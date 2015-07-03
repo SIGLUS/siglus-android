@@ -1,16 +1,26 @@
-package net.gongmingqm10.androidtemplate;
+package net.gongmingqm10.androidtemplate.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import net.gongmingqm10.androidtemplate.R;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 public class MainActivity extends Activity {
+
+    @InjectView(R.id.welcome_label)
+    protected TextView welcomeLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.inject(this);
     }
 
     @Override
