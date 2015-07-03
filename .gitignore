@@ -38,3 +38,11 @@ proguard/
 
 # Log Files
 *.log
+=======
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/captures
+*.iml
