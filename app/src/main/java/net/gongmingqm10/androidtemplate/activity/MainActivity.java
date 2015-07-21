@@ -1,7 +1,9 @@
 package net.gongmingqm10.androidtemplate.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -11,8 +13,12 @@ import android.widget.TextView;
 
 import net.gongmingqm10.androidtemplate.R;
 
+import java.text.DecimalFormat;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 public class MainActivity extends Activity {
 
@@ -47,4 +53,32 @@ public class MainActivity extends Activity {
 
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
+
+    @OnClick(R.id.result_btn)
+    protected void calculateResult() {
+        Double firstNumber = Double.parseDouble(firstNumberEdit.getText().toString());
+        Double secondNumber = Double.parseDouble(secondNumberEdit.getText().toString());
+
+        if (secondNumber == 0D) {
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.second_number_not_zero)
+                    .setPositiveButton(R.string.ok, null)
+                    .show();
+            secondNumberEdit.setText("");
+        } else {
+            String formattedResult = new DecimalFormat("##.##").format(firstNumber / secondNumber);
+            resultLabel.setText(getResources().getString(R.string.calculate_result_template, formattedResult));
+        }
+    }
+
+    @OnTextChanged({R.id.first_number_edit_text, R.id.second_number_edit_text})
+    protected void numberTextChanged() {
+        if (TextUtils.isEmpty(firstNumberEdit.getText().toString())
+                || TextUtils.isEmpty(secondNumberEdit.getText().toString())) {
+            resultBtn.setEnabled(false);
+        } else {
+            resultBtn.setEnabled(true);
+        }
+    }
+
 }

@@ -6,6 +6,11 @@
     <string name="input_first_number">Input first number</string>
     <string name="two_number_to_divide">Please input two number to divide</string>
     <string name="get_result">Get result</string>
-    <string name="result_label_placeholder">The result is 5</string>
+    <string name="result_label_placeholder">Result will be showed here</string>
     <string name="input_second_number">Input second number</string>
+
+    <string name="calculate_result_template">The result is %1$s</string>
+    <string name="second_number_not_zero">The second number should not be zero</string>
+    <string name="ok">OK</string>
+
 </resources>
