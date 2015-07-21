@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextClock;
 import android.widget.TextView;
 
 import net.gongmingqm10.androidtemplate.R;
@@ -13,8 +16,17 @@ import butterknife.InjectView;
 
 public class MainActivity extends Activity {
 
-    @InjectView(R.id.welcome_label)
-    protected TextView welcomeLabel;
+    @InjectView(R.id.first_number_edit_text)
+    protected EditText firstNumberEdit;
+
+    @InjectView(R.id.second_number_edit_text)
+    protected EditText secondNumberEdit;
+
+    @InjectView(R.id.result_btn)
+    protected Button resultBtn;
+
+    @InjectView(R.id.result_label)
+    protected TextView resultLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,23 +37,14 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 }

@@ -1,6 +1,11 @@
 <resources>
-    <string name="app_name">AndroidTemplate</string>
+    <string name="app_name">Calculator</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="input_first_number">Input first number</string>
+    <string name="two_number_to_divide">Please input two number to divide</string>
+    <string name="get_result">Get result</string>
+    <string name="result_label_placeholder">The result is 5</string>
+    <string name="input_second_number">Input second number</string>
 </resources>

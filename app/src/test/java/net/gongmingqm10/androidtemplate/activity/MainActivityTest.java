@@ -18,14 +18,6 @@ public class MainActivityTest {
     public void setUp() {
         mainActivity = Robolectric.buildActivity(MainActivity.class).create().get();
     }
+    
 
-    @Test
-    public void testDummy() {
-        assertThat(true).isTrue();
-    }
-
-    @Test
-    public void shouldSayHelloWorld() {
-        assertThat(mainActivity.welcomeLabel.getText().toString()).isEqualTo("Hello world!");
-    }
 }
