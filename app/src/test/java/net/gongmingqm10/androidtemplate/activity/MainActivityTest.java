@@ -18,6 +18,15 @@ public class MainActivityTest {
     public void setUp() {
         mainActivity = Robolectric.buildActivity(MainActivity.class).create().get();
     }
-    
+
+    @Test
+    public void shouldShowTwoWhenSixDividedByTwo() {
+        mainActivity.firstNumberEdit.setText("6");
+        mainActivity.secondNumberEdit.setText("2");
+
+        mainActivity.resultBtn.performClick();
+
+        assertThat(mainActivity.resultLabel.getText().toString()).isEqualTo("Result is 3");
+    }
 
 }
