@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- Disable app:showAsAction lint error -->
+    <issue id="AppCompatResource" severity="ignore" />
+
+</lint>
