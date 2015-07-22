@@ -1,18 +1,15 @@
-package net.gongmingqm10.androidtemplate.activity;
-
-import android.app.AlertDialog;
-
-import net.gongmingqm10.androidtemplate.TemplateTestRunner;
+package org.openlmis.core.activity;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestRunner;
 import org.robolectric.Robolectric;
 import org.robolectric.shadows.ShadowAlertDialog;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(TemplateTestRunner.class)
+@RunWith(LMISTestRunner.class)
 public class MainActivityTest {
 
     private MainActivity mainActivity;

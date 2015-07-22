@@ -1,4 +1,4 @@
-package net.gongmingqm10.androidtemplate;
+package org.openlmis.core;
 
 import org.junit.runners.model.InitializationError;
 import org.robolectric.AndroidManifest;
@@ -9,7 +9,7 @@ import org.robolectric.annotation.Config;
 import java.io.File;
 import java.util.Properties;
 
-public class TemplateTestRunner extends RobolectricTestRunner {
+public class LMISTestRunner extends RobolectricTestRunner {
 
     /**
      * Creates a runner to run {@code testClass}. Looks in your working directory for your AndroidManifest.xml file
@@ -18,7 +18,7 @@ public class TemplateTestRunner extends RobolectricTestRunner {
      * @param testClass the test class to be run
      * @throws InitializationError if junit says so
      */
-    public TemplateTestRunner(Class<?> testClass) throws InitializationError {
+    public LMISTestRunner(Class<?> testClass) throws InitializationError {
         super(testClass);
     }
 

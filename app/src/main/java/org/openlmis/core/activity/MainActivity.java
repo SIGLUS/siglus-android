@@ -1,4 +1,4 @@
-package net.gongmingqm10.androidtemplate.activity;
+package org.openlmis.core.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,10 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextClock;
 import android.widget.TextView;
 
-import net.gongmingqm10.androidtemplate.R;
+import org.openlmis.core.R;
 
 import java.text.DecimalFormat;
 

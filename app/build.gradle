@@ -5,7 +5,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "net.gongmingqm10.androidtemplate"
+        applicationId "org.openlmis.core"
         minSdkVersion 17
         targetSdkVersion 22
         versionCode 1
@@ -33,4 +33,27 @@ dependencies {
     testCompile 'org.robolectric:robolectric:2.4'
     testCompile 'org.assertj:assertj-core:1.7.1'
 
+}
+
+task bundleInstall(type:Exec) {
+    workingDir "$projectDir/../functionalTests"
+    executable 'bundle'
+    args 'install'
+}
+
+task functionalTests(type:Exec, dependsOn: ['bundleInstall']) {
+    description 'Run Calabash Tests against specified apk (-PapkPath)'
+    group JavaBasePlugin.VERIFICATION_GROUP
+    workingDir "$projectDir/../functionalTests"
+
+    def targetPath
+
+    if(project.hasProperty("apkPath")) {
+        targetPath = "$apkPath"
+    } else {
+        targetPath = "$projectDir/build/outputs/apk/app-debug.apk"
+    }
+
+    executable 'calabash-android'
+    args "run", "$targetPath", "--tags ~@pending"
 }
