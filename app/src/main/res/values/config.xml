@@ -1,0 +1,3 @@
+<resources>
+    <string name="server_base_url">http://demo.openlmis.org</string>
+</resources>

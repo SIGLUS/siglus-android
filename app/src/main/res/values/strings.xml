@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Calculator</string>
+    <string name="app_name">CHAI LMIS</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -12,5 +12,20 @@
     <string name="calculate_result_template">The result is %1$s</string>
     <string name="second_number_not_zero">The second number should not be zero</string>
     <string name="ok">OK</string>
+
+
+    <!-- Login Page -->
+    <string name="hint_username">User Name</string>
+    <string name="hint_password">Password</string>
+    <string name="btn_login">Login</string>
+    <string name="msg_login_failed">Login Failed : %1s</string>
+    <string name="msg_login_validate">User Name / Password cannot be empty !</string>
+
+    <!-- Init Inventory -->
+    <string name="hint_quantity_in_stock">Quantity in stock</string>
+    <string name="label_expire_date">Expiration Date</string>
+    <string name="label_dummy_product">Paracetemol</string>
+    <string name="label_dummy_unit">500mg</string>
+
 
 </resources>
