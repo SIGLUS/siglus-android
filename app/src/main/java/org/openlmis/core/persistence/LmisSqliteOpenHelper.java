@@ -42,7 +42,7 @@ import org.openlmis.core.persistence.migrations.CreateInitTables;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LMISSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
+public class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
     private static final List<Migration> MIGRATIONS = new ArrayList<Migration>() {
         {
@@ -51,17 +51,17 @@ public class LMISSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
         }
     };
     private static int instanceCount = 0;
-    private static LMISSqliteOpenHelper _helperInstance;
+    private static LmisSqliteOpenHelper _helperInstance;
 
-    private LMISSqliteOpenHelper(Context context) {
+    private LmisSqliteOpenHelper(Context context) {
         super(context, "lmis_db", null, MIGRATIONS.size());
         ++instanceCount;
-        Log.d("LMISSqliteOpenHelper", "Instance Created : total count : " + instanceCount);
+        Log.d("LmisSqliteOpenHelper", "Instance Created : total count : " + instanceCount);
     }
 
-    public static synchronized LMISSqliteOpenHelper getInstance(Context context) {
+    public static synchronized LmisSqliteOpenHelper getInstance(Context context) {
         if (_helperInstance == null) {
-            _helperInstance = new LMISSqliteOpenHelper(context);
+            _helperInstance = new LmisSqliteOpenHelper(context);
         }
         return _helperInstance;
     }
@@ -69,7 +69,7 @@ public class LMISSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     public static void closeHelper() {
         _helperInstance = null;
         --instanceCount;
-        Log.d("LMISSqliteOpenHelper", "Instance Destroyed : total count : " + instanceCount);
+        Log.d("LmisSqliteOpenHelper", "Instance Destroyed : total count : " + instanceCount);
     }
 
     @Override
