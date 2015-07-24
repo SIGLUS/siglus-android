@@ -4,12 +4,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import org.openlmis.core.model.Product;
+import com.google.inject.Inject;
 
-import java.util.ArrayList;
+import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Product;
+import org.openlmis.core.model.repository.ProductRepository;
+
 import java.util.List;
 
 public class InventoryPresenter implements Presenter{
+
+    @Inject
+    ProductRepository productRepository;
 
     @Override
     public void onStart() {
@@ -37,13 +43,11 @@ public class InventoryPresenter implements Presenter{
     }
 
     public List<Product> loadMasterProductList() {
-        ArrayList<Product> list = new ArrayList<>();
-        for (int i =0; i<10 ;i ++){
-            Product product = new Product();
-            product.setName("Paracetemol " + i);
-            product.setUnit("500 ml" + i);
-
-            list.add(product);
+        List<Product> list = null;
+        try {
+            list = productRepository.loadProductList();
+        }catch (LMISException e){
+            e.printStackTrace();
         }
 
         return list;

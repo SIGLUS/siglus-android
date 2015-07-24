@@ -33,7 +33,7 @@ public class LoginActivity extends BaseActivity{
     @Inject
     LoginPresenter presenter;
 
-    ProgressDialog loadingDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,21 +59,5 @@ public class LoginActivity extends BaseActivity{
     }
 
 
-    public void startLoading() {
-        if(loadingDialog == null){
-            loadingDialog = new ProgressDialog(this);
-        }
 
-        loadingDialog.show();
-    }
-
-    public void stopLoading() {
-        if(loadingDialog !=null){
-            loadingDialog.dismiss();
-        }
-    }
-
-    public void showMessage(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
 }

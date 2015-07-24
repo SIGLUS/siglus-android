@@ -1,7 +1,7 @@
 package org.openlmis.core.model.repository;
 
 
-import org.openlmis.core.model.exception.UnauthorizedException;
+import org.openlmis.core.exceptions.UnauthorizedException;
 
 import retrofit.ErrorHandler;
 import retrofit.RestAdapter;
