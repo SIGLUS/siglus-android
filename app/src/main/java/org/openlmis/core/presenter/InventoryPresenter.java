@@ -22,19 +22,29 @@ package org.openlmis.core.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
 
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryPresenter implements Presenter{
 
     @Inject
     ProductRepository productRepository;
+
+    @Inject
+    StockRepository stockRepository;
+
+    Activity view;
 
     @Override
     public void onStart() {
@@ -48,7 +58,7 @@ public class InventoryPresenter implements Presenter{
 
     @Override
     public void attachView(Activity v) {
-
+        view = v;
     }
 
     @Override
@@ -72,4 +82,20 @@ public class InventoryPresenter implements Presenter{
         return list;
     }
 
+    public void initStockCard(List<InventoryViewModel> list){
+        List<StockCard> stockCards = new ArrayList<>();
+
+        for (InventoryViewModel model : list){
+            if (model.isChecked()){
+                StockCard stockCard = new StockCard();
+                stockCard.setProduct(model.getProduct());
+                stockCard.setStockOnHand(Integer.parseInt(model.getQuantity()));
+                stockCard.setExpireDates(model.getExpireDate());
+
+                stockCards.add(stockCard);
+            }
+        }
+        stockRepository.batchSave(stockCards);
+        Toast.makeText(view , "Inventory Complete: you created " + stockCards.size() + "", Toast.LENGTH_SHORT).show();
+    }
 }

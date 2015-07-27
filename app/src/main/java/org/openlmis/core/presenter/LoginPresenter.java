@@ -26,8 +26,9 @@ import android.content.Intent;
 import com.google.inject.Inject;
 
 import org.openlmis.core.R;
+import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
-import org.openlmis.core.view.activity.InventoryActitivy;
+import org.openlmis.core.network.NetworkConnectionManager;
 import org.openlmis.core.view.activity.LoginActivity;
 
 import retrofit.Callback;
@@ -35,7 +36,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 
-public class LoginPresenter implements  Presenter, Callback<UserRepository.UserResponse>{
+public class LoginPresenter implements Presenter, Callback<UserRepository.UserResponse> {
 
     LoginActivity view;
     Context context;
@@ -44,7 +45,7 @@ public class LoginPresenter implements  Presenter, Callback<UserRepository.UserR
     UserRepository userRepository;
 
 
-    public void initPresenter(Context context){
+    public void initPresenter(Context context) {
         this.context = context;
     }
 
@@ -65,29 +66,45 @@ public class LoginPresenter implements  Presenter, Callback<UserRepository.UserR
 
     @Override
     public void attachView(Activity v) {
-       this.view = (LoginActivity)v;
+        this.view = (LoginActivity) v;
     }
 
-    public  void startLogin(String userName, String password){
-        if("".equals(userName.trim()) || "".equals(password.trim())){
+    public void startLogin(String userName, String password) {
+        if ("".equals(userName.trim()) || "".equals(password)) {
             view.showMessage(context.getResources().getString(R.string.msg_login_validate));
             return;
         }
 
         view.startLoading();
-        //send login request.
-        userRepository.getUser(userName, password, this);
+
+        if (NetworkConnectionManager.isConnectionAvaliable(context)) {
+            userRepository.getUser(userName.trim(), password, this);
+        } else {
+            User user = userRepository.getUserForLocalDatabase(userName.trim(), password);
+
+            if (user == null) {
+                view.showMessage(context.getResources().getString(R.string.msg_login_failed));
+            } else {
+                view.goToInitInventory();
+            }
+
+            view.stopLoading();
+        }
     }
+
+
+    public void saveToLocalDatabase(User user) {
+        userRepository.save(user);
+    }
+
 
     @Override
     public void success(UserRepository.UserResponse userResponse, Response response) {
-        if(userResponse.isAuthenticated()){
-            view.showMessage("Login Successfully");
-        }else{
-            view.showMessage("Login Failed");
-        }
+        view.showMessage(context.getResources().getString(R.string.msg_login_successful));
+        view.stopLoading();
 
-        view.startLoading();
+        saveToLocalDatabase(userResponse.getUserProfile());
+        view.goToInitInventory();
     }
 
     @Override
@@ -95,8 +112,6 @@ public class LoginPresenter implements  Presenter, Callback<UserRepository.UserR
         view.showMessage(context.getResources().getString(R.string.msg_login_failed, error.getMessage()));
         view.stopLoading();
 
-        Intent intent = new Intent();
-        intent.setClass(context, InventoryActitivy.class);
-        context.startActivity(intent);
+        view.goToInitInventory();
     }
 }

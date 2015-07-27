@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.adapter;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -26,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -42,16 +44,14 @@ import java.util.List;
 public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdapter.ViewHolder> {
 
     LayoutInflater inflater;
-    InventoryPresenter presenter;
     Context context;
     List<InventoryViewModel> inventoryList;
 
 
-    public InventoryListAdapter(Context context, InventoryPresenter presenter){
+    public InventoryListAdapter(Context context, List<Product> productList){
         inflater = LayoutInflater.from(context);
-        this.presenter = presenter;
         this.context = context;
-        inventoryList = wrapByViewModel(presenter.loadMasterProductList());
+        inventoryList = wrapByViewModel(productList);
     }
 
     private List<InventoryViewModel> wrapByViewModel(List<Product> productList){
@@ -73,7 +73,7 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final InventoryViewModel viewModel = inventoryList.get(position);
 
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -100,11 +100,10 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
             }
         });
 
-        holder.txExpireDate.setOnKeyListener(new View.OnKeyListener() {
+        holder.txExpireDate.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                viewModel.setExpireDate(holder.txExpireDate.getText().toString());
-                return false;
+            public void onClick(View v) {
+                showDatePicker(holder, position);
             }
         });
 
@@ -125,7 +124,7 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
         public TextView productName;
         public TextView productUnit;
         public EditText txQuantity;
-        public EditText txExpireDate;
+        public TextView txExpireDate;
         public View actionDivider;
         public CheckBox checkBox;
         public View actionPanel;
@@ -136,7 +135,7 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
             productName = (TextView)itemView.findViewById(R.id.product_name);
             productUnit = (TextView)itemView.findViewById(R.id.product_unit);
             txQuantity = (EditText)itemView.findViewById(R.id.tx_quantity);
-            txExpireDate = (EditText)itemView.findViewById(R.id.tx_expire_date);
+            txExpireDate = (TextView)itemView.findViewById(R.id.tx_expire_date);
             checkBox = (CheckBox)itemView.findViewById(R.id.checkbox);
             actionDivider = itemView.findViewById(R.id.action_divider);
             actionPanel = itemView.findViewById(R.id.action_panel);
@@ -151,5 +150,24 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
         public String toString() {
             return super.toString();
         }
+    }
+
+
+    public void showDatePicker(final ViewHolder holder, final int position) {
+
+        DatePickerDialog dialog = new DatePickerDialog(context,DatePickerDialog.BUTTON_NEUTRAL , new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                String dateString = new StringBuilder().append(dayOfMonth).append("/").append(monthOfYear + 1).append("/").append(year).toString();
+                holder.txExpireDate.setText(dateString);
+                inventoryList.get(position).setExpireDate(dateString);
+            }
+        }, 2015, 0, 1);
+
+        dialog.show();
+    }
+
+    public List<InventoryViewModel> getInventoryList(){
+        return this.inventoryList;
     }
 }

@@ -16,7 +16,7 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.model.repository;
+package org.openlmis.core.network;
 
 
 import org.openlmis.core.exceptions.UnauthorizedException;
@@ -28,7 +28,7 @@ import retrofit.client.Response;
 
 public class RestRepository {
 
-    public static String END_POINT = "http://52.69.106.103:8888/";
+    public static String END_POINT = " http://10.203.20.152:9091";
 
     protected RestAdapter restAdapter;
     protected LMISRestApi lmisRestApi;

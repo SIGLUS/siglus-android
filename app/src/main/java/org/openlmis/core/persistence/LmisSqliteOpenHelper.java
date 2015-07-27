@@ -71,11 +71,13 @@ public class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
-        for (int currentVersion = oldVersion; currentVersion < newVersion; currentVersion++) {
-            Migration migration = MIGRATIONS.get(currentVersion);
-            Log.i("DB Migration", "Upgrading migration [" + migration.getClass().getSimpleName() + "]");
-            migration.up(database, connectionSource);
-        }
+//        for (int currentVersion = oldVersion; currentVersion < newVersion; currentVersion++) {
+//            Migration migration = MIGRATIONS.get(currentVersion);
+//            Log.i("DB Migration", "Upgrading migration [" + migration.getClass().getSimpleName() + "]");
+//            migration.up(database, connectionSource);
+//        }
+
+        onCreate(database, connectionSource);
     }
 
     @Override

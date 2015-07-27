@@ -19,6 +19,8 @@
 
 package org.openlmis.core.model.repository;
 
+import android.content.Context;
+
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -26,22 +28,22 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.persistence.DbUtil;
+import org.openlmis.core.persistence.GenericDao;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public class ProductRepository {
 
+    GenericDao<Product> genericDao;
+
+
     @Inject
-    DbUtil dbUtil;
+    public ProductRepository(Context context){
+        genericDao = new GenericDao<>(Product.class, context);
+    }
 
     public List<Product> loadProductList() throws LMISException{
-        return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
-            @Override
-            public List<Product> operate(Dao<Product, String> dao) throws SQLException {
-                List<Product> products = dao.queryForAll();
-                return products;
-            }
-        });
+        return  genericDao.queryForAll();
     }
 }

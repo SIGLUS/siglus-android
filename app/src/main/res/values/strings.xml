@@ -18,6 +18,7 @@
     <string name="hint_username">User Name</string>
     <string name="hint_password">Password</string>
     <string name="btn_login">Login</string>
+    <string name="msg_login_successful">Login Successful</string>
     <string name="msg_login_failed">Login Failed : %1s</string>
     <string name="msg_login_validate">User Name / Password cannot be empty !</string>
 
@@ -26,6 +27,7 @@
     <string name="label_expire_date">Expiration Date</string>
     <string name="label_dummy_product">Paracetemol</string>
     <string name="label_dummy_unit">500mg</string>
+    <string name="msg_inventory_check_failed">Quantity cannot be empty !</string>
 
 
 </resources>

@@ -17,8 +17,10 @@
  */
 
 
-package org.openlmis.core.model.repository;
+package org.openlmis.core.network;
 
+
+import org.openlmis.core.model.repository.UserRepository;
 
 import retrofit.Callback;
 import retrofit.http.Field;
@@ -30,6 +32,6 @@ import rx.Observable;
 
 public interface LMISRestApi {
 
-    @POST("/j_spring_security_check")
+    @POST("/rest-api/login")
     void authorizeUser(@Query("j_username") String username, @Query("j_password") String password, Callback<UserRepository.UserResponse> callback);
 }

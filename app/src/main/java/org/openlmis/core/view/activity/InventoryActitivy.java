@@ -18,18 +18,27 @@
 
 package org.openlmis.core.view.activity;
 
+import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.Toast;
 
 import com.google.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.InventoryPresenter;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
+
+import java.util.List;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -61,15 +70,51 @@ public class InventoryActitivy extends BaseActivity {
         initUI();
     }
 
-    private void initUI(){
-        // use a linear layout manager
+    private void initUI() {
         mLayoutManager = new LinearLayoutManager(this);
         productListRecycleView.setLayoutManager(mLayoutManager);
 
-        // specify an adapter (see also next example)
-        mAdapter = new InventoryListAdapter(this, presenter);
+        mAdapter = new InventoryListAdapter(this, presenter.loadMasterProductList());
         productListRecycleView.setAdapter(mAdapter);
+
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position;
+                if ((position = checkInventory()) == -1) {
+                    presenter.initStockCard(mAdapter.getInventoryList());
+                    //goToMainPage();
+                } else {
+                    productListRecycleView.scrollToPosition(position);
+                    Toast.makeText(InventoryActitivy.this, R.string.msg_inventory_check_failed, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
+
+    public void goToMainPage() {
+        Intent intent = getIntent();
+        intent.setClass(this, InventoryActitivy.class);
+        startActivity(intent);
+    }
+
+    public int checkInventory() {
+        List<InventoryViewModel> list = mAdapter.getInventoryList();
+
+        if (list != null) {
+            for (int i = 0; i < list.size(); i++) {
+                InventoryViewModel inventory = list.get(i);
+                if (inventory.isChecked()) {
+                    if (StringUtils.isEmpty(inventory.getQuantity())) {
+                        return i;
+                    }
+                }
+            }
+        }
+
+        return -1;
+    }
+
 
     @Override
     public Presenter getPresenter() {

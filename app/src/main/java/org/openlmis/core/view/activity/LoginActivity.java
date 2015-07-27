@@ -22,6 +22,7 @@ package org.openlmis.core.view.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -77,6 +78,10 @@ public class LoginActivity extends BaseActivity{
         return presenter;
     }
 
-
+    public  void goToInitInventory(){
+        Intent intent = new Intent();
+        intent.setClass(this, InventoryActitivy.class);
+        startActivity(intent);
+    }
 
 }

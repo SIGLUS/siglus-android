@@ -39,9 +39,15 @@ public class StockCard {
     @DatabaseField
     String stockCardId;
 
+    @DatabaseField
+    String expireDates;
+
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     Product product;
 
     @ForeignCollectionField()
     private ForeignCollection<StockItem> stockItems;
+
+    @DatabaseField
+    int stockOnHand;
 }

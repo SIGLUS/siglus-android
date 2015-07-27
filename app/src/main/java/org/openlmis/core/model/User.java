@@ -32,12 +32,15 @@ public class User {
     private long id;
 
     @DatabaseField
-    String username;
+    String userName;
 
     @DatabaseField
     String password;
 
     @DatabaseField
-    String facilityId;
+    String facilityCode;
+
+    @DatabaseField
+    String facilityName;
 
 }
