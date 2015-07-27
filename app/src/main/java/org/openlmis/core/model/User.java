@@ -35,6 +35,12 @@ public class User {
     String userName;
 
     @DatabaseField
+    String userFirstName;
+
+    @DatabaseField
+    String userLastName;
+
+    @DatabaseField
     String password;
 
     @DatabaseField

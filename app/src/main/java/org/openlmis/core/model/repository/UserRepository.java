@@ -63,7 +63,6 @@ public class UserRepository extends RestRepository {
                 public List<User> operate(Dao<User, String> dao) throws SQLException {
                     User user = new User();
                     user.setUserName(userName);
-                    user.setPassword(password);
                     return dao.queryForMatchingArgs(user);
                 }
             });
@@ -85,6 +84,6 @@ public class UserRepository extends RestRepository {
     public
     @Data
     class UserResponse {
-        User userProfile;
+        User userInformation;
     }
 }

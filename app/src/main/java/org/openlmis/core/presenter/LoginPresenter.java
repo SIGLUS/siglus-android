@@ -22,6 +22,7 @@ package org.openlmis.core.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
 
 import com.google.inject.Inject;
 
@@ -98,20 +99,31 @@ public class LoginPresenter implements Presenter, Callback<UserRepository.UserRe
     }
 
 
+    public void onLoginSuccess(User user){
+        Toast.makeText(context, context.getResources().getString(R.string.msg_login_successful), Toast.LENGTH_SHORT).show();
+        saveToLocalDatabase(user);
+        view.goToInitInventory();
+    }
+
+    public void onLoginFailed(String errorMessage){
+        view.showMessage(context.getResources().getString(R.string.msg_login_failed, errorMessage));
+        view.clearPassword();
+    }
+
     @Override
     public void success(UserRepository.UserResponse userResponse, Response response) {
-        view.showMessage(context.getResources().getString(R.string.msg_login_successful));
         view.stopLoading();
 
-        saveToLocalDatabase(userResponse.getUserProfile());
-        view.goToInitInventory();
+        if (userResponse.getUserInformation() != null){
+            onLoginSuccess(userResponse.getUserInformation());
+        } else {
+            onLoginFailed(context.getResources().getString(R.string.msg_login_failed));
+        }
     }
 
     @Override
     public void failure(RetrofitError error) {
-        view.showMessage(context.getResources().getString(R.string.msg_login_failed, error.getMessage()));
         view.stopLoading();
-
-        view.goToInitInventory();
+        onLoginFailed(error.getMessage());
     }
 }

@@ -33,5 +33,5 @@ import rx.Observable;
 public interface LMISRestApi {
 
     @POST("/rest-api/login")
-    void authorizeUser(@Query("j_username") String username, @Query("j_password") String password, Callback<UserRepository.UserResponse> callback);
+    void authorizeUser(@Query("username") String username, @Query("password") String password, Callback<UserRepository.UserResponse> callback);
 }

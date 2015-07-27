@@ -84,4 +84,8 @@ public class LoginActivity extends BaseActivity{
         startActivity(intent);
     }
 
+    public void clearPassword(){
+        password.setText("");
+    }
+
 }
