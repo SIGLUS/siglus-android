@@ -20,17 +20,16 @@
 package org.openlmis.core.view.activity;
 
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.LoginPresenter;
 import org.openlmis.core.presenter.Presenter;
@@ -39,20 +38,20 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_login)
-public class LoginActivity extends BaseActivity{
+public class LoginActivity extends BaseActivity {
 
     @InjectView(R.id.tx_username)
     public EditText userName;
-
     @InjectView(R.id.tx_password)
     public EditText password;
-
     @InjectView(R.id.btn_login)
     public Button btnLogin;
-
+    @InjectView(R.id.ly_username)
+    TextInputLayout lyUserName;
+    @InjectView(R.id.ly_password)
+    TextInputLayout lyPassword;
     @Inject
     LoginPresenter presenter;
-
 
 
     @Override
@@ -62,7 +61,7 @@ public class LoginActivity extends BaseActivity{
         initUI();
     }
 
-    void initUI(){
+    void initUI() {
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,14 +77,26 @@ public class LoginActivity extends BaseActivity{
         return presenter;
     }
 
-    public  void goToInitInventory(){
+    public void goToInitInventory() {
         Intent intent = new Intent();
         intent.setClass(this, InventoryActitivy.class);
         startActivity(intent);
+        this.finish();
     }
 
-    public void clearPassword(){
-        password.setText("");
+    public void clearPassword() {
+        password.setText(StringUtils.EMPTY);
     }
 
+    public void showErrorOnFields(int filedPosition, String msg) {
+        if (filedPosition == 0) {
+            lyUserName.setError(msg);
+        } else if (filedPosition == 1) {
+            lyPassword.setError(msg);
+        }else{
+            lyUserName.setError(msg);
+            lyPassword.setError(msg);
+        }
+
+    }
 }

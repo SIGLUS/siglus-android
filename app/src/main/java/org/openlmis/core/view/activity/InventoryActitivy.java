@@ -18,7 +18,6 @@
 
 package org.openlmis.core.view.activity;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,7 +25,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.Toast;
 
 import com.google.inject.Inject;
@@ -36,6 +34,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.presenter.InventoryPresenter;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
+import org.openlmis.core.view.adapter.StockCardListAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.List;
@@ -83,7 +82,7 @@ public class InventoryActitivy extends BaseActivity {
                 int position;
                 if ((position = checkInventory()) == -1) {
                     presenter.initStockCard(mAdapter.getInventoryList());
-                    //goToMainPage();
+                    goToMainPage();
                 } else {
                     productListRecycleView.scrollToPosition(position);
                     Toast.makeText(InventoryActitivy.this, R.string.msg_inventory_check_failed, Toast.LENGTH_SHORT).show();
@@ -94,7 +93,7 @@ public class InventoryActitivy extends BaseActivity {
 
     public void goToMainPage() {
         Intent intent = getIntent();
-        intent.setClass(this, InventoryActitivy.class);
+        intent.setClass(this, HomeActivity.class);
         startActivity(intent);
     }
 

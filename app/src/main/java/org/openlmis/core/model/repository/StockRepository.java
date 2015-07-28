@@ -49,4 +49,8 @@ public class StockRepository {
             e.printStackTrace();
         }
     }
+
+    public List<StockCard> getStockCards() throws LMISException{
+        return genericDao.queryForAll();
+    }
 }

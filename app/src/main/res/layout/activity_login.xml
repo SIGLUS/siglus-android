@@ -40,22 +40,34 @@
             android:textSize="24sp"
             android:textColor="@color/background_material_dark"/>
 
-        <EditText
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/ly_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:ems="18"
-            android:id="@+id/tx_username"
-            android:hint="@string/hint_username"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp">
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="18"
+                android:id="@+id/tx_username"
+                android:hint="@string/hint_username"/>
+        </android.support.design.widget.TextInputLayout>
 
-        <EditText
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/ly_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:ems="18"
-            android:hint="@string/hint_password"
-            android:id="@+id/tx_password"/>
+            android:layout_marginBottom="20dp">
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:ems="18"
+                android:hint="@string/hint_password"
+                android:id="@+id/tx_password"/>
+        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:layout_width="match_parent"
@@ -67,8 +79,7 @@
             android:layout_marginTop="40dp"
             android:layout_marginBottom="20dp"
             android:layout_gravity="center_horizontal"
-            android:background="@color/button_material_light"
-            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored" />
+            android:background="@drawable/blue_button"/>
 
     </LinearLayout>
 </RelativeLayout>

@@ -28,5 +28,6 @@
         android:layout_height="wrap_content"
         android:padding="20dp"
         android:layout_alignParentBottom="true"
-        android:text="Done"/>
+        android:text="Done"
+        android:background="@drawable/blue_button"/>
 </RelativeLayout>

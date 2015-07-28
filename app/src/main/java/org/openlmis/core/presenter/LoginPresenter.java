@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.google.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
@@ -71,8 +72,12 @@ public class LoginPresenter implements Presenter, Callback<UserRepository.UserRe
     }
 
     public void startLogin(String userName, String password) {
-        if ("".equals(userName.trim()) || "".equals(password)) {
-            view.showMessage(context.getResources().getString(R.string.msg_login_validate));
+
+        if (StringUtils.EMPTY.equals(userName.trim())){
+            view.showErrorOnFields(0, context.getString(R.string.msg_login_validate));
+            return;
+        } else if (StringUtils.EMPTY.equals(password)) {
+            view.showErrorOnFields(1, context.getString(R.string.msg_login_validate));
             return;
         }
 
@@ -84,7 +89,7 @@ public class LoginPresenter implements Presenter, Callback<UserRepository.UserRe
             User user = userRepository.getUserForLocalDatabase(userName.trim(), password);
 
             if (user == null) {
-                view.showMessage(context.getResources().getString(R.string.msg_login_failed));
+                view.showMessage(context.getString(R.string.msg_login_failed));
             } else {
                 view.goToInitInventory();
             }
@@ -100,14 +105,16 @@ public class LoginPresenter implements Presenter, Callback<UserRepository.UserRe
 
 
     public void onLoginSuccess(User user){
-        Toast.makeText(context, context.getResources().getString(R.string.msg_login_successful), Toast.LENGTH_SHORT).show();
         saveToLocalDatabase(user);
         view.goToInitInventory();
     }
 
     public void onLoginFailed(String errorMessage){
-        view.showMessage(context.getResources().getString(R.string.msg_login_failed, errorMessage));
+        //view.showMessage(R.string.msg_login_failed, errorMessage);
+        view.showErrorOnFields(2 , context.getResources().getString(R.string.msg_invalid_username));
         view.clearPassword();
+
+        view.goToInitInventory();
     }
 
     @Override

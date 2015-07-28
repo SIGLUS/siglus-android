@@ -20,6 +20,8 @@
 package org.openlmis.core.view.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -28,6 +30,10 @@ import org.openlmis.core.presenter.Presenter;
 import roboguice.activity.RoboActionBarActivity;
 
 public abstract class BaseActivity extends RoboActionBarActivity {
+
+
+    private static final String MYPREFERENCE = "LMISPreference";
+    SharedPreferences preferences;
 
 
     public abstract Presenter getPresenter();
@@ -48,7 +54,7 @@ public abstract class BaseActivity extends RoboActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        preferences = getSharedPreferences(MYPREFERENCE, Context.MODE_PRIVATE);
         initPresenter();
     }
 
@@ -62,6 +68,7 @@ public abstract class BaseActivity extends RoboActionBarActivity {
     public void startLoading() {
         if(loadingDialog == null){
             loadingDialog = new ProgressDialog(this);
+            loadingDialog.setIndeterminate(false);
         }
 
         loadingDialog.show();
@@ -73,7 +80,30 @@ public abstract class BaseActivity extends RoboActionBarActivity {
         }
     }
 
+    public void saveString(String key, String value) {
+        preferences.edit().putString(key,value).commit();
+    }
+
+    public void saveInt(String key, int value){
+        preferences.edit().putInt(key, value).commit();
+    }
+
+    public SharedPreferences getPreferences(){
+        return preferences;
+    }
+
     public void showMessage(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
+    public void showMessage(int resId) {
+        String msg = getResources().getString(resId);
+        showMessage(msg);
+    }
+
+    public void showMessage(int resId, Object... args){
+        String msg = getResources().getString(resId, args);
+        showMessage(msg);
+    }
+
+
 }

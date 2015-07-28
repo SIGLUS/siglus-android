@@ -6,10 +6,11 @@
     <!-- Login Page -->
     <string name="hint_username">User Name</string>
     <string name="hint_password">Password</string>
-    <string name="btn_login">Login</string>
+    <string name="btn_login">LOG IN</string>
     <string name="msg_login_successful">Login Successful</string>
     <string name="msg_login_failed">Login Failed : %1s</string>
     <string name="msg_login_validate">User Name / Password cannot be empty !</string>
+    <string name="msg_invalid_username">Username or Password is incorrect</string>
 
     <!-- Init Inventory -->
     <string name="hint_quantity_in_stock">Quantity in stock</string>
