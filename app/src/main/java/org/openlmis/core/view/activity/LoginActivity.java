@@ -47,12 +47,11 @@ public class LoginActivity extends BaseActivity {
     @InjectView(R.id.btn_login)
     public Button btnLogin;
     @InjectView(R.id.ly_username)
-    TextInputLayout lyUserName;
+    public TextInputLayout lyUserName;
     @InjectView(R.id.ly_password)
-    TextInputLayout lyPassword;
+    public TextInputLayout lyPassword;
     @Inject
     LoginPresenter presenter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -113,8 +113,6 @@ public class LoginPresenter implements Presenter, Callback<UserRepository.UserRe
         //view.showMessage(R.string.msg_login_failed, errorMessage);
         view.showErrorOnFields(2 , context.getResources().getString(R.string.msg_invalid_username));
         view.clearPassword();
-
-        view.goToInitInventory();
     }
 
     @Override
