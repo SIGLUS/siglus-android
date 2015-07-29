@@ -106,6 +106,9 @@ public class LoginActivity extends BaseActivity {
     }
 
     public void showErrorOnFields(int filedPosition, String msg) {
+        lyUserName.setErrorEnabled(false);
+        lyPassword.setErrorEnabled(false);
+
         if (filedPosition == 0) {
             lyUserName.setError(msg);
         } else if (filedPosition == 1) {

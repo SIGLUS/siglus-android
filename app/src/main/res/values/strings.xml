@@ -18,6 +18,7 @@
     <string name="label_dummy_product">Paracetemol</string>
     <string name="label_dummy_unit">500mg</string>
     <string name="msg_inventory_check_failed">Quantity cannot be empty !</string>
+    <string name="msg_invalid_date">Cannot choose old day</string>
 
 
 </resources>

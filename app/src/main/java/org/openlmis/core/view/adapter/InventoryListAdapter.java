@@ -21,6 +21,7 @@ package org.openlmis.core.view.adapter;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputFilter;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,15 +31,22 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.InventoryPresenter;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.widget.InputFilterMinMax;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdapter.ViewHolder> {
@@ -46,7 +54,6 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
     LayoutInflater inflater;
     Context context;
     List<InventoryViewModel> inventoryList;
-
 
     public InventoryListAdapter(Context context, List<Product> productList){
         inflater = LayoutInflater.from(context);
@@ -139,6 +146,8 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
             checkBox = (CheckBox)itemView.findViewById(R.id.checkbox);
             actionDivider = itemView.findViewById(R.id.action_divider);
             actionPanel = itemView.findViewById(R.id.action_panel);
+
+            txQuantity.setFilters(new InputFilter[] {new InputFilterMinMax(Integer.MAX_VALUE)});
         }
 
         public void reset(){
@@ -155,14 +164,21 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
 
     public void showDatePicker(final ViewHolder holder, final int position) {
 
+        final Calendar today = GregorianCalendar.getInstance();
+
         DatePickerDialog dialog = new DatePickerDialog(context,DatePickerDialog.BUTTON_NEUTRAL , new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                String dateString = new StringBuilder().append(dayOfMonth).append("/").append(monthOfYear + 1).append("/").append(year).toString();
-                holder.txExpireDate.setText(dateString);
-                inventoryList.get(position).setExpireDate(dateString);
+                GregorianCalendar date = new GregorianCalendar(year, monthOfYear, dayOfMonth);
+                if(today.before(date)){
+                    String dateString = new StringBuilder().append(dayOfMonth).append("/").append(monthOfYear + 1).append("/").append(year).toString();
+                    holder.txExpireDate.setText(dateString);
+                    inventoryList.get(position).setExpireDate(dateString);
+                }else {
+                    Toast.makeText(context, context.getResources().getString(R.string.msg_invalid_date), Toast.LENGTH_SHORT).show();
+                }
             }
-        }, 2015, 0, 1);
+        }, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
 
         dialog.show();
     }
