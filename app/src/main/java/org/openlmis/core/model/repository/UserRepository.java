@@ -58,7 +58,7 @@ public class UserRepository extends RestRepository {
         lmisRestApi.authorizeUser(user, callback);
     }
 
-    public User getUserForLocalDatabase(final String userName, final String password) {
+    public User getUserForLocalDatabase(final String userName) {
         List<User> users = null;
         try {
             users = dbUtil.withDao(User.class, new DbUtil.Operation<User, List<User>>() {

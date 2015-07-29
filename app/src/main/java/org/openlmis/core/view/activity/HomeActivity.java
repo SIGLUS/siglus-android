@@ -69,7 +69,7 @@ public class HomeActivity extends BaseActivity{
             }
 
             @Override
-            public void attachView(Activity v) {
+            public void attachView(BaseActivity v) {
 
             }
 

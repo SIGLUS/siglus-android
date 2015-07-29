@@ -32,6 +32,7 @@ import org.openlmis.core.common.Constants;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.NetworkConnectionManager;
+import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.LoginActivity;
 
 import retrofit.Callback;
@@ -68,7 +69,7 @@ public class LoginPresenter implements Presenter, Callback<UserRepository.UserRe
     }
 
     @Override
-    public void attachView(Activity v) {
+    public void attachView(BaseActivity v) {
         this.view = (LoginActivity) v;
     }
 
@@ -87,7 +88,7 @@ public class LoginPresenter implements Presenter, Callback<UserRepository.UserRe
         if (NetworkConnectionManager.isConnectionAvaliable(context)) {
             userRepository.authorizeUser(userName.trim(), password, this);
         } else {
-            User user = userRepository.getUserForLocalDatabase(userName.trim(), password);
+            User user = userRepository.getUserForLocalDatabase(userName.trim());
 
             if (user == null) {
                 view.showMessage(context.getString(R.string.msg_login_failed));

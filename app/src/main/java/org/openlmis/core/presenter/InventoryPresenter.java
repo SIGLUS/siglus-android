@@ -19,10 +19,8 @@
 
 package org.openlmis.core.presenter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
 import com.google.inject.Inject;
 
@@ -31,6 +29,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ public class InventoryPresenter implements Presenter{
     @Inject
     StockRepository stockRepository;
 
-    Activity view;
+    BaseActivity view;
 
     @Override
     public void onStart() {
@@ -57,7 +56,7 @@ public class InventoryPresenter implements Presenter{
     }
 
     @Override
-    public void attachView(Activity v) {
+    public void attachView(BaseActivity v) {
         view = v;
     }
 
@@ -96,6 +95,6 @@ public class InventoryPresenter implements Presenter{
             }
         }
         stockRepository.batchSave(stockCards);
-        Toast.makeText(view , "Inventory Complete: you created " + stockCards.size() + "", Toast.LENGTH_SHORT).show();
+        view.showMessage( "Inventory Complete: you created " + stockCards.size() + "");
     }
 }

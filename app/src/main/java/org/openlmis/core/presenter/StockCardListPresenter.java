@@ -8,6 +8,7 @@ import android.content.Intent;
 import com.google.inject.Inject;
 
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.view.activity.BaseActivity;
 
 public class StockCardListPresenter implements Presenter{
 
@@ -27,7 +28,7 @@ public class StockCardListPresenter implements Presenter{
     }
 
     @Override
-    public void attachView(Activity v) {
+    public void attachView(BaseActivity v) {
         activity = v;
     }
 

@@ -19,9 +19,10 @@
 package org.openlmis.core.presenter;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+
+import org.openlmis.core.view.activity.BaseActivity;
 
 
 public interface Presenter {
@@ -30,7 +31,7 @@ public interface Presenter {
 
     void onStop();
 
-    void attachView(Activity v);
+    void attachView(BaseActivity v);
 
     void attachIncomingIntent(Intent intent);
 

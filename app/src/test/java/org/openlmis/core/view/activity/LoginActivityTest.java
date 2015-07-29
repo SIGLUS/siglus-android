@@ -1,4 +1,4 @@
-package org.openlmis.core.activity;
+package org.openlmis.core.view.activity;
 
 import android.support.design.widget.TextInputLayout;
 import android.widget.TextView;
