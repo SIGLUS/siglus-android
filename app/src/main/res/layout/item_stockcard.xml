@@ -31,11 +31,11 @@
     </LinearLayout>
 
     <TextView android:id="@+id/stockOnHand"
-        android:layout_width="100dp"
+        android:layout_width="120dp"
         android:layout_height="match_parent"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:gravity="center_vertical|end"
         android:background="@color/color_primary_light"/>
 

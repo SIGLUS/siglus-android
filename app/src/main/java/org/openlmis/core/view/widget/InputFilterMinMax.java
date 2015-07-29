@@ -24,6 +24,8 @@ public class InputFilterMinMax  implements InputFilter {
 
             if (input > max && input < min){
                 return null;
+            }else{
+                return source;
             }
         } catch (NumberFormatException nfe) { }
         return "";
