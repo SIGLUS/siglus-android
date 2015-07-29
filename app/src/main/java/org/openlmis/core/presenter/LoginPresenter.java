@@ -28,6 +28,7 @@ import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
+import org.openlmis.core.common.Constants;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.NetworkConnectionManager;
@@ -84,7 +85,7 @@ public class LoginPresenter implements Presenter, Callback<UserRepository.UserRe
         view.startLoading();
 
         if (NetworkConnectionManager.isConnectionAvaliable(context)) {
-            userRepository.getUser(userName.trim(), password, this);
+            userRepository.authorizeUser(userName.trim(), password, this);
         } else {
             User user = userRepository.getUserForLocalDatabase(userName.trim(), password);
 
@@ -104,9 +105,17 @@ public class LoginPresenter implements Presenter, Callback<UserRepository.UserRe
     }
 
 
+    public boolean needInitInventory(){
+        return  view.getPreferences().getBoolean(Constants.KEY_INIT_INVENTORY, true);
+    }
+
     public void onLoginSuccess(User user){
         saveToLocalDatabase(user);
-        view.goToInitInventory();
+        if (needInitInventory()){
+            view.goToInitInventory();
+        } else {
+            view.goToHomePage();
+        }
     }
 
     public void onLoginFailed(String errorMessage){

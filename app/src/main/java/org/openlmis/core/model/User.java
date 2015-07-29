@@ -32,7 +32,7 @@ public class User {
     private long id;
 
     @DatabaseField
-    String userName;
+    String username;
 
     @DatabaseField
     String userFirstName;

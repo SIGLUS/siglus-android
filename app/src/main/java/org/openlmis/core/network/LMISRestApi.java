@@ -20,9 +20,11 @@
 package org.openlmis.core.network;
 
 
+import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
 
 import retrofit.Callback;
+import retrofit.http.Body;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.Headers;
@@ -33,5 +35,5 @@ import rx.Observable;
 public interface LMISRestApi {
 
     @POST("/rest-api/login")
-    void authorizeUser(@Query("username") String username, @Query("password") String password, Callback<UserRepository.UserResponse> callback);
+    void authorizeUser(@Body User user, Callback<UserRepository.UserResponse> callback);
 }

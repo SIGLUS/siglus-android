@@ -31,6 +31,7 @@ import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
+import org.openlmis.core.common.Constants;
 import org.openlmis.core.presenter.InventoryPresenter;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
@@ -92,9 +93,12 @@ public class InventoryActitivy extends BaseActivity {
     }
 
     public void goToMainPage() {
+        saveBoolean(Constants.KEY_INIT_INVENTORY, false);
+
         Intent intent = getIntent();
         intent.setClass(this, HomeActivity.class);
         startActivity(intent);
+        this.finish();
     }
 
     public int checkInventory() {

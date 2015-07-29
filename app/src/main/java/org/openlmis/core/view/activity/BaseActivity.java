@@ -81,11 +81,15 @@ public abstract class BaseActivity extends RoboActionBarActivity {
     }
 
     public void saveString(String key, String value) {
-        preferences.edit().putString(key,value).commit();
+        preferences.edit().putString(key,value).apply();
     }
 
     public void saveInt(String key, int value){
-        preferences.edit().putInt(key, value).commit();
+        preferences.edit().putInt(key, value).apply();
+    }
+
+    public void saveBoolean(String key, boolean value){
+        preferences.edit().putBoolean(key, value).apply();
     }
 
     public SharedPreferences getPreferences(){

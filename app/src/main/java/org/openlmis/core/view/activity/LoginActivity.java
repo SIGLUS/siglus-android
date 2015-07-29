@@ -31,6 +31,7 @@ import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
+import org.openlmis.core.common.Constants;
 import org.openlmis.core.presenter.LoginPresenter;
 import org.openlmis.core.presenter.Presenter;
 
@@ -68,6 +69,12 @@ public class LoginActivity extends BaseActivity {
                 presenter.startLogin(userName.getText().toString(), password.getText().toString());
             }
         });
+
+        String lastLoginUser = getPreferences().getString(Constants.KEY_LAST_LOGIN_USER, StringUtils.EMPTY);
+        if(StringUtils.isNotBlank(lastLoginUser)){
+            userName.setText(lastLoginUser);
+            password.requestFocus();
+        }
     }
 
 
@@ -77,11 +84,22 @@ public class LoginActivity extends BaseActivity {
     }
 
     public void goToInitInventory() {
+        startActivity(InventoryActitivy.class);
+    }
+
+    public void goToHomePage(){
+        startActivity(HomeActivity.class);
+    }
+
+    public void startActivity(Class activityName){
+        saveString(Constants.KEY_LAST_LOGIN_USER, userName.getText().toString().trim());
+
         Intent intent = new Intent();
-        intent.setClass(this, InventoryActitivy.class);
+        intent.setClass(this, activityName);
         startActivity(intent);
         this.finish();
     }
+
 
     public void clearPassword() {
         password.setText(StringUtils.EMPTY);

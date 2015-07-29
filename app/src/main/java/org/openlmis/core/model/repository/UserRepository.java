@@ -51,8 +51,11 @@ public class UserRepository extends RestRepository {
     }
 
 
-    public void getUser(String username, String password, Callback<UserResponse> callback) {
-        lmisRestApi.authorizeUser(username, password, callback);
+    public void authorizeUser(String username, String password, Callback<UserResponse> callback) {
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+        lmisRestApi.authorizeUser(user, callback);
     }
 
     public User getUserForLocalDatabase(final String userName, final String password) {
@@ -62,7 +65,7 @@ public class UserRepository extends RestRepository {
                 @Override
                 public List<User> operate(Dao<User, String> dao) throws SQLException {
                     User user = new User();
-                    user.setUserName(userName);
+                    user.setUsername(userName);
                     return dao.queryForMatchingArgs(user);
                 }
             });
