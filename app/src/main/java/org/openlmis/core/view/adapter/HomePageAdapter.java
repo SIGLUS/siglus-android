@@ -11,10 +11,12 @@ import java.util.ArrayList;
 public class HomePageAdapter extends FragmentPagerAdapter{
 
     ArrayList<Fragment> fragments;
+    String[] titles;
 
-    public HomePageAdapter(FragmentManager fm, ArrayList<Fragment> fragments){
+    public HomePageAdapter(FragmentManager fm, ArrayList<Fragment> fragments, String[] titles){
         super(fm);
         this.fragments = fragments;
+        this.titles = titles;
     }
 
     @Override
@@ -29,14 +31,10 @@ public class HomePageAdapter extends FragmentPagerAdapter{
 
     @Override
     public CharSequence getPageTitle(int position) {
-
-        switch (position){
-            case 0:
-                return "Ficha de stock";
-            case 1:
-                return "Requisition";
-            default:
-                return "Ficha de stock";
+        if(position < titles.length){
+            return titles[position];
+        }else {
+            return titles[0];
         }
     }
 }

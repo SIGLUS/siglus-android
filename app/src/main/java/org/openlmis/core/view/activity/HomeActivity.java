@@ -1,9 +1,5 @@
 package org.openlmis.core.view.activity;
 
-
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -12,6 +8,7 @@ import android.support.v4.view.ViewPager;
 
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.Presenter;
+import org.openlmis.core.view.View;
 import org.openlmis.core.view.adapter.HomePageAdapter;
 import org.openlmis.core.view.fragment.RequisitionListFragment;
 import org.openlmis.core.view.fragment.StockCardListFragment;
@@ -35,21 +32,18 @@ public class HomeActivity extends BaseActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        ActionBar actionBar = getSupportActionBar();
-//        if(actionBar!=null){
-//            actionBar.setCustomView(R.layout.design_navigation_item);
-//        }
-
         initUI();
     }
 
-    private void initUI(){
+    private void initUI() {
         ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(new StockCardListFragment());
         fragments.add(new RequisitionListFragment());
 
-        viewPager.setAdapter(new HomePageAdapter(getSupportFragmentManager(), fragments));
+        String[] titles = new String[]{ getResources().getString(R.string.stock_card_list),
+                                        getResources().getString(R.string.requisition_list)};
+
+        viewPager.setAdapter(new HomePageAdapter(getSupportFragmentManager(), fragments, titles));
         tabStrip.setupWithViewPager(viewPager);
         tabStrip.setTabGravity(TabLayout.GRAVITY_FILL);
         tabStrip.setTabTextColors(getResources().getColor(R.color.secondary_text), getResources().getColor(R.color.white));
@@ -69,17 +63,7 @@ public class HomeActivity extends BaseActivity{
             }
 
             @Override
-            public void attachView(BaseActivity v) {
-
-            }
-
-            @Override
-            public void attachIncomingIntent(Intent intent) {
-
-            }
-
-            @Override
-            public void initPresenter(Context context) {
+            public void attachView(View v) {
 
             }
         };

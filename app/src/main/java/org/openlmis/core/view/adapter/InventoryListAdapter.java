@@ -35,17 +35,13 @@ import android.widget.Toast;
 
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.presenter.InventoryPresenter;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 

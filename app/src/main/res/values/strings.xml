@@ -7,10 +7,8 @@
     <string name="hint_username">User Name</string>
     <string name="hint_password">Password</string>
     <string name="btn_login">LOG IN</string>
-    <string name="msg_login_successful">Login Successful</string>
-    <string name="msg_login_failed">Login Failed : %1s</string>
-    <string name="msg_login_validate">User Name / Password cannot be empty !</string>
-    <string name="msg_invalid_username">Username or Password is incorrect</string>
+    <string name="msg_empty_user">User Name / Password cannot be empty !</string>
+    <string name="msg_invalid_user">Username or Password is incorrect</string>
 
     <!-- Init Inventory -->
     <string name="hint_quantity_in_stock">Quantity in stock</string>
@@ -20,5 +18,9 @@
     <string name="msg_inventory_check_failed">Quantity cannot be empty !</string>
     <string name="msg_invalid_date">Cannot choose old day</string>
 
+
+    <!-- Home Page -->
+    <string name="stock_card_list">STOCK CARDS</string>
+    <string name="requisition_list">REQUISITION</string>
 
 </resources>

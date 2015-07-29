@@ -23,6 +23,7 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.Where;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.User;
@@ -51,29 +52,28 @@ public class UserRepository extends RestRepository {
     }
 
 
-    public void authorizeUser(String username, String password, Callback<UserResponse> callback) {
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(password);
+    public void authorizeUser(User user, Callback<UserResponse> callback) {
         lmisRestApi.authorizeUser(user, callback);
     }
 
-    public User getUserForLocalDatabase(final String userName) {
+    public User getUserForLocalDatabase(final String userName, final String password) {
         List<User> users = null;
         try {
             users = dbUtil.withDao(User.class, new DbUtil.Operation<User, List<User>>() {
                 @Override
                 public List<User> operate(Dao<User, String> dao) throws SQLException {
-                    User user = new User();
-                    user.setUsername(userName);
-                    return dao.queryForMatchingArgs(user);
+                    return dao.queryBuilder().where().eq("username", userName).and().eq("password", password).query();
                 }
             });
         } catch (LMISException e) {
             e.printStackTrace();
         }
 
-        return users == null ? null : users.get(0);
+        if (users !=null && users.size() >0 ){
+            return users.get(0);
+        }else {
+            return null;
+        }
     }
 
     public void save(final User user) {

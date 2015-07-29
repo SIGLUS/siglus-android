@@ -19,10 +19,7 @@
 package org.openlmis.core.presenter;
 
 
-import android.content.Context;
-import android.content.Intent;
-
-import org.openlmis.core.view.activity.BaseActivity;
+import org.openlmis.core.view.View;
 
 
 public interface Presenter {
@@ -31,9 +28,5 @@ public interface Presenter {
 
     void onStop();
 
-    void attachView(BaseActivity v);
-
-    void attachIncomingIntent(Intent intent);
-
-    void initPresenter(Context context);
+    void attachView(View v);
 }

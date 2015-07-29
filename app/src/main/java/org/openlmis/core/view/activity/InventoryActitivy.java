@@ -44,7 +44,7 @@ import roboguice.inject.InjectView;
 
 
 @ContentView(R.layout.activity_inventory)
-public class InventoryActitivy extends BaseActivity {
+public class InventoryActitivy extends BaseActivity implements InventoryPresenter.InventoryView{
 
     @InjectView(R.id.search_view)
     SearchView searchView;

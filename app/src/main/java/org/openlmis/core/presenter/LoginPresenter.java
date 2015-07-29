@@ -19,21 +19,14 @@
 package org.openlmis.core.presenter;
 
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.widget.Toast;
-
 import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.R;
-import org.openlmis.core.common.Constants;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.NetworkConnectionManager;
-import org.openlmis.core.view.activity.BaseActivity;
-import org.openlmis.core.view.activity.LoginActivity;
+import org.openlmis.core.view.View;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -42,21 +35,14 @@ import retrofit.client.Response;
 
 public class LoginPresenter implements Presenter, Callback<UserRepository.UserResponse> {
 
-    LoginActivity view;
-    Context context;
+    LoginView view;
+    User user;
 
     @Inject
     UserRepository userRepository;
 
-
-    public void initPresenter(Context context) {
-        this.context = context;
-    }
-
-    @Override
-    public void attachIncomingIntent(Intent intent) {
-
-    }
+    @Inject
+    Context context;
 
     @Override
     public void onStart() {
@@ -69,32 +55,38 @@ public class LoginPresenter implements Presenter, Callback<UserRepository.UserRe
     }
 
     @Override
-    public void attachView(BaseActivity v) {
-        this.view = (LoginActivity) v;
+    public void attachView(View v) {
+        this.view = (LoginView) v;
     }
 
     public void startLogin(String userName, String password) {
 
         if (StringUtils.EMPTY.equals(userName.trim())){
-            view.showErrorOnFields(0, context.getString(R.string.msg_login_validate));
-            return;
-        } else if (StringUtils.EMPTY.equals(password)) {
-            view.showErrorOnFields(1, context.getString(R.string.msg_login_validate));
+            view.showEmptyAlert(0);
             return;
         }
 
+        if (StringUtils.EMPTY.equals(password)) {
+            view.showEmptyAlert(1);
+            return;
+        }
+
+
         view.startLoading();
 
+        user = new User(userName.trim(), password);
         if (NetworkConnectionManager.isConnectionAvaliable(context)) {
-            userRepository.authorizeUser(userName.trim(), password, this);
+            userRepository.authorizeUser(user, this);
         } else {
-            User user = userRepository.getUserForLocalDatabase(userName.trim());
+            User localUser = userRepository.getUserForLocalDatabase(userName.trim(), password);
 
-            if (user == null) {
-                view.showMessage(context.getString(R.string.msg_login_failed));
+            if (localUser == null) {
+                view.showInvalidAlert();
             } else {
-                view.goToInitInventory();
+                goToNextPage();
             }
+
+
 
             view.stopLoading();
         }
@@ -105,23 +97,21 @@ public class LoginPresenter implements Presenter, Callback<UserRepository.UserRe
         userRepository.save(user);
     }
 
-
-    public boolean needInitInventory(){
-        return  view.getPreferences().getBoolean(Constants.KEY_INIT_INVENTORY, true);
-    }
-
     public void onLoginSuccess(User user){
         saveToLocalDatabase(user);
-        if (needInitInventory()){
+        goToNextPage();
+    }
+
+    public void goToNextPage(){
+        if (view.needInitInventory()){
             view.goToInitInventory();
         } else {
             view.goToHomePage();
         }
     }
 
-    public void onLoginFailed(String errorMessage){
-        //view.showMessage(R.string.msg_login_failed, errorMessage);
-        view.showErrorOnFields(2 , context.getResources().getString(R.string.msg_invalid_username));
+    public void onLoginFailed(){
+        view.showInvalidAlert();
         view.clearPassword();
     }
 
@@ -129,16 +119,30 @@ public class LoginPresenter implements Presenter, Callback<UserRepository.UserRe
     public void success(UserRepository.UserResponse userResponse, Response response) {
         view.stopLoading();
 
+        User userInfo = userResponse.getUserInformation();
+        userInfo.setUsername(user.getUsername());
+        userInfo.setPassword(user.getPassword());
         if (userResponse.getUserInformation() != null){
-            onLoginSuccess(userResponse.getUserInformation());
+            onLoginSuccess(userInfo);
         } else {
-            onLoginFailed(context.getResources().getString(R.string.msg_login_failed));
+            onLoginFailed();
         }
     }
 
     @Override
     public void failure(RetrofitError error) {
         view.stopLoading();
-        onLoginFailed(error.getMessage());
+        onLoginFailed();
+    }
+
+    public interface LoginView extends View{
+        void stopLoading();
+        void startLoading();
+        void clearPassword();
+        void goToHomePage();
+        void goToInitInventory();
+        boolean needInitInventory();
+        void showInvalidAlert();
+        void showEmptyAlert(int position);
     }
 }

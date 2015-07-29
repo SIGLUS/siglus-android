@@ -1,21 +1,20 @@
 package org.openlmis.core.presenter;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
 import com.google.inject.Inject;
 
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.view.activity.BaseActivity;
+import org.openlmis.core.view.View;
 
 public class StockCardListPresenter implements Presenter{
 
     @Inject
     StockRepository stockRepository;
 
-    Activity activity;
+    StockCardListView view;
 
     @Override
     public void onStart() {
@@ -28,17 +27,11 @@ public class StockCardListPresenter implements Presenter{
     }
 
     @Override
-    public void attachView(BaseActivity v) {
-        activity = v;
+    public void attachView(View v) {
+        view = (StockCardListView) v;
     }
 
-    @Override
-    public void attachIncomingIntent(Intent intent) {
-
-    }
-
-    @Override
-    public void initPresenter(Context context) {
+    public interface StockCardListView extends View{
 
     }
 }

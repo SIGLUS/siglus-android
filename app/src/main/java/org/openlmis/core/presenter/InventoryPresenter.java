@@ -19,9 +19,6 @@
 
 package org.openlmis.core.presenter;
 
-import android.content.Context;
-import android.content.Intent;
-
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
@@ -29,7 +26,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.view.activity.BaseActivity;
+import org.openlmis.core.view.View;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.ArrayList;
@@ -43,7 +40,7 @@ public class InventoryPresenter implements Presenter{
     @Inject
     StockRepository stockRepository;
 
-    BaseActivity view;
+    InventoryView view;
 
     @Override
     public void onStart() {
@@ -56,18 +53,8 @@ public class InventoryPresenter implements Presenter{
     }
 
     @Override
-    public void attachView(BaseActivity v) {
-        view = v;
-    }
-
-    @Override
-    public void attachIncomingIntent(Intent intent) {
-
-    }
-
-    @Override
-    public void initPresenter(Context context) {
-
+    public void attachView(View v) {
+        view = (InventoryView) v;
     }
 
     public List<Product> loadMasterProductList() {
@@ -96,5 +83,10 @@ public class InventoryPresenter implements Presenter{
         }
         stockRepository.batchSave(stockCards);
         view.showMessage( "Inventory Complete: you created " + stockCards.size() + "");
+    }
+
+
+    public interface InventoryView extends View{
+        void showMessage(String msg);
     }
 }

@@ -49,4 +49,13 @@ public class User {
     @DatabaseField
     String facilityName;
 
+    public User(String username, String password){
+        this.username = username;
+        this.password = password;
+    }
+
+    public User(){
+
+    }
+
 }

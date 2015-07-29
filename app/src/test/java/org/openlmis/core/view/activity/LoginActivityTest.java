@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
-import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.Robolectric;
 
 import java.lang.reflect.Field;
@@ -43,6 +42,6 @@ public class LoginActivityTest {
         }
 
         assertThat(errorText, notNullValue());
-        assertThat(errorText.getText().toString(), is(loginActivity.getResources().getString(R.string.msg_login_validate)));
+        assertThat(errorText.getText().toString(), is(loginActivity.getResources().getString(R.string.msg_empty_user)));
     }
 }

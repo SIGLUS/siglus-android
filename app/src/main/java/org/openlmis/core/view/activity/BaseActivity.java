@@ -26,10 +26,11 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import org.openlmis.core.presenter.Presenter;
+import org.openlmis.core.view.View;
 
 import roboguice.activity.RoboActionBarActivity;
 
-public abstract class BaseActivity extends RoboActionBarActivity {
+public abstract class BaseActivity extends RoboActionBarActivity implements View{
 
 
     private static final String MYPREFERENCE = "LMISPreference";
@@ -55,15 +56,8 @@ public abstract class BaseActivity extends RoboActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         preferences = getSharedPreferences(MYPREFERENCE, Context.MODE_PRIVATE);
-        initPresenter();
-    }
-
-    protected void initPresenter(){
         getPresenter().attachView(BaseActivity.this);
-        getPresenter().attachIncomingIntent(getIntent());
-        getPresenter().initPresenter(BaseActivity.this);
     }
-
 
     public void startLoading() {
         if(loadingDialog == null){

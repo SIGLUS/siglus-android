@@ -39,7 +39,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_login)
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity implements LoginPresenter.LoginView {
 
     @InjectView(R.id.tx_username)
     public EditText userName;
@@ -71,7 +71,7 @@ public class LoginActivity extends BaseActivity {
         });
 
         String lastLoginUser = getPreferences().getString(Constants.KEY_LAST_LOGIN_USER, StringUtils.EMPTY);
-        if(StringUtils.isNotBlank(lastLoginUser)){
+        if (StringUtils.isNotBlank(lastLoginUser)) {
             userName.setText(lastLoginUser);
             password.requestFocus();
         }
@@ -87,11 +87,11 @@ public class LoginActivity extends BaseActivity {
         startActivity(InventoryActitivy.class);
     }
 
-    public void goToHomePage(){
+    public void goToHomePage() {
         startActivity(HomeActivity.class);
     }
 
-    public void startActivity(Class activityName){
+    public void startActivity(Class activityName) {
         saveString(Constants.KEY_LAST_LOGIN_USER, userName.getText().toString().trim());
 
         Intent intent = new Intent();
@@ -113,10 +113,28 @@ public class LoginActivity extends BaseActivity {
             lyUserName.setError(msg);
         } else if (filedPosition == 1) {
             lyPassword.setError(msg);
-        }else{
+        } else {
             lyUserName.setError(msg);
             lyPassword.setError(msg);
         }
 
+    }
+
+
+    @Override
+    public boolean needInitInventory() {
+        return getPreferences().getBoolean(Constants.KEY_INIT_INVENTORY, true);
+    }
+
+    @Override
+    public void showInvalidAlert() {
+        String msg = getResources().getString(R.string.msg_invalid_user);
+        showErrorOnFields(2, msg);
+    }
+
+    @Override
+    public void showEmptyAlert(int position) {
+        String msg = getResources().getString(R.string.msg_empty_user);
+        showErrorOnFields(position, msg);
     }
 }
