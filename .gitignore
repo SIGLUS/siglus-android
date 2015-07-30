@@ -45,3 +45,6 @@ proguard/
 /build
 /captures
 *.iml
+
+*.ipr
+*.iws

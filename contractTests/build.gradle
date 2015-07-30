@@ -1,0 +1,8 @@
+task bundleInstall(type:Exec) {
+    commandLine 'bundle', 'install'
+}
+
+task contractTests(type:Exec, dependsOn:'bundleInstall') {
+    description 'Run contract tests to confirm web API works as expected'
+    commandLine 'rspec', 'spec/'
+}
