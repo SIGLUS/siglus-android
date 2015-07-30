@@ -85,7 +85,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     public void goToInitInventory() {
-        startActivity(InventoryActitivy.class);
+        startActivity(InventoryActivity.class);
     }
 
     public void goToHomePage() {

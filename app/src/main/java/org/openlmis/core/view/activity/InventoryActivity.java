@@ -44,23 +44,23 @@ import roboguice.inject.InjectView;
 
 
 @ContentView(R.layout.activity_inventory)
-public class InventoryActitivy extends BaseActivity implements InventoryPresenter.InventoryView{
+public class InventoryActivity extends BaseActivity implements InventoryPresenter.InventoryView{
 
     @InjectView(R.id.search_view)
     SearchView searchView;
 
     @InjectView(R.id.products_list)
-    RecyclerView productListRecycleView;
+    public RecyclerView productListRecycleView;
 
     @InjectView(R.id.btn_done)
-    Button btnDone;
+    public Button btnDone;
 
 
     @Inject
     InventoryPresenter presenter;
 
     LinearLayoutManager mLayoutManager;
-    private InventoryListAdapter mAdapter;
+    public InventoryListAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +85,7 @@ public class InventoryActitivy extends BaseActivity implements InventoryPresente
                     goToMainPage();
                 } else {
                     productListRecycleView.scrollToPosition(position);
-                    Toast.makeText(InventoryActitivy.this, R.string.msg_inventory_check_failed, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(InventoryActivity.this, R.string.msg_inventory_check_failed, Toast.LENGTH_SHORT).show();
                 }
             }
         });

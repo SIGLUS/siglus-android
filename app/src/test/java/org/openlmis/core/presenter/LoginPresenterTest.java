@@ -69,8 +69,10 @@ public class LoginPresenterTest {
         verify(userRepository).save(any(User.class));
     }
 
+    @Test
     public void shouldGoToInventoryPageIfFirstLogin() throws InterruptedException {
         when(mockActivity.needInitInventory()).thenReturn(true);
+        when(mockActivity.isConnectionAvailable()).thenReturn(true);
 
         presenter.startLogin("user", "password");
         verify(userRepository).authorizeUser(any(User.class), cb.capture());
@@ -82,10 +84,11 @@ public class LoginPresenterTest {
         verify(mockActivity).goToInitInventory();
     }
 
+    @Test
     public void shouldDoOfflineLoginWhenNoConnection () {
         when(mockActivity.isConnectionAvailable()).thenReturn(false);
         presenter.startLogin("user", "password");
-        verify(userRepository.getUserForLocalDatabase(anyString(), anyString()));
+        verify(userRepository).getUserForLocalDatabase(anyString(), anyString());
     }
 
 
