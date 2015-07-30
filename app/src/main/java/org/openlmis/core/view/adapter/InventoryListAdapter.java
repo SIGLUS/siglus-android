@@ -50,11 +50,13 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
     LayoutInflater inflater;
     Context context;
     List<InventoryViewModel> inventoryList;
+    List<InventoryViewModel> currentList;
 
     public InventoryListAdapter(Context context, List<Product> productList){
         inflater = LayoutInflater.from(context);
         this.context = context;
         inventoryList = wrapByViewModel(productList);
+        currentList = inventoryList;
     }
 
     private List<InventoryViewModel> wrapByViewModel(List<Product> productList){
@@ -77,7 +79,7 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final InventoryViewModel viewModel = inventoryList.get(position);
+        final InventoryViewModel viewModel = currentList.get(position);
 
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -119,7 +121,7 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
 
     @Override
     public int getItemCount() {
-        return inventoryList.size();
+        return currentList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -169,7 +171,7 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
                 if(today.before(date)){
                     String dateString = new StringBuilder().append(dayOfMonth).append("/").append(monthOfYear + 1).append("/").append(year).toString();
                     holder.txExpireDate.setText(dateString);
-                    inventoryList.get(position).setExpireDate(dateString);
+                    currentList.get(position).setExpireDate(dateString);
                 }else {
                     Toast.makeText(context, context.getResources().getString(R.string.msg_invalid_date), Toast.LENGTH_SHORT).show();
                 }
@@ -182,4 +184,24 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
     public List<InventoryViewModel> getInventoryList(){
         return this.inventoryList;
     }
+
+    public void filterByName(String key) {
+
+        if (StringUtils.isEmpty(key)){
+            this.currentList = inventoryList;
+            this.notifyDataSetChanged();
+            return;
+        }
+
+        List<InventoryViewModel> filteredList = new ArrayList<>();
+
+        for (InventoryViewModel viewModel : inventoryList) {
+            if (viewModel.getProduct().getName().contains(key)) {
+                filteredList.add(viewModel);
+            }
+        }
+        this.currentList = filteredList;
+        this.notifyDataSetChanged();
+    }
+
 }

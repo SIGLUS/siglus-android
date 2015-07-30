@@ -89,6 +89,29 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
                 }
             }
         });
+
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mAdapter.filterByName(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                mAdapter.filterByName(StringUtils.EMPTY);
+                return false;
+            }
+        });
+
     }
 
     public void goToMainPage() {

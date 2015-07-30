@@ -136,7 +136,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     @Override
     public void showInvalidAlert() {
         String msg = getResources().getString(R.string.msg_invalid_user);
-        showErrorOnFields(2, msg);
+        showErrorOnFields(1, msg);
     }
 
     @Override
