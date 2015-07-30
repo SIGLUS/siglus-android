@@ -75,7 +75,7 @@ public class LoginPresenter implements Presenter, Callback<UserRepository.UserRe
         view.startLoading();
 
         user = new User(userName.trim(), password);
-        if (NetworkConnectionManager.isConnectionAvaliable(context)) {
+        if (view.isConnectionAvailable()) {
             userRepository.authorizeUser(user, this);
         } else {
             User localUser = userRepository.getUserForLocalDatabase(userName.trim(), password);
@@ -85,9 +85,6 @@ public class LoginPresenter implements Presenter, Callback<UserRepository.UserRe
             } else {
                 goToNextPage();
             }
-
-
-
             view.stopLoading();
         }
     }
@@ -144,5 +141,6 @@ public class LoginPresenter implements Presenter, Callback<UserRepository.UserRe
         boolean needInitInventory();
         void showInvalidAlert();
         void showEmptyAlert(int position);
+        boolean isConnectionAvailable();
     }
 }
