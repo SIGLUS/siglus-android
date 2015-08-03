@@ -7,18 +7,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.model.StockCard;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdapter.ViewHolder>{
 
     List<StockCard> stockCards;
+    List<StockCard> currentStockCards;
 
 
     public StockCardListAdapter(List<StockCard> stockCardList){
         this.stockCards = stockCardList;
+        currentStockCards = stockCardList;
     }
 
     @Override
@@ -32,14 +36,14 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
 
     @Override
     public void onBindViewHolder(StockCardListAdapter.ViewHolder holder, int position) {
-        holder.productName.setText(stockCards.get(position).getProduct().getName());
-        holder.productUnit.setText(stockCards.get(position).getProduct().getUnit());
-        holder.stockOnHand.setText(stockCards.get(position).getStockOnHand() + "");
+        holder.productName.setText(currentStockCards.get(position).getProduct().getName());
+        holder.productUnit.setText(currentStockCards.get(position).getProduct().getUnit());
+        holder.stockOnHand.setText(currentStockCards.get(position).getStockOnHand() + "");
     }
 
     @Override
     public int getItemCount() {
-        return stockCards.size();
+        return currentStockCards.size();
     }
 
 
@@ -61,5 +65,21 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
         public String toString() {
             return super.toString();
         }
+    }
+
+    public void filterByName(String query){
+        if (StringUtils.isEmpty(query)){
+            this.currentStockCards = stockCards;
+            this.notifyDataSetChanged();
+        }
+
+        this.currentStockCards = new ArrayList<>();
+        for (StockCard stockCard : stockCards){
+            if (stockCard.getProduct().getName().contains(query)){
+                this.currentStockCards.add(stockCard);
+            }
+        }
+
+        this.notifyDataSetChanged();
     }
 }

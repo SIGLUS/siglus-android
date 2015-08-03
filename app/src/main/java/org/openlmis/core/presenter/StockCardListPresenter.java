@@ -6,8 +6,13 @@ import android.content.Intent;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.View;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StockCardListPresenter implements Presenter{
 
@@ -26,12 +31,22 @@ public class StockCardListPresenter implements Presenter{
 
     }
 
+
+    public List<StockCard> loadStockCards(){
+        try {
+            return  stockRepository.getStockCards();
+        }catch (LMISException e){
+            e.printStackTrace();
+        }
+
+        return new ArrayList<>();
+    }
+
     @Override
     public void attachView(View v) {
         view = (StockCardListView) v;
     }
 
     public interface StockCardListView extends View{
-
     }
 }

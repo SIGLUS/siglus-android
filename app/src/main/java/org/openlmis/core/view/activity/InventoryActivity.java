@@ -46,9 +46,6 @@ import roboguice.inject.InjectView;
 @ContentView(R.layout.activity_inventory)
 public class InventoryActivity extends BaseActivity implements InventoryPresenter.InventoryView{
 
-    @InjectView(R.id.search_view)
-    SearchView searchView;
-
     @InjectView(R.id.products_list)
     public RecyclerView productListRecycleView;
 
@@ -83,28 +80,18 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
             }
         });
 
+    }
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                mAdapter.filterByName(query);
-                return false;
-            }
+    @Override
+    public boolean onSearchStart(String query) {
+        mAdapter.filterByName(query);
+        return false;
+    }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                mAdapter.filterByName(StringUtils.EMPTY);
-                return false;
-            }
-        });
-
+    @Override
+    public boolean onSearchClosed() {
+        mAdapter.filterByName(StringUtils.EMPTY);
+        return false;
     }
 
     public void goToMainPage() {

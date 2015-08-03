@@ -23,8 +23,13 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
+import org.openlmis.core.R;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.view.View;
 
@@ -57,6 +62,41 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         super.onCreate(savedInstanceState);
         preferences = getSharedPreferences(MYPREFERENCE, Context.MODE_PRIVATE);
         getPresenter().attachView(BaseActivity.this);
+
+
+        if(getSupportActionBar() !=null){
+            getSupportActionBar().setHomeButtonEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+
+        SearchView searchView = (SearchView)menu.findItem(R.id.action_search).getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return onSearchStart(query);
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                return onSearchClosed();
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     public void startLoading() {
@@ -104,4 +144,28 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     }
 
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                return true;
+            case R.id.action_settings:
+                return onSettingClick();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+    public boolean onSearchStart(String query){
+        return false;
+    }
+
+    public boolean onSearchClosed(){
+        return false;
+    }
+
+    public boolean onSettingClick(){
+        return false;
+    }
 }

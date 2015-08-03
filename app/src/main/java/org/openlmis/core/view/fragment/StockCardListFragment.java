@@ -1,6 +1,5 @@
 package org.openlmis.core.view.fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,23 +11,30 @@ import android.view.ViewGroup;
 import com.google.inject.Inject;
 
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.presenter.StockCardListPresenter;
 import org.openlmis.core.view.adapter.StockCardListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
 import roboguice.fragment.RoboFragment;
 
-public class StockCardListFragment extends RoboFragment {
+public class StockCardListFragment extends RoboFragment implements StockCardListPresenter.StockCardListView{
 
 
     RecyclerView inventoryList;
 
     @Inject
     StockRepository stockRepository;
+
+    @Inject
+    @Getter
+    StockCardListPresenter presenter;
+
+    StockCardListAdapter mAdapter;
 
     List<StockCard> stockCardList = new ArrayList<>();
 
@@ -41,9 +47,7 @@ public class StockCardListFragment extends RoboFragment {
         inventoryList.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(container.getContext());
         inventoryList.setLayoutManager(mLayoutManager);
-
-        inventoryList.setAdapter(new StockCardListAdapter(stockCardList));
-
+        inventoryList.setAdapter(mAdapter);
         return view;
     }
 
@@ -51,11 +55,13 @@ public class StockCardListFragment extends RoboFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        try{
-            stockCardList = stockRepository.getStockCards();
-        }catch (LMISException e){
-            e.printStackTrace();
-        }
+        presenter.attachView(this);
+        stockCardList = presenter.loadStockCards();
+        mAdapter = new StockCardListAdapter(stockCardList);
+    }
 
+
+    public void filterStockCard(String query) {
+        mAdapter.filterByName(query);
     }
 }
