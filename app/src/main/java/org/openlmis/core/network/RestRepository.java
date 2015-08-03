@@ -28,7 +28,7 @@ import retrofit.client.Response;
 
 public class RestRepository {
 
-    public static String END_POINT = "http://52.69.106.103:8888/";
+    public static String END_POINT = "http://52.69.124.32:8080/";
 
     protected RestAdapter restAdapter;
     protected LMISRestApi lmisRestApi;

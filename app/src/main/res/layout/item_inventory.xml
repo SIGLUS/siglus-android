@@ -59,19 +59,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:gravity="bottom"
             android:padding="@dimen/abc_list_item_padding_horizontal_material"
             android:weightSum="2"
             android:visibility="gone">
 
-            <EditText
-                android:id="@+id/tx_quantity"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ly_quantity"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:ems="8"
-                android:maxLength="12"
-                android:hint="@string/hint_quantity_in_stock"
-                android:inputType="number" />
+                android:gravity="center_vertical">
+
+                <EditText
+                    android:id="@+id/tx_quantity"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:ems="8"
+                    android:hint="@string/hint_quantity_in_stock"
+                    android:inputType="number" />
+            </android.support.design.widget.TextInputLayout>
 
             <TextView
                 android:id="@+id/tx_expire_date"

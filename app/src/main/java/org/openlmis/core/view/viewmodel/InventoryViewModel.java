@@ -32,11 +32,13 @@ public class InventoryViewModel {
     String quantity;
     String expireDate;
 
-    public InventoryViewModel (Product product){
+    boolean isValid = true;
+
+    public InventoryViewModel(Product product) {
         this.product = product;
     }
 
-    public void reset(){
+    public void reset() {
         quantity = StringUtils.EMPTY;
         expireDate = StringUtils.EMPTY;
     }

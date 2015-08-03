@@ -20,6 +20,7 @@ package org.openlmis.core.view.adapter;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
 import android.view.KeyEvent;
@@ -52,21 +53,21 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
     List<InventoryViewModel> inventoryList;
     List<InventoryViewModel> currentList;
 
-    public InventoryListAdapter(Context context, List<Product> productList){
+    public InventoryListAdapter(Context context, List<Product> productList) {
         inflater = LayoutInflater.from(context);
         this.context = context;
         inventoryList = wrapByViewModel(productList);
         currentList = inventoryList;
     }
 
-    private List<InventoryViewModel> wrapByViewModel(List<Product> productList){
+    private List<InventoryViewModel> wrapByViewModel(List<Product> productList) {
         List<InventoryViewModel> inventoryList = new ArrayList<>();
 
-        for(Product product : productList){
+        for (Product product : productList) {
             inventoryList.add(new InventoryViewModel(product));
         }
 
-        return  inventoryList;
+        return inventoryList;
     }
 
 
@@ -117,6 +118,12 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
         holder.productUnit.setText(viewModel.getProduct().getUnit());
         holder.txQuantity.setText(viewModel.getQuantity());
         holder.txExpireDate.setText(viewModel.getExpireDate());
+
+        if (!viewModel.isValid()) {
+            holder.lyQuantity.setError(context.getResources().getString(R.string.msg_inventory_check_failed));
+        } else {
+            holder.lyQuantity.setErrorEnabled(false);
+        }
     }
 
     @Override
@@ -124,55 +131,19 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
         return currentList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        public TextView productName;
-        public TextView productUnit;
-        public EditText txQuantity;
-        public TextView txExpireDate;
-        public View actionDivider;
-        public CheckBox checkBox;
-        public View actionPanel;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-
-            productName = (TextView)itemView.findViewById(R.id.product_name);
-            productUnit = (TextView)itemView.findViewById(R.id.product_unit);
-            txQuantity = (EditText)itemView.findViewById(R.id.tx_quantity);
-            txExpireDate = (TextView)itemView.findViewById(R.id.tx_expire_date);
-            checkBox = (CheckBox)itemView.findViewById(R.id.checkbox);
-            actionDivider = itemView.findViewById(R.id.action_divider);
-            actionPanel = itemView.findViewById(R.id.action_panel);
-
-            txQuantity.setFilters(new InputFilter[] {new InputFilterMinMax(Integer.MAX_VALUE)});
-        }
-
-        public void reset(){
-            txQuantity.setText(StringUtils.EMPTY);
-            txExpireDate.setText(StringUtils.EMPTY);
-        }
-
-        @Override
-        public String toString() {
-            return super.toString();
-        }
-    }
-
-
     public void showDatePicker(final ViewHolder holder, final int position) {
 
         final Calendar today = GregorianCalendar.getInstance();
 
-        DatePickerDialog dialog = new DatePickerDialog(context,DatePickerDialog.BUTTON_NEUTRAL , new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog dialog = new DatePickerDialog(context, DatePickerDialog.BUTTON_NEUTRAL, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 GregorianCalendar date = new GregorianCalendar(year, monthOfYear, dayOfMonth);
-                if(today.before(date)){
+                if (today.before(date)) {
                     String dateString = new StringBuilder().append(dayOfMonth).append("/").append(monthOfYear + 1).append("/").append(year).toString();
                     holder.txExpireDate.setText(dateString);
                     currentList.get(position).setExpireDate(dateString);
-                }else {
+                } else {
                     Toast.makeText(context, context.getResources().getString(R.string.msg_invalid_date), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -181,13 +152,13 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
         dialog.show();
     }
 
-    public List<InventoryViewModel> getInventoryList(){
+    public List<InventoryViewModel> getInventoryList() {
         return this.inventoryList;
     }
 
     public void filterByName(String key) {
 
-        if (StringUtils.isEmpty(key)){
+        if (StringUtils.isEmpty(key)) {
             this.currentList = inventoryList;
             this.notifyDataSetChanged();
             return;
@@ -202,6 +173,58 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
         }
         this.currentList = filteredList;
         this.notifyDataSetChanged();
+    }
+
+    public int validateItems() {
+        int position = -1;
+        for (int i = 0; i < currentList.size(); i++) {
+            InventoryViewModel model = currentList.get(i);
+            if (model.isChecked() && StringUtils.isEmpty(model.getQuantity())) {
+                model.setValid(false);
+                if (position == -1) position = i;
+            } else {
+                model.setValid(true);
+            }
+        }
+        this.notifyDataSetChanged();
+        return position;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        public TextView productName;
+        public TextView productUnit;
+        public TextInputLayout lyQuantity;
+        public EditText txQuantity;
+        public TextView txExpireDate;
+        public View actionDivider;
+        public CheckBox checkBox;
+        public View actionPanel;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+
+            productName = (TextView) itemView.findViewById(R.id.product_name);
+            productUnit = (TextView) itemView.findViewById(R.id.product_unit);
+            lyQuantity = (TextInputLayout) itemView.findViewById(R.id.ly_quantity);
+            txQuantity = (EditText) itemView.findViewById(R.id.tx_quantity);
+            txExpireDate = (TextView) itemView.findViewById(R.id.tx_expire_date);
+            checkBox = (CheckBox) itemView.findViewById(R.id.checkbox);
+            actionDivider = itemView.findViewById(R.id.action_divider);
+            actionPanel = itemView.findViewById(R.id.action_panel);
+
+            txQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
+        }
+
+        public void reset() {
+            txQuantity.setText(StringUtils.EMPTY);
+            txExpireDate.setText(StringUtils.EMPTY);
+        }
+
+        @Override
+        public String toString() {
+            return super.toString();
+        }
     }
 
 }

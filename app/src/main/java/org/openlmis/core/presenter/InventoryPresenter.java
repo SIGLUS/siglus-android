@@ -32,7 +32,7 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InventoryPresenter implements Presenter{
+public class InventoryPresenter implements Presenter {
 
     @Inject
     ProductRepository productRepository;
@@ -61,18 +61,18 @@ public class InventoryPresenter implements Presenter{
         List<Product> list = null;
         try {
             list = productRepository.loadProductList();
-        }catch (LMISException e){
+        } catch (LMISException e) {
             e.printStackTrace();
         }
 
         return list;
     }
 
-    public void initStockCard(List<InventoryViewModel> list){
+    public void initStockCard(List<InventoryViewModel> list) {
         List<StockCard> stockCards = new ArrayList<>();
 
-        for (InventoryViewModel model : list){
-            if (model.isChecked()){
+        for (InventoryViewModel model : list) {
+            if (model.isChecked()) {
                 StockCard stockCard = new StockCard();
                 stockCard.setProduct(model.getProduct());
                 stockCard.setStockOnHand(Integer.parseInt(model.getQuantity()));
@@ -82,11 +82,18 @@ public class InventoryPresenter implements Presenter{
             }
         }
         stockRepository.batchSave(stockCards);
-        view.showMessage( "Inventory Complete: you created " + stockCards.size() + "");
     }
 
+    public void submitInventory(List<InventoryViewModel> list) {
+        if (view.validateInventory()) {
+            initStockCard(list);
+            view.goToMainPage();
+        }
+    }
 
-    public interface InventoryView extends View{
-        void showMessage(String msg);
+    public interface InventoryView extends View {
+        void goToMainPage();
+
+        boolean validateInventory();
     }
 }

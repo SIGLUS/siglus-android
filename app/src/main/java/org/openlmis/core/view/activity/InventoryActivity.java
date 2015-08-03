@@ -79,14 +79,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int position;
-                if ((position = checkInventory()) == -1) {
-                    presenter.initStockCard(mAdapter.getInventoryList());
-                    goToMainPage();
-                } else {
-                    productListRecycleView.scrollToPosition(position);
-                    Toast.makeText(InventoryActivity.this, R.string.msg_inventory_check_failed, Toast.LENGTH_SHORT).show();
-                }
+                presenter.submitInventory(mAdapter.getInventoryList());
             }
         });
 
@@ -123,26 +116,18 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
         this.finish();
     }
 
-    public int checkInventory() {
-        List<InventoryViewModel> list = mAdapter.getInventoryList();
-
-        if (list != null) {
-            for (int i = 0; i < list.size(); i++) {
-                InventoryViewModel inventory = list.get(i);
-                if (inventory.isChecked()) {
-                    if (StringUtils.isEmpty(inventory.getQuantity())) {
-                        return i;
-                    }
-                }
-            }
-        }
-
-        return -1;
-    }
-
-
     @Override
     public Presenter getPresenter() {
         return presenter;
+    }
+
+    @Override
+    public boolean validateInventory() {
+        int position = mAdapter.validateItems();
+        if (position >= 0){
+            productListRecycleView.scrollToPosition(position);
+            return false;
+        }
+        return true;
     }
 }

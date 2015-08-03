@@ -27,6 +27,6 @@ public class InventoryActivityTest {
     public void shouldCheckQuantityNotEmpty(){
         inventoryActivity.mAdapter.getInventoryList().get(0).setChecked(true);
         inventoryActivity.btnDone.performClick();
-        assertThat(ShadowToast.getTextOfLatestToast(), is(application.getResources().getString(R.string.msg_inventory_check_failed)));
+        assertThat(inventoryActivity.mAdapter.getInventoryList().get(0).isValid(), is(false));
     }
 }
