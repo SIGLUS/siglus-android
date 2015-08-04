@@ -25,7 +25,7 @@ import java.util.Date;
 
 public class DateUtil {
 
-    public static SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MMM-dd");
+    public static SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
 
     public static Date getMonthStartDate(Date date) {
         Calendar calendar = calendarDate(date);

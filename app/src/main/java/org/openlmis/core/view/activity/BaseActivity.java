@@ -30,6 +30,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.view.View;
 
@@ -61,7 +62,13 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         preferences = getSharedPreferences(MYPREFERENCE, Context.MODE_PRIVATE);
-        getPresenter().attachView(BaseActivity.this);
+        try {
+            getPresenter().attachView(BaseActivity.this);
+        } catch (ViewNotMatchException e){
+            e.printStackTrace();
+            showMessage(e.getMessage());
+            return;
+        }
 
 
         if(getSupportActionBar() !=null){

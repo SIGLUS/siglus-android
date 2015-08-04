@@ -34,7 +34,7 @@ public class StockCardListPresenter implements Presenter{
 
     public List<StockCard> loadStockCards(){
         try {
-            return  stockRepository.getStockCards();
+            return  stockRepository.list();
         }catch (LMISException e){
             e.printStackTrace();
         }

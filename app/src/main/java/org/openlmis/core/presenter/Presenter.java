@@ -19,6 +19,7 @@
 package org.openlmis.core.presenter;
 
 
+import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.view.View;
 
 
@@ -28,5 +29,5 @@ public interface Presenter {
 
     void onStop();
 
-    void attachView(View v);
+    void attachView(View v) throws ViewNotMatchException;
 }

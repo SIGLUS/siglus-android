@@ -22,15 +22,11 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 
 import com.google.inject.Inject;
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.stmt.QueryBuilder;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class ProductRepository {
@@ -45,5 +41,9 @@ public class ProductRepository {
 
     public List<Product> loadProductList() throws LMISException{
         return  genericDao.queryForAll();
+    }
+
+    public void create(Product product) throws LMISException {
+        genericDao.create(product);
     }
 }
