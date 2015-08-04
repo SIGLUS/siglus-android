@@ -25,10 +25,7 @@ import lombok.Data;
 
 @Data
 @DatabaseTable(tableName = "adjustment_reasons")
-public class AdjustmentReason {
-
-    @DatabaseField(uniqueIndex = true, generatedId = true)
-    private long id;
+public class AdjustmentReason extends BaseModel{
 
     @DatabaseField
     String reasonId;

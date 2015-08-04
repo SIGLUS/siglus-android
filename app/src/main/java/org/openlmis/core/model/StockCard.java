@@ -30,11 +30,7 @@ import lombok.Data;
 
 @Data
 @DatabaseTable(tableName = "stock_cards")
-public class StockCard {
-
-
-    @DatabaseField(uniqueIndex = true, generatedId = true)
-    private long id;
+public class StockCard extends BaseModel{
 
     @DatabaseField
     String stockCardId;

@@ -29,10 +29,7 @@ import lombok.Data;
 
 @Data
 @DatabaseTable(tableName = "products")
-public class Product {
-
-    @DatabaseField(uniqueIndex = true, generatedId = true)
-    private long id;
+public class Product extends BaseModel{
 
     @DatabaseField
     String name;

@@ -26,10 +26,7 @@ import lombok.Data;
 
 @Data
 @DatabaseTable(tableName = "stock_items")
-public class StockItem {
-
-    @DatabaseField(uniqueIndex = true, generatedId = true)
-    private long id;
+public class StockItem extends BaseModel{
 
     @DatabaseField
     String documentNumber;

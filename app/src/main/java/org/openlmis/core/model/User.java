@@ -26,10 +26,7 @@ import lombok.Data;
 
 @Data
 @DatabaseTable(tableName = "users")
-public class User {
-
-    @DatabaseField(uniqueIndex = true, generatedId = true)
-    private long id;
+public class User extends BaseModel{
 
     @DatabaseField
     String username;
