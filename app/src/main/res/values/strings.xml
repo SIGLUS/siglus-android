@@ -9,6 +9,8 @@
     <string name="btn_login">LOG IN</string>
     <string name="msg_empty_user">User Name / Password cannot be empty !</string>
     <string name="msg_invalid_user">Username or Password is incorrect</string>
+    <string name="init_product_error">Initial Data Error,Please Retry</string>
+
 
     <!-- Init Inventory -->
     <string name="hint_quantity_in_stock">Quantity in stock</string>

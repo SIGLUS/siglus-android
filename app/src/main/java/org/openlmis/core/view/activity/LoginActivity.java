@@ -134,6 +134,16 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     @Override
+    public boolean hasGetProducts() {
+        return getPreferences().getBoolean(Constants.KEY_HAS_GET_PRODUCTS, false);
+    }
+
+    @Override
+    public void setHasGetProducts(boolean hasGetProducts) {
+        saveBoolean(Constants.KEY_HAS_GET_PRODUCTS, hasGetProducts);
+    }
+
+    @Override
     public void showInvalidAlert() {
         String msg = getResources().getString(R.string.msg_invalid_user);
         showErrorOnFields(1, msg);

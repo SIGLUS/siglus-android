@@ -31,7 +31,7 @@ import lombok.Setter;
 public class Product extends BaseModel{
 
     @DatabaseField
-    String name;
+    String productName;
 
     @DatabaseField
     String unit;

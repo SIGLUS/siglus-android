@@ -19,9 +19,14 @@
 package org.openlmis.core.network;
 
 
+import com.squareup.okhttp.Credentials;
+
 import org.openlmis.core.exceptions.UnauthorizedException;
+import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.User;
 
 import retrofit.ErrorHandler;
+import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -35,17 +40,30 @@ public class RestRepository {
 
     public RestRepository() {
 
+        RequestInterceptor requestInterceptor = new RequestInterceptor() {
+            @Override
+            public void intercept(RequestFacade request) {
+                User user = UserInfoMgr.getInstance().getUser();
+                if (user != null) {
+                    String basic = Credentials.basic(user.getUsername(), user.getPassword());
+                    request.addHeader("Authorization", basic);
+                }
+            }
+        };
+
         restAdapter = new RestAdapter.Builder()
                 .setEndpoint(END_POINT)
                 .setErrorHandler(new MyErrorHandler())
                 .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setRequestInterceptor(requestInterceptor)
                 .build();
 
         lmisRestApi = restAdapter.create(LMISRestApi.class);
     }
 
     class MyErrorHandler implements ErrorHandler {
-        @Override public Throwable handleError(RetrofitError cause) {
+        @Override
+        public Throwable handleError(RetrofitError cause) {
             Response r = cause.getResponse();
             if (r != null && r.getStatus() == 401) {
                 return new UnauthorizedException(cause);

@@ -19,7 +19,6 @@
 package org.openlmis.core.presenter;
 
 
-
 import com.google.inject.AbstractModule;
 
 import org.junit.After;
@@ -31,6 +30,7 @@ import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.Robolectric;
@@ -48,16 +48,23 @@ import static org.mockito.Mockito.when;
 public class LoginPresenterTest {
 
     UserRepository userRepository;
+    ProductRepository productRepository;
     LoginActivity mockActivity;
     LoginPresenter presenter;
+    ProductRepository.ProductsResponse mockProductsResponse;
 
     @Captor
-    private ArgumentCaptor<Callback<UserRepository.UserResponse>> cb;
+    private ArgumentCaptor<Callback<UserRepository.UserResponse>> loginCB;
+    @Captor
+    private ArgumentCaptor<Callback<ProductRepository.ProductsResponse>> getProductsCB;
 
     @Before
     public void setup() {
         userRepository = mock(UserRepository.class);
+        productRepository = mock(ProductRepository.class);
         mockActivity = mock(LoginActivity.class);
+        mockProductsResponse = mock(ProductRepository.ProductsResponse.class);
+
         RoboGuice.overrideApplicationInjector(Robolectric.application, new MyTestModule());
         MockitoAnnotations.initMocks(this);
 
@@ -78,32 +85,53 @@ public class LoginPresenterTest {
 
         verify(mockActivity).startLoading();
 
-        verify(userRepository).authorizeUser(any(User.class), cb.capture());
+        verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
         UserRepository.UserResponse userResponse = userRepository.new UserResponse();
         userResponse.setUserInformation(new User("user", "password"));
 
-        cb.getValue().success(userResponse, null);
-        verify(mockActivity).stopLoading();
+        loginCB.getValue().success(userResponse, null);
         verify(userRepository).save(any(User.class));
     }
 
     @Test
-    public void shouldGoToInventoryPageIfFirstLogin() throws InterruptedException {
-        when(mockActivity.needInitInventory()).thenReturn(true);
+    public void shouldGetProductsWhenLoginSuccFromNet() {
         when(mockActivity.isConnectionAvailable()).thenReturn(true);
+        when(mockActivity.hasGetProducts()).thenReturn(false);
 
         presenter.startLogin("user", "password");
-        verify(userRepository).authorizeUser(any(User.class), cb.capture());
+        verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
         UserRepository.UserResponse userResponse = userRepository.new UserResponse();
         userResponse.setUserInformation(new User("user", "password"));
 
-        cb.getValue().success(userResponse, null);
+        loginCB.getValue().success(userResponse, null);
 
+        verify(productRepository).getProducts(anyString(), getProductsCB.capture());
+    }
+
+
+    @Test
+    public void shouldGoToInventoryPageIfGetProductsSuccess() throws InterruptedException {
+        when(mockActivity.needInitInventory()).thenReturn(true);
+        when(mockActivity.isConnectionAvailable()).thenReturn(true);
+        when(mockActivity.hasGetProducts()).thenReturn(false);
+
+        presenter.startLogin("user", "password");
+        verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
+        UserRepository.UserResponse userResponse = userRepository.new UserResponse();
+        userResponse.setUserInformation(new User("user", "password"));
+
+        loginCB.getValue().success(userResponse, null);
+
+        verify(productRepository).getProducts(anyString(), getProductsCB.capture());
+
+        getProductsCB.getValue().success(mockProductsResponse, null);
+
+        verify(mockActivity).stopLoading();
         verify(mockActivity).goToInitInventory();
     }
 
     @Test
-    public void shouldDoOfflineLoginWhenNoConnection () {
+    public void shouldDoOfflineLoginWhenNoConnection() {
         when(mockActivity.isConnectionAvailable()).thenReturn(false);
         presenter.startLogin("user", "password");
         verify(userRepository).getUserForLocalDatabase(anyString(), anyString());
@@ -114,6 +142,7 @@ public class LoginPresenterTest {
         @Override
         protected void configure() {
             bind(UserRepository.class).toInstance(userRepository);
+            bind(ProductRepository.class).toInstance(productRepository);
         }
     }
 }

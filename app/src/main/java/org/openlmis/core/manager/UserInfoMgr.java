@@ -15,12 +15,31 @@
  * this program. If not, see http://www.gnu.org/licenses. For additional
  * information contact info@OpenLMIS.org
  */
+package org.openlmis.core.manager;
 
-package org.openlmis.core.common;
 
-public class Constants {
-    public static final String KEY_LAST_LOGIN_USER = "last_user";
-    public static final String KEY_INIT_INVENTORY = "init_inventory";
-    //TODO refactor AppPrefence
-    public static final String KEY_HAS_GET_PRODUCTS = "has_get_products";
+import org.openlmis.core.model.User;
+
+public class UserInfoMgr {
+    private static UserInfoMgr mInstance;
+    private User user;
+
+    private UserInfoMgr() {
+    }
+
+    public static UserInfoMgr getInstance() {
+
+        if (mInstance == null) {
+            mInstance = new UserInfoMgr();
+        }
+        return mInstance;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

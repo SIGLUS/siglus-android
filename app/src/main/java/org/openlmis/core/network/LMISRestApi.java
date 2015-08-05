@@ -20,15 +20,23 @@
 package org.openlmis.core.network;
 
 
+import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.UserRepository;
+
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
+import retrofit.http.GET;
 import retrofit.http.Headers;
 import retrofit.http.POST;
+import retrofit.http.Part;
+import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
 
@@ -36,4 +44,7 @@ public interface LMISRestApi {
 
     @POST("/rest-api/login")
     void authorizeUser(@Body User user, Callback<UserRepository.UserResponse> callback);
+
+    @GET("/rest-api/programs-with-products")
+    void getProducts(@Query("facilityCode") String facilityCode, Callback<ProductRepository.ProductsResponse> callback);
 }

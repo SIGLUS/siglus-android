@@ -48,7 +48,7 @@ public class CreateDummyProducts implements Migration {
                 public String operate(Dao dao) throws SQLException {
                     for (int i = 0; i < 10; i++) {
                         Product product = new Product();
-                        product.setName("Paracetelmol " + i);
+                        product.setProductName("Paracetelmol " + i);
                         product.setUnit("500ML *" + i);
 
                         dao.create(product);

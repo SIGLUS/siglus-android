@@ -16,11 +16,17 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.common;
+package org.openlmis.core.model;
 
-public class Constants {
-    public static final String KEY_LAST_LOGIN_USER = "last_user";
-    public static final String KEY_INIT_INVENTORY = "init_inventory";
-    //TODO refactor AppPrefence
-    public static final String KEY_HAS_GET_PRODUCTS = "has_get_products";
+
+import lombok.Data;
+
+@Data
+public class Program {
+
+    String programCode;
+
+    public Program(String programCode) {
+        this.programCode = programCode;
+    }
 }

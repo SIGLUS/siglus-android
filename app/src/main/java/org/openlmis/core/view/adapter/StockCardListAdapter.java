@@ -54,7 +54,7 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
 
     @Override
     public void onBindViewHolder(StockCardListAdapter.ViewHolder holder, int position) {
-        holder.productName.setText(currentStockCards.get(position).getProduct().getName());
+        holder.productName.setText(currentStockCards.get(position).getProduct().getProductName());
         holder.productUnit.setText(currentStockCards.get(position).getProduct().getUnit());
         holder.stockOnHand.setText(currentStockCards.get(position).getStockOnHand() + "");
     }
@@ -93,7 +93,7 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
 
         this.currentStockCards = new ArrayList<>();
         for (StockCard stockCard : stockCards){
-            if (stockCard.getProduct().getName().contains(query)){
+            if (stockCard.getProduct().getProductName().contains(query)){
                 this.currentStockCards.add(stockCard);
             }
         }

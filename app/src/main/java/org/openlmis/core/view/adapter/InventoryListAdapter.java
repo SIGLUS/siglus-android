@@ -114,7 +114,7 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
         });
 
         holder.checkBox.setChecked(viewModel.isChecked());
-        holder.productName.setText(viewModel.getProduct().getName());
+        holder.productName.setText(viewModel.getProduct().getProductName());
         holder.productUnit.setText(viewModel.getProduct().getUnit());
         holder.txQuantity.setText(viewModel.getQuantity());
         holder.txExpireDate.setText(viewModel.getExpireDate());
@@ -167,7 +167,7 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
         List<InventoryViewModel> filteredList = new ArrayList<>();
 
         for (InventoryViewModel viewModel : inventoryList) {
-            if (viewModel.getProduct().getName().contains(key)) {
+            if (viewModel.getProduct().getProductName().contains(key)) {
                 filteredList.add(viewModel);
             }
         }

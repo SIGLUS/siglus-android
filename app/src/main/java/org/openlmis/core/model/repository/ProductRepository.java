@@ -25,22 +25,66 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
+import com.j256.ormlite.dao.Dao;
+
+import org.openlmis.core.network.RestRepository;
+import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
+import java.sql.SQLException;
 import java.util.List;
 
-public class ProductRepository {
+import lombok.Data;
+import retrofit.Callback;
+
+public class ProductRepository extends RestRepository {
 
     GenericDao<Product> genericDao;
 
+    @Inject
+    DbUtil dbUtil;
 
     @Inject
-    public ProductRepository(Context context){
+    public ProductRepository(Context context) {
         genericDao = new GenericDao<>(Product.class, context);
     }
 
     public List<Product> list() throws LMISException{
         return  genericDao.queryForAll();
+    }
+
+    public void getProducts(String facilityCode, Callback<ProductsResponse> callback) {
+        lmisRestApi.getProducts(facilityCode, callback);
+    }
+
+    public void save(final List<Product> products) {
+        try {
+            dbUtil.withDaoAsBatch(Product.class, new DbUtil.Operation<Product, Void>() {
+                @Override
+                public Void operate(Dao<Product, String> dao) throws SQLException {
+                    for (Product product : products){
+                        dao.create(product);
+                    }
+                    return null;
+                }
+            });
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public
+    @Data
+    class ProductsResponse {
+        List<ProgramsWithProducts> programsWithProducts;
+    }
+
+    public
+    @Data
+    class ProgramsWithProducts{
+        String programName;
+        String programCode;
+        List<Product> products;
     }
 
     public void create(Product product) throws LMISException {

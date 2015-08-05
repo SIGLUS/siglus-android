@@ -15,12 +15,27 @@
  * this program. If not, see http://www.gnu.org/licenses. For additional
  * information contact info@OpenLMIS.org
  */
+package org.openlmis.core.utils;
 
-package org.openlmis.core.common;
 
-public class Constants {
-    public static final String KEY_LAST_LOGIN_USER = "last_user";
-    public static final String KEY_INIT_INVENTORY = "init_inventory";
-    //TODO refactor AppPrefence
-    public static final String KEY_HAS_GET_PRODUCTS = "has_get_products";
+import android.util.Log;
+
+import org.openlmis.core.BuildConfig;
+
+
+public class LogUtil {
+    private static final boolean DEBUG = BuildConfig.DEBUG;
+
+    public static void i(String tag, String msg) {
+        if (DEBUG) {
+            if (msg == null)
+                return;
+            Log.i(tag, msg);
+        }
+    }
+
+    public static void s(String msg) {
+        i("sunzhuo", msg);
+    }
+
 }

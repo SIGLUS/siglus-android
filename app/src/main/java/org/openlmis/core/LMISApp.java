@@ -19,14 +19,22 @@
 package org.openlmis.core;
 
 import android.app.Application;
+import android.content.Context;
 
 import roboguice.RoboGuice;
 
 public class LMISApp extends Application {
+    private static Context applicationContext;
+
     @Override
     public void onCreate() {
         super.onCreate();
 
         RoboGuice.getInjector(this).injectMembersWithoutViews(this);
+        this.applicationContext=getApplicationContext();
+    }
+
+    public static Context getContext() {
+        return applicationContext;
     }
 }
