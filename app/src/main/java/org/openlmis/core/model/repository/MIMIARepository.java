@@ -39,6 +39,16 @@ import java.util.List;
 
 public class MIMIARepository extends RnrFormRepository{
 
+    public static final String ATTR_NEW_PATIENTS = "New Patients";
+    public static final String ATTR_SUSTAINING = "Sustaining";
+    public static final String ATTR_Alteration = "Alteration";
+    public static final String ATTR_TOTAL_MONTH_DISPENSE = "Total Month Dispense";
+    public static final String ATTR_TOTAL_PATIENTS = "Total Patients";
+    public static final String ATTR_PTV = "PTV";
+    public static final String ATTR_PPE = "PPE";
+
+    public static final int DAY_PERIOD_END = 20;
+
     @Inject
     public MIMIARepository(Context context){
         super(context);
@@ -62,8 +72,9 @@ public class MIMIARepository extends RnrFormRepository{
 
         Calendar calendar = GregorianCalendar.getInstance();
         int month = calendar.get(Calendar.MONTH);
-        Date startDate = new GregorianCalendar(calendar.get(Calendar.YEAR), month - 1, 20).getTime();
-        Date endDate = new GregorianCalendar(calendar.get(Calendar.YEAR), month, 20).getTime();
+        int year = calendar.get(Calendar.YEAR);
+        Date startDate = new GregorianCalendar(year, month - 1, DAY_PERIOD_END + 1).getTime();
+        Date endDate = new GregorianCalendar(year, month, DAY_PERIOD_END).getTime();
 
         for (StockCard stockCard : stockCards) {
             List<StockItem> stockItems = stockRepository.queryStockItems(stockCard, startDate, endDate);
@@ -71,7 +82,7 @@ public class MIMIARepository extends RnrFormRepository{
                 RnrFormItem productItem = new RnrFormItem();
 
                 StockItem firstItem = stockItems.get(0);
-                productItem.setInitialAmount(firstItem.getStockOnHand() + firstItem.getAmount());
+                productItem.setInitialAmount(firstItem.getStockOnHand() - firstItem.getAmount());
 
                 long totalReceived = 0;
                 long totalIssued = 0;
@@ -112,13 +123,13 @@ public class MIMIARepository extends RnrFormRepository{
     }
 
     private List<BaseInfoItem> generateBaseInfoItems(RnRForm form){
-        BaseInfoItem newPatients = new BaseInfoItem("New Patients", BaseInfoItem.TYPE.INT, form);
-        BaseInfoItem sustaining = new BaseInfoItem("Sustaining", BaseInfoItem.TYPE.INT, form);
-        BaseInfoItem alteration = new BaseInfoItem("Alteration", BaseInfoItem.TYPE.INT, form);
-        BaseInfoItem totalMonthDispense = new BaseInfoItem("Total Month Dispense", BaseInfoItem.TYPE.INT, form);
-        BaseInfoItem totalPatients = new BaseInfoItem("Total Patients", BaseInfoItem.TYPE.INT, form);
-        BaseInfoItem PTV = new BaseInfoItem("PTV", BaseInfoItem.TYPE.INT, form);
-        BaseInfoItem PPE = new BaseInfoItem("PPE", BaseInfoItem.TYPE.INT, form);
+        BaseInfoItem newPatients = new BaseInfoItem(ATTR_NEW_PATIENTS, BaseInfoItem.TYPE.INT, form);
+        BaseInfoItem sustaining = new BaseInfoItem(ATTR_SUSTAINING, BaseInfoItem.TYPE.INT, form);
+        BaseInfoItem alteration = new BaseInfoItem(ATTR_Alteration, BaseInfoItem.TYPE.INT, form);
+        BaseInfoItem totalMonthDispense = new BaseInfoItem(ATTR_TOTAL_MONTH_DISPENSE, BaseInfoItem.TYPE.INT, form);
+        BaseInfoItem totalPatients = new BaseInfoItem(ATTR_TOTAL_PATIENTS, BaseInfoItem.TYPE.INT, form);
+        BaseInfoItem PTV = new BaseInfoItem(ATTR_PTV, BaseInfoItem.TYPE.INT, form);
+        BaseInfoItem PPE = new BaseInfoItem(ATTR_PPE, BaseInfoItem.TYPE.INT, form);
 
         List<BaseInfoItem> baseInfoItemList = new ArrayList<>();
 
@@ -134,14 +145,12 @@ public class MIMIARepository extends RnrFormRepository{
     }
 
 
-    public int getTotalPatients(RnRForm form){
-
-       for (BaseInfoItem item : form.getBaseInfoItemList()){
-           if ("Total Patients".equals(item.getName())){
-               return Integer.parseInt(item.getValue());
-           }
-       }
-
-        return 0;
+    public long getTotalPatients(RnRForm form) {
+        for (BaseInfoItem item : form.getBaseInfoItemList()) {
+            if (ATTR_TOTAL_PATIENTS.equals(item.getName())) {
+                return Long.parseLong(item.getValue());
+            }
+        }
+        return 0L;
     }
 }

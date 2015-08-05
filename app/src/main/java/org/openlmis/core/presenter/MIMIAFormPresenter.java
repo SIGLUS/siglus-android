@@ -75,16 +75,11 @@ public class MIMIAFormPresenter implements Presenter{
     }
 
     private boolean validate(RnRForm form){
-        int totalRegimenNumber = 0;
+        long totalRegimenNumber = 0;
         for (RegimenItem item : form.getRegimenItemList()){
             totalRegimenNumber += item.getAmount();
         }
-
-        if (totalRegimenNumber != mimiaRepository.getTotalPatients(form)){
-            return false;
-        }
-
-        return true;
+        return totalRegimenNumber != mimiaRepository.getTotalPatients(form);
     }
 
     public interface MIMIAFormView extends View {

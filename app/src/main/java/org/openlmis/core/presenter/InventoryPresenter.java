@@ -60,7 +60,7 @@ public class InventoryPresenter implements Presenter {
     public List<Product> loadMasterProductList() {
         List<Product> list = null;
         try {
-            list = productRepository.loadProductList();
+            list = productRepository.list();
         } catch (LMISException e) {
             e.printStackTrace();
         }

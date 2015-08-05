@@ -43,7 +43,7 @@ public class RegimenRepository {
         return  regimenGenericDao.queryForAll();
     }
 
-    public void save(Regimen regimen) throws LMISException{
+    public void create(Regimen regimen) throws LMISException{
         regimenGenericDao.create(regimen);
     }
 }

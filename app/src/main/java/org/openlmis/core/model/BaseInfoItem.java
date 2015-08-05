@@ -32,7 +32,7 @@ public class BaseInfoItem extends BaseModel{
     public enum TYPE{
         INT,
         STRING,
-        DATE;
+        DATE
     }
 
 

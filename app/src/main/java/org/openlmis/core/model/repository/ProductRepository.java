@@ -39,7 +39,7 @@ public class ProductRepository {
         genericDao = new GenericDao<>(Product.class, context);
     }
 
-    public List<Product> loadProductList() throws LMISException{
+    public List<Product> list() throws LMISException{
         return  genericDao.queryForAll();
     }
 

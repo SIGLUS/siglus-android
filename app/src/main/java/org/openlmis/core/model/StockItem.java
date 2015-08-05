@@ -34,7 +34,7 @@ public class StockItem extends BaseModel{
         RECEIVE,
         ISSUE,
         POSADJUST,
-        NEGADJUST;
+        NEGADJUST
     }
 
     @DatabaseField
