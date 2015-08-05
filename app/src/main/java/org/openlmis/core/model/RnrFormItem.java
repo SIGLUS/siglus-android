@@ -26,15 +26,24 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@DatabaseTable(tableName = "regime_items")
-public class RegimenItem extends BaseModel{
+@DatabaseTable(tableName = "MIMIA_product_items")
+public class RnrFormItem extends BaseModel{
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
+    private Product product;
 
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private RnRForm form;
 
-    @DatabaseField(foreign = true)
-    private Regimen regimen;
-
     @DatabaseField
-    private long amount;
+    private long initialAmount;
+    @DatabaseField
+    private long received;
+    @DatabaseField
+    private long issued;
+    @DatabaseField
+    private long adjustment;
+    @DatabaseField
+    private long inventory;
+    @DatabaseField
+    private String validate;
 }

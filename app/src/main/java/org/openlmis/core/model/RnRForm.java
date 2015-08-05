@@ -18,7 +18,9 @@
 
 package org.openlmis.core.model;
 
+import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import lombok.Getter;
@@ -26,15 +28,27 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@DatabaseTable(tableName = "regime_items")
-public class RegimenItem extends BaseModel{
+@DatabaseTable(tableName = "rnr_forms")
+public class RnRForm extends BaseModel{
 
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    private RnRForm form;
+    public enum STATUS{
+        DRAFT,
+        SUBMITED,
+        APPROVED;
+    }
 
-    @DatabaseField(foreign = true)
-    private Regimen regimen;
+    @ForeignCollectionField()
+    private ForeignCollection<RnrFormItem> rnrFormItemList;
+
+    @ForeignCollectionField()
+    private ForeignCollection<RegimenItem> regimenItemList;
+
+    @ForeignCollectionField()
+    private ForeignCollection<BaseInfoItem> baseInfoItemList;
 
     @DatabaseField
-    private long amount;
+    private String comments;
+
+    @DatabaseField
+    private STATUS status;
 }

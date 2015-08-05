@@ -24,17 +24,38 @@ import com.j256.ormlite.table.DatabaseTable;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @Setter
-@DatabaseTable(tableName = "regime_items")
-public class RegimenItem extends BaseModel{
+@Getter
+@DatabaseTable(tableName = "rnr_baseInfo_items")
+public class BaseInfoItem extends BaseModel{
 
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    private RnRForm form;
+    public enum TYPE{
+        INT,
+        STRING,
+        DATE;
+    }
 
-    @DatabaseField(foreign = true)
-    private Regimen regimen;
 
     @DatabaseField
-    private long amount;
+    private String name;
+
+    @DatabaseField
+    private TYPE type;
+
+    @DatabaseField
+    private String value;
+
+    @DatabaseField(foreign = true)
+    private RnRForm rnRForm;
+
+
+    public BaseInfoItem(){
+
+    }
+
+    public BaseInfoItem(String name, TYPE type, RnRForm form){
+        this.name = name;
+        this.type = type;
+        this.rnRForm = form;
+    }
 }

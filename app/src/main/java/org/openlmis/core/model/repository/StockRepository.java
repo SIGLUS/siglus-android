@@ -1,3 +1,21 @@
+/*
+ * This program is part of the OpenLMIS logistics management information
+ * system platform software.
+ *
+ * Copyright © 2015 ThoughtWorks, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version. This program is distributed in the
+ * hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details. You should
+ * have received a copy of the GNU Affero General Public License along with
+ * this program. If not, see http://www.gnu.org/licenses. For additional
+ * information contact info@OpenLMIS.org
+ */
+
 package org.openlmis.core.model.repository;
 
 import android.content.Context;
@@ -28,17 +46,6 @@ public class StockRepository {
 
     GenericDao<StockCard> genericDao;
     GenericDao<StockItem> stockItemGenericDao;
-
-    enum MOVEMENTTYPE {
-        RECEIVE("Receive"),
-        ISSUE("Issue"),
-        POSADJUST("Positive Adjustment"),
-        NEGADJUST("Negative Adjustment");
-
-        MOVEMENTTYPE(String name){
-
-        }
-    }
 
     @Inject
     public StockRepository(Context context) {
@@ -107,17 +114,17 @@ public class StockRepository {
         });
     }
 
-    public int sum(final String movementType, final StockCard stockCard, final Date startDate, final Date endDate) throws LMISException {
-        return dbUtil.withDao(StockItem.class, new DbUtil.Operation<StockItem, Integer>() {
+    public long sum(final StockItem.MovementType movementType, final StockCard stockCard, final Date startDate, final Date endDate) throws LMISException {
+        return dbUtil.withDao(StockItem.class, new DbUtil.Operation<StockItem, Long>() {
             @Override
-            public Integer operate(Dao<StockItem, String> dao) throws SQLException {
+            public Long operate(Dao<StockItem, String> dao) throws SQLException {
 
                 String query = "select sum(amount) from stock_items where stockCard_id=" + stockCard.getId()
                         + " and movementType='" + movementType
                         + "' and createdAt<='" + DateUtil.formatDate(endDate) + "' and createdAt>='" + DateUtil.formatDate(startDate) + "'";
 
                 Log.d("StockRepository", query);
-                return (int) dao.queryRawValue(query);
+                return dao.queryRawValue(query);
             }
         });
     }

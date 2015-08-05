@@ -23,8 +23,9 @@ import android.database.sqlite.SQLiteDatabase;
 import com.j256.ormlite.support.ConnectionSource;
 
 
-import org.openlmis.core.model.MIMIAForm;
-import org.openlmis.core.model.MIMIAProductItem;
+import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
@@ -45,8 +46,9 @@ public class CreateInitTables implements Migration {
             createTable(connectionSource, Product.class);
             createTable(connectionSource, StockCard.class);
             createTable(connectionSource, StockItem.class);
-            createTable(connectionSource, MIMIAForm.class);
-            createTable(connectionSource, MIMIAProductItem.class);
+            createTable(connectionSource, RnRForm.class);
+            createTable(connectionSource, BaseInfoItem.class);
+            createTable(connectionSource, RnrFormItem.class);
             createTable(connectionSource, Regimen.class);
             createTable(connectionSource, RegimenItem.class);
 

@@ -1,3 +1,21 @@
+/*
+ * This program is part of the OpenLMIS logistics management information
+ * system platform software.
+ *
+ * Copyright © 2015 ThoughtWorks, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version. This program is distributed in the
+ * hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details. You should
+ * have received a copy of the GNU Affero General Public License along with
+ * this program. If not, see http://www.gnu.org/licenses. For additional
+ * information contact info@OpenLMIS.org
+ */
+
 package org.openlmis.core.model.repository;
 
 
@@ -11,6 +29,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockItem;
+import org.openlmis.core.utils.DateUtil;
 import org.robolectric.Robolectric;
 
 
@@ -82,13 +101,15 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldGetStockItemsInPeriod() throws LMISException{
+    public void shouldGetStockItemsInPeriod() throws Exception{
         StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(1000);
         stockCard.setProduct(product);
 
         stockRepository.save(stockCard);
 
+        Date date1 = DateUtil.parseString("2015-08-01", DateUtil.defaultDateFormat);
+        Date date2 = DateUtil.parseString("2015-08-02", DateUtil.defaultDateFormat);
 
         ArrayList<StockItem> stockItems = new ArrayList<>();
         for (int i= 0; i < 10; i++){
@@ -100,13 +121,18 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
             item.setAmount(i);
 
             if (i%2 == 0) {
-                item.setMovementType(StockRepository.MOVEMENTTYPE.RECEIVE.toString());
+                item.setMovementType(StockItem.MovementType.RECEIVE);
             }else {
-                item.setMovementType(StockRepository.MOVEMENTTYPE.ISSUE.toString());
+                item.setMovementType(StockItem.MovementType.ISSUE);
             }
 
             item.setDocumentNumber("DOC" + i);
 
+            if (i < 5){
+                item.setCreatedAt(date1);
+            } else {
+                item.setCreatedAt(date2);
+            }
             stockItems.add(item);
         }
 
@@ -115,10 +141,10 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
         assertThat(retItems.size(), is(10));
 
-        int sum1 = stockRepository.sum(StockRepository.MOVEMENTTYPE.ISSUE.toString(), stockCard, new Date(), new Date());
-        int sum2 = stockRepository.sum(StockRepository.MOVEMENTTYPE.RECEIVE.toString(), stockCard, new Date(), new Date());
+        long sum1 = stockRepository.sum(StockItem.MovementType.ISSUE, stockCard, date1, date1);
+        long sum2 = stockRepository.sum(StockItem.MovementType.RECEIVE, stockCard, date1, date2);
 
-        assertThat(sum1, is(25));
-        assertThat(sum2, is(20));
+        assertThat(sum1, is(4L));
+        assertThat(sum2, is(20L));
     }
 }

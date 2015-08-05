@@ -25,7 +25,6 @@ import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
-import org.openlmis.core.network.NetworkConnectionManager;
 import org.openlmis.core.view.View;
 
 import retrofit.Callback;
