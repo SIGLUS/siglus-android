@@ -56,7 +56,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         productRepository = RoboGuice.getInjector(Robolectric.application).getInstance(ProductRepository.class);
 
         product = new Product();
-        product.setName("Test Product");
+        product.setProductName("Test Product");
         product.setUnit("200");
 
         productRepository.create(product);

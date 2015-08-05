@@ -60,7 +60,7 @@ public class InventoryActivityTest {
 
         ArrayList<Product> products = new ArrayList<>();
         Product product = new Product();
-        product.setName("test product");
+        product.setProductName("test product");
         product.setUnit("500 ml");
         products.add(product);
 
