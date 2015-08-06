@@ -46,7 +46,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdapter.ViewHolder> {
+public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdapter.ViewHolder> implements FilterableAdapter {
 
     LayoutInflater inflater;
     Context context;
@@ -156,7 +156,8 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
         return this.inventoryList;
     }
 
-    public void filterByName(String key) {
+    @Override
+    public void filter(String key) {
 
         if (StringUtils.isEmpty(key)) {
             this.currentList = inventoryList;
@@ -167,7 +168,8 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
         List<InventoryViewModel> filteredList = new ArrayList<>();
 
         for (InventoryViewModel viewModel : inventoryList) {
-            if (viewModel.getProduct().getPrimaryName().contains(key)) {
+            if (viewModel.getProduct().getPrimaryName().contains(key)
+                    ||viewModel.getProduct().getCode().contains(key)) {
                 filteredList.add(viewModel);
             }
         }

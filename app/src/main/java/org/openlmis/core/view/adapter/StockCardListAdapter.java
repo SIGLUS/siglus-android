@@ -39,7 +39,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdapter.ViewHolder>{
+public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdapter.ViewHolder> implements FilterableAdapter {
 
     List<StockCard> stockCards;
     List<StockCard> currentStockCards;
@@ -104,7 +104,8 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
         }
     }
 
-    public void filterByName(String query){
+    @Override
+    public void filter(String query){
         if (StringUtils.isEmpty(query)){
             this.currentStockCards = stockCards;
             this.notifyDataSetChanged();
@@ -112,7 +113,8 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
 
         this.currentStockCards = new ArrayList<>();
         for (StockCard stockCard : stockCards){
-            if (stockCard.getProduct().getPrimaryName().contains(query)){
+            if (stockCard.getProduct().getPrimaryName().contains(query)
+                    || stockCard.getProduct().getCode().contains(query)){
                 this.currentStockCards.add(stockCard);
             }
         }

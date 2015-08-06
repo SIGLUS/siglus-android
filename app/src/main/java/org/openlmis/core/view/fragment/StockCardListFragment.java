@@ -80,6 +80,6 @@ public class StockCardListFragment extends RoboFragment implements StockCardList
 
 
     public void filterStockCard(String query) {
-        mAdapter.filterByName(query);
+        mAdapter.filter(query);
     }
 }

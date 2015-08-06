@@ -80,13 +80,13 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
 
     @Override
     public boolean onSearchStart(String query) {
-        mAdapter.filterByName(query);
+        mAdapter.filter(query);
         return false;
     }
 
     @Override
     public boolean onSearchClosed() {
-        mAdapter.filterByName(StringUtils.EMPTY);
+        mAdapter.filter(StringUtils.EMPTY);
         return false;
     }
 
