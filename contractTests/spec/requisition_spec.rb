@@ -1,8 +1,3 @@
-require 'rubygems'
-require 'rest-client'
-require 'base64'
-require 'json'
-
 # NOTE: API does not have delete endpoint and therefore can only
 # post until reaching the current period. Use UAT env because UAT will
 # clean up data regularly

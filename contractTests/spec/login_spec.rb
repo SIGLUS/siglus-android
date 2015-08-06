@@ -1,7 +1,3 @@
-require 'rubygems'
-require 'rest-client'
-require 'json'
-
 describe "log in to web server" do
 
   it "should authenticate and return expected json containing login info" do
