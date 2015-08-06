@@ -23,11 +23,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class DateUtil {
+public final class DateUtil {
 
-    public static String defaultDateFormat = "yyyy-MM-dd";
+    public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
-    public static SimpleDateFormat dateFormater = new SimpleDateFormat(defaultDateFormat);
+    public static final SimpleDateFormat DATE_FORMATER = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
+
+    private DateUtil(){
+
+    }
 
     public static Date getMonthStartDate(Date date) {
         Calendar calendar = calendarDate(date);
@@ -75,7 +79,7 @@ public class DateUtil {
     }
 
     public static boolean equal(Date date1, Date date2) {
-        return dateFormater.format(date1).equals(dateFormater.format(date2));
+        return DATE_FORMATER.format(date1).equals(DATE_FORMATER.format(date2));
     }
 
     public static int dayNumber(Date date) {
@@ -84,7 +88,7 @@ public class DateUtil {
     }
 
     public static String formatDate(Date date) {
-        return dateFormater.format(date);
+        return DATE_FORMATER.format(date);
     }
 
     public static String formatDate(Date date, String format) {

@@ -45,7 +45,7 @@ public class InputFilterMinMax  implements InputFilter {
             }else{
                 return source;
             }
-        } catch (NumberFormatException nfe) { }
+        } catch (NumberFormatException nfe) { nfe.printStackTrace(); }
         return "";
     }
 }

@@ -31,7 +31,7 @@ import org.openlmis.core.persistence.migrations.CreateInitTables;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
+public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
     private static final List<Migration> MIGRATIONS = new ArrayList<Migration>() {
         {

@@ -20,7 +20,7 @@ package org.openlmis.core.manager;
 
 import org.openlmis.core.model.User;
 
-public class UserInfoMgr {
+public final class UserInfoMgr {
     private static UserInfoMgr mInstance;
     private User user;
 

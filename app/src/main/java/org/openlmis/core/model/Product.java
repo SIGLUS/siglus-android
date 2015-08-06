@@ -41,5 +41,4 @@ public class Product extends BaseModel{
 
     @DatabaseField
     String type;
-    
 }

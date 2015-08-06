@@ -23,14 +23,12 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.stmt.Where;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.User;
 import org.openlmis.core.network.RestRepository;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
-import org.w3c.dom.UserDataHandler;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -69,9 +67,9 @@ public class UserRepository extends RestRepository {
             e.printStackTrace();
         }
 
-        if (users !=null && users.size() >0 ){
+        if (users !=null && users.size() >0){
             return users.get(0);
-        }else {
+        } else {
             return null;
         }
     }

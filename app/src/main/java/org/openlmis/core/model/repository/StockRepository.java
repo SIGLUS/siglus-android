@@ -24,7 +24,6 @@ import android.util.Log;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockItem;
@@ -35,10 +34,7 @@ import org.openlmis.core.utils.DateUtil;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 public class StockRepository {
     @Inject

@@ -23,8 +23,12 @@ import android.util.Log;
 import org.openlmis.core.BuildConfig;
 
 
-public class LogUtil {
+public final class LogUtil {
     private static final boolean DEBUG = BuildConfig.DEBUG;
+
+    private LogUtil(){
+
+    }
 
     public static void i(String tag, String msg) {
         if (DEBUG) {

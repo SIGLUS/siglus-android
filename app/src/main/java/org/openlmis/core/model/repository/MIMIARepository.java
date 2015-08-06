@@ -41,7 +41,7 @@ public class MIMIARepository extends RnrFormRepository{
 
     public static final String ATTR_NEW_PATIENTS = "New Patients";
     public static final String ATTR_SUSTAINING = "Sustaining";
-    public static final String ATTR_Alteration = "Alteration";
+    public static final String ATTR_ALTERATION = "Alteration";
     public static final String ATTR_TOTAL_MONTH_DISPENSE = "Total Month Dispense";
     public static final String ATTR_TOTAL_PATIENTS = "Total Patients";
     public static final String ATTR_PTV = "PTV";
@@ -125,11 +125,11 @@ public class MIMIARepository extends RnrFormRepository{
     private List<BaseInfoItem> generateBaseInfoItems(RnRForm form){
         BaseInfoItem newPatients = new BaseInfoItem(ATTR_NEW_PATIENTS, BaseInfoItem.TYPE.INT, form);
         BaseInfoItem sustaining = new BaseInfoItem(ATTR_SUSTAINING, BaseInfoItem.TYPE.INT, form);
-        BaseInfoItem alteration = new BaseInfoItem(ATTR_Alteration, BaseInfoItem.TYPE.INT, form);
+        BaseInfoItem alteration = new BaseInfoItem(ATTR_ALTERATION, BaseInfoItem.TYPE.INT, form);
         BaseInfoItem totalMonthDispense = new BaseInfoItem(ATTR_TOTAL_MONTH_DISPENSE, BaseInfoItem.TYPE.INT, form);
         BaseInfoItem totalPatients = new BaseInfoItem(ATTR_TOTAL_PATIENTS, BaseInfoItem.TYPE.INT, form);
-        BaseInfoItem PTV = new BaseInfoItem(ATTR_PTV, BaseInfoItem.TYPE.INT, form);
-        BaseInfoItem PPE = new BaseInfoItem(ATTR_PPE, BaseInfoItem.TYPE.INT, form);
+        BaseInfoItem ptv = new BaseInfoItem(ATTR_PTV, BaseInfoItem.TYPE.INT, form);
+        BaseInfoItem ppe = new BaseInfoItem(ATTR_PPE, BaseInfoItem.TYPE.INT, form);
 
         List<BaseInfoItem> baseInfoItemList = new ArrayList<>();
 
@@ -138,8 +138,8 @@ public class MIMIARepository extends RnrFormRepository{
         baseInfoItemList.add(alteration);
         baseInfoItemList.add(totalMonthDispense);
         baseInfoItemList.add(totalPatients);
-        baseInfoItemList.add(PTV);
-        baseInfoItemList.add(PPE);
+        baseInfoItemList.add(ptv);
+        baseInfoItemList.add(ppe);
 
         return baseInfoItemList;
     }

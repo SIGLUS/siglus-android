@@ -32,7 +32,6 @@ import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import roboguice.inject.InjectResource;
 
 public class RestRepository {
 

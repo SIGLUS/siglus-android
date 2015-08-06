@@ -22,7 +22,11 @@ import android.widget.Toast;
 
 import org.openlmis.core.LMISApp;
 
-public class ToastUtil {
+public final class ToastUtil {
+
+    private ToastUtil(){
+
+    }
 
     public static void show(CharSequence text) {
         if (text == null)

@@ -108,8 +108,8 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
         stockRepository.save(stockCard);
 
-        Date date1 = DateUtil.parseString("2015-08-01", DateUtil.defaultDateFormat);
-        Date date2 = DateUtil.parseString("2015-08-02", DateUtil.defaultDateFormat);
+        Date date1 = DateUtil.parseString("2015-08-01", DateUtil.DEFAULT_DATE_FORMAT);
+        Date date2 = DateUtil.parseString("2015-08-02", DateUtil.DEFAULT_DATE_FORMAT);
 
         ArrayList<StockItem> stockItems = new ArrayList<>();
         for (int i= 0; i < 10; i++){

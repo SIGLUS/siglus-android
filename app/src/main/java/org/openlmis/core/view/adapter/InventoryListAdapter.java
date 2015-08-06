@@ -20,14 +20,9 @@ package org.openlmis.core.view.adapter;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.style.BackgroundColorSpan;
-import android.text.style.ForegroundColorSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;

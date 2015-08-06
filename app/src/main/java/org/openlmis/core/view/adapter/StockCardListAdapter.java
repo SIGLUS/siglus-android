@@ -35,6 +35,8 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdapter.ViewHolder>{
@@ -117,4 +119,33 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
 
         this.notifyDataSetChanged();
     }
+
+    public void sortBySOH(final boolean asc){
+        Collections.sort(currentStockCards, new Comparator<StockCard>() {
+            @Override
+            public int compare(StockCard lhs, StockCard rhs) {
+                if (asc){
+                    return lhs.getStockOnHand() - rhs.getStockOnHand();
+                }else {
+                    return rhs.getStockOnHand() - lhs.getStockOnHand();
+                }
+            }
+        });
+
+        this.notifyDataSetChanged();
+    }
+
+    public void sortByName(final boolean asc){
+        Collections.sort(currentStockCards, new Comparator<StockCard>() {
+            @Override
+            public int compare(StockCard lhs, StockCard rhs) {
+                if (asc){
+                    return lhs.getProduct().getPrimaryName().compareTo(rhs.getProduct().getPrimaryName());
+                }else {
+                    return rhs.getProduct().getPrimaryName().compareTo(lhs.getProduct().getPrimaryName());
+                }
+            }
+        });
+    }
+
 }

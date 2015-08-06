@@ -11,7 +11,11 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
     buildTypes {
+        debug {
+            testCoverageEnabled true
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -27,6 +31,61 @@ android {
         abortOnError false
     }
 }
+
+
+apply plugin: "jacoco"
+
+jacoco {
+    toolVersion = "0.7.1.201405082137"
+}
+
+def coverageSourceDirs = ['./src/main/java']
+
+task jacocoTestReport(type: JacocoReport, dependsOn: "testDebug") {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+    classDirectories = fileTree(dir: './build/intermediates/classes/debug/org')
+    sourceDirectories = files(coverageSourceDirs)
+    executionData = files('./build/jacoco/testDebug.exec')
+}
+
+
+apply plugin: 'checkstyle'
+apply plugin: 'findbugs'
+
+
+check.dependsOn 'findbugs', 'checkstyle'
+
+task checkstyle(type: Checkstyle) {
+    configFile file("config/quality/checkstyle/checkstyle.xml")
+    source 'src/main'
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    classpath = files()
+}
+
+task findbugs(type: FindBugs) {
+    ignoreFailures = true
+    effort = "max"
+    reportLevel = "high"
+    excludeFilter = new File("config/quality/findbugs/findbugs-filter.xml")
+    classes = files("$project.buildDir/intermediates/classes/")
+
+    source 'src/main'
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    reports {
+        html.enabled = true
+        xml.enabled = false
+    }
+
+    classpath = files()
+}
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
