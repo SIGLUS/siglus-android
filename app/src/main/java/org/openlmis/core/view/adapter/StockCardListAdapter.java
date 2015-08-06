@@ -20,13 +20,18 @@ package org.openlmis.core.view.adapter;
 
 
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 
 import java.util.ArrayList;
@@ -54,8 +59,20 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
 
     @Override
     public void onBindViewHolder(StockCardListAdapter.ViewHolder holder, int position) {
-        holder.productName.setText(currentStockCards.get(position).getProduct().getProductName());
-        holder.productUnit.setText(currentStockCards.get(position).getProduct().getUnit());
+
+        Product product = currentStockCards.get(position).getProduct();
+        String productName = product.getPrimaryName() + " [" + product.getCode() + "]";
+        SpannableStringBuilder styledName=new SpannableStringBuilder(productName);
+        styledName.setSpan(new ForegroundColorSpan(LMISApp.getContext().getResources().getColor(R.color.secondary_text)),
+                product.getPrimaryName().length(), productName.length(), Spannable.SPAN_POINT_MARK);
+
+        String unit = product.getStrength() + " " + product.getType();
+        SpannableStringBuilder styledUnit=new SpannableStringBuilder(unit);
+        styledUnit.setSpan(new ForegroundColorSpan(LMISApp.getContext().getResources().getColor(R.color.secondary_text)),
+                product.getStrength().length(), unit.length(), Spannable.SPAN_POINT_MARK);
+
+        holder.productName.setText(styledName);
+        holder.productUnit.setText(styledUnit);
         holder.stockOnHand.setText(currentStockCards.get(position).getStockOnHand() + "");
     }
 
@@ -93,7 +110,7 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
 
         this.currentStockCards = new ArrayList<>();
         for (StockCard stockCard : stockCards){
-            if (stockCard.getProduct().getProductName().contains(query)){
+            if (stockCard.getProduct().getPrimaryName().contains(query)){
                 this.currentStockCards.add(stockCard);
             }
         }

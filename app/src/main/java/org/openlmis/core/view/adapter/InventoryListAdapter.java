@@ -20,9 +20,14 @@ package org.openlmis.core.view.adapter;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -114,8 +119,8 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
         });
 
         holder.checkBox.setChecked(viewModel.isChecked());
-        holder.productName.setText(viewModel.getProduct().getProductName());
-        holder.productUnit.setText(viewModel.getProduct().getUnit());
+        holder.productName.setText(viewModel.getProduct().getPrimaryName());
+        holder.productUnit.setText(viewModel.getProduct().getType());
         holder.txQuantity.setText(viewModel.getQuantity());
         holder.txExpireDate.setText(viewModel.getExpireDate());
 
@@ -167,7 +172,7 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
         List<InventoryViewModel> filteredList = new ArrayList<>();
 
         for (InventoryViewModel viewModel : inventoryList) {
-            if (viewModel.getProduct().getProductName().contains(key)) {
+            if (viewModel.getProduct().getPrimaryName().contains(key)) {
                 filteredList.add(viewModel);
             }
         }

@@ -21,6 +21,8 @@ package org.openlmis.core.network;
 
 import com.squareup.okhttp.Credentials;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.UnauthorizedException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
@@ -30,15 +32,17 @@ import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import roboguice.inject.InjectResource;
 
 public class RestRepository {
 
-    public static String END_POINT = "http://52.69.124.32:8080/";
+    public String END_POINT;
 
     protected RestAdapter restAdapter;
     protected LMISRestApi lmisRestApi;
 
     public RestRepository() {
+        END_POINT = LMISApp.getContext().getResources().getString(R.string.server_base_url);
 
         RequestInterceptor requestInterceptor = new RequestInterceptor() {
             @Override

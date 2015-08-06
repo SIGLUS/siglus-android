@@ -20,7 +20,6 @@ package org.openlmis.core.persistence.migrations;
 
 import android.database.sqlite.SQLiteDatabase;
 
-import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 
@@ -48,8 +47,8 @@ public class CreateDummyProducts implements Migration {
                 public String operate(Dao dao) throws SQLException {
                     for (int i = 0; i < 10; i++) {
                         Product product = new Product();
-                        product.setProductName("Paracetelmol " + i);
-                        product.setUnit("500ML *" + i);
+                        product.setPrimaryName("Paracetelmol " + i);
+                        product.setStrength("500ML *" + i);
 
                         dao.create(product);
                     }

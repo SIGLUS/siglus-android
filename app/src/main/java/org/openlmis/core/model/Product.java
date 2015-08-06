@@ -31,8 +31,15 @@ import lombok.Setter;
 public class Product extends BaseModel{
 
     @DatabaseField
-    String productName;
+    String primaryName;
 
     @DatabaseField
-    String unit;
+    String strength;
+
+    @DatabaseField
+    String code;
+
+    @DatabaseField
+    String type;
+    
 }

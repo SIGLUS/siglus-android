@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:paddingBottom="1dp"
+    android:background="@color/color_item_bg">
 
 
     <LinearLayout
@@ -11,7 +13,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
         android:padding="8dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/white">
 
         <TextView
             android:id="@+id/product_name"
@@ -19,14 +22,15 @@
             android:layout_height="wrap_content"
             android:text="@string/label_dummy_product"
             android:textColor="@color/primary_text"
-            android:textSize="20sp" />
+            android:textStyle="bold"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/product_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_dummy_unit"
-            android:textColor="@color/secondary_text"
+            android:textColor="@color/primary_text"
             android:textSize="16sp" />
     </LinearLayout>
 
@@ -36,7 +40,8 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:textSize="18sp"
+        android:textColor="@color/primary_text"
         android:gravity="center_vertical|end"
-        android:background="@color/color_primary_light"/>
+        android:background="@color/color_primary_50"/>
 
 </LinearLayout>
