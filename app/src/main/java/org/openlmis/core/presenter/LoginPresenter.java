@@ -47,7 +47,6 @@ import retrofit.client.Response;
 public class LoginPresenter implements Presenter {
 
     LoginView view;
-    User user;
 
     @Inject
     UserRepository userRepository;
@@ -82,47 +81,52 @@ public class LoginPresenter implements Presenter {
             view.showEmptyAlert(0);
             return;
         }
-
         if (StringUtils.EMPTY.equals(password)) {
             view.showEmptyAlert(1);
             return;
         }
-
-
         view.startLoading();
 
-        user = new User(userName.trim(), password);
+        User user = new User(userName.trim(), password);
         if (view.isConnectionAvailable()) {
-            userRepository.authorizeUser(user, new Callback<UserRepository.UserResponse>() {
-                @Override
-                public void success(UserRepository.UserResponse userResponse, Response response) {
-                    User userInfo = userResponse.getUserInformation();
-                    userInfo.setUsername(user.getUsername());
-                    userInfo.setPassword(user.getPassword());
-                    if (userResponse.getUserInformation() != null) {
-                        onLoginSuccess(userInfo);
-                    } else {
-                        onLoginFailed();
-                    }
-                }
+            authorizeUserRemote(user);
+        } else {
+            authorizeUserLocal(user);
+        }
+    }
 
-                @Override
-                public void failure(RetrofitError error) {
-                    view.stopLoading();
+    private void authorizeUserLocal(User user) {
+        User localUser = userRepository.getUserForLocalDatabase(user);
+
+        if (localUser == null) {
+            view.showInvalidAlert();
+        } else {
+            user = localUser;
+            UserInfoMgr.getInstance().setUser(user);
+            goToNextPage();
+        }
+        view.stopLoading();
+    }
+
+    private void authorizeUserRemote(final User user) {
+        userRepository.authorizeUser(user, new Callback<UserRepository.UserResponse>() {
+            @Override
+            public void success(UserRepository.UserResponse userResponse, Response response) {
+                User userInfo = userResponse.getUserInformation();
+                userInfo.setUsername(user.getUsername());
+                userInfo.setPassword(user.getPassword());
+                if (userResponse.getUserInformation() != null) {
+                    onLoginSuccess(userInfo);
+                } else {
                     onLoginFailed();
                 }
-            });
-        } else {
-            User localUser = userRepository.getUserForLocalDatabase(userName.trim(), password);
-
-            if (localUser == null) {
-                view.showInvalidAlert();
-            } else {
-                UserInfoMgr.getInstance().setUser(user);
-                goToNextPage();
             }
-            view.stopLoading();
-        }
+            @Override
+            public void failure(RetrofitError error) {
+                view.stopLoading();
+                onLoginFailed();
+            }
+        });
     }
 
 

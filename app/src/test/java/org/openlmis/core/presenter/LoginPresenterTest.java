@@ -39,6 +39,7 @@ import retrofit.Callback;
 import roboguice.RoboGuice;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -134,7 +135,7 @@ public class LoginPresenterTest {
     public void shouldDoOfflineLoginWhenNoConnection() {
         when(mockActivity.isConnectionAvailable()).thenReturn(false);
         presenter.startLogin("user", "password");
-        verify(userRepository).getUserForLocalDatabase(anyString(), anyString());
+        verify(userRepository).getUserForLocalDatabase(any(User.class));
     }
 
 

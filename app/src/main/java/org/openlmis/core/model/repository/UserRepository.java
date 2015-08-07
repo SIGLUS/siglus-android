@@ -54,13 +54,13 @@ public class UserRepository extends RestRepository {
         lmisRestApi.authorizeUser(user, callback);
     }
 
-    public User getUserForLocalDatabase(final String userName, final String password) {
+    public User getUserForLocalDatabase(final User user) {
         List<User> users = null;
         try {
             users = dbUtil.withDao(User.class, new DbUtil.Operation<User, List<User>>() {
                 @Override
                 public List<User> operate(Dao<User, String> dao) throws SQLException {
-                    return dao.queryBuilder().where().eq("username", userName).and().eq("password", password).query();
+                    return dao.queryBuilder().where().eq("username", user.getUsername()).and().eq("password", user.getPassword()).query();
                 }
             });
         } catch (LMISException e) {
