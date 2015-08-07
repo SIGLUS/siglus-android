@@ -30,6 +30,9 @@ import lombok.Setter;
 @DatabaseTable(tableName = "products")
 public class Product extends BaseModel{
 
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
+    private Program program;
+
     @DatabaseField
     String primaryName;
 

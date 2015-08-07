@@ -24,6 +24,7 @@ import com.j256.ormlite.support.ConnectionSource;
 
 
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.Product;
@@ -43,6 +44,7 @@ public class CreateInitTables implements Migration {
     public void up(SQLiteDatabase db, ConnectionSource connectionSource) {
         try {
             createTable(connectionSource, User.class);
+            createTable(connectionSource, Program.class);
             createTable(connectionSource, Product.class);
             createTable(connectionSource, StockCard.class);
             createTable(connectionSource, StockItem.class);

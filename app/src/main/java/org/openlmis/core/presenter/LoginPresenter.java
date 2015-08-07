@@ -25,13 +25,18 @@ import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.View;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.Callback;
@@ -46,6 +51,9 @@ public class LoginPresenter implements Presenter {
 
     @Inject
     UserRepository userRepository;
+
+    @Inject
+    ProgramRepository programRepository;
 
     @Inject
     ProductRepository productRepository;
@@ -149,7 +157,7 @@ public class LoginPresenter implements Presenter {
                 @Override
                 public void success(ProductRepository.ProductsResponse programsWithProducts, Response response) {
                     view.stopLoading();
-                    saveProductsToLocalDatabase(programsWithProducts);
+                    saveProgramAndProductsToLocalDatabase(programsWithProducts);
                     view.setHasGetProducts(true);
                     goToNextPage();
                 }
@@ -167,10 +175,19 @@ public class LoginPresenter implements Presenter {
         }
     }
 
-    private void saveProductsToLocalDatabase(ProductRepository.ProductsResponse response) {
-        List<ProductRepository.ProgramsWithProducts> programsWithProducts = response.getProgramsWithProducts();
-        for (ProductRepository.ProgramsWithProducts programsWithProduct : programsWithProducts) {
-            productRepository.save(programsWithProduct.getProducts());
+    private void saveProgramAndProductsToLocalDatabase(ProductRepository.ProductsResponse response) {
+        List<Program> programsWithProducts = response.getProgramsWithProducts();
+        for (Program programWithProducts : programsWithProducts) {
+            try {
+                programRepository.create(programWithProducts);
+                for (Product product : programWithProducts.getProducts()) {
+                    product.setProgram(programWithProducts);
+                }
+                productRepository.save(new ArrayList<>(programWithProducts.getProducts()));
+                programRepository.refresh(programWithProducts);
+            } catch (LMISException e) {
+                e.printStackTrace();
+            }
         }
     }
 

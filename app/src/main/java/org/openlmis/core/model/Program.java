@@ -19,14 +19,24 @@
 package org.openlmis.core.model;
 
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
+import com.j256.ormlite.table.DatabaseTable;
+
+import java.util.Collection;
+
 import lombok.Data;
 
 @Data
-public class Program {
+@DatabaseTable(tableName = "program")
+public class Program extends BaseModel {
 
+    @DatabaseField
     String programCode;
 
-    public Program(String programCode) {
-        this.programCode = programCode;
-    }
+    @DatabaseField
+    String programName;
+
+    @ForeignCollectionField(columnName = "products")
+    private Collection<Product> products;
 }
