@@ -21,6 +21,8 @@ package org.openlmis.core.view.widget;
 import android.text.InputFilter;
 import android.text.Spanned;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class InputFilterMinMax  implements InputFilter {
 
     int min = 0;
@@ -45,7 +47,6 @@ public class InputFilterMinMax  implements InputFilter {
             }else{
                 return source;
             }
-        } catch (NumberFormatException nfe) { nfe.printStackTrace(); }
-        return "";
+        } catch (NumberFormatException nfe) { return StringUtils.EMPTY; }
     }
 }

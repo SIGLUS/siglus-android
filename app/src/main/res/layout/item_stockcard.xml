@@ -20,7 +20,6 @@
             android:id="@+id/product_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_dummy_product"
             android:textColor="@color/primary_text"
             android:textStyle="bold"
             android:textSize="18sp" />
@@ -29,7 +28,6 @@
             android:id="@+id/product_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_dummy_unit"
             android:textColor="@color/primary_text"
             android:textSize="16sp" />
     </LinearLayout>
