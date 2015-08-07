@@ -27,7 +27,7 @@ import com.j256.ormlite.dao.Dao;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
-import org.openlmis.core.network.RestRepository;
+import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
@@ -35,9 +35,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import lombok.Data;
-import retrofit.Callback;
 
-public class ProductRepository extends RestRepository {
+public class ProductRepository extends LMISRestManager {
 
     GenericDao<Product> genericDao;
 
@@ -51,10 +50,6 @@ public class ProductRepository extends RestRepository {
 
     public List<Product> list() throws LMISException{
         return  genericDao.queryForAll();
-    }
-
-    public void getProducts(String facilityCode, Callback<ProductsResponse> callback) {
-        lmisRestApi.getProducts(facilityCode, callback);
     }
 
     public void save(final List<Product> products) {

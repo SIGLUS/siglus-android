@@ -36,5 +36,5 @@ public interface LMISRestApi {
     void authorizeUser(@Body User user, Callback<UserRepository.UserResponse> callback);
 
     @GET("/rest-api/programs-with-products")
-    void getProducts(@Query("facilityCode") String facilityCode, Callback<ProductRepository.ProductsResponse> callback);
+    ProductRepository.ProductsResponse getProducts(@Query("facilityCode") String facilityCode);
 }

@@ -26,14 +26,14 @@ import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Program;
-import org.openlmis.core.network.RestRepository;
+import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public class ProgramRepository extends RestRepository {
+public class ProgramRepository extends LMISRestManager {
 
     GenericDao<Program> genericDao;
 

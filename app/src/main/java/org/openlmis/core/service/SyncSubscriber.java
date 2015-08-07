@@ -16,29 +16,16 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.model;
+package org.openlmis.core.service;
 
+import rx.Subscriber;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.field.ForeignCollectionField;
-import com.j256.ormlite.table.DatabaseTable;
+public abstract  class SyncSubscriber<T> extends Subscriber<T> {
+    @Override
+    public void onError(Throwable e) {
+    }
 
-import java.util.Collection;
-
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-@DatabaseTable(tableName = "program")
-public class Program extends BaseModel {
-
-    @DatabaseField
-    String programCode;
-
-    @DatabaseField
-    String programName;
-
-    @ForeignCollectionField(columnName = "products")
-    private Collection<Product> products;
+    @Override
+    public void onNext(Object o) {
+    }
 }

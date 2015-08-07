@@ -19,30 +19,21 @@
 package org.openlmis.core.presenter;
 
 
-import android.content.Context;
 
 import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.model.Product;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.User;
-import org.openlmis.core.model.repository.ProductRepository;
-import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.UserRepository;
-import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.service.SyncManager;
+import org.openlmis.core.service.SyncSubscriber;
 import org.openlmis.core.view.View;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
 
 public class LoginPresenter implements Presenter {
 
@@ -52,13 +43,7 @@ public class LoginPresenter implements Presenter {
     UserRepository userRepository;
 
     @Inject
-    ProgramRepository programRepository;
-
-    @Inject
-    ProductRepository productRepository;
-
-    @Inject
-    Context context;
+    SyncManager syncManager;
 
     @Override
     public void onStart() {
@@ -121,6 +106,7 @@ public class LoginPresenter implements Presenter {
                     onLoginFailed();
                 }
             }
+
             @Override
             public void failure(RetrofitError error) {
                 view.stopLoading();
@@ -157,41 +143,19 @@ public class LoginPresenter implements Presenter {
 
     public void getProducts() {
         if (!view.hasGetProducts()) {
-            productRepository.getProducts(UserInfoMgr.getInstance().getUser().getFacilityCode(), new Callback<ProductRepository.ProductsResponse>() {
+            view.startLoading();
+            syncManager.syncProductsWithProgramAsync(new SyncSubscriber<Void>() {
                 @Override
-                public void success(ProductRepository.ProductsResponse programsWithProducts, Response response) {
+                public void onCompleted() {
                     view.stopLoading();
-                    saveProgramAndProductsToLocalDatabase(programsWithProducts);
                     view.setHasGetProducts(true);
                     goToNextPage();
                 }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    view.stopLoading();
-                    view.setHasGetProducts(false);
-                    ToastUtil.show(R.string.init_product_error);
-                }
             });
+
         } else {
             view.stopLoading();
             goToNextPage();
-        }
-    }
-
-    private void saveProgramAndProductsToLocalDatabase(ProductRepository.ProductsResponse response) {
-        List<Program> programsWithProducts = response.getProgramsWithProducts();
-        for (Program programWithProducts : programsWithProducts) {
-            try {
-                programRepository.create(programWithProducts);
-                for (Product product : programWithProducts.getProducts()) {
-                    product.setProgram(programWithProducts);
-                }
-                productRepository.save(new ArrayList<>(programWithProducts.getProducts()));
-                programRepository.refresh(programWithProducts);
-            } catch (LMISException e) {
-                e.printStackTrace();
-            }
         }
     }
 

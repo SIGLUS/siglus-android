@@ -32,11 +32,19 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.UserRepository;
+import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.Robolectric;
 
 import retrofit.Callback;
 import roboguice.RoboGuice;
+import rx.Observable;
+import rx.Observer;
+import rx.functions.Func1;
+import rx.observers.TestObserver;
+import rx.observers.TestSubscriber;
+import rx.schedulers.TestScheduler;
+import rx.subjects.TestSubject;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
@@ -49,22 +57,22 @@ import static org.mockito.Mockito.when;
 public class LoginPresenterTest {
 
     UserRepository userRepository;
-    ProductRepository productRepository;
     LoginActivity mockActivity;
     LoginPresenter presenter;
     ProductRepository.ProductsResponse mockProductsResponse;
+    SyncManager syncManager;
 
     @Captor
     private ArgumentCaptor<Callback<UserRepository.UserResponse>> loginCB;
     @Captor
-    private ArgumentCaptor<Callback<ProductRepository.ProductsResponse>> getProductsCB;
+    private ArgumentCaptor<Observer<Void>> getProductsCB;
 
     @Before
     public void setup() {
         userRepository = mock(UserRepository.class);
-        productRepository = mock(ProductRepository.class);
         mockActivity = mock(LoginActivity.class);
         mockProductsResponse = mock(ProductRepository.ProductsResponse.class);
+        syncManager = mock(SyncManager.class);
 
         RoboGuice.overrideApplicationInjector(Robolectric.application, new MyTestModule());
         MockitoAnnotations.initMocks(this);
@@ -106,7 +114,8 @@ public class LoginPresenterTest {
 
         loginCB.getValue().success(userResponse, null);
 
-        verify(productRepository).getProducts(anyString(), getProductsCB.capture());
+        verify(syncManager).syncProductsWithProgramAsync(getProductsCB.capture());
+        getProductsCB.getValue().onCompleted();
     }
 
 
@@ -116,6 +125,7 @@ public class LoginPresenterTest {
         when(mockActivity.isConnectionAvailable()).thenReturn(true);
         when(mockActivity.hasGetProducts()).thenReturn(false);
 
+
         presenter.startLogin("user", "password");
         verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
         UserRepository.UserResponse userResponse = userRepository.new UserResponse();
@@ -123,9 +133,8 @@ public class LoginPresenterTest {
 
         loginCB.getValue().success(userResponse, null);
 
-        verify(productRepository).getProducts(anyString(), getProductsCB.capture());
-
-        getProductsCB.getValue().success(mockProductsResponse, null);
+        verify(syncManager).syncProductsWithProgramAsync(getProductsCB.capture());
+        getProductsCB.getValue().onCompleted();
 
         verify(mockActivity).stopLoading();
         verify(mockActivity).goToInitInventory();
@@ -143,7 +152,7 @@ public class LoginPresenterTest {
         @Override
         protected void configure() {
             bind(UserRepository.class).toInstance(userRepository);
-            bind(ProductRepository.class).toInstance(productRepository);
+            bind(SyncManager.class).toInstance(syncManager);
         }
     }
 }

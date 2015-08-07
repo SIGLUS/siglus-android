@@ -26,7 +26,7 @@ import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.User;
-import org.openlmis.core.network.RestRepository;
+import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
@@ -36,7 +36,7 @@ import java.util.List;
 import lombok.Data;
 import retrofit.Callback;
 
-public class UserRepository extends RestRepository {
+public class UserRepository extends LMISRestManager {
 
     @Inject
     DbUtil dbUtil;

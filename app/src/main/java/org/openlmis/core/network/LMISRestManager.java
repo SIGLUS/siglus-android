@@ -33,14 +33,14 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class RestRepository {
+public class LMISRestManager {
 
     public String END_POINT;
 
     protected RestAdapter restAdapter;
     protected LMISRestApi lmisRestApi;
 
-    public RestRepository() {
+    public LMISRestManager() {
         END_POINT = LMISApp.getContext().getResources().getString(R.string.server_base_url);
 
         RequestInterceptor requestInterceptor = new RequestInterceptor() {
@@ -62,6 +62,10 @@ public class RestRepository {
                 .build();
 
         lmisRestApi = restAdapter.create(LMISRestApi.class);
+    }
+
+    public LMISRestApi getLmisRestApi(){
+        return lmisRestApi;
     }
 
     class MyErrorHandler implements ErrorHandler {
