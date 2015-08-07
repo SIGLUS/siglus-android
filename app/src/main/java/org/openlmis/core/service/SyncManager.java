@@ -57,7 +57,7 @@ public class SyncManager {
         lmisRestApi = new LMISRestManager().getLmisRestApi();
     }
 
-    public void syncProductsWithProgram(){
+    public void syncProductsWithProgram() throws Exception{
         User user = UserInfoMgr.getInstance().getUser();
         ProductRepository.ProductsResponse response = lmisRestApi.getProducts(user.getFacilityCode());
         List<Program> programsWithProducts = response.getProgramsWithProducts();
@@ -79,7 +79,11 @@ public class SyncManager {
         rx.Observable.create(new rx.Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
-                syncProductsWithProgram();
+                try {
+                    syncProductsWithProgram();
+                } catch (Exception e){
+                    subscriber.onError(new LMISException("Get Product List Failed."));
+                }
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);

@@ -28,6 +28,7 @@ import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.service.SyncSubscriber;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.View;
 
 
@@ -150,6 +151,12 @@ public class LoginPresenter implements Presenter {
                     view.stopLoading();
                     view.setHasGetProducts(true);
                     goToNextPage();
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    ToastUtil.show(e.getMessage());
+                    view.stopLoading();
                 }
             });
 
