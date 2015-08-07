@@ -21,8 +21,7 @@ package org.openlmis.core.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.inject.Inject;
@@ -53,11 +52,9 @@ public class MMIASpreadActivity extends BaseActivity {
     @InjectView(R.id.mmia_info_list)
     public ListView mmiaInfoListView;
 
-    @InjectView(R.id.ly_comment)
-    public TextInputLayout ly_comment;
+    @InjectView(R.id.btn_complete)
+    public Button btnComplete;
 
-    @InjectView(R.id.tx_comment)
-    public EditText tx_comment;
 
     @Inject
     MMIAFormPresenter presenter;
@@ -90,4 +87,5 @@ public class MMIASpreadActivity extends BaseActivity {
         Intent intent = new Intent(mContext, MMIASpreadActivity.class);
         return intent;
     }
+
 }

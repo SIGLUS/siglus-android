@@ -35,6 +35,7 @@
     <string name="list_mmia_info_header_name">TIPO</string>
     <string name="mmia_speed_info_header">Quantificação dos doentes em TARV</string>
     <string name="hint_mmia_comment">observações</string>
+    <string name="btn_complete">completo</string>
 
 
 </resources>
