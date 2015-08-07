@@ -67,7 +67,8 @@ public class MIMIARepository extends RnrFormRepository{
     }
 
     private List<RnrFormItem> generateProductItems(RnRForm form) throws LMISException {
-        List<StockCard> stockCards = stockRepository.list("ART");
+        //TODO programCode
+        List<StockCard> stockCards = stockRepository.list("TB");
         List<RnrFormItem> productItems = new ArrayList<>();
 
         Calendar calendar = GregorianCalendar.getInstance();
@@ -94,7 +95,7 @@ public class MIMIARepository extends RnrFormRepository{
                     }else if (StockItem.MovementType.ISSUE == item.getMovementType()){
                         totalIssued += item.getAmount();
                     }else {
-                        totalAdjustment += Math.abs(item.getAmount());
+                        totalAdjustment += item.getAmount();
                     }
                 }
 
@@ -102,6 +103,8 @@ public class MIMIARepository extends RnrFormRepository{
                 productItem.setIssued(totalIssued);
                 productItem.setAdjustment(totalAdjustment);
                 productItem.setForm(form);
+                productItem.setInventory(stockItems.get(stockItems.size() - 1).getStockOnHand());
+                productItem.setValidate(stockCard.getEarliestExpireDate());
 
                 productItems.add(productItem);
             }

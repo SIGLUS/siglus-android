@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mmia_spread_bg"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <org.openlmis.core.view.widget.ExpandableHeightListView
+                android:id="@+id/rnr_from_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/mmia_spread_list_bg"
+                android:padding="@dimen/divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/rnr_from_list"
+                    android:layout_weight="3">
+
+                    <org.openlmis.core.view.widget.ExpandableHeightListView
+                        android:id="@+id/regime_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/mmia_spread_list_bg"
+                        android:padding="@dimen/divider" />
+
+                    <TextView
+                        android:layout_width="80dp"
+                        android:layout_height="30dp"
+                        android:layout_below="@+id/regime_list"
+                        android:layout_toLeftOf="@+id/et_regime_total"
+                        android:background="@drawable/mmia_spread_total_bg"
+                        android:gravity="right|center_vertical"
+                        android:paddingRight="8dp"
+                        android:text="@string/Total" />
+
+                    <EditText
+                        android:id="@+id/et_regime_total"
+                        android:layout_width="@dimen/mmia_spread_item_common_width"
+                        android:layout_height="30dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@+id/regime_list"
+                        android:background="@drawable/mmia_spread_et_total_bg"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="8dp" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="8dp"
+                    android:layout_weight="2"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/black"
+                        android:padding="8dp"
+                        android:text="@string/mmia_speed_info_header"
+                        android:textColor="@color/white" />
+
+                    <org.openlmis.core.view.widget.ExpandableHeightListView
+                        android:id="@+id/mmia_info_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/rnr_from_list"
+                        android:layout_toRightOf="@+id/regime_list"
+                        android:background="@drawable/mmia_spread_list_bg"
+                        android:divider="@color/divider"
+                        android:dividerHeight="@dimen/divider"
+                        android:padding="@dimen/divider" />
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/ly_comment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@color/white">
+
+                        <EditText
+                            android:id="@+id/tx_comment"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/hint_mmia_comment"
+                            android:minHeight="50dp" />
+                    </android.support.design.widget.TextInputLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </ScrollView>
+</LinearLayout>

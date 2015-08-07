@@ -27,11 +27,19 @@ import lombok.Setter;
 @Getter
 @Setter
 @DatabaseTable(tableName = "regimes")
-public class Regimen extends BaseModel{
+public class Regimen extends BaseModel {
+
+    public enum RegimeType {
+        ADULT,
+        BABY,
+    }
 
     @DatabaseField
     private String name;
 
     @DatabaseField
     private String code;
+
+    @DatabaseField
+    private RegimeType type;
 }

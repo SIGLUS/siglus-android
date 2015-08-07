@@ -24,6 +24,12 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,6 +37,8 @@ import lombok.Setter;
 @Setter
 @DatabaseTable(tableName = "stock_cards")
 public class StockCard extends BaseModel{
+
+    public static final String DIVIDER = ",";
 
     @DatabaseField
     String stockCardId;
@@ -46,4 +54,13 @@ public class StockCard extends BaseModel{
 
     @DatabaseField
     int stockOnHand;
+
+    public String getEarliestExpireDate(){
+        if (!StringUtils.isEmpty(expireDates)){
+            List<String> stringList = Arrays.asList(expireDates.split(DIVIDER));
+            Collections.sort(stringList);
+            return stringList.get(0);
+        }
+        return null;
+    }
 }

@@ -25,6 +25,7 @@ import android.util.Log;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 
+import org.openlmis.core.persistence.migrations.CreateDummyRegimes;
 import org.openlmis.core.persistence.migrations.CreateInitTables;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     private static final List<Migration> MIGRATIONS = new ArrayList<Migration>() {
         {
             add(new CreateInitTables());
+            add(new CreateDummyRegimes());
         }
     };
     private static int instanceCount = 0;

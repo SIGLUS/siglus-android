@@ -33,8 +33,6 @@ import org.openlmis.core.common.Constants;
 import org.openlmis.core.presenter.InventoryPresenter;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
-
-
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 

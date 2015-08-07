@@ -21,7 +21,6 @@ package org.openlmis.core.common;
 public final class Constants {
     public static final String KEY_LAST_LOGIN_USER = "last_user";
     public static final String KEY_INIT_INVENTORY = "init_inventory";
-    //TODO refactor AppPrefence
     public static final String KEY_HAS_GET_PRODUCTS = "has_get_products";
 
     private Constants(){

@@ -26,7 +26,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@DatabaseTable(tableName = "Rnr_form_items")
+@DatabaseTable(tableName = "rnr_form_items")
 public class RnrFormItem extends BaseModel{
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private Product product;

@@ -26,4 +26,15 @@
     <string name="requisition_list">REQUISITION</string>
     <string name="action_do_inventory">Do physic inventory</string>
 
+    <!--MMIA Speed-->
+    <string name="list_rnrfrom_left_header">MEDICAMENTO</string>
+    <string name="list_regime_header_code">Codigo</string>
+    <string name="list_regime_header_name">REGIME TERAPEUTICO</string>
+    <string name="TOTAL">TOTAL</string>
+    <string name="Total">Total</string>
+    <string name="list_mmia_info_header_name">TIPO</string>
+    <string name="mmia_speed_info_header">Quantificação dos doentes em TARV</string>
+    <string name="hint_mmia_comment">observações</string>
+
+
 </resources>

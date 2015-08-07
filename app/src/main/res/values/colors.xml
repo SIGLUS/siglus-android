@@ -6,9 +6,16 @@
     <color name="color_accent">#536DFE</color>
     <color name="color_primary_light">#C8E6C9</color>
     <color name="white">#FFFFFF</color>
+    <color name="black">#000</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#727272</color>
+    <color name="color_mmia_speed_list_header">#EFEFEF</color>
     <color name="divider_color">#B6B6B6</color>
     <color name="color_item_bg">#30B6B6B6</color>
     <color name="color_accent_light">#80536DFE</color>
+    <color name="color_mmia_info_name">#D0D0D0</color>
+    <color name="color_regime_adult">#C2FFC1</color>
+    <color name="color_regime_baby">#FFFF81</color>
+    <color name="divider">#565656</color>
+    <color name="mmia_spread_bg">#EAEAEA</color>
 </resources>

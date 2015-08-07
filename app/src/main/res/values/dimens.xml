@@ -4,4 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="margin_normal">16dp</dimen>
+    <dimen name="mmia_spread_item_common_width">60dp</dimen>
+    <dimen name="divider">1dp</dimen>
 </resources>

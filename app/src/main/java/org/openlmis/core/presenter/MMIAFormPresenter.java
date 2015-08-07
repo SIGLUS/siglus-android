@@ -27,7 +27,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MIMIARepository;
 import org.openlmis.core.view.View;
 
-public class MIMIAFormPresenter implements Presenter{
+public class MMIAFormPresenter implements Presenter{
 
     RnRForm form;
     MIMIAFormView view;
@@ -55,6 +55,8 @@ public class MIMIAFormPresenter implements Presenter{
     }
 
     public RnRForm initMIMIA(){
+        //TODO add code just init once
+
         RnRForm form = null;
         try {
             form = mimiaRepository.initMIMIA();
