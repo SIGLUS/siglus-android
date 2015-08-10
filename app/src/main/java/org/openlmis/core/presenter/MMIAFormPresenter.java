@@ -55,8 +55,6 @@ public class MMIAFormPresenter implements Presenter{
     }
 
     public RnRForm initMIMIA(){
-        //TODO add code just init once
-
         RnRForm form = null;
         try {
             form = mimiaRepository.initMIMIA();
