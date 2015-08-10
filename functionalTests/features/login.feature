@@ -5,4 +5,4 @@ Feature: Login
     When I enter username "superuser"
     And I enter password "password1"
     And I press "LOG IN"
-    Then I should see "Done"
+    Then I should see "DONE"
