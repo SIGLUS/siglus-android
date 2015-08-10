@@ -39,9 +39,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import lombok.Getter;
+
 public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdapter.ViewHolder> implements FilterableAdapter {
 
     List<StockCard> stockCards;
+
+    @Getter
     List<StockCard> currentStockCards;
 
 
