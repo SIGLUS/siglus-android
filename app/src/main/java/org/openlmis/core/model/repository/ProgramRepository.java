@@ -25,17 +25,22 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProgramRepository extends LMISRestManager {
 
     GenericDao<Program> genericDao;
+
+    @Inject
+    ProductRepository productRepository;
 
     @Inject
     DbUtil dbUtil;
@@ -51,6 +56,15 @@ public class ProgramRepository extends LMISRestManager {
 
     public void create(Program program) throws LMISException {
         genericDao.create(program);
+    }
+
+    public void saveProgramWithProduct(Program program) throws LMISException {
+        create(program);
+        for (Product product : program.getProducts()) {
+            product.setProgram(program);
+        }
+        productRepository.save(new ArrayList<>(program.getProducts()));
+        refresh(program);
     }
 
     public void refresh(Program programsWithProducts) {

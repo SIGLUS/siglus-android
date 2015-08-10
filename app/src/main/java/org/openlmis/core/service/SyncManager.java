@@ -25,7 +25,6 @@ import com.google.inject.Singleton;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.ProductRepository;
@@ -33,7 +32,6 @@ import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observer;
@@ -44,9 +42,6 @@ import rx.schedulers.Schedulers;
 
 @Singleton
 public class SyncManager {
-
-    @Inject
-    ProductRepository productRepository;
 
     @Inject
     ProgramRepository programRepository;
@@ -63,12 +58,7 @@ public class SyncManager {
         List<Program> programsWithProducts = response.getProgramsWithProducts();
         for (Program programWithProducts : programsWithProducts) {
             try {
-                programRepository.create(programWithProducts);
-                for (Product product : programWithProducts.getProducts()) {
-                    product.setProgram(programWithProducts);
-                }
-                productRepository.save(new ArrayList<>(programWithProducts.getProducts()));
-                programRepository.refresh(programWithProducts);
+                programRepository.saveProgramWithProduct(programWithProducts);
             } catch (LMISException e) {
                 e.printStackTrace();
             }

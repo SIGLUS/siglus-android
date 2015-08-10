@@ -124,7 +124,7 @@ public class LoginPresenter implements Presenter {
     public void onLoginSuccess(User user) {
         saveUserToLocalDatabase(user);
         UserInfoMgr.getInstance().setUser(user);
-        getProducts();
+        getProgramWithProducts();
     }
 
     public void goToNextPage() {
@@ -142,7 +142,7 @@ public class LoginPresenter implements Presenter {
     }
 
 
-    public void getProducts() {
+    public void getProgramWithProducts() {
         if (!view.hasGetProducts()) {
             view.startLoading();
             syncManager.syncProductsWithProgramAsync(new SyncSubscriber<Void>() {
