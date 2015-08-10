@@ -89,7 +89,6 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     }
 
     public void goToMainPage() {
-        startActivity(MMIASpreadActivity.getIntent2Me(this));
         saveBoolean(Constants.KEY_INIT_INVENTORY, false);
 
         Intent intent = getIntent();

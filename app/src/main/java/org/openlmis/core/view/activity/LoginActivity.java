@@ -59,7 +59,6 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        startActivity(MMIASpreadActivity.getIntent2Me(this));
         initUI();
     }
 
