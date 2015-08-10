@@ -26,6 +26,7 @@ import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockItem;
 import org.openlmis.core.persistence.DbUtil;
@@ -100,12 +101,17 @@ public class StockRepository {
     }
 
     public List<StockCard> list(String programCode) throws LMISException {
-        List<Product> products = productRepository.queryProducts(programRepository.queryByCode(programCode).getId());
         ArrayList<StockCard> stockCards = new ArrayList<>();
-        for (Product product : products) {
-            StockCard stockCard = queryStockCardByProductId(product.getId());
-            if (stockCard != null) {
-                stockCards.add(stockCard);
+        Program program = programRepository.queryByCode(programCode);
+        if (program != null) {
+            List<Product> products = productRepository.queryProducts(program.getId());
+            if (products != null) {
+                for (Product product : products) {
+                    StockCard stockCard = queryStockCardByProductId(product.getId());
+                    if (stockCard != null) {
+                        stockCards.add(stockCard);
+                    }
+                }
             }
         }
         return stockCards;
