@@ -5,28 +5,5 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@color/color_primary"
-        android:weightSum="5">
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabStrip"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="3"
-            app:tabIndicatorColor="@color/white"
-            app:tabIndicatorHeight="4dp"/>
-    </LinearLayout>
-
-
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewPager"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-    </android.support.v4.view.ViewPager>
-
 
 </LinearLayout>

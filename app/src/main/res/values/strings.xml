@@ -45,4 +45,10 @@
     <string name="issued_unit">UNIDADE de Saida</string>
 
 
+    <!-- Stock Card List Page -->
+    <string-array name="sort_items_array">
+        <item>Sort stock alphabetically</item>
+        <item>Sort stock on hand</item>
+    </string-array>
+
 </resources>

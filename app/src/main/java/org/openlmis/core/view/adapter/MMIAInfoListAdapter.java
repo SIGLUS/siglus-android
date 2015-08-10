@@ -40,7 +40,7 @@ public class MMIAInfoListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        View inflate = View.inflate(context, R.layout.item_mmia_info, null);
+        View inflate = View.inflate(context, R.layout.item_mmia_info, viewGroup);
         TextView tvName = (TextView) inflate.findViewById(R.id.tv_name);
         EditText etTotal = (EditText) inflate.findViewById(R.id.et_total);
 

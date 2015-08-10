@@ -55,8 +55,7 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_stockcard, parent, false);
 
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     @Override
@@ -148,6 +147,8 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
                 }
             }
         });
+
+        this.notifyDataSetChanged();
     }
 
 }
