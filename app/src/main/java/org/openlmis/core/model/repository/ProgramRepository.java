@@ -45,24 +45,8 @@ public class ProgramRepository extends LMISRestManager {
         genericDao = new GenericDao<>(Program.class, context);
     }
 
-    public List<Program> list() throws LMISException{
-        return  genericDao.queryForAll();
-    }
-
-    public void save(final List<Program> products) {
-        try {
-            dbUtil.withDaoAsBatch(Program.class, new DbUtil.Operation<Program, Void>() {
-                @Override
-                public Void operate(Dao<Program, String> dao) throws SQLException {
-                    for (Program product : products){
-                        dao.create(product);
-                    }
-                    return null;
-                }
-            });
-        } catch (LMISException e) {
-            e.printStackTrace();
-        }
+    public List<Program> list() throws LMISException {
+        return genericDao.queryForAll();
     }
 
     public void create(Program program) throws LMISException {
@@ -75,5 +59,14 @@ public class ProgramRepository extends LMISRestManager {
         } catch (LMISException e) {
             e.printStackTrace();
         }
+    }
+
+    public Program queryByCode(final String programCode) throws LMISException {
+        return dbUtil.withDao(Program.class, new DbUtil.Operation<Program, Program>() {
+            @Override
+            public Program operate(Dao<Program, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("programCode", programCode).queryForFirst();
+            }
+        });
     }
 }

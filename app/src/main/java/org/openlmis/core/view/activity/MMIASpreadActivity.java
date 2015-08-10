@@ -33,6 +33,7 @@ import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.view.adapter.MMIAInfoListAdapter;
 import org.openlmis.core.view.adapter.RegimeListAdapter;
 import org.openlmis.core.view.adapter.RnrFromListAdapter;
+import org.openlmis.core.view.adapter.RnrFromNameListAdapter;
 
 import java.util.ArrayList;
 
@@ -43,17 +44,20 @@ import roboguice.inject.InjectView;
 public class MMIASpreadActivity extends BaseActivity {
 
     @InjectView(R.id.rnr_from_list)
-    public ListView rnrFromListView;
+    private ListView rnrFromList;
+
+    @InjectView(R.id.rnr_from_list_product_name)
+    private ListView rnrFromListView;
 
     @InjectView(R.id.regime_list)
-    public ListView regimeListView;
+    private ListView regimeListView;
 
 
     @InjectView(R.id.mmia_info_list)
-    public ListView mmiaInfoListView;
+    private ListView mmiaInfoListView;
 
     @InjectView(R.id.btn_complete)
-    public Button btnComplete;
+    private Button btnComplete;
 
 
     @Inject
@@ -73,10 +77,11 @@ public class MMIASpreadActivity extends BaseActivity {
     private void initUI() {
         RnRForm rnRForm = presenter.initMIMIA();
 
-        rnrFromListView.setAdapter(new RnrFromListAdapter(this, new ArrayList(rnRForm.getRnrFormItemList())));
+        rnrFromListView.setAdapter(new RnrFromNameListAdapter(this, new ArrayList(rnRForm.getRnrFormItemList())));
 
-        RegimeListAdapter regimeListAdapter = new RegimeListAdapter(this, new ArrayList(rnRForm.getRegimenItemList()));
-        regimeListView.setAdapter(regimeListAdapter);
+        rnrFromList.setAdapter(new RnrFromListAdapter(this, new ArrayList(rnRForm.getRnrFormItemList())));
+
+        regimeListView.setAdapter(new RegimeListAdapter(this, new ArrayList(rnRForm.getRegimenItemList())));
 
         mmiaInfoListView.setAdapter(new MMIAInfoListAdapter(this, new ArrayList(rnRForm.getBaseInfoItemList())));
 

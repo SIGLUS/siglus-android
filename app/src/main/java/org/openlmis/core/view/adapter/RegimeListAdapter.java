@@ -37,7 +37,7 @@ public class RegimeListAdapter extends BaseAdapter {
     private final Context context;
     private final List<RegimenItem> list;
 
-    public RegimeListAdapter(Context context, List list) {
+    public RegimeListAdapter(Context context, List<RegimenItem> list) {
         this.context = context;
         this.list = list;
     }

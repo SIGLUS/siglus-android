@@ -25,8 +25,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.utils.LogUtil;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class RnrFromListAdapter extends BaseAdapter {
     private final Context context;
     private final List<RnrFormItem> list;
 
-    public RnrFromListAdapter(Context context, List list) {
+    public RnrFromListAdapter(Context context, List<RnrFormItem> list) {
         this.context = context;
         this.list = list;
     }
@@ -56,20 +56,44 @@ public class RnrFromListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        View inflate = View.inflate(context, R.layout.item_rnr_from_left, null);
-        TextView tvPrimaryName = (TextView) inflate.findViewById(R.id.tv_primary_name);
+    public View getView(final int i, View view, ViewGroup viewGroup) {
+        View inflate = View.inflate(context, R.layout.item_rnr_from, null);
+
+        TextView tvIssuedUnit = (TextView) inflate.findViewById(R.id.tv_issued_unit);
+        TextView tvInitialAmount = (TextView) inflate.findViewById(R.id.tv_initial_amount);
+        TextView tvReceived = (TextView) inflate.findViewById(R.id.tv_received);
+        TextView tvIssued = (TextView) inflate.findViewById(R.id.tv_issued);
+        TextView tvAdjustment = (TextView) inflate.findViewById(R.id.tv_adjustment);
+        TextView tvInventory = (TextView) inflate.findViewById(R.id.tv_inventory);
+        TextView tvValidate = (TextView) inflate.findViewById(R.id.tv_validate);
 
         if (i == 0) {
-            tvPrimaryName.setText(R.string.list_rnrfrom_left_header);
-//            et_total.setGravity(Gravity.CENTER);
-            inflate.setBackgroundResource(R.color.color_mmia_speed_list_header);
+            tvIssuedUnit.setText(R.string.issued_unit);
+            tvInitialAmount.setText(R.string.initial_amount);
+            tvReceived.setText(R.string.received);
+            tvIssued.setText(R.string.issued);
+            tvAdjustment.setText(R.string.adjustment);
+            tvInventory.setText(R.string.inventory);
+            tvValidate.setText(R.string.validate);
+            inflate.setBackgroundResource(R.color.color_mmia_info_name);
         } else {
             RnrFormItem item = getItem(i - 1);
-            Product product = item.getProduct();
-            tvPrimaryName.setText(product.getPrimaryName());
+            //TODO refactor api field tvIssuedUnit
+            tvIssuedUnit.setText(String.valueOf(item.getProduct().getStrength()));
+            tvInitialAmount.setText(String.valueOf(item.getInitialAmount()));
+            tvReceived.setText(String.valueOf(item.getReceived()));
+            tvIssued.setText(String.valueOf(item.getIssued()));
+            tvAdjustment.setText(String.valueOf(item.getAdjustment()));
+            tvInventory.setText(String.valueOf(item.getInventory()));
+            tvValidate.setText(String.valueOf(item.getValidate()));
         }
 
+        inflate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LogUtil.s("postion---" + i);
+            }
+        });
         return inflate;
     }
 

@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockItem;
 import org.openlmis.core.persistence.DbUtil;
@@ -44,8 +45,14 @@ public class StockRepository {
     GenericDao<StockItem> stockItemGenericDao;
 
     @Inject
+    ProductRepository productRepository;
+
+    @Inject
+    ProgramRepository programRepository;
+
+    @Inject
     public StockRepository(Context context) {
-        genericDao = new GenericDao<>(StockCard.class,context);
+        genericDao = new GenericDao<>(StockCard.class, context);
         stockItemGenericDao = new GenericDao<>(StockItem.class, context);
     }
 
@@ -75,12 +82,12 @@ public class StockRepository {
         }
     }
 
-    public void saveStockItems(final ArrayList<StockItem> stockItems) throws LMISException{
+    public void saveStockItems(final ArrayList<StockItem> stockItems) throws LMISException {
         dbUtil.withDaoAsBatch(StockItem.class, new DbUtil.Operation<StockItem, Void>() {
             @Override
             public Void operate(Dao<StockItem, String> dao) throws SQLException {
 
-                for (StockItem item : stockItems){
+                for (StockItem item : stockItems) {
                     dao.create(item);
                 }
                 return null;
@@ -88,13 +95,29 @@ public class StockRepository {
         });
     }
 
-    public List<StockCard> list() throws LMISException{
+    public List<StockCard> list() throws LMISException {
         return genericDao.queryForAll();
     }
 
-    public List<StockCard> list(String programCode) throws LMISException{
-        //TODO
-        return new ArrayList<>();
+    public List<StockCard> list(String programCode) throws LMISException {
+        List<Product> products = productRepository.queryProducts(programRepository.queryByCode(programCode).getId());
+        ArrayList<StockCard> stockCards = new ArrayList<>();
+        for (Product product : products) {
+            StockCard stockCard = queryStockCardByProductId(product.getId());
+            if (stockCard != null) {
+                stockCards.add(stockCard);
+            }
+        }
+        return stockCards;
+    }
+
+    private StockCard queryStockCardByProductId(final long productId) throws LMISException {
+        return dbUtil.withDao(StockCard.class, new DbUtil.Operation<StockCard, StockCard>() {
+            @Override
+            public StockCard operate(Dao<StockCard, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("product_id", productId).queryForFirst();
+            }
+        });
     }
 
     public List<StockItem> listStockItems() throws LMISException {
@@ -109,6 +132,7 @@ public class StockRepository {
             }
         });
     }
+
 
     public long sum(final StockItem.MovementType movementType, final StockCard stockCard, final Date startDate, final Date endDate) throws LMISException {
         return dbUtil.withDao(StockItem.class, new DbUtil.Operation<StockItem, Long>() {

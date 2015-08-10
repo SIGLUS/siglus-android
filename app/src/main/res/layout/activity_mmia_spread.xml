@@ -15,13 +15,35 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <org.openlmis.core.view.widget.ExpandableHeightListView
-                android:id="@+id/rnr_from_list"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/mmia_spread_list_bg"
-                android:padding="@dimen/divider" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <org.openlmis.core.view.widget.ExpandableHeightListView
+                    android:id="@+id/rnr_from_list_product_name"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="8dp"
+                    android:layout_weight="2"
+                    android:background="@drawable/mmia_spread_list_bg"
+                    android:padding="@dimen/divider" />
+
+                <HorizontalScrollView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3">
+
+                    <org.openlmis.core.view.widget.ExpandableHeightListView
+                        android:id="@+id/rnr_from_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/mmia_spread_list_bg"
+                        android:padding="@dimen/divider" />
+
+                </HorizontalScrollView>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -31,7 +53,7 @@
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_below="@+id/rnr_from_list"
+                    android:layout_below="@+id/rnr_from_list_product_name"
                     android:layout_weight="3">
 
                     <org.openlmis.core.view.widget.ExpandableHeightListView
@@ -81,7 +103,7 @@
                         android:id="@+id/mmia_info_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/rnr_from_list"
+                        android:layout_below="@+id/rnr_from_list_product_name"
                         android:layout_toRightOf="@+id/regime_list"
                         android:background="@drawable/mmia_spread_list_bg"
                         android:divider="@color/divider"

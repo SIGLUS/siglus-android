@@ -18,7 +18,7 @@ public class MMIAInfoListAdapter extends BaseAdapter {
     private final Context context;
     private final List<BaseInfoItem> list;
 
-    public MMIAInfoListAdapter(Context context, List list) {
+    public MMIAInfoListAdapter(Context context, List<BaseInfoItem> list) {
         this.context = context;
         this.list = list;
     }

@@ -31,13 +31,14 @@ import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockItem;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class MIMIARepository extends RnrFormRepository{
+public class MIMIARepository extends RnrFormRepository {
 
     public static final String ATTR_NEW_PATIENTS = "New Patients";
     public static final String ATTR_SUSTAINING = "Sustaining";
@@ -50,7 +51,7 @@ public class MIMIARepository extends RnrFormRepository{
     public static final int DAY_PERIOD_END = 20;
 
     @Inject
-    public MIMIARepository(Context context){
+    public MIMIARepository(Context context) {
         super(context);
     }
 
@@ -67,8 +68,7 @@ public class MIMIARepository extends RnrFormRepository{
     }
 
     private List<RnrFormItem> generateProductItems(RnRForm form) throws LMISException {
-        //TODO programCode
-        List<StockCard> stockCards = stockRepository.list("TB");
+        List<StockCard> stockCards = stockRepository.list("ART");
         List<RnrFormItem> productItems = new ArrayList<>();
 
         Calendar calendar = GregorianCalendar.getInstance();
@@ -79,8 +79,8 @@ public class MIMIARepository extends RnrFormRepository{
 
         for (StockCard stockCard : stockCards) {
             List<StockItem> stockItems = stockRepository.queryStockItems(stockCard, startDate, endDate);
+            RnrFormItem productItem = new RnrFormItem();
             if (stockItems.size() > 0) {
-                RnrFormItem productItem = new RnrFormItem();
 
                 StockItem firstItem = stockItems.get(0);
                 productItem.setInitialAmount(firstItem.getStockOnHand() - firstItem.getAmount());
@@ -89,16 +89,16 @@ public class MIMIARepository extends RnrFormRepository{
                 long totalIssued = 0;
                 long totalAdjustment = 0;
 
-                for (StockItem item : stockItems){
-                    if (StockItem.MovementType.RECEIVE == item.getMovementType()){
+                for (StockItem item : stockItems) {
+                    if (StockItem.MovementType.RECEIVE == item.getMovementType()) {
                         totalReceived += item.getAmount();
-                    }else if (StockItem.MovementType.ISSUE == item.getMovementType()){
+                    } else if (StockItem.MovementType.ISSUE == item.getMovementType()) {
                         totalIssued += item.getAmount();
-                    }else {
+                    } else {
                         totalAdjustment += item.getAmount();
                     }
                 }
-
+                productItem.setProduct(stockCard.getProduct());
                 productItem.setReceived(totalReceived);
                 productItem.setIssued(totalIssued);
                 productItem.setAdjustment(totalAdjustment);
@@ -106,8 +106,16 @@ public class MIMIARepository extends RnrFormRepository{
                 productItem.setInventory(stockItems.get(stockItems.size() - 1).getStockOnHand());
                 productItem.setValidate(stockCard.getEarliestExpireDate());
 
-                productItems.add(productItem);
+            } else {
+                productItem.setProduct(stockCard.getProduct());
+                productItem.setReceived(0);
+                productItem.setIssued(0);
+                productItem.setAdjustment(0);
+                productItem.setForm(form);
+                productItem.setInventory(stockCard.getStockOnHand());
+                productItem.setValidate(stockCard.getEarliestExpireDate());
             }
+            productItems.add(productItem);
         }
 
         return productItems;
@@ -125,7 +133,7 @@ public class MIMIARepository extends RnrFormRepository{
         return regimenItems;
     }
 
-    private List<BaseInfoItem> generateBaseInfoItems(RnRForm form){
+    private List<BaseInfoItem> generateBaseInfoItems(RnRForm form) {
         BaseInfoItem newPatients = new BaseInfoItem(ATTR_NEW_PATIENTS, BaseInfoItem.TYPE.INT, form);
         BaseInfoItem sustaining = new BaseInfoItem(ATTR_SUSTAINING, BaseInfoItem.TYPE.INT, form);
         BaseInfoItem alteration = new BaseInfoItem(ATTR_ALTERATION, BaseInfoItem.TYPE.INT, form);

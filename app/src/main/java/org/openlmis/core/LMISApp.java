@@ -31,7 +31,7 @@ public class LMISApp extends Application {
         super.onCreate();
 
         RoboGuice.getInjector(this).injectMembersWithoutViews(this);
-        this.applicationContext=getApplicationContext();
+        applicationContext=getApplicationContext();
     }
 
     public static Context getContext() {
