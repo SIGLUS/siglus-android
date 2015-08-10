@@ -16,17 +16,19 @@
 
     <TextView
         android:id="@+id/tv_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:labelFor="@+id/et_total"
         android:padding="4dp" />
 
     <include layout="@layout/view_space_line_vertical" />
 
     <EditText
         android:id="@+id/et_total"
-        android:background="@null"
         android:layout_width="@dimen/mmia_spread_item_common_width"
         android:layout_height="wrap_content"
+        android:background="@null"
+        android:inputType="number"
         android:padding="4dp" />
 </LinearLayout>

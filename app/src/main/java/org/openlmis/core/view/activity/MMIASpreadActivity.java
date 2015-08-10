@@ -77,20 +77,19 @@ public class MMIASpreadActivity extends BaseActivity {
     private void initUI() {
         RnRForm rnRForm = presenter.initMIMIA();
 
-        rnrFromListView.setAdapter(new RnrFromNameListAdapter(this, new ArrayList(rnRForm.getRnrFormItemList())));
+        rnrFromListView.setAdapter(new RnrFromNameListAdapter(this, new ArrayList<>(rnRForm.getRnrFormItemList())));
 
-        rnrFromList.setAdapter(new RnrFromListAdapter(this, new ArrayList(rnRForm.getRnrFormItemList())));
+        rnrFromList.setAdapter(new RnrFromListAdapter(this, new ArrayList<>(rnRForm.getRnrFormItemList())));
 
-        regimeListView.setAdapter(new RegimeListAdapter(this, new ArrayList(rnRForm.getRegimenItemList())));
+        regimeListView.setAdapter(new RegimeListAdapter(this, new ArrayList<>(rnRForm.getRegimenItemList())));
 
-        mmiaInfoListView.setAdapter(new MMIAInfoListAdapter(this, new ArrayList(rnRForm.getBaseInfoItemList())));
+        mmiaInfoListView.setAdapter(new MMIAInfoListAdapter(this, new ArrayList<>(rnRForm.getBaseInfoItemList())));
 
 
     }
 
     public static Intent getIntent2Me(Context mContext) {
-        Intent intent = new Intent(mContext, MMIASpreadActivity.class);
-        return intent;
+        return new Intent(mContext, MMIASpreadActivity.class);
     }
 
 }

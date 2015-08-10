@@ -12,7 +12,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
@@ -36,7 +36,7 @@
 
                     <org.openlmis.core.view.widget.ExpandableHeightListView
                         android:id="@+id/rnr_from_list"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginBottom="8dp"
                         android:background="@drawable/mmia_spread_list_bg"
@@ -48,12 +48,12 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:baselineAligned="false"
                 android:orientation="horizontal">
 
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_below="@+id/rnr_from_list_product_name"
                     android:layout_weight="3">
 
                     <org.openlmis.core.view.widget.ExpandableHeightListView
@@ -67,27 +67,31 @@
                         android:layout_width="80dp"
                         android:layout_height="30dp"
                         android:layout_below="@+id/regime_list"
-                        android:layout_toLeftOf="@+id/et_regime_total"
+                        android:layout_toStartOf="@+id/et_regime_total"
                         android:background="@drawable/mmia_spread_total_bg"
-                        android:gravity="right|center_vertical"
-                        android:paddingRight="8dp"
+                        android:gravity="end|center_vertical"
+                        android:labelFor="@+id/et_regime_total"
+                        android:paddingEnd="8dp"
+                        android:paddingStart="8dp"
                         android:text="@string/Total" />
 
                     <EditText
                         android:id="@+id/et_regime_total"
                         android:layout_width="@dimen/mmia_spread_item_common_width"
                         android:layout_height="30dp"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_below="@+id/regime_list"
                         android:background="@drawable/mmia_spread_et_total_bg"
                         android:gravity="center_vertical"
-                        android:paddingLeft="8dp" />
+                        android:inputType="number"
+                        android:paddingEnd="8dp"
+                        android:paddingStart="8dp" />
                 </RelativeLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
                     android:layout_weight="2"
                     android:orientation="vertical">
 
@@ -103,8 +107,6 @@
                         android:id="@+id/mmia_info_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/rnr_from_list_product_name"
-                        android:layout_toRightOf="@+id/regime_list"
                         android:background="@drawable/mmia_spread_list_bg"
                         android:divider="@color/divider"
                         android:dividerHeight="@dimen/divider"
@@ -135,9 +137,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:background="@drawable/blue_button"
         android:text="@string/btn_complete"
         android:textColor="@color/white" />
