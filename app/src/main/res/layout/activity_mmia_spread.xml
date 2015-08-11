@@ -61,6 +61,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_below="@+id/regime_list"
                         android:background="@drawable/mmia_spread_et_total_bg"
+                        android:freezesText="true"
                         android:gravity="center_vertical"
                         android:inputType="number"
                         android:paddingEnd="8dp"

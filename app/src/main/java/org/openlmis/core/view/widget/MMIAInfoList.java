@@ -61,14 +61,9 @@ public class MMIAInfoList extends LinearLayout {
     private void addHeaderView() {
         View view = LayoutInflater.from(context).inflate(R.layout.item_mmia_info, this, false);
         TextView tvName = (TextView) view.findViewById(R.id.tv_name);
-        final EditText etTotal = (EditText) view.findViewById(R.id.et_value);
+        EditText etTotal = (EditText) view.findViewWithTag("tag_for_when_rotate_save_date");
         tvName.setText(R.string.list_mmia_info_header_name);
-        etTotal.post(new Runnable() {
-            @Override
-            public void run() {
-                etTotal.setText(R.string.TOTAL);
-            }
-        });
+        etTotal.setText(R.string.TOTAL);
         etTotal.setEnabled(false);
         etTotal.setGravity(Gravity.CENTER);
         view.setBackgroundResource(R.color.color_mmia_info_name);
@@ -78,10 +73,15 @@ public class MMIAInfoList extends LinearLayout {
 
     private void initView(View view, final BaseInfoItem item) {
         TextView tvName = (TextView) view.findViewById(R.id.tv_name);
-        EditText etValue = (EditText) view.findViewById(R.id.et_value);
+        EditText etValue = (EditText) view.findViewWithTag("tag_for_when_rotate_save_date");
         editTexts.add(etValue);
         tvName.setText(item.getName());
-        if (MIMIARepository.ATTR_TOTAL_PATIENTS.equals(item.getName())) {
+
+        //setId for save date when screen screen Orientation change
+        etValue.setId(getId() + (int) System.currentTimeMillis());
+        etValue.setText(item.getValue());
+
+        if (isTotalValue(item)) {
             totalView = etValue;
             totalItem = item;
             totalView.setEnabled(false);
@@ -113,6 +113,9 @@ public class MMIAInfoList extends LinearLayout {
     public long getTotal() {
         long totalRegimenNumber = 0;
         for (BaseInfoItem item : list) {
+            if (isTotalValue(item)) {
+                continue;
+            }
             try {
                 totalRegimenNumber += Long.parseLong(item.getValue());
             } catch (NumberFormatException e) {
@@ -121,6 +124,11 @@ public class MMIAInfoList extends LinearLayout {
         }
         return totalRegimenNumber;
     }
+
+    private boolean isTotalValue(BaseInfoItem item) {
+        return MIMIARepository.ATTR_TOTAL_PATIENTS.equals(item.getName());
+    }
+
 
     public boolean complete() {
         for (EditText editText : editTexts) {

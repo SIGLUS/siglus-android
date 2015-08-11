@@ -72,13 +72,13 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
     }
 
     private void initUI() {
-        final RnRForm rnRForm = presenter.initMIMIA();
+        final RnRForm rnRForm = presenter.getRnrForm();
 
         rnrFromListView.initView(new ArrayList<>(rnRForm.getRnrFormItemList()));
 
-        regimeListView.initView(new ArrayList<>(rnRForm.getRegimenItemList()), tvRegimeTotal);
+        regimeListView.initView(rnRForm.getRegimenItemListWrapper(), tvRegimeTotal);
 
-        mmiaInfoListView.initView(new ArrayList<>(rnRForm.getBaseInfoItemList()));
+        mmiaInfoListView.initView(rnRForm.getBaseInfoItemListWrapper());
 
         btnComplete.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -15,7 +15,7 @@
     <include layout="@layout/view_space_line_vertical" />
 
     <EditText
-        android:id="@+id/et_value"
+        android:tag="tag_for_when_rotate_save_date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"

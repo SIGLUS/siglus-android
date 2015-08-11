@@ -25,7 +25,7 @@
     <include layout="@layout/view_space_line_vertical" />
 
     <EditText
-        android:id="@+id/et_total"
+        android:tag="tag_for_when_rotate_save_date"
         android:layout_width="@dimen/mmia_spread_item_common_width"
         android:layout_height="wrap_content"
         android:background="@null"

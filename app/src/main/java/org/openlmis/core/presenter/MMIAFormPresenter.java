@@ -62,7 +62,7 @@ public class MMIAFormPresenter implements Presenter {
         return form;
     }
 
-    public RnRForm initMIMIA() {
+    private RnRForm initMIMIA() {
         try {
             form = mimiaRepository.initMIMIA();
         } catch (LMISException e) {

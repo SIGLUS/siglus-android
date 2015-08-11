@@ -23,6 +23,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import lombok.Getter;
@@ -45,8 +46,12 @@ public class RnRForm extends BaseModel {
     @ForeignCollectionField()
     private ForeignCollection<RegimenItem> regimenItemList;
 
+    private ArrayList<RegimenItem> regimenItemListWrapper;
+
     @ForeignCollectionField()
     private ForeignCollection<BaseInfoItem> baseInfoItemList;
+
+    private ArrayList<BaseInfoItem> baseInfoItemListWrapper;
 
     @DatabaseField
     private String comments;
@@ -68,4 +73,20 @@ public class RnRForm extends BaseModel {
 
         return totalRegimenNumber;
     }
+
+    public ArrayList<BaseInfoItem> getBaseInfoItemListWrapper() {
+        if (baseInfoItemListWrapper == null) {
+            baseInfoItemListWrapper = new ArrayList(baseInfoItemList);
+        }
+        return baseInfoItemListWrapper;
+    }
+
+    public ArrayList<RegimenItem> getRegimenItemListWrapper() {
+        if (regimenItemListWrapper == null) {
+            regimenItemListWrapper = new ArrayList(regimenItemList);
+        }
+        return regimenItemListWrapper;
+    }
+
+
 }

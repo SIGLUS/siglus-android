@@ -22,7 +22,6 @@ package org.openlmis.core.model;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 
-
 import java.util.Date;
 
 import lombok.Data;

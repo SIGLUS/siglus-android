@@ -153,10 +153,10 @@ public class MIMIARepository extends RnrFormRepository {
         baseInfoItemList.add(newPatients);
         baseInfoItemList.add(sustaining);
         baseInfoItemList.add(alteration);
-        baseInfoItemList.add(totalMonthDispense);
-        baseInfoItemList.add(totalPatients);
         baseInfoItemList.add(ptv);
         baseInfoItemList.add(ppe);
+        baseInfoItemList.add(totalMonthDispense);
+        baseInfoItemList.add(totalPatients);
 
         return baseInfoItemList;
     }
