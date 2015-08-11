@@ -21,19 +21,18 @@ package org.openlmis.core.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.inject.Inject;
 
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIAFormPresenter;
-import org.openlmis.core.presenter.Presenter;
-import org.openlmis.core.view.adapter.MMIAInfoListAdapter;
-import org.openlmis.core.view.adapter.RegimeListAdapter;
-import org.openlmis.core.view.adapter.RnrFromListAdapter;
-import org.openlmis.core.view.adapter.RnrFromNameListAdapter;
+import org.openlmis.core.view.widget.MMIAInfoList;
+import org.openlmis.core.view.widget.MMIARegimeList;
+import org.openlmis.core.view.widget.MMIARnrForm;
 
 import java.util.ArrayList;
 
@@ -41,30 +40,28 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_mmia_spread)
-public class MMIASpreadActivity extends BaseActivity {
+public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresenter.MIMIAFormView {
 
-    @InjectView(R.id.rnr_from_list)
-    private ListView rnrFromList;
-
-    @InjectView(R.id.rnr_from_list_product_name)
-    private ListView rnrFromListView;
+    @InjectView(R.id.rnr_form_list)
+    private MMIARnrForm rnrFromListView;
 
     @InjectView(R.id.regime_list)
-    private ListView regimeListView;
-
+    private MMIARegimeList regimeListView;
 
     @InjectView(R.id.mmia_info_list)
-    private ListView mmiaInfoListView;
+    private MMIAInfoList mmiaInfoListView;
 
     @InjectView(R.id.btn_complete)
     private Button btnComplete;
 
+    @InjectView(R.id.tv_regime_total)
+    private TextView tvRegimeTotal;
 
     @Inject
     MMIAFormPresenter presenter;
 
     @Override
-    public Presenter getPresenter() {
+    public MMIAFormPresenter getPresenter() {
         return presenter;
     }
 
@@ -75,21 +72,38 @@ public class MMIASpreadActivity extends BaseActivity {
     }
 
     private void initUI() {
-        RnRForm rnRForm = presenter.initMIMIA();
+        final RnRForm rnRForm = presenter.initMIMIA();
 
-        rnrFromListView.setAdapter(new RnrFromNameListAdapter(this, new ArrayList<>(rnRForm.getRnrFormItemList())));
+        rnrFromListView.initView(new ArrayList<>(rnRForm.getRnrFormItemList()));
 
-        rnrFromList.setAdapter(new RnrFromListAdapter(this, new ArrayList<>(rnRForm.getRnrFormItemList())));
+        regimeListView.initView(new ArrayList<>(rnRForm.getRegimenItemList()), tvRegimeTotal);
 
-        regimeListView.setAdapter(new RegimeListAdapter(this, new ArrayList<>(rnRForm.getRegimenItemList())));
+        mmiaInfoListView.initView(new ArrayList<>(rnRForm.getBaseInfoItemList()));
 
-        mmiaInfoListView.setAdapter(new MMIAInfoListAdapter(this, new ArrayList<>(rnRForm.getBaseInfoItemList())));
+        btnComplete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (regimeListView.complete() && mmiaInfoListView.complete() && (regimeListView.getTotal() == mmiaInfoListView.getTotal())) {
+//                    //TODO update save to db
+//                    rnRForm.getRegimenItemList().update(RegimenItem);
 
-
+                    presenter.saveForm();
+                }
+            }
+        });
     }
 
     public static Intent getIntent2Me(Context mContext) {
         return new Intent(mContext, MMIASpreadActivity.class);
     }
 
+    @Override
+    public void showValidationAlert() {
+
+    }
+
+    @Override
+    public void showErrorMessage(String msg) {
+
+    }
 }

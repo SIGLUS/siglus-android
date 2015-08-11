@@ -1,0 +1,22 @@
+<resources>
+
+    <!--MMIA Speed-->
+    <string name="list_rnrfrom_left_header">MEDICAMENTO</string>
+    <string name="list_regime_header_code">Codigo</string>
+    <string name="list_regime_header_name">REGIME TERAPEUTICO</string>
+    <string name="TOTAL">TOTAL</string>
+    <string name="Total">Total</string>
+    <string name="list_mmia_info_header_name">TIPO</string>
+    <string name="mmia_speed_info_header">Quantificação dos doentes em TARV</string>
+    <string name="hint_mmia_comment">observações</string>
+    <string name="btn_complete">completo</string>
+    <string name="initial_amount">Saldo Inicial</string>
+    <string name="received">Entradas</string>
+    <string name="issued">Saídas</string>
+    <string name="adjustment">Perdas e ajustes</string>
+    <string name="inventory">Inventario</string>
+    <string name="validate">Validade</string>
+    <string name="issued_unit">UNIDADE de Saida</string>
+
+
+</resources>

@@ -9,45 +9,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+            <org.openlmis.core.view.widget.MMIARnrForm
+                android:id="@+id/rnr_form_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:background="@drawable/mmia_spread_list_bg"
+                android:padding="@dimen/divider" />
 
-                <org.openlmis.core.view.widget.ExpandableHeightListView
-                    android:id="@+id/rnr_from_list_product_name"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="8dp"
-                    android:layout_weight="2"
-                    android:background="@drawable/mmia_spread_list_bg"
-                    android:padding="@dimen/divider" />
-
-                <HorizontalScrollView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3">
-
-                    <org.openlmis.core.view.widget.ExpandableHeightListView
-                        android:id="@+id/rnr_from_list"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="8dp"
-                        android:background="@drawable/mmia_spread_list_bg"
-                        android:padding="@dimen/divider" />
-
-                </HorizontalScrollView>
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="60dp"
+                android:layout_marginTop="8dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
@@ -56,10 +35,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="3">
 
-                    <org.openlmis.core.view.widget.ExpandableHeightListView
+                    <org.openlmis.core.view.widget.MMIARegimeList
                         android:id="@+id/regime_list"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@drawable/mmia_spread_list_bg"
                         android:padding="@dimen/divider" />
 
@@ -67,16 +46,16 @@
                         android:layout_width="80dp"
                         android:layout_height="30dp"
                         android:layout_below="@+id/regime_list"
-                        android:layout_toStartOf="@+id/et_regime_total"
+                        android:layout_toStartOf="@+id/tv_regime_total"
                         android:background="@drawable/mmia_spread_total_bg"
                         android:gravity="end|center_vertical"
-                        android:labelFor="@+id/et_regime_total"
+                        android:labelFor="@+id/tv_regime_total"
                         android:paddingEnd="8dp"
                         android:paddingStart="8dp"
                         android:text="@string/Total" />
 
-                    <EditText
-                        android:id="@+id/et_regime_total"
+                    <TextView
+                        android:id="@+id/tv_regime_total"
                         android:layout_width="@dimen/mmia_spread_item_common_width"
                         android:layout_height="30dp"
                         android:layout_alignParentEnd="true"
@@ -103,7 +82,7 @@
                         android:text="@string/mmia_speed_info_header"
                         android:textColor="@color/white" />
 
-                    <org.openlmis.core.view.widget.ExpandableHeightListView
+                    <org.openlmis.core.view.widget.MMIAInfoList
                         android:id="@+id/mmia_info_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

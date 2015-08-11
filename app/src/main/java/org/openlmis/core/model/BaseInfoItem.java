@@ -27,9 +27,9 @@ import lombok.Setter;
 @Setter
 @Getter
 @DatabaseTable(tableName = "rnr_baseInfo_items")
-public class BaseInfoItem extends BaseModel{
+public class BaseInfoItem extends BaseModel {
 
-    public enum TYPE{
+    public enum TYPE {
         INT,
         STRING,
         DATE
@@ -49,11 +49,11 @@ public class BaseInfoItem extends BaseModel{
     private RnRForm rnRForm;
 
 
-    public BaseInfoItem(){
+    public BaseInfoItem() {
 
     }
 
-    public BaseInfoItem(String name, TYPE type, RnRForm form){
+    public BaseInfoItem(String name, TYPE type, RnRForm form) {
         this.name = name;
         this.type = type;
         this.rnRForm = form;

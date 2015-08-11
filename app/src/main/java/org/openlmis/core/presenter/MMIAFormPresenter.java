@@ -22,12 +22,11 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
-import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MIMIARepository;
 import org.openlmis.core.view.View;
 
-public class MMIAFormPresenter implements Presenter{
+public class MMIAFormPresenter implements Presenter {
 
     RnRForm form;
     MIMIAFormView view;
@@ -46,44 +45,42 @@ public class MMIAFormPresenter implements Presenter{
     }
 
     @Override
-    public void attachView(View v) throws ViewNotMatchException{
-        if (v instanceof MIMIAFormView){
-            this.view = (MIMIAFormView)v;
-        }else {
+    public void attachView(View v) throws ViewNotMatchException {
+        if (v instanceof MIMIAFormView) {
+            this.view = (MIMIAFormView) v;
+        } else {
             throw new ViewNotMatchException(MIMIAFormView.class.getName());
         }
     }
 
-    public RnRForm initMIMIA(){
-        RnRForm form = null;
+    public RnRForm initMIMIA() {
         try {
             form = mimiaRepository.initMIMIA();
-        } catch (LMISException e){
+        } catch (LMISException e) {
             view.showErrorMessage(e.getMessage());
         }
         return form;
     }
 
-    public void saveForm(){
-        if (validate(form)){
+    public void saveForm() {
+        if (validate(form)) {
             try {
                 mimiaRepository.save(form);
-            } catch (LMISException e){
+            } catch (LMISException e) {
                 view.showErrorMessage(e.getMessage());
             }
+        }else {
+            view.showValidationAlert();
         }
     }
 
-    private boolean validate(RnRForm form){
-        long totalRegimenNumber = 0;
-        for (RegimenItem item : form.getRegimenItemList()){
-            totalRegimenNumber += item.getAmount();
-        }
-        return totalRegimenNumber != mimiaRepository.getTotalPatients(form);
+    private boolean validate(RnRForm form) {
+        return form.getRegimenItemListAmount(form.getRegimenItemList()) != mimiaRepository.getTotalPatients(form);
     }
 
     public interface MIMIAFormView extends View {
         void showValidationAlert();
+
         void showErrorMessage(String msg);
     }
 }

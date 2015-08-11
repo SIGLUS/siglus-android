@@ -23,15 +23,17 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.util.Collection;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @DatabaseTable(tableName = "rnr_forms")
-public class RnRForm extends BaseModel{
+public class RnRForm extends BaseModel {
 
-    public enum STATUS{
+    public enum STATUS {
         DRAFT,
         SUBMITED,
         APPROVED
@@ -57,4 +59,13 @@ public class RnRForm extends BaseModel{
 
     @DatabaseField
     private boolean synced = false;
+
+    public static long getRegimenItemListAmount(Collection<RegimenItem> list) {
+        long totalRegimenNumber = 0;
+        for (RegimenItem item : list) {
+            totalRegimenNumber += item.getAmount();
+        }
+
+        return totalRegimenNumber;
+    }
 }
