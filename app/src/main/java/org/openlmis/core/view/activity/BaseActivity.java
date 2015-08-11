@@ -21,6 +21,7 @@ package org.openlmis.core.view.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
@@ -148,6 +149,14 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     public void showMessage(int resId, Object... args){
         String msg = getResources().getString(resId, args);
         showMessage(msg);
+    }
+
+    public void startActivity(Class activityName, boolean closeThis){
+        Intent intent = new Intent();
+        intent.setClass(this, activityName);
+        startActivity(intent);
+
+        if (closeThis) this.finish();
     }
 
 

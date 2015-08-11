@@ -18,31 +18,46 @@
 
 package org.openlmis.core.view.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.widget.Button;
 
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.view.View;
 
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
 
 
 @ContentView(R.layout.activity_main_page)
 public class HomeActivity extends BaseActivity{
 
+    @InjectView(R.id.btn_stock_card)
+    Button btnStockCard;
+
+    @InjectView(R.id.btn_requisition)
+    Button btnRequisition;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = getIntent();
-        intent.setClass(this, StockCardListActivity.class);
-        startActivity(intent);
+        btnStockCard.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                startActivity(StockCardListActivity.class, false);
+            }
+        });
 
-        finish();
+
+        btnRequisition.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                startActivity(MMIASpreadActivity.class, false);
+            }
+        });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

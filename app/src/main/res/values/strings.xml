@@ -24,6 +24,7 @@
     <!-- Home Page -->
     <string name="stock_card_list">STOCK CARDS</string>
     <string name="requisition_list">REQUISITION</string>
+    <string name="mmia_spreadsheet">MMIA</string>
     <string name="action_do_inventory">Do physic inventory</string>
 
     <!--MMIA Speed-->

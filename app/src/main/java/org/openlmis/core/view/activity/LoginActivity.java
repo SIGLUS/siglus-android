@@ -20,7 +20,6 @@
 package org.openlmis.core.view.activity;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
@@ -94,11 +93,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
     public void startActivity(Class activityName) {
         saveString(Constants.KEY_LAST_LOGIN_USER, userName.getText().toString().trim());
-
-        Intent intent = new Intent();
-        intent.setClass(this, activityName);
-        startActivity(intent);
-        this.finish();
+        super.startActivity(activityName, true);
     }
 
 
