@@ -19,6 +19,7 @@
 package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
@@ -26,6 +27,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MIMIARepository;
 import org.openlmis.core.view.View;
 
+@Singleton
 public class MMIAFormPresenter implements Presenter {
 
     RnRForm form;
@@ -53,6 +55,13 @@ public class MMIAFormPresenter implements Presenter {
         }
     }
 
+    public RnRForm getRnrForm() {
+        if (form == null) {
+            form = initMIMIA();
+        }
+        return form;
+    }
+
     public RnRForm initMIMIA() {
         try {
             form = mimiaRepository.initMIMIA();
@@ -69,7 +78,7 @@ public class MMIAFormPresenter implements Presenter {
             } catch (LMISException e) {
                 view.showErrorMessage(e.getMessage());
             }
-        }else {
+        } else {
             view.showValidationAlert();
         }
     }
