@@ -88,7 +88,13 @@ public class StockCardListActivity extends BaseActivity implements StockCardList
                 mAdapter.sortByName(true);
                 break;
             case 1:
+                mAdapter.sortByName(false);
+                break;
+            case 2:
                 mAdapter.sortBySOH(false);
+                break;
+            case 3:
+                mAdapter.sortBySOH(true);
                 break;
             default:
         }

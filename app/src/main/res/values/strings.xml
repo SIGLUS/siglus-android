@@ -47,8 +47,10 @@
 
     <!-- Stock Card List Page -->
     <string-array name="sort_items_array">
-        <item>Sort stock alphabetically</item>
-        <item>Sort stock on hand</item>
+        <item>Sort alphabetically: A to Z</item>
+        <item>Sort alphabetically: Z to A</item>
+        <item>Sort by quantity: High to Low</item>
+        <item>Sort by quantity: Low to High</item>
     </string-array>
 
 </resources>

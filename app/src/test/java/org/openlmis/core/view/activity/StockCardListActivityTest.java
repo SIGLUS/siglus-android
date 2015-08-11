@@ -73,7 +73,13 @@ public class StockCardListActivityTest {
         verify(stockCardListActivity.mAdapter).sortByName(true);
 
         stockCardListActivity.sortSpinner.setSelection(1);
-        verify(stockCardListActivity.mAdapter).sortBySOH(false);
+        verify(stockCardListActivity.mAdapter).sortByName(false);
+
+        stockCardListActivity.sortSpinner.setSelection(2);
+        verify(stockCardListActivity.mAdapter).sortByName(false);
+
+        stockCardListActivity.sortSpinner.setSelection(3);
+        verify(stockCardListActivity.mAdapter).sortBySOH(true);
     }
 
     @Test
