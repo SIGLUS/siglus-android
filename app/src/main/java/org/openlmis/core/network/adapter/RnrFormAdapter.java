@@ -18,6 +18,8 @@
 
 package org.openlmis.core.network.adapter;
 
+import android.util.Log;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -42,7 +44,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
             requisition.addProperty("programCode", rnRForm.getProgram().getProgramCode());
             requisition.addProperty("agentCode", UserInfoMgr.getInstance().getUser().getFacilityCode());
         }catch (NullPointerException e){
-            e.printStackTrace();
+            Log.e(RnrFormAdapter.class.getSimpleName(), "No Program associated !");
         }
 
         JsonArray products = new JsonArray();

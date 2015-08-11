@@ -17,29 +17,22 @@
  */
 
 
-package org.openlmis.core.network;
+package org.openlmis.core.service;
 
-import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.User;
-import org.openlmis.core.model.repository.ProductRepository;
-import org.openlmis.core.model.repository.UserRepository;
-import org.openlmis.core.network.response.RequisitionResponse;
+import android.app.Service;
+import android.content.Intent;
+import android.os.IBinder;
 
+public class AuthenticatorService extends Service {
+    private StubAuthenticator authenticator;
 
-import retrofit.Callback;
-import retrofit.http.Body;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.Query;
+    @Override
+    public void onCreate() {
+        authenticator = new StubAuthenticator(this);
+    }
 
-public interface LMISRestApi {
-
-    @POST("/rest-api/login")
-    void authorizeUser(@Body User user, Callback<UserRepository.UserResponse> callback);
-
-    @GET("/rest-api/programs-with-products")
-    ProductRepository.ProductsResponse getProducts(@Query("facilityCode") String facilityCode);
-
-    @POST("/rest-api/requisitions")
-    RequisitionResponse submitRequisition(@Body RnRForm rnRForm);
+    @Override
+    public IBinder onBind(Intent intent) {
+        return authenticator.getIBinder();
+    }
 }

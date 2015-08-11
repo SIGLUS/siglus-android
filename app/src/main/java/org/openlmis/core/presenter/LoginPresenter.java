@@ -122,6 +122,9 @@ public class LoginPresenter implements Presenter {
     }
 
     public void onLoginSuccess(User user) {
+        syncManager.createSyncAccount(user);
+        syncManager.kickOff();
+
         saveUserToLocalDatabase(user);
         UserInfoMgr.getInstance().setUser(user);
         getProgramWithProducts();

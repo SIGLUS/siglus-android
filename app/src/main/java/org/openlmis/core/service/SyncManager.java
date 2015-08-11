@@ -19,11 +19,16 @@
 package org.openlmis.core.service;
 
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.os.Bundle;
+import android.util.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
@@ -35,13 +40,24 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.response.RequisitionResponse;
+import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.List;
 
+import roboguice.inject.InjectResource;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static android.content.ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY;
+import static android.content.ContentResolver.SYNC_EXTRAS_EXPEDITED;
+import static android.content.ContentResolver.SYNC_EXTRAS_MANUAL;
+import static android.content.ContentResolver.addPeriodicSync;
+import static android.content.ContentResolver.setIsSyncable;
+import static android.content.ContentResolver.setSyncAutomatically;
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 
 @Singleton
@@ -54,12 +70,54 @@ public class SyncManager {
     RnrFormRepository rnrFormRepository;
 
     LMISRestApi lmisRestApi;
+    @Inject
+    private AccountManager accountManager;
+    @InjectResource(R.string.sync_content_authority)
+    private String syncContentAuthority;
+    @InjectResource(R.string.sync_account_type)
+    private String syncAccountType;
+    @InjectResource(R.integer.sync_interval)
+    private Integer syncInterval;
 
-    public SyncManager(){
+    public SyncManager() {
         lmisRestApi = new LMISRestManager().getLmisRestApi();
     }
 
-    public void syncProductsWithProgram() throws Exception{
+    public void kickOff() {
+        List<Account> accounts = newArrayList(accountManager.getAccounts());
+        List<Account> lmisAccounts = from(accounts).filter(new Predicate<Account>() {
+            @Override
+            public boolean apply(Account input) {
+                return syncAccountType.equals(input.type);
+            }
+        }).toList();
+
+        if (lmisAccounts.size() > 0) {
+            kickOffFor(lmisAccounts.get(0));
+        }
+    }
+
+    private void kickOffFor(Account account) {
+        setIsSyncable(account, syncContentAuthority, 1);
+        setSyncAutomatically(account, syncContentAuthority, true);
+        addPeriodicSync(account, syncContentAuthority, periodicSyncParams(), syncInterval);
+    }
+
+    private Bundle periodicSyncParams() {
+        Bundle extras = new Bundle();
+        extras.putBoolean(SYNC_EXTRAS_DO_NOT_RETRY, false);
+        extras.putBoolean(SYNC_EXTRAS_EXPEDITED, false);
+        extras.putBoolean(SYNC_EXTRAS_DO_NOT_RETRY, false);
+        extras.putBoolean(SYNC_EXTRAS_MANUAL, false);
+        return extras;
+    }
+
+    public void createSyncAccount(User user) {
+        Account account = new Account(user.getUsername(), syncAccountType);
+        accountManager.addAccountExplicitly(account, user.getPassword(), null);
+    }
+
+    public void syncProductsWithProgram() throws Exception {
         User user = UserInfoMgr.getInstance().getUser();
         ProductRepository.ProductsResponse response = lmisRestApi.getProducts(user.getFacilityCode());
         List<Program> programsWithProducts = response.getProgramsWithProducts();
@@ -72,13 +130,13 @@ public class SyncManager {
         }
     }
 
-    public void syncProductsWithProgramAsync(Observer<Void> observer){
+    public void syncProductsWithProgramAsync(Observer<Void> observer) {
         rx.Observable.create(new rx.Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
                     syncProductsWithProgram();
-                } catch (Exception e){
+                } catch (Exception e) {
                     subscriber.onError(new LMISException("Get Product List Failed."));
                 }
                 subscriber.onCompleted();
@@ -86,29 +144,34 @@ public class SyncManager {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
     }
 
-    public void syncRnr(){
+    public void syncRnr() {
+        List<RnRForm> forms = null;
         try {
-            List<RnRForm> forms = rnrFormRepository.listUnSynced();
-            if (forms!=null){
-                for (RnRForm rnRForm : forms){
+            forms = rnrFormRepository.listUnSynced();
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+        if (forms != null) {
+            for (RnRForm rnRForm : forms) {
+                try {
                     RequisitionResponse response = lmisRestApi.submitRequisition(rnRForm);
-                    if (StringUtils.isEmpty(response.getError())){
+                    if (StringUtils.isEmpty(response.getError())) {
                         rnRForm.setSynced(true);
                         rnrFormRepository.save(rnRForm);
                     }
+                } catch (Exception e) {
+                    Log.e("==>SyncRnR :", e.getMessage());
                 }
             }
-        }catch (LMISException e){
-            e.printStackTrace();
         }
     }
 
 
-    public void syncStockCards(){
+    public void syncStockCards() {
 
     }
 
-    public void authorizeUser(){
+    public void authorizeUser() {
 
     }
 }
