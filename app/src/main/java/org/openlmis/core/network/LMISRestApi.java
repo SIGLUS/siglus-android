@@ -19,9 +19,11 @@
 
 package org.openlmis.core.network;
 
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.UserRepository;
+import org.openlmis.core.network.response.RequisitionResponse;
 
 
 import retrofit.Callback;
@@ -37,4 +39,7 @@ public interface LMISRestApi {
 
     @GET("/rest-api/programs-with-products")
     ProductRepository.ProductsResponse getProducts(@Query("facilityCode") String facilityCode);
+
+    @POST(" /rest-api/requisitions")
+    RequisitionResponse submitRequisition(@Body RnRForm rnRForm);
 }

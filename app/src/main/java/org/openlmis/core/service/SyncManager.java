@@ -23,14 +23,18 @@ package org.openlmis.core.service;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
+import org.openlmis.core.network.response.RequisitionResponse;
 
 import java.util.List;
 
@@ -45,6 +49,9 @@ public class SyncManager {
 
     @Inject
     ProgramRepository programRepository;
+
+    @Inject
+    RnrFormRepository rnrFormRepository;
 
     LMISRestApi lmisRestApi;
 
@@ -78,6 +85,24 @@ public class SyncManager {
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
     }
+
+    public void syncRnr(){
+        try {
+            List<RnRForm> forms = rnrFormRepository.listUnSynced();
+            if (forms!=null){
+                for (RnRForm rnRForm : forms){
+                    RequisitionResponse response = lmisRestApi.submitRequisition(rnRForm);
+                    if (StringUtils.isEmpty(response.getError())){
+                        rnRForm.setSynced(true);
+                        rnrFormRepository.save(rnRForm);
+                    }
+                }
+            }
+        }catch (LMISException e){
+            e.printStackTrace();
+        }
+    }
+
 
     public void syncStockCards(){
 

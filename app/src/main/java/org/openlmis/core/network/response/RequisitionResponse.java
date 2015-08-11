@@ -16,45 +16,14 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.model;
-
-import com.j256.ormlite.dao.ForeignCollection;
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.field.ForeignCollectionField;
-import com.j256.ormlite.table.DatabaseTable;
+package org.openlmis.core.network.response;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@DatabaseTable(tableName = "rnr_forms")
-public class RnRForm extends BaseModel{
-
-    public enum STATUS{
-        DRAFT,
-        SUBMITED,
-        APPROVED
-    }
-
-    @ForeignCollectionField()
-    private ForeignCollection<RnrFormItem> rnrFormItemList;
-
-    @ForeignCollectionField()
-    private ForeignCollection<RegimenItem> regimenItemList;
-
-    @ForeignCollectionField()
-    private ForeignCollection<BaseInfoItem> baseInfoItemList;
-
-    @DatabaseField
-    private String comments;
-
-    @DatabaseField
-    private STATUS status;
-
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    private Program program;
-
-    @DatabaseField
-    private boolean synced = false;
+public class RequisitionResponse {
+    String error;
+    String requisitionId;
 }

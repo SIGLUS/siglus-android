@@ -19,19 +19,23 @@
 package org.openlmis.core.network;
 
 
+import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.Credentials;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.UnauthorizedException;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
+import org.openlmis.core.network.adapter.RnrFormAdapter;
 
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.converter.GsonConverter;
 
 public class LMISRestManager {
 
@@ -59,6 +63,7 @@ public class LMISRestManager {
                 .setErrorHandler(new MyErrorHandler())
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setRequestInterceptor(requestInterceptor)
+                .setConverter(registerTypeAdapter())
                 .build();
 
         lmisRestApi = restAdapter.create(LMISRestApi.class);
@@ -66,6 +71,10 @@ public class LMISRestManager {
 
     public LMISRestApi getLmisRestApi(){
         return lmisRestApi;
+    }
+
+    private GsonConverter registerTypeAdapter(){
+        return new GsonConverter(new GsonBuilder().registerTypeAdapter(RnRForm.class, new RnrFormAdapter()).create());
     }
 
     class MyErrorHandler implements ErrorHandler {

@@ -35,7 +35,7 @@ import org.openlmis.core.persistence.GenericDao;
 import java.sql.SQLException;
 import java.util.List;
 
-public abstract class RnrFormRepository {
+public class RnrFormRepository {
     @Inject
     DbUtil dbUtil;
 
@@ -66,6 +66,16 @@ public abstract class RnrFormRepository {
     public List<RnRForm> list() throws LMISException {
         return genericDao.queryForAll();
     }
+
+    public List<RnRForm> listUnSynced() throws LMISException{
+        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
+            @Override
+            public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("synced", false).query();
+            }
+        });
+    }
+
 
     public void approve(RnRForm form) throws LMISException{
         form.setStatus(RnRForm.STATUS.APPROVED);

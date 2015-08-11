@@ -49,6 +49,10 @@ public class MIMIARepository extends RnrFormRepository {
     public static final String ATTR_PPE = "PPE";
 
     public static final int DAY_PERIOD_END = 20;
+    public static final String MMIA_PROGRAM_CODE = "ART";
+
+    @Inject
+    ProgramRepository programRepository;
 
     @Inject
     public MIMIARepository(Context context) {
@@ -58,6 +62,8 @@ public class MIMIARepository extends RnrFormRepository {
     public RnRForm initMIMIA() throws LMISException {
 
         RnRForm form = new RnRForm();
+        form.setProgram(programRepository.queryByCode(MMIA_PROGRAM_CODE));
+
         create(form);
         createRnrFormItems(generateProductItems(form));
         createRegimenItems(generateRegimeItems(form));
@@ -68,7 +74,7 @@ public class MIMIARepository extends RnrFormRepository {
     }
 
     private List<RnrFormItem> generateProductItems(RnRForm form) throws LMISException {
-        List<StockCard> stockCards = stockRepository.list("ART");
+        List<StockCard> stockCards = stockRepository.list(MMIA_PROGRAM_CODE);
         List<RnrFormItem> productItems = new ArrayList<>();
 
         Calendar calendar = GregorianCalendar.getInstance();
