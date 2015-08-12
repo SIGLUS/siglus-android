@@ -18,18 +18,16 @@
 
 package org.openlmis.core.view.activity;
 
-import android.content.Context;
-import android.content.Intent;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.inject.Inject;
-
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIAFormPresenter;
+import org.openlmis.core.view.fragment.RetainedFragment;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARnrForm;
@@ -37,6 +35,7 @@ import org.openlmis.core.view.widget.MMIARnrForm;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -61,8 +60,10 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
     @InjectView(R.id.et_comment)
     private TextView etComment;
 
-    @Inject
     MMIAFormPresenter presenter;
+
+    private RetainedFragment dataFragment;
+    private RnRForm rnRForm;
 
     @Override
     public MMIAFormPresenter getPresenter() {
@@ -71,44 +72,55 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        initPresenter();
         super.onCreate(savedInstanceState);
         setTitle(R.string.title_mmia_spread);
+
+        rnRForm = presenter.getRnrForm();
+
         initUI();
     }
 
-    private void initUI() {
-        //TODO  init once code
-        final RnRForm rnRForm = presenter.getRnrForm();
+    private void initPresenter() {
+        // find the retained fragment on activity restarts
+        FragmentManager fm = getFragmentManager();
+        dataFragment = (RetainedFragment) fm.findFragmentByTag("RetainedFragment");
 
-        etComment.setText(rnRForm.getComments());
-
-        if (rnRForm != null) {
-            rnrFromListView.initView(new ArrayList<>(rnRForm.getRnrFormItemList()));
-
-            regimeListView.initView(rnRForm.getRegimenItemListWrapper(), tvRegimeTotal);
-
-            mmiaInfoListView.initView(rnRForm.getBaseInfoItemListWrapper());
-
-            btnComplete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (regimeListView.complete() && mmiaInfoListView.complete() && (regimeListView.getTotal() == mmiaInfoListView.getTotal())) {
-                        try {
-                            rnRForm.setComments(etComment.getText().toString());
-                            presenter.saveForm();
-                            startActivity(HomeActivity.class, true);
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                            showErrorMessage(e.getMessage());
-                        }
-                    }
-                }
-            });
+        if (dataFragment == null) {
+            dataFragment = new RetainedFragment();
+            fm.beginTransaction().add(dataFragment, "RetainedFragment").commit();
+            presenter = RoboGuice.getInjector(getApplicationContext()).getInstance(MMIAFormPresenter.class);
+            dataFragment.setData(presenter);
+        } else {
+            presenter = (MMIAFormPresenter) dataFragment.getData();
         }
     }
 
-    public static Intent getIntent2Me(Context mContext) {
-        return new Intent(mContext, MMIASpreadActivity.class);
+    private void initUI() {
+
+        etComment.setText(rnRForm.getComments());
+
+        rnrFromListView.initView(new ArrayList<>(rnRForm.getRnrFormItemList()));
+
+        regimeListView.initView(rnRForm.getRegimenItemListWrapper(), tvRegimeTotal);
+
+        mmiaInfoListView.initView(rnRForm.getBaseInfoItemListWrapper());
+
+        btnComplete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (regimeListView.complete() && mmiaInfoListView.complete() && (regimeListView.getTotal() == mmiaInfoListView.getTotal())) {
+                    try {
+                        rnRForm.setComments(etComment.getText().toString());
+                        presenter.saveForm();
+                        startActivity(HomeActivity.class, true);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        showErrorMessage(e.getMessage());
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -119,5 +131,11 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
     @Override
     public void showErrorMessage(String msg) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        dataFragment.setData(presenter);
+        super.onDestroy();
     }
 }
