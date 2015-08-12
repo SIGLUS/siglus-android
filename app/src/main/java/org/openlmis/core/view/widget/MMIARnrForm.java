@@ -51,7 +51,7 @@ public class MMIARnrForm extends LinearLayout {
     }
 
     private void addRightView(RnrFormItem item) {
-        addRightView(item, true);
+        addRightView(item, false);
     }
 
     private void addLeftView(RnrFormItem item) {
@@ -122,7 +122,7 @@ public class MMIARnrForm extends LinearLayout {
             SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
             try {
                 Date parse = sdf.parse(item.getValidate());
-                sdf = new SimpleDateFormat("MMM yy");
+                sdf = new SimpleDateFormat("MMM - yy");
                 String formatDate = sdf.format(parse);
                 tvValidate.setText(formatDate);
             } catch (ParseException e) {

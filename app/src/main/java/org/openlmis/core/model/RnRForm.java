@@ -68,7 +68,9 @@ public class RnRForm extends BaseModel {
     public static long getRegimenItemListAmount(Collection<RegimenItem> list) {
         long totalRegimenNumber = 0;
         for (RegimenItem item : list) {
-            totalRegimenNumber += item.getAmount();
+            if (item.getAmount() != null) {
+                totalRegimenNumber += item.getAmount();
+            }
         }
 
         return totalRegimenNumber;

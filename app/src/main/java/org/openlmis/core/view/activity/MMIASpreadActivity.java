@@ -74,7 +74,7 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
 
     private void initUI() {
         //TODO  init once code
-        final RnRForm rnRForm = presenter.getRnrForm();
+        RnRForm rnRForm = presenter.getRnrForm();
 
         if (rnRForm != null) {
             rnrFromListView.initView(new ArrayList<>(rnRForm.getRnrFormItemList()));

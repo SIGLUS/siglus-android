@@ -74,15 +74,12 @@ public class MMIARegimeList extends LinearLayout {
             tvName.setText(R.string.list_regime_header_name);
             etTotal.setText(R.string.TOTAL);
         } else {
-            //setId for save date when screen screen Orientation change
-            etTotal.setId(getId() + (int) System.currentTimeMillis());
-
             editTexts.add(etTotal);
             Regimen regimen = item.getRegimen();
             tvCode.setText(regimen.getCode());
             tvName.setText(regimen.getName());
 
-            if (item.getAmount() != 0) {
+            if (item.getAmount() != null) {
                 etTotal.setText(String.valueOf(item.getAmount()));
             }
 
@@ -121,7 +118,7 @@ public class MMIARegimeList extends LinearLayout {
                 item.setAmount(Long.parseLong(editable.toString()));
             } catch (NumberFormatException e) {
                 e.printStackTrace();
-                item.setAmount(0);
+                item.setAmount(0L);
             }
             totalView.setText(String.valueOf(getTotal()));
         }

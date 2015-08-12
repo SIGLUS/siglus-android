@@ -79,9 +79,6 @@ public class MMIAInfoList extends LinearLayout {
         } else {
             tvName.setText(item.getName());
             editTexts.add(etValue);
-
-            //setId for save date when screen screen Orientation change
-            etValue.setId(getId() + (int) System.currentTimeMillis());
             etValue.setText(item.getValue());
 
             if (isTotalValue(item)) {

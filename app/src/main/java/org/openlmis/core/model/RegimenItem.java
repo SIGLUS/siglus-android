@@ -36,5 +36,5 @@ public class RegimenItem extends BaseModel{
     private Regimen regimen;
 
     @DatabaseField
-    private long amount;
+    private Long amount;
 }
