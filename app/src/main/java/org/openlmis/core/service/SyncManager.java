@@ -34,7 +34,6 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
-import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.network.LMISRestApi;
@@ -63,6 +62,8 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @Singleton
 public class SyncManager {
+
+    private static final String TAG = "SyncManager";
 
     @Inject
     ProgramRepository programRepository;
@@ -149,6 +150,7 @@ public class SyncManager {
         List<RnRForm> forms = null;
         try {
             forms = rnrFormRepository.listUnSynced();
+            Log.d(TAG, "===> SyncRnR :" + forms.size() + " RnrForm ready to sync...");
         } catch (LMISException e) {
             e.printStackTrace();
         }
@@ -161,7 +163,7 @@ public class SyncManager {
                         rnrFormRepository.save(rnRForm);
                     }
                 } catch (Exception e) {
-                    Log.e("==>SyncRnR :", e.getMessage());
+                    Log.e("===> SyncRnR :", e.getMessage());
                 }
             }
         }

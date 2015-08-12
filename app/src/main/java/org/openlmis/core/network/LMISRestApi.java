@@ -21,7 +21,6 @@ package org.openlmis.core.network;
 
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
-import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.response.ProductsResponse;
 import org.openlmis.core.network.response.RequisitionResponse;
