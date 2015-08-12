@@ -161,8 +161,13 @@ public class SyncManager {
         Observable.from(forms).filter(new Func1<RnRForm, Boolean>() {
             @Override
             public Boolean call(RnRForm rnRForm) {
-                RequisitionResponse response = lmisRestApi.submitRequisition(rnRForm);
-                return StringUtils.isEmpty(response.getError());
+                try {
+                    RequisitionResponse response = lmisRestApi.submitRequisition(rnRForm);
+                    return StringUtils.isEmpty(response.getError());
+                } catch (Exception e) {
+                    Log.e(TAG, "===> SyncRnr : synced failed ->" + e.getMessage());
+                }
+                return false;
             }
         }).subscribe(new Action1<RnRForm>() {
             @Override
@@ -173,11 +178,6 @@ public class SyncManager {
                 } catch (Exception e) {
                     Log.e(TAG, "===> SyncRnr : mark synced failed -> " + rnRForm.getId());
                 }
-            }
-        }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                Log.e(TAG, "===> SyncRnr : synced failed ->" + throwable.getMessage());
             }
         });
     }
