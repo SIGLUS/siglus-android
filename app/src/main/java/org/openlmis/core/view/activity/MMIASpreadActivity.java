@@ -19,6 +19,7 @@
 package org.openlmis.core.view.activity;
 
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -113,6 +114,8 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
                     try {
                         rnRForm.setComments(etComment.getText().toString());
                         presenter.saveForm();
+                        Intent intent =new Intent(MMIASpreadActivity.this,HomeActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(HomeActivity.class, true);
                     } catch (SQLException e) {
                         e.printStackTrace();

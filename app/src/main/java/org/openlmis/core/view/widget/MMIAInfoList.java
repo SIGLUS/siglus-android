@@ -132,7 +132,7 @@ public class MMIAInfoList extends LinearLayout {
         @Override
         public void afterTextChanged(Editable editable) {
             item.setValue(editable.toString());
-            if (totalView != null) {
+            if (totalView != null && !isNotPlusValue(item)) {
                 String total = String.valueOf(getTotal());
                 totalItem.setValue(total);
                 totalView.setText(total);

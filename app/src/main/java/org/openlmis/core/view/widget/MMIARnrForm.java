@@ -34,6 +34,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 public class MMIARnrForm extends LinearLayout {
     private ViewGroup leftViewGroup;
@@ -136,10 +137,10 @@ public class MMIARnrForm extends LinearLayout {
             tvAdjustment.setText(String.valueOf(item.getAdjustment()));
             tvInventory.setText(String.valueOf(item.getInventory()));
 
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             try {
                 Date parse = sdf.parse(item.getValidate());
-                sdf = new SimpleDateFormat("MMM - yy");
+                sdf = new SimpleDateFormat("MMM - yy", Locale.getDefault());
                 String formatDate = sdf.format(parse);
                 tvValidate.setText(formatDate);
             } catch (ParseException e) {
