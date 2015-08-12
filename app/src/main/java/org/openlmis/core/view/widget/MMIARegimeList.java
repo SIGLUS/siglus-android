@@ -109,7 +109,6 @@ public class MMIARegimeList extends LinearLayout {
             etTotal.addTextChangedListener(new EditTextWatcher(item));
         }
         addView(view);
-        addView(layoutInflater.inflate(R.layout.view_space_line, this, false));
     }
 
     class EditTextWatcher implements android.text.TextWatcher {
@@ -135,7 +134,6 @@ public class MMIARegimeList extends LinearLayout {
             try {
                 item.setAmount(Long.parseLong(editable.toString()));
             } catch (NumberFormatException e) {
-                e.printStackTrace();
                 item.setAmount(0L);
             }
             totalView.setText(String.valueOf(getTotal()));

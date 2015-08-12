@@ -74,10 +74,6 @@ public class MMIAInfoList extends LinearLayout {
         addItemView(item, false);
     }
 
-    private void addDivideView() {
-        addView(layoutInflater.inflate(R.layout.view_space_line, this, false));
-    }
-
     private void addHeaderView() {
         addItemView(null, true);
     }
@@ -108,7 +104,6 @@ public class MMIAInfoList extends LinearLayout {
             }
         }
         addView(view);
-        addDivideView();
     }
 
     class EditTextWatcher implements android.text.TextWatcher {
@@ -132,7 +127,7 @@ public class MMIAInfoList extends LinearLayout {
         @Override
         public void afterTextChanged(Editable editable) {
             item.setValue(editable.toString());
-            if (totalView != null && !isNotPlusValue(item)) {
+            if (totalView != null && !isNotCalculateValue(item)) {
                 String total = String.valueOf(getTotal());
                 totalItem.setValue(total);
                 totalView.setText(total);
@@ -143,7 +138,7 @@ public class MMIAInfoList extends LinearLayout {
     public long getTotal() {
         long totalRegimenNumber = 0;
         for (BaseInfoItem item : list) {
-            if (isNotPlusValue(item)) {
+            if (isNotCalculateValue(item)) {
                 continue;
             }
             try {
@@ -155,7 +150,7 @@ public class MMIAInfoList extends LinearLayout {
         return totalRegimenNumber;
     }
 
-    private boolean isNotPlusValue(BaseInfoItem item) {
+    private boolean isNotCalculateValue(BaseInfoItem item) {
         return MIMIARepository.ATTR_TOTAL_MONTH_DISPENSE.equals(item.getName()) || isTotalValue(item);
     }
 

@@ -78,8 +78,9 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
         setTitle(R.string.title_mmia_spread);
 
         rnRForm = presenter.getRnrForm();
-
-        initUI();
+        if (rnRForm != null) {
+            initUI();
+        }
     }
 
     private void initPresenter() {
@@ -114,7 +115,7 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
                     try {
                         rnRForm.setComments(etComment.getText().toString());
                         presenter.saveForm();
-                        Intent intent =new Intent(MMIASpreadActivity.this,HomeActivity.class);
+                        Intent intent = new Intent(MMIASpreadActivity.this, HomeActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(HomeActivity.class, true);
                     } catch (SQLException e) {

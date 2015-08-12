@@ -22,6 +22,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public final class DateUtil {
 
@@ -29,7 +30,7 @@ public final class DateUtil {
 
     public static final SimpleDateFormat DATE_FORMATER = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
 
-    private DateUtil(){
+    private DateUtil() {
 
     }
 
@@ -66,7 +67,7 @@ public final class DateUtil {
         return calendar.getTime();
     }
 
-    public static Date addMonth(Date date, int difference){
+    public static Date addMonth(Date date, int difference) {
         Calendar calendar = calendarDate(date);
         calendar.add(Calendar.MONTH, difference);
         return calendar.getTime();
@@ -92,11 +93,11 @@ public final class DateUtil {
     }
 
     public static String formatDate(Date date, String format) {
-        return new SimpleDateFormat(format).format(date);
+        return new SimpleDateFormat(format, Locale.getDefault()).format(date);
     }
 
     public static Date parseString(String string, String format) throws ParseException {
-        return new SimpleDateFormat(format).parse(string);
+        return new SimpleDateFormat(format, Locale.getDefault()).parse(string);
     }
 
     public static Date today() {
@@ -114,5 +115,9 @@ public final class DateUtil {
 
     public static int monthNumber() {
         return monthNumber(new Date());
+    }
+
+    public static String convertDate(String date, String currentFormat, String expectFormat) throws ParseException {
+        return formatDate(parseString(date, currentFormat), expectFormat);
     }
 }

@@ -29,12 +29,10 @@ import android.widget.TextView;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.utils.DateUtil;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 public class MMIARnrForm extends LinearLayout {
     private ViewGroup leftViewGroup;
@@ -63,8 +61,10 @@ public class MMIARnrForm extends LinearLayout {
         addLeftHeaderView();
         addRightHeaderView();
         for (RnrFormItem item : rnrFormItemList) {
-            addLeftView(item);
-            addRightView(item);
+            if (item != null) {
+                addLeftView(item);
+                addRightView(item);
+            }
         }
     }
 
@@ -75,11 +75,6 @@ public class MMIARnrForm extends LinearLayout {
     private void addLeftView(RnrFormItem item) {
         addLeftView(item, false);
     }
-
-    private View inflaterDividerLine(LayoutInflater layoutInflater) {
-        return layoutInflater.inflate(R.layout.view_space_line, this, false);
-    }
-
 
     private View addLeftHeaderView() {
         return addLeftView(null, true);
@@ -101,7 +96,6 @@ public class MMIARnrForm extends LinearLayout {
             tvPrimaryName.setText(product.getPrimaryName());
         }
         leftViewGroup.addView(view);
-        leftViewGroup.addView(inflaterDividerLine(layoutInflater));
         return view;
     }
 
@@ -137,19 +131,14 @@ public class MMIARnrForm extends LinearLayout {
             tvAdjustment.setText(String.valueOf(item.getAdjustment()));
             tvInventory.setText(String.valueOf(item.getInventory()));
 
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             try {
-                Date parse = sdf.parse(item.getValidate());
-                sdf = new SimpleDateFormat("MMM - yy", Locale.getDefault());
-                String formatDate = sdf.format(parse);
-                tvValidate.setText(formatDate);
+                tvValidate.setText(DateUtil.convertDate(item.getValidate(), "dd/MM/yyyy", "MMM - yy"));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
 
         }
         rightViewGroup.addView(inflate);
-        rightViewGroup.addView(inflaterDividerLine(layoutInflater));
     }
 
 
