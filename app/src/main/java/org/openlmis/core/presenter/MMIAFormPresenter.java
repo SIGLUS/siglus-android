@@ -19,7 +19,6 @@
 package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
@@ -27,7 +26,6 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MIMIARepository;
 import org.openlmis.core.view.View;
 
-@Singleton
 public class MMIAFormPresenter implements Presenter {
 
     RnRForm form;

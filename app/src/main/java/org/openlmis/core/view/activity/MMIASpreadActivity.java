@@ -30,6 +30,7 @@ import com.google.inject.Inject;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIAFormPresenter;
+import org.openlmis.core.utils.LogUtil;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARnrForm;
@@ -60,6 +61,8 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
     @Inject
     MMIAFormPresenter presenter;
 
+    private RnRForm rnRForm;
+
     @Override
     public MMIAFormPresenter getPresenter() {
         return presenter;
@@ -69,28 +72,35 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initUI();
+//TODO  init once code
     }
 
     private void initUI() {
-        final RnRForm rnRForm = presenter.getRnrForm();
+        if (rnRForm == null) {
+            rnRForm = presenter.getRnrForm();
+            LogUtil.s("---initUI---");
+        }
 
-        rnrFromListView.initView(new ArrayList<>(rnRForm.getRnrFormItemList()));
+        if (rnRForm != null) {
+            rnrFromListView.initView(new ArrayList<>(rnRForm.getRnrFormItemList()));
 
-        regimeListView.initView(rnRForm.getRegimenItemListWrapper(), tvRegimeTotal);
+            regimeListView.initView(rnRForm.getRegimenItemListWrapper(), tvRegimeTotal);
 
-        mmiaInfoListView.initView(rnRForm.getBaseInfoItemListWrapper());
+            mmiaInfoListView.initView(rnRForm.getBaseInfoItemListWrapper());
 
-        btnComplete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (regimeListView.complete() && mmiaInfoListView.complete() && (regimeListView.getTotal() == mmiaInfoListView.getTotal())) {
+            btnComplete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (regimeListView.complete() && mmiaInfoListView.complete() && (regimeListView.getTotal() == mmiaInfoListView.getTotal())) {
+
 //                    //TODO update save to db
 //                    rnRForm.getRegimenItemList().update(RegimenItem);
-
-                    presenter.saveForm();
+                        presenter.saveForm();
+                        startActivity(HomeActivity.class, true);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     public static Intent getIntent2Me(Context mContext) {
