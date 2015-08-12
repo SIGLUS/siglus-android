@@ -49,7 +49,7 @@ public class MIMIARepository extends RnrFormRepository {
     public static final String ATTR_PPE = "PPE";
 
     public static final int DAY_PERIOD_END = 20;
-    public static final String MMIA_PROGRAM_CODE = "ART";
+    public static final String MMIA_PROGRAM_CODE = "TB";
 
     @Inject
     ProgramRepository programRepository;
@@ -63,7 +63,6 @@ public class MIMIARepository extends RnrFormRepository {
 
         RnRForm form = new RnRForm();
         form.setProgram(programRepository.queryByCode(MMIA_PROGRAM_CODE));
-
         create(form);
         createRnrFormItems(generateProductItems(form));
         createRegimenItems(generateRegimeItems(form));

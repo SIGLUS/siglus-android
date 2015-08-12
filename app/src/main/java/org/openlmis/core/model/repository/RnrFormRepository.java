@@ -81,7 +81,7 @@ public class RnrFormRepository {
         return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
             @Override
             public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("synced", false).query();
+                return dao.queryBuilder().where().eq("synced", false).and().eq("status", RnRForm.STATUS.APPROVED).query();
             }
         });
     }

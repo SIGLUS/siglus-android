@@ -56,7 +56,7 @@ public class RnRForm extends BaseModel {
     @DatabaseField
     private String comments;
 
-    @DatabaseField
+    @DatabaseField(defaultValue = "DRAFT")
     private STATUS status;
 
     @DatabaseField(foreign = true, foreignAutoRefresh = true)

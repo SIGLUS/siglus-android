@@ -36,19 +36,15 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
     @Override
     public JsonElement serialize(RnRForm rnRForm, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject root = new JsonObject();
-        JsonObject requisition = new JsonObject();
-
-        root.add("requisition", requisition);
-
+        root.addProperty("agentCode", UserInfoMgr.getInstance().getUser().getFacilityCode());
         try {
-            requisition.addProperty("programCode", rnRForm.getProgram().getProgramCode());
-            requisition.addProperty("agentCode", UserInfoMgr.getInstance().getUser().getFacilityCode());
+            root.addProperty("programCode", rnRForm.getProgram().getProgramCode());
         }catch (NullPointerException e){
             Log.e(RnrFormAdapter.class.getSimpleName(), "No Program associated !");
         }
 
-        JsonArray products = new JsonArray();
         if (rnRForm.getRnrFormItemList() != null){
+            JsonArray products = new JsonArray();
             for (RnrFormItem item : rnRForm.getRnrFormItemList()){
                 JsonObject product = new JsonObject();
                 product.addProperty("productCode", item.getProduct().getCode());
@@ -62,6 +58,8 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
 
                 products.add(product);
             }
+
+            root.add("products", products);
         }
         return root;
     }
