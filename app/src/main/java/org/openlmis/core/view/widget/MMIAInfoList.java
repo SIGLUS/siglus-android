@@ -143,7 +143,7 @@ public class MMIAInfoList extends LinearLayout {
     public long getTotal() {
         long totalRegimenNumber = 0;
         for (BaseInfoItem item : list) {
-            if (isTotalValue(item)) {
+            if (isNotPlusValue(item)) {
                 continue;
             }
             try {
@@ -153,6 +153,10 @@ public class MMIAInfoList extends LinearLayout {
             }
         }
         return totalRegimenNumber;
+    }
+
+    private boolean isNotPlusValue(BaseInfoItem item) {
+        return MIMIARepository.ATTR_TOTAL_MONTH_DISPENSE.equals(item.getName()) || isTotalValue(item);
     }
 
     private boolean isTotalValue(BaseInfoItem item) {

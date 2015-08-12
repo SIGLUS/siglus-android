@@ -136,7 +136,7 @@ public class MMIARnrForm extends LinearLayout {
             tvAdjustment.setText(String.valueOf(item.getAdjustment()));
             tvInventory.setText(String.valueOf(item.getInventory()));
 
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             try {
                 Date parse = sdf.parse(item.getValidate());
                 sdf = new SimpleDateFormat("MMM - yy");
