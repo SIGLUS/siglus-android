@@ -53,7 +53,6 @@ public class RnRForm extends BaseModel {
 
     private ArrayList<BaseInfoItem> baseInfoItemListWrapper;
 
-    //TODO save comments
     @DatabaseField
     private String comments;
 
