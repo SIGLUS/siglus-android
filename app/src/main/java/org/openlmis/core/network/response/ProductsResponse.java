@@ -16,31 +16,16 @@
  * information contact info@OpenLMIS.org
  */
 
+package org.openlmis.core.network.response;
 
-package org.openlmis.core.network;
+import org.openlmis.core.model.Program;
 
-import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.User;
-import org.openlmis.core.model.repository.ProductRepository;
-import org.openlmis.core.model.repository.UserRepository;
-import org.openlmis.core.network.response.ProductsResponse;
-import org.openlmis.core.network.response.RequisitionResponse;
+import java.util.List;
 
+import lombok.Data;
 
-import retrofit.Callback;
-import retrofit.http.Body;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.Query;
-
-public interface LMISRestApi {
-
-    @POST("/rest-api/login")
-    void authorizeUser(@Body User user, Callback<UserRepository.UserResponse> callback);
-
-    @GET("/rest-api/programs-with-products")
-    ProductsResponse getProducts(@Query("facilityCode") String facilityCode);
-
-    @POST("/rest-api/requisitions")
-    RequisitionResponse submitRequisition(@Body RnRForm rnRForm);
+public
+@Data
+class ProductsResponse {
+    List<Program> programsWithProducts;
 }

@@ -39,6 +39,7 @@ import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
+import org.openlmis.core.network.response.ProductsResponse;
 import org.openlmis.core.network.response.RequisitionResponse;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
@@ -119,7 +120,7 @@ public class SyncManager {
 
     public void syncProductsWithProgram() throws Exception {
         User user = UserInfoMgr.getInstance().getUser();
-        ProductRepository.ProductsResponse response = lmisRestApi.getProducts(user.getFacilityCode());
+        ProductsResponse response = lmisRestApi.getProducts(user.getFacilityCode());
         List<Program> programsWithProducts = response.getProgramsWithProducts();
         for (Program programWithProducts : programsWithProducts) {
             try {

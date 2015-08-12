@@ -30,8 +30,8 @@ import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.User;
-import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.UserRepository;
+import org.openlmis.core.network.response.ProductsResponse;
 import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.Robolectric;
@@ -51,7 +51,7 @@ public class LoginPresenterTest {
     UserRepository userRepository;
     LoginActivity mockActivity;
     LoginPresenter presenter;
-    ProductRepository.ProductsResponse mockProductsResponse;
+    ProductsResponse mockProductsResponse;
     SyncManager syncManager;
 
     @Captor
@@ -63,7 +63,7 @@ public class LoginPresenterTest {
     public void setup() {
         userRepository = mock(UserRepository.class);
         mockActivity = mock(LoginActivity.class);
-        mockProductsResponse = mock(ProductRepository.ProductsResponse.class);
+        mockProductsResponse = mock(ProductsResponse.class);
         syncManager = mock(SyncManager.class);
 
         RoboGuice.overrideApplicationInjector(Robolectric.application, new MyTestModule());

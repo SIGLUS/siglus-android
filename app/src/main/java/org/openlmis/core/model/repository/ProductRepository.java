@@ -36,7 +36,7 @@ import java.util.List;
 
 import lombok.Data;
 
-public class ProductRepository extends LMISRestManager {
+public class ProductRepository {
 
     GenericDao<Product> genericDao;
 
@@ -66,12 +66,6 @@ public class ProductRepository extends LMISRestManager {
         } catch (LMISException e) {
             e.printStackTrace();
         }
-    }
-
-    public
-    @Data
-    class ProductsResponse {
-        List<Program> programsWithProducts;
     }
 
     public void create(Product product) throws LMISException {
