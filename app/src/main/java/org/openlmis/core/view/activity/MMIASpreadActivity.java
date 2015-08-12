@@ -30,11 +30,11 @@ import com.google.inject.Inject;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIAFormPresenter;
-import org.openlmis.core.utils.LogUtil;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARnrForm;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import roboguice.inject.ContentView;
@@ -61,8 +61,6 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
     @Inject
     MMIAFormPresenter presenter;
 
-    private RnRForm rnRForm;
-
     @Override
     public MMIAFormPresenter getPresenter() {
         return presenter;
@@ -72,14 +70,11 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initUI();
-//TODO  init once code
     }
 
     private void initUI() {
-        if (rnRForm == null) {
-            rnRForm = presenter.getRnrForm();
-            LogUtil.s("---initUI---");
-        }
+        //TODO  init once code
+        final RnRForm rnRForm = presenter.getRnrForm();
 
         if (rnRForm != null) {
             rnrFromListView.initView(new ArrayList<>(rnRForm.getRnrFormItemList()));
@@ -92,11 +87,13 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
                 @Override
                 public void onClick(View view) {
                     if (regimeListView.complete() && mmiaInfoListView.complete() && (regimeListView.getTotal() == mmiaInfoListView.getTotal())) {
-
-//                    //TODO update save to db
-//                    rnRForm.getRegimenItemList().update(RegimenItem);
-                        presenter.saveForm();
-                        startActivity(HomeActivity.class, true);
+                        try {
+                            presenter.saveForm();
+                            startActivity(HomeActivity.class, true);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                            showErrorMessage(e.getMessage());
+                        }
                     }
                 }
             });

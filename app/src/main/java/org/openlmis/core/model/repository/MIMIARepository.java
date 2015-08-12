@@ -163,7 +163,7 @@ public class MIMIARepository extends RnrFormRepository {
 
 
     public long getTotalPatients(RnRForm form) {
-        for (BaseInfoItem item : form.getBaseInfoItemList()) {
+        for (BaseInfoItem item : form.getBaseInfoItemListWrapper()) {
             if (ATTR_TOTAL_PATIENTS.equals(item.getName())) {
                 return Long.parseLong(item.getValue());
             }

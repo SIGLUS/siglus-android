@@ -26,6 +26,8 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MIMIARepository;
 import org.openlmis.core.view.View;
 
+import java.sql.SQLException;
+
 public class MMIAFormPresenter implements Presenter {
 
     RnRForm form;
@@ -69,7 +71,8 @@ public class MMIAFormPresenter implements Presenter {
         return form;
     }
 
-    public void saveForm() {
+    public void saveForm() throws SQLException {
+
         if (validate(form)) {
             try {
                 mimiaRepository.save(form);
@@ -82,7 +85,7 @@ public class MMIAFormPresenter implements Presenter {
     }
 
     private boolean validate(RnRForm form) {
-        return form.getRegimenItemListAmount(form.getRegimenItemList()) != mimiaRepository.getTotalPatients(form);
+        return form.getRegimenItemListAmount(form.getRegimenItemListWrapper()) != mimiaRepository.getTotalPatients(form);
     }
 
     public interface MIMIAFormView extends View {

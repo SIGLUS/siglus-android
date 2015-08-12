@@ -59,8 +59,18 @@ public class RnrFormRepository {
         genericDao.create(rnRForm);
     }
 
-    public void save(RnRForm form) throws LMISException {
+    public void save(RnRForm form) throws LMISException, SQLException {
+        updateRegimenAndBaseInfo(form);
         genericDao.update(form);
+    }
+
+    public void updateRegimenAndBaseInfo(RnRForm form) throws SQLException {
+        for (RegimenItem item : form.getRegimenItemListWrapper()) {
+            form.getRegimenItemList().update(item);
+        }
+        for (BaseInfoItem item : form.getBaseInfoItemListWrapper()) {
+            form.getBaseInfoItemList().update(item);
+        }
     }
 
     public List<RnRForm> list() throws LMISException {

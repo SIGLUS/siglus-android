@@ -26,7 +26,9 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
@@ -35,6 +37,7 @@ import org.robolectric.Robolectric;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import roboguice.RoboGuice;
 
@@ -47,7 +50,7 @@ import static org.mockito.Mockito.when;
 
 
 @RunWith(LMISTestRunner.class)
-public class MIMIARepositoryTest extends LMISRepositoryUnitTest{
+public class MIMIARepositoryTest extends LMISRepositoryUnitTest {
 
     ProductRepository productRepository;
     MIMIARepository mimiaRepository;
@@ -55,7 +58,7 @@ public class MIMIARepositoryTest extends LMISRepositoryUnitTest{
     Product product;
 
     @Before
-    public void setup() throws LMISException{
+    public void setup() throws LMISException {
         mockStockRepository = mock(StockRepository.class);
 
         RoboGuice.overrideApplicationInjector(Robolectric.application, new MyTestModule());
@@ -80,12 +83,12 @@ public class MIMIARepositoryTest extends LMISRepositoryUnitTest{
         stockCards.add(stockCard);
 
         ArrayList<StockItem> stockItems = new ArrayList<>();
-        for (int i=0;i<10;i++){
+        for (int i = 0; i < 10; i++) {
             StockItem stockItem = new StockItem();
             stockItem.setStockOnHand(100);
             stockItem.setAmount(i);
             stockItem.setStockCard(stockCard);
-            if (i%2==0){
+            if (i % 2 == 0) {
                 stockItem.setMovementType(StockItem.MovementType.ISSUE);
             } else {
                 stockItem.setMovementType(StockItem.MovementType.RECEIVE);
@@ -99,7 +102,7 @@ public class MIMIARepositoryTest extends LMISRepositoryUnitTest{
         RnRForm form = mimiaRepository.initMIMIA();
         assertThat(form.getRnrFormItemList().size(), is(1));
 
-        for (RnrFormItem item : form.getRnrFormItemList()){
+        for (RnrFormItem item : form.getRnrFormItemList()) {
             assertThat(item.getReceived(), is(25L));
             assertThat(item.getIssued(), is(20L));
         }
@@ -111,5 +114,32 @@ public class MIMIARepositoryTest extends LMISRepositoryUnitTest{
         protected void configure() {
             bind(StockRepository.class).toInstance(mockStockRepository);
         }
+    }
+
+    @Test
+    public void shouldSaveSuccess() throws Exception {
+        RnRForm initForm = mimiaRepository.initMIMIA();
+        ArrayList<RegimenItem> regimenItemListWrapper = initForm.getRegimenItemListWrapper();
+
+        for (int i = 0; i < regimenItemListWrapper.size(); i++) {
+            RegimenItem item = regimenItemListWrapper.get(i);
+            item.setAmount(i);
+        }
+
+        ArrayList<BaseInfoItem> baseInfoItemListWrapper = initForm.getBaseInfoItemListWrapper();
+        for (int i = 0; i < baseInfoItemListWrapper.size(); i++) {
+            BaseInfoItem item = baseInfoItemListWrapper.get(i);
+            item.setValue(String.valueOf(i));
+        }
+        mimiaRepository.save(initForm);
+
+        List<RnRForm> list = mimiaRepository.list();
+        RnRForm DBForm = list.get(list.size() - 1);
+
+        long expectRegimeTotal = RnRForm.getRegimenItemListAmount(initForm.getRegimenItemListWrapper());
+        long regimenTotal = RnRForm.getRegimenItemListAmount(DBForm.getRegimenItemListWrapper());
+        assertThat(expectRegimeTotal, is(regimenTotal));
+
+        assertThat(mimiaRepository.getTotalPatients(initForm), is(mimiaRepository.getTotalPatients(DBForm)));
     }
 }

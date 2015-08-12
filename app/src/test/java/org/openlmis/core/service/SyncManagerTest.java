@@ -32,6 +32,7 @@ import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.response.RequisitionResponse;
 import org.robolectric.Robolectric;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,7 +68,7 @@ public class SyncManagerTest {
     }
 
     @Test
-    public void shouldSubmitAllUnsyncedRequisitions() throws LMISException {
+    public void shouldSubmitAllUnsyncedRequisitions() throws LMISException, SQLException {
         List<RnRForm> unSyncedList = new ArrayList<>();
         for (int i=0;i<10;i++){
             RnRForm form = new RnRForm();
