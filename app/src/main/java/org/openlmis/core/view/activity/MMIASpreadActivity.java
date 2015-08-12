@@ -72,6 +72,7 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(R.string.title_mmia_spread);
         initUI();
     }
 

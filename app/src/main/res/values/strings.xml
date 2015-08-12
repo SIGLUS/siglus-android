@@ -3,6 +3,12 @@
 
     <string name="action_settings">Settings</string>
 
+    <string name="title_home">Home Page</string>
+    <string name="title_login">Login</string>
+    <string name="title_init_inventory">Initial Inventory</string>
+    <string name="title_stockcards">Stock Cards</string>
+    <string name="title_mmia_spread">MMIA</string>
+
     <!-- Login Page -->
     <string name="hint_username">User Name</string>
     <string name="hint_password">Password</string>

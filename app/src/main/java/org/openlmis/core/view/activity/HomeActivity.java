@@ -57,6 +57,8 @@ public class HomeActivity extends BaseActivity{
                 startActivity(MMIASpreadActivity.class, false);
             }
         });
+
+        setTitle(R.string.title_home);
     }
 
     @Override
