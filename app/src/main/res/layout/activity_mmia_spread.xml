@@ -100,7 +100,7 @@
                         android:background="@color/white">
 
                         <EditText
-                            android:id="@+id/tx_comment"
+                            android:id="@+id/et_comment"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/hint_mmia_comment"

@@ -123,7 +123,7 @@ public class MIMIARepositoryTest extends LMISRepositoryUnitTest {
 
         for (int i = 0; i < regimenItemListWrapper.size(); i++) {
             RegimenItem item = regimenItemListWrapper.get(i);
-            item.setAmount(i);
+            item.setAmount((long)i);
         }
 
         ArrayList<BaseInfoItem> baseInfoItemListWrapper = initForm.getBaseInfoItemListWrapper();

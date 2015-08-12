@@ -58,6 +58,9 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
     @InjectView(R.id.tv_regime_total)
     private TextView tvRegimeTotal;
 
+    @InjectView(R.id.et_comment)
+    private TextView etComment;
+
     @Inject
     MMIAFormPresenter presenter;
 
@@ -74,7 +77,9 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
 
     private void initUI() {
         //TODO  init once code
-        RnRForm rnRForm = presenter.getRnrForm();
+        final RnRForm rnRForm = presenter.getRnrForm();
+
+        etComment.setText(rnRForm.getComments());
 
         if (rnRForm != null) {
             rnrFromListView.initView(new ArrayList<>(rnRForm.getRnrFormItemList()));
@@ -88,6 +93,7 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
                 public void onClick(View view) {
                     if (regimeListView.complete() && mmiaInfoListView.complete() && (regimeListView.getTotal() == mmiaInfoListView.getTotal())) {
                         try {
+                            rnRForm.setComments(etComment.getText().toString());
                             presenter.saveForm();
                             startActivity(HomeActivity.class, true);
                         } catch (SQLException e) {
