@@ -15,12 +15,13 @@
     <include layout="@layout/view_space_line_vertical" />
 
     <EditText
-        android:tag="tag_for_when_rotate_save_date"
+        android:id="@+id/et_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@null"
         android:inputType="number"
-        android:padding="8dp" />
+        android:padding="8dp"
+        android:saveEnabled="false" />
 
 </LinearLayout>

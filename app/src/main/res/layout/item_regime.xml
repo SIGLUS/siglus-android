@@ -25,10 +25,11 @@
     <include layout="@layout/view_space_line_vertical" />
 
     <EditText
-        android:tag="tag_for_when_rotate_save_date"
+        android:id="@+id/et_total"
         android:layout_width="@dimen/mmia_spread_item_common_width"
         android:layout_height="wrap_content"
         android:background="@null"
         android:inputType="number"
-        android:padding="4dp" />
+        android:padding="4dp"
+        android:saveEnabled="false" />
 </LinearLayout>

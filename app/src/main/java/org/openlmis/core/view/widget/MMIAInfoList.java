@@ -82,7 +82,7 @@ public class MMIAInfoList extends LinearLayout {
     private void addItemView(BaseInfoItem item, boolean isHeaderView) {
         View view = layoutInflater.inflate(R.layout.item_mmia_info, this, false);
         TextView tvName = (TextView) view.findViewById(R.id.tv_name);
-        EditText etValue = (EditText) view.findViewWithTag("tag_for_when_rotate_save_date");
+        EditText etValue = (EditText) view.findViewById(R.id.et_value);
 
         if (isHeaderView) {
             tvName.setText(R.string.list_mmia_info_header_name);

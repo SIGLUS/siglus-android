@@ -82,7 +82,7 @@ public class MMIARegimeList extends LinearLayout {
         View view = layoutInflater.inflate(R.layout.item_regime, this, false);
         TextView tvCode = (TextView) view.findViewById(R.id.tv_code);
         TextView tvName = (TextView) view.findViewById(R.id.tv_name);
-        EditText etTotal = (EditText) view.findViewWithTag("tag_for_when_rotate_save_date");
+        EditText etTotal = (EditText) view.findViewById(R.id.et_total);
         if (isHeaderView) {
             tvName.setGravity(Gravity.CENTER);
             etTotal.setEnabled(false);
