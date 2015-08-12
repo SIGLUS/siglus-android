@@ -45,9 +45,12 @@ import org.roboguice.shaded.goole.common.base.Predicate;
 import java.util.List;
 
 import roboguice.inject.InjectResource;
+import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static android.content.ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY;
@@ -154,19 +157,29 @@ public class SyncManager {
         } catch (LMISException e) {
             e.printStackTrace();
         }
-        if (forms != null) {
-            for (RnRForm rnRForm : forms) {
+
+        Observable.from(forms).filter(new Func1<RnRForm, Boolean>() {
+            @Override
+            public Boolean call(RnRForm rnRForm) {
+                RequisitionResponse response = lmisRestApi.submitRequisition(rnRForm);
+                return StringUtils.isEmpty(response.getError());
+            }
+        }).subscribe(new Action1<RnRForm>() {
+            @Override
+            public void call(RnRForm rnRForm) {
+                rnRForm.setSynced(true);
                 try {
-                    RequisitionResponse response = lmisRestApi.submitRequisition(rnRForm);
-                    if (StringUtils.isEmpty(response.getError())) {
-                        rnRForm.setSynced(true);
-                        rnrFormRepository.save(rnRForm);
-                    }
+                    rnrFormRepository.save(rnRForm);
                 } catch (Exception e) {
-                    Log.e("===> SyncRnR :", e.getMessage());
+                    Log.e(TAG, "===> SyncRnr : mark synced failed -> " + rnRForm.getId());
                 }
             }
-        }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                Log.e(TAG, "===> SyncRnr : synced failed ->" + throwable.getMessage());
+            }
+        });
     }
 
 
