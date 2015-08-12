@@ -116,12 +116,14 @@ public class StockCardListActivity extends BaseActivity implements StockCardList
 
     @Override
     public boolean onSearchStart(String query) {
+        sortSpinner.setSelection(0);
         filterStockCard(query);
         return true;
     }
 
     @Override
     public boolean onSearchClosed() {
+        sortSpinner.setSelection(0);
         filterStockCard(StringUtils.EMPTY);
         return false;
     }

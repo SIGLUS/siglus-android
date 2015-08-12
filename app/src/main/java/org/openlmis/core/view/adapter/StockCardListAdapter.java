@@ -51,7 +51,7 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
 
     public StockCardListAdapter(List<StockCard> stockCardList){
         this.stockCards = stockCardList;
-        currentStockCards = stockCardList;
+        currentStockCards = new ArrayList<>(stockCardList);
     }
 
     @Override
@@ -110,7 +110,7 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
     @Override
     public void filter(String query){
         if (StringUtils.isEmpty(query)){
-            this.currentStockCards = stockCards;
+            this.currentStockCards = new ArrayList<>(stockCards);
             this.notifyDataSetChanged();
         }
 
