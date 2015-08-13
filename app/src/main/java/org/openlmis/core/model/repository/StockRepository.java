@@ -139,7 +139,6 @@ public class StockRepository {
         });
     }
 
-
     public long sum(final StockItem.MovementType movementType, final StockCard stockCard, final Date startDate, final Date endDate) throws LMISException {
         return dbUtil.withDao(StockItem.class, new DbUtil.Operation<StockItem, Long>() {
             @Override
