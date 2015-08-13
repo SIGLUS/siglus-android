@@ -23,14 +23,10 @@ import android.view.ViewGroup;
 
 import org.openlmis.core.LMISApp;
 
-<<<<<<< HEAD
-public class DisplayUtil {
-=======
 public final class DisplayUtil {
 
     private DisplayUtil() {
     }
->>>>>>> ZS -#32- refactor UI code
 
     public static int dip2px(float dipValue) {
         final float scale = LMISApp.getContext().getResources()
