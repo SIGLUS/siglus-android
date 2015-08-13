@@ -85,7 +85,7 @@ public class MMIAFormPresenter implements Presenter {
     }
 
     private boolean validate(RnRForm form) {
-        return form.getRegimenItemListAmount(form.getRegimenItemListWrapper()) != mmiaRepository.getTotalPatients(form);
+        return form.getRegimenItemListAmount(form.getRegimenItemListWrapper()) == mmiaRepository.getTotalPatients(form);
     }
 
     public interface MIMIAFormView extends View {

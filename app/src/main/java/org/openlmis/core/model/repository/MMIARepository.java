@@ -49,7 +49,7 @@ public class MMIARepository extends RnrFormRepository {
     public static final String ATTR_PPE = "PPE";
 
     public static final int DAY_PERIOD_END = 20;
-    public static final String MMIA_PROGRAM_CODE = "ESS_MEDS";
+    public static final String MMIA_PROGRAM_CODE = "VACCINES";
 
     @Inject
     ProgramRepository programRepository;
