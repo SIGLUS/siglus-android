@@ -128,6 +128,8 @@ public class LoginPresenter implements Presenter {
 
         saveUserToLocalDatabase(user);
         UserInfoMgr.getInstance().setUser(user);
+        view.clearErrorAlerts();
+
         getProgramWithProducts();
     }
 
@@ -192,5 +194,7 @@ public class LoginPresenter implements Presenter {
         boolean hasGetProducts();
 
         void setHasGetProducts(boolean hasGetProducts);
+
+        void clearErrorAlerts();
     }
 }

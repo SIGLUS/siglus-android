@@ -15,7 +15,7 @@
     <string name="btn_login">LOG IN</string>
     <string name="msg_empty_user">User Name / Password cannot be empty !</string>
     <string name="msg_invalid_user">Username or Password is incorrect</string>
-    <string name="msg_user_not_facility">No facility for this user</string>
+    <string name="msg_user_not_facility">No facility for this user, please contact your administrator</string>
     <string name="init_product_error">Initial Data Error,Please Retry</string>
 
 

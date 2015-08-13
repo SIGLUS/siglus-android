@@ -101,8 +101,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     public void showErrorOnFields(int filedPosition, String msg) {
-        lyUserName.setErrorEnabled(false);
-        lyPassword.setErrorEnabled(false);
+        clearErrorAlerts();
 
         if (filedPosition == 0) {
             lyUserName.setError(msg);
@@ -113,6 +112,11 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
             lyPassword.setError(msg);
         }
 
+    }
+
+    public void clearErrorAlerts(){
+        lyUserName.setErrorEnabled(false);
+        lyPassword.setErrorEnabled(false);
     }
 
 
