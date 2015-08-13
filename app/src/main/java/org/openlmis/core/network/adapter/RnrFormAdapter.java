@@ -27,6 +27,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
@@ -45,39 +46,60 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
         }
 
         if (rnRForm.getRnrFormItemList() != null){
-            JsonArray products = new JsonArray();
-            for (RnrFormItem item : rnRForm.getRnrFormItemList()){
-                JsonObject product = new JsonObject();
-                product.addProperty("productCode", item.getProduct().getCode());
-                product.addProperty("beginningBalance", item.getInitialAmount());
-                product.addProperty("quantityReceived", item.getReceived());
-                product.addProperty("quantityDispensed", item.getIssued());
-                product.addProperty("totalLossesAndAdjustments", item.getAdjustment());
-                product.addProperty("stockInHand", item.getInventory());
-                product.addProperty("quantityRequested", 0);
-                product.addProperty("reasonForRequestedQuantity", "reason");
-
-                products.add(product);
-            }
-
-            root.add("products", products);
+            root.add("products", serializeProductItems(rnRForm.getRnrFormItemList()));
         }
 
         if (rnRForm.getRegimenItemList() != null){
-            JsonArray regimens = new JsonArray();
+            root.add("regimens", serializeRegimens(rnRForm.getRegimenItemList()));
+        }
 
-            for (RegimenItem item : rnRForm.getRegimenItemList()){
-                JsonObject regimenItem = new JsonObject();
-                regimenItem.addProperty("code", item.getRegimen().getCode());
-                regimenItem.addProperty("name", item.getRegimen().getName());
-                regimenItem.addProperty("patientsOnTreatmentAdult", item.getAmount());
-
-                regimens.add(regimenItem);
-            }
-
-            root.add("regimens", regimens);
+        if (rnRForm.getBaseInfoItemList() !=null){
+            root.add("patientQuantifications", serializePatientInfo(rnRForm.getBaseInfoItemList()));
         }
 
         return root;
     }
+
+    private JsonArray serializeProductItems(Iterable<RnrFormItem> productItems){
+        JsonArray products = new JsonArray();
+        for (RnrFormItem item : productItems){
+            JsonObject product = new JsonObject();
+            product.addProperty("productCode", item.getProduct().getCode());
+            product.addProperty("beginningBalance", item.getInitialAmount());
+            product.addProperty("quantityReceived", item.getReceived());
+            product.addProperty("quantityDispensed", item.getIssued());
+            product.addProperty("totalLossesAndAdjustments", item.getAdjustment());
+            product.addProperty("stockInHand", item.getInventory());
+            product.addProperty("quantityRequested", 0);
+            product.addProperty("reasonForRequestedQuantity", "reason");
+
+            products.add(product);
+        }
+        return products;
+    }
+
+    private JsonArray serializeRegimens(Iterable<RegimenItem> regimenItems){
+        JsonArray regimens = new JsonArray();
+        for (RegimenItem item : regimenItems){
+            JsonObject regimenItem = new JsonObject();
+            regimenItem.addProperty("code", item.getRegimen().getCode());
+            regimenItem.addProperty("name", item.getRegimen().getName());
+            regimenItem.addProperty("patientsOnTreatmentAdult", item.getAmount());
+
+            regimens.add(regimenItem);
+        }
+
+        return regimens;
+    }
+
+    private JsonArray serializePatientInfo(Iterable<BaseInfoItem> patientInfoItems){
+        JsonArray patientInfos = new JsonArray();
+        for (BaseInfoItem item : patientInfoItems){
+            JsonObject patientInfo = new JsonObject();
+            patientInfo.addProperty("category", item.getName());
+            patientInfo.addProperty("total", item.getValue());
+        }
+        return patientInfos;
+    }
+
 }
