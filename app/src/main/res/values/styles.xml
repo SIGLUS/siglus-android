@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="mmia_spread_rnr_item">
         <item name="android:layout_gravity">center</item>
