@@ -1,4 +1,5 @@
-source "https://rubygems.org"
+source "https://ruby.taobao.org"
+
 gem 'rspec'
 gem 'calabash-android', '0.5.8'
 gem 'pry'
