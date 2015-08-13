@@ -26,57 +26,72 @@ describe "submit requisition to web server" do
       {
         code: "001",
         name: "REGIMEN1",
-        patientsOnTreatmentAdult: 50,
-        patientsToInitiateTreatmentAdult: 100,
-        patientsStoppedTreatmentAdult: 40,
-        patientsOnTreatmentChildren: 10,
-        patientsToInitiateTreatmentChildren: 121,
-        patientsStoppedTreatmentChildren: 11,
-        remarks: "remark"
+        patientsOnTreatment: 200,
+        patientsToInitiateTreatment: 200,
+        patientsStoppedTreatment: 200,
+        patientsOnTreatmentAdult:100,
+        patientsToInitiateTreatmentAdult:100,
+        patientsStoppedTreatmentAdult:100,
+        patientsOnTreatmentChildren:100,
+        patientsToInitiateTreatmentChildren:100,
+        patientsStoppedTreatmentChildren:100,
+        remarks:"remark"
       },
       {
         code: "002",
         name: "REGIMEN2",
-        patientsOnTreatmentAdult: 50,
-        patientsToInitiateTreatmentAdult: 100,
-        patientsStoppedTreatmentAdult: 40,
-        patientsOnTreatmentChildren: 10,
-        patientsToInitiateTreatmentChildren: 121,
-        patientsStoppedTreatmentChildren: 11,
-        remarks: "remark"
+        patientsOnTreatment: 200,
+        patientsToInitiateTreatment: 200,
+        patientsStoppedTreatment: 200,
+        patientsOnTreatmentAdult:100,
+        patientsToInitiateTreatmentAdult:100,
+        patientsStoppedTreatmentAdult:100,
+        patientsOnTreatmentChildren:100,
+        patientsToInitiateTreatmentChildren:100,
+        patientsStoppedTreatmentChildren:100,
+        remarks:"remark"
       },
       {
         code: "003",
         name: "REGIMEN3",
-        patientsOnTreatmentAdult: 50,
-        patientsToInitiateTreatmentAdult: 100,
-        patientsStoppedTreatmentAdult: 40,
-        patientsOnTreatmentChildren: 10,
-        patientsToInitiateTreatmentChildren: 121,
-        patientsStoppedTreatmentChildren: 11,
-        remarks: "remark"
+        patientsOnTreatment: 200,
+        patientsToInitiateTreatment: 200,
+        patientsStoppedTreatment: 200,
+        patientsOnTreatmentAdult:100,
+        patientsToInitiateTreatmentAdult:100,
+        patientsStoppedTreatmentAdult:100,
+        patientsOnTreatmentChildren:100,
+        patientsToInitiateTreatmentChildren:100,
+        patientsStoppedTreatmentChildren:100,
+        remarks:"remark"
       },
       {
         code: "005",
         name: "REGIMEN5",
-        patientsOnTreatmentAdult: 50,
-        patientsToInitiateTreatmentAdult: 100,
-        patientsStoppedTreatmentAdult: 40,
-        patientsOnTreatmentChildren: 10,
-        patientsToInitiateTreatmentChildren: 121,
-        patientsStoppedTreatmentChildren: 11,
-        remarks: "remark"
+        patientsOnTreatment: 200,
+        patientsToInitiateTreatment: 200,
+        patientsStoppedTreatment: 200,
+        patientsOnTreatmentAdult:100,
+        patientsToInitiateTreatmentAdult:100,
+        patientsStoppedTreatmentAdult:100,
+        patientsOnTreatmentChildren:100,
+        patientsToInitiateTreatmentChildren:100,
+        patientsStoppedTreatmentChildren:100,
+        remarks:"remark"
       },
       {
-        code: "006",
-        name: "REGIMEN6",
-        patientsOnTreatmentAdult: 50,
-        patientsToInitiateTreatmentAdult: 100,
-        patientsStoppedTreatmentAdult: 40,
-        patientsOnTreatmentChildren: 10,
-        patientsToInitiateTreatmentChildren: 121,
-        patientsStoppedTreatmentChildren: 11,
-        remarks: "remark"
+        code:"006",
+        name:"REGIMEN6",
+        patientsOnTreatment: 200,
+        patientsToInitiateTreatment: 200,
+        patientsStoppedTreatment: 200,
+        patientsOnTreatmentAdult:100,
+        patientsToInitiateTreatmentAdult:100,
+        patientsStoppedTreatmentAdult:100,
+        patientsOnTreatmentChildren:100,
+        patientsToInitiateTreatmentChildren:100,
+        patientsStoppedTreatmentChildren:100,
+        remarks:"remark"
       }
       ]
     }
@@ -86,9 +101,6 @@ describe "submit requisition to web server" do
       requisition.to_json, 'Content-Type' => 'application/json',
       'Accept' => 'application/json',
       'Authorization' => http_basic_auth('superuser', 'password1')
-
-    puts request
-    puts response
 
     expect(response.code).to eq 201
 
@@ -110,7 +122,6 @@ describe "submit requisition to web server" do
     expect(body['requisition']['programCode']).to eq "ESS_MEDS"
     expect(body['requisition']['agentCode']).to eq "F10"
     expect(body['requisition']['emergency']).to be false
-    expect(body['requisition']['products'][0]['productCode']).to eq "P74"
     expect(body['requisition']['requisitionStatus']).to eq "AUTHORIZED"
   end
 end
