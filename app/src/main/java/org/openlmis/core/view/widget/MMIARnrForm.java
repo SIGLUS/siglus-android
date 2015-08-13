@@ -30,6 +30,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.DisplayUtil;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -57,22 +58,36 @@ public class MMIARnrForm extends LinearLayout {
     }
 
     public void initView(ArrayList<RnrFormItem> rnrFormItemList) {
-        addLeftHeaderView();
-        addRightHeaderView();
+        View leftHeaderView = addLeftHeaderView();
+        View rightHeaderView = addRightHeaderView();
+        syncItemHeight(leftHeaderView, rightHeaderView);
         for (RnrFormItem item : rnrFormItemList) {
             if (item != null) {
-                addLeftView(item);
-                addRightView(item);
+                View leftView = addLeftView(item);
+                View rightView = addRightView(item);
+                syncItemHeight(leftView, rightView);
             }
         }
     }
 
-    private void addRightView(RnrFormItem item) {
-        addRightView(item, false);
+    private void syncItemHeight(View leftView, View rightView) {
+        DisplayUtil.measureView(leftView);
+        DisplayUtil.measureView(rightView);
+        int leftHeight = leftView.getMeasuredHeight();
+        int rightHeight = rightView.getMeasuredHeight();
+        if (leftHeight > rightHeight) {
+            rightView.getLayoutParams().height = leftHeight;
+        } else {
+            leftView.getLayoutParams().height = rightHeight;
+        }
     }
 
-    private void addLeftView(RnrFormItem item) {
-        addLeftView(item, false);
+    private View addRightView(RnrFormItem item) {
+        return addRightView(item, false);
+    }
+
+    private View addLeftView(RnrFormItem item) {
+        return addLeftView(item, false);
     }
 
     private View addLeftHeaderView() {
@@ -98,11 +113,11 @@ public class MMIARnrForm extends LinearLayout {
         return view;
     }
 
-    private void addRightHeaderView() {
-        addRightView(null, true);
+    private View addRightHeaderView() {
+        return addRightView(null, true);
     }
 
-    private void addRightView(RnrFormItem item, boolean isHeaderView) {
+    private View addRightView(RnrFormItem item, boolean isHeaderView) {
         View inflate = layoutInflater.inflate(R.layout.item_rnr_from, this, false);
 
         TextView tvIssuedUnit = (TextView) inflate.findViewById(R.id.tv_issued_unit);
@@ -131,15 +146,15 @@ public class MMIARnrForm extends LinearLayout {
             tvAdjustment.setText(String.valueOf(item.getAdjustment()));
             tvInventory.setText(String.valueOf(item.getInventory()));
 
+//            tvInitialAmount.setText("tvInventory.setText(String.valueOf(item.getInventory()))");
             try {
                 tvValidate.setText(DateUtil.convertDate(item.getValidate(), "dd/MM/yyyy", "MMM - yy"));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-
         }
         rightViewGroup.addView(inflate);
+        return inflate;
     }
-
 
 }

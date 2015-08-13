@@ -1,3 +1,11 @@
 <resources>
 
+    <style name="mmia_spread_rnr_item">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:layout_width">80dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
 </resources>

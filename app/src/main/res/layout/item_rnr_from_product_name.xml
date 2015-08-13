@@ -2,7 +2,7 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/tv_primary_name"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="wrap_content"
     android:background="@color/color_regime_adult"
-    android:minHeight="50dp"
+    android:gravity="center_vertical"
     android:padding="8dp" />

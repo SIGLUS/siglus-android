@@ -3,59 +3,36 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:divider="@drawable/divider_vertical"
-    android:minWidth="600dp"
     android:orientation="horizontal"
     android:showDividers="middle">
 
+
     <TextView
         android:id="@+id/tv_issued_unit"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_weight="8"
-        android:gravity="center" />
-
+        style="@style/mmia_spread_rnr_item" />
 
     <TextView
         android:id="@+id/tv_initial_amount"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_weight="6"
-        android:gravity="center" />
-
+        style="@style/mmia_spread_rnr_item" />
 
     <TextView
         android:id="@+id/tv_received"
-        android:layout_width="0dp"
-        android:layout_height="fill_parent"
-        android:layout_weight="8"
-        android:gravity="center" />
+        style="@style/mmia_spread_rnr_item" />
 
     <TextView
         android:id="@+id/tv_issued"
-        android:layout_width="0dp"
-        android:layout_height="fill_parent"
-        android:layout_weight="6"
-        android:gravity="center" />
+        style="@style/mmia_spread_rnr_item" />
 
     <TextView
         android:id="@+id/tv_adjustment"
-        android:layout_width="0dp"
-        android:layout_height="fill_parent"
-        android:layout_weight="8"
-        android:gravity="center" />
+        style="@style/mmia_spread_rnr_item" />
 
     <TextView
         android:id="@+id/tv_inventory"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="8"
-        android:gravity="center" />
+        style="@style/mmia_spread_rnr_item" />
 
     <TextView
         android:id="@+id/tv_validate"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_weight="9"
-        android:gravity="center" />
+        style="@style/mmia_spread_rnr_item" />
 
 </LinearLayout>
