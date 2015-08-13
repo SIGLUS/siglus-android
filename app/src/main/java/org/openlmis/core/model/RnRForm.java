@@ -37,7 +37,7 @@ public class RnRForm extends BaseModel {
     public enum STATUS {
         DRAFT,
         SUBMITED,
-        APPROVED
+        AUTHORIZED
     }
 
     @ForeignCollectionField()

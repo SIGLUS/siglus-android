@@ -23,7 +23,7 @@ import com.google.inject.Inject;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.repository.MIMIARepository;
+import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.view.View;
 
 import java.sql.SQLException;
@@ -34,7 +34,7 @@ public class MMIAFormPresenter implements Presenter {
     MIMIAFormView view;
 
     @Inject
-    MIMIARepository mimiaRepository;
+    MMIARepository mmiaRepository;
 
     @Override
     public void onStart() {
@@ -64,7 +64,7 @@ public class MMIAFormPresenter implements Presenter {
 
     private RnRForm initMIMIA() {
         try {
-            form = mimiaRepository.initMIMIA();
+            form = mmiaRepository.initMIMIA();
         } catch (LMISException e) {
             view.showErrorMessage(e.getMessage());
         }
@@ -75,7 +75,7 @@ public class MMIAFormPresenter implements Presenter {
 
         if (validate(form)) {
             try {
-                mimiaRepository.save(form);
+                mmiaRepository.save(form);
             } catch (LMISException e) {
                 view.showErrorMessage(e.getMessage());
             }
@@ -85,7 +85,7 @@ public class MMIAFormPresenter implements Presenter {
     }
 
     private boolean validate(RnRForm form) {
-        return form.getRegimenItemListAmount(form.getRegimenItemListWrapper()) != mimiaRepository.getTotalPatients(form);
+        return form.getRegimenItemListAmount(form.getRegimenItemListWrapper()) != mmiaRepository.getTotalPatients(form);
     }
 
     public interface MIMIAFormView extends View {

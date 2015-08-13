@@ -22,8 +22,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Button;
 
+import com.google.inject.Inject;
+
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.Presenter;
+import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.view.View;
 
 import roboguice.inject.ContentView;
@@ -38,6 +41,12 @@ public class HomeActivity extends BaseActivity{
 
     @InjectView(R.id.btn_requisition)
     Button btnRequisition;
+
+    @InjectView(R.id.btn_sync_data)
+    Button btnSyncData;
+
+    @Inject
+    SyncManager syncManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +64,14 @@ public class HomeActivity extends BaseActivity{
             @Override
             public void onClick(android.view.View v) {
                 startActivity(MMIASpreadActivity.class, false);
+            }
+        });
+
+
+        btnSyncData.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                syncManager.requestSyncImmediately();
             }
         });
     }

@@ -36,7 +36,7 @@
 
         <activity
             android:name=".view.activity.StockCardListActivity"
-            android:label="@string/title_stockcards"/>
+            android:label="@string/title_stock_cards"/>
 
         <activity
             android:name=".view.activity.MMIASpreadActivity"

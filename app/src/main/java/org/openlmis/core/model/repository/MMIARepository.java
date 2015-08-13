@@ -38,7 +38,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class MIMIARepository extends RnrFormRepository {
+public class MMIARepository extends RnrFormRepository {
 
     public static final String ATTR_NEW_PATIENTS = "New Patients";
     public static final String ATTR_SUSTAINING = "Sustaining";
@@ -49,13 +49,13 @@ public class MIMIARepository extends RnrFormRepository {
     public static final String ATTR_PPE = "PPE";
 
     public static final int DAY_PERIOD_END = 20;
-    public static final String MMIA_PROGRAM_CODE = "ART";
+    public static final String MMIA_PROGRAM_CODE = "ESS_MEDS";
 
     @Inject
     ProgramRepository programRepository;
 
     @Inject
-    public MIMIARepository(Context context) {
+    public MMIARepository(Context context) {
         super(context);
     }
 

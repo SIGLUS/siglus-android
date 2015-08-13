@@ -20,4 +20,12 @@
         android:text="@string/mmia_spreadsheet"
         android:layout_marginTop="20dp"
         android:layout_gravity="center_horizontal" />
+
+    <Button
+        android:id="@+id/btn_sync_data"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:text="@string/label_sync"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal" />
 </LinearLayout>

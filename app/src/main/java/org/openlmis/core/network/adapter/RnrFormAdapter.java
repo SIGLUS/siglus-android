@@ -27,6 +27,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 
@@ -61,6 +62,22 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
 
             root.add("products", products);
         }
+
+        if (rnRForm.getRegimenItemList() != null){
+            JsonArray regimens = new JsonArray();
+
+            for (RegimenItem item : rnRForm.getRegimenItemList()){
+                JsonObject regimenItem = new JsonObject();
+                regimenItem.addProperty("code", item.getRegimen().getCode());
+                regimenItem.addProperty("name", item.getRegimen().getName());
+                regimenItem.addProperty("patientsOnTreatmentAdult", item.getAmount());
+
+                regimens.add(regimenItem);
+            }
+
+            root.add("regimens", regimens);
+        }
+
         return root;
     }
 }

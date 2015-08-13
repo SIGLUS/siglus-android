@@ -36,6 +36,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class RnrFormRepository {
+
+    private static final String TAG = "RnrFormRepository";
+
     @Inject
     DbUtil dbUtil;
 
@@ -81,14 +84,14 @@ public class RnrFormRepository {
         return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
             @Override
             public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("synced", false).and().eq("status", RnRForm.STATUS.APPROVED).query();
+                return dao.queryBuilder().where().eq("synced", false).and().eq("status", RnRForm.STATUS.AUTHORIZED).query();
             }
         });
     }
 
 
     public void approve(RnRForm form) throws LMISException{
-        form.setStatus(RnRForm.STATUS.APPROVED);
+        form.setStatus(RnRForm.STATUS.AUTHORIZED);
         genericDao.update(form);
     }
 

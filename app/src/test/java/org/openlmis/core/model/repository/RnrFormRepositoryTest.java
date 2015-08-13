@@ -49,7 +49,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         for (int i=0; i< 10; i++){
             RnRForm form = new RnRForm();
             form.setComments("Rnr Form" + i);
-            form.setStatus(RnRForm.STATUS.APPROVED);
+            form.setStatus(RnRForm.STATUS.AUTHORIZED);
             if (i %2 == 0){
                 form.setSynced(true);
             }

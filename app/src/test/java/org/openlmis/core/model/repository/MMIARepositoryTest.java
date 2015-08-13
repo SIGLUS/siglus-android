@@ -50,10 +50,10 @@ import static org.mockito.Mockito.when;
 
 
 @RunWith(LMISTestRunner.class)
-public class MIMIARepositoryTest extends LMISRepositoryUnitTest {
+public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
     ProductRepository productRepository;
-    MIMIARepository mimiaRepository;
+    MMIARepository MMIARepository;
     StockRepository mockStockRepository;
     Product product;
 
@@ -63,7 +63,7 @@ public class MIMIARepositoryTest extends LMISRepositoryUnitTest {
 
         RoboGuice.overrideApplicationInjector(Robolectric.application, new MyTestModule());
 
-        mimiaRepository = RoboGuice.getInjector(Robolectric.application).getInstance(MIMIARepository.class);
+        MMIARepository = RoboGuice.getInjector(Robolectric.application).getInstance(MMIARepository.class);
         productRepository = RoboGuice.getInjector(Robolectric.application).getInstance(ProductRepository.class);
 
         product = new Product();
@@ -99,7 +99,7 @@ public class MIMIARepositoryTest extends LMISRepositoryUnitTest {
         when(mockStockRepository.list(anyString())).thenReturn(stockCards);
         when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(stockItems);
 
-        RnRForm form = mimiaRepository.initMIMIA();
+        RnRForm form = MMIARepository.initMIMIA();
         assertThat(form.getRnrFormItemList().size(), is(1));
 
         for (RnrFormItem item : form.getRnrFormItemList()) {
@@ -118,7 +118,7 @@ public class MIMIARepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldSaveSuccess() throws Exception {
-        RnRForm initForm = mimiaRepository.initMIMIA();
+        RnRForm initForm = MMIARepository.initMIMIA();
         ArrayList<RegimenItem> regimenItemListWrapper = initForm.getRegimenItemListWrapper();
 
         for (int i = 0; i < regimenItemListWrapper.size(); i++) {
@@ -131,15 +131,15 @@ public class MIMIARepositoryTest extends LMISRepositoryUnitTest {
             BaseInfoItem item = baseInfoItemListWrapper.get(i);
             item.setValue(String.valueOf(i));
         }
-        mimiaRepository.save(initForm);
+        MMIARepository.save(initForm);
 
-        List<RnRForm> list = mimiaRepository.list();
+        List<RnRForm> list = MMIARepository.list();
         RnRForm DBForm = list.get(list.size() - 1);
 
         long expectRegimeTotal = RnRForm.getRegimenItemListAmount(initForm.getRegimenItemListWrapper());
         long regimenTotal = RnRForm.getRegimenItemListAmount(DBForm.getRegimenItemListWrapper());
         assertThat(expectRegimeTotal, is(regimenTotal));
 
-        assertThat(mimiaRepository.getTotalPatients(initForm), is(mimiaRepository.getTotalPatients(DBForm)));
+        assertThat(MMIARepository.getTotalPatients(initForm), is(MMIARepository.getTotalPatients(DBForm)));
     }
 }

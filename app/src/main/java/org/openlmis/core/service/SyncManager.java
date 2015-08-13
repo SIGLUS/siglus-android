@@ -21,6 +21,7 @@ package org.openlmis.core.service;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.content.ContentResolver;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -89,6 +90,13 @@ public class SyncManager {
     }
 
     public void kickOff() {
+        Account account = findFirstLmisAccount();
+        if (account != null) {
+            kickOffFor(account);
+        }
+    }
+
+    private Account findFirstLmisAccount() {
         List<Account> accounts = newArrayList(accountManager.getAccounts());
         List<Account> lmisAccounts = from(accounts).filter(new Predicate<Account>() {
             @Override
@@ -98,8 +106,10 @@ public class SyncManager {
         }).toList();
 
         if (lmisAccounts.size() > 0) {
-            kickOffFor(lmisAccounts.get(0));
+            return lmisAccounts.get(0);
         }
+
+        return null;
     }
 
     private void kickOffFor(Account account) {
@@ -120,6 +130,14 @@ public class SyncManager {
     public void createSyncAccount(User user) {
         Account account = new Account(user.getUsername(), syncAccountType);
         accountManager.addAccountExplicitly(account, user.getPassword(), null);
+    }
+
+
+    public void requestSyncImmediately() {
+        Account account = findFirstLmisAccount();
+        if (account != null) {
+            ContentResolver.requestSync(findFirstLmisAccount(), syncContentAuthority, new Bundle());
+        }
     }
 
     public void syncProductsWithProgram() throws Exception {
@@ -161,25 +179,33 @@ public class SyncManager {
         Observable.from(forms).filter(new Func1<RnRForm, Boolean>() {
             @Override
             public Boolean call(RnRForm rnRForm) {
-                try {
-                    RequisitionResponse response = lmisRestApi.submitRequisition(rnRForm);
-                    return StringUtils.isEmpty(response.getError());
-                } catch (Exception e) {
-                    Log.e(TAG, "===> SyncRnr : synced failed ->" + e.getMessage());
-                }
-                return false;
+                return submitRequisition(rnRForm);
             }
         }).subscribe(new Action1<RnRForm>() {
             @Override
             public void call(RnRForm rnRForm) {
-                rnRForm.setSynced(true);
-                try {
-                    rnrFormRepository.save(rnRForm);
-                } catch (Exception e) {
-                    Log.e(TAG, "===> SyncRnr : mark synced failed -> " + rnRForm.getId());
-                }
+                markRnrFormSynced(rnRForm);
             }
         });
+    }
+
+    private boolean submitRequisition(RnRForm rnRForm) {
+        try {
+            RequisitionResponse response = lmisRestApi.submitRequisition(rnRForm);
+            return StringUtils.isEmpty(response.getError());
+        } catch (Exception e) {
+            Log.e(TAG, "===> SyncRnr : synced failed ->" + e.getMessage());
+        }
+        return false;
+    }
+
+    private void markRnrFormSynced(RnRForm rnRForm) {
+        rnRForm.setSynced(true);
+        try {
+            rnrFormRepository.save(rnRForm);
+        } catch (Exception e) {
+            Log.e(TAG, "===> SyncRnr : mark synced failed -> " + rnRForm.getId());
+        }
     }
 
 

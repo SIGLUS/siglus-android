@@ -31,7 +31,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.model.BaseInfoItem;
-import org.openlmis.core.model.repository.MIMIARepository;
+import org.openlmis.core.model.repository.MMIARepository;
 
 import java.util.ArrayList;
 
@@ -151,11 +151,11 @@ public class MMIAInfoList extends LinearLayout {
     }
 
     private boolean isNotCalculateValue(BaseInfoItem item) {
-        return MIMIARepository.ATTR_TOTAL_MONTH_DISPENSE.equals(item.getName()) || isTotalValue(item);
+        return MMIARepository.ATTR_TOTAL_MONTH_DISPENSE.equals(item.getName()) || isTotalValue(item);
     }
 
     private boolean isTotalValue(BaseInfoItem item) {
-        return MIMIARepository.ATTR_TOTAL_PATIENTS.equals(item.getName());
+        return MMIARepository.ATTR_TOTAL_PATIENTS.equals(item.getName());
     }
 
 
