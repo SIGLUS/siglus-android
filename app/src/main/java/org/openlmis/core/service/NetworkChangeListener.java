@@ -16,25 +16,28 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.network;
+package org.openlmis.core.service;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.content.Intent;
+import android.util.Log;
 
-public final class NetworkConnectionManager {
+import org.openlmis.core.network.NetworkConnectionManager;
 
-    private NetworkConnectionManager(){
+import roboguice.RoboGuice;
 
-    }
-
-    public static boolean isConnectionAvaliable(Context context) {
-        ConnectivityManager cm =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo mobNetInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        NetworkInfo wifiNetInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-        return mobNetInfo.isConnected() || wifiNetInfo.isConnected();
+public class NetworkChangeListener extends BroadcastReceiver{
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        SyncManager manager = RoboGuice.getInjector(context).getInstance(SyncManager.class);
+        if (NetworkConnectionManager.isConnectionAvaliable(context)){
+            Log.d("NetworkChangeListener :", "network connected, start sync service...");
+            manager.requestSyncImmediately();
+            manager.kickOff();
+        } else {
+            Log.d("NetworkChangeListener :", "network disconnect, stop sync service...");
+            manager.shutDown();
+        }
     }
 }

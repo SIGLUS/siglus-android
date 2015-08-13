@@ -92,8 +92,20 @@ public class SyncManager {
     public void kickOff() {
         Account account = findFirstLmisAccount();
         if (account != null) {
-            kickOffFor(account);
+            setIsSyncable(account, syncContentAuthority, 1);
+            setSyncAutomatically(account, syncContentAuthority, true);
+            addPeriodicSync(account, syncContentAuthority, periodicSyncParams(), syncInterval);
         }
+        Log.d(TAG, "sync service started");
+    }
+
+    public void shutDown() {
+        Account account = findFirstLmisAccount();
+        if (account != null) {
+            ContentResolver.cancelSync(account, syncContentAuthority);
+            ContentResolver.setSyncAutomatically(account, syncContentAuthority, false);
+        }
+        Log.d(TAG, "sync service stopped");
     }
 
     private Account findFirstLmisAccount() {
@@ -110,12 +122,6 @@ public class SyncManager {
         }
 
         return null;
-    }
-
-    private void kickOffFor(Account account) {
-        setIsSyncable(account, syncContentAuthority, 1);
-        setSyncAutomatically(account, syncContentAuthority, true);
-        addPeriodicSync(account, syncContentAuthority, periodicSyncParams(), syncInterval);
     }
 
     private Bundle periodicSyncParams() {

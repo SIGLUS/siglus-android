@@ -70,6 +70,15 @@
             android:authorities="@string/sync_content_authority"
             android:syncable="true" />
 
+
+        <receiver
+            android:name=".service.NetworkChangeListener"
+            android:label="NetworkConnection">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
