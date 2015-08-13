@@ -65,7 +65,6 @@ public class StockCardListActivity extends BaseActivity implements StockCardList
         stockCardList = presenter.loadStockCards();
         mAdapter = new StockCardListAdapter(stockCardList);
 
-        setTitle(R.string.title_stockcards);
         initUI();
     }
 

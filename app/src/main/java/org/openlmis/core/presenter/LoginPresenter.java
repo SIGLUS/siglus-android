@@ -23,6 +23,7 @@ package org.openlmis.core.presenter;
 import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.R;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
@@ -158,7 +159,7 @@ public class LoginPresenter implements Presenter {
 
                 @Override
                 public void onError(Throwable e) {
-                    ToastUtil.show(e.getMessage());
+                    ToastUtil.show(R.string.msg_user_not_facility);
                     view.stopLoading();
                 }
             });

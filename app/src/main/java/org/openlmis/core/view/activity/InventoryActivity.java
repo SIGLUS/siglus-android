@@ -56,8 +56,6 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setTitle(R.string.title_init_inventory);
         initUI();
     }
 
