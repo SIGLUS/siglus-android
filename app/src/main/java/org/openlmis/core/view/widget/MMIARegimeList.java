@@ -89,9 +89,9 @@ public class MMIARegimeList extends LinearLayout {
             etTotal.setEnabled(false);
             view.setBackgroundResource(R.color.color_mmia_speed_list_header);
 
-            tvCode.setText(R.string.list_regime_header_code);
-            tvName.setText(R.string.list_regime_header_name);
-            etTotal.setText(R.string.TOTAL);
+            tvCode.setText(R.string.label_regime_header_code);
+            tvName.setText(R.string.label_regime_header_name);
+            etTotal.setText(R.string.label_TOTAL);
         } else {
             editTexts.add(etTotal);
             Regimen regimen = item.getRegimen();
@@ -144,7 +144,7 @@ public class MMIARegimeList extends LinearLayout {
     public boolean complete() {
         for (EditText editText : editTexts) {
             if (TextUtils.isEmpty(editText.getText().toString())) {
-                editText.setError(context.getString(R.string.error_input));
+                editText.setError(context.getString(R.string.hint_error_input));
                 editText.requestFocus();
                 return false;
             }

@@ -104,7 +104,7 @@ public class MMIARnrForm extends LinearLayout {
         View view = inflaterLeftView();
         TextView tvPrimaryName = (TextView) view.findViewById(R.id.tv_primary_name);
         if (isHeaderView) {
-            tvPrimaryName.setText(R.string.list_rnrfrom_left_header);
+            tvPrimaryName.setText(R.string.label_rnrfrom_left_header);
             tvPrimaryName.setGravity(Gravity.CENTER);
             view.setBackgroundResource(R.color.color_mmia_info_name);
         } else {
@@ -131,13 +131,13 @@ public class MMIARnrForm extends LinearLayout {
         TextView tvValidate = (TextView) inflate.findViewById(R.id.tv_validate);
 
         if (isHeaderView) {
-            tvIssuedUnit.setText(R.string.issued_unit);
-            tvInitialAmount.setText(R.string.initial_amount);
-            tvReceived.setText(R.string.received);
-            tvIssued.setText(R.string.issued);
-            tvAdjustment.setText(R.string.adjustment);
-            tvInventory.setText(R.string.inventory);
-            tvValidate.setText(R.string.validate);
+            tvIssuedUnit.setText(R.string.label_issued_unit);
+            tvInitialAmount.setText(R.string.label_initial_amount);
+            tvReceived.setText(R.string.label_received);
+            tvIssued.setText(R.string.label_issued);
+            tvAdjustment.setText(R.string.label_adjustment);
+            tvInventory.setText(R.string.label_inventory);
+            tvValidate.setText(R.string.label_validate);
             inflate.setBackgroundResource(R.color.color_mmia_info_name);
         } else {
             //TODO refactor api field tvIssuedUnit

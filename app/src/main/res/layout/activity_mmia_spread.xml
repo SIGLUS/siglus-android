@@ -67,7 +67,7 @@
                             android:labelFor="@+id/tv_regime_total"
                             android:paddingEnd="8dp"
                             android:paddingStart="8dp"
-                            android:text="@string/Total" />
+                            android:text="@string/label_Total" />
 
                         <TextView
                             android:id="@+id/tv_regime_total"
@@ -94,7 +94,7 @@
                         android:background="@color/black"
                         android:gravity="center"
                         android:minHeight="38dp"
-                        android:text="@string/mmia_speed_info_header"
+                        android:text="@string/label_mmia_speed_info_header"
                         android:textColor="@color/white" />
 
                     <org.openlmis.core.view.widget.MMIAInfoList

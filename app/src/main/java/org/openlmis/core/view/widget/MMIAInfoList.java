@@ -85,8 +85,8 @@ public class MMIAInfoList extends LinearLayout {
         EditText etValue = (EditText) view.findViewById(R.id.et_value);
 
         if (isHeaderView) {
-            tvName.setText(R.string.list_mmia_info_header_name);
-            etValue.setText(R.string.TOTAL);
+            tvName.setText(R.string.label_mmia_info_header_name);
+            etValue.setText(R.string.label_TOTAL);
             etValue.setEnabled(false);
             etValue.setGravity(Gravity.CENTER);
             view.setBackgroundResource(R.color.color_mmia_info_name);
@@ -162,7 +162,7 @@ public class MMIAInfoList extends LinearLayout {
     public boolean complete() {
         for (EditText editText : editTexts) {
             if (TextUtils.isEmpty(editText.getText().toString())) {
-                editText.setError(context.getString(R.string.error_input));
+                editText.setError(context.getString(R.string.hint_error_input));
                 editText.requestFocus();
                 return false;
             }

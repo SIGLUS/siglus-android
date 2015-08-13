@@ -36,23 +36,23 @@
     <string name="action_do_inventory">Do physic inventory</string>
 
     <!--MMIA Speed-->
-    <string name="list_rnrfrom_left_header">PRODUCT</string>
-    <string name="list_regime_header_code">Code</string>
-    <string name="list_regime_header_name">REGIME THERAPEUTIC</string>
-    <string name="TOTAL">TOTAL</string>
-    <string name="Total">Total</string>
-    <string name="list_mmia_info_header_name">TYPE</string>
-    <string name="mmia_speed_info_header">Quantification of patients on ART</string>
+    <string name="label_rnrfrom_left_header">PRODUCT</string>
+    <string name="label_regime_header_code">Code</string>
+    <string name="label_regime_header_name">REGIME THERAPEUTIC</string>
+    <string name="label_TOTAL">TOTAL</string>
+    <string name="label_Total">Total</string>
+    <string name="label_mmia_info_header_name">TYPE</string>
+    <string name="label_mmia_speed_info_header">Quantification of patients on ART</string>
     <string name="hint_mmia_comment">Comments</string>
     <string name="btn_complete">complete</string>
-    <string name="initial_amount">Initial Amount</string>
-    <string name="received">Received</string>
-    <string name="issued">Issued</string>
-    <string name="adjustment">Adjustment</string>
-    <string name="inventory">Inventory</string>
-    <string name="validate">Validate</string>
-    <string name="issued_unit">Issued Unit</string>
-    <string name="error_input">Error Input</string>
+    <string name="label_initial_amount">Initial Amount</string>
+    <string name="label_received">Received</string>
+    <string name="label_issued">Issued</string>
+    <string name="label_adjustment">Adjustment</string>
+    <string name="label_inventory">Inventory</string>
+    <string name="label_validate">Validate</string>
+    <string name="label_issued_unit">Issued Unit</string>
+    <string name="hint_error_input">Invalid Input</string>
 
 
     <!-- Stock Card List Page -->
