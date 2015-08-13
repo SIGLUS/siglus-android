@@ -75,6 +75,7 @@ public class MMIAFormPresenter implements Presenter {
 
         if (validate(form)) {
             try {
+                form.setStatus(RnRForm.STATUS.AUTHORIZED);
                 mmiaRepository.save(form);
             } catch (LMISException e) {
                 view.showErrorMessage(e.getMessage());

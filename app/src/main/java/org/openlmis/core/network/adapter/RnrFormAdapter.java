@@ -98,6 +98,8 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
             JsonObject patientInfo = new JsonObject();
             patientInfo.addProperty("category", item.getName());
             patientInfo.addProperty("total", item.getValue());
+
+            patientInfos.add(patientInfo);
         }
         return patientInfos;
     }
