@@ -70,8 +70,7 @@
                         android:freezesText="true"
                         android:gravity="center_vertical"
                         android:inputType="number"
-                        android:paddingEnd="8dp"
-                        android:paddingStart="8dp" />
+                        android:padding="4dp" />
                 </RelativeLayout>
 
                 <LinearLayout

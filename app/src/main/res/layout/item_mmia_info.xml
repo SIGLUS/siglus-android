@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:divider="@drawable/divider_vertical"
     android:orientation="horizontal"
     android:showDividers="middle">
@@ -12,16 +12,17 @@
         android:layout_height="match_parent"
         android:background="@color/color_mmia_info_name"
         android:gravity="center"
-        android:labelFor="@+id/et_value" />
+        android:labelFor="@+id/et_value"
+        android:padding="4dp" />
 
     <EditText
         android:id="@+id/et_value"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:background="@null"
         android:inputType="number"
-        android:padding="8dp"
+        android:padding="4dp"
         android:saveEnabled="false" />
 
 </LinearLayout>

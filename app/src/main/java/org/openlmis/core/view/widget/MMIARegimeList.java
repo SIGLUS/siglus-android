@@ -83,6 +83,7 @@ public class MMIARegimeList extends LinearLayout {
         TextView tvCode = (TextView) view.findViewById(R.id.tv_code);
         TextView tvName = (TextView) view.findViewById(R.id.tv_name);
         EditText etTotal = (EditText) view.findViewById(R.id.et_total);
+
         if (isHeaderView) {
             tvName.setGravity(Gravity.CENTER);
             etTotal.setEnabled(false);

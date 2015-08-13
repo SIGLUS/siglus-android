@@ -104,6 +104,7 @@ public class MMIARnrForm extends LinearLayout {
 
     private void addRightView(RnrFormItem item, boolean isHeaderView) {
         View inflate = layoutInflater.inflate(R.layout.item_rnr_from, this, false);
+
         TextView tvIssuedUnit = (TextView) inflate.findViewById(R.id.tv_issued_unit);
         TextView tvInitialAmount = (TextView) inflate.findViewById(R.id.tv_initial_amount);
         TextView tvReceived = (TextView) inflate.findViewById(R.id.tv_received);
