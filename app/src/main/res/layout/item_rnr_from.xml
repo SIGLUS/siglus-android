@@ -2,60 +2,60 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:divider="@drawable/divider_vertical"
+    android:minWidth="600dp"
+    android:orientation="horizontal"
+    android:showDividers="middle">
 
     <TextView
         android:id="@+id/tv_issued_unit"
-        android:layout_width="80dp"
+        android:layout_width="0dp"
         android:layout_height="50dp"
+        android:layout_weight="8"
         android:gravity="center" />
 
-    <include layout="@layout/view_space_line_vertical" />
 
     <TextView
         android:id="@+id/tv_initial_amount"
-        android:layout_width="@dimen/mmia_spread_item_common_width"
+        android:layout_width="0dp"
         android:layout_height="50dp"
+        android:layout_weight="6"
         android:gravity="center" />
 
-    <include layout="@layout/view_space_line_vertical" />
 
     <TextView
         android:id="@+id/tv_received"
-        android:layout_width="80dp"
+        android:layout_width="0dp"
         android:layout_height="fill_parent"
+        android:layout_weight="8"
         android:gravity="center" />
-
-    <include layout="@layout/view_space_line_vertical" />
 
     <TextView
         android:id="@+id/tv_issued"
-        android:layout_width="@dimen/mmia_spread_item_common_width"
+        android:layout_width="0dp"
         android:layout_height="fill_parent"
+        android:layout_weight="6"
         android:gravity="center" />
-
-    <include layout="@layout/view_space_line_vertical" />
 
     <TextView
         android:id="@+id/tv_adjustment"
-        android:layout_width="80dp"
+        android:layout_width="0dp"
         android:layout_height="fill_parent"
+        android:layout_weight="8"
         android:gravity="center" />
-
-    <include layout="@layout/view_space_line_vertical" />
 
     <TextView
         android:id="@+id/tv_inventory"
-        android:layout_width="80dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="8"
         android:gravity="center" />
-
-    <include layout="@layout/view_space_line_vertical" />
 
     <TextView
         android:id="@+id/tv_validate"
-        android:layout_width="90dp"
+        android:layout_width="0dp"
         android:layout_height="50dp"
+        android:layout_weight="9"
         android:gravity="center" />
 
 </LinearLayout>

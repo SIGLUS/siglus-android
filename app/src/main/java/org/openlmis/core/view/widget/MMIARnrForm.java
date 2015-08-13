@@ -50,9 +50,8 @@ public class MMIARnrForm extends LinearLayout {
     }
 
     private void init(Context context) {
-        setOrientation(LinearLayout.VERTICAL);
         layoutInflater = LayoutInflater.from(context);
-        View container = layoutInflater.inflate(R.layout.view_mmia_rnr_form, this);
+        View container = layoutInflater.inflate(R.layout.view_mmia_rnr_form, this, true);
         leftViewGroup = (ViewGroup) container.findViewById(R.id.rnr_from_list_product_name);
         rightViewGroup = (ViewGroup) container.findViewById(R.id.rnr_from_list);
     }

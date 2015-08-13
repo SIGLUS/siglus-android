@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:divider="@drawable/divider_vertical"
+    android:orientation="horizontal"
+    android:showDividers="middle">
 
     <TextView
         android:id="@+id/tv_code"
@@ -12,8 +14,6 @@
         android:padding="4dp" />
 
 
-    <include layout="@layout/view_space_line_vertical" />
-
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="0dp"
@@ -22,7 +22,6 @@
         android:labelFor="@+id/et_total"
         android:padding="4dp" />
 
-    <include layout="@layout/view_space_line_vertical" />
 
     <EditText
         android:id="@+id/et_total"

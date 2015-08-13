@@ -12,14 +12,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="5dp">
 
             <org.openlmis.core.view.widget.MMIARnrForm
                 android:id="@+id/rnr_form_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/mmia_spread_list_bg"
-                android:divider="@drawable/list_divider"
+                android:divider="@drawable/divider_vertical"
+                android:orientation="horizontal"
                 android:padding="@dimen/divider"
                 android:showDividers="middle" />
 
@@ -42,7 +44,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/mmia_spread_list_bg"
-                        android:divider="@drawable/list_divider"
+                        android:divider="@drawable/divider_horizontal"
                         android:padding="@dimen/divider"
                         android:showDividers="middle" />
 
@@ -92,7 +94,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/mmia_spread_list_bg"
-                        android:divider="@drawable/list_divider"
+                        android:divider="@drawable/divider_horizontal"
                         android:padding="@dimen/divider"
                         android:showDividers="middle" />
 
