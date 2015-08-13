@@ -21,8 +21,10 @@ package org.openlmis.core.view.activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
@@ -60,6 +62,9 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
 
     @InjectView(R.id.et_comment)
     private TextView etComment;
+
+    @InjectView(R.id.scrollview)
+    private ScrollView scrollView;
 
     MMIAFormPresenter presenter;
 
@@ -122,6 +127,14 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
                         showErrorMessage(e.getMessage());
                     }
                 }
+            }
+        });
+
+        scrollView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                hideImm();
+                return false;
             }
         });
     }

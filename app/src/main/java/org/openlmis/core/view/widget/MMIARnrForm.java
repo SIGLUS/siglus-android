@@ -30,7 +30,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.utils.DisplayUtil;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -70,16 +69,19 @@ public class MMIARnrForm extends LinearLayout {
         }
     }
 
-    private void syncItemHeight(View leftView, View rightView) {
-        DisplayUtil.measureView(leftView);
-        DisplayUtil.measureView(rightView);
-        int leftHeight = leftView.getMeasuredHeight();
-        int rightHeight = rightView.getMeasuredHeight();
-        if (leftHeight > rightHeight) {
-            rightView.getLayoutParams().height = leftHeight;
-        } else {
-            leftView.getLayoutParams().height = rightHeight;
-        }
+    private void syncItemHeight(final View leftView, final View rightView) {
+        rightView.post(new Runnable() {
+            @Override
+            public void run() {
+                int leftHeight = leftView.getHeight();
+                int rightHeight = rightView.getHeight();
+                if (leftHeight > rightHeight) {
+                    rightView.getLayoutParams().height = leftHeight;
+                } else {
+                    leftView.getLayoutParams().height = rightHeight;
+                }
+            }
+        });
     }
 
     private View addRightView(RnrFormItem item) {
@@ -146,7 +148,6 @@ public class MMIARnrForm extends LinearLayout {
             tvAdjustment.setText(String.valueOf(item.getAdjustment()));
             tvInventory.setText(String.valueOf(item.getInventory()));
 
-//            tvInitialAmount.setText("tvInventory.setText(String.valueOf(item.getInventory()))");
             try {
                 tvValidate.setText(DateUtil.convertDate(item.getValidate(), "dd/MM/yyyy", "MMM - yy"));
             } catch (ParseException e) {

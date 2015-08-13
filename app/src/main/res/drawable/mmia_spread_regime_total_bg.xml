@@ -15,7 +15,7 @@
     <!-- This is the main color -->
     <item>
         <shape>
-            <solid android:color="@color/color_mmia_info_name" />
+            <solid android:color="@android:color/transparent" />
         </shape>
     </item>
 

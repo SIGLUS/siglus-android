@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <ScrollView
+        android:id="@+id/scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -34,10 +35,11 @@
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="3">
+                    android:layout_weight="3"
+                    android:orientation="vertical">
 
                     <org.openlmis.core.view.widget.MMIARegimeList
                         android:id="@+id/regime_list"
@@ -48,30 +50,35 @@
                         android:padding="@dimen/divider"
                         android:showDividers="middle" />
 
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="30dp"
-                        android:layout_below="@+id/regime_list"
-                        android:layout_toStartOf="@+id/tv_regime_total"
-                        android:background="@drawable/mmia_spread_total_bg"
-                        android:gravity="end|center_vertical"
-                        android:labelFor="@+id/tv_regime_total"
-                        android:paddingEnd="8dp"
-                        android:paddingStart="8dp"
-                        android:text="@string/Total" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:background="@drawable/mmia_spread_regime_total_bg"
+                        android:divider="@drawable/divider_vertical"
+                        android:orientation="horizontal"
+                        android:showDividers="middle">
 
-                    <TextView
-                        android:id="@+id/tv_regime_total"
-                        android:layout_width="@dimen/mmia_spread_item_common_width"
-                        android:layout_height="30dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_below="@+id/regime_list"
-                        android:background="@drawable/mmia_spread_et_total_bg"
-                        android:freezesText="true"
-                        android:gravity="center_vertical"
-                        android:inputType="number"
-                        android:padding="4dp" />
-                </RelativeLayout>
+                        <TextView
+                            android:layout_width="80dp"
+                            android:layout_height="30dp"
+                            android:background="@color/color_mmia_info_name"
+                            android:gravity="end|center_vertical"
+                            android:labelFor="@+id/tv_regime_total"
+                            android:paddingEnd="8dp"
+                            android:paddingStart="8dp"
+                            android:text="@string/Total" />
+
+                        <TextView
+                            android:id="@+id/tv_regime_total"
+                            android:layout_width="@dimen/mmia_spread_item_common_width"
+                            android:layout_height="30dp"
+                            android:background="@color/mmia_spread_bg"
+                            android:freezesText="true"
+                            android:gravity="center_vertical"
+                            android:padding="4dp" />
+                    </LinearLayout>
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -81,10 +88,12 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/mmia_spread_list_item"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/black"
-                        android:padding="8dp"
+                        android:gravity="center"
+                        android:minHeight="38dp"
                         android:text="@string/mmia_speed_info_header"
                         android:textColor="@color/white" />
 

@@ -28,6 +28,7 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import org.openlmis.core.R;
@@ -46,6 +47,8 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
 
     public abstract Presenter getPresenter();
     ProgressDialog loadingDialog;
+
+    public InputMethodManager mImm;
 
     @Override
     protected void onStart() {
@@ -76,6 +79,8 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
             getSupportActionBar().setHomeButtonEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
+
+        mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     @Override
@@ -172,6 +177,12 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         }
     }
 
+    public void hideImm() {
+        if (mImm != null && mImm.isActive() && this.getCurrentFocus() != null) {
+            mImm.hideSoftInputFromWindow(this.getCurrentFocus()
+                    .getWindowToken(), 0);
+        }
+    }
 
     public boolean onSearchStart(String query){
         return false;

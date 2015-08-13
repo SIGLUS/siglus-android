@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.openlmis.core">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
@@ -28,19 +28,20 @@
 
         <activity
             android:name=".view.activity.InventoryActivity"
-            android:label="@string/title_init_inventory"/>
+            android:label="@string/title_init_inventory" />
 
         <activity
             android:name=".view.activity.HomeActivity"
-            android:label="@string/title_home"/>
+            android:label="@string/title_home" />
 
         <activity
             android:name=".view.activity.StockCardListActivity"
-            android:label="@string/title_stock_cards"/>
+            android:label="@string/title_stock_cards" />
 
         <activity
             android:name=".view.activity.MMIASpreadActivity"
-            android:label="@string/title_mmia_spread"/>
+            android:label="@string/title_mmia_spread"
+            android:windowSoftInputMode="adjustPan" />
 
 
         <service

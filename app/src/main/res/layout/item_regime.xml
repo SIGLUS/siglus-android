@@ -8,27 +8,27 @@
 
     <TextView
         android:id="@+id/tv_code"
+        style="@style/mmia_spread_list_item"
         android:layout_width="@dimen/mmia_spread_item_common_width"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:padding="4dp" />
+        android:gravity="center" />
 
 
     <TextView
         android:id="@+id/tv_name"
+        style="@style/mmia_spread_list_item"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:labelFor="@+id/et_total"
-        android:padding="4dp" />
+        android:labelFor="@+id/et_total" />
 
 
     <EditText
         android:id="@+id/et_total"
+        style="@style/mmia_spread_list_item"
         android:layout_width="@dimen/mmia_spread_item_common_width"
         android:layout_height="match_parent"
         android:background="@null"
         android:inputType="number"
-        android:padding="4dp"
         android:saveEnabled="false" />
 </LinearLayout>
