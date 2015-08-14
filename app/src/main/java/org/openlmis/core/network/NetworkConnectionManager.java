@@ -28,7 +28,7 @@ public final class NetworkConnectionManager {
 
     }
 
-    public static boolean isConnectionAvaliable(Context context) {
+    public static boolean isConnectionAvailable(Context context) {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 

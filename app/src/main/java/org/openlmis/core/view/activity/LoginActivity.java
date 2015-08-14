@@ -128,7 +128,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
     @Override
     public boolean isConnectionAvailable() {
-        return NetworkConnectionManager.isConnectionAvaliable(LoginActivity.this);
+        return NetworkConnectionManager.isConnectionAvailable(LoginActivity.this);
     }
 
     @Override
