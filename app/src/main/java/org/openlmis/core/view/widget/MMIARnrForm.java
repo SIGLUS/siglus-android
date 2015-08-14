@@ -162,7 +162,9 @@ public class MMIARnrForm extends LinearLayout {
             tvInventory.setText(String.valueOf(item.getInventory()));
 
             try {
-                tvValidate.setText(DateUtil.convertDate(item.getValidate(), "dd/MM/yyyy", "MMM - yy"));
+                if (item.getValidate() != null) {
+                    tvValidate.setText(DateUtil.convertDate(item.getValidate(), "dd/MM/yyyy", "MMM - yy"));
+                }
             } catch (ParseException e) {
                 e.printStackTrace();
             }
