@@ -86,7 +86,7 @@ public class MMIAInfoList extends LinearLayout {
 
         if (isHeaderView) {
             tvName.setText(R.string.label_mmia_info_header_name);
-            etValue.setText(R.string.label_TOTAL);
+            etValue.setText(getResources().getString(R.string.label_total).toUpperCase());
             etValue.setEnabled(false);
             etValue.setGravity(Gravity.CENTER);
             view.setBackgroundResource(R.color.color_mmia_info_name);
@@ -102,8 +102,15 @@ public class MMIAInfoList extends LinearLayout {
             } else {
                 etValue.addTextChangedListener(new EditTextWatcher(item));
             }
+            setTotalViewBackground(item, etValue);
         }
         addView(view);
+    }
+
+    private void setTotalViewBackground(BaseInfoItem item, EditText etValue) {
+        if (isNotCalculateValue(item)) {
+            etValue.setBackgroundResource(R.color.color_mmia_speed_list_header);
+        }
     }
 
     class EditTextWatcher implements android.text.TextWatcher {

@@ -91,7 +91,7 @@ public class MMIARegimeList extends LinearLayout {
 
             tvCode.setText(R.string.label_regime_header_code);
             tvName.setText(R.string.label_regime_header_name);
-            etTotal.setText(R.string.label_TOTAL);
+            etTotal.setText(getResources().getString(R.string.label_total).toUpperCase());
         } else {
             editTexts.add(etTotal);
             Regimen regimen = item.getRegimen();

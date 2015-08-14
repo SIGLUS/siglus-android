@@ -53,7 +53,7 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="right"
+                        android:layout_gravity="end"
                         android:background="@drawable/mmia_spread_regime_total_bg"
                         android:divider="@drawable/divider_vertical"
                         android:orientation="horizontal"
@@ -61,21 +61,23 @@
 
                         <TextView
                             android:layout_width="80dp"
-                            android:layout_height="30dp"
+                            android:layout_height="match_parent"
                             android:background="@color/color_mmia_info_name"
                             android:gravity="end|center_vertical"
                             android:labelFor="@+id/tv_regime_total"
+                            android:minHeight="30dp"
                             android:paddingEnd="8dp"
                             android:paddingStart="8dp"
-                            android:text="@string/label_Total" />
+                            android:text="@string/label_total" />
 
                         <TextView
                             android:id="@+id/tv_regime_total"
                             android:layout_width="@dimen/mmia_spread_item_common_width"
-                            android:layout_height="30dp"
+                            android:layout_height="match_parent"
                             android:background="@color/mmia_spread_bg"
                             android:freezesText="true"
                             android:gravity="center_vertical"
+                            android:minHeight="30dp"
                             android:padding="4dp" />
                     </LinearLayout>
                 </LinearLayout>

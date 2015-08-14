@@ -18,7 +18,7 @@
         android:id="@+id/tv_name"
         style="@style/mmia_spread_list_item"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:labelFor="@+id/et_total" />
 
@@ -27,8 +27,9 @@
         android:id="@+id/et_total"
         style="@style/mmia_spread_list_item"
         android:layout_width="@dimen/mmia_spread_item_common_width"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@null"
-        android:inputType="number"
+        android:maxLength="7"
+        android:numeric="integer"
         android:saveEnabled="false" />
 </LinearLayout>
