@@ -38,6 +38,7 @@ public class MMIARnrForm extends LinearLayout {
     private ViewGroup leftViewGroup;
     private ViewGroup rightViewGroup;
     private LayoutInflater layoutInflater;
+    private ViewGroup vg_right_scrollview;
 
     public MMIARnrForm(Context context) {
         super(context);
@@ -52,6 +53,7 @@ public class MMIARnrForm extends LinearLayout {
     private void init(Context context) {
         layoutInflater = LayoutInflater.from(context);
         View container = layoutInflater.inflate(R.layout.view_mmia_rnr_form, this, true);
+        vg_right_scrollview = (ViewGroup) container.findViewById(R.id.vg_right_scrollview);
         leftViewGroup = (ViewGroup) container.findViewById(R.id.rnr_from_list_product_name);
         rightViewGroup = (ViewGroup) container.findViewById(R.id.rnr_from_list);
     }
@@ -63,10 +65,20 @@ public class MMIARnrForm extends LinearLayout {
         for (RnrFormItem item : rnrFormItemList) {
             if (item != null) {
                 View leftView = addLeftView(item);
-                View rightView = addRightView(item);
-                syncItemHeight(leftView, rightView);
+                ViewGroup rightView = addRightView(item);
+                setItemSize(leftView, rightView);
             }
         }
+    }
+
+    private void setItemSize(final View leftView, final ViewGroup rightView) {
+        rightView.post(new Runnable() {
+            @Override
+            public void run() {
+                setRightItemWidth(rightView);
+                syncItemHeight(leftView, rightView);
+            }
+        });
     }
 
     private void syncItemHeight(final View leftView, final View rightView) {
@@ -84,7 +96,7 @@ public class MMIARnrForm extends LinearLayout {
         });
     }
 
-    private View addRightView(RnrFormItem item) {
+    private ViewGroup addRightView(RnrFormItem item) {
         return addRightView(item, false);
     }
 
@@ -119,8 +131,8 @@ public class MMIARnrForm extends LinearLayout {
         return addRightView(null, true);
     }
 
-    private View addRightView(RnrFormItem item, boolean isHeaderView) {
-        View inflate = layoutInflater.inflate(R.layout.item_rnr_from, this, false);
+    private ViewGroup addRightView(RnrFormItem item, boolean isHeaderView) {
+        ViewGroup inflate = (ViewGroup) layoutInflater.inflate(R.layout.item_rnr_from, this, false);
 
         TextView tvIssuedUnit = (TextView) inflate.findViewById(R.id.tv_issued_unit);
         TextView tvInitialAmount = (TextView) inflate.findViewById(R.id.tv_initial_amount);
@@ -138,6 +150,7 @@ public class MMIARnrForm extends LinearLayout {
             tvAdjustment.setText(R.string.label_adjustment);
             tvInventory.setText(R.string.label_inventory);
             tvValidate.setText(R.string.label_validate);
+
             inflate.setBackgroundResource(R.color.color_mmia_info_name);
         } else {
             //TODO refactor api field tvIssuedUnit
@@ -157,5 +170,23 @@ public class MMIARnrForm extends LinearLayout {
         rightViewGroup.addView(inflate);
         return inflate;
     }
+
+    private void setRightItemWidth(final ViewGroup inflate) {
+        int rightWidth = vg_right_scrollview.getWidth();
+        int rightViewGroupWidth = rightViewGroup.getWidth();
+
+        if (rightViewGroupWidth < rightWidth) {
+            int childCount = inflate.getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                inflate.getChildAt(i).getLayoutParams().width = getRightViewWidth(rightWidth, childCount);
+            }
+        }
+    }
+
+    private int getRightViewWidth(int rightWidth, int childCount) {
+        int dimension = (int) getResources().getDimension(R.dimen.divider);
+        return (rightWidth - (childCount - 1) * dimension) / childCount;
+    }
+
 
 }

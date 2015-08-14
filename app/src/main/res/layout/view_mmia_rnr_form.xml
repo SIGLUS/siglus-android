@@ -11,6 +11,7 @@
         android:showDividers="middle" />
 
     <HorizontalScrollView
+        android:id="@+id/vg_right_scrollview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="3">
