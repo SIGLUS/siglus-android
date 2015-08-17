@@ -22,6 +22,16 @@ describe "submit requisition to web server" do
         reasonForRequestedQuantity: "justbecause"
         }
       ],
+      patientQuantification: [
+      {
+        category: "adult",
+        value: 100
+      },
+      {
+        category: "child",
+        value: 300
+      }
+      ],
       regimens: [
       {
         code: "001",
