@@ -60,14 +60,15 @@ public class MMIARegimeList extends LinearLayout {
     }
 
     public void initView(ArrayList<RegimenItem> regimenItems, TextView totalView) {
-        this.totalView = totalView;
         this.list = regimenItems;
+        this.totalView = totalView;
         addHeaderView();
         for (RegimenItem item : regimenItems) {
             if (item != null) {
                 addItemView(item);
             }
         }
+        totalView.setText(String.valueOf(getTotal()));
     }
 
     private void addHeaderView() {

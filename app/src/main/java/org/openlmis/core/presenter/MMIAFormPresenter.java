@@ -56,10 +56,24 @@ public class MMIAFormPresenter implements Presenter {
     }
 
     public RnRForm getRnrForm() {
-        if (form == null) {
+        RnRForm draftMMIAForm = getDraftMMIAForm();
+
+        if (draftMMIAForm != null) {
+            form = draftMMIAForm;
+        } else {
             form = initMIMIA();
         }
         return form;
+    }
+
+    private RnRForm getDraftMMIAForm() {
+        RnRForm draftMMIAForm = null;
+        try {
+            draftMMIAForm = mmiaRepository.getDraftMMIAForm();
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+        return draftMMIAForm;
     }
 
     private RnRForm initMIMIA() {

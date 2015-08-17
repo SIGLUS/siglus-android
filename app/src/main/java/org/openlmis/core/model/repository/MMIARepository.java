@@ -56,6 +56,10 @@ public class MMIARepository extends RnrFormRepository {
         return  initRnrForm(programRepository.queryByCode(MMIA_PROGRAM_CODE));
     }
 
+    public RnRForm getDraftMMIAForm() throws LMISException {
+        return  queryDraft(programRepository.queryByCode(MMIA_PROGRAM_CODE));
+    }
+
     @Override
     protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
         List<Regimen> regimens = regimenRepository.list();
