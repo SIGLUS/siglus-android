@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.robolectric.Robolectric;
 
@@ -40,17 +41,17 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     RnrFormRepository rnrFormRepository;
 
     @Before
-    public void setup() throws LMISException{
+    public void setup() throws LMISException {
         rnrFormRepository = RoboGuice.getInjector(Robolectric.application).getInstance(RnrFormRepository.class);
     }
 
     @Test
     public void shouldGetAllUnsyncedMMIAForms() throws LMISException {
-        for (int i=0; i< 10; i++){
+        for (int i = 0; i < 10; i++) {
             RnRForm form = new RnRForm();
             form.setComments("Rnr Form" + i);
             form.setStatus(RnRForm.STATUS.AUTHORIZED);
-            if (i %2 == 0){
+            if (i % 2 == 0) {
                 form.setSynced(true);
             }
             rnrFormRepository.create(form);
@@ -59,4 +60,22 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         List<RnRForm> list = rnrFormRepository.listUnSynced();
         assertThat(list.size(), is(5));
     }
+
+    @Test
+    public void shouldGetDraftMMIAForms() throws LMISException {
+        Program program = new Program();
+
+        RnRForm form = new RnRForm();
+        form.setProgram(program);
+        form.setComments("DRAFT Form");
+        form.setStatus(RnRForm.STATUS.DRAFT);
+
+        rnrFormRepository.create(form);
+
+        RnRForm rnRForm = rnrFormRepository.queryDraft(program);
+
+        assertThat(rnRForm.getComments(), is("DRAFT Form"));
+    }
+
+
 }
