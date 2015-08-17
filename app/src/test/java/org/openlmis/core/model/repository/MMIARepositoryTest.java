@@ -28,6 +28,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
@@ -55,11 +56,14 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     ProductRepository productRepository;
     MMIARepository MMIARepository;
     StockRepository mockStockRepository;
+    ProgramRepository mockProgramRepository;
+
     Product product;
 
     @Before
     public void setup() throws LMISException {
         mockStockRepository = mock(StockRepository.class);
+        mockProgramRepository = mock(ProgramRepository.class);
 
         RoboGuice.overrideApplicationInjector(Robolectric.application, new MyTestModule());
 
@@ -72,6 +76,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
         productRepository.create(product);
 
+        when(mockProgramRepository.queryByCode(anyString())).thenReturn(new Program("ART", "ART", null));
     }
 
     @Test
@@ -113,6 +118,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         @Override
         protected void configure() {
             bind(StockRepository.class).toInstance(mockStockRepository);
+            bind(ProgramRepository.class).toInstance(mockProgramRepository);
         }
     }
 

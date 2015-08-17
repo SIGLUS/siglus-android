@@ -26,17 +26,25 @@ import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class RnrFormRepository {
 
+    public static final int DAY_PERIOD_END = 20;
     private static final String TAG = "RnrFormRepository";
 
     @Inject
@@ -58,7 +66,23 @@ public class RnrFormRepository {
     }
 
 
-    public void create(RnRForm rnRForm) throws LMISException{
+    public RnRForm initRnrForm(Program program) throws LMISException {
+        if (program == null){
+            throw  new LMISException("Program cannot be null !");
+        }
+
+        RnRForm form = new RnRForm();
+        form.setProgram(program);
+        create(form);
+        createRnrFormItems(generateProductItems(form));
+        createRegimenItems(generateRegimeItems(form));
+        createBaseInfoItems(generateBaseInfoItems(form));
+        genericDao.refresh(form);
+
+        return form;
+    }
+
+    protected void create(RnRForm rnRForm) throws LMISException{
         genericDao.create(rnRForm);
     }
 
@@ -123,11 +147,74 @@ public class RnrFormRepository {
         dbUtil.withDaoAsBatch(BaseInfoItem.class, new DbUtil.Operation<BaseInfoItem, Void>() {
             @Override
             public Void operate(Dao<BaseInfoItem, String> dao) throws SQLException {
-                for (BaseInfoItem item : baseInfoItemList){
+                for (BaseInfoItem item : baseInfoItemList) {
                     dao.create(item);
                 }
                 return null;
             }
         });
+    }
+
+
+    protected List<BaseInfoItem> generateBaseInfoItems(RnRForm form) {
+        return null;
+    }
+
+    protected List<RnrFormItem> generateProductItems(RnRForm form) throws LMISException {
+        List<StockCard> stockCards = stockRepository.list(form.getProgram().getProgramCode());
+        List<RnrFormItem> productItems = new ArrayList<>();
+
+        Calendar calendar = GregorianCalendar.getInstance();
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+        Date startDate = new GregorianCalendar(year, month - 1, DAY_PERIOD_END + 1).getTime();
+        Date endDate = new GregorianCalendar(year, month, DAY_PERIOD_END).getTime();
+
+        for (StockCard stockCard : stockCards) {
+            List<StockItem> stockItems = stockRepository.queryStockItems(stockCard, startDate, endDate);
+            RnrFormItem productItem = new RnrFormItem();
+            if (stockItems.size() > 0) {
+
+                StockItem firstItem = stockItems.get(0);
+                productItem.setInitialAmount(firstItem.getStockOnHand() - firstItem.getAmount());
+
+                long totalReceived = 0;
+                long totalIssued = 0;
+                long totalAdjustment = 0;
+
+                for (StockItem item : stockItems) {
+                    if (StockItem.MovementType.RECEIVE == item.getMovementType()) {
+                        totalReceived += item.getAmount();
+                    } else if (StockItem.MovementType.ISSUE == item.getMovementType()) {
+                        totalIssued += item.getAmount();
+                    } else {
+                        totalAdjustment += item.getAmount();
+                    }
+                }
+                productItem.setProduct(stockCard.getProduct());
+                productItem.setReceived(totalReceived);
+                productItem.setIssued(totalIssued);
+                productItem.setAdjustment(totalAdjustment);
+                productItem.setForm(form);
+                productItem.setInventory(stockItems.get(stockItems.size() - 1).getStockOnHand());
+                productItem.setValidate(stockCard.getEarliestExpireDate());
+
+            } else {
+                productItem.setProduct(stockCard.getProduct());
+                productItem.setReceived(0);
+                productItem.setIssued(0);
+                productItem.setAdjustment(0);
+                productItem.setForm(form);
+                productItem.setInventory(stockCard.getStockOnHand());
+                productItem.setValidate(stockCard.getEarliestExpireDate());
+            }
+            productItems.add(productItem);
+        }
+
+        return productItems;
+    }
+
+    protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
+        return null;
     }
 }

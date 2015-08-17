@@ -25,11 +25,15 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.Collection;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor(suppressConstructorProperties = true)
+@NoArgsConstructor
 @DatabaseTable(tableName = "program")
 public class Program extends BaseModel {
 

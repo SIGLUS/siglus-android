@@ -26,16 +26,10 @@ import com.google.inject.Inject;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
-import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockItem;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class MMIARepository extends RnrFormRepository {
@@ -48,7 +42,6 @@ public class MMIARepository extends RnrFormRepository {
     public static final String ATTR_PTV = "PTV";
     public static final String ATTR_PPE = "PPE";
 
-    public static final int DAY_PERIOD_END = 20;
     public static final String MMIA_PROGRAM_CODE = "VACCINES";
 
     @Inject
@@ -60,73 +53,11 @@ public class MMIARepository extends RnrFormRepository {
     }
 
     public RnRForm initMIMIA() throws LMISException {
-
-        RnRForm form = new RnRForm();
-        form.setProgram(programRepository.queryByCode(MMIA_PROGRAM_CODE));
-        create(form);
-        createRnrFormItems(generateProductItems(form));
-        createRegimenItems(generateRegimeItems(form));
-        createBaseInfoItems(generateBaseInfoItems(form));
-
-        genericDao.refresh(form);
-        return form;
+        return  initRnrForm(programRepository.queryByCode(MMIA_PROGRAM_CODE));
     }
 
-    private List<RnrFormItem> generateProductItems(RnRForm form) throws LMISException {
-        List<StockCard> stockCards = stockRepository.list(MMIA_PROGRAM_CODE);
-        List<RnrFormItem> productItems = new ArrayList<>();
-
-        Calendar calendar = GregorianCalendar.getInstance();
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
-        Date startDate = new GregorianCalendar(year, month - 1, DAY_PERIOD_END + 1).getTime();
-        Date endDate = new GregorianCalendar(year, month, DAY_PERIOD_END).getTime();
-
-        for (StockCard stockCard : stockCards) {
-            List<StockItem> stockItems = stockRepository.queryStockItems(stockCard, startDate, endDate);
-            RnrFormItem productItem = new RnrFormItem();
-            if (stockItems.size() > 0) {
-
-                StockItem firstItem = stockItems.get(0);
-                productItem.setInitialAmount(firstItem.getStockOnHand() - firstItem.getAmount());
-
-                long totalReceived = 0;
-                long totalIssued = 0;
-                long totalAdjustment = 0;
-
-                for (StockItem item : stockItems) {
-                    if (StockItem.MovementType.RECEIVE == item.getMovementType()) {
-                        totalReceived += item.getAmount();
-                    } else if (StockItem.MovementType.ISSUE == item.getMovementType()) {
-                        totalIssued += item.getAmount();
-                    } else {
-                        totalAdjustment += item.getAmount();
-                    }
-                }
-                productItem.setProduct(stockCard.getProduct());
-                productItem.setReceived(totalReceived);
-                productItem.setIssued(totalIssued);
-                productItem.setAdjustment(totalAdjustment);
-                productItem.setForm(form);
-                productItem.setInventory(stockItems.get(stockItems.size() - 1).getStockOnHand());
-                productItem.setValidate(stockCard.getEarliestExpireDate());
-
-            } else {
-                productItem.setProduct(stockCard.getProduct());
-                productItem.setReceived(0);
-                productItem.setIssued(0);
-                productItem.setAdjustment(0);
-                productItem.setForm(form);
-                productItem.setInventory(stockCard.getStockOnHand());
-                productItem.setValidate(stockCard.getEarliestExpireDate());
-            }
-            productItems.add(productItem);
-        }
-
-        return productItems;
-    }
-
-    private List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
+    @Override
+    protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
         List<Regimen> regimens = regimenRepository.list();
         List<RegimenItem> regimenItems = new ArrayList<>();
         for (Regimen regimen : regimens) {
@@ -138,7 +69,8 @@ public class MMIARepository extends RnrFormRepository {
         return regimenItems;
     }
 
-    private List<BaseInfoItem> generateBaseInfoItems(RnRForm form) {
+    @Override
+    protected List<BaseInfoItem> generateBaseInfoItems(RnRForm form) {
         BaseInfoItem newPatients = new BaseInfoItem(ATTR_NEW_PATIENTS, BaseInfoItem.TYPE.INT, form);
         BaseInfoItem sustaining = new BaseInfoItem(ATTR_SUSTAINING, BaseInfoItem.TYPE.INT, form);
         BaseInfoItem alteration = new BaseInfoItem(ATTR_ALTERATION, BaseInfoItem.TYPE.INT, form);
