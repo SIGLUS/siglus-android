@@ -3,29 +3,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center">
+    android:padding="20dp">
 
 
     <Button
         android:id="@+id/btn_stock_card"
-        android:layout_width="300dp"
-        android:layout_height="200dp"
-        android:text="@string/stock_card_list"
-        android:layout_gravity="center_horizontal" />
+        android:text="@string/label_stock_cards"
+        android:layout_marginTop="20dp"
+        android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+        style="@style/home_page_button"/>
+
+    <Button
+        android:id="@+id/btn_inventory"
+        android:text="@string/label_inventory"
+        android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+        style="@style/home_page_button"/>
+
+    <Button
+        android:id="@+id/btn_mmia"
+        android:text="@string/label_mmia"
+        android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+        style="@style/home_page_button"/>
 
     <Button
         android:id="@+id/btn_requisition"
-        android:layout_width="300dp"
-        android:layout_height="200dp"
-        android:text="@string/mmia_spreadsheet"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center_horizontal" />
+        android:text="@string/label_requisition"
+        android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+        style="@style/home_page_button"/>
 
     <Button
         android:id="@+id/btn_sync_data"
-        android:layout_width="300dp"
-        android:layout_height="200dp"
         android:text="@string/label_sync"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center_horizontal" />
+        android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+        style="@style/home_page_button"/>
 </LinearLayout>

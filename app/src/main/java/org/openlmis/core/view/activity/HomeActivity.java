@@ -27,6 +27,7 @@ import com.google.inject.Inject;
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.service.SyncManager;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.View;
 
 import roboguice.inject.ContentView;
@@ -38,6 +39,12 @@ public class HomeActivity extends BaseActivity{
 
     @InjectView(R.id.btn_stock_card)
     Button btnStockCard;
+
+    @InjectView(R.id.btn_inventory)
+    Button btnInventory;
+
+    @InjectView(R.id.btn_mmia)
+    Button btnMMIA;
 
     @InjectView(R.id.btn_requisition)
     Button btnRequisition;
@@ -59,14 +66,26 @@ public class HomeActivity extends BaseActivity{
             }
         });
 
+        btnInventory.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                ToastUtil.show("Jump to Inventory...");
+            }
+        });
 
-        btnRequisition.setOnClickListener(new android.view.View.OnClickListener() {
+        btnMMIA.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View v) {
                 startActivity(MMIASpreadActivity.class, false);
             }
         });
 
+        btnRequisition.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) {
+                ToastUtil.show("Jump to Requisition...");
+            }
+        });
 
         btnSyncData.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
