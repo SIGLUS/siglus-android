@@ -108,7 +108,7 @@ public class MMIAInfoList extends LinearLayout {
     }
 
     private void setTotalViewBackground(BaseInfoItem item, EditText etValue) {
-        if (isNotCalculateValue(item)) {
+        if (isTotalInfoView(item)) {
             etValue.setBackgroundResource(R.color.color_mmia_speed_list_header);
         }
     }
@@ -134,7 +134,7 @@ public class MMIAInfoList extends LinearLayout {
         @Override
         public void afterTextChanged(Editable editable) {
             item.setValue(editable.toString());
-            if (totalView != null && !isNotCalculateValue(item)) {
+            if (totalView != null && !isTotalInfoView(item)) {
                 String total = String.valueOf(getTotal());
                 totalItem.setValue(total);
                 totalView.setText(total);
@@ -145,7 +145,7 @@ public class MMIAInfoList extends LinearLayout {
     public long getTotal() {
         long totalRegimenNumber = 0;
         for (BaseInfoItem item : list) {
-            if (isNotCalculateValue(item)) {
+            if (isTotalInfoView(item)) {
                 continue;
             }
             try {
@@ -157,7 +157,7 @@ public class MMIAInfoList extends LinearLayout {
         return totalRegimenNumber;
     }
 
-    private boolean isNotCalculateValue(BaseInfoItem item) {
+    private boolean isTotalInfoView(BaseInfoItem item) {
         return MMIARepository.ATTR_TOTAL_MONTH_DISPENSE.equals(item.getName()) || isTotalValue(item);
     }
 
