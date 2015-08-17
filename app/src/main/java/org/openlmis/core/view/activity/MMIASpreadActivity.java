@@ -65,6 +65,9 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
 
     @InjectView(R.id.scrollview)
     private ScrollView scrollView;
+    
+    @InjectView(R.id.btn_save)
+    private View btnSave;
 
     MMIAFormPresenter presenter;
 
@@ -112,6 +115,20 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
 
         mmiaInfoListView.initView(rnRForm.getBaseInfoItemListWrapper());
 
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    rnRForm.setComments(etComment.getText().toString());
+                    presenter.saveDraftForm();
+                    goToHomePage();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    showErrorMessage(e.getMessage());
+                }
+            }
+        });
+
         btnComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,9 +136,7 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
                     try {
                         rnRForm.setComments(etComment.getText().toString());
                         presenter.saveForm();
-                        Intent intent = new Intent(MMIASpreadActivity.this, HomeActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(HomeActivity.class, true);
+                        goToHomePage();
                     } catch (SQLException e) {
                         e.printStackTrace();
                         showErrorMessage(e.getMessage());
@@ -137,6 +152,12 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
                 return false;
             }
         });
+    }
+
+    private void goToHomePage() {
+        Intent intent = new Intent(MMIASpreadActivity.this, HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(HomeActivity.class, true);
     }
 
     @Override

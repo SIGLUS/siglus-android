@@ -89,6 +89,15 @@ public class MMIAFormPresenter implements Presenter {
         return form.getRegimenItemListAmount(form.getRegimenItemListWrapper()) == mmiaRepository.getTotalPatients(form);
     }
 
+    public void saveDraftForm() throws SQLException {
+        try {
+            form.setStatus(RnRForm.STATUS.DRAFT);
+            mmiaRepository.save(form);
+        } catch (LMISException e) {
+            view.showErrorMessage(e.getMessage());
+        }
+    }
+
     public interface MIMIAFormView extends View {
         void showValidationAlert();
 

@@ -114,7 +114,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
     }
 
-    public void clearErrorAlerts(){
+    public void clearErrorAlerts() {
         lyUserName.setErrorEnabled(false);
         lyPassword.setErrorEnabled(false);
     }
