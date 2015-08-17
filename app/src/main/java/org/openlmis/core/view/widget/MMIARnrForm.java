@@ -60,8 +60,8 @@ public class MMIARnrForm extends LinearLayout {
 
     public void initView(ArrayList<RnrFormItem> rnrFormItemList) {
         View leftHeaderView = addLeftHeaderView();
-        View rightHeaderView = addRightHeaderView();
-        syncItemHeight(leftHeaderView, rightHeaderView);
+        ViewGroup rightHeaderView = addRightHeaderView();
+        setItemSize(leftHeaderView, rightHeaderView);
         for (RnrFormItem item : rnrFormItemList) {
             if (item != null) {
                 View leftView = addLeftView(item);
@@ -127,7 +127,7 @@ public class MMIARnrForm extends LinearLayout {
         return view;
     }
 
-    private View addRightHeaderView() {
+    private ViewGroup addRightHeaderView() {
         return addRightView(null, true);
     }
 
@@ -173,21 +173,29 @@ public class MMIARnrForm extends LinearLayout {
         return inflate;
     }
 
-    private void setRightItemWidth(final ViewGroup inflate) {
+    private void setRightItemWidth(final ViewGroup rightView) {
         int rightWidth = vg_right_scrollview.getWidth();
         int rightViewGroupWidth = rightViewGroup.getWidth();
 
         if (rightViewGroupWidth < rightWidth) {
-            int childCount = inflate.getChildCount();
+            int childCount = rightView.getChildCount();
             for (int i = 0; i < childCount; i++) {
-                inflate.getChildAt(i).getLayoutParams().width = getRightViewWidth(rightWidth, childCount);
+                rightView.getChildAt(i).getLayoutParams().width = getRightViewWidth(rightWidth, childCount);
             }
+            rightView.getChildAt(0).getLayoutParams().width = getRightViewWidth(rightWidth, childCount) + getRightViewRemainderWidth(rightWidth, childCount);
         }
     }
 
     private int getRightViewWidth(int rightWidth, int childCount) {
-        int dimension = (int) getResources().getDimension(R.dimen.divider);
-        return (rightWidth - (childCount - 1) * dimension) / childCount;
+        return (rightWidth - (childCount - 1) * getDividerWidth()) / childCount;
+    }
+
+    private int getRightViewRemainderWidth(int rightWidth, int childCount) {
+        return (rightWidth - (childCount - 1) * getDividerWidth()) % childCount;
+    }
+
+    private int getDividerWidth() {
+        return (int) getResources().getDimension(R.dimen.divider);
     }
 
 
