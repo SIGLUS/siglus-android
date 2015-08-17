@@ -52,6 +52,7 @@
     <string name="label_validate">Validate</string>
     <string name="label_issued_unit">Issued Unit</string>
     <string name="hint_error_input">Invalid Input</string>
+    <string name="btn_save">save</string>
 
 
     <!-- Stock Card List Page -->
