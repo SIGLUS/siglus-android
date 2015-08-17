@@ -86,6 +86,16 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
             regimenItem.addProperty("name", item.getRegimen().getName());
             regimenItem.addProperty("patientsOnTreatmentAdult", item.getAmount());
 
+            regimenItem.addProperty("patientsToInitiateTreatment", 0);
+            regimenItem.addProperty("patientsStoppedTreatment", 0);
+            regimenItem.addProperty("patientsOnTreatmentAdult", 0);
+            regimenItem.addProperty("patientsToInitiateTreatmentAdult", 0);
+            regimenItem.addProperty("patientsStoppedTreatmentAdult", 0);
+            regimenItem.addProperty("patientsOnTreatmentChildren", 0);
+            regimenItem.addProperty("patientsToInitiateTreatmentChildren", 0);
+            regimenItem.addProperty("patientsStoppedTreatmentChildren", 0);
+            regimenItem.addProperty("remarks", "remark");
+
             regimens.add(regimenItem);
         }
 

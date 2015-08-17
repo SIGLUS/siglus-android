@@ -23,6 +23,7 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.misc.TransactionManager;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
@@ -34,6 +35,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
+import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -41,6 +43,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class RnrFormRepository {
 
@@ -59,25 +62,40 @@ public class RnrFormRepository {
     GenericDao<RnRForm> genericDao;
     GenericDao<RnrFormItem> rnrFormItemGenericDao;
 
+    private Context context;
+
+
     @Inject
     public RnrFormRepository(Context context){
         genericDao = new GenericDao<>(RnRForm.class, context);
         rnrFormItemGenericDao = new GenericDao<>(RnrFormItem.class, context);
+        this.context = context;
     }
 
 
-    public RnRForm initRnrForm(Program program) throws LMISException {
+    public RnRForm initRnrForm(final Program program) throws LMISException {
         if (program == null){
             throw  new LMISException("Program cannot be null !");
         }
 
-        RnRForm form = new RnRForm();
-        form.setProgram(program);
-        create(form);
-        createRnrFormItems(generateProductItems(form));
-        createRegimenItems(generateRegimeItems(form));
-        createBaseInfoItems(generateBaseInfoItems(form));
-        genericDao.refresh(form);
+        final RnRForm form = new RnRForm();
+        try {
+            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+
+                    form.setProgram(program);
+                    create(form);
+                    createRnrFormItems(generateProductItems(form));
+                    createRegimenItems(generateRegimeItems(form));
+                    createBaseInfoItems(generateBaseInfoItems(form));
+                    genericDao.refresh(form);
+                    return null;
+                }
+            });
+        } catch (SQLException e) {
+            throw new LMISException(e);
+        }
 
         return form;
     }
