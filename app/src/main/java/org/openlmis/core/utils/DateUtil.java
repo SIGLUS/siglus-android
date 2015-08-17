@@ -30,6 +30,10 @@ public final class DateUtil {
 
     public static final SimpleDateFormat DATE_FORMATER = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
 
+    public static final long MILLISECONDS_MINUTE = 60000;
+    public static final long MILLISECONDS_HOUR = 3600000;
+    public static final long MILLISECONDS_DAY = 86400000;
+
     private DateUtil() {
 
     }

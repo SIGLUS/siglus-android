@@ -28,8 +28,11 @@ import android.util.Log;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
+
+import java.util.Date;
 
 import roboguice.RoboGuice;
 
@@ -38,9 +41,15 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     @Inject
     SyncManager syncManager;
 
+    @Inject
+    SharedPreferenceMgr sharedPreferenceMgr;
+
+    Context context;
+
     public SyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
         RoboGuice.getInjector(context).injectMembers(this);
+        this.context = context;
     }
 
     @Override
@@ -51,6 +60,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             return;
         }
         Log.d("SyncAdapter", "===> Sync : requisitions");
+
         syncManager.syncRnr();
+        recordLastSyncedTime();
     }
+
+    private void recordLastSyncedTime(){
+        sharedPreferenceMgr.getPreference().edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME, new Date().getTime()).apply();
+    }
+
 }

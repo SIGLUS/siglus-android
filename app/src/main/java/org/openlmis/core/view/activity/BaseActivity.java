@@ -31,8 +31,11 @@ import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.google.inject.Inject;
+
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.view.View;
 
@@ -41,8 +44,8 @@ import roboguice.activity.RoboActionBarActivity;
 public abstract class BaseActivity extends RoboActionBarActivity implements View{
 
 
-    private static final String MYPREFERENCE = "LMISPreference";
-    SharedPreferences preferences;
+    @Inject
+    SharedPreferenceMgr preferencesMgr;
 
 
     public abstract Presenter getPresenter();
@@ -65,7 +68,6 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        preferences = getSharedPreferences(MYPREFERENCE, Context.MODE_PRIVATE);
         try {
             getPresenter().attachView(BaseActivity.this);
         } catch (ViewNotMatchException e){
@@ -128,19 +130,19 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     }
 
     public void saveString(String key, String value) {
-        preferences.edit().putString(key,value).apply();
+        preferencesMgr.getPreference().edit().putString(key,value).apply();
     }
 
     public void saveInt(String key, int value){
-        preferences.edit().putInt(key, value).apply();
+        preferencesMgr.getPreference().edit().putInt(key, value).apply();
     }
 
     public void saveBoolean(String key, boolean value){
-        preferences.edit().putBoolean(key, value).apply();
+        preferencesMgr.getPreference().edit().putBoolean(key, value).apply();
     }
 
     public SharedPreferences getPreferences(){
-        return preferences;
+        return preferencesMgr.getPreference();
     }
 
     public void showMessage(String msg) {

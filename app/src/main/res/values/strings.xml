@@ -34,6 +34,9 @@
     <string name="label_mmia">MMIA</string>
     <string name="label_sync">Sync Data</string>
     <string name="action_do_inventory">Do physic inventory</string>
+    <string name="label_last_synced_mins_ago">Last synced on %s minutes ago</string>
+    <string name="label_last_synced_hours_ago">Last synced on %s hours ago</string>
+    <string name="label_last_synced_days_ago">Last synced on %s days ago</string>
 
     <!--MMIA Speed-->
     <string name="label_rnrfrom_left_header">PRODUCT</string>

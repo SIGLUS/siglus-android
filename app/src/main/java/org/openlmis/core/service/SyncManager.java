@@ -173,7 +173,7 @@ public class SyncManager {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
     }
 
-    public void syncRnr() {
+    public boolean syncRnr() {
         List<RnRForm> forms = null;
         try {
             forms = rnrFormRepository.listUnSynced();
@@ -191,6 +191,13 @@ public class SyncManager {
             @Override
             public void call(RnRForm rnRForm) {
                 markRnrFormSynced(rnRForm);
+            }
+        });
+
+        return from(forms).anyMatch(new Predicate<RnRForm>() {
+            @Override
+            public boolean apply(RnRForm rnRForm) {
+                return rnRForm.isSynced();
             }
         });
     }

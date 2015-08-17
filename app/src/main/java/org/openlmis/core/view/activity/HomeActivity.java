@@ -21,14 +21,19 @@ package org.openlmis.core.view.activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.inject.Inject;
 
 import org.openlmis.core.R;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.service.SyncManager;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.View;
+
+import java.util.Date;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -51,6 +56,9 @@ public class HomeActivity extends BaseActivity{
 
     @InjectView(R.id.btn_sync_data)
     Button btnSyncData;
+
+    @InjectView(R.id.tx_last_synced)
+    TextView txLastSynced;
 
     @Inject
     SyncManager syncManager;
@@ -96,10 +104,34 @@ public class HomeActivity extends BaseActivity{
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        showLastSyncedTime();
+    }
+
+
+    private void showLastSyncedTime(){
+        long lastSyncedTimestamp = getPreferences().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME, 0);
+        if (lastSyncedTimestamp == 0){
+            return;
+        }
+
+        long currentTimestamp = new Date().getTime();
+
+        long diff = currentTimestamp - lastSyncedTimestamp;
+
+        if (diff < DateUtil.MILLISECONDS_HOUR){
+            txLastSynced.setText(getResources().getString(R.string.label_last_synced_mins_ago, (diff /DateUtil.MILLISECONDS_MINUTE)));
+        } else if (diff < DateUtil.MILLISECONDS_DAY){
+            txLastSynced.setText(getResources().getString(R.string.label_last_synced_hours_ago, (diff /DateUtil.MILLISECONDS_HOUR)));
+        } else {
+            txLastSynced.setText(getResources().getString(R.string.label_last_synced_days_ago, (diff /DateUtil.MILLISECONDS_DAY)));
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        boolean ret = super.onCreateOptionsMenu(menu);
-        menu.getItem(1).setVisible(false);
-        return ret;
+        return false;
     }
 
     @Override

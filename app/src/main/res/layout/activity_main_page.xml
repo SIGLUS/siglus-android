@@ -36,4 +36,11 @@
         android:text="@string/label_sync"
         android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
         style="@style/home_page_button"/>
+
+    <TextView android:id="@+id/tx_last_synced"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textColor="@color/secondary_text"
+        android:textSize="28sp"
+        android:gravity="bottom|center_horizontal"/>
 </LinearLayout>
