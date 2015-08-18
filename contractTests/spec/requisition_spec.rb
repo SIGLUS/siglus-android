@@ -3,24 +3,23 @@
 # clean up data regularly
 describe "submit requisition to web server" do
 
-  it "should submit successfully and return expected response" do
+  it "should sync MMIA requisition to server successfully and return expected response" do
 
     requisition = {
       programCode: "ESS_MEDS",
       agentCode: "F10",
       products: [
-        {
+      {
         productCode: "P74",
         beginningBalance: 1000,
         quantityReceived: 2000,
         quantityDispensed: 2500,
         totalLossesAndAdjustments: 0,
         stockInHand: 500,
-        newPatientCount: 500,
         stockOutDays: 20,
         quantityRequested: 10000,
         reasonForRequestedQuantity: "justbecause"
-        }
+      }
       ],
       patientQuantification: [
       {
@@ -39,12 +38,6 @@ describe "submit requisition to web server" do
         patientsOnTreatment: 200,
         patientsToInitiateTreatment: 200,
         patientsStoppedTreatment: 200,
-        patientsOnTreatmentAdult:100,
-        patientsToInitiateTreatmentAdult:100,
-        patientsStoppedTreatmentAdult:100,
-        patientsOnTreatmentChildren:100,
-        patientsToInitiateTreatmentChildren:100,
-        patientsStoppedTreatmentChildren:100,
         remarks:"remark"
       },
       {
@@ -53,12 +46,6 @@ describe "submit requisition to web server" do
         patientsOnTreatment: 200,
         patientsToInitiateTreatment: 200,
         patientsStoppedTreatment: 200,
-        patientsOnTreatmentAdult:100,
-        patientsToInitiateTreatmentAdult:100,
-        patientsStoppedTreatmentAdult:100,
-        patientsOnTreatmentChildren:100,
-        patientsToInitiateTreatmentChildren:100,
-        patientsStoppedTreatmentChildren:100,
         remarks:"remark"
       },
       {
@@ -67,12 +54,6 @@ describe "submit requisition to web server" do
         patientsOnTreatment: 200,
         patientsToInitiateTreatment: 200,
         patientsStoppedTreatment: 200,
-        patientsOnTreatmentAdult:100,
-        patientsToInitiateTreatmentAdult:100,
-        patientsStoppedTreatmentAdult:100,
-        patientsOnTreatmentChildren:100,
-        patientsToInitiateTreatmentChildren:100,
-        patientsStoppedTreatmentChildren:100,
         remarks:"remark"
       },
       {
@@ -81,12 +62,6 @@ describe "submit requisition to web server" do
         patientsOnTreatment: 200,
         patientsToInitiateTreatment: 200,
         patientsStoppedTreatment: 200,
-        patientsOnTreatmentAdult:100,
-        patientsToInitiateTreatmentAdult:100,
-        patientsStoppedTreatmentAdult:100,
-        patientsOnTreatmentChildren:100,
-        patientsToInitiateTreatmentChildren:100,
-        patientsStoppedTreatmentChildren:100,
         remarks:"remark"
       },
       {
@@ -95,12 +70,6 @@ describe "submit requisition to web server" do
         patientsOnTreatment: 200,
         patientsToInitiateTreatment: 200,
         patientsStoppedTreatment: 200,
-        patientsOnTreatmentAdult:100,
-        patientsToInitiateTreatmentAdult:100,
-        patientsStoppedTreatmentAdult:100,
-        patientsOnTreatmentChildren:100,
-        patientsToInitiateTreatmentChildren:100,
-        patientsStoppedTreatmentChildren:100,
         remarks:"remark"
       }
       ]
