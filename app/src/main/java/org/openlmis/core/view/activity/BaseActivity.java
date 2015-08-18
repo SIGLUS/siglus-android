@@ -79,7 +79,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
 
         if(getSupportActionBar() !=null){
             getSupportActionBar().setHomeButtonEnabled(false);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
         mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -170,6 +170,9 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
             case R.id.action_search:
                 return true;
             case R.id.action_settings:

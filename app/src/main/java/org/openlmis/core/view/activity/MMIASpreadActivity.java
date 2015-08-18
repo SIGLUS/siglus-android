@@ -21,6 +21,7 @@ package org.openlmis.core.view.activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -65,7 +66,7 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
 
     @InjectView(R.id.scrollview)
     private ScrollView scrollView;
-    
+
     @InjectView(R.id.btn_save)
     private View btnSave;
 
@@ -88,6 +89,11 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
         if (rnRForm != null) {
             initUI();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return false;
     }
 
     private void initPresenter() {
