@@ -136,7 +136,7 @@ public class MMIARegimeList extends LinearLayout {
             try {
                 item.setAmount(Long.parseLong(editable.toString()));
             } catch (NumberFormatException e) {
-                item.setAmount(0L);
+                item.setAmount(null);
             }
             totalView.setText(String.valueOf(getTotal()));
         }
