@@ -51,8 +51,6 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     public abstract Presenter getPresenter();
     ProgressDialog loadingDialog;
 
-    public InputMethodManager mImm;
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -82,7 +80,6 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     @Override
@@ -183,6 +180,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     }
 
     public void hideImm() {
+        InputMethodManager mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (mImm != null && mImm.isActive() && this.getCurrentFocus() != null) {
             mImm.hideSoftInputFromWindow(this.getCurrentFocus()
                     .getWindowToken(), 0);
