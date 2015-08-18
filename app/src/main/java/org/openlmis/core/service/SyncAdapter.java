@@ -61,8 +61,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
         Log.d("SyncAdapter", "===> Sync : requisitions");
 
-        syncManager.syncRnr();
-        recordLastSyncedTime();
+        if (syncManager.syncRnr()) {
+            recordLastSyncedTime();
+        }
     }
 
     private void recordLastSyncedTime(){

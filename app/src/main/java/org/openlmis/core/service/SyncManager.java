@@ -194,7 +194,7 @@ public class SyncManager {
             }
         });
 
-        return from(forms).anyMatch(new Predicate<RnRForm>() {
+        return from(forms).allMatch(new Predicate<RnRForm>() {
             @Override
             public boolean apply(RnRForm rnRForm) {
                 return rnRForm.isSynced();
