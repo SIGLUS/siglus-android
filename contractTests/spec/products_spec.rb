@@ -10,11 +10,10 @@ describe "Get programs with products information for a facility" do
     body = JSON.parse(response.body)
 
     expect(body['programsWithProducts'].length).to eq 4
-    expect(body['programsWithProducts'][0]['programCode']).to eq 'TB'
-    expect(body['programsWithProducts'][0]['programName']).to eq 'TB'
+    expect(body['programsWithProducts'][0]['programCode']).not_to be_nil
+    expect(body['programsWithProducts'][0]['programName']).not_to be_nil
 
-    expect(body['programsWithProducts'][0]['products'].length).to eq 113
-    expect(body['programsWithProducts'][0]['products'][0]['code']).to eq 'P10'
-    expect(body['programsWithProducts'][0]['products'][0]['primaryName']).to eq 'Acetylsalicylic Acid, tablet 300mg'
+    expect(body['programsWithProducts'][0]['products'][0]['code']).not_to be_nil
+    expect(body['programsWithProducts'][0]['products'][0]['primaryName']).not_to be_nil
   end
 end
