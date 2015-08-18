@@ -45,7 +45,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_mmia_spread)
-public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresenter.MIMIAFormView {
+public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresenter.MIMIAFormView, View.OnClickListener {
 
     @InjectView(R.id.rnr_form_list)
     private MMIARnrForm rnrFromListView;
@@ -122,35 +122,9 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
 
         mmiaInfoListView.initView(rnRForm.getBaseInfoItemListWrapper());
 
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    rnRForm.setComments(etComment.getText().toString());
-                    presenter.saveDraftForm();
-                    goToHomePage();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    showErrorMessage(e.getMessage());
-                }
-            }
-        });
+        btnSave.setOnClickListener(this);
 
-        btnComplete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (regimeListView.complete() && mmiaInfoListView.complete() && (regimeListView.getTotal() == mmiaInfoListView.getTotal())) {
-                    try {
-                        rnRForm.setComments(etComment.getText().toString());
-                        presenter.saveForm();
-                        goToHomePage();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        showErrorMessage(e.getMessage());
-                    }
-                }
-            }
-        });
+        btnComplete.setOnClickListener(this);
 
         scrollView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -186,5 +160,44 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
     protected void onDestroy() {
         dataFragment.setData(presenter);
         super.onDestroy();
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_save:
+                onSaveBtnClick();
+                break;
+            case R.id.btn_complete:
+                onCompleteBtnClick();
+                break;
+            default:
+                break;
+
+        }
+    }
+
+    private void onCompleteBtnClick() {
+        if (regimeListView.complete() && mmiaInfoListView.complete() && (regimeListView.getTotal() == mmiaInfoListView.getTotal())) {
+            try {
+                rnRForm.setComments(etComment.getText().toString());
+                presenter.saveForm();
+                goToHomePage();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                showErrorMessage(e.getMessage());
+            }
+        }
+    }
+
+    private void onSaveBtnClick() {
+        try {
+            rnRForm.setComments(etComment.getText().toString());
+            presenter.saveDraftForm();
+            goToHomePage();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showErrorMessage(e.getMessage());
+        }
     }
 }
