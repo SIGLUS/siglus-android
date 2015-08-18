@@ -28,4 +28,11 @@
         <item name="android:gravity">left</item>
         <item name="android:drawablePadding">10dp</item>
     </style>
+
+
+    <style name="DefaultBorderedEditText">
+        <item name="text">Label</item>
+        <item name="ems">4</item>
+    </style>
+
 </resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="BorderedEditText">
+        <attr name="ems" format="integer" />
+        <attr name="text" format="string" />
+        <attr name="labelWidth" format="dimension"/>
+    </declare-styleable>
+
+</resources>

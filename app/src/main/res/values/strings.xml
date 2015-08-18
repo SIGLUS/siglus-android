@@ -8,6 +8,7 @@
     <string name="title_init_inventory">Initial Inventory</string>
     <string name="title_stock_cards">Stock Cards</string>
     <string name="title_mmia_spread">MMIA</string>
+    <string name="title_requisition">Requisition</string>
 
     <!-- Login Page -->
     <string name="hint_username">User Name</string>
@@ -59,6 +60,14 @@
     <string name="msg_mmia_onback_confirm">Are you sure you want to quit without save your work?</string>
     <string name="btn_positive">Yes</string>
     <string name="btn_negative">No</string>
+
+
+    <!-- Requisition Form -->
+    <string name="label_consultation">Consultation Numbers</string>
+    <string name="label_kits_received">Kits received</string>
+    <string name="label_kits_opened">Kits opened</string>
+    <string name="label_us">US</string>
+    <string name="label_ape">APE</string>
 
 
     <!-- Stock Card List Page -->

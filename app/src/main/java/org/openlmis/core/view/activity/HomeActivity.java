@@ -91,7 +91,7 @@ public class HomeActivity extends BaseActivity{
         btnRequisition.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View v) {
-                ToastUtil.show("Jump to Requisition...");
+                startActivity(RequisitionActivity.class, false);
             }
         });
 

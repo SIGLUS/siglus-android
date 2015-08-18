@@ -43,6 +43,11 @@
             android:label="@string/title_mmia_spread"
             android:windowSoftInputMode="adjustPan" />
 
+        <activity
+            android:name=".view.activity.RequisitionActivity"
+            android:label="@string/title_requisition"
+            android:windowSoftInputMode="adjustPan" />
+
 
         <service
             android:name=".service.SyncService"
