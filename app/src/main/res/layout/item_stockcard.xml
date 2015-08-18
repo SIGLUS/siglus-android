@@ -32,14 +32,33 @@
             android:textSize="16sp" />
     </LinearLayout>
 
-    <TextView android:id="@+id/stockOnHand"
+    <RelativeLayout
+        android:id="@+id/vg_stock_on_hand_bg"
         android:layout_width="120dp"
+        android:background="@color/color_primary_50"
         android:layout_height="match_parent"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:textSize="18sp"
-        android:textColor="@color/primary_text"
-        android:gravity="center_vertical|end"
-        android:background="@color/color_primary_50"/>
+        >
+        <ImageView
+            android:id="@+id/iv_warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_warning"
+            android:paddingStart="5dp"
+            />
+        <TextView
+            android:layout_toEndOf="@+id/iv_warning"
+            android:id="@+id/tv_stock_on_hand"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textSize="18sp"
+            android:textColor="@color/primary_text"
+            android:gravity="center_vertical|end"
+            />
+
+
+    </RelativeLayout>
 
 </LinearLayout>

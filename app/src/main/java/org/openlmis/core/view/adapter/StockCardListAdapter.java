@@ -49,7 +49,7 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
     List<StockCard> currentStockCards;
 
 
-    public StockCardListAdapter(List<StockCard> stockCardList){
+    public StockCardListAdapter(List<StockCard> stockCardList) {
         this.stockCards = stockCardList;
         currentStockCards = new ArrayList<>(stockCardList);
     }
@@ -67,18 +67,36 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
 
         Product product = currentStockCards.get(position).getProduct();
         String productName = product.getPrimaryName() + " [" + product.getCode() + "]";
-        SpannableStringBuilder styledName=new SpannableStringBuilder(productName);
+        SpannableStringBuilder styledName = new SpannableStringBuilder(productName);
         styledName.setSpan(new ForegroundColorSpan(LMISApp.getContext().getResources().getColor(R.color.secondary_text)),
                 product.getPrimaryName().length(), productName.length(), Spannable.SPAN_POINT_MARK);
 
         String unit = product.getStrength() + " " + product.getType();
-        SpannableStringBuilder styledUnit=new SpannableStringBuilder(unit);
+        SpannableStringBuilder styledUnit = new SpannableStringBuilder(unit);
         styledUnit.setSpan(new ForegroundColorSpan(LMISApp.getContext().getResources().getColor(R.color.secondary_text)),
                 product.getStrength().length(), unit.length(), Spannable.SPAN_POINT_MARK);
 
         holder.productName.setText(styledName);
         holder.productUnit.setText(styledUnit);
-        holder.stockOnHand.setText(currentStockCards.get(position).getStockOnHand() + "");
+        StockCard stockCard = currentStockCards.get(position);
+        holder.stockOnHand.setText(stockCard.getStockOnHand() + "");
+        holder.stockOnHandBg.setBackgroundResource(getStockOnHandViewColor(stockCard));
+    }
+
+    private int getStockOnHandViewColor(StockCard stockCard) {
+        int result = R.color.color_primary_50;
+        int stockOnHandLevel = stockCard.getStockOnHandLevel();
+        switch (stockOnHandLevel) {
+            case StockCard.STOCK_ON_HAND_LOW_STOCK:
+                result = R.color.color_low_stock;
+                break;
+            case StockCard.STOCK_ON_HAND_STOCK_OUT:
+                result = R.color.color_stock_out;
+                break;
+            default:
+                break;
+        }
+        return result;
     }
 
     @Override
@@ -87,18 +105,21 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView productName;
         public TextView productUnit;
         public TextView stockOnHand;
+        public View stockOnHandBg;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            productName = (TextView)itemView.findViewById(R.id.product_name);
-            productUnit = (TextView)itemView.findViewById(R.id.product_unit);
-            stockOnHand = (TextView)itemView.findViewById(R.id.stockOnHand);
+            productName = (TextView) itemView.findViewById(R.id.product_name);
+            productUnit = (TextView) itemView.findViewById(R.id.product_unit);
+            stockOnHand = (TextView) itemView.findViewById(R.id.tv_stock_on_hand);
+            stockOnHandBg = itemView.findViewById(R.id.vg_stock_on_hand_bg);
         }
 
         @Override
@@ -108,16 +129,16 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
     }
 
     @Override
-    public void filter(String query){
-        if (StringUtils.isEmpty(query)){
+    public void filter(String query) {
+        if (StringUtils.isEmpty(query)) {
             this.currentStockCards = new ArrayList<>(stockCards);
             this.notifyDataSetChanged();
         }
 
         this.currentStockCards = new ArrayList<>();
-        for (StockCard stockCard : stockCards){
+        for (StockCard stockCard : stockCards) {
             if (stockCard.getProduct().getPrimaryName().contains(query)
-                    || stockCard.getProduct().getCode().contains(query)){
+                    || stockCard.getProduct().getCode().contains(query)) {
                 this.currentStockCards.add(stockCard);
             }
         }
@@ -125,13 +146,13 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
         this.notifyDataSetChanged();
     }
 
-    public void sortBySOH(final boolean asc){
+    public void sortBySOH(final boolean asc) {
         Collections.sort(currentStockCards, new Comparator<StockCard>() {
             @Override
             public int compare(StockCard lhs, StockCard rhs) {
-                if (asc){
+                if (asc) {
                     return lhs.getStockOnHand() - rhs.getStockOnHand();
-                }else {
+                } else {
                     return rhs.getStockOnHand() - lhs.getStockOnHand();
                 }
             }
@@ -140,13 +161,13 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
         this.notifyDataSetChanged();
     }
 
-    public void sortByName(final boolean asc){
+    public void sortByName(final boolean asc) {
         Collections.sort(currentStockCards, new Comparator<StockCard>() {
             @Override
             public int compare(StockCard lhs, StockCard rhs) {
-                if (asc){
+                if (asc) {
                     return lhs.getProduct().getPrimaryName().compareTo(rhs.getProduct().getPrimaryName());
-                }else {
+                } else {
                     return rhs.getProduct().getPrimaryName().compareTo(lhs.getProduct().getPrimaryName());
                 }
             }

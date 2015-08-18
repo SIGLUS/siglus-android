@@ -18,4 +18,8 @@
     <color name="color_regime_baby">#FFFF81</color>
     <color name="divider">#565656</color>
     <color name="mmia_spread_bg">#EAEAEA</color>
+
+    <color name="color_stock_out">#FF5252</color>
+    <color name="color_low_stock">#FFDE80</color>
+
 </resources>
