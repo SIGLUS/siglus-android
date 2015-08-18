@@ -31,6 +31,7 @@ import android.widget.TextView;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIAFormPresenter;
+import org.openlmis.core.view.fragment.MMIAOnBackConfirmDialog;
 import org.openlmis.core.view.fragment.RetainedFragment;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
@@ -158,6 +159,11 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        MMIAOnBackConfirmDialog.showDialog(getFragmentManager());
     }
 
     private void goToHomePage() {
