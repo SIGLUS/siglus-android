@@ -45,9 +45,14 @@ public class CreateDummyRegimes implements Migration {
             dbUtil.withDao(Regimen.class, new DbUtil.Operation<Regimen, String>() {
                 @Override
                 public String operate(Dao dao) throws SQLException {
-                    for (int i = 0; i < 10; i++) {
+                    for (int i = 0; i < 7; i++) {
+                        if (i==3 || i== 6){
+                            continue;
+                        }
+
                         Regimen regimen = new Regimen();
-                        regimen.setCode("");
+                        regimen.setCode("00" + (i+1));
+
                         regimen.setName("AZT+3TC+NVP-" + i);
                         if (i % 2 == 0) {
                             regimen.setType(Regimen.RegimeType.ADULT);
