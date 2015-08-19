@@ -1,46 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp">
+    android:layout_height="match_parent">
 
-
-    <Button
-        android:id="@+id/btn_stock_card"
-        android:text="@string/label_stock_cards"
-        android:layout_marginTop="20dp"
-        android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
-        style="@style/home_page_button"/>
-
-    <Button
-        android:id="@+id/btn_inventory"
-        android:text="@string/label_inventory"
-        android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
-        style="@style/home_page_button"/>
-
-    <Button
-        android:id="@+id/btn_mmia"
-        android:text="@string/label_mmia"
-        android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
-        style="@style/home_page_button"/>
-
-    <Button
-        android:id="@+id/btn_requisition"
-        android:text="@string/label_requisition"
-        android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
-        style="@style/home_page_button"/>
-
-    <Button
-        android:id="@+id/btn_sync_data"
-        android:text="@string/label_sync"
-        android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
-        style="@style/home_page_button"/>
-
-    <TextView android:id="@+id/tx_last_synced"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textColor="@color/secondary_text"
-        android:textSize="28sp"
-        android:gravity="bottom|center_horizontal"/>
-</LinearLayout>
+        android:orientation="vertical"
+        android:padding="20dp">
+
+
+        <Button
+            android:id="@+id/btn_stock_card"
+            style="@style/home_page_button"
+            android:layout_marginTop="20dp"
+            android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+            android:text="@string/label_stock_cards" />
+
+        <Button
+            android:id="@+id/btn_inventory"
+            style="@style/home_page_button"
+            android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+            android:text="@string/label_inventory" />
+
+        <Button
+            android:id="@+id/btn_mmia"
+            style="@style/home_page_button"
+            android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+            android:text="@string/label_mmia" />
+
+        <Button
+            android:id="@+id/btn_requisition"
+            style="@style/home_page_button"
+            android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+            android:text="@string/label_requisition" />
+
+        <Button
+            android:id="@+id/btn_sync_data"
+            style="@style/home_page_button"
+            android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+            android:text="@string/label_sync" />
+
+        <TextView
+            android:id="@+id/tx_last_synced"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom|center_horizontal"
+            android:textColor="@color/secondary_text"
+            android:textSize="28sp" />
+    </LinearLayout>
+</ScrollView>
