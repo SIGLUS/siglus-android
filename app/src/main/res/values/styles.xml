@@ -35,4 +35,22 @@
         <item name="ems">4</item>
     </style>
 
+    <style name="sheet_header_base">
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="sheet_header1" parent="sheet_header_base">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
+    <style name="sheet_header2" parent="sheet_header_base">
+        <item name="android:textSize">16sp</item>
+        <item name="android:minWidth">80dp</item>
+    </style>
+
 </resources>

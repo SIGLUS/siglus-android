@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/border_bg"
+    android:divider="@drawable/divider_vertical"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="1000dp"
+        android:layout_height="match_parent"
+        android:divider="@drawable/divider_horizontal"
+        android:orientation="vertical"
+        android:showDividers="middle">
+
+        <TextView
+            style="@style/sheet_header1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Request from provincial or district level" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@drawable/divider_vertical"
+            android:orientation="horizontal"
+            android:showDividers="middle"
+            android:weightSum="8">
+
+            <TextView
+                style="@style/sheet_header1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"
+                android:text="Stock Movement" />
+
+            <TextView
+                style="@style/sheet_header1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="Inventory Information" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@drawable/divider_vertical"
+            android:orientation="horizontal"
+            android:showDividers="middle"
+            android:weightSum="8">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="7"
+                android:divider="@drawable/divider_horizontal"
+                android:orientation="vertical"
+                android:showDividers="middle">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@drawable/divider_vertical"
+                    android:orientation="horizontal"
+                    android:showDividers="middle">
+                    <TextView
+                        style="@style/sheet_header2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/label_initial_amount" />
+
+                    <TextView
+                        style="@style/sheet_header2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/label_received" />
+
+                    <TextView
+                        style="@style/sheet_header2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/label_issued" />
+
+                    <TextView
+                        style="@style/sheet_header2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/label_theoretical" />
+
+                    <TextView
+                        style="@style/sheet_header2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/label_total" />
+
+                    <TextView
+                        style="@style/sheet_header2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/label_inventory" />
+
+                    <TextView
+                        style="@style/sheet_header2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/label_different" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@drawable/divider_vertical"
+                    android:orientation="horizontal"
+                    android:showDividers="middle">
+                    <TextView
+                        style="@style/sheet_header2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="SI" />
+
+                    <TextView
+                        style="@style/sheet_header2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="E" />
+
+                    <TextView
+                        style="@style/sheet_header2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="S" />
+
+                    <TextView
+                        style="@style/sheet_header2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="SF=SI+E-S" />
+
+                    <TextView
+                        style="@style/sheet_header2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="P" />
+
+                    <TextView
+                        style="@style/sheet_header2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="I" />
+
+                    <TextView
+                        style="@style/sheet_header2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="I-SF" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <TextView
+                style="@style/sheet_header2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/label_total_requested" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:divider="@drawable/divider_vertical"
+        android:showDividers="middle|end|beginning">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            style="@style/sheet_header2"
+            android:layout_weight="1"
+            android:text="@string/label_request_amount"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            style="@style/sheet_header2"
+            android:layout_weight="1"
+            android:text="@string/label_approved_amount"/>
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="@drawable/divider_vertical"
+    android:showDividers="beginning|middle|end">
+
+
+    <LinearLayout
+        android:layout_width="1000dp"
+        android:layout_height="wrap_content"
+        android:divider="@drawable/divider_vertical"
+        android:orientation="horizontal"
+        android:showDividers="middle">
+        <TextView
+            android:id="@+id/tx_initial_amount"
+            style="@style/sheet_header2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1000" />
+
+        <TextView
+            android:id="@+id/tx_received"
+            style="@style/sheet_header2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1000" />
+
+        <TextView
+            android:id="@+id/tx_issued"
+            style="@style/sheet_header2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1000" />
+
+        <TextView
+            android:id="@+id/tx_theoretical"
+            style="@style/sheet_header2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1000" />
+
+        <TextView
+            android:id="@+id/tx_total"
+            style="@style/sheet_header2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1000" />
+
+        <TextView
+            android:id="@+id/tx_inventory"
+            style="@style/sheet_header2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1000" />
+
+        <TextView
+            android:id="@+id/tx_different"
+            style="@style/sheet_header2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1000" />
+
+        <TextView
+            android:id="@+id/tx_total_request"
+            style="@style/sheet_header2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1000" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:divider="@drawable/divider_vertical"
+        android:showDividers="middle|end|beginning">
+        <EditText
+            android:id="@+id/et_request_amount"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            style="@style/sheet_header2"
+            android:layout_weight="1"/>
+        <EditText
+            android:id="@+id/et_approved_amount"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            style="@style/sheet_header2"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+</LinearLayout>

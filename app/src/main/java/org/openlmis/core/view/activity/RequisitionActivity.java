@@ -18,13 +18,19 @@
 
 package org.openlmis.core.view.activity;
 
+import android.os.Bundle;
+
 import com.google.inject.Inject;
 
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.repository.VIAReposotory;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.RequisitionPresenter;
+import org.openlmis.core.view.widget.RequisitionForm;
 
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
 
 
 @ContentView(R.layout.activity_requisition)
@@ -32,6 +38,24 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     @Inject
     RequisitionPresenter presenter;
+
+    @InjectView(R.id.requisition_form)
+    RequisitionForm requisitionForm;
+
+    @Inject
+    VIAReposotory viaReposotory;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        try {
+            requisitionForm.setData(viaReposotory.initVIA());
+        }catch (LMISException e){
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public Presenter getPresenter() {

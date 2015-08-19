@@ -68,6 +68,13 @@
     <string name="label_kits_opened">Kits opened</string>
     <string name="label_us">US</string>
     <string name="label_ape">APE</string>
+    <string name="label_theoretical">Theoretical</string>
+    <string name="label_different">Different</string>
+    <string name="label_total_requested">Total request</string>
+    <string name="label_request_amount">Request amount</string>
+    <string name="label_approved_amount">Approved amount</string>
+    <string name="label_fnm">FNM</string>
+    <string name="label_product_name">Product Name</string>
 
 
     <!-- Stock Card List Page -->
