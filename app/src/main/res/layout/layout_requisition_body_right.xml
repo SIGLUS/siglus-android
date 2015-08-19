@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="3"
+    android:background="@drawable/border_bg_gray">
 
     <LinearLayout android:id="@+id/requisition_body_right"
-        android:layout_width="1200dp"
+        android:layout_width="1000dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:divider="@drawable/divider_horizontal"
+        android:showDividers="middle|end">
 
         <include android:id="@+id/requisition_body_header"
             layout="@layout/layout_requisition_header_right" />

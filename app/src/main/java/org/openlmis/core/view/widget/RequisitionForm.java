@@ -69,14 +69,28 @@ public class RequisitionForm extends LinearLayout{
     public void setData(RnRForm rnRForm){
         this.rnRForm = rnRForm;
 
-        for (RnrFormItem product : rnRForm.getRnrFormItemList()){
-            addChildToLeft(product);
-            addChildToRight(product);
+        RnrFormItem item = rnRForm.getRnrFormItemList().iterator().next();
+        for (int i=0;i<10;i++){
+            final View rightView = addChildToRight(item);
+            final View leftView = addChildToLeft(item);
+
+            leftView.post(new Runnable() {
+                @Override
+                public void run() {
+                    int leftHeight = leftView.getHeight();
+                    int rightHeight = rightView.getHeight();
+                    if (leftHeight > rightHeight) {
+                        rightView.getLayoutParams().height = leftHeight;
+                    } else {
+                        leftView.getLayoutParams().height = rightHeight;
+                    }
+                }
+            });
         }
     }
 
 
-    private void addChildToRight(RnrFormItem product){
+    private View addChildToRight(RnrFormItem product){
         View item = layoutInflater.inflate(R.layout.item_requisition_body_right, this,false);
         long received = product.getReceived();
         long total = product.getInitialAmount() + received - product.getIssued();
@@ -92,13 +106,15 @@ public class RequisitionForm extends LinearLayout{
         ((TextView)item.findViewById(R.id.tx_total_request)).setText(String.valueOf(received*2-inventory));
 
         requisitionBody.addView(item);
+        return item;
     }
 
-    private void addChildToLeft(RnrFormItem product) {
+    private View addChildToLeft(RnrFormItem product) {
         View item = layoutInflater.inflate(R.layout.item_requisition_body_left, this, false);
         ((TextView)item.findViewById(R.id.tx_FNM)).setText(product.getProduct().getCode());
         ((TextView)item.findViewById(R.id.tx_product_name)).setText(product.getProduct().getPrimaryName());
         productNameList.addView(item);
+        return item;
     }
 
 }

@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/requisition_body_left"
-    android:orientation="vertical" android:layout_width="300dp"
-    android:layout_height="match_parent">
+    android:background="@drawable/border_bg"
+    android:orientation="vertical" android:layout_width="0dp"
+    android:layout_weight="2"
+    android:layout_height="match_parent"
+    android:divider="@drawable/divider_horizontal"
+    android:showDividers="middle|end">
 
     <include android:id="@+id/product_name_list_header"
         layout="@layout/layout_requisition_header_left"/>
