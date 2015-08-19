@@ -42,6 +42,7 @@ public class MMIAInfoList extends LinearLayout {
     private BaseInfoItem totalItem;
     private LayoutInflater layoutInflater;
     private ArrayList<BaseInfoItem> list;
+    private boolean hasDataChanged = false;
 
     public MMIAInfoList(Context context) {
         super(context);
@@ -113,6 +114,10 @@ public class MMIAInfoList extends LinearLayout {
         }
     }
 
+    public boolean hasDataChanged() {
+        return hasDataChanged;
+    }
+
     class EditTextWatcher implements android.text.TextWatcher {
 
         private final BaseInfoItem item;
@@ -133,6 +138,7 @@ public class MMIAInfoList extends LinearLayout {
 
         @Override
         public void afterTextChanged(Editable editable) {
+            hasDataChanged = true;
             item.setValue(editable.toString());
             if (totalView != null && !isTotalInfoView(item)) {
                 String total = String.valueOf(getTotal());

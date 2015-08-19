@@ -137,7 +137,15 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
 
     @Override
     public void onBackPressed() {
-        MMIAOnBackConfirmDialog.showDialog(getFragmentManager());
+        if (hasDataChanged()) {
+            MMIAOnBackConfirmDialog.showDialog(getFragmentManager());
+        }else {
+            super.onBackPressed();
+        }
+    }
+
+    private boolean hasDataChanged() {
+        return regimeListView.hasDataChanged()||mmiaInfoListView.hasDataChanged();
     }
 
     private void goToHomePage() {

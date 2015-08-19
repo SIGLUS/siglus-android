@@ -42,6 +42,7 @@ public class MMIARegimeList extends LinearLayout {
     private ArrayList<RegimenItem> list;
     private ArrayList<EditText> editTexts = new ArrayList<>();
     private LayoutInflater layoutInflater;
+    private boolean hasDataChanged = false;
 
     public MMIARegimeList(Context context) {
         super(context);
@@ -113,6 +114,11 @@ public class MMIARegimeList extends LinearLayout {
         addView(view);
     }
 
+    public boolean hasDataChanged() {
+        return hasDataChanged;
+    }
+
+
     class EditTextWatcher implements android.text.TextWatcher {
 
         private final RegimenItem item;
@@ -133,6 +139,8 @@ public class MMIARegimeList extends LinearLayout {
 
         @Override
         public void afterTextChanged(Editable editable) {
+            hasDataChanged = true;
+
             try {
                 item.setAmount(Long.parseLong(editable.toString()));
             } catch (NumberFormatException e) {
