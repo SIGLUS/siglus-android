@@ -56,8 +56,11 @@ public class MMIAFormPresenter implements Presenter {
     }
 
     public RnRForm getRnrForm() {
-        RnRForm draftMMIAForm = getDraftMMIAForm();
+        if (form != null) {
+            return form;
+        }
 
+        RnRForm draftMMIAForm = getDraftMMIAForm();
         if (draftMMIAForm != null) {
             form = draftMMIAForm;
         } else {
