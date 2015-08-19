@@ -33,6 +33,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -78,9 +79,18 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
 
         holder.productName.setText(styledName);
         holder.productUnit.setText(styledUnit);
-        StockCard stockCard = currentStockCards.get(position);
+        initStockOnHand(holder, currentStockCards.get(position));
+    }
+
+    private void initStockOnHand(ViewHolder holder, final StockCard stockCard) {
         holder.stockOnHand.setText(stockCard.getStockOnHand() + "");
         holder.stockOnHandBg.setBackgroundResource(getStockOnHandViewColor(stockCard));
+        holder.iv_warning.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ToastUtil.showInCenter(getStockOnHandWarningMsg(stockCard));
+            }
+        });
     }
 
     private int getStockOnHandViewColor(StockCard stockCard) {
@@ -92,6 +102,22 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
                 break;
             case StockCard.STOCK_ON_HAND_STOCK_OUT:
                 result = R.color.color_stock_out;
+                break;
+            default:
+                break;
+        }
+        return result;
+    }
+
+    private String getStockOnHandWarningMsg(StockCard stockCard) {
+        String result = "";
+        int stockOnHandLevel = stockCard.getStockOnHandLevel();
+        switch (stockOnHandLevel) {
+            case StockCard.STOCK_ON_HAND_LOW_STOCK:
+                result = LMISApp.getContext().getString(R.string.msg_low_stock_warning);
+                break;
+            case StockCard.STOCK_ON_HAND_STOCK_OUT:
+                result = LMISApp.getContext().getString(R.string.msg_stock_out_warning);
                 break;
             default:
                 break;
@@ -111,6 +137,7 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
         public TextView productUnit;
         public TextView stockOnHand;
         public View stockOnHandBg;
+        public View iv_warning;
 
 
         public ViewHolder(View itemView) {
@@ -120,6 +147,7 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
             productUnit = (TextView) itemView.findViewById(R.id.product_unit);
             stockOnHand = (TextView) itemView.findViewById(R.id.tv_stock_on_hand);
             stockOnHandBg = itemView.findViewById(R.id.vg_stock_on_hand_bg);
+            iv_warning = itemView.findViewById(R.id.iv_warning);
         }
 
         @Override

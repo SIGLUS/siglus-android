@@ -75,6 +75,8 @@
     <string name="label_approved_amount">Approved amount</string>
     <string name="label_fnm">FNM</string>
     <string name="label_product_name">Product Name</string>
+    <string name="msg_low_stock_warning">Your product has low stock.</string>
+    <string name="msg_stock_out_warning">Your product is stocked out.</string>
 
 
     <!-- Stock Card List Page -->
