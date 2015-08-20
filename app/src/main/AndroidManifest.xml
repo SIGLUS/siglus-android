@@ -39,7 +39,7 @@
             android:label="@string/title_stock_cards" />
 
         <activity
-            android:name=".view.activity.MMIASpreadActivity"
+            android:name=".view.activity.MMIAActivity"
             android:label="@string/title_mmia_spread"
             android:windowSoftInputMode="adjustPan" />
 

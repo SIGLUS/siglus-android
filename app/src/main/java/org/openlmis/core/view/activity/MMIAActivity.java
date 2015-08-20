@@ -44,7 +44,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_mmia_spread)
-public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresenter.MIMIAFormView, View.OnClickListener {
+public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMIAFormView, View.OnClickListener {
 
     @InjectView(R.id.rnr_form_list)
     private MMIARnrForm rnrFromListView;
@@ -148,7 +148,7 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
     }
 
     private void goToHomePage() {
-        Intent intent = new Intent(MMIASpreadActivity.this, HomeActivity.class);
+        Intent intent = new Intent(MMIAActivity.this, HomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(HomeActivity.class, true);
     }

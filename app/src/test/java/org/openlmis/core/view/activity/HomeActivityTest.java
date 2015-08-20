@@ -60,7 +60,7 @@ public class HomeActivityTest {
     public void shouldGoToMMIAFormPage(){
         homeActivity.btnMMIA.performClick();
 
-        verifyNextPage(MMIASpreadActivity.class.getName());
+        verifyNextPage(MMIAActivity.class.getName());
     }
 
     @Test
