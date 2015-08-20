@@ -56,6 +56,10 @@ public class CreateDummyRnrForm implements Migration {
                     product.setProgram(program);
                     product.setId(1);
                     createRnrFormItem(product);
+                    product.setId(2);
+                    createRnrFormItem(product);
+                    product.setId(3);
+                    createRnrFormItem(product);
                     return null;
                 }
             });
