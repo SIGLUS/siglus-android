@@ -1,5 +1,7 @@
 package org.openlmis.core.model.repository;
 
+import android.support.annotation.NonNull;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +37,7 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
     public void shouldQueryListForLowStockByProductId() throws LMISException {
 
         RnRForm form = new RnRForm();
-        List<RnrFormItem> rnrFormItemList = new ArrayList();
+        List<RnrFormItem> rnrFormItemList = new ArrayList<>();
 
         Program program = new Program();
         program.setProgramCode("1");
@@ -43,17 +45,12 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
         product.setProgram(program);
         product.setId(1);
 
-        for (int i = 0; i < 20; i++) {
-            RnrFormItem rnrFormItem = new RnrFormItem();
-            rnrFormItem.setForm(form);
-            rnrFormItem.setProduct(product);
-            if (i % 2 == 0) {
-                rnrFormItem.setInventory(0);
-            } else {
-                rnrFormItem.setInventory(1);
-            }
-            rnrFormItemList.add(rnrFormItem);
-        }
+        rnrFormItemList.add(getRnrFormItem(form, product, 1));
+        rnrFormItemList.add(getRnrFormItem(form, product, 2));
+        rnrFormItemList.add(getRnrFormItem(form, product, 3));
+        rnrFormItemList.add(getRnrFormItem(form, product, 0));
+        rnrFormItemList.add(getRnrFormItem(form, product, 5));
+        rnrFormItemList.add(getRnrFormItem(form, product, 7));
 
         rnrFormItemRepository.create(rnrFormItemList);
 
@@ -63,9 +60,18 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
 
         assertThat(rnrFormItemListFromDB.size(), is(3));
 
-        for (RnrFormItem item : rnrFormItemListFromDB) {
-            assertThat(item.getInventory(), is(1L));
-        }
+        assertThat(rnrFormItemListFromDB.get(0).getInventory(), is(7L));
+        assertThat(rnrFormItemListFromDB.get(1).getInventory(), is(5L));
+        assertThat(rnrFormItemListFromDB.get(2).getInventory(), is(3L));
+    }
+
+    @NonNull
+    private RnrFormItem getRnrFormItem(RnRForm form, Product product, long inventory) {
+        RnrFormItem rnrFormItem = new RnrFormItem();
+        rnrFormItem.setForm(form);
+        rnrFormItem.setProduct(product);
+        rnrFormItem.setInventory(inventory);
+        return rnrFormItem;
     }
 
 
