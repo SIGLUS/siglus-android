@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<link>
+    <script src="js/jquery.min.js"></script>
+
+    <script src="js/jquery.dataTables.min.js"></script>
+
+    <script src="js/dataTables.fixedColumns.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="css/fixedColumns.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="css/requisitionForm.css">
+</head>
+<body>
+
+<script>
+    var table;
+    $(document).ready(function() {
+        table = $('#example').DataTable( {
+            scrollY:        "100%",
+            scrollX:        true,
+            scrollCollapse: true,
+            paging:         false,
+            fixedColumns:   {
+                leftColumns: 2
+            }
+        });
+
+        json = window.JSInterface.fillFormData();
+        setData(eval(json));
+    });
+
+    function addRow(values){
+        for(i=values.length+1;i<=10;i++){
+            values.push("");
+        }
+
+        values.push("<input type='text' name='requestedAmount'/>");
+        values.push("<input type='text' name='approvedAmount'/>");
+
+        table.row.add(values);
+    }
+
+    function setData(map){
+        table.clear();
+
+        map.forEach(function(entry){
+            addRow(entry);
+        });
+
+        table.draw();
+    }
+
+</script>
+
+
+<table id="example" class="stripe row-border order-column" cellspacing="0">
+    <thead>
+    <tr>
+        <th rowspan="4">FNM</th>
+        <th rowspan="4">Product Name</th>
+        <th colspan="8">Requisition from provincial or district level</th>
+        <th rowspan="4">Quantity Requested</th>
+        <th rowspan="4">Quantity Approved</th>
+    </tr>
+    <tr>
+        <td colspan="5">Stock Movement</td>
+        <td colspan="3">Inventory</td>
+    </tr>
+    <tr>
+        <td>Initial amount</td>
+        <td>Received</td>
+        <td>Issued</td>
+        <td>Theoretical</td>
+        <td>Total</td>
+        <td>Inventory</td>
+        <td>Difference</td>
+        <td rowspan="2">Quantity Request</td>
+    </tr>
+    <tr>
+        <td>SI</td>
+        <td>E</td>
+        <td>S</td>
+        <td>SF=SI+E-S</td>
+        <td>P</td>
+        <td>I</td>
+        <td>I-SF</td>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr id="contentList">
+        <td class="tg-031e">F100231</td>
+        <td class="tg-6wtj">Acasfad Caoaf Tablet 500ml * 10</td>
+        <td class="tg-031e">100</td>
+        <td class="tg-6wtj">100</td>
+        <td class="tg-031e">242</td>
+        <td class="tg-6wtj">123</td>
+        <td class="tg-031e">12</td>
+        <td class="tg-6wtj">123</td>
+        <td class="tg-031e">123</td>
+        <td class="tg-6wtj">1244</td>
+        <td class="tg-031e">123</td>
+        <td class="tg-6wtj"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

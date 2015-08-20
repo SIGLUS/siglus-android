@@ -18,20 +18,22 @@
 
 package org.openlmis.core.view.activity;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
-import android.webkit.ConsoleMessage;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
+import com.google.gson.Gson;
 import com.google.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.VIAReposotory;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.RequisitionPresenter;
+import org.openlmis.core.view.widget.FormView;
+
+import java.util.ArrayList;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -44,7 +46,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     RequisitionPresenter presenter;
 
     @InjectView(R.id.requisition_form)
-    WebView requisitionForm;
+    FormView requisitionForm;
 
     @Inject
     VIAReposotory viaReposotory;
@@ -54,34 +56,68 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requisitionForm.getSettings().setJavaScriptEnabled(true);
-        requisitionForm.setWebChromeClient(new WebChromeClient() {
+        requisitionForm.loadForm("form");
+
+        requisitionForm.setFormViewListener(new FormView.FormViewCallback() {
             @Override
-            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                Log.d("WebView", consoleMessage.message());
-                return super.onConsoleMessage(consoleMessage);
-            }
-
-        });
-
-        requisitionForm.setWebViewClient(new WebViewClient(){
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-
+            public void onStartLoading() {
                 startLoading();
             }
 
             @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
+            public void onStopLoading() {
                 stopLoading();
             }
 
+            @Override
+            public void onError(LMISException e) {
 
+            }
+
+            @Override
+            public String fillFormData() {
+                return getRnrFormData();
+            }
         });
+    }
 
-        requisitionForm.loadUrl("file:///android_asset/www/form.html");
+    public String getRnrFormData(){
+        try {
+            RnRForm rnRForm = viaReposotory.initVIA();
+            RnrFormItem item = rnRForm.getRnrFormItemList().iterator().next();
+
+            ArrayList<ArrayList<String>> dataMap = new ArrayList<>();
+
+            for (int i=0;i<100;i++){
+                ArrayList<String> values = new ArrayList<>();
+
+
+                long received = item.getReceived();
+                long total = item.getInitialAmount() + received - item.getIssued();
+                long inventory = item.getInventory();
+
+                values.add(item.getProduct().getCode());
+                values.add(item.getProduct().getPrimaryName());
+
+                values.add(String.valueOf(item.getInitialAmount()));
+                values.add(String.valueOf(received));
+                values.add(String.valueOf(item.getIssued()));
+                values.add(String.valueOf(total));
+                values.add("-");
+                values.add(String.valueOf(inventory));
+                values.add(String.valueOf(item.getAdjustment() - total));
+                values.add(String.valueOf(received * 2 - inventory));
+
+                dataMap.add(values);
+            }
+
+            return new Gson().toJson(dataMap);
+
+        } catch (LMISException e){
+            e.printStackTrace();
+        }
+
+        return StringUtils.EMPTY;
     }
 
     @Override
