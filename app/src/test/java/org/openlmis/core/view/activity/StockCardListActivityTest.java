@@ -84,7 +84,7 @@ public class StockCardListActivityTest {
 
     @Test
     public void shouldSortListByProductName(){
-        StockCardListAdapter adapter = new StockCardListAdapter(stockCards);
+        StockCardListAdapter adapter = new StockCardListAdapter(stockCardListActivity.presenter,stockCards);
         adapter.sortByName(true);
 
         List<StockCard> sortedList = adapter.getCurrentStockCards();
@@ -95,7 +95,7 @@ public class StockCardListActivityTest {
 
     @Test
     public void shouldSortListBySOH(){
-        StockCardListAdapter adapter = new StockCardListAdapter(stockCards);
+        StockCardListAdapter adapter = new StockCardListAdapter(stockCardListActivity.presenter,stockCards);
         adapter.sortBySOH(true);
 
         List<StockCard> sortedList = adapter.getCurrentStockCards();

@@ -33,6 +33,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.presenter.StockCardListPresenter;
 import org.openlmis.core.utils.ToastUtil;
 
 import java.util.ArrayList;
@@ -44,13 +45,14 @@ import lombok.Getter;
 
 public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdapter.ViewHolder> implements FilterableAdapter {
 
+    private final StockCardListPresenter presenter;
     List<StockCard> stockCards;
 
     @Getter
     List<StockCard> currentStockCards;
 
-
-    public StockCardListAdapter(List<StockCard> stockCardList) {
+    public StockCardListAdapter(StockCardListPresenter presenter, List<StockCard> stockCardList) {
+        this.presenter = presenter;
         this.stockCards = stockCardList;
         currentStockCards = new ArrayList<>(stockCardList);
     }
@@ -84,46 +86,35 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
 
     private void initStockOnHand(ViewHolder holder, final StockCard stockCard) {
         holder.stockOnHand.setText(stockCard.getStockOnHand() + "");
-        holder.stockOnHandBg.setBackgroundResource(getStockOnHandViewColor(stockCard));
+
+        int stockOnHandLevel = presenter.getStockOnHandLevel(stockCard);
+        String warningMsg = null;
+        switch (stockOnHandLevel) {
+            case StockCardListPresenter.STOCK_ON_HAND_LOW_STOCK:
+                holder.stockOnHandBg.setBackgroundResource(R.color.color_low_stock);
+                warningMsg = LMISApp.getContext().getString(R.string.msg_low_stock_warning);
+                holder.iv_warning.setVisibility(View.VISIBLE);
+                break;
+            case StockCardListPresenter.STOCK_ON_HAND_STOCK_OUT:
+                holder.stockOnHandBg.setBackgroundResource(R.color.color_stock_out);
+                warningMsg = LMISApp.getContext().getString(R.string.msg_stock_out_warning);
+                holder.iv_warning.setVisibility(View.VISIBLE);
+                break;
+            default:
+                holder.iv_warning.setVisibility(View.GONE);
+                holder.stockOnHandBg.setBackgroundResource(R.color.color_primary_50);
+                break;
+        }
+        final String finalWarningMsg = warningMsg;
         holder.iv_warning.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ToastUtil.showInCenter(getStockOnHandWarningMsg(stockCard));
+                ToastUtil.showInCenter(finalWarningMsg);
             }
         });
+
     }
 
-    private int getStockOnHandViewColor(StockCard stockCard) {
-        int result = R.color.color_primary_50;
-        int stockOnHandLevel = stockCard.getStockOnHandLevel();
-        switch (stockOnHandLevel) {
-            case StockCard.STOCK_ON_HAND_LOW_STOCK:
-                result = R.color.color_low_stock;
-                break;
-            case StockCard.STOCK_ON_HAND_STOCK_OUT:
-                result = R.color.color_stock_out;
-                break;
-            default:
-                break;
-        }
-        return result;
-    }
-
-    private String getStockOnHandWarningMsg(StockCard stockCard) {
-        String result = "";
-        int stockOnHandLevel = stockCard.getStockOnHandLevel();
-        switch (stockOnHandLevel) {
-            case StockCard.STOCK_ON_HAND_LOW_STOCK:
-                result = LMISApp.getContext().getString(R.string.msg_low_stock_warning);
-                break;
-            case StockCard.STOCK_ON_HAND_STOCK_OUT:
-                result = LMISApp.getContext().getString(R.string.msg_stock_out_warning);
-                break;
-            default:
-                break;
-        }
-        return result;
-    }
 
     @Override
     public int getItemCount() {

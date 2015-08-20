@@ -38,10 +38,6 @@ import lombok.Setter;
 @DatabaseTable(tableName = "stock_cards")
 public class StockCard extends BaseModel{
 
-    public static final int STOCK_ON_HAND_NORMAL = 1;
-    public static final int STOCK_ON_HAND_LOW_STOCK = 2;
-    public static final int STOCK_ON_HAND_STOCK_OUT = 3;
-
     public static final String DIVIDER = ",";
 
     @DatabaseField
@@ -68,8 +64,4 @@ public class StockCard extends BaseModel{
         return null;
     }
 
-    //TODO
-    public int getStockOnHandLevel(){
-        return STOCK_ON_HAND_LOW_STOCK;
-    }
 }

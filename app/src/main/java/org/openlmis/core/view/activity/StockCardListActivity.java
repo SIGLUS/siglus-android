@@ -63,7 +63,7 @@ public class StockCardListActivity extends BaseActivity implements StockCardList
 
         presenter.attachView(this);
         stockCardList = presenter.loadStockCards();
-        mAdapter = new StockCardListAdapter(stockCardList);
+        mAdapter = new StockCardListAdapter(presenter,stockCardList);
 
         initUI();
     }

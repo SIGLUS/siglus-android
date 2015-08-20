@@ -30,12 +30,12 @@ public class RnrFormItemRepository {
         return dbUtil.withDao(RnrFormItem.class, new DbUtil.Operation<RnrFormItem, List<RnrFormItem>>() {
             @Override
             public List<RnrFormItem> operate(Dao<RnrFormItem, String> dao) throws SQLException {
-                return dao.queryBuilder().limit(3L).where().eq("product_id", product.getId()).and().ne("inventory", 0).query();
+                return dao.queryBuilder().orderBy("id", false).limit(3L).where().eq("product_id", product.getId()).and().ne("inventory", 0).query();
             }
         });
     }
 
-    public void create(final List<RnrFormItem> rnrFormItemList) throws LMISException{
+    public void create(final List<RnrFormItem> rnrFormItemList) throws LMISException {
         dbUtil.withDaoAsBatch(RnrFormItem.class, new DbUtil.Operation<RnrFormItem, Void>() {
             @Override
             public Void operate(Dao<RnrFormItem, String> dao) throws SQLException {
