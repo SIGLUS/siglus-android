@@ -57,9 +57,6 @@ public class RnrFormRepository {
     StockRepository stockRepository;
 
     @Inject
-    RegimenRepository regimenRepository;
-
-    @Inject
     RnrFormItemRepository rnrFormItemRepository;
 
     GenericDao<RnRForm> genericDao;
@@ -89,7 +86,7 @@ public class RnrFormRepository {
 
                     form.setProgram(program);
                     create(form);
-                    rnrFormItemRepository.create(generateProductItems(form));
+                    createRnrFormItems(generateProductItems(form));
                     createRegimenItems(generateRegimeItems(form));
                     createBaseInfoItems(generateBaseInfoItems(form));
                     genericDao.refresh(form);
@@ -149,6 +146,9 @@ public class RnrFormRepository {
         genericDao.update(form);
     }
 
+    private void createRnrFormItems(List<RnrFormItem> form) throws LMISException {
+        rnrFormItemRepository.create(form);
+    }
 
     public void createRegimenItems(final List<RegimenItem> regimenItemList) throws LMISException {
         dbUtil.withDao(RegimenItem.class, new DbUtil.Operation<RegimenItem, Void>() {
