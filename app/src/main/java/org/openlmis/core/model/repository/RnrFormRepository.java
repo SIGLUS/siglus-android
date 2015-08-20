@@ -57,6 +57,9 @@ public class RnrFormRepository {
     StockRepository stockRepository;
 
     @Inject
+    RegimenRepository regimenRepository;
+
+    @Inject
     RnrFormItemRepository rnrFormItemRepository;
 
     GenericDao<RnRForm> genericDao;
