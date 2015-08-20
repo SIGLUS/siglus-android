@@ -84,7 +84,7 @@ public class HomeActivity extends BaseActivity{
         btnMMIA.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View v) {
-                startActivity(MMIASpreadActivity.class, false);
+                startActivity(MMIAActivity.class, false);
             }
         });
 
