@@ -20,20 +20,14 @@ package org.openlmis.core.view.activity;
 
 import android.os.Bundle;
 
-import com.google.gson.Gson;
 import com.google.inject.Inject;
 
-import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnrFormItem;
-import org.openlmis.core.model.repository.VIAReposotory;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.RequisitionPresenter;
 import org.openlmis.core.view.widget.FormView;
 
-import java.util.ArrayList;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -48,19 +42,15 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     @InjectView(R.id.requisition_form)
     FormView requisitionForm;
 
-    @Inject
-    VIAReposotory viaReposotory;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         requisitionForm.loadForm("form");
-
         requisitionForm.setFormViewListener(new FormView.FormViewCallback() {
             @Override
             public void onStartLoading() {
+                presenter.loadRnrForm();
                 startLoading();
             }
 
@@ -76,48 +66,9 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
             @Override
             public String fillFormData() {
-                return getRnrFormData();
+                return presenter.fillFormData();
             }
         });
-    }
-
-    public String getRnrFormData(){
-        try {
-            RnRForm rnRForm = viaReposotory.initVIA();
-            RnrFormItem item = rnRForm.getRnrFormItemList().iterator().next();
-
-            ArrayList<ArrayList<String>> dataMap = new ArrayList<>();
-
-            for (int i=0;i<100;i++){
-                ArrayList<String> values = new ArrayList<>();
-
-
-                long received = item.getReceived();
-                long total = item.getInitialAmount() + received - item.getIssued();
-                long inventory = item.getInventory();
-
-                values.add(item.getProduct().getCode());
-                values.add(item.getProduct().getPrimaryName());
-
-                values.add(String.valueOf(item.getInitialAmount()));
-                values.add(String.valueOf(received));
-                values.add(String.valueOf(item.getIssued()));
-                values.add(String.valueOf(total));
-                values.add("-");
-                values.add(String.valueOf(inventory));
-                values.add(String.valueOf(item.getAdjustment() - total));
-                values.add(String.valueOf(received * 2 - inventory));
-
-                dataMap.add(values);
-            }
-
-            return new Gson().toJson(dataMap);
-
-        } catch (LMISException e){
-            e.printStackTrace();
-        }
-
-        return StringUtils.EMPTY;
     }
 
     @Override
