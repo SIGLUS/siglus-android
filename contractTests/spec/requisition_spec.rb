@@ -6,18 +6,17 @@ describe "submit requisition to web server" do
   it "should sync MMIA requisition to server successfully and return expected response" do
 
     requisition = {
-      programCode: "ESS_MEDS",
+      programCode: "MMIA",
       agentCode: "F10",
       products: [
       {
-        productCode: "P74",
+        productCode: "P6",
         beginningBalance: 1000,
         quantityReceived: 2000,
         quantityDispensed: 2500,
         totalLossesAndAdjustments: 0,
-        stockInHand: 500,
-        stockOutDays: 20,
-        quantityRequested: 10000,
+        quantityRequested: 1000,
+        expirationDate: "12/31/2015",
         reasonForRequestedQuantity: "justbecause"
       }
       ],
@@ -34,43 +33,15 @@ describe "submit requisition to web server" do
       regimens: [
       {
         code: "001",
-        name: "REGIMEN1",
-        patientsOnTreatment: 200,
-        patientsToInitiateTreatment: 200,
-        patientsStoppedTreatment: 200,
-        remarks:"remark"
+        patientsOnTreatment: 200
       },
       {
         code: "002",
-        name: "REGIMEN2",
-        patientsOnTreatment: 200,
-        patientsToInitiateTreatment: 200,
-        patientsStoppedTreatment: 200,
-        remarks:"remark"
+        patientsOnTreatment: 200
       },
       {
         code: "003",
-        name: "REGIMEN3",
-        patientsOnTreatment: 200,
-        patientsToInitiateTreatment: 200,
-        patientsStoppedTreatment: 200,
-        remarks:"remark"
-      },
-      {
-        code: "005",
-        name: "REGIMEN5",
-        patientsOnTreatment: 200,
-        patientsToInitiateTreatment: 200,
-        patientsStoppedTreatment: 200,
-        remarks:"remark"
-      },
-      {
-        code:"006",
-        name:"REGIMEN6",
-        patientsOnTreatment: 200,
-        patientsToInitiateTreatment: 200,
-        patientsStoppedTreatment: 200,
-        remarks:"remark"
+        patientsOnTreatment: 200
       }
       ]
     }
@@ -98,7 +69,7 @@ describe "submit requisition to web server" do
     body = JSON.parse(response.body)
 
     expect(body['requisition']['id']).to eq requisition_id
-    expect(body['requisition']['programCode']).to eq "ESS_MEDS"
+    expect(body['requisition']['programCode']).to eq "MMIA"
     expect(body['requisition']['agentCode']).to eq "F10"
     expect(body['requisition']['emergency']).to be false
     expect(body['requisition']['requisitionStatus']).to eq "AUTHORIZED"

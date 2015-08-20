@@ -11,10 +11,10 @@ describe "log in to web server" do
     expected_body =
       { "userInformation" =>
         { "userName" => "superuser",
-          "userFirstName" => "Maafi-de",
-          "userLastName" => "Doe",
+          "userFirstName" => "Super",
+          "userLastName" => "User",
           "facilityCode" => "F10",
-          "facilityName" => "Village Dispensary"
+          "facilityName" => "Health Facility 1"
         }
       }
 
