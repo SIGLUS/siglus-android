@@ -41,7 +41,7 @@ public class MMIAInfoList extends LinearLayout {
     private ArrayList<EditText> editTexts = new ArrayList<>();
     private BaseInfoItem totalItem;
     private LayoutInflater layoutInflater;
-    private ArrayList<BaseInfoItem> list;
+    private ArrayList<BaseInfoItem> dataList = new ArrayList<>();
     private boolean hasDataChanged = false;
 
     public MMIAInfoList(Context context) {
@@ -61,10 +61,10 @@ public class MMIAInfoList extends LinearLayout {
     }
 
     public void initView(ArrayList<BaseInfoItem> list) {
-        this.list = list;
+        this.dataList.addAll(list);
         addHeaderView();
 
-        for (BaseInfoItem item : list) {
+        for (BaseInfoItem item : dataList) {
             if (item != null) {
                 addItemView(item);
             }
@@ -118,6 +118,10 @@ public class MMIAInfoList extends LinearLayout {
         return hasDataChanged;
     }
 
+    public ArrayList<BaseInfoItem> getDataList() {
+        return dataList;
+    }
+
     class EditTextWatcher implements android.text.TextWatcher {
 
         private final BaseInfoItem item;
@@ -150,7 +154,7 @@ public class MMIAInfoList extends LinearLayout {
 
     public long getTotal() {
         long totalRegimenNumber = 0;
-        for (BaseInfoItem item : list) {
+        for (BaseInfoItem item : dataList) {
             if (isTotalInfoView(item)) {
                 continue;
             }

@@ -22,11 +22,15 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.view.View;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class MMIAFormPresenter implements Presenter {
 
@@ -35,11 +39,13 @@ public class MMIAFormPresenter implements Presenter {
 
     @Inject
     MMIARepository mmiaRepository;
+    private RnRForm rnrForm;
 
     @Override
     public void onStart() {
-        if (getRnrForm() != null) {
-            view.initUI();
+        rnrForm = getRnrForm();
+        if (rnrForm != null) {
+            view.initUI(new ArrayList<>(rnrForm.getRnrFormItemList()), rnrForm.getRegimenItemListWrapper(), rnrForm.getBaseInfoItemListWrapper(), rnrForm.getComments());
         }
     }
 
@@ -90,7 +96,10 @@ public class MMIAFormPresenter implements Presenter {
         return form;
     }
 
-    public void saveForm() throws SQLException {
+    public void saveForm(ArrayList<RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) throws SQLException {
+        form.setRegimenItemListWrapper(regimenItemList);
+        form.setBaseInfoItemListWrapper(baseInfoItemList);
+        form.setComments(comments);
         if (validate(form)) {
             try {
                 form.setStatus(RnRForm.STATUS.AUTHORIZED);
@@ -107,7 +116,10 @@ public class MMIAFormPresenter implements Presenter {
         return form.getRegimenItemListAmount(form.getRegimenItemListWrapper()) == mmiaRepository.getTotalPatients(form);
     }
 
-    public void saveDraftForm() throws SQLException {
+    public void saveDraftForm(ArrayList<RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) throws SQLException {
+        form.setRegimenItemListWrapper(regimenItemList);
+        form.setBaseInfoItemListWrapper(baseInfoItemList);
+        form.setComments(comments);
         try {
             form.setStatus(RnRForm.STATUS.DRAFT);
             mmiaRepository.save(form);
@@ -117,7 +129,7 @@ public class MMIAFormPresenter implements Presenter {
     }
 
     public interface MIMIAFormView extends View {
-        void initUI();
+        void initUI(ArrayList<RnrFormItem> rnrFormItemList, ArrayList<RegimenItem> regimenItemListWrapper, ArrayList<BaseInfoItem> baseInfoItemListWrapper, String comments);
 
         void showValidationAlert();
 

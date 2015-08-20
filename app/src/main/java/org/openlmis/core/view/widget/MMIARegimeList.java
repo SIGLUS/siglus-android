@@ -39,7 +39,7 @@ import java.util.ArrayList;
 public class MMIARegimeList extends LinearLayout {
     private Context context;
     private TextView totalView;
-    private ArrayList<RegimenItem> list;
+    private ArrayList<RegimenItem> dataList = new ArrayList<>();
     private ArrayList<EditText> editTexts = new ArrayList<>();
     private LayoutInflater layoutInflater;
     private boolean hasDataChanged = false;
@@ -61,15 +61,19 @@ public class MMIARegimeList extends LinearLayout {
     }
 
     public void initView(ArrayList<RegimenItem> regimenItems, TextView totalView) {
-        this.list = regimenItems;
+        this.dataList.addAll(regimenItems);
         this.totalView = totalView;
         addHeaderView();
-        for (RegimenItem item : regimenItems) {
+        for (RegimenItem item : dataList) {
             if (item != null) {
                 addItemView(item);
             }
         }
         totalView.setText(String.valueOf(getTotal()));
+    }
+
+    public ArrayList<RegimenItem> getDataList() {
+        return dataList;
     }
 
     private void addHeaderView() {
@@ -162,7 +166,7 @@ public class MMIARegimeList extends LinearLayout {
     }
 
     public long getTotal() {
-        return RnRForm.getRegimenItemListAmount(list);
+        return RnRForm.getRegimenItemListAmount(dataList);
     }
 
 }

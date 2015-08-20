@@ -93,7 +93,7 @@ public class StockCardListPresenter implements Presenter{
             for (RnrFormItem item : rnrFormItemList) {
                 total += item.getIssued();
             }
-            return (int) Math.ceil((total / 3) * 0.05);
+            return (int) Math.ceil((total / rnrFormItemList.size()) * 0.05);
         } catch (LMISException e) {
             e.printStackTrace();
         }

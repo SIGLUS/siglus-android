@@ -21,6 +21,8 @@ package org.openlmis.core.view.activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,6 +31,9 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.RegimenItem;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.presenter.MMIAFormPresenter;
 import org.openlmis.core.view.fragment.MMIAOnBackConfirmDialog;
 import org.openlmis.core.view.fragment.RetainedFragment;
@@ -75,6 +80,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
     Boolean hasDataChanged;
 
     private RetainedFragment dataFragment;
+    private boolean commentHasChanged = false;
 
     @Override
     public MMIAFormPresenter getPresenter() {
@@ -108,15 +114,18 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
         hasDataChanged = (Boolean) dataFragment.getData("hasDataChanged");
     }
 
-    public void initUI() {
+    @Override
+    public void initUI(ArrayList<RnrFormItem> rnrFormItemList, ArrayList<RegimenItem> regimenItemListWrapper, ArrayList<BaseInfoItem> baseInfoItemListWrapper, String comments) {
 
-        etComment.setText(presenter.getRnrForm().getComments());
+        rnrFromListView.initView(rnrFormItemList);
 
-        rnrFromListView.initView(new ArrayList<>(presenter.getRnrForm().getRnrFormItemList()));
+        regimeListView.initView(regimenItemListWrapper, tvRegimeTotal);
 
-        regimeListView.initView(presenter.getRnrForm().getRegimenItemListWrapper(), tvRegimeTotal);
+        mmiaInfoListView.initView(baseInfoItemListWrapper);
 
-        mmiaInfoListView.initView(presenter.getRnrForm().getBaseInfoItemListWrapper());
+        etComment.setText(comments);
+
+        etComment.addTextChangedListener(textWatcher);
 
         btnSave.setOnClickListener(this);
 
@@ -131,6 +140,23 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
         });
     }
 
+    TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            commentHasChanged = true;
+        }
+    };
+
     @Override
     public void onBackPressed() {
         if (hasDataChanged()) {
@@ -142,7 +168,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
 
     private boolean hasDataChanged() {
         if (hasDataChanged == null) {
-            hasDataChanged = regimeListView.hasDataChanged() || mmiaInfoListView.hasDataChanged();
+            hasDataChanged = regimeListView.hasDataChanged() || mmiaInfoListView.hasDataChanged() || commentHasChanged;
         }
         return hasDataChanged;
     }
@@ -186,10 +212,9 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
     }
 
     private void onCompleteBtnClick() {
-        if (regimeListView.complete() && mmiaInfoListView.complete() && (regimeListView.getTotal() == mmiaInfoListView.getTotal())) {
+        if (regimeListView.complete() && mmiaInfoListView.complete() && isTotalEqual()) {
             try {
-                presenter.getRnrForm().setComments(etComment.getText().toString());
-                presenter.saveForm();
+                presenter.saveForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
                 goToHomePage();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -198,10 +223,15 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
         }
     }
 
+    private boolean isTotalEqual() {
+        return regimeListView.getTotal() == mmiaInfoListView.getTotal();
+    }
+
     private void onSaveBtnClick() {
         try {
-            presenter.getRnrForm().setComments(etComment.getText().toString());
-            presenter.saveDraftForm();
+            if (hasDataChanged) {
+                presenter.saveDraftForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
+            }
             goToHomePage();
         } catch (SQLException e) {
             e.printStackTrace();
