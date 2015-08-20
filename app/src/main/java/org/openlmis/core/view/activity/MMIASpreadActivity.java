@@ -20,6 +20,7 @@ package org.openlmis.core.view.activity;
 
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -71,6 +72,8 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
 
     MMIAFormPresenter presenter;
 
+    Boolean hasDataChanged;
+
     private RetainedFragment dataFragment;
 
     @Override
@@ -97,6 +100,12 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
         } else {
             presenter = (MMIAFormPresenter) dataFragment.getData("presenter");
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        hasDataChanged = (Boolean) dataFragment.getData("hasDataChanged");
     }
 
     public void initUI() {
@@ -132,7 +141,10 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
     }
 
     private boolean hasDataChanged() {
-        return regimeListView.hasDataChanged() || mmiaInfoListView.hasDataChanged();
+        if (hasDataChanged == null) {
+            hasDataChanged = regimeListView.hasDataChanged() || mmiaInfoListView.hasDataChanged();
+        }
+        return hasDataChanged;
     }
 
     private void goToHomePage() {
@@ -154,6 +166,7 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
     @Override
     protected void onDestroy() {
         dataFragment.putData("presenter", presenter);
+        dataFragment.putData("hasDataChanged", hasDataChanged());
         super.onDestroy();
     }
 
