@@ -38,7 +38,9 @@ public class MMIAFormPresenter implements Presenter {
 
     @Override
     public void onStart() {
-
+        if (getRnrForm() != null) {
+            view.initUI();
+        }
     }
 
     @Override
@@ -89,7 +91,6 @@ public class MMIAFormPresenter implements Presenter {
     }
 
     public void saveForm() throws SQLException {
-
         if (validate(form)) {
             try {
                 form.setStatus(RnRForm.STATUS.AUTHORIZED);
@@ -116,6 +117,8 @@ public class MMIAFormPresenter implements Presenter {
     }
 
     public interface MIMIAFormView extends View {
+        void initUI();
+
         void showValidationAlert();
 
         void showErrorMessage(String msg);

@@ -20,7 +20,6 @@ package org.openlmis.core.view.activity;
 
 import android.app.FragmentManager;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,7 +28,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIAFormPresenter;
 import org.openlmis.core.view.fragment.MMIAOnBackConfirmDialog;
 import org.openlmis.core.view.fragment.RetainedFragment;
@@ -74,22 +72,11 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
     MMIAFormPresenter presenter;
 
     private RetainedFragment dataFragment;
-    private RnRForm rnRForm;
 
     @Override
     public MMIAFormPresenter getPresenter() {
         initPresenter();
         return presenter;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        rnRForm = presenter.getRnrForm();
-        if (rnRForm != null) {
-            initUI();
-        }
     }
 
     @Override
@@ -106,21 +93,21 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
             dataFragment = new RetainedFragment();
             fm.beginTransaction().add(dataFragment, "RetainedFragment").commit();
             presenter = RoboGuice.getInjector(getApplicationContext()).getInstance(MMIAFormPresenter.class);
-            dataFragment.setData(presenter);
+            dataFragment.putData("presenter", presenter);
         } else {
-            presenter = (MMIAFormPresenter) dataFragment.getData();
+            presenter = (MMIAFormPresenter) dataFragment.getData("presenter");
         }
     }
 
-    private void initUI() {
+    public void initUI() {
 
-        etComment.setText(rnRForm.getComments());
+        etComment.setText(presenter.getRnrForm().getComments());
 
-        rnrFromListView.initView(new ArrayList<>(rnRForm.getRnrFormItemList()));
+        rnrFromListView.initView(new ArrayList<>(presenter.getRnrForm().getRnrFormItemList()));
 
-        regimeListView.initView(rnRForm.getRegimenItemListWrapper(), tvRegimeTotal);
+        regimeListView.initView(presenter.getRnrForm().getRegimenItemListWrapper(), tvRegimeTotal);
 
-        mmiaInfoListView.initView(rnRForm.getBaseInfoItemListWrapper());
+        mmiaInfoListView.initView(presenter.getRnrForm().getBaseInfoItemListWrapper());
 
         btnSave.setOnClickListener(this);
 
@@ -139,13 +126,13 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
     public void onBackPressed() {
         if (hasDataChanged()) {
             MMIAOnBackConfirmDialog.showDialog(getFragmentManager());
-        }else {
+        } else {
             super.onBackPressed();
         }
     }
 
     private boolean hasDataChanged() {
-        return regimeListView.hasDataChanged()||mmiaInfoListView.hasDataChanged();
+        return regimeListView.hasDataChanged() || mmiaInfoListView.hasDataChanged();
     }
 
     private void goToHomePage() {
@@ -166,7 +153,7 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
 
     @Override
     protected void onDestroy() {
-        dataFragment.setData(presenter);
+        dataFragment.putData("presenter", presenter);
         super.onDestroy();
     }
 
@@ -188,7 +175,7 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
     private void onCompleteBtnClick() {
         if (regimeListView.complete() && mmiaInfoListView.complete() && (regimeListView.getTotal() == mmiaInfoListView.getTotal())) {
             try {
-                rnRForm.setComments(etComment.getText().toString());
+                presenter.getRnrForm().setComments(etComment.getText().toString());
                 presenter.saveForm();
                 goToHomePage();
             } catch (SQLException e) {
@@ -200,7 +187,7 @@ public class MMIASpreadActivity extends BaseActivity implements MMIAFormPresente
 
     private void onSaveBtnClick() {
         try {
-            rnRForm.setComments(etComment.getText().toString());
+            presenter.getRnrForm().setComments(etComment.getText().toString());
             presenter.saveDraftForm();
             goToHomePage();
         } catch (SQLException e) {

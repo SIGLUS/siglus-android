@@ -19,10 +19,14 @@ package org.openlmis.core.view.fragment;
 
 import android.os.Bundle;
 
+import java.util.HashMap;
+
 public class RetainedFragment extends BaseFragment {
 
     // data object we want to retain
     private Object data;
+
+    private HashMap map = new HashMap();
 
     // this method is only called once for this fragment
     @Override
@@ -32,11 +36,11 @@ public class RetainedFragment extends BaseFragment {
         setRetainInstance(true);
     }
 
-    public void setData(Object data) {
-        this.data = data;
+    public void putData(Object key, Object data) {
+        map.put(key, data);
     }
 
-    public Object getData() {
-        return data;
+    public Object getData(Object key) {
+        return map.get(key);
     }
 }
