@@ -18,16 +18,20 @@
 
 package org.openlmis.core.view.activity;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
+import android.webkit.ConsoleMessage;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.google.inject.Inject;
 
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.repository.VIAReposotory;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.RequisitionPresenter;
-import org.openlmis.core.view.widget.RequisitionForm;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -40,7 +44,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     RequisitionPresenter presenter;
 
     @InjectView(R.id.requisition_form)
-    RequisitionForm requisitionForm;
+    WebView requisitionForm;
 
     @Inject
     VIAReposotory viaReposotory;
@@ -50,11 +54,34 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        try {
-            requisitionForm.setData(viaReposotory.initVIA());
-        }catch (LMISException e){
-            e.printStackTrace();
-        }
+        requisitionForm.getSettings().setJavaScriptEnabled(true);
+        requisitionForm.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                Log.d("WebView", consoleMessage.message());
+                return super.onConsoleMessage(consoleMessage);
+            }
+
+        });
+
+        requisitionForm.setWebViewClient(new WebViewClient(){
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+
+                startLoading();
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                stopLoading();
+            }
+
+
+        });
+
+        requisitionForm.loadUrl("file:///android_asset/www/form.html");
     }
 
     @Override
