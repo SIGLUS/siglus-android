@@ -45,28 +45,40 @@ public class CreateDummyRegimes implements Migration {
             dbUtil.withDao(Regimen.class, new DbUtil.Operation<Regimen, String>() {
                 @Override
                 public String operate(Dao dao) throws SQLException {
-                    for (int i = 0; i < 7; i++) {
-                        if (i==3 || i== 6){
-                            continue;
-                        }
 
-                        Regimen regimen = new Regimen();
-                        regimen.setCode("00" + (i+1));
+                    createRegime(dao, "AZT+3TC+NVP", Regimen.RegimeType.ADULT);
+                    createRegime(dao, "TDF+3TC+EFV", Regimen.RegimeType.ADULT);
+                    createRegime(dao, "AZT+3TC+EFV", Regimen.RegimeType.ADULT);
+                    createRegime(dao, "d4T 30+3TC+NVP", Regimen.RegimeType.ADULT);
+                    createRegime(dao, "d4T 30+3TC+EFV", Regimen.RegimeType.ADULT);
+                    createRegime(dao, "AZT+3TC+LPV/r", Regimen.RegimeType.ADULT);
+                    createRegime(dao, "TDF+3TC+LPV/r", Regimen.RegimeType.ADULT);
+                    createRegime(dao, "ABC+3TC+LPV/r", Regimen.RegimeType.ADULT);
 
-                        regimen.setName("AZT+3TC+NVP-" + i);
-                        if (i % 2 == 0) {
-                            regimen.setType(Regimen.RegimeType.ADULT);
-                        } else {
-                            regimen.setType(Regimen.RegimeType.BABY);
-                        }
-                        dao.create(regimen);
-                    }
+                    createRegime(dao, "d4T+3TC+NVP(3DFC Baby)", Regimen.RegimeType.BABY);
+                    createRegime(dao, "d4T+3TC+LPV/r(2DFC Baby + LPV/r)", Regimen.RegimeType.BABY);
+                    createRegime(dao, "d4T+3TC+ABC(2DFC Baby + ABC)", Regimen.RegimeType.BABY);
+                    createRegime(dao, "d4T+3TC+EFV(2DFC Baby + EFV)", Regimen.RegimeType.BABY);
+                    createRegime(dao, "AZT60+3TC+NVP(3DFC)", Regimen.RegimeType.BABY);
+                    createRegime(dao, "AZT60+3TC+EFV(2DFC + EFV)", Regimen.RegimeType.BABY);
+                    createRegime(dao, "AZT60+3TC+ABC(2DFC + ABC)", Regimen.RegimeType.BABY);
+                    createRegime(dao, "AZT60+3TC+LPV/r(2DFC + LPV/r)", Regimen.RegimeType.BABY);
+                    createRegime(dao, "ABC+3TC+LPV/r", Regimen.RegimeType.BABY);
+                    createRegime(dao, "ABC+3TC+EFZ", Regimen.RegimeType.BABY);
+
                     return null;
                 }
             });
         } catch (LMISException e) {
             e.printStackTrace();
         }
+    }
+
+    private void createRegime(Dao dao, String name, Regimen.RegimeType regimeType) throws SQLException {
+        Regimen regimen = new Regimen();
+        regimen.setName(name);
+        regimen.setType(regimeType);
+        dao.create(regimen);
     }
 
     @Override
