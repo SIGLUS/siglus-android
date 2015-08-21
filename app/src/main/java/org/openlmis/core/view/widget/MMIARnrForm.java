@@ -117,18 +117,13 @@ public class MMIARnrForm extends LinearLayout {
     }
 
     private void syncItemHeight(final View leftView, final View rightView) {
-        rightView.post(new Runnable() {
-            @Override
-            public void run() {
-                int leftHeight = leftView.getHeight();
-                int rightHeight = rightView.getHeight();
-                if (leftHeight > rightHeight) {
-                    rightView.getLayoutParams().height = leftHeight;
-                } else {
-                    leftView.getLayoutParams().height = rightHeight;
-                }
-            }
-        });
+        int leftHeight = leftView.getHeight();
+        int rightHeight = rightView.getHeight();
+        if (leftHeight > rightHeight) {
+            rightView.getLayoutParams().height = leftHeight;
+        } else {
+            leftView.getLayoutParams().height = rightHeight;
+        }
     }
 
     private ViewGroup addRightView(RnrFormItem item) {
@@ -157,15 +152,15 @@ public class MMIARnrForm extends LinearLayout {
         } else {
             Product product = item.getProduct();
             tvPrimaryName.setText(product.getPrimaryName());
-            setLeftViewColor(item, view);
+            setLeftViewColor(product, view);
         }
 
         leftViewGroup.addView(view);
         return view;
     }
 
-    private void setLeftViewColor(RnrFormItem item, View view) {
-        switch (item.getProduct().getMedicine_type()) {
+    private void setLeftViewColor(Product product, View view) {
+        switch (product.getMedicine_type()) {
             case Product.MEDICINE_TYPE_ADULT:
                 view.setBackgroundResource(R.color.color_regime_adult);
                 break;
