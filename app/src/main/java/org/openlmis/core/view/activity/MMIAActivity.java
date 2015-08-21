@@ -229,7 +229,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
 
     private void onSaveBtnClick() {
         try {
-            if (hasDataChanged) {
+            if (hasDataChanged()) {
                 presenter.saveDraftForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
             }
             goToHomePage();
