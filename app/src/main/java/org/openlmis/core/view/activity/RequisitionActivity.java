@@ -19,14 +19,18 @@
 package org.openlmis.core.view.activity;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AbsListView;
+import android.widget.ListView;
 
 import com.google.inject.Inject;
 
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.RequisitionPresenter;
-import org.openlmis.core.view.widget.FormView;
+import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 
 
 import roboguice.inject.ContentView;
@@ -40,39 +44,109 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     RequisitionPresenter presenter;
 
     @InjectView(R.id.requisition_form)
-    FormView requisitionForm;
+    ListView requisitionForm;
+
+    @InjectView(R.id.product_name_list_view)
+    ListView requisitionNameList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LayoutInflater inflater = LayoutInflater.from(this);
 
-        requisitionForm.loadForm("form");
-        requisitionForm.setFormViewListener(new FormView.FormViewCallback() {
+
+        RnRForm rnRForm = presenter.loadRnrForm();
+        final View headerView = inflater.inflate(R.layout.item_requisition_header, requisitionForm, false);
+        requisitionForm.addHeaderView(headerView);
+        requisitionForm.setAdapter(new RequisitionFormAdapter(this, rnRForm, false));
+
+        final View nameListHeader = inflater.inflate(R.layout.layout_requisition_header_left, requisitionNameList, false);
+        requisitionNameList.addHeaderView(nameListHeader);
+        requisitionNameList.setAdapter(new RequisitionFormAdapter(this, rnRForm, true));
+
+        requisitionNameList.post(new Runnable() {
             @Override
-            public void onStartLoading() {
-                presenter.loadRnrForm();
-                startLoading();
-            }
-
-            @Override
-            public void onStopLoading() {
-                stopLoading();
-            }
-
-            @Override
-            public void onError(LMISException e) {
-
-            }
-
-            @Override
-            public String fillFormData() {
-                return presenter.fillFormData();
+            public void run() {
+                nameListHeader.getLayoutParams().height = headerView.getHeight();
             }
         });
+        setListViewOnTouchAndScrollListener(requisitionForm, requisitionNameList);
     }
 
     @Override
     public Presenter getPresenter() {
         return presenter;
+    }
+
+
+    public void setListViewOnTouchAndScrollListener(final ListView listView1, final ListView listView2) {
+        listView2.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState == 0 || scrollState == 1) {
+                    View subView = view.getChildAt(0);
+
+                    if (subView != null) {
+                        final int top = subView.getTop();
+                        final int top1 = listView1.getChildAt(0).getTop();
+                        final int position = view.getFirstVisiblePosition();
+
+                        if (top != top1) {
+                            listView1.setSelectionFromTop(position, top);
+                        }
+                    }
+                }
+
+            }
+
+            public void onScroll(AbsListView view, final int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+                View subView = view.getChildAt(0);
+                if (subView != null) {
+                    final int top = subView.getTop();
+
+                    int top1 = listView1.getChildAt(0).getTop();
+                    if (!(top1 - 7 < top && top < top1 + 7)) {
+                        listView1.setSelectionFromTop(firstVisibleItem, top);
+                        listView2.setSelectionFromTop(firstVisibleItem, top);
+                    }
+
+                }
+            }
+        });
+
+        listView1.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState == 0 || scrollState == 1) {
+                    View subView = view.getChildAt(0);
+
+                    if (subView != null) {
+                        final int top = subView.getTop();
+                        final int top1 = listView2.getChildAt(0).getTop();
+                        final int position = view.getFirstVisiblePosition();
+
+                        if (top != top1) {
+                            listView1.setSelectionFromTop(position, top);
+                            listView2.setSelectionFromTop(position, top);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, final int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+                View subView = view.getChildAt(0);
+                if (subView != null) {
+                    final int top = subView.getTop();
+                    listView1.setSelectionFromTop(firstVisibleItem, top);
+                    listView2.setSelectionFromTop(firstVisibleItem, top);
+
+                }
+            }
+        });
     }
 }

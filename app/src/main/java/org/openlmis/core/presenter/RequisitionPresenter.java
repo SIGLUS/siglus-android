@@ -18,18 +18,14 @@
 
 package org.openlmis.core.presenter;
 
-import com.google.gson.Gson;
 import com.google.inject.Inject;
 
-import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.VIAReposotory;
 import org.openlmis.core.view.View;
 
-import java.util.ArrayList;
 
 public class RequisitionPresenter implements Presenter{
 
@@ -63,37 +59,6 @@ public class RequisitionPresenter implements Presenter{
         return null;
     }
 
-    public String fillFormData(){
-        if (rnRForm ==null){
-            return StringUtils.EMPTY;
-        }
-
-        RnrFormItem item = rnRForm.getRnrFormItemList().iterator().next();
-
-        ArrayList<ArrayList<String>> dataMap = new ArrayList<>();
-        for (int i=0;i<100;i++){
-            ArrayList<String> values = new ArrayList<>();
-            long received = item.getReceived();
-            long total = item.getInitialAmount() + received - item.getIssued();
-            long inventory = item.getInventory();
-
-            values.add(item.getProduct().getCode());
-            values.add(item.getProduct().getPrimaryName());
-
-            values.add(String.valueOf(item.getInitialAmount()));
-            values.add(String.valueOf(received));
-            values.add(String.valueOf(item.getIssued()));
-            values.add(String.valueOf(total));
-            values.add("-");
-            values.add(String.valueOf(inventory));
-            values.add(String.valueOf(item.getAdjustment() - total));
-            values.add(String.valueOf(received * 2 - inventory));
-
-            dataMap.add(values);
-        }
-
-        return new Gson().toJson(dataMap);
-    }
 
     public interface RequisitionView extends View {
 

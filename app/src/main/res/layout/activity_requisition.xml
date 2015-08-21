@@ -1,102 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.openlmis.core.view.widget.MyScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <org.openlmis.core.view.widget.BorderedEditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/border_bg"
+        app:ems="4"
+        app:labelWidth="100dp"
+        app:text="@string/label_consultation" />
+
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-
-        <LinearLayout
+        android:layout_height="match_parent">
+        <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="20dp">
-
-            <org.openlmis.core.view.widget.BorderedEditText
+            android:layout_height="match_parent">
+            <ListView
+                android:id="@+id/requisition_form"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/border_bg"
-                app:ems="3"
-                app:labelWidth="100dp"
-                app:text="@string/label_consultation" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:background="@drawable/border_bg"
-                android:divider="@drawable/divider_horizontal"
-                android:orientation="vertical"
-                android:showDividers="middle">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:divider="@drawable/divider_vertical"
-                    android:showDividers="middle">
-
-                    <org.openlmis.core.view.widget.BorderedEditText
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:ems="3"
-                        app:labelWidth="80dp"
-                        app:text="@string/label_kits_received" />
-
-                    <org.openlmis.core.view.widget.BorderedEditText
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:ems="2"
-                        app:labelWidth="40dp"
-                        app:text="@string/label_us" />
-
-                    <org.openlmis.core.view.widget.BorderedEditText
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:ems="2"
-                        app:labelWidth="40dp"
-                        app:text="@string/label_ape" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:divider="@drawable/divider_vertical"
-                    android:showDividers="middle">
-
-                    <org.openlmis.core.view.widget.BorderedEditText
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:ems="3"
-                        app:labelWidth="80dp"
-                        app:text="@string/label_kits_opened" />
-
-                    <org.openlmis.core.view.widget.BorderedEditText
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:ems="2"
-                        app:labelWidth="40dp"
-                        app:text="@string/label_us" />
-
-                    <org.openlmis.core.view.widget.BorderedEditText
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:ems="2"
-                        app:labelWidth="40dp"
-                        app:text="@string/label_ape" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <org.openlmis.core.view.widget.FormView android:id="@+id/requisition_form"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </LinearLayout>
-</org.openlmis.core.view.widget.MyScrollView>
+                android:layout_height="match_parent"
+                android:scrollbars="vertical" />
+        </HorizontalScrollView>
+        <ListView
+            android:id="@+id/product_name_list_view"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:background="@color/white" />
+    </FrameLayout>
+</LinearLayout>
 
