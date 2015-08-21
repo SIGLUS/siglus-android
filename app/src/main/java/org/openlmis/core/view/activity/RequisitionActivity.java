@@ -27,18 +27,26 @@ import android.widget.ListView;
 import com.google.inject.Inject;
 
 import org.openlmis.core.R;
-import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.RequisitionPresenter;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
+import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 
+
+import java.util.ArrayList;
+import java.util.List;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 
 @ContentView(R.layout.activity_requisition)
-public class RequisitionActivity extends BaseActivity implements RequisitionPresenter.RequisitionView{
+public class RequisitionActivity extends BaseActivity implements RequisitionPresenter.RequisitionView {
 
     @Inject
     RequisitionPresenter presenter;
@@ -49,29 +57,73 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     @InjectView(R.id.product_name_list_view)
     ListView requisitionNameList;
 
+    List<RequisitionFormItemViewModel> productList;
+    LayoutInflater inflater;
+
+    View bodyHeaderView;
+    View productHeaderView;
+
+    RequisitionFormAdapter productListAdapter;
+    RequisitionFormAdapter requisitionFormAdapter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LayoutInflater inflater = LayoutInflater.from(this);
+        inflater = LayoutInflater.from(this);
 
+        initUI();
 
-        RnRForm rnRForm = presenter.loadRnrForm();
-        final View headerView = inflater.inflate(R.layout.item_requisition_header, requisitionForm, false);
-        requisitionForm.addHeaderView(headerView);
-        requisitionForm.setAdapter(new RequisitionFormAdapter(this, rnRForm, false));
+        startLoading();
+        Observable.create(new Observable.OnSubscribe<List<RequisitionFormItemViewModel>>() {
+            @Override
+            public void call(Subscriber<? super  List<RequisitionFormItemViewModel>> subscriber) {
+                subscriber.onNext(presenter.getRequisitionViewModelList());
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<List<RequisitionFormItemViewModel>>() {
+            @Override
+            public void call(List<RequisitionFormItemViewModel> requisitionFormItemViewModels) {
+                productList.addAll(requisitionFormItemViewModels);
+                productListAdapter.notifyDataSetChanged();
+                requisitionFormAdapter.notifyDataSetChanged();
+                stopLoading();
+            }
+        });
+    }
 
-        final View nameListHeader = inflater.inflate(R.layout.layout_requisition_header_left, requisitionNameList, false);
-        requisitionNameList.addHeaderView(nameListHeader);
-        requisitionNameList.setAdapter(new RequisitionFormAdapter(this, rnRForm, true));
+    private void initUI() {
+        productList = new ArrayList<>();
+
+        initRequisitionBodyList();
+        initRequisitionProductList();
 
         requisitionNameList.post(new Runnable() {
             @Override
             public void run() {
-                nameListHeader.getLayoutParams().height = headerView.getHeight();
+                productHeaderView.getLayoutParams().height = bodyHeaderView.getHeight();
             }
         });
+
         setListViewOnTouchAndScrollListener(requisitionForm, requisitionNameList);
     }
+
+
+    private void initRequisitionBodyList() {
+        bodyHeaderView = inflater.inflate(R.layout.item_requisition_header, requisitionForm, false);
+        requisitionForm.addHeaderView(bodyHeaderView);
+
+        requisitionFormAdapter = new RequisitionFormAdapter(this, productList, false);
+        requisitionForm.setAdapter(requisitionFormAdapter);
+    }
+
+    private void initRequisitionProductList() {
+        productHeaderView = inflater.inflate(R.layout.layout_requisition_header_left, requisitionNameList, false);
+        requisitionNameList.addHeaderView(productHeaderView);
+
+        productListAdapter = new RequisitionFormAdapter(this, productList, true);
+        requisitionNameList.setAdapter(productListAdapter);
+    }
+
 
     @Override
     public Presenter getPresenter() {
@@ -79,74 +131,57 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     }
 
 
-    public void setListViewOnTouchAndScrollListener(final ListView listView1, final ListView listView2) {
-        listView2.setOnScrollListener(new AbsListView.OnScrollListener() {
+    private class MyScrollListener implements AbsListView.OnScrollListener {
 
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (scrollState == 0 || scrollState == 1) {
-                    View subView = view.getChildAt(0);
+        ListView list1;
+        ListView list2;
 
-                    if (subView != null) {
-                        final int top = subView.getTop();
-                        final int top1 = listView1.getChildAt(0).getTop();
-                        final int position = view.getFirstVisiblePosition();
+        public MyScrollListener(ListView list1, ListView list2) {
+            this.list1 = list1;
+            this.list2 = list2;
+        }
 
-                        if (top != top1) {
-                            listView1.setSelectionFromTop(position, top);
-                        }
-                    }
-                }
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+            if (scrollState == 0 || scrollState == 1) {
+                View subView1 = view.getChildAt(0);
 
-            }
+                if (subView1 != null) {
+                    final int top1 = subView1.getTop();
+                    View subview2 = list2.getChildAt(0);
+                    if (subview2 != null) {
+                        int top2 = subview2.getTop();
+                        int position = view.getFirstVisiblePosition();
 
-            public void onScroll(AbsListView view, final int firstVisibleItem,
-                                 int visibleItemCount, int totalItemCount) {
-                View subView = view.getChildAt(0);
-                if (subView != null) {
-                    final int top = subView.getTop();
-
-                    int top1 = listView1.getChildAt(0).getTop();
-                    if (!(top1 - 7 < top && top < top1 + 7)) {
-                        listView1.setSelectionFromTop(firstVisibleItem, top);
-                        listView2.setSelectionFromTop(firstVisibleItem, top);
-                    }
-
-                }
-            }
-        });
-
-        listView1.setOnScrollListener(new AbsListView.OnScrollListener() {
-
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (scrollState == 0 || scrollState == 1) {
-                    View subView = view.getChildAt(0);
-
-                    if (subView != null) {
-                        final int top = subView.getTop();
-                        final int top1 = listView2.getChildAt(0).getTop();
-                        final int position = view.getFirstVisiblePosition();
-
-                        if (top != top1) {
-                            listView1.setSelectionFromTop(position, top);
-                            listView2.setSelectionFromTop(position, top);
+                        if (top1 != top2) {
+                            list2.setSelectionFromTop(position, top1);
                         }
                     }
                 }
             }
+        }
 
-            @Override
-            public void onScroll(AbsListView view, final int firstVisibleItem,
-                                 int visibleItemCount, int totalItemCount) {
-                View subView = view.getChildAt(0);
-                if (subView != null) {
-                    final int top = subView.getTop();
-                    listView1.setSelectionFromTop(firstVisibleItem, top);
-                    listView2.setSelectionFromTop(firstVisibleItem, top);
+        public void onScroll(AbsListView view, int firstVisibleItem,
+                             int visibleItemCount, int totalItemCount) {
+            View subView1 = view.getChildAt(0);
+            if (subView1 != null) {
+                int top1 = subView1.getTop();
 
+                View subView2 = list2.getChildAt(0);
+                if (subView2 != null) {
+                    int top2 = list2.getChildAt(0).getTop();
+                    if (top1 != top2) {
+                        list1.setSelectionFromTop(firstVisibleItem, top1);
+                        list2.setSelectionFromTop(firstVisibleItem, top1);
+                    }
                 }
             }
-        });
+        }
+    }
+
+
+    private void setListViewOnTouchAndScrollListener(ListView listView1, ListView listView2) {
+        listView2.setOnScrollListener(new MyScrollListener(listView2, listView1));
+        listView1.setOnScrollListener(new MyScrollListener(listView1, listView2));
     }
 }

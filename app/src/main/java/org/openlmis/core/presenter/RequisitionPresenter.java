@@ -23,8 +23,16 @@ import com.google.inject.Inject;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.VIAReposotory;
 import org.openlmis.core.view.View;
+import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
+import org.roboguice.shaded.goole.common.base.Function;
+
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class RequisitionPresenter implements Presenter{
@@ -57,6 +65,26 @@ public class RequisitionPresenter implements Presenter{
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    public List<RequisitionFormItemViewModel> getRequisitionViewModelList() {
+        if (rnRForm == null) {
+            loadRnrForm();
+        }
+
+        List<RnrFormItem> tmpList = new ArrayList<>();
+        RnrFormItem item =rnRForm.getRnrFormItemList().iterator().next();
+        for (int i=0;i<100;i++){
+            tmpList.add(item);
+        }
+
+        return from(tmpList).transform(new Function<RnrFormItem, RequisitionFormItemViewModel>() {
+            @Override
+            public RequisitionFormItemViewModel apply(RnrFormItem item) {
+                return new RequisitionFormItemViewModel(item);
+            }
+        }).toList();
     }
 
 

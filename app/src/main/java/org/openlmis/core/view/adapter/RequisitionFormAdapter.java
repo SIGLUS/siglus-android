@@ -26,44 +26,38 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RequisitionFormAdapter extends BaseAdapter {
 
     Context context;
-    List<RnrFormItem> data;
+    List<RequisitionFormItemViewModel> data;
     LayoutInflater inflater;
     boolean isNameList;
 
     int itemLayoutResId;
 
-    public RequisitionFormAdapter(Context context, RnRForm rnRForm, boolean isNameList) {
+    public RequisitionFormAdapter(Context context, List<RequisitionFormItemViewModel> data, boolean isNameList) {
         this.context = context;
-        data = new ArrayList<>();
-        for (RnrFormItem item : rnRForm.getRnrFormItemList()) {
-            data.add(item);
-        }
+        this.data = data;
         inflater = LayoutInflater.from(context);
         this.isNameList = isNameList;
-        if (isNameList){
+        if (isNameList) {
             itemLayoutResId = R.layout.item_requisition_body_left;
-        }else{
+        } else {
             itemLayoutResId = R.layout.item_requisition_body;
         }
-
     }
 
     @Override
     public int getCount() {
-        return 101;
+        return data.size();
     }
 
     @Override
-    public RnrFormItem getItem(int position) {
+    public RequisitionFormItemViewModel getItem(int position) {
         return data.get(0);
     }
 
@@ -90,23 +84,19 @@ public class RequisitionFormAdapter extends BaseAdapter {
     }
 
     public void onBindViewHolder(ViewHolder holder, int position) {
-        RnrFormItem product = data.get(0);
-        holder.productCode.setText(product.getProduct().getCode());
-        holder.productName.setText(product.getProduct().getPrimaryName());
+        RequisitionFormItemViewModel entry = getItem(position);
+        holder.productCode.setText(entry.getFmn());
+        holder.productName.setText(entry.getProductName());
 
         if (!isNameList){
-            long received = product.getReceived();
-            long total = product.getInitialAmount() + received - product.getIssued();
-            long inventory = product.getInventory();
-
-            holder.initAmount.setText(String.valueOf(product.getInitialAmount()));
-            holder.received.setText(String.valueOf(received));
-            holder.issued.setText(String.valueOf(product.getIssued()));
-            holder.theoretical.setText(String.valueOf(total));
-            holder.total.setText("-");
-            holder.inventory.setText(String.valueOf(inventory));
-            holder.different.setText(String.valueOf(product.getAdjustment() - total));
-            holder.totalRequest.setText(String.valueOf(received * 2 - inventory));
+            holder.initAmount.setText(entry.getInitAmount());
+            holder.received.setText(entry.getReceived());
+            holder.issued.setText(entry.getIssued());
+            holder.theoretical.setText(entry.getTheoretical());
+            holder.total.setText(entry.getTotal());
+            holder.inventory.setText(entry.getInventory());
+            holder.different.setText(entry.getDifferent());
+            holder.totalRequest.setText(entry.getTotalRequest());
         }
     }
 
