@@ -91,8 +91,8 @@ public class MMIARnrForm extends LinearLayout {
     private void setMedicineType(ArrayList<RnrFormItem> rnrFormItemList, String medicineTypeName) {
         List<String> medicineType = rnrFormItemConfigList.get(medicineTypeName);
         for (RnrFormItem item : rnrFormItemList) {
-            for (String FNM : medicineType) {
-                if (FNM.equals(item.getProduct().getCode())) {
+            for (String fnm : medicineType) {
+                if (fnm.equals(item.getProduct().getCode())) {
                     item.getProduct().setMedicine_type(medicineTypeName);
                     rnrFormItemList.add(item);
                 }
