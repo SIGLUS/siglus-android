@@ -31,7 +31,7 @@ import org.openlmis.core.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StockCardListPresenter implements Presenter{
+public class StockCardListPresenter implements Presenter {
 
     @Inject
     StockRepository stockRepository;
@@ -56,10 +56,10 @@ public class StockCardListPresenter implements Presenter{
     }
 
 
-    public List<StockCard> loadStockCards(){
+    public List<StockCard> loadStockCards() {
         try {
-            return  stockRepository.list();
-        }catch (LMISException e){
+            return stockRepository.list();
+        } catch (LMISException e) {
             e.printStackTrace();
         }
 
@@ -71,7 +71,7 @@ public class StockCardListPresenter implements Presenter{
         view = (StockCardListView) v;
     }
 
-    public interface StockCardListView extends View{
+    public interface StockCardListView extends View {
     }
 
     public int getStockOnHandLevel(StockCard stockCard) {
@@ -93,7 +93,9 @@ public class StockCardListPresenter implements Presenter{
             for (RnrFormItem item : rnrFormItemList) {
                 total += item.getIssued();
             }
-            return (int) Math.ceil((total / rnrFormItemList.size()) * 0.05);
+            if (rnrFormItemList.size() > 0) {
+                return (int) Math.ceil((total / rnrFormItemList.size()) * 0.05);
+            }
         } catch (LMISException e) {
             e.printStackTrace();
         }

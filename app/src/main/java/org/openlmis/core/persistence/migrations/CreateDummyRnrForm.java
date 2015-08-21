@@ -79,7 +79,7 @@ public class CreateDummyRnrForm implements Migration {
         rnrFormItem2.setIssued(2000);
         rnrFormItem2.setProduct(product);
         RnrFormItem rnrFormItem3 = new RnrFormItem();
-        rnrFormItem3.setInventory(3000);
+        rnrFormItem3.setInventory(0);
         rnrFormItem3.setIssued(3000);
         rnrFormItem3.setProduct(product);
         RnrFormItem rnrFormItem4 = new RnrFormItem();
