@@ -33,12 +33,17 @@ import org.openlmis.core.utils.DateUtil;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 public class MMIARnrForm extends LinearLayout {
     private ViewGroup leftViewGroup;
     private ViewGroup rightViewGroup;
     private LayoutInflater layoutInflater;
     private ViewGroup vg_right_scrollview;
+    ArrayList<RnrFormItem> rnrFormItemList = new ArrayList<>();
+    private HashMap<String, List<String>> rnrFormItemConfigList = new HashMap<>();
 
     public MMIARnrForm(Context context) {
         super(context);
@@ -58,7 +63,12 @@ public class MMIARnrForm extends LinearLayout {
         rightViewGroup = (ViewGroup) container.findViewById(R.id.rnr_from_list);
     }
 
-    public void initView(ArrayList<RnrFormItem> rnrFormItemList) {
+    public void initView(ArrayList<RnrFormItem> list) {
+
+        ArrayList<RnrFormItem> dataList = new ArrayList<>();
+        dataList.addAll(list);
+        sortAndSetType(dataList);
+
         View leftHeaderView = addLeftHeaderView();
         ViewGroup rightHeaderView = addRightHeaderView();
         setItemSize(leftHeaderView, rightHeaderView);
@@ -69,6 +79,31 @@ public class MMIARnrForm extends LinearLayout {
                 setItemSize(leftView, rightView);
             }
         }
+    }
+
+    private void sortAndSetType(ArrayList<RnrFormItem> rnrFormItemList) {
+        initRnrFormItemConfigList();
+        setMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_ADULT);
+        setMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_BABY);
+        setMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_OTHER);
+    }
+
+    private void setMedicineType(ArrayList<RnrFormItem> rnrFormItemList, String medicineTypeName) {
+        List<String> medicineType = rnrFormItemConfigList.get(medicineTypeName);
+        for (RnrFormItem item : rnrFormItemList) {
+            for (String FNM : medicineType) {
+                if (FNM.equals(item.getProduct().getCode())) {
+                    item.getProduct().setMedicine_type(medicineTypeName);
+                    rnrFormItemList.add(item);
+                }
+            }
+        }
+    }
+
+    public void initRnrFormItemConfigList() {
+        rnrFormItemConfigList.put(Product.MEDICINE_TYPE_ADULT, Arrays.asList(getResources().getStringArray(R.array.medicine_adult)));
+        rnrFormItemConfigList.put(Product.MEDICINE_TYPE_BABY, Arrays.asList(getResources().getStringArray(R.array.medicine_baby)));
+        rnrFormItemConfigList.put(Product.MEDICINE_TYPE_OTHER, Arrays.asList(getResources().getStringArray(R.array.medicine_other)));
     }
 
     private void setItemSize(final View leftView, final ViewGroup rightView) {
@@ -122,9 +157,27 @@ public class MMIARnrForm extends LinearLayout {
         } else {
             Product product = item.getProduct();
             tvPrimaryName.setText(product.getPrimaryName());
+            setLeftViewColor(item, view);
         }
+
         leftViewGroup.addView(view);
         return view;
+    }
+
+    private void setLeftViewColor(RnrFormItem item, View view) {
+        switch (item.getProduct().getMedicine_type()) {
+            case Product.MEDICINE_TYPE_ADULT:
+                view.setBackgroundResource(R.color.color_regime_adult);
+                break;
+            case Product.MEDICINE_TYPE_BABY:
+                view.setBackgroundResource(R.color.color_regime_baby);
+                break;
+            case Product.MEDICINE_TYPE_OTHER:
+                view.setBackgroundResource(R.color.color_regime_other);
+                break;
+            default:
+                break;
+        }
     }
 
     private ViewGroup addRightHeaderView() {

@@ -30,6 +30,10 @@ import lombok.Setter;
 @DatabaseTable(tableName = "products")
 public class Product extends BaseModel{
 
+    public static final String MEDICINE_TYPE_ADULT="Adult";
+    public static final String MEDICINE_TYPE_BABY="Baby";
+    public static final String MEDICINE_TYPE_OTHER="Other";
+
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private Program program;
 
@@ -44,4 +48,6 @@ public class Product extends BaseModel{
 
     @DatabaseField
     String type;
+
+    String medicine_type;
 }
