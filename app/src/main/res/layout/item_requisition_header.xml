@@ -7,5 +7,5 @@
     <include android:id="@+id/requisition_body_header"
         layout="@layout/layout_requisition_header_right"
         android:layout_height="wrap_content"
-        android:layout_width="1000dp"/>
+        android:layout_width="1200dp"/>
 </LinearLayout>

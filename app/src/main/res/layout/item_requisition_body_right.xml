@@ -3,7 +3,8 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:divider="@drawable/divider_vertical"
-    android:showDividers="middle|end">
+    android:showDividers="middle|end"
+    android:paddingEnd="1dp">
 
 
     <LinearLayout
@@ -18,64 +19,56 @@
             style="@style/sheet_header2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="1000" />
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/tx_received"
             style="@style/sheet_header2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="1000" />
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/tx_issued"
             style="@style/sheet_header2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="1000" />
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tx_theoretical"
             style="@style/sheet_header2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="1000" />
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/tx_total"
             style="@style/sheet_header2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="1000" />
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/tx_inventory"
             style="@style/sheet_header2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="1000" />
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/tx_different"
             style="@style/sheet_header2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="1000" />
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/tx_total_request"
             style="@style/sheet_header2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="1000" />
+            android:layout_weight="1"/>
     </LinearLayout>
 
 

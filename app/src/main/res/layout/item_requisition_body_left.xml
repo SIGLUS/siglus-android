@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:divider="@drawable/divider_vertical"
     android:orientation="horizontal"
-    android:showDividers="beginning|middle|end"
+    android:showDividers="middle|end"
     android:weightSum="4">
 
 
