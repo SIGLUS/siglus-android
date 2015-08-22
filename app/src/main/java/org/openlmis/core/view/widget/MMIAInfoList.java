@@ -41,7 +41,7 @@ public class MMIAInfoList extends LinearLayout {
     private ArrayList<EditText> editTexts = new ArrayList<>();
     private BaseInfoItem totalItem;
     private LayoutInflater layoutInflater;
-    private ArrayList<BaseInfoItem> dataList = new ArrayList<>();
+    private ArrayList<BaseInfoItem> dataList;
     private boolean hasDataChanged = false;
 
     public MMIAInfoList(Context context) {
@@ -61,7 +61,7 @@ public class MMIAInfoList extends LinearLayout {
     }
 
     public void initView(ArrayList<BaseInfoItem> list) {
-        this.dataList.addAll(list);
+        this.dataList = list;
         addHeaderView();
 
         for (BaseInfoItem item : dataList) {

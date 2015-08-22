@@ -64,9 +64,7 @@ public class MMIARnrForm extends LinearLayout {
     }
 
     public void initView(ArrayList<RnrFormItem> list) {
-        ArrayList<RnrFormItem> dataList = new ArrayList<>();
-        dataList.addAll(list);
-        sortAndSetType(dataList);
+        sortAndSetType(list);
 
         View leftHeaderView = addLeftHeaderView();
         ViewGroup rightHeaderView = addRightHeaderView();
