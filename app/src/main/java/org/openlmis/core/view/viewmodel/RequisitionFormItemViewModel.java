@@ -44,7 +44,13 @@ public class RequisitionFormItemViewModel {
         long issued = item.getIssued();
         long received = item.getReceived();
         long theoretical = item.getInitialAmount() + received - item.getIssued();
+        theoretical = theoretical > 0 ? theoretical : 0;
         long inventory = item.getInventory();
+        long different = inventory - theoretical;
+        different = different > 0 ? different : 0;
+
+        long totalRequest = issued * 2 - inventory;
+        totalRequest = totalRequest > 0 ? totalRequest : 0;
 
         this.initAmount = String.valueOf(item.getInitialAmount());
         this.received = String.valueOf(received);
@@ -52,7 +58,7 @@ public class RequisitionFormItemViewModel {
         this.theoretical = String.valueOf(theoretical);
         this.total = "-";
         this.inventory = String.valueOf(inventory);
-        this.different = String.valueOf(inventory - theoretical);
-        this.totalRequest = String.valueOf(issued * 2 - inventory);
+        this.different = String.valueOf(different);
+        this.totalRequest = String.valueOf(totalRequest);
     }
 }
