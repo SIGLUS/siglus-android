@@ -24,7 +24,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
-import org.openlmis.core.model.repository.VIAReposotory;
+import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.View;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
@@ -34,13 +34,27 @@ import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
+
 
 public class RequisitionPresenter implements Presenter{
 
     @Inject
-    VIAReposotory viaReposotory;
+    VIARepository viaRepository;
 
-    private RnRForm rnRForm;
+    RequisitionView view;
+
+    protected RnRForm rnRForm;
+    protected List<RequisitionFormItemViewModel> requisitionFormItemViewModelList;
+
+    public RequisitionPresenter(){
+        requisitionFormItemViewModelList = new ArrayList<>();
+    }
+
 
     @Override
     public void onStart() {
@@ -54,12 +68,16 @@ public class RequisitionPresenter implements Presenter{
 
     @Override
     public void attachView(View v) throws ViewNotMatchException {
-
+        if (v instanceof RequisitionView){
+            this.view = (RequisitionView) v;
+        }else {
+            throw new ViewNotMatchException("required RequisitionView");
+        }
     }
 
     public RnRForm loadRnrForm(){
         try {
-            rnRForm = viaReposotory.initVIA();
+            rnRForm = viaRepository.initVIA();
             return rnRForm;
         } catch (LMISException e){
             e.printStackTrace();
@@ -69,17 +87,14 @@ public class RequisitionPresenter implements Presenter{
 
 
     public List<RequisitionFormItemViewModel> getRequisitionViewModelList() {
+        return requisitionFormItemViewModelList;
+    }
+
+    protected List<RequisitionFormItemViewModel> createViewModelsFromRnrForm(){
         if (rnRForm == null) {
             loadRnrForm();
         }
-
-        List<RnrFormItem> tmpList = new ArrayList<>();
-        RnrFormItem item =rnRForm.getRnrFormItemList().iterator().next();
-        for (int i=0;i<100;i++){
-            tmpList.add(item);
-        }
-
-        return from(tmpList).transform(new Function<RnrFormItem, RequisitionFormItemViewModel>() {
+        return from(rnRForm.getRnrFormItemList()).transform(new Function<RnrFormItem, RequisitionFormItemViewModel>() {
             @Override
             public RequisitionFormItemViewModel apply(RnrFormItem item) {
                 return new RequisitionFormItemViewModel(item);
@@ -87,9 +102,39 @@ public class RequisitionPresenter implements Presenter{
         }).toList();
     }
 
+    public void loadRequisitionFormList() {
+
+        if (requisitionFormItemViewModelList.size() > 0){
+            return;
+        }
+
+        view.startLoading();
+
+        Observable.create(new Observable.OnSubscribe<List<RequisitionFormItemViewModel>>() {
+            @Override
+            public void call(Subscriber<? super List<RequisitionFormItemViewModel>> subscriber) {
+                subscriber.onNext(createViewModelsFromRnrForm());
+            }
+        }).observeOn(Schedulers.io()).subscribeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<List<RequisitionFormItemViewModel>>() {
+            @Override
+            public void call(List<RequisitionFormItemViewModel> requisitionFormItemViewModels) {
+                requisitionFormItemViewModelList.addAll(requisitionFormItemViewModels);
+                view.refreshRequisitionForm();
+                view.stopLoading();
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                view.stopLoading();
+            }
+        });
+    }
+
 
     public interface RequisitionView extends View {
-
+        void refreshRequisitionForm();
+        void startLoading();
+        void stopLoading();
     }
 
 }

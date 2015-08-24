@@ -29,7 +29,7 @@ import org.openlmis.core.model.RnRForm;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VIAReposotory extends RnrFormRepository{
+public class VIARepository extends RnrFormRepository{
 
     public static final String VIA_PROGRAM_CODE = "ESS_MEDS";
 
@@ -39,7 +39,7 @@ public class VIAReposotory extends RnrFormRepository{
     ProgramRepository programRepository;
 
     @Inject
-    public VIAReposotory(Context context) {
+    public VIARepository(Context context) {
         super(context);
     }
 

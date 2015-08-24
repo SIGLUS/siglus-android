@@ -30,19 +30,11 @@ import org.openlmis.core.R;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.RequisitionPresenter;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
-import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 
 
-import java.util.ArrayList;
-import java.util.List;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 
 @ContentView(R.layout.activity_requisition)
@@ -56,8 +48,6 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     @InjectView(R.id.product_name_list_view)
     ListView requisitionNameList;
-
-    List<RequisitionFormItemViewModel> productList;
     LayoutInflater inflater;
 
     View bodyHeaderView;
@@ -73,27 +63,17 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         inflater = LayoutInflater.from(this);
 
         initUI();
+        presenter.loadRequisitionFormList();
+    }
 
-        startLoading();
-        Observable.create(new Observable.OnSubscribe<List<RequisitionFormItemViewModel>>() {
-            @Override
-            public void call(Subscriber<? super  List<RequisitionFormItemViewModel>> subscriber) {
-                subscriber.onNext(presenter.getRequisitionViewModelList());
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<List<RequisitionFormItemViewModel>>() {
-            @Override
-            public void call(List<RequisitionFormItemViewModel> requisitionFormItemViewModels) {
-                productList.addAll(requisitionFormItemViewModels);
-                productListAdapter.notifyDataSetChanged();
-                requisitionFormAdapter.notifyDataSetChanged();
-                stopLoading();
-            }
-        });
+
+    @Override
+    public void refreshRequisitionForm() {
+        productListAdapter.notifyDataSetChanged();
+        requisitionFormAdapter.notifyDataSetChanged();
     }
 
     private void initUI() {
-        productList = new ArrayList<>();
-
         initRequisitionBodyList();
         initRequisitionProductList();
 
@@ -112,7 +92,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         bodyHeaderView = inflater.inflate(R.layout.item_requisition_header, requisitionForm, false);
         requisitionForm.addHeaderView(bodyHeaderView);
 
-        requisitionFormAdapter = new RequisitionFormAdapter(this, productList, false);
+        requisitionFormAdapter = new RequisitionFormAdapter(this, presenter.getRequisitionViewModelList(), false);
         requisitionForm.setAdapter(requisitionFormAdapter);
     }
 
@@ -120,10 +100,9 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         productHeaderView = inflater.inflate(R.layout.layout_requisition_header_left, requisitionNameList, false);
         requisitionNameList.addHeaderView(productHeaderView);
 
-        productListAdapter = new RequisitionFormAdapter(this, productList, true);
+        productListAdapter = new RequisitionFormAdapter(this, presenter.getRequisitionViewModelList(), true);
         requisitionNameList.setAdapter(productListAdapter);
     }
-
 
     @Override
     public Presenter getPresenter() {
