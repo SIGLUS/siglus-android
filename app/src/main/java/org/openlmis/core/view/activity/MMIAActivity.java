@@ -55,7 +55,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
     private MMIARnrForm rnrFromListView;
 
     @InjectView(R.id.regime_list)
-    private MMIARegimeList regimeListView;
+    public MMIARegimeList regimeListView;
 
     @InjectView(R.id.mmia_info_list)
     private MMIAInfoList mmiaInfoListView;
