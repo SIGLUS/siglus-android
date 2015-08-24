@@ -80,15 +80,17 @@ public class MMIARnrForm extends LinearLayout {
 
     public void sortAndSetType(ArrayList<RnrFormItem> rnrFormItemList) {
         initRnrFormItemConfigList();
+
+        //in sequence to add ADULT、BABY and OTHER
         setMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_ADULT);
         setMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_BABY);
         setMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_OTHER);
     }
 
     private void setMedicineType(ArrayList<RnrFormItem> dataList, String medicineTypeName) {
-        List<String> medicineType = rnrFormItemConfigList.get(medicineTypeName);
+        List<String> fnms = rnrFormItemConfigList.get(medicineTypeName);
         for (RnrFormItem item : dataList) {
-            for (String fnm : medicineType) {
+            for (String fnm : fnms) {
                 if (fnm.equals(item.getProduct().getCode())) {
                     item.getProduct().setMedicine_type(medicineTypeName);
                     rnrFormItemList.add(item);

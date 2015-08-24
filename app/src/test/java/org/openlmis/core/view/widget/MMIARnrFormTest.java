@@ -37,13 +37,13 @@ public class MMIARnrFormTest {
 
         RnrFormItem item2 = new RnrFormItem();
         Product product2 = new Product();
-        product2.setCode("08S32B");//type is other
+        product2.setCode("08S32B");//type is baby
         item2.setProduct(product2);
         list.add(item2);
 
         RnrFormItem item3 = new RnrFormItem();
         Product product3 = new Product();
-        product3.setCode("08S39Z");//type is other
+        product3.setCode("08S39Z");//type is adult
         item3.setProduct(product3);
         list.add(item3);
 
@@ -51,6 +51,6 @@ public class MMIARnrFormTest {
         ArrayList<RnrFormItem> rnrFormItemList = mmiaRnrForm.getRnrFormItemList();
 
         assertThat(rnrFormItemList.get(0).getProduct().getMedicine_type(), is(Product.MEDICINE_TYPE_ADULT));
-        assertThat(rnrFormItemList.get(2).getProduct().getMedicine_type(),is(Product.MEDICINE_TYPE_OTHER));
+        assertThat(rnrFormItemList.get(2).getProduct().getMedicine_type(), is(Product.MEDICINE_TYPE_OTHER));
     }
 }
