@@ -78,6 +78,16 @@
     <string name="msg_low_stock_warning">Your product has low stock.</string>
     <string name="msg_stock_out_warning">Your product is stocked out.</string>
 
+    <!-- Stock Movement -->
+    <string name="title_stock_movement">Stock Card</string>
+    <string name="label_default">-</string>
+    <string name="label_movement_date">Movement Date</string>
+    <string name="label_reason">Original/Destination/Reason</string>
+    <string name="label_document_no">Document Number</string>
+    <string name="label_negative_adjustment">Negative Adjustment</string>
+    <string name="label_positive_adjustment">Positive Adjustment</string>
+    <string name="label_stock_existence">Stock Existence</string>
+    <string name="btn_cancel">Cancel</string>
 
     <!-- Stock Card List Page -->
     <string-array name="sort_items_array">

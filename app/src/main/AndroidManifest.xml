@@ -48,6 +48,11 @@
             android:label="@string/title_requisition"
             android:windowSoftInputMode="adjustPan" />
 
+        <activity
+            android:name=".view.activity.StockMovementActivity"
+            android:label="@string/title_stock_movement"
+            android:windowSoftInputMode="adjustPan" />
+
 
         <service
             android:name=".service.SyncService"

@@ -6,4 +6,5 @@
     <dimen name="margin_normal">16dp</dimen>
     <dimen name="mmia_spread_item_common_width">65dp</dimen>
     <dimen name="divider">1dp</dimen>
+    <dimen name="stock_movement_item_common_width">100dp</dimen>
 </resources>

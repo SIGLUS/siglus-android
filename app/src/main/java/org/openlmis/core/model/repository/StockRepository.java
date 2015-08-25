@@ -130,6 +130,16 @@ public class StockRepository {
         return stockItemGenericDao.queryForAll();
     }
 
+    public List<StockItem> listLastFive(final long stockCardId) throws LMISException{
+        return dbUtil.withDao(StockItem.class, new DbUtil.Operation<StockItem, List<StockItem>>() {
+            @Override
+            public List<StockItem> operate(Dao<StockItem, String> dao) throws SQLException {
+               return dao.queryBuilder().limit(10L).orderBy("createdAt",true).where().eq("stockCard_id", stockCardId).query();
+            }
+        });
+    }
+
+
     public List<StockItem> queryStockItems(final StockCard stockCard, final Date startDate, final Date endDate) throws LMISException {
         return dbUtil.withDao(StockItem.class, new DbUtil.Operation<StockItem, List<StockItem>>() {
             @Override

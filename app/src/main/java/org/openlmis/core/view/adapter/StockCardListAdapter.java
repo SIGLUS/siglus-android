@@ -19,6 +19,8 @@
 package org.openlmis.core.view.adapter;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -35,6 +37,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockCardListPresenter;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.activity.StockMovementActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,9 +69,9 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
     }
 
     @Override
-    public void onBindViewHolder(StockCardListAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(StockCardListAdapter.ViewHolder holder, final int position) {
 
-        Product product = currentStockCards.get(position).getProduct();
+        final Product product = currentStockCards.get(position).getProduct();
         String productName = product.getPrimaryName() + " [" + product.getCode() + "]";
         SpannableStringBuilder styledName = new SpannableStringBuilder(productName);
         styledName.setSpan(new ForegroundColorSpan(LMISApp.getContext().getResources().getColor(R.color.secondary_text)),
@@ -82,6 +85,18 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
         holder.productName.setText(styledName);
         holder.productUnit.setText(styledUnit);
         initStockOnHand(holder, currentStockCards.get(position));
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Context context = v.getContext();
+                Intent intent = new Intent();
+                intent.setClass(v.getContext(), StockMovementActivity.class);
+                intent.putExtra("stockCardId", currentStockCards.get(position).getId());
+                context.startActivity(intent);
+            }
+        });
     }
 
     private void initStockOnHand(ViewHolder holder, final StockCard stockCard) {

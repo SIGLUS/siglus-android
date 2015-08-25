@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp">
+
+    <LinearLayout android:id="@+id/title_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/border_bg"
+        android:divider="@drawable/divider_vertical"
+        android:showDividers="middle"
+        android:layout_marginTop="10dp">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@mipmap/ic_launcher"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="balabal"
+            android:textSize="60sp"
+            android:textColor="@color/primary_text"
+            android:textStyle="bold"
+            android:gravity="center"/>
+
+    </LinearLayout>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_panel"
+        android:layout_above="@+id/action_panel"
+        android:layout_marginTop="10dp">
+        <ListView android:id="@+id/list_stock_movement"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:divider="@drawable/divider_horizontal"
+            android:background="@drawable/border_bg"/>
+
+    </HorizontalScrollView>
+
+    <include android:id="@+id/action_panel"
+        layout="@layout/layout_form_action"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"/>
+</RelativeLayout>
