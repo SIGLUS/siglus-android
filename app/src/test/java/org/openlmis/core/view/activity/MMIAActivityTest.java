@@ -18,13 +18,14 @@
 
 package org.openlmis.core.view.activity;
 
+import android.app.DialogFragment;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.robolectric.Robolectric;
-import org.robolectric.shadows.ShadowDialog;
 
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -46,13 +47,8 @@ public class MMIAActivityTest {
     public void shouldShowDialogWhenDataChangedOnBackPressed() {
         when(mmiaRegimeList.hasDataChanged()).thenReturn(true);
         activity.onBackPressed();
-
-        mmiaRegimeList.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                assertTrue(ShadowDialog.getLatestDialog().isShowing());
-            }
-        }, 200);
+        DialogFragment mmiaOnBackConfirmDialog = (DialogFragment) activity.getFragmentManager().findFragmentByTag("MMIAOnBackConfirmDialog");
+        assertTrue(mmiaOnBackConfirmDialog.getShowsDialog());
     }
 
 }
