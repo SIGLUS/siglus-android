@@ -91,12 +91,12 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return onSearchStart(query);
+                return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                return false;
+                return onSearchStart(newText);
             }
         });
 
