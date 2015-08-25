@@ -8,20 +8,24 @@
     android:orientation="horizontal"
     android:showDividers="middle">
 
-    <TextView android:id="@+id/label"
+    <TextView
+        android:id="@+id/label"
         android:layout_width="wrap_content"
-        android:maxWidth="100dp"
-        android:minWidth="60dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textSize="16sp"
+        android:labelFor="@+id/edit_text"
+        android:maxWidth="100dp"
+        android:minWidth="60dp"
         android:text="@string/label_consultation"
-        android:labelFor="@+id/edit_text"/>
+        android:textSize="16sp" />
 
-    <EditText android:id="@+id/edit_text"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/edit_text"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
+        android:background="@null"
         android:ems="4"
-        android:inputType="number"/>
+        android:numeric="integer"
+        android:padding="4dp" />
 
 </LinearLayout>
