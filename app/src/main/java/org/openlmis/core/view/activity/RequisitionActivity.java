@@ -18,10 +18,12 @@
 
 package org.openlmis.core.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.inject.Inject;
@@ -32,13 +34,14 @@ import org.openlmis.core.presenter.RequisitionPresenter;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 
 
+import java.sql.SQLException;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 
 @ContentView(R.layout.activity_requisition)
-public class RequisitionActivity extends BaseActivity implements RequisitionPresenter.RequisitionView {
+public class RequisitionActivity extends BaseActivity implements RequisitionPresenter.RequisitionView, View.OnClickListener {
 
     @Inject
     RequisitionPresenter presenter;
@@ -48,6 +51,13 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     @InjectView(R.id.product_name_list_view)
     ListView requisitionNameList;
+
+    @InjectView(R.id.btn_complete)
+    private Button btnComplete;
+
+    @InjectView(R.id.btn_save)
+    private View btnSave;
+
     LayoutInflater inflater;
 
     View bodyHeaderView;
@@ -85,6 +95,10 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         });
 
         setListViewOnTouchAndScrollListener(requisitionForm, requisitionNameList);
+
+        btnComplete.setOnClickListener(this);
+        btnSave.setOnClickListener(this);
+
     }
 
 
@@ -107,6 +121,30 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     @Override
     public Presenter getPresenter() {
         return presenter;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_save:
+                onSaveBtnClick();
+                break;
+            case R.id.btn_complete:
+                onCompleteBtnClick();
+                break;
+            default:
+                break;
+
+        }
+    }
+
+    private void onCompleteBtnClick() {
+        goToHomePage();
+
+    }
+
+    private void onSaveBtnClick() {
+        goToHomePage();
     }
 
 
@@ -162,5 +200,11 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     private void setListViewOnTouchAndScrollListener(ListView listView1, ListView listView2) {
         listView2.setOnScrollListener(new MyScrollListener(listView2, listView1));
         listView1.setOnScrollListener(new MyScrollListener(listView1, listView2));
+    }
+
+    private void goToHomePage() {
+        Intent intent = new Intent(RequisitionActivity.this, HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(HomeActivity.class, true);
     }
 }
