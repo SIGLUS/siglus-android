@@ -19,13 +19,16 @@
 package org.openlmis.core.view.adapter;
 
 import android.content.Context;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 
 import java.util.List;
@@ -71,8 +74,7 @@ public class RequisitionFormAdapter extends BaseAdapter {
         ViewHolder viewHolder;
         if (convertView == null) {
             convertView = inflater.inflate(itemLayoutResId, parent, false);
-
-            viewHolder = new ViewHolder(convertView);
+            viewHolder = new ViewHolder(convertView, isNameList);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -88,7 +90,7 @@ public class RequisitionFormAdapter extends BaseAdapter {
         holder.productCode.setText(entry.getFmn());
         holder.productName.setText(entry.getProductName());
 
-        if (!isNameList){
+        if (!isNameList) {
             holder.initAmount.setText(entry.getInitAmount());
             holder.received.setText(entry.getReceived());
             holder.issued.setText(entry.getIssued());
@@ -112,19 +114,35 @@ public class RequisitionFormAdapter extends BaseAdapter {
         public TextView inventory;
         public TextView different;
         public TextView totalRequest;
+        public EditText requestAmount;
+        public EditText approvedAmount;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, boolean isNameList) {
             productCode = ((TextView) itemView.findViewById(R.id.tx_FNM));
             productName = ((TextView) itemView.findViewById(R.id.tx_product_name));
-            received = ((TextView) itemView.findViewById(R.id.tx_received));
-            initAmount = ((TextView) itemView.findViewById(R.id.tx_initial_amount));
-            issued = ((TextView) itemView.findViewById(R.id.tx_issued));
-            theoretical = ((TextView) itemView.findViewById(R.id.tx_theoretical));
-            total = ((TextView) itemView.findViewById(R.id.tx_total));
-            inventory = ((TextView) itemView.findViewById(R.id.tx_inventory));
-            different = ((TextView) itemView.findViewById(R.id.tx_different));
-            totalRequest = ((TextView) itemView.findViewById(R.id.tx_total_request));
+
+
+            if (!isNameList) {
+                received = ((TextView) itemView.findViewById(R.id.tx_received));
+                initAmount = ((TextView) itemView.findViewById(R.id.tx_initial_amount));
+                issued = ((TextView) itemView.findViewById(R.id.tx_issued));
+                theoretical = ((TextView) itemView.findViewById(R.id.tx_theoretical));
+                total = ((TextView) itemView.findViewById(R.id.tx_total));
+                inventory = ((TextView) itemView.findViewById(R.id.tx_inventory));
+                different = ((TextView) itemView.findViewById(R.id.tx_different));
+                totalRequest = ((TextView) itemView.findViewById(R.id.tx_total_request));
+                requestAmount = ((EditText) itemView.findViewById(R.id.et_request_amount));
+                approvedAmount = ((EditText) itemView.findViewById(R.id.et_approved_amount));
+
+                requestAmount.addTextChangedListener(new SimpleTextWatcher() {
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        approvedAmount.setText(requestAmount.getText());
+                    }
+                });
+            }
         }
     }
+
 }
 
