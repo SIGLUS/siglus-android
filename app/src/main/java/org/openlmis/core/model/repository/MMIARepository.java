@@ -42,7 +42,7 @@ public class MMIARepository extends RnrFormRepository {
     public static final String ATTR_PTV = "PTV";
     public static final String ATTR_PPE = "PPE";
 
-    public static final String MMIA_PROGRAM_CODE = "VACCINES";
+    public static final String MMIA_PROGRAM_CODE = "MMIA";
 
     @Inject
     ProgramRepository programRepository;

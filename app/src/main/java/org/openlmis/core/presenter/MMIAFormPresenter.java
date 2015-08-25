@@ -25,7 +25,6 @@ import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.view.View;
 
@@ -43,10 +42,7 @@ public class MMIAFormPresenter implements Presenter {
 
     @Override
     public void onStart() {
-        rnrForm = getRnrForm();
-        if (rnrForm != null) {
-            view.initUI(new ArrayList<>(rnrForm.getRnrFormItemList()), rnrForm.getRegimenItemListWrapper(), rnrForm.getBaseInfoItemListWrapper(), rnrForm.getComments());
-        }
+
     }
 
     @Override
@@ -129,8 +125,6 @@ public class MMIAFormPresenter implements Presenter {
     }
 
     public interface MIMIAFormView extends View {
-        void initUI(ArrayList<RnrFormItem> rnrFormItemList, ArrayList<RegimenItem> regimenItemListWrapper, ArrayList<BaseInfoItem> baseInfoItemListWrapper, String comments);
-
         void showValidationAlert();
 
         void showErrorMessage(String msg);

@@ -31,9 +31,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.model.BaseInfoItem;
-import org.openlmis.core.model.RegimenItem;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.presenter.MMIAFormPresenter;
 import org.openlmis.core.view.fragment.MMIAOnBackConfirmDialog;
 import org.openlmis.core.view.fragment.RetainedFragment;
@@ -112,18 +109,20 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hasDataChanged = (Boolean) dataFragment.getData("hasDataChanged");
+        if (presenter.getRnrForm() != null) {
+            initUI();
+        }
     }
 
-    @Override
-    public void initUI(ArrayList<RnrFormItem> rnrFormItemList, ArrayList<RegimenItem> regimenItemListWrapper, ArrayList<BaseInfoItem> baseInfoItemListWrapper, String comments) {
+    public void initUI() {
 
-        rnrFromListView.initView(rnrFormItemList);
+        rnrFromListView.initView(new ArrayList<>(presenter.getRnrForm().getRnrFormItemList()));
 
-        regimeListView.initView(regimenItemListWrapper, tvRegimeTotal);
+        regimeListView.initView(presenter.getRnrForm().getRegimenItemListWrapper(), tvRegimeTotal);
 
-        mmiaInfoListView.initView(baseInfoItemListWrapper);
+        mmiaInfoListView.initView(presenter.getRnrForm().getBaseInfoItemListWrapper());
 
-        etComment.setText(comments);
+        etComment.setText(presenter.getRnrForm().getComments());
 
         etComment.addTextChangedListener(textWatcher);
 
