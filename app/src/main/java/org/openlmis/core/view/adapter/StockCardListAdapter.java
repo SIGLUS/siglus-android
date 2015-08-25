@@ -51,10 +51,10 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
     @Getter
     List<StockCard> currentStockCards;
 
-    public StockCardListAdapter(StockCardListPresenter presenter, List<StockCard> stockCardList) {
+    public StockCardListAdapter(StockCardListPresenter presenter) {
         this.presenter = presenter;
-        this.stockCards = stockCardList;
-        currentStockCards = new ArrayList<>(stockCardList);
+        this.stockCards = presenter.getStockCards();
+        currentStockCards = new ArrayList<>(stockCards);
     }
 
     @Override

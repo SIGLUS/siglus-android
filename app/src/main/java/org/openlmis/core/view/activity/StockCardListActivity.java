@@ -30,13 +30,10 @@ import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
-import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockCardListPresenter;
 import org.openlmis.core.view.adapter.StockCardListAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -55,17 +52,15 @@ public class StockCardListActivity extends BaseActivity implements StockCardList
 
     StockCardListAdapter mAdapter;
 
-    List<StockCard> stockCardList = new ArrayList<>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         presenter.attachView(this);
-        stockCardList = presenter.loadStockCards();
-        mAdapter = new StockCardListAdapter(presenter,stockCardList);
-
+        mAdapter = new StockCardListAdapter(presenter);
         initUI();
+
+        presenter.loadStockCards();
     }
 
     private  void initUI(){
@@ -126,5 +121,12 @@ public class StockCardListActivity extends BaseActivity implements StockCardList
         sortSpinner.setSelection(0);
         filterStockCard(StringUtils.EMPTY);
         return false;
+    }
+
+
+    @Override
+    public void refreshList() {
+        mAdapter = new StockCardListAdapter(presenter);
+        stockCardRecycleView.setAdapter(mAdapter);
     }
 }

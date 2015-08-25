@@ -68,7 +68,7 @@ public class StockCardListActivityTest {
     public  void shouldSortListWhenSelectSortSpinner(){
 
 
-        when(stockCardListActivity.presenter.loadStockCards()).thenReturn(stockCards);
+        when(stockCardListActivity.presenter.getStockCards()).thenReturn(stockCards);
         stockCardListActivity.sortSpinner.setSelection(0);
         verify(stockCardListActivity.mAdapter).sortByName(true);
 
@@ -84,7 +84,8 @@ public class StockCardListActivityTest {
 
     @Test
     public void shouldSortListByProductName(){
-        StockCardListAdapter adapter = new StockCardListAdapter(stockCardListActivity.presenter,stockCards);
+        when(stockCardListActivity.presenter.getStockCards()).thenReturn(stockCards);
+        StockCardListAdapter adapter = new StockCardListAdapter(stockCardListActivity.presenter);
         adapter.sortByName(true);
 
         List<StockCard> sortedList = adapter.getCurrentStockCards();
@@ -95,7 +96,8 @@ public class StockCardListActivityTest {
 
     @Test
     public void shouldSortListBySOH(){
-        StockCardListAdapter adapter = new StockCardListAdapter(stockCardListActivity.presenter,stockCards);
+        when(stockCardListActivity.presenter.getStockCards()).thenReturn(stockCards);
+        StockCardListAdapter adapter = new StockCardListAdapter(stockCardListActivity.presenter);
         adapter.sortBySOH(true);
 
         List<StockCard> sortedList = adapter.getCurrentStockCards();

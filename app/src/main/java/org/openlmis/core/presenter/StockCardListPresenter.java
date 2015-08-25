@@ -31,6 +31,12 @@ import org.openlmis.core.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 public class StockCardListPresenter implements Presenter {
 
     @Inject
@@ -41,9 +47,16 @@ public class StockCardListPresenter implements Presenter {
 
     StockCardListView view;
 
+    List<StockCard> stockCardList;
+
     public static final int STOCK_ON_HAND_NORMAL = 1;
     public static final int STOCK_ON_HAND_LOW_STOCK = 2;
     public static final int STOCK_ON_HAND_STOCK_OUT = 3;
+
+    public StockCardListPresenter(){
+        stockCardList = new ArrayList<>();
+    }
+
 
     @Override
     public void onStart() {
@@ -56,14 +69,45 @@ public class StockCardListPresenter implements Presenter {
     }
 
 
-    public List<StockCard> loadStockCards() {
-        try {
-            return stockRepository.list();
-        } catch (LMISException e) {
-            e.printStackTrace();
+    public List<StockCard> getStockCards(){
+        return stockCardList;
+    }
+
+    public void loadStockCards() {
+
+        if (stockCardList.size() > 0){
+            return;
         }
 
-        return new ArrayList<>();
+        view.startLoading();
+        Observable.create(new Observable.OnSubscribe<List<StockCard>>() {
+            @Override
+            public void call(Subscriber<? super List<StockCard>> subscriber) {
+                try {
+                    subscriber.onNext(stockRepository.list());
+                }catch (LMISException e){
+                    subscriber.onError(e);
+                }finally {
+                    subscriber.onCompleted();
+                }
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<List<StockCard>>() {
+            @Override
+            public void onCompleted() {
+                view.stopLoading();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(List<StockCard> stockCards) {
+                stockCardList.addAll(stockCards);
+                view.refreshList();
+            }
+        });
     }
 
     @Override
@@ -72,6 +116,9 @@ public class StockCardListPresenter implements Presenter {
     }
 
     public interface StockCardListView extends View {
+        void startLoading();
+        void stopLoading();
+        void refreshList();
     }
 
     public int getStockOnHandLevel(StockCard stockCard) {
