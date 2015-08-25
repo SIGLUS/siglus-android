@@ -176,7 +176,7 @@ public class MMIAInfoList extends LinearLayout {
     }
 
 
-    public boolean complete() {
+    public boolean isCompleted() {
         for (EditText editText : editTexts) {
             if (TextUtils.isEmpty(editText.getText().toString())) {
                 editText.setError(context.getString(R.string.hint_error_input));

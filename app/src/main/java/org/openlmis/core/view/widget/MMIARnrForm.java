@@ -78,7 +78,7 @@ public class MMIARnrForm extends LinearLayout {
         }
     }
 
-    public void sortAndSetType(ArrayList<RnrFormItem> rnrFormItemList) {
+    private void sortAndSetType(ArrayList<RnrFormItem> rnrFormItemList) {
         initRnrFormItemConfigList();
 
         //in sequence to add ADULT、BABY and OTHER

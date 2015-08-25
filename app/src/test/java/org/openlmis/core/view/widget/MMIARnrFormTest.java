@@ -47,7 +47,7 @@ public class MMIARnrFormTest {
         item3.setProduct(product3);
         list.add(item3);
 
-        mmiaRnrForm.sortAndSetType(list);
+        mmiaRnrForm.initView(list);
         ArrayList<RnrFormItem> rnrFormItemList = mmiaRnrForm.getRnrFormItemList();
 
         assertThat(rnrFormItemList.get(0).getProduct().getMedicine_type(), is(Product.MEDICINE_TYPE_ADULT));

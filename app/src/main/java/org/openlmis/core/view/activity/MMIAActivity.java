@@ -212,7 +212,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
     }
 
     private void onCompleteBtnClick() {
-        if (regimeListView.complete() && mmiaInfoListView.complete() && isTotalEqual()) {
+        if (regimeListView.isCompleted() && mmiaInfoListView.isCompleted() && isTotalEqual()) {
             try {
                 presenter.saveForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
                 goToHomePage();
