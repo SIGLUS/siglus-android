@@ -10,7 +10,7 @@ describe "submit requisition to web server" do
       agentCode: "F10",
       products: [
       {
-        productCode: "P6",
+        productCode: "08S42",
         beginningBalance: 1000,
         quantityReceived: 2000,
         quantityDispensed: 2500,
