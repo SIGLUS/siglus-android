@@ -89,6 +89,49 @@
     <string name="label_stock_existence">Stock Existence</string>
     <string name="btn_cancel">Cancel</string>
 
+    <!-- Reason/Origin/Destination select dialog-->
+    <string-array name="movement_type_items_array">
+        <item>Receive</item>
+        <item>Negative Adjustment</item>
+        <item>Positive Adjustment</item>
+        <item>Issue</item>
+    </string-array>
+
+    <string-array name="movement_receive_items_array">
+        <item>Dest1</item>
+        <item>Dest2</item>
+        <item>Dest3</item>
+        <item>Dest4</item>
+        <item>Dest1</item>
+        <item>Dest2</item>
+        <item>Dest3</item>
+        <item>Dest4</item>
+        <item>Dest1</item>
+        <item>Dest2</item>
+        <item>Dest3</item>
+        <item>Dest4</item>
+    </string-array>
+
+    <string-array name="movement_negative_items_array">
+        <item>Dest1</item>
+        <item>Dest2</item>
+        <item>Dest3</item>
+        <item>Dest4</item>
+    </string-array>
+    <string-array name="movement_positive_items_array">
+        <item>Dest1</item>
+        <item>Dest2</item>
+        <item>Dest3</item>
+        <item>Dest4</item>
+    </string-array>
+    <string-array name="movement_issue_items_array">
+        <item>Dest1</item>
+        <item>Dest2</item>
+        <item>Dest3</item>
+        <item>Dest4</item>
+    </string-array>
+
+
     <!-- Stock Card List Page -->
     <string-array name="sort_items_array">
         <item>Sort alphabetically: A to Z</item>

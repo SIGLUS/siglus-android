@@ -19,6 +19,7 @@
 package org.openlmis.core.view.adapter;
 
 import android.content.Context;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,10 +31,14 @@ import android.widget.TextView;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.StockMovementPresenter;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
+import org.openlmis.core.view.widget.MovementTypeDialog;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
 
 public class StockMovementAdapter extends BaseAdapter {
 
@@ -41,12 +46,21 @@ public class StockMovementAdapter extends BaseAdapter {
 
     LayoutInflater layoutInflater;
 
+    Context context;
+
+    MovementTypeDialog dialog;
+
+    ViewHolder editableLine;
+
     public StockMovementAdapter(Context context, StockMovementPresenter presenter){
         data = presenter.getStockMovementModels();
         if (data == null){
             data = new ArrayList<>();
         }
+        this.context = context;
         layoutInflater = LayoutInflater.from(context);
+
+        setupMovementTypeDialog();
     }
 
     @Override
@@ -85,8 +99,14 @@ public class StockMovementAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        StockMovementViewModel model = getItem(position);
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        final StockMovementViewModel model = getItem(position);
+
+        holder.etDocumentNo.setEnabled(false);
+        holder.etReceived.setEnabled(false);
+        holder.etNegativeAdjustment.setEnabled(false);
+        holder.etPositiveAdjustment.setEnabled(false);
+        holder.etIssued.setEnabled(false);
 
         if (model != null){
             holder.txMovementDate.setText(model.getMovementDate());
@@ -97,12 +117,6 @@ public class StockMovementAdapter extends BaseAdapter {
             holder.etPositiveAdjustment.setText(model.getPositiveAdjustment());
             holder.etIssued.setText(model.getIssued());
             holder.txStockExistence.setText(model.getStockExistence());
-
-            holder.etDocumentNo.setEnabled(false);
-            holder.etReceived.setEnabled(false);
-            holder.etNegativeAdjustment.setEnabled(false);
-            holder.etPositiveAdjustment.setEnabled(false);
-            holder.etIssued.setEnabled(false);
         } else {
             holder.txMovementDate.setText(StringUtils.EMPTY);
             holder.txReason.setText(StringUtils.EMPTY);
@@ -112,9 +126,65 @@ public class StockMovementAdapter extends BaseAdapter {
             holder.etPositiveAdjustment.setText(StringUtils.EMPTY);
             holder.etIssued.setText(StringUtils.EMPTY);
             holder.txStockExistence.setText(StringUtils.EMPTY);
+
+            editableLine = holder;
         }
+
+        holder.txReason.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (model == null) {
+                    dialog.show();
+                }
+            }
+        });
+
+        MyOnKeyListener listener = new MyOnKeyListener(holder);
+        holder.etReceived.setOnKeyListener(listener);
+        holder.etNegativeAdjustment.setOnKeyListener(listener);
+        holder.etPositiveAdjustment.setOnKeyListener(listener);
+        holder.etIssued.setOnKeyListener(listener);
     }
 
+    private long getCurrentStockOnHand(){
+        long currentStock = 0;
+        if (data.size()  > 0){
+            currentStock = Long.parseLong(data.get(data.size() -1).getStockExistence());
+        }
+
+        return  currentStock;
+    }
+
+    private void setupMovementTypeDialog(){
+        dialog = new MovementTypeDialog(context, new MovementTypeDialog.OnMovementSelectListener() {
+            @Override
+            public void onReceive() {
+                editableLine.etReceived.setEnabled(true);
+            }
+
+            @Override
+            public void onIssue() {
+                editableLine.etIssued.setEnabled(true);
+            }
+
+            @Override
+            public void onPositiveAdjustment() {
+                editableLine.etPositiveAdjustment.setEnabled(true);
+            }
+
+            @Override
+            public void onNegativeAdjustment() {
+                editableLine.etNegativeAdjustment.setEnabled(true);
+            }
+
+            @Override
+            public void onComplete(String result) {
+                editableLine.etDocumentNo.setEnabled(true);
+                editableLine.txReason.setText(result);
+                editableLine.txMovementDate.setText(DateUtil.formatDate(new Date()));
+            }
+        });
+    }
 
     class ViewHolder {
 
@@ -137,6 +207,32 @@ public class StockMovementAdapter extends BaseAdapter {
             etPositiveAdjustment = (EditText)view.findViewById(R.id.et_positive_adjustment);
             etIssued = (EditText)view.findViewById(R.id.et_issued);
             txStockExistence = (TextView)view.findViewById(R.id.tx_stock_on_hand);
+        }
+    }
+
+    class MyOnKeyListener implements View.OnKeyListener{
+
+        ViewHolder viewHolder;
+
+        public MyOnKeyListener(ViewHolder viewHolder) {
+            this.viewHolder = viewHolder;
+        }
+
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+            String text = ((TextView)v).getText().toString();
+            long number = 0;
+            if (!StringUtils.isEmpty(text)){
+                number = Long.parseLong(text);
+            }
+
+            if (v == viewHolder.etReceived || v == viewHolder.etPositiveAdjustment){
+                viewHolder.txStockExistence.setText(String.valueOf(getCurrentStockOnHand() + number));
+            } else {
+                viewHolder.txStockExistence.setText(String.valueOf(getCurrentStockOnHand() - number));
+            }
+
+            return false;
         }
     }
 }
