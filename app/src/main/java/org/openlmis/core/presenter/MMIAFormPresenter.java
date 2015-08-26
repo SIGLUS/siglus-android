@@ -92,7 +92,7 @@ public class MMIAFormPresenter implements Presenter {
         return form;
     }
 
-    public void saveForm(ArrayList<RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) throws SQLException {
+    public void saveForm(ArrayList<RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) {
         form.setRegimenItemListWrapper(regimenItemList);
         form.setBaseInfoItemListWrapper(baseInfoItemList);
         form.setComments(comments);
@@ -100,7 +100,7 @@ public class MMIAFormPresenter implements Presenter {
             try {
                 form.setStatus(RnRForm.STATUS.AUTHORIZED);
                 mmiaRepository.save(form);
-            } catch (LMISException e) {
+            } catch (LMISException|SQLException e) {
                 view.showErrorMessage(e.getMessage());
             }
         } else {
