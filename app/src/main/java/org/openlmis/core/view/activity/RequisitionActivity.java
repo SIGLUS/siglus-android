@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.google.inject.Inject;
@@ -32,9 +33,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.RequisitionPresenter;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
-
-
-import java.sql.SQLException;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -139,8 +137,38 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     }
 
     private void onCompleteBtnClick() {
-        goToHomePage();
+        if (presenter.isCompleted()) {
+            goToHomePage();
+        }
+    }
 
+    @Override
+    public void showInputError(int index) {
+        // +1  Header View
+        final int position = index + 1;
+        requisitionForm.setSelection(position);
+        requisitionForm.post(new Runnable() {
+            @Override
+            public void run() {
+                View childAt = getViewByPosition(position, requisitionForm);
+                final EditText viewById = (EditText) childAt.findViewById(R.id.et_request_amount);
+                viewById.requestFocus();
+                viewById.setError(getString(R.string.hint_error_input));
+            }
+        });
+    }
+
+
+    public View getViewByPosition(int pos, ListView listView) {
+        final int firstListItemPosition = listView.getFirstVisiblePosition();
+        final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
+
+        if (pos < firstListItemPosition || pos > lastListItemPosition) {
+            return listView.getAdapter().getView(pos, null, listView);
+        } else {
+            final int childIndex = pos - firstListItemPosition;
+            return listView.getChildAt(childIndex);
+        }
     }
 
     private void onSaveBtnClick() {

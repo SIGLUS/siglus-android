@@ -18,6 +18,8 @@
 
 package org.openlmis.core.presenter;
 
+import android.text.TextUtils;
+
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
@@ -29,8 +31,6 @@ import org.openlmis.core.view.View;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 
-import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +40,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
-public class RequisitionPresenter implements Presenter{
+
+public class RequisitionPresenter implements Presenter {
 
     @Inject
     VIARepository viaRepository;
@@ -51,7 +53,7 @@ public class RequisitionPresenter implements Presenter{
     protected RnRForm rnRForm;
     protected List<RequisitionFormItemViewModel> requisitionFormItemViewModelList;
 
-    public RequisitionPresenter(){
+    public RequisitionPresenter() {
         requisitionFormItemViewModelList = new ArrayList<>();
     }
 
@@ -68,18 +70,18 @@ public class RequisitionPresenter implements Presenter{
 
     @Override
     public void attachView(View v) throws ViewNotMatchException {
-        if (v instanceof RequisitionView){
+        if (v instanceof RequisitionView) {
             this.view = (RequisitionView) v;
-        }else {
+        } else {
             throw new ViewNotMatchException("required RequisitionView");
         }
     }
 
-    public RnRForm loadRnrForm(){
+    public RnRForm loadRnrForm() {
         try {
             rnRForm = viaRepository.initVIA();
             return rnRForm;
-        } catch (LMISException e){
+        } catch (LMISException e) {
             e.printStackTrace();
         }
         return null;
@@ -90,7 +92,7 @@ public class RequisitionPresenter implements Presenter{
         return requisitionFormItemViewModelList;
     }
 
-    protected List<RequisitionFormItemViewModel> createViewModelsFromRnrForm(){
+    protected List<RequisitionFormItemViewModel> createViewModelsFromRnrForm() {
         if (rnRForm == null) {
             loadRnrForm();
         }
@@ -104,7 +106,7 @@ public class RequisitionPresenter implements Presenter{
 
     public void loadRequisitionFormList() {
 
-        if (requisitionFormItemViewModelList.size() > 0){
+        if (requisitionFormItemViewModelList.size() > 0) {
             return;
         }
 
@@ -130,10 +132,27 @@ public class RequisitionPresenter implements Presenter{
         });
     }
 
+    public boolean isCompleted() {
+        List<RequisitionFormItemViewModel> requisitionViewModelList = getRequisitionViewModelList();
+        for (int i = 0; i < requisitionViewModelList.size(); i++) {
+            RequisitionFormItemViewModel itemViewModel = requisitionViewModelList.get(i);
+            if (TextUtils.isEmpty(itemViewModel.getRequestAmount())) {
+                view.showInputError(i);
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     public interface RequisitionView extends View {
+
+        void showInputError(int index);
+
         void refreshRequisitionForm();
+
         void startLoading();
+
         void stopLoading();
     }
 

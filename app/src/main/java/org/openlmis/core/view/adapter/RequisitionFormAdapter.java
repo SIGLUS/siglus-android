@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.Editable;
 import android.view.LayoutInflater;
@@ -61,17 +62,18 @@ public class RequisitionFormAdapter extends BaseAdapter {
 
     @Override
     public RequisitionFormItemViewModel getItem(int position) {
-        return data.get(0);
+        return data.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
+        final RequisitionFormItemViewModel entry = getItem(position);
         if (convertView == null) {
             convertView = inflater.inflate(itemLayoutResId, parent, false);
             viewHolder = new ViewHolder(convertView, isNameList);
@@ -80,13 +82,17 @@ public class RequisitionFormAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        onBindViewHolder(viewHolder, position);
+        View currentFocus = ((Activity) context).getCurrentFocus();
+        if (currentFocus != null) {
+            currentFocus.clearFocus();
+        }
+        onBindViewHolder(viewHolder, entry);
 
         return convertView;
     }
 
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        RequisitionFormItemViewModel entry = getItem(position);
+    public void onBindViewHolder(final ViewHolder holder, final RequisitionFormItemViewModel entry) {
+
         holder.productCode.setText(entry.getFmn());
         holder.productName.setText(entry.getProductName());
 
@@ -99,6 +105,44 @@ public class RequisitionFormAdapter extends BaseAdapter {
             holder.inventory.setText(entry.getInventory());
             holder.different.setText(entry.getDifferent());
             holder.totalRequest.setText(entry.getTotalRequest());
+
+            MySimpleTextWatcher mySimpleTextWatcher = new MySimpleTextWatcher(holder.approvedAmount, entry);
+            holder.requestAmount.removeTextChangedListener(mySimpleTextWatcher);
+            holder.requestAmount.setText(entry.getRequestAmount());
+            holder.requestAmount.setError(null);
+            holder.requestAmount.addTextChangedListener(mySimpleTextWatcher);
+
+            holder.approvedAmount.setText(entry.getApprovedAmount());
+
+        }
+    }
+
+    class MySimpleTextWatcher extends SimpleTextWatcher {
+
+        private final EditText approvedAmount;
+        private final RequisitionFormItemViewModel entry;
+
+        public MySimpleTextWatcher(EditText approvedAmount, RequisitionFormItemViewModel entry) {
+            this.approvedAmount = approvedAmount;
+            this.entry = entry;
+        }
+
+        @Override
+        public int hashCode() {
+            return super.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return true;
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            String value = editable.toString();
+            approvedAmount.setText(value);
+            entry.setRequestAmount(value);
+            entry.setApprovedAmount(value);
         }
     }
 
@@ -133,13 +177,6 @@ public class RequisitionFormAdapter extends BaseAdapter {
                 totalRequest = ((TextView) itemView.findViewById(R.id.tx_total_request));
                 requestAmount = ((EditText) itemView.findViewById(R.id.et_request_amount));
                 approvedAmount = ((EditText) itemView.findViewById(R.id.et_approved_amount));
-
-                requestAmount.addTextChangedListener(new SimpleTextWatcher() {
-                    @Override
-                    public void afterTextChanged(Editable editable) {
-                        approvedAmount.setText(requestAmount.getText());
-                    }
-                });
             }
         }
     }

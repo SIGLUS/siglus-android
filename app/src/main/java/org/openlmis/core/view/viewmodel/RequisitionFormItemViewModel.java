@@ -35,6 +35,8 @@ public class RequisitionFormItemViewModel {
     private String inventory;
     private String different;
     private String totalRequest;
+    private String requestAmount;
+    private String approvedAmount;
 
     public RequisitionFormItemViewModel(RnrFormItem item) {
 
