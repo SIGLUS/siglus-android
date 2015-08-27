@@ -59,11 +59,10 @@ public class MMIARepository extends RnrFormRepository {
 
     public RnRForm getDraftMMIAForm() throws LMISException {
         Program program = programRepository.queryByCode(MMIA_PROGRAM_CODE);
-        if (program != null) {
-            return queryDraft(programRepository.queryByCode(MMIA_PROGRAM_CODE));
-        } else {
-            return null;
+        if (program == null) {
+            throw new LMISException("Program cannot be null !");
         }
+        return queryDraft(program);
     }
 
     @Override
