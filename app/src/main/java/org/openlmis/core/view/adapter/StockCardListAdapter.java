@@ -52,7 +52,7 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
 
     @Getter
     List<StockCard> currentStockCards;
-    private  Class<?> detailActivity;
+    private Class<?> detailActivity;
 
     public StockCardListAdapter(StockCardListPresenter presenter, String className) {
         this.presenter = presenter;
@@ -85,8 +85,13 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
 
         String unit = product.getStrength() + " " + product.getType();
         SpannableStringBuilder styledUnit = new SpannableStringBuilder(unit);
+        int length = 0;
+        if (product.getStrength() != null) {
+            length = product.getStrength().length();
+        }
         styledUnit.setSpan(new ForegroundColorSpan(LMISApp.getContext().getResources().getColor(R.color.secondary_text)),
-                product.getStrength().length(), unit.length(), Spannable.SPAN_POINT_MARK);
+                length, unit.length(), Spannable.SPAN_POINT_MARK);
+
 
         holder.productName.setText(styledName);
         holder.productUnit.setText(styledUnit);
