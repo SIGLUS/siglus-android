@@ -190,6 +190,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
 
     @Override
     protected void onDestroy() {
+
         dataFragment.putData("presenter", presenter);
         dataFragment.putData("hasDataChanged", hasDataChanged());
         super.onDestroy();

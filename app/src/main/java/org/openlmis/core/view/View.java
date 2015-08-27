@@ -20,4 +20,7 @@ package org.openlmis.core.view;
 
 public interface View {
 
+    void loading();
+
+    void loaded();
 }

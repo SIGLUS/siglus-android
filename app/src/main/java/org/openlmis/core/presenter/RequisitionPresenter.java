@@ -110,7 +110,7 @@ public class RequisitionPresenter implements Presenter {
             return;
         }
 
-        view.startLoading();
+        view.loading();
 
         Observable.create(new Observable.OnSubscribe<List<RequisitionFormItemViewModel>>() {
             @Override
@@ -122,12 +122,12 @@ public class RequisitionPresenter implements Presenter {
             public void call(List<RequisitionFormItemViewModel> requisitionFormItemViewModels) {
                 requisitionFormItemViewModelList.addAll(requisitionFormItemViewModels);
                 view.refreshRequisitionForm();
-                view.stopLoading();
+                view.loaded();
             }
         }, new Action1<Throwable>() {
             @Override
             public void call(Throwable throwable) {
-                view.stopLoading();
+                view.loaded();
             }
         });
     }
@@ -150,10 +150,6 @@ public class RequisitionPresenter implements Presenter {
         void showInputError(int index);
 
         void refreshRequisitionForm();
-
-        void startLoading();
-
-        void stopLoading();
     }
 
 }

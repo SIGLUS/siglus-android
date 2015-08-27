@@ -16,7 +16,7 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.view.activity;
+package org.openlmis.core.view.fragment;
 
 
 import android.view.Menu;
@@ -28,8 +28,10 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockCardListPresenter;
+import org.openlmis.core.view.activity.StockCardListActivity;
+import org.openlmis.core.view.activity.StockMovementActivity;
 import org.openlmis.core.view.adapter.StockCardListAdapter;
-import org.robolectric.Robolectric;
+import static org.robolectric.util.FragmentTestUtil.startFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,16 +43,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
-public class StockCardListActivityTest {
+public class StockCardListFragmentTest {
 
-    StockCardListActivityMock stockCardListActivity;
+    StockCardListFragment stockCardListFragment;
     List<StockCard> stockCards;
 
     @Before
     public void setUp() {
-        stockCardListActivity = Robolectric.buildActivity(StockCardListActivityMock.class).create().get();
-        stockCardListActivity.presenter = mock(StockCardListPresenter.class);
-        stockCardListActivity.mAdapter =  mock(StockCardListAdapter.class);
+        stockCardListFragment = new StockCardListFragment();
+        startFragment(stockCardListFragment);
+        stockCardListFragment.presenter = mock(StockCardListPresenter.class);
+        stockCardListFragment.mAdapter =  mock(StockCardListAdapter.class);
 
         stockCards = new ArrayList<>();
         for (int i=0; i< 10 ;i ++){
@@ -66,26 +69,24 @@ public class StockCardListActivityTest {
 
     @Test
     public  void shouldSortListWhenSelectSortSpinner(){
+        when(stockCardListFragment.presenter.getStockCards()).thenReturn(stockCards);
+        stockCardListFragment.sortSpinner.setSelection(0);
+        verify(stockCardListFragment.mAdapter).sortByName(true);
 
+        stockCardListFragment.sortSpinner.setSelection(1);
+        verify(stockCardListFragment.mAdapter).sortByName(false);
 
-        when(stockCardListActivity.presenter.getStockCards()).thenReturn(stockCards);
-        stockCardListActivity.sortSpinner.setSelection(0);
-        verify(stockCardListActivity.mAdapter).sortByName(true);
+        stockCardListFragment.sortSpinner.setSelection(2);
+        verify(stockCardListFragment.mAdapter).sortByName(false);
 
-        stockCardListActivity.sortSpinner.setSelection(1);
-        verify(stockCardListActivity.mAdapter).sortByName(false);
-
-        stockCardListActivity.sortSpinner.setSelection(2);
-        verify(stockCardListActivity.mAdapter).sortByName(false);
-
-        stockCardListActivity.sortSpinner.setSelection(3);
-        verify(stockCardListActivity.mAdapter).sortBySOH(true);
+        stockCardListFragment.sortSpinner.setSelection(3);
+        verify(stockCardListFragment.mAdapter).sortBySOH(true);
     }
 
     @Test
     public void shouldSortListByProductName(){
-        when(stockCardListActivity.presenter.getStockCards()).thenReturn(stockCards);
-        StockCardListAdapter adapter = new StockCardListAdapter(stockCardListActivity.presenter);
+        when(stockCardListFragment.presenter.getStockCards()).thenReturn(stockCards);
+        StockCardListAdapter adapter = new StockCardListAdapter(stockCardListFragment.presenter, StockMovementActivity.class.getName());
         adapter.sortByName(true);
 
         List<StockCard> sortedList = adapter.getCurrentStockCards();
@@ -96,8 +97,8 @@ public class StockCardListActivityTest {
 
     @Test
     public void shouldSortListBySOH(){
-        when(stockCardListActivity.presenter.getStockCards()).thenReturn(stockCards);
-        StockCardListAdapter adapter = new StockCardListAdapter(stockCardListActivity.presenter);
+        when(stockCardListFragment.presenter.getStockCards()).thenReturn(stockCards);
+        StockCardListAdapter adapter = new StockCardListAdapter(stockCardListFragment.presenter, StockMovementActivity.class.getName());
         adapter.sortBySOH(true);
 
         List<StockCard> sortedList = adapter.getCurrentStockCards();

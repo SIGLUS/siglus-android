@@ -72,7 +72,7 @@ public class LoginPresenter implements Presenter {
             view.showEmptyAlert(1);
             return;
         }
-        view.startLoading();
+        view.loading();
 
         User user = new User(userName.trim(), password);
         if (view.isConnectionAvailable()) {
@@ -92,7 +92,7 @@ public class LoginPresenter implements Presenter {
             UserInfoMgr.getInstance().setUser(user);
             goToNextPage();
         }
-        view.stopLoading();
+        view.loaded();
     }
 
     private void authorizeUserRemote(final User user) {
@@ -111,7 +111,7 @@ public class LoginPresenter implements Presenter {
 
             @Override
             public void failure(RetrofitError error) {
-                view.stopLoading();
+                view.loaded();
                 onLoginFailed();
             }
         });
@@ -142,7 +142,7 @@ public class LoginPresenter implements Presenter {
     }
 
     public void onLoginFailed() {
-        view.stopLoading();
+        view.loaded();
         view.showInvalidAlert();
         view.clearPassword();
     }
@@ -150,11 +150,11 @@ public class LoginPresenter implements Presenter {
 
     public void getProgramWithProducts() {
         if (!view.hasGetProducts()) {
-            view.startLoading();
+            view.loading();
             syncManager.syncProductsWithProgramAsync(new SyncSubscriber<Void>() {
                 @Override
                 public void onCompleted() {
-                    view.stopLoading();
+                    view.loaded();
                     view.setHasGetProducts(true);
                     goToNextPage();
                 }
@@ -162,20 +162,17 @@ public class LoginPresenter implements Presenter {
                 @Override
                 public void onError(Throwable e) {
                     ToastUtil.show(R.string.msg_user_not_facility);
-                    view.stopLoading();
+                    view.loaded();
                 }
             });
 
         } else {
-            view.stopLoading();
+            view.loaded();
             goToNextPage();
         }
     }
 
     public interface LoginView extends View {
-        void stopLoading();
-
-        void startLoading();
 
         void clearPassword();
 

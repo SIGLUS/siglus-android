@@ -111,7 +111,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void startLoading() {
+    public void loading() {
         if(loadingDialog == null){
             loadingDialog = new ProgressDialog(this);
             loadingDialog.setIndeterminate(false);
@@ -120,7 +120,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         loadingDialog.show();
     }
 
-    public void stopLoading() {
+    public void loaded() {
         if(loadingDialog !=null){
             loadingDialog.dismiss();
         }

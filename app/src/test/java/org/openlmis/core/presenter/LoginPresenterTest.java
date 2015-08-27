@@ -84,7 +84,7 @@ public class LoginPresenterTest {
         when(mockActivity.isConnectionAvailable()).thenReturn(true);
         presenter.startLogin("user", "password");
 
-        verify(mockActivity).startLoading();
+        verify(mockActivity).loading();
 
         verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
         UserRepository.UserResponse userResponse = userRepository.new UserResponse();
@@ -128,7 +128,7 @@ public class LoginPresenterTest {
         verify(syncManager).syncProductsWithProgramAsync(getProductsCB.capture());
         getProductsCB.getValue().onCompleted();
 
-        verify(mockActivity).stopLoading();
+        verify(mockActivity).loaded();
         verify(mockActivity).goToInitInventory();
     }
 

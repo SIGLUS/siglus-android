@@ -7,4 +7,9 @@
         <attr name="labelWidth" format="dimension"/>
     </declare-styleable>
 
+
+    <declare-styleable name="ComponentAttr">
+        <attr name="className" format="string"/>
+    </declare-styleable>
+
 </resources>

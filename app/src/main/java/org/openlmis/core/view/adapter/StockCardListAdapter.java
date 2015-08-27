@@ -37,7 +37,6 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockCardListPresenter;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.activity.StockMovementActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,11 +52,18 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
 
     @Getter
     List<StockCard> currentStockCards;
+    private  Class<?> detailActivity;
 
-    public StockCardListAdapter(StockCardListPresenter presenter) {
+    public StockCardListAdapter(StockCardListPresenter presenter, String className) {
         this.presenter = presenter;
         this.stockCards = presenter.getStockCards();
         currentStockCards = new ArrayList<>(stockCards);
+
+        try {
+            detailActivity = Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -92,7 +98,7 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
 
                 Context context = v.getContext();
                 Intent intent = new Intent();
-                intent.setClass(v.getContext(), StockMovementActivity.class);
+                intent.setClass(v.getContext(), detailActivity);
                 intent.putExtra("stockCardId", currentStockCards.get(position).getId());
                 context.startActivity(intent);
             }

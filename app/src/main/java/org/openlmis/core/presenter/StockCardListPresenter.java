@@ -79,7 +79,7 @@ public class StockCardListPresenter implements Presenter {
             return;
         }
 
-        view.startLoading();
+        view.loading();
         Observable.create(new Observable.OnSubscribe<List<StockCard>>() {
             @Override
             public void call(Subscriber<? super List<StockCard>> subscriber) {
@@ -94,7 +94,7 @@ public class StockCardListPresenter implements Presenter {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<List<StockCard>>() {
             @Override
             public void onCompleted() {
-                view.stopLoading();
+                view.loaded();
             }
 
             @Override
@@ -105,20 +105,18 @@ public class StockCardListPresenter implements Presenter {
             @Override
             public void onNext(List<StockCard> stockCards) {
                 stockCardList.addAll(stockCards);
-                view.refreshList();
+                view.refresh();
             }
         });
     }
 
     @Override
     public void attachView(View v) {
-        view = (StockCardListView) v;
+        view = (StockCardListView)v;
     }
 
     public interface StockCardListView extends View {
-        void startLoading();
-        void stopLoading();
-        void refreshList();
+        void refresh();
     }
 
     public int getStockOnHandLevel(StockCard stockCard) {
