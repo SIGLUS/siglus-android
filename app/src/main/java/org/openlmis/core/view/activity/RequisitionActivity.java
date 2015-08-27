@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -27,22 +28,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.google.inject.Inject;
-
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.RequisitionPresenter;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
+import org.openlmis.core.view.fragment.RetainedFragment;
 
+import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 
 @ContentView(R.layout.activity_requisition)
 public class RequisitionActivity extends BaseActivity implements RequisitionPresenter.RequisitionView, View.OnClickListener {
-
-    @Inject
-    RequisitionPresenter presenter;
 
     @InjectView(R.id.requisition_form)
     ListView requisitionForm;
@@ -56,7 +54,16 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     @InjectView(R.id.btn_save)
     private View btnSave;
 
+    @InjectView(R.id.edit_text)
+    private EditText etConsultationNumbers;
+
     LayoutInflater inflater;
+
+    RequisitionPresenter presenter;
+
+    Boolean hasDataChanged;
+
+    private RetainedFragment dataFragment;
 
     View bodyHeaderView;
     View productHeaderView;
@@ -65,11 +72,27 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     RequisitionFormAdapter requisitionFormAdapter;
 
 
+
+    private void initPresenter() {
+        // find the retained fragment on activity restarts
+        FragmentManager fm = getFragmentManager();
+        dataFragment = (RetainedFragment) fm.findFragmentByTag("RetainedFragment");
+
+        if (dataFragment == null) {
+            dataFragment = new RetainedFragment();
+            fm.beginTransaction().add(dataFragment, "RetainedFragment").commit();
+            presenter = RoboGuice.getInjector(getApplicationContext()).getInstance(RequisitionPresenter.class);
+            dataFragment.putData("presenter", presenter);
+        } else {
+            presenter = (RequisitionPresenter) dataFragment.getData("presenter");
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflater = LayoutInflater.from(this);
-
+        hasDataChanged = (Boolean) dataFragment.getData("hasDataChanged");
         initUI();
         presenter.loadRequisitionFormList();
     }
@@ -79,6 +102,50 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     public void refreshRequisitionForm() {
         productListAdapter.notifyDataSetChanged();
         requisitionFormAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public Presenter getPresenter() {
+        initPresenter();
+        return presenter;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_save:
+                onSaveBtnClick();
+                break;
+            case R.id.btn_complete:
+                onCompleteBtnClick();
+                break;
+            default:
+                break;
+
+        }
+    }
+
+    @Override
+    public void showInputError(int index) {
+        // +1  Header View
+        final int position = index + 1;
+        requisitionForm.setSelection(position);
+        requisitionForm.post(new Runnable() {
+            @Override
+            public void run() {
+                View childAt = getViewByPosition(position, requisitionForm);
+                final EditText viewById = (EditText) childAt.findViewById(R.id.et_request_amount);
+                viewById.requestFocus();
+                viewById.setError(getString(R.string.hint_error_input));
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        dataFragment.putData("presenter", presenter);
+        dataFragment.putData("hasDataChanged", hasDataChanged());
+        super.onDestroy();
     }
 
     private void initUI() {
@@ -99,7 +166,6 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     }
 
-
     private void initRequisitionBodyList() {
         bodyHeaderView = inflater.inflate(R.layout.item_requisition_header, requisitionForm, false);
         requisitionForm.addHeaderView(bodyHeaderView);
@@ -116,46 +182,10 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         requisitionNameList.setAdapter(productListAdapter);
     }
 
-    @Override
-    public Presenter getPresenter() {
-        return presenter;
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_save:
-                onSaveBtnClick();
-                break;
-            case R.id.btn_complete:
-                onCompleteBtnClick();
-                break;
-            default:
-                break;
-
-        }
-    }
-
     private void onCompleteBtnClick() {
         if (presenter.isCompleted()) {
             goToHomePage();
         }
-    }
-
-    @Override
-    public void showInputError(int index) {
-        // +1  Header View
-        final int position = index + 1;
-        requisitionForm.setSelection(position);
-        requisitionForm.post(new Runnable() {
-            @Override
-            public void run() {
-                View childAt = getViewByPosition(position, requisitionForm);
-                final EditText viewById = (EditText) childAt.findViewById(R.id.et_request_amount);
-                viewById.requestFocus();
-                viewById.setError(getString(R.string.hint_error_input));
-            }
-        });
     }
 
 
@@ -234,5 +264,10 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         Intent intent = new Intent(RequisitionActivity.this, HomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(HomeActivity.class, true);
+    }
+
+    private boolean hasDataChanged() {
+        //TODO
+        return true;
     }
 }
