@@ -24,12 +24,13 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class VIARepository extends RnrFormRepository{
+public class VIARepository extends RnrFormRepository {
 
     public static final String VIA_PROGRAM_CODE = "ESS_MEDS";
 
@@ -43,15 +44,23 @@ public class VIARepository extends RnrFormRepository{
         super(context);
     }
 
-    public RnRForm initVIA() throws LMISException{
+    public RnRForm initVIA() throws LMISException {
         return initRnrForm(programRepository.queryByCode(VIA_PROGRAM_CODE));
     }
 
     @Override
     protected List<BaseInfoItem> generateBaseInfoItems(RnRForm form) {
-        BaseInfoItem newPatients = new BaseInfoItem(ATTR_CONSULTATION, BaseInfoItem.TYPE.INT, form);
+        BaseInfoItem newPatients = new BaseInfoItem(ATTR_CONSULTATION, BaseInfoItem.TYPE.STRING, form);
         List<BaseInfoItem> baseInfoItemList = new ArrayList<>();
         baseInfoItemList.add(newPatients);
         return baseInfoItemList;
+    }
+
+    public RnRForm getDraftVIA() throws LMISException {
+        Program program = programRepository.queryByCode(VIA_PROGRAM_CODE);
+        if (program == null) {
+            throw new LMISException("Program cannot be null !");
+        }
+        return queryDraft(program);
     }
 }

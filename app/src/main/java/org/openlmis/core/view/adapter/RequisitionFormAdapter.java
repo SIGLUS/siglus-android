@@ -40,6 +40,7 @@ public class RequisitionFormAdapter extends BaseAdapter {
     List<RequisitionFormItemViewModel> data;
     LayoutInflater inflater;
     boolean isNameList;
+    private boolean hasDataChanged = false;
 
     int itemLayoutResId;
 
@@ -117,6 +118,10 @@ public class RequisitionFormAdapter extends BaseAdapter {
         }
     }
 
+    public boolean hasDataChanged() {
+        return hasDataChanged;
+    }
+
     class MySimpleTextWatcher extends SimpleTextWatcher {
 
         private final EditText approvedAmount;
@@ -139,6 +144,7 @@ public class RequisitionFormAdapter extends BaseAdapter {
 
         @Override
         public void afterTextChanged(Editable editable) {
+            hasDataChanged = true;
             String value = editable.toString();
             approvedAmount.setText(value);
             entry.setRequestAmount(value);

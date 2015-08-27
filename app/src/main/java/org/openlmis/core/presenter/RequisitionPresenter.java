@@ -80,7 +80,12 @@ public class RequisitionPresenter implements Presenter {
 
     public RnRForm loadRnrForm() {
         try {
-            rnRForm = viaRepository.initVIA();
+            RnRForm draftVIA = viaRepository.getDraftVIA();
+            if (draftVIA != null) {
+                rnRForm = draftVIA;
+            } else {
+                rnRForm = viaRepository.initVIA();
+            }
             return rnRForm;
         } catch (LMISException e) {
             e.printStackTrace();
@@ -163,6 +168,22 @@ public class RequisitionPresenter implements Presenter {
             rnrFormItemListWrapper.get(i).setRequestAmount(requisitionFormItemViewModelList.get(i).getRequestAmount());
             rnrFormItemListWrapper.get(i).setApprovedAmount(requisitionFormItemViewModelList.get(i).getApprovedAmount());
         }
+    }
+
+    public void saveDraftRequisition(String consultationNumbers) {
+        setRnrFormAmount();
+        rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
+        rnRForm.setStatus(RnRForm.STATUS.DRAFT);
+
+        try {
+            viaRepository.save(rnRForm);
+        } catch (LMISException | SQLException e) {
+            view.showErrorMessage(e.getMessage());
+        }
+    }
+
+    public String getConsultationNumbers() {
+        return rnRForm.getBaseInfoItemListWrapper().get(0).getValue();
     }
 
 

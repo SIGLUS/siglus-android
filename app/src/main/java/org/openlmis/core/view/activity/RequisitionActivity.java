@@ -21,7 +21,9 @@ package org.openlmis.core.view.activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
@@ -33,6 +35,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.RequisitionPresenter;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
+import org.openlmis.core.view.fragment.OnBackConfirmDialog;
 import org.openlmis.core.view.fragment.RetainedFragment;
 
 import roboguice.RoboGuice;
@@ -71,7 +74,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     RequisitionFormAdapter productListAdapter;
     RequisitionFormAdapter requisitionFormAdapter;
-
+    private boolean consultationNumbersHasChanged;
 
 
     private void initPresenter() {
@@ -103,6 +106,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     public void refreshRequisitionForm() {
         productListAdapter.notifyDataSetChanged();
         requisitionFormAdapter.notifyDataSetChanged();
+        etConsultationNumbers.setText(presenter.getConsultationNumbers());
     }
 
     @Override
@@ -166,7 +170,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         });
 
         setListViewOnTouchAndScrollListener(requisitionForm, requisitionNameList);
-
+        etConsultationNumbers.addTextChangedListener(textWatcher);
         btnComplete.setOnClickListener(this);
         btnSave.setOnClickListener(this);
 
@@ -215,6 +219,10 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     }
 
     private void onSaveBtnClick() {
+        if (hasDataChanged()) {
+            String consultationNumbers = etConsultationNumbers.getText().toString();
+            presenter.saveDraftRequisition(consultationNumbers);
+        }
         goToHomePage();
     }
 
@@ -280,7 +288,35 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     }
 
     private boolean hasDataChanged() {
-        //TODO
-        return true;
+        if (hasDataChanged == null) {
+            hasDataChanged = requisitionFormAdapter.hasDataChanged() || consultationNumbersHasChanged;
+        }
+        return hasDataChanged;
+    }
+
+    TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            consultationNumbersHasChanged = true;
+        }
+    };
+
+    @Override
+    public void onBackPressed() {
+        if (hasDataChanged()) {
+            OnBackConfirmDialog.showDialog(getFragmentManager());
+        } else {
+            super.onBackPressed();
+        }
     }
 }
