@@ -25,7 +25,7 @@ import android.os.Bundle;
 
 import org.openlmis.core.R;
 
-public class MMIAOnBackConfirmDialog extends BaseDialogFragment {
+public class OnBackConfirmDialog extends BaseDialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -46,8 +46,8 @@ public class MMIAOnBackConfirmDialog extends BaseDialogFragment {
     }
 
     public static void showDialog(FragmentManager fragmentManager) {
-        MMIAOnBackConfirmDialog dialog = new MMIAOnBackConfirmDialog();
-        dialog.show(fragmentManager, "MMIAOnBackConfirmDialog");
+        OnBackConfirmDialog dialog = new OnBackConfirmDialog();
+        dialog.show(fragmentManager, "OnBackConfirmDialog");
     }
 
 }

@@ -32,7 +32,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.MMIAFormPresenter;
-import org.openlmis.core.view.fragment.MMIAOnBackConfirmDialog;
+import org.openlmis.core.view.fragment.OnBackConfirmDialog;
 import org.openlmis.core.view.fragment.RetainedFragment;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
@@ -158,7 +158,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
     @Override
     public void onBackPressed() {
         if (hasDataChanged()) {
-            MMIAOnBackConfirmDialog.showDialog(getFragmentManager());
+            OnBackConfirmDialog.showDialog(getFragmentManager());
         } else {
             super.onBackPressed();
         }

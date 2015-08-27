@@ -47,7 +47,7 @@ public class MMIAActivityTest {
     public void shouldShowDialogWhenDataChangedOnBackPressed() {
         when(mmiaRegimeList.hasDataChanged()).thenReturn(true);
         activity.onBackPressed();
-        DialogFragment mmiaOnBackConfirmDialog = (DialogFragment) activity.getFragmentManager().findFragmentByTag("MMIAOnBackConfirmDialog");
+        DialogFragment mmiaOnBackConfirmDialog = (DialogFragment) activity.getFragmentManager().findFragmentByTag("OnBackConfirmDialog");
         assertTrue(mmiaOnBackConfirmDialog.getShowsDialog());
     }
 
