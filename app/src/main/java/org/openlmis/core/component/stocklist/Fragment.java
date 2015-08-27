@@ -16,7 +16,7 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.view.fragment;
+package org.openlmis.core.component.stocklist;
 
 import android.app.Activity;
 import android.content.res.TypedArray;
@@ -35,14 +35,12 @@ import android.widget.Spinner;
 import com.google.inject.Inject;
 
 import org.openlmis.core.R;
-import org.openlmis.core.presenter.StockCardListPresenter;
 import org.openlmis.core.view.activity.StockMovementActivity;
-import org.openlmis.core.view.adapter.StockCardListAdapter;
+import org.openlmis.core.component.Component;
 
-import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
-public class StockCardListFragment extends RoboFragment implements StockCardListPresenter.StockCardListView, AdapterView.OnItemSelectedListener {
+public class Fragment extends Component implements Presenter.StockCardListView, AdapterView.OnItemSelectedListener {
 
     @InjectView(R.id.sort_spinner)
     Spinner sortSpinner;
@@ -51,9 +49,9 @@ public class StockCardListFragment extends RoboFragment implements StockCardList
     RecyclerView stockCardRecycleView;
 
     @Inject
-    StockCardListPresenter presenter;
+    Presenter presenter;
 
-    StockCardListAdapter mAdapter;
+    Adapter mAdapter;
     String className;
 
     View contentView;
@@ -88,7 +86,7 @@ public class StockCardListFragment extends RoboFragment implements StockCardList
 
         sortSpinner = (Spinner) contentView.findViewById(R.id.sort_spinner);
         stockCardRecycleView = (RecyclerView) contentView.findViewById(R.id.products_list);
-        mAdapter = new StockCardListAdapter(presenter, className);
+        mAdapter = new Adapter(presenter, className);
 
         initProductList();
         initSortSpinner();
@@ -148,10 +146,11 @@ public class StockCardListFragment extends RoboFragment implements StockCardList
 
     @Override
     public void refresh() {
-        mAdapter = new StockCardListAdapter(presenter, className);
+        mAdapter = new Adapter(presenter, className);
         stockCardRecycleView.setAdapter(mAdapter);
     }
 
+    @Override
     public void onSearch(String query){
         mAdapter.filter(query);
     }

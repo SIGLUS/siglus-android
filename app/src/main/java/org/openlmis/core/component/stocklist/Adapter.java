@@ -16,7 +16,7 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.view.adapter;
+package org.openlmis.core.component.stocklist;
 
 
 import android.content.Context;
@@ -35,8 +35,8 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.presenter.StockCardListPresenter;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.adapter.FilterableAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,16 +45,16 @@ import java.util.List;
 
 import lombok.Getter;
 
-public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdapter.ViewHolder> implements FilterableAdapter {
+public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements FilterableAdapter {
 
-    private final StockCardListPresenter presenter;
+    private final Presenter presenter;
     List<StockCard> stockCards;
 
     @Getter
     List<StockCard> currentStockCards;
     private Class<?> detailActivity;
 
-    public StockCardListAdapter(StockCardListPresenter presenter, String className) {
+    public Adapter(Presenter presenter, String className) {
         this.presenter = presenter;
         this.stockCards = presenter.getStockCards();
         currentStockCards = new ArrayList<>(stockCards);
@@ -67,7 +67,7 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
     }
 
     @Override
-    public StockCardListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public Adapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_stockcard, parent, false);
 
@@ -75,7 +75,7 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
     }
 
     @Override
-    public void onBindViewHolder(StockCardListAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(Adapter.ViewHolder holder, final int position) {
 
         final Product product = currentStockCards.get(position).getProduct();
         String productName = product.getPrimaryName() + " [" + product.getCode() + "]";
@@ -116,12 +116,12 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardListAdap
         int stockOnHandLevel = presenter.getStockOnHandLevel(stockCard);
         String warningMsg = null;
         switch (stockOnHandLevel) {
-            case StockCardListPresenter.STOCK_ON_HAND_LOW_STOCK:
+            case Presenter.STOCK_ON_HAND_LOW_STOCK:
                 holder.stockOnHandBg.setBackgroundResource(R.color.color_low_stock);
                 warningMsg = LMISApp.getContext().getString(R.string.msg_low_stock_warning);
                 holder.iv_warning.setVisibility(View.VISIBLE);
                 break;
-            case StockCardListPresenter.STOCK_ON_HAND_STOCK_OUT:
+            case Presenter.STOCK_ON_HAND_STOCK_OUT:
                 holder.stockOnHandBg.setBackgroundResource(R.color.color_stock_out);
                 warningMsg = LMISApp.getContext().getString(R.string.msg_stock_out_warning);
                 holder.iv_warning.setVisibility(View.VISIBLE);

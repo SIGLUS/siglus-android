@@ -16,7 +16,7 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.presenter;
+package org.openlmis.core.component.stocklist;
 
 
 import com.google.inject.Inject;
@@ -37,7 +37,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class StockCardListPresenter implements Presenter {
+public class Presenter implements org.openlmis.core.presenter.Presenter {
 
     @Inject
     StockRepository stockRepository;
@@ -53,7 +53,7 @@ public class StockCardListPresenter implements Presenter {
     public static final int STOCK_ON_HAND_LOW_STOCK = 2;
     public static final int STOCK_ON_HAND_STOCK_OUT = 3;
 
-    public StockCardListPresenter(){
+    public Presenter(){
         stockCardList = new ArrayList<>();
     }
 

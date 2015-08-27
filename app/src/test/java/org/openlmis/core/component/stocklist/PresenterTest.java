@@ -16,7 +16,7 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.presenter;
+package org.openlmis.core.component.stocklist;
 
 
 import android.support.annotation.NonNull;
@@ -46,10 +46,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
-public class StockCardListPresenterTest {
+public class PresenterTest {
 
 
-    private StockCardListPresenter stockCardListPresenter;
+    private Presenter presenter;
 
     RnrFormItemRepository rnrFormItemRepositoryMock;
 
@@ -58,7 +58,7 @@ public class StockCardListPresenterTest {
         rnrFormItemRepositoryMock = mock(RnrFormItemRepository.class);
         RoboGuice.overrideApplicationInjector(Robolectric.application, new MyTestModule());
 
-        stockCardListPresenter = RoboGuice.getInjector(Robolectric.application).getInstance(StockCardListPresenter.class);
+        presenter = RoboGuice.getInjector(Robolectric.application).getInstance(Presenter.class);
     }
 
     @Test
@@ -75,9 +75,9 @@ public class StockCardListPresenterTest {
         StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(100);
 
-        int stockOnHandLevel = stockCardListPresenter.getStockOnHandLevel(stockCard);
+        int stockOnHandLevel = presenter.getStockOnHandLevel(stockCard);
 
-        assertThat(stockOnHandLevel, is(StockCardListPresenter.STOCK_ON_HAND_NORMAL));
+        assertThat(stockOnHandLevel, is(Presenter.STOCK_ON_HAND_NORMAL));
 
     }
 
@@ -95,9 +95,9 @@ public class StockCardListPresenterTest {
         StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(2);
 
-        int stockOnHandLevel = stockCardListPresenter.getStockOnHandLevel(stockCard);
+        int stockOnHandLevel = presenter.getStockOnHandLevel(stockCard);
 
-        assertThat(stockOnHandLevel, is(StockCardListPresenter.STOCK_ON_HAND_LOW_STOCK));
+        assertThat(stockOnHandLevel, is(Presenter.STOCK_ON_HAND_LOW_STOCK));
     }
 
     @Test
@@ -114,9 +114,9 @@ public class StockCardListPresenterTest {
         StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(0);
 
-        int stockOnHandLevel = stockCardListPresenter.getStockOnHandLevel(stockCard);
+        int stockOnHandLevel = presenter.getStockOnHandLevel(stockCard);
 
-        assertThat(stockOnHandLevel, is(StockCardListPresenter.STOCK_ON_HAND_STOCK_OUT));
+        assertThat(stockOnHandLevel, is(Presenter.STOCK_ON_HAND_STOCK_OUT));
     }
 
     @NonNull

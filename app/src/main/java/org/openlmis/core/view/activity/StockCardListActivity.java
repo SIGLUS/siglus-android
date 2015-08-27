@@ -24,7 +24,7 @@ import android.os.Bundle;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.presenter.Presenter;
-import org.openlmis.core.view.fragment.StockCardListFragment;
+import org.openlmis.core.component.Component;
 
 
 import roboguice.inject.ContentView;
@@ -34,7 +34,7 @@ import roboguice.inject.InjectFragment;
 public class StockCardListActivity extends BaseActivity {
 
     @InjectFragment(R.id.stock_card_list)
-    StockCardListFragment stockCardFragment;
+    Component stockCardFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

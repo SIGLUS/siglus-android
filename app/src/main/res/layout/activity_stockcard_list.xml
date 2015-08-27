@@ -6,7 +6,7 @@
     android:background="@color/white">
 
     <fragment android:id="@+id/stock_card_list"
-        class="org.openlmis.core.view.fragment.StockCardListFragment"
+        class="org.openlmis.core.component.stocklist.Fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:className="org.openlmis.core.view.activity.StockMovementActivity"/>
