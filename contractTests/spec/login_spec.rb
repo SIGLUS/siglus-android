@@ -1,7 +1,7 @@
 describe "log in to web server" do
 
   it "should authenticate and return expected json containing login info" do
-    response = RestClient.post "http://#{WEB_UAT_URI}/rest-api/login",
+    response = RestClient.post "http://#{WEB_DEV_URI}/rest-api/login",
       { 'username' => 'superuser', 'password' => 'password1' }.to_json,
       :content_type => :json,
       :accept => :json

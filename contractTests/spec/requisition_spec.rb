@@ -47,7 +47,7 @@ describe "submit requisition to web server" do
     }
 
 
-    response = RestClient.post "http://#{WEB_UAT_URI}/rest-api/requisitions",
+    response = RestClient.post "http://#{WEB_DEV_URI}/rest-api/requisitions",
       requisition.to_json, 'Content-Type' => 'application/json',
       'Accept' => 'application/json',
       'Authorization' => http_basic_auth('superuser', 'password1')
@@ -59,7 +59,7 @@ describe "submit requisition to web server" do
 
     expect(requisition_id).not_to be_nil
 
-    response = RestClient.get "http://#{WEB_UAT_URI}/rest-api/requisitions/#{requisition_id}",
+    response = RestClient.get "http://#{WEB_DEV_URI}/rest-api/requisitions/#{requisition_id}",
       'Content-Type' => 'application/json',
       'Accept' => 'application/json',
       'Authorization' => http_basic_auth('superuser', 'password1')
