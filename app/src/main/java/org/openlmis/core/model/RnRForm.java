@@ -43,6 +43,8 @@ public class RnRForm extends BaseModel {
     @ForeignCollectionField()
     private ForeignCollection<RnrFormItem> rnrFormItemList;
 
+    private ArrayList<RnrFormItem> rnrFormItemListWrapper;
+
     @ForeignCollectionField()
     private ForeignCollection<RegimenItem> regimenItemList;
 
@@ -55,6 +57,9 @@ public class RnRForm extends BaseModel {
 
     @DatabaseField
     private String comments;
+
+    @DatabaseField
+    private long consultationNumbers;
 
     @DatabaseField(defaultValue = "DRAFT")
     private STATUS status;
@@ -74,6 +79,13 @@ public class RnRForm extends BaseModel {
         }
 
         return totalRegimenNumber;
+    }
+
+    public ArrayList<RnrFormItem> getRnrFormItemListWrapper() {
+        if (rnrFormItemListWrapper == null) {
+            rnrFormItemListWrapper = new ArrayList(rnrFormItemList);
+        }
+        return rnrFormItemListWrapper;
     }
 
     public ArrayList<BaseInfoItem> getBaseInfoItemListWrapper() {

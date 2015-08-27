@@ -108,11 +108,14 @@ public class RnrFormRepository {
     }
 
     public void save(RnRForm form) throws LMISException, SQLException {
-        updateRegimenAndBaseInfo(form);
+        updateWrapperList(form);
         genericDao.update(form);
     }
 
-    public void updateRegimenAndBaseInfo(RnRForm form) throws SQLException {
+    public void updateWrapperList(RnRForm form) throws SQLException {
+        for (RnrFormItem item : form.getRnrFormItemListWrapper()) {
+            form.getRnrFormItemList().update(item);
+        }
         for (RegimenItem item : form.getRegimenItemListWrapper()) {
             form.getRegimenItemList().update(item);
         }
