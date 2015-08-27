@@ -46,4 +46,9 @@ public class RnrFormItem extends BaseModel{
     private long inventory;
     @DatabaseField
     private String validate;
+    @DatabaseField
+    private String requestAmount;
+    @DatabaseField
+    private String approvedAmount;
+
 }

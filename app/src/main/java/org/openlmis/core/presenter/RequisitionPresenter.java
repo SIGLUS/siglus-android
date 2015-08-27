@@ -31,6 +31,7 @@ import org.openlmis.core.view.View;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -132,24 +133,46 @@ public class RequisitionPresenter implements Presenter {
         });
     }
 
-    public boolean isCompleted() {
+    public boolean isRequisitionFormAmountCompleted() {
         List<RequisitionFormItemViewModel> requisitionViewModelList = getRequisitionViewModelList();
         for (int i = 0; i < requisitionViewModelList.size(); i++) {
             RequisitionFormItemViewModel itemViewModel = requisitionViewModelList.get(i);
             if (TextUtils.isEmpty(itemViewModel.getRequestAmount())) {
-                view.showInputError(i);
+                view.showListInputError(i);
                 return false;
             }
         }
         return true;
     }
 
+    public void saveRequisition(String consultationNumbers) {
+        setRnrFormAmount();
+        rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
+        rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
+
+        try {
+            viaRepository.save(rnRForm);
+        } catch (LMISException | SQLException e) {
+            view.showErrorMessage(e.getMessage());
+        }
+    }
+
+    private void setRnrFormAmount() {
+        ArrayList<RnrFormItem> rnrFormItemListWrapper = rnRForm.getRnrFormItemListWrapper();
+        for (int i = 0; i < rnrFormItemListWrapper.size(); i++) {
+            rnrFormItemListWrapper.get(i).setRequestAmount(requisitionFormItemViewModelList.get(i).getRequestAmount());
+            rnrFormItemListWrapper.get(i).setApprovedAmount(requisitionFormItemViewModelList.get(i).getApprovedAmount());
+        }
+    }
+
 
     public interface RequisitionView extends View {
 
-        void showInputError(int index);
+        void showListInputError(int index);
 
         void refreshRequisitionForm();
+
+        void showErrorMessage(String msg);
     }
 
 }

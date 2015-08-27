@@ -65,8 +65,8 @@ public class RequisitionPresenterTest {
         }
 
         presenter.requisitionFormItemViewModelList = list;
-        assertFalse(presenter.isCompleted());
-        verify(mockActivity).showInputError(anyInt());
+        assertFalse(presenter.isRequisitionFormAmountCompleted());
+        verify(mockActivity).showListInputError(anyInt());
     }
 
     @Test
@@ -80,7 +80,7 @@ public class RequisitionPresenterTest {
         }
 
         presenter.requisitionFormItemViewModelList = list;
-        assertTrue(presenter.isCompleted());
+        assertTrue(presenter.isRequisitionFormAmountCompleted());
     }
 
     private RnrFormItem createRnrFormItem(int i) {

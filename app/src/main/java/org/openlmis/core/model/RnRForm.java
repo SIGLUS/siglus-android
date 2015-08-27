@@ -58,9 +58,6 @@ public class RnRForm extends BaseModel {
     @DatabaseField
     private String comments;
 
-    @DatabaseField
-    private long consultationNumbers;
-
     @DatabaseField(defaultValue = "DRAFT")
     private STATUS status;
 

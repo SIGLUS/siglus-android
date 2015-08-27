@@ -21,6 +21,7 @@ package org.openlmis.core.view.activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
@@ -105,6 +106,11 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     }
 
     @Override
+    public void showErrorMessage(String msg) {
+
+    }
+
+    @Override
     public Presenter getPresenter() {
         initPresenter();
         return presenter;
@@ -126,7 +132,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     }
 
     @Override
-    public void showInputError(int index) {
+    public void showListInputError(int index) {
         // +1  Header View
         final int position = index + 1;
         requisitionForm.setSelection(position);
@@ -183,7 +189,14 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     }
 
     private void onCompleteBtnClick() {
-        if (presenter.isCompleted()) {
+
+        String consultationNumbers = etConsultationNumbers.getText().toString();
+        if (TextUtils.isEmpty(consultationNumbers)) {
+            etConsultationNumbers.setError(getString(R.string.hint_error_input));
+            return;
+        }
+        if (presenter.isRequisitionFormAmountCompleted()) {
+            presenter.saveRequisition(consultationNumbers);
             goToHomePage();
         }
     }
