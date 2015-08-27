@@ -18,13 +18,20 @@
 
 package org.openlmis.core;
 
+import org.junit.Rule;
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
 import org.junit.runners.model.InitializationError;
+import org.junit.runners.model.Statement;
+import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.robolectric.AndroidManifest;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.SdkConfig;
 import org.robolectric.annotation.Config;
 
 import java.io.File;
+import java.util.List;
 import java.util.Properties;
 
 public class LMISTestRunner extends RobolectricTestRunner {
@@ -69,5 +76,31 @@ public class LMISTestRunner extends RobolectricTestRunner {
         // so we must downgrade to simulate the latest supported version.
         config = overwriteConfig(config, "emulateSdk", "18");
         return super.pickSdkVersion(appManifest, config);
+    }
+
+
+    @Override
+    protected List<TestRule> getTestRules(Object target) {
+        TestRule closeConnection = new TestRule() {
+            @Override
+            public Statement apply(final Statement base, Description description) {
+                return new Statement() {
+                    @Override
+                    public void evaluate() throws Throwable {
+                        try {
+                            base.evaluate();
+
+                        } catch (Throwable ignore) {
+                        } finally {
+                            LmisSqliteOpenHelper.getInstance(Robolectric.application).close();
+                        }
+                    }
+                };
+            }
+        };
+
+        List<TestRule> testRules = super.getTestRules(target);
+        testRules.add(closeConnection);
+        return testRules;
     }
 }
