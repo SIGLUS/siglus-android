@@ -112,14 +112,14 @@ public class MMIAFormPresenter implements Presenter {
         return form.getRegimenItemListAmount(form.getRegimenItemListWrapper()) == mmiaRepository.getTotalPatients(form);
     }
 
-    public void saveDraftForm(ArrayList<RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) throws SQLException {
+    public void saveDraftForm(ArrayList<RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) {
         form.setRegimenItemListWrapper(regimenItemList);
         form.setBaseInfoItemListWrapper(baseInfoItemList);
         form.setComments(comments);
         try {
             form.setStatus(RnRForm.STATUS.DRAFT);
             mmiaRepository.save(form);
-        } catch (LMISException e) {
+        } catch (LMISException|SQLException e) {
             view.showErrorMessage(e.getMessage());
         }
     }

@@ -38,7 +38,6 @@ import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARnrForm;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 import roboguice.RoboGuice;
@@ -223,14 +222,9 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
     }
 
     private void onSaveBtnClick() {
-        try {
-            if (hasDataChanged()) {
-                presenter.saveDraftForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
-            }
-            goToHomePage();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showErrorMessage(e.getMessage());
+        if (hasDataChanged()) {
+            presenter.saveDraftForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
         }
+        goToHomePage();
     }
 }
