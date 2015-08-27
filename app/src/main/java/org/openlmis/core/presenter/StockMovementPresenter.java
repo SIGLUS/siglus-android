@@ -23,7 +23,7 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
-import org.openlmis.core.model.StockItem;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.View;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
@@ -69,10 +69,10 @@ public class StockMovementPresenter implements Presenter{
 
     public List<StockMovementViewModel> getStockMovementModels(){
         try{
-            return from(stockRepository.listLastFive(stockCardId)).transform(new Function<StockItem, StockMovementViewModel>() {
+            return from(stockRepository.listLastFive(stockCardId)).transform(new Function<StockMovementItem, StockMovementViewModel>() {
                 @Override
-                public StockMovementViewModel apply(StockItem stockItem) {
-                    return  new StockMovementViewModel(stockItem);
+                public StockMovementViewModel apply(StockMovementItem stockMovementItem) {
+                    return  new StockMovementViewModel(stockMovementItem);
                 }
             }).toList();
         }catch (LMISException e){
@@ -80,5 +80,10 @@ public class StockMovementPresenter implements Presenter{
         }
 
         return null;
+    }
+
+    public void saveStockMovement(StockMovementItem stockMovementItem) throws LMISException {
+        stockMovementItem.setStockCard(stockRepository.queryStockCardById(stockCardId));
+        stockRepository.saveStockItem(stockMovementItem);
     }
 }

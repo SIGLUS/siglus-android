@@ -19,7 +19,6 @@
 package org.openlmis.core.model.repository;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
@@ -28,10 +27,9 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockItem;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
-import org.openlmis.core.utils.DateUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -43,7 +41,7 @@ public class StockRepository {
     DbUtil dbUtil;
 
     GenericDao<StockCard> genericDao;
-    GenericDao<StockItem> stockItemGenericDao;
+    GenericDao<StockMovementItem> stockItemGenericDao;
 
     @Inject
     ProductRepository productRepository;
@@ -54,7 +52,7 @@ public class StockRepository {
     @Inject
     public StockRepository(Context context) {
         genericDao = new GenericDao<>(StockCard.class, context);
-        stockItemGenericDao = new GenericDao<>(StockItem.class, context);
+        stockItemGenericDao = new GenericDao<>(StockMovementItem.class, context);
     }
 
 
@@ -83,14 +81,11 @@ public class StockRepository {
         }
     }
 
-    public void saveStockItems(final ArrayList<StockItem> stockItems) throws LMISException {
-        dbUtil.withDaoAsBatch(StockItem.class, new DbUtil.Operation<StockItem, Void>() {
+    public void saveStockItem(final StockMovementItem stockMovementItem) throws LMISException {
+        dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, Void>() {
             @Override
-            public Void operate(Dao<StockItem, String> dao) throws SQLException {
-
-                for (StockItem item : stockItems) {
-                    dao.create(item);
-                }
+            public Void operate(Dao<StockMovementItem, String> dao) throws SQLException {
+                dao.create(stockMovementItem);
                 return null;
             }
         });
@@ -126,42 +121,31 @@ public class StockRepository {
         });
     }
 
-    public List<StockItem> listStockItems() throws LMISException {
-        return stockItemGenericDao.queryForAll();
-    }
-
-    public List<StockItem> listLastFive(final long stockCardId) throws LMISException{
-        return dbUtil.withDao(StockItem.class, new DbUtil.Operation<StockItem, List<StockItem>>() {
+    public List<StockMovementItem> listLastFive(final long stockCardId) throws LMISException{
+        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
             @Override
-            public List<StockItem> operate(Dao<StockItem, String> dao) throws SQLException {
-               return dao.queryBuilder().limit(10L).orderBy("createdAt",true).where().eq("stockCard_id", stockCardId).query();
+            public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
+               return dao.queryBuilder().limit(5L).orderBy("createdAt", true).where().eq("stockCard_id", stockCardId).query();
             }
         });
     }
 
 
-    public List<StockItem> queryStockItems(final StockCard stockCard, final Date startDate, final Date endDate) throws LMISException {
-        return dbUtil.withDao(StockItem.class, new DbUtil.Operation<StockItem, List<StockItem>>() {
+    public List<StockMovementItem> queryStockItems(final StockCard stockCard, final Date startDate, final Date endDate) throws LMISException {
+        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
             @Override
-            public List<StockItem> operate(Dao<StockItem, String> dao) throws SQLException {
+            public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
                 return dao.queryBuilder().where().eq("stockCard_id", stockCard.getId()).and().ge("createdAt", startDate).and().le("createdAt", endDate).query();
             }
         });
     }
 
-    public long sum(final StockItem.MovementType movementType, final StockCard stockCard, final Date startDate, final Date endDate) throws LMISException {
-        return dbUtil.withDao(StockItem.class, new DbUtil.Operation<StockItem, Long>() {
+    public StockCard queryStockCardById(final long id) throws LMISException{
+        return dbUtil.withDao(StockCard.class, new DbUtil.Operation<StockCard, StockCard>() {
             @Override
-            public Long operate(Dao<StockItem, String> dao) throws SQLException {
-
-                String query = "select sum(amount) from stock_items where stockCard_id=" + stockCard.getId()
-                        + " and movementType='" + movementType
-                        + "' and createdAt<='" + DateUtil.formatDate(endDate) + "' and createdAt>='" + DateUtil.formatDate(startDate) + "'";
-
-                Log.d("StockRepository", query);
-                return dao.queryRawValue(query);
+            public StockCard operate(Dao<StockCard, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("id", id).queryForFirst();
             }
         });
     }
-
 }

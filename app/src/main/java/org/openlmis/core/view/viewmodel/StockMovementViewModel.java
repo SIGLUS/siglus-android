@@ -19,7 +19,7 @@
 package org.openlmis.core.view.viewmodel;
 
 
-import org.openlmis.core.model.StockItem;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
 
 import lombok.Data;
@@ -37,9 +37,10 @@ public class StockMovementViewModel {
     String stockExistence;
 
 
-    public StockMovementViewModel(StockItem item){
+    public StockMovementViewModel(StockMovementItem item){
         this.movementDate = DateUtil.formatDate(item.getCreatedAt());
         this.documentNo = item.getDocumentNumber();
+        this.reason = item.getReason();
 
         switch (item.getMovementType()){
             case RECEIVE:
@@ -48,10 +49,10 @@ public class StockMovementViewModel {
             case ISSUE:
                 this.issued = String.valueOf(item.getAmount());
                 break;
-            case NEGADJUST:
+            case NEGATIVE_ADJUST:
                 this.negativeAdjustment = String.valueOf(item.getAmount());
                 break;
-            case POSADJUST:
+            case POSITIVE_ADJUST:
                 this.positiveAdjustment = String.valueOf(item.getAmount());
                 break;
             default:

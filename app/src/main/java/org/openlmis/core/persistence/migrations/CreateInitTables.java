@@ -31,7 +31,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockItem;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
 import org.openlmis.core.persistence.Migration;
 
@@ -47,7 +47,7 @@ public class CreateInitTables implements Migration {
             createTable(connectionSource, Program.class);
             createTable(connectionSource, Product.class);
             createTable(connectionSource, StockCard.class);
-            createTable(connectionSource, StockItem.class);
+            createTable(connectionSource, StockMovementItem.class);
             createTable(connectionSource, RnRForm.class);
             createTable(connectionSource, BaseInfoItem.class);
             createTable(connectionSource, RnrFormItem.class);

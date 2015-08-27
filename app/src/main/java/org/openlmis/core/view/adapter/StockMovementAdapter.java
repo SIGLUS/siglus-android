@@ -27,9 +27,9 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.presenter.StockMovementPresenter;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
@@ -42,7 +42,7 @@ import java.util.List;
 
 public class StockMovementAdapter extends BaseAdapter {
 
-    List<StockMovementViewModel> data;
+    List<StockMovementViewModel> stockMovementViewModels;
 
     LayoutInflater layoutInflater;
 
@@ -53,9 +53,9 @@ public class StockMovementAdapter extends BaseAdapter {
     ViewHolder editableLine;
 
     public StockMovementAdapter(Context context, StockMovementPresenter presenter){
-        data = presenter.getStockMovementModels();
-        if (data == null){
-            data = new ArrayList<>();
+        stockMovementViewModels = presenter.getStockMovementModels();
+        if (stockMovementViewModels == null){
+            stockMovementViewModels = new ArrayList<>();
         }
         this.context = context;
         layoutInflater = LayoutInflater.from(context);
@@ -65,15 +65,15 @@ public class StockMovementAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return data.size() + 1;
+        return stockMovementViewModels.size() + 1;
     }
 
     @Override
     public StockMovementViewModel getItem(int position) {
-        if (position >= data.size()){
+        if (position >= stockMovementViewModels.size()){
             return null;
         }
-        return data.get(position);
+        return stockMovementViewModels.get(position);
     }
 
     @Override
@@ -95,7 +95,6 @@ public class StockMovementAdapter extends BaseAdapter {
         }
 
         onBindViewHolder(holder, position);
-
         return convertView;
     }
 
@@ -148,8 +147,8 @@ public class StockMovementAdapter extends BaseAdapter {
 
     private long getCurrentStockOnHand(){
         long currentStock = 0;
-        if (data.size()  > 0){
-            currentStock = Long.parseLong(data.get(data.size() -1).getStockExistence());
+        if (stockMovementViewModels.size()  > 0){
+            currentStock = Long.parseLong(stockMovementViewModels.get(stockMovementViewModels.size() -1).getStockExistence());
         }
 
         return  currentStock;
@@ -185,6 +184,40 @@ public class StockMovementAdapter extends BaseAdapter {
             }
         });
     }
+
+    public StockMovementItem getCurrentStockMovementItem() {
+        StockMovementItem item = new StockMovementItem();
+
+        StockMovementItem.MovementType movementType;
+        Long amount;
+
+        if (editableLine.etReceived.isEnabled()){
+            movementType= StockMovementItem.MovementType.RECEIVE;
+            String text = editableLine.etReceived.getText().toString();
+            amount = Long.parseLong(text);
+        }else if (editableLine.etNegativeAdjustment.isEnabled()){
+            movementType = StockMovementItem.MovementType.NEGATIVE_ADJUST;
+            String text = editableLine.etNegativeAdjustment.getText().toString();
+            amount = Long.parseLong(text);
+        }else if (editableLine.etPositiveAdjustment.isEnabled()){
+            movementType = StockMovementItem.MovementType.POSITIVE_ADJUST;
+            String text = editableLine.etPositiveAdjustment.getText().toString();
+            amount = Long.parseLong(text);
+        }else {
+            movementType = StockMovementItem.MovementType.ISSUE;
+            String text = editableLine.etIssued.getText().toString();
+            amount = Long.parseLong(text);
+        }
+
+        item.setDocumentNumber(editableLine.etDocumentNo.getText().toString());
+        item.setStockOnHand(Long.parseLong(editableLine.txStockExistence.getText().toString()));
+        item.setMovementType(movementType);
+        item.setAmount(amount);
+        item.setReason(editableLine.txReason.getText().toString());
+
+        return item;
+    }
+
 
     class ViewHolder {
 

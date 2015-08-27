@@ -41,16 +41,13 @@ public class StockCard extends BaseModel{
     public static final String DIVIDER = ",";
 
     @DatabaseField
-    String stockCardId;
-
-    @DatabaseField
     String expireDates;
 
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     Product product;
 
     @ForeignCollectionField()
-    private ForeignCollection<StockItem> stockItems;
+    private ForeignCollection<StockMovementItem> stockMovementItems;
 
     @DatabaseField
     int stockOnHand;

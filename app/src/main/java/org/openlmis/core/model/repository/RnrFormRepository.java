@@ -32,7 +32,7 @@ import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockItem;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -196,21 +196,21 @@ public class RnrFormRepository {
         Date endDate = new GregorianCalendar(year, month, DAY_PERIOD_END).getTime();
 
         for (StockCard stockCard : stockCards) {
-            List<StockItem> stockItems = stockRepository.queryStockItems(stockCard, startDate, endDate);
+            List<StockMovementItem> stockMovementItems = stockRepository.queryStockItems(stockCard, startDate, endDate);
             RnrFormItem productItem = new RnrFormItem();
-            if (stockItems.size() > 0) {
+            if (stockMovementItems.size() > 0) {
 
-                StockItem firstItem = stockItems.get(0);
+                StockMovementItem firstItem = stockMovementItems.get(0);
                 productItem.setInitialAmount(firstItem.getStockOnHand() - firstItem.getAmount());
 
                 long totalReceived = 0;
                 long totalIssued = 0;
                 long totalAdjustment = 0;
 
-                for (StockItem item : stockItems) {
-                    if (StockItem.MovementType.RECEIVE == item.getMovementType()) {
+                for (StockMovementItem item : stockMovementItems) {
+                    if (StockMovementItem.MovementType.RECEIVE == item.getMovementType()) {
                         totalReceived += item.getAmount();
-                    } else if (StockItem.MovementType.ISSUE == item.getMovementType()) {
+                    } else if (StockMovementItem.MovementType.ISSUE == item.getMovementType()) {
                         totalIssued += item.getAmount();
                     } else {
                         totalAdjustment += item.getAmount();
@@ -221,7 +221,7 @@ public class RnrFormRepository {
                 productItem.setIssued(totalIssued);
                 productItem.setAdjustment(totalAdjustment);
                 productItem.setForm(form);
-                productItem.setInventory(stockItems.get(stockItems.size() - 1).getStockOnHand());
+                productItem.setInventory(stockMovementItems.get(stockMovementItems.size() - 1).getStockOnHand());
                 productItem.setValidate(stockCard.getEarliestExpireDate());
 
             } else {

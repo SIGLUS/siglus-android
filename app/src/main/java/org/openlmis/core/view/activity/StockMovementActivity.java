@@ -27,6 +27,7 @@ import android.widget.ListView;
 import com.google.inject.Inject;
 
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockMovementPresenter;
 import org.openlmis.core.view.adapter.StockMovementAdapter;
@@ -64,7 +65,7 @@ public class StockMovementActivity extends BaseActivity{
     }
 
     private void initUI(){
-        StockMovementAdapter adapter = new StockMovementAdapter(this, presenter);
+        final StockMovementAdapter adapter = new StockMovementAdapter(this, presenter);
         View headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
 
         stockMovementList.addHeaderView(headerView);
@@ -76,7 +77,11 @@ public class StockMovementActivity extends BaseActivity{
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                try {
+                    presenter.saveStockMovement(adapter.getCurrentStockMovementItem());
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                }
             }
         });
 

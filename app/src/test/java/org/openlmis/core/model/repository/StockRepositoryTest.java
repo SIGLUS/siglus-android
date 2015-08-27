@@ -28,19 +28,17 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockItem;
-import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.model.StockMovementItem;
 import org.robolectric.Robolectric;
 
-
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import roboguice.RoboGuice;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(LMISTestRunner.class)
 public class StockRepositoryTest extends LMISRepositoryUnitTest {
@@ -69,7 +67,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     public void shouldSaveStockCardsSuccessful() throws LMISException{
 
         StockCard stockCard = new StockCard();
-        stockCard.setStockCardId("ID");
         stockCard.setStockOnHand(1);
         stockCard.setProduct(product);
         stockRepository.save(stockCard);
@@ -87,7 +84,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
         for (int i =0; i < 10;i++){
             StockCard stockCard = new StockCard();
-            stockCard.setStockCardId("ID" + i);
             stockCard.setStockOnHand(i);
             stockCard.setProduct(product);
 
@@ -101,50 +97,28 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldGetStockItemsInPeriod() throws Exception{
+    public void shouldGetCorrectDataAfterSavedStockMovementItem() throws Exception {
+        StockMovementItem stockMovementItem = new StockMovementItem();
+
         StockCard stockCard = new StockCard();
-        stockCard.setStockOnHand(1000);
-        stockCard.setProduct(product);
 
-        stockRepository.save(stockCard);
+        stockMovementItem.setStockCard(stockCard);
+        stockMovementItem.setAmount(10L);
+        stockMovementItem.setStockOnHand(100L);
+        stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
+        stockMovementItem.setDocumentNumber("XXX123456");
+        stockMovementItem.setReason("some reason");
 
-        Date date1 = DateUtil.parseString("2015-08-01", DateUtil.DEFAULT_DATE_FORMAT);
-        Date date2 = DateUtil.parseString("2015-08-02", DateUtil.DEFAULT_DATE_FORMAT);
+        stockRepository.saveStockItem(stockMovementItem);
 
-        ArrayList<StockItem> stockItems = new ArrayList<>();
-        for (int i= 0; i < 10; i++){
-            StockItem item = new StockItem();
-            item.setStockOnHand(i);
-            item.setProduct(product);
-            item.setStockCard(stockCard);
+        List<StockMovementItem> stockMovementItems = stockRepository.listLastFive(stockCard.getId());
+        StockMovementItem stockMovementItemActual = stockMovementItems.get(stockMovementItems.size() - 1);
 
-            item.setAmount(i);
-
-            if (i%2 == 0) {
-                item.setMovementType(StockItem.MovementType.RECEIVE);
-            }else {
-                item.setMovementType(StockItem.MovementType.ISSUE);
-            }
-
-            item.setDocumentNumber("DOC" + i);
-
-            if (i < 5){
-                item.setCreatedAt(date1);
-            } else {
-                item.setCreatedAt(date2);
-            }
-            stockItems.add(item);
-        }
-
-        stockRepository.saveStockItems(stockItems);
-        List<StockItem> retItems = stockRepository.listStockItems();
-
-        assertThat(retItems.size(), is(10));
-
-        long sum1 = stockRepository.sum(StockItem.MovementType.ISSUE, stockCard, date1, date1);
-        long sum2 = stockRepository.sum(StockItem.MovementType.RECEIVE, stockCard, date1, date2);
-
-        assertThat(sum1, is(4L));
-        assertThat(sum2, is(20L));
+        assertEquals(stockMovementItem.getId(), stockMovementItemActual.getId());
+        assertEquals(stockMovementItem.getAmount(), stockMovementItemActual.getAmount());
+        assertEquals(stockMovementItem.getStockOnHand(), stockMovementItemActual.getStockOnHand());
+        assertEquals(stockMovementItem.getMovementType(), stockMovementItemActual.getMovementType());
+        assertEquals(stockMovementItem.getDocumentNumber(), stockMovementItemActual.getDocumentNumber());
+        assertEquals(stockMovementItem.getReason(), stockMovementItemActual.getReason());
     }
 }

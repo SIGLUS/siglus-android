@@ -28,13 +28,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @DatabaseTable(tableName = "stock_items")
-public class StockItem extends BaseModel{
+public class StockMovementItem extends BaseModel{
 
     public enum MovementType {
         RECEIVE,
         ISSUE,
-        POSADJUST,
-        NEGADJUST
+        POSITIVE_ADJUST,
+        NEGATIVE_ADJUST
     }
 
     @DatabaseField
@@ -44,13 +44,13 @@ public class StockItem extends BaseModel{
     long amount;
 
     @DatabaseField
+    String reason;
+
+    @DatabaseField
     MovementType movementType;
 
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     StockCard stockCard;
-
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    Product product;
 
     @DatabaseField
     long stockOnHand;

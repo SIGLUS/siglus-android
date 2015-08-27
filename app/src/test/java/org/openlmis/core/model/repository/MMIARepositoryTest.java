@@ -33,7 +33,7 @@ import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockItem;
+import org.openlmis.core.model.StockMovementItem;
 import org.robolectric.Robolectric;
 
 import java.util.ArrayList;
@@ -87,22 +87,22 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         stockCard.setStockOnHand(10);
         stockCards.add(stockCard);
 
-        ArrayList<StockItem> stockItems = new ArrayList<>();
+        ArrayList<StockMovementItem> stockMovementItems = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            StockItem stockItem = new StockItem();
-            stockItem.setStockOnHand(100);
-            stockItem.setAmount(i);
-            stockItem.setStockCard(stockCard);
+            StockMovementItem stockMovementItem = new StockMovementItem();
+            stockMovementItem.setStockOnHand(100);
+            stockMovementItem.setAmount(i);
+            stockMovementItem.setStockCard(stockCard);
             if (i % 2 == 0) {
-                stockItem.setMovementType(StockItem.MovementType.ISSUE);
+                stockMovementItem.setMovementType(StockMovementItem.MovementType.ISSUE);
             } else {
-                stockItem.setMovementType(StockItem.MovementType.RECEIVE);
+                stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
             }
-            stockItems.add(stockItem);
+            stockMovementItems.add(stockMovementItem);
         }
 
         when(mockStockRepository.list(anyString())).thenReturn(stockCards);
-        when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(stockItems);
+        when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(stockMovementItems);
 
         RnRForm form = MMIARepository.initMIMIA();
         assertThat(form.getRnrFormItemList().size(), is(1));
