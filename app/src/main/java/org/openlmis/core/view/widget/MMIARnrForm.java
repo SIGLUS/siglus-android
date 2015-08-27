@@ -205,7 +205,7 @@ public class MMIARnrForm extends LinearLayout {
             inflate.setBackgroundResource(R.color.color_mmia_info_name);
         } else {
             //TODO refactor api field tvIssuedUnit
-            tvIssuedUnit.setText(String.valueOf(item.getProduct().getStrength()));
+            tvIssuedUnit.setText(item.getProduct().getStrength());
             tvInitialAmount.setText(String.valueOf(item.getInitialAmount()));
             tvReceived.setText(String.valueOf(item.getReceived()));
             tvIssued.setText(String.valueOf(item.getIssued()));
