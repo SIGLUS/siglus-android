@@ -123,7 +123,7 @@ public class RequisitionPresenter implements Presenter {
             public void call(Subscriber<? super List<RequisitionFormItemViewModel>> subscriber) {
                 subscriber.onNext(createViewModelsFromRnrForm());
             }
-        }).observeOn(Schedulers.io()).subscribeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<List<RequisitionFormItemViewModel>>() {
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<List<RequisitionFormItemViewModel>>() {
             @Override
             public void call(List<RequisitionFormItemViewModel> requisitionFormItemViewModels) {
                 requisitionFormItemViewModelList.addAll(requisitionFormItemViewModels);
@@ -165,14 +165,23 @@ public class RequisitionPresenter implements Presenter {
     private void setRnrFormAmount() {
         ArrayList<RnrFormItem> rnrFormItemListWrapper = rnRForm.getRnrFormItemListWrapper();
         for (int i = 0; i < rnrFormItemListWrapper.size(); i++) {
-            rnrFormItemListWrapper.get(i).setRequestAmount(requisitionFormItemViewModelList.get(i).getRequestAmount());
-            rnrFormItemListWrapper.get(i).setApprovedAmount(requisitionFormItemViewModelList.get(i).getApprovedAmount());
+            String requestAmount = requisitionFormItemViewModelList.get(i).getRequestAmount();
+            if (!TextUtils.isEmpty(requestAmount)) {
+                rnrFormItemListWrapper.get(i).setRequestAmount(Long.valueOf(requestAmount));
+            }
+
+            String approvedAmount = requisitionFormItemViewModelList.get(i).getApprovedAmount();
+            if (!TextUtils.isEmpty(approvedAmount)) {
+                rnrFormItemListWrapper.get(i).setApprovedAmount(Long.valueOf(approvedAmount));
+            }
         }
     }
 
     public void saveDraftRequisition(String consultationNumbers) {
         setRnrFormAmount();
-        rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
+        if (!TextUtils.isEmpty(consultationNumbers)) {
+            rnRForm.getBaseInfoItemListWrapper().get(0).setValue(Long.valueOf(consultationNumbers).toString());
+        }
         rnRForm.setStatus(RnRForm.STATUS.DRAFT);
 
         try {

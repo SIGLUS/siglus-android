@@ -106,7 +106,12 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     public void refreshRequisitionForm() {
         productListAdapter.notifyDataSetChanged();
         requisitionFormAdapter.notifyDataSetChanged();
+        setConsultationNumbers();
+    }
+
+    private void setConsultationNumbers() {
         etConsultationNumbers.setText(presenter.getConsultationNumbers());
+        etConsultationNumbers.addTextChangedListener(textWatcher);
     }
 
     @Override
@@ -170,7 +175,6 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         });
 
         setListViewOnTouchAndScrollListener(requisitionForm, requisitionNameList);
-        etConsultationNumbers.addTextChangedListener(textWatcher);
         btnComplete.setOnClickListener(this);
         btnSave.setOnClickListener(this);
 

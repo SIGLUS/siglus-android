@@ -47,8 +47,8 @@ public class RnrFormItem extends BaseModel{
     @DatabaseField
     private String validate;
     @DatabaseField
-    private String requestAmount;
+    private Long requestAmount;
     @DatabaseField
-    private String approvedAmount;
+    private Long approvedAmount;
 
 }
