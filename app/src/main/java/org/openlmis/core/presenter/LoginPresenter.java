@@ -96,17 +96,12 @@ public class LoginPresenter implements Presenter {
     }
 
     private void authorizeUserRemote(final User user) {
-        userRepository.authorizeUser(user, new Callback<UserRepository.UserResponse>() {
+        userRepository.authorizeUser(user, new Callback<User>() {
             @Override
-            public void success(UserRepository.UserResponse userResponse, Response response) {
-                User userInfo = userResponse.getUserInformation();
-                userInfo.setUsername(user.getUsername());
-                userInfo.setPassword(user.getPassword());
-                if (userResponse.getUserInformation() != null) {
-                    onLoginSuccess(userInfo);
-                } else {
-                    onLoginFailed();
-                }
+            public void success(User remoteUser, Response response) {
+                remoteUser.setUsername(user.getUsername());
+                remoteUser.setPassword(user.getPassword());
+                onLoginSuccess(remoteUser);
             }
 
             @Override
@@ -116,7 +111,6 @@ public class LoginPresenter implements Presenter {
             }
         });
     }
-
 
     public void saveUserToLocalDatabase(User user) {
         userRepository.save(user);

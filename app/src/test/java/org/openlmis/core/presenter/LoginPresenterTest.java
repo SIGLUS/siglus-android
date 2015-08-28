@@ -55,7 +55,7 @@ public class LoginPresenterTest {
     SyncManager syncManager;
 
     @Captor
-    private ArgumentCaptor<Callback<UserRepository.UserResponse>> loginCB;
+    private ArgumentCaptor<Callback<User>> loginCB;
     @Captor
     private ArgumentCaptor<Observer<Void>> getProductsCB;
 
@@ -87,10 +87,8 @@ public class LoginPresenterTest {
         verify(mockActivity).loading();
 
         verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
-        UserRepository.UserResponse userResponse = userRepository.new UserResponse();
-        userResponse.setUserInformation(new User("user", "password"));
+        loginCB.getValue().success(new User("user", "password"), null);
 
-        loginCB.getValue().success(userResponse, null);
         verify(userRepository).save(any(User.class));
     }
 
@@ -101,10 +99,7 @@ public class LoginPresenterTest {
 
         presenter.startLogin("user", "password");
         verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
-        UserRepository.UserResponse userResponse = userRepository.new UserResponse();
-        userResponse.setUserInformation(new User("user", "password"));
-
-        loginCB.getValue().success(userResponse, null);
+        loginCB.getValue().success(new User("user", "password"), null);
 
         verify(syncManager).syncProductsWithProgramAsync(getProductsCB.capture());
         getProductsCB.getValue().onCompleted();
@@ -120,10 +115,8 @@ public class LoginPresenterTest {
 
         presenter.startLogin("user", "password");
         verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
-        UserRepository.UserResponse userResponse = userRepository.new UserResponse();
-        userResponse.setUserInformation(new User("user", "password"));
 
-        loginCB.getValue().success(userResponse, null);
+        loginCB.getValue().success(new User("user", "password"), null);
 
         verify(syncManager).syncProductsWithProgramAsync(getProductsCB.capture());
         getProductsCB.getValue().onCompleted();

@@ -35,6 +35,8 @@ import java.util.List;
 
 import lombok.Data;
 import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class UserRepository extends LMISRestManager {
 
@@ -50,8 +52,22 @@ public class UserRepository extends LMISRestManager {
     }
 
 
-    public void authorizeUser(User user, Callback<UserResponse> callback) {
-        lmisRestApi.authorizeUser(user, callback);
+    public void authorizeUser(User user, final Callback<User> callback) {
+        lmisRestApi.authorizeUser(user, new Callback<UserResponse>() {
+            @Override
+            public void success(UserResponse userResponse, Response response) {
+                if (userResponse.userInformation !=null){
+                    callback.success(userResponse.userInformation, response);
+                } else {
+                    callback.failure(null);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                callback.failure(error);
+            }
+        });
     }
 
     public User getUserForLocalDatabase(final User user) {
@@ -82,9 +98,8 @@ public class UserRepository extends LMISRestManager {
         }
     }
 
-    public
     @Data
-    class UserResponse {
+    public class UserResponse {
         User userInformation;
     }
 }
