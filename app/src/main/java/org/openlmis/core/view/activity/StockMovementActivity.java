@@ -54,18 +54,19 @@ public class StockMovementActivity extends BaseActivity{
 
     @Inject
     StockMovementPresenter presenter;
+    private long stockId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        long stockId = getIntent().getLongExtra("stockCardId", 0);
+        stockId = getIntent().getLongExtra("stockCardId", 0);
         presenter.setStockCard(stockId);
         initUI();
     }
 
     private void initUI(){
-        final StockMovementAdapter adapter = new StockMovementAdapter(this, presenter);
+        final StockMovementAdapter adapter = new StockMovementAdapter(this, presenter, stockId);
         View headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
 
         stockMovementList.addHeaderView(headerView);

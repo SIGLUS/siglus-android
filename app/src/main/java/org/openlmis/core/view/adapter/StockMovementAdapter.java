@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.presenter.StockMovementPresenter;
 import org.openlmis.core.utils.DateUtil;
@@ -38,6 +39,8 @@ import org.openlmis.core.view.widget.MovementTypeDialog;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static org.roboguice.shaded.goole.common.base.Preconditions.checkNotNull;
 
 
 public class StockMovementAdapter extends BaseAdapter {
@@ -51,13 +54,15 @@ public class StockMovementAdapter extends BaseAdapter {
     MovementTypeDialog dialog;
 
     ViewHolder editableLine;
+    private final StockCard stockCard;
 
-    public StockMovementAdapter(Context context, StockMovementPresenter presenter){
+    public StockMovementAdapter(Context context, StockMovementPresenter presenter,long stockId){
         stockMovementViewModels = presenter.getStockMovementModels();
         if (stockMovementViewModels == null){
             stockMovementViewModels = new ArrayList<>();
         }
         this.context = context;
+        stockCard = presenter.getStockCard(stockId);
         layoutInflater = LayoutInflater.from(context);
 
         setupMovementTypeDialog();
@@ -146,12 +151,7 @@ public class StockMovementAdapter extends BaseAdapter {
     }
 
     private long getCurrentStockOnHand(){
-        long currentStock = 0;
-        if (stockMovementViewModels.size()  > 0){
-            currentStock = Long.parseLong(stockMovementViewModels.get(stockMovementViewModels.size() -1).getStockExistence());
-        }
-
-        return  currentStock;
+        return  checkNotNull(stockCard).getStockOnHand();
     }
 
     private void setupMovementTypeDialog(){

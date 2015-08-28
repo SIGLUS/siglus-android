@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.View;
@@ -34,7 +35,7 @@ import java.util.List;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
-public class StockMovementPresenter implements Presenter{
+public class StockMovementPresenter implements Presenter {
 
     List<StockMovementViewModel> stockMovementModelList;
 
@@ -58,24 +59,24 @@ public class StockMovementPresenter implements Presenter{
 
     }
 
-    public void setStockCard(long stockCardId){
+    public void setStockCard(long stockCardId) {
         this.stockCardId = stockCardId;
     }
 
 
-    public StockMovementPresenter(){
+    public StockMovementPresenter() {
         stockMovementModelList = new ArrayList<>();
     }
 
-    public List<StockMovementViewModel> getStockMovementModels(){
-        try{
+    public List<StockMovementViewModel> getStockMovementModels() {
+        try {
             return from(stockRepository.listLastFive(stockCardId)).transform(new Function<StockMovementItem, StockMovementViewModel>() {
                 @Override
                 public StockMovementViewModel apply(StockMovementItem stockMovementItem) {
-                    return  new StockMovementViewModel(stockMovementItem);
+                    return new StockMovementViewModel(stockMovementItem);
                 }
             }).toList();
-        }catch (LMISException e){
+        } catch (LMISException e) {
             e.printStackTrace();
         }
 
@@ -85,5 +86,14 @@ public class StockMovementPresenter implements Presenter{
     public void saveStockMovement(StockMovementItem stockMovementItem) throws LMISException {
         stockMovementItem.setStockCard(stockRepository.queryStockCardById(stockCardId));
         stockRepository.saveStockItem(stockMovementItem);
+    }
+
+    public StockCard getStockCard(long stockId) {
+        try {
+            return stockRepository.queryStockCardById(stockId);
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
