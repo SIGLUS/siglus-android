@@ -49,5 +49,6 @@ public class Product extends BaseModel{
     @DatabaseField
     String type;
 
-    String medicine_type;
+    @DatabaseField
+    transient String medicine_type;
 }

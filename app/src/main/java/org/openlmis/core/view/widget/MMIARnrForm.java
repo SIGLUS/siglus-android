@@ -33,9 +33,6 @@ import org.openlmis.core.utils.DateUtil;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 
 public class MMIARnrForm extends LinearLayout {
     private ViewGroup leftViewGroup;
@@ -43,7 +40,6 @@ public class MMIARnrForm extends LinearLayout {
     private LayoutInflater layoutInflater;
     private ViewGroup vg_right_scrollview;
     ArrayList<RnrFormItem> rnrFormItemList = new ArrayList<>();
-    private HashMap<String, List<String>> rnrFormItemConfigList = new HashMap<>();
 
     public MMIARnrForm(Context context) {
         super(context);
@@ -64,49 +60,52 @@ public class MMIARnrForm extends LinearLayout {
     }
 
     public void initView(ArrayList<RnrFormItem> list) {
-        sortAndSetType(list);
+        rnrFormItemList = list;
 
+        addHeaderView();
+        sortAndSetType(list);
+    }
+
+    private void sortAndSetType(ArrayList<RnrFormItem> rnrFormItemList) {
+        //in sequence to add ADULT、BABY and OTHER
+        setMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_ADULT);
+
+        addDividerView(Product.MEDICINE_TYPE_ADULT);
+        addDividerView(Product.MEDICINE_TYPE_ADULT);
+
+        setMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_BABY);
+        addDividerView(Product.MEDICINE_TYPE_BABY);
+        setMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_OTHER);
+        addDividerView(Product.MEDICINE_TYPE_OTHER);
+    }
+
+    private void addHeaderView() {
         View leftHeaderView = addLeftHeaderView();
         ViewGroup rightHeaderView = addRightHeaderView();
         setItemSize(leftHeaderView, rightHeaderView);
-        for (RnrFormItem item : rnrFormItemList) {
-            if (item != null) {
-                View leftView = addLeftView(item);
+    }
+
+    private void addDividerView(String medicineType) {
+        View leftView = inflaterLeftView();
+        leftViewGroup.addView(leftView);
+        setLeftViewColor(medicineType, leftView);
+        ViewGroup rightView = inflateRightView();
+        rightViewGroup.addView(rightView);
+        setItemSize(leftView, rightView);
+    }
+
+    private ViewGroup inflateRightView() {
+        return (ViewGroup) layoutInflater.inflate(R.layout.item_rnr_from, this, false);
+    }
+
+    private void setMedicineType(ArrayList<RnrFormItem> dataList, String medicineTypeName) {
+        for (RnrFormItem item : dataList) {
+            if (medicineTypeName.equals(item.getProduct().getMedicine_type())) {
+                View leftView = addLeftView(item, medicineTypeName);
                 ViewGroup rightView = addRightView(item);
                 setItemSize(leftView, rightView);
             }
         }
-    }
-
-    private void sortAndSetType(ArrayList<RnrFormItem> rnrFormItemList) {
-        initRnrFormItemConfigList();
-
-        //in sequence to add ADULT、BABY and OTHER
-        setMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_ADULT);
-        setMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_BABY);
-        setMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_OTHER);
-    }
-
-    private void setMedicineType(ArrayList<RnrFormItem> dataList, String medicineTypeName) {
-        List<String> fnms = rnrFormItemConfigList.get(medicineTypeName);
-        for (RnrFormItem item : dataList) {
-            for (String fnm : fnms) {
-                if (fnm.equals(item.getProduct().getCode())) {
-                    item.getProduct().setMedicine_type(medicineTypeName);
-                    rnrFormItemList.add(item);
-                }
-            }
-        }
-    }
-
-    public ArrayList<RnrFormItem> getRnrFormItemList() {
-        return rnrFormItemList;
-    }
-
-    public void initRnrFormItemConfigList() {
-        rnrFormItemConfigList.put(Product.MEDICINE_TYPE_ADULT, Arrays.asList(getResources().getStringArray(R.array.medicine_adult)));
-        rnrFormItemConfigList.put(Product.MEDICINE_TYPE_BABY, Arrays.asList(getResources().getStringArray(R.array.medicine_baby)));
-        rnrFormItemConfigList.put(Product.MEDICINE_TYPE_OTHER, Arrays.asList(getResources().getStringArray(R.array.medicine_other)));
     }
 
     private void setItemSize(final View leftView, final ViewGroup rightView) {
@@ -133,19 +132,19 @@ public class MMIARnrForm extends LinearLayout {
         return addRightView(item, false);
     }
 
-    private View addLeftView(RnrFormItem item) {
-        return addLeftView(item, false);
+    private View addLeftView(RnrFormItem item, String medicineType) {
+        return addLeftView(item, false, medicineType);
     }
 
     private View addLeftHeaderView() {
-        return addLeftView(null, true);
+        return addLeftView(null, true, null);
     }
 
     private View inflaterLeftView() {
         return layoutInflater.inflate(R.layout.item_rnr_from_product_name, this, false);
     }
 
-    private View addLeftView(RnrFormItem item, boolean isHeaderView) {
+    private View addLeftView(RnrFormItem item, boolean isHeaderView, String medicineType) {
         View view = inflaterLeftView();
         TextView tvPrimaryName = (TextView) view.findViewById(R.id.tv_primary_name);
         if (isHeaderView) {
@@ -155,15 +154,15 @@ public class MMIARnrForm extends LinearLayout {
         } else {
             Product product = item.getProduct();
             tvPrimaryName.setText(product.getPrimaryName());
-            setLeftViewColor(product, view);
+            setLeftViewColor(medicineType, view);
         }
 
         leftViewGroup.addView(view);
         return view;
     }
 
-    private void setLeftViewColor(Product product, View view) {
-        switch (product.getMedicine_type()) {
+    private void setLeftViewColor(String medicineType, View view) {
+        switch (medicineType) {
             case Product.MEDICINE_TYPE_ADULT:
                 view.setBackgroundResource(R.color.color_regime_adult);
                 break;
@@ -183,7 +182,7 @@ public class MMIARnrForm extends LinearLayout {
     }
 
     private ViewGroup addRightView(RnrFormItem item, boolean isHeaderView) {
-        ViewGroup inflate = (ViewGroup) layoutInflater.inflate(R.layout.item_rnr_from, this, false);
+        ViewGroup inflate = inflateRightView();
 
         TextView tvIssuedUnit = (TextView) inflate.findViewById(R.id.tv_issued_unit);
         TextView tvInitialAmount = (TextView) inflate.findViewById(R.id.tv_initial_amount);
