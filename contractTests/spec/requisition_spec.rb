@@ -5,43 +5,195 @@ describe "submit requisition to web server" do
 
   it "should sync MMIA requisition to server successfully and return expected response" do
 
-    requisition = {
-      programCode: "MMIA",
+    # requisition = {
+    #   programCode: "MMIA",
+    #   agentCode: "F10",
+    #   products: [
+    #   {
+    #     productCode: "08S42",
+    #     beginningBalance: 1000,
+    #     quantityReceived: 2000,
+    #     quantityDispensed: 2500,
+    #     totalLossesAndAdjustments: 0,
+    #     quantityRequested: 1000,
+    #     reasonForRequestedQuantity: "justbecause"
+    #   }
+    #   ],
+    #   patientQuantification: [
+    #   {
+    #     category: "adult",
+    #     value: 100
+    #   },
+    #   {
+    #     category: "child",
+    #     value: 300
+    #   }
+    #   ],
+    #   regimens: [
+    #   {
+    #     code: "001",
+    #     name: "",
+    #     patientsOnTreatment: 200
+    #   },
+    #   {
+    #     code: "002",
+    #     name: "",
+    #     patientsOnTreatment: 200
+    #   },
+    #   {
+    #     code: "003",
+    #     name: "",
+    #     patientsOnTreatment: 200
+    #   }
+    #   ]
+    # }
+
+    requisition =
+    {
       agentCode: "F10",
+      programCode: "MMIA",
       products: [
       {
-        productCode: "08S42",
-        beginningBalance: 1000,
-        quantityReceived: 2000,
-        quantityDispensed: 2500,
+        productCode: "08S23",
+        beginningBalance: 0,
+        quantityReceived: 0,
+        quantityDispensed: 0,
         totalLossesAndAdjustments: 0,
-        quantityRequested: 1000,
-        expirationDate: "12/31/2015",
-        reasonForRequestedQuantity: "justbecause"
-      }
-      ],
-      patientQuantification: [
-      {
-        category: "adult",
-        value: 100
+        stockInHand: 28,
+        quantityRequested: 0,
+        reasonForRequestedQuantity: "reason"
       },
       {
-        category: "child",
-        value: 300
+        productCode: "08S17",
+        beginningBalance: 0,
+        quantityReceived: 0,
+        quantityDispensed: 0,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 29,
+        quantityRequested: 0,
+        reasonForRequestedQuantity: "reason"
       }
       ],
       regimens: [
       {
         code: "001",
-        patientsOnTreatment: 200
+        name: "AZT+3TC+NVP",
+        patientsOnTreatment: 1
       },
       {
         code: "002",
-        patientsOnTreatment: 200
+        name: "TDF+3TC+EFV",
+        patientsOnTreatment: 2
       },
       {
         code: "003",
-        patientsOnTreatment: 200
+        name: "AZT+3TC+EFV",
+        patientsOnTreatment: 3
+      },
+      {
+        code: "004",
+        name: "d4T 30+3TC+NVP",
+        patientsOnTreatment: 1
+      },
+      {
+        code: "005",
+        name: "d4T 30+3TC+EFV",
+        patientsOnTreatment: 1
+      },
+      {
+        code: "006",
+        name: "AZT+3TC+LPV/r",
+        patientsOnTreatment: 1
+      },
+      {
+        code: "007",
+        name: "TDF+3TC+LPV/r",
+        patientsOnTreatment: 1
+      },
+      {
+        code: "008",
+        name: "ABC+3TC+LPV/r",
+        patientsOnTreatment: 1
+      },
+      {
+        code: "009",
+        name: "d4T+3TC+NVP(3DFC Baby)",
+        patientsOnTreatment: 1
+      },
+      {
+        code: "010",
+        name: "d4T+3TC+LPV/r(2DFC Baby + LPV/r)",
+        patientsOnTreatment: 1
+      },
+      {
+        code: "011",
+        name: "d4T+3TC+ABC(2DFC Baby + ABC)",
+        patientsOnTreatment: 1
+      },
+      {
+        code: "012",
+        name: "d4T+3TC+EFV(2DFC Baby + EFV)",
+        patientsOnTreatment: 1
+      },
+      {
+        code: "013",
+        name: "AZT60+3TC+NVP(3DFC)",
+        patientsOnTreatment: 1
+      },
+      {
+        code: "014",
+        name: "AZT60+3TC+EFV(2DFC + EFV)",
+        patientsOnTreatment: 1
+      },
+      {
+        code: "015",
+        name: "AZT60+3TC+ABC(2DFC + ABC)",
+        patientsOnTreatment: 1
+      },
+      {
+        code: "016",
+        name: "AZT60+3TC+LPV/r(2DFC + LPV/r)",
+        patientsOnTreatment: 1
+      },
+      {
+        code: "017",
+        name: "ABC+3TC+LPV/r",
+        patientsOnTreatment: 1
+      },
+      {
+        code: "018",
+        name: "ABC+3TC+EFZ",
+        patientsOnTreatment: 1
+      }
+      ],
+      patientQuantifications: [
+      {
+        category: "New Patients",
+        total: "1"
+      },
+      {
+        category: "Sustaining",
+        total: "1"
+      },
+      {
+        category: "Alteration",
+        total: "1"
+      },
+      {
+        category: "PTV",
+        total: "1"
+      },
+      {
+        category: "PPE",
+        total: "26"
+      },
+      {
+        category: "Total Month Dispense",
+        total: "1"
+      },
+      {
+        category: "Total Patients",
+        total: "30"
       }
       ]
     }
