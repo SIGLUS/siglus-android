@@ -25,14 +25,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
 import org.robolectric.Robolectric;
 
 import roboguice.RoboGuice;
 
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
 public class StockMovementPresenterTest {
@@ -52,8 +55,12 @@ public class StockMovementPresenterTest {
     @Test
     public void shouldSaveStockMovement() throws LMISException {
         StockMovementItem stockMovementItem = new StockMovementItem();
+        StockCard stockCard = new StockCard();
+        when(stockRepositoryMock.queryStockCardById(anyInt())).thenReturn(stockCard);
+
         stockMovementPresenter.saveStockMovement(stockMovementItem);
 
+        verify(stockRepositoryMock).update(stockCard);
         verify(stockRepositoryMock).saveStockItem(stockMovementItem);
     }
 

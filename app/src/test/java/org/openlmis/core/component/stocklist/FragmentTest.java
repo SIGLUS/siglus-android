@@ -30,8 +30,6 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.view.activity.StockCardListActivity;
 import org.openlmis.core.view.activity.StockMovementActivity;
 
-import static org.robolectric.util.FragmentTestUtil.startFragment;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +38,7 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.robolectric.util.FragmentTestUtil.startFragment;
 
 @RunWith(LMISTestRunner.class)
 public class FragmentTest {
@@ -101,9 +100,9 @@ public class FragmentTest {
         adapter.sortBySOH(true);
 
         List<StockCard> sortedList = adapter.getCurrentStockCards();
-        assertThat(sortedList.get(0).getStockOnHand(), is(1));
-        assertThat(sortedList.get(1).getStockOnHand(), is(2));
-        assertThat(sortedList.get(2).getStockOnHand(), is(3));
+        assertThat(sortedList.get(0).getStockOnHand(), is(1L));
+        assertThat(sortedList.get(1).getStockOnHand(), is(2L));
+        assertThat(sortedList.get(2).getStockOnHand(), is(3L));
     }
 
 

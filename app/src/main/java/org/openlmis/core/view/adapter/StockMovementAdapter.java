@@ -56,9 +56,9 @@ public class StockMovementAdapter extends BaseAdapter {
     ViewHolder editableLine;
     private final StockCard stockCard;
 
-    public StockMovementAdapter(Context context, StockMovementPresenter presenter,long stockId){
+    public StockMovementAdapter(Context context, StockMovementPresenter presenter, long stockId) {
         stockMovementViewModels = presenter.getStockMovementModels();
-        if (stockMovementViewModels == null){
+        if (stockMovementViewModels == null) {
             stockMovementViewModels = new ArrayList<>();
         }
         this.context = context;
@@ -75,7 +75,7 @@ public class StockMovementAdapter extends BaseAdapter {
 
     @Override
     public StockMovementViewModel getItem(int position) {
-        if (position >= stockMovementViewModels.size()){
+        if (position >= stockMovementViewModels.size()) {
             return null;
         }
         return stockMovementViewModels.get(position);
@@ -90,13 +90,13 @@ public class StockMovementAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
 
-        if (convertView == null){
+        if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.item_stock_movement, parent, false);
             holder = new ViewHolder(convertView);
 
             convertView.setTag(holder);
         } else {
-            holder = (ViewHolder)convertView.getTag();
+            holder = (ViewHolder) convertView.getTag();
         }
 
         onBindViewHolder(holder, position);
@@ -112,7 +112,7 @@ public class StockMovementAdapter extends BaseAdapter {
         holder.etPositiveAdjustment.setEnabled(false);
         holder.etIssued.setEnabled(false);
 
-        if (model != null){
+        if (model != null) {
             holder.txMovementDate.setText(model.getMovementDate());
             holder.txReason.setText(model.getReason());
             holder.etDocumentNo.setText(model.getDocumentNo());
@@ -150,11 +150,11 @@ public class StockMovementAdapter extends BaseAdapter {
         holder.etIssued.setOnKeyListener(listener);
     }
 
-    private long getCurrentStockOnHand(){
-        return  checkNotNull(stockCard).getStockOnHand();
+    private long getCurrentStockOnHand() {
+        return checkNotNull(stockCard).getStockOnHand();
     }
 
-    private void setupMovementTypeDialog(){
+    private void setupMovementTypeDialog() {
         dialog = new MovementTypeDialog(context, new MovementTypeDialog.OnMovementSelectListener() {
             @Override
             public void onReceive() {
@@ -191,19 +191,19 @@ public class StockMovementAdapter extends BaseAdapter {
         StockMovementItem.MovementType movementType;
         Long amount;
 
-        if (editableLine.etReceived.isEnabled()){
-            movementType= StockMovementItem.MovementType.RECEIVE;
+        if (editableLine.etReceived.isEnabled()) {
+            movementType = StockMovementItem.MovementType.RECEIVE;
             String text = editableLine.etReceived.getText().toString();
             amount = Long.parseLong(text);
-        }else if (editableLine.etNegativeAdjustment.isEnabled()){
+        } else if (editableLine.etNegativeAdjustment.isEnabled()) {
             movementType = StockMovementItem.MovementType.NEGATIVE_ADJUST;
             String text = editableLine.etNegativeAdjustment.getText().toString();
             amount = Long.parseLong(text);
-        }else if (editableLine.etPositiveAdjustment.isEnabled()){
+        } else if (editableLine.etPositiveAdjustment.isEnabled()) {
             movementType = StockMovementItem.MovementType.POSITIVE_ADJUST;
             String text = editableLine.etPositiveAdjustment.getText().toString();
             amount = Long.parseLong(text);
-        }else {
+        } else {
             movementType = StockMovementItem.MovementType.ISSUE;
             String text = editableLine.etIssued.getText().toString();
             amount = Long.parseLong(text);
@@ -231,19 +231,19 @@ public class StockMovementAdapter extends BaseAdapter {
         TextView txStockExistence;
 
 
-        public ViewHolder(View view){
-            txMovementDate = (TextView)view.findViewById(R.id.tx_date);
-            txReason = (TextView)view.findViewById(R.id.tx_reason);
-            etDocumentNo = (EditText)view.findViewById(R.id.et_document_no);
-            etReceived = (EditText)view.findViewById(R.id.et_received);
-            etNegativeAdjustment = (EditText)view.findViewById(R.id.et_negative_adjustment);
-            etPositiveAdjustment = (EditText)view.findViewById(R.id.et_positive_adjustment);
-            etIssued = (EditText)view.findViewById(R.id.et_issued);
-            txStockExistence = (TextView)view.findViewById(R.id.tx_stock_on_hand);
+        public ViewHolder(View view) {
+            txMovementDate = (TextView) view.findViewById(R.id.tx_date);
+            txReason = (TextView) view.findViewById(R.id.tx_reason);
+            etDocumentNo = (EditText) view.findViewById(R.id.et_document_no);
+            etReceived = (EditText) view.findViewById(R.id.et_received);
+            etNegativeAdjustment = (EditText) view.findViewById(R.id.et_negative_adjustment);
+            etPositiveAdjustment = (EditText) view.findViewById(R.id.et_positive_adjustment);
+            etIssued = (EditText) view.findViewById(R.id.et_issued);
+            txStockExistence = (TextView) view.findViewById(R.id.tx_stock_on_hand);
         }
     }
 
-    class MyOnKeyListener implements View.OnKeyListener{
+    class MyOnKeyListener implements View.OnKeyListener {
 
         ViewHolder viewHolder;
 
@@ -253,9 +253,9 @@ public class StockMovementAdapter extends BaseAdapter {
 
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
-            String text = ((TextView)v).getText().toString();
+            String text = ((TextView) v).getText().toString();
             long number = 0;
-            if (!StringUtils.isEmpty(text)){
+            if (!StringUtils.isEmpty(text)) {
                 number = Long.parseLong(text);
             }
 

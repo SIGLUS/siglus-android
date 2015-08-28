@@ -121,7 +121,7 @@ public class Presenter implements org.openlmis.core.presenter.Presenter {
 
     public int getStockOnHandLevel(StockCard stockCard) {
         int lowStockAvg = getLowStockAvg(stockCard);
-        int stockOnHand = stockCard.getStockOnHand();
+        long stockOnHand = stockCard.getStockOnHand();
         if (stockOnHand > lowStockAvg) {
             return STOCK_ON_HAND_NORMAL;
         } else if (stockOnHand > 0) {

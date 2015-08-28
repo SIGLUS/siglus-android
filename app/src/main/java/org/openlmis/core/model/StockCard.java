@@ -50,7 +50,7 @@ public class StockCard extends BaseModel{
     private ForeignCollection<StockMovementItem> stockMovementItems;
 
     @DatabaseField
-    int stockOnHand;
+    long stockOnHand;
 
     public String getEarliestExpireDate(){
         if (!StringUtils.isEmpty(expireDates)){

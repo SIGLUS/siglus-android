@@ -84,7 +84,9 @@ public class StockMovementPresenter implements Presenter {
     }
 
     public void saveStockMovement(StockMovementItem stockMovementItem) throws LMISException {
-        stockMovementItem.setStockCard(stockRepository.queryStockCardById(stockCardId));
+        StockCard stockcard = getStockCard(stockCardId);
+        stockcard.setStockOnHand(stockMovementItem.getStockOnHand());
+        stockRepository.update(stockcard);
         stockRepository.saveStockItem(stockMovementItem);
     }
 

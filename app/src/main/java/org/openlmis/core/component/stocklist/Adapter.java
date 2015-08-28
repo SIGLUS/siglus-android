@@ -196,9 +196,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
             @Override
             public int compare(StockCard lhs, StockCard rhs) {
                 if (asc) {
-                    return lhs.getStockOnHand() - rhs.getStockOnHand();
+                    return (int)(lhs.getStockOnHand() - rhs.getStockOnHand());
                 } else {
-                    return rhs.getStockOnHand() - lhs.getStockOnHand();
+                    return (int)(rhs.getStockOnHand() - lhs.getStockOnHand());
                 }
             }
         });

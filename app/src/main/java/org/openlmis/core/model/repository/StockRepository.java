@@ -81,6 +81,14 @@ public class StockRepository {
         }
     }
 
+    public void update(final StockCard stockCard) {
+        try {
+            genericDao.update(stockCard);
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void saveStockItem(final StockMovementItem stockMovementItem) throws LMISException {
         dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, Void>() {
             @Override
