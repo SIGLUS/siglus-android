@@ -87,6 +87,7 @@ public class StockMovementPresenter implements Presenter {
         StockCard stockcard = getStockCard(stockCardId);
         stockcard.setStockOnHand(stockMovementItem.getStockOnHand());
         stockRepository.update(stockcard);
+        stockMovementItem.setStockCard(stockcard);
         stockRepository.saveStockItem(stockMovementItem);
     }
 
