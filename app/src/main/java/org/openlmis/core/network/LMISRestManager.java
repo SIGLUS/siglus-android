@@ -30,6 +30,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
 
+import lombok.Data;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -75,6 +76,11 @@ public class LMISRestManager {
 
     private GsonConverter registerTypeAdapter(){
         return new GsonConverter(new GsonBuilder().registerTypeAdapter(RnRForm.class, new RnrFormAdapter()).create());
+    }
+
+    @Data
+    public static class UserResponse {
+        User userInformation;
     }
 
     class MyErrorHandler implements ErrorHandler {

@@ -31,12 +31,12 @@ import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
+import org.openlmis.core.model.repository.UserRepository.NewCallback;
 import org.openlmis.core.network.response.ProductsResponse;
 import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.Robolectric;
 
-import retrofit.Callback;
 import roboguice.RoboGuice;
 import rx.Observer;
 
@@ -55,7 +55,7 @@ public class LoginPresenterTest {
     SyncManager syncManager;
 
     @Captor
-    private ArgumentCaptor<Callback<User>> loginCB;
+    private ArgumentCaptor<NewCallback<User>> loginCB;
     @Captor
     private ArgumentCaptor<Observer<Void>> getProductsCB;
 
@@ -87,7 +87,7 @@ public class LoginPresenterTest {
         verify(mockActivity).loading();
 
         verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
-        loginCB.getValue().success(new User("user", "password"), null);
+        loginCB.getValue().success(new User("user", "password"));
 
         verify(userRepository).save(any(User.class));
     }
@@ -99,7 +99,7 @@ public class LoginPresenterTest {
 
         presenter.startLogin("user", "password");
         verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
-        loginCB.getValue().success(new User("user", "password"), null);
+        loginCB.getValue().success(new User("user", "password"));
 
         verify(syncManager).syncProductsWithProgramAsync(getProductsCB.capture());
         getProductsCB.getValue().onCompleted();
@@ -116,7 +116,7 @@ public class LoginPresenterTest {
         presenter.startLogin("user", "password");
         verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
 
-        loginCB.getValue().success(new User("user", "password"), null);
+        loginCB.getValue().success(new User("user", "password"));
 
         verify(syncManager).syncProductsWithProgramAsync(getProductsCB.capture());
         getProductsCB.getValue().onCompleted();
@@ -129,7 +129,7 @@ public class LoginPresenterTest {
     public void shouldDoOfflineLoginWhenNoConnection() {
         when(mockActivity.isConnectionAvailable()).thenReturn(false);
         presenter.startLogin("user", "password");
-        verify(userRepository).getUserForLocalDatabase(any(User.class));
+        verify(userRepository).getUserFromLocal(any(User.class));
     }
 
 

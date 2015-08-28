@@ -27,15 +27,11 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
+import org.openlmis.core.model.repository.UserRepository.NewCallback;
 import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.service.SyncSubscriber;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.View;
-
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class LoginPresenter implements Presenter {
 
@@ -83,7 +79,7 @@ public class LoginPresenter implements Presenter {
     }
 
     private void authorizeUserLocal(User user) {
-        User localUser = userRepository.getUserForLocalDatabase(user);
+        User localUser = userRepository.getUserFromLocal(user);
 
         if (localUser == null) {
             view.showInvalidAlert();
@@ -96,16 +92,16 @@ public class LoginPresenter implements Presenter {
     }
 
     private void authorizeUserRemote(final User user) {
-        userRepository.authorizeUser(user, new Callback<User>() {
+        userRepository.authorizeUser(user, new NewCallback<User>() {
             @Override
-            public void success(User remoteUser, Response response) {
+            public void success(User remoteUser) {
                 remoteUser.setUsername(user.getUsername());
                 remoteUser.setPassword(user.getPassword());
                 onLoginSuccess(remoteUser);
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void failure(String error) {
                 view.loaded();
                 onLoginFailed();
             }

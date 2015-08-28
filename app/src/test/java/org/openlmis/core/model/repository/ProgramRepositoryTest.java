@@ -52,4 +52,18 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(programRepository.list().size(), is(1));
         assertThat(programRepository.list().get(0).getProducts().size(), is(1));
     }
+
+    @Test
+    public void shouldSaveProgramWithProductsSuccessful1() throws LMISException{
+        Program program = new Program();
+
+        program.setProducts(products);
+        program.setProgramCode("TB");
+        program.setProgramName("TB");
+
+        programRepository.saveProgramWithProduct(program);
+
+        assertThat(programRepository.list().size(), is(1));
+        assertThat(programRepository.list().get(0).getProducts().size(), is(1));
+    }
 }

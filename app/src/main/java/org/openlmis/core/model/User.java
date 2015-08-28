@@ -23,11 +23,13 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @DatabaseTable(tableName = "users")
+@NoArgsConstructor
 public class User extends BaseModel{
 
     @DatabaseField
@@ -48,13 +50,9 @@ public class User extends BaseModel{
     @DatabaseField
     String facilityName;
 
+
     public User(String username, String password){
         this.username = username;
         this.password = password;
     }
-
-    public User(){
-
-    }
-
 }

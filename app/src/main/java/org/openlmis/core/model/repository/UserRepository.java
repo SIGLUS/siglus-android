@@ -33,7 +33,6 @@ import org.openlmis.core.persistence.GenericDao;
 import java.sql.SQLException;
 import java.util.List;
 
-import lombok.Data;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -51,13 +50,12 @@ public class UserRepository extends LMISRestManager {
         genericDao = new GenericDao<>(User.class, context);
     }
 
-
-    public void authorizeUser(User user, final Callback<User> callback) {
+    public void authorizeUser(final User user, final NewCallback<User> callback) {
         lmisRestApi.authorizeUser(user, new Callback<UserResponse>() {
             @Override
             public void success(UserResponse userResponse, Response response) {
-                if (userResponse.userInformation !=null){
-                    callback.success(userResponse.userInformation, response);
+                if (userResponse.getUserInformation() !=null){
+                    callback.success(userResponse.getUserInformation());
                 } else {
                     callback.failure(null);
                 }
@@ -65,12 +63,12 @@ public class UserRepository extends LMISRestManager {
 
             @Override
             public void failure(RetrofitError error) {
-                callback.failure(error);
+                callback.failure(error.getMessage());
             }
         });
     }
 
-    public User getUserForLocalDatabase(final User user) {
+    public User getUserFromLocal(final User user) {
         List<User> users = null;
         try {
             users = dbUtil.withDao(User.class, new DbUtil.Operation<User, List<User>>() {
@@ -98,8 +96,9 @@ public class UserRepository extends LMISRestManager {
         }
     }
 
-    @Data
-    public class UserResponse {
-        User userInformation;
+
+    public interface NewCallback<T> {
+        void success(T t);
+        void failure(String error);
     }
 }

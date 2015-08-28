@@ -92,6 +92,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     @Override
     public void close() {
         super.close();
+        getWritableDatabase().close();
         closeHelper();
     }
 }
