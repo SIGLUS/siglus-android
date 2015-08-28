@@ -19,6 +19,7 @@
 package org.openlmis.core.component.stocklist;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -35,12 +36,17 @@ import android.widget.Spinner;
 import com.google.inject.Inject;
 
 import org.openlmis.core.R;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.view.activity.StockMovementActivity;
 import org.openlmis.core.component.Component;
+
+import java.util.List;
 
 import roboguice.inject.InjectView;
 
 public class Fragment extends Component implements Presenter.StockCardListView, AdapterView.OnItemSelectedListener {
+
+    public static final int REQUEST_CODE_CHANGE = 1;
 
     @InjectView(R.id.sort_spinner)
     Spinner sortSpinner;
@@ -55,10 +61,12 @@ public class Fragment extends Component implements Presenter.StockCardListView, 
     String className;
 
     View contentView;
+    private List<StockCard> stockCards;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setRetainInstance(true);
         contentView = inflater.inflate(R.layout.fragment_stockcard_list, container, false);
         presenter.attachView(this);
         initView();
@@ -72,21 +80,22 @@ public class Fragment extends Component implements Presenter.StockCardListView, 
         TypedArray a = activity.obtainStyledAttributes(attrs, R.styleable.ComponentAttr);
         try {
             className = a.getString(R.styleable.ComponentAttr_className);
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             a.recycle();
         }
     }
 
     private void initView() {
-        if (className == null){
+        if (className == null) {
             className = StockMovementActivity.class.getName();
         }
 
         sortSpinner = (Spinner) contentView.findViewById(R.id.sort_spinner);
         stockCardRecycleView = (RecyclerView) contentView.findViewById(R.id.products_list);
-        mAdapter = new Adapter(presenter, className);
+        stockCards = presenter.getStockCards();
+        mAdapter = new Adapter(this, presenter, stockCards, className);
 
         initProductList();
         initSortSpinner();
@@ -146,12 +155,20 @@ public class Fragment extends Component implements Presenter.StockCardListView, 
 
     @Override
     public void refresh() {
-        mAdapter = new Adapter(presenter, className);
+        stockCards = presenter.getStockCards();
+        mAdapter = new Adapter(this, presenter, stockCards, className);
         stockCardRecycleView.setAdapter(mAdapter);
     }
 
     @Override
-    public void onSearch(String query){
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CHANGE) {
+            presenter.loadStockCards();
+        }
+    }
+
+    @Override
+    public void onSearch(String query) {
         mAdapter.filter(query);
     }
 }

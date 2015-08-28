@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,6 +81,8 @@ public class StockMovementActivity extends BaseActivity{
             public void onClick(View v) {
                 try {
                     presenter.saveStockMovement(adapter.getCurrentStockMovementItem());
+                    setResult(Activity.RESULT_OK);
+                    finish();
                 } catch (LMISException e) {
                     e.printStackTrace();
                 }

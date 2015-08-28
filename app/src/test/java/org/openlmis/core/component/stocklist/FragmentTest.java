@@ -51,14 +51,14 @@ public class FragmentTest {
         fragment = new Fragment();
         startFragment(fragment);
         fragment.presenter = mock(Presenter.class);
-        fragment.mAdapter =  mock(Adapter.class);
+        fragment.mAdapter = mock(Adapter.class);
 
         stockCards = new ArrayList<>();
-        for (int i=0; i< 10 ;i ++){
+        for (int i = 0; i < 10; i++) {
             StockCard stockCard = new StockCard();
-            stockCard.setStockOnHand(10 -i);
+            stockCard.setStockOnHand(10 - i);
             Product product = new Product();
-            product.setPrimaryName((char)('A' + i) + " Product");
+            product.setPrimaryName((char) ('A' + i) + " Product");
 
             stockCard.setProduct(product);
             stockCards.add(stockCard);
@@ -66,7 +66,7 @@ public class FragmentTest {
     }
 
     @Test
-    public  void shouldSortListWhenSelectSortSpinner(){
+    public void shouldSortListWhenSelectSortSpinner() {
         when(fragment.presenter.getStockCards()).thenReturn(stockCards);
         fragment.sortSpinner.setSelection(0);
         verify(fragment.mAdapter).sortByName(true);
@@ -82,9 +82,10 @@ public class FragmentTest {
     }
 
     @Test
-    public void shouldSortListByProductName(){
+    public void shouldSortListByProductName() {
         when(fragment.presenter.getStockCards()).thenReturn(stockCards);
-        Adapter adapter = new Adapter(fragment.presenter, StockMovementActivity.class.getName());
+        List<StockCard> stockCards = fragment.presenter.getStockCards();
+        Adapter adapter = new Adapter(fragment, fragment.presenter, stockCards, StockMovementActivity.class.getName());
         adapter.sortByName(true);
 
         List<StockCard> sortedList = adapter.getCurrentStockCards();
@@ -94,9 +95,9 @@ public class FragmentTest {
     }
 
     @Test
-    public void shouldSortListBySOH(){
+    public void shouldSortListBySOH() {
         when(fragment.presenter.getStockCards()).thenReturn(stockCards);
-        Adapter adapter = new Adapter(fragment.presenter, StockMovementActivity.class.getName());
+        Adapter adapter = new Adapter(fragment, fragment.presenter, stockCards, StockMovementActivity.class.getName());
         adapter.sortBySOH(true);
 
         List<StockCard> sortedList = adapter.getCurrentStockCards();

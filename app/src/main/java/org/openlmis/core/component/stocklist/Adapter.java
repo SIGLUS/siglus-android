@@ -19,7 +19,6 @@
 package org.openlmis.core.component.stocklist;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -48,15 +47,17 @@ import lombok.Getter;
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements FilterableAdapter {
 
     private final Presenter presenter;
+    private final Fragment fragment;
     List<StockCard> stockCards;
 
     @Getter
     List<StockCard> currentStockCards;
     private Class<?> detailActivity;
 
-    public Adapter(Presenter presenter, String className) {
+    public Adapter(Fragment fragment, Presenter presenter, List<StockCard> stockCards, String className) {
+        this.fragment = fragment;
         this.presenter = presenter;
-        this.stockCards = presenter.getStockCards();
+        this.stockCards = stockCards;
         currentStockCards = new ArrayList<>(stockCards);
 
         try {
@@ -101,11 +102,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
             @Override
             public void onClick(View v) {
 
-                Context context = v.getContext();
                 Intent intent = new Intent();
                 intent.setClass(v.getContext(), detailActivity);
                 intent.putExtra("stockCardId", currentStockCards.get(position).getId());
-                context.startActivity(intent);
+                fragment.startActivityForResult(intent, Fragment.REQUEST_CODE_CHANGE);
             }
         });
     }
@@ -196,9 +196,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
             @Override
             public int compare(StockCard lhs, StockCard rhs) {
                 if (asc) {
-                    return (int)(lhs.getStockOnHand() - rhs.getStockOnHand());
+                    return (int) (lhs.getStockOnHand() - rhs.getStockOnHand());
                 } else {
-                    return (int)(rhs.getStockOnHand() - lhs.getStockOnHand());
+                    return (int) (rhs.getStockOnHand() - lhs.getStockOnHand());
                 }
             }
         });

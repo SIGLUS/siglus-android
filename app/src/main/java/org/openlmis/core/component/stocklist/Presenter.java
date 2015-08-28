@@ -75,10 +75,6 @@ public class Presenter implements org.openlmis.core.presenter.Presenter {
 
     public void loadStockCards() {
 
-        if (stockCardList.size() > 0){
-            return;
-        }
-
         view.loading();
         Observable.create(new Observable.OnSubscribe<List<StockCard>>() {
             @Override
@@ -104,6 +100,7 @@ public class Presenter implements org.openlmis.core.presenter.Presenter {
 
             @Override
             public void onNext(List<StockCard> stockCards) {
+                stockCardList.clear();
                 stockCardList.addAll(stockCards);
                 view.refresh();
             }
