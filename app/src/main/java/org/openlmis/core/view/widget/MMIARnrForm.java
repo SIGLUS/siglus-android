@@ -68,14 +68,14 @@ public class MMIARnrForm extends LinearLayout {
 
     private void sortAndSetType(ArrayList<RnrFormItem> rnrFormItemList) {
         //in sequence to add ADULT、BABY and OTHER
-        setMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_ADULT);
+        addViewByMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_ADULT);
 
         addDividerView(Product.MEDICINE_TYPE_ADULT);
         addDividerView(Product.MEDICINE_TYPE_ADULT);
 
-        setMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_BABY);
+        addViewByMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_BABY);
         addDividerView(Product.MEDICINE_TYPE_BABY);
-        setMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_OTHER);
+        addViewByMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_OTHER);
         addDividerView(Product.MEDICINE_TYPE_OTHER);
     }
 
@@ -98,11 +98,11 @@ public class MMIARnrForm extends LinearLayout {
         return (ViewGroup) layoutInflater.inflate(R.layout.item_rnr_from, this, false);
     }
 
-    private void setMedicineType(ArrayList<RnrFormItem> dataList, String medicineTypeName) {
+    private void addViewByMedicineType(ArrayList<RnrFormItem> dataList, String medicineTypeName) {
         for (RnrFormItem item : dataList) {
             if (medicineTypeName.equals(item.getProduct().getMedicine_type())) {
                 View leftView = addLeftView(item, medicineTypeName);
-                ViewGroup rightView = addRightView(item);
+                ViewGroup rightView = addRightView(item,false);
                 setItemSize(leftView, rightView);
             }
         }
@@ -126,10 +126,6 @@ public class MMIARnrForm extends LinearLayout {
         } else {
             leftView.getLayoutParams().height = rightHeight;
         }
-    }
-
-    private ViewGroup addRightView(RnrFormItem item) {
-        return addRightView(item, false);
     }
 
     private View addLeftView(RnrFormItem item, String medicineType) {
