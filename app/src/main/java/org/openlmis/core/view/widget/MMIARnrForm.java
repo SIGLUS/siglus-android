@@ -63,13 +63,11 @@ public class MMIARnrForm extends LinearLayout {
         rnrFormItemList = list;
 
         addHeaderView();
-        sortAndSetType(list);
+        addItemView(list);
     }
 
-    private void sortAndSetType(ArrayList<RnrFormItem> rnrFormItemList) {
-        //in sequence to add ADULT、BABY and OTHER
+    private void addItemView(ArrayList<RnrFormItem> rnrFormItemList) {
         addViewByMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_ADULT);
-
         addDividerView(Product.MEDICINE_TYPE_ADULT);
         addDividerView(Product.MEDICINE_TYPE_ADULT);
 
@@ -199,7 +197,6 @@ public class MMIARnrForm extends LinearLayout {
 
             inflate.setBackgroundResource(R.color.color_mmia_info_name);
         } else {
-            //TODO refactor api field tvIssuedUnit
             tvIssuedUnit.setText(item.getProduct().getStrength());
             tvInitialAmount.setText(String.valueOf(item.getInitialAmount()));
             tvReceived.setText(String.valueOf(item.getReceived()));
