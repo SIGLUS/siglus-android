@@ -28,9 +28,12 @@ import android.widget.ListView;
 import com.google.inject.Inject;
 
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockMovementPresenter;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.StockMovementAdapter;
+import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -55,22 +58,28 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @Inject
     StockMovementPresenter presenter;
     private long stockId;
+    private StockMovementAdapter stockMovementAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         stockId = getIntent().getLongExtra("stockCardId", 0);
-        presenter.setStockCard(stockId);
+        try {
+            presenter.setStockCard(stockId);
+        }catch (LMISException e){
+            ToastUtil.show(R.string.msg_db_error);
+            finish();
+        }
         initUI();
     }
 
     private void initUI(){
-        final StockMovementAdapter adapter = new StockMovementAdapter(this, presenter, stockId);
+        stockMovementAdapter = new StockMovementAdapter(this, presenter, stockId);
         View headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
 
         stockMovementList.addHeaderView(headerView);
-        stockMovementList.setAdapter(adapter);
+        stockMovementList.setAdapter(stockMovementAdapter);
 
         btnCancel.setText(getResources().getString(R.string.btn_cancel));
 
@@ -78,14 +87,14 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.submitStockMovement(adapter.getEditableStockMovement());
+                presenter.submitStockMovement(stockMovementAdapter.getEditableStockMovement());
             }
         });
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                adapter.cancelStockMovement();
+                stockMovementAdapter.cancelStockMovement();
             }
         });
 
@@ -96,11 +105,15 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         showMessage(msg);
     }
 
-
     @Override
-    public void close() {
+    public void onBackPressed() {
         setResult(Activity.RESULT_OK);
         finish();
+    }
+
+    @Override
+    public void refreshStockMovement(StockMovementViewModel viewModel) {
+        stockMovementAdapter.addLine(viewModel);
     }
 
     @Override

@@ -76,8 +76,8 @@ public class StockMovementPresenter implements Presenter {
         }
     }
 
-    public void setStockCard(long stockCardId) {
-        this.stockCard = getStockCard(stockCardId);
+    public void setStockCard(long stockCardId) throws LMISException{
+        this.stockCard = stockRepository.queryStockCardById(stockCardId);
     }
 
     public List<StockMovementViewModel> getStockMovementModels() {
@@ -103,7 +103,8 @@ public class StockMovementPresenter implements Presenter {
         if (viewModel.validate()) {
             try {
                 saveStockMovement(viewModel.convertViewToModel());
-                view.close();
+
+                view.refreshStockMovement(viewModel);
             } catch (LMISException e) {
                 view.showErrorAlert(e.getMessage());
             }
@@ -112,18 +113,13 @@ public class StockMovementPresenter implements Presenter {
         }
     }
 
-    public StockCard getStockCard(long stockId) {
-        try {
-            return stockRepository.queryStockCardById(stockId);
-        } catch (LMISException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public StockCard getStockCard() {
+        return stockCard;
     }
 
 
     public interface StockMovementView extends View {
         void showErrorAlert(String msg);
-        void close();
+        void refreshStockMovement(StockMovementViewModel viewModel);
     }
 }

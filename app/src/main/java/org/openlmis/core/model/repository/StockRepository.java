@@ -30,6 +30,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
+import org.roboguice.shaded.goole.common.collect.Lists;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -141,7 +142,7 @@ public class StockRepository {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
             @Override
             public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
-               return dao.queryBuilder().limit(5L).orderBy("createdAt", true).where().eq("stockCard_id", stockCardId).query();
+               return Lists.reverse(dao.queryBuilder().limit(5L).orderBy("id", false).where().eq("stockCard_id", stockCardId).query());
             }
         });
     }

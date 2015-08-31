@@ -92,6 +92,7 @@
     <string name="btn_cancel">Cancel</string>
     <string name="msg_validation_error">Missing required field/ Invalid Input</string>
     <string name="msg_invalid_stock_movement_date">Cannot choose future date</string>
+    <string name="msg_db_error">An unexpected error has occurred. Please contact your administrator.</string>
 
     <!-- Reason/Origin/Destination select dialog-->
     <string-array name="movement_type_items_array">

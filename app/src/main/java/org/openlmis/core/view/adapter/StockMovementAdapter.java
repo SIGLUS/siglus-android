@@ -45,6 +45,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import static org.roboguice.shaded.goole.common.base.Preconditions.checkNotNull;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 
 public class StockMovementAdapter extends BaseAdapter {
@@ -66,7 +67,7 @@ public class StockMovementAdapter extends BaseAdapter {
             stockMovementViewModels = new ArrayList<>();
         }
         this.context = context;
-        stockCard = presenter.getStockCard(stockId);
+        stockCard = presenter.getStockCard();
         layoutInflater = LayoutInflater.from(context);
 
         setupMovementTypeDialog();
@@ -232,6 +233,13 @@ public class StockMovementAdapter extends BaseAdapter {
         setupMovementTypeDialog();
     }
 
+
+    public void addLine(StockMovementViewModel viewModel){
+        stockMovementViewModels = newArrayList(stockMovementViewModels);
+        stockMovementViewModels.add(viewModel);
+        notifyDataSetChanged();
+        setupMovementTypeDialog();
+    }
 
     private void showDatePickerDialog() {
         final Calendar today = GregorianCalendar.getInstance();
