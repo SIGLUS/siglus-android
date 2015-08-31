@@ -1,85 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/center_divider"
-        android:src="@mipmap/logo"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp"/>
-
-
-    <View android:id="@+id/center_divider"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_centerInParent="true"/>
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-
-
-    <LinearLayout android:id="@+id/login_panel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp"
-        android:gravity="center"
-        android:padding="10dp"
-        android:orientation="vertical"
-        android:layout_below="@+id/center_divider"
-        android:background="@color/white">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textSize="24sp"
-            android:textColor="@color/background_material_dark"/>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/ly_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:ems="18"
-                android:id="@+id/tx_username"
-                android:hint="@string/hint_username"/>
-        </android.support.design.widget.TextInputLayout>
-
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/ly_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:ems="18"
-                android:hint="@string/hint_password"
-                android:id="@+id/tx_password"/>
-        </android.support.design.widget.TextInputLayout>
-
-        <Button
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="60dp"
-            android:layout_marginRight="60dp"
-            android:text="@string/btn_login"
-            android:id="@+id/btn_login"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="20dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/blue_button"/>
+            android:layout_height="match_parent">
 
-    </LinearLayout>
-</RelativeLayout>
+            <ImageView
+                android:layout_width="350dp"
+                android:layout_height="350dp"
+                android:layout_above="@+id/center_divider"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:src="@mipmap/logo" />
+
+
+            <View
+                android:id="@+id/center_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerInParent="true" />
+
+
+            <LinearLayout
+                android:id="@+id/login_panel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/center_divider"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:background="@color/white"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_name"
+                    android:textColor="@color/background_material_dark"
+                    android:textSize="24sp" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/ly_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp">
+
+                    <EditText
+                        android:id="@+id/tx_username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="18"
+                        android:hint="@string/hint_username"
+                        android:inputType="textPersonName" />
+                </android.support.design.widget.TextInputLayout>
+
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/ly_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp">
+
+                    <EditText
+                        android:id="@+id/tx_password"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="18"
+                        android:hint="@string/hint_password"
+                        android:inputType="textPassword" />
+                </android.support.design.widget.TextInputLayout>
+
+                <Button
+                    android:id="@+id/btn_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="60dp"
+                    android:layout_marginRight="60dp"
+                    android:layout_marginTop="40dp"
+                    android:background="@drawable/blue_button"
+                    android:text="@string/btn_login" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</merge>
