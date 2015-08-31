@@ -53,6 +53,7 @@ public class ProgramRepository {
     Resources resources;
 
     private HashMap<String, List<String>> rnrFormItemConfigList = new HashMap<>();
+    private final ArrayList<Product> sortedMMIAProducts = new ArrayList<>();
 
     @Inject
     public ProgramRepository(Context context) {
@@ -69,7 +70,7 @@ public class ProgramRepository {
 
     public void saveProgramWithProduct(Program program) throws LMISException {
         if (MMIARepository.MMIA_PROGRAM_CODE.equals(program.getProgramCode())) {
-            setMMIAProductMedicineType(program);
+            setMMIAProductMedicineTypeAndSort(program);
         }
         create(program);
         for (Product product : program.getProducts()) {
@@ -79,20 +80,24 @@ public class ProgramRepository {
         refresh(program);
     }
 
-    private void setMMIAProductMedicineType(Program program) {
+    private void setMMIAProductMedicineTypeAndSort(Program program) {
         initRnrFormItemConfigList();
         Collection<Product> products = program.getProducts();
+
         setMedicineType(products, Product.MEDICINE_TYPE_ADULT);
         setMedicineType(products, Product.MEDICINE_TYPE_BABY);
         setMedicineType(products, Product.MEDICINE_TYPE_OTHER);
+
+        program.setProducts(sortedMMIAProducts);
     }
 
-    private void setMedicineType(Collection<Product> dataList, String medicineType) {
+    private void setMedicineType(Collection<Product> products, String medicineType) {
         List<String> fnms = rnrFormItemConfigList.get(medicineType);
-        for (Product item : dataList) {
-            for (String fnm : fnms) {
-                if (fnm.equals(item.getCode())) {
-                    item.setMedicine_type(medicineType);
+        for (String fnm : fnms) {
+            for (Product product : products) {
+                if (fnm.equals(product.getCode())) {
+                    product.setMedicine_type(medicineType);
+                    sortedMMIAProducts.add(product);
                 }
             }
         }
