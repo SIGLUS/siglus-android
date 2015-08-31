@@ -103,7 +103,7 @@ public class StockMovementPresenter implements Presenter {
         if (viewModel.validate()) {
             try {
                 saveStockMovement(viewModel.convertViewToModel());
-                view.finish();
+                view.close();
             } catch (LMISException e) {
                 view.showErrorAlert(e.getMessage());
             }
@@ -124,7 +124,6 @@ public class StockMovementPresenter implements Presenter {
 
     public interface StockMovementView extends View {
         void showErrorAlert(String msg);
-
-        void finish();
+        void close();
     }
 }

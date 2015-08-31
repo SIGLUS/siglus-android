@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -93,6 +94,13 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @Override
     public void showErrorAlert(String msg) {
         showMessage(msg);
+    }
+
+
+    @Override
+    public void close() {
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 
     @Override
