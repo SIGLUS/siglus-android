@@ -19,8 +19,11 @@
 package org.openlmis.core.view.viewmodel;
 
 
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
+
+import java.text.ParseException;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,7 +43,7 @@ public class StockMovementViewModel {
 
 
     public StockMovementViewModel(StockMovementItem item) {
-        movementDate = DateUtil.formatDate(item.getCreatedAt());
+        movementDate = DateUtil.formatDate(item.getMovementDate());
         documentNo = item.getDocumentNumber();
         reason = item.getReason();
 
@@ -80,10 +83,23 @@ public class StockMovementViewModel {
             stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
             stockMovementItem.setAmount(Long.parseLong(getReceived()));
         }
+
+        try {
+            stockMovementItem.setMovementDate(DateUtil.parseString(getMovementDate(), DateUtil.DEFAULT_DATE_FORMAT));
+        } catch (ParseException e){
+            e.printStackTrace();
+        }
+
         return stockMovementItem;
     }
 
     public boolean validate() {
-        return true;
+        return ((StringUtils.isNumeric(getReceived())
+                || StringUtils.isNumeric(getNegativeAdjustment())
+                || StringUtils.isNumeric(getPositiveAdjustment())
+                || StringUtils.isNumeric(getIssued()))
+                && StringUtils.isNoneEmpty(getReason())
+                && StringUtils.isNoneEmpty(getMovementDate())
+                && Long.parseLong(getStockExistence()) >= 0);
     }
 }

@@ -19,6 +19,7 @@
 package org.openlmis.core.model;
 
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -54,4 +55,8 @@ public class StockMovementItem extends BaseModel{
 
     @DatabaseField
     long stockOnHand;
+
+    @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = "yyyy-MM-dd")
+    private java.util.Date movementDate;
+
 }

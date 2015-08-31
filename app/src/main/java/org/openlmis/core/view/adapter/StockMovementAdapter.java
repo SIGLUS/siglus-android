@@ -200,6 +200,7 @@ public class StockMovementAdapter extends BaseAdapter {
         item.setDocumentNo(editableLine.etDocumentNo.getText().toString());
         item.setStockExistence(editableLine.txStockExistence.getText().toString());
         item.setReason(editableLine.txReason.getText().toString());
+        item.setMovementDate(editableLine.txMovementDate.getText().toString());
         return item;
     }
 

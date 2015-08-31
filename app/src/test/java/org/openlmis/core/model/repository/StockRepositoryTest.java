@@ -32,6 +32,7 @@ import org.openlmis.core.model.StockMovementItem;
 import org.robolectric.Robolectric;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import roboguice.RoboGuice;
@@ -108,6 +109,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
         stockMovementItem.setDocumentNumber("XXX123456");
         stockMovementItem.setReason("some reason");
+        stockMovementItem.setMovementDate(new Date());
 
         stockRepository.saveStockItem(stockMovementItem);
 

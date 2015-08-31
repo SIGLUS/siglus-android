@@ -88,6 +88,7 @@
     <string name="label_positive_adjustment">Positive Adjustment</string>
     <string name="label_stock_existence">Stock Existence</string>
     <string name="btn_cancel">Cancel</string>
+    <string name="msg_validation_error">Missing required field/ Invalid Input</string>
 
     <!-- Reason/Origin/Destination select dialog-->
     <string-array name="movement_type_items_array">

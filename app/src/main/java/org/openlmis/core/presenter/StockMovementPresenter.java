@@ -19,8 +19,11 @@
 package org.openlmis.core.presenter;
 
 
+import android.content.Context;
+
 import com.google.inject.Inject;
 
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.StockCard;
@@ -45,6 +48,10 @@ public class StockMovementPresenter implements Presenter {
     StockCard stockCard;
 
     StockMovementView view;
+
+
+    @Inject
+    Context context;
 
     public StockMovementPresenter() {
         stockMovementModelList = new ArrayList<>();
@@ -101,7 +108,7 @@ public class StockMovementPresenter implements Presenter {
                 view.showErrorAlert(e.getMessage());
             }
         } else {
-            view.showErrorAlert("");
+            view.showErrorAlert(context.getResources().getString(R.string.msg_validation_error));
         }
     }
 
