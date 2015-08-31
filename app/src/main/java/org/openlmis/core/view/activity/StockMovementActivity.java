@@ -85,7 +85,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                adapter.cancelStockMovement();
             }
         });
 

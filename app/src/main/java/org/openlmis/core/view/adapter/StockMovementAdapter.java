@@ -105,11 +105,7 @@ public class StockMovementAdapter extends BaseAdapter {
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final StockMovementViewModel model = getItem(position);
 
-        holder.etDocumentNo.setEnabled(false);
-        holder.etReceived.setEnabled(false);
-        holder.etNegativeAdjustment.setEnabled(false);
-        holder.etPositiveAdjustment.setEnabled(false);
-        holder.etIssued.setEnabled(false);
+        disableLine(holder);
 
         if (model != null) {
             holder.txMovementDate.setText(model.getMovementDate());
@@ -121,15 +117,7 @@ public class StockMovementAdapter extends BaseAdapter {
             holder.etIssued.setText(model.getIssued());
             holder.txStockExistence.setText(model.getStockExistence());
         } else {
-            holder.txMovementDate.setText(StringUtils.EMPTY);
-            holder.txReason.setText(StringUtils.EMPTY);
-            holder.etDocumentNo.setText(StringUtils.EMPTY);
-            holder.etReceived.setText(StringUtils.EMPTY);
-            holder.etNegativeAdjustment.setText(StringUtils.EMPTY);
-            holder.etPositiveAdjustment.setText(StringUtils.EMPTY);
-            holder.etIssued.setText(StringUtils.EMPTY);
-            holder.txStockExistence.setText(StringUtils.EMPTY);
-
+            resetLine(holder);
             editableLine = holder;
         }
 
@@ -147,6 +135,25 @@ public class StockMovementAdapter extends BaseAdapter {
         holder.etNegativeAdjustment.setOnKeyListener(listener);
         holder.etPositiveAdjustment.setOnKeyListener(listener);
         holder.etIssued.setOnKeyListener(listener);
+    }
+
+    private void disableLine(ViewHolder holder) {
+        holder.etDocumentNo.setEnabled(false);
+        holder.etReceived.setEnabled(false);
+        holder.etNegativeAdjustment.setEnabled(false);
+        holder.etPositiveAdjustment.setEnabled(false);
+        holder.etIssued.setEnabled(false);
+    }
+
+    private void resetLine(ViewHolder holder) {
+        holder.txMovementDate.setText(StringUtils.EMPTY);
+        holder.txReason.setText(StringUtils.EMPTY);
+        holder.etDocumentNo.setText(StringUtils.EMPTY);
+        holder.etReceived.setText(StringUtils.EMPTY);
+        holder.etNegativeAdjustment.setText(StringUtils.EMPTY);
+        holder.etPositiveAdjustment.setText(StringUtils.EMPTY);
+        holder.etIssued.setText(StringUtils.EMPTY);
+        holder.txStockExistence.setText(StringUtils.EMPTY);
     }
 
     private long getCurrentStockOnHand() {
@@ -202,6 +209,13 @@ public class StockMovementAdapter extends BaseAdapter {
         item.setReason(editableLine.txReason.getText().toString());
         item.setMovementDate(editableLine.txMovementDate.getText().toString());
         return item;
+    }
+
+    public void cancelStockMovement(){
+        resetLine(editableLine);
+        disableLine(editableLine);
+
+        setupMovementTypeDialog();
     }
 
 
