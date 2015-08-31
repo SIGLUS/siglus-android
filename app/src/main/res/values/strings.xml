@@ -26,7 +26,7 @@
     <string name="label_dummy_product">Paracetemol</string>
     <string name="label_dummy_unit">500mg</string>
     <string name="msg_inventory_check_failed">Quantity cannot be empty !</string>
-    <string name="msg_invalid_date">Cannot choose old day</string>
+    <string name="msg_invalid_date">Cannot choose past date</string>
 
 
     <!-- Home Page -->
@@ -57,7 +57,7 @@
     <string name="label_issued_unit">Issued Unit</string>
     <string name="hint_error_input">Invalid Input</string>
     <string name="btn_save">save</string>
-    <string name="msg_mmia_onback_confirm">Are you sure you want to quit without save your work?</string>
+    <string name="msg_mmia_onback_confirm">Are you sure you want to quit without saving your work?</string>
     <string name="btn_positive">Yes</string>
     <string name="btn_negative">No</string>
 
