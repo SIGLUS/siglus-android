@@ -43,7 +43,7 @@ public final class ToastUtil {
         Toast.makeText(LMISApp.getContext(), resId, Toast.LENGTH_SHORT).show();
     }
 
-    public static void showInCenter(CharSequence text) {
+    public static void showCustomToast(CharSequence text) {
         if (text == null)
             return;
         Toast toast = new Toast(LMISApp.getContext());

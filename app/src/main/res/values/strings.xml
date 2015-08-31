@@ -60,6 +60,7 @@
     <string name="msg_mmia_onback_confirm">Are you sure you want to quit without saving your work?</string>
     <string name="btn_positive">Yes</string>
     <string name="btn_negative">No</string>
+    <string name="msg_mmia_submit_tip">Thank you for submitting your mmia form.\r\n Please make sure it syncs successfully.</string>
 
 
     <!-- Requisition Form -->
@@ -77,6 +78,7 @@
     <string name="label_product_name">Product Name</string>
     <string name="msg_low_stock_warning">Your product has low stock.</string>
     <string name="msg_stock_out_warning">Your product is stocked out.</string>
+    <string name="msg_requisition_submit_tip">Thank you for submitting your requisition form.\r\n Please make sure it syncs successfully.</string>
 
     <!-- Stock Movement -->
     <string name="title_stock_movement">Stock Card</string>

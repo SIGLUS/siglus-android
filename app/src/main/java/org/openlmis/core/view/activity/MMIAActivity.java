@@ -32,6 +32,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.MMIAFormPresenter;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.OnBackConfirmDialog;
 import org.openlmis.core.view.fragment.RetainedFragment;
 import org.openlmis.core.view.widget.MMIAInfoList;
@@ -213,6 +214,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
     private void onCompleteBtnClick() {
         if (regimeListView.isCompleted() && mmiaInfoListView.isCompleted() && isTotalEqual()) {
             presenter.saveForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
+            ToastUtil.show(R.string.msg_mmia_submit_tip);
             goToHomePage();
         }
     }

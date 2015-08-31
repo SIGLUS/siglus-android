@@ -34,6 +34,7 @@ import android.widget.ListView;
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.RequisitionPresenter;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 import org.openlmis.core.view.fragment.OnBackConfirmDialog;
 import org.openlmis.core.view.fragment.RetainedFragment;
@@ -205,6 +206,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         }
         if (presenter.isRequisitionFormAmountCompleted()) {
             presenter.saveRequisition(consultationNumbers);
+            ToastUtil.show(R.string.msg_requisition_submit_tip);
             goToHomePage();
         }
     }

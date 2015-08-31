@@ -135,7 +135,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
         holder.iv_warning.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ToastUtil.showInCenter(finalWarningMsg);
+                ToastUtil.showCustomToast(finalWarningMsg);
             }
         });
 
