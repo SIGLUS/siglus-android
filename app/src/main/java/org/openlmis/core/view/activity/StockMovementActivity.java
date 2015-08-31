@@ -18,7 +18,6 @@
 
 package org.openlmis.core.view.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +27,6 @@ import android.widget.ListView;
 import com.google.inject.Inject;
 
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockMovementPresenter;
 import org.openlmis.core.view.adapter.StockMovementAdapter;
@@ -37,7 +35,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_stock_movement)
-public class StockMovementActivity extends BaseActivity{
+public class StockMovementActivity extends BaseActivity implements StockMovementPresenter.StockMovementView{
 
 
     @InjectView(R.id.list_stock_movement)
@@ -79,13 +77,7 @@ public class StockMovementActivity extends BaseActivity{
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    presenter.saveStockMovement(adapter.getCurrentStockMovementItem());
-                    setResult(Activity.RESULT_OK);
-                    finish();
-                } catch (LMISException e) {
-                    e.printStackTrace();
-                }
+                presenter.submitStockMovement(adapter.getEditableStockMovement());
             }
         });
 
@@ -96,6 +88,11 @@ public class StockMovementActivity extends BaseActivity{
             }
         });
 
+    }
+
+    @Override
+    public void showErrorAlert(String msg) {
+        showMessage(msg);
     }
 
     @Override

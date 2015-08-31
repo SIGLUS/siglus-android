@@ -89,7 +89,7 @@ public class StockRepository {
         }
     }
 
-    public void saveStockItem(final StockMovementItem stockMovementItem) throws LMISException {
+    protected void saveStockItem(final StockMovementItem stockMovementItem) throws LMISException {
         dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, Void>() {
             @Override
             public Void operate(Dao<StockMovementItem, String> dao) throws SQLException {
@@ -98,6 +98,14 @@ public class StockRepository {
             }
         });
     }
+
+    public void addStockMovementItem(StockCard stockcard,  StockMovementItem stockMovementItem) throws LMISException{
+        stockcard.setStockOnHand(stockMovementItem.getStockOnHand());
+        update(stockcard);
+        stockMovementItem.setStockCard(stockcard);
+        saveStockItem(stockMovementItem);
+    }
+
 
     public List<StockCard> list() throws LMISException {
         return genericDao.queryForAll();

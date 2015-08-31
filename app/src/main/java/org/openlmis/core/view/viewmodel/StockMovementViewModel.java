@@ -23,8 +23,10 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class StockMovementViewModel {
 
     String movementDate;
@@ -37,26 +39,51 @@ public class StockMovementViewModel {
     String stockExistence;
 
 
-    public StockMovementViewModel(StockMovementItem item){
-        this.movementDate = DateUtil.formatDate(item.getCreatedAt());
-        this.documentNo = item.getDocumentNumber();
-        this.reason = item.getReason();
+    public StockMovementViewModel(StockMovementItem item) {
+        movementDate = DateUtil.formatDate(item.getCreatedAt());
+        documentNo = item.getDocumentNumber();
+        reason = item.getReason();
 
-        switch (item.getMovementType()){
+        switch (item.getMovementType()) {
             case RECEIVE:
-                this.received = String.valueOf(item.getAmount());
+                received = String.valueOf(item.getAmount());
                 break;
             case ISSUE:
-                this.issued = String.valueOf(item.getAmount());
+                issued = String.valueOf(item.getAmount());
                 break;
             case NEGATIVE_ADJUST:
-                this.negativeAdjustment = String.valueOf(item.getAmount());
+                negativeAdjustment = String.valueOf(item.getAmount());
                 break;
             case POSITIVE_ADJUST:
-                this.positiveAdjustment = String.valueOf(item.getAmount());
+                positiveAdjustment = String.valueOf(item.getAmount());
                 break;
             default:
         }
-        this.stockExistence = String.valueOf(item.getStockOnHand());
+        stockExistence = String.valueOf(item.getStockOnHand());
+    }
+
+    public StockMovementItem convertViewToModel() {
+        StockMovementItem stockMovementItem = new StockMovementItem();
+        stockMovementItem.setStockOnHand(Long.parseLong(getStockExistence()));
+        stockMovementItem.setReason(getReason());
+        stockMovementItem.setDocumentNumber(getDocumentNo());
+        if (getIssued() != null) {
+            stockMovementItem.setMovementType(StockMovementItem.MovementType.ISSUE);
+            stockMovementItem.setAmount(Long.parseLong(getIssued()));
+        } else if (getPositiveAdjustment() != null) {
+            stockMovementItem.setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
+            stockMovementItem.setAmount(Long.parseLong(getPositiveAdjustment()));
+        } else if (getNegativeAdjustment() != null) {
+            stockMovementItem.setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
+            stockMovementItem.setAmount(Long.parseLong(getNegativeAdjustment()));
+        } else {
+            stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
+            stockMovementItem.setAmount(Long.parseLong(getReceived()));
+        }
+        return stockMovementItem;
+    }
+
+    public boolean validate() {
+        return true;
     }
 }

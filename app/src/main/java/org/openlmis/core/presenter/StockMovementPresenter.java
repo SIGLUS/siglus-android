@@ -42,7 +42,13 @@ public class StockMovementPresenter implements Presenter {
     @Inject
     StockRepository stockRepository;
 
-    long stockCardId;
+    StockCard stockCard;
+
+    StockMovementView view;
+
+    public StockMovementPresenter() {
+        stockMovementModelList = new ArrayList<>();
+    }
 
     @Override
     public void onStart() {
@@ -56,21 +62,20 @@ public class StockMovementPresenter implements Presenter {
 
     @Override
     public void attachView(View v) throws ViewNotMatchException {
-
+        if (v instanceof StockMovementView) {
+            this.view = (StockMovementView) v;
+        } else {
+            throw new ViewNotMatchException("Need StockMovementView");
+        }
     }
 
     public void setStockCard(long stockCardId) {
-        this.stockCardId = stockCardId;
-    }
-
-
-    public StockMovementPresenter() {
-        stockMovementModelList = new ArrayList<>();
+        this.stockCard = getStockCard(stockCardId);
     }
 
     public List<StockMovementViewModel> getStockMovementModels() {
         try {
-            return from(stockRepository.listLastFive(stockCardId)).transform(new Function<StockMovementItem, StockMovementViewModel>() {
+            return from(stockRepository.listLastFive(stockCard.getId())).transform(new Function<StockMovementItem, StockMovementViewModel>() {
                 @Override
                 public StockMovementViewModel apply(StockMovementItem stockMovementItem) {
                     return new StockMovementViewModel(stockMovementItem);
@@ -83,12 +88,21 @@ public class StockMovementPresenter implements Presenter {
         return null;
     }
 
-    public void saveStockMovement(StockMovementItem stockMovementItem) throws LMISException {
-        StockCard stockcard = getStockCard(stockCardId);
-        stockcard.setStockOnHand(stockMovementItem.getStockOnHand());
-        stockRepository.update(stockcard);
-        stockMovementItem.setStockCard(stockcard);
-        stockRepository.saveStockItem(stockMovementItem);
+    private void saveStockMovement(StockMovementItem stockMovementItem) throws LMISException {
+        stockRepository.addStockMovementItem(stockCard, stockMovementItem);
+    }
+
+    public void submitStockMovement(StockMovementViewModel viewModel) {
+        if (viewModel.validate()) {
+            try {
+                saveStockMovement(viewModel.convertViewToModel());
+                view.finish();
+            } catch (LMISException e) {
+                view.showErrorAlert(e.getMessage());
+            }
+        } else {
+            view.showErrorAlert("");
+        }
     }
 
     public StockCard getStockCard(long stockId) {
@@ -98,5 +112,12 @@ public class StockMovementPresenter implements Presenter {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    public interface StockMovementView extends View {
+        void showErrorAlert(String msg);
+
+        void finish();
     }
 }

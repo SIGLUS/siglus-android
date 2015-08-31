@@ -30,7 +30,6 @@ import android.widget.TextView;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.presenter.StockMovementPresenter;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
@@ -185,36 +184,22 @@ public class StockMovementAdapter extends BaseAdapter {
         });
     }
 
-    public StockMovementItem getCurrentStockMovementItem() {
-        StockMovementItem item = new StockMovementItem();
+    public StockMovementViewModel getEditableStockMovement() {
 
-        StockMovementItem.MovementType movementType;
-        Long amount;
-
+        StockMovementViewModel item = new StockMovementViewModel();
         if (editableLine.etReceived.isEnabled()) {
-            movementType = StockMovementItem.MovementType.RECEIVE;
-            String text = editableLine.etReceived.getText().toString();
-            amount = Long.parseLong(text);
+            item.setReceived(editableLine.etReceived.getText().toString());
         } else if (editableLine.etNegativeAdjustment.isEnabled()) {
-            movementType = StockMovementItem.MovementType.NEGATIVE_ADJUST;
-            String text = editableLine.etNegativeAdjustment.getText().toString();
-            amount = Long.parseLong(text);
+            item.setNegativeAdjustment(editableLine.etNegativeAdjustment.getText().toString());
         } else if (editableLine.etPositiveAdjustment.isEnabled()) {
-            movementType = StockMovementItem.MovementType.POSITIVE_ADJUST;
-            String text = editableLine.etPositiveAdjustment.getText().toString();
-            amount = Long.parseLong(text);
+            item.setPositiveAdjustment(editableLine.etPositiveAdjustment.getText().toString());
         } else {
-            movementType = StockMovementItem.MovementType.ISSUE;
-            String text = editableLine.etIssued.getText().toString();
-            amount = Long.parseLong(text);
+            item.setIssued(editableLine.etIssued.getText().toString());
         }
 
-        item.setDocumentNumber(editableLine.etDocumentNo.getText().toString());
-        item.setStockOnHand(Long.parseLong(editableLine.txStockExistence.getText().toString()));
-        item.setMovementType(movementType);
-        item.setAmount(amount);
+        item.setDocumentNo(editableLine.etDocumentNo.getText().toString());
+        item.setStockExistence(editableLine.txStockExistence.getText().toString());
         item.setReason(editableLine.txReason.getText().toString());
-
         return item;
     }
 

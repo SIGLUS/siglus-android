@@ -23,45 +23,68 @@ import com.google.inject.AbstractModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.robolectric.Robolectric;
 
 import roboguice.RoboGuice;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
-public class StockMovementPresenterTest {
+public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
 
     private StockMovementPresenter stockMovementPresenter;
 
     StockRepository stockRepositoryMock;
+    StockMovementPresenter.StockMovementView view;
 
     @Before
-    public void setup() {
+    public void setup() throws Exception{
         stockRepositoryMock = mock(StockRepository.class);
+
+        view = mock(StockMovementPresenter.StockMovementView.class);
         RoboGuice.overrideApplicationInjector(Robolectric.application, new MyTestModule());
 
         stockMovementPresenter = RoboGuice.getInjector(Robolectric.application).getInstance(StockMovementPresenter.class);
+        stockMovementPresenter.attachView(view);
+    }
+
+    @Test
+    public void shouldValidateStockMovementViewModelBeforeSaveAndReturnErrorIfInvalid() {
+        StockMovementViewModel stockMovementViewModelMock = mock(StockMovementViewModel.class);
+        when(stockMovementViewModelMock.validate()).thenReturn(false);
+
+        stockMovementPresenter.submitStockMovement(stockMovementViewModelMock);
+        verify(stockMovementViewModelMock).validate();
+        verify(view).showErrorAlert(anyString());
     }
 
     @Test
     public void shouldSaveStockMovement() throws LMISException {
-        StockMovementItem stockMovementItem = new StockMovementItem();
         StockCard stockCard = new StockCard();
-        when(stockRepositoryMock.queryStockCardById(anyInt())).thenReturn(stockCard);
+        when(stockRepositoryMock.queryStockCardById(123)).thenReturn(stockCard);
+        stockMovementPresenter.setStockCard(123);
 
-        stockMovementPresenter.saveStockMovement(stockMovementItem);
+        StockMovementItem item = new StockMovementItem();
 
-        verify(stockRepositoryMock).update(stockCard);
-        verify(stockRepositoryMock).saveStockItem(stockMovementItem);
+        StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
+        when(viewModel.validate()).thenReturn(true);
+        when(viewModel.convertViewToModel()).thenReturn(item);
+
+        stockMovementPresenter.submitStockMovement(viewModel);
+        verify(stockRepositoryMock).addStockMovementItem(stockCard, item);
     }
 
     public class MyTestModule extends AbstractModule {
