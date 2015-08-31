@@ -26,7 +26,7 @@ import java.util.Locale;
 
 public final class DateUtil {
 
-    public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+    public static final String DEFAULT_DATE_FORMAT = "dd/MM/yyyy";
 
     public static final SimpleDateFormat DATE_FORMATER = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
 

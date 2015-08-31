@@ -18,12 +18,14 @@
 
 package org.openlmis.core.view.adapter;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -32,11 +34,14 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockMovementPresenter;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.openlmis.core.view.widget.MovementTypeDialog;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import static org.roboguice.shaded.goole.common.base.Preconditions.checkNotNull;
@@ -130,6 +135,15 @@ public class StockMovementAdapter extends BaseAdapter {
             }
         });
 
+        holder.txMovementDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (model == null){
+                    showDatePickerDialog();
+                }
+            }
+        });
+
         MyOnKeyListener listener = new MyOnKeyListener(holder);
         holder.etReceived.setOnKeyListener(listener);
         holder.etNegativeAdjustment.setOnKeyListener(listener);
@@ -216,6 +230,26 @@ public class StockMovementAdapter extends BaseAdapter {
         disableLine(editableLine);
 
         setupMovementTypeDialog();
+    }
+
+
+    private void showDatePickerDialog() {
+        final Calendar today = GregorianCalendar.getInstance();
+
+        DatePickerDialog dialog = new DatePickerDialog(context, DatePickerDialog.BUTTON_NEUTRAL, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                GregorianCalendar date = new GregorianCalendar(year, monthOfYear, dayOfMonth);
+                if (today.before(date)) {
+                    ToastUtil.show(R.string.msg_invalid_stock_movement_date);
+                } else {
+                    String dateString = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                    editableLine.txMovementDate.setText(dateString);
+                }
+            }
+        }, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
+
+        dialog.show();
     }
 
 
