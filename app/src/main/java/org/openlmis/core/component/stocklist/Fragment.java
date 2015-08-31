@@ -62,6 +62,7 @@ public class Fragment extends Component implements Presenter.StockCardListView, 
 
     View contentView;
     private List<StockCard> stockCards;
+    int currentPostion;
 
     @Nullable
     @Override
@@ -121,6 +122,7 @@ public class Fragment extends Component implements Presenter.StockCardListView, 
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        currentPostion = position;
         switch (position) {
             case 0:
                 mAdapter.sortByName(true);
@@ -158,6 +160,7 @@ public class Fragment extends Component implements Presenter.StockCardListView, 
         stockCards = presenter.getStockCards();
         mAdapter = new Adapter(this, presenter, stockCards, className);
         stockCardRecycleView.setAdapter(mAdapter);
+        onItemSelected(sortSpinner, null, currentPostion, 0L);
     }
 
     @Override
