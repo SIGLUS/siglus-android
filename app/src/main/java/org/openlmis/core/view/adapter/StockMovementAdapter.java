@@ -38,6 +38,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.openlmis.core.view.widget.MovementTypeDialog;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -61,7 +62,7 @@ public class StockMovementAdapter extends BaseAdapter {
     ViewHolder editableLine;
     private final StockCard stockCard;
 
-    public StockMovementAdapter(Context context, StockMovementPresenter presenter, long stockId) {
+    public StockMovementAdapter(Context context, StockMovementPresenter presenter) {
         stockMovementViewModels = presenter.getStockMovementModels();
         if (stockMovementViewModels == null) {
             stockMovementViewModels = new ArrayList<>();
@@ -247,17 +248,25 @@ public class StockMovementAdapter extends BaseAdapter {
         DatePickerDialog dialog = new DatePickerDialog(context, DatePickerDialog.BUTTON_NEUTRAL, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                GregorianCalendar date = new GregorianCalendar(year, monthOfYear, dayOfMonth);
-                if (today.before(date)) {
-                    ToastUtil.show(R.string.msg_invalid_stock_movement_date);
-                } else {
-                    String dateString = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-                    editableLine.txMovementDate.setText(dateString);
-                }
+                validateStockMovementDate(new GregorianCalendar(year, monthOfYear, dayOfMonth));
             }
         }, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
 
         dialog.show();
+    }
+
+    public void validateStockMovementDate(GregorianCalendar date) {
+        Calendar today = GregorianCalendar.getInstance();
+        try {
+            Date lastMovementDate = DateUtil.parseString(stockMovementViewModels.get(stockMovementViewModels.size() - 1).getMovementDate(), DateUtil.DEFAULT_DATE_FORMAT);
+            if (today.before(date) || lastMovementDate.after(date.getTime())) {
+                ToastUtil.show(R.string.msg_invalid_stock_movement_date);
+            } else {
+                editableLine.txMovementDate.setText(DateUtil.formatDate(date.getTime()));
+            }
+        }catch (ParseException e){
+            ToastUtil.show(R.string.msg_invalid_stock_movement_date);
+        }
     }
 
 

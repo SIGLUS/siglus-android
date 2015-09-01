@@ -75,7 +75,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     }
 
     private void initUI(){
-        stockMovementAdapter = new StockMovementAdapter(this, presenter, stockId);
+        stockMovementAdapter = new StockMovementAdapter(this, presenter);
         View headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
 
         stockMovementList.addHeaderView(headerView);

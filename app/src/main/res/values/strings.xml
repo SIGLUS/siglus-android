@@ -91,7 +91,7 @@
     <string name="label_stock_existence">Stock Existence</string>
     <string name="btn_cancel">Cancel</string>
     <string name="msg_validation_error">Missing required field/ Invalid Input</string>
-    <string name="msg_invalid_stock_movement_date">Cannot choose future date</string>
+    <string name="msg_invalid_stock_movement_date">Invalid date</string>
     <string name="msg_db_error">An unexpected error has occurred. Please contact your administrator.</string>
     <string name="label_cmm">CMM</string>
     <string name="label_validate_period">Validate Period</string>
