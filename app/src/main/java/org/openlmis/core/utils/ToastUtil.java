@@ -58,6 +58,13 @@ public final class ToastUtil {
         toast.show();
     }
 
+    public static void showInCenter(String text) {
+        Toast toast = Toast
+                .makeText(LMISApp.getContext(), text, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+    }
+
     public static void showInCenter(int text) {
         Toast toast = Toast
                 .makeText(LMISApp.getContext(), text, Toast.LENGTH_SHORT);

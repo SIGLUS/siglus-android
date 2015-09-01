@@ -39,7 +39,7 @@
     <string name="label_last_synced_hours_ago">Last synced on %s hours ago</string>
     <string name="label_last_synced_days_ago">Last synced on %s days ago</string>
 
-    <!--MMIA Speed-->
+    <!--MMIA-->
     <string name="label_rnrfrom_left_header">PRODUCT</string>
     <string name="label_regime_header_code">Code</string>
     <string name="label_regime_header_name">REGIME THERAPEUTIC</string>
@@ -61,6 +61,7 @@
     <string name="btn_positive">Yes</string>
     <string name="btn_negative">No</string>
     <string name="msg_mmia_submit_tip">Thank you for submitting your mmia form.\r\n Please make sure it syncs successfully.</string>
+    <string name="hint_mmia_total_not_equal">Total REGIME TERAPEUTICO does not match \r\n Total de pacientes em TARV na US</string>
 
 
     <!-- Requisition Form -->

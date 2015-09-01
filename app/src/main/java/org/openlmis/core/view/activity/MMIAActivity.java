@@ -212,11 +212,16 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
     }
 
     private void onCompleteBtnClick() {
-        if (regimeListView.isCompleted() && mmiaInfoListView.isCompleted() && isTotalEqual()) {
-            presenter.saveForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
-            ToastUtil.show(R.string.msg_mmia_submit_tip);
-            goToHomePage();
+        if (!regimeListView.isCompleted() || !mmiaInfoListView.isCompleted()) {
+            return;
         }
+        if (!isTotalEqual()) {
+            ToastUtil.show(R.string.hint_mmia_total_not_equal);
+            return;
+        }
+        presenter.saveForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
+        ToastUtil.show(R.string.msg_mmia_submit_tip);
+        goToHomePage();
     }
 
     private boolean isTotalEqual() {
