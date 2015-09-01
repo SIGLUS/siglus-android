@@ -73,23 +73,20 @@
 
     </LinearLayout>
 
-    <HorizontalScrollView
+    <ListView
+        android:id="@+id/list_stock_movement"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/title_panel"
         android:layout_above="@+id/action_panel"
-        android:layout_marginTop="10dp">
-        <ListView android:id="@+id/list_stock_movement"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:divider="@drawable/divider_horizontal"
-            android:background="@drawable/border_bg"/>
+        android:layout_below="@+id/title_panel"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/border_bg"
+        android:divider="@drawable/divider_horizontal" />
 
-    </HorizontalScrollView>
-
-    <include android:id="@+id/action_panel"
+    <include
+        android:id="@+id/action_panel"
         layout="@layout/layout_form_action"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"/>
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

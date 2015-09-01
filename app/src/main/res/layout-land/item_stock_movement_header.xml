@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="wrap_content"
+    android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:divider="@drawable/divider_vertical"
     android:showDividers="middle"
@@ -21,7 +21,7 @@
         android:text="@string/label_reason"/>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="@drawable/divider_vertical"
         android:orientation="horizontal"
@@ -30,42 +30,54 @@
 
         <TextView
             android:id="@+id/et_document_no"
-            android:layout_width="@dimen/stock_movement_item_common_width"
+            android:minWidth="@dimen/stock_movement_item_common_width"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             style="@style/sheet_header2"
             android:text="@string/label_document_no"/>
 
         <TextView
             android:id="@+id/et_received"
-            android:layout_width="@dimen/stock_movement_item_common_width"
+            android:minWidth="@dimen/stock_movement_item_common_width"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             style="@style/sheet_header2"
             android:text="@string/label_received"/>
 
         <TextView
             android:id="@+id/et_negative_adjustment"
-            android:layout_width="@dimen/stock_movement_item_common_width"
+            android:minWidth="@dimen/stock_movement_item_common_width"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             style="@style/sheet_header2"
             android:text="@string/label_negative_adjustment"/>
 
         <TextView
             android:id="@+id/et_positive_adjustment"
-            android:layout_width="@dimen/stock_movement_item_common_width"
+            android:minWidth="@dimen/stock_movement_item_common_width"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             style="@style/sheet_header2"
             android:text="@string/label_positive_adjustment"/>
 
         <TextView
             android:id="@+id/et_issued"
-            android:layout_width="@dimen/stock_movement_item_common_width"
+            android:minWidth="@dimen/stock_movement_item_common_width"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             style="@style/sheet_header2"
             android:text="@string/label_issued"/>
 
         <TextView
             android:id="@+id/tx_stock_on_hand"
-            android:layout_width="@dimen/stock_movement_item_common_width"
+            android:minWidth="@dimen/stock_movement_item_common_width"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             style="@style/sheet_header2"
             android:text="@string/label_stock_existence"/>

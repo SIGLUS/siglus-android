@@ -106,37 +106,28 @@
     </string-array>
 
     <string-array name="movement_receive_items_array">
-        <item>Dest1</item>
-        <item>Dest2</item>
-        <item>Dest3</item>
-        <item>Dest4</item>
-        <item>Dest1</item>
-        <item>Dest2</item>
-        <item>Dest3</item>
-        <item>Dest4</item>
-        <item>Dest1</item>
-        <item>Dest2</item>
-        <item>Dest3</item>
-        <item>Dest4</item>
+        <item>Normal requisition/reinforcement</item>
+        <item>Emergency requisition</item>
+        <item>Opening Kits(Health facilities)</item>
     </string-array>
 
     <string-array name="movement_negative_items_array">
-        <item>Dest1</item>
-        <item>Dest2</item>
-        <item>Dest3</item>
-        <item>Dest4</item>
+        <item>Returns of  drugs expired in quarantine(or supplier deposit)</item>
+        <item>Damaged at the Deposit </item>
+        <item>loans (To all levels) which arrive at the warehouse</item>
+        <item>Inventory correction in case of over stock on Stock  card (Stock on  hand is less than stock in stock card)</item>
+        <item>Issue to quarentine in case of problems with quality of product</item>
     </string-array>
     <string-array name="movement_positive_items_array">
-        <item>Dest1</item>
-        <item>Dest2</item>
-        <item>Dest3</item>
-        <item>Dest4</item>
+        <item>Returns from Customers(HF and dependent wards)</item>
+        <item>Returns of expired drugs (HF and dependent wards)</item>
+        <item>Donations to Deposit</item>
+        <item>loans (from all levels) which arrive at the warehouse</item>
+        <item>Inventory correction in case of under stock on Stock card (Stock on  hand is more than stock in stock card)</item>
+        <item>Quarantine return, in the case of confirming the good quality of the product.</item>
     </string-array>
     <string-array name="movement_issue_items_array">
-        <item>Dest1</item>
-        <item>Dest2</item>
-        <item>Dest3</item>
-        <item>Dest4</item>
+        <item>Issues from customers requests </item>
     </string-array>
 
 

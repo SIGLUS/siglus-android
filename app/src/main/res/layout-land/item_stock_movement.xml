@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="wrap_content"
+    android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:divider="@drawable/divider_vertical"
@@ -19,7 +19,7 @@
         style="@style/sheet_header2"/>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:divider="@drawable/divider_vertical"
@@ -28,41 +28,53 @@
 
         <EditText
             android:id="@+id/et_document_no"
-            android:layout_width="@dimen/stock_movement_item_common_width"
+            android:minWidth="@dimen/stock_movement_item_common_width"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             style="@style/sheet_header2"/>
 
         <EditText
             android:id="@+id/et_received"
-            android:layout_width="@dimen/stock_movement_item_common_width"
+            android:minWidth="@dimen/stock_movement_item_common_width"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:inputType="number"
             style="@style/sheet_header2"/>
 
         <EditText
             android:id="@+id/et_negative_adjustment"
-            android:layout_width="@dimen/stock_movement_item_common_width"
+            android:minWidth="@dimen/stock_movement_item_common_width"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:inputType="number"
             style="@style/sheet_header2"/>
 
         <EditText
             android:id="@+id/et_positive_adjustment"
-            android:layout_width="@dimen/stock_movement_item_common_width"
+            android:minWidth="@dimen/stock_movement_item_common_width"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:inputType="number"
             style="@style/sheet_header2"/>
 
         <EditText
             android:id="@+id/et_issued"
-            android:layout_width="@dimen/stock_movement_item_common_width"
+            android:minWidth="@dimen/stock_movement_item_common_width"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:inputType="number"
             style="@style/sheet_header2"/>
 
         <TextView
             android:id="@+id/tx_stock_on_hand"
-            android:layout_width="@dimen/stock_movement_item_common_width"
+            android:minWidth="@dimen/stock_movement_item_common_width"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             style="@style/sheet_header2"/>
     </LinearLayout>
