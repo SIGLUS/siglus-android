@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:padding="10dp"
+        android:padding="2dp"
         style="@style/sheet_header1"
         android:text="@string/label_fnm"/>
 
@@ -19,7 +19,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="3"
-        android:padding="10dp"
+        android:padding="2dp"
         style="@style/sheet_header1"
         android:text="@string/label_product_name"/>
 </LinearLayout>
