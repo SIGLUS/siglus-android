@@ -62,6 +62,7 @@ public class RequisitionPresenterTest {
         List<RequisitionFormItemViewModel> list = new ArrayList<RequisitionFormItemViewModel>();
         for (int i = 0; i < 3; i++) {
             list.add(new RequisitionFormItemViewModel(createRnrFormItem(i)));
+            list.get(i).setRequestAmount("");
         }
 
         presenter.requisitionFormItemViewModelList = list;

@@ -62,7 +62,7 @@ public class RequisitionFormItemViewModel {
         this.inventory = String.valueOf(inventory);
         this.different = String.valueOf(different);
         this.totalRequest = String.valueOf(totalRequest);
-        this.requestAmount = (null == item.getRequestAmount()) ? "" : String.valueOf(item.getRequestAmount());
-        this.approvedAmount = (null == item.getApprovedAmount()) ? "" : String.valueOf(item.getApprovedAmount());
+        this.requestAmount = (null == item.getRequestAmount()) ? this.totalRequest : String.valueOf(item.getRequestAmount());
+        this.approvedAmount = (null == item.getApprovedAmount()) ? this.totalRequest : String.valueOf(item.getApprovedAmount());
     }
 }
