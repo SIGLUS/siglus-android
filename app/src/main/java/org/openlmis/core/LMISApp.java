@@ -21,6 +21,10 @@ package org.openlmis.core;
 import android.app.Application;
 import android.content.Context;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
+
+import io.fabric.sdk.android.Fabric;
 import roboguice.RoboGuice;
 
 public class LMISApp extends Application {
@@ -32,6 +36,14 @@ public class LMISApp extends Application {
 
         RoboGuice.getInjector(this).injectMembersWithoutViews(this);
         applicationContext=getApplicationContext();
+        setupFabric();
+    }
+
+
+    protected void setupFabric(){
+        Fabric.with(this, new Crashlytics.Builder()
+                .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
+                .build());
     }
 
     public static Context getContext() {

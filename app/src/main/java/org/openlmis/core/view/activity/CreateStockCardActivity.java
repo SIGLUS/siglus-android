@@ -38,7 +38,7 @@ import roboguice.inject.InjectView;
 
 
 @ContentView(R.layout.activity_inventory)
-public class InventoryActivity extends BaseActivity implements InventoryPresenter.InventoryView{
+public class CreateStockCardActivity extends BaseActivity implements InventoryPresenter.InventoryView{
 
     @InjectView(R.id.products_list)
     public RecyclerView productListRecycleView;

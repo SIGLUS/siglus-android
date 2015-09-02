@@ -16,6 +16,10 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="bb9773077d8b9b49cf4a0d181c8e6bcf19213304" />
+
         <activity
             android:name=".view.activity.LoginActivity"
             android:label="@string/app_name"
@@ -27,7 +31,7 @@
         </activity>
 
         <activity
-            android:name=".view.activity.InventoryActivity"
+            android:name=".view.activity.CreateStockCardActivity"
             android:label="@string/title_init_inventory" />
 
         <activity

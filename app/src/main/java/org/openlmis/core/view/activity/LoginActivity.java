@@ -83,7 +83,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     public void goToInitInventory() {
-        startActivity(InventoryActivity.class);
+        startActivity(CreateStockCardActivity.class);
     }
 
     public void goToHomePage() {

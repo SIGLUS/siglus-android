@@ -1,4 +1,11 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+
+repositories {
+    jcenter()
+    maven { url 'https://maven.fabric.io/public' }
+}
 
 android {
     compileSdkVersion 21
@@ -15,6 +22,7 @@ android {
     buildTypes {
         debug {
             testCoverageEnabled true
+            ext.enableCrashlytics = false
         }
         release {
             minifyEnabled false
@@ -120,6 +128,12 @@ dependencies {
     testCompile 'org.mockito:mockito-all:1.10.19'
     testCompile 'org.robolectric:robolectric:2.4'
     testCompile 'org.assertj:assertj-core:1.7.1'
+
+
+    // Crashlytics Kit
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.1@aar') {
+        transitive = true
+    }
 
 }
 
