@@ -3,51 +3,66 @@
 # clean up data regularly
 describe "submit requisition to web server" do
 
+  it "should sync VIA requisition to server successfully and return expected response" do
+
+    requisition =
+    {
+      agentCode: "F10",
+      programCode: "ESS_MEDS",
+      products: [
+      {
+        productCode: "P1",
+        beginningBalance: 40,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        stockInHand: 10,
+        calculatedOrderQuantity: 10,
+        quantityRequested: 10,
+        reasonForRequestedQuantity: "reason"
+      },
+      {
+        productCode: "P2",
+        beginningBalance: 100,
+        quantityReceived: 300,
+        quantityDispensed: 100,
+        stockInHand: 300,
+        calculatedOrderQuantity: 0,
+        quantityRequested: 0,
+        reasonForRequestedQuantity: "reason"
+      }
+      ]
+    }
+
+    response = RestClient.post "http://#{WEB_DEV_URI}/rest-api/requisitions",
+      requisition.to_json, 'Content-Type' => 'application/json',
+      'Accept' => 'application/json',
+      'Authorization' => http_basic_auth('superuser', 'password1')
+
+    expect(response.code).to eq 201
+
+    body = JSON.parse(response.body)
+    requisition_id = body['requisitionId']
+
+    expect(requisition_id).not_to be_nil
+
+    response = RestClient.get "http://#{WEB_DEV_URI}/rest-api/requisitions/#{requisition_id}",
+      'Content-Type' => 'application/json',
+      'Accept' => 'application/json',
+      'Authorization' => http_basic_auth('superuser', 'password1')
+
+    expect(response.code).to eq 200
+
+    body = JSON.parse(response.body)
+
+    expect(body['requisition']['id']).to eq requisition_id
+    expect(body['requisition']['programCode']).to eq "ESS_MEDS"
+    expect(body['requisition']['agentCode']).to eq "F10"
+    expect(body['requisition']['emergency']).to be false
+    expect(body['requisition']['requisitionStatus']).to eq "AUTHORIZED"
+
+  end
+
   it "should sync MMIA requisition to server successfully and return expected response" do
-
-    # requisition = {
-    #   programCode: "MMIA",
-    #   agentCode: "F10",
-    #   products: [
-    #   {
-    #     productCode: "08S42",
-    #     beginningBalance: 1000,
-    #     quantityReceived: 2000,
-    #     quantityDispensed: 2500,
-    #     totalLossesAndAdjustments: 0,
-    #     quantityRequested: 1000,
-    #     reasonForRequestedQuantity: "justbecause"
-    #   }
-    #   ],
-    #   patientQuantification: [
-    #   {
-    #     category: "adult",
-    #     value: 100
-    #   },
-    #   {
-    #     category: "child",
-    #     value: 300
-    #   }
-    #   ],
-    #   regimens: [
-    #   {
-    #     code: "001",
-    #     name: "",
-    #     patientsOnTreatment: 200
-    #   },
-    #   {
-    #     code: "002",
-    #     name: "",
-    #     patientsOnTreatment: 200
-    #   },
-    #   {
-    #     code: "003",
-    #     name: "",
-    #     patientsOnTreatment: 200
-    #   }
-    #   ]
-    # }
-
     requisition =
     {
       agentCode: "F10",
