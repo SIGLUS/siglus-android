@@ -166,9 +166,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
     }
 
     private boolean hasDataChanged() {
-        if (hasDataChanged == null) {
-            hasDataChanged = regimeListView.hasDataChanged() || mmiaInfoListView.hasDataChanged() || commentHasChanged;
-        }
+        hasDataChanged = regimeListView.hasDataChanged() || mmiaInfoListView.hasDataChanged() || commentHasChanged;
         return hasDataChanged;
     }
 
