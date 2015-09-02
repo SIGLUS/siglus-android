@@ -165,6 +165,8 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     }
 
     private void initUI() {
+        etConsultationNumbers.addTextChangedListener(textWatcher);
+
         initRequisitionBodyList();
         initRequisitionProductList();
 
@@ -294,9 +296,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     }
 
     private boolean hasDataChanged() {
-        if (hasDataChanged == null) {
-            hasDataChanged = requisitionFormAdapter.hasDataChanged() || consultationNumbersHasChanged;
-        }
+        hasDataChanged = requisitionFormAdapter.hasDataChanged() || consultationNumbersHasChanged;
         return hasDataChanged;
     }
 
