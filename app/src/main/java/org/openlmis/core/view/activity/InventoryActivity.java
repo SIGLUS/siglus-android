@@ -32,13 +32,24 @@ import org.openlmis.core.R;
 import org.openlmis.core.common.Constants;
 import org.openlmis.core.presenter.InventoryPresenter;
 import org.openlmis.core.presenter.Presenter;
+import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.adapter.FilterableAdapter;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
+import org.openlmis.core.view.adapter.PhysicalInventoryAdapater;
+import org.openlmis.core.view.viewmodel.StockCardViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
+import rx.Subscriber;
 
 
 @ContentView(R.layout.activity_inventory)
 public class InventoryActivity extends BaseActivity implements InventoryPresenter.InventoryView{
+
+    public static final String PARAM_IS_PHYSICAL_INVENTORY = "isInitialInventory";
 
     @InjectView(R.id.products_list)
     public RecyclerView productListRecycleView;
@@ -51,25 +62,62 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     InventoryPresenter presenter;
 
     LinearLayoutManager mLayoutManager;
-    public InventoryListAdapter mAdapter;
+    FilterableAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initUI();
-    }
 
-    private void initUI() {
         mLayoutManager = new LinearLayoutManager(this);
         productListRecycleView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new InventoryListAdapter(this, presenter.loadMasterProductList());
-        productListRecycleView.setAdapter(mAdapter);
+        if (getIntent().getBooleanExtra(PARAM_IS_PHYSICAL_INVENTORY, false)){
+            initPhysicalInventoryUI();
+        } else {
+            initInitialInventoryUI();
+        }
+    }
+
+    private void initPhysicalInventoryUI() {
+        final List<StockCardViewModel> list = new ArrayList<>();
+        mAdapter = new PhysicalInventoryAdapater(this, list);
+        productListRecycleView.setAdapter((PhysicalInventoryAdapater)mAdapter);
+
+        setTitle(getResources().getString(R.string.title_physical_inventory));
+
+        presenter.loadStockCardList().subscribe(new Subscriber<List<StockCardViewModel>>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                ToastUtil.show(e.getMessage());
+            }
+
+            @Override
+            public void onNext(List<StockCardViewModel> stockCardViewModels) {
+                list.addAll(stockCardViewModels);
+                ((PhysicalInventoryAdapater) mAdapter).notifyDataSetChanged();
+            }
+        });
 
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.submitInventory(mAdapter.getInventoryList());
+            }
+        });
+    }
+
+
+    private void initInitialInventoryUI() {
+        mAdapter = new InventoryListAdapter(this, presenter.loadMasterProductList());
+        productListRecycleView.setAdapter((InventoryListAdapter)mAdapter);
+
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.submitInventory(((InventoryListAdapter)mAdapter).getInventoryList());
             }
         });
 
@@ -103,7 +151,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
 
     @Override
     public boolean validateInventory() {
-        int position = mAdapter.validateItems();
+        int position = mAdapter.validateAll();
         if (position >= 0){
             productListRecycleView.scrollToPosition(position);
             return false;

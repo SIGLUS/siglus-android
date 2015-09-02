@@ -177,7 +177,8 @@ public class InventoryListAdapter extends RecyclerView.Adapter<InventoryListAdap
         this.notifyDataSetChanged();
     }
 
-    public int validateItems() {
+    @Override
+    public int validateAll() {
         int position = -1;
         for (int i = 0; i < currentList.size(); i++) {
             InventoryViewModel model = currentList.get(i);

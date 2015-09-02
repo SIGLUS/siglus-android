@@ -35,7 +35,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.adapter.FilterableAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +43,7 @@ import java.util.List;
 
 import lombok.Getter;
 
-public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements FilterableAdapter {
+public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
     private final Presenter presenter;
     private final Fragment fragment;
@@ -173,7 +172,6 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
         }
     }
 
-    @Override
     public void filter(String query) {
         if (StringUtils.isEmpty(query)) {
             this.currentStockCards = new ArrayList<>(stockCards);

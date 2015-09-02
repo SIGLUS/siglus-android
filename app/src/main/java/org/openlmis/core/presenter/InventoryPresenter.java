@@ -28,9 +28,17 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.View;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class InventoryPresenter implements Presenter {
 
@@ -67,6 +75,27 @@ public class InventoryPresenter implements Presenter {
 
         return list;
     }
+
+    public Observable<List<StockCardViewModel>> loadStockCardList(){
+        return Observable.create(new Observable.OnSubscribe<List<StockCardViewModel>>() {
+            @Override
+            public void call(Subscriber<? super List<StockCardViewModel>> subscriber) {
+                List<StockCard> list;
+                try{
+                    list = stockRepository.list();
+                    subscriber.onNext(FluentIterable.from(list).transform(new Function<StockCard, StockCardViewModel>() {
+                        @Override
+                        public StockCardViewModel apply(StockCard stockCard) {
+                            return new StockCardViewModel(stockCard);
+                        }
+                    }).toList());
+                }catch (LMISException e){
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+    }
+
 
     public void initStockCard(List<InventoryViewModel> list) {
         List<StockCard> stockCards = new ArrayList<>();

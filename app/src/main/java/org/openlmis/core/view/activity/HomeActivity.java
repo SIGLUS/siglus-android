@@ -30,7 +30,6 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.View;
 
 import java.util.Date;
@@ -77,7 +76,9 @@ public class HomeActivity extends BaseActivity{
         btnInventory.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View v) {
-                ToastUtil.show("Jump to Inventory...");
+                startActivity(getIntent()
+                        .setClass(HomeActivity.this, InventoryActivity.class)
+                        .putExtra(InventoryActivity.PARAM_IS_PHYSICAL_INVENTORY, true));
             }
         });
 

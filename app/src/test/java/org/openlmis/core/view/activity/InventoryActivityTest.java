@@ -31,6 +31,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.view.adapter.InventoryListAdapter;
 import org.robolectric.Robolectric;
 
 import java.util.ArrayList;
@@ -78,9 +79,9 @@ public class InventoryActivityTest {
     @Test
     public void shouldCheckQuantityNotEmpty(){
 
-        inventoryActivity.mAdapter.getInventoryList().get(0).setChecked(true);
+        ((InventoryListAdapter)inventoryActivity.mAdapter).getInventoryList().get(0).setChecked(true);
         inventoryActivity.btnDone.performClick();
-        assertThat(inventoryActivity.mAdapter.getInventoryList().get(0).isValid(), is(false));
+        assertThat(((InventoryListAdapter)inventoryActivity.mAdapter).getInventoryList().get(0).isValid(), is(false));
     }
 
     static class InventoryActivityMock extends InventoryActivity {
