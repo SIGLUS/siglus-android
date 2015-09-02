@@ -6,6 +6,7 @@ import android.widget.TextView;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
@@ -19,7 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 @RunWith(LMISTestRunner.class)
-public class MMIARnrFormTest {
+public class MMIARnrFormTest  extends LMISRepositoryUnitTest {
 
     private MMIARnrForm mmiaRnrForm;
 

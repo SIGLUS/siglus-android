@@ -53,35 +53,6 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldSetMMIAProductMedicineTypeAndSortCorrectly() throws Exception {
-        ArrayList<Product> list = new ArrayList<>();
-
-        list.add(getProduct(1L, "product", "08S17", Product.MEDICINE_TYPE_OTHER));
-        list.add(getProduct(2L, "product2", "08S32B", Product.MEDICINE_TYPE_BABY));
-        list.add(getProduct(3L, "product3", "08S39Z", Product.MEDICINE_TYPE_ADULT));
-
-        Program program = new Program();
-        program.setProducts(list);
-        program.setProgramCode(MMIARepository.MMIA_PROGRAM_CODE);
-
-        programRepository.saveProgramWithProduct(program);
-
-
-        ArrayList<Product> products = new ArrayList(program.getProducts());
-        assertThat(products.get(0).getMedicine_type(), is(Product.MEDICINE_TYPE_ADULT));
-        assertThat(products.get(2).getMedicine_type(), is(Product.MEDICINE_TYPE_OTHER));
-    }
-
-    private Product getProduct(long id, String primaryName, String code, String medicineType) {
-        Product product = new Product();
-        product.setId(id);
-        product.setPrimaryName(primaryName);
-        product.setCode(code);
-        product.setMedicine_type(medicineType);
-        return product;
-    }
-
-    @Test
     public void shouldSaveProgramWithProductsSuccessful1() throws LMISException {
         Program program = new Program();
 

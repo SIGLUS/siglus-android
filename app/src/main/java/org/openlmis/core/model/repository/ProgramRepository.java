@@ -20,12 +20,10 @@
 package org.openlmis.core.model.repository;
 
 import android.content.Context;
-import android.content.res.Resources;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
@@ -34,9 +32,6 @@ import org.openlmis.core.persistence.GenericDao;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 public class ProgramRepository {
@@ -48,12 +43,6 @@ public class ProgramRepository {
 
     @Inject
     DbUtil dbUtil;
-
-    @Inject
-    Resources resources;
-
-    private HashMap<String, List<String>> rnrFormItemConfigList = new HashMap<>();
-    private final ArrayList<Product> sortedMMIAProducts = new ArrayList<>();
 
     @Inject
     public ProgramRepository(Context context) {
@@ -69,45 +58,12 @@ public class ProgramRepository {
     }
 
     public void saveProgramWithProduct(Program program) throws LMISException {
-        if (MMIARepository.MMIA_PROGRAM_CODE.equals(program.getProgramCode())) {
-            setMMIAProductMedicineTypeAndSort(program);
-        }
         create(program);
         for (Product product : program.getProducts()) {
             product.setProgram(program);
         }
         productRepository.save(new ArrayList<>(program.getProducts()));
         refresh(program);
-    }
-
-    private void setMMIAProductMedicineTypeAndSort(Program program) {
-        initRnrFormItemConfigList();
-        Collection<Product> products = program.getProducts();
-
-        setMedicineType(products, Product.MEDICINE_TYPE_ADULT);
-        setMedicineType(products, Product.MEDICINE_TYPE_BABY);
-        setMedicineType(products, Product.MEDICINE_TYPE_OTHER);
-
-        program.setProducts(sortedMMIAProducts);
-    }
-
-    private void setMedicineType(Collection<Product> products, String medicineType) {
-        List<String> fnms = rnrFormItemConfigList.get(medicineType);
-        for (String fnm : fnms) {
-            for (Product product : products) {
-                if (fnm.equals(product.getCode())) {
-                    product.setMedicine_type(medicineType);
-                    sortedMMIAProducts.add(product);
-                }
-            }
-        }
-    }
-
-
-    public void initRnrFormItemConfigList() {
-        rnrFormItemConfigList.put(Product.MEDICINE_TYPE_ADULT, Arrays.asList(resources.getStringArray(R.array.medicine_adult)));
-        rnrFormItemConfigList.put(Product.MEDICINE_TYPE_BABY, Arrays.asList(resources.getStringArray(R.array.medicine_baby)));
-        rnrFormItemConfigList.put(Product.MEDICINE_TYPE_OTHER, Arrays.asList(resources.getStringArray(R.array.medicine_other)));
     }
 
     public void refresh(Program programsWithProducts) {
