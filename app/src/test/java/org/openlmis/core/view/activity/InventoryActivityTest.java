@@ -45,7 +45,7 @@ import static org.mockito.Mockito.when;
 @RunWith(LMISTestRunner.class)
 public class InventoryActivityTest {
 
-    private CreateStockCardActivity inventoryActivity;
+    private InventoryActivity inventoryActivity;
     private ProductRepository productRepository;
 
     @Before
@@ -83,7 +83,7 @@ public class InventoryActivityTest {
         assertThat(inventoryActivity.mAdapter.getInventoryList().get(0).isValid(), is(false));
     }
 
-    static class InventoryActivityMock extends CreateStockCardActivity {
+    static class InventoryActivityMock extends InventoryActivity {
         @Override
         public boolean onCreateOptionsMenu(Menu menu) {
             return false;
