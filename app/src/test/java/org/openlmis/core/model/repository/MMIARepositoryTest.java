@@ -71,6 +71,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         productRepository = RoboGuice.getInjector(Robolectric.application).getInstance(ProductRepository.class);
 
         product = new Product();
+        product.setId(1L);
         product.setPrimaryName("Test Product");
         product.setStrength("200");
 
