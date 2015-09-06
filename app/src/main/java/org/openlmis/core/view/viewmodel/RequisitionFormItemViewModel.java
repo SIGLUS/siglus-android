@@ -51,9 +51,6 @@ public class RequisitionFormItemViewModel {
         Long different = inventory - theoretical;
         different = different > 0 ? different : 0;
 
-        Long totalRequest = issued * 2 - inventory;
-        totalRequest = totalRequest > 0 ? totalRequest : 0;
-
         this.initAmount = String.valueOf(item.getInitialAmount());
         this.received = String.valueOf(received);
         this.issued = String.valueOf(issued);
@@ -61,7 +58,7 @@ public class RequisitionFormItemViewModel {
         this.total = "-";
         this.inventory = String.valueOf(inventory);
         this.different = String.valueOf(different);
-        this.totalRequest = String.valueOf(totalRequest);
+        this.totalRequest = String.valueOf(item.getCalculatedOrderQuantity());
         this.requestAmount = (null == item.getRequestAmount()) ? this.totalRequest : String.valueOf(item.getRequestAmount());
         this.approvedAmount = (null == item.getApprovedAmount()) ? this.totalRequest : String.valueOf(item.getApprovedAmount());
     }

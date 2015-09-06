@@ -228,8 +228,14 @@ public class RnrFormRepository {
                 productItem.setIssued(totalIssued);
                 productItem.setAdjustment(totalAdjustment);
                 productItem.setForm(form);
-                productItem.setInventory(stockMovementItems.get(stockMovementItems.size() - 1).getStockOnHand());
+
+                Long inventory = stockMovementItems.get(stockMovementItems.size() - 1).getStockOnHand();
+                productItem.setInventory(inventory);
                 productItem.setValidate(stockCard.getEarliestExpireDate());
+
+                Long totalRequest = totalIssued * 2 - inventory;
+                totalRequest = totalRequest > 0 ? totalRequest : 0;
+                productItem.setCalculatedOrderQuantity(totalRequest);
 
             } else {
                 productItem.setProduct(stockCard.getProduct());
@@ -239,6 +245,7 @@ public class RnrFormRepository {
                 productItem.setForm(form);
                 productItem.setInventory(stockCard.getStockOnHand());
                 productItem.setValidate(stockCard.getEarliestExpireDate());
+                productItem.setCalculatedOrderQuantity(new Long(0L));
             }
             productItems.add(productItem);
         }

@@ -31,6 +31,8 @@ import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.repository.MMIARepository;
+import org.openlmis.core.model.repository.VIARepository;
 
 import java.lang.reflect.Type;
 
@@ -38,18 +40,19 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
     @Override
     public JsonElement serialize(RnRForm rnRForm, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject root = new JsonObject();
+        String programCode = rnRForm.getProgram().getProgramCode();
         root.addProperty("agentCode", UserInfoMgr.getInstance().getUser().getFacilityCode());
         try {
-            root.addProperty("programCode", rnRForm.getProgram().getProgramCode());
+            root.addProperty("programCode", programCode);
         }catch (NullPointerException e){
             Log.e(RnrFormAdapter.class.getSimpleName(), "No Program associated !");
         }
 
         if (rnRForm.getRnrFormItemList() != null){
-            root.add("products", serializeProductItems(rnRForm.getRnrFormItemList()));
+            root.add("products", serializeProductItems(rnRForm.getRnrFormItemList(), programCode));
         }
 
-        if (rnRForm.getRegimenItemList() != null){
+        if (rnRForm.getRegimenItemList() != null && programCode.equals(MMIARepository.MMIA_PROGRAM_CODE)){
             root.add("regimens", serializeRegimens(rnRForm.getRegimenItemList()));
         }
 
@@ -60,7 +63,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
         return root;
     }
 
-    private JsonArray serializeProductItems(Iterable<RnrFormItem> productItems){
+    private JsonArray serializeProductItems(Iterable<RnrFormItem> productItems, String programCode){
         JsonArray products = new JsonArray();
         for (RnrFormItem item : productItems){
             JsonObject product = new JsonObject();
@@ -71,10 +74,10 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
             product.addProperty("stockInHand", item.getInventory());
             product.addProperty("quantityRequested", 0);
             product.addProperty("reasonForRequestedQuantity", "reason");
-            if (item.getCalculatedOrderQuantity() != null) {
+            if (programCode.equals(VIARepository.VIA_PROGRAM_CODE)) {
                 product.addProperty("calculatedOrderQuantity", item.getCalculatedOrderQuantity());
             }
-            if (item.getAdjustment() != null) {
+            if (programCode.equals(MMIARepository.MMIA_PROGRAM_CODE)) {
                 product.addProperty("totalLossesAndAdjustments", item.getAdjustment());
             }
             products.add(product);
