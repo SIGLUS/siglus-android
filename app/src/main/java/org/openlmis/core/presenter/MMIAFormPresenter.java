@@ -85,7 +85,7 @@ public class MMIAFormPresenter implements Presenter {
 
     private RnRForm initMIMIA() {
         try {
-            form = mmiaRepository.initMMIA();
+            form = mmiaRepository.initMIMIA();
         } catch (LMISException e) {
             view.showErrorMessage(e.getMessage());
         }

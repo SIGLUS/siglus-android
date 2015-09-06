@@ -35,22 +35,20 @@ public class RnrFormItem extends BaseModel{
     private RnRForm form;
 
     @DatabaseField
-    private Long initialAmount;
+    private long initialAmount;
     @DatabaseField
-    private Long received;
+    private long received;
     @DatabaseField
-    private Long issued;
+    private long issued;
     @DatabaseField
-    private Long adjustment;
+    private long adjustment;
     @DatabaseField
-    private Long inventory;
+    private long inventory;
     @DatabaseField
     private String validate;
     @DatabaseField
     private Long requestAmount;
     @DatabaseField
     private Long approvedAmount;
-    @DatabaseField
-    private Long calculatedOrderQuantity;
 
 }

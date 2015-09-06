@@ -239,9 +239,9 @@ public class RnrFormRepository {
 
             } else {
                 productItem.setProduct(stockCard.getProduct());
-                productItem.setReceived(new Long(0L));
-                productItem.setIssued(new Long(0L));
-                productItem.setAdjustment(new Long(0L));
+                productItem.setReceived(0);
+                productItem.setIssued(0);
+                productItem.setAdjustment(0);
                 productItem.setForm(form);
                 productItem.setInventory(stockCard.getStockOnHand());
                 productItem.setValidate(stockCard.getEarliestExpireDate());

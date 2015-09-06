@@ -30,12 +30,6 @@ describe "submit requisition to web server" do
         quantityRequested: 0,
         reasonForRequestedQuantity: "reason"
       }
-      ] ,
-      patientQuantifications: [
-      {
-        category: "consultation",
-        total: 100
-      }
       ]
     }
 
@@ -190,31 +184,31 @@ describe "submit requisition to web server" do
       patientQuantifications: [
       {
         category: "New Patients",
-        total: 1
+        total: "1"
       },
       {
         category: "Sustaining",
-        total: 1
+        total: "1"
       },
       {
         category: "Alteration",
-        total: 1
+        total: "1"
       },
       {
         category: "PTV",
-        total: 1
+        total: "1"
       },
       {
         category: "PPE",
-        total: 26
+        total: "26"
       },
       {
         category: "Total Month Dispense",
-        total: 1
+        total: "1"
       },
       {
         category: "Total Patients",
-        total: 30
+        total: "30"
       }
       ]
     }

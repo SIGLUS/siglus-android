@@ -91,10 +91,8 @@ public class RequisitionPresenterTest {
         product.setProgram(program);
         product.setId(1);
         RnrFormItem rnrFormItem = new RnrFormItem();
-        rnrFormItem.setInitialAmount(new Long(0));
-        rnrFormItem.setInventory(new Long(1000));
-        rnrFormItem.setReceived(new Long(0));
-        rnrFormItem.setIssued(new Long(i));
+        rnrFormItem.setInventory(1000);
+        rnrFormItem.setIssued(i);
         rnrFormItem.setProduct(product);
         return rnrFormItem;
     }
