@@ -205,9 +205,9 @@ public class RnrFormRepository {
                 if (firstItem.getMovementType() == StockMovementItem.MovementType.ISSUE
                         || firstItem.getMovementType() == StockMovementItem.MovementType.NEGATIVE_ADJUST){
 
-                    productItem.setInitialAmount(firstItem.getStockOnHand() + firstItem.getAmount());
+                    productItem.setInitialAmount(firstItem.getStockOnHand() + firstItem.getMovementQuantity());
                 } else {
-                    productItem.setInitialAmount(firstItem.getStockOnHand() - firstItem.getAmount());
+                    productItem.setInitialAmount(firstItem.getStockOnHand() - firstItem.getMovementQuantity());
                 }
 
                 long totalReceived = 0;
@@ -216,11 +216,11 @@ public class RnrFormRepository {
 
                 for (StockMovementItem item : stockMovementItems) {
                     if (StockMovementItem.MovementType.RECEIVE == item.getMovementType()) {
-                        totalReceived += item.getAmount();
+                        totalReceived += item.getMovementQuantity();
                     } else if (StockMovementItem.MovementType.ISSUE == item.getMovementType()) {
-                        totalIssued += item.getAmount();
+                        totalIssued += item.getMovementQuantity();
                     } else {
-                        totalAdjustment += item.getAmount();
+                        totalAdjustment += item.getMovementQuantity();
                     }
                 }
                 productItem.setProduct(stockCard.getProduct());

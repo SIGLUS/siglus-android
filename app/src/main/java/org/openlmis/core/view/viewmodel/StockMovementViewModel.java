@@ -49,16 +49,16 @@ public class StockMovementViewModel {
 
         switch (item.getMovementType()) {
             case RECEIVE:
-                received = String.valueOf(item.getAmount());
+                received = String.valueOf(item.getMovementQuantity());
                 break;
             case ISSUE:
-                issued = String.valueOf(item.getAmount());
+                issued = String.valueOf(item.getMovementQuantity());
                 break;
             case NEGATIVE_ADJUST:
-                negativeAdjustment = String.valueOf(item.getAmount());
+                negativeAdjustment = String.valueOf(item.getMovementQuantity());
                 break;
             case POSITIVE_ADJUST:
-                positiveAdjustment = String.valueOf(item.getAmount());
+                positiveAdjustment = String.valueOf(item.getMovementQuantity());
                 break;
             default:
         }
@@ -72,16 +72,16 @@ public class StockMovementViewModel {
         stockMovementItem.setDocumentNumber(getDocumentNo());
         if (getIssued() != null) {
             stockMovementItem.setMovementType(StockMovementItem.MovementType.ISSUE);
-            stockMovementItem.setAmount(Long.parseLong(getIssued()));
+            stockMovementItem.setMovementQuantity(Long.parseLong(getIssued()));
         } else if (getPositiveAdjustment() != null) {
             stockMovementItem.setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
-            stockMovementItem.setAmount(Long.parseLong(getPositiveAdjustment()));
+            stockMovementItem.setMovementQuantity(Long.parseLong(getPositiveAdjustment()));
         } else if (getNegativeAdjustment() != null) {
             stockMovementItem.setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
-            stockMovementItem.setAmount(Long.parseLong(getNegativeAdjustment()));
+            stockMovementItem.setMovementQuantity(Long.parseLong(getNegativeAdjustment()));
         } else {
             stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
-            stockMovementItem.setAmount(Long.parseLong(getReceived()));
+            stockMovementItem.setMovementQuantity(Long.parseLong(getReceived()));
         }
 
         try {

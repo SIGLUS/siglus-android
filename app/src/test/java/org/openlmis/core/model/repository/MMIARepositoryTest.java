@@ -92,7 +92,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         for (int i = 0; i < 10; i++) {
             StockMovementItem stockMovementItem = new StockMovementItem();
             stockMovementItem.setStockOnHand(100);
-            stockMovementItem.setAmount(i);
+            stockMovementItem.setMovementQuantity(i);
             stockMovementItem.setStockCard(stockCard);
             if (i % 2 == 0) {
                 stockMovementItem.setMovementType(StockMovementItem.MovementType.ISSUE);

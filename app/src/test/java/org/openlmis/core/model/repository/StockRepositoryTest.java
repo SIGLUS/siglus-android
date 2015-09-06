@@ -67,7 +67,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockCard = new StockCard();
 
         stockMovementItem.setStockCard(stockCard);
-        stockMovementItem.setAmount(10L);
+        stockMovementItem.setMovementQuantity(10L);
         stockMovementItem.setStockOnHand(100L);
         stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
         stockMovementItem.setDocumentNumber("XXX123456");
@@ -114,12 +114,11 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldGetCorrectDataAfterSavedStockMovementItem() throws Exception {
-
         List<StockMovementItem> stockMovementItems = stockRepository.listLastFive(stockCard.getId());
         StockMovementItem stockMovementItemActual = stockMovementItems.get(stockMovementItems.size() - 1);
 
         assertEquals(stockMovementItem.getId(), stockMovementItemActual.getId());
-        assertEquals(stockMovementItem.getAmount(), stockMovementItemActual.getAmount());
+        assertEquals(stockMovementItem.getMovementQuantity(), stockMovementItemActual.getMovementQuantity());
         assertEquals(stockMovementItem.getStockOnHand(), stockMovementItemActual.getStockOnHand());
         assertEquals(stockMovementItem.getMovementType(), stockMovementItemActual.getMovementType());
         assertEquals(stockMovementItem.getDocumentNumber(), stockMovementItemActual.getDocumentNumber());
@@ -131,7 +130,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     public void shouldCalculateStockOnHandCorrectly() throws LMISException{
         stockCard.setStockOnHand(100L);
         stockMovementItem.setStockOnHand(-1);
-        stockMovementItem.setAmount(50L);
+        stockMovementItem.setMovementQuantity(50L);
         stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
 
         stockRepository.addStockMovementItem(stockCard, stockMovementItem);

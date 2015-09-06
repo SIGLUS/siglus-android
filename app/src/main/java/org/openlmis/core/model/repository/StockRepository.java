@@ -109,9 +109,9 @@ public class StockRepository {
             long stockExistence = stockcard.getStockOnHand();
             if (stockMovementItem.getMovementType() == StockMovementItem.MovementType.ISSUE
                     || stockMovementItem.getMovementType() == StockMovementItem.MovementType.NEGATIVE_ADJUST){
-                stockExistence -= stockMovementItem.getAmount();
+                stockExistence -= stockMovementItem.getMovementQuantity();
             } else {
-                stockExistence += stockMovementItem.getAmount();
+                stockExistence += stockMovementItem.getMovementQuantity();
             }
             stockMovementItem.setStockOnHand(stockExistence);
         }

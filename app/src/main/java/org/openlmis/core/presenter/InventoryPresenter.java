@@ -127,7 +127,7 @@ public class InventoryPresenter implements Presenter {
 
         StockMovementItem item = new StockMovementItem();
         item.setMovementDate(new Date());
-        item.setAmount(Math.abs(inventory - stockOnHand));
+        item.setMovementQuantity(Math.abs(inventory - stockOnHand));
 
         if (inventory > stockOnHand) {
             item.setReason(context.getResources().getStringArray(R.array.movement_positive_items_array)[4]);

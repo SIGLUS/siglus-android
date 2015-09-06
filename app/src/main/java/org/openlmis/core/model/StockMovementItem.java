@@ -43,7 +43,7 @@ public class StockMovementItem extends BaseModel{
     String documentNumber;
 
     @DatabaseField
-    long amount;
+    long movementQuantity;
 
     @DatabaseField
     String reason;
