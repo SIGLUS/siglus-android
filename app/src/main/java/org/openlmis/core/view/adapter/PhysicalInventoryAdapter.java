@@ -34,13 +34,13 @@ import org.openlmis.core.view.widget.InputFilterMinMax;
 import java.util.List;
 
 
-public class PhysicalInventoryAdapater extends RecyclerView.Adapter<PhysicalInventoryAdapater.ViewHolder> implements FilterableAdapter {
+public class PhysicalInventoryAdapter extends RecyclerView.Adapter<PhysicalInventoryAdapter.ViewHolder> implements FilterableAdapter {
 
     LayoutInflater inflater;
     Context context;
     List<StockCardViewModel> data;
 
-    public PhysicalInventoryAdapater(Context context, List<StockCardViewModel> stockCardViewModelList){
+    public PhysicalInventoryAdapter(Context context, List<StockCardViewModel> stockCardViewModelList){
         this.context = context;
         this.data = stockCardViewModelList;
         inflater = LayoutInflater.from(context);

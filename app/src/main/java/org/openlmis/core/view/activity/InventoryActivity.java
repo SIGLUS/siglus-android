@@ -35,7 +35,7 @@ import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.FilterableAdapter;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
-import org.openlmis.core.view.adapter.PhysicalInventoryAdapater;
+import org.openlmis.core.view.adapter.PhysicalInventoryAdapter;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 
 import java.util.ArrayList;
@@ -80,8 +80,8 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
 
     private void initPhysicalInventoryUI() {
         final List<StockCardViewModel> list = new ArrayList<>();
-        mAdapter = new PhysicalInventoryAdapater(this, list);
-        productListRecycleView.setAdapter((PhysicalInventoryAdapater)mAdapter);
+        mAdapter = new PhysicalInventoryAdapter(this, list);
+        productListRecycleView.setAdapter((PhysicalInventoryAdapter)mAdapter);
 
         setTitle(getResources().getString(R.string.title_physical_inventory));
 
@@ -98,7 +98,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
             @Override
             public void onNext(List<StockCardViewModel> stockCardViewModels) {
                 list.addAll(stockCardViewModels);
-                ((PhysicalInventoryAdapater) mAdapter).notifyDataSetChanged();
+                ((PhysicalInventoryAdapter) mAdapter).notifyDataSetChanged();
             }
         });
 
