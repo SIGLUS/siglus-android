@@ -88,7 +88,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         StockMovementItem item = inventoryPresenter.calculateAdjustment(model);
 
         assertThat(item.getMovementType(), is(StockMovementItem.MovementType.POSITIVE_ADJUST));
-        assertThat(item.getAmount(), is(20L));
+        assertThat(item.getMovementQuantity(), is(20L));
     }
 
     @Test
@@ -99,7 +99,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         StockMovementItem item = inventoryPresenter.calculateAdjustment(model);
 
         assertThat(item.getMovementType(), is(StockMovementItem.MovementType.NEGATIVE_ADJUST));
-        assertThat(item.getAmount(), is(20L));
+        assertThat(item.getMovementQuantity(), is(20L));
     }
 
 
@@ -112,7 +112,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         StockMovementItem item = inventoryPresenter.calculateAdjustment(model);
 
         assertThat(item.getMovementType(), is(StockMovementItem.MovementType.PHYSICAL_INVENTORY));
-        assertThat(item.getAmount(), is(0L));
+        assertThat(item.getMovementQuantity(), is(0L));
     }
 
     public class MyTestModule extends AbstractModule {

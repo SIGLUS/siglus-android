@@ -50,5 +50,7 @@ public class RnrFormItem extends BaseModel{
     private Long requestAmount;
     @DatabaseField
     private Long approvedAmount;
+    @DatabaseField
+    private long calculatedOrderQuantity;
 
 }
