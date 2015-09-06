@@ -121,40 +121,37 @@ public class InventoryPresenter implements Presenter {
         stockRepository.batchSave(stockCards);
     }
 
+    public StockMovementItem calculateAdjustment(StockCardViewModel model) {
+        long inventory = Long.parseLong(model.getQuantity());
+        long stockOnHand = model.getStockOnHand();
 
-    public void makeAdjustment(List<StockCardViewModel> list){
+        StockMovementItem item = new StockMovementItem();
+        item.setMovementDate(new Date());
+        item.setAmount(Math.abs(inventory - stockOnHand));
 
-        for (StockCardViewModel model : list){
-
-            long inventory = Long.parseLong(model.getQuantity());
-            long stockOnHand = model.getStockOnHand();
-
-            StockMovementItem item = new StockMovementItem();
-            item.setMovementDate(new Date());
-            item.setAmount(Math.abs(inventory - stockOnHand));
-
-            if (inventory > stockOnHand) {
-                item.setReason(context.getResources().getStringArray(R.array.movement_positive_items_array)[4]);
-                item.setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
-            } else if (inventory < stockOnHand) {
-                item.setReason(context.getResources().getStringArray(R.array.movement_negative_items_array)[3]);
-                item.setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
-            } else {
-                item.setReason(context.getResources().getString(R.string.title_physical_inventory));
-                item.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
-            }
-
-            try {
-                stockRepository.addStockMovementItem(model.getStockCardId(), item);
-            } catch (LMISException e) {
-                e.printStackTrace();
-            }
+        if (inventory > stockOnHand) {
+            item.setReason(context.getResources().getStringArray(R.array.movement_positive_items_array)[4]);
+            item.setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
+        } else if (inventory < stockOnHand) {
+            item.setReason(context.getResources().getStringArray(R.array.movement_negative_items_array)[3]);
+            item.setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
+        } else {
+            item.setReason(context.getResources().getString(R.string.title_physical_inventory));
+            item.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
         }
+        return item;
     }
 
-    public void doPhysicalInventory(List<StockCardViewModel> list){
-        if (view.validateInventory()){
-            makeAdjustment(list);
+    public void doPhysicalInventory(List<StockCardViewModel> list) {
+        if (view.validateInventory()) {
+            for (StockCardViewModel model : list) {
+                StockMovementItem item = calculateAdjustment(model);
+                try {
+                    stockRepository.addStockMovementItem(model.getStockCardId(), item);
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                }
+            }
             view.goToMainPage();
         }
     }
