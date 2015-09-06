@@ -69,6 +69,16 @@ public class ProductRepository {
     }
 
 
+    public Product getById(long id){
+        try {
+            return genericDao.getById(String.valueOf(id));
+        }catch (LMISException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
     public List<Product> queryProducts(final long programId) throws LMISException {
         return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
             @Override

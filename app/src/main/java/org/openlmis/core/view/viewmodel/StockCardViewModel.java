@@ -28,6 +28,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -36,6 +37,9 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @Data
 public class StockCardViewModel {
+
+    long productId;
+
     String productName;
     String fnm;
     String strength;
@@ -43,7 +47,7 @@ public class StockCardViewModel {
 
     String quantity;
 
-    List<String> expiry_dates;
+    List<String> expiryDates;
 
     long stockCardId;
     long stockOnHand;
@@ -52,19 +56,32 @@ public class StockCardViewModel {
     SpannableStringBuilder styledUnit;
 
     boolean validate = true;
+    boolean checked;
 
     public StockCardViewModel(StockCard stockCard){
         this.productName = stockCard.getProduct().getPrimaryName();
         this.fnm = stockCard.getProduct().getCode();
         this.strength = stockCard.getProduct().getStrength();
         this.stockCardId = stockCard.getId();
+        this.productId = stockCard.getProduct().getId();
 
         Product product = stockCard.getProduct();
         formatProductDisplay(product);
 
-        this.expiry_dates = newArrayList(stockCard.getExpireDates().split(StockCard.DIVIDER));
+        this.expiryDates = newArrayList(stockCard.getExpireDates().split(StockCard.DIVIDER));
         this.stockOnHand = stockCard.getStockOnHand();
+        this.checked = true;
     }
+
+    public StockCardViewModel(Product product){
+        this.productName = product.getPrimaryName();
+        this.fnm = product.getCode();
+        this.strength = product.getStrength();
+        this.type = product.getType();
+        this.productId = product.getId();
+        this.checked = false;
+    }
+
 
     private void formatProductDisplay(Product product) {
         String productName = product.getPrimaryName() + " [" + product.getCode() + "]";
@@ -82,9 +99,38 @@ public class StockCardViewModel {
                 length, unit.length(), Spannable.SPAN_POINT_MARK);
     }
 
+    public String formatExpiryDateString(){
+        if (expiryDates ==null){
+            return StringUtils.EMPTY;
+        }
 
-    public boolean validate(){
-        validate = StringUtils.isNumeric(quantity);
+        String expiryDateString = StringUtils.EMPTY;
+        for (String date : expiryDates){
+            expiryDateString += date;
+        }
+
+        return expiryDateString;
+    }
+
+
+    public String optFirstExpiryDate(){
+        if (expiryDates !=null && expiryDates.size() >0){
+            return expiryDates.get(0);
+        }else {
+            return StringUtils.EMPTY;
+        }
+    }
+
+    public void addExpiryDate(String date){
+        if (expiryDates == null){
+            expiryDates = new ArrayList<>();
+        }
+        expiryDates.add(date);
+    }
+
+
+    public boolean validate() {
+        validate = !checked || StringUtils.isNumeric(quantity);
         return validate;
     }
 }

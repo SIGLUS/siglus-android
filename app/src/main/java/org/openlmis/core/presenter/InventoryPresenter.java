@@ -31,7 +31,6 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.View;
-import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -105,15 +104,17 @@ public class InventoryPresenter implements Presenter {
     }
 
 
-    public void initStockCard(List<InventoryViewModel> list) {
+    public void initStockCard(List<StockCardViewModel> list) {
         List<StockCard> stockCards = new ArrayList<>();
 
-        for (InventoryViewModel model : list) {
+        for (StockCardViewModel model : list) {
             if (model.isChecked()) {
+                Product product = productRepository.getById(model.getProductId());
+
                 StockCard stockCard = new StockCard();
-                stockCard.setProduct(model.getProduct());
+                stockCard.setProduct(product);
                 stockCard.setStockOnHand(Integer.parseInt(model.getQuantity()));
-                stockCard.setExpireDates(model.getExpireDate());
+                stockCard.setExpireDates(model.formatExpiryDateString());
 
                 stockCards.add(stockCard);
             }
@@ -156,7 +157,7 @@ public class InventoryPresenter implements Presenter {
         }
     }
 
-    public void submitInventory(List<InventoryViewModel> list) {
+    public void submitInventory(List<StockCardViewModel> list) {
         if (view.validateInventory()) {
             initStockCard(list);
             view.goToMainPage();

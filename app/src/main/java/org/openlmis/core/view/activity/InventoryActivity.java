@@ -33,7 +33,7 @@ import org.openlmis.core.common.Constants;
 import org.openlmis.core.presenter.InventoryPresenter;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.adapter.FilterableAdapter;
+import org.openlmis.core.view.adapter.InitialInventoryAdapter;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
 import org.openlmis.core.view.adapter.PhysicalInventoryAdapter;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
@@ -62,7 +62,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     InventoryPresenter presenter;
 
     LinearLayoutManager mLayoutManager;
-    FilterableAdapter mAdapter;
+    InventoryListAdapter mAdapter;
 
     boolean isPhysicalInventory = false;
 
@@ -84,7 +84,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     private void initPhysicalInventoryUI() {
         final List<StockCardViewModel> list = new ArrayList<>();
         mAdapter = new PhysicalInventoryAdapter(this, list);
-        productListRecycleView.setAdapter((PhysicalInventoryAdapter)mAdapter);
+        productListRecycleView.setAdapter(mAdapter);
 
         setTitle(getResources().getString(R.string.title_physical_inventory));
 
@@ -100,7 +100,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
 
             @Override
             public void onNext(List<StockCardViewModel> stockCardViewModels) {
-                ((PhysicalInventoryAdapter) mAdapter).refreshList(stockCardViewModels);
+                mAdapter.refreshList(stockCardViewModels);
             }
         });
 
@@ -114,13 +114,13 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
 
 
     private void initInitialInventoryUI() {
-        mAdapter = new InventoryListAdapter(this, presenter.loadMasterProductList());
-        productListRecycleView.setAdapter((InventoryListAdapter)mAdapter);
+        mAdapter = new InitialInventoryAdapter(this, presenter.loadMasterProductList());
+        productListRecycleView.setAdapter(mAdapter);
 
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.submitInventory(((InventoryListAdapter)mAdapter).getInventoryList());
+                presenter.submitInventory((mAdapter).getData());
             }
         });
 
