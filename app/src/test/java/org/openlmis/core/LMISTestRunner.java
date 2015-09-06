@@ -96,6 +96,12 @@ public class LMISTestRunner extends RobolectricTestRunner {
         public Application createApplication(Method method, AndroidManifest appManifest, Config config) {
             return new TestApplication();
         }
+
+        @Override
+        public void afterTest(Method method) {
+            super.afterTest(method);
+            LmisSqliteOpenHelper.getInstance(Robolectric.application).close();
+        }
     }
 
     public static class TestApplication extends LMISApp{
