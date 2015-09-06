@@ -32,21 +32,13 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
-import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.robolectric.Robolectric;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import roboguice.RoboGuice;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
 public class InventoryPresenterTest extends LMISRepositoryUnitTest {

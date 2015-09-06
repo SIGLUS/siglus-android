@@ -77,9 +77,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
             if (programCode.equals(VIARepository.VIA_PROGRAM_CODE)) {
                 product.addProperty("calculatedOrderQuantity", item.getCalculatedOrderQuantity());
             }
-            if (programCode.equals(MMIARepository.MMIA_PROGRAM_CODE)) {
-                product.addProperty("totalLossesAndAdjustments", item.getAdjustment());
-            }
+            product.addProperty("totalLossesAndAdjustments", item.getAdjustment());
             products.add(product);
         }
         return products;
