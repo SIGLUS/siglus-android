@@ -122,7 +122,7 @@ public class PresenterTest {
     @NonNull
     private RnrFormItem getRnrFormItem(long issued) {
         RnrFormItem rnrFormItem = new RnrFormItem();
-        rnrFormItem.setInventory(10);
+        rnrFormItem.setInventory(new Long(10));
         rnrFormItem.setIssued(issued);
         return rnrFormItem;
     }

@@ -71,24 +71,24 @@ public class CreateDummyRnrForm implements Migration {
     private List createRnrFormItem(Product product) {
         final List<RnrFormItem> list = new ArrayList();
         RnrFormItem rnrFormItem1 = new RnrFormItem();
-        rnrFormItem1.setInventory(1000);
-        rnrFormItem1.setIssued(1000);
+        rnrFormItem1.setInventory(new Long(1000));
+        rnrFormItem1.setIssued(new Long(1000));
         rnrFormItem1.setProduct(product);
         RnrFormItem rnrFormItem2 = new RnrFormItem();
-        rnrFormItem2.setInventory(2000);
-        rnrFormItem2.setIssued(2000);
+        rnrFormItem2.setInventory(new Long(2000));
+        rnrFormItem2.setIssued(new Long(2000));
         rnrFormItem2.setProduct(product);
         RnrFormItem rnrFormItem3 = new RnrFormItem();
-        rnrFormItem3.setInventory(0);
-        rnrFormItem3.setIssued(3000);
+        rnrFormItem3.setInventory(new Long(0));
+        rnrFormItem3.setIssued(new Long(3000));
         rnrFormItem3.setProduct(product);
         RnrFormItem rnrFormItem4 = new RnrFormItem();
-        rnrFormItem4.setInventory(4000);
-        rnrFormItem4.setIssued(4000);
+        rnrFormItem4.setInventory(new Long(4000));
+        rnrFormItem4.setIssued(new Long(4000));
         rnrFormItem4.setProduct(product);
         RnrFormItem rnrFormItem5 = new RnrFormItem();
-        rnrFormItem5.setInventory(5000);
-        rnrFormItem5.setIssued(5000);
+        rnrFormItem5.setInventory(new Long(5000));
+        rnrFormItem5.setIssued(new Long(5000));
         rnrFormItem5.setProduct(product);
 
         list.add(rnrFormItem1);

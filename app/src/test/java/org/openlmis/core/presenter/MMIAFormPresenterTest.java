@@ -27,13 +27,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
-import org.openlmis.core.model.repository.ProgramRepository;
-import org.openlmis.core.model.repository.RnrFormRepository;
-import org.openlmis.core.model.repository.UserRepository;
-import org.openlmis.core.service.SyncManager;
 import org.robolectric.Robolectric;
 
 import java.sql.SQLException;
@@ -43,7 +38,6 @@ import roboguice.RoboGuice;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -70,7 +64,7 @@ public class MMIAFormPresenterTest {
         when(mmiaRepository.getDraftMMIAForm()).thenReturn(null);
         presenter.getRnrForm();
         verify(mmiaRepository).getDraftMMIAForm();
-        verify(mmiaRepository).initMIMIA();
+        verify(mmiaRepository).initMMIA();
     }
 
     @Test
@@ -78,7 +72,7 @@ public class MMIAFormPresenterTest {
         when(mmiaRepository.getDraftMMIAForm()).thenReturn(new RnRForm());
         presenter.getRnrForm();
         verify(mmiaRepository).getDraftMMIAForm();
-        verify(mmiaRepository, never()).initMIMIA();
+        verify(mmiaRepository, never()).initMMIA();
     }
 
     public class MyTestModule extends AbstractModule {

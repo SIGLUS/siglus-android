@@ -53,7 +53,7 @@ public class MMIARepository extends RnrFormRepository {
         super(context);
     }
 
-    public RnRForm initMIMIA() throws LMISException {
+    public RnRForm initMMIA() throws LMISException {
         return initRnrForm(programRepository.queryByCode(MMIA_PROGRAM_CODE));
     }
 

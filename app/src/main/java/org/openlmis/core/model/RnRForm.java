@@ -36,7 +36,6 @@ public class RnRForm extends BaseModel {
 
     public enum STATUS {
         DRAFT,
-        SUBMITED,
         AUTHORIZED
     }
 

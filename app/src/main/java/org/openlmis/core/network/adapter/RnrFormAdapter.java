@@ -68,11 +68,15 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
             product.addProperty("beginningBalance", item.getInitialAmount());
             product.addProperty("quantityReceived", item.getReceived());
             product.addProperty("quantityDispensed", item.getIssued());
-            product.addProperty("totalLossesAndAdjustments", item.getAdjustment());
             product.addProperty("stockInHand", item.getInventory());
             product.addProperty("quantityRequested", 0);
             product.addProperty("reasonForRequestedQuantity", "reason");
-
+            if (item.getCalculatedOrderQuantity() != null) {
+                product.addProperty("calculatedOrderQuantity", item.getCalculatedOrderQuantity());
+            }
+            if (item.getAdjustment() != null) {
+                product.addProperty("totalLossesAndAdjustments", item.getAdjustment());
+            }
             products.add(product);
         }
         return products;
