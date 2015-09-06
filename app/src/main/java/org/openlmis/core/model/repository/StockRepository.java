@@ -101,10 +101,30 @@ public class StockRepository {
     }
 
     public void addStockMovementItem(StockCard stockcard,  StockMovementItem stockMovementItem) throws LMISException{
+        if (stockcard == null){
+            return;
+        }
+
+        if (stockMovementItem.getStockOnHand() == -1){
+            long stockExistence = stockcard.getStockOnHand();
+            if (stockMovementItem.getMovementType() == StockMovementItem.MovementType.ISSUE
+                    || stockMovementItem.getMovementType() == StockMovementItem.MovementType.NEGATIVE_ADJUST){
+                stockExistence -= stockMovementItem.getAmount();
+            } else {
+                stockExistence += stockMovementItem.getAmount();
+            }
+            stockMovementItem.setStockOnHand(stockExistence);
+        }
+
         stockcard.setStockOnHand(stockMovementItem.getStockOnHand());
         update(stockcard);
         stockMovementItem.setStockCard(stockcard);
         saveStockItem(stockMovementItem);
+    }
+
+    public void addStockMovementItem(long id, StockMovementItem stockMovementItem) throws LMISException{
+        StockCard stockCard = genericDao.getById(String.valueOf(id));
+        addStockMovementItem(stockCard, stockMovementItem);
     }
 
 

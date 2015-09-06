@@ -19,11 +19,15 @@
 
 package org.openlmis.core.presenter;
 
+import android.content.Context;
+
 import com.google.inject.Inject;
 
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.View;
@@ -33,6 +37,7 @@ import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import rx.Observable;
@@ -49,6 +54,9 @@ public class InventoryPresenter implements Presenter {
     StockRepository stockRepository;
 
     InventoryView view;
+
+    @Inject
+    Context context;
 
     @Override
     public void onStart() {
@@ -111,6 +119,44 @@ public class InventoryPresenter implements Presenter {
             }
         }
         stockRepository.batchSave(stockCards);
+    }
+
+
+    public void makeAdjustment(List<StockCardViewModel> list){
+
+        for (StockCardViewModel model : list){
+
+            long inventory = Long.parseLong(model.getQuantity());
+            long stockOnHand = model.getStockOnHand();
+
+            StockMovementItem item = new StockMovementItem();
+            item.setMovementDate(new Date());
+            item.setAmount(Math.abs(inventory - stockOnHand));
+
+            if (inventory > stockOnHand) {
+                item.setReason(context.getResources().getStringArray(R.array.movement_positive_items_array)[4]);
+                item.setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
+            } else if (inventory < stockOnHand) {
+                item.setReason(context.getResources().getStringArray(R.array.movement_negative_items_array)[3]);
+                item.setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
+            } else {
+                item.setReason(context.getResources().getString(R.string.title_physical_inventory));
+                item.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
+            }
+
+            try {
+                stockRepository.addStockMovementItem(model.getStockCardId(), item);
+            } catch (LMISException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void doPhysicalInventory(List<StockCardViewModel> list){
+        if (view.validateInventory()){
+            makeAdjustment(list);
+            view.goToMainPage();
+        }
     }
 
     public void submitInventory(List<InventoryViewModel> list) {

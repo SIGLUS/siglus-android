@@ -35,7 +35,8 @@ public class StockMovementItem extends BaseModel{
         RECEIVE,
         ISSUE,
         POSITIVE_ADJUST,
-        NEGATIVE_ADJUST
+        NEGATIVE_ADJUST,
+        PHYSICAL_INVENTORY
     }
 
     @DatabaseField
@@ -54,7 +55,7 @@ public class StockMovementItem extends BaseModel{
     StockCard stockCard;
 
     @DatabaseField
-    long stockOnHand;
+    long stockOnHand = -1;
 
     @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = "yyyy-MM-dd")
     private java.util.Date movementDate;

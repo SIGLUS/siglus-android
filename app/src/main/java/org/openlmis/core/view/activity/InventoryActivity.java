@@ -97,14 +97,14 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
 
             @Override
             public void onNext(List<StockCardViewModel> stockCardViewModels) {
-                list.addAll(stockCardViewModels);
-                ((PhysicalInventoryAdapter) mAdapter).notifyDataSetChanged();
+                ((PhysicalInventoryAdapter) mAdapter).refreshList(stockCardViewModels);
             }
         });
 
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                presenter.doPhysicalInventory(((PhysicalInventoryAdapter) mAdapter).getData());
             }
         });
     }

@@ -21,28 +21,41 @@ package org.openlmis.core.view.adapter;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
+import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.List;
+
+import lombok.Getter;
+
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 
 public class PhysicalInventoryAdapter extends RecyclerView.Adapter<PhysicalInventoryAdapter.ViewHolder> implements FilterableAdapter {
 
     LayoutInflater inflater;
     Context context;
+
+    @Getter
     List<StockCardViewModel> data;
+    List<StockCardViewModel> currentList;
 
     public PhysicalInventoryAdapter(Context context, List<StockCardViewModel> stockCardViewModelList){
         this.context = context;
         this.data = stockCardViewModelList;
+        currentList =  newArrayList(data);
         inflater = LayoutInflater.from(context);
     }
 
@@ -53,25 +66,63 @@ public class PhysicalInventoryAdapter extends RecyclerView.Adapter<PhysicalInven
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        StockCardViewModel viewModel = data.get(position);
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        StockCardViewModel viewModel = currentList.get(position);
         holder.tvProductName.setText(viewModel.getStyledName());
         holder.tvProductUnit.setText(viewModel.getStyledUnit());
+
+        holder.etQuantity.setText(viewModel.getQuantity());
+
+        holder.etQuantity.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                currentList.get(position).setQuantity(((TextView)v).getText().toString());
+                return false;
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return currentList.size();
     }
 
     @Override
-    public void filter(String keyword) {
+    public void filter(final String keyword) {
+        if (StringUtils.isEmpty(keyword)) {
+            this.currentList = data;
+            this.notifyDataSetChanged();
+            return;
+        }
 
+        this.currentList = from(data).filter(new Predicate<StockCardViewModel>() {
+            @Override
+            public boolean apply(StockCardViewModel stockCardViewModel) {
+                return stockCardViewModel.getProductName().contains(keyword)
+                        || stockCardViewModel.getFnm().contains(keyword);
+            }
+        }).toList();
+
+        this.notifyDataSetChanged();
     }
+
+    public void refreshList(List<StockCardViewModel> data){
+        this.data = data;
+        this.currentList.clear();
+        this.currentList.addAll(data);
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public int validateAll() {
-        return 0;
+        for (int i=0;i<data.size();i++){
+            if (!data.get(i).validate()){
+                ToastUtil.show(i + "");
+                return i;
+            }
+        }
+        return -1;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
