@@ -15,7 +15,8 @@ describe "submit requisition to web server" do
         beginningBalance: 40,
         quantityReceived: 10,
         quantityDispensed: 10,
-        stockInHand: 10,
+        stockInHand: 40,
+        totalLossesAndAdjustments: 0,
         calculatedOrderQuantity: 10,
         quantityRequested: 10,
         reasonForRequestedQuantity: "reason"
@@ -26,9 +27,16 @@ describe "submit requisition to web server" do
         quantityReceived: 300,
         quantityDispensed: 100,
         stockInHand: 300,
+        totalLossesAndAdjustments: 0,
         calculatedOrderQuantity: 0,
         quantityRequested: 0,
         reasonForRequestedQuantity: "reason"
+      }
+      ] ,
+      patientQuantifications: [
+      {
+        category: "consultation",
+        total: 100
       }
       ]
     }
@@ -70,21 +78,21 @@ describe "submit requisition to web server" do
       products: [
       {
         productCode: "08S23",
-        beginningBalance: 0,
-        quantityReceived: 0,
-        quantityDispensed: 0,
+        beginningBalance: 30,
+        quantityReceived: 10,
+        quantityDispensed: 20,
         totalLossesAndAdjustments: 0,
-        stockInHand: 28,
+        stockInHand: 20,
         quantityRequested: 0,
         reasonForRequestedQuantity: "reason"
       },
       {
         productCode: "08S17",
-        beginningBalance: 0,
-        quantityReceived: 0,
-        quantityDispensed: 0,
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
         totalLossesAndAdjustments: 0,
-        stockInHand: 29,
+        stockInHand: 10,
         quantityRequested: 0,
         reasonForRequestedQuantity: "reason"
       }
@@ -184,31 +192,31 @@ describe "submit requisition to web server" do
       patientQuantifications: [
       {
         category: "New Patients",
-        total: "1"
+        total: 1
       },
       {
         category: "Sustaining",
-        total: "1"
+        total: 1
       },
       {
         category: "Alteration",
-        total: "1"
+        total: 1
       },
       {
         category: "PTV",
-        total: "1"
+        total: 1
       },
       {
         category: "PPE",
-        total: "26"
+        total: 26
       },
       {
         category: "Total Month Dispense",
-        total: "1"
+        total: 1
       },
       {
         category: "Total Patients",
-        total: "30"
+        total: 30
       }
       ]
     }
