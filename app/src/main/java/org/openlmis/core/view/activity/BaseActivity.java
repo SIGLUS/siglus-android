@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.google.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -46,6 +47,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
 
     @Inject
     SharedPreferenceMgr preferencesMgr;
+    protected SearchView searchView;
 
 
     public abstract Presenter getPresenter();
@@ -87,7 +89,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
 
-        SearchView searchView = (SearchView)menu.findItem(R.id.action_search).getActionView();
+        searchView = (SearchView)menu.findItem(R.id.action_search).getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -109,6 +111,12 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         });
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public void clearSearch(){
+        if (searchView!=null){
+            searchView.setQuery(StringUtils.EMPTY, true);
+        }
     }
 
     public void loading() {

@@ -51,6 +51,8 @@ public class StockCardViewModel {
     SpannableStringBuilder styledName;
     SpannableStringBuilder styledUnit;
 
+    boolean validate = true;
+
     public StockCardViewModel(StockCard stockCard){
         this.productName = stockCard.getProduct().getPrimaryName();
         this.fnm = stockCard.getProduct().getCode();
@@ -82,6 +84,7 @@ public class StockCardViewModel {
 
 
     public boolean validate(){
-        return StringUtils.isNumeric(quantity);
+        validate = StringUtils.isNumeric(quantity);
+        return validate;
     }
 }

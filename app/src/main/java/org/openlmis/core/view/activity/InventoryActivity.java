@@ -64,14 +64,17 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     LinearLayoutManager mLayoutManager;
     FilterableAdapter mAdapter;
 
+    boolean isPhysicalInventory = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mLayoutManager = new LinearLayoutManager(this);
         productListRecycleView.setLayoutManager(mLayoutManager);
+        isPhysicalInventory = getIntent().getBooleanExtra(PARAM_IS_PHYSICAL_INVENTORY, false);
 
-        if (getIntent().getBooleanExtra(PARAM_IS_PHYSICAL_INVENTORY, false)){
+        if (isPhysicalInventory){
             initPhysicalInventoryUI();
         } else {
             initInitialInventoryUI();
@@ -153,6 +156,10 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     public boolean validateInventory() {
         int position = mAdapter.validateAll();
         if (position >= 0){
+            if (isPhysicalInventory){
+                clearSearch();
+            }
+
             productListRecycleView.scrollToPosition(position);
             return false;
         }

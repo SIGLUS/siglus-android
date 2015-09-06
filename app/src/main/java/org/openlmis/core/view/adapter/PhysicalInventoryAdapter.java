@@ -19,6 +19,7 @@
 package org.openlmis.core.view.adapter;
 
 import android.content.Context;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
 import android.view.KeyEvent;
@@ -30,7 +31,6 @@ import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
-import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 import org.roboguice.shaded.goole.common.base.Predicate;
@@ -80,6 +80,12 @@ public class PhysicalInventoryAdapter extends RecyclerView.Adapter<PhysicalInven
                 return false;
             }
         });
+
+        if (!viewModel.isValidate()) {
+            holder.lyQuantity.setError(context.getResources().getString(R.string.msg_inventory_check_failed));
+        } else {
+            holder.lyQuantity.setErrorEnabled(false);
+        }
     }
 
     @Override
@@ -116,13 +122,16 @@ public class PhysicalInventoryAdapter extends RecyclerView.Adapter<PhysicalInven
 
     @Override
     public int validateAll() {
+        int position = -1;
         for (int i=0;i<data.size();i++){
             if (!data.get(i).validate()){
-                ToastUtil.show(i + "");
-                return i;
+                position = i;
+                break;
             }
         }
-        return -1;
+
+        this.notifyDataSetChanged();
+        return position;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -130,6 +139,7 @@ public class PhysicalInventoryAdapter extends RecyclerView.Adapter<PhysicalInven
         TextView tvProductUnit;
         EditText etQuantity;
         TextView tvAddExpiryDate;
+        TextInputLayout lyQuantity;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -137,6 +147,7 @@ public class PhysicalInventoryAdapter extends RecyclerView.Adapter<PhysicalInven
             tvProductName = (TextView)itemView.findViewById(R.id.product_name);
             tvProductUnit = (TextView)itemView.findViewById(R.id.product_unit);
             etQuantity = (EditText)itemView.findViewById(R.id.tx_quantity);
+            lyQuantity = (TextInputLayout)itemView.findViewById(R.id.ly_quantity);
             tvAddExpiryDate = (TextView)itemView.findViewById(R.id.tx_expire_date);
 
             etQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
