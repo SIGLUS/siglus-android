@@ -238,8 +238,10 @@ public class StockMovementAdapter extends BaseAdapter {
     }
 
     public void cancelStockMovement(){
-        resetLine(editableLine);
-        disableLine(editableLine);
+        if (editableLine!=null){
+            resetLine(editableLine);
+            disableLine(editableLine);
+        }
 
         stockMovementViewModels.remove(getDraftStockMovementItem());
         stockMovementViewModels.add(new StockMovementViewModel());
