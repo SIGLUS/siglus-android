@@ -219,7 +219,9 @@ public class RnrFormRepository {
                         totalReceived += item.getMovementQuantity();
                     } else if (StockMovementItem.MovementType.ISSUE == item.getMovementType()) {
                         totalIssued += item.getMovementQuantity();
-                    } else {
+                    } else if (StockMovementItem.MovementType.NEGATIVE_ADJUST == item.getMovementType()){
+                        totalAdjustment -= item.getMovementQuantity();
+                    } else if (StockMovementItem.MovementType.POSITIVE_ADJUST == item.getMovementType()) {
                         totalAdjustment += item.getMovementQuantity();
                     }
                 }
