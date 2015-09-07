@@ -119,7 +119,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
     @Override
     public void refreshStockMovement(StockMovementViewModel viewModel) {
-        stockMovementAdapter.addLine(viewModel);
+        stockMovementAdapter.addLine();
     }
 
     @Override

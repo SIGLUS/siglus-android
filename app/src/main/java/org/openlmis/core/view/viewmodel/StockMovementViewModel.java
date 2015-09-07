@@ -41,11 +41,15 @@ public class StockMovementViewModel {
     String issued;
     String stockExistence;
 
+    StockMovementItem.MovementType movementType;
+    boolean isDraft = true;
 
     public StockMovementViewModel(StockMovementItem item) {
         movementDate = DateUtil.formatDate(item.getMovementDate());
         documentNo = item.getDocumentNumber();
         reason = item.getReason();
+        movementType = item.getMovementType();
+        isDraft = false;
 
         switch (item.getMovementType()) {
             case RECEIVE:
@@ -70,20 +74,22 @@ public class StockMovementViewModel {
         stockMovementItem.setStockOnHand(Long.parseLong(getStockExistence()));
         stockMovementItem.setReason(getReason());
         stockMovementItem.setDocumentNumber(getDocumentNo());
-        if (getIssued() != null) {
-            stockMovementItem.setMovementType(StockMovementItem.MovementType.ISSUE);
-            stockMovementItem.setMovementQuantity(Long.parseLong(getIssued()));
-        } else if (getPositiveAdjustment() != null) {
-            stockMovementItem.setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
-            stockMovementItem.setMovementQuantity(Long.parseLong(getPositiveAdjustment()));
-        } else if (getNegativeAdjustment() != null) {
-            stockMovementItem.setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
-            stockMovementItem.setMovementQuantity(Long.parseLong(getNegativeAdjustment()));
-        } else {
-            stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
-            stockMovementItem.setMovementQuantity(Long.parseLong(getReceived()));
-        }
+        stockMovementItem.setMovementType(movementType);
 
+        switch (movementType){
+            case ISSUE:
+                stockMovementItem.setMovementQuantity(Long.parseLong(issued));
+                break;
+            case RECEIVE:
+                stockMovementItem.setMovementQuantity(Long.parseLong(received));
+                break;
+            case NEGATIVE_ADJUST:
+                stockMovementItem.setMovementQuantity(Long.parseLong(negativeAdjustment));
+                break;
+            case POSITIVE_ADJUST:
+                stockMovementItem.setMovementQuantity(Long.parseLong(positiveAdjustment));
+                break;
+        }
         try {
             stockMovementItem.setMovementDate(DateUtil.parseString(getMovementDate(), DateUtil.DEFAULT_DATE_FORMAT));
         } catch (ParseException e){
@@ -94,12 +100,12 @@ public class StockMovementViewModel {
     }
 
     public boolean validate() {
-        return ((StringUtils.isNumeric(getReceived())
-                || StringUtils.isNumeric(getNegativeAdjustment())
-                || StringUtils.isNumeric(getPositiveAdjustment())
-                || StringUtils.isNumeric(getIssued()))
-                && StringUtils.isNoneEmpty(getReason())
-                && StringUtils.isNoneEmpty(getMovementDate())
-                && Long.parseLong(getStockExistence()) >= 0);
+        return ((StringUtils.isNumeric(received)
+                || StringUtils.isNumeric(negativeAdjustment)
+                || StringUtils.isNumeric(positiveAdjustment)
+                || StringUtils.isNumeric(issued))
+                && StringUtils.isNoneEmpty(reason)
+                && StringUtils.isNoneEmpty(movementDate)
+                && Long.parseLong(stockExistence) >= 0);
     }
 }

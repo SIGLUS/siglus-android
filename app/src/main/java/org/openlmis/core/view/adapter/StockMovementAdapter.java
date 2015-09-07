@@ -20,6 +20,7 @@ package org.openlmis.core.view.adapter;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.text.InputFilter;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,10 +33,12 @@ import android.widget.TextView;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.presenter.StockMovementPresenter;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
+import org.openlmis.core.view.widget.InputFilterMinMax;
 import org.openlmis.core.view.widget.MovementTypeDialog;
 
 import java.text.ParseException;
@@ -60,13 +63,16 @@ public class StockMovementAdapter extends BaseAdapter {
     MovementTypeDialog dialog;
 
     ViewHolder editableLine;
+
     private final StockCard stockCard;
 
     public StockMovementAdapter(Context context, StockMovementPresenter presenter) {
-        stockMovementViewModels = presenter.getStockMovementModels();
-        if (stockMovementViewModels == null) {
+        if (presenter.getStockMovementModels() == null){
             stockMovementViewModels = new ArrayList<>();
+        }else {
+            stockMovementViewModels = newArrayList(presenter.getStockMovementModels());
         }
+        stockMovementViewModels.add(new StockMovementViewModel());
         this.context = context;
         stockCard = presenter.getStockCard();
         layoutInflater = LayoutInflater.from(context);
@@ -76,14 +82,11 @@ public class StockMovementAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return stockMovementViewModels.size() + 1;
+        return stockMovementViewModels.size();
     }
 
     @Override
     public StockMovementViewModel getItem(int position) {
-        if (position >= stockMovementViewModels.size()) {
-            return null;
-        }
         return stockMovementViewModels.get(position);
     }
 
@@ -114,24 +117,41 @@ public class StockMovementAdapter extends BaseAdapter {
 
         disableLine(holder);
 
-        if (model != null) {
-            holder.txMovementDate.setText(model.getMovementDate());
-            holder.txReason.setText(model.getReason());
-            holder.etDocumentNo.setText(model.getDocumentNo());
-            holder.etReceived.setText(model.getReceived());
-            holder.etNegativeAdjustment.setText(model.getNegativeAdjustment());
-            holder.etPositiveAdjustment.setText(model.getPositiveAdjustment());
-            holder.etIssued.setText(model.getIssued());
-            holder.txStockExistence.setText(model.getStockExistence());
-        } else {
-            resetLine(holder);
+        holder.txMovementDate.setText(model.getMovementDate());
+        holder.txReason.setText(model.getReason());
+        holder.etDocumentNo.setText(model.getDocumentNo());
+        holder.etReceived.setText(model.getReceived());
+        holder.etNegativeAdjustment.setText(model.getNegativeAdjustment());
+        holder.etPositiveAdjustment.setText(model.getPositiveAdjustment());
+        holder.etIssued.setText(model.getIssued());
+        holder.txStockExistence.setText(model.getStockExistence());
+
+        if (model.isDraft()){
             editableLine = holder;
+
+            if (model.getMovementType() != null) {
+                holder.etDocumentNo.setEnabled(true);
+                switch (model.getMovementType()) {
+                    case ISSUE:
+                        holder.etIssued.setEnabled(true);
+                        break;
+                    case RECEIVE:
+                        holder.etReceived.setEnabled(true);
+                        break;
+                    case NEGATIVE_ADJUST:
+                        holder.etNegativeAdjustment.setEnabled(true);
+                        break;
+                    case POSITIVE_ADJUST:
+                        holder.etPositiveAdjustment.setEnabled(true);
+                        break;
+                }
+            }
         }
 
         holder.txReason.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (model == null) {
+                if (model.isDraft()) {
                     dialog.show();
                 }
             }
@@ -140,7 +160,7 @@ public class StockMovementAdapter extends BaseAdapter {
         holder.txMovementDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (model == null){
+                if (model.isDraft()){
                     showDatePickerDialog();
                 }
             }
@@ -151,6 +171,7 @@ public class StockMovementAdapter extends BaseAdapter {
         holder.etNegativeAdjustment.setOnKeyListener(listener);
         holder.etPositiveAdjustment.setOnKeyListener(listener);
         holder.etIssued.setOnKeyListener(listener);
+        holder.etDocumentNo.setOnKeyListener(listener);
     }
 
     private void disableLine(ViewHolder holder) {
@@ -176,68 +197,67 @@ public class StockMovementAdapter extends BaseAdapter {
         return checkNotNull(stockCard).getStockOnHand();
     }
 
+    public StockMovementViewModel getDraftStockMovementItem(){
+        return getItem(getCount() - 1);
+    }
+
     private void setupMovementTypeDialog() {
         dialog = new MovementTypeDialog(context, new MovementTypeDialog.OnMovementSelectListener() {
+
             @Override
             public void onReceive() {
                 editableLine.etReceived.setEnabled(true);
+                getDraftStockMovementItem().setMovementType(StockMovementItem.MovementType.RECEIVE);
             }
 
             @Override
             public void onIssue() {
                 editableLine.etIssued.setEnabled(true);
+                getDraftStockMovementItem().setMovementType(StockMovementItem.MovementType.ISSUE);
             }
 
             @Override
             public void onPositiveAdjustment() {
                 editableLine.etPositiveAdjustment.setEnabled(true);
+                getDraftStockMovementItem().setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
             }
 
             @Override
             public void onNegativeAdjustment() {
                 editableLine.etNegativeAdjustment.setEnabled(true);
+                getDraftStockMovementItem().setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
             }
 
             @Override
             public void onComplete(String result) {
                 editableLine.etDocumentNo.setEnabled(true);
                 editableLine.txReason.setText(result);
-                editableLine.txMovementDate.setText(DateUtil.formatDate(new Date()));
+                getDraftStockMovementItem().setReason(result);
+                String movementDate = DateUtil.formatDate(new Date());
+                editableLine.txMovementDate.setText(movementDate);
+                getDraftStockMovementItem().setMovementDate(movementDate);
             }
         });
     }
 
     public StockMovementViewModel getEditableStockMovement() {
-
-        StockMovementViewModel item = new StockMovementViewModel();
-        if (editableLine.etReceived.isEnabled()) {
-            item.setReceived(editableLine.etReceived.getText().toString());
-        } else if (editableLine.etNegativeAdjustment.isEnabled()) {
-            item.setNegativeAdjustment(editableLine.etNegativeAdjustment.getText().toString());
-        } else if (editableLine.etPositiveAdjustment.isEnabled()) {
-            item.setPositiveAdjustment(editableLine.etPositiveAdjustment.getText().toString());
-        } else {
-            item.setIssued(editableLine.etIssued.getText().toString());
-        }
-
-        item.setDocumentNo(editableLine.etDocumentNo.getText().toString());
-        item.setStockExistence(editableLine.txStockExistence.getText().toString());
-        item.setReason(editableLine.txReason.getText().toString());
-        item.setMovementDate(editableLine.txMovementDate.getText().toString());
-        return item;
+        return stockMovementViewModels.get(stockMovementViewModels.size() - 1);
     }
 
     public void cancelStockMovement(){
         resetLine(editableLine);
         disableLine(editableLine);
 
+        stockMovementViewModels.remove(getDraftStockMovementItem());
+        stockMovementViewModels.add(new StockMovementViewModel());
+        notifyDataSetChanged();
         setupMovementTypeDialog();
     }
 
 
-    public void addLine(StockMovementViewModel viewModel){
-        stockMovementViewModels = newArrayList(stockMovementViewModels);
-        stockMovementViewModels.add(viewModel);
+    public void addLine(){
+        getDraftStockMovementItem().setDraft(false);
+        stockMovementViewModels.add(new StockMovementViewModel());
         notifyDataSetChanged();
         setupMovementTypeDialog();
     }
@@ -259,14 +279,16 @@ public class StockMovementAdapter extends BaseAdapter {
         Calendar today = GregorianCalendar.getInstance();
         try {
             Date lastMovementDate = DateUtil.parseString("01/01/1900", DateUtil.DEFAULT_DATE_FORMAT);
-            if (!stockMovementViewModels.isEmpty()){
-                lastMovementDate = DateUtil.parseString(stockMovementViewModels.get(stockMovementViewModels.size() - 1).getMovementDate(), DateUtil.DEFAULT_DATE_FORMAT);
+            if (stockMovementViewModels.size() > 1){
+                lastMovementDate = DateUtil.parseString(stockMovementViewModels.get(stockMovementViewModels.size() - 2).getMovementDate(), DateUtil.DEFAULT_DATE_FORMAT);
             }
 
             if (today.before(date) || lastMovementDate.after(date.getTime())) {
                 ToastUtil.show(R.string.msg_invalid_stock_movement_date);
             } else {
-                editableLine.txMovementDate.setText(DateUtil.formatDate(date.getTime()));
+                String movementDate = DateUtil.formatDate(date.getTime());
+                editableLine.txMovementDate.setText(movementDate);
+                getDraftStockMovementItem().setMovementDate(movementDate);
             }
         }catch (ParseException e){
             ToastUtil.show(R.string.msg_invalid_stock_movement_date);
@@ -295,6 +317,13 @@ public class StockMovementAdapter extends BaseAdapter {
             etPositiveAdjustment = (EditText) view.findViewById(R.id.et_positive_adjustment);
             etIssued = (EditText) view.findViewById(R.id.et_issued);
             txStockExistence = (TextView) view.findViewById(R.id.tx_stock_on_hand);
+
+
+            InputFilter[] filters = new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)};
+            etReceived.setFilters(filters);
+            etNegativeAdjustment.setFilters(filters);
+            etPositiveAdjustment.setFilters(filters);
+            etIssued.setFilters(filters);
         }
     }
 
@@ -309,15 +338,34 @@ public class StockMovementAdapter extends BaseAdapter {
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             String text = ((TextView) v).getText().toString();
-            long number = 0;
-            if (!StringUtils.isEmpty(text)) {
-                number = Long.parseLong(text);
+
+            if (v != viewHolder.etDocumentNo){
+                long number = 0;
+                if (!StringUtils.isEmpty(text)) {
+                    number = Long.parseLong(text);
+                }
+
+                if (v == viewHolder.etReceived || v == viewHolder.etPositiveAdjustment){
+                    String stockExistence = String.valueOf(getCurrentStockOnHand() + number);
+                    viewHolder.txStockExistence.setText(stockExistence);
+                    getDraftStockMovementItem().setStockExistence(stockExistence);
+                } else if (v == viewHolder.etIssued || v == viewHolder.etNegativeAdjustment){
+                    String stockExistence = String.valueOf(getCurrentStockOnHand() - number);
+                    viewHolder.txStockExistence.setText(stockExistence);
+                    getDraftStockMovementItem().setStockExistence(stockExistence);
+                }
             }
 
-            if (v == viewHolder.etReceived || v == viewHolder.etPositiveAdjustment){
-                viewHolder.txStockExistence.setText(String.valueOf(getCurrentStockOnHand() + number));
-            } else {
-                viewHolder.txStockExistence.setText(String.valueOf(getCurrentStockOnHand() - number));
+            if (v == viewHolder.etReceived){
+                getDraftStockMovementItem().setReceived(viewHolder.etReceived.getText().toString());
+            } else if (v == viewHolder.etIssued){
+                getDraftStockMovementItem().setIssued(viewHolder.etIssued.getText().toString());
+            } else if (v == viewHolder.etPositiveAdjustment){
+                getDraftStockMovementItem().setPositiveAdjustment(viewHolder.etPositiveAdjustment.getText().toString());
+            } else if (v == viewHolder.etNegativeAdjustment){
+                getDraftStockMovementItem().setNegativeAdjustment(viewHolder.etNegativeAdjustment.getText().toString());
+            } else if (v == viewHolder.etDocumentNo){
+                getDraftStockMovementItem().setDocumentNo(viewHolder.etDocumentNo.getText().toString());
             }
 
             return false;
