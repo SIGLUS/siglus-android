@@ -195,6 +195,14 @@ public class RequisitionPresenter implements Presenter {
         return rnRForm.getBaseInfoItemListWrapper().get(0).getValue();
     }
 
+    public void removeRnrForm() {
+        try {
+            viaRepository.removeRnrForm(rnRForm);
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public interface RequisitionView extends View {
 

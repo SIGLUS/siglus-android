@@ -324,11 +324,13 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
                 @Override
                 public void callback(boolean flag) {
                     if (flag) {
+                        presenter.removeRnrForm();
                         finish();
                     }
                 }
             });
         } else {
+            presenter.removeRnrForm();
             super.onBackPressed();
         }
     }
