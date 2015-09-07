@@ -72,7 +72,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
             product.addProperty("quantityReceived", item.getReceived());
             product.addProperty("quantityDispensed", item.getIssued());
             product.addProperty("stockInHand", item.getInventory());
-            product.addProperty("quantityRequested", 0);
+            product.addProperty("quantityRequested", item.getRequestAmount());
             product.addProperty("reasonForRequestedQuantity", "reason");
             if (programCode.equals(VIARepository.VIA_PROGRAM_CODE)) {
                 product.addProperty("calculatedOrderQuantity", item.getCalculatedOrderQuantity());
