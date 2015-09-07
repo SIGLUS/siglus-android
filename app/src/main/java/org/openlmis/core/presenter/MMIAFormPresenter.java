@@ -124,6 +124,14 @@ public class MMIAFormPresenter implements Presenter {
         }
     }
 
+    public void removeRnrForm() {
+        try {
+            mmiaRepository.removeRnrForm(form);
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+    }
+
     public interface MIMIAFormView extends View {
         void showValidationAlert();
 

@@ -263,4 +263,39 @@ public class RnrFormRepository {
     protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
         return new ArrayList<>();
     }
+
+    public void removeRnrForm(RnRForm form) throws LMISException {
+        deleteRnrFormItems(form.getRnrFormItemListWrapper());
+        deleteRegimenItems(form.getRegimenItemListWrapper());
+        deleteBaseInfoItems(form.getBaseInfoItemListWrapper());
+        genericDao.delete(form);
+    }
+
+    private void deleteBaseInfoItems(final ArrayList<BaseInfoItem> baseInfoItemListWrapper) throws LMISException {
+        dbUtil.withDaoAsBatch(BaseInfoItem.class, new DbUtil.Operation<BaseInfoItem, Void>() {
+            @Override
+            public Void operate(Dao<BaseInfoItem, String> dao) throws SQLException {
+                for (BaseInfoItem item : baseInfoItemListWrapper) {
+                    dao.delete(item);
+                }
+                return null;
+            }
+        });
+    }
+
+    private void deleteRegimenItems(final ArrayList<RegimenItem> regimenItemListWrapper) throws LMISException {
+        dbUtil.withDao(RegimenItem.class, new DbUtil.Operation<RegimenItem, Void>() {
+            @Override
+            public Void operate(Dao<RegimenItem, String> dao) throws SQLException {
+                for (RegimenItem item : regimenItemListWrapper) {
+                    dao.delete(item);
+                }
+                return null;
+            }
+        });
+    }
+
+    private void deleteRnrFormItems(final List<RnrFormItem> rnrFormItemListWrapper) throws LMISException {
+        rnrFormItemRepository.delete(rnrFormItemListWrapper);
+    }
 }

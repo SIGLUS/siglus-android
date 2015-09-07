@@ -114,4 +114,13 @@ public class GenericDao<Model> {
             }
         });
     }
+
+    public Integer delete(final Model object) throws LMISException {
+        return dbUtil.withDao(context, type, new DbUtil.Operation<Model, Integer>() {
+            @Override
+            public Integer operate(Dao<Model, String> dao) throws SQLException {
+                return dao.delete(object);
+            }
+        });
+    }
 }

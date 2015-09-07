@@ -163,11 +163,13 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
                 @Override
                 public void callback(boolean flag) {
                     if(flag) {
+                        presenter.removeRnrForm();
                         finish();
                     }
                 }
             });
         } else {
+            presenter.removeRnrForm();
             super.onBackPressed();
         }
     }
