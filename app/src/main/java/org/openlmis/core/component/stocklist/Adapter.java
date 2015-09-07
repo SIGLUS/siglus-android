@@ -190,7 +190,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     }
 
     public void sortBySOH(final boolean asc) {
-        Collections.sort(currentStockCards, new Comparator<StockCard>() {
+
+        Comparator<StockCard> stockCardComparator = new Comparator<StockCard>() {
             @Override
             public int compare(StockCard lhs, StockCard rhs) {
                 if (asc) {
@@ -199,13 +200,17 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                     return (int) (rhs.getStockOnHand() - lhs.getStockOnHand());
                 }
             }
-        });
+        };
+
+        Collections.sort(currentStockCards, stockCardComparator);
+        Collections.sort(stockCards, stockCardComparator);
 
         this.notifyDataSetChanged();
     }
 
     public void sortByName(final boolean asc) {
-        Collections.sort(currentStockCards, new Comparator<StockCard>() {
+
+        Comparator<StockCard> stockCardComparator = new Comparator<StockCard>() {
             @Override
             public int compare(StockCard lhs, StockCard rhs) {
                 if (asc) {
@@ -214,7 +219,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                     return rhs.getProduct().getPrimaryName().compareTo(lhs.getProduct().getPrimaryName());
                 }
             }
-        });
+        };
+
+        Collections.sort(currentStockCards,stockCardComparator);
+        Collections.sort(stockCards, stockCardComparator);
 
         this.notifyDataSetChanged();
     }
