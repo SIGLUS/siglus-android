@@ -67,6 +67,12 @@ public class MMIARnrForm extends LinearLayout {
         addItemView(list);
     }
 
+    private void addHeaderView() {
+        View leftHeaderView = addLeftHeaderView();
+        ViewGroup rightHeaderView = addRightHeaderView();
+        setItemSize(leftHeaderView, rightHeaderView);
+    }
+
     private void addItemView(ArrayList<RnrFormItem> rnrFormItemList) {
         initRnrFormItemConfigList();
         addViewByMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_ADULT);
@@ -84,18 +90,12 @@ public class MMIARnrForm extends LinearLayout {
         for (String fnm : fnms) {
             for (RnrFormItem item : dataList) {
                 if (fnm.equals(item.getProduct().getCode())) {
-                    View leftView = addLeftView(item, medicineTypeName);
-                    ViewGroup rightView = addRightView(item);
+                    View leftView = addLeftView(item,false,medicineTypeName);
+                    ViewGroup rightView = addRightView(item,false);
                     setItemSize(leftView, rightView);
                 }
             }
         }
-    }
-
-    private void addHeaderView() {
-        View leftHeaderView = addLeftHeaderView();
-        ViewGroup rightHeaderView = addRightHeaderView();
-        setItemSize(leftHeaderView, rightHeaderView);
     }
 
     private void addDividerView(String medicineType) {
@@ -105,6 +105,10 @@ public class MMIARnrForm extends LinearLayout {
         ViewGroup rightView = inflateRightView();
         rightViewGroup.addView(rightView);
         setItemSize(leftView, rightView);
+    }
+
+    private View inflaterLeftView() {
+        return layoutInflater.inflate(R.layout.item_rnr_from_product_name, this, false);
     }
 
     private ViewGroup inflateRightView() {
@@ -127,6 +131,19 @@ public class MMIARnrForm extends LinearLayout {
         });
     }
 
+    private void setRightItemWidth(final ViewGroup rightView) {
+        int rightWidth = vg_right_scrollview.getWidth();
+        int rightViewGroupWidth = rightViewGroup.getWidth();
+
+        if (rightViewGroupWidth < rightWidth) {
+            int childCount = rightView.getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                rightView.getChildAt(i).getLayoutParams().width = getRightViewWidth(rightWidth, childCount);
+            }
+            rightView.getChildAt(0).getLayoutParams().width = getRightViewWidth(rightWidth, childCount) + getRightViewRemainderWidth(rightWidth, childCount);
+        }
+    }
+
     private void syncItemHeight(final View leftView, final View rightView) {
         int leftHeight = leftView.getHeight();
         int rightHeight = rightView.getHeight();
@@ -137,16 +154,8 @@ public class MMIARnrForm extends LinearLayout {
         }
     }
 
-    private View addLeftView(RnrFormItem item, String medicineType) {
-        return addLeftView(item, false, medicineType);
-    }
-
     private View addLeftHeaderView() {
         return addLeftView(null, true, null);
-    }
-
-    private View inflaterLeftView() {
-        return layoutInflater.inflate(R.layout.item_rnr_from_product_name, this, false);
     }
 
     private View addLeftView(RnrFormItem item, boolean isHeaderView, String medicineType) {
@@ -182,12 +191,9 @@ public class MMIARnrForm extends LinearLayout {
         }
     }
 
+
     private ViewGroup addRightHeaderView() {
         return addRightView(null, true);
-    }
-
-    private ViewGroup addRightView(RnrFormItem item) {
-        return addRightView(item, false);
     }
 
     private ViewGroup addRightView(RnrFormItem item, boolean isHeaderView) {
@@ -229,19 +235,6 @@ public class MMIARnrForm extends LinearLayout {
         }
         rightViewGroup.addView(inflate);
         return inflate;
-    }
-
-    private void setRightItemWidth(final ViewGroup rightView) {
-        int rightWidth = vg_right_scrollview.getWidth();
-        int rightViewGroupWidth = rightViewGroup.getWidth();
-
-        if (rightViewGroupWidth < rightWidth) {
-            int childCount = rightView.getChildCount();
-            for (int i = 0; i < childCount; i++) {
-                rightView.getChildAt(i).getLayoutParams().width = getRightViewWidth(rightWidth, childCount);
-            }
-            rightView.getChildAt(0).getLayoutParams().width = getRightViewWidth(rightWidth, childCount) + getRightViewRemainderWidth(rightWidth, childCount);
-        }
     }
 
     private int getRightViewWidth(int rightWidth, int childCount) {

@@ -35,7 +35,7 @@ public class MMIARnrFormTest  extends LMISRepositoryUnitTest {
         ArrayList<RnrFormItem> list = new ArrayList<>();
 
         list.add(getRnrFormItem(1L, "product", "08S17", Product.MEDICINE_TYPE_OTHER));
-        list.add(getRnrFormItem(2L, "product2", "08S32B", Product.MEDICINE_TYPE_BABY));
+        list.add(getRnrFormItem(2L, "product2", "08S32Z", Product.MEDICINE_TYPE_BABY));
         list.add(getRnrFormItem(3L, "product3", "08S39Z", Product.MEDICINE_TYPE_ADULT));
 
         mmiaRnrForm.initView(list);
