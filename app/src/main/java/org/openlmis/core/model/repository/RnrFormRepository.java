@@ -36,7 +36,6 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
-import org.openlmis.core.utils.DateUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
