@@ -172,7 +172,7 @@ public class StockRepository {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
             @Override
             public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("stockCard_id", stockCard.getId()).and().ge("createdAt", startDate).and().le("createdAt", endDate).query();
+                return dao.queryBuilder().where().eq("stockCard_id", stockCard.getId()).and().ge("movementDate", startDate).and().le("movementDate", endDate).query();
             }
         });
     }

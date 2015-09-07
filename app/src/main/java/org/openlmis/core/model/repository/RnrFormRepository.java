@@ -36,6 +36,7 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
+import org.openlmis.core.utils.DateUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -89,7 +90,7 @@ public class RnrFormRepository {
 
                     form.setProgram(program);
                     create(form);
-                    createRnrFormItems(generateProductItems(form));
+                    createRnrFormItems(generateRnrFormItems(form));
                     createRegimenItems(generateRegimeItems(form));
                     createBaseInfoItems(generateBaseInfoItems(form));
                     genericDao.refresh(form);
@@ -185,9 +186,9 @@ public class RnrFormRepository {
         return null;
     }
 
-    protected List<RnrFormItem> generateProductItems(RnRForm form) throws LMISException {
+    protected List<RnrFormItem> generateRnrFormItems(RnRForm form) throws LMISException {
         List<StockCard> stockCards = stockRepository.list(form.getProgram().getProgramCode());
-        List<RnrFormItem> productItems = new ArrayList<>();
+        List<RnrFormItem> rnrFormItems = new ArrayList<>();
 
         Calendar calendar = GregorianCalendar.getInstance();
         int month = calendar.get(Calendar.MONTH);
@@ -196,63 +197,68 @@ public class RnrFormRepository {
         Date endDate = new GregorianCalendar(year, month, DAY_PERIOD_END).getTime();
 
         for (StockCard stockCard : stockCards) {
-            List<StockMovementItem> stockMovementItems = stockRepository.queryStockItems(stockCard, startDate, endDate);
-            RnrFormItem productItem = new RnrFormItem();
-            if (stockMovementItems.size() > 0) {
+            RnrFormItem rnrFormItem = createRnrFormItemByPeriod(stockCard, startDate, endDate);
+            rnrFormItem.setForm(form);
+            rnrFormItems.add(rnrFormItem);
+        }
+        return rnrFormItems;
+    }
 
-                StockMovementItem firstItem = stockMovementItems.get(0);
+    private RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {
+        List<StockMovementItem> stockMovementItems = stockRepository.queryStockItems(stockCard, startDate, endDate);
 
-                if (firstItem.getMovementType() == StockMovementItem.MovementType.ISSUE
-                        || firstItem.getMovementType() == StockMovementItem.MovementType.NEGATIVE_ADJUST){
+        RnrFormItem rnrFormItem = new RnrFormItem();
+        if (!stockMovementItems.isEmpty()) {
 
-                    productItem.setInitialAmount(firstItem.getStockOnHand() + firstItem.getMovementQuantity());
-                } else {
-                    productItem.setInitialAmount(firstItem.getStockOnHand() - firstItem.getMovementQuantity());
-                }
+            StockMovementItem firstItem = stockMovementItems.get(0);
+            if (firstItem.getMovementType() == StockMovementItem.MovementType.ISSUE
+                    || firstItem.getMovementType() == StockMovementItem.MovementType.NEGATIVE_ADJUST){
 
-                long totalReceived = 0;
-                long totalIssued = 0;
-                long totalAdjustment = 0;
-
-                for (StockMovementItem item : stockMovementItems) {
-                    if (StockMovementItem.MovementType.RECEIVE == item.getMovementType()) {
-                        totalReceived += item.getMovementQuantity();
-                    } else if (StockMovementItem.MovementType.ISSUE == item.getMovementType()) {
-                        totalIssued += item.getMovementQuantity();
-                    } else if (StockMovementItem.MovementType.NEGATIVE_ADJUST == item.getMovementType()){
-                        totalAdjustment -= item.getMovementQuantity();
-                    } else if (StockMovementItem.MovementType.POSITIVE_ADJUST == item.getMovementType()) {
-                        totalAdjustment += item.getMovementQuantity();
-                    }
-                }
-                productItem.setProduct(stockCard.getProduct());
-                productItem.setReceived(totalReceived);
-                productItem.setIssued(totalIssued);
-                productItem.setAdjustment(totalAdjustment);
-                productItem.setForm(form);
-
-                Long inventory = stockMovementItems.get(stockMovementItems.size() - 1).getStockOnHand();
-                productItem.setInventory(inventory);
-                productItem.setValidate(stockCard.getEarliestExpireDate());
-
-                Long totalRequest = totalIssued * 2 - inventory;
-                totalRequest = totalRequest > 0 ? totalRequest : 0;
-                productItem.setCalculatedOrderQuantity(totalRequest);
-
+                rnrFormItem.setInitialAmount(firstItem.getStockOnHand() + firstItem.getMovementQuantity());
             } else {
-                productItem.setProduct(stockCard.getProduct());
-                productItem.setReceived(0);
-                productItem.setIssued(0);
-                productItem.setAdjustment(0);
-                productItem.setForm(form);
-                productItem.setInventory(stockCard.getStockOnHand());
-                productItem.setValidate(stockCard.getEarliestExpireDate());
-                productItem.setCalculatedOrderQuantity(new Long(0L));
+                rnrFormItem.setInitialAmount(firstItem.getStockOnHand() - firstItem.getMovementQuantity());
             }
-            productItems.add(productItem);
+
+            long totalReceived = 0;
+            long totalIssued = 0;
+            long totalAdjustment = 0;
+
+            for (StockMovementItem item : stockMovementItems) {
+                if (StockMovementItem.MovementType.RECEIVE == item.getMovementType()) {
+                    totalReceived += item.getMovementQuantity();
+                } else if (StockMovementItem.MovementType.ISSUE == item.getMovementType()) {
+                    totalIssued += item.getMovementQuantity();
+                } else if (StockMovementItem.MovementType.NEGATIVE_ADJUST == item.getMovementType()){
+                    totalAdjustment -= item.getMovementQuantity();
+                } else if (StockMovementItem.MovementType.POSITIVE_ADJUST == item.getMovementType()) {
+                    totalAdjustment += item.getMovementQuantity();
+                }
+            }
+            rnrFormItem.setProduct(stockCard.getProduct());
+            rnrFormItem.setReceived(totalReceived);
+            rnrFormItem.setIssued(totalIssued);
+            rnrFormItem.setAdjustment(totalAdjustment);
+
+            Long inventory = stockMovementItems.get(stockMovementItems.size() - 1).getStockOnHand();
+            rnrFormItem.setInventory(inventory);
+            rnrFormItem.setValidate(stockCard.getEarliestExpireDate());
+
+            Long totalRequest = totalIssued * 2 - inventory;
+            totalRequest = totalRequest > 0 ? totalRequest : 0;
+            rnrFormItem.setCalculatedOrderQuantity(totalRequest);
+
+        } else {
+            rnrFormItem.setInitialAmount(stockCard.getStockOnHand());
+            rnrFormItem.setProduct(stockCard.getProduct());
+            rnrFormItem.setReceived(0);
+            rnrFormItem.setIssued(0);
+            rnrFormItem.setAdjustment(0);
+            rnrFormItem.setInventory(stockCard.getStockOnHand());
+            rnrFormItem.setValidate(stockCard.getEarliestExpireDate());
+            rnrFormItem.setCalculatedOrderQuantity(0L);
         }
 
-        return productItems;
+        return rnrFormItem;
     }
 
     protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {

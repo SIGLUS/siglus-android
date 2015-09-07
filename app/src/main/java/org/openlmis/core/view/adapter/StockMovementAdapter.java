@@ -258,7 +258,11 @@ public class StockMovementAdapter extends BaseAdapter {
     public void validateStockMovementDate(GregorianCalendar date) {
         Calendar today = GregorianCalendar.getInstance();
         try {
-            Date lastMovementDate = DateUtil.parseString(stockMovementViewModels.get(stockMovementViewModels.size() - 1).getMovementDate(), DateUtil.DEFAULT_DATE_FORMAT);
+            Date lastMovementDate = DateUtil.parseString("01/01/1900", DateUtil.DEFAULT_DATE_FORMAT);
+            if (!stockMovementViewModels.isEmpty()){
+                lastMovementDate = DateUtil.parseString(stockMovementViewModels.get(stockMovementViewModels.size() - 1).getMovementDate(), DateUtil.DEFAULT_DATE_FORMAT);
+            }
+
             if (today.before(date) || lastMovementDate.after(date.getTime())) {
                 ToastUtil.show(R.string.msg_invalid_stock_movement_date);
             } else {
