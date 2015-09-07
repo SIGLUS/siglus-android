@@ -19,6 +19,7 @@
 package org.openlmis.core.view.activity;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,8 +35,9 @@ import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockMovementPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.StockMovementAdapter;
-import org.openlmis.core.view.viewmodel.StockMovementViewModel;
+import org.openlmis.core.view.fragment.RetainedFragment;
 
+import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -56,10 +58,12 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     Button btnCancel;
 
 
-    @Inject
     StockMovementPresenter presenter;
+
     private long stockId;
     private StockMovementAdapter stockMovementAdapter;
+
+    private RetainedFragment dataFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +77,21 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             finish();
         }
         initUI();
+    }
+
+    private void initPresenter() {
+        // find the retained fragment on activity restarts
+        FragmentManager fm = getFragmentManager();
+        dataFragment = (RetainedFragment) fm.findFragmentByTag("RetainedFragment");
+
+        if (dataFragment == null) {
+            dataFragment = new RetainedFragment();
+            fm.beginTransaction().add(dataFragment, "RetainedFragment").commit();
+            presenter = RoboGuice.getInjector(getApplicationContext()).getInstance(StockMovementPresenter.class);
+            dataFragment.putData("presenter", presenter);
+        } else {
+            presenter = (StockMovementPresenter) dataFragment.getData("presenter");
+        }
     }
 
     private void initUI(){
@@ -99,6 +118,9 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             }
         });
 
+
+        loading();
+        presenter.loadStockMovementViewModels();
     }
 
     @Override
@@ -118,12 +140,20 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     }
 
     @Override
-    public void refreshStockMovement(StockMovementViewModel viewModel) {
-        stockMovementAdapter.addLine();
+    public void refreshStockMovement() {
+        stockMovementAdapter.refresh();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        dataFragment.putData("presenter", presenter);
+        super.onDestroy();
     }
 
     @Override
     public Presenter getPresenter() {
+        initPresenter();
         return presenter;
     }
 }

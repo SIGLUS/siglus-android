@@ -36,10 +36,18 @@ import org.roboguice.shaded.goole.common.base.Function;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
+
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class StockMovementPresenter implements Presenter {
 
+    @Getter
     List<StockMovementViewModel> stockMovementModelList;
 
     @Inject
@@ -80,20 +88,42 @@ public class StockMovementPresenter implements Presenter {
         this.stockCard = stockRepository.queryStockCardById(stockCardId);
     }
 
-    public List<StockMovementViewModel> getStockMovementModels() {
-        try {
-            return from(stockRepository.listLastFive(stockCard.getId())).transform(new Function<StockMovementItem, StockMovementViewModel>() {
-                @Override
-                public StockMovementViewModel apply(StockMovementItem stockMovementItem) {
-                    return new StockMovementViewModel(stockMovementItem);
-                }
-            }).toList();
-        } catch (LMISException e) {
-            e.printStackTrace();
+    public void loadStockMovementViewModels() {
+        if (!stockMovementModelList.isEmpty()){
+            view.loaded();
+            return;
         }
 
-        return null;
+        Observable.create(new Observable.OnSubscribe<List<StockMovementViewModel>>() {
+            @Override
+            public void call(Subscriber<? super List<StockMovementViewModel>> subscriber) {
+                try {
+
+                    List<StockMovementViewModel> list = from(stockRepository.listLastFive(stockCard.getId())).transform(new Function<StockMovementItem, StockMovementViewModel>() {
+                        @Override
+                        public StockMovementViewModel apply(StockMovementItem stockMovementItem) {
+                            return new StockMovementViewModel(stockMovementItem);
+                        }
+                    }).toList();
+
+                    subscriber.onNext(list);
+                } catch (LMISException e){
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<List<StockMovementViewModel>>() {
+            @Override
+            public void call(List<StockMovementViewModel> stockMovementViewModels) {
+                stockMovementModelList.clear();
+                stockMovementModelList.addAll(stockMovementViewModels);
+                stockMovementModelList.add(new StockMovementViewModel());
+
+                view.refreshStockMovement();
+                view.loaded();
+            }
+        });
     }
+
 
     private void saveStockMovement(StockMovementItem stockMovementItem) throws LMISException {
         stockRepository.addStockMovementItem(stockCard, stockMovementItem);
@@ -104,7 +134,10 @@ public class StockMovementPresenter implements Presenter {
             try {
                 saveStockMovement(viewModel.convertViewToModel());
 
-                view.refreshStockMovement(viewModel);
+                viewModel.setDraft(false);
+                stockMovementModelList.add(new StockMovementViewModel());
+
+                view.refreshStockMovement();
             } catch (LMISException e) {
                 view.showErrorAlert(e.getMessage());
             }
@@ -120,6 +153,6 @@ public class StockMovementPresenter implements Presenter {
 
     public interface StockMovementView extends View {
         void showErrorAlert(String msg);
-        void refreshStockMovement(StockMovementViewModel viewModel);
+        void refreshStockMovement();
     }
 }

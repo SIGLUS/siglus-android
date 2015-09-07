@@ -42,14 +42,12 @@ import org.openlmis.core.view.widget.InputFilterMinMax;
 import org.openlmis.core.view.widget.MovementTypeDialog;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import static org.roboguice.shaded.goole.common.base.Preconditions.checkNotNull;
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 
 public class StockMovementAdapter extends BaseAdapter {
@@ -67,12 +65,7 @@ public class StockMovementAdapter extends BaseAdapter {
     private final StockCard stockCard;
 
     public StockMovementAdapter(Context context, StockMovementPresenter presenter) {
-        if (presenter.getStockMovementModels() == null){
-            stockMovementViewModels = new ArrayList<>();
-        }else {
-            stockMovementViewModels = newArrayList(presenter.getStockMovementModels());
-        }
-        stockMovementViewModels.add(new StockMovementViewModel());
+        stockMovementViewModels = presenter.getStockMovementModelList();
         this.context = context;
         stockCard = presenter.getStockCard();
         layoutInflater = LayoutInflater.from(context);
@@ -255,9 +248,7 @@ public class StockMovementAdapter extends BaseAdapter {
     }
 
 
-    public void addLine(){
-        getDraftStockMovementItem().setDraft(false);
-        stockMovementViewModels.add(new StockMovementViewModel());
+    public void refresh(){
         notifyDataSetChanged();
         setupMovementTypeDialog();
     }
