@@ -12,13 +12,13 @@ describe "submit requisition to web server" do
       products: [
       {
         productCode: "P1",
-        beginningBalance: 40,
-        quantityReceived: 10,
-        quantityDispensed: 10,
-        stockInHand: 40,
-        totalLossesAndAdjustments: 0,
-        calculatedOrderQuantity: 10,
-        quantityRequested: 10,
+        beginningBalance: 10,
+        quantityReceived: 0,
+        quantityDispensed: 0,
+        stockInHand: 20,
+        totalLossesAndAdjustments: 10,
+        calculatedOrderQuantity: 0,
+        quantityRequested: 0,
         reasonForRequestedQuantity: "reason"
       },
       {
