@@ -18,36 +18,33 @@
 package org.openlmis.core.view.fragment;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.FragmentManager;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Bundle;
 
 import org.openlmis.core.R;
 
 public class OnBackConfirmDialog extends BaseDialogFragment {
 
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(R.string.msg_mmia_onback_confirm)
+    public interface ResultCallBack {
+        public void callback(boolean flag);
+    }
+
+    public static void showDialog(Context context, final ResultCallBack resultCallBack) {
+        AlertDialog dialog = new AlertDialog.Builder(context).setMessage(R.string.msg_mmia_onback_confirm)
                 .setPositiveButton(R.string.btn_positive, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        getActivity().finish();
+                        if (resultCallBack != null) {
+                            resultCallBack.callback(true);
+                        }
                     }
                 }).setNegativeButton(R.string.btn_negative, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        return builder.create();
-    }
-
-    public static void showDialog(FragmentManager fragmentManager) {
-        OnBackConfirmDialog dialog = new OnBackConfirmDialog();
-        dialog.show(fragmentManager, "OnBackConfirmDialog");
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create();
+        dialog.show();
     }
 
 }

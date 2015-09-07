@@ -159,7 +159,14 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
     @Override
     public void onBackPressed() {
         if (hasDataChanged()) {
-            OnBackConfirmDialog.showDialog(getFragmentManager());
+            OnBackConfirmDialog.showDialog(this, new OnBackConfirmDialog.ResultCallBack() {
+                @Override
+                public void callback(boolean flag) {
+                    if(flag) {
+                        finish();
+                    }
+                }
+            });
         } else {
             super.onBackPressed();
         }
