@@ -107,6 +107,12 @@ public class Presenter implements org.openlmis.core.presenter.Presenter {
         });
     }
 
+    public void refreshStockCards(){
+        for (StockCard stockCard : stockCardList){
+            stockRepository.refresh(stockCard);
+        }
+    }
+
     @Override
     public void attachView(View v) {
         view = (StockCardListView)v;
