@@ -24,7 +24,10 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -39,6 +42,8 @@ public class RnRForm extends BaseModel {
         SUBMITED,
         AUTHORIZED
     }
+
+    public static final int DAY_PERIOD_END = 20;
 
     @ForeignCollectionField()
     private ForeignCollection<RnrFormItem> rnrFormItemList;
@@ -66,6 +71,35 @@ public class RnRForm extends BaseModel {
 
     @DatabaseField
     private boolean synced = false;
+
+    @DatabaseField
+    private Date periodBegin;
+
+    @DatabaseField
+    private Date periodEnd;
+
+
+    public static RnRForm init(Program program, Date generateDate){
+        RnRForm rnrForm = new RnRForm();
+        rnrForm.program = program;
+
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime(generateDate);
+
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        if (day <= DAY_PERIOD_END + 5){
+            rnrForm.periodBegin = new GregorianCalendar(year, month - 1, DAY_PERIOD_END + 1).getTime();
+            rnrForm.periodEnd =  new GregorianCalendar(year, month, DAY_PERIOD_END).getTime();
+        } else{
+            rnrForm.periodBegin = new GregorianCalendar(year, month, DAY_PERIOD_END + 1).getTime();
+            rnrForm.periodEnd = new GregorianCalendar(year, month + 1, DAY_PERIOD_END).getTime();
+        }
+
+        return rnrForm;
+    }
 
     public static long getRegimenItemListAmount(Collection<RegimenItem> list) {
         long totalRegimenNumber = 0;

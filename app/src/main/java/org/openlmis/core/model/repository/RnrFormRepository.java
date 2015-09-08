@@ -36,18 +36,16 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
+import org.openlmis.core.utils.DateUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 public class RnrFormRepository {
 
-    public static final int DAY_PERIOD_END = 20;
     private static final String TAG = "RnrFormRepository";
 
     @Inject
@@ -81,13 +79,11 @@ public class RnrFormRepository {
             throw new LMISException("Program cannot be null !");
         }
 
-        final RnRForm form = new RnRForm();
+        final RnRForm form = RnRForm.init(program, DateUtil.today());
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-
-                    form.setProgram(program);
                     create(form);
                     createRnrFormItems(generateRnrFormItems(form));
                     createRegimenItems(generateRegimeItems(form));
@@ -192,14 +188,8 @@ public class RnrFormRepository {
         List<StockCard> stockCards = stockRepository.list(form.getProgram().getProgramCode());
         List<RnrFormItem> rnrFormItems = new ArrayList<>();
 
-        Calendar calendar = GregorianCalendar.getInstance();
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
-        Date startDate = new GregorianCalendar(year, month - 1, DAY_PERIOD_END + 1).getTime();
-        Date endDate = new GregorianCalendar(year, month, DAY_PERIOD_END).getTime();
-
         for (StockCard stockCard : stockCards) {
-            RnrFormItem rnrFormItem = createRnrFormItemByPeriod(stockCard, startDate, endDate);
+            RnrFormItem rnrFormItem = createRnrFormItemByPeriod(stockCard, form.getPeriodBegin(), form.getPeriodEnd());
             rnrFormItem.setForm(form);
             rnrFormItems.add(rnrFormItem);
         }

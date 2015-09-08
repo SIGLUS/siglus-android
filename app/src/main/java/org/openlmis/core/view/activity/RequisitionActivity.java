@@ -122,7 +122,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     @Override
     public void showErrorMessage(String msg) {
-
+        ToastUtil.show(msg);
     }
 
     @Override

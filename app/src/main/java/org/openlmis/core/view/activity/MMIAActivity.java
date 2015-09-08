@@ -199,7 +199,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
 
     @Override
     public void showErrorMessage(String msg) {
-
+        ToastUtil.show(msg);
     }
 
     @Override

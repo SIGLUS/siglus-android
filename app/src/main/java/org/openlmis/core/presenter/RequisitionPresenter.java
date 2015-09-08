@@ -88,6 +88,7 @@ public class RequisitionPresenter implements Presenter {
             }
             return rnRForm;
         } catch (LMISException e) {
+            view.showErrorMessage(e.getMessage());
             e.printStackTrace();
         }
         return null;
