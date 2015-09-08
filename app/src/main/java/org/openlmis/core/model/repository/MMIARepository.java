@@ -58,15 +58,11 @@ public class MMIARepository extends RnrFormRepository {
     }
 
     public RnRForm initMIMIA() throws LMISException {
-        RnRForm rnrForm = initRnrForm(programRepository.queryByCode(MMIA_PROGRAM_CODE));
-        inflateMMIAProducts(rnrForm);
-        return rnrForm;
+        return initRnrForm(programRepository.queryByCode(MMIA_PROGRAM_CODE));
     }
 
     public RnRForm getDraftMMIAForm() throws LMISException {
-        RnRForm rnRForm = queryDraft(programRepository.queryByCode(MMIA_PROGRAM_CODE));
-        inflateMMIAProducts(rnRForm);
-        return rnRForm;
+        return queryDraft(programRepository.queryByCode(MMIA_PROGRAM_CODE));
     }
 
     @Override
@@ -115,25 +111,24 @@ public class MMIARepository extends RnrFormRepository {
         return 0L;
     }
 
-    private void inflateMMIAProducts(RnRForm rnrForm) throws LMISException {
-        if (rnrForm == null) {
-            return;
-        }
+    @Override
+    protected List<RnrFormItem> generateRnrFormItems(RnRForm form) throws LMISException {
+        List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form);
 
         List<Product> products = productRepository.queryProducts(programRepository.queryByCode(MMIA_PROGRAM_CODE).getId());
         ArrayList<RnrFormItem> result = new ArrayList<>();
-        ArrayList<RnrFormItem> rnrFormItemListWrapper = rnrForm.getRnrFormItemListWrapper();
 
         for (Product product : products) {
             RnrFormItem rnrFormItem = new RnrFormItem();
+            rnrFormItem.setForm(form);
             rnrFormItem.setProduct(product);
-            for (RnrFormItem item : rnrFormItemListWrapper) {
+            for (RnrFormItem item : rnrFormItems) {
                 if (item.getProduct().getId() == product.getId()) {
                     rnrFormItem = item;
                 }
             }
             result.add(rnrFormItem);
         }
-        rnrForm.setRnrFormItemListWrapper(result);
+        return result;
     }
 }

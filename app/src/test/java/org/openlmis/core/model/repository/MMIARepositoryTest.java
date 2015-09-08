@@ -60,8 +60,6 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     ProgramRepository mockProgramRepository;
     RnrFormRepository mockRnrFormRepository;
 
-    Product product;
-
     @Before
     public void setup() throws LMISException {
         mockStockRepository = mock(StockRepository.class);
@@ -73,16 +71,30 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
         MMIARepository = RoboGuice.getInjector(Robolectric.application).getInstance(MMIARepository.class);
 
-        product = new Product();
-        product.setId(1L);
-        product.setPrimaryName("Test Product");
-        product.setStrength("200");
 
-        when(mockProgramRepository.queryByCode(anyString())).thenReturn(new Program("ART", "ART", null));
+        Program program = new Program("ART", "ART", null);
+        when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
+
+        ArrayList<Product> products = new ArrayList<>();
+
+        for (int i = 0; i < 24; i++) {
+            Product product = new Product();
+            product.setId(i);
+            product.setProgram(program);
+            product.setPrimaryName("mockProduct");
+            products.add(product);
+        }
+
+        when(mockProductRepository.queryProducts(anyLong())).thenReturn(products);
     }
 
     @Test
     public void shouldCalculateInfoFromStockCardByPeriod() throws Exception {
+        Product product = new Product();
+        product.setId(1L);
+        product.setPrimaryName("Test Product");
+        product.setStrength("200");
+
         ArrayList<StockCard> stockCards = new ArrayList<>();
         StockCard stockCard = new StockCard();
         stockCard.setProduct(product);
@@ -107,12 +119,11 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(stockMovementItems);
 
         RnRForm form = MMIARepository.initMIMIA();
-        assertThat(form.getRnrFormItemList().size(), is(1));
+        assertThat(form.getRnrFormItemList().size(), is(24));
 
-        for (RnrFormItem item : form.getRnrFormItemList()) {
-            assertThat(item.getReceived(), is(25L));
-            assertThat(item.getIssued(), is(20L));
-        }
+        RnrFormItem item = form.getRnrFormItemListWrapper().get(1);
+        assertThat(item.getReceived(), is(25L));
+        assertThat(item.getIssued(), is(20L));
     }
 
 
@@ -133,7 +144,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
         for (int i = 0; i < regimenItemListWrapper.size(); i++) {
             RegimenItem item = regimenItemListWrapper.get(i);
-            item.setAmount((long)i);
+            item.setAmount((long) i);
         }
 
         ArrayList<BaseInfoItem> baseInfoItemListWrapper = initForm.getBaseInfoItemListWrapper();
@@ -156,15 +167,6 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldInflateMMIAProducts() throws Exception {
 
-        ArrayList<Product> products = new ArrayList<>();
-
-        for (int i=0;i<24;i++){
-            Product product = new Product();
-            products.add(product);
-        }
-
-        when(mockProductRepository.queryProducts(anyLong())).thenReturn(products);
-
         Program program = new Program();
         program.setProgramCode(org.openlmis.core.model.repository.MMIARepository.MMIA_PROGRAM_CODE);
 
@@ -173,8 +175,8 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
         when(mockRnrFormRepository.initRnrForm(program)).thenReturn(rnRForm);
 
-        RnRForm rnRFormTest =  MMIARepository.initMIMIA();
+        RnRForm rnRFormTest = MMIARepository.initMIMIA();
 
-        assertThat(rnRFormTest.getRnrFormItemListWrapper().size(),is(24));
+        assertThat(rnRFormTest.getRnrFormItemListWrapper().size(), is(24));
     }
 }
