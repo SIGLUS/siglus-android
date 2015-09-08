@@ -35,10 +35,12 @@ import android.widget.TextView;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -121,7 +123,11 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
                 GregorianCalendar date = new GregorianCalendar(year, monthOfYear, dayOfMonth);
                 if (today.before(date)) {
                     String dateString = new StringBuilder().append(dayOfMonth).append("/").append(monthOfYear + 1).append("/").append(year).toString();
-                    holder.txExpireDate.setText(dateString);
+                    try {
+                        holder.txExpireDate.setText(DateUtil.convertDate(dateString, "dd/MM/yyyy", "MMM yyyy"));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                     currentList.get(position).addExpiryDate(dateString);
                 } else {
                     ToastUtil.show(R.string.msg_invalid_date);

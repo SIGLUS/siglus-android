@@ -27,7 +27,9 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.utils.DateUtil;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,7 +117,12 @@ public class StockCardViewModel {
 
     public String optFirstExpiryDate(){
         if (expiryDates !=null && expiryDates.size() >0){
-            return expiryDates.get(0);
+            try {
+                return DateUtil.convertDate(expiryDates.get(0), "dd/MM/yyyy", "MMM yyyy");
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return  StringUtils.EMPTY;
+            }
         }else {
             return StringUtils.EMPTY;
         }
