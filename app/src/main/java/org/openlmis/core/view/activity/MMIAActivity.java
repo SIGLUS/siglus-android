@@ -46,7 +46,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_mmia)
-public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMIAFormView, View.OnClickListener {
+public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIAFormView, View.OnClickListener {
 
     @InjectView(R.id.rnr_form_list)
     private MMIARnrForm rnrFormList;

@@ -37,7 +37,7 @@ import java.util.ArrayList;
 public class MMIAFormPresenter implements Presenter {
 
     RnRForm form;
-    MIMIAFormView view;
+    MMIAFormView view;
 
     @Inject
     MMIARepository mmiaRepository;
@@ -58,10 +58,10 @@ public class MMIAFormPresenter implements Presenter {
 
     @Override
     public void attachView(View v) throws ViewNotMatchException {
-        if (v instanceof MIMIAFormView) {
-            this.view = (MIMIAFormView) v;
+        if (v instanceof MMIAFormView) {
+            this.view = (MMIAFormView) v;
         } else {
-            throw new ViewNotMatchException(MIMIAFormView.class.getName());
+            throw new ViewNotMatchException(MMIAFormView.class.getName());
         }
     }
 
@@ -74,7 +74,7 @@ public class MMIAFormPresenter implements Presenter {
         if (draftMMIAForm != null) {
             form = draftMMIAForm;
         } else {
-            form = initMIMIA();
+            form = initMMIA();
         }
         return form;
     }
@@ -89,9 +89,9 @@ public class MMIAFormPresenter implements Presenter {
         return draftMMIAForm;
     }
 
-    private RnRForm initMIMIA() {
+    private RnRForm initMMIA() {
         try {
-            form = mmiaRepository.initMIMIA();
+            form = mmiaRepository.initMMIA();
         } catch (LMISException e) {
             view.showErrorMessage(e.getMessage());
         }
@@ -142,7 +142,7 @@ public class MMIAFormPresenter implements Presenter {
         }
     }
 
-    public interface MIMIAFormView extends View {
+    public interface MMIAFormView extends View {
         void showValidationAlert();
 
         void showErrorMessage(String msg);
