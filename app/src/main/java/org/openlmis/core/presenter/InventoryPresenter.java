@@ -34,7 +34,6 @@ import org.openlmis.core.view.View;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.Date;
 import java.util.List;
@@ -43,6 +42,8 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class InventoryPresenter implements Presenter {
 
@@ -75,7 +76,19 @@ public class InventoryPresenter implements Presenter {
     public List<Product> loadMasterProductList() {
         List<Product> list = null;
         try {
-            list = productRepository.list();
+            final List<Product> existProductList = from(stockRepository.list()).transform(new Function<StockCard, Product>() {
+                @Override
+                public Product apply(StockCard stockCard) {
+                    return stockCard.getProduct();
+                }
+            }).toList();
+
+            list = from(productRepository.list()).filter(new Predicate<Product>() {
+                @Override
+                public boolean apply(Product product) {
+                    return !existProductList.contains(product);
+                }
+            }).toList();
         } catch (LMISException e) {
             e.printStackTrace();
         }
@@ -90,7 +103,7 @@ public class InventoryPresenter implements Presenter {
                 List<StockCard> list;
                 try{
                     list = stockRepository.list();
-                    subscriber.onNext(FluentIterable.from(list).transform(new Function<StockCard, StockCardViewModel>() {
+                    subscriber.onNext(from(list).transform(new Function<StockCard, StockCardViewModel>() {
                         @Override
                         public StockCardViewModel apply(StockCard stockCard) {
                             return new StockCardViewModel(stockCard);
@@ -106,7 +119,7 @@ public class InventoryPresenter implements Presenter {
 
     public void initStockCards(List<StockCardViewModel> list) {
 
-        FluentIterable.from(list).filter(new Predicate<StockCardViewModel>() {
+        from(list).filter(new Predicate<StockCardViewModel>() {
             @Override
             public boolean apply(StockCardViewModel stockCardViewModel) {
                 return stockCardViewModel.isChecked();

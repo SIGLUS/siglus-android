@@ -22,6 +22,7 @@ package org.openlmis.core.model;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -50,4 +51,20 @@ public class Product extends BaseModel{
     String type;
 
     String medicine_type;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof  Product){
+            Product product = (Product)o;
+            return product.getCode().equals(getCode());
+        }else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return getCode().hashCode();
+    }
 }

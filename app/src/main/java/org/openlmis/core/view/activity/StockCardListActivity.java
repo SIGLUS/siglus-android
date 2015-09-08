@@ -19,6 +19,7 @@
 package org.openlmis.core.view.activity;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 
 
 import org.openlmis.core.R;
@@ -59,6 +60,16 @@ public class StockCardListActivity extends BaseActivity {
 
             }
         };
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_inventory){
+            startActivity(InventoryActivity.class, false);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
