@@ -165,8 +165,6 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     }
 
     private void initUI() {
-        etConsultationNumbers.addTextChangedListener(textWatcher);
-
         initRequisitionBodyList();
         initRequisitionProductList();
 
