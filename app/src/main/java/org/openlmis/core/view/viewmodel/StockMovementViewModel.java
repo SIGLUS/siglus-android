@@ -45,7 +45,11 @@ public class StockMovementViewModel {
     boolean isDraft = true;
 
     public StockMovementViewModel(StockMovementItem item) {
-        movementDate = DateUtil.formatDate(item.getMovementDate());
+        try {
+            movementDate = DateUtil.convertDate(DateUtil.formatDate(item.getMovementDate()), "dd/MM/yyyy", "dd MMM yyyy");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         documentNo = item.getDocumentNumber();
         reason = item.getReason();
         movementType = item.getMovementType();
