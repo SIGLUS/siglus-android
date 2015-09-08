@@ -45,6 +45,7 @@ import roboguice.RoboGuice;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -53,10 +54,11 @@ import static org.mockito.Mockito.when;
 @RunWith(LMISTestRunner.class)
 public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
-    ProductRepository productRepository;
+    ProductRepository mockProductRepository;
     MMIARepository MMIARepository;
     StockRepository mockStockRepository;
     ProgramRepository mockProgramRepository;
+    RnrFormRepository mockRnrFormRepository;
 
     Product product;
 
@@ -64,18 +66,17 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     public void setup() throws LMISException {
         mockStockRepository = mock(StockRepository.class);
         mockProgramRepository = mock(ProgramRepository.class);
+        mockRnrFormRepository = mock(RnrFormRepository.class);
+        mockProductRepository = mock(ProductRepository.class);
 
         RoboGuice.overrideApplicationInjector(Robolectric.application, new MyTestModule());
 
         MMIARepository = RoboGuice.getInjector(Robolectric.application).getInstance(MMIARepository.class);
-        productRepository = RoboGuice.getInjector(Robolectric.application).getInstance(ProductRepository.class);
 
         product = new Product();
         product.setId(1L);
         product.setPrimaryName("Test Product");
         product.setStrength("200");
-
-        productRepository.create(product);
 
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(new Program("ART", "ART", null));
     }
@@ -118,6 +119,8 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
+            bind(ProductRepository.class).toInstance(mockProductRepository);
+            bind(RnrFormRepository.class).toInstance(mockRnrFormRepository);
             bind(StockRepository.class).toInstance(mockStockRepository);
             bind(ProgramRepository.class).toInstance(mockProgramRepository);
         }
@@ -148,5 +151,30 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         assertThat(expectRegimeTotal, is(regimenTotal));
 
         assertThat(MMIARepository.getTotalPatients(initForm), is(MMIARepository.getTotalPatients(DBForm)));
+    }
+
+    @Test
+    public void shouldInflateMMIAProducts() throws Exception {
+
+        ArrayList<Product> products = new ArrayList<>();
+
+        for (int i=0;i<24;i++){
+            Product product = new Product();
+            products.add(product);
+        }
+
+        when(mockProductRepository.queryProducts(anyLong())).thenReturn(products);
+
+        Program program = new Program();
+        program.setProgramCode(org.openlmis.core.model.repository.MMIARepository.MMIA_PROGRAM_CODE);
+
+        RnRForm rnRForm = new RnRForm();
+        rnRForm.setProgram(program);
+
+        when(mockRnrFormRepository.initRnrForm(program)).thenReturn(rnRForm);
+
+        RnRForm rnRFormTest =  MMIARepository.initMIMIA();
+
+        assertThat(rnRFormTest.getRnrFormItemListWrapper().size(),is(24));
     }
 }

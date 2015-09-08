@@ -115,7 +115,7 @@ public class MMIARepository extends RnrFormRepository {
         return 0L;
     }
 
-    public void inflateMMIAProducts(RnRForm rnrForm) throws LMISException {
+    private void inflateMMIAProducts(RnRForm rnrForm) throws LMISException {
         if (rnrForm == null) {
             return;
         }
@@ -123,6 +123,7 @@ public class MMIARepository extends RnrFormRepository {
         List<Product> products = productRepository.queryProducts(programRepository.queryByCode(MMIA_PROGRAM_CODE).getId());
         ArrayList<RnrFormItem> result = new ArrayList<>();
         ArrayList<RnrFormItem> rnrFormItemListWrapper = rnrForm.getRnrFormItemListWrapper();
+
         for (Product product : products) {
             RnrFormItem rnrFormItem = new RnrFormItem();
             rnrFormItem.setProduct(product);
