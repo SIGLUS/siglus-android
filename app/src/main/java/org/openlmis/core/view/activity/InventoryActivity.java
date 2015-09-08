@@ -120,7 +120,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.submitInventory((mAdapter).getData());
+                presenter.doInitialInventory(((InitialInventoryAdapter) mAdapter).getData());
             }
         });
 

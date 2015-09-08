@@ -34,11 +34,17 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.robolectric.Robolectric;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import roboguice.RoboGuice;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(LMISTestRunner.class)
 public class InventoryPresenterTest extends LMISRepositoryUnitTest {
@@ -68,6 +74,26 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         stockCard.setStockOnHand(100);
         stockCard.setProduct(product);
         stockCard.setExpireDates(StringUtils.EMPTY);
+    }
+
+
+    @Test
+    public void shouldInitStockCardAndCreateAInitInventoryMovementItem() throws LMISException {
+        StockCardViewModel model = new StockCardViewModel(product);
+        model.setChecked(true);
+        model.setQuantity("100");
+        StockCardViewModel model2 = new StockCardViewModel(product);
+        model2.setChecked(false);
+        model2.setQuantity("200");
+
+        List<StockCardViewModel> stockCardViewModelList = new ArrayList<>();
+        stockCardViewModelList.add(model);
+        stockCardViewModelList.add(model2);
+
+        inventoryPresenter.initStockCards(stockCardViewModelList);
+
+        verify(stockRepositoryMock, times(1)).save(any(StockCard.class));
+        verify(stockRepositoryMock, times(1)).addStockMovementItem(any(StockCard.class), any(StockMovementItem.class));
     }
 
 

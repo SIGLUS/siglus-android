@@ -33,9 +33,9 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.View;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -104,23 +104,48 @@ public class InventoryPresenter implements Presenter {
     }
 
 
-    public void initStockCard(List<StockCardViewModel> list) {
-        List<StockCard> stockCards = new ArrayList<>();
+    public void initStockCards(List<StockCardViewModel> list) {
 
-        for (StockCardViewModel model : list) {
-            if (model.isChecked()) {
-                Product product = productRepository.getById(model.getProductId());
-
-                StockCard stockCard = new StockCard();
-                stockCard.setProduct(product);
-                stockCard.setStockOnHand(Integer.parseInt(model.getQuantity()));
-                stockCard.setExpireDates(model.formatExpiryDateString());
-
-                stockCards.add(stockCard);
+        FluentIterable.from(list).filter(new Predicate<StockCardViewModel>() {
+            @Override
+            public boolean apply(StockCardViewModel stockCardViewModel) {
+                return stockCardViewModel.isChecked();
             }
-        }
-        stockRepository.batchSave(stockCards);
+        }).transform(new Function<StockCardViewModel, StockCard>() {
+            @Override
+            public StockCard apply(StockCardViewModel stockCardViewModel) {
+                return initStockCard(stockCardViewModel);
+            }
+        }).toList();
     }
+
+    private StockCard initStockCard(StockCardViewModel model){
+        try {
+            Product product = productRepository.getById(model.getProductId());
+
+            StockCard stockCard = new StockCard();
+            stockCard.setProduct(product);
+            stockCard.setStockOnHand(Integer.parseInt(model.getQuantity()));
+            stockCard.setExpireDates(model.formatExpiryDateString());
+
+            stockRepository.save(stockCard);
+
+            StockMovementItem initInventory = new StockMovementItem();
+            initInventory.setReason(context.getResources().getString(R.string.title_physical_inventory));
+            initInventory.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
+            initInventory.setMovementDate(new Date());
+            initInventory.setMovementQuantity(0);
+
+            stockRepository.addStockMovementItem(stockCard, initInventory);
+
+            return stockCard;
+        }catch (LMISException e){
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 
     public StockMovementItem calculateAdjustment(StockCardViewModel model) {
         long inventory = Long.parseLong(model.getQuantity());
@@ -157,9 +182,9 @@ public class InventoryPresenter implements Presenter {
         }
     }
 
-    public void submitInventory(List<StockCardViewModel> list) {
+    public void doInitialInventory(List<StockCardViewModel> list) {
         if (view.validateInventory()) {
-            initStockCard(list);
+            initStockCards(list);
             view.goToMainPage();
         }
     }
