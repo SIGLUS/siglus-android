@@ -69,7 +69,7 @@ public class RnrFormRepository {
 
 
     @Inject
-    public RnrFormRepository(Context context){
+    public RnrFormRepository(Context context) {
         genericDao = new GenericDao<>(RnRForm.class, context);
         rnrFormItemGenericDao = new GenericDao<>(RnrFormItem.class, context);
         this.context = context;
@@ -77,8 +77,8 @@ public class RnrFormRepository {
 
 
     public RnRForm initRnrForm(final Program program) throws LMISException {
-        if (program == null){
-            throw  new LMISException("Program cannot be null !");
+        if (program == null) {
+            throw new LMISException("Program cannot be null !");
         }
 
         final RnRForm form = new RnRForm();
@@ -103,7 +103,7 @@ public class RnrFormRepository {
         return form;
     }
 
-    protected void create(RnRForm rnRForm) throws LMISException{
+    protected void create(RnRForm rnRForm) throws LMISException {
         genericDao.create(rnRForm);
     }
 
@@ -128,7 +128,7 @@ public class RnrFormRepository {
         return genericDao.queryForAll();
     }
 
-    public List<RnRForm> listUnSynced() throws LMISException{
+    public List<RnRForm> listUnSynced() throws LMISException {
         return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
             @Override
             public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
@@ -137,7 +137,10 @@ public class RnrFormRepository {
         });
     }
 
-    public RnRForm queryDraft(final Program program) throws LMISException{
+    public RnRForm queryDraft(final Program program) throws LMISException {
+        if (program == null) {
+            throw new LMISException("Program cannot be null !");
+        }
         return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
             @Override
             public RnRForm operate(Dao<RnRForm, String> dao) throws SQLException {
@@ -147,7 +150,7 @@ public class RnrFormRepository {
     }
 
 
-    public void approve(RnRForm form) throws LMISException{
+    public void approve(RnRForm form) throws LMISException {
         form.setStatus(RnRForm.STATUS.AUTHORIZED);
         genericDao.update(form);
     }
@@ -211,7 +214,7 @@ public class RnrFormRepository {
 
             StockMovementItem firstItem = stockMovementItems.get(0);
             if (firstItem.getMovementType() == StockMovementItem.MovementType.ISSUE
-                    || firstItem.getMovementType() == StockMovementItem.MovementType.NEGATIVE_ADJUST){
+                    || firstItem.getMovementType() == StockMovementItem.MovementType.NEGATIVE_ADJUST) {
 
                 rnrFormItem.setInitialAmount(firstItem.getStockOnHand() + firstItem.getMovementQuantity());
             } else {
@@ -227,7 +230,7 @@ public class RnrFormRepository {
                     totalReceived += item.getMovementQuantity();
                 } else if (StockMovementItem.MovementType.ISSUE == item.getMovementType()) {
                     totalIssued += item.getMovementQuantity();
-                } else if (StockMovementItem.MovementType.NEGATIVE_ADJUST == item.getMovementType()){
+                } else if (StockMovementItem.MovementType.NEGATIVE_ADJUST == item.getMovementType()) {
                     totalAdjustment -= item.getMovementQuantity();
                 } else if (StockMovementItem.MovementType.POSITIVE_ADJUST == item.getMovementType()) {
                     totalAdjustment += item.getMovementQuantity();

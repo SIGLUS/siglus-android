@@ -116,7 +116,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
 
     public void initUI() {
 
-        rnrFromListView.initView(new ArrayList<>(presenter.getRnrForm().getRnrFormItemList()));
+        rnrFromListView.initView(new ArrayList<>(presenter.getRnrForm().getRnrFormItemListWrapper()));
 
         regimeListView.initView(presenter.getRnrForm().getRegimenItemListWrapper(), tvRegimeTotal);
 

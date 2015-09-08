@@ -25,10 +25,11 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
-import org.openlmis.core.model.Program;
-import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
+import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnrFormItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,20 +50,23 @@ public class MMIARepository extends RnrFormRepository {
     ProgramRepository programRepository;
 
     @Inject
+    ProductRepository productRepository;
+
+    @Inject
     public MMIARepository(Context context) {
         super(context);
     }
 
     public RnRForm initMIMIA() throws LMISException {
-        return initRnrForm(programRepository.queryByCode(MMIA_PROGRAM_CODE));
+        RnRForm rnrForm = initRnrForm(programRepository.queryByCode(MMIA_PROGRAM_CODE));
+        inflateMMIAProducts(rnrForm);
+        return rnrForm;
     }
 
     public RnRForm getDraftMMIAForm() throws LMISException {
-        Program program = programRepository.queryByCode(MMIA_PROGRAM_CODE);
-        if (program == null) {
-            throw new LMISException("Program cannot be null !");
-        }
-        return queryDraft(program);
+        RnRForm rnRForm = queryDraft(programRepository.queryByCode(MMIA_PROGRAM_CODE));
+        inflateMMIAProducts(rnRForm);
+        return rnRForm;
     }
 
     @Override
@@ -109,5 +113,26 @@ public class MMIARepository extends RnrFormRepository {
             }
         }
         return 0L;
+    }
+
+    public void inflateMMIAProducts(RnRForm rnrForm) throws LMISException {
+        if (rnrForm == null) {
+            return;
+        }
+
+        List<Product> products = productRepository.queryProducts(programRepository.queryByCode(MMIA_PROGRAM_CODE).getId());
+        ArrayList<RnrFormItem> result = new ArrayList<>();
+        ArrayList<RnrFormItem> rnrFormItemListWrapper = rnrForm.getRnrFormItemListWrapper();
+        for (Product product : products) {
+            RnrFormItem rnrFormItem = new RnrFormItem();
+            rnrFormItem.setProduct(product);
+            for (RnrFormItem item : rnrFormItemListWrapper) {
+                if (item.getProduct().getId() == product.getId()) {
+                    rnrFormItem = item;
+                }
+            }
+            result.add(rnrFormItem);
+        }
+        rnrForm.setRnrFormItemListWrapper(result);
     }
 }
