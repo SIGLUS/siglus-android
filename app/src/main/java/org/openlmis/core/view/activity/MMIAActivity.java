@@ -124,7 +124,12 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
 
         etComment.setText(presenter.getRnrForm().getComments());
 
-        etComment.addTextChangedListener(textWatcher);
+        etComment.post(new Runnable() {
+            @Override
+            public void run() {
+                etComment.addTextChangedListener(textWatcher);
+            }
+        });
 
         btnSave.setOnClickListener(this);
 
@@ -162,7 +167,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
             OnBackConfirmDialog.showDialog(this, new OnBackConfirmDialog.ResultCallBack() {
                 @Override
                 public void callback(boolean flag) {
-                    if(flag) {
+                    if (flag) {
                         presenter.removeRnrForm();
                         finish();
                     }
@@ -175,7 +180,9 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
     }
 
     private boolean hasDataChanged() {
-        hasDataChanged = regimeListView.hasDataChanged() || mmiaInfoListView.hasDataChanged() || commentHasChanged;
+        if (hasDataChanged == null) {
+            hasDataChanged = regimeListView.hasDataChanged() || mmiaInfoListView.hasDataChanged() || commentHasChanged;
+        }
         return hasDataChanged;
     }
 
@@ -197,9 +204,10 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
 
     @Override
     protected void onDestroy() {
-
         dataFragment.putData("presenter", presenter);
-        dataFragment.putData("hasDataChanged", hasDataChanged());
+        if (hasDataChanged()) {
+            dataFragment.putData("hasDataChanged", hasDataChanged());
+        }
         super.onDestroy();
     }
 

@@ -203,6 +203,10 @@ public class RequisitionPresenter implements Presenter {
         }
     }
 
+    public void setConsultationNumbers(String consultationNumbers) {
+        rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
+    }
+
 
     public interface RequisitionView extends View {
 

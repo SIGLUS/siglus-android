@@ -112,7 +112,12 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     private void setConsultationNumbers() {
         etConsultationNumbers.setText(presenter.getConsultationNumbers());
-        etConsultationNumbers.addTextChangedListener(textWatcher);
+        etConsultationNumbers.post(new Runnable() {
+            @Override
+            public void run() {
+                etConsultationNumbers.addTextChangedListener(etConsultationNumbersTextWatcher);
+            }
+        });
     }
 
     @Override
@@ -160,7 +165,9 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     @Override
     protected void onDestroy() {
         dataFragment.putData("presenter", presenter);
-        dataFragment.putData("hasDataChanged", hasDataChanged());
+        if (hasDataChanged()) {
+            dataFragment.putData("hasDataChanged", hasDataChanged());
+        }
         super.onDestroy();
     }
 
@@ -294,11 +301,13 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     }
 
     private boolean hasDataChanged() {
-        hasDataChanged = requisitionFormAdapter.hasDataChanged() || consultationNumbersHasChanged;
+        if (hasDataChanged == null) {
+            hasDataChanged = requisitionFormAdapter.hasDataChanged() || consultationNumbersHasChanged;
+        }
         return hasDataChanged;
     }
 
-    TextWatcher textWatcher = new TextWatcher() {
+    TextWatcher etConsultationNumbersTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -311,6 +320,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
         @Override
         public void afterTextChanged(Editable s) {
+            presenter.setConsultationNumbers(etConsultationNumbers.getText().toString());
             consultationNumbersHasChanged = true;
         }
     };
