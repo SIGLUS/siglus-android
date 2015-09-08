@@ -23,6 +23,7 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Product;
@@ -34,15 +35,24 @@ import org.openlmis.core.model.RnrFormItem;
 import java.util.ArrayList;
 import java.util.List;
 
+import roboguice.inject.InjectResource;
+
 public class MMIARepository extends RnrFormRepository {
 
-    public static final String ATTR_NEW_PATIENTS = "New Patients";
-    public static final String ATTR_SUSTAINING = "Sustaining";
-    public static final String ATTR_ALTERATION = "Alteration";
-    public static final String ATTR_TOTAL_MONTH_DISPENSE = "Total Month Dispense";
-    public static final String ATTR_TOTAL_PATIENTS = "Total Patients";
-    public static final String ATTR_PTV = "PTV";
-    public static final String ATTR_PPE = "PPE";
+    @InjectResource(R.string.label_new_patients)
+    public String ATTR_NEW_PATIENTS;
+    @InjectResource(R.string.label_sustaining)
+    public String ATTR_SUSTAINING;
+    @InjectResource(R.string.label_alteration)
+    public String ATTR_ALTERATION;
+    @InjectResource(R.string.label_total_month_dispense)
+    public String ATTR_TOTAL_MONTH_DISPENSE;
+    @InjectResource(R.string.label_total_patients)
+    public String ATTR_TOTAL_PATIENTS;
+    @InjectResource(R.string.label_ptv)
+    public String ATTR_PTV;
+    @InjectResource(R.string.label_ppe)
+    public String ATTR_PPE;
 
     public static final String MMIA_PROGRAM_CODE = "MMIA";
 

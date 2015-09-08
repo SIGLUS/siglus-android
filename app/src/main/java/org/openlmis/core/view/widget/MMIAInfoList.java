@@ -31,7 +31,6 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.model.BaseInfoItem;
-import org.openlmis.core.model.repository.MMIARepository;
 
 import java.util.ArrayList;
 
@@ -168,11 +167,11 @@ public class MMIAInfoList extends LinearLayout {
     }
 
     private boolean isTotalInfoView(BaseInfoItem item) {
-        return MMIARepository.ATTR_TOTAL_MONTH_DISPENSE.equals(item.getName()) || isTotalValue(item);
+        return getResources().getString(R.string.label_total_month_dispense).equals(item.getName()) || isTotalValue(item);
     }
 
     private boolean isTotalValue(BaseInfoItem item) {
-        return MMIARepository.ATTR_TOTAL_PATIENTS.equals(item.getName());
+        return getResources().getString(R.string.label_total_patients).equals(item.getName());
     }
 
 

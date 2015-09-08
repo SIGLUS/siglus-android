@@ -103,6 +103,15 @@
     <string name="btn_add_expiry_date">+ Expiry date</string>
     <string name="title_add_new_drug">Add new drug</string>
 
+    <!--MMIABaseInfo-->
+    <string name="label_new_patients">New Patients</string>
+    <string name="label_sustaining">Sustaining</string>
+    <string name="label_alteration">Alteration</string>
+    <string name="label_total_month_dispense">Total Month Dispense</string>
+    <string name="label_total_patients">Total Patients</string>
+    <string name="label_ptv">PTV</string>
+    <string name="label_ppe">PPE</string>
+
     <!-- Reason/Origin/Destination select dialog-->
     <string-array name="movement_type_items_array">
         <item>Receive</item>
