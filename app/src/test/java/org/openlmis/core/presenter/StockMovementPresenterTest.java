@@ -30,13 +30,10 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
-import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 
 import roboguice.RoboGuice;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -55,9 +52,9 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         stockRepositoryMock = mock(StockRepository.class);
 
         view = mock(StockMovementPresenter.StockMovementView.class);
-        RoboGuice.overrideApplicationInjector(Robolectric.application, new MyTestModule());
+        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
-        stockMovementPresenter = RoboGuice.getInjector(Robolectric.application).getInstance(StockMovementPresenter.class);
+        stockMovementPresenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockMovementPresenter.class);
         stockMovementPresenter.attachView(view);
     }
 

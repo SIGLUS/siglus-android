@@ -21,7 +21,6 @@ package org.openlmis.core.service;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
@@ -31,14 +30,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
-import org.robolectric.Robolectric;
-import org.robolectric.shadows.ShadowNetworkInfo;
+import org.robolectric.RuntimeEnvironment;
 
 import roboguice.RoboGuice;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.robolectric.Robolectric.shadowOf;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class NetworkChangeListenerTest {
@@ -55,7 +53,7 @@ public class NetworkChangeListenerTest {
         intent = mock(Intent.class);
 
         syncManager = mock(SyncManager.class);
-        RoboGuice.overrideApplicationInjector(Robolectric.application, new Module() {
+        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
             @Override
             public void configure(Binder binder) {
                 binder.bind(SyncManager.class).toInstance(syncManager);
@@ -66,19 +64,19 @@ public class NetworkChangeListenerTest {
     @Test
     public void shouldKickOffSyncServiceWhenConnectionAvailable() {
         shadowOf(getConnectivityManager().getActiveNetworkInfo()).setConnectionStatus(true);
-        listener.onReceive(Robolectric.application, intent);
+        listener.onReceive(RuntimeEnvironment.application, intent);
         verify(syncManager).kickOff();
     }
 
     @Test
     public void shouldShutdownSyncServiceWhenConnectionNotAvailable(){
         shadowOf(getConnectivityManager().getActiveNetworkInfo()).setConnectionStatus(false);
-        listener.onReceive(Robolectric.application, intent);
+        listener.onReceive(RuntimeEnvironment.application, intent);
         verify(syncManager).shutDown();
     }
 
 
     private ConnectivityManager getConnectivityManager() {
-        return (ConnectivityManager) Robolectric.application.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return (ConnectivityManager) RuntimeEnvironment.application.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 }

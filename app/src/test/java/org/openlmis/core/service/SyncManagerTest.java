@@ -31,6 +31,7 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.response.RequisitionResponse;
 import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -56,14 +57,14 @@ public class SyncManagerTest {
         rnrFormRepository = mock(RnrFormRepository.class);
         lmisRestApi = mock(LMISRestApi.class);
 
-        RoboGuice.overrideApplicationInjector(Robolectric.application, new Module() {
+        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
             @Override
             public void configure(Binder binder) {
                 binder.bind(RnrFormRepository.class).toInstance(rnrFormRepository);
             }
         });
 
-        syncManager = RoboGuice.getInjector(Robolectric.application).getInstance(SyncManager.class);
+        syncManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncManager.class);
         syncManager.lmisRestApi = lmisRestApi;
     }
 

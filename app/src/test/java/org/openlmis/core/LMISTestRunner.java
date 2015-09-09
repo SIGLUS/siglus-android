@@ -20,25 +20,16 @@ package org.openlmis.core;
 
 import android.app.Application;
 
-import org.junit.Rule;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
 import org.junit.runners.model.InitializationError;
-import org.junit.runners.model.Statement;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
-import org.robolectric.AndroidManifest;
 import org.robolectric.DefaultTestLifecycle;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.SdkConfig;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.TestLifecycle;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowSQLiteConnection;
+import org.robolectric.manifest.AndroidManifest;
 
-import java.io.File;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 public class LMISTestRunner extends RobolectricTestRunner {
@@ -52,21 +43,17 @@ public class LMISTestRunner extends RobolectricTestRunner {
      */
     public LMISTestRunner(Class<?> testClass) throws InitializationError {
         super(testClass);
+
+        String buildVariant = (BuildConfig.FLAVOR.isEmpty() ? "" : BuildConfig.FLAVOR+ "/") + BuildConfig.BUILD_TYPE;
+        String intermediatesPath = BuildConfig.class.getResource("").toString().replace("file:", "");
+        intermediatesPath = intermediatesPath.substring(0, intermediatesPath.indexOf("/classes"));
+
+        System.setProperty("android.package", BuildConfig.APPLICATION_ID);
+        System.setProperty("android.manifest", intermediatesPath + "/manifests/full/" + buildVariant + "/AndroidManifest.xml");
+        System.setProperty("android.resources", intermediatesPath + "/res/" + buildVariant);
+        System.setProperty("android.assets", intermediatesPath + "/assets/" + buildVariant);
     }
 
-    @Override
-    protected AndroidManifest getAppManifest(Config config) {
-        String path = "src/main/AndroidManifest.xml";
-
-        // android studio has a different execution root for tests than pure gradle
-        // so we avoid here manual effort to get them running inside android studio
-        if (!new File(path).exists()) {
-            path = "app/" + path;
-        }
-
-        config = overwriteConfig(config, "manifest", path);
-        return super.getAppManifest(config);
-    }
 
     protected Config.Implementation overwriteConfig(
             Config config, String key, String value) {
@@ -76,13 +63,11 @@ public class LMISTestRunner extends RobolectricTestRunner {
                 Config.Implementation.fromProperties(properties));
     }
 
+
     @Override
-    protected SdkConfig pickSdkVersion(
-            AndroidManifest appManifest, Config config) {
-        // current Robolectric supports not the latest android SDK version
-        // so we must downgrade to simulate the latest supported version.
+    protected int pickSdkVersion(Config config, AndroidManifest manifest) {
         config = overwriteConfig(config, "emulateSdk", "18");
-        return super.pickSdkVersion(appManifest, config);
+        return super.pickSdkVersion(config, manifest);
     }
 
 
@@ -100,7 +85,7 @@ public class LMISTestRunner extends RobolectricTestRunner {
         @Override
         public void afterTest(Method method) {
             super.afterTest(method);
-            LmisSqliteOpenHelper.getInstance(Robolectric.application).close();
+            LmisSqliteOpenHelper.getInstance(RuntimeEnvironment.application).close();
         }
     }
 

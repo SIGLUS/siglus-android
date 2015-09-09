@@ -12,7 +12,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
-import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +29,8 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
 
     @Before
     public void setUp() throws LMISException {
-        rnrFormItemRepository = RoboGuice.getInjector(Robolectric.application).getInstance(RnrFormItemRepository.class);
-        rnrFormRepository = RoboGuice.getInjector(Robolectric.application).getInstance(RnrFormRepository.class);
+        rnrFormItemRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormItemRepository.class);
+        rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormRepository.class);
     }
 
     @Test

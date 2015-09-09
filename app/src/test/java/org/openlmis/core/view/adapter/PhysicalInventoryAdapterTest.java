@@ -26,7 +26,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
-import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ public class PhysicalInventoryAdapterTest {
 
     @Before
     public void setup() {
-        adapter = new PhysicalInventoryAdapter(Robolectric.application, new ArrayList<StockCardViewModel>());
+        adapter = new PhysicalInventoryAdapter(RuntimeEnvironment.application, new ArrayList<StockCardViewModel>());
 
         product = new Product();
         product.setPrimaryName("Test Product");

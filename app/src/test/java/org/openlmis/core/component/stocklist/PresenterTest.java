@@ -32,7 +32,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.RnrFormItemRepository;
-import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,9 +56,9 @@ public class PresenterTest {
     @Before
     public void setup() {
         rnrFormItemRepositoryMock = mock(RnrFormItemRepository.class);
-        RoboGuice.overrideApplicationInjector(Robolectric.application, new MyTestModule());
+        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
-        presenter = RoboGuice.getInjector(Robolectric.application).getInstance(Presenter.class);
+        presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(Presenter.class);
     }
 
     @Test

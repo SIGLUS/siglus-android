@@ -34,7 +34,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
-import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -67,9 +67,9 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         mockRnrFormRepository = mock(RnrFormRepository.class);
         mockProductRepository = mock(ProductRepository.class);
 
-        RoboGuice.overrideApplicationInjector(Robolectric.application, new MyTestModule());
+        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
-        MMIARepository = RoboGuice.getInjector(Robolectric.application).getInstance(MMIARepository.class);
+        MMIARepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(MMIARepository.class);
 
 
         Program program = new Program("ART", "ART", null);

@@ -35,7 +35,7 @@ import org.openlmis.core.model.repository.UserRepository.NewCallback;
 import org.openlmis.core.network.response.ProductsResponse;
 import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.view.activity.LoginActivity;
-import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 
 import roboguice.RoboGuice;
 import rx.Observer;
@@ -66,10 +66,10 @@ public class LoginPresenterTest {
         mockProductsResponse = mock(ProductsResponse.class);
         syncManager = mock(SyncManager.class);
 
-        RoboGuice.overrideApplicationInjector(Robolectric.application, new MyTestModule());
+        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         MockitoAnnotations.initMocks(this);
 
-        presenter = RoboGuice.getInjector(Robolectric.application).getInstance(LoginPresenter.class);
+        presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(LoginPresenter.class);
         presenter.attachView(mockActivity);
     }
 

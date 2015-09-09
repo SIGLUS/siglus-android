@@ -8,7 +8,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
-import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 
@@ -25,8 +25,8 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
 
     @Before
     public void setup() throws LMISException {
-        programRepository = RoboGuice.getInjector(Robolectric.application).getInstance(ProgramRepository.class);
-        productRepository = RoboGuice.getInjector(Robolectric.application).getInstance(ProductRepository.class);
+        programRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProgramRepository.class);
+        productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
 
         Product product = new Product();
         product.setPrimaryName("Test Product");

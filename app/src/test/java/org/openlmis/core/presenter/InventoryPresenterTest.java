@@ -32,7 +32,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
-import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,9 +61,9 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         stockRepositoryMock = mock(StockRepository.class);
 
         view = mock(InventoryPresenter.InventoryView.class);
-        RoboGuice.overrideApplicationInjector(Robolectric.application, new MyTestModule());
+        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
-        inventoryPresenter = RoboGuice.getInjector(Robolectric.application).getInstance(InventoryPresenter.class);
+        inventoryPresenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(InventoryPresenter.class);
         inventoryPresenter.attachView(view);
 
         product = new Product();

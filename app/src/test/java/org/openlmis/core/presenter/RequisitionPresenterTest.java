@@ -29,7 +29,7 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.view.activity.RequisitionActivity;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
-import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ public class RequisitionPresenterTest {
     public void setup() throws ViewNotMatchException {
         mockActivity = mock(RequisitionActivity.class);
 
-        presenter = RoboGuice.getInjector(Robolectric.application).getInstance(RequisitionPresenter.class);
+        presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RequisitionPresenter.class);
         presenter.attachView(mockActivity);
     }
 

@@ -29,7 +29,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
-import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,8 +53,8 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     @Before
     public void setup() throws LMISException{
 
-        stockRepository = RoboGuice.getInjector(Robolectric.application).getInstance(StockRepository.class);
-        productRepository = RoboGuice.getInjector(Robolectric.application).getInstance(ProductRepository.class);
+        stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockRepository.class);
+        productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
 
         product = new Product();
         product.setPrimaryName("Test Product");

@@ -30,6 +30,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowIntent;
 
@@ -37,7 +38,7 @@ import java.util.Date;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.robolectric.Robolectric.shadowOf;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class HomeActivityTest {
@@ -65,7 +66,7 @@ public class HomeActivityTest {
 
     @Test
     public void shouldShowLastSyncedTimeCorrectly() {
-        SharedPreferences sharedPreferences = Robolectric.application.getSharedPreferences(SharedPreferenceMgr.MY_PREFERENCE, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = RuntimeEnvironment.application.getSharedPreferences(SharedPreferenceMgr.MY_PREFERENCE, Context.MODE_PRIVATE);
         sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME, new Date().getTime() - 20 * DateUtil.MILLISECONDS_MINUTE).apply();
 
         homeActivity.onResume();

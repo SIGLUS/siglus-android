@@ -33,6 +33,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 
@@ -52,7 +53,7 @@ public class InventoryActivityTest {
     @Before
     public void setUp() throws LMISException{
         productRepository = mock(ProductRepository.class);
-        RoboGuice.overrideApplicationInjector(Robolectric.application, new AbstractModule() {
+        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
             protected void configure() {
                 bind(ProductRepository.class).toInstance(productRepository);

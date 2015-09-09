@@ -27,7 +27,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.utils.DateUtil;
-import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 
 import java.util.Date;
 import java.util.List;
@@ -44,7 +44,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     @Before
     public void setup() throws LMISException {
-        rnrFormRepository = RoboGuice.getInjector(Robolectric.application).getInstance(RnrFormRepository.class);
+        rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormRepository.class);
     }
 
     @Test
