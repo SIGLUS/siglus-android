@@ -19,14 +19,11 @@
 package org.openlmis.core.view.activity;
 
 import android.os.Bundle;
-import android.view.MenuItem;
-
 
 import org.openlmis.core.R;
+import org.openlmis.core.component.Component;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.presenter.Presenter;
-import org.openlmis.core.component.Component;
-
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectFragment;
@@ -60,16 +57,6 @@ public class StockCardListActivity extends BaseActivity {
 
             }
         };
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_add_new_drug){
-            startActivity(InventoryActivity.class, false);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

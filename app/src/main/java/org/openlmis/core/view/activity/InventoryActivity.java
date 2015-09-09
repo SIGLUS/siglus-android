@@ -22,7 +22,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.MenuItem;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
@@ -66,6 +66,15 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     InventoryListAdapter mAdapter;
 
     boolean isPhysicalInventory = false;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        boolean createOptionsMenu = super.onCreateOptionsMenu(menu);
+
+        menu.findItem(R.id.action_add_new_drug).setVisible(false);
+
+        return createOptionsMenu;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,15 +174,5 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
             return false;
         }
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_add_new_drug){
-            startActivity(InventoryActivity.class, false);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }
