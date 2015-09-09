@@ -110,4 +110,39 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd()), is("20/07/2015"));
     }
 
+    @Test
+    public void shouldReturnFalseIfThereIsAAuthorizedFormExisted() throws Exception{
+        Program program = new Program();
+        program.setId(123);
+
+        Date generateDate = DateUtil.parseString("05/07/2015", DateUtil.DEFAULT_DATE_FORMAT);
+
+        RnRForm form = RnRForm.init(program, generateDate);
+        form.setStatus(RnRForm.STATUS.AUTHORIZED);
+        rnrFormRepository.create(form);
+
+        generateDate = DateUtil.parseString("20/07/2015", DateUtil.DEFAULT_DATE_FORMAT);
+
+        RnRForm rnRForm2 = RnRForm.init(program, generateDate);
+
+        assertThat(rnrFormRepository.isPeriodUnique(rnRForm2), is(false));
+    }
+
+    @Test
+    public void shouldReturnTrueIfThereIsNoAuthorizedFormExisted() throws Exception{
+        Program program = new Program();
+        program.setId(123);
+
+        Date generateDate = DateUtil.parseString("05/07/2015", DateUtil.DEFAULT_DATE_FORMAT);
+
+        RnRForm form = RnRForm.init(program, generateDate);
+        form.setStatus(RnRForm.STATUS.DRAFT);
+        rnrFormRepository.create(form);
+
+        generateDate = DateUtil.parseString("20/07/2015", DateUtil.DEFAULT_DATE_FORMAT);
+
+        RnRForm rnRForm2 = RnRForm.init(program, generateDate);
+
+        assertThat(rnrFormRepository.isPeriodUnique(rnRForm2), is(true));
+    }
 }

@@ -18,9 +18,13 @@
 
 package org.openlmis.core.presenter;
 
+import android.content.Context;
+
 import com.google.inject.Inject;
 
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RegimenItem;
@@ -28,7 +32,6 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.view.View;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class MMIAFormPresenter implements Presenter {
@@ -39,6 +42,9 @@ public class MMIAFormPresenter implements Presenter {
     @Inject
     MMIARepository mmiaRepository;
     private RnRForm rnrForm;
+
+    @Inject
+    Context context;
 
     @Override
     public void onStart() {
@@ -92,16 +98,20 @@ public class MMIAFormPresenter implements Presenter {
         return form;
     }
 
-    public void saveForm(ArrayList<RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) {
+    public void completeMMIA(ArrayList<RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) {
         form.setRegimenItemListWrapper(regimenItemList);
         form.setBaseInfoItemListWrapper(baseInfoItemList);
         form.setComments(comments);
         if (validate(form)) {
             try {
-                form.setStatus(RnRForm.STATUS.AUTHORIZED);
-                mmiaRepository.save(form);
-            } catch (LMISException|SQLException e) {
-                view.showErrorMessage(e.getMessage());
+                mmiaRepository.authorise(form);
+                view.completeSuccess();
+            }catch (LMISException e){
+                if (e instanceof PeriodNotUniqueException){
+                    view.showErrorMessage(context.getResources().getString(R.string.msg_mmia_not_unique));
+                } else {
+                    view.showErrorMessage(e.getMessage());
+                }
             }
         } else {
             view.showValidationAlert();
@@ -119,7 +129,7 @@ public class MMIAFormPresenter implements Presenter {
         try {
             form.setStatus(RnRForm.STATUS.DRAFT);
             mmiaRepository.save(form);
-        } catch (LMISException|SQLException e) {
+        } catch (LMISException e) {
             view.showErrorMessage(e.getMessage());
         }
     }
@@ -136,5 +146,7 @@ public class MMIAFormPresenter implements Presenter {
         void showValidationAlert();
 
         void showErrorMessage(String msg);
+
+        void completeSuccess();
     }
 }

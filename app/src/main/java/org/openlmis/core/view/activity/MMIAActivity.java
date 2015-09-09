@@ -234,7 +234,11 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
             ToastUtil.show(R.string.hint_mmia_total_not_equal);
             return;
         }
-        presenter.saveForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
+        presenter.completeMMIA(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
+    }
+
+    @Override
+    public void completeSuccess() {
         ToastUtil.show(R.string.msg_mmia_submit_tip);
         goToHomePage();
     }

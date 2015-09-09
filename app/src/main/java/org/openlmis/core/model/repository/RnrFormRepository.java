@@ -26,6 +26,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
@@ -103,10 +104,40 @@ public class RnrFormRepository {
         genericDao.create(rnRForm);
     }
 
-    public void save(RnRForm form) throws LMISException, SQLException {
-        updateWrapperList(form);
-        genericDao.update(form);
+    public void save(RnRForm form) throws LMISException {
+        try {
+            updateWrapperList(form);
+            genericDao.update(form);
+        }catch (SQLException e){
+            throw new LMISException(e);
+        }
     }
+
+    public void authorise(RnRForm form) throws LMISException{
+        if (!isPeriodUnique(form)){
+            throw new PeriodNotUniqueException("Already have a authorized form");
+        }
+
+        form.setStatus(RnRForm.STATUS.AUTHORIZED);
+        save(form);
+    }
+
+    protected boolean isPeriodUnique(final RnRForm form) {
+        try {
+            RnRForm rnRForm = dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
+                @Override
+                public RnRForm operate(Dao<RnRForm, String> dao) throws SQLException {
+                    return dao.queryBuilder().where().eq("program_id", form.getProgram().getId()).and().eq("status", RnRForm.STATUS.AUTHORIZED).and().eq("periodBegin", form.getPeriodBegin()).and().eq("periodEnd", form.getPeriodEnd()).queryForFirst();
+                }
+            });
+
+           return rnRForm == null;
+        }catch (LMISException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
     public void updateWrapperList(RnRForm form) throws SQLException {
         for (RnrFormItem item : form.getRnrFormItemListWrapper()) {

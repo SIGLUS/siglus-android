@@ -218,13 +218,14 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
             etConsultationNumbers.setError(getString(R.string.hint_error_input));
             return;
         }
-        if (presenter.isRequisitionFormAmountCompleted()) {
-            presenter.saveRequisition(consultationNumbers);
-            ToastUtil.show(R.string.msg_requisition_submit_tip);
-            goToHomePage();
-        }
+        presenter.completeRequisition(consultationNumbers);
     }
 
+    @Override
+    public void completeSuccess() {
+        ToastUtil.show(R.string.msg_requisition_submit_tip);
+        goToHomePage();
+    }
 
     public View getViewByPosition(int pos, ListView listView) {
         final int firstListItemPosition = listView.getFirstVisiblePosition();

@@ -18,11 +18,14 @@
 
 package org.openlmis.core.presenter;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
@@ -31,7 +34,6 @@ import org.openlmis.core.view.View;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +50,9 @@ public class RequisitionPresenter implements Presenter {
 
     @Inject
     VIARepository viaRepository;
+
+    @Inject
+    Context context;
 
     RequisitionView view;
 
@@ -139,7 +144,7 @@ public class RequisitionPresenter implements Presenter {
         });
     }
 
-    public boolean isRequisitionFormAmountCompleted() {
+    protected boolean isRequisitionFormAmountCompleted() {
         List<RequisitionFormItemViewModel> requisitionViewModelList = getRequisitionViewModelList();
         for (int i = 0; i < requisitionViewModelList.size(); i++) {
             RequisitionFormItemViewModel itemViewModel = requisitionViewModelList.get(i);
@@ -151,15 +156,23 @@ public class RequisitionPresenter implements Presenter {
         return true;
     }
 
-    public void saveRequisition(String consultationNumbers) {
+    public void completeRequisition(String consultationNumbers) {
+        if (!isRequisitionFormAmountCompleted()){
+            return;
+        }
+
         setRnrFormAmount();
         rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
-        rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
 
         try {
-            viaRepository.save(rnRForm);
-        } catch (LMISException | SQLException e) {
-            view.showErrorMessage(e.getMessage());
+            viaRepository.authorise(rnRForm);
+            view.completeSuccess();
+        } catch (LMISException e) {
+            if (e instanceof PeriodNotUniqueException){
+                view.showErrorMessage(context.getResources().getString(R.string.msg_requisition_not_unique));
+            } else {
+                view.showErrorMessage(e.getMessage());
+            }
         }
     }
 
@@ -187,7 +200,7 @@ public class RequisitionPresenter implements Presenter {
 
         try {
             viaRepository.save(rnRForm);
-        } catch (LMISException | SQLException e) {
+        } catch (LMISException e) {
             view.showErrorMessage(e.getMessage());
         }
     }
@@ -216,6 +229,8 @@ public class RequisitionPresenter implements Presenter {
         void refreshRequisitionForm();
 
         void showErrorMessage(String msg);
+
+        void completeSuccess();
     }
 
 }

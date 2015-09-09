@@ -82,6 +82,9 @@
     <string name="msg_stock_out_warning">Your product is stocked out.</string>
     <string name="msg_requisition_submit_tip">Thank you for submitting your requisition form.\r\n Please make sure it syncs successfully.</string>
 
+    <string name="msg_requisition_not_unique">Cannot submit requisition twice in a period!</string>
+    <string name="msg_mmia_not_unique">Cannot submit MMIA twice in a period!</string>
+
     <!-- Stock Movement -->
     <string name="title_stock_movement">Stock Card</string>
     <string name="label_default">-</string>
