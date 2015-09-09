@@ -42,7 +42,7 @@ import org.openlmis.core.view.View;
 
 import roboguice.activity.RoboActionBarActivity;
 
-public abstract class BaseActivity extends RoboActionBarActivity implements View{
+public abstract class BaseActivity extends RoboActionBarActivity implements View {
 
 
     @Inject
@@ -51,6 +51,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
 
 
     public abstract Presenter getPresenter();
+
     ProgressDialog loadingDialog;
 
     @Override
@@ -70,14 +71,14 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         super.onCreate(savedInstanceState);
         try {
             getPresenter().attachView(BaseActivity.this);
-        } catch (ViewNotMatchException e){
+        } catch (ViewNotMatchException e) {
             e.printStackTrace();
             showMessage(e.getMessage());
             return;
         }
 
 
-        if(getSupportActionBar() !=null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setHomeButtonEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -89,7 +90,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
 
-        searchView = (SearchView)menu.findItem(R.id.action_search).getActionView();
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -113,14 +114,14 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void clearSearch(){
-        if (searchView!=null){
+    public void clearSearch() {
+        if (searchView != null) {
             searchView.setQuery(StringUtils.EMPTY, true);
         }
     }
 
     public void loading() {
-        if(loadingDialog == null){
+        if (loadingDialog == null) {
             loadingDialog = new ProgressDialog(this);
             loadingDialog.setIndeterminate(false);
         }
@@ -129,41 +130,42 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     }
 
     public void loaded() {
-        if(loadingDialog !=null){
+        if (loadingDialog != null) {
             loadingDialog.dismiss();
         }
     }
 
     public void saveString(String key, String value) {
-        preferencesMgr.getPreference().edit().putString(key,value).apply();
+        preferencesMgr.getPreference().edit().putString(key, value).apply();
     }
 
-    public void saveInt(String key, int value){
+    public void saveInt(String key, int value) {
         preferencesMgr.getPreference().edit().putInt(key, value).apply();
     }
 
-    public void saveBoolean(String key, boolean value){
+    public void saveBoolean(String key, boolean value) {
         preferencesMgr.getPreference().edit().putBoolean(key, value).apply();
     }
 
-    public SharedPreferences getPreferences(){
+    public SharedPreferences getPreferences() {
         return preferencesMgr.getPreference();
     }
 
     public void showMessage(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
+
     public void showMessage(int resId) {
         String msg = getResources().getString(resId);
         showMessage(msg);
     }
 
-    public void showMessage(int resId, Object... args){
+    public void showMessage(int resId, Object... args) {
         String msg = getResources().getString(resId, args);
         showMessage(msg);
     }
 
-    public void startActivity(Class activityName, boolean closeThis){
+    public void startActivity(Class activityName, boolean closeThis) {
         Intent intent = new Intent();
         intent.setClass(this, activityName);
         startActivity(intent);
@@ -171,6 +173,9 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         if (closeThis) this.finish();
     }
 
+    public void startActivity(Class activityName) {
+        startActivity(activityName, false);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -199,15 +204,15 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         }
     }
 
-    public boolean onSearchStart(String query){
+    public boolean onSearchStart(String query) {
         return false;
     }
 
-    public boolean onSearchClosed(){
+    public boolean onSearchClosed() {
         return false;
     }
 
-    public boolean onSettingClick(){
+    public boolean onSettingClick() {
         return false;
     }
 }

@@ -23,6 +23,8 @@ import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -42,7 +44,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_stock_movement)
-public class StockMovementActivity extends BaseActivity implements StockMovementPresenter.StockMovementView{
+public class StockMovementActivity extends BaseActivity implements StockMovementPresenter.StockMovementView {
 
 
     @InjectView(R.id.list_stock_movement)
@@ -72,7 +74,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         stockId = getIntent().getLongExtra("stockCardId", 0);
         try {
             presenter.setStockCard(stockId);
-        }catch (LMISException e){
+        } catch (LMISException e) {
             ToastUtil.show(R.string.msg_db_error);
             finish();
         }
@@ -94,7 +96,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         }
     }
 
-    private void initUI(){
+    private void initUI() {
         stockMovementAdapter = new StockMovementAdapter(this, presenter);
         View headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
 
@@ -124,11 +126,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return false;
-    }
-
-    @Override
     public void showErrorAlert(String msg) {
         showMessage(msg);
     }
@@ -155,5 +152,24 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     public Presenter getPresenter() {
         initPresenter();
         return presenter;
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_stock_movement, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_history:
+                startActivity(StockMovementHistoryActivity.getIntentToMe(this,stockId));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

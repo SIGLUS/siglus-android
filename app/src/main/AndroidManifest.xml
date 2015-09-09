@@ -36,8 +36,8 @@
 
         <activity
             android:name=".view.activity.HomeActivity"
-            android:launchMode="singleTask"
-            android:label="@string/title_home" />
+            android:label="@string/title_home"
+            android:launchMode="singleTask" />
 
         <activity
             android:name=".view.activity.StockCardListActivity"
@@ -57,6 +57,8 @@
             android:name=".view.activity.StockMovementActivity"
             android:label="@string/title_stock_movement"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
+        <activity android:name=".view.activity.StockMovementHistoryActivity" />
 
 
         <service
