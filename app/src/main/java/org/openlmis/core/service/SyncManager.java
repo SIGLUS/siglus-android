@@ -178,6 +178,10 @@ public class SyncManager {
         try {
             forms = rnrFormRepository.listUnSynced();
             Log.d(TAG, "===> SyncRnR :" + forms.size() + " RnrForm ready to sync...");
+
+            if (forms.size() == 0){
+                return false;
+            }
         } catch (LMISException e) {
             e.printStackTrace();
         }
