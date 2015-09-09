@@ -64,7 +64,7 @@ public class StockCardListActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_inventory){
+        if (item.getItemId() == R.id.action_add_new_drug){
             startActivity(InventoryActivity.class, false);
             return true;
         }

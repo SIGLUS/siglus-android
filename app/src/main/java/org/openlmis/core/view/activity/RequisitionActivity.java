@@ -25,6 +25,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.Button;
@@ -91,6 +92,12 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         } else {
             presenter = (RequisitionPresenter) dataFragment.getData("presenter");
         }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return false;
     }
 
     @Override
