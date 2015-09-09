@@ -183,7 +183,9 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
             case R.id.action_settings:
                 return onSettingClick();
             case R.id.action_add_new_drug:
-                startActivity(InventoryActivity.class, false);
+                startActivity(getIntent()
+                        .setClass(this, InventoryActivity.class)
+                        .putExtra(InventoryActivity.PARAM_IS_ADD_NEW_DRUG, true));
             default:
                 return super.onOptionsItemSelected(item);
         }

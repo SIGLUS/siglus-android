@@ -98,6 +98,7 @@
     <string name="label_cmm">CMM</string>
     <string name="label_validate_period">Validate Period</string>
     <string name="btn_add_expiry_date">+ Expiry date</string>
+    <string name="title_add_new_drug">Add new drug</string>
 
     <!-- Reason/Origin/Destination select dialog-->
     <string-array name="movement_type_items_array">

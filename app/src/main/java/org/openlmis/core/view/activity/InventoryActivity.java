@@ -51,6 +51,7 @@ import rx.Subscriber;
 public class InventoryActivity extends BaseActivity implements InventoryPresenter.InventoryView{
 
     public static final String PARAM_IS_PHYSICAL_INVENTORY = "isInitialInventory";
+    public static final String PARAM_IS_ADD_NEW_DRUG = "isAddNewDrug";
 
     @InjectView(R.id.products_list)
     public RecyclerView productListRecycleView;
@@ -87,6 +88,9 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
         if (isPhysicalInventory){
             initPhysicalInventoryUI();
         } else {
+            if (getIntent().getBooleanExtra(PARAM_IS_ADD_NEW_DRUG, false)) {
+                setTitle(getResources().getString(R.string.title_add_new_drug));
+            }
             initInitialInventoryUI();
         }
     }
