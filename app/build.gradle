@@ -19,9 +19,19 @@ android {
         versionName "1.0"
     }
 
+    signingConfigs {
+        release {
+            storeFile file("../scripts/lmis_moz.jks")
+            storePassword  System.getenv("KSTOREPWD")
+            keyAlias "clintonhealthaccess"
+            keyPassword System.getenv("KEYPWD")
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
