@@ -106,13 +106,7 @@ public class StockCardViewModel {
         if (expiryDates ==null){
             return StringUtils.EMPTY;
         }
-
-        String expiryDateString = StringUtils.EMPTY;
-        for (String date : expiryDates){
-            expiryDateString += date;
-        }
-
-        return expiryDateString;
+        return StringUtils.join(expiryDates, StockCard.DIVIDER);
     }
 
 
@@ -129,10 +123,14 @@ public class StockCardViewModel {
         }
     }
 
-    public void addExpiryDate(String date){
+    public void addExpiryDate(String date, boolean append){
         if (expiryDates == null){
             expiryDates = new ArrayList<>();
         }
+        if (!append){
+            expiryDates.clear();
+        }
+
         expiryDates.add(date);
     }
 

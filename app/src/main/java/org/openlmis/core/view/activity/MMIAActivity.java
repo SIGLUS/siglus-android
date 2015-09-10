@@ -49,7 +49,7 @@ import roboguice.inject.InjectView;
 public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMIAFormView, View.OnClickListener {
 
     @InjectView(R.id.rnr_form_list)
-    private MMIARnrForm rnrFromListView;
+    private MMIARnrForm rnrFormList;
 
     @InjectView(R.id.regime_list)
     public MMIARegimeList regimeListView;
@@ -116,7 +116,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MIMI
 
     public void initUI() {
 
-        rnrFromListView.initView(new ArrayList<>(presenter.getRnrForm().getRnrFormItemListWrapper()));
+        rnrFormList.initView(new ArrayList<>(presenter.getRnrForm().getRnrFormItemListWrapper()));
 
         regimeListView.initView(presenter.getRnrForm().getRegimenItemListWrapper(), tvRegimeTotal);
 

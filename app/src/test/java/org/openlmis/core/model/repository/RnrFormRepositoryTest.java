@@ -82,32 +82,32 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldGenerateRnRFromByLastPeriod() throws Exception{
-        Date generateDate = DateUtil.parseString("10/06/2015", DateUtil.DEFAULT_DATE_FORMAT);
+        Date generateDate = DateUtil.parseString("10/06/2015", DateUtil.SIMPLE_DATE_FORMAT);
         RnRForm rnRForm = RnRForm.init(new Program(), generateDate);
 
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin()), is("21/05/2015"));
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd()), is("20/06/2015"));
+        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.SIMPLE_DATE_FORMAT), is("21/05/2015"));
+        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(),DateUtil.SIMPLE_DATE_FORMAT), is("20/06/2015"));
 
-        generateDate = DateUtil.parseString("30/05/2015", DateUtil.DEFAULT_DATE_FORMAT);
+        generateDate = DateUtil.parseString("30/05/2015", DateUtil.SIMPLE_DATE_FORMAT);
         rnRForm = RnRForm.init(new Program(), generateDate);
 
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin()), is("21/05/2015"));
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd()), is("20/06/2015"));
+        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(),DateUtil.SIMPLE_DATE_FORMAT), is("21/05/2015"));
+        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(),DateUtil.SIMPLE_DATE_FORMAT), is("20/06/2015"));
     }
 
     @Test
     public void shouldGenerateRnRFromByCurrentPeriod() throws Exception{
-        Date generateDate = DateUtil.parseString("30/06/2015", DateUtil.DEFAULT_DATE_FORMAT);
+        Date generateDate = DateUtil.parseString("30/06/2015", DateUtil.SIMPLE_DATE_FORMAT);
         RnRForm rnRForm = RnRForm.init(new Program(), generateDate);
 
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin()), is("21/06/2015"));
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd()), is("20/07/2015"));
+        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.SIMPLE_DATE_FORMAT), is("21/06/2015"));
+        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(), DateUtil.SIMPLE_DATE_FORMAT), is("20/07/2015"));
 
-        generateDate = DateUtil.parseString("05/07/2015", DateUtil.DEFAULT_DATE_FORMAT);
+        generateDate = DateUtil.parseString("05/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
         rnRForm = RnRForm.init(new Program(), generateDate);
 
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin()), is("21/06/2015"));
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd()), is("20/07/2015"));
+        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(),DateUtil.SIMPLE_DATE_FORMAT), is("21/06/2015"));
+        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(),DateUtil.SIMPLE_DATE_FORMAT), is("20/07/2015"));
     }
 
     @Test
@@ -115,13 +115,13 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         Program program = new Program();
         program.setId(123);
 
-        Date generateDate = DateUtil.parseString("05/07/2015", DateUtil.DEFAULT_DATE_FORMAT);
+        Date generateDate = DateUtil.parseString("05/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
 
         RnRForm form = RnRForm.init(program, generateDate);
         form.setStatus(RnRForm.STATUS.AUTHORIZED);
         rnrFormRepository.create(form);
 
-        generateDate = DateUtil.parseString("20/07/2015", DateUtil.DEFAULT_DATE_FORMAT);
+        generateDate = DateUtil.parseString("20/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
 
         RnRForm rnRForm2 = RnRForm.init(program, generateDate);
 
@@ -133,13 +133,13 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         Program program = new Program();
         program.setId(123);
 
-        Date generateDate = DateUtil.parseString("05/07/2015", DateUtil.DEFAULT_DATE_FORMAT);
+        Date generateDate = DateUtil.parseString("05/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
 
         RnRForm form = RnRForm.init(program, generateDate);
         form.setStatus(RnRForm.STATUS.DRAFT);
         rnrFormRepository.create(form);
 
-        generateDate = DateUtil.parseString("20/07/2015", DateUtil.DEFAULT_DATE_FORMAT);
+        generateDate = DateUtil.parseString("20/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
 
         RnRForm rnRForm2 = RnRForm.init(program, generateDate);
 

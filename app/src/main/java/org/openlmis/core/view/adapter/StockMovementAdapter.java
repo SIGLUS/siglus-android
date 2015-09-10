@@ -227,19 +227,15 @@ public class StockMovementAdapter extends BaseAdapter {
                 editableLine.txReason.setText(result);
                 getDraftStockMovementItem().setReason(result);
                 if(editableLine.txMovementDate.getText() == "") {
-                    setmovementDate();
+                    setMovementDate();
                 }
             }
         });
     }
 
-    private void setmovementDate() {
+    private void setMovementDate() {
         String movementDate = "";
-        try {
-            movementDate = DateUtil.convertDate(DateUtil.formatDate(new Date()), "dd/MM/yyyy", "dd MMM yyyy");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        movementDate = DateUtil.formatDate(new Date());
 
         editableLine.txMovementDate.setText(movementDate);
         getDraftStockMovementItem().setMovementDate(movementDate);
@@ -283,21 +279,16 @@ public class StockMovementAdapter extends BaseAdapter {
     public void validateStockMovementDate(GregorianCalendar date) {
         Calendar today = GregorianCalendar.getInstance();
         try {
-            Date lastMovementDate = DateUtil.parseString("01/01/1900", DateUtil.DEFAULT_DATE_FORMAT);
+            Date lastMovementDate = DateUtil.parseString("01/01/1900", "dd/MM/yyyy");
             if (stockMovementViewModels.size() > 1){
-                lastMovementDate = DateUtil.parseString(DateUtil.convertDate(stockMovementViewModels.get(stockMovementViewModels.size() - 2).getMovementDate(), "dd MMM yyyy", "dd/MM/yyyy"), DateUtil.DEFAULT_DATE_FORMAT);
+                lastMovementDate = DateUtil.parseString(stockMovementViewModels.get(stockMovementViewModels.size() - 2).getMovementDate(), DateUtil.DEFAULT_DATE_FORMAT);
             }
 
             if (today.before(date) || lastMovementDate.after(date.getTime())) {
                 ToastUtil.show(R.string.msg_invalid_stock_movement_date);
             } else {
-                String movementDate = DateUtil.formatDate(date.getTime());
-                try {
-                    editableLine.txMovementDate.setText(DateUtil.convertDate(movementDate, "dd/MM/yyyy", "dd MMM yyyy"));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                getDraftStockMovementItem().setMovementDate(movementDate);
+                editableLine.txMovementDate.setText(DateUtil.formatDate(date.getTime()));
+                getDraftStockMovementItem().setMovementDate(DateUtil.formatDate(date.getTime()));
             }
         }catch (ParseException e){
             ToastUtil.show(R.string.msg_invalid_stock_movement_date);

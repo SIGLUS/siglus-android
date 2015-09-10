@@ -128,7 +128,7 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    currentList.get(position).addExpiryDate(dateString);
+                    currentList.get(position).addExpiryDate(dateString, false);
                 } else {
                     ToastUtil.show(R.string.msg_invalid_date);
                 }
