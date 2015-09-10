@@ -100,7 +100,7 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
         });
 
         holder.checkBox.setChecked(viewModel.isChecked());
-        holder.productName.setText(viewModel.getProductName());
+        holder.productName.setText(viewModel.getStyledName());
         holder.productUnit.setText(viewModel.getType());
         holder.txQuantity.setText(viewModel.getQuantity());
         holder.txExpireDate.setText(viewModel.optFirstExpiryDate());

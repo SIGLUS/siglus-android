@@ -82,6 +82,7 @@ public class StockCardViewModel {
         this.type = product.getType();
         this.productId = product.getId();
         this.checked = false;
+        formatProductDisplay(product);
     }
 
 
