@@ -20,6 +20,7 @@ package org.openlmis.core.view.adapter;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.text.InputFilter;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -108,7 +109,7 @@ public class StockMovementAdapter extends BaseAdapter {
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final StockMovementViewModel model = getItem(position);
 
-        disableLine(holder);
+        disableLineAndHideUnderline(holder);
 
         holder.txMovementDate.setText(model.getMovementDate());
         holder.txReason.setText(model.getReason());
@@ -123,19 +124,19 @@ public class StockMovementAdapter extends BaseAdapter {
             editableLine = holder;
 
             if (model.getMovementType() != null) {
-                holder.etDocumentNo.setEnabled(true);
+                setEditTextEnableAndRecoverUnderline(holder.etDocumentNo);
                 switch (model.getMovementType()) {
                     case ISSUE:
-                        holder.etIssued.setEnabled(true);
+                        setEditTextEnableAndRecoverUnderline(holder.etIssued);
                         break;
                     case RECEIVE:
-                        holder.etReceived.setEnabled(true);
+                        setEditTextEnableAndRecoverUnderline(holder.etReceived);
                         break;
                     case NEGATIVE_ADJUST:
-                        holder.etNegativeAdjustment.setEnabled(true);
+                        setEditTextEnableAndRecoverUnderline(holder.etNegativeAdjustment);
                         break;
                     case POSITIVE_ADJUST:
-                        holder.etPositiveAdjustment.setEnabled(true);
+                        setEditTextEnableAndRecoverUnderline(holder.etPositiveAdjustment);
                         break;
                 }
             }
@@ -167,12 +168,23 @@ public class StockMovementAdapter extends BaseAdapter {
         holder.etDocumentNo.setOnKeyListener(listener);
     }
 
-    private void disableLine(ViewHolder holder) {
+    private void setEditTextEnableAndRecoverUnderline(EditText editText) {
+        editText.setEnabled(true);
+        editText.setBackground(editableLine.editTextBackground);
+    }
+
+    private void disableLineAndHideUnderline(ViewHolder holder) {
         holder.etDocumentNo.setEnabled(false);
         holder.etReceived.setEnabled(false);
         holder.etNegativeAdjustment.setEnabled(false);
         holder.etPositiveAdjustment.setEnabled(false);
         holder.etIssued.setEnabled(false);
+
+        holder.etDocumentNo.setBackground(null);
+        holder.etReceived.setBackground(null);
+        holder.etNegativeAdjustment.setBackground(null);
+        holder.etPositiveAdjustment.setBackground(null);
+        holder.etIssued.setBackground(null);
     }
 
     private void resetLine(ViewHolder holder) {
@@ -199,31 +211,33 @@ public class StockMovementAdapter extends BaseAdapter {
 
             @Override
             public void onReceive() {
-                editableLine.etReceived.setEnabled(true);
+                setEditTextEnableAndRecoverUnderline(editableLine.etReceived);
                 getDraftStockMovementItem().setMovementType(StockMovementItem.MovementType.RECEIVE);
             }
 
             @Override
             public void onIssue() {
-                editableLine.etIssued.setEnabled(true);
+                setEditTextEnableAndRecoverUnderline(editableLine.etIssued);
                 getDraftStockMovementItem().setMovementType(StockMovementItem.MovementType.ISSUE);
             }
 
             @Override
             public void onPositiveAdjustment() {
-                editableLine.etPositiveAdjustment.setEnabled(true);
+                setEditTextEnableAndRecoverUnderline(editableLine.etPositiveAdjustment);
                 getDraftStockMovementItem().setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
+
             }
 
             @Override
             public void onNegativeAdjustment() {
-                editableLine.etNegativeAdjustment.setEnabled(true);
+                setEditTextEnableAndRecoverUnderline(editableLine.etNegativeAdjustment);
                 getDraftStockMovementItem().setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
             }
 
             @Override
             public void onComplete(String result) {
-                editableLine.etDocumentNo.setEnabled(true);
+                setEditTextEnableAndRecoverUnderline(editableLine.etDocumentNo);
+
                 editableLine.txReason.setText(result);
                 getDraftStockMovementItem().setReason(result);
                 if(editableLine.txMovementDate.getText() == "") {
@@ -248,7 +262,7 @@ public class StockMovementAdapter extends BaseAdapter {
     public void cancelStockMovement(){
         if (editableLine!=null){
             resetLine(editableLine);
-            disableLine(editableLine);
+            disableLineAndHideUnderline(editableLine);
         }
 
         stockMovementViewModels.remove(getDraftStockMovementItem());
@@ -306,6 +320,7 @@ public class StockMovementAdapter extends BaseAdapter {
         EditText etPositiveAdjustment;
         EditText etIssued;
         TextView txStockExistence;
+        private  Drawable editTextBackground;
 
 
         public ViewHolder(View view) {
@@ -324,7 +339,10 @@ public class StockMovementAdapter extends BaseAdapter {
             etNegativeAdjustment.setFilters(filters);
             etPositiveAdjustment.setFilters(filters);
             etIssued.setFilters(filters);
+
+            editTextBackground =new EditText(context).getBackground();
         }
+
     }
 
     class MyOnKeyListener implements View.OnKeyListener {
