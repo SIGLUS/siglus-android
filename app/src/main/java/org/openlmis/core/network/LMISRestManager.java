@@ -21,6 +21,7 @@ package org.openlmis.core.network;
 
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.Credentials;
+import com.squareup.okhttp.OkHttpClient;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -30,11 +31,25 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
 
+import java.io.InputStream;
+import java.net.URL;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManagerFactory;
+
 import lombok.Data;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
+import retrofit.client.OkClient;
 import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
 
@@ -44,9 +59,16 @@ public class LMISRestManager {
 
     protected RestAdapter restAdapter;
     protected LMISRestApi lmisRestApi;
+    private OkHttpClient client;
+    private String hostName;
 
     public LMISRestManager() {
         END_POINT = LMISApp.getContext().getResources().getString(R.string.server_base_url);
+        try {
+            hostName = new URL(END_POINT).getHost();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
         RequestInterceptor requestInterceptor = new RequestInterceptor() {
             @Override
@@ -65,10 +87,60 @@ public class LMISRestManager {
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setRequestInterceptor(requestInterceptor)
                 .setConverter(registerTypeAdapter())
+                .setClient(new OkClient(getSSLClient()))
                 .build();
 
         lmisRestApi = restAdapter.create(LMISRestApi.class);
     }
+
+    public OkHttpClient getSSLClient(){
+        OkHttpClient client = new OkHttpClient();
+        // loading CAs from an InputStream
+        try {
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            InputStream cert = LMISApp.getContext().getResources().openRawResource(R.raw.ssl_cert);
+            Certificate ca = null;
+            try {
+                ca = cf.generateCertificate(cert);
+                System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
+            }catch (Exception e){
+                e.printStackTrace();
+            }finally { cert.close(); }
+
+            // creating a KeyStore containing our trusted CAs
+            String keyStoreType = KeyStore.getDefaultType();
+            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+            keyStore.load(null, null);
+            keyStore.setCertificateEntry("ca", ca);
+
+            // creating a TrustManager that trusts the CAs in our KeyStore
+            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+            tmf.init(keyStore);
+
+            // creating an SSLSocketFactory that uses our TrustManager
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, tmf.getTrustManagers(), null);
+            client.setSslSocketFactory(sslContext.getSocketFactory());
+            client.setHostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String hostname, SSLSession session) {
+                    if (hostname.equals(hostName)){
+                        return true;
+                    }
+
+                    HostnameVerifier hv =
+                            HttpsURLConnection.getDefaultHostnameVerifier();
+                    return hv.verify(hostname, session);
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return client;
+    }
+
 
     public LMISRestApi getLmisRestApi(){
         return lmisRestApi;
