@@ -36,9 +36,14 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockMovementPresenter;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.StockMovementAdapter;
 import org.openlmis.core.view.fragment.RetainedFragment;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
@@ -134,7 +139,17 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
     private void displayExpireDate() {
         String expireDates = presenter.getStockCard().getExpireDates();
-        expireDataView.setText(expireDates);
+        String convertedDate;
+        Date date = null;
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-mm-yyyy");
+
+        try {
+            convertedDate = DateUtil.convertDate(expireDates, "dd/mm/yyyy", "dd-mm-yyyy");
+            date = formatter.parse(convertedDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        expireDataView.setText(DateUtil.formatDate(date));
     }
 
     @Override
@@ -178,7 +193,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_history:
-                startActivity(StockMovementHistoryActivity.getIntentToMe(this,stockId,stockName));
+                startActivity(StockMovementHistoryActivity.getIntentToMe(this, stockId, stockName));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
