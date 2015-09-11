@@ -50,7 +50,7 @@ public class CreateDummyStockMovements implements Migration {
     private void createStockMovementItems() {
         final List<StockMovementItem> list = new ArrayList<>();
         StockCard stockCard = new StockCard();
-        stockCard.setId(1l);
+        stockCard.setId(1L);
         for (int i = 0; i < 500; i++) {
             StockMovementItem stockMovementItem = new StockMovementItem();
             stockMovementItem.setMovementQuantity(i);
