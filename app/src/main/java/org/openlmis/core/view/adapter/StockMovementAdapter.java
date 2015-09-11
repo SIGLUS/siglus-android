@@ -147,7 +147,6 @@ public class StockMovementAdapter extends BaseAdapter {
             public void onClick(View v) {
                 if (model.isDraft()) {
                     dialog.show();
-                    holder.itemView.setBackgroundResource(R.color.color_primary_50);
                 }
             }
         });
@@ -157,7 +156,6 @@ public class StockMovementAdapter extends BaseAdapter {
             public void onClick(View v) {
                 if (model.isDraft()) {
                     showDatePickerDialog();
-                    holder.itemView.setBackgroundResource(R.color.color_primary_50);
                 }
             }
         });
@@ -245,6 +243,7 @@ public class StockMovementAdapter extends BaseAdapter {
                 if (editableLine.txMovementDate.getText() == "") {
                     setMovementDate();
                 }
+                editableLine.itemView.setBackgroundResource(R.color.color_primary_50);
             }
         });
     }
@@ -305,6 +304,7 @@ public class StockMovementAdapter extends BaseAdapter {
             } else {
                 editableLine.txMovementDate.setText(DateUtil.formatDate(date.getTime()));
                 getDraftStockMovementItem().setMovementDate(DateUtil.formatDate(date.getTime()));
+                editableLine.itemView.setBackgroundResource(R.color.color_primary_50);
             }
         } catch (ParseException e) {
             ToastUtil.show(R.string.msg_invalid_stock_movement_date);
@@ -323,7 +323,7 @@ public class StockMovementAdapter extends BaseAdapter {
         EditText etPositiveAdjustment;
         EditText etIssued;
         TextView txStockExistence;
-        private  Drawable editTextBackground;
+        private Drawable editTextBackground;
 
 
         public ViewHolder(View view) {
@@ -344,7 +344,7 @@ public class StockMovementAdapter extends BaseAdapter {
             etPositiveAdjustment.setFilters(filters);
             etIssued.setFilters(filters);
 
-            editTextBackground =new EditText(context).getBackground();
+            editTextBackground = new EditText(context).getBackground();
         }
 
     }
