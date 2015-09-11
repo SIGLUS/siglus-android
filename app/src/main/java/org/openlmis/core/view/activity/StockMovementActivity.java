@@ -66,12 +66,14 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     private StockMovementAdapter stockMovementAdapter;
 
     private RetainedFragment dataFragment;
+    private String stockName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         stockId = getIntent().getLongExtra("stockCardId", 0);
+        stockName = getIntent().getStringExtra("stockName");
         try {
             presenter.setStockCard(stockId);
         } catch (LMISException e) {
@@ -166,7 +168,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_history:
-                startActivity(StockMovementHistoryActivity.getIntentToMe(this,stockId));
+                startActivity(StockMovementHistoryActivity.getIntentToMe(this,stockId,stockName));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

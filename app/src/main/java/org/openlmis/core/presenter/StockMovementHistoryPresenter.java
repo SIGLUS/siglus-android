@@ -24,7 +24,6 @@ import android.content.Context;
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.View;
@@ -51,12 +50,12 @@ public class StockMovementHistoryPresenter implements Presenter {
     @Inject
     StockRepository stockRepository;
 
-    StockMovementPresenter.StockMovementView view;
+    StockMovementHistoryView view;
 
 
     @Inject
     Context context;
-    public static final long MAXROWS = 50L;
+    public static final long MAXROWS = 30L;
     private long stockCardId;
 
     @Override
@@ -70,16 +69,11 @@ public class StockMovementHistoryPresenter implements Presenter {
     }
 
     @Override
-    public void attachView(View v) throws ViewNotMatchException {
-        this.view = (StockMovementPresenter.StockMovementView) v;
+    public void attachView(View v) {
+        this.view = (StockMovementHistoryView) v;
     }
 
     public void loadStockMovementViewModels(final long startIndex) {
-        if (!stockMovementModelList.isEmpty()) {
-            view.loaded();
-            return;
-        }
-
         Observable.create(new Observable.OnSubscribe<List<StockMovementViewModel>>() {
             @Override
             public void call(Subscriber<? super List<StockMovementViewModel>> subscriber) {
@@ -99,9 +93,13 @@ public class StockMovementHistoryPresenter implements Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<List<StockMovementViewModel>>() {
             @Override
             public void call(List<StockMovementViewModel> stockMovementViewModels) {
-                stockMovementModelList.addAll(0, stockMovementViewModels);
+                if (stockMovementViewModels.size() == 0) {
+                    view.refreshStockMovement(false);
+                } else {
+                    stockMovementModelList.addAll(0, stockMovementViewModels);
 
-                view.refreshStockMovement();
+                    view.refreshStockMovement(true);
+                }
                 view.loaded();
             }
         });
@@ -110,4 +108,9 @@ public class StockMovementHistoryPresenter implements Presenter {
     public void setStockCardId(long stockId) {
         this.stockCardId = stockId;
     }
+
+    public interface StockMovementHistoryView extends View {
+        void refreshStockMovement(boolean hasNewData);
+    }
+
 }

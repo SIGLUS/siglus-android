@@ -104,6 +104,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                 Intent intent = new Intent();
                 intent.setClass(v.getContext(), detailActivity);
                 intent.putExtra("stockCardId", currentStockCards.get(position).getId());
+                intent.putExtra("stockName", currentStockCards.get(position).getProduct().getPrimaryName());
                 fragment.startActivityForResult(intent, Fragment.REQUEST_CODE_CHANGE);
             }
         });

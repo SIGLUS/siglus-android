@@ -112,6 +112,7 @@
     <string name="label_total_patients">Total Patients</string>
     <string name="label_ptv">PTV</string>
     <string name="label_ppe">PPE</string>
+    <string name="hint_has_not_new_data">There are no more new content!</string>
 
     <!-- Reason/Origin/Destination select dialog-->
     <string-array name="movement_type_items_array">

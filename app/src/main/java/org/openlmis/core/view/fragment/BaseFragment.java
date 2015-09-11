@@ -19,6 +19,17 @@
 package org.openlmis.core.view.fragment;
 
 import android.app.Fragment;
+import android.os.Bundle;
 
-public class BaseFragment extends Fragment{
+import roboguice.RoboGuice;
+
+public class BaseFragment extends Fragment {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // retain this fragment
+        setRetainInstance(true);
+        RoboGuice.getInjector(getActivity()).injectMembersWithoutViews(this);
+        RoboGuice.getInjector(getActivity()).injectViewMembers(this);
+    }
 }
