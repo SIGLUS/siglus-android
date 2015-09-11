@@ -152,7 +152,9 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
     private void addFooterView() {
         TextView view = new TextView(getActivity());
         view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, 150));
-        historyListView.addFooterView(view);
+        if (historyListView.getFooterViewsCount() == 0) {
+            historyListView.addFooterView(view);
+        }
     }
 
     private boolean isGreaterThanOneScreen() {
