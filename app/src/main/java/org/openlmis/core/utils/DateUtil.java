@@ -27,9 +27,11 @@ import java.util.Locale;
 public final class DateUtil {
 
     public static final String DEFAULT_DATE_FORMAT = "dd MMM yyyy";
+    public static final String DATE_FORMAT_ONLY_MONTH_AND_YEAR = "MMM yyyy";
     public static final String SIMPLE_DATE_FORMAT = "dd/MM/yyyy";
 
     public static final SimpleDateFormat DATE_FORMATER = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
+    public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_DAY = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR);
 
     public static final long MILLISECONDS_MINUTE = 60000;
     public static final long MILLISECONDS_HOUR = 3600000;
@@ -95,6 +97,10 @@ public final class DateUtil {
 
     public static String formatDate(Date date) {
         return DATE_FORMATER.format(date);
+    }
+
+    public static String formatDateWithYearAndMonth(Date date) {
+        return DATE_FORMAT_NOT_DISPLAY_DAY.format(date);
     }
 
     public static String formatDate(Date date, String format) {

@@ -52,7 +52,6 @@ import roboguice.inject.InjectView;
 @ContentView(R.layout.activity_stock_movement)
 public class StockMovementActivity extends BaseActivity implements StockMovementPresenter.StockMovementView {
 
-
     @InjectView(R.id.list_stock_movement)
     ListView stockMovementList;
 
@@ -117,7 +116,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
         btnCancel.setText(getResources().getString(R.string.btn_cancel));
 
-
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,7 +129,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
                 stockMovementAdapter.cancelStockMovement();
             }
         });
-
 
         loading();
         presenter.loadStockMovementViewModels();
@@ -149,7 +146,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        expireDataView.setText(DateUtil.formatDate(date));
+        expireDataView.setText(DateUtil.formatDateWithYearAndMonth(date));
     }
 
     @Override
@@ -168,7 +165,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         stockMovementAdapter.refresh();
     }
 
-
     @Override
     protected void onDestroy() {
         dataFragment.putData("presenter", presenter);
@@ -180,7 +176,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         initPresenter();
         return presenter;
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
