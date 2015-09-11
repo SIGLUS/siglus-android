@@ -21,6 +21,7 @@ package org.openlmis.core.view.adapter;
 import android.app.DatePickerDialog;
 import android.graphics.drawable.Drawable;
 import android.text.InputFilter;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -142,6 +143,10 @@ public class StockMovementAdapter extends BaseAdapter {
                         break;
                 }
             }
+
+            if (!TextUtils.isEmpty(model.getMovementDate())) {
+                highLightAndShowBottomBtn();
+            }
         }
 
         holder.txReason.setOnClickListener(new View.OnClickListener() {
@@ -245,7 +250,7 @@ public class StockMovementAdapter extends BaseAdapter {
                 if (editableLine.txMovementDate.getText() == "") {
                     setMovementDate();
                 }
-                notifyUIChange();
+                highLightAndShowBottomBtn();
             }
         });
     }
@@ -305,14 +310,14 @@ public class StockMovementAdapter extends BaseAdapter {
             } else {
                 editableLine.txMovementDate.setText(DateUtil.formatDate(date.getTime()));
                 getDraftStockMovementItem().setMovementDate(DateUtil.formatDate(date.getTime()));
-                notifyUIChange();
+                highLightAndShowBottomBtn();
             }
         } catch (ParseException e) {
             ToastUtil.show(R.string.msg_invalid_stock_movement_date);
         }
     }
 
-    public void notifyUIChange() {
+    public void highLightAndShowBottomBtn() {
         editableLine.itemView.setBackgroundResource(R.color.color_primary_50);
         activity.showBottomBtn();
     }

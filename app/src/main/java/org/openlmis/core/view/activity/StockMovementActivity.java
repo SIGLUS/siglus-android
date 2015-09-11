@@ -44,8 +44,6 @@ import org.openlmis.core.view.adapter.StockMovementAdapter;
 import org.openlmis.core.view.fragment.RetainedFragment;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
@@ -92,11 +90,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         }
 
         initUI();
-
-//        if (savedInstanceState != null) {
-//            stockMovementAdapter.notifyUIChange();
-//        }
-
     }
 
     private void initPresenter() {
@@ -152,17 +145,13 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
     private void displayExpireDate() {
         String expireDates = presenter.getStockCard().getExpireDates();
-        String convertedDate;
-        Date date = null;
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-mm-yyyy");
-
+        String convertedDate = null;
         try {
-            convertedDate = DateUtil.convertDate(expireDates, "dd/mm/yyyy", "dd-mm-yyyy");
-            date = formatter.parse(convertedDate);
+            convertedDate = DateUtil.convertDate(expireDates, "dd/mm/yyyy", DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        expireDataView.setText(DateUtil.formatDateWithYearAndMonth(date));
+        expireDataView.setText(convertedDate);
     }
 
     @Override
