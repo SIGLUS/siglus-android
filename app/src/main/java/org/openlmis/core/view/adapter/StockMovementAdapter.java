@@ -19,7 +19,6 @@
 package org.openlmis.core.view.adapter;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.text.InputFilter;
 import android.view.KeyEvent;
@@ -38,6 +37,7 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.presenter.StockMovementPresenter;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.activity.StockMovementActivity;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 import org.openlmis.core.view.widget.MovementTypeDialog;
@@ -57,7 +57,7 @@ public class StockMovementAdapter extends BaseAdapter {
 
     LayoutInflater layoutInflater;
 
-    Context context;
+    StockMovementActivity activity;
 
     MovementTypeDialog dialog;
 
@@ -65,12 +65,14 @@ public class StockMovementAdapter extends BaseAdapter {
 
     private final StockCard stockCard;
 
-    public StockMovementAdapter(Context context, StockMovementPresenter presenter) {
+    View buttonView;
+
+    public StockMovementAdapter(StockMovementActivity context, StockMovementPresenter presenter, View buttonView) {
         stockMovementViewModels = presenter.getStockMovementModelList();
-        this.context = context;
+        this.activity = context;
         stockCard = presenter.getStockCard();
         layoutInflater = LayoutInflater.from(context);
-
+        this.buttonView = buttonView;
         setupMovementTypeDialog();
     }
 
@@ -207,7 +209,7 @@ public class StockMovementAdapter extends BaseAdapter {
     }
 
     private void setupMovementTypeDialog() {
-        dialog = new MovementTypeDialog(context, new MovementTypeDialog.OnMovementSelectListener() {
+        dialog = new MovementTypeDialog(activity, new MovementTypeDialog.OnMovementSelectListener() {
 
             @Override
             public void onReceive() {
@@ -243,14 +245,13 @@ public class StockMovementAdapter extends BaseAdapter {
                 if (editableLine.txMovementDate.getText() == "") {
                     setMovementDate();
                 }
-                editableLine.itemView.setBackgroundResource(R.color.color_primary_50);
+                notifyUIChange();
             }
         });
     }
 
     private void setMovementDate() {
-        String movementDate = "";
-        movementDate = DateUtil.formatDate(new Date());
+        String movementDate = DateUtil.formatDate(new Date());
 
         editableLine.txMovementDate.setText(movementDate);
         getDraftStockMovementItem().setMovementDate(movementDate);
@@ -281,7 +282,7 @@ public class StockMovementAdapter extends BaseAdapter {
     private void showDatePickerDialog() {
         final Calendar today = GregorianCalendar.getInstance();
 
-        DatePickerDialog dialog = new DatePickerDialog(context, DatePickerDialog.BUTTON_NEUTRAL, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog dialog = new DatePickerDialog(activity, DatePickerDialog.BUTTON_NEUTRAL, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 validateStockMovementDate(new GregorianCalendar(year, monthOfYear, dayOfMonth));
@@ -304,11 +305,20 @@ public class StockMovementAdapter extends BaseAdapter {
             } else {
                 editableLine.txMovementDate.setText(DateUtil.formatDate(date.getTime()));
                 getDraftStockMovementItem().setMovementDate(DateUtil.formatDate(date.getTime()));
-                editableLine.itemView.setBackgroundResource(R.color.color_primary_50);
+                notifyUIChange();
             }
         } catch (ParseException e) {
             ToastUtil.show(R.string.msg_invalid_stock_movement_date);
         }
+    }
+
+    public void notifyUIChange() {
+        editableLine.itemView.setBackgroundResource(R.color.color_primary_50);
+        activity.showBottomBtn();
+    }
+
+    public void cleanHighLight() {
+        editableLine.itemView.setBackgroundResource(R.color.white);
     }
 
 
@@ -344,7 +354,7 @@ public class StockMovementAdapter extends BaseAdapter {
             etPositiveAdjustment.setFilters(filters);
             etIssued.setFilters(filters);
 
-            editTextBackground = new EditText(context).getBackground();
+            editTextBackground = new EditText(activity).getBackground();
         }
 
     }

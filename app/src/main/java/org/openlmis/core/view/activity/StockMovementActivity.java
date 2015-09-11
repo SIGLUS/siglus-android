@@ -26,6 +26,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -74,6 +76,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
     private RetainedFragment dataFragment;
     private String stockName;
+    private View buttonView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +90,13 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             ToastUtil.show(R.string.msg_db_error);
             finish();
         }
+
         initUI();
+
+//        if (savedInstanceState != null) {
+//            stockMovementAdapter.notifyUIChange();
+//        }
+
     }
 
     private void initPresenter() {
@@ -108,8 +117,12 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     private void initUI() {
         displayExpireDate();
 
-        stockMovementAdapter = new StockMovementAdapter(this, presenter);
+        buttonView = findViewById(R.id.action_panel);
+        buttonView.setVisibility(View.GONE);
+
+        stockMovementAdapter = new StockMovementAdapter(this, presenter, buttonView);
         View headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
+
 
         stockMovementList.addHeaderView(headerView);
         stockMovementList.setAdapter(stockMovementAdapter);
@@ -120,6 +133,9 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             @Override
             public void onClick(View v) {
                 presenter.submitStockMovement(stockMovementAdapter.getEditableStockMovement());
+
+                buttonView.setVisibility(View.GONE);
+                stockMovementAdapter.cleanHighLight();
             }
         });
 
@@ -193,5 +209,20 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void showBottomBtn() {
+        if (buttonView.getVisibility() == View.VISIBLE) {
+            return;
+        }
+        buttonView.setVisibility(View.VISIBLE);
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.anim_from_bottom_in);
+        buttonView.startAnimation(animation);
+        stockMovementList.post(new Runnable() {
+            @Override
+            public void run() {
+                stockMovementList.setSelection(stockMovementList.getCount() - 1);
+            }
+        });
     }
 }
