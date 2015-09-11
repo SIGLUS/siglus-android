@@ -34,6 +34,7 @@ import com.google.inject.Inject;
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.StockMovementHistoryPresenter;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.adapter.StockMovementHistoryAdapter;
 
 public class StockMovementHistoryFragment extends BaseFragment implements StockMovementHistoryPresenter.StockMovementHistoryView, OnRefreshListener {
@@ -90,6 +91,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
 
     public void initData() {
         isFirstLoading = true;
+        ((BaseActivity) getActivity()).loading();
         swipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -122,6 +124,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
             }
         } else {
             ToastUtil.showInCenter(R.string.hint_has_not_new_data);
+            ((BaseActivity) getActivity()).loaded();
         }
         isLoading = false;
         swipeRefreshLayout.setRefreshing(false);
@@ -133,6 +136,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
             @Override
             public void run() {
                 historyListView.setSelection(historyListView.getCount() - 1);
+                ((BaseActivity) getActivity()).loaded();
             }
         });
     }
@@ -168,6 +172,5 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
 
     @Override
     public void loaded() {
-
     }
 }

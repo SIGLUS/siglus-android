@@ -23,7 +23,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
@@ -106,22 +105,22 @@ public class StockMovementHistoryAdapter extends BaseAdapter {
 
         TextView txMovementDate;
         TextView txReason;
-        EditText etDocumentNo;
-        EditText etReceived;
-        EditText etNegativeAdjustment;
-        EditText etPositiveAdjustment;
-        EditText etIssued;
+        TextView etDocumentNo;
+        TextView etReceived;
+        TextView etNegativeAdjustment;
+        TextView etPositiveAdjustment;
+        TextView etIssued;
         TextView txStockExistence;
 
 
         public ViewHolder(View view) {
             txMovementDate = (TextView) view.findViewById(R.id.tx_date);
             txReason = (TextView) view.findViewById(R.id.tx_reason);
-            etDocumentNo = (EditText) view.findViewById(R.id.et_document_no);
-            etReceived = (EditText) view.findViewById(R.id.et_received);
-            etNegativeAdjustment = (EditText) view.findViewById(R.id.et_negative_adjustment);
-            etPositiveAdjustment = (EditText) view.findViewById(R.id.et_positive_adjustment);
-            etIssued = (EditText) view.findViewById(R.id.et_issued);
+            etDocumentNo = (TextView) view.findViewById(R.id.et_document_no);
+            etReceived = (TextView) view.findViewById(R.id.et_received);
+            etNegativeAdjustment = (TextView) view.findViewById(R.id.et_negative_adjustment);
+            etPositiveAdjustment = (TextView) view.findViewById(R.id.et_positive_adjustment);
+            etIssued = (TextView) view.findViewById(R.id.et_issued);
             txStockExistence = (TextView) view.findViewById(R.id.tx_stock_on_hand);
         }
     }
