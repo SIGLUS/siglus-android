@@ -108,13 +108,13 @@ public class RnrFormRepository {
         try {
             updateWrapperList(form);
             genericDao.update(form);
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new LMISException(e);
         }
     }
 
-    public void authorise(RnRForm form) throws LMISException{
-        if (!isPeriodUnique(form)){
+    public void authorise(RnRForm form) throws LMISException {
+        if (!isPeriodUnique(form)) {
             throw new PeriodNotUniqueException("Already have a authorized form");
         }
 
@@ -131,8 +131,8 @@ public class RnrFormRepository {
                 }
             });
 
-           return rnRForm == null;
-        }catch (LMISException e){
+            return rnRForm == null;
+        } catch (LMISException e) {
             e.printStackTrace();
         }
         return false;
@@ -289,10 +289,12 @@ public class RnrFormRepository {
     }
 
     public void removeRnrForm(RnRForm form) throws LMISException {
-        deleteRnrFormItems(form.getRnrFormItemListWrapper());
-        deleteRegimenItems(form.getRegimenItemListWrapper());
-        deleteBaseInfoItems(form.getBaseInfoItemListWrapper());
-        genericDao.delete(form);
+        if (form != null) {
+            deleteRnrFormItems(form.getRnrFormItemListWrapper());
+            deleteRegimenItems(form.getRegimenItemListWrapper());
+            deleteBaseInfoItems(form.getBaseInfoItemListWrapper());
+            genericDao.delete(form);
+        }
     }
 
     private void deleteBaseInfoItems(final ArrayList<BaseInfoItem> baseInfoItemListWrapper) throws LMISException {
