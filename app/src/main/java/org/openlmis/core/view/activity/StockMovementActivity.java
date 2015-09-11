@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.inject.Inject;
 
@@ -59,6 +60,8 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @InjectView(R.id.btn_complete)
     Button btnCancel;
 
+    @InjectView(R.id.tx_expire_data_stock_movement)
+    TextView expireDataView;
 
     StockMovementPresenter presenter;
 
@@ -99,6 +102,8 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     }
 
     private void initUI() {
+        displayExpireDate();
+
         stockMovementAdapter = new StockMovementAdapter(this, presenter);
         View headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
 
@@ -125,6 +130,11 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
         loading();
         presenter.loadStockMovementViewModels();
+    }
+
+    private void displayExpireDate() {
+        String expireDates = presenter.getStockCard().getExpireDates();
+        expireDataView.setText(expireDates);
     }
 
     @Override
