@@ -168,6 +168,17 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
             actionPanel = itemView.findViewById(R.id.action_panel);
 
             txQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (checkBox.isChecked()){
+                        checkBox.setChecked(false);
+                    }else {
+                        checkBox.setChecked(true);
+                    }
+                }
+            });
         }
 
         public void reset() {
