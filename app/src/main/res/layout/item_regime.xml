@@ -24,5 +24,5 @@
         android:maxLength="7"
         android:numeric="integer"
         android:saveEnabled="false"
-        android:imeOptions="actionDone"/>
+        android:imeOptions="actionNext"/>
 </LinearLayout>

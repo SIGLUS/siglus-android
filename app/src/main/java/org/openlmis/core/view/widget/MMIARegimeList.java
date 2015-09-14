@@ -23,8 +23,10 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -64,11 +66,14 @@ public class MMIARegimeList extends LinearLayout {
         this.dataList = regimenItems;
         this.totalView = totalView;
         addHeaderView();
-        for (RegimenItem item : dataList) {
+
+        for (int i = 0; i < dataList.size(); i++) {
+            RegimenItem item = dataList.get(i);
             if (item != null) {
-                addItemView(item);
+                addItemView(item, i);
             }
         }
+        editTexts.get(editTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
         totalView.setText(String.valueOf(getTotal()));
     }
 
@@ -77,14 +82,14 @@ public class MMIARegimeList extends LinearLayout {
     }
 
     private void addHeaderView() {
-        addItemView(null, true);
+        addItemView(null, true, 0);
     }
 
-    private void addItemView(final RegimenItem item) {
-        addItemView(item, false);
+    private void addItemView(final RegimenItem item, int position) {
+        addItemView(item, false, position);
     }
 
-    private void addItemView(final RegimenItem item, boolean isHeaderView) {
+    private void addItemView(final RegimenItem item, boolean isHeaderView, final int position) {
         View view = layoutInflater.inflate(R.layout.item_regime, this, false);
         TextView tvName = (TextView) view.findViewById(R.id.tv_name);
         EditText etTotal = (EditText) view.findViewById(R.id.et_total);
@@ -110,7 +115,23 @@ public class MMIARegimeList extends LinearLayout {
             } else {
                 view.setBackgroundResource(R.color.color_regime_adult);
             }
+
             etTotal.addTextChangedListener(new EditTextWatcher(item));
+
+            etTotal.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                        if ((position + 1) < editTexts.size()) {
+                            editTexts.get(position + 1).requestFocus();
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            });
+
+
         }
         addView(view);
     }

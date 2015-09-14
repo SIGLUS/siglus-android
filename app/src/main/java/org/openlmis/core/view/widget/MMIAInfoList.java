@@ -23,8 +23,10 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -63,23 +65,26 @@ public class MMIAInfoList extends LinearLayout {
         this.dataList = list;
         addHeaderView();
 
-        for (BaseInfoItem item : dataList) {
+        for (int i = 0; i < dataList.size(); i++) {
+            BaseInfoItem item = dataList.get(i);
             if (item != null) {
-                addItemView(item);
+                addItemView(item, i);
             }
         }
+
+        editTexts.get(editTexts.size() - 2).setImeOptions(EditorInfo.IME_ACTION_DONE);
     }
 
-    private void addItemView(BaseInfoItem item) {
-        addItemView(item, false);
+    private void addItemView(BaseInfoItem item, int position) {
+        addItemView(item, false, position);
     }
 
     private void addHeaderView() {
-        addItemView(null, true);
+        addItemView(null, true, 0);
     }
 
 
-    private void addItemView(BaseInfoItem item, boolean isHeaderView) {
+    private void addItemView(BaseInfoItem item, boolean isHeaderView, final int position) {
         View view = layoutInflater.inflate(R.layout.item_mmia_info, this, false);
         TextView tvName = (TextView) view.findViewById(R.id.tv_name);
         EditText etValue = (EditText) view.findViewById(R.id.et_value);
@@ -105,6 +110,19 @@ public class MMIAInfoList extends LinearLayout {
             setTotalViewBackground(item, etValue);
         }
         addView(view);
+
+        etValue.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                    if ((position + 1) < editTexts.size()) {
+                        editTexts.get(position + 1).requestFocus();
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
     }
 
     private void setTotalViewBackground(BaseInfoItem item, EditText etValue) {
