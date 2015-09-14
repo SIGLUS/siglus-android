@@ -7,14 +7,6 @@
     android:showDividers="middle">
 
     <TextView
-        android:id="@+id/tv_code"
-        style="@style/mmia_spread_list_item"
-        android:layout_width="@dimen/mmia_spread_item_common_width"
-        android:layout_height="match_parent"
-        android:gravity="center" />
-
-
-    <TextView
         android:id="@+id/tv_name"
         style="@style/mmia_spread_list_item"
         android:layout_width="0dp"

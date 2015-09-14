@@ -13,7 +13,9 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:orientation="vertical"
             android:padding="5dp">
 
@@ -30,7 +32,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginTop="8dp"
                 android:layout_weight="1"
                 android:baselineAligned="false"
@@ -127,7 +129,7 @@
             </LinearLayout>
 
 
-            <include layout="@layout/layout_form_action"/>
+            <include layout="@layout/layout_form_action" />
 
         </LinearLayout>
     </ScrollView>

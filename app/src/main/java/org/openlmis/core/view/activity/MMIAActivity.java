@@ -31,6 +31,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIAFormPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.OnBackConfirmDialog;
@@ -109,20 +110,16 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hasDataChanged = (Boolean) dataFragment.getData("hasDataChanged");
-        if (presenter.getRnrForm() != null) {
-            initUI();
-        }
+        presenter.loadData();
     }
 
-    public void initUI() {
+    @Override
+    public void initView(final RnRForm form) {
 
-        rnrFormList.initView(new ArrayList<>(presenter.getRnrForm().getRnrFormItemListWrapper()));
-
-        regimeListView.initView(presenter.getRnrForm().getRegimenItemListWrapper(), tvRegimeTotal);
-
-        mmiaInfoListView.initView(presenter.getRnrForm().getBaseInfoItemListWrapper());
-
-        etComment.setText(presenter.getRnrForm().getComments());
+        rnrFormList.initView(new ArrayList<>(form.getRnrFormItemListWrapper()));
+        regimeListView.initView(form.getRegimenItemListWrapper(), tvRegimeTotal);
+        mmiaInfoListView.initView(form.getBaseInfoItemListWrapper());
+        etComment.setText(form.getComments());
 
         etComment.post(new Runnable() {
             @Override

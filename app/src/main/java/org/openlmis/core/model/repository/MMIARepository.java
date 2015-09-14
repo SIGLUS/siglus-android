@@ -27,6 +27,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
@@ -67,12 +68,12 @@ public class MMIARepository extends RnrFormRepository {
         super(context);
     }
 
-    public RnRForm initMMIA() throws LMISException {
-        return initRnrForm(programRepository.queryByCode(MMIA_PROGRAM_CODE));
+    public RnRForm initMMIA(Program program) throws LMISException {
+        return initRnrForm(program);
     }
 
-    public RnRForm getDraftMMIAForm() throws LMISException {
-        return queryDraft(programRepository.queryByCode(MMIA_PROGRAM_CODE));
+    public RnRForm getDraftMMIAForm(Program program) throws LMISException {
+        return queryDraft(program);
     }
 
     @Override

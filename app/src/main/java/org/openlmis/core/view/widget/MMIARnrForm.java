@@ -90,8 +90,8 @@ public class MMIARnrForm extends LinearLayout {
         for (String fnm : fnms) {
             for (RnrFormItem item : dataList) {
                 if (fnm.equals(item.getProduct().getCode())) {
-                    View leftView = addLeftView(item,false,medicineTypeName);
-                    ViewGroup rightView = addRightView(item,false);
+                    View leftView = addLeftView(item, false, medicineTypeName);
+                    ViewGroup rightView = addRightView(item, false);
                     setItemSize(leftView, rightView);
                 }
             }
@@ -122,7 +122,7 @@ public class MMIARnrForm extends LinearLayout {
     }
 
     private void setItemSize(final View leftView, final ViewGroup rightView) {
-        rightView.post(new Runnable() {
+        post(new Runnable() {
             @Override
             public void run() {
                 setRightItemWidth(rightView);
@@ -148,9 +148,13 @@ public class MMIARnrForm extends LinearLayout {
         int leftHeight = leftView.getHeight();
         int rightHeight = rightView.getHeight();
         if (leftHeight > rightHeight) {
-            rightView.getLayoutParams().height = leftHeight;
+            ViewGroup.LayoutParams layoutParams = rightView.getLayoutParams();
+            layoutParams.height = leftHeight;
+            rightView.setLayoutParams(layoutParams);
         } else {
-            leftView.getLayoutParams().height = rightHeight;
+            ViewGroup.LayoutParams layoutParams = leftView.getLayoutParams();
+            layoutParams.height = rightHeight;
+            leftView.setLayoutParams(layoutParams);
         }
     }
 

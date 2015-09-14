@@ -2,7 +2,6 @@
 
     <!--MMIA Speed-->
     <string name="label_rnrfrom_left_header">MEDICAMENTO</string>
-    <string name="label_regime_header_code">Codigo</string>
     <string name="label_regime_header_name">REGIME TERAPEUTICO</string>
     <string name="label_total">Total</string>
     <string name="label_mmia_info_header_name">TIPO</string>

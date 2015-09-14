@@ -86,7 +86,6 @@ public class MMIARegimeList extends LinearLayout {
 
     private void addItemView(final RegimenItem item, boolean isHeaderView) {
         View view = layoutInflater.inflate(R.layout.item_regime, this, false);
-        TextView tvCode = (TextView) view.findViewById(R.id.tv_code);
         TextView tvName = (TextView) view.findViewById(R.id.tv_name);
         EditText etTotal = (EditText) view.findViewById(R.id.et_total);
 
@@ -95,13 +94,11 @@ public class MMIARegimeList extends LinearLayout {
             etTotal.setEnabled(false);
             view.setBackgroundResource(R.color.color_mmia_speed_list_header);
 
-            tvCode.setText(R.string.label_regime_header_code);
             tvName.setText(R.string.label_regime_header_name);
             etTotal.setText(getResources().getString(R.string.label_total).toUpperCase());
         } else {
             editTexts.add(etTotal);
             Regimen regimen = item.getRegimen();
-            tvCode.setText(regimen.getCode());
             tvName.setText(regimen.getName());
 
             if (item.getAmount() != null) {

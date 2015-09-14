@@ -27,12 +27,20 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
+import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.view.View;
 
 import java.util.ArrayList;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class MMIAFormPresenter implements Presenter {
 
@@ -41,7 +49,9 @@ public class MMIAFormPresenter implements Presenter {
 
     @Inject
     MMIARepository mmiaRepository;
-    private RnRForm rnrForm;
+
+    @Inject
+    ProgramRepository programRepository;
 
     @Inject
     Context context;
@@ -65,37 +75,58 @@ public class MMIAFormPresenter implements Presenter {
         }
     }
 
-    public RnRForm getRnrForm() {
+    public void loadData() {
+        view.loading();
+        Observable.create(new Observable.OnSubscribe<RnRForm>() {
+            @Override
+            public void call(Subscriber<? super RnRForm> subscriber) {
+                try {
+                    subscriber.onNext(getRnrForm());
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<RnRForm>() {
+
+            @Override
+            public void call(RnRForm form) {
+                if (form != null) {
+                    view.initView(form);
+                }
+                view.loaded();
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                view.loaded();
+                view.showErrorMessage(throwable.getMessage());
+            }
+        });
+    }
+
+    public RnRForm getRnrForm() throws LMISException {
+
         if (form != null) {
             return form;
         }
+        Program program = programRepository.queryByCode(MMIARepository.MMIA_PROGRAM_CODE);
 
-        RnRForm draftMMIAForm = getDraftMMIAForm();
+        RnRForm draftMMIAForm = getDraftMMIAForm(program);
         if (draftMMIAForm != null) {
             form = draftMMIAForm;
         } else {
-            form = initMMIA();
+            form = initMMIA(program);
         }
         return form;
     }
 
-    private RnRForm getDraftMMIAForm() {
-        RnRForm draftMMIAForm = null;
-        try {
-            draftMMIAForm = mmiaRepository.getDraftMMIAForm();
-        } catch (LMISException e) {
-            e.printStackTrace();
-        }
-        return draftMMIAForm;
+    private RnRForm getDraftMMIAForm(Program program) throws LMISException {
+        return mmiaRepository.getDraftMMIAForm(program);
     }
 
-    private RnRForm initMMIA() {
-        try {
-            form = mmiaRepository.initMMIA();
-        } catch (LMISException e) {
-            view.showErrorMessage(e.getMessage());
-        }
-        return form;
+    private RnRForm initMMIA(Program program) throws LMISException {
+        return mmiaRepository.initMMIA(program);
     }
 
     public void completeMMIA(ArrayList<RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) {
@@ -106,8 +137,8 @@ public class MMIAFormPresenter implements Presenter {
             try {
                 mmiaRepository.authorise(form);
                 view.completeSuccess();
-            }catch (LMISException e){
-                if (e instanceof PeriodNotUniqueException){
+            } catch (LMISException e) {
+                if (e instanceof PeriodNotUniqueException) {
                     view.showErrorMessage(context.getResources().getString(R.string.msg_mmia_not_unique));
                 } else {
                     view.showErrorMessage(e.getMessage());
@@ -148,5 +179,7 @@ public class MMIAFormPresenter implements Presenter {
         void showErrorMessage(String msg);
 
         void completeSuccess();
+
+        void initView(RnRForm form);
     }
 }

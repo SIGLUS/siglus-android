@@ -24,9 +24,11 @@ import com.google.inject.AbstractModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.robolectric.RuntimeEnvironment;
@@ -58,18 +60,18 @@ public class MMIAFormPresenterTest {
 
     @Test
     public void shouldGetInitMMIAForm() throws LMISException, SQLException {
-        when(mmiaRepository.getDraftMMIAForm()).thenReturn(null);
+        when(mmiaRepository.getDraftMMIAForm(Matchers.<Program>anyObject())).thenReturn(null);
         presenter.getRnrForm();
-        verify(mmiaRepository).getDraftMMIAForm();
-        verify(mmiaRepository).initMMIA();
+        verify(mmiaRepository).getDraftMMIAForm(Matchers.<Program>anyObject());
+        verify(mmiaRepository).initMMIA(Matchers.<Program>anyObject());
     }
 
     @Test
     public void shouldGetDraftMMIAForm() throws LMISException {
-        when(mmiaRepository.getDraftMMIAForm()).thenReturn(new RnRForm());
+        when(mmiaRepository.getDraftMMIAForm(Matchers.<Program>anyObject())).thenReturn(new RnRForm());
         presenter.getRnrForm();
-        verify(mmiaRepository).getDraftMMIAForm();
-        verify(mmiaRepository, never()).initMMIA();
+        verify(mmiaRepository).getDraftMMIAForm(Matchers.<Program>anyObject());
+        verify(mmiaRepository, never()).initMMIA(Matchers.<Program>anyObject());
     }
 
     public class MyTestModule extends AbstractModule {

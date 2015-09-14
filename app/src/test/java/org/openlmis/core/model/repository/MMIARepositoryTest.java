@@ -59,6 +59,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     StockRepository mockStockRepository;
     ProgramRepository mockProgramRepository;
     RnrFormRepository mockRnrFormRepository;
+    private Program program;
 
     @Before
     public void setup() throws LMISException {
@@ -72,7 +73,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         MMIARepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(MMIARepository.class);
 
 
-        Program program = new Program("ART", "ART", null);
+        program = new Program("ART", "ART", null);
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
 
         ArrayList<Product> products = new ArrayList<>();
@@ -118,7 +119,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         when(mockStockRepository.list(anyString())).thenReturn(stockCards);
         when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(stockMovementItems);
 
-        RnRForm form = MMIARepository.initMMIA();
+        RnRForm form = MMIARepository.initMMIA(program);
         assertThat(form.getRnrFormItemList().size(), is(24));
 
         RnrFormItem item = form.getRnrFormItemListWrapper().get(1);
@@ -139,7 +140,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldSaveSuccess() throws Exception {
-        RnRForm initForm = MMIARepository.initMMIA();
+        RnRForm initForm = MMIARepository.initMMIA(program);
         ArrayList<RegimenItem> regimenItemListWrapper = initForm.getRegimenItemListWrapper();
 
         for (int i = 0; i < regimenItemListWrapper.size(); i++) {
@@ -175,7 +176,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
         when(mockRnrFormRepository.initRnrForm(program)).thenReturn(rnRForm);
 
-        RnRForm rnRFormTest = MMIARepository.initMMIA();
+        RnRForm rnRFormTest = MMIARepository.initMMIA(program);
 
         assertThat(rnRFormTest.getRnrFormItemListWrapper().size(), is(24));
     }

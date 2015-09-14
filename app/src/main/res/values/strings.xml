@@ -42,7 +42,6 @@
 
     <!--MMIA-->
     <string name="label_rnrfrom_left_header">PRODUCT</string>
-    <string name="label_regime_header_code">Code</string>
     <string name="label_regime_header_name">REGIME THERAPEUTIC</string>
     <string name="label_total">Total</string>
     <string name="label_mmia_info_header_name">TYPE</string>
