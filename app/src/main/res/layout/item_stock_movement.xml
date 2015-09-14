@@ -1,70 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="wrap_content"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
     android:divider="@drawable/divider_vertical"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
     android:showDividers="middle">
 
     <TextView
         android:id="@+id/tx_date"
+        style="@style/sheet_header2"
         android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        style="@style/sheet_header2" />
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/tx_reason"
+        style="@style/sheet_header2"
         android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        style="@style/sheet_header2"/>
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
         android:divider="@drawable/divider_vertical"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:showDividers="middle">
 
         <EditText
             android:id="@+id/et_document_no"
+            style="@style/sheet_header2"
             android:layout_width="@dimen/stock_movement_item_common_width"
             android:layout_height="wrap_content"
-            style="@style/sheet_header2"/>
+            android:imeOptions="actionDone"
+            android:singleLine="true" />
 
         <EditText
             android:id="@+id/et_received"
+            style="@style/sheet_header2"
             android:layout_width="@dimen/stock_movement_item_common_width"
             android:layout_height="wrap_content"
             android:inputType="number"
-            style="@style/sheet_header2"/>
+            android:imeOptions="actionDone"/>
 
         <EditText
             android:id="@+id/et_negative_adjustment"
+            style="@style/sheet_header2"
             android:layout_width="@dimen/stock_movement_item_common_width"
             android:layout_height="wrap_content"
             android:inputType="number"
-            style="@style/sheet_header2"/>
+            android:imeOptions="actionDone" />
 
         <EditText
             android:id="@+id/et_positive_adjustment"
+            style="@style/sheet_header2"
             android:layout_width="@dimen/stock_movement_item_common_width"
             android:layout_height="wrap_content"
             android:inputType="number"
-            style="@style/sheet_header2"/>
+            android:imeOptions="actionDone" />
 
         <EditText
             android:id="@+id/et_issued"
+            style="@style/sheet_header2"
             android:layout_width="@dimen/stock_movement_item_common_width"
             android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
             android:inputType="number"
-            style="@style/sheet_header2"/>
+             />
 
         <TextView
             android:id="@+id/tx_stock_on_hand"
+            style="@style/sheet_header2"
             android:layout_width="@dimen/stock_movement_item_common_width"
-            android:layout_height="wrap_content"
-            style="@style/sheet_header2"/>
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </LinearLayout>
