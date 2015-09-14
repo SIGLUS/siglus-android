@@ -76,7 +76,7 @@ public class StockMovementViewModel {
         stockMovementItem.setDocumentNumber(getDocumentNo());
         stockMovementItem.setMovementType(movementType);
 
-        switch (movementType){
+        switch (movementType) {
             case ISSUE:
                 stockMovementItem.setMovementQuantity(Long.parseLong(issued));
                 break;
@@ -92,20 +92,28 @@ public class StockMovementViewModel {
         }
         try {
             stockMovementItem.setMovementDate(DateUtil.parseString(getMovementDate(), DateUtil.DEFAULT_DATE_FORMAT));
-        } catch (ParseException e){
+        } catch (ParseException e) {
             e.printStackTrace();
         }
 
         return stockMovementItem;
     }
 
-    public boolean validate() {
+    public boolean validateEmpty() {
+        return ((StringUtils.isNoneEmpty(reason)
+                && StringUtils.isNoneEmpty(movementDate)
+                && !(StringUtils.isEmpty(received)
+                && (StringUtils.isEmpty(negativeAdjustment)
+                && StringUtils.isEmpty(positiveAdjustment)
+                && StringUtils.isEmpty(issued))))
+        );
+    }
+
+    public boolean validateInputValid() {
         return ((StringUtils.isNumeric(received)
                 || StringUtils.isNumeric(negativeAdjustment)
                 || StringUtils.isNumeric(positiveAdjustment)
                 || StringUtils.isNumeric(issued))
-                && StringUtils.isNoneEmpty(reason)
-                && StringUtils.isNoneEmpty(movementDate)
                 && Long.parseLong(stockExistence) >= 0);
     }
 }

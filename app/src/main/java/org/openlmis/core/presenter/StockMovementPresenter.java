@@ -130,7 +130,7 @@ public class StockMovementPresenter implements Presenter {
     }
 
     public void submitStockMovement(StockMovementViewModel viewModel) {
-        if (viewModel.validate()) {
+        if (viewModel.validateEmpty() && viewModel.validateInputValid() ) {
             try {
                 saveStockMovement(viewModel.convertViewToModel());
 
@@ -141,7 +141,9 @@ public class StockMovementPresenter implements Presenter {
             } catch (LMISException e) {
                 view.showErrorAlert(e.getMessage());
             }
-        } else {
+        }else if(!viewModel.validateEmpty()) {
+            view.showErrorAlert(context.getResources().getString(R.string.msg_validation_empty_error));
+        } else if(!viewModel.validateInputValid()) {
             view.showErrorAlert(context.getResources().getString(R.string.msg_validation_error));
         }
     }
