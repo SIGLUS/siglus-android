@@ -130,7 +130,7 @@ public class StockMovementPresenter implements Presenter {
     }
 
     public void submitStockMovement(StockMovementViewModel viewModel) {
-        if (viewModel.validateEmpty() && viewModel.validateInputValid() ) {
+        if (viewModel.validateEmpty() && viewModel.validateInputValid()) {
             try {
                 saveStockMovement(viewModel.convertViewToModel());
 

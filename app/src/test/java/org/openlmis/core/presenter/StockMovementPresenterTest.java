@@ -36,6 +36,7 @@ import roboguice.RoboGuice;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -61,10 +62,10 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldValidateStockMovementViewModelBeforeSaveAndReturnErrorIfInvalid() {
         StockMovementViewModel stockMovementViewModelMock = mock(StockMovementViewModel.class);
-        when(stockMovementViewModelMock.validate()).thenReturn(false);
+        when(stockMovementViewModelMock.validateEmpty()).thenReturn(false);
 
         stockMovementPresenter.submitStockMovement(stockMovementViewModelMock);
-        verify(stockMovementViewModelMock).validate();
+        verify(stockMovementViewModelMock,times(2)).validateEmpty();
         verify(view).showErrorAlert(anyString());
     }
 
@@ -77,7 +78,8 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         StockMovementItem item = new StockMovementItem();
 
         StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
-        when(viewModel.validate()).thenReturn(true);
+        when(viewModel.validateInputValid()).thenReturn(true);
+        when(viewModel.validateEmpty()).thenReturn(true);
         when(viewModel.convertViewToModel()).thenReturn(item);
 
         stockMovementPresenter.submitStockMovement(viewModel);

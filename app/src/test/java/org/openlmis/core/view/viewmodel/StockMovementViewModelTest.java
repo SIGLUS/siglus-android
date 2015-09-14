@@ -48,7 +48,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
         stockMovementViewModel.setDocumentNo("111");
         stockMovementViewModel.setReason("abc");
         stockMovementViewModel.setReceived("100");
-        assertTrue(stockMovementViewModel.validate());
+        assertTrue(stockMovementViewModel.validateInputValid());
     }
 
     @Test
@@ -57,7 +57,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
         stockMovementViewModel.setDocumentNo("111");
         stockMovementViewModel.setReason("abc");
         stockMovementViewModel.setReceived("100");
-        assertFalse(stockMovementViewModel.validate());
+        assertFalse(stockMovementViewModel.validateEmpty());
     }
 
     @Test
@@ -66,7 +66,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
         stockMovementViewModel.setDocumentNo("111");
         stockMovementViewModel.setMovementDate("2016-11-20");
         stockMovementViewModel.setReceived("100");
-        assertFalse(stockMovementViewModel.validate());
+        assertFalse(stockMovementViewModel.validateEmpty());
     }
 
     @Test
@@ -75,7 +75,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
         stockMovementViewModel.setDocumentNo("111");
         stockMovementViewModel.setReason("abc");
         stockMovementViewModel.setMovementDate("2016-11-20");
-        assertFalse(stockMovementViewModel.validate());
+        assertFalse(stockMovementViewModel.validateEmpty());
     }
 
 }
