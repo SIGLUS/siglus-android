@@ -80,7 +80,7 @@
         android:divider="@drawable/divider_vertical"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:showDividers="middle|beginning|end">
+        android:showDividers="middle">
 
         <EditText
             android:id="@+id/et_request_amount"

@@ -2,15 +2,14 @@
 <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="0dp"
     android:layout_height="match_parent"
-    android:layout_weight="3"
-    android:background="@drawable/border_bg_gray">
+    android:layout_weight="3">
 
     <LinearLayout android:id="@+id/requisition_body_right"
         android:layout_width="1000dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:divider="@drawable/divider_horizontal"
-        android:showDividers="middle|end">
+        android:showDividers="middle">
 
         <include android:id="@+id/requisition_body_header"
             layout="@layout/layout_requisition_header_right" />
