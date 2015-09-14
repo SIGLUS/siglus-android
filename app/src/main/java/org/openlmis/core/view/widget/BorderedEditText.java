@@ -23,6 +23,7 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -62,7 +63,8 @@ public class BorderedEditText extends LinearLayout{
         editText = (EditText) contentView.findViewById(R.id.edit_text);
 
         label.setText(text);
-        label.setWidth((int)width);
+        label.setWidth((int) width);
         editText.setEms(ems);
+        editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
     }
 }
