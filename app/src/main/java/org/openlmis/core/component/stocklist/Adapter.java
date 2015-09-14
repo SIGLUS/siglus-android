@@ -181,8 +181,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
         this.currentStockCards = new ArrayList<>();
         for (StockCard stockCard : stockCards) {
-            if (stockCard.getProduct().getPrimaryName().contains(query)
-                    || stockCard.getProduct().getCode().contains(query)) {
+            if (stockCard.getProduct().getPrimaryName().toLowerCase().contains(query.toLowerCase())
+                    || stockCard.getProduct().getCode().toLowerCase().contains(query.toLowerCase())) {
                 this.currentStockCards.add(stockCard);
             }
         }
@@ -222,7 +222,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
             }
         };
 
-        Collections.sort(currentStockCards,stockCardComparator);
+        Collections.sort(currentStockCards, stockCardComparator);
         Collections.sort(stockCards, stockCardComparator);
 
         this.notifyDataSetChanged();

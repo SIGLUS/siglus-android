@@ -66,8 +66,8 @@ public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> e
         this.currentList = from(data).filter(new Predicate<StockCardViewModel>() {
             @Override
             public boolean apply(StockCardViewModel stockCardViewModel) {
-                return stockCardViewModel.getProductName().contains(keyword)
-                        || stockCardViewModel.getFnm().contains(keyword);
+                return stockCardViewModel.getProductName().toLowerCase().contains(keyword.toLowerCase())
+                        || stockCardViewModel.getFnm().toLowerCase().contains(keyword.toLowerCase());
             }
         }).toList();
 
