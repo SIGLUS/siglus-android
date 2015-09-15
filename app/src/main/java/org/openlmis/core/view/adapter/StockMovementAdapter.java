@@ -391,13 +391,13 @@ public class StockMovementAdapter extends BaseAdapter {
         }
 
         @Override
-        public boolean equals(Object o) {
-            return true;
+        public int hashCode() {
+            return super.hashCode();
         }
 
         @Override
-        public int hashCode() {
-            return super.hashCode();
+        public boolean equals(Object o) {
+            return true;
         }
 
         @Override
