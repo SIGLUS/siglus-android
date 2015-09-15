@@ -45,7 +45,7 @@ This is a primary appstore for CHAI LMIS Moz
 archive_older = 3
 archive_url = "https://f-droid.org/archive"
 archive_name = "My First FDroid Archive Demo"
-archive_icon = "fdroid-icon.png"
+archive_icon = "logo.png"
 archive_description = """
 The repository of older versions of applications from the main demo repository.
 """
@@ -65,7 +65,7 @@ repo_keyalias = "clintonhealthaccess"
 # configure FDroid to use a smartcard, set the keystore file using the keyword
 # "NONE" (i.e. keystore = "NONE").  That makes Java find the keystore on the
 # smartcard based on 'smartcardoptions' below.
-keystore = "/app/appstore/appstore.jks"
+keystore = "/apk/appstore.jks"
 
 # You should not need to change these at all, unless you have a very
 # customized setup for using smartcards in Java with keytool/jarsigner
