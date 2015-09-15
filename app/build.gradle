@@ -2,6 +2,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
 
+def buildNumber = System.getenv('BUILD_NUMBER') as Integer ?: 1
+
 repositories {
     jcenter()
     maven { url 'https://maven.fabric.io/public' }
@@ -15,8 +17,8 @@ android {
         applicationId "org.openlmis.core"
         minSdkVersion 17
         targetSdkVersion 21
-        versionCode 1
-        versionName "1.0"
+        versionCode buildNumber
+        versionName "1.0.${buildNumber}"
     }
 
     signingConfigs {
@@ -38,9 +40,12 @@ android {
 
     productFlavors {
         dev {
-            applicationId 'org.openlmis.core'
+            applicationId 'org.openlmis.core.dev'
         }
         qa {
+            applicationId 'org.openlmis.core.qa'
+        }
+        prd {
             applicationId 'org.openlmis.core'
         }
     }

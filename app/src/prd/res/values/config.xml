@@ -1,8 +1,8 @@
 <resources>
-    <string name="server_base_url">https://52.69.16.156:8443/</string>
+    <string name="server_base_url">https://52.68.243.196:8443</string>
     <string name="sync_account_type">org.clintonhealthaccess.lmismoz</string>
     <integer name="sync_interval">3600</integer>
-    <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.dev</string>
+    <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync</string>
 
 
     <string-array name="medicine_adult">
@@ -28,7 +28,7 @@
         <item>08S39B</item>
         <item>08S39Y</item>
         <item>08S01ZZ</item>
-        <item>08S20</item>      
+        <item>08S20</item>
         <item>08S19</item>
         <item>08S01B</item>
     </string-array>

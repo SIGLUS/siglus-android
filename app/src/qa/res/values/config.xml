@@ -2,7 +2,7 @@
     <string name="server_base_url">https://52.68.243.196:8443</string>
     <string name="sync_account_type">org.clintonhealthaccess.lmismoz</string>
     <integer name="sync_interval">3600</integer>
-    <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync</string>
+    <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.qa</string>
 
 
     <string-array name="medicine_adult">
