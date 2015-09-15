@@ -396,6 +396,11 @@ public class StockMovementAdapter extends BaseAdapter {
         }
 
         @Override
+        public int hashCode() {
+            return super.hashCode();
+        }
+
+        @Override
         public void afterTextChanged(Editable editable) {
             setValue(view, viewHolder);
         }
