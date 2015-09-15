@@ -110,12 +110,13 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hasDataChanged = (Boolean) dataFragment.getData("hasDataChanged");
+        scrollView.setVisibility(View.INVISIBLE);
         presenter.loadData();
     }
 
     @Override
     public void initView(final RnRForm form) {
-
+        scrollView.setVisibility(View.VISIBLE);
         rnrFormList.initView(new ArrayList<>(form.getRnrFormItemListWrapper()));
         regimeListView.initView(form.getRegimenItemListWrapper(), tvRegimeTotal);
         mmiaInfoListView.initView(form.getBaseInfoItemListWrapper());
