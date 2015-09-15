@@ -20,9 +20,9 @@ package org.openlmis.core.view.adapter;
 
 import android.app.DatePickerDialog;
 import android.graphics.drawable.Drawable;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +37,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.presenter.StockMovementPresenter;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.StockMovementActivity;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
@@ -112,6 +113,22 @@ public class StockMovementAdapter extends BaseAdapter {
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final StockMovementViewModel model = getItem(position);
 
+        EditTextWatcher watcher = new EditTextWatcher(holder.etReceived, holder);
+        holder.etReceived.removeTextChangedListener(watcher);
+
+        EditTextWatcher watcher1 = new EditTextWatcher(holder.etNegativeAdjustment, holder);
+        holder.etNegativeAdjustment.removeTextChangedListener(watcher1);
+
+
+        EditTextWatcher watcher2 = new EditTextWatcher(holder.etPositiveAdjustment, holder);
+        holder.etPositiveAdjustment.removeTextChangedListener(watcher2);
+
+        EditTextWatcher watcher3 = new EditTextWatcher(holder.etIssued, holder);
+        holder.etIssued.removeTextChangedListener(watcher3);
+
+        EditTextWatcher watcher4 = new EditTextWatcher(holder.etDocumentNo, holder);
+        holder.etDocumentNo.removeTextChangedListener(watcher4);
+
         disableLineAndHideUnderline(holder);
 
         holder.txMovementDate.setText(model.getMovementDate());
@@ -167,12 +184,11 @@ public class StockMovementAdapter extends BaseAdapter {
             }
         });
 
-        MyOnKeyListener listener = new MyOnKeyListener(holder);
-        holder.etReceived.setOnKeyListener(listener);
-        holder.etNegativeAdjustment.setOnKeyListener(listener);
-        holder.etPositiveAdjustment.setOnKeyListener(listener);
-        holder.etIssued.setOnKeyListener(listener);
-        holder.etDocumentNo.setOnKeyListener(listener);
+        holder.etReceived.addTextChangedListener(watcher);
+        holder.etNegativeAdjustment.addTextChangedListener(watcher1);
+        holder.etPositiveAdjustment.addTextChangedListener(watcher2);
+        holder.etIssued.addTextChangedListener(watcher3);
+        holder.etDocumentNo.addTextChangedListener(watcher4);
     }
 
     private void setEditTextEnableAndRecoverUnderline(EditText editText) {
@@ -364,48 +380,58 @@ public class StockMovementAdapter extends BaseAdapter {
 
     }
 
-    class MyOnKeyListener implements View.OnKeyListener {
+    class EditTextWatcher extends SimpleTextWatcher {
 
-        ViewHolder viewHolder;
+        private final View view;
+        private final ViewHolder viewHolder;
 
-        public MyOnKeyListener(ViewHolder viewHolder) {
+        public EditTextWatcher(View view, ViewHolder viewHolder) {
+            this.view = view;
             this.viewHolder = viewHolder;
         }
 
         @Override
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-            String text = ((TextView) v).getText().toString();
+        public boolean equals(Object o) {
+            return true;
+        }
 
-            if (v != viewHolder.etDocumentNo) {
-                long number = 0;
-                if (!StringUtils.isEmpty(text)) {
-                    number = Long.parseLong(text);
-                }
-
-                if (v == viewHolder.etReceived || v == viewHolder.etPositiveAdjustment) {
-                    String stockExistence = String.valueOf(getCurrentStockOnHand() + number);
-                    viewHolder.txStockExistence.setText(stockExistence);
-                    getDraftStockMovementItem().setStockExistence(stockExistence);
-                } else if (v == viewHolder.etIssued || v == viewHolder.etNegativeAdjustment) {
-                    String stockExistence = String.valueOf(getCurrentStockOnHand() - number);
-                    viewHolder.txStockExistence.setText(stockExistence);
-                    getDraftStockMovementItem().setStockExistence(stockExistence);
-                }
-            }
-
-            if (v == viewHolder.etReceived) {
-                getDraftStockMovementItem().setReceived(viewHolder.etReceived.getText().toString());
-            } else if (v == viewHolder.etIssued) {
-                getDraftStockMovementItem().setIssued(viewHolder.etIssued.getText().toString());
-            } else if (v == viewHolder.etPositiveAdjustment) {
-                getDraftStockMovementItem().setPositiveAdjustment(viewHolder.etPositiveAdjustment.getText().toString());
-            } else if (v == viewHolder.etNegativeAdjustment) {
-                getDraftStockMovementItem().setNegativeAdjustment(viewHolder.etNegativeAdjustment.getText().toString());
-            } else if (v == viewHolder.etDocumentNo) {
-                getDraftStockMovementItem().setDocumentNo(viewHolder.etDocumentNo.getText().toString());
-            }
-
-            return false;
+        @Override
+        public void afterTextChanged(Editable editable) {
+            setValue(view, viewHolder);
         }
     }
+
+    private void setValue(View v, ViewHolder viewHolder) {
+        String text = ((TextView) v).getText().toString();
+
+        if (v != viewHolder.etDocumentNo) {
+            long number = 0;
+            if (!StringUtils.isEmpty(text)) {
+                number = Long.parseLong(text);
+            }
+
+            if (v == viewHolder.etReceived || v == viewHolder.etPositiveAdjustment) {
+                String stockExistence = String.valueOf(getCurrentStockOnHand() + number);
+                viewHolder.txStockExistence.setText(stockExistence);
+                getDraftStockMovementItem().setStockExistence(stockExistence);
+            } else if (v == viewHolder.etIssued || v == viewHolder.etNegativeAdjustment) {
+                String stockExistence = String.valueOf(getCurrentStockOnHand() - number);
+                viewHolder.txStockExistence.setText(stockExistence);
+                getDraftStockMovementItem().setStockExistence(stockExistence);
+            }
+        }
+
+        if (v == viewHolder.etReceived) {
+            getDraftStockMovementItem().setReceived(viewHolder.etReceived.getText().toString());
+        } else if (v == viewHolder.etIssued) {
+            getDraftStockMovementItem().setIssued(viewHolder.etIssued.getText().toString());
+        } else if (v == viewHolder.etPositiveAdjustment) {
+            getDraftStockMovementItem().setPositiveAdjustment(viewHolder.etPositiveAdjustment.getText().toString());
+        } else if (v == viewHolder.etNegativeAdjustment) {
+            getDraftStockMovementItem().setNegativeAdjustment(viewHolder.etNegativeAdjustment.getText().toString());
+        } else if (v == viewHolder.etDocumentNo) {
+            getDraftStockMovementItem().setDocumentNo(viewHolder.etDocumentNo.getText().toString());
+        }
+    }
+
 }

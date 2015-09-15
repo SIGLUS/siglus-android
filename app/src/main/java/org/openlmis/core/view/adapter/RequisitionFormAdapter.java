@@ -107,7 +107,7 @@ public class RequisitionFormAdapter extends BaseAdapter {
             holder.different.setText(entry.getDifferent());
             holder.totalRequest.setText(entry.getTotalRequest());
 
-            MySimpleTextWatcher mySimpleTextWatcher = new MySimpleTextWatcher(holder.approvedAmount, entry);
+            MyTextWatcher mySimpleTextWatcher = new MyTextWatcher(holder.approvedAmount, entry);
             holder.requestAmount.removeTextChangedListener(mySimpleTextWatcher);
             holder.requestAmount.setText(entry.getRequestAmount());
             holder.requestAmount.setError(null);
@@ -122,12 +122,12 @@ public class RequisitionFormAdapter extends BaseAdapter {
         return hasDataChanged;
     }
 
-    class MySimpleTextWatcher extends SimpleTextWatcher {
+    class MyTextWatcher extends SimpleTextWatcher {
 
         private final EditText approvedAmount;
         private final RequisitionFormItemViewModel entry;
 
-        public MySimpleTextWatcher(EditText approvedAmount, RequisitionFormItemViewModel entry) {
+        public MyTextWatcher(EditText approvedAmount, RequisitionFormItemViewModel entry) {
             this.approvedAmount = approvedAmount;
             this.entry = entry;
         }
