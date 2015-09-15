@@ -21,6 +21,7 @@ package org.openlmis.core.view.activity;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -145,13 +146,15 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
     private void displayExpireDate() {
         String expireDates = presenter.getStockCard().getExpireDates();
-        String convertedDate = null;
-        try {
-            convertedDate = DateUtil.convertDate(expireDates, "dd/mm/yyyy", DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if (!TextUtils.isEmpty(expireDates)) {
+            String convertedDate = null;
+            try {
+                convertedDate = DateUtil.convertDate(expireDates, "dd/mm/yyyy", DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            expireDataView.setText(convertedDate);
         }
-        expireDataView.setText(convertedDate);
     }
 
     @Override
