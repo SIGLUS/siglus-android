@@ -49,13 +49,13 @@ end
 Given(/^I am in Home Page$/) do
   steps %Q{
 		Given I am logged in
-        Then I should see "Initial Inventory"
+        Then I wait for the "InventoryActivity" screen to appear
 
 		When I Select MMIA Item
 		When I Select VIA Item
 
         And I press view with id "btn_done"
-        Then I should see "Home Page"
+        Then I wait for the "HomeActivity" screen to appear
 	}
 end
 
