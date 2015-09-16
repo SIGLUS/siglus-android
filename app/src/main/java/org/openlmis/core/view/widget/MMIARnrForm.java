@@ -214,8 +214,8 @@ public class MMIARnrForm extends LinearLayout {
         if (isHeaderView) {
             tvIssuedUnit.setText(R.string.label_issued_unit);
             tvInitialAmount.setText(R.string.label_initial_amount);
-            tvReceived.setText(R.string.label_received);
-            tvIssued.setText(R.string.label_issued);
+            tvReceived.setText(R.string.label_received_mmia);
+            tvIssued.setText(R.string.label_issued_mmia);
             tvAdjustment.setText(R.string.label_adjustment);
             tvInventory.setText(R.string.label_inventory);
             tvValidate.setText(R.string.label_validate);

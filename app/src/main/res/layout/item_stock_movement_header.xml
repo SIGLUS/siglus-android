@@ -41,7 +41,7 @@
             android:layout_width="@dimen/stock_movement_item_common_width"
             android:layout_height="wrap_content"
             style="@style/sheet_header2"
-            android:text="@string/label_received"/>
+            android:text="@string/label_received_mmia"/>
 
         <TextView
             android:id="@+id/et_negative_adjustment"
@@ -62,7 +62,7 @@
             android:layout_width="@dimen/stock_movement_item_common_width"
             android:layout_height="wrap_content"
             style="@style/sheet_header2"
-            android:text="@string/label_issued"/>
+            android:text="@string/label_issued_mmia"/>
 
         <TextView
             android:id="@+id/tx_stock_on_hand"

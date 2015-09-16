@@ -18,7 +18,7 @@
             style="@style/sheet_header1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Request from provincial or district level" />
+            android:text="@string/request_provincial_district_level" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,14 +33,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
-                android:text="Stock Movement" />
+                android:text="@string/title_stock_move_ment" />
 
             <TextView
                 style="@style/sheet_header1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:text="Inventory Information" />
+                android:text="@string/title_inventory_info" />
         </LinearLayout>
 
         <LinearLayout
@@ -69,21 +69,21 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/label_initial_amount" />
+                        android:text="@string/label_initial_amount_requisition" />
 
                     <TextView
                         style="@style/sheet_header2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/label_received" />
+                        android:text="@string/label_received_requisition" />
 
                     <TextView
                         style="@style/sheet_header2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/label_issued" />
+                        android:text="@string/label_issued_mmia" />
 
                     <TextView
                         style="@style/sheet_header2"
@@ -97,7 +97,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/label_total" />
+                        android:text="@string/label_total_requisition" />
 
                     <TextView
                         style="@style/sheet_header2"

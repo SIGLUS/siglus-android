@@ -9,54 +9,54 @@
     <string name="title_physical_inventory">Physical Inventory</string>
     <string name="title_stock_cards">Stock Cards</string>
     <string name="title_mmia_spread">MMIA</string>
-    <string name="title_requisition">Requisition</string>
+    <string name="title_requisition">Via Classica Requesition</string>
 
     <!-- Login Page -->
     <string name="hint_username">User Name</string>
     <string name="hint_password">Password</string>
     <string name="btn_login">LOG IN</string>
-    <string name="msg_empty_user">User Name / Password cannot be empty !</string>
-    <string name="msg_invalid_user">Username or Password is incorrect</string>
+    <string name="msg_empty_user">User Name and Password cannot left blank</string>
+    <string name="msg_invalid_user">Username or Password is incorrect.</string>
     <string name="msg_user_not_facility">No facility for this user, please contact your administrator</string>
     <string name="init_product_error">Initial Data Error,Please Retry</string>
 
 
     <!-- Init Inventory -->
-    <string name="hint_quantity_in_stock">Quantity in stock</string>
+    <string name="hint_quantity_in_stock">Stock on Hand</string>
     <string name="label_expire_date">Expiration Date</string>
     <string name="label_dummy_product">Paracetemol</string>
     <string name="label_dummy_unit">500mg</string>
-    <string name="msg_inventory_check_failed">Quantity cannot be empty !</string>
+    <string name="msg_inventory_check_failed">Quantity cannot be left blank!</string>
     <string name="msg_invalid_date">Cannot choose past date</string>
 
 
     <!-- Home Page -->
     <string name="label_stock_cards">Stock on Hand</string>
-    <string name="label_requisition">Requisition</string>
+    <string name="label_requisition">Via Classica Requesition</string>
     <string name="label_mmia">MMIA</string>
     <string name="label_sync">Sync Data</string>
     <string name="action_add_new_drug">Add new drug</string>
-    <string name="label_last_synced_mins_ago">Last synced on %s minutes ago</string>
-    <string name="label_last_synced_hours_ago">Last synced on %s hours ago</string>
-    <string name="label_last_synced_days_ago">Last synced on %s days ago</string>
+    <string name="label_last_synced_mins_ago">Last synced %s minutes ago</string>
+    <string name="label_last_synced_hours_ago">Last synced %s hours ago</string>
+    <string name="label_last_synced_days_ago">Last synced %s days ago</string>
 
     <!--MMIA-->
-    <string name="label_rnrfrom_left_header">PRODUCT</string>
-    <string name="label_regime_header_name">REGIME THERAPEUTIC</string>
-    <string name="label_total">Total</string>
+    <string name="label_rnrfrom_left_header">Medicine</string>
+    <string name="label_regime_header_name">Theraputic Regime</string>
+    <string name="label_total_mmia">Total</string>
     <string name="label_mmia_info_header_name">TYPE</string>
-    <string name="label_mmia_speed_info_header">Quantification of patients on ART</string>
-    <string name="hint_mmia_comment">Comments</string>
-    <string name="btn_complete">complete</string>
+    <string name="label_mmia_speed_info_header">Quantity of patients on ART</string>
+    <string name="hint_mmia_comment">Observations</string>
+    <string name="btn_complete">Complete</string>
     <string name="label_initial_amount">Initial Amount</string>
-    <string name="label_received">Received</string>
-    <string name="label_issued">Issued</string>
-    <string name="label_adjustment">Adjustment</string>
+    <string name="label_received_mmia">Entries</string>
+    <string name="label_issued_mmia">Issues</string>
+    <string name="label_adjustment">Adjustments</string>
     <string name="label_inventory">Inventory</string>
-    <string name="label_validate">Validate</string>
-    <string name="label_issued_unit">Issued Unit</string>
+    <string name="label_validate">Expiration</string>
+    <string name="label_issued_unit">Unit of Issue</string>
     <string name="hint_error_input">Invalid Input</string>
-    <string name="btn_save">save</string>
+    <string name="btn_save">Save</string>
     <string name="msg_mmia_onback_confirm">Are you sure you want to quit without saving your work?</string>
     <string name="btn_positive">Yes</string>
     <string name="btn_negative">No</string>
@@ -65,16 +65,24 @@
 
 
     <!-- Requisition Form -->
-    <string name="label_consultation">Consultation Numbers</string>
-    <string name="label_kits_received">Kits received</string>
-    <string name="label_kits_opened">Kits opened</string>
-    <string name="label_us">US</string>
-    <string name="label_ape">APE</string>
-    <string name="label_theoretical">Theoretical</string>
-    <string name="label_different">Different</string>
-    <string name="label_total_requested">Total request</string>
-    <string name="label_request_amount">Request amount</string>
-    <string name="label_approved_amount">Approved amount</string>
+    <string name="msg_mmia_not_unique">Cannot submit MMIA twice in a period!</string>
+    <string name="request_provincial_district_level">Request from provincial or district level</string>
+    <string name="title_stock_move_ment">Stock Movement</string>
+    <string name="title_inventory_info">Inventory Information</string>
+    <string name="label_consultation">No. of External Consultations Performed</string>
+    <string name="label_kits_received">No. of Kits Received</string>
+    <string name="label_kits_opened">No. of Kits Opened</string>
+    <string name="label_us">HF</string>
+    <string name="label_ape">CHW</string>
+    <string name="label_initial_amount_requisition">Stock at Beginning of Period</string>
+    <string name="label_received_requisition">Sum of Entries</string>
+    <string name="label_issued_requisition">Sum of Issues</string>
+    <string name="label_theoretical">Theoretical Stock at End of Period</string>
+    <string name="label_total_requisition">Total Requested</string>
+    <string name="label_different">Difference</string>
+    <string name="label_total_requested">Theoretical Quantity to Request</string>
+    <string name="label_request_amount">Quantity Requested</string>
+    <string name="label_approved_amount">Quantity Approved</string>
     <string name="label_fnm">FNM</string>
     <string name="label_product_name">Product Name</string>
     <string name="msg_low_stock_warning">Your product has low stock.</string>
@@ -82,17 +90,17 @@
     <string name="msg_requisition_submit_tip">Thank you for submitting your requisition form.\r\n Please make sure it syncs successfully.</string>
 
     <string name="msg_requisition_not_unique">Cannot submit requisition twice in a period!</string>
-    <string name="msg_mmia_not_unique">Cannot submit MMIA twice in a period!</string>
+
 
     <!-- Stock Movement -->
     <string name="title_stock_movement">Stock Card</string>
     <string name="label_default">-</string>
-    <string name="label_movement_date">Movement Date</string>
-    <string name="label_reason">Original/Destination/Reason</string>
+    <string name="label_movement_date">Date of Movement</string>
+    <string name="label_reason">Origin/Destination of Movement</string>
     <string name="label_document_no">Document Number</string>
     <string name="label_negative_adjustment">Negative Adjustment</string>
     <string name="label_positive_adjustment">Positive Adjustment</string>
-    <string name="label_stock_existence">Stock Existence</string>
+    <string name="label_stock_existence">Stock on Hand</string>
     <string name="btn_cancel">Cancel</string>
     <string name="msg_validation_error">Invalid Input</string>
     <string name="msg_validation_empty_error">Missing required field</string>
@@ -104,11 +112,12 @@
     <string name="menu_item_stock_movement_history">All movements</string>
     <string name="title_add_new_drug">Add new drug</string>
 
+
     <!--MMIABaseInfo-->
-    <string name="label_new_patients">New Patients</string>
-    <string name="label_sustaining">Sustaining</string>
+    <string name="label_new_patients">New</string>
+    <string name="label_sustaining">Maintenance </string>
     <string name="label_alteration">Alteration</string>
-    <string name="label_total_month_dispense">Total Month Dispense</string>
+    <string name="label_total_month_dispense">Total Dispensed</string>
     <string name="label_total_patients">Total Patients</string>
     <string name="label_ptv">PTV</string>
     <string name="label_ppe">PPE</string>

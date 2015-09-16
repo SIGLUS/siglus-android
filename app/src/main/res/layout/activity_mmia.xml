@@ -71,7 +71,7 @@
                             android:minHeight="30dp"
                             android:paddingEnd="8dp"
                             android:paddingStart="8dp"
-                            android:text="@string/label_total" />
+                            android:text="@string/label_total_mmia" />
 
                         <TextView
                             android:id="@+id/tv_regime_total"
