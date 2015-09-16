@@ -51,15 +51,15 @@ Given(/^I am in Home Page$/) do
 		Given I am logged in
         Then I should see "Initial Inventory"
 
-		Given Select MMIA Item
-		Given Select VIA Item
+		When I Select MMIA Item
+		When I Select VIA Item
 
         And I press view with id "btn_done"
         Then I should see "Home Page"
 	}
 end
 
-Given(/^Select MMIA Item$/) do
+When(/^I Select MMIA Item$/) do
   steps %Q{
         When I select the item called "Lamivudina 150mg/Zidovudina 300mg/Nevirapina 200mg [08S42]"
         When I select the item called "Tenofovir 300mg/Lamivudina 300mg/Efavirenze 600mg [08S18Y]"
@@ -69,7 +69,7 @@ Given(/^Select MMIA Item$/) do
 	}
 end
 
-Given(/^Select VIA Item$/) do
+When(/^I Select VIA Item$/) do
   steps %Q{
         When I select the item called "Acetylsalicylic Acid, tablet 300mg [P1]"
         When I select the item called "Acyclovir, tablet 400mg [P2]"
