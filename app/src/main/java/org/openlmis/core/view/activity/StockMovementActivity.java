@@ -127,9 +127,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             @Override
             public void onClick(View v) {
                 presenter.submitStockMovement(stockMovementAdapter.getEditableStockMovement());
-
-                buttonView.setVisibility(View.GONE);
-                stockMovementAdapter.cleanHighLight();
             }
         });
 
@@ -137,11 +134,18 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             @Override
             public void onClick(View v) {
                 stockMovementAdapter.cancelStockMovement();
+
+                deactivatedStockDraft();
             }
         });
 
         loading();
         presenter.loadStockMovementViewModels();
+    }
+
+    public void deactivatedStockDraft() {
+        buttonView.setVisibility(View.GONE);
+        stockMovementAdapter.cleanHighLight();
     }
 
     private void displayExpireDate() {

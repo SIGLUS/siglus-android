@@ -138,8 +138,9 @@ public class StockMovementPresenter implements Presenter {
                 stockMovementModelList.add(new StockMovementViewModel());
 
                 view.refreshStockMovement();
+                view.deactivatedStockDraft();
             } catch (LMISException e) {
-                view.showErrorAlert(e.getMessage());
+                e.printStackTrace();
             }
         }else if(!viewModel.validateEmpty()) {
             view.showErrorAlert(context.getResources().getString(R.string.msg_validation_empty_error));
@@ -156,5 +157,6 @@ public class StockMovementPresenter implements Presenter {
     public interface StockMovementView extends View {
         void showErrorAlert(String msg);
         void refreshStockMovement();
+        void deactivatedStockDraft();
     }
 }
