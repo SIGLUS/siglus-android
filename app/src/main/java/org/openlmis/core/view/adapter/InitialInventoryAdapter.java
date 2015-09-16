@@ -22,8 +22,8 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.InputFilter;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -36,6 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
@@ -66,6 +67,8 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final StockCardViewModel viewModel = currentList.get(position);
+        final EditTextWatcher textWatcher = new EditTextWatcher(viewModel);
+        holder.txQuantity.removeTextChangedListener(textWatcher);
 
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -84,13 +87,6 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
             }
         });
 
-        holder.txQuantity.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                viewModel.setQuantity(holder.txQuantity.getText().toString());
-                return false;
-            }
-        });
 
         holder.txExpireDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,13 +98,39 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
         holder.checkBox.setChecked(viewModel.isChecked());
         holder.productName.setText(viewModel.getStyledName());
         holder.productUnit.setText(viewModel.getType());
-        holder.txQuantity.setText(viewModel.getQuantity());
         holder.txExpireDate.setText(viewModel.optFirstExpiryDate());
+
+        holder.txQuantity.setText(viewModel.getQuantity());
+        holder.txQuantity.addTextChangedListener(textWatcher);
 
         if (!viewModel.isValidate()) {
             holder.lyQuantity.setError(context.getResources().getString(R.string.msg_inventory_check_failed));
         } else {
             holder.lyQuantity.setErrorEnabled(false);
+        }
+    }
+
+    class EditTextWatcher extends SimpleTextWatcher {
+
+        private final StockCardViewModel viewModel;
+
+        public EditTextWatcher(StockCardViewModel viewModel) {
+            this.viewModel = viewModel;
+        }
+
+        @Override
+        public int hashCode() {
+            return super.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return true;
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            viewModel.setQuantity(editable.toString());
         }
     }
 
@@ -172,9 +194,9 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (checkBox.isChecked()){
+                    if (checkBox.isChecked()) {
                         checkBox.setChecked(false);
-                    }else {
+                    } else {
                         checkBox.setChecked(true);
                     }
                 }

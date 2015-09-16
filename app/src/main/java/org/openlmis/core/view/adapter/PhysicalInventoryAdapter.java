@@ -21,14 +21,15 @@ package org.openlmis.core.view.adapter;
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.InputFilter;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 
@@ -51,18 +52,13 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<PhysicalInven
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         StockCardViewModel viewModel = currentList.get(position);
+        EditTextWatcher textWatcher=new EditTextWatcher(viewModel);
+        holder.etQuantity.removeTextChangedListener(textWatcher);
+
         holder.tvProductName.setText(viewModel.getStyledName());
         holder.tvProductUnit.setText(viewModel.getStyledUnit());
-
         holder.etQuantity.setText(viewModel.getQuantity());
-
-        holder.etQuantity.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                currentList.get(position).setQuantity(((TextView)v).getText().toString());
-                return false;
-            }
-        });
+        holder.etQuantity.addTextChangedListener(textWatcher);
 
         if (!viewModel.isValidate()) {
             holder.lyQuantity.setError(context.getResources().getString(R.string.msg_inventory_check_failed));
@@ -71,6 +67,30 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<PhysicalInven
         }
     }
 
+
+    class EditTextWatcher extends SimpleTextWatcher {
+
+        private final StockCardViewModel viewModel;
+
+        public EditTextWatcher(StockCardViewModel viewModel) {
+            this.viewModel = viewModel;
+        }
+
+        @Override
+        public int hashCode() {
+            return super.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return true;
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            viewModel.setQuantity(editable.toString());
+        }
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvProductName;
