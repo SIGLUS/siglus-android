@@ -21,6 +21,7 @@ package org.openlmis.core.view.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import android.widget.TextView;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
+import org.openlmis.core.view.widget.InputFilterMinMax;
 
 import java.util.List;
 
@@ -183,6 +185,9 @@ public class RequisitionFormAdapter extends BaseAdapter {
                 totalRequest = ((TextView) itemView.findViewById(R.id.tx_total_request));
                 requestAmount = ((EditText) itemView.findViewById(R.id.et_request_amount));
                 approvedAmount = ((EditText) itemView.findViewById(R.id.et_approved_amount));
+
+                requestAmount.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
+                approvedAmount.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
             }
         }
     }
