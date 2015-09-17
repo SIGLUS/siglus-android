@@ -57,6 +57,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        startActivity(HomeActivity.class, false);
         initUI();
     }
 

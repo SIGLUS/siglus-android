@@ -47,6 +47,7 @@ end
 Given(/^I am Initialized Inventory$/) do
   steps %Q{
         Then I wait for the "InventoryActivity" screen to appear
+        Then I wait for 1 second
 		When I Select MMIA Item
 		When I Select VIA Item
 
