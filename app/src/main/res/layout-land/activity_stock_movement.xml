@@ -20,7 +20,7 @@
             <ImageView
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:src="@mipmap/ic_launcher"/>
+                android:src="@drawable/stock_card_icon"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -68,7 +68,6 @@
                     android:id="@+id/tx_expire_data_stock_movement"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/btn_add_expiry_date"
                     style="@style/sheet_header1"
                     android:textColor="@color/color_accent"/>
             </LinearLayout>
