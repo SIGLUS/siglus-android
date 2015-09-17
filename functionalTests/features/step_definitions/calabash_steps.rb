@@ -38,7 +38,7 @@ When(/^I select the item called "(.*?)"$/) do |name|
      scroll("RecyclerView", :down)
   end
 
-  h = query("android.widget.EditText id:'tx_quantity' text:''")
+  h = query("android.widget.EditText id:'tx_quantity' text:''").last
   touch(h)
   keyboard_enter_text("123")
   hide_soft_keyboard
