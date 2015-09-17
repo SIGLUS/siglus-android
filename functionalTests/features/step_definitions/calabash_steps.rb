@@ -14,15 +14,13 @@ end
 Given(/^I am logged in$/) do
   steps %Q{
 		When I enter username "superuser"
-    And I enter password "password1"
-    And I press "LOG IN"
-    Then I should see "DONE"
+        And I enter password "password1"
+        And I press "LOG IN"
 	}
 end
 
 When(/^I select the item called "(.*?)"$/) do |name|
   q = query("android.widget.TextView text:'#{name}'")
-
   while q.empty?
     scroll("RecyclerView", :down)
     q = query("android.widget.TextView text:'#{name}'")
@@ -46,11 +44,9 @@ When(/^I select the item called "(.*?)"$/) do |name|
   hide_soft_keyboard
 end
 
-Given(/^I am in Home Page$/) do
+Given(/^I am Initialized Inventory$/) do
   steps %Q{
-		Given I am logged in
         Then I wait for the "InventoryActivity" screen to appear
-
 		When I Select MMIA Item
 		When I Select VIA Item
 
