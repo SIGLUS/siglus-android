@@ -27,6 +27,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.VIARepository;
@@ -157,7 +158,7 @@ public class RequisitionPresenter implements Presenter {
     }
 
     public void completeRequisition(String consultationNumbers) {
-        if (!isRequisitionFormAmountCompleted()){
+        if (!isRequisitionFormAmountCompleted()) {
             return;
         }
 
@@ -168,7 +169,7 @@ public class RequisitionPresenter implements Presenter {
             viaRepository.authorise(rnRForm);
             view.completeSuccess();
         } catch (LMISException e) {
-            if (e instanceof PeriodNotUniqueException){
+            if (e instanceof PeriodNotUniqueException) {
                 view.showErrorMessage(context.getResources().getString(R.string.msg_requisition_not_unique));
             } else {
                 view.showErrorMessage(e.getMessage());
@@ -206,7 +207,8 @@ public class RequisitionPresenter implements Presenter {
     }
 
     public String getConsultationNumbers() {
-        return rnRForm.getBaseInfoItemListWrapper().get(0).getValue();
+        String value = rnRForm.getBaseInfoItemListWrapper().get(0).getValue();
+        return value == null ? "" : value;
     }
 
     public void removeRnrForm() {
@@ -218,7 +220,10 @@ public class RequisitionPresenter implements Presenter {
     }
 
     public void setConsultationNumbers(String consultationNumbers) {
-        rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
+        ArrayList<BaseInfoItem> baseInfoItemListWrapper = rnRForm.getBaseInfoItemListWrapper();
+        if (baseInfoItemListWrapper != null) {
+            baseInfoItemListWrapper.get(0).setValue(consultationNumbers);
+        }
     }
 
 

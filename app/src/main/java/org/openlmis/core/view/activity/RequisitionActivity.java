@@ -196,6 +196,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         btnSave.setOnClickListener(this);
 
         etConsultationNumbers.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
+        etConsultationNumbers.addTextChangedListener(etConsultationNumbersTextWatcher);
     }
 
     private void initRequisitionBodyList() {
@@ -331,8 +332,11 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
         @Override
         public void afterTextChanged(Editable s) {
-            presenter.setConsultationNumbers(etConsultationNumbers.getText().toString());
-            consultationNumbersHasChanged = true;
+            String input = etConsultationNumbers.getText().toString();
+            if (!input.equals(presenter.getConsultationNumbers())) {
+                consultationNumbersHasChanged = true;
+                presenter.setConsultationNumbers(input);
+            }
         }
     };
 
