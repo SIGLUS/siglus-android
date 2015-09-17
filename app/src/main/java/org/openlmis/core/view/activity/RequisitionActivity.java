@@ -22,6 +22,7 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -39,6 +40,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 import org.openlmis.core.view.fragment.OnBackConfirmDialog;
 import org.openlmis.core.view.fragment.RetainedFragment;
+import org.openlmis.core.view.widget.InputFilterMinMax;
 
 import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
@@ -193,6 +195,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         btnComplete.setOnClickListener(this);
         btnSave.setOnClickListener(this);
 
+        etConsultationNumbers.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
     }
 
     private void initRequisitionBodyList() {
