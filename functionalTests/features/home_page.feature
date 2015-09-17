@@ -6,5 +6,5 @@ Feature: Home Page
 
     Scenario: Entry Inventory Page
             Given I am logged in
-            And I press view with id "btn_inventory"
+            And I press "Inventory"
             Then I wait for the "InventoryActivity" screen to appear
