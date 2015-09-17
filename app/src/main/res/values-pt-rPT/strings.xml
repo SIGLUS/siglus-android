@@ -158,6 +158,7 @@
 
 
     <!-- Stock Card List Page -->
+    <string name="search_hint">Procurar…</string>
     <string-array name="sort_items_array">
         <item>Ordenar por alfabético: de A a Z</item>
         <item>Ordenar por alfabético: de Z a A</item>
