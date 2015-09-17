@@ -6,17 +6,24 @@ Then(/^I select stock card called "(.*?)"$/) do |name|
       touch(q.last);
 end
 
-And (/^I select a reason$/) do
+And (/^I select a reason "(.*?)" "(.*?)"$/) do |first_reason, second_reason|
     q = query("android.widget.TextView id:'tx_reason'")
     touch(q.last);
     steps %Q{
-        Then I press "Receive"
-        Then I press "Normal requisition/reinforcement"
+        Then I press "#{first_reason}"
+        Then I press "#{second_reason}"
     	}
 end
 
 And (/^I enter received number "(.*?)"$/) do |number|
     touch(query("android.widget.EditText id:'et_received'").last);
+    keyboard_enter_text(number)
+    hide_soft_keyboard
+end
+
+And (/^I enter issued number "(.*?)"$/) do |number|
+    q = query("android.widget.EditText id:'et_issued'")
+    touch(q.last)
     keyboard_enter_text(number)
     hide_soft_keyboard
 end
