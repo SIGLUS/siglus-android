@@ -76,19 +76,18 @@ When(/^I Select VIA Item$/) do
 	}
 end
 
-Then(/^I should see (\d+) products$/) do |numberOfItems|
+Then(/^I should see "(\d+)" products$/) do |numberOfItems|
 	size = query("ListView","getAdapter","getCount")
-
-	unless (size == numberOfItems)
+	unless (size.first == (numberOfItems.to_i + 1))
 		fail(msg="#{size} size")
 	end
 end
 
-When(/^I enter consultationsNub "(\d+)/) do |consultationsNub|
+When(/^I enter consultationsNub "(\d+)"/) do |consultationsNub|
   enter_text("BorderedEditText id:'tx_consultation'", consultationsNub)
 end
 
-Then(/^I enter QuantityRequested (\d+)/) do |requestedNub|
+Then(/^I enter QuantityRequested "(\d+)"/) do |requestedNub|
     et = query("android.widget.EditText id:'et_request_amount' ").first
         touch(et)
         keyboard_enter_text(requestedNub)

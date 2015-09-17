@@ -1,23 +1,26 @@
+@requisition
 Feature: Requisition
 
-    Scenario: Navigate to Home Page
-            Given I am logged in
-            Given I am Initialized Inventory
-
-  Scenario: Go to Requisition Page
+  Scenario: As a suer,I want to Requisition
     Given I am logged in
-    And I press view with id "btn_requisition"
+    Given I am Initialized Inventory
+
+    And I press "Via Classica Requesition"
     Then I wait for the "RequisitionActivity" screen to appear
+    Then I wait for 1 second
 
-    Then I should see text containing "Acyclovir,tablet400mg"
-    Then I should see 5 products
+    Then I should see text containing "Acyclovir, tablet 400mg"
+    Then I should see "5" products
 
-
-    When I enter consultationsNub "001"
-    Then I enter QuantityRequested "100"
-    Then I press "SAVE"
-
-
+    When I enter consultationsNub "888"
+    Then I swipe right
+    Then I swipe right
+    Then I swipe right
+    Then I enter QuantityRequested "345"
+    And I press "Save"
 
     When I press view with id "btn_requisition"
-    Then I press "COMPLETE"
+    Then I swipe right
+    Then I swipe right
+    Then I should see "345"
+    And I press "Complete"
