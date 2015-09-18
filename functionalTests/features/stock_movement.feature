@@ -1,9 +1,12 @@
 @StockMovement
 Feature: stock movement Page
 
-    Scenario: Add A Positive Movement
+    Scenario: Navigate to Home Page
         Given I am logged in
         Given I am Initialized Inventory
+
+    Scenario: Add A Receive Movement
+        Given I am logged in
         And I press "Stock on Hand"
         Then I wait for the "StockCardListActivity" screen to appear
         Then I wait for 1 second
@@ -54,8 +57,7 @@ Feature: stock movement Page
         Then I go back
         Then I wait for the "HomeActivity" screen to appear
 
-
-    Scenario: Add A Negative Movement
+    Scenario: Add A Issued Movement
         Given I am logged in
         And I press "Stock on Hand"
         Then I wait for the "StockCardListActivity" screen to appear
