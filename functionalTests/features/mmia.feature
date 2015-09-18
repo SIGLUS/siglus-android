@@ -34,7 +34,7 @@ Feature: stock movement Page
             Then I should see text containing "Your MMIA form has been successfully saved,"
             Then I wait for the "HomeActivity" screen to appear
 
-    Scenario: Initial a MMIA and not save
+    Scenario: after editing if I go back without saving I should see pop up, if I say yes then go back without saving, else staying at mmia page
             Given I am logged in
             And I press "Stock on Hand"
             Then I wait for the "StockCardListActivity" screen to appear
@@ -50,6 +50,12 @@ Feature: stock movement Page
             Then I scroll to "Complete"
             Then I wait for 1 second
             And I enter patient total
+            Then I go back
+            Then I should see text containing "Are you sure you want to quit without saving your work?"
+            Then I press "No"
+            Then I wait for the "MMIAActivity" screen to appear
+            Then I wait for 1 second
+            Then I should see text containing "Complete"
             Then I go back
             Then I should see text containing "Are you sure you want to quit without saving your work?"
             Then I press "Yes"
