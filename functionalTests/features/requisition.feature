@@ -10,17 +10,18 @@ Feature: Requisition
     Then I should see text containing "Acyclovir, tablet 400mg"
     Then I should see "5" products
 
-  Scenario:Pop up alert
+  Scenario: Pop up alert
     Given I am logged in
     And I press "Via Classical Requisition"
     Then I wait for the "RequisitionActivity" screen to appear
-    When I enter consultationsNub "111"
+    Then I enter consultationsNub "2015"
+    Then I wait for 1 second
     Then I go back
     Then I wait to see "Are you sure you want to quit without saving your work?"
     Then I press "Yes"
-    Then I wait for the "RequisitionActivity" screen to appear
+    Then I wait for the "HomeActivity" screen to appear
 
-  Scenario: Save draft and complete
+  Scenario: Save requisition draft and complete
     Given I am logged in
     And I press "Via Classical Requisition"
     When I enter consultationsNub "888"

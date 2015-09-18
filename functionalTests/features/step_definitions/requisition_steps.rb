@@ -14,8 +14,11 @@ When(/^I enter consultationsNub "(\d+)"/) do |consultationsNub|
 end
 
 Then(/^I enter QuantityRequested "(\d+)"/) do |requestedNub|
-    et = query("android.widget.EditText id:'et_request_amount' ").first
-        touch(et)
-        keyboard_enter_text(requestedNub)
-        hide_soft_keyboard
+    ets = query("android.widget.EditText id:'et_request_amount' ")
+    for et in ets
+    touch(et)
+    keyboard_enter_text(requestedNub)
+    hide_soft_keyboard
+    end
 end
+
