@@ -45,19 +45,21 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<PhysicalInven
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view  = inflater.inflate(R.layout.item_physical_inventory, parent, false);
+        View view = inflater.inflate(R.layout.item_physical_inventory, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         StockCardViewModel viewModel = currentList.get(position);
-        EditTextWatcher textWatcher=new EditTextWatcher(viewModel);
+        EditTextWatcher textWatcher = new EditTextWatcher(viewModel);
         holder.etQuantity.removeTextChangedListener(textWatcher);
 
         holder.tvProductName.setText(viewModel.getStyledName());
         holder.tvProductUnit.setText(viewModel.getStyledUnit());
+
         holder.etQuantity.setText(viewModel.getQuantity());
+        holder.etQuantity.setHint(R.string.hint_quantity_in_stock);
         holder.etQuantity.addTextChangedListener(textWatcher);
 
         if (!viewModel.isValidate()) {
@@ -102,11 +104,11 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<PhysicalInven
         public ViewHolder(View itemView) {
             super(itemView);
 
-            tvProductName = (TextView)itemView.findViewById(R.id.product_name);
-            tvProductUnit = (TextView)itemView.findViewById(R.id.product_unit);
-            etQuantity = (EditText)itemView.findViewById(R.id.tx_quantity);
-            lyQuantity = (TextInputLayout)itemView.findViewById(R.id.ly_quantity);
-            tvAddExpiryDate = (TextView)itemView.findViewById(R.id.tx_expire_date);
+            tvProductName = (TextView) itemView.findViewById(R.id.product_name);
+            tvProductUnit = (TextView) itemView.findViewById(R.id.product_unit);
+            etQuantity = (EditText) itemView.findViewById(R.id.tx_quantity);
+            lyQuantity = (TextInputLayout) itemView.findViewById(R.id.ly_quantity);
+            tvAddExpiryDate = (TextView) itemView.findViewById(R.id.tx_expire_date);
 
             etQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
         }
