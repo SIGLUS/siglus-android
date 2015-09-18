@@ -42,6 +42,12 @@ And(/^I enter patient total$/) do
     hide_soft_keyboard
 end
 
+And(/^I should see empty patient total$/) do
+    if element_exists("android.widget.EditText id:'et_value' text:'3'") or element_exists("android.widget.EditText id:'et_value' text:'6'")
+		fail(msg="patient total not empty")
+	end
+end
+
 Then(/^I scroll to "(.*?)"$/) do |text|
     until element_exists("* marked:'#{text}'") do
         scroll("ScrollView", :down)
