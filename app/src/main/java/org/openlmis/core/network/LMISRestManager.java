@@ -27,8 +27,10 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.UnauthorizedException;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
+import org.openlmis.core.network.adapter.ProductsAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
 
 import java.io.InputStream;
@@ -147,7 +149,10 @@ public class LMISRestManager {
     }
 
     private GsonConverter registerTypeAdapter(){
-        return new GsonConverter(new GsonBuilder().registerTypeAdapter(RnRForm.class, new RnrFormAdapter()).create());
+        return new GsonConverter(new GsonBuilder()
+                .registerTypeAdapter(RnRForm.class, new RnrFormAdapter())
+                .registerTypeAdapter(Product.class, new ProductsAdapter())
+                .create());
     }
 
     @Data
