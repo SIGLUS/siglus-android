@@ -6,7 +6,7 @@
     <string name="title_home">Página principal</string>
     <string name="title_login">Entrar</string>
     <string name="title_init_inventory">Inventário inicial</string>
-    <string name="title_physical_inventory">Physical Inventory</string>
+    <string name="title_physical_inventory">Inventario</string>
     <string name="title_stock_cards">Fichas de Stock</string>
     <string name="title_mmia_spread">MMIA</string>
     <string name="title_requisition">Requisição / Balancete</string>
@@ -28,14 +28,14 @@
     <string name="label_dummy_unit">500mg</string>
     <string name="msg_inventory_check_failed">Quantidade não pode estar em branco</string>
     <string name="msg_invalid_date">Não pode escolher data no passado</string>
-
+    <string name="btn_done">Feito</string>
 
     <!-- Home Page -->
     <string name="label_stock_cards">Stock Existente</string>
     <string name="label_requisition">Requisição / Balancete</string>
     <string name="label_mmia">MMIA</string>
     <string name="label_sync">Sincronizar dados</string>
-    <string name="action_add_new_drug">Add new drug</string>
+    <string name="action_add_new_drug">Adicionar novo producto</string>
     <string name="label_last_synced_mins_ago">Última sincronização há %s minutos</string>
     <string name="label_last_synced_hours_ago">Última sincronização há %s horas</string>
     <string name="label_last_synced_days_ago">Última sincronização há %s dias</string>
@@ -60,15 +60,16 @@
     <string name="msg_mmia_onback_confirm">Tem certeza que quer sair sem gravar suas alteraçães?</string>
     <string name="btn_positive">Sim</string>
     <string name="btn_negative">Não</string>
-    <string name="msg_mmia_submit_tip">Thank you for submitting your mmia form.\r\n Please make sure it syncs successfully.</string>
-    <string name="hint_mmia_total_not_equal">Total REGIME TERAPEUTICO does not match \r\n Total de pacientes em TARV na US</string>
+    <string name="msg_mmia_submit_tip">O seu MMIA foi gravado com sucesso,e vai ser submetido \r\n automaticamente quando tiver coneccao a internet.</string>
+    <string name="hint_mmia_total_not_equal">O Total dos regimes terapêuticos não confere com o Total de pacientes em TARV na US.</string>
+    <string name="msg_mmia_not_unique">Não é possivel submeter duas vezes o MMIA no mesmo período.</string>
 
 
     <!-- Requisition Form -->
     <string name="label_consultation">No. de Consultas Externas Realizadas</string>
-    <string name="request_provincial_district_level">Request from provincial or district level</string>
-    <string name="title_stock_move_ment">Stock Movement</string>
-    <string name="title_inventory_info">Inventory Information</string>
+    <string name="request_provincial_district_level">Requisicao do nível provincial ou distrital</string>
+    <string name="title_stock_move_ment">Movimento de stock</string>
+    <string name="title_inventory_info">Informação do Inventário</string>
     <string name="label_kits_received">No. de Kits Recebido</string>
     <string name="label_kits_opened">No. de Kits Abertos</string>
     <string name="label_us">US</string>
@@ -86,10 +87,9 @@
     <string name="label_product_name">MEDICAMENTO</string>
     <string name="msg_low_stock_warning">O seu produto tem stock baixo</string>
     <string name="msg_stock_out_warning">O seu produto está em roptura de stock</string>
-    <string name="msg_requisition_submit_tip">Thank you for submitting your requisition form.\r\n Please make sure it syncs successfully.</string>
+    <string name="msg_requisition_submit_tip">A sua Requisicao foi gravada com sucesso,e vai ser submetida \r\n automaticamente quando tiver coneccao a internet.</string>
 
-    <string name="msg_requisition_not_unique">Cannot submit requisition twice in a period!</string>
-    <string name="msg_mmia_not_unique">Cannot submit MMIA twice in a period!</string>
+    <string name="msg_requisition_not_unique">Não é possivel submeter duas vezes a requisição no mesmo período.</string>
 
 
     <!-- Stock Movement -->
@@ -103,14 +103,14 @@
     <string name="label_stock_existence">Stock Existente</string>
     <string name="btn_cancel">Cancelar</string>
     <string name="msg_validation_error">Entrada inválida</string>
-    <string name="msg_validation_empty_error">Missing required field</string>
-    <string name="msg_invalid_stock_movement_date">Invalid date</string>
-    <string name="msg_db_error">An unexpected error has occurred. Please contact your administrator.</string>
+    <string name="msg_validation_empty_error">Falta um campo obrigatório</string>
+    <string name="msg_invalid_stock_movement_date">Dados Inválidos</string>
+    <string name="msg_db_error">Ocorreu um erro inesperado. Por favor contacte o administrador.</string>
     <string name="label_cmm">CMM</string>
-    <string name="label_validate_period">Validate Period</string>
-    <string name="btn_add_expiry_date">+ Expiry date</string>
-    <string name="menu_item_stock_movement_history">All movements</string>
-    <string name="title_add_new_drug">Add new drug</string>
+    <string name="label_validate_period">Prazos de Validade</string>
+    <string name="btn_add_expiry_date">+ Data de espiração</string>
+    <string name="menu_item_stock_movement_history">Historico de movimentos</string>
+    <string name="title_add_new_drug">Adicionar novo producto</string>
 
 
     <!--MMIABaseInfo-->
@@ -121,44 +121,47 @@
     <string name="label_total_patients">Total de pacientes em TARV na US</string>
     <string name="label_ptv">PTV</string>
     <string name="label_ppe">PPE</string>
-    <string name="hint_has_not_new_data">There are no more new content!</string>
+    <string name="hint_has_not_new_data">Estas no fim da lista</string>
 
     <!-- Reason/Origin/Destination select dialog-->
     <string-array name="movement_type_items_array">
-        <item>Receive</item>
-        <item>Negative Adjustment</item>
-        <item>Positive Adjustment</item>
-        <item>Issue</item>
+        <item>Entradas</item>
+        <item>Ajustes Negativos</item>
+        <item>Ajustes Positivos</item>
+        <item>Saídas</item>
     </string-array>
 
     <string-array name="movement_receive_items_array">
-        <item>Normal requisition/reinforcement</item>
-        <item>Emergency requisition</item>
-        <item>Opening Kits(Health facilities)</item>
+        <item>Requisição periódica/reforço</item>
+        <item>requisição emergência</item>
+        <item>Abertura de Kits(Unidade Sanitária)</item>
+    </string-array>
+
+    <string-array name="movement_issue_items_array">
+        <item>Saída por pedidos dos Clientes</item>
     </string-array>
 
     <string-array name="movement_negative_items_array">
-        <item>Returns of  drugs expired in quarantine(or supplier deposit)</item>
-        <item>Damaged at the Deposit </item>
-        <item>loans (To all levels) which arrive at the warehouse</item>
-        <item>Inventory correction in case of over stock on Stock  card (Stock on  hand is less than stock in stock card)</item>
-        <item>Issue to quarentine in case of problems with quality of product</item>
+        <item>Devolução de Expirados Quarentena (ou Depósito fornecedor)</item>
+        <item>Danificados no Depósito</item>
+        <item>Empréstimo (de todos os Níveis) que dão saída do Depósito</item>
+        <item>Correção do Inventário, no caso de excesso de stock (stock é superior ao existente na ficha)</item>
+        <item>Saída para Quarentena no Caso de Problemas relativos as Qualidade</item>
     </string-array>
+
     <string-array name="movement_positive_items_array">
-        <item>Returns from Customers(HF and dependent wards)</item>
-        <item>Returns of expired drugs (HF and dependent wards)</item>
-        <item>Donations to Deposit</item>
-        <item>loans (from all levels) which arrive at the warehouse</item>
-        <item>Inventory correction in case of under stock on Stock card (Stock on  hand is more than stock in stock card)</item>
-        <item>Quarantine return, in the case of confirming the good quality of the product.</item>
-    </string-array>
-    <string-array name="movement_issue_items_array">
-        <item>Issues from customers requests </item>
+        <item>Devolução dos seus dependentes (US e Depósitos Beneficiários)</item>
+        <item>Devolução de Expirados (US e Depósitos Beneficiários)</item>
+        <item>Doação ao Depósito</item>
+        <item>Empréstimo (de todos os Níveis) que dão entrada no Depósito</item>
+        <item>Correção do Inventário, no caso de stock em falta (stock é inferior ao existente na ficha)</item>
+        <item>Retorno da Quarentena no caso de se confirmar a qualidade do produto</item>
     </string-array>
 
 
     <!-- Stock Card List Page -->
     <string name="search_hint">Procurar…</string>
+
     <string-array name="sort_items_array">
         <item>Ordenar por alfabético: de A a Z</item>
         <item>Ordenar por alfabético: de Z a A</item>

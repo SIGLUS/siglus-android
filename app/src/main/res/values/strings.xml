@@ -6,7 +6,7 @@
     <string name="title_home">Home Page</string>
     <string name="title_login">Login</string>
     <string name="title_init_inventory">Initial Inventory</string>
-    <string name="title_physical_inventory">Physical Inventory</string>
+    <string name="title_physical_inventory">Inventory</string>
     <string name="title_stock_cards">Stock Cards</string>
     <string name="title_mmia_spread">MMIA</string>
     <string name="title_requisition">Via Classica Requesition</string>
@@ -28,14 +28,14 @@
     <string name="label_dummy_unit">500mg</string>
     <string name="msg_inventory_check_failed">Quantity cannot be left blank!</string>
     <string name="msg_invalid_date">Cannot choose past date</string>
-
+    <string name="btn_done">Done</string>
 
     <!-- Home Page -->
     <string name="label_stock_cards">Stock on Hand</string>
     <string name="label_requisition">Via Classica Requesition</string>
     <string name="label_mmia">MMIA</string>
     <string name="label_sync">Sync Data</string>
-    <string name="action_add_new_drug">Add new drug</string>
+    <string name="action_add_new_drug">Add new product</string>
     <string name="label_last_synced_mins_ago">Last synced %s minutes ago</string>
     <string name="label_last_synced_hours_ago">Last synced %s hours ago</string>
     <string name="label_last_synced_days_ago">Last synced %s days ago</string>
@@ -60,15 +60,15 @@
     <string name="msg_mmia_onback_confirm">Are you sure you want to quit without saving your work?</string>
     <string name="btn_positive">Yes</string>
     <string name="btn_negative">No</string>
-    <string name="msg_mmia_submit_tip">Thank you for submitting your mmia form.\r\n Please make sure it syncs successfully.</string>
-    <string name="hint_mmia_total_not_equal">Total REGIME TERAPEUTICO does not match \r\n Total de pacientes em TARV na US</string>
+    <string name="msg_mmia_submit_tip">Your MMIA form has been succesfully saved, \r\n and will submit automatically when you have a data conection </string>
+    <string name="hint_mmia_total_not_equal">Total Therapeutic Regime does not equal Total Patients</string>
+    <string name="msg_mmia_not_unique">Cannot submit MMIA twice in a period!</string>
 
 
     <!-- Requisition Form -->
-    <string name="msg_mmia_not_unique">Cannot submit MMIA twice in a period!</string>
-    <string name="request_provincial_district_level">Request from provincial or district level</string>
-    <string name="title_stock_move_ment">Stock Movement</string>
-    <string name="title_inventory_info">Inventory Information</string>
+    <string name="request_provincial_district_level">Requesition for Province or Distrit Level</string>
+    <string name="title_stock_move_ment">Stock Movements</string>
+    <string name="title_inventory_info">Inventory</string>
     <string name="label_consultation">No. of External Consultations Performed</string>
     <string name="label_kits_received">No. of Kits Received</string>
     <string name="label_kits_opened">No. of Kits Opened</string>
@@ -87,7 +87,7 @@
     <string name="label_product_name">Product Name</string>
     <string name="msg_low_stock_warning">Your product has low stock.</string>
     <string name="msg_stock_out_warning">Your product is stocked out.</string>
-    <string name="msg_requisition_submit_tip">Thank you for submitting your requisition form.\r\n Please make sure it syncs successfully.</string>
+    <string name="msg_requisition_submit_tip">Your Requisition form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
 
     <string name="msg_requisition_not_unique">Cannot submit requisition twice in a period!</string>
 
@@ -108,9 +108,9 @@
     <string name="msg_db_error">An unexpected error has occurred. Please contact your administrator.</string>
     <string name="label_cmm">CMM</string>
     <string name="label_validate_period">Validate Period</string>
-    <string name="btn_add_expiry_date">+ Expiry date</string>
-    <string name="menu_item_stock_movement_history">All movements</string>
-    <string name="title_add_new_drug">Add new drug</string>
+    <string name="btn_add_expiry_date">+ Expiration Date</string>
+    <string name="menu_item_stock_movement_history">Movement History</string>
+    <string name="title_add_new_drug">Add new product</string>
 
 
     <!--MMIABaseInfo-->
@@ -121,14 +121,14 @@
     <string name="label_total_patients">Total Patients</string>
     <string name="label_ptv">PTV</string>
     <string name="label_ppe">PPE</string>
-    <string name="hint_has_not_new_data">There are no more new content!</string>
+    <string name="hint_has_not_new_data">You are at the end of the list</string>
 
     <!-- Reason/Origin/Destination select dialog-->
     <string-array name="movement_type_items_array">
-        <item>Receive</item>
-        <item>Negative Adjustment</item>
-        <item>Positive Adjustment</item>
-        <item>Issue</item>
+        <item>Entries</item>
+        <item>Negative Adjustments</item>
+        <item>Positive Adjustments</item>
+        <item>Issues</item>
     </string-array>
 
     <string-array name="movement_receive_items_array">
@@ -137,23 +137,25 @@
         <item>Opening Kits(Health facilities)</item>
     </string-array>
 
-    <string-array name="movement_negative_items_array">
-        <item>Returns of  drugs expired in quarantine(or supplier deposit)</item>
-        <item>Damaged at the Deposit </item>
-        <item>loans (To all levels) which arrive at the warehouse</item>
-        <item>Inventory correction in case of over stock on Stock  card (Stock on  hand is less than stock in stock card)</item>
-        <item>Issue to quarentine in case of problems with quality of product</item>
+    <string-array name="movement_issue_items_array">
+        <item>Issues from customers requests </item>
     </string-array>
+
+    <string-array name="movement_negative_items_array">
+        <item>Drugs in quarantine have expired, returned to Supplier</item>
+        <item>Damaged on arrival</item>
+        <item>Loans made from a health facility deposit</item>
+        <item>Inventory correction in case of over stock on Stock  card (Stock on  hand is less than stock in stock card)</item>
+        <item>Product defective, moved to quarantine</item>
+    </string-array>
+
     <string-array name="movement_positive_items_array">
         <item>Returns from Customers(HF and dependent wards)</item>
         <item>Returns of expired drugs (HF and dependent wards)</item>
         <item>Donations to Deposit</item>
-        <item>loans (from all levels) which arrive at the warehouse</item>
+        <item>Loans received at the health facility deposit</item>
         <item>Inventory correction in case of under stock on Stock card (Stock on  hand is more than stock in stock card)</item>
-        <item>Quarantine return, in the case of confirming the good quality of the product.</item>
-    </string-array>
-    <string-array name="movement_issue_items_array">
-        <item>Issues from customers requests </item>
+        <item>Returns from Quarantine, in the case of quarantined product being fit for use</item>
     </string-array>
 
 
