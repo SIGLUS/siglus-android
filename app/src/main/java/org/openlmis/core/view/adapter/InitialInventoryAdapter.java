@@ -76,6 +76,7 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
                 if (isChecked) {
                     holder.actionDivider.setVisibility(View.VISIBLE);
                     holder.actionPanel.setVisibility(View.VISIBLE);
+                    holder.txQuantity.requestFocus();
                 } else {
                     holder.actionDivider.setVisibility(View.GONE);
                     holder.actionPanel.setVisibility(View.GONE);
@@ -100,7 +101,6 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
         holder.productUnit.setText(viewModel.getType());
         holder.txExpireDate.setText(viewModel.optFirstExpiryDate());
         holder.txQuantity.setText(viewModel.getQuantity());
-        holder.txQuantity.setHint(R.string.hint_quantity_in_stock);
         holder.txQuantity.addTextChangedListener(textWatcher);
 
         if (!viewModel.isValidate()) {
