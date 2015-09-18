@@ -33,7 +33,7 @@
             android:id="@+id/btn_requisition"
             style="@style/home_page_button"
             android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
-            android:text="@string/label_requisition" />
+            android:text="@string/title_requisition" />
 
         <Button
             android:id="@+id/btn_sync_data"

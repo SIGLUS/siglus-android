@@ -9,7 +9,7 @@
     <string name="title_physical_inventory">Inventory</string>
     <string name="title_stock_cards">Stock Cards</string>
     <string name="title_mmia_spread">MMIA</string>
-    <string name="title_requisition">Via Classica Requesition</string>
+    <string name="title_requisition">Via Classical Requisition</string>
 
     <!-- Login Page -->
     <string name="hint_username">User Name</string>
@@ -24,7 +24,7 @@
     <!-- Init Inventory -->
     <string name="hint_quantity_in_stock">Stock on Hand</string>
     <string name="label_expire_date">Expiration Date</string>
-    <string name="label_dummy_product">Paracetemol</string>
+    <string name="label_dummy_product">Paracetamol</string>
     <string name="label_dummy_unit">500mg</string>
     <string name="msg_inventory_check_failed">Quantity cannot be left blank!</string>
     <string name="msg_invalid_date">Cannot choose past date</string>
@@ -32,7 +32,6 @@
 
     <!-- Home Page -->
     <string name="label_stock_cards">Stock on Hand</string>
-    <string name="label_requisition">Via Classica Requesition</string>
     <string name="label_mmia">MMIA</string>
     <string name="label_sync">Sync Data</string>
     <string name="action_add_new_drug">Add new product</string>
@@ -42,7 +41,7 @@
 
     <!--MMIA-->
     <string name="label_rnrfrom_left_header">Medicine</string>
-    <string name="label_regime_header_name">Theraputic Regime</string>
+    <string name="label_regime_header_name">Therapeutic Regime</string>
     <string name="label_total_mmia">Total</string>
     <string name="label_mmia_info_header_name">TYPE</string>
     <string name="label_mmia_speed_info_header">Quantity of patients on ART</string>
@@ -60,7 +59,7 @@
     <string name="msg_mmia_onback_confirm">Are you sure you want to quit without saving your work?</string>
     <string name="btn_positive">Yes</string>
     <string name="btn_negative">No</string>
-    <string name="msg_mmia_submit_tip">Your MMIA form has been succesfully saved, \r\n and will submit automatically when you have a data conection </string>
+    <string name="msg_mmia_submit_tip">Your MMIA form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
     <string name="hint_mmia_total_not_equal">Total Therapeutic Regime does not equal Total Patients</string>
     <string name="msg_mmia_not_unique">Cannot submit MMIA twice in a period!</string>
 
@@ -138,7 +137,7 @@
     </string-array>
 
     <string-array name="movement_issue_items_array">
-        <item>Issues from customers requests </item>
+        <item>Issues from customers requests</item>
     </string-array>
 
     <string-array name="movement_negative_items_array">
