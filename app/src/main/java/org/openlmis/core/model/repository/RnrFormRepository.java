@@ -104,10 +104,16 @@ public class RnrFormRepository {
         genericDao.create(rnRForm);
     }
 
-    public void save(RnRForm form) throws LMISException {
+    public void save(final RnRForm form) throws LMISException {
         try {
-            updateWrapperList(form);
-            genericDao.update(form);
+            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+                    updateWrapperList(form);
+                    genericDao.update(form);
+                    return null;
+                }
+            });
         } catch (SQLException e) {
             throw new LMISException(e);
         }
