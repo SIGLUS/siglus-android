@@ -20,6 +20,8 @@
 package org.openlmis.core.view.activity;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
@@ -143,5 +145,11 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     public void showUserNameEmpty() {
         clearErrorAlerts();
         lyUserName.setError(getResources().getString(R.string.msg_empty_user));
+    }
+
+    public static Intent getIntentToMe(Context context) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        return intent;
     }
 }

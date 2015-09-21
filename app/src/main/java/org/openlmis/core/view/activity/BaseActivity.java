@@ -28,6 +28,7 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -40,6 +41,10 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.view.View;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import roboguice.activity.RoboActionBarActivity;
 
 public abstract class BaseActivity extends RoboActionBarActivity implements View {
@@ -48,7 +53,9 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     @Inject
     SharedPreferenceMgr preferencesMgr;
     protected SearchView searchView;
-
+    public static long lastOperateTime;
+    private final long TIMEOUT_TIME = 60 * 60 * 1000;
+    private static ScheduledThreadPoolExecutor executor;
 
     public abstract Presenter getPresenter();
 
@@ -67,8 +74,43 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     }
 
     @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        resetTime();
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    protected void onResume() {
+        resetTime();
+        super.onResume();
+    }
+
+    private void resetTime() {
+        lastOperateTime = System.currentTimeMillis();
+    }
+
+    private void initTimeOutTimer() {
+
+        if (executor == null) {
+            executor = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(1);
+            executor.scheduleAtFixedRate(new Runnable() {
+                @Override
+                public void run() {
+                    if (System.currentTimeMillis() - BaseActivity.lastOperateTime > TIMEOUT_TIME) {
+                        startActivity(LoginActivity.getIntentToMe(BaseActivity.this));
+                        finish();
+                    }
+                }
+            }, 0, 1, TimeUnit.MINUTES);
+        }
+    }
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        resetTime();
+        initTimeOutTimer();
         try {
             getPresenter().attachView(BaseActivity.this);
         } catch (ViewNotMatchException e) {
