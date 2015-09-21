@@ -73,27 +73,38 @@ public class InventoryPresenter implements Presenter {
         view = (InventoryView) v;
     }
 
-    public List<Product> loadMasterProductList() {
-        List<Product> list = null;
-        try {
-            final List<Product> existProductList = from(stockRepository.list()).transform(new Function<StockCard, Product>() {
-                @Override
-                public Product apply(StockCard stockCard) {
-                    return stockCard.getProduct();
-                }
-            }).toList();
+    public Observable<List<StockCardViewModel>> loadMasterProductList() {
 
-            list = from(productRepository.list()).filter(new Predicate<Product>() {
-                @Override
-                public boolean apply(Product product) {
-                    return !existProductList.contains(product);
-                }
-            }).toList();
-        } catch (LMISException e) {
-            e.printStackTrace();
-        }
+        return Observable.create(new Observable.OnSubscribe<List<StockCardViewModel>>() {
+            @Override
+            public void call(Subscriber<? super List<StockCardViewModel>> subscriber) {
+                try {
+                    final List<Product> existProductList = from(stockRepository.list()).transform(new Function<StockCard, Product>() {
+                        @Override
+                        public Product apply(StockCard stockCard) {
+                            return stockCard.getProduct();
+                        }
+                    }).toList();
 
-        return list;
+                    List<StockCardViewModel> list = from(productRepository.list()).filter(new Predicate<Product>() {
+                        @Override
+                        public boolean apply(Product product) {
+                            return !existProductList.contains(product);
+                        }
+                    }).transform(new Function<Product, StockCardViewModel>() {
+                        @Override
+                        public StockCardViewModel apply(Product product) {
+                            return new StockCardViewModel(product);
+                        }
+                    }).toList();
+
+                    subscriber.onNext(list);
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
     public Observable<List<StockCardViewModel>> loadStockCardList(){

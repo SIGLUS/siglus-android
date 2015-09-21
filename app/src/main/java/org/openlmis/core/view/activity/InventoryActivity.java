@@ -102,6 +102,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
 
         setTitle(getResources().getString(R.string.title_physical_inventory));
 
+        loading();
         presenter.loadStockCardList().subscribe(new Subscriber<List<StockCardViewModel>>() {
             @Override
             public void onCompleted() {
@@ -110,11 +111,13 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
             @Override
             public void onError(Throwable e) {
                 ToastUtil.show(e.getMessage());
+                loaded();
             }
 
             @Override
             public void onNext(List<StockCardViewModel> stockCardViewModels) {
                 mAdapter.refreshList(stockCardViewModels);
+                loaded();
             }
         });
 
@@ -128,8 +131,30 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
 
 
     private void initInitialInventoryUI() {
-        mAdapter = new InitialInventoryAdapter(this, presenter.loadMasterProductList());
+        final List<StockCardViewModel> list = new ArrayList<>();
+        mAdapter = new InitialInventoryAdapter(this, list);
         productListRecycleView.setAdapter(mAdapter);
+
+        loading();
+        presenter.loadMasterProductList().subscribe(new Subscriber<List<StockCardViewModel>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                loaded();
+                ToastUtil.show(e.getMessage());
+            }
+
+            @Override
+            public void onNext(List<StockCardViewModel> stockCardViewModels) {
+                mAdapter.refreshList(stockCardViewModels);
+                loaded();
+            }
+        });
+
 
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override

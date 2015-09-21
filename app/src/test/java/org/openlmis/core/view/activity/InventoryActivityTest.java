@@ -21,7 +21,6 @@ package org.openlmis.core.view.activity;
 
 import android.view.Menu;
 
-import com.google.inject.AbstractModule;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,10 +29,8 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 
@@ -41,32 +38,14 @@ import roboguice.RoboGuice;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
 public class InventoryActivityTest {
 
     private InventoryActivity inventoryActivity;
-    private ProductRepository productRepository;
 
     @Before
     public void setUp() throws LMISException{
-        productRepository = mock(ProductRepository.class);
-        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
-            @Override
-            protected void configure() {
-                bind(ProductRepository.class).toInstance(productRepository);
-            }
-        });
-
-        ArrayList<Product> products = new ArrayList<>();
-        Product product = new Product();
-        product.setPrimaryName("test product");
-        product.setStrength("500 ml");
-        products.add(product);
-
-        when(productRepository.list()).thenReturn(products);
 
         inventoryActivity = Robolectric.buildActivity(InventoryActivityMock.class).create().get();
     }
@@ -78,7 +57,14 @@ public class InventoryActivityTest {
 
 
     @Test
-    public void shouldCheckQuantityNotEmpty(){
+    public void shouldCheckQuantityNotEmpty() throws InterruptedException{
+        ArrayList<StockCardViewModel> products = new ArrayList<>();
+        Product product = new Product();
+        product.setPrimaryName("test product");
+        product.setStrength("500 ml");
+        products.add(new StockCardViewModel(product));
+
+        inventoryActivity.mAdapter.refreshList(products);
         ((StockCardViewModel)inventoryActivity.mAdapter.getData().get(0)).setChecked(true);
         inventoryActivity.btnDone.performClick();
         assertThat(((StockCardViewModel)inventoryActivity.mAdapter.getData().get(0)).isValidate(), is(false));
