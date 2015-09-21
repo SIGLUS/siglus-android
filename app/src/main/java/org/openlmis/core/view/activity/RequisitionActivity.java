@@ -29,6 +29,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -62,6 +63,12 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     @InjectView(R.id.btn_save)
     private View btnSave;
+
+    @InjectView(R.id.action_panel)
+    private View actionPanel;
+
+    @InjectView(R.id.vg_container)
+    private ViewGroup vgContainer;
 
     @InjectView(R.id.edit_text)
     private EditText etConsultationNumbers;
@@ -106,19 +113,30 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        long formId = getIntent().getLongExtra("formId", 0);
         inflater = LayoutInflater.from(this);
         hasDataChanged = (Boolean) dataFragment.getData("hasDataChanged");
         initUI();
-        long formId = getIntent().getLongExtra("formId", 0);
         presenter.loadRequisitionFormList(formId);
     }
 
 
     @Override
     public void refreshRequisitionForm() {
+        setEditable();
         productListAdapter.notifyDataSetChanged();
         requisitionFormAdapter.notifyDataSetChanged();
         setConsultationNumbers();
+    }
+
+    private void setEditable() {
+        if (presenter.formIsEditable()) {
+            vgContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+            actionPanel.setVisibility(View.VISIBLE);
+        } else {
+            vgContainer.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+            actionPanel.setVisibility(View.GONE);
+        }
     }
 
     private void setConsultationNumbers() {

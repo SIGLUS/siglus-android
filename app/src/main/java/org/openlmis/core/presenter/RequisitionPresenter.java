@@ -44,6 +44,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
+import static org.roboguice.shaded.goole.common.base.Preconditions.checkNotNull;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 
@@ -228,6 +229,10 @@ public class RequisitionPresenter implements Presenter {
         if (baseInfoItemListWrapper != null) {
             baseInfoItemListWrapper.get(0).setValue(consultationNumbers);
         }
+    }
+
+    public boolean formIsEditable() {
+        return checkNotNull(rnRForm).getStatus().equals(RnRForm.STATUS.DRAFT);
     }
 
 
