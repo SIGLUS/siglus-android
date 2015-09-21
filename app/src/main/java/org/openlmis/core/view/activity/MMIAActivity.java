@@ -26,6 +26,7 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -121,12 +122,24 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     @Override
     public void initView(final RnRForm form) {
+        final boolean isDraft = form.getStatus().equals(RnRForm.STATUS.DRAFT);
+
         scrollView.setVisibility(View.VISIBLE);
         rnrFormList.initView(new ArrayList<>(form.getRnrFormItemListWrapper()));
-        regimeListView.initView(form.getRegimenItemListWrapper(), tvRegimeTotal,isMMIAHistory);
-        mmiaInfoListView.initView(form.getBaseInfoItemListWrapper(),isMMIAHistory);
+        regimeListView.initView(form.getRegimenItemListWrapper(), tvRegimeTotal);
+        mmiaInfoListView.initView(form.getBaseInfoItemListWrapper());
+
         if (isMMIAHistory){
-            etComment.setEnabled(false);
+            setTitle(getResources().getString(R.string.mmia_history_title));
+            if (!isDraft) {
+                scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+                btnSave.setVisibility(View.GONE);
+                btnComplete.setVisibility(View.GONE);
+            }else {
+                scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+                btnSave.setVisibility(View.VISIBLE);
+                btnComplete.setVisibility(View.VISIBLE);
+            }
         }
         etComment.setText(form.getComments());
 
@@ -180,7 +193,8 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
                 }
             });
         } else {
-            presenter.removeRnrForm();
+            if (!isMMIAHistory){
+            presenter.removeRnrForm();}
             super.onBackPressed();
         }
     }

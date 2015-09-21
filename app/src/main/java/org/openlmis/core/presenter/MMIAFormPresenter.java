@@ -85,7 +85,7 @@ public class MMIAFormPresenter implements Presenter {
                     subscriber.onNext(getRnrForm());
                     } else {
                         subscriber.onNext(getRnrFormByIndex(0));
-                    };
+                    }
                 } catch (LMISException e) {
                     e.printStackTrace();
                     subscriber.onError(e);
