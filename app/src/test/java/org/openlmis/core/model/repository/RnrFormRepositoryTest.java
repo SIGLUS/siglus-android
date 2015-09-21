@@ -18,8 +18,7 @@
 
 package org.openlmis.core.model.repository;
 
-import com.google.inject.Binder;
-import com.google.inject.Module;
+import com.google.inject.AbstractModule;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,10 +36,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import retrofit.http.HEAD;
 import roboguice.RoboGuice;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -50,17 +51,20 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     RnrFormRepository rnrFormRepository;
     private StockRepository mockStockRepository;
 
+    private ProgramRepository mockProgramRepository;
+
     @Before
     public void setup() throws LMISException {
+        mockProgramRepository = mock(ProgramRepository.class);
         mockStockRepository = mock(StockRepository.class);
-        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
-            @Override
-            public void configure(Binder binder) {
-                binder.bind(StockRepository.class).toInstance(mockStockRepository);
-            }
-        });
+        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
         rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormRepository.class);
+
+        Program programMMIA = new Program("MMIA", "MMIA", null);
+        programMMIA.setId(1l);
+
+        when(mockProgramRepository.queryByCode(anyString())).thenReturn(programMMIA);
     }
 
     @Test
@@ -77,6 +81,29 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         List<RnRForm> list = rnrFormRepository.listUnSynced();
         assertThat(list.size(), is(5));
+    }
+
+    @Test
+    public void shouldGetAllMMIAForms() throws LMISException {
+        Program programMMIA = new Program();
+        programMMIA.setId(1l);
+        Program programVIA = new Program();
+        programVIA.setId(2l);
+
+        for (int i = 0; i < 11; i++) {
+            RnRForm form = new RnRForm();
+            form.setComments("Rnr Form" + i);
+            form.setStatus(RnRForm.STATUS.AUTHORIZED);
+            if (i % 2 == 0) {
+                form.setProgram(programMMIA);
+            }else {
+                form.setProgram(programVIA);
+            }
+            rnrFormRepository.create(form);
+        }
+
+        List<RnRForm> list = rnrFormRepository.listMMIA();
+        assertThat(list.size(), is(6));
     }
 
     @Test
@@ -204,5 +231,13 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         RnRForm rnRForm = rnrFormRepository.queryRnRForm(1);
         assertThat(rnRForm.getComments(), is("DRAFT Form"));
+    }
+
+    public class MyTestModule extends AbstractModule {
+        @Override
+        protected void configure() {
+            bind(ProgramRepository.class).toInstance(mockProgramRepository);
+            bind(StockRepository.class).toInstance(mockStockRepository);
+        }
     }
 }

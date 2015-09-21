@@ -75,13 +75,17 @@ public class MMIAFormPresenter implements Presenter {
         }
     }
 
-    public void loadData() {
+    public void loadData(final boolean isMMIAHistory) {
         view.loading();
         Observable.create(new Observable.OnSubscribe<RnRForm>() {
             @Override
             public void call(Subscriber<? super RnRForm> subscriber) {
                 try {
+                    if (!isMMIAHistory){
                     subscriber.onNext(getRnrForm());
+                    } else {
+                        subscriber.onNext(getRnrFormByIndex(0));
+                    };
                 } catch (LMISException e) {
                     e.printStackTrace();
                     subscriber.onError(e);
@@ -103,6 +107,11 @@ public class MMIAFormPresenter implements Presenter {
                 view.showErrorMessage(throwable.getMessage());
             }
         });
+    }
+
+    public RnRForm getRnrFormByIndex(int formId) throws LMISException {
+        form = mmiaRepository.listMMIA().get(formId);
+        return form;
     }
 
     public RnRForm getRnrForm() throws LMISException {
@@ -164,6 +173,8 @@ public class MMIAFormPresenter implements Presenter {
             e.printStackTrace();
         }
     }
+
+
 
     public interface MMIAFormView extends View {
         void showValidationAlert();
