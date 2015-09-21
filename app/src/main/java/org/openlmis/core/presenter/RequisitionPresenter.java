@@ -84,13 +84,17 @@ public class RequisitionPresenter implements Presenter {
         }
     }
 
-    public RnRForm loadRnrForm() {
+    public RnRForm loadRnrForm(long formId) {
         try {
-            RnRForm draftVIA = viaRepository.getDraftVIA();
-            if (draftVIA != null) {
-                rnRForm = draftVIA;
+            if (formId > 0) {
+                rnRForm = viaRepository.queryRnRForm(formId);
             } else {
-                rnRForm = viaRepository.initVIA();
+                RnRForm draftVIA = viaRepository.getDraftVIA();
+                if (draftVIA != null) {
+                    rnRForm = draftVIA;
+                } else {
+                    rnRForm = viaRepository.initVIA();
+                }
             }
             return rnRForm;
         } catch (LMISException e) {
@@ -105,9 +109,9 @@ public class RequisitionPresenter implements Presenter {
         return requisitionFormItemViewModelList;
     }
 
-    protected List<RequisitionFormItemViewModel> createViewModelsFromRnrForm() {
+    protected List<RequisitionFormItemViewModel> createViewModelsFromRnrForm(long formId) {
         if (rnRForm == null) {
-            loadRnrForm();
+            loadRnrForm(formId);
         }
         return from(rnRForm.getRnrFormItemList()).transform(new Function<RnrFormItem, RequisitionFormItemViewModel>() {
             @Override
@@ -117,7 +121,7 @@ public class RequisitionPresenter implements Presenter {
         }).toList();
     }
 
-    public void loadRequisitionFormList() {
+    public void loadRequisitionFormList(final long formId) {
 
         if (requisitionFormItemViewModelList.size() > 0) {
             return;
@@ -128,7 +132,7 @@ public class RequisitionPresenter implements Presenter {
         Observable.create(new Observable.OnSubscribe<List<RequisitionFormItemViewModel>>() {
             @Override
             public void call(Subscriber<? super List<RequisitionFormItemViewModel>> subscriber) {
-                subscriber.onNext(createViewModelsFromRnrForm());
+                subscriber.onNext(createViewModelsFromRnrForm(formId));
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<List<RequisitionFormItemViewModel>>() {
             @Override
