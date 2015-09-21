@@ -97,7 +97,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
 
     @Test
-    public void shouldGenerateRnRFromByLastPeriod() throws Exception{
+    public void shouldGenerateRnRFromByLastPeriod() throws Exception {
         Date generateDate = DateUtil.parseString("10/06/2015", DateUtil.SIMPLE_DATE_FORMAT);
         RnRForm rnRForm = RnRForm.init(new Program(), generateDate);
 
@@ -112,7 +112,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldGenerateRnRFromByCurrentPeriod() throws Exception{
+    public void shouldGenerateRnRFromByCurrentPeriod() throws Exception {
         Date generateDate = DateUtil.parseString("30/06/2015", DateUtil.SIMPLE_DATE_FORMAT);
         RnRForm rnRForm = RnRForm.init(new Program(), generateDate);
 
@@ -122,12 +122,12 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         generateDate = DateUtil.parseString("05/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
         rnRForm = RnRForm.init(new Program(), generateDate);
 
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(),DateUtil.SIMPLE_DATE_FORMAT), is("21/06/2015"));
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(),DateUtil.SIMPLE_DATE_FORMAT), is("20/07/2015"));
+        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.SIMPLE_DATE_FORMAT), is("21/06/2015"));
+        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(), DateUtil.SIMPLE_DATE_FORMAT), is("20/07/2015"));
     }
 
     @Test
-    public void shouldReturnFalseIfThereIsAAuthorizedFormExisted() throws Exception{
+    public void shouldReturnFalseIfThereIsAAuthorizedFormExisted() throws Exception {
         Program program = new Program();
         program.setId(123);
 
@@ -145,7 +145,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldReturnTrueIfThereIsNoAuthorizedFormExisted() throws Exception{
+    public void shouldReturnTrueIfThereIsNoAuthorizedFormExisted() throws Exception {
         Program program = new Program();
         program.setId(123);
 
@@ -162,9 +162,8 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(rnrFormRepository.isPeriodUnique(rnRForm2), is(true));
     }
 
-
     @Test
-    public void shouldGetStockCardsExistedInPeriod() throws Exception{
+    public void shouldGetStockCardsExistedInPeriod() throws Exception {
         Program program = new Program();
         program.setId(123);
         program.setProgramCode(MMIARepository.MMIA_PROGRAM_CODE);
@@ -190,5 +189,20 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         when(mockStockRepository.list(program.getProgramCode())).thenReturn(stockCardList);
         assertThat(rnrFormRepository.generateRnrFormItems(form).size(), is(2));
+    }
+
+    @Test
+    public void shouldReturnRnRForm() throws LMISException {
+        Program program = new Program();
+
+        RnRForm form = new RnRForm();
+        form.setProgram(program);
+        form.setId(1);
+        form.setComments("DRAFT Form");
+
+        rnrFormRepository.create(form);
+
+        RnRForm rnRForm = rnrFormRepository.queryRnRForm(1);
+        assertThat(rnRForm.getComments(), is("DRAFT Form"));
     }
 }
