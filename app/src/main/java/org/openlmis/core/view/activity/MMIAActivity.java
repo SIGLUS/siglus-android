@@ -141,6 +141,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
                 btnComplete.setVisibility(View.VISIBLE);
             }
         }
+
         etComment.setText(form.getComments());
 
         etComment.post(new Runnable() {
