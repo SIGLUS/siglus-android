@@ -61,7 +61,6 @@ public class LMISRestManager {
 
     protected RestAdapter restAdapter;
     protected LMISRestApi lmisRestApi;
-    private OkHttpClient client;
     private String hostName;
 
     public LMISRestManager() {
