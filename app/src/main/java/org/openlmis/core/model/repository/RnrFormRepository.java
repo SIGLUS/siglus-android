@@ -61,11 +61,13 @@ public class RnrFormRepository {
     @Inject
     RnrFormItemRepository rnrFormItemRepository;
 
+    @Inject
+    ProgramRepository programRepository;
+
     GenericDao<RnRForm> genericDao;
     GenericDao<RnrFormItem> rnrFormItemGenericDao;
 
     private Context context;
-
 
     @Inject
     public RnrFormRepository(Context context) {
@@ -164,6 +166,17 @@ public class RnrFormRepository {
             @Override
             public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
                 return dao.queryBuilder().where().eq("synced", false).and().eq("status", RnRForm.STATUS.AUTHORIZED).query();
+            }
+        });
+    }
+
+    public List<RnRForm> listMMIA() throws LMISException {
+        final long mmiaId = programRepository.queryByCode(MMIARepository.MMIA_PROGRAM_CODE).getId();
+
+        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
+            @Override
+            public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("program_id", mmiaId).query();
             }
         });
     }

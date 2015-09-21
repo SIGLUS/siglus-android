@@ -49,6 +49,7 @@ import roboguice.inject.InjectView;
 @ContentView(R.layout.activity_mmia)
 public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIAFormView, View.OnClickListener {
 
+    public static final String PARAM_IS_MMIA_HISTORY = "isMMIAHistory";
     @InjectView(R.id.rnr_form_list)
     private MMIARnrForm rnrFormList;
 
@@ -79,6 +80,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     private RetainedFragment dataFragment;
     private boolean commentHasChanged = false;
+    private Boolean isMMIAHistory = false;
 
     @Override
     public MMIAFormPresenter getPresenter() {
@@ -111,15 +113,21 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         super.onCreate(savedInstanceState);
         hasDataChanged = (Boolean) dataFragment.getData("hasDataChanged");
         scrollView.setVisibility(View.INVISIBLE);
-        presenter.loadData();
+
+        isMMIAHistory = getIntent().getBooleanExtra(MMIAActivity.PARAM_IS_MMIA_HISTORY,false);
+
+        presenter.loadData(isMMIAHistory);
     }
 
     @Override
     public void initView(final RnRForm form) {
         scrollView.setVisibility(View.VISIBLE);
         rnrFormList.initView(new ArrayList<>(form.getRnrFormItemListWrapper()));
-        regimeListView.initView(form.getRegimenItemListWrapper(), tvRegimeTotal);
-        mmiaInfoListView.initView(form.getBaseInfoItemListWrapper());
+        regimeListView.initView(form.getRegimenItemListWrapper(), tvRegimeTotal,isMMIAHistory);
+        mmiaInfoListView.initView(form.getBaseInfoItemListWrapper(),isMMIAHistory);
+        if (isMMIAHistory){
+            etComment.setEnabled(false);
+        }
         etComment.setText(form.getComments());
 
         etComment.post(new Runnable() {

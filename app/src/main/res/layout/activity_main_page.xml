@@ -41,6 +41,11 @@
             android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
             android:text="@string/label_sync" />
 
+        <Button
+            android:id="@+id/btn_mmia_history"
+            android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+            style="@style/home_page_button"
+            android:text="MMIA History"/>
         <TextView
             android:id="@+id/tx_last_synced"
             android:layout_width="match_parent"
