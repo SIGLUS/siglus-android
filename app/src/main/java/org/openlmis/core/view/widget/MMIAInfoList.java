@@ -44,7 +44,6 @@ public class MMIAInfoList extends LinearLayout {
     private LayoutInflater layoutInflater;
     private ArrayList<BaseInfoItem> dataList;
     private boolean hasDataChanged = false;
-    private boolean isMMIAHistory = false;
 
     public MMIAInfoList(Context context) {
         super(context);
@@ -62,9 +61,8 @@ public class MMIAInfoList extends LinearLayout {
         layoutInflater = LayoutInflater.from(context);
     }
 
-    public void initView(ArrayList<BaseInfoItem> list,boolean isMMIAHistory) {
+    public void initView(ArrayList<BaseInfoItem> list) {
         this.dataList = list;
-        this.isMMIAHistory = isMMIAHistory;
         addHeaderView();
 
         for (int i = 0; i < dataList.size(); i++) {
@@ -90,10 +88,6 @@ public class MMIAInfoList extends LinearLayout {
         View view = layoutInflater.inflate(R.layout.item_mmia_info, this, false);
         TextView tvName = (TextView) view.findViewById(R.id.tv_name);
         EditText etValue = (EditText) view.findViewById(R.id.et_value);
-
-        if (isMMIAHistory){
-            etValue.setEnabled(false);
-        }
 
         if (isHeaderView) {
             tvName.setText(R.string.label_mmia_info_header_name);
