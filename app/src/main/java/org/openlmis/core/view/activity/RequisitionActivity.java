@@ -19,6 +19,7 @@
 package org.openlmis.core.view.activity;
 
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -108,7 +109,8 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         inflater = LayoutInflater.from(this);
         hasDataChanged = (Boolean) dataFragment.getData("hasDataChanged");
         initUI();
-        presenter.loadRequisitionFormList();
+        long formId = getIntent().getLongExtra("formId", 0);
+        presenter.loadRequisitionFormList(formId);
     }
 
 
@@ -356,5 +358,11 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
             presenter.removeRnrForm();
             super.onBackPressed();
         }
+    }
+
+    public static Intent getIntentToMe(Context context, long formId) {
+        Intent intent = new Intent(context, RequisitionActivity.class);
+        intent.putExtra("formId", formId);
+        return intent;
     }
 }

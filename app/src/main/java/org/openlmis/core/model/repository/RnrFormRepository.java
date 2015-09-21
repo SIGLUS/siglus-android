@@ -176,7 +176,7 @@ public class RnrFormRepository {
         });
     }
 
-    public RnRForm queryRnRForm(final int id) throws LMISException {
+    public RnRForm queryRnRForm(final long id) throws LMISException {
         return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
             @Override
             public RnRForm operate(Dao<RnRForm, String> dao) throws SQLException {
