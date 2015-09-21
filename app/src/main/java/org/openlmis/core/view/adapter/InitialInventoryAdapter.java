@@ -34,7 +34,6 @@ import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
-import org.openlmis.core.model.Product;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
@@ -42,27 +41,15 @@ import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 public class InitialInventoryAdapter extends InventoryListAdapter<InitialInventoryAdapter.ViewHolder> {
 
-    public InitialInventoryAdapter(Context context, List<Product> productList) {
-        super(context, wrapByViewModel(productList));
+    public InitialInventoryAdapter(Context context, List<StockCardViewModel> data) {
+        super(context, data);
     }
-
-    public static List<StockCardViewModel> wrapByViewModel(List<Product> productList) {
-        List<StockCardViewModel> inventoryList = new ArrayList<>();
-
-        for (Product product : productList) {
-            inventoryList.add(new StockCardViewModel(product));
-        }
-
-        return inventoryList;
-    }
-
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
