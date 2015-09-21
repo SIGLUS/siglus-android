@@ -86,13 +86,13 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         RnRForm rnRForm = RnRForm.init(new Program(), generateDate);
 
         assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.SIMPLE_DATE_FORMAT), is("21/05/2015"));
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(),DateUtil.SIMPLE_DATE_FORMAT), is("20/06/2015"));
+        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(), DateUtil.SIMPLE_DATE_FORMAT), is("20/06/2015"));
 
         generateDate = DateUtil.parseString("30/05/2015", DateUtil.SIMPLE_DATE_FORMAT);
         rnRForm = RnRForm.init(new Program(), generateDate);
 
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(),DateUtil.SIMPLE_DATE_FORMAT), is("21/05/2015"));
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(),DateUtil.SIMPLE_DATE_FORMAT), is("20/06/2015"));
+        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.SIMPLE_DATE_FORMAT), is("21/05/2015"));
+        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(), DateUtil.SIMPLE_DATE_FORMAT), is("20/06/2015"));
     }
 
     @Test
@@ -144,5 +144,20 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         RnRForm rnRForm2 = RnRForm.init(program, generateDate);
 
         assertThat(rnrFormRepository.isPeriodUnique(rnRForm2), is(true));
+    }
+
+    @Test
+    public void shouldReturnRnRForm() throws LMISException {
+        Program program = new Program();
+
+        RnRForm form = new RnRForm();
+        form.setProgram(program);
+        form.setId(1);
+        form.setComments("DRAFT Form");
+
+        rnrFormRepository.create(form);
+
+        RnRForm rnRForm = rnrFormRepository.queryRnRForm(1);
+        assertThat(rnRForm.getComments(),is("DRAFT Form"));
     }
 }

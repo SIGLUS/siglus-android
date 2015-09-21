@@ -176,6 +176,15 @@ public class RnrFormRepository {
         });
     }
 
+    public RnRForm queryRnRForm(final int id) throws LMISException {
+        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
+            @Override
+            public RnRForm operate(Dao<RnRForm, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("id", id).queryForFirst();
+            }
+        });
+    }
+
 
     public void approve(RnRForm form) throws LMISException {
         form.setStatus(RnRForm.STATUS.AUTHORIZED);
