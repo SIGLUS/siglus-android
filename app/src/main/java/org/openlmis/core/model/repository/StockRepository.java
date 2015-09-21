@@ -24,12 +24,13 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
+import org.roboguice.shaded.goole.common.base.Predicate;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.Lists;
 
 import java.sql.SQLException;
@@ -142,18 +143,16 @@ public class StockRepository {
     }
 
     public List<StockCard> list(String programCode) throws LMISException {
-        ArrayList<StockCard> stockCards = new ArrayList<>();
-        Program program = programRepository.queryByCode(programCode);
+        List<StockCard> stockCards = new ArrayList<>();
+        final Program program = programRepository.queryByCode(programCode);
         if (program != null) {
-            List<Product> products = productRepository.queryProducts(program.getId());
-            if (products != null) {
-                for (Product product : products) {
-                    StockCard stockCard = queryStockCardByProductId(product.getId());
-                    if (stockCard != null) {
-                        stockCards.add(stockCard);
-                    }
+
+            stockCards = FluentIterable.from(genericDao.queryForAll()).filter(new Predicate<StockCard>() {
+                @Override
+                public boolean apply(StockCard stockCard) {
+                    return stockCard.getProduct().getProgram().getId() == program.getId();
                 }
-            }
+            }).toList();
         }
         return stockCards;
     }

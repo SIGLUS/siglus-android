@@ -79,7 +79,6 @@ public class RnrFormRepository {
         if (program == null) {
             throw new LMISException("Program cannot be null !");
         }
-
         final RnRForm form = RnRForm.init(program, DateUtil.today());
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
@@ -96,7 +95,6 @@ public class RnrFormRepository {
         } catch (SQLException e) {
             throw new LMISException(e);
         }
-
         return form;
     }
 
