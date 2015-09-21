@@ -61,7 +61,7 @@
     <string name="msg_mmia_submit_tip">Your MMIA form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
     <string name="hint_mmia_total_not_equal">Total Therapeutic Regime does not equal Total Patients</string>
     <string name="msg_mmia_not_unique">Cannot submit MMIA twice in a period!</string>
-
+    <string name="mmia_history_title">MMIA HISTORY</string>
 
     <!-- Requisition Form -->
     <string name="request_provincial_district_level">Requesition for Province or Distrit Level</string>

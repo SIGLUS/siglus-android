@@ -45,7 +45,6 @@ public class MMIARegimeList extends LinearLayout {
     private ArrayList<EditText> editTexts = new ArrayList<>();
     private LayoutInflater layoutInflater;
     private boolean hasDataChanged = false;
-    private boolean isMMIAHistory = false;
 
     public MMIARegimeList(Context context) {
         super(context);
@@ -63,10 +62,9 @@ public class MMIARegimeList extends LinearLayout {
         layoutInflater = LayoutInflater.from(context);
     }
 
-    public void initView(ArrayList<RegimenItem> regimenItems, TextView totalView,boolean isMMIAHistory) {
+    public void initView(ArrayList<RegimenItem> regimenItems, TextView totalView) {
         this.dataList = regimenItems;
         this.totalView = totalView;
-        this.isMMIAHistory = isMMIAHistory;
         addHeaderView();
 
         for (int i = 0; i < dataList.size(); i++) {
@@ -95,10 +93,6 @@ public class MMIARegimeList extends LinearLayout {
         View view = layoutInflater.inflate(R.layout.item_regime, this, false);
         TextView tvName = (TextView) view.findViewById(R.id.tv_name);
         EditText etTotal = (EditText) view.findViewById(R.id.et_total);
-
-        if (isMMIAHistory){
-            etTotal.setEnabled(false);
-        }
 
         if (isHeaderView) {
             tvName.setGravity(Gravity.CENTER);
