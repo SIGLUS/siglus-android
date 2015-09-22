@@ -207,8 +207,14 @@ public class RequisitionPresenter implements Presenter {
     }
 
     public String getConsultationNumbers() {
-        String value = rnRForm.getBaseInfoItemListWrapper().get(0).getValue();
-        return value == null ? "" : value;
+        String value;
+        try {
+            value = rnRForm.getBaseInfoItemListWrapper().get(0).getValue();
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            e.printStackTrace();
+            value = "";
+        }
+        return value;
     }
 
     public void removeRnrForm() {
