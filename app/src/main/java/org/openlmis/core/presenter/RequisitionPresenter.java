@@ -214,7 +214,7 @@ public class RequisitionPresenter implements Presenter {
             e.printStackTrace();
             value = "";
         }
-        return value;
+        return value == null ? "" : value;
     }
 
     public void removeRnrForm() {
