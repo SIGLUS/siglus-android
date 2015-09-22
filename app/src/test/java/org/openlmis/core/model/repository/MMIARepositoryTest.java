@@ -34,6 +34,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -101,6 +102,8 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         stockCard.setProduct(product);
         stockCard.setStockOnHand(10);
         stockCards.add(stockCard);
+
+        stockCard.setCreatedAt(RnRForm.init(program, DateUtil.today()).getPeriodEnd());
 
         ArrayList<StockMovementItem> stockMovementItems = new ArrayList<>();
         for (int i = 0; i < 10; i++) {

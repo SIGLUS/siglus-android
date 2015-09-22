@@ -18,6 +18,9 @@
 
 package org.openlmis.core.model.repository;
 
+import com.google.inject.Binder;
+import com.google.inject.Module;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,9 +29,11 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -36,14 +41,25 @@ import roboguice.RoboGuice;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
 public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     RnrFormRepository rnrFormRepository;
+    private StockRepository mockStockRepository;
 
     @Before
     public void setup() throws LMISException {
+        mockStockRepository = mock(StockRepository.class);
+        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
+            @Override
+            public void configure(Binder binder) {
+                binder.bind(StockRepository.class).toInstance(mockStockRepository);
+            }
+        });
+
         rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormRepository.class);
     }
 
@@ -86,13 +102,13 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         RnRForm rnRForm = RnRForm.init(new Program(), generateDate);
 
         assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.SIMPLE_DATE_FORMAT), is("21/05/2015"));
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(),DateUtil.SIMPLE_DATE_FORMAT), is("20/06/2015"));
+        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(), DateUtil.SIMPLE_DATE_FORMAT), is("20/06/2015"));
 
         generateDate = DateUtil.parseString("30/05/2015", DateUtil.SIMPLE_DATE_FORMAT);
         rnRForm = RnRForm.init(new Program(), generateDate);
 
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(),DateUtil.SIMPLE_DATE_FORMAT), is("21/05/2015"));
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(),DateUtil.SIMPLE_DATE_FORMAT), is("20/06/2015"));
+        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.SIMPLE_DATE_FORMAT), is("21/05/2015"));
+        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(), DateUtil.SIMPLE_DATE_FORMAT), is("20/06/2015"));
     }
 
     @Test
@@ -144,5 +160,35 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         RnRForm rnRForm2 = RnRForm.init(program, generateDate);
 
         assertThat(rnrFormRepository.isPeriodUnique(rnRForm2), is(true));
+    }
+
+
+    @Test
+    public void shouldGetStockCardsExistedInPeriod() throws Exception{
+        Program program = new Program();
+        program.setId(123);
+        program.setProgramCode(MMIARepository.MMIA_PROGRAM_CODE);
+
+        Date generateDate1 = DateUtil.parseString("05/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
+        Date generateDate2 = DateUtil.parseString("20/06/2015", DateUtil.SIMPLE_DATE_FORMAT);
+        Date generateDate3 = DateUtil.parseString("21/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
+        RnRForm form = RnRForm.init(program, generateDate1);
+
+        List<StockCard> stockCardList = new ArrayList<>();
+        StockCard stockCard1 = new StockCard();
+        stockCard1.setCreatedAt(generateDate1);
+
+        StockCard stockCard2 = new StockCard();
+        stockCard2.setCreatedAt(generateDate2);
+
+        StockCard stockCard3 = new StockCard();
+        stockCard3.setCreatedAt(generateDate3);
+
+        stockCardList.add(stockCard1);
+        stockCardList.add(stockCard2);
+        stockCardList.add(stockCard3);
+
+        when(mockStockRepository.list(program.getProgramCode())).thenReturn(stockCardList);
+        assertThat(rnrFormRepository.generateRnrFormItems(form).size(), is(2));
     }
 }

@@ -38,12 +38,15 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
+import org.roboguice.shaded.goole.common.base.Predicate;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
+
 
 public class RnrFormRepository {
 
@@ -219,8 +222,14 @@ public class RnrFormRepository {
         return null;
     }
 
-    protected List<RnrFormItem> generateRnrFormItems(RnRForm form) throws LMISException {
-        List<StockCard> stockCards = stockRepository.list(form.getProgram().getProgramCode());
+    protected List<RnrFormItem> generateRnrFormItems(final RnRForm form) throws LMISException {
+        List<StockCard> stockCards = FluentIterable.from(stockRepository.list(form.getProgram().getProgramCode())).filter(new Predicate<StockCard>() {
+            @Override
+            public boolean apply(StockCard stockCard) {
+                return !form.getPeriodEnd().before(stockCard.getCreatedAt());
+            }
+        }).toList();
+
         List<RnrFormItem> rnrFormItems = new ArrayList<>();
 
         for (StockCard stockCard : stockCards) {
