@@ -22,13 +22,16 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.misc.TransactionManager;
 
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
+import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.Lists;
@@ -37,10 +40,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class StockRepository {
     @Inject
     DbUtil dbUtil;
+
+    @Inject
+    Context context;
 
     GenericDao<StockCard> genericDao;
     GenericDao<StockMovementItem> stockItemGenericDao;
@@ -110,7 +117,29 @@ public class StockRepository {
         });
     }
 
-    public void addStockMovementItem(StockCard stockcard, StockMovementItem stockMovementItem) throws LMISException {
+    public void initStockCard(final StockCard stockCard) throws LMISException {
+        try {
+            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+                    StockMovementItem initInventory = new StockMovementItem();
+                    initInventory.setReason(context.getString(R.string.title_physical_inventory));
+                    initInventory.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
+                    initInventory.setMovementDate(new Date());
+                    initInventory.setMovementQuantity(0);
+
+                    save(stockCard);
+                    addStockMovement(stockCard, initInventory);
+                    return null;
+                }
+            });
+        }catch (SQLException e){
+            e.printStackTrace();
+            throw new LMISException(e);
+        }
+    }
+
+    public void addStockMovement(StockCard stockcard, StockMovementItem stockMovementItem) throws LMISException {
         if (stockcard == null) {
             return;
         }
@@ -132,9 +161,9 @@ public class StockRepository {
         saveStockItem(stockMovementItem);
     }
 
-    public void addStockMovementItem(long id, StockMovementItem stockMovementItem) throws LMISException {
+    public void addStockMovement(long id, StockMovementItem stockMovementItem) throws LMISException {
         StockCard stockCard = genericDao.getById(String.valueOf(id));
-        addStockMovementItem(stockCard, stockMovementItem);
+        addStockMovement(stockCard, stockMovementItem);
     }
 
 
@@ -155,15 +184,6 @@ public class StockRepository {
             }).toList();
         }
         return stockCards;
-    }
-
-    private StockCard queryStockCardByProductId(final long productId) throws LMISException {
-        return dbUtil.withDao(StockCard.class, new DbUtil.Operation<StockCard, StockCard>() {
-            @Override
-            public StockCard operate(Dao<StockCard, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("product_id", productId).queryForFirst();
-            }
-        });
     }
 
     public List<StockMovementItem> listLastFive(final long stockCardId) throws LMISException {

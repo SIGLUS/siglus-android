@@ -145,28 +145,16 @@ public class InventoryPresenter implements Presenter {
 
     private StockCard initStockCard(StockCardViewModel model){
         try {
-            Product product = productRepository.getById(model.getProductId());
-
             StockCard stockCard = new StockCard();
-            stockCard.setProduct(product);
-            stockCard.setStockOnHand(Integer.parseInt(model.getQuantity()));
+            stockCard.setProduct(productRepository.getById(model.getProductId()));
+            stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
             stockCard.setExpireDates(model.formatExpiryDateString());
 
-            stockRepository.save(stockCard);
-
-            StockMovementItem initInventory = new StockMovementItem();
-            initInventory.setReason(context.getResources().getString(R.string.title_physical_inventory));
-            initInventory.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
-            initInventory.setMovementDate(new Date());
-            initInventory.setMovementQuantity(0);
-
-            stockRepository.addStockMovementItem(stockCard, initInventory);
-
+            stockRepository.initStockCard(stockCard);
             return stockCard;
         }catch (LMISException e){
             e.printStackTrace();
         }
-
         return null;
     }
 
@@ -197,7 +185,7 @@ public class InventoryPresenter implements Presenter {
             for (StockCardViewModel model : list) {
                 StockMovementItem item = calculateAdjustment(model);
                 try {
-                    stockRepository.addStockMovementItem(model.getStockCardId(), item);
+                    stockRepository.addStockMovement(model.getStockCardId(), item);
                 } catch (LMISException e) {
                     e.printStackTrace();
                 }

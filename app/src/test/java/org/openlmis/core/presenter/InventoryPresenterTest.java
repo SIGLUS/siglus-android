@@ -92,8 +92,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
         inventoryPresenter.initStockCards(stockCardViewModelList);
 
-        verify(stockRepositoryMock, times(1)).save(any(StockCard.class));
-        verify(stockRepositoryMock, times(1)).addStockMovementItem(any(StockCard.class), any(StockMovementItem.class));
+        verify(stockRepositoryMock, times(1)).initStockCard(any(StockCard.class));
     }
 
 
