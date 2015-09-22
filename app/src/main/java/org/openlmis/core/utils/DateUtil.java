@@ -32,6 +32,7 @@ public final class DateUtil {
 
     public static final SimpleDateFormat DATE_FORMATER = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
     public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_DAY = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+    private static Locale locale = Locale.getDefault();
 
     public static final long MILLISECONDS_MINUTE = 60000;
     public static final long MILLISECONDS_HOUR = 3600000;
@@ -104,11 +105,11 @@ public final class DateUtil {
     }
 
     public static String formatDate(Date date, String format) {
-        return new SimpleDateFormat(format, Locale.getDefault()).format(date);
+        return new SimpleDateFormat(format, locale).format(date);
     }
 
     public static Date parseString(String string, String format) throws ParseException {
-        return new SimpleDateFormat(format, Locale.getDefault()).parse(string);
+        return new SimpleDateFormat(format, locale).parse(string);
     }
 
     public static Date today() {
