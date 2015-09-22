@@ -48,6 +48,9 @@ android {
         prd {
             applicationId 'org.openlmis.core'
         }
+        staging {
+            applicationId 'org.openlmis.core'
+        }
     }
 
     compileOptions {

@@ -5,6 +5,8 @@
     <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.qa</string>
 
 
+    <string name="app_name">CHAI LMIS QA</string>
+
     <string-array name="medicine_adult">
         <item>08S42</item>
         <item>08S18Y</item>

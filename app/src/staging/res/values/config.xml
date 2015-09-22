@@ -1,11 +1,10 @@
 <resources>
-    <string name="server_base_url">https://52.68.243.196:8443</string>
+    <string name="server_base_url">http://52.69.115.46:8000/</string>
     <string name="sync_account_type">org.clintonhealthaccess.lmismoz.dev</string>
     <integer name="sync_interval">3600</integer>
     <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.dev</string>
 
-
-    <string name="app_name">CHAI LMIS DEV</string>
+    <string name="app_name">CHAI LMIS DEMO</string>
 
     <string-array name="medicine_adult">
         <item>08S42</item>
