@@ -1,0 +1,1 @@
+./gradlew clean testPrdDebug testPrdRelease assembleDevDebug assembleQaRelease assemblePrdRelease checkstyle findbugs
