@@ -84,7 +84,7 @@ public class MMIAFormPresenter implements Presenter {
                     if (!isMMIAHistory){
                     subscriber.onNext(getRnrForm());
                     } else {
-                        subscriber.onNext(getRnrFormByIndex(0));
+                        subscriber.onNext(getRnrFormById(1));
                     }
                 } catch (LMISException e) {
                     e.printStackTrace();
@@ -109,8 +109,8 @@ public class MMIAFormPresenter implements Presenter {
         });
     }
 
-    public RnRForm getRnrFormByIndex(int formId) throws LMISException {
-        form = mmiaRepository.listMMIA().get(formId);
+    public RnRForm getRnrFormById(int formId) throws LMISException {
+        form=mmiaRepository.queryRnRForm(formId);
         return form;
     }
 
