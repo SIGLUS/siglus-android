@@ -17,6 +17,7 @@ Feature: stock movement Page
         Then I wait for 1 second
         And I enter received number "2"
         And I press "Save"
+        Then I see "125"
         Then I go back
         Then I wait for 1 second
         Then I go back
@@ -34,6 +35,7 @@ Feature: stock movement Page
         Then I wait for 1 second
         And I enter negative adjustment number "2"
         And I press "Save"
+        Then I see "121"
         Then I go back
         Then I wait for 1 second
         Then I go back
@@ -52,6 +54,7 @@ Feature: stock movement Page
         Then I wait for 1 second
         And I enter positive adjustment number "2"
         And I press "Save"
+        Then I see "125"
         Then I go back
         Then I wait for 1 second
         Then I go back
@@ -70,6 +73,7 @@ Feature: stock movement Page
         Then I swipe right
         And I enter issued number "2"
         And I press "Save"
+        Then I see "121"
         Then I go back
         Then I wait for 1 second
         Then I go back
