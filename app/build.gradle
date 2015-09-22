@@ -49,7 +49,7 @@ android {
             applicationId 'org.openlmis.core'
         }
         staging {
-            applicationId 'org.openlmis.core'
+            applicationId 'org.openlmis.core.staging'
         }
     }
 

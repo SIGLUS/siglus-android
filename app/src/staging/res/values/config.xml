@@ -1,8 +1,8 @@
 <resources>
     <string name="server_base_url">http://52.69.115.46:8000/</string>
-    <string name="sync_account_type">org.clintonhealthaccess.lmismoz.dev</string>
+    <string name="sync_account_type">org.clintonhealthaccess.lmismoz.staging</string>
     <integer name="sync_interval">3600</integer>
-    <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.dev</string>
+    <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.staging</string>
 
     <string name="app_name">CHAI LMIS DEMO</string>
 
