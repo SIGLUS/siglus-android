@@ -161,8 +161,8 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         List<RnRForm> list = MMIARepository.list();
         RnRForm DBForm = list.get(list.size() - 1);
 
-        long expectRegimeTotal = RnRForm.getRegimenItemListAmount(initForm.getRegimenItemListWrapper());
-        long regimenTotal = RnRForm.getRegimenItemListAmount(DBForm.getRegimenItemListWrapper());
+        long expectRegimeTotal = RnRForm.calculateTotalRegimenAmount(initForm.getRegimenItemListWrapper());
+        long regimenTotal = RnRForm.calculateTotalRegimenAmount(DBForm.getRegimenItemListWrapper());
         assertThat(expectRegimeTotal, is(regimenTotal));
 
         assertThat(MMIARepository.getTotalPatients(initForm), is(MMIARepository.getTotalPatients(DBForm)));

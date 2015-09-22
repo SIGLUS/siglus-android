@@ -112,21 +112,13 @@ public class MMIAFormPresenter implements Presenter {
         }
         Program program = programRepository.queryByCode(MMIARepository.MMIA_PROGRAM_CODE);
 
-        RnRForm draftMMIAForm = getDraftMMIAForm(program);
+        RnRForm draftMMIAForm = mmiaRepository.getDraftMMIAForm(program);
         if (draftMMIAForm != null) {
             form = draftMMIAForm;
         } else {
-            form = initMMIA(program);
+            form = mmiaRepository.initMMIA(program);
         }
         return form;
-    }
-
-    private RnRForm getDraftMMIAForm(Program program) throws LMISException {
-        return mmiaRepository.getDraftMMIAForm(program);
-    }
-
-    private RnRForm initMMIA(Program program) throws LMISException {
-        return mmiaRepository.initMMIA(program);
     }
 
     public void completeMMIA(ArrayList<RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) {
@@ -150,7 +142,7 @@ public class MMIAFormPresenter implements Presenter {
     }
 
     private boolean validate(RnRForm form) {
-        return form.getRegimenItemListAmount(form.getRegimenItemListWrapper()) == mmiaRepository.getTotalPatients(form);
+        return RnRForm.calculateTotalRegimenAmount(form.getRegimenItemListWrapper()) == mmiaRepository.getTotalPatients(form);
     }
 
     public void saveDraftForm(ArrayList<RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) {

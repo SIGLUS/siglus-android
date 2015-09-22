@@ -184,7 +184,7 @@ public class MMIARegimeList extends LinearLayout {
     }
 
     public long getTotal() {
-        return RnRForm.getRegimenItemListAmount(dataList);
+        return RnRForm.calculateTotalRegimenAmount(dataList);
     }
 
 }
