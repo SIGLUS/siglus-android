@@ -97,8 +97,6 @@ apply plugin: 'checkstyle'
 apply plugin: 'findbugs'
 
 
-check.dependsOn 'findbugs', 'checkstyle'
-
 task checkstyle(type: Checkstyle) {
     configFile file("config/quality/checkstyle/checkstyle.xml")
     source 'src/main'
