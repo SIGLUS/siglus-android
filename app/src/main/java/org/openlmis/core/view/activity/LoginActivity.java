@@ -100,20 +100,6 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         password.setText(StringUtils.EMPTY);
     }
 
-    public void showErrorOnFields(int filedPosition, String msg) {
-        clearErrorAlerts();
-
-        if (filedPosition == 0) {
-            lyUserName.setError(msg);
-        } else if (filedPosition == 1) {
-            lyPassword.setError(msg);
-        } else {
-            lyUserName.setError(msg);
-            lyPassword.setError(msg);
-        }
-
-    }
-
     public void clearErrorAlerts() {
         lyUserName.setErrorEnabled(false);
         lyPassword.setErrorEnabled(false);
@@ -143,13 +129,19 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
     @Override
     public void showInvalidAlert() {
-        String msg = getResources().getString(R.string.msg_invalid_user);
-        showErrorOnFields(1, msg);
+        clearErrorAlerts();
+        lyUserName.setError(getResources().getString(R.string.msg_invalid_user));
     }
 
     @Override
-    public void showEmptyAlert(int position) {
-        String msg = getResources().getString(R.string.msg_empty_user);
-        showErrorOnFields(position, msg);
+    public void showPasswordEmpty() {
+        clearErrorAlerts();
+        lyPassword.setError(getResources().getString(R.string.msg_empty_user));
+    }
+
+    @Override
+    public void showUserNameEmpty() {
+        clearErrorAlerts();
+        lyUserName.setError(getResources().getString(R.string.msg_empty_user));
     }
 }

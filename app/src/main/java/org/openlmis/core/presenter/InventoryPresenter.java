@@ -159,7 +159,7 @@ public class InventoryPresenter implements Presenter {
     }
 
 
-    public StockMovementItem calculateAdjustment(StockCardViewModel model) {
+    protected StockMovementItem calculateAdjustment(StockCardViewModel model) {
         long inventory = Long.parseLong(model.getQuantity());
         long stockOnHand = model.getStockOnHand();
 
@@ -183,9 +183,8 @@ public class InventoryPresenter implements Presenter {
     public void doPhysicalInventory(List<StockCardViewModel> list) {
         if (view.validateInventory()) {
             for (StockCardViewModel model : list) {
-                StockMovementItem item = calculateAdjustment(model);
                 try {
-                    stockRepository.addStockMovement(model.getStockCardId(), item);
+                    stockRepository.addStockMovement(model.getStockCardId(), calculateAdjustment(model));
                 } catch (LMISException e) {
                     e.printStackTrace();
                 }

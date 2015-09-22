@@ -61,11 +61,11 @@ public class LoginPresenter implements Presenter {
     public void startLogin(String userName, String password) {
 
         if (StringUtils.EMPTY.equals(userName.trim())) {
-            view.showEmptyAlert(0);
+            view.showUserNameEmpty();
             return;
         }
         if (StringUtils.EMPTY.equals(password)) {
-            view.showEmptyAlert(1);
+            view.showPasswordEmpty();
             return;
         }
         view.loading();
@@ -174,7 +174,9 @@ public class LoginPresenter implements Presenter {
 
         void showInvalidAlert();
 
-        void showEmptyAlert(int position);
+        void showUserNameEmpty();
+
+        void showPasswordEmpty();
 
         boolean isConnectionAvailable();
 
