@@ -39,6 +39,26 @@ Feature: Requisition
     Then I go back
     Then I press "Complete"
     Then I wait for the "RequisitionActivity" screen to appear
-    
 
+Scenario: Add A Issued Movement on VIA product,then the quantity should change
+    Given I am logged in
+    And I press "Stock on Hand"
+    Then I wait for the "StockCardListActivity" screen to appear
+    Then I wait for 1 second
+    Then I select stock card called "Acetylsalicylic Acid, tablet 300mg [P1]"
+    Then I wait for the "StockMovementActivity" screen to appear
+    Then I wait for 1 second
+    And I select a reason "Issues" "Issues from customers requests"
+    Then I wait for 1 second
+    Then I swipe right
+    And I enter issued number "10"
+    And I press "Save"
+    Then I go back
+    Then I wait for 1 second
+    Then I go back
+    Then I wait for the "HomeActivity" screen to appear
+
+    When I press view with id "btn_requisition"
+    Then I swipe right
+    Then I should see "113" on index "1" of "tx_theoretical" field
 

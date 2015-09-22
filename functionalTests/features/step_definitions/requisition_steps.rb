@@ -22,3 +22,10 @@ Then(/^I enter QuantityRequested "(\d+)"/) do |requestedNub|
     end
 end
 
+Then(/^I should see "(\d+)" on index "(\d+)" of "(.*?)" field/) do |num,index,fieldName|
+    textView_text = query("android.widget.EditText id:'fieldName' ", :text)[index.to_i-1]
+    unless (textView_text.to_i == num.to_i)
+        fail(msg="#{num} number")
+    end
+end
+

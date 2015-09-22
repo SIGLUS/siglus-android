@@ -119,6 +119,22 @@ public class StockMovementHistoryAdapter extends BaseAdapter {
         holder.etPositiveAdjustment.setTextColor(Color.RED);
         holder.etNegativeAdjustment.setTextColor(Color.RED);
         holder.txStockExistence.setTextColor(Color.RED);
+        setFontToRedWhenReasonIsReceived(holder, model);
+    }
+
+    private void setFontToRedWhenReasonIsReceived(ViewHolder holder, StockMovementViewModel model) {
+        if (model.getReceived() != null || model.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY){
+            holder.txMovementDate.setTextColor(Color.RED);
+            holder.txReason.setTextColor(Color.RED);
+            holder.etDocumentNo.setTextColor(Color.RED);
+            holder.etReceived.setTextColor(Color.RED);
+            holder.txStockExistence.setTextColor(Color.RED);
+        }
+        holder.etDocumentNo.setBackground(null);
+        holder.etIssued.setBackground(null);
+        holder.etNegativeAdjustment.setBackground(null);
+        holder.etPositiveAdjustment.setBackground(null);
+        holder.etReceived.setBackground(null);
     }
 
     private void disableLine(ViewHolder holder) {
