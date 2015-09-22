@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <shape>
-            <padding
-                android:bottom="1dp"
-                android:left="1dp"
-                android:right="1dp"
-                android:top="1dp" />
-            <solid android:color="@color/divider" />
-        </shape>
-    </item>
-    <item>
-        <shape>
-            <solid android:color="@android:color/white" />
-        </shape>
-    </item>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <stroke
+        android:width="@dimen/divider"
+        android:color="@color/divider" />
+    <solid android:color="@color/white" />
 
-</layer-list>
+</shape>
