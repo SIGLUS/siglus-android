@@ -20,6 +20,10 @@ package org.openlmis.core.model.repository;
 
 import com.google.inject.AbstractModule;
 
+<<<<<<<HEAD
+        =======
+
+        >>>>>>>8247d5e7c5cb486f52af13f2429f40bee48bcf72
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -96,7 +100,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
             form.setStatus(RnRForm.STATUS.AUTHORIZED);
             if (i % 2 == 0) {
                 form.setProgram(programMMIA);
-            }else {
+            } else {
                 form.setProgram(programVIA);
             }
             rnrFormRepository.create(form);
