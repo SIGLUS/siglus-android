@@ -20,10 +20,6 @@ package org.openlmis.core.model.repository;
 
 import com.google.inject.AbstractModule;
 
-<<<<<<<HEAD
-        =======
-
-        >>>>>>>8247d5e7c5cb486f52af13f2429f40bee48bcf72
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +36,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import retrofit.http.HEAD;
 import roboguice.RoboGuice;
 
 import static org.hamcrest.MatcherAssert.assertThat;
