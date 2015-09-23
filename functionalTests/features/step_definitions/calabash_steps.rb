@@ -114,7 +114,7 @@ When(/^I Select initial inventory in Screen$/) do
 end
 
 When(/^I Select initial inventory$/) do
-    while true
+    while index < 800
         steps %Q{
 
             When I select the checkbox
