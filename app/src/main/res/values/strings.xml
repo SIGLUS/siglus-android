@@ -159,6 +159,8 @@
 
     <!-- Stock Card List Page -->
     <string name="search_hint">Search…</string>
+    <string name="physical_inventory_positive">physicalInventoryPositive</string>
+    <string name="physical_inventory_negative">physicalInventoryNegative</string>
     <string-array name="sort_items_array">
         <item>Sort alphabetically: A to Z</item>
         <item>Sort alphabetically: Z to A</item>

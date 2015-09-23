@@ -133,7 +133,6 @@ public class StockMovementAdapter extends BaseAdapter {
         disableLineAndHideUnderline(holder);
 
         holder.txMovementDate.setText(model.getMovementDate());
-        holder.txReason.setText(model.getReason());
         holder.etDocumentNo.setText(model.getDocumentNo());
         holder.etReceived.setText(model.getReceived());
         holder.etNegativeAdjustment.setText(model.getNegativeAdjustment());
@@ -141,7 +140,13 @@ public class StockMovementAdapter extends BaseAdapter {
         holder.etIssued.setText(model.getIssued());
         holder.txStockExistence.setText(model.getStockExistence());
 
-        setFontToRedWhenReasonIsReceived(holder, model);
+        if (!model.isDraft()) {
+            setReasonAndFontColor(holder, model);
+        }
+
+        if (model.getReceived() != null || model.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
+            setFontColorToRed(holder);
+        }
 
         if (model.isDraft()) {
             editableLine = holder;
@@ -194,14 +199,26 @@ public class StockMovementAdapter extends BaseAdapter {
         holder.etDocumentNo.addTextChangedListener(watcher4);
     }
 
-    private void setFontToRedWhenReasonIsReceived(ViewHolder holder, StockMovementViewModel model) {
-        if (model.getReceived() != null || model.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY){
-            holder.txMovementDate.setTextColor(Color.RED);
-            holder.txReason.setTextColor(Color.RED);
-            holder.etDocumentNo.setTextColor(Color.RED);
-            holder.etReceived.setTextColor(Color.RED);
-            holder.txStockExistence.setTextColor(Color.RED);
-        }
+    private void setReasonAndFontColor(ViewHolder holder, StockMovementViewModel model) {
+            if (model.getReason().equals(activity.getResources().getString(R.string.physical_inventory_positive))) {
+                holder.txReason.setText(activity.getResources().getStringArray(R.array.movement_positive_items_array)[4]);
+                setFontColorToRed(holder);
+            } else if (model.getReason().equals(activity.getResources().getString(R.string.physical_inventory_negative))) {
+                holder.txReason.setText(activity.getResources().getStringArray(R.array.movement_negative_items_array)[3]);
+                setFontColorToRed(holder);
+            } else {
+                holder.txReason.setText(model.getReason());
+            }
+    }
+
+    private void setFontColorToRed(ViewHolder holder) {
+        holder.txMovementDate.setTextColor(Color.RED);
+        holder.txReason.setTextColor(Color.RED);
+        holder.etDocumentNo.setTextColor(Color.RED);
+        holder.etReceived.setTextColor(Color.RED);
+        holder.etPositiveAdjustment.setTextColor(Color.RED);
+        holder.etNegativeAdjustment.setTextColor(Color.RED);
+        holder.txStockExistence.setTextColor(Color.RED);
     }
 
     private void setEditTextEnableAndRecoverUnderline(EditText editText) {

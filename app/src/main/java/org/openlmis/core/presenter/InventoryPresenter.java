@@ -168,10 +168,10 @@ public class InventoryPresenter implements Presenter {
         item.setMovementQuantity(Math.abs(inventory - stockOnHand));
 
         if (inventory > stockOnHand) {
-            item.setReason(context.getResources().getStringArray(R.array.movement_positive_items_array)[4]);
+            item.setReason(context.getResources().getString(R.string.physical_inventory_positive));
             item.setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
         } else if (inventory < stockOnHand) {
-            item.setReason(context.getResources().getStringArray(R.array.movement_negative_items_array)[3]);
+            item.setReason(context.getResources().getString(R.string.physical_inventory_negative));
             item.setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
         } else {
             item.setReason(context.getResources().getString(R.string.title_physical_inventory));
