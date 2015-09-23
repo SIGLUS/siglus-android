@@ -125,6 +125,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         if (loadingDialog == null) {
             loadingDialog = new ProgressDialog(this);
             loadingDialog.setIndeterminate(false);
+            loadingDialog.setCanceledOnTouchOutside(false);
         }
 
         loadingDialog.show();

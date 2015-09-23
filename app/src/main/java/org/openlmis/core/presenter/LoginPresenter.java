@@ -82,7 +82,7 @@ public class LoginPresenter implements Presenter {
         User localUser = userRepository.getUserFromLocal(user);
 
         if (localUser == null) {
-            view.showInvalidAlert();
+            onLoginFailed();
         } else {
             user = localUser;
             UserInfoMgr.getInstance().setUser(user);
@@ -103,7 +103,7 @@ public class LoginPresenter implements Presenter {
             @Override
             public void failure(String error) {
                 view.loaded();
-                onLoginFailed();
+                authorizeUserLocal(user);
             }
         });
     }
