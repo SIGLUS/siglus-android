@@ -86,6 +86,7 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
         holder.productName.setText(viewModel.getStyledName());
         holder.productUnit.setText(viewModel.getType());
         holder.txExpireDate.setText(viewModel.optFirstExpiryDate());
+        holder.txQuantity.setHint(R.string.hint_quantity_in_stock);
         holder.txQuantity.setText(viewModel.getQuantity());
         holder.txQuantity.addTextChangedListener(textWatcher);
 
@@ -184,6 +185,7 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
                         checkBox.setChecked(false);
                     } else {
                         checkBox.setChecked(true);
+                        txQuantity.requestFocus();
                     }
                 }
             });
