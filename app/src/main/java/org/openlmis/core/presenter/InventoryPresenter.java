@@ -41,6 +41,7 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
@@ -180,23 +181,59 @@ public class InventoryPresenter implements Presenter {
         return item;
     }
 
-    public void doPhysicalInventory(List<StockCardViewModel> list) {
+    public void doPhysicalInventory(final List<StockCardViewModel> list) {
         if (view.validateInventory()) {
-            for (StockCardViewModel model : list) {
-                try {
-                    stockRepository.addStockMovement(model.getStockCardId(), calculateAdjustment(model));
-                } catch (LMISException e) {
-                    e.printStackTrace();
+            view.loading();
+            Observable.create(new Observable.OnSubscribe<Object>() {
+                @Override
+                public void call(Subscriber<? super Object> subscriber) {
+                    try {
+                        for (StockCardViewModel model : list) {
+                            stockRepository.addStockMovement(model.getStockCardId(), calculateAdjustment(model));
+                        }
+                        subscriber.onNext(null);
+                    } catch (LMISException e) {
+                        subscriber.onError(e);
+                        e.printStackTrace();
+                    } finally {
+                        subscriber.onCompleted();
+                    }
                 }
-            }
-            view.goToMainPage();
+            }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Object>() {
+                @Override
+                public void onCompleted() {
+                    view.loaded();
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    view.showErrorMessage(e.getMessage());
+                }
+
+                @Override
+                public void onNext(Object o) {
+                    view.goToMainPage();
+                }
+            });
         }
     }
 
-    public void doInitialInventory(List<StockCardViewModel> list) {
+    public void doInitialInventory(final List<StockCardViewModel> list) {
         if (view.validateInventory()) {
-            initStockCards(list);
-            view.goToMainPage();
+            view.loading();
+            Observable.create(new Observable.OnSubscribe<Object>() {
+                @Override
+                public void call(Subscriber<? super Object> subscriber) {
+                    initStockCards(list);
+                    subscriber.onNext(null);
+                }
+            }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Object>() {
+                @Override
+                public void call(Object o) {
+                    view.loaded();
+                    view.goToMainPage();
+                }
+            });
         }
     }
 
@@ -204,5 +241,7 @@ public class InventoryPresenter implements Presenter {
         void goToMainPage();
 
         boolean validateInventory();
+
+        void  showErrorMessage(String msg);
     }
 }
