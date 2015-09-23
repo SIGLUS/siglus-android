@@ -119,6 +119,7 @@ public class StockMovementHistoryAdapter extends BaseAdapter {
         holder.etPositiveAdjustment.setTextColor(Color.RED);
         holder.etNegativeAdjustment.setTextColor(Color.RED);
         holder.txStockExistence.setTextColor(Color.RED);
+        hideUnderline(holder);
         setFontToRedWhenReasonIsReceived(holder, model);
     }
 
@@ -130,6 +131,9 @@ public class StockMovementHistoryAdapter extends BaseAdapter {
             holder.etReceived.setTextColor(Color.RED);
             holder.txStockExistence.setTextColor(Color.RED);
         }
+    }
+
+    private void hideUnderline(ViewHolder holder) {
         holder.etDocumentNo.setBackground(null);
         holder.etIssued.setBackground(null);
         holder.etNegativeAdjustment.setBackground(null);
