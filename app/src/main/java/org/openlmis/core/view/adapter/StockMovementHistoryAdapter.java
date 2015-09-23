@@ -19,6 +19,7 @@
 package org.openlmis.core.view.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
 import java.util.List;
@@ -91,6 +93,17 @@ public class StockMovementHistoryAdapter extends BaseAdapter {
         holder.etIssued.setText(model.getIssued());
         holder.txStockExistence.setText(model.getStockExistence());
 
+        setFontToRedWhenReasonIsReceived(holder, model);
+    }
+
+    private void setFontToRedWhenReasonIsReceived(ViewHolder holder, StockMovementViewModel model) {
+        if (model.getReceived() != null || model.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY){
+            holder.txMovementDate.setTextColor(Color.RED);
+            holder.txReason.setTextColor(Color.RED);
+            holder.etDocumentNo.setTextColor(Color.RED);
+            holder.etReceived.setTextColor(Color.RED);
+            holder.txStockExistence.setTextColor(Color.RED);
+        }
     }
 
     private void disableLine(ViewHolder holder) {
