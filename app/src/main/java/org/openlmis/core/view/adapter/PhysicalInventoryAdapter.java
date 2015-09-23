@@ -58,7 +58,6 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<PhysicalInven
         holder.tvProductName.setText(viewModel.getStyledName());
         holder.tvProductUnit.setText(viewModel.getStyledUnit());
 
-        holder.etQuantity.requestFocus();
         holder.etQuantity.setText(viewModel.getQuantity());
         holder.etQuantity.addTextChangedListener(textWatcher);
 

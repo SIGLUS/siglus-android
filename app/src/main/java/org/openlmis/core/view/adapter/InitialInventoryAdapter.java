@@ -63,7 +63,6 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
                 if (isChecked) {
                     holder.actionDivider.setVisibility(View.VISIBLE);
                     holder.actionPanel.setVisibility(View.VISIBLE);
-                    holder.txQuantity.requestFocus();
                 } else {
                     holder.actionDivider.setVisibility(View.GONE);
                     holder.actionPanel.setVisibility(View.GONE);
@@ -185,6 +184,7 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
                         checkBox.setChecked(false);
                     } else {
                         checkBox.setChecked(true);
+                        txQuantity.requestFocus();
                     }
                 }
             });
