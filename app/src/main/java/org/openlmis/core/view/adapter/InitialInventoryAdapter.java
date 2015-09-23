@@ -184,7 +184,6 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
                         checkBox.setChecked(false);
                     } else {
                         checkBox.setChecked(true);
-                        txQuantity.requestFocus();
                     }
                 }
             });
