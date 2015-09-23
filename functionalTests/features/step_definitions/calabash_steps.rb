@@ -70,7 +70,7 @@ end
 
 Given(/^I am Initialized Inventory$/) do
   steps %Q{
-        Then I wait for 5 second
+        Then I wait for 10 second
         Then I wait for the "InventoryActivity" screen to appear
         Then I wait for 1 second
 		When I Select MMIA Item
@@ -114,9 +114,8 @@ When(/^I Select initial inventory in Screen$/) do
 end
 
 When(/^I Select initial inventory$/) do
-    while index < 800
+    while index < 20
         steps %Q{
-
             When I select the checkbox
     	}
         scroll("RecyclerView", :down)
