@@ -192,6 +192,11 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     }
 
     @Override
+    public void showErrorMessage(String msg) {
+        ToastUtil.show(msg);
+    }
+
+    @Override
     public boolean validateInventory() {
         int position = mAdapter.validateAll();
         if (position >= 0){
