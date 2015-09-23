@@ -102,7 +102,11 @@ public class LoginPresenter implements Presenter {
 
             @Override
             public void failure(String error) {
-                view.loaded();
+                onLoginFailed();
+            }
+
+            @Override
+            public void timeout(String error) {
                 authorizeUserLocal(user);
             }
         });

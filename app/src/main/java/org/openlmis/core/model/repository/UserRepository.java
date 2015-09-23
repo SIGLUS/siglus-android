@@ -30,6 +30,7 @@ import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
+import java.net.ConnectException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -63,7 +64,11 @@ public class UserRepository extends LMISRestManager {
 
             @Override
             public void failure(RetrofitError error) {
-                callback.failure(error.getMessage());
+                if (error.getCause() instanceof ConnectException){
+                    callback.timeout(error.getMessage());
+                }else {
+                    callback.failure(error.getMessage());
+                }
             }
         });
     }
@@ -100,5 +105,6 @@ public class UserRepository extends LMISRestManager {
     public interface NewCallback<T> {
         void success(T t);
         void failure(String error);
+        void timeout(String error);
     }
 }
