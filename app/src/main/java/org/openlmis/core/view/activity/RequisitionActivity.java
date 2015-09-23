@@ -81,7 +81,10 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     private RetainedFragment dataFragment;
 
+    @InjectView(R.id.requisition_header_right)
     View bodyHeaderView;
+
+    @InjectView(R.id.requisition_header_left)
     View productHeaderView;
 
     RequisitionFormAdapter productListAdapter;
@@ -220,17 +223,11 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     }
 
     private void initRequisitionBodyList() {
-        bodyHeaderView = inflater.inflate(R.layout.item_requisition_header, requisitionForm, false);
-        requisitionForm.addHeaderView(bodyHeaderView);
-
         requisitionFormAdapter = new RequisitionFormAdapter(this, presenter.getRequisitionViewModelList(), false);
         requisitionForm.setAdapter(requisitionFormAdapter);
     }
 
     private void initRequisitionProductList() {
-        productHeaderView = inflater.inflate(R.layout.layout_requisition_header_left, requisitionNameList, false);
-        requisitionNameList.addHeaderView(productHeaderView);
-
         productListAdapter = new RequisitionFormAdapter(this, presenter.getRequisitionViewModelList(), true);
         requisitionNameList.setAdapter(productListAdapter);
     }
