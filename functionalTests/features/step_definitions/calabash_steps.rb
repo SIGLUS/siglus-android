@@ -1,6 +1,9 @@
 require 'calabash-android/calabash_steps'
 require 'pry'
 
+index = 0
+pre_name = ""
+
 When /^I enter username "([^\"]+)"$/ do |username|
   enter_text("android.widget.EditText id:'tx_username'", username)
   hide_soft_keyboard
@@ -13,13 +16,14 @@ end
 
 Given(/^I am logged in$/) do
   steps %Q{
-		When I enter username "superuser"
-        And I enter password "password1"
+		When I enter username "test_user"
+        And I enter password "testuser123"
         And I press "LOG IN"
 	}
 end
 
 When(/^I select the item called "(.*?)"$/) do |name|
+  p "When I select the item called #{name}"
   q = query("android.widget.TextView text:'#{name}'")
   while q.empty?
     scroll("RecyclerView", :down)
@@ -40,12 +44,33 @@ When(/^I select the item called "(.*?)"$/) do |name|
 
   h = query("android.widget.EditText id:'tx_quantity' text:''").last
   touch(h)
-  keyboard_enter_text("123")
+  keyboard_enter_text(index + 1)
+  index = index + 1
   hide_soft_keyboard
+end
+
+When(/^I select the checkbox$/) do
+    wait_for_element_exists("android.widget.CheckBox id:'checkbox' checked:'false'", :timeout => 10)
+    checkbox = query("android.widget.CheckBox id:'checkbox' checked:'false'").first
+    while !checkbox.nil?
+      touch(checkbox)
+      h = query("android.widget.EditText id:'tx_quantity' text:''")
+      while h.empty?
+           scroll("RecyclerView", :down)
+           h = query("android.widget.EditText id:'tx_quantity' text:''")
+      end
+      tx_quantity = h.last
+      touch(tx_quantity)
+      keyboard_enter_text(index + 1)
+      index = index + 1
+      hide_soft_keyboard
+      checkbox = query("android.widget.CheckBox id:'checkbox' checked:'false'").first
+  end
 end
 
 Given(/^I am Initialized Inventory$/) do
   steps %Q{
+        Then I wait for 5 second
         Then I wait for the "InventoryActivity" screen to appear
         Then I wait for 1 second
 		When I Select MMIA Item
@@ -74,4 +99,26 @@ When(/^I Select VIA Item$/) do
         When I select the item called "Amoxicillin (Trihydrate), Dry powder for suspension 125mg/5ml [P4]"
         When I select the item called "Atenolol 50mg tab [P5]"
 	}
+end
+
+When(/^I Select initial inventory in Screen$/) do
+    product_name = query("android.widget.TextView id:'product_name' ", "getText")
+    for name in product_name
+            if pre_name!=name
+                steps %Q{
+                    When I select the item called "#{name}"
+    	        }
+    	    end
+            pre_name=name
+    end
+end
+
+When(/^I Select initial inventory$/) do
+    while true
+        steps %Q{
+
+            When I select the checkbox
+    	}
+        scroll("RecyclerView", :down)
+    end
 end
