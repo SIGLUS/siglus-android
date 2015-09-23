@@ -19,6 +19,7 @@
 package org.openlmis.core.view.adapter;
 
 import android.app.DatePickerDialog;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -140,6 +141,8 @@ public class StockMovementAdapter extends BaseAdapter {
         holder.etIssued.setText(model.getIssued());
         holder.txStockExistence.setText(model.getStockExistence());
 
+        setFontToRedWhenReasonIsReceived(holder, model);
+
         if (model.isDraft()) {
             editableLine = holder;
 
@@ -189,6 +192,16 @@ public class StockMovementAdapter extends BaseAdapter {
         holder.etPositiveAdjustment.addTextChangedListener(watcher2);
         holder.etIssued.addTextChangedListener(watcher3);
         holder.etDocumentNo.addTextChangedListener(watcher4);
+    }
+
+    private void setFontToRedWhenReasonIsReceived(ViewHolder holder, StockMovementViewModel model) {
+        if (model.getReceived() != null || model.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY){
+            holder.txMovementDate.setTextColor(Color.RED);
+            holder.txReason.setTextColor(Color.RED);
+            holder.etDocumentNo.setTextColor(Color.RED);
+            holder.etReceived.setTextColor(Color.RED);
+            holder.txStockExistence.setTextColor(Color.RED);
+        }
     }
 
     private void setEditTextEnableAndRecoverUnderline(EditText editText) {
