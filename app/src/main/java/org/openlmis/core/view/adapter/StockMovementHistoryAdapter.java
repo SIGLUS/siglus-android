@@ -83,6 +83,7 @@ public class StockMovementHistoryAdapter extends BaseAdapter {
         final StockMovementViewModel model = getItem(position);
 
         disableLine(holder);
+        hideUnderline(holder);
 
         holder.txMovementDate.setText(model.getMovementDate());
         holder.etDocumentNo.setText(model.getDocumentNo());
@@ -119,18 +120,6 @@ public class StockMovementHistoryAdapter extends BaseAdapter {
         holder.etPositiveAdjustment.setTextColor(Color.RED);
         holder.etNegativeAdjustment.setTextColor(Color.RED);
         holder.txStockExistence.setTextColor(Color.RED);
-        hideUnderline(holder);
-        setFontToRedWhenReasonIsReceived(holder, model);
-    }
-
-    private void setFontToRedWhenReasonIsReceived(ViewHolder holder, StockMovementViewModel model) {
-        if (model.getReceived() != null || model.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY){
-            holder.txMovementDate.setTextColor(Color.RED);
-            holder.txReason.setTextColor(Color.RED);
-            holder.etDocumentNo.setTextColor(Color.RED);
-            holder.etReceived.setTextColor(Color.RED);
-            holder.txStockExistence.setTextColor(Color.RED);
-        }
     }
 
     private void hideUnderline(ViewHolder holder) {
