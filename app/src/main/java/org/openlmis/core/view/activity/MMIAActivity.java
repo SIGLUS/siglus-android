@@ -264,6 +264,11 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         goToHomePage();
     }
 
+    @Override
+    public void saveSuccess() {
+        goToHomePage();
+    }
+
     private boolean isTotalEqual() {
         return regimeListView.getTotal() == mmiaInfoListView.getTotal();
     }
@@ -272,6 +277,5 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         if (hasDataChanged()) {
             presenter.saveDraftForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
         }
-        goToHomePage();
     }
 }

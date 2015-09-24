@@ -81,8 +81,8 @@ public class MMIAFormPresenter implements Presenter {
             @Override
             public void call(Subscriber<? super RnRForm> subscriber) {
                 try {
-                    if (!isMMIAHistory){
-                    subscriber.onNext(getRnrForm());
+                    if (!isMMIAHistory) {
+                        subscriber.onNext(getRnrForm());
                     } else {
                         subscriber.onNext(getRnrFormById(1));
                     }
@@ -110,7 +110,7 @@ public class MMIAFormPresenter implements Presenter {
     }
 
     public RnRForm getRnrFormById(int formId) throws LMISException {
-        form=mmiaRepository.queryRnRForm(formId);
+        form = mmiaRepository.queryRnRForm(formId);
         return form;
     }
 
@@ -158,12 +158,36 @@ public class MMIAFormPresenter implements Presenter {
         form.setRegimenItemListWrapper(regimenItemList);
         form.setBaseInfoItemListWrapper(baseInfoItemList);
         form.setComments(comments);
-        try {
-            form.setStatus(RnRForm.STATUS.DRAFT);
-            mmiaRepository.save(form);
-        } catch (LMISException e) {
-            view.showErrorMessage(e.getMessage());
-        }
+        form.setStatus(RnRForm.STATUS.DRAFT);
+        saveForm();
+    }
+
+    private void saveForm() {
+        view.loading();
+        Observable.create(new Observable.OnSubscribe<Object>() {
+            @Override
+            public void call(Subscriber<? super Object> subscriber) {
+                try {
+                    mmiaRepository.save(form);
+                    subscriber.onNext(null);
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<Object>() {
+            @Override
+            public void call(Object o) {
+                view.loaded();
+                view.saveSuccess();
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                view.loaded();
+                view.showErrorMessage(context.getString(R.string.hint_save_failed));
+            }
+        });
     }
 
     public void removeRnrForm() {
@@ -175,7 +199,6 @@ public class MMIAFormPresenter implements Presenter {
     }
 
 
-
     public interface MMIAFormView extends View {
         void showValidationAlert();
 
@@ -184,5 +207,7 @@ public class MMIAFormPresenter implements Presenter {
         void completeSuccess();
 
         void initView(RnRForm form);
+
+        void saveSuccess();
     }
 }
