@@ -162,6 +162,7 @@
     <string name="physical_inventory_positive">physicalInventoryPositive</string>
     <string name="physical_inventory_negative">physicalInventoryNegative</string>
     <string name="hint_save_failed">Save Failed</string>
+    <string name="hint_complete_failed">Complete Failed</string>
     <string-array name="sort_items_array">
         <item>Sort alphabetically: A to Z</item>
         <item>Sort alphabetically: Z to A</item>

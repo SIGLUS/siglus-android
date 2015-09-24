@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -134,20 +135,49 @@ public class MMIAFormPresenter implements Presenter {
         form.setRegimenItemListWrapper(regimenItemList);
         form.setBaseInfoItemListWrapper(baseInfoItemList);
         form.setComments(comments);
+
         if (validate(form)) {
-            try {
-                mmiaRepository.authorise(form);
-                view.completeSuccess();
-            } catch (LMISException e) {
-                if (e instanceof PeriodNotUniqueException) {
-                    view.showErrorMessage(context.getResources().getString(R.string.msg_mmia_not_unique));
-                } else {
-                    view.showErrorMessage(e.getMessage());
-                }
-            }
+            authoriseForm();
         } else {
             view.showValidationAlert();
         }
+    }
+
+    private void authoriseForm() {
+        view.loading();
+        Observable.create(new Observable.OnSubscribe<LMISException>() {
+            @Override
+            public void call(Subscriber<? super LMISException> subscriber) {
+                try {
+                    mmiaRepository.authorise(form);
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                    subscriber.onNext(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<LMISException>() {
+            @Override
+            public void call(LMISException e) {
+                view.loaded();
+                if (e instanceof PeriodNotUniqueException) {
+                    view.showErrorMessage(context.getResources().getString(R.string.msg_mmia_not_unique));
+                } else {
+                    view.showErrorMessage(context.getString(R.string.hint_complete_failed));
+                }
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                view.loaded();
+            }
+        }, new Action0() {
+            @Override
+            public void call() {
+                view.loaded();
+                view.completeSuccess();
+            }
+        });
     }
 
     private boolean validate(RnRForm form) {
