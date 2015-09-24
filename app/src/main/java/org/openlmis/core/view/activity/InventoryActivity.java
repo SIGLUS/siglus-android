@@ -48,7 +48,7 @@ import rx.Subscriber;
 
 
 @ContentView(R.layout.activity_inventory)
-public class InventoryActivity extends BaseActivity implements InventoryPresenter.InventoryView{
+public class InventoryActivity extends BaseActivity implements InventoryPresenter.InventoryView {
 
     public static final String PARAM_IS_PHYSICAL_INVENTORY = "isInitialInventory";
     public static final String PARAM_IS_ADD_NEW_DRUG = "isAddNewDrug";
@@ -85,7 +85,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
         productListRecycleView.setLayoutManager(mLayoutManager);
         isPhysicalInventory = getIntent().getBooleanExtra(PARAM_IS_PHYSICAL_INVENTORY, false);
 
-        if (isPhysicalInventory){
+        if (isPhysicalInventory) {
             initPhysicalInventoryUI();
         } else {
             if (getIntent().getBooleanExtra(PARAM_IS_ADD_NEW_DRUG, false)) {
@@ -199,10 +199,8 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     @Override
     public boolean validateInventory() {
         int position = mAdapter.validateAll();
-        if (position >= 0){
-            if (isPhysicalInventory){
-                clearSearch();
-            }
+        if (position >= 0) {
+            clearSearch();
 
             productListRecycleView.scrollToPosition(position);
             return false;
