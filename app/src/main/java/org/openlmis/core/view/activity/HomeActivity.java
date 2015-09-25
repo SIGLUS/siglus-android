@@ -59,9 +59,6 @@ public class HomeActivity extends BaseActivity{
     @InjectView(R.id.tx_last_synced)
     TextView txLastSynced;
 
-    @InjectView(R.id.btn_mmia_history)
-    Button btnMMIAHistory;
-
     @Inject
     SyncManager syncManager;
 
@@ -106,14 +103,6 @@ public class HomeActivity extends BaseActivity{
             }
         });
 
-        btnMMIAHistory.setOnClickListener(new android.view.View.OnClickListener() {
-            @Override
-            public void onClick(android.view.View v) {
-                startActivity(getIntent()
-                .setClass(HomeActivity.this,MMIAActivity.class)
-                .putExtra(MMIAActivity.PARAM_IS_MMIA_HISTORY,true));
-            }
-        });
     }
 
     @Override

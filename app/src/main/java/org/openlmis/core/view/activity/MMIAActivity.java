@@ -19,6 +19,7 @@
 package org.openlmis.core.view.activity;
 
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -50,7 +51,6 @@ import roboguice.inject.InjectView;
 @ContentView(R.layout.activity_mmia)
 public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIAFormView, View.OnClickListener {
 
-    public static final String PARAM_IS_MMIA_HISTORY = "isMMIAHistory";
     @InjectView(R.id.rnr_form_list)
     private MMIARnrForm rnrFormList;
 
@@ -81,7 +81,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     private RetainedFragment dataFragment;
     private boolean commentHasChanged = false;
-    private Boolean isMMIAHistory = false;
+    private boolean isHistoryForm;
 
     @Override
     public MMIAFormPresenter getPresenter() {
@@ -115,31 +115,32 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         hasDataChanged = (Boolean) dataFragment.getData("hasDataChanged");
         scrollView.setVisibility(View.INVISIBLE);
 
-        isMMIAHistory = getIntent().getBooleanExtra(MMIAActivity.PARAM_IS_MMIA_HISTORY,false);
-
-        presenter.loadData(isMMIAHistory);
+        long formId = getIntent().getLongExtra("formId", 0);
+        if (formId == 0) {
+            isHistoryForm = false;
+        } else {
+            isHistoryForm = true;
+        }
+        presenter.loadData(formId);
     }
 
     @Override
     public void initView(final RnRForm form) {
-        final boolean isDraft = form.getStatus().equals(RnRForm.STATUS.DRAFT);
-
         scrollView.setVisibility(View.VISIBLE);
         rnrFormList.initView(new ArrayList<>(form.getRnrFormItemListWrapper()));
         regimeListView.initView(form.getRegimenItemListWrapper(), tvRegimeTotal);
         mmiaInfoListView.initView(form.getBaseInfoItemListWrapper());
 
-        if (isMMIAHistory){
-            setTitle(getResources().getString(R.string.mmia_history_title));
-            if (!isDraft) {
-                scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-                btnSave.setVisibility(View.GONE);
-                btnComplete.setVisibility(View.GONE);
-            }else {
-                scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-                btnSave.setVisibility(View.VISIBLE);
-                btnComplete.setVisibility(View.VISIBLE);
-            }
+
+        if (presenter.formIsEditable()) {
+            scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+            btnSave.setVisibility(View.VISIBLE);
+            btnComplete.setVisibility(View.VISIBLE);
+        } else {
+            scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+            btnSave.setVisibility(View.GONE);
+            btnComplete.setVisibility(View.GONE);
+
         }
 
         etComment.setText(form.getComments());
@@ -188,15 +189,20 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
                 @Override
                 public void callback(boolean flag) {
                     if (flag) {
-                        presenter.removeRnrForm();
+                        removeTempForm();
                         finish();
                     }
                 }
             });
         } else {
-            if (!isMMIAHistory){
-            presenter.removeRnrForm();}
+            removeTempForm();
             super.onBackPressed();
+        }
+    }
+
+    private void removeTempForm() {
+        if (!isHistoryForm) {
+            presenter.removeRnrForm();
         }
     }
 
@@ -277,5 +283,11 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         if (hasDataChanged()) {
             presenter.saveDraftForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
         }
+    }
+
+    public static Intent getIntentToMe(Context context, long formId) {
+        Intent intent = new Intent(context, MMIAActivity.class);
+        intent.putExtra("formId", formId);
+        return intent;
     }
 }

@@ -90,6 +90,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     RequisitionFormAdapter productListAdapter;
     RequisitionFormAdapter requisitionFormAdapter;
     private boolean consultationNumbersHasChanged;
+    private boolean isHistoryForm;
 
 
     private void initPresenter() {
@@ -117,6 +118,11 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         long formId = getIntent().getLongExtra("formId", 0);
+        if (formId == 0) {
+            isHistoryForm = false;
+        } else {
+            isHistoryForm = true;
+        }
         inflater = LayoutInflater.from(this);
         hasDataChanged = (Boolean) dataFragment.getData("hasDataChanged");
         initUI();
@@ -180,7 +186,6 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     @Override
     public void showListInputError(int index) {
-        // +1  Header View
         final int position = index + 1;
         requisitionForm.setSelection(position);
         requisitionForm.post(new Runnable() {
@@ -364,14 +369,20 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
                 @Override
                 public void callback(boolean flag) {
                     if (flag) {
-                        presenter.removeRnrForm();
+                        removeTempForm();
                         finish();
                     }
                 }
             });
         } else {
-            presenter.removeRnrForm();
+            removeTempForm();
             super.onBackPressed();
+        }
+    }
+
+    private void removeTempForm() {
+        if (!isHistoryForm) {
+            presenter.removeRnrForm();
         }
     }
 

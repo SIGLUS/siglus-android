@@ -61,7 +61,7 @@ public class MMIAFormPresenterTest {
     @Test
     public void shouldGetInitMMIAForm() throws LMISException, SQLException {
         when(mmiaRepository.getDraftMMIAForm(Matchers.<Program>anyObject())).thenReturn(null);
-        presenter.getRnrForm();
+        presenter.getRnrForm(0);
         verify(mmiaRepository).getDraftMMIAForm(Matchers.<Program>anyObject());
         verify(mmiaRepository).initMMIA(Matchers.<Program>anyObject());
     }
@@ -69,7 +69,7 @@ public class MMIAFormPresenterTest {
     @Test
     public void shouldGetDraftMMIAForm() throws LMISException {
         when(mmiaRepository.getDraftMMIAForm(Matchers.<Program>anyObject())).thenReturn(new RnRForm());
-        presenter.getRnrForm();
+        presenter.getRnrForm(0);
         verify(mmiaRepository).getDraftMMIAForm(Matchers.<Program>anyObject());
         verify(mmiaRepository, never()).initMMIA(Matchers.<Program>anyObject());
     }

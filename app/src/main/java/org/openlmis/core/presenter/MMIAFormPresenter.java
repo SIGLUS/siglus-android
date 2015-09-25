@@ -43,6 +43,8 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
+import static org.roboguice.shaded.goole.common.base.Preconditions.checkNotNull;
+
 public class MMIAFormPresenter implements Presenter {
 
     RnRForm form;
@@ -76,17 +78,13 @@ public class MMIAFormPresenter implements Presenter {
         }
     }
 
-    public void loadData(final boolean isMMIAHistory) {
+    public void loadData(final long formId) {
         view.loading();
         Observable.create(new Observable.OnSubscribe<RnRForm>() {
             @Override
             public void call(Subscriber<? super RnRForm> subscriber) {
                 try {
-                    if (!isMMIAHistory) {
-                        subscriber.onNext(getRnrForm());
-                    } else {
-                        subscriber.onNext(getRnrFormById(1));
-                    }
+                    subscriber.onNext(getRnrForm(formId));
                 } catch (LMISException e) {
                     e.printStackTrace();
                     subscriber.onError(e);
@@ -110,25 +108,28 @@ public class MMIAFormPresenter implements Presenter {
         });
     }
 
-    public RnRForm getRnrFormById(int formId) throws LMISException {
-        form = mmiaRepository.queryRnRForm(formId);
-        return form;
-    }
-
-    public RnRForm getRnrForm() throws LMISException {
+    public RnRForm getRnrForm(final long formId) throws LMISException {
 
         if (form != null) {
             return form;
         }
-        Program program = programRepository.queryByCode(MMIARepository.MMIA_PROGRAM_CODE);
 
-        RnRForm draftMMIAForm = mmiaRepository.getDraftMMIAForm(program);
-        if (draftMMIAForm != null) {
-            form = draftMMIAForm;
+        if (formId > 0) {
+            form = mmiaRepository.queryRnRForm(formId);
         } else {
-            form = mmiaRepository.initMMIA(program);
+            Program program = programRepository.queryByCode(MMIARepository.MMIA_PROGRAM_CODE);
+            RnRForm draftMMIAForm = mmiaRepository.getDraftMMIAForm(program);
+            if (draftMMIAForm != null) {
+                form = draftMMIAForm;
+            } else {
+                form = mmiaRepository.initMMIA(program);
+            }
         }
         return form;
+    }
+
+    public boolean formIsEditable() {
+        return checkNotNull(form).getStatus().equals(RnRForm.STATUS.DRAFT);
     }
 
     public void completeMMIA(ArrayList<RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) {
