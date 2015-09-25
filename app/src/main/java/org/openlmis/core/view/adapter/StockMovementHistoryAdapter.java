@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.utils.FeatureToggle;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
 import java.util.List;
@@ -93,11 +94,15 @@ public class StockMovementHistoryAdapter extends BaseAdapter {
         holder.etIssued.setText(model.getIssued());
         holder.txStockExistence.setText(model.getStockExistence());
 
-        setReasonAndFontColor(holder, model);
-
-        if (model.getReceived() != null || model.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
-            setFontColorToRed(holder);
+        if (FeatureToggle.isOpen(R.bool.red_font_color_267)){
+            setReasonAndFontColor(holder, model);
+            if (model.getReceived() != null || model.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
+                setFontColorToRed(holder);
+            }
+        }else {
+            holder.txReason.setText(model.getReason());
         }
+
     }
 
     private void setReasonAndFontColor(ViewHolder holder, StockMovementViewModel model) {

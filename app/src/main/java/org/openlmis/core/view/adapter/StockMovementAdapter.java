@@ -38,6 +38,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.presenter.StockMovementPresenter;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.FeatureToggle;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.StockMovementActivity;
@@ -141,12 +142,16 @@ public class StockMovementAdapter extends BaseAdapter {
         holder.txStockExistence.setText(model.getStockExistence());
 
         if (!model.isDraft()) {
-            setReasonAndFontColor(holder, model);
+            if (FeatureToggle.isOpen(R.bool.red_font_color_267)) {
+                setReasonAndFontColor(holder, model);
+                if (model.getReceived() != null || model.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
+                    setFontColorToRed(holder);
+                }
+            } else {
+                holder.txReason.setText(model.getReason());
+            }
         }
 
-        if (model.getReceived() != null || model.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
-            setFontColorToRed(holder);
-        }
 
         if (model.isDraft()) {
             editableLine = holder;
@@ -200,15 +205,15 @@ public class StockMovementAdapter extends BaseAdapter {
     }
 
     private void setReasonAndFontColor(ViewHolder holder, StockMovementViewModel model) {
-            if (model.getReason().equals(activity.getResources().getString(R.string.physical_inventory_positive))) {
-                holder.txReason.setText(activity.getResources().getStringArray(R.array.movement_positive_items_array)[4]);
-                setFontColorToRed(holder);
-            } else if (model.getReason().equals(activity.getResources().getString(R.string.physical_inventory_negative))) {
-                holder.txReason.setText(activity.getResources().getStringArray(R.array.movement_negative_items_array)[3]);
-                setFontColorToRed(holder);
-            } else {
-                holder.txReason.setText(model.getReason());
-            }
+        if (model.getReason().equals(activity.getResources().getString(R.string.physical_inventory_positive))) {
+            holder.txReason.setText(activity.getResources().getStringArray(R.array.movement_positive_items_array)[4]);
+            setFontColorToRed(holder);
+        } else if (model.getReason().equals(activity.getResources().getString(R.string.physical_inventory_negative))) {
+            holder.txReason.setText(activity.getResources().getStringArray(R.array.movement_negative_items_array)[3]);
+            setFontColorToRed(holder);
+        } else {
+            holder.txReason.setText(model.getReason());
+        }
     }
 
     private void setFontColorToRed(ViewHolder holder) {

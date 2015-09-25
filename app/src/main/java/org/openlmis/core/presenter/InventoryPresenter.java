@@ -30,6 +30,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.utils.FeatureToggle;
 import org.openlmis.core.view.View;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
@@ -108,12 +109,12 @@ public class InventoryPresenter implements Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    public Observable<List<StockCardViewModel>> loadStockCardList(){
+    public Observable<List<StockCardViewModel>> loadStockCardList() {
         return Observable.create(new Observable.OnSubscribe<List<StockCardViewModel>>() {
             @Override
             public void call(Subscriber<? super List<StockCardViewModel>> subscriber) {
                 List<StockCard> list;
-                try{
+                try {
                     list = stockRepository.list();
                     subscriber.onNext(from(list).transform(new Function<StockCard, StockCardViewModel>() {
                         @Override
@@ -121,7 +122,7 @@ public class InventoryPresenter implements Presenter {
                             return new StockCardViewModel(stockCard);
                         }
                     }).toList());
-                }catch (LMISException e){
+                } catch (LMISException e) {
                     subscriber.onError(e);
                 }
             }
@@ -144,7 +145,7 @@ public class InventoryPresenter implements Presenter {
         }).toList();
     }
 
-    private StockCard initStockCard(StockCardViewModel model){
+    private StockCard initStockCard(StockCardViewModel model) {
         try {
             StockCard stockCard = new StockCard();
             stockCard.setProduct(productRepository.getById(model.getProductId()));
@@ -153,7 +154,7 @@ public class InventoryPresenter implements Presenter {
 
             stockRepository.initStockCard(stockCard);
             return stockCard;
-        }catch (LMISException e){
+        } catch (LMISException e) {
             e.printStackTrace();
         }
         return null;
@@ -168,15 +169,28 @@ public class InventoryPresenter implements Presenter {
         item.setMovementDate(new Date());
         item.setMovementQuantity(Math.abs(inventory - stockOnHand));
 
-        if (inventory > stockOnHand) {
-            item.setReason(context.getResources().getString(R.string.physical_inventory_positive));
-            item.setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
-        } else if (inventory < stockOnHand) {
-            item.setReason(context.getResources().getString(R.string.physical_inventory_negative));
-            item.setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
+        if (FeatureToggle.isOpen(R.bool.red_font_color_267)) {
+            if (inventory > stockOnHand) {
+                item.setReason(context.getResources().getString(R.string.physical_inventory_positive));
+                item.setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
+            } else if (inventory < stockOnHand) {
+                item.setReason(context.getResources().getString(R.string.physical_inventory_negative));
+                item.setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
+            } else {
+                item.setReason(context.getResources().getString(R.string.title_physical_inventory));
+                item.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
+            }
         } else {
-            item.setReason(context.getResources().getString(R.string.title_physical_inventory));
-            item.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
+            if (inventory > stockOnHand) {
+                item.setReason(context.getResources().getStringArray(R.array.movement_positive_items_array)[4]);
+                item.setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
+            } else if (inventory < stockOnHand) {
+                item.setReason(context.getResources().getStringArray(R.array.movement_negative_items_array)[3]);
+                item.setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
+            } else {
+                item.setReason(context.getResources().getString(R.string.title_physical_inventory));
+                item.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
+            }
         }
         return item;
     }
@@ -242,6 +256,6 @@ public class InventoryPresenter implements Presenter {
 
         boolean validateInventory();
 
-        void  showErrorMessage(String msg);
+        void showErrorMessage(String msg);
     }
 }
