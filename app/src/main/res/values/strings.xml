@@ -135,7 +135,16 @@
     </string-array>
 
     <string-array name="movement_issue_items_array">
-        <item>Issues from customers requests</item>
+        <item>Public pharmacy</item>
+        <item>Maternity</item>
+        <item>General Ward</item>
+        <item>Accident &amp; Emergency</item>
+        <item>Mobile unit</item>
+        <item>Laboratory</item>
+        <item>UATS</item>
+        <item>PNCTL</item>
+        <item>PAV</item>
+        <item>Dental ward</item>
     </string-array>
 
     <string-array name="movement_negative_items_array">
@@ -151,7 +160,7 @@
         <item>Returns of expired drugs (HF and dependent wards)</item>
         <item>Donations to Deposit</item>
         <item>Loans received at the health facility deposit</item>
-        <item>Inventory correction in case of under stock on Stock card (Stock on  hand is more than stock in stock card)</item>
+        <item>Inventory correction in case of under stock on Stock card (Stock on hand is more than stock in stock card)</item>
         <item>Returns from Quarantine, in the case of quarantined product being fit for use</item>
     </string-array>
 

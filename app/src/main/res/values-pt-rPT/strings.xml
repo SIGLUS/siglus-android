@@ -137,7 +137,16 @@
     </string-array>
 
     <string-array name="movement_issue_items_array">
-        <item>Saída por pedidos dos Clientes</item>
+        <item>Farmácia Pública</item>
+        <item>Maternidade-SMI</item>
+        <item>Enfermaria</item>
+        <item>Banco de Socorro-BIS</item>
+        <item>Brigada móvel</item>
+        <item>Laboratório</item>
+        <item>UATS</item>
+        <item>PNCTL</item>
+        <item>PAV</item>
+        <item>Estomalogia</item>
     </string-array>
 
     <string-array name="movement_negative_items_array">
