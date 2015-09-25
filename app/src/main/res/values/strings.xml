@@ -129,9 +129,8 @@
     </string-array>
 
     <string-array name="movement_receive_items_array">
-        <item>Normal requisition/reinforcement</item>
-        <item>Emergency requisition</item>
-        <item>Opening Kits(Health facilities)</item>
+        <item>District( DDM)</item>
+        <item>Province ( DPM)</item>
     </string-array>
 
     <string-array name="movement_issue_items_array">

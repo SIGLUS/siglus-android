@@ -131,9 +131,8 @@
     </string-array>
 
     <string-array name="movement_receive_items_array">
-        <item>Requisição periódica/reforço</item>
-        <item>requisição emergência</item>
-        <item>Abertura de Kits(Unidade Sanitária)</item>
+        <item>Distrito (DDM)</item>
+        <item>Província (DPM)</item>
     </string-array>
 
     <string-array name="movement_issue_items_array">
