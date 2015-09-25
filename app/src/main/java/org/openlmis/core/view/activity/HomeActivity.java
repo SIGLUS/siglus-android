@@ -32,6 +32,7 @@ import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.FeatureToggle;
 import org.openlmis.core.view.View;
 
 import java.util.Date;
@@ -60,6 +61,12 @@ public class HomeActivity extends BaseActivity{
 
     @InjectView(R.id.tx_last_synced)
     TextView txLastSynced;
+
+    @InjectView(R.id.btn_mmia_list)
+    Button btnMMIAList;
+
+    @InjectView(R.id.btn_via_list)
+    Button btnVIAList;
 
     @Inject
     SyncManager syncManager;
@@ -104,6 +111,11 @@ public class HomeActivity extends BaseActivity{
                 syncManager.requestSyncImmediately();
             }
         });
+
+        if (!FeatureToggle.isOpen(R.bool.view_requisition_history_75)){
+            btnMMIAList.setVisibility(android.view.View.GONE);
+            btnVIAList.setVisibility(android.view.View.GONE);
+        }
     }
 
     public void showMMIAHistoryList(android.view.View view) {

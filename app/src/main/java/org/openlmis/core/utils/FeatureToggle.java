@@ -2,7 +2,7 @@ package org.openlmis.core.utils;
 
 import org.openlmis.core.LMISApp;
 
-public class FeatureToggle {
+final public class FeatureToggle {
 
     private FeatureToggle() { /* cannot be instantiated */ }
 
