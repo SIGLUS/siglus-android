@@ -63,6 +63,11 @@
         <activity android:name=".view.activity.StockMovementHistoryActivity" />
 
 
+        <activity
+            android:name=".view.activity.RnRFormListActivity"
+            android:label="@string/title_stock_movement"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <service
             android:name=".service.SyncService"
             android:exported="true">

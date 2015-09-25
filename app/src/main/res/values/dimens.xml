@@ -7,4 +7,6 @@
     <dimen name="mmia_spread_item_common_width">65dp</dimen>
     <dimen name="divider">1dp</dimen>
     <dimen name="stock_movement_item_common_width">100dp</dimen>
+    <dimen name="list_item_padding">12dp</dimen>
+    <dimen name="card_view_padding">8dp</dimen>
 </resources>

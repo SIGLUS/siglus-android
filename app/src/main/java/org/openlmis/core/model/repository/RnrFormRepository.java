@@ -164,6 +164,17 @@ public class RnrFormRepository {
         return genericDao.queryForAll();
     }
 
+    public List<RnRForm> list(String programCode) throws LMISException {
+        final long programId = programRepository.queryByCode(programCode).getId();
+
+        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
+            @Override
+            public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("program_id", programId).query();
+            }
+        });
+    }
+
     public List<RnRForm> listUnSynced() throws LMISException {
         return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
             @Override
@@ -174,15 +185,9 @@ public class RnrFormRepository {
     }
 
     public List<RnRForm> listMMIA() throws LMISException {
-        final long mmiaId = programRepository.queryByCode(MMIARepository.MMIA_PROGRAM_CODE).getId();
-
-        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
-            @Override
-            public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("program_id", mmiaId).query();
-            }
-        });
+        return list(MMIARepository.MMIA_PROGRAM_CODE);
     }
+
 
     public RnRForm queryDraft(final Program program) throws LMISException {
         if (program == null) {

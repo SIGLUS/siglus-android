@@ -1,0 +1,92 @@
+/*
+ * This program is part of the OpenLMIS logistics management information
+ * system platform software.
+ *
+ * Copyright © 2015 ThoughtWorks, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version. This program is distributed in the
+ * hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details. You should
+ * have received a copy of the GNU Affero General Public License along with
+ * this program. If not, see http://www.gnu.org/licenses. For additional
+ * information contact info@OpenLMIS.org
+ */
+
+package org.openlmis.core.view.activity;
+
+import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+
+import com.google.inject.Inject;
+
+import org.openlmis.core.R;
+import org.openlmis.core.presenter.Presenter;
+import org.openlmis.core.presenter.RnRFormListPresenter;
+import org.openlmis.core.view.adapter.RnRFormListAdapter;
+import org.openlmis.core.view.viewmodel.RnRFormViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
+import rx.Subscriber;
+
+@ContentView(R.layout.activity_rnr_list)
+public class RnRFormListActivity extends BaseActivity implements RnRFormListPresenter.RnRFormListView {
+
+    public static final String PARAM_PROGRAM_CODE = "programCode";
+
+    @InjectView(R.id.rnr_form_list)
+    RecyclerView listView;
+
+    String programCode;
+
+    @Inject
+    RnRFormListPresenter presenter;
+
+    @Override
+    public Presenter getPresenter() {
+        return presenter;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        programCode = getIntent().getStringExtra(PARAM_PROGRAM_CODE);
+        presenter.setProgramCode(programCode);
+        initUI();
+    }
+
+    private void initUI() {
+        setTitle(programCode);
+        listView.setLayoutManager(new LinearLayoutManager(this));
+        listView.setHasFixedSize(true);
+
+        final RnRFormListAdapter adapter = new RnRFormListAdapter(this, programCode, new ArrayList<RnRFormViewModel>());
+        listView.setAdapter(adapter);
+
+        loading();
+        presenter.loadRnRFormList().subscribe(new Subscriber<List<RnRFormViewModel>>() {
+            @Override
+            public void onCompleted() {
+                loaded();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                showMessage(e.getMessage());
+            }
+
+            @Override
+            public void onNext(List<RnRFormViewModel> rnRFormViewModels) {
+                adapter.refreshList(rnRFormViewModels);
+            }
+        });
+    }
+}

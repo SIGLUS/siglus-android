@@ -27,6 +27,8 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.repository.MMIARepository;
+import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.utils.DateUtil;
@@ -102,7 +104,18 @@ public class HomeActivity extends BaseActivity{
                 syncManager.requestSyncImmediately();
             }
         });
+    }
 
+    public void showMMIAHistoryList(android.view.View view) {
+        startActivity(getIntent()
+                .setClass(HomeActivity.this, RnRFormListActivity.class)
+                .putExtra(RnRFormListActivity.PARAM_PROGRAM_CODE, MMIARepository.MMIA_PROGRAM_CODE));
+    }
+
+    public void showVIAHistoryList(android.view.View view){
+        startActivity(getIntent()
+                .setClass(HomeActivity.this, RnRFormListActivity.class)
+                .putExtra(RnRFormListActivity.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE));
     }
 
     @Override

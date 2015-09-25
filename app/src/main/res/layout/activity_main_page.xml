@@ -35,6 +35,18 @@
             android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
             android:text="@string/title_requisition" />
 
+        <Button android:id="@+id/btn_via_list"
+            android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+            style="@style/home_page_button"
+            android:text="@string/btn_requisition_list"
+            android:onClick="showVIAHistoryList"/>
+
+        <Button android:id="@+id/btn_mmia_list"
+            android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+            style="@style/home_page_button"
+            android:text="@string/btn_mmia_list"
+            android:onClick="showMMIAHistoryList"/>
+
         <Button
             android:id="@+id/btn_sync_data"
             style="@style/home_page_button"

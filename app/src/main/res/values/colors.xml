@@ -22,5 +22,8 @@
 
     <color name="color_stock_out">#FF5252</color>
     <color name="color_low_stock">#FFDE80</color>
+    <color name="color_draft_title">#9E9E9E</color>
+    <color name="color_error_title">#F44336</color>
+    <color name="color_text_button_blue">#449CE3</color>
 
 </resources>

@@ -1,5 +1,4 @@
 <resources>
-
     <string name="action_settings">Settings</string>
 
     <string name="title_home">Home Page</string>
@@ -176,5 +175,16 @@
         <item>Sort by quantity: High to Low</item>
         <item>Sort by quantity: Low to High</item>
     </string-array>
+
+    
+    <!-- Rnr form historical list -->
+    <string name="label_incomplete_requisition">%1$s is incomplete. To complete this %2$s , Please select "%3$s" on the home page</string>
+    <string name="label_unsynced_requisition">%s did not sync due to lack of internet connection. The form will be submitted as soon as an internet connection is available.</string>
+    <string name="label_submitted_message">%1$s successfully submitted on the  %2$s</string>
+    <string name="btn_view_requisition">VIEW REQUISITION BALANCE</string>
+    <string name="btn_view_mmia">VIEW MMIA</string>
+
+    <string name="btn_requisition_list">Requisition history</string>
+    <string name="btn_mmia_list">MMIA history</string>
 
 </resources>
