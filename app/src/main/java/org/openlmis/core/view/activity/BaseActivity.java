@@ -82,7 +82,15 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     @Override
     protected void onResume() {
         resetTime();
+        initTimeOutTimer();
         super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        executor.shutdown();
+        executor = null;
+        super.onPause();
     }
 
     private void resetTime() {
@@ -96,7 +104,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
             executor.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
-                    if (System.currentTimeMillis() - BaseActivity.lastOperateTime > TIMEOUT_TIME) {
+                    if (System.currentTimeMillis() - BaseActivity.lastOperateTime > TIMEOUT_TIME && !LoginActivity.isActive) {
                         startActivity(LoginActivity.getIntentToMe(BaseActivity.this));
                         finish();
                     }
@@ -109,8 +117,6 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        resetTime();
-        initTimeOutTimer();
         try {
             getPresenter().attachView(BaseActivity.this);
         } catch (ViewNotMatchException e) {
