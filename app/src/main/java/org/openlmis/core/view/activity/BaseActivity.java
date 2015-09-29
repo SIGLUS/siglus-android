@@ -39,6 +39,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.Presenter;
+import org.openlmis.core.utils.FeatureToggle;
 import org.openlmis.core.view.View;
 
 import java.util.concurrent.Executors;
@@ -82,14 +83,18 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     @Override
     protected void onResume() {
         resetTime();
-        initTimeOutTimer();
+        if (FeatureToggle.isOpen(R.bool.time_out_235)) {
+            initTimeOutTimer();
+        }
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        executor.shutdown();
-        executor = null;
+        if (FeatureToggle.isOpen(R.bool.time_out_235)) {
+            executor.shutdown();
+            executor = null;
+        }
         super.onPause();
     }
 
