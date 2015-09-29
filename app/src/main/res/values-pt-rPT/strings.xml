@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">CHAI LMIS</string>
-
     <string name="action_settings">Definições</string>
 
     <string name="title_home">Página principal</string>
