@@ -3,4 +3,6 @@
     <!-- Disable app:showAsAction lint error -->
     <issue id="AppCompatResource" severity="ignore" />
 
+    <issue id="MissingTranslation" severity="ignore" />
+
 </lint>
