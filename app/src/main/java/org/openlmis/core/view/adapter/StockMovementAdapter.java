@@ -141,17 +141,18 @@ public class StockMovementAdapter extends BaseAdapter {
         holder.etIssued.setText(model.getIssued());
         holder.txStockExistence.setText(model.getStockExistence());
 
-        if (!model.isDraft()) {
-            if (FeatureToggle.isOpen(R.bool.red_font_color_267)) {
+        if (FeatureToggle.isOpen(R.bool.red_font_color_267)) {
+            cleanFontColor(holder);
+            holder.txReason.setText(model.getReason());
+            if (!model.isDraft()) {
                 setReasonAndFontColor(holder, model);
                 if (model.getReceived() != null || model.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
                     setFontColorToRed(holder);
                 }
-            } else {
-                holder.txReason.setText(model.getReason());
             }
+        } else {
+            holder.txReason.setText(model.getReason());
         }
-
 
         if (model.isDraft()) {
             editableLine = holder;
@@ -211,8 +212,6 @@ public class StockMovementAdapter extends BaseAdapter {
         } else if (model.getReason().equals(activity.getResources().getString(R.string.physical_inventory_negative))) {
             holder.txReason.setText(activity.getResources().getStringArray(R.array.movement_negative_items_array)[3]);
             setFontColorToRed(holder);
-        } else {
-            holder.txReason.setText(model.getReason());
         }
     }
 
@@ -224,6 +223,16 @@ public class StockMovementAdapter extends BaseAdapter {
         holder.etPositiveAdjustment.setTextColor(Color.RED);
         holder.etNegativeAdjustment.setTextColor(Color.RED);
         holder.txStockExistence.setTextColor(Color.RED);
+    }
+
+    private void cleanFontColor(ViewHolder holder){
+        holder.txMovementDate.setTextColor(Color.BLACK);
+        holder.txReason.setTextColor(Color.BLACK);
+        holder.etDocumentNo.setTextColor(Color.BLACK);
+        holder.etReceived.setTextColor(Color.BLACK);
+        holder.etPositiveAdjustment.setTextColor(Color.BLACK);
+        holder.etNegativeAdjustment.setTextColor(Color.BLACK);
+        holder.txStockExistence.setTextColor(Color.BLACK);
     }
 
     private void setEditTextEnableAndRecoverUnderline(EditText editText) {

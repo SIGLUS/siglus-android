@@ -95,6 +95,7 @@ public class StockMovementHistoryAdapter extends BaseAdapter {
         holder.txStockExistence.setText(model.getStockExistence());
 
         if (FeatureToggle.isOpen(R.bool.red_font_color_267)){
+            cleanFontColor(holder);
             setReasonAndFontColor(holder, model);
             if (model.getReceived() != null || model.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
                 setFontColorToRed(holder);
@@ -102,7 +103,6 @@ public class StockMovementHistoryAdapter extends BaseAdapter {
         }else {
             holder.txReason.setText(model.getReason());
         }
-
     }
 
     private void setReasonAndFontColor(ViewHolder holder, StockMovementViewModel model) {
@@ -125,6 +125,16 @@ public class StockMovementHistoryAdapter extends BaseAdapter {
         holder.etPositiveAdjustment.setTextColor(Color.RED);
         holder.etNegativeAdjustment.setTextColor(Color.RED);
         holder.txStockExistence.setTextColor(Color.RED);
+    }
+
+    private void cleanFontColor(ViewHolder holder){
+        holder.txMovementDate.setTextColor(Color.BLACK);
+        holder.txReason.setTextColor(Color.BLACK);
+        holder.etDocumentNo.setTextColor(Color.BLACK);
+        holder.etReceived.setTextColor(Color.BLACK);
+        holder.etPositiveAdjustment.setTextColor(Color.BLACK);
+        holder.etNegativeAdjustment.setTextColor(Color.BLACK);
+        holder.txStockExistence.setTextColor(Color.BLACK);
     }
 
     private void hideUnderline(ViewHolder holder) {
