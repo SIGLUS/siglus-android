@@ -42,6 +42,7 @@ import rx.Observer;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -130,6 +131,20 @@ public class LoginPresenterTest {
         when(mockActivity.isConnectionAvailable()).thenReturn(false);
         presenter.startLogin("user", "password");
         verify(userRepository).getUserFromLocal(any(User.class));
+    }
+
+    @Test
+    public void shouldCallGetProductOnlyOnceWhenClickLoginButtonTwice() throws Exception{
+        when(mockActivity.isConnectionAvailable()).thenReturn(true);
+        when(mockActivity.hasGetProducts()).thenReturn(false);
+
+        presenter.startLogin("user", "password");
+        presenter.startLogin("user", "password");
+
+        verify(userRepository, times(2)).authorizeUser(any(User.class), loginCB.capture());
+        loginCB.getValue().success(new User("user", "password"));
+
+        verify(syncManager, times(1)).syncProductsWithProgramAsync(any(Observer.class));
     }
 
 

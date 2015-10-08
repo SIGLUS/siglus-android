@@ -37,6 +37,8 @@ public class LoginPresenter implements Presenter {
 
     LoginView view;
 
+    boolean isLoadingProducts = false;
+
     @Inject
     UserRepository userRepository;
 
@@ -144,19 +146,24 @@ public class LoginPresenter implements Presenter {
 
     public void getProgramWithProducts() {
         if (!view.hasGetProducts()) {
+            if (isLoadingProducts){
+                return;
+            }
+
+            isLoadingProducts = true;
             view.loading();
             syncManager.syncProductsWithProgramAsync(new SyncSubscriber<Void>() {
                 @Override
                 public void onCompleted() {
-                    view.loaded();
+                    isLoadingProducts = false;
                     view.setHasGetProducts(true);
+                    view.loaded();
                     goToNextPage();
                 }
 
                 @Override
                 public void onError(Throwable e) {
                     ToastUtil.show(R.string.msg_user_not_facility);
-                    view.loaded();
                 }
             });
 
