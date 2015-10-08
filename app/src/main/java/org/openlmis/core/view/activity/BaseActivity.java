@@ -113,7 +113,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
                     if (System.currentTimeMillis() - BaseActivity.lastOperateTime > TIMEOUT_TIME && !LoginActivity.isActive) {
                         if (isAppOnForeground()) {
                             startActivity(LoginActivity.getIntentToMe(BaseActivity.this));
-                            finish();
+
                         } else {
                             isTimeOuted = true;
                         }
@@ -123,7 +123,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         }
     }
 
-    public boolean isAppOnForeground() {
+    private boolean isAppOnForeground() {
         ActivityManager activityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
         String packageName = getApplicationContext().getPackageName();
 
@@ -299,7 +299,6 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         super.onRestart();
         if (isTimeOuted) {
             startActivity(LoginActivity.getIntentToMe(BaseActivity.this));
-            finish();
             isTimeOuted = false;
         }
     }
