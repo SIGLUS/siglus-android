@@ -178,13 +178,17 @@
 
     
     <!-- Rnr form historical list -->
-    <string name="label_incomplete_requisition">%1$s is incomplete. To complete this %2$s , Please select "%3$s" on the home page</string>
-    <string name="label_unsynced_requisition">%s did not sync due to lack of internet connection. The form will be submitted as soon as an internet connection is available.</string>
-    <string name="label_submitted_message">%1$s successfully submitted on the  %2$s</string>
-    <string name="btn_view_requisition">VIEW REQUISITION BALANCE</string>
-    <string name="btn_view_mmia">VIEW MMIA</string>
+    <string name="label_incomplete_requisition"><![CDATA[<b>%1$s</b>]]> is incomplete. To complete this %2$s , Please select "%3$s" on the home page</string>
+    <string name="label_unsynced_requisition"><![CDATA[<b>%1$s</b>]]> did not sync due to lack of internet connection.<![CDATA[<br/>]]>  The form will be submitted as soon as an internet connection is available.</string>
+    <string name="label_submitted_message">%1$s successfully <![CDATA[<b>submitted</b>]]> on the  %2$s</string>
+    <string name="btn_view_requisition">VIEW %s</string>
 
-    <string name="btn_requisition_list">Requisition history</string>
-    <string name="btn_mmia_list">MMIA history</string>
+    <string name="btn_requisition_list">See old VIA</string>
+    <string name="btn_mmia_list">See old MMIA</string>
+    <string name="title_requisition_list">Requisition of all balances</string>
+    <string name="title_mmia_list">MMIA of all balances</string>
+    
+    <string name="label_current_period">Current period</string>
+    <string name="label_previous_period">Previous periods</string>
 
 </resources>

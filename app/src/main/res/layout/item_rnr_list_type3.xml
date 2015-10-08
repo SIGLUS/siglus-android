@@ -8,5 +8,5 @@
             android:paddingTop="@dimen/card_view_padding"
             android:paddingStart="20dp"
             android:textSize="18sp"
-            android:textColor="@color/primary_text"/>
+            android:textColor="@color/secondary_text"/>
 </LinearLayout>

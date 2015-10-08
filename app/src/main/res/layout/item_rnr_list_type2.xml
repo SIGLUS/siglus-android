@@ -40,20 +40,20 @@
             android:id="@+id/tx_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="37dp"
+            android:layout_marginStart="@dimen/rnr_card_content_margin_left"
             android:padding="@dimen/list_item_padding"
             android:textColor="@color/black"
-            android:textSize="12sp" />
+            android:textSize="@dimen/rnr_card_content_text_size" />
 
         <TextView
             android:id="@+id/btn_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="37dp"
+            android:layout_marginStart="@dimen/rnr_card_content_margin_left"
             android:padding="@dimen/list_item_padding"
             android:text="@string/btn_view_requisition"
             android:textColor="@color/color_text_button_blue"
-            android:textSize="12sp"
+            android:textSize="@dimen/rnr_card_content_text_size"
             android:textStyle="bold" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

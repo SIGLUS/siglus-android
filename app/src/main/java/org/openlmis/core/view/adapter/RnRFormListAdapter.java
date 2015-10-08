@@ -20,6 +20,8 @@ package org.openlmis.core.view.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +31,7 @@ import android.widget.TextView;
 import org.openlmis.core.R;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
-import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.activity.MMIAActivity;
 import org.openlmis.core.view.activity.RequisitionActivity;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 
@@ -37,6 +39,7 @@ import java.util.List;
 
 public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormListAdapter.ViewHolder>{
 
+    public static final int INT_UNSET = 0;
     LayoutInflater inflater;
     Context context;
 
@@ -85,39 +88,40 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormListAdapter.
                 holder.txTitle.setText(model.getTitle());
                 break;
             case RnRFormViewModel.TYPE_DRAFT:
-                holder.txPeriod.setText(model.getPeriod());
-                holder.txMessage.setText(context.getString(R.string.label_incomplete_requisition, model.getName(), model.getName(), model.getName()));
-                holder.icon.setImageResource(R.drawable.ic_description);
-                holder.lyPeriod.setBackgroundResource(R.color.color_draft_title);
+                configHolder(holder, model.getPeriod(), Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName(), model.getName(), model.getName())), R.drawable.ic_description, R.color.color_draft_title);
                 break;
             case RnRFormViewModel.TYPE_UNSYNC:
-                holder.txPeriod.setText(model.getPeriod());
-                holder.txMessage.setText(context.getString(R.string.label_unsynced_requisition, model.getName()));
-                holder.icon.setImageResource(R.drawable.ic_error);
-                holder.lyPeriod.setBackgroundResource(R.color.color_error_title);
+                configHolder(holder, model.getPeriod(), Html.fromHtml(context.getString(R.string.label_unsynced_requisition, model.getName())), R.drawable.ic_error, R.color.color_error_title);
                 break;
             case RnRFormViewModel.TYPE_HISTORICAL:
-                holder.icon.setImageResource(R.drawable.ic_done);
-                holder.txPeriod.setText(model.getPeriod());
-                holder.txMessage.setText(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedDate()));
+                configHolder(holder, model.getPeriod(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedDate())), R.drawable.ic_done, INT_UNSET);
 
+                holder.btnView.setText(context.getString(R.string.btn_view_requisition, model.getName()));
                 holder.btnView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                       showFormDetail(model.getId());
+                        showFormDetail(model.getId());
                     }
                 });
                 break;
         }
     }
 
+    private void configHolder(ViewHolder holder, String period, Spanned text, int icDescription, int colorDraftTitle) {
+        holder.txPeriod.setText(period);
+        holder.txMessage.setText(text);
+        holder.icon.setImageResource(icDescription);
+        if (holder.lyPeriod !=null && colorDraftTitle != INT_UNSET){
+            holder.lyPeriod.setBackgroundResource(colorDraftTitle);
+        }
+    }
+
     protected void showFormDetail(long formId){
         if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)){
-            ToastUtil.show("Not Implemented");
+            context.startActivity(MMIAActivity.getIntentToMe(context, formId));
         }else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)){
             context.startActivity(RequisitionActivity.getIntentToMe(context, formId));
         }
-
     }
 
 

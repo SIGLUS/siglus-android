@@ -21,10 +21,12 @@ package org.openlmis.core.view.activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
 
 import com.google.inject.Inject;
 
 import org.openlmis.core.R;
+import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.RnRFormListPresenter;
 import org.openlmis.core.view.adapter.RnRFormListAdapter;
@@ -63,8 +65,20 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         initUI();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return false;
+    }
+
     private void initUI() {
-        setTitle(programCode);
+        String title;
+        if (programCode.equals(MMIARepository.MMIA_PROGRAM_CODE)) {
+            title = getString(R.string.title_mmia_list);
+        } else {
+            title = getString(R.string.title_requisition_list);
+        }
+
+        setTitle(title);
         listView.setLayoutManager(new LinearLayoutManager(this));
         listView.setHasFixedSize(true);
 

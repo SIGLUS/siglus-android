@@ -23,6 +23,8 @@ import android.support.annotation.NonNull;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RnRForm;
@@ -96,14 +98,14 @@ public class RnRFormListPresenter implements Presenter{
             return viewModels;
         }
 
-        viewModels.add(new RnRFormViewModel("Current period"));
+        viewModels.add(new RnRFormViewModel(LMISApp.getContext().getResources().getString(R.string.label_current_period)));
         Collections.reverse(rnRForms);
 
         if (rnRForms.get(0).getStatus() == RnRForm.STATUS.DRAFT){
             viewModels.add(new RnRFormViewModel(rnRForms.get(0)));
             rnRForms.remove(0);
         }
-        viewModels.add(new RnRFormViewModel("Previous period"));
+        viewModels.add(new RnRFormViewModel(LMISApp.getContext().getResources().getString(R.string.label_previous_period)));
 
         viewModels.addAll(FluentIterable.from(rnRForms).transform(new Function<RnRForm, RnRFormViewModel>() {
             @Override
