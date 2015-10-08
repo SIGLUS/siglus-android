@@ -8,7 +8,7 @@ Feature: Requisition
     And I press "Via Classical Requisition"
     Then I wait for the "RequisitionActivity" screen to appear
     Then I should see text containing "Acyclovir, tablet 400mg"
-    Then I should see "5" products
+    Then I should see "4" products
 
   Scenario: Pop up alert
     Given I am logged in
@@ -45,15 +45,7 @@ Scenario: Add A Issued Movement on VIA product,then the quantity should change
     And I press "Stock on Hand"
     Then I wait for the "StockCardListActivity" screen to appear
     Then I wait for 1 second
-    Then I select stock card called "Acetylsalicylic Acid, tablet 300mg [P1]"
-    Then I wait for the "StockMovementActivity" screen to appear
-    Then I wait for 1 second
-    And I select a reason "Issues" "Issues from customers requests"
-    Then I wait for 1 second
-    Then I swipe right
-    And I enter issued number "10"
-    And I press "Save"
-    Then I go back
+    And I make a movement "Acetylsalicylic Acid, tablet 300mg [P1]" "Issues" "PAV" "issued" "10"
     Then I wait for 1 second
     Then I go back
     Then I wait for the "HomeActivity" screen to appear

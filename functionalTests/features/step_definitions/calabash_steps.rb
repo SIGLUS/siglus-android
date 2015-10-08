@@ -16,8 +16,8 @@ end
 
 Given(/^I am logged in$/) do
   steps %Q{
-		When I enter username "test_user"
-        And I enter password "testuser123"
+		When I enter username "superuser"
+        And I enter password "password1"
         And I press "LOG IN"
 	}
 end
@@ -44,8 +44,7 @@ When(/^I select the item called "(.*?)"$/) do |name|
 
   h = query("android.widget.EditText id:'tx_quantity' text:''").last
   touch(h)
-  keyboard_enter_text(index + 1)
-  index = index + 1
+  keyboard_enter_text(123)
   hide_soft_keyboard
 end
 
@@ -70,7 +69,7 @@ end
 
 Given(/^I am Initialized Inventory$/) do
   steps %Q{
-        Then I wait for 10 second
+        Then I wait for 10 seconds
         Then I wait for the "InventoryActivity" screen to appear
         Then I wait for 1 second
 		When I Select MMIA Item
@@ -114,10 +113,12 @@ When(/^I Select initial inventory in Screen$/) do
 end
 
 When(/^I Select initial inventory$/) do
-    while index < 20
+    checkBox = query("android.widget.CheckBox id:'checkbox' checked:'false'").first
+    while !checkBox.nil?
         steps %Q{
             When I select the checkbox
     	}
         scroll("RecyclerView", :down)
+        checkBox = query("android.widget.CheckBox id:'checkbox' checked:'false'").first
     end
 end

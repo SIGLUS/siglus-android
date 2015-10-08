@@ -10,7 +10,7 @@ Feature: stock movement Page
             And I press "Stock on Hand"
             Then I wait for the "StockCardListActivity" screen to appear
             Then I wait for 1 second
-            And I make a movement "Lamivudina 150mg/Zidovudina 300mg/Nevirapina 200mg [08S42]" "Issues" "Issues from customers requests" "issued" "2"
+            And I make a movement "Lamivudina 150mg/Zidovudina 300mg/Nevirapina 200mg [08S42]" "Issues" "PAV" "issued" "2"
             Then I wait for 1 second
             Then I go back
             Then I wait for the "HomeActivity" screen to appear
@@ -39,7 +39,7 @@ Feature: stock movement Page
             And I press "Stock on Hand"
             Then I wait for the "StockCardListActivity" screen to appear
             Then I wait for 1 second
-            And I make a movement "Lamivudina 150mg/Zidovudina 300mg/Nevirapina 200mg [08S42]" "Issues" "Issues from customers requests" "issued" "2"
+            And I make a movement "Lamivudina 150mg/Zidovudina 300mg/Nevirapina 200mg [08S42]" "Issues" "PAV" "issued" "2"
             Then I wait for 1 second
             Then I go back
             Then I wait for the "HomeActivity" screen to appear

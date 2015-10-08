@@ -16,7 +16,7 @@ Feature: stock movement Page
         Then I wait for 1 second
         Then I don't see "Save"
         Then I don't see "Cancel"
-        Then I select a reason "Entries" "Normal requisition/reinforcement"
+        Then I select a reason "Entries" "District( DDM)"
         Then I should see "Save"
         Then I should see "Cancel"
         And I press "Cancel"
@@ -35,7 +35,7 @@ Feature: stock movement Page
         Then I select stock card called "Lamivudina 150mg/Zidovudina 300mg/Nevirapina 200mg [08S42]"
         Then I wait for the "StockMovementActivity" screen to appear
         Then I wait for 1 second
-        And I select a reason "Entries" "Normal requisition/reinforcement"
+        And I select a reason "Entries" "District( DDM)"
         Then I wait for 1 second
         And I enter received number "2"
         And I press "Save"
@@ -90,7 +90,7 @@ Feature: stock movement Page
         Then I select stock card called "Tenofovir 300mg/Lamivudina 300mg/Efavirenze 600mg [08S18Y]"
         Then I wait for the "StockMovementActivity" screen to appear
         Then I wait for 1 second
-        And I select a reason "Issues" "Issues from customers requests"
+        And I select a reason "Issues" "PAV"
         Then I wait for 1 second
         Then I swipe right
         And I enter issued number "2"
