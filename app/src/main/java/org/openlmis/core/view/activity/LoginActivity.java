@@ -164,7 +164,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
     public static Intent getIntentToMe(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         return intent;
     }
 
