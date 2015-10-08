@@ -90,7 +90,6 @@ public class LoginPresenter implements Presenter {
             UserInfoMgr.getInstance().setUser(user);
             goToNextPage();
         }
-        view.loaded();
     }
 
     private void authorizeUserRemote(final User user) {
@@ -130,6 +129,7 @@ public class LoginPresenter implements Presenter {
     }
 
     public void goToNextPage() {
+        view.loaded();
         if (view.needInitInventory()) {
             view.goToInitInventory();
         } else {
@@ -168,7 +168,6 @@ public class LoginPresenter implements Presenter {
             });
 
         } else {
-            view.loaded();
             goToNextPage();
         }
     }

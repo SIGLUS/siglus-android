@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Button;
@@ -89,9 +90,9 @@ public class HomeActivity extends BaseActivity {
         btnInventory.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View v) {
-                startActivity(getIntent()
-                        .setClass(HomeActivity.this, InventoryActivity.class)
-                        .putExtra(InventoryActivity.PARAM_IS_PHYSICAL_INVENTORY, true));
+                Intent intent = new Intent(HomeActivity.this, InventoryActivity.class);
+                intent.putExtra(InventoryActivity.PARAM_IS_PHYSICAL_INVENTORY, true);
+                startActivity(intent);
             }
         });
 
@@ -123,15 +124,15 @@ public class HomeActivity extends BaseActivity {
     }
 
     public void showMMIAHistoryList(android.view.View view) {
-        startActivity(getIntent()
-                .setClass(HomeActivity.this, RnRFormListActivity.class)
-                .putExtra(RnRFormListActivity.PARAM_PROGRAM_CODE, MMIARepository.MMIA_PROGRAM_CODE));
+        Intent intent = new Intent(this, RnRFormListActivity.class);
+        intent.putExtra(RnRFormListActivity.PARAM_PROGRAM_CODE, MMIARepository.MMIA_PROGRAM_CODE);
+        startActivity(intent);
     }
 
-    public void showVIAHistoryList(android.view.View view) {
-        startActivity(getIntent()
-                .setClass(HomeActivity.this, RnRFormListActivity.class)
-                .putExtra(RnRFormListActivity.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE));
+    public void showVIAHistoryList(android.view.View view){
+        Intent intent = new Intent(this, RnRFormListActivity.class);
+        intent.putExtra(RnRFormListActivity.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE);
+        startActivity(intent);
     }
 
     @Override

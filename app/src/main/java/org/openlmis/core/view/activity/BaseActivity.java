@@ -19,6 +19,7 @@
 
 package org.openlmis.core.view.activity;
 
+import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -42,6 +43,7 @@ import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.FeatureToggle;
 import org.openlmis.core.view.View;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -55,8 +57,9 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     SharedPreferenceMgr preferencesMgr;
     protected SearchView searchView;
     public static long lastOperateTime;
-    private final long TIMEOUT_TIME = 60 * 60 * 1000;
+    private final long TIMEOUT_TIME = 12 * 1000;
     private static ScheduledThreadPoolExecutor executor;
+    private static boolean isTimeOuted;
 
     public abstract Presenter getPresenter();
 
@@ -92,8 +95,6 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     @Override
     protected void onPause() {
         if (FeatureToggle.isOpen(R.bool.time_out_235)) {
-            executor.shutdown();
-            executor = null;
         }
         super.onPause();
     }
@@ -110,12 +111,34 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
                 @Override
                 public void run() {
                     if (System.currentTimeMillis() - BaseActivity.lastOperateTime > TIMEOUT_TIME && !LoginActivity.isActive) {
-                        startActivity(LoginActivity.getIntentToMe(BaseActivity.this));
-                        finish();
+                        if (isAppOnForeground()) {
+                            startActivity(LoginActivity.getIntentToMe(BaseActivity.this));
+                            finish();
+                        } else {
+                            isTimeOuted = true;
+                        }
                     }
                 }
-            }, 0, 1, TimeUnit.MINUTES);
+            }, 0, 12, TimeUnit.SECONDS);
         }
+    }
+
+    public boolean isAppOnForeground() {
+        ActivityManager activityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+        String packageName = getApplicationContext().getPackageName();
+
+        List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager
+                .getRunningAppProcesses();
+        if (appProcesses == null)
+            return false;
+
+        for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+            if (appProcess.processName.equals(packageName)
+                    && appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -243,7 +266,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
             case R.id.action_settings:
                 return onSettingClick();
             case R.id.action_add_new_drug:
-                startActivity(getIntent()
+                startActivity(new Intent()
                         .setClass(this, InventoryActivity.class)
                         .putExtra(InventoryActivity.PARAM_IS_ADD_NEW_DRUG, true));
             default:
@@ -270,4 +293,15 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     public boolean onSettingClick() {
         return false;
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (isTimeOuted) {
+            startActivity(LoginActivity.getIntentToMe(BaseActivity.this));
+            finish();
+            isTimeOuted = false;
+        }
+    }
 }
+

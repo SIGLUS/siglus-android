@@ -28,6 +28,8 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.repository.MMIARepository;
+import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
@@ -38,6 +40,7 @@ import java.util.Date;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
@@ -58,10 +61,40 @@ public class HomeActivityTest {
     }
 
     @Test
-    public void shouldGoToMMIAFormPage(){
+    public void shouldGoToMMIAFormPage() {
         homeActivity.btnMMIA.performClick();
 
         verifyNextPage(MMIAActivity.class.getName());
+    }
+
+    @Test
+    public void shouldGoToInventoryPage() {
+        homeActivity.btnInventory.performClick();
+
+        Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
+
+        assertThat(startedIntent.getComponent().getClassName(), equalTo(InventoryActivity.class.getName()));
+        assertThat(startedIntent.getBooleanExtra(InventoryActivity.PARAM_IS_PHYSICAL_INVENTORY, false), is(true));
+    }
+
+    @Test
+    public void shouldGoToMMIAHistoryPage() {
+        homeActivity.btnMMIAList.performClick();
+
+        Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
+
+        assertThat(startedIntent.getComponent().getClassName(), equalTo(RnRFormListActivity.class.getName()));
+        assertThat(startedIntent.getStringExtra(RnRFormListActivity.PARAM_PROGRAM_CODE), is(MMIARepository.MMIA_PROGRAM_CODE));
+    }
+
+    @Test
+    public void shouldGoToViaHistoryPage() {
+        homeActivity.btnVIAList.performClick();
+
+        Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
+
+        assertThat(startedIntent.getComponent().getClassName(), equalTo(RnRFormListActivity.class.getName()));
+        assertThat(startedIntent.getStringExtra(RnRFormListActivity.PARAM_PROGRAM_CODE), is(VIARepository.VIA_PROGRAM_CODE));
     }
 
     @Test
@@ -85,7 +118,7 @@ public class HomeActivityTest {
 
     }
 
-    private void verifyNextPage(String className){
+    private void verifyNextPage(String className) {
         ShadowActivity shadowActivity = shadowOf(homeActivity);
         Intent startedIntent = shadowActivity.getNextStartedActivity();
         ShadowIntent shadowIntent = shadowOf(startedIntent);
