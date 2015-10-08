@@ -42,7 +42,7 @@ import roboguice.inject.InjectView;
 
 
 @ContentView(R.layout.activity_main_page)
-public class HomeActivity extends BaseActivity{
+public class HomeActivity extends BaseActivity {
 
     @InjectView(R.id.btn_stock_card)
     Button btnStockCard;
@@ -74,6 +74,10 @@ public class HomeActivity extends BaseActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
 
         btnStockCard.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
@@ -112,7 +116,7 @@ public class HomeActivity extends BaseActivity{
             }
         });
 
-        if (!FeatureToggle.isOpen(R.bool.view_requisition_history_75)){
+        if (!FeatureToggle.isOpen(R.bool.view_requisition_history_75)) {
             btnMMIAList.setVisibility(android.view.View.GONE);
             btnVIAList.setVisibility(android.view.View.GONE);
         }
@@ -124,7 +128,7 @@ public class HomeActivity extends BaseActivity{
                 .putExtra(RnRFormListActivity.PARAM_PROGRAM_CODE, MMIARepository.MMIA_PROGRAM_CODE));
     }
 
-    public void showVIAHistoryList(android.view.View view){
+    public void showVIAHistoryList(android.view.View view) {
         startActivity(getIntent()
                 .setClass(HomeActivity.this, RnRFormListActivity.class)
                 .putExtra(RnRFormListActivity.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE));
@@ -137,9 +141,9 @@ public class HomeActivity extends BaseActivity{
     }
 
 
-    private void showLastSyncedTime(){
+    private void showLastSyncedTime() {
         long lastSyncedTimestamp = getPreferences().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME, 0);
-        if (lastSyncedTimestamp == 0){
+        if (lastSyncedTimestamp == 0) {
             return;
         }
 
@@ -147,12 +151,12 @@ public class HomeActivity extends BaseActivity{
 
         long diff = currentTimestamp - lastSyncedTimestamp;
 
-        if (diff < DateUtil.MILLISECONDS_HOUR){
-            txLastSynced.setText(getResources().getString(R.string.label_last_synced_mins_ago, (diff /DateUtil.MILLISECONDS_MINUTE)));
-        } else if (diff < DateUtil.MILLISECONDS_DAY){
-            txLastSynced.setText(getResources().getString(R.string.label_last_synced_hours_ago, (diff /DateUtil.MILLISECONDS_HOUR)));
+        if (diff < DateUtil.MILLISECONDS_HOUR) {
+            txLastSynced.setText(getResources().getString(R.string.label_last_synced_mins_ago, (diff / DateUtil.MILLISECONDS_MINUTE)));
+        } else if (diff < DateUtil.MILLISECONDS_DAY) {
+            txLastSynced.setText(getResources().getString(R.string.label_last_synced_hours_ago, (diff / DateUtil.MILLISECONDS_HOUR)));
         } else {
-            txLastSynced.setText(getResources().getString(R.string.label_last_synced_days_ago, (diff /DateUtil.MILLISECONDS_DAY)));
+            txLastSynced.setText(getResources().getString(R.string.label_last_synced_days_ago, (diff / DateUtil.MILLISECONDS_DAY)));
         }
     }
 
