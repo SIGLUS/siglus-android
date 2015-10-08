@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -206,5 +207,10 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
             return false;
         }
         return true;
+    }
+
+    public static Intent getIntentToMe(Context context) {
+        Intent intent = new Intent(context, InventoryActivity.class);
+        return intent;
     }
 }

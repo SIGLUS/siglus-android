@@ -88,7 +88,9 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     public void goToInitInventory() {
-        startActivity(InventoryActivity.class);
+        Intent intent = InventoryActivity.getIntentToMe(this);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     public void goToHomePage() {
