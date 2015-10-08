@@ -38,6 +38,7 @@ import org.roboguice.shaded.goole.common.base.Function;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -58,6 +59,7 @@ public class RequisitionPresenter implements Presenter {
 
     RequisitionView view;
 
+    @Getter
     protected RnRForm rnRForm;
     protected List<RequisitionFormItemViewModel> requisitionFormItemViewModelList;
 

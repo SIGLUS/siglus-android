@@ -42,6 +42,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 import org.openlmis.core.view.fragment.OnBackConfirmDialog;
 import org.openlmis.core.view.fragment.RetainedFragment;
+import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 
 import roboguice.RoboGuice;
@@ -145,6 +146,8 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         } else {
             vgContainer.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             actionPanel.setVisibility(View.GONE);
+
+            setTitle(new RnRFormViewModel(presenter.getRnRForm()).getPeriod());
         }
     }
 

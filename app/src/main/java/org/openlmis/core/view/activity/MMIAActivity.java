@@ -38,6 +38,7 @@ import org.openlmis.core.presenter.MMIAFormPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.OnBackConfirmDialog;
 import org.openlmis.core.view.fragment.RetainedFragment;
+import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARnrForm;
@@ -141,6 +142,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
             btnSave.setVisibility(View.GONE);
             btnComplete.setVisibility(View.GONE);
 
+            setTitle(new RnRFormViewModel(form).getPeriod());
         }
 
         etComment.setText(form.getComments());
