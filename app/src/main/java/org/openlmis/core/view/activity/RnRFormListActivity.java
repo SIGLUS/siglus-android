@@ -71,14 +71,8 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     }
 
     private void initUI() {
-        String title;
-        if (programCode.equals(MMIARepository.MMIA_PROGRAM_CODE)) {
-            title = getString(R.string.title_mmia_list);
-        } else {
-            title = getString(R.string.title_requisition_list);
-        }
+        setTitle(MMIARepository.MMIA_PROGRAM_CODE.equals(programCode) ? R.string.title_mmia_list : R.string.title_requisition_list);
 
-        setTitle(title);
         listView.setLayoutManager(new LinearLayoutManager(this));
         listView.setHasFixedSize(true);
 
