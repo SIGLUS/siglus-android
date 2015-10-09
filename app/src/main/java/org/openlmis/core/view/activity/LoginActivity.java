@@ -62,6 +62,16 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!isTaskRoot()) {
+            Intent intent = getIntent();
+            String action = intent.getAction();
+            if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && action != null && action.equals(Intent.ACTION_MAIN)) {
+                finish();
+                return;
+            }
+        }
+
         initUI();
     }
 
@@ -88,9 +98,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     public void goToInitInventory() {
-        Intent intent = InventoryActivity.getIntentToMe(this);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        startActivity(InventoryActivity.getIntentToMe(this));
     }
 
     public void goToHomePage() {
