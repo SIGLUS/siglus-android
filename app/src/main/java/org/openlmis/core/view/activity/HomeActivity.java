@@ -20,6 +20,7 @@ package org.openlmis.core.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.widget.Button;
 import android.widget.TextView;
@@ -159,6 +160,20 @@ public class HomeActivity extends BaseActivity {
         } else {
             txLastSynced.setText(getResources().getString(R.string.label_last_synced_days_ago, (diff / DateUtil.MILLISECONDS_DAY)));
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (FeatureToggle.isOpen(R.bool.time_out_235)) {
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+                homeIntent.addCategory(Intent.CATEGORY_HOME);
+                homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(homeIntent);
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

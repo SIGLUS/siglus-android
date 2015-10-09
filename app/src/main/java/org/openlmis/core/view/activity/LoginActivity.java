@@ -96,7 +96,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
     public void startActivity(Class activityName) {
         saveString(Constants.KEY_LAST_LOGIN_USER, userName.getText().toString().trim());
-        super.startActivity(activityName, true);
+        super.startActivity(activityName);
     }
 
 
@@ -159,11 +159,5 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     protected void onPause() {
         super.onPause();
         isActive = false;
-    }
-
-    public static Intent getIntentToMe(Context context) {
-        Intent intent = new Intent(context, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
-        return intent;
     }
 }

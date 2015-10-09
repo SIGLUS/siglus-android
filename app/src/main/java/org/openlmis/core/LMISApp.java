@@ -20,6 +20,7 @@ package org.openlmis.core;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.res.Configuration;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
