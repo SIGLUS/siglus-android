@@ -42,10 +42,6 @@ import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.FeatureToggle;
 import org.openlmis.core.view.View;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 import roboguice.activity.RoboActionBarActivity;
 
 public abstract class BaseActivity extends RoboActionBarActivity implements View {
@@ -55,8 +51,8 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     SharedPreferenceMgr preferencesMgr;
     protected SearchView searchView;
     public static long lastOperateTime;
-    private final long TIMEOUT_TIME = 60 * 60 * 1000;
-    private static ScheduledThreadPoolExecutor executor;
+
+    private final static long TIMEOUT_TIME = 3 * 60 * 1000;
 
     public abstract Presenter getPresenter();
 
@@ -76,48 +72,24 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        resetTime();
+        if (FeatureToggle.isOpen(R.bool.time_out_235)) {
+            if (System.currentTimeMillis() - BaseActivity.lastOperateTime > TIMEOUT_TIME && !LoginActivity.isActive) {
+                Intent intent = new Intent(this, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                resetTime();
+                return true;
+            } else {
+                resetTime();
+            }
+        }
+
         return super.dispatchTouchEvent(ev);
-    }
-
-    @Override
-    protected void onResume() {
-        resetTime();
-        if (FeatureToggle.isOpen(R.bool.time_out_235)) {
-            initTimeOutTimer();
-        }
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        if (FeatureToggle.isOpen(R.bool.time_out_235)) {
-            executor.shutdown();
-            executor = null;
-        }
-        super.onPause();
     }
 
     private void resetTime() {
         lastOperateTime = System.currentTimeMillis();
     }
-
-    private void initTimeOutTimer() {
-
-        if (executor == null) {
-            executor = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(1);
-            executor.scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    if (System.currentTimeMillis() - BaseActivity.lastOperateTime > TIMEOUT_TIME && !LoginActivity.isActive) {
-                        startActivity(LoginActivity.getIntentToMe(BaseActivity.this));
-                        finish();
-                    }
-                }
-            }, 0, 1, TimeUnit.MINUTES);
-        }
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,12 +102,10 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
             return;
         }
 
-
         if (getSupportActionBar() != null) {
             getSupportActionBar().setHomeButtonEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
     }
 
     @Override
@@ -243,7 +213,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
             case R.id.action_settings:
                 return onSettingClick();
             case R.id.action_add_new_drug:
-                startActivity(getIntent()
+                startActivity(new Intent()
                         .setClass(this, InventoryActivity.class)
                         .putExtra(InventoryActivity.PARAM_IS_ADD_NEW_DRUG, true));
             default:
@@ -271,3 +241,4 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         return false;
     }
 }
+

@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +35,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.common.Constants;
 import org.openlmis.core.presenter.InventoryPresenter;
 import org.openlmis.core.presenter.Presenter;
+import org.openlmis.core.utils.FeatureToggle;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.InitialInventoryAdapter;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
@@ -212,5 +214,19 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     public static Intent getIntentToMe(Context context) {
         Intent intent = new Intent(context, InventoryActivity.class);
         return intent;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (FeatureToggle.isOpen(R.bool.time_out_235)) {
+            if (!isPhysicalInventory && keyCode == KeyEvent.KEYCODE_BACK) {
+                Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+                homeIntent.addCategory(Intent.CATEGORY_HOME);
+                homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(homeIntent);
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

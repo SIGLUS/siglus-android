@@ -18,7 +18,9 @@
 
 package org.openlmis.core.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.widget.Button;
 import android.widget.TextView;
@@ -89,9 +91,9 @@ public class HomeActivity extends BaseActivity {
         btnInventory.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View v) {
-                startActivity(getIntent()
-                        .setClass(HomeActivity.this, InventoryActivity.class)
-                        .putExtra(InventoryActivity.PARAM_IS_PHYSICAL_INVENTORY, true));
+                Intent intent = new Intent(HomeActivity.this, InventoryActivity.class);
+                intent.putExtra(InventoryActivity.PARAM_IS_PHYSICAL_INVENTORY, true);
+                startActivity(intent);
             }
         });
 
@@ -123,15 +125,15 @@ public class HomeActivity extends BaseActivity {
     }
 
     public void showMMIAHistoryList(android.view.View view) {
-        startActivity(getIntent()
-                .setClass(HomeActivity.this, RnRFormListActivity.class)
-                .putExtra(RnRFormListActivity.PARAM_PROGRAM_CODE, MMIARepository.MMIA_PROGRAM_CODE));
+        Intent intent = new Intent(this, RnRFormListActivity.class);
+        intent.putExtra(RnRFormListActivity.PARAM_PROGRAM_CODE, MMIARepository.MMIA_PROGRAM_CODE);
+        startActivity(intent);
     }
 
-    public void showVIAHistoryList(android.view.View view) {
-        startActivity(getIntent()
-                .setClass(HomeActivity.this, RnRFormListActivity.class)
-                .putExtra(RnRFormListActivity.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE));
+    public void showVIAHistoryList(android.view.View view){
+        Intent intent = new Intent(this, RnRFormListActivity.class);
+        intent.putExtra(RnRFormListActivity.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE);
+        startActivity(intent);
     }
 
     @Override
@@ -158,6 +160,20 @@ public class HomeActivity extends BaseActivity {
         } else {
             txLastSynced.setText(getResources().getString(R.string.label_last_synced_days_ago, (diff / DateUtil.MILLISECONDS_DAY)));
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (FeatureToggle.isOpen(R.bool.time_out_235)) {
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+                homeIntent.addCategory(Intent.CATEGORY_HOME);
+                homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(homeIntent);
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

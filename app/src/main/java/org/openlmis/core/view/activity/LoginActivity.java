@@ -24,7 +24,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -107,7 +106,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
     public void startActivity(Class activityName) {
         saveString(Constants.KEY_LAST_LOGIN_USER, userName.getText().toString().trim());
-        super.startActivity(activityName, true);
+        super.startActivity(activityName);
     }
 
 
@@ -161,34 +160,14 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         isActive = true;
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         isActive = false;
-    }
-
-    public static Intent getIntentToMe(Context context) {
-        Intent intent = new Intent(context, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        return intent;
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-
-            Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-            homeIntent.addCategory(Intent.CATEGORY_HOME);
-            homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(homeIntent);
-
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
     }
 }

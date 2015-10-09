@@ -32,13 +32,13 @@
 
         <activity
             android:name=".view.activity.InventoryActivity"
-            android:screenOrientation="portrait"
             android:label="@string/title_init_inventory" />
 
         <activity
             android:name=".view.activity.HomeActivity"
-            android:label="@string/title_home"
-            android:launchMode="singleTask" />
+            android:label="@string/title_home">
+
+        </activity>
 
         <activity
             android:name=".view.activity.StockCardListActivity"
