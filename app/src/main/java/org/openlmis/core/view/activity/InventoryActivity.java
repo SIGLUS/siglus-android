@@ -91,11 +91,15 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
         if (isPhysicalInventory) {
             initPhysicalInventoryUI();
         } else {
-            if (getIntent().getBooleanExtra(PARAM_IS_ADD_NEW_DRUG, false)) {
+            if (isAddNewDrug()) {
                 setTitle(getResources().getString(R.string.title_add_new_drug));
             }
             initInitialInventoryUI();
         }
+    }
+
+    private boolean isAddNewDrug() {
+        return getIntent().getBooleanExtra(PARAM_IS_ADD_NEW_DRUG, false);
     }
 
     private void initPhysicalInventoryUI() {
@@ -219,7 +223,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (FeatureToggle.isOpen(R.bool.time_out_235)) {
-            if (!isPhysicalInventory && keyCode == KeyEvent.KEYCODE_BACK) {
+            if (!isPhysicalInventory && !isAddNewDrug() && keyCode == KeyEvent.KEYCODE_BACK) {
                 Intent homeIntent = new Intent(Intent.ACTION_MAIN);
                 homeIntent.addCategory(Intent.CATEGORY_HOME);
                 homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
