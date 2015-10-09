@@ -95,6 +95,10 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
                 setTitle(getResources().getString(R.string.title_add_new_drug));
             }
             initInitialInventoryUI();
+
+            if (getSupportActionBar() != null && !isAddNewDrug()) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            }
         }
     }
 
@@ -224,10 +228,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (FeatureToggle.isOpen(R.bool.time_out_235)) {
             if (!isPhysicalInventory && !isAddNewDrug() && keyCode == KeyEvent.KEYCODE_BACK) {
-                Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-                homeIntent.addCategory(Intent.CATEGORY_HOME);
-                homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(homeIntent);
+                moveTaskToBack(true);
                 return true;
             }
         }

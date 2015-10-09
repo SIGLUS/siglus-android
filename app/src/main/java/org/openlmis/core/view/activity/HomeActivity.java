@@ -130,7 +130,7 @@ public class HomeActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    public void showVIAHistoryList(android.view.View view){
+    public void showVIAHistoryList(android.view.View view) {
         Intent intent = new Intent(this, RnRFormListActivity.class);
         intent.putExtra(RnRFormListActivity.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE);
         startActivity(intent);
@@ -166,10 +166,7 @@ public class HomeActivity extends BaseActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (FeatureToggle.isOpen(R.bool.time_out_235)) {
             if (keyCode == KeyEvent.KEYCODE_BACK) {
-                Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-                homeIntent.addCategory(Intent.CATEGORY_HOME);
-                homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(homeIntent);
+                moveTaskToBack(true);
                 return true;
             }
         }
