@@ -50,9 +50,9 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     @Inject
     SharedPreferenceMgr preferencesMgr;
     protected SearchView searchView;
-    public static long lastOperateTime;
+    public static long lastOperateTime = System.currentTimeMillis();
 
-    private final static long TIMEOUT_TIME = 5 * 60 * 1000;
+    private final static long TIMEOUT_TIME = 60 * 60 * 1000;
 
     public abstract Presenter getPresenter();
 
