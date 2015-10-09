@@ -20,7 +20,6 @@
 package org.openlmis.core.view.activity;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -169,11 +168,5 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     protected void onPause() {
         super.onPause();
         isActive = false;
-    }
-
-    public static Intent getIntentToMe(Context context) {
-        Intent intent = new Intent(context, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
-        return intent;
     }
 }

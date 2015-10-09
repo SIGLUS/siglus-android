@@ -52,7 +52,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     protected SearchView searchView;
     public static long lastOperateTime;
 
-    private final static long TIMEOUT_TIME = 3 * 60 * 1000;
+    private final static long TIMEOUT_TIME = 5 * 60 * 1000;
 
     public abstract Presenter getPresenter();
 
