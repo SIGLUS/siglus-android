@@ -1,11 +1,10 @@
-package org.openlmis.core.view.fragment;
+package org.openlmis.core.view.widget;
 
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +14,12 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import org.openlmis.core.R;
+import org.openlmis.core.view.fragment.BaseDialogFragment;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class InventorySignatureDialog extends DialogFragment implements View.OnClickListener {
+public class SignatureDialog extends BaseDialogFragment implements View.OnClickListener {
 
     Button btnCancel;
     Button btnSign;
