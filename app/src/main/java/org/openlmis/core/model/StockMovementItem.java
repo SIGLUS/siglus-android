@@ -57,6 +57,9 @@ public class StockMovementItem extends BaseModel{
     @DatabaseField
     long stockOnHand = -1;
 
+    @DatabaseField
+    String signature;
+
     @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = "yyyy-MM-dd")
     private java.util.Date movementDate;
 

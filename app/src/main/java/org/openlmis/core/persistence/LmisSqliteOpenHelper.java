@@ -25,6 +25,7 @@ import android.util.Log;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 
+import org.openlmis.core.persistence.migrations.AddSignatureFieldInStockMovementItemTable;
 import org.openlmis.core.persistence.migrations.CreateDummyRegimes;
 import org.openlmis.core.persistence.migrations.CreateInitTables;
 
@@ -37,6 +38,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
         {
             add(new CreateInitTables());
             add(new CreateDummyRegimes());
+            add(new AddSignatureFieldInStockMovementItemTable());
         }
     };
     private static int instanceCount = 0;
