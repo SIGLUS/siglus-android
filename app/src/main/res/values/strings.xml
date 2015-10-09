@@ -27,7 +27,10 @@
     <string name="msg_inventory_check_failed">Quantity cannot be left blank!</string>
     <string name="msg_invalid_date">Cannot choose past date</string>
     <string name="btn_done">Done</string>
-
+    <string name="dialog_request_signature">Sign the movement with your details</string>
+    <string name="dialog_request_signature_cancel">Cancel</string>
+    <string name="dialog_request_signature_sign">Sign</string>
+    
     <!-- Home Page -->
     <string name="label_stock_cards">Stock on Hand</string>
     <string name="label_mmia">MMIA</string>
