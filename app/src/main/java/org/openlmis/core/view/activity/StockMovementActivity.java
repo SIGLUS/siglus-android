@@ -153,7 +153,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         if (!TextUtils.isEmpty(expireDates)) {
             String convertedDate = null;
             try {
-                convertedDate = DateUtil.convertDate(expireDates, "dd/mm/yyyy", DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+                convertedDate = DateUtil.convertDate(expireDates, DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
