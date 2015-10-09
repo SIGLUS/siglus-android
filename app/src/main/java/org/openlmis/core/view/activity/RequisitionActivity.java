@@ -119,11 +119,8 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         long formId = getIntent().getLongExtra("formId", 0);
-        if (formId == 0) {
-            isHistoryForm = false;
-        } else {
-            isHistoryForm = true;
-        }
+        isHistoryForm = formId != 0;
+
         inflater = LayoutInflater.from(this);
         hasDataChanged = (Boolean) dataFragment.getData("hasDataChanged");
         initUI();
@@ -269,11 +266,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     }
 
     private void onSaveBtnClick() {
-        if (hasDataChanged()) {
-            String consultationNumbers = etConsultationNumbers.getText().toString();
-            presenter.saveDraftRequisition(consultationNumbers);
-        }
-        goToHomePage();
+        presenter.saveDraftRequisition(etConsultationNumbers.getText().toString());
     }
 
 
@@ -331,7 +324,8 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         listView1.setOnScrollListener(new MyScrollListener(listView1, listView2));
     }
 
-    private void goToHomePage() {
+    @Override
+    public void goToHomePage() {
         Intent intent = new Intent(RequisitionActivity.this, HomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(HomeActivity.class, true);

@@ -200,17 +200,36 @@ public class RequisitionPresenter implements Presenter {
     }
 
     public void saveDraftRequisition(String consultationNumbers) {
+        view.loading();
         setRnrFormAmount();
         if (!TextUtils.isEmpty(consultationNumbers)) {
             rnRForm.getBaseInfoItemListWrapper().get(0).setValue(Long.valueOf(consultationNumbers).toString());
         }
         rnRForm.setStatus(RnRForm.STATUS.DRAFT);
 
-        try {
-            viaRepository.save(rnRForm);
-        } catch (LMISException e) {
-            view.showErrorMessage(e.getMessage());
-        }
+        Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    viaRepository.save(rnRForm);
+                    subscriber.onNext(null);
+                } catch (LMISException e) {
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                view.loaded();
+                view.goToHomePage();
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                view.loaded();
+                view.showErrorMessage(throwable.getMessage());
+            }
+        });
     }
 
     public String getConsultationNumbers() {
@@ -253,6 +272,8 @@ public class RequisitionPresenter implements Presenter {
         void showErrorMessage(String msg);
 
         void completeSuccess();
+
+        void goToHomePage();
     }
 
 }

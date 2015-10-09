@@ -282,9 +282,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     }
 
     private void onSaveBtnClick() {
-        if (hasDataChanged()) {
-            presenter.saveDraftForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
-        }
+        presenter.saveDraftForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
     }
 
     public static Intent getIntentToMe(Context context, long formId) {
