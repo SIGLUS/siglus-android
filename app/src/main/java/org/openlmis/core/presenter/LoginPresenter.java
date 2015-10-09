@@ -163,6 +163,7 @@ public class LoginPresenter implements Presenter {
                 @Override
                 public void onError(Throwable e) {
                     ToastUtil.show(R.string.msg_user_not_facility);
+                    view.loaded();
                 }
             });
 
