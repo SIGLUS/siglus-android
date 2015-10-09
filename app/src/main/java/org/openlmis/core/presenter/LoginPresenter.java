@@ -157,7 +157,6 @@ public class LoginPresenter implements Presenter {
                 public void onCompleted() {
                     isLoadingProducts = false;
                     view.setHasGetProducts(true);
-                    view.loaded();
                     goToNextPage();
                 }
 
