@@ -23,9 +23,12 @@ package org.openlmis.core.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.text.InputType;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.google.inject.Inject;
 
@@ -40,7 +43,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_login)
-public class LoginActivity extends BaseActivity implements LoginPresenter.LoginView {
+public class LoginActivity extends BaseActivity implements LoginPresenter.LoginView, View.OnClickListener {
 
     @InjectView(R.id.tx_username)
     public EditText userName;
@@ -52,6 +55,8 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     public TextInputLayout lyUserName;
     @InjectView(R.id.ly_password)
     public TextInputLayout lyPassword;
+    @InjectView(R.id.iv_visibility_pwd)
+    public ImageView ivVisibilityPwd;
     @Inject
     LoginPresenter presenter;
 
@@ -75,12 +80,8 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
     void initUI() {
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.startLogin(userName.getText().toString(), password.getText().toString());
-            }
-        });
+        ivVisibilityPwd.setOnClickListener(this);
+        btnLogin.setOnClickListener(this);
 
         String lastLoginUser = getPreferences().getString(Constants.KEY_LAST_LOGIN_USER, StringUtils.EMPTY);
         if (StringUtils.isNotBlank(lastLoginUser)) {
@@ -168,5 +169,34 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     protected void onPause() {
         super.onPause();
         isActive = false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_login:
+                presenter.startLogin(userName.getText().toString(), password.getText().toString());
+                break;
+            case R.id.iv_visibility_pwd:
+                setPwdVisibility();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void setPwdVisibility() {
+        if (password.getInputType() == (InputType.TYPE_CLASS_TEXT
+                | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD)) {
+            ivVisibilityPwd.setImageResource(R.drawable.ic_visibility_off);
+            password.setInputType(InputType.TYPE_CLASS_TEXT
+                    | EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        } else {
+            password.setInputType(InputType.TYPE_CLASS_TEXT
+                    | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
+            ivVisibilityPwd.setImageResource(R.drawable.ic_visibility);
+        }
+
+        password.setSelection(password.getText().length());
     }
 }

@@ -7,10 +7,10 @@
         android:fillViewport="true">
 
         <LinearLayout
-            android:orientation="vertical"
-            android:gravity="center_horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="350dp"
@@ -50,15 +50,16 @@
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/ly_username"
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp">
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="60dp"
+                    android:layout_marginRight="60dp">
 
                     <EditText
                         android:id="@+id/tx_username"
-                        android:layout_width="wrap_content"
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:ems="18"
                         android:hint="@string/hint_username"
                         android:inputType="textPersonName" />
                 </android.support.design.widget.TextInputLayout>
@@ -66,17 +67,35 @@
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/ly_password"
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp">
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="60dp"
+                    android:layout_marginRight="60dp"
+                    android:orientation="horizontal">
 
-                    <EditText
-                        android:id="@+id/tx_password"
-                        android:layout_width="wrap_content"
+                    <FrameLayout
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:ems="18"
-                        android:hint="@string/hint_password"
-                        android:inputType="textPassword" />
+                        android:orientation="horizontal">
+
+
+                        <EditText
+                            android:id="@+id/tx_password"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/hint_password"
+                            android:inputType="textPassword"
+                            android:paddingEnd="35dp" />
+
+                        <ImageView
+                            android:id="@+id/iv_visibility_pwd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:layout_gravity="right"
+                            android:padding="5dp"
+                            android:src="@drawable/ic_visibility" />
+                    </FrameLayout>
                 </android.support.design.widget.TextInputLayout>
 
                 <Button
