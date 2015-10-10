@@ -36,7 +36,7 @@ Feature: Requisition
     Then I swipe right
     Then I swipe right
     Then I should see "345"
-    Then I go back
+    Then I press "Submit"
     Then I press "Complete"
     Then I wait for the "RequisitionActivity" screen to appear
 
