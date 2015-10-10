@@ -64,7 +64,9 @@
     <string name="msg_mmia_submit_tip">Your MMIA form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
     <string name="hint_mmia_total_not_equal">Total Therapeutic Regime does not equal Total Patients</string>
     <string name="msg_mmia_not_unique">Cannot submit MMIA twice in a period!</string>
-    <string name="reason_for_total_not_match"><![CDATA[Add reason for regime & patient mismatch]]></string>
+    <string name="msg_reason_for_total_not_match"><![CDATA[Add reason for regime & patient mismatch]]></string>
+    <string name="msg_regime_total_and_patient_total_not_match">Totals do not match please check figures that you\'ve entered .If figures are correct please add a justification for differing totals in the observation box</string>
+
 
     <!-- Requisition Form -->
     <string name="request_provincial_district_level">Requesition for Province or Distrit Level</string>

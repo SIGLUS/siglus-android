@@ -140,11 +140,11 @@ public class MMIAFormPresenter implements Presenter {
         form.setBaseInfoItemListWrapper(baseInfoItemList);
         form.setComments(comments);
 
-        if (validate(form)) {
-            authoriseForm();
-        } else {
+        if (!validate(form) && comments.equals("")) {
             view.showValidationAlert();
+            return;
         }
+        authoriseForm();
     }
 
     private void authoriseForm() {

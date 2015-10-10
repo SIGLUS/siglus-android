@@ -133,7 +133,7 @@
                             android:layout_marginBottom="10dp"
                             android:textColor="@color/color_error_title"
                             android:visibility="invisible"
-                            android:text="@string/reason_for_total_not_match"/>
+                            android:text="@string/msg_reason_for_total_not_match"/>
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
             </LinearLayout>

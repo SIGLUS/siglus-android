@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
@@ -227,7 +228,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     };
 
     private void highlightTotalDifference() {
-        if (regimeListView.getTotal() != mmiaInfoListView.getTotal()){
+        if (!isTotalEqual()){
             regimeListView.highLightTotal();
             mmiaInfoListView.highLightTotal();
             tvNotMatch.setVisibility(View.VISIBLE);
@@ -277,7 +278,11 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     @Override
     public void showValidationAlert() {
-
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false)
+                .setMessage(getString(R.string.msg_regime_total_and_patient_total_not_match))
+                .setPositiveButton("OK",null)
+                .show();
     }
 
     @Override
@@ -313,10 +318,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         if (!regimeListView.isCompleted() || !mmiaInfoListView.isCompleted()) {
             return;
         }
-        if (!isTotalEqual()) {
-            ToastUtil.show(R.string.hint_mmia_total_not_equal);
-            return;
-        }
+
         presenter.completeMMIA(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
     }
 
