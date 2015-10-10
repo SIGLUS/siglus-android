@@ -2,5 +2,4 @@
 <resources>
     <bool name="red_font_color_267">true</bool>
     <bool name="view_requisition_history_75">true</bool>
-    <bool name="time_out_235">true</bool>
 </resources>

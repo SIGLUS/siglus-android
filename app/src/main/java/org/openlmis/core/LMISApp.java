@@ -30,6 +30,8 @@ import roboguice.RoboGuice;
 public class LMISApp extends Application {
     private static Context applicationContext;
 
+    public static long lastOperateTime = 0L;
+
     @Override
     public void onCreate() {
         super.onCreate();

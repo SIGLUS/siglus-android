@@ -20,7 +20,6 @@ package org.openlmis.core.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.widget.Button;
 import android.widget.TextView;
@@ -163,14 +162,10 @@ public class HomeActivity extends BaseActivity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public void onBackPressed() {
         if (FeatureToggle.isOpen(R.bool.time_out_235)) {
-            if (keyCode == KeyEvent.KEYCODE_BACK) {
-                moveTaskToBack(true);
-                return true;
-            }
+            moveTaskToBack(true);
         }
-        return super.onKeyDown(keyCode, event);
     }
 
     @Override

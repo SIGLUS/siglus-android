@@ -39,4 +39,6 @@
         <item>08S23</item>
         <item>08S17</item>
     </string-array>
+
+    <string name="timeout">3600000</string>
 </resources>

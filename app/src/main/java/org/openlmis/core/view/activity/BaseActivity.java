@@ -35,11 +35,11 @@ import android.widget.Toast;
 import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.Presenter;
-import org.openlmis.core.utils.FeatureToggle;
 import org.openlmis.core.view.View;
 
 import roboguice.activity.RoboActionBarActivity;
@@ -50,9 +50,8 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     @Inject
     SharedPreferenceMgr preferencesMgr;
     protected SearchView searchView;
-    public static long lastOperateTime = System.currentTimeMillis();
 
-    private final static long TIMEOUT_TIME = 60 * 60 * 1000;
+    private final long APP_TIMEOUT = Long.parseLong(getResources().getString(R.string.timeout_time));
 
     public abstract Presenter getPresenter();
 
@@ -72,23 +71,24 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (FeatureToggle.isOpen(R.bool.time_out_235)) {
-            if (System.currentTimeMillis() - BaseActivity.lastOperateTime > TIMEOUT_TIME && !LoginActivity.isActive) {
-                Intent intent = new Intent(this, LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                resetTime();
-                return true;
-            } else {
-                resetTime();
-            }
+        if (LMISApp.lastOperateTime > 0L && alreadyTimeOuted(ev.getEventTime())) {
+            logout();
+            return true;
+        } else {
+            LMISApp.lastOperateTime = ev.getEventTime();
+            return super.dispatchTouchEvent(ev);
         }
-
-        return super.dispatchTouchEvent(ev);
     }
 
-    private void resetTime() {
-        lastOperateTime = System.currentTimeMillis();
+    private void logout() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        LMISApp.lastOperateTime = 0L;
+    }
+
+    private boolean alreadyTimeOuted(Long eventTime) {
+        return eventTime - LMISApp.lastOperateTime > APP_TIMEOUT;
     }
 
     @Override
@@ -126,7 +126,6 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
                 return onSearchStart(newText);
             }
         });
-
 
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override

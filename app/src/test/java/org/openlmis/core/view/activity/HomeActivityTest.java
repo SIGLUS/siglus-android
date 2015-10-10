@@ -21,10 +21,14 @@ package org.openlmis.core.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.view.MotionEvent;
 
+import org.hamcrest.core.Is;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -38,19 +42,28 @@ import org.robolectric.shadows.ShadowIntent;
 
 import java.util.Date;
 
+import static junit.framework.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class HomeActivityTest {
 
     HomeActivity homeActivity;
+    protected MotionEvent mockMotion1;
+    protected MotionEvent mockMotion2;
 
     @Before
     public void setUp() {
         homeActivity = Robolectric.buildActivity(HomeActivity.class).create().get();
+
+        mockMotion1 = mock(MotionEvent.class);
+        mockMotion2 = mock(MotionEvent.class);
     }
 
     @Test
@@ -123,5 +136,39 @@ public class HomeActivityTest {
         Intent startedIntent = shadowActivity.getNextStartedActivity();
         ShadowIntent shadowIntent = shadowOf(startedIntent);
         assertThat(shadowIntent.getComponent().getClassName(), equalTo(className));
+    }
+
+    @Test
+    public void shouldNotLogOutOrResetTimeIfFirstTimeOperation() throws Exception {
+        when(mockMotion1.getEventTime()).thenReturn(1234L);
+        homeActivity.dispatchTouchEvent(mockMotion1);
+        Assert.assertThat(LMISApp.lastOperateTime, Is.is(not(0L)));
+    }
+
+    @Test
+    public void shouldNotLogOutOrResetTimeIfNotTimeOut() throws Exception {
+        when(mockMotion1.getEventTime()).thenReturn(10000L);
+        homeActivity.dispatchTouchEvent(mockMotion1);
+
+        when(mockMotion2.getEventTime()).thenReturn(16000L);
+        homeActivity.dispatchTouchEvent(mockMotion2);
+
+        Assert.assertThat(LMISApp.lastOperateTime, Is.is(not(0L)));
+        Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
+        assertNull(startedIntent);
+    }
+
+    @Test
+    public void shouldLogOutAndResetTimeIfTimeOut() throws Exception {
+        when(mockMotion1.getEventTime()).thenReturn(10000L);
+        homeActivity.dispatchTouchEvent(mockMotion1);
+
+        when(mockMotion2.getEventTime()).thenReturn(23000L);
+        homeActivity.dispatchTouchEvent(mockMotion2);
+
+        Assert.assertThat(LMISApp.lastOperateTime, is(0L));
+
+        Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
+        assertThat(startedIntent.getComponent().getClassName(), equalTo(LoginActivity.class.getName()));
     }
 }

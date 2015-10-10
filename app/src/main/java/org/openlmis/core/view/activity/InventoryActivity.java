@@ -23,7 +23,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -225,13 +224,13 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public void onBackPressed() {
         if (FeatureToggle.isOpen(R.bool.time_out_235)) {
-            if (!isPhysicalInventory && !isAddNewDrug() && keyCode == KeyEvent.KEYCODE_BACK) {
+            if (!isPhysicalInventory && !isAddNewDrug()) {
                 moveTaskToBack(true);
-                return true;
+            }else {
+                super.onBackPressed();
             }
         }
-        return super.onKeyDown(keyCode, event);
     }
 }
