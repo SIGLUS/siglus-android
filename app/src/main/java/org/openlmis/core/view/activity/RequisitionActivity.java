@@ -249,7 +249,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     @Override
     public void completeSuccess() {
-        ToastUtil.show(R.string.msg_requisition_submit_tip);
+        ToastUtil.showForLongTime(R.string.msg_requisition_submit_tip);
         goToHomePage();
     }
 

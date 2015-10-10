@@ -328,7 +328,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     @Override
     public void completeSuccess() {
-        ToastUtil.show(R.string.msg_mmia_submit_tip);
+        ToastUtil.showForLongTime(R.string.msg_mmia_submit_tip);
         goToHomePage();
     }
 

@@ -39,6 +39,12 @@ public final class ToastUtil {
         Toast.makeText(LMISApp.getContext(), text, Toast.LENGTH_SHORT).show();
     }
 
+    public static void showForLongTime(int resId) {
+        for(int i = 0; i < 2; i++) {
+            Toast.makeText(LMISApp.getContext(), resId, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public static void show(int resId) {
         Toast.makeText(LMISApp.getContext(), resId, Toast.LENGTH_SHORT).show();
     }
