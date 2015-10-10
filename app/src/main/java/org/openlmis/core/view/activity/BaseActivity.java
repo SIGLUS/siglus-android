@@ -51,7 +51,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     SharedPreferenceMgr preferencesMgr;
     protected SearchView searchView;
 
-    private final long APP_TIMEOUT = Long.parseLong(getResources().getString(R.string.timeout_time));
+    private long APP_TIMEOUT;
 
     public abstract Presenter getPresenter();
 
@@ -106,6 +106,8 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
             getSupportActionBar().setHomeButtonEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+        APP_TIMEOUT = Long.parseLong(getResources().getString(R.string.timeout_time));
     }
 
     @Override
