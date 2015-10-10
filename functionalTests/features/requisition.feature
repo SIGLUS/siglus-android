@@ -30,9 +30,10 @@ Feature: Requisition
     Then I swipe right
     Then I enter QuantityRequested "345"
     And I press "Save"
-    Then I wait for the "RequisitionActivity" screen to appear
 
+    Then I wait for 1 second
     When I press view with id "btn_requisition"
+    Then I wait for the "RequisitionActivity" screen to appear
     Then I swipe right
     Then I swipe right
     Then I should see "345"
