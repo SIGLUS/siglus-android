@@ -106,7 +106,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldGetDraftMMIAForms() throws LMISException {
+    public void shouldGetDraftForm() throws LMISException {
         Program program = new Program();
 
         RnRForm form = new RnRForm();
@@ -119,6 +119,22 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         RnRForm rnRForm = rnrFormRepository.queryUnAuthorized(program);
 
         assertThat(rnRForm.getComments(), is("DRAFT Form"));
+    }
+
+    @Test
+    public void shouldGetSubmittedForm() throws LMISException {
+        Program program = new Program();
+
+        RnRForm form = new RnRForm();
+        form.setProgram(program);
+        form.setComments("Submitted Form");
+        form.setStatus(RnRForm.STATUS.SUBMITED);
+
+        rnrFormRepository.create(form);
+
+        RnRForm rnRForm = rnrFormRepository.queryUnAuthorized(program);
+
+        assertThat(rnRForm.getComments(), is("Submitted Form"));
     }
 
 

@@ -28,6 +28,7 @@ import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
@@ -56,11 +57,11 @@ public class RequisitionPresenterTest {
 
     private RequisitionPresenter presenter;
     private RequisitionActivity mockActivity;
-    private VIARepository viaRepository;
+    private VIARepository mockVIARepository;
 
     @Before
     public void setup() throws ViewNotMatchException {
-        viaRepository = mock(VIARepository.class);
+        mockVIARepository = mock(VIARepository.class);
         mockActivity = mock(RequisitionActivity.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
@@ -101,25 +102,80 @@ public class RequisitionPresenterTest {
     @Test
     public void shouldGetRnRFormById() throws Exception {
         presenter.loadRnrForm(1);
-        verify(viaRepository).queryRnRForm(anyInt());
-        verify(viaRepository, never()).getDraftVIA();
+        verify(mockVIARepository).queryRnRForm(anyInt());
+        verify(mockVIARepository, never()).getDraftVIA();
     }
 
     @Test
     public void shouldGetInitForm() throws LMISException, SQLException {
-        when(viaRepository.getDraftVIA()).thenReturn(null);
+        when(mockVIARepository.getDraftVIA()).thenReturn(null);
         presenter.loadRnrForm(0);
-        verify(viaRepository).getDraftVIA();
-        verify(viaRepository).initVIA();
+        verify(mockVIARepository).getDraftVIA();
+        verify(mockVIARepository).initVIA();
     }
 
     @Test
     public void shouldGetDraftForm() throws LMISException {
-        when(viaRepository.getDraftVIA()).thenReturn(new RnRForm());
+        when(mockVIARepository.getDraftVIA()).thenReturn(new RnRForm());
         presenter.loadRnrForm(0);
-        verify(viaRepository).getDraftVIA();
-        verify(viaRepository, never()).initVIA();
+        verify(mockVIARepository).getDraftVIA();
+        verify(mockVIARepository, never()).initVIA();
     }
+
+    @Test
+    public void shouldSubmitWhenStatusIsDraftAndAuthorizeWhenStatusIsSubmitted() throws LMISException{
+        final RnRForm form = new RnRForm();
+        form.setStatus(RnRForm.STATUS.DRAFT);
+        form.setRnrFormItemListWrapper(new ArrayList<RnrFormItem>());
+        form.setBaseInfoItemListWrapper(new ArrayList<BaseInfoItem>() {{
+            add(new BaseInfoItem(VIARepository.ATTR_CONSULTATION, BaseInfoItem.TYPE.STRING, form));
+        }});
+
+        when(mockVIARepository.getDraftVIA()).thenReturn(form);
+
+        mockVIARepository.initVIA();
+        presenter.loadRnrForm(0);
+
+        presenter.requisitionFormItemViewModelList = new ArrayList<>();
+        presenter.processRequisition("123");
+
+        verify(mockVIARepository).submit(form);
+
+        form.setStatus(RnRForm.STATUS.SUBMITED);
+        presenter.processRequisition("123");
+
+        verify(mockVIARepository).authorise(form);
+    }
+
+
+    @Test
+    public void shouldHighLightRequestAmountWhenFormStatusIsDraft(){
+        highLightForm(RnRForm.STATUS.DRAFT);
+        verify(mockActivity).highLightRequestAmount();
+        verify(mockActivity, never()).highLightApprovedAmount();
+    }
+
+    @Test
+    public void shouldHighLightApproveAmountWhenFormStatusIsSubmitted(){
+        highLightForm(RnRForm.STATUS.SUBMITED);
+        verify(mockActivity).highLightApprovedAmount();
+        verify(mockActivity, never()).highLightRequestAmount();
+    }
+
+    @Test
+    public void shouldNotHighLightAnyColumnWhenFormStatusIsAuthorized() {
+        highLightForm(RnRForm.STATUS.AUTHORIZED);
+        verify(mockActivity, never()).highLightApprovedAmount();
+        verify(mockActivity, never()).highLightRequestAmount();
+    }
+
+    private void highLightForm(RnRForm.STATUS status) {
+        RnRForm form = new RnRForm();
+        form.setStatus(status);
+        presenter.rnRForm = form;
+        presenter.updateRequisitionFormUI(new ArrayList<RequisitionFormItemViewModel>());
+    }
+
 
     private RnrFormItem createRnrFormItem(int i) {
         Program program = new Program();
@@ -137,7 +193,7 @@ public class RequisitionPresenterTest {
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
-            bind(VIARepository.class).toInstance(viaRepository);
+            bind(VIARepository.class).toInstance(mockVIARepository);
         }
     }
 
