@@ -77,6 +77,9 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     @InjectView(R.id.btn_save)
     private View btnSave;
 
+    @InjectView(R.id.tv_total_not_match)
+    private TextView tvNotMatch;
+
     MMIAFormPresenter presenter;
 
     Boolean hasDataChanged;
@@ -97,7 +100,6 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     }
 
     private void initPresenter() {
-        // find the retained fragment on activity restarts
         FragmentManager fm = getFragmentManager();
         dataFragment = (RetainedFragment) fm.findFragmentByTag("RetainedFragment");
 
@@ -146,6 +148,8 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
             setTitle(new RnRFormViewModel(form).getPeriod());
         }
 
+        highlightTotalDifference();
+
         etComment.setText(form.getComments());
 
         etComment.post(new Runnable() {
@@ -185,14 +189,10 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     TextWatcher commentTextWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -202,14 +202,10 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     TextWatcher regimeTotalTextWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -219,14 +215,10 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     TextWatcher totalPatientTextWatcher  = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -238,9 +230,11 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         if (regimeListView.getTotal() != mmiaInfoListView.getTotal()){
             regimeListView.highLightTotal();
             mmiaInfoListView.highLightTotal();
+            tvNotMatch.setVisibility(View.VISIBLE);
         }else {
             regimeListView.deHighLightTotal();
             mmiaInfoListView.deHighLightTotal();
+            tvNotMatch.setVisibility(View.INVISIBLE);
         }
     }
 
