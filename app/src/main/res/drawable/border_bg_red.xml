@@ -3,6 +3,6 @@
     android:shape="rectangle">
     <stroke
         android:width="@dimen/divider"
-        android:color="@color/divider" />
-    <solid android:color="@color/white" />
+        android:color="@color/red" />
+    <solid android:color="@color/mmia_spread_bg" />
 </shape>
