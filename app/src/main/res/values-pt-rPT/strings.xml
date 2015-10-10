@@ -7,7 +7,7 @@
     <string name="title_physical_inventory">Inventario</string>
     <string name="title_stock_cards">Fichas de Stock</string>
     <string name="title_mmia_spread">MMIA</string>
-    <string name="title_requisition">Requisição / Balancete</string>
+    <string name="title_requisition">Elaborar Requisição/Balancete</string>
 
     <!-- Login Page -->
     <string name="hint_username">Usuário</string>
@@ -29,8 +29,8 @@
     <string name="btn_done">Feito</string>
 
     <!-- Home Page -->
-    <string name="label_stock_cards">FICHA DE STOCK</string>
-    <string name="label_mmia">MMIA</string>
+    <string name="label_stock_cards">Ficha de Stock</string>
+    <string name="label_mmia">Elaborar MMIA</string>
     <string name="label_sync">Sincronizar dados</string>
     <string name="action_add_new_drug">Adicionar novo producto</string>
     <string name="label_last_synced_mins_ago">Última sincronização há %s minutos</string>
@@ -49,7 +49,7 @@
     <string name="label_received_mmia">Entradas</string>
     <string name="label_issued_mmia">Saídas</string>
     <string name="label_adjustment">Perdas e ajustes</string>
-    <string name="label_inventory">Inventario</string>
+    <string name="label_inventory">Fazer Inventário Mensal</string>
     <string name="label_validate">Validade</string>
     <string name="label_issued_unit">Unidade de Saída</string>
     <string name="hint_error_input">Entrada inválida</string>

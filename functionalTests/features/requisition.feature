@@ -5,14 +5,14 @@ Feature: Requisition
     Given I am logged in
     Given I am Initialized Inventory
 
-    And I press "Via Classical Requisition"
+    And I press "Create a Via Classica Requesition"
     Then I wait for the "RequisitionActivity" screen to appear
     Then I should see text containing "Acyclovir, tablet 400mg"
     Then I should see "4" products
 
   Scenario: Pop up alert
     Given I am logged in
-    And I press "Via Classical Requisition"
+    And I press "Create a Via Classica Requesition"
     Then I wait for the "RequisitionActivity" screen to appear
     Then I enter consultationsNub "2015"
     Then I wait for 1 second
@@ -23,7 +23,7 @@ Feature: Requisition
 
   Scenario: Save requisition draft and complete
     Given I am logged in
-    And I press "Via Classical Requisition"
+    And I press "Create a Via Classica Requesition"
     When I enter consultationsNub "888"
     Then I swipe right
     Then I swipe right
@@ -42,7 +42,7 @@ Feature: Requisition
 
 Scenario: Add A Issued Movement on VIA product,then the quantity should change
     Given I am logged in
-    And I press "STOCK MOVEMENT CARD"
+    And I press "Stock Card"
     Then I wait for the "StockCardListActivity" screen to appear
     Then I wait for 1 second
     And I make a movement "Acetylsalicylic Acid, tablet 300mg [P1]" "Issues" "PAV" "issued" "10"

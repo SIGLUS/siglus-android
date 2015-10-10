@@ -7,7 +7,7 @@
     <string name="title_physical_inventory">Inventory</string>
     <string name="title_stock_cards">Stock Cards</string>
     <string name="title_mmia_spread">MMIA</string>
-    <string name="title_requisition">Via Classical Requisition</string>
+    <string name="title_requisition">Create a Via Classica Requesition</string>
 
     <!-- Login Page -->
     <string name="hint_username">User Name</string>
@@ -32,8 +32,8 @@
     <string name="dialog_request_signature_sign">Sign</string>
     
     <!-- Home Page -->
-    <string name="label_stock_cards">STOCK MOVEMENT CARD</string>
-    <string name="label_mmia">MMIA</string>
+    <string name="label_stock_cards">Stock Card</string>
+    <string name="label_mmia">Create a MMIA</string>
     <string name="label_sync">Sync Data</string>
     <string name="action_add_new_drug">Add new product</string>
     <string name="label_last_synced_mins_ago">Last synced %s minutes ago</string>
@@ -53,7 +53,7 @@
     <string name="label_received_mmia">Entries</string>
     <string name="label_issued_mmia">Issues</string>
     <string name="label_adjustment">Adjustments</string>
-    <string name="label_inventory">Inventory</string>
+    <string name="label_inventory">Do Monthly Inventory</string>
     <string name="label_validate">Expiration</string>
     <string name="label_issued_unit">Unit of Issue</string>
     <string name="hint_error_input">Invalid Input</string>
