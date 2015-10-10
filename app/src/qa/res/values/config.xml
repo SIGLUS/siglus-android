@@ -40,5 +40,5 @@
         <item>08S17</item>
     </string-array>
 
-    <string name="timeout">3600000</string>
+    <string name="app_time_out">3600000</string>
 </resources>

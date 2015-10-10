@@ -150,7 +150,7 @@ public class HomeActivityTest {
         when(mockMotion1.getEventTime()).thenReturn(10000L);
         homeActivity.dispatchTouchEvent(mockMotion1);
 
-        when(mockMotion2.getEventTime()).thenReturn(9000L+Long.parseLong(homeActivity.getResources().getString(R.string.timeout_time)));
+        when(mockMotion2.getEventTime()).thenReturn(9000L+Long.parseLong(homeActivity.getResources().getString(R.string.app_time_out)));
         homeActivity.dispatchTouchEvent(mockMotion2);
 
         Assert.assertThat(LMISApp.lastOperateTime, Is.is(not(0L)));
@@ -163,7 +163,7 @@ public class HomeActivityTest {
         when(mockMotion1.getEventTime()).thenReturn(10000L);
         homeActivity.dispatchTouchEvent(mockMotion1);
 
-        when(mockMotion2.getEventTime()).thenReturn(11000L+Long.parseLong(homeActivity.getResources().getString(R.string.timeout_time)));
+        when(mockMotion2.getEventTime()).thenReturn(11000L+Long.parseLong(homeActivity.getResources().getString(R.string.app_time_out)));
         homeActivity.dispatchTouchEvent(mockMotion2);
 
         Assert.assertThat(LMISApp.lastOperateTime, is(0L));

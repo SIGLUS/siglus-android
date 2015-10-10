@@ -236,7 +236,6 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     private void highlightTotalDifference() {
         if (regimeListView.getTotal() != mmiaInfoListView.getTotal()){
-            //TODO highLight
             regimeListView.highLightTotal();
             mmiaInfoListView.highLightTotal();
         }else {

@@ -107,7 +107,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        APP_TIMEOUT = Long.parseLong(getResources().getString(R.string.timeout_time));
+        APP_TIMEOUT = Long.parseLong(getResources().getString(R.string.app_time_out));
     }
 
     @Override
