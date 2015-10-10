@@ -55,6 +55,10 @@ public class MMIAInfoList extends LinearLayout {
         init(context);
     }
 
+    public EditText getPatientTotalView(){
+        return totalView;
+    }
+
     private void init(Context context) {
         this.context = context;
         setOrientation(LinearLayout.VERTICAL);
@@ -123,6 +127,7 @@ public class MMIAInfoList extends LinearLayout {
                 return false;
             }
         });
+
     }
 
     private void setTotalViewBackground(BaseInfoItem item, EditText etValue) {
@@ -137,6 +142,14 @@ public class MMIAInfoList extends LinearLayout {
 
     public ArrayList<BaseInfoItem> getDataList() {
         return dataList;
+    }
+
+    public void highLightTotal() {
+        totalView.setBackground(getResources().getDrawable(R.drawable.border_bg_red));
+    }
+
+    public void deHighLightTotal() {
+        totalView.setBackground(getResources().getDrawable(R.color.mmia_spread_bg));
     }
 
     class EditTextWatcher implements android.text.TextWatcher {
@@ -165,6 +178,7 @@ public class MMIAInfoList extends LinearLayout {
                 String total = String.valueOf(getTotal());
                 totalItem.setValue(total);
                 totalView.setText(total);
+
             }
         }
     }

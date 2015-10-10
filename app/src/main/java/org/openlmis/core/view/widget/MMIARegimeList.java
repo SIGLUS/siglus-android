@@ -140,6 +140,13 @@ public class MMIARegimeList extends LinearLayout {
         return hasDataChanged;
     }
 
+    public void highLightTotal() {
+        totalView.setBackground(getResources().getDrawable(R.drawable.border_bg_red));
+    }
+
+    public void deHighLightTotal() {
+        totalView.setBackground(getResources().getDrawable(R.color.mmia_spread_bg));
+    }
 
     class EditTextWatcher implements android.text.TextWatcher {
 
@@ -169,6 +176,7 @@ public class MMIARegimeList extends LinearLayout {
                 item.setAmount(null);
             }
             totalView.setText(String.valueOf(getTotal()));
+
         }
     }
 

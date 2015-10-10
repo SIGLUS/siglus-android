@@ -29,6 +29,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -150,7 +151,22 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         etComment.post(new Runnable() {
             @Override
             public void run() {
-                etComment.addTextChangedListener(textWatcher);
+                etComment.addTextChangedListener(commentTextWatcher);
+            }
+        });
+
+        tvRegimeTotal.post(new Runnable() {
+            @Override
+            public void run() {
+                tvRegimeTotal.addTextChangedListener(regimeTotalTextWatcher);
+            }
+        });
+
+        final EditText patientTotalView = mmiaInfoListView.getPatientTotalView();
+        patientTotalView.post(new Runnable() {
+            @Override
+            public void run() {
+                patientTotalView.addTextChangedListener(totalPatientTextWatcher);
             }
         });
 
@@ -167,7 +183,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         });
     }
 
-    TextWatcher textWatcher = new TextWatcher() {
+    TextWatcher commentTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -183,6 +199,51 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
             commentHasChanged = true;
         }
     };
+
+    TextWatcher regimeTotalTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            highlightTotalDifference();
+        }
+    };
+
+    TextWatcher totalPatientTextWatcher  = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            highlightTotalDifference();
+        }
+    };
+
+    private void highlightTotalDifference() {
+        if (regimeListView.getTotal() != mmiaInfoListView.getTotal()){
+            //TODO highLight
+            regimeListView.highLightTotal();
+            mmiaInfoListView.highLightTotal();
+        }else {
+            regimeListView.deHighLightTotal();
+            mmiaInfoListView.deHighLightTotal();
+        }
+    }
 
     @Override
     public void onBackPressed() {
