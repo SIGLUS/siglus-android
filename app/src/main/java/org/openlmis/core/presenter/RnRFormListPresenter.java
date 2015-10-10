@@ -101,7 +101,7 @@ public class RnRFormListPresenter implements Presenter{
         viewModels.add(new RnRFormViewModel(LMISApp.getContext().getResources().getString(R.string.label_current_period)));
         Collections.reverse(rnRForms);
 
-        if (rnRForms.get(0).getStatus() == RnRForm.STATUS.DRAFT){
+        if (rnRForms.get(0).getStatus() != RnRForm.STATUS.AUTHORIZED){
             viewModels.add(new RnRFormViewModel(rnRForms.get(0)));
             rnRForms.remove(0);
         }

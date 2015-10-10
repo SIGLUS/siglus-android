@@ -116,7 +116,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         rnrFormRepository.create(form);
 
-        RnRForm rnRForm = rnrFormRepository.queryDraft(program);
+        RnRForm rnRForm = rnrFormRepository.queryUnAuthorized(program);
 
         assertThat(rnRForm.getComments(), is("DRAFT Form"));
     }

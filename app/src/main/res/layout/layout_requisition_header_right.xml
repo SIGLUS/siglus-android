@@ -191,13 +191,13 @@
         android:orientation="horizontal"
         android:divider="@drawable/divider_vertical"
         android:showDividers="middle|end">
-        <TextView
+        <TextView android:id="@+id/tv_label_request"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             style="@style/sheet_header2"
             android:layout_weight="1"
             android:text="@string/label_request_amount"/>
-        <TextView
+        <TextView android:id="@+id/tv_label_approve"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             style="@style/sheet_header2"

@@ -30,11 +30,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 
 import java.util.List;
+
+import lombok.Setter;
 
 public class RequisitionFormAdapter extends BaseAdapter {
 
@@ -45,6 +48,9 @@ public class RequisitionFormAdapter extends BaseAdapter {
     private boolean hasDataChanged = false;
 
     int itemLayoutResId;
+
+    @Setter
+    RnRForm.STATUS status = RnRForm.STATUS.AUTHORIZED;
 
     public RequisitionFormAdapter(Context context, List<RequisitionFormItemViewModel> data, boolean isNameList) {
         this.context = context;
@@ -109,16 +115,35 @@ public class RequisitionFormAdapter extends BaseAdapter {
             holder.different.setText(entry.getDifferent());
             holder.totalRequest.setText(entry.getTotalRequest());
 
+
             MyTextWatcher mySimpleTextWatcher = new MyTextWatcher(holder.approvedAmount, entry);
             holder.requestAmount.removeTextChangedListener(mySimpleTextWatcher);
+            holder.approvedAmount.removeTextChangedListener(mySimpleTextWatcher);
+
             holder.requestAmount.setText(entry.getRequestAmount());
             holder.requestAmount.setError(null);
-            holder.requestAmount.addTextChangedListener(mySimpleTextWatcher);
-
             holder.approvedAmount.setText(entry.getApprovedAmount());
 
+
+            if (status == RnRForm.STATUS.SUBMITED){
+                holder.requestAmount.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
+                holder.approvedAmount.setBackgroundColor(context.getResources().getColor(R.color.white));
+
+                holder.requestAmount.setEnabled(false);
+                holder.approvedAmount.setEnabled(true);
+                holder.approvedAmount.addTextChangedListener(mySimpleTextWatcher);
+
+            } else if (status == RnRForm.STATUS.DRAFT){
+                holder.requestAmount.setBackgroundColor(context.getResources().getColor(R.color.white));
+                holder.approvedAmount.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
+
+                holder.requestAmount.setEnabled(true);
+                holder.approvedAmount.setEnabled(false);
+                holder.requestAmount.addTextChangedListener(mySimpleTextWatcher);
+            }
         }
     }
+
 
     public boolean hasDataChanged() {
         return hasDataChanged;
@@ -148,13 +173,17 @@ public class RequisitionFormAdapter extends BaseAdapter {
         public void afterTextChanged(Editable editable) {
             hasDataChanged = true;
             String value = editable.toString();
-            approvedAmount.setText(value);
-            entry.setRequestAmount(value);
-            entry.setApprovedAmount(value);
+            if (status == RnRForm.STATUS.SUBMITED) {
+                entry.setApprovedAmount(value);
+            } else if (status == RnRForm.STATUS.DRAFT) {
+                approvedAmount.setText(value);
+                entry.setApprovedAmount(value);
+                entry.setRequestAmount(value);
+            }
         }
     }
 
-    static class ViewHolder {
+    static class ViewHolder{
 
         public TextView productCode;
         public TextView productName;

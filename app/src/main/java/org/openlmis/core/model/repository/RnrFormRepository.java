@@ -122,6 +122,11 @@ public class RnrFormRepository {
         }
     }
 
+    public void submit(RnRForm form) throws LMISException {
+        form.setStatus(RnRForm.STATUS.SUBMITED);
+        save(form);
+    }
+
     public void authorise(RnRForm form) throws LMISException {
         if (!isPeriodUnique(form)) {
             throw new PeriodNotUniqueException("Already have a authorized form");
@@ -189,14 +194,14 @@ public class RnrFormRepository {
     }
 
 
-    public RnRForm queryDraft(final Program program) throws LMISException {
+    public RnRForm queryUnAuthorized(final Program program) throws LMISException {
         if (program == null) {
             throw new LMISException("Program cannot be null !");
         }
         return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
             @Override
             public RnRForm operate(Dao<RnRForm, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("program_id", program.getId()).and().eq("status", RnRForm.STATUS.DRAFT).queryForFirst();
+                return dao.queryBuilder().where().eq("program_id", program.getId()).and().ne("status", RnRForm.STATUS.AUTHORIZED).queryForFirst();
             }
         });
     }
@@ -208,12 +213,6 @@ public class RnrFormRepository {
                 return dao.queryBuilder().where().eq("id", id).queryForFirst();
             }
         });
-    }
-
-
-    public void approve(RnRForm form) throws LMISException {
-        form.setStatus(RnRForm.STATUS.AUTHORIZED);
-        genericDao.update(form);
     }
 
     private void createRnrFormItems(List<RnrFormItem> form) throws LMISException {

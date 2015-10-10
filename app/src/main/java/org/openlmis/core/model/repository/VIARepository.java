@@ -61,6 +61,6 @@ public class VIARepository extends RnrFormRepository {
         if (program == null) {
             throw new LMISException("Program cannot be null !");
         }
-        return queryDraft(program);
+        return queryUnAuthorized(program);
     }
 }

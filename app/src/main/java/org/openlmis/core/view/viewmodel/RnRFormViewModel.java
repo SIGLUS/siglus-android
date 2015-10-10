@@ -44,7 +44,7 @@ public class RnRFormViewModel {
         this.name = form.getProgram().getProgramName();
         this.id = form.getId();
 
-        if (form.getStatus() == RnRForm.STATUS.DRAFT){
+        if (form.getStatus() != RnRForm.STATUS.AUTHORIZED){
             this.type = TYPE_DRAFT;
         } else if (!form.isSynced()){
             this.type = TYPE_UNSYNC;

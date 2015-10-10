@@ -34,8 +34,10 @@ import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.RequisitionPresenter;
 import org.openlmis.core.utils.ToastUtil;
@@ -88,6 +90,12 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     @InjectView(R.id.requisition_header_left)
     View productHeaderView;
 
+    @InjectView(R.id.tv_label_request)
+    TextView headerRequestAmount;
+
+    @InjectView(R.id.tv_label_approve)
+    TextView headerApproveAmount;
+
     RequisitionFormAdapter productListAdapter;
     RequisitionFormAdapter requisitionFormAdapter;
     private boolean consultationNumbersHasChanged;
@@ -136,6 +144,29 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         setConsultationNumbers();
     }
 
+
+    @Override
+    public void highLightApprovedAmount() {
+        headerRequestAmount.setBackgroundResource(android.R.color.transparent);
+        headerRequestAmount.setTextColor(getResources().getColor(R.color.primary_text));
+
+        headerApproveAmount.setBackgroundResource(R.color.color_accent);
+        headerApproveAmount.setTextColor(getResources().getColor(R.color.white));
+
+        requisitionFormAdapter.setStatus(RnRForm.STATUS.SUBMITED);
+    }
+
+    @Override
+    public void highLightRequestAmount() {
+        headerRequestAmount.setBackgroundResource(R.color.color_accent);
+        headerRequestAmount.setTextColor(getResources().getColor(R.color.white));
+
+        headerApproveAmount.setBackgroundResource(android.R.color.transparent);
+        headerApproveAmount.setTextColor(getResources().getColor(R.color.primary_text));
+
+        requisitionFormAdapter.setStatus(RnRForm.STATUS.DRAFT);
+    }
+
     private void setEditable() {
         if (presenter.formIsEditable()) {
             vgContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
@@ -176,7 +207,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
                 onSaveBtnClick();
                 break;
             case R.id.btn_complete:
-                onCompleteBtnClick();
+                onProcessButtonClick();
                 break;
             default:
                 break;
@@ -220,8 +251,10 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         });
 
         setListViewOnTouchAndScrollListener(requisitionForm, requisitionNameList);
+        btnComplete.setText(getResources().getString(R.string.btn_submit));
         btnComplete.setOnClickListener(this);
         btnSave.setOnClickListener(this);
+
 
         etConsultationNumbers.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
         etConsultationNumbers.addTextChangedListener(etConsultationNumbersTextWatcher);
@@ -237,14 +270,18 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         requisitionNameList.setAdapter(productListAdapter);
     }
 
-    private void onCompleteBtnClick() {
+    @Override
+    public void setProcessButtonName(String name) {
+        btnComplete.setText(name);
+    }
 
+    private void onProcessButtonClick() {
         String consultationNumbers = etConsultationNumbers.getText().toString();
         if (TextUtils.isEmpty(consultationNumbers)) {
             etConsultationNumbers.setError(getString(R.string.hint_error_input));
             return;
         }
-        presenter.completeRequisition(consultationNumbers);
+        presenter.processRequisition(consultationNumbers);
     }
 
     @Override
@@ -266,7 +303,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     }
 
     private void onSaveBtnClick() {
-        presenter.saveDraftRequisition(etConsultationNumbers.getText().toString());
+        presenter.saveRequisition(etConsultationNumbers.getText().toString());
     }
 
 

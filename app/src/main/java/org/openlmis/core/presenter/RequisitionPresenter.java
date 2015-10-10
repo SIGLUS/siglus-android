@@ -140,8 +140,7 @@ public class RequisitionPresenter implements Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<List<RequisitionFormItemViewModel>>() {
             @Override
             public void call(List<RequisitionFormItemViewModel> requisitionFormItemViewModels) {
-                requisitionFormItemViewModelList.addAll(requisitionFormItemViewModels);
-                view.refreshRequisitionForm();
+                updateRequisitionFormUI(requisitionFormItemViewModels);
                 view.loaded();
             }
         }, new Action1<Throwable>() {
@@ -151,6 +150,20 @@ public class RequisitionPresenter implements Presenter {
             }
         });
     }
+
+    protected void updateRequisitionFormUI(List<RequisitionFormItemViewModel> requisitionFormItemViewModels) {
+        requisitionFormItemViewModelList.addAll(requisitionFormItemViewModels);
+
+        if (rnRForm.getStatus() == RnRForm.STATUS.DRAFT){
+            view.highLightRequestAmount();
+        }else if (rnRForm.getStatus() == RnRForm.STATUS.SUBMITED){
+            view.setProcessButtonName(context.getString(R.string.btn_complete));
+            view.highLightApprovedAmount();
+        }
+
+        view.refreshRequisitionForm();
+    }
+
 
     protected boolean isRequisitionFormAmountCompleted() {
         List<RequisitionFormItemViewModel> requisitionViewModelList = getRequisitionViewModelList();
@@ -164,14 +177,33 @@ public class RequisitionPresenter implements Presenter {
         return true;
     }
 
-    public void completeRequisition(String consultationNumbers) {
+    public void processRequisition(String consultationNumbers){
         if (!isRequisitionFormAmountCompleted()) {
             return;
         }
-
         setRnrFormAmount();
         rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
 
+        if (rnRForm.getStatus() == RnRForm.STATUS.DRAFT) {
+            submitRequisition();
+        }else {
+            completeRequisition();
+        }
+    }
+
+    public void submitRequisition() {
+        try {
+            viaRepository.submit(rnRForm);
+        } catch (LMISException e) {
+            view.showErrorMessage(e.getMessage());
+        }
+        view.highLightApprovedAmount();
+        view.refreshRequisitionForm();
+        view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
+    }
+
+
+    public void completeRequisition() {
         try {
             viaRepository.authorise(rnRForm);
             view.completeSuccess();
@@ -199,13 +231,12 @@ public class RequisitionPresenter implements Presenter {
         }
     }
 
-    public void saveDraftRequisition(String consultationNumbers) {
+    public void saveRequisition(String consultationNumbers) {
         view.loading();
         setRnrFormAmount();
         if (!TextUtils.isEmpty(consultationNumbers)) {
             rnRForm.getBaseInfoItemListWrapper().get(0).setValue(Long.valueOf(consultationNumbers).toString());
         }
-        rnRForm.setStatus(RnRForm.STATUS.DRAFT);
 
         Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
@@ -259,7 +290,7 @@ public class RequisitionPresenter implements Presenter {
     }
 
     public boolean formIsEditable() {
-        return checkNotNull(rnRForm).getStatus().equals(RnRForm.STATUS.DRAFT);
+        return !checkNotNull(rnRForm).getStatus().equals(RnRForm.STATUS.AUTHORIZED);
     }
 
 
@@ -274,6 +305,12 @@ public class RequisitionPresenter implements Presenter {
         void completeSuccess();
 
         void goToHomePage();
+
+        void highLightRequestAmount();
+
+        void highLightApprovedAmount();
+
+        void setProcessButtonName(String name);
     }
 
 }
