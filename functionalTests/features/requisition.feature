@@ -42,7 +42,7 @@ Feature: Requisition
 
 Scenario: Add A Issued Movement on VIA product,then the quantity should change
     Given I am logged in
-    And I press "Stock on Hand"
+    And I press "STOCK MOVEMENT CARD"
     Then I wait for the "StockCardListActivity" screen to appear
     Then I wait for 1 second
     And I make a movement "Acetylsalicylic Acid, tablet 300mg [P1]" "Issues" "PAV" "issued" "10"

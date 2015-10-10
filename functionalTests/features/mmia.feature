@@ -7,7 +7,7 @@ Feature: stock movement Page
 
     Scenario: Initial a MMIA
             Given I am logged in
-            And I press "Stock on Hand"
+            And I press "STOCK MOVEMENT CARD"
             Then I wait for the "StockCardListActivity" screen to appear
             Then I wait for 1 second
             And I make a movement "Lamivudina 150mg/Zidovudina 300mg/Nevirapina 200mg [08S42]" "Issues" "PAV" "issued" "2"
@@ -36,7 +36,7 @@ Feature: stock movement Page
 
     Scenario: after editing if I go back without saving I should see pop up, if I say yes then go back without saving, else staying at mmia page
             Given I am logged in
-            And I press "Stock on Hand"
+            And I press "STOCK MOVEMENT CARD"
             Then I wait for the "StockCardListActivity" screen to appear
             Then I wait for 1 second
             And I make a movement "Lamivudina 150mg/Zidovudina 300mg/Nevirapina 200mg [08S42]" "Issues" "PAV" "issued" "2"

@@ -32,7 +32,7 @@
     <string name="dialog_request_signature_sign">Sign</string>
     
     <!-- Home Page -->
-    <string name="label_stock_cards">Stock on Hand</string>
+    <string name="label_stock_cards">STOCK MOVEMENT CARD</string>
     <string name="label_mmia">MMIA</string>
     <string name="label_sync">Sync Data</string>
     <string name="action_add_new_drug">Add new product</string>

@@ -29,7 +29,7 @@
     <string name="btn_done">Feito</string>
 
     <!-- Home Page -->
-    <string name="label_stock_cards">Stock Existente</string>
+    <string name="label_stock_cards">FICHA DE STOCK</string>
     <string name="label_mmia">MMIA</string>
     <string name="label_sync">Sincronizar dados</string>
     <string name="action_add_new_drug">Adicionar novo producto</string>

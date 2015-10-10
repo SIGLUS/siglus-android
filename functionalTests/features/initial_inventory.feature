@@ -8,7 +8,7 @@ Feature: initial_inventory
             When I Select initial inventory
             And I press "Done"
             Then I wait for the "HomeActivity" screen to appear
-            And I press "Stock on Hand"
+            And I press "STOCK MOVEMENT CARD"
             Then I wait for the "StockCardListActivity" screen to appear
             And I press "Sort alphabetically: A to Z"
             And I press "Sort by quantity: High to Low"

@@ -7,7 +7,7 @@ Feature: stock movement Page
 
     Scenario: Bottom Btn Logic
         Given I am logged in
-        And I press "Stock on Hand"
+        And I press "STOCK MOVEMENT CARD"
         Then I wait for the "StockCardListActivity" screen to appear
         Then I see "Stock Card"
         Then I wait for 1 second
@@ -29,7 +29,7 @@ Feature: stock movement Page
 
     Scenario: Add A Receive Movement
         Given I am logged in
-        And I press "Stock on Hand"
+        And I press "STOCK MOVEMENT CARD"
         Then I wait for the "StockCardListActivity" screen to appear
         Then I wait for 1 second
         Then I select stock card called "Lamivudina 150mg/Zidovudina 300mg/Nevirapina 200mg [08S42]"
@@ -47,7 +47,7 @@ Feature: stock movement Page
 
     Scenario: Add A Negative Adjustment
         Given I am logged in
-        And I press "Stock on Hand"
+        And I press "STOCK MOVEMENT CARD"
         Then I wait for the "StockCardListActivity" screen to appear
         Then I wait for 1 second
         Then I select stock card called "Acyclovir, tablet 400mg [P2]"
@@ -65,7 +65,7 @@ Feature: stock movement Page
 
     Scenario: Add A Positive Adjustment
         Given I am logged in
-        And I press "Stock on Hand"
+        And I press "STOCK MOVEMENT CARD"
         Then I wait for the "StockCardListActivity" screen to appear
         Then I wait for 1 second
         Then I select stock card called "Atenolol 50mg tab [P5]"
@@ -84,7 +84,7 @@ Feature: stock movement Page
 
     Scenario: Add A Issued Movement
         Given I am logged in
-        And I press "Stock on Hand"
+        And I press "STOCK MOVEMENT CARD"
         Then I wait for the "StockCardListActivity" screen to appear
         Then I wait for 1 second
         Then I select stock card called "Tenofovir 300mg/Lamivudina 300mg/Efavirenze 600mg [08S18Y]"
