@@ -28,12 +28,15 @@ import org.mockito.Matchers;
 import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.robolectric.RuntimeEnvironment;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import roboguice.RoboGuice;
 
@@ -48,10 +51,12 @@ public class MMIAFormPresenterTest {
 
     private MMIAFormPresenter presenter;
     private MMIARepository mmiaRepository;
+    private MMIAFormPresenter.MMIAFormView mockMMIAformView;
 
     @Before
     public void setup() {
         mmiaRepository = mock(MMIARepository.class);
+        mockMMIAformView = mock(MMIAFormPresenter.MMIAFormView.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         MockitoAnnotations.initMocks(this);
 
@@ -78,7 +83,49 @@ public class MMIAFormPresenterTest {
         @Override
         protected void configure() {
             bind(MMIARepository.class).toInstance(mmiaRepository);
+            bind(MMIAFormPresenter.MMIAFormView.class).toInstance(mockMMIAformView);
         }
     }
 
+    @Test
+    public void shouldCompleteMMIAIfTotalsMatch() throws Exception {
+        ArrayList<RegimenItem> regimenItems = new ArrayList<>();
+        RegimenItem regimenItem = new RegimenItem();
+        regimenItem.setAmount(100L);
+        regimenItems.add(regimenItem);
+
+        ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
+
+        presenter.attachView(mockMMIAformView);
+        RnRForm rnRForm = new RnRForm();
+
+        when(mmiaRepository.getDraftMMIAForm(Matchers.<Program>anyObject())).thenReturn(null);
+        when(mmiaRepository.initMMIA(Matchers.<Program>anyObject())).thenReturn(rnRForm);
+        when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
+        presenter.getRnrForm(0);
+
+        presenter.completeMMIA(regimenItems, baseInfoItems, "");
+        verify(mockMMIAformView,never()).showValidationAlert();
+    }
+
+    @Test
+    public void shouldNotCompleteMMIAIfTotalsMismatchAndCommentInvalid() throws Exception {
+        ArrayList<RegimenItem> regimenItems = new ArrayList<>();
+        RegimenItem regimenItem = new RegimenItem();
+        regimenItem.setAmount(100L);
+        regimenItems.add(regimenItem);
+
+        ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
+
+        presenter.attachView(mockMMIAformView);
+        RnRForm rnRForm = new RnRForm();
+
+        when(mmiaRepository.getDraftMMIAForm(Matchers.<Program>anyObject())).thenReturn(null);
+        when(mmiaRepository.initMMIA(Matchers.<Program>anyObject())).thenReturn(rnRForm);
+        when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(99L);
+        presenter.getRnrForm(0);
+
+        presenter.completeMMIA(regimenItems, baseInfoItems, "1234");
+        verify(mockMMIAformView).showValidationAlert();
+    }
 }
