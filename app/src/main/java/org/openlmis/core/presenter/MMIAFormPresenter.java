@@ -32,6 +32,7 @@ import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.view.View;
 
 import java.util.ArrayList;
@@ -39,7 +40,6 @@ import java.util.ArrayList;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -58,6 +58,9 @@ public class MMIAFormPresenter implements Presenter {
 
     @Inject
     Context context;
+
+    @Inject
+    SyncManager syncManager;
 
     @Override
     public void onStart() {
@@ -146,39 +149,41 @@ public class MMIAFormPresenter implements Presenter {
 
     private void authoriseForm() {
         view.loading();
-        Observable.create(new Observable.OnSubscribe<LMISException>() {
+        Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
-            public void call(Subscriber<? super LMISException> subscriber) {
+            public void call(Subscriber<? super Void> subscriber) {
                 try {
                     mmiaRepository.authorise(form);
-                    subscriber.onCompleted();
+                    subscriber.onNext(null);
                 } catch (LMISException e) {
                     e.printStackTrace();
-                    subscriber.onNext(e);
+                    subscriber.onError(e);
                 }
             }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<LMISException>() {
-            @Override
-            public void call(LMISException e) {
-                view.loaded();
-                if (e instanceof PeriodNotUniqueException) {
-                    view.showErrorMessage(context.getResources().getString(R.string.msg_mmia_not_unique));
-                } else {
-                    view.showErrorMessage(context.getString(R.string.hint_complete_failed));
-                }
-            }
-        }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                view.loaded();
-            }
-        }, new Action0() {
-            @Override
-            public void call() {
-                view.loaded();
-                view.completeSuccess();
-            }
-        });
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Subscriber<Void>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        view.loaded();
+                        if (e instanceof PeriodNotUniqueException) {
+                            view.showErrorMessage(context.getResources().getString(R.string.msg_mmia_not_unique));
+                        } else {
+                            view.showErrorMessage(context.getString(R.string.hint_complete_failed));
+                        }
+                    }
+
+                    @Override
+                    public void onNext(Void e) {
+                        view.loaded();
+                        view.completeSuccess();
+                        syncManager.requestSyncImmediately();
+                    }
+                });
     }
 
     private boolean validate(RnRForm form) {

@@ -31,6 +31,7 @@ import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.VIARepository;
+import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.view.View;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
@@ -56,6 +57,9 @@ public class RequisitionPresenter implements Presenter {
 
     @Inject
     Context context;
+
+    @Inject
+    SyncManager syncManager;
 
     RequisitionView view;
 
@@ -187,36 +191,86 @@ public class RequisitionPresenter implements Presenter {
         if (rnRForm.getStatus() == RnRForm.STATUS.DRAFT) {
             submitRequisition();
         }else {
-            completeRequisition();
+            authorise();
         }
     }
 
     public void submitRequisition() {
-        try {
-            viaRepository.submit(rnRForm);
-        } catch (LMISException e) {
-            view.showErrorMessage(e.getMessage());
-        }
-        view.highLightApprovedAmount();
-        view.refreshRequisitionForm();
-        view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
-    }
+        view.loading();
+        Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    viaRepository.submit(rnRForm);
+                    subscriber.onNext(null);
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
 
+            }
 
-    public void completeRequisition() {
-        try {
-            viaRepository.authorise(rnRForm);
-            view.completeSuccess();
-        } catch (LMISException e) {
-            if (e instanceof PeriodNotUniqueException) {
-                view.showErrorMessage(context.getResources().getString(R.string.msg_requisition_not_unique));
-            } else {
+            @Override
+            public void onError(Throwable e) {
+                view.loaded();
                 view.showErrorMessage(e.getMessage());
             }
-        }
+
+            @Override
+            public void onNext(Void aVoid) {
+                view.loaded();
+                view.highLightApprovedAmount();
+                view.refreshRequisitionForm();
+                view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
+
+            }
+        });
     }
 
-    private void setRnrFormAmount() {
+    private void authorise() {
+        view.loading();
+        Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    viaRepository.authorise(rnRForm);
+                    subscriber.onNext(null);
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.loaded();
+                if (e instanceof PeriodNotUniqueException) {
+                    view.showErrorMessage(context.getResources().getString(R.string.msg_requisition_not_unique));
+                } else {
+                    view.showErrorMessage(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+                view.loaded();
+                view.completeSuccess();
+                syncManager.requestSyncImmediately();
+            }
+        });
+
+        }
+
+        private void setRnrFormAmount() {
         ArrayList<RnrFormItem> rnrFormItemListWrapper = rnRForm.getRnrFormItemListWrapper();
         for (int i = 0; i < rnrFormItemListWrapper.size(); i++) {
             String requestAmount = requisitionFormItemViewModelList.get(i).getRequestAmount();
