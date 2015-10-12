@@ -57,6 +57,7 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormListAdapter.
     public void refreshList(List<RnRFormViewModel> data){
         this.data.clear();
         this.data.addAll(data);
+        notifyDataSetChanged();
     }
 
 
