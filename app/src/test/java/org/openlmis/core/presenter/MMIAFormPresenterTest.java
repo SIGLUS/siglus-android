@@ -99,7 +99,6 @@ public class MMIAFormPresenterTest {
         presenter.attachView(mockMMIAformView);
         RnRForm rnRForm = new RnRForm();
 
-        when(mmiaRepository.getDraftMMIAForm(Matchers.<Program>anyObject())).thenReturn(null);
         when(mmiaRepository.initMMIA(Matchers.<Program>anyObject())).thenReturn(rnRForm);
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
         presenter.getRnrForm(0);
@@ -120,7 +119,6 @@ public class MMIAFormPresenterTest {
         presenter.attachView(mockMMIAformView);
         RnRForm rnRForm = new RnRForm();
 
-        when(mmiaRepository.getDraftMMIAForm(Matchers.<Program>anyObject())).thenReturn(null);
         when(mmiaRepository.initMMIA(Matchers.<Program>anyObject())).thenReturn(rnRForm);
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(99L);
         presenter.getRnrForm(0);
