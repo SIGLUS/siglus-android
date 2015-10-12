@@ -139,12 +139,24 @@ public class RequisitionPresenterTest {
         presenter.requisitionFormItemViewModelList = new ArrayList<>();
         presenter.processRequisition("123");
 
+        waitObservableToExeute();
+
         verify(mockVIARepository).submit(form);
 
         form.setStatus(RnRForm.STATUS.SUBMITTED);
         presenter.processRequisition("123");
 
+        waitObservableToExeute();
+
         verify(mockVIARepository).authorise(form);
+    }
+
+    private void waitObservableToExeute() {
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 
