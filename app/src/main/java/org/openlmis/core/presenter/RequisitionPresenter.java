@@ -156,7 +156,7 @@ public class RequisitionPresenter implements Presenter {
 
         if (rnRForm.getStatus() == RnRForm.STATUS.DRAFT){
             view.highLightRequestAmount();
-        }else if (rnRForm.getStatus() == RnRForm.STATUS.SUBMITED){
+        }else if (rnRForm.getStatus() == RnRForm.STATUS.SUBMITTED){
             view.setProcessButtonName(context.getString(R.string.btn_complete));
             view.highLightApprovedAmount();
         }

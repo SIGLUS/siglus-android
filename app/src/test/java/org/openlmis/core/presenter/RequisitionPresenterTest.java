@@ -141,7 +141,7 @@ public class RequisitionPresenterTest {
 
         verify(mockVIARepository).submit(form);
 
-        form.setStatus(RnRForm.STATUS.SUBMITED);
+        form.setStatus(RnRForm.STATUS.SUBMITTED);
         presenter.processRequisition("123");
 
         verify(mockVIARepository).authorise(form);
@@ -157,7 +157,7 @@ public class RequisitionPresenterTest {
 
     @Test
     public void shouldHighLightApproveAmountWhenFormStatusIsSubmitted(){
-        highLightForm(RnRForm.STATUS.SUBMITED);
+        highLightForm(RnRForm.STATUS.SUBMITTED);
         verify(mockActivity).highLightApprovedAmount();
         verify(mockActivity, never()).highLightRequestAmount();
     }

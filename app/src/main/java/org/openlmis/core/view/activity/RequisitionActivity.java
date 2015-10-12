@@ -153,7 +153,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         headerApproveAmount.setBackgroundResource(R.color.color_accent);
         headerApproveAmount.setTextColor(getResources().getColor(R.color.white));
 
-        requisitionFormAdapter.setStatus(RnRForm.STATUS.SUBMITED);
+        requisitionFormAdapter.setStatus(RnRForm.STATUS.SUBMITTED);
     }
 
     @Override

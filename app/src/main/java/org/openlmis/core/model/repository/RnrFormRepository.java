@@ -123,7 +123,7 @@ public class RnrFormRepository {
     }
 
     public void submit(RnRForm form) throws LMISException {
-        form.setStatus(RnRForm.STATUS.SUBMITED);
+        form.setStatus(RnRForm.STATUS.SUBMITTED);
         save(form);
     }
 

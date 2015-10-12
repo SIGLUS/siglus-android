@@ -125,7 +125,7 @@ public class RequisitionFormAdapter extends BaseAdapter {
             holder.approvedAmount.setText(entry.getApprovedAmount());
 
 
-            if (status == RnRForm.STATUS.SUBMITED){
+            if (status == RnRForm.STATUS.SUBMITTED){
                 holder.requestAmount.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
                 holder.approvedAmount.setBackgroundColor(context.getResources().getColor(R.color.white));
 
@@ -173,7 +173,7 @@ public class RequisitionFormAdapter extends BaseAdapter {
         public void afterTextChanged(Editable editable) {
             hasDataChanged = true;
             String value = editable.toString();
-            if (status == RnRForm.STATUS.SUBMITED) {
+            if (status == RnRForm.STATUS.SUBMITTED) {
                 entry.setApprovedAmount(value);
             } else if (status == RnRForm.STATUS.DRAFT) {
                 approvedAmount.setText(value);

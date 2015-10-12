@@ -128,7 +128,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         RnRForm form = new RnRForm();
         form.setProgram(program);
         form.setComments("Submitted Form");
-        form.setStatus(RnRForm.STATUS.SUBMITED);
+        form.setStatus(RnRForm.STATUS.SUBMITTED);
 
         rnrFormRepository.create(form);
 
