@@ -225,12 +225,4 @@ public class SyncManager {
         }
     }
 
-
-    public void syncStockCards() {
-
-    }
-
-    public void authorizeUser() {
-
-    }
 }

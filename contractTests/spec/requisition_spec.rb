@@ -75,6 +75,7 @@ describe "submit requisition to web server" do
     {
       agentCode: "F10",
       programCode: "MMIA",
+      clientSubmittedNotes: "I don't know",
       products: [
       {
         productCode: "08S23",

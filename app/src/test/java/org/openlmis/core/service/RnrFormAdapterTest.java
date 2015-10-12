@@ -39,18 +39,15 @@ import static org.junit.Assert.assertEquals;
 @RunWith(LMISTestRunner.class)
 public class RnrFormAdapterTest {
     private RnrFormAdapter rnrFormAdapter;
-    private RnRForm rnRForm;
 
     @Before
     public void setUp() throws LMISException {
         rnrFormAdapter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormAdapter.class);
-
-        rnRForm = new RnRForm();
     }
 
     @Test
     public void shouldSerializeRnrFormWithCommentsToJsonObject() throws LMISException {
-        rnRForm = new RnRForm();
+        RnRForm rnRForm = new RnRForm();
         Program program = new Program();
         UserInfoMgr.getInstance().setUser(new User("user", "password"));
         program.setProgramCode(MMIARepository.MMIA_PROGRAM_CODE);
