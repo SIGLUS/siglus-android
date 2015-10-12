@@ -181,7 +181,7 @@ task functionalTests(type:Exec, dependsOn: ['bundleInstall']) {
     if(project.hasProperty("apkPath")) {
         targetPath = "$apkPath"
     } else {
-        targetPath = "$projectDir/build/outputs/apk/app-debug.apk"
+        targetPath = "$projectDir/build/outputs/apk/app-dev-debug.apk"
     }
 
     executable 'calabash-android'
