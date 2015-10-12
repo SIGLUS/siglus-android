@@ -3,7 +3,7 @@ Feature: Requisition
 
   Scenario: Go to requisition page and display all VIA products
     Given I am logged in
-    Given I am Initialized Inventory
+    Given I have initialized inventory
 
     And I press "Create a Via Classica Requesition"
     Then I wait for the "RequisitionActivity" screen to appear

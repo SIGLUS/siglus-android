@@ -163,7 +163,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         tvRegimeTotal.post(new Runnable() {
             @Override
             public void run() {
-                tvRegimeTotal.addTextChangedListener(regimeTotalTextWatcher);
+                tvRegimeTotal.addTextChangedListener(totalTextWatcher);
             }
         });
 
@@ -171,7 +171,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         patientTotalView.post(new Runnable() {
             @Override
             public void run() {
-                patientTotalView.addTextChangedListener(totalPatientTextWatcher);
+                patientTotalView.addTextChangedListener(totalTextWatcher);
             }
         });
 
@@ -201,20 +201,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         }
     };
 
-    TextWatcher regimeTotalTextWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            highlightTotalDifference();
-        }
-    };
-
-    TextWatcher totalPatientTextWatcher  = new TextWatcher() {
+    TextWatcher totalTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
@@ -281,7 +268,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false)
                 .setMessage(getString(R.string.msg_regime_total_and_patient_total_not_match))
-                .setPositiveButton("OK",null)
+                .setPositiveButton("OK", null)
                 .show();
     }
 

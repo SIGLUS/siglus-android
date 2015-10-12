@@ -13,7 +13,7 @@ Then(/^I should see inventory "(.*?)"$/) do |number|
 	end
 end
 
-And(/^I enter regime total$/) do
+And(/^I enter regimen totals$/) do
     q = query("android.widget.EditText id:'et_total'")
     for element in q
         if !element.eql? q.first
@@ -24,7 +24,7 @@ And(/^I enter regime total$/) do
     hide_soft_keyboard
 end
 
-And(/^I enter patient total$/) do
+And(/^I enter patient totals$/) do
     q = query("android.widget.EditText id:'et_value'")
     for element in q
         if element.eql? q.first or element.eql? q.last
@@ -34,6 +34,25 @@ And(/^I enter patient total$/) do
         if element.eql? q.at(1)
             touch(element)
             keyboard_enter_text(6)
+        else
+            touch(element)
+            keyboard_enter_text(3)
+        end
+    end
+    hide_soft_keyboard
+end
+
+
+And(/^I enter patient total different from regime total$/) do
+    q = query("android.widget.EditText id:'et_value'")
+    for element in q
+        if element.eql? q.first or element.eql? q.last
+            next
+        end
+
+        if element.eql? q.at(1)
+            touch(element)
+            keyboard_enter_text(3)
         else
             touch(element)
             keyboard_enter_text(3)
@@ -53,3 +72,11 @@ Then(/^I scroll to "(.*?)"$/) do |text|
         scroll("ScrollView", :down)
     end
 end
+
+When(/^I enter "(.*)" in "Observations"$/) do |text|
+    enter_text("android.widget.EditText id:'et_comment'", text)
+    hide_soft_keyboard
+end
+
+
+

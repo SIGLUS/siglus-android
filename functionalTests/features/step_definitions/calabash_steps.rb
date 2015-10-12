@@ -67,9 +67,9 @@ When(/^I select the checkbox$/) do
   end
 end
 
-Given(/^I am Initialized Inventory$/) do
+Given(/^I have initialized inventory$/) do
   steps %Q{
-        Then I wait for 10 seconds
+        Then I wait for 3 seconds
         Then I wait for the "InventoryActivity" screen to appear
         Then I wait for 1 second
 		When I Select MMIA Item

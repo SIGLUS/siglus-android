@@ -3,7 +3,7 @@ Feature: stock movement Page
 
     Scenario: Navigate to Home Page
         Given I am logged in
-        Given I am Initialized Inventory
+        Given I have initialized inventory
 
     Scenario: Bottom Btn Logic
         Given I am logged in
