@@ -72,7 +72,7 @@ public class MMIARepository extends RnrFormRepository {
         return initRnrForm(program);
     }
 
-    public RnRForm getDraftMMIAForm(Program program) throws LMISException {
+    public RnRForm getUnCompletedMMIA(Program program) throws LMISException {
         return queryUnAuthorized(program);
     }
 

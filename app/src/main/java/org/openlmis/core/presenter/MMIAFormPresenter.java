@@ -118,7 +118,7 @@ public class MMIAFormPresenter implements Presenter {
             form = mmiaRepository.queryRnRForm(formId);
         } else {
             Program program = programRepository.queryByCode(MMIARepository.MMIA_PROGRAM_CODE);
-            RnRForm draftMMIAForm = mmiaRepository.getDraftMMIAForm(program);
+            RnRForm draftMMIAForm = mmiaRepository.getUnCompletedMMIA(program);
             if (draftMMIAForm != null) {
                 form = draftMMIAForm;
             } else {
