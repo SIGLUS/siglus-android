@@ -186,7 +186,7 @@ public class MMIAInfoList extends LinearLayout {
     public long getTotal() {
         long totalRegimenNumber = 0;
         for (BaseInfoItem item : dataList) {
-            if (isTotalInfoView(item)) {
+            if (isTotalInfoView(item) || TextUtils.isEmpty(item.getValue())) {
                 continue;
             }
             try {
