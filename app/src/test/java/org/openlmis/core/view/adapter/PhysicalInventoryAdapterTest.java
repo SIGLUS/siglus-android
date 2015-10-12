@@ -57,11 +57,11 @@ public class PhysicalInventoryAdapterTest {
     @Test
     public void shouldReturnFirstInvalidItemPosition() {
         List<StockCardViewModel> list = new ArrayList<>();
-        for (int i=0; i< 10;i++){
+        for (int i = 0; i < 10; i++) {
             StockCardViewModel model = new StockCardViewModel(stockCard);
             list.add(model);
 
-            if (i == 5){
+            if (i == 5) {
                 continue;
             }
             model.setQuantity(i + "");
@@ -74,7 +74,7 @@ public class PhysicalInventoryAdapterTest {
     @Test
     public void shouldFilterTheListByProductName() {
         List<StockCardViewModel> list = new ArrayList<>();
-        for (int i=0; i< 10;i++){
+        for (int i = 0; i < 10; i++) {
             StockCardViewModel model = new StockCardViewModel(stockCard);
             list.add(model);
             model.setProductName("Product" + i);
@@ -83,9 +83,10 @@ public class PhysicalInventoryAdapterTest {
 
         adapter.refreshList(list);
 
-        assertThat(adapter.getItemCount(), is(10));
+        //+1 for footer view (Done Btn)
+        assertThat(adapter.getItemCount(), is(10 + 1));
         adapter.filter("1");
-        assertThat(adapter.getItemCount(), is(1));
+        assertThat(adapter.getItemCount(), is(1 + 1));
     }
 
 }

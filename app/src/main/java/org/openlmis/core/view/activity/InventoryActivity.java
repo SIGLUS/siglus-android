@@ -25,6 +25,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.google.inject.Inject;
@@ -47,7 +48,6 @@ import java.util.List;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
-
 
 @ContentView(R.layout.activity_inventory)
 public class InventoryActivity extends BaseActivity implements InventoryPresenter.InventoryView {
@@ -83,9 +83,10 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        isPhysicalInventory = getIntent().getBooleanExtra(PARAM_IS_PHYSICAL_INVENTORY, false);
+
         mLayoutManager = new LinearLayoutManager(this);
         productListRecycleView.setLayoutManager(mLayoutManager);
-        isPhysicalInventory = getIntent().getBooleanExtra(PARAM_IS_PHYSICAL_INVENTORY, false);
 
         if (isPhysicalInventory) {
             initPhysicalInventoryUI();
@@ -107,7 +108,8 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
 
     private void initPhysicalInventoryUI() {
         final List<StockCardViewModel> list = new ArrayList<>();
-        mAdapter = new PhysicalInventoryAdapter(this, list);
+        ((ViewGroup)btnDone.getParent()).removeView(btnDone);
+        mAdapter = new PhysicalInventoryAdapter(this, list, btnDone);
         productListRecycleView.setAdapter(mAdapter);
 
         setTitle(getResources().getString(R.string.title_physical_inventory));
@@ -228,7 +230,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
         if (FeatureToggle.isOpen(R.bool.time_out_235)) {
             if (!isPhysicalInventory && !isAddNewDrug()) {
                 moveTaskToBack(true);
-            }else {
+            } else {
                 super.onBackPressed();
             }
         }

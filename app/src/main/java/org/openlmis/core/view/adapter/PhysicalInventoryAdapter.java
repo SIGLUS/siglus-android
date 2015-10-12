@@ -36,21 +36,37 @@ import org.openlmis.core.view.widget.InputFilterMinMax;
 import java.util.List;
 
 
-public class PhysicalInventoryAdapter extends InventoryListAdapter<PhysicalInventoryAdapter.ViewHolder> implements FilterableAdapter {
-
+public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.ViewHolder> implements FilterableAdapter {
+    private static final int TYPE_ITEM = 0;
+    private static final int TYPE_FOOTER = 1;
+    private View footView;
 
     public PhysicalInventoryAdapter(Context context, List<StockCardViewModel> data) {
         super(context, data);
     }
 
+    public PhysicalInventoryAdapter(Context context, List<StockCardViewModel> data, View footView) {
+        this(context, data);
+        this.footView = footView;
+    }
+
+
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.item_physical_inventory, parent, false);
-        return new ViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == TYPE_ITEM) {
+            View view = inflater.inflate(R.layout.item_physical_inventory, parent, false);
+            return new ViewHolder(view);
+        } else {
+            return new VHFooter(footView);
+        }
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        if (position >= currentList.size()) {
+            return;
+        }
+        ViewHolder holder = (ViewHolder) viewHolder;
         StockCardViewModel viewModel = currentList.get(position);
         EditTextWatcher textWatcher = new EditTextWatcher(viewModel);
         holder.etQuantity.removeTextChangedListener(textWatcher);
@@ -113,4 +129,31 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<PhysicalInven
             etQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
         }
     }
+
+    public static class VHFooter extends RecyclerView.ViewHolder {
+        public VHFooter(View itemView) {
+            super(itemView);
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        int itemCount = super.getItemCount();
+        return itemCount == 0 ? itemCount : itemCount + 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (isPositionFooter(position)) {
+            return TYPE_FOOTER;
+        } else {
+            return TYPE_ITEM;
+        }
+
+    }
+
+    private boolean isPositionFooter(int position) {
+        return position == currentList.size();
+    }
+
 }
