@@ -60,6 +60,9 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
             root.add("patientQuantifications", serializePatientInfo(rnRForm.getBaseInfoItemList()));
         }
 
+        if (rnRForm.getComments() != null) {
+            root.addProperty("clientSubmittedNotes", rnRForm.getComments());
+        }
         return root;
     }
 
