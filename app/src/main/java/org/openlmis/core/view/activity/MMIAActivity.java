@@ -18,7 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
-import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
@@ -35,9 +35,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIAFormPresenter;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.fragment.MMIATotalMismatchDialogFragment;
 import org.openlmis.core.view.fragment.OnBackConfirmDialog;
 import org.openlmis.core.view.fragment.RetainedFragment;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
@@ -58,16 +60,16 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     private MMIARnrForm rnrFormList;
 
     @InjectView(R.id.regime_list)
-    public MMIARegimeList regimeListView;
+    protected MMIARegimeList regimeListView;
 
     @InjectView(R.id.mmia_info_list)
-    private MMIAInfoList mmiaInfoListView;
+    protected MMIAInfoList mmiaInfoListView;
 
     @InjectView(R.id.btn_complete)
     private Button btnComplete;
 
     @InjectView(R.id.tv_regime_total)
-    private TextView tvRegimeTotal;
+    protected TextView tvRegimeTotal;
 
     @InjectView(R.id.et_comment)
     private TextView etComment;
@@ -78,8 +80,8 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     @InjectView(R.id.btn_save)
     private View btnSave;
 
-    @InjectView(R.id.tv_total_not_match)
-    private TextView tvNotMatch;
+    @InjectView(R.id.tv_total_mismatch)
+    protected TextView tvMismatch;
 
     MMIAFormPresenter presenter;
 
@@ -88,6 +90,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     private RetainedFragment dataFragment;
     private boolean commentHasChanged = false;
     private boolean isHistoryForm;
+    private long formId;
 
     @Override
     public MMIAFormPresenter getPresenter() {
@@ -120,7 +123,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         hasDataChanged = (Boolean) dataFragment.getData("hasDataChanged");
         scrollView.setVisibility(View.INVISIBLE);
 
-        long formId = getIntent().getLongExtra("formId", 0);
+        formId = getIntent().getLongExtra("formId", 0);
         if (formId == 0) {
             isHistoryForm = false;
         } else {
@@ -198,6 +201,11 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         @Override
         public void afterTextChanged(Editable s) {
             commentHasChanged = true;
+            try {
+                presenter.getRnrForm(formId).setComments(s.toString());
+            } catch (LMISException e) {
+                e.printStackTrace();
+            }
         }
     };
 
@@ -215,14 +223,14 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     };
 
     private void highlightTotalDifference() {
-        if (!isTotalEqual()){
-            regimeListView.highLightTotal();
-            mmiaInfoListView.highLightTotal();
-            tvNotMatch.setVisibility(View.VISIBLE);
-        }else {
+        if (isTotalEqual()){
             regimeListView.deHighLightTotal();
             mmiaInfoListView.deHighLightTotal();
-            tvNotMatch.setVisibility(View.INVISIBLE);
+            tvMismatch.setVisibility(View.INVISIBLE);
+        }else {
+            regimeListView.highLightTotal();
+            mmiaInfoListView.highLightTotal();
+            tvMismatch.setVisibility(View.VISIBLE);
         }
     }
 
@@ -265,11 +273,8 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     @Override
     public void showValidationAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(false)
-                .setMessage(getString(R.string.msg_regime_total_and_patient_total_not_match))
-                .setPositiveButton("OK", null)
-                .show();
+        DialogFragment dialogFragment = new MMIATotalMismatchDialogFragment();
+        dialogFragment.show(getFragmentManager(),"tag");
     }
 
     @Override
