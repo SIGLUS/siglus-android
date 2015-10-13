@@ -1,10 +1,11 @@
+@MMIA_mismatch
 Feature: MMIA Page total mismatch
 
   Scenario: When I fill a field, if the regime total and patient total are different, I will see pop up if I press complete without filling comments.
     Given I am logged in
     And I have initialized inventory
     Then I wait for the "HomeActivity" screen to appear
-    When I press "MMIA"
+    When I press "Create a MMIA"
     And I wait for the "MMIAActivity" screen to appear
     And I scroll to "Complete"
     And I enter regimen totals
