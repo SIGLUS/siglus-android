@@ -94,7 +94,7 @@
                             android:layout_height="fill_parent"
                             android:layout_gravity="right"
                             android:padding="5dp"
-                            android:src="@drawable/ic_visibility" />
+                            android:src="@drawable/ic_visibility_off" />
                     </FrameLayout>
                 </android.support.design.widget.TextInputLayout>
 
