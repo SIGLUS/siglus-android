@@ -142,7 +142,12 @@ public class SyncManager {
     public void requestSyncImmediately() {
         Account account = findFirstLmisAccount();
         if (account != null) {
-            ContentResolver.requestSync(findFirstLmisAccount(), syncContentAuthority, new Bundle());
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+            bundle.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);
+            bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+
+            ContentResolver.requestSync(findFirstLmisAccount(), syncContentAuthority, bundle);
         }
     }
 
