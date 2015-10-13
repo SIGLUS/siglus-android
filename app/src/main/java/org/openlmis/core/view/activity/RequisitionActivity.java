@@ -217,7 +217,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     @Override
     public void showListInputError(int index) {
-        final int position = index + 1;
+        final int position = index;
         requisitionForm.setSelection(position);
         requisitionForm.post(new Runnable() {
             @Override
