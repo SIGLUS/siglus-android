@@ -5,7 +5,10 @@ index = 0
 pre_name = ""
 
 When /^I enter username "([^\"]+)"$/ do |username|
-  enter_text("android.widget.EditText id:'tx_username'", username)
+  element = "android.widget.EditText id:'tx_username'"
+  enter_text(element, username)
+  clear_text_in(element)
+  enter_text(element, username)
   hide_soft_keyboard
 end
 
