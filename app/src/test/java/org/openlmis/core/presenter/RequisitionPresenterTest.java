@@ -185,7 +185,7 @@ public class RequisitionPresenterTest {
         RnRForm form = new RnRForm();
         form.setStatus(status);
         presenter.rnRForm = form;
-        presenter.updateRequisitionFormUI(new ArrayList<RequisitionFormItemViewModel>());
+        presenter.updateRequisitionFormUI();
     }
 
 
