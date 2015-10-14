@@ -59,7 +59,7 @@ Then(/^I make a movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_ca
     steps %Q{
         Then I wait for 1 second
         And I enter #{movement_column} number "#{number}"
-        And I press "Save"
+        And I press "Complete"
         Then I go back
     }
 end

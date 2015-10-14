@@ -14,14 +14,14 @@ Feature: stock movement Page
         Then I select stock card called "Lamivudina 150mg/Zidovudina 300mg/Nevirapina 200mg [08S42]"
         Then I wait for the "StockMovementActivity" screen to appear
         Then I wait for 1 second
-        Then I don't see "Save"
+        Then I don't see "Complete"
         Then I don't see "Cancel"
         Then I select a reason "Entries" "District( DDM)"
-        Then I should see "Save"
+        Then I should see "Complete"
         Then I should see "Cancel"
         And I press "Cancel"
         Then I wait for 1 second
-        Then I don't see "Save"
+        Then I don't see "Complete"
         Then I don't see "Cancel"
         Then I don't see "Normal requisition/reinforcement"
 
@@ -38,7 +38,7 @@ Feature: stock movement Page
         And I select a reason "Entries" "District( DDM)"
         Then I wait for 1 second
         And I enter received number "2"
-        And I press "Save"
+        And I press "Complete"
         Then I see "125"
         Then I go back
         Then I wait for 1 second
@@ -56,7 +56,7 @@ Feature: stock movement Page
         And I select a reason "Negative Adjustments" "Damaged on arrival"
         Then I wait for 1 second
         And I enter negative adjustment number "2"
-        And I press "Save"
+        And I press "Complete"
         Then I see "121"
         Then I go back
         Then I wait for 1 second
@@ -75,7 +75,7 @@ Feature: stock movement Page
         Then I swipe right
         Then I wait for 1 second
         And I enter positive adjustment number "2"
-        And I press "Save"
+        And I press "Complete"
         Then I see "125"
         Then I go back
         Then I wait for 1 second
@@ -94,7 +94,7 @@ Feature: stock movement Page
         Then I wait for 1 second
         Then I swipe right
         And I enter issued number "2"
-        And I press "Save"
+        And I press "Complete"
         Then I see "121"
         Then I go back
         Then I wait for 1 second
