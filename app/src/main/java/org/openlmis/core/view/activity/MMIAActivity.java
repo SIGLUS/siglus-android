@@ -124,11 +124,8 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         scrollView.setVisibility(View.INVISIBLE);
 
         formId = getIntent().getLongExtra("formId", 0);
-        if (formId == 0) {
-            isHistoryForm = false;
-        } else {
-            isHistoryForm = true;
-        }
+        isHistoryForm = formId != 0;
+        
         presenter.loadData(formId);
     }
 
@@ -193,10 +190,12 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     TextWatcher commentTextWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -211,10 +210,12 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     TextWatcher totalTextWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -223,11 +224,11 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     };
 
     private void highlightTotalDifference() {
-        if (isTotalEqual()){
+        if (isTotalEqual()) {
             regimeListView.deHighLightTotal();
             mmiaInfoListView.deHighLightTotal();
             tvMismatch.setVisibility(View.INVISIBLE);
-        }else {
+        } else {
             regimeListView.highLightTotal();
             mmiaInfoListView.highLightTotal();
             tvMismatch.setVisibility(View.VISIBLE);
@@ -274,7 +275,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     @Override
     public void showValidationAlert() {
         DialogFragment dialogFragment = new MMIATotalMismatchDialogFragment();
-        dialogFragment.show(getFragmentManager(),"tag");
+        dialogFragment.show(getFragmentManager(), "tag");
     }
 
     @Override

@@ -7,7 +7,7 @@
     <string name="title_physical_inventory">Inventory</string>
     <string name="title_stock_cards">Stock Cards</string>
     <string name="title_mmia_spread">MMIA</string>
-    <string name="title_requisition">Create a Via Classica Requesition</string>
+    <string name="title_requisition">Create a Via Classica Requisition</string>
 
     <!-- Login Page -->
     <string name="hint_username">User Name</string>
@@ -69,7 +69,7 @@
 
 
     <!-- Requisition Form -->
-    <string name="request_provincial_district_level">Requesition for Province or Distrit Level</string>
+    <string name="request_provincial_district_level">Requisition for Province or District Level</string>
     <string name="title_stock_move_ment">Stock Movements</string>
     <string name="title_inventory_info">Inventory</string>
     <string name="label_consultation">No. of External Consultations Performed</string>
