@@ -168,11 +168,12 @@ public class RequisitionPresenter implements Presenter {
     }
 
 
-    protected boolean isRequisitionFormAmountCompleted() {
+    protected boolean validateFormInput() {
         List<RequisitionFormItemViewModel> requisitionViewModelList = getRequisitionViewModelList();
         for (int i = 0; i < requisitionViewModelList.size(); i++) {
             RequisitionFormItemViewModel itemViewModel = requisitionViewModelList.get(i);
-            if (TextUtils.isEmpty(itemViewModel.getRequestAmount())) {
+            if (TextUtils.isEmpty(itemViewModel.getRequestAmount())
+                    || TextUtils.isEmpty(itemViewModel.getApprovedAmount())) {
                 view.showListInputError(i);
                 return false;
             }
@@ -181,7 +182,7 @@ public class RequisitionPresenter implements Presenter {
     }
 
     public void processRequisition(String consultationNumbers){
-        if (!isRequisitionFormAmountCompleted()) {
+        if (!validateFormInput()) {
             return;
         }
         setRnrFormAmount();

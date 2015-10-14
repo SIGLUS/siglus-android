@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
+import org.openlmis.core.factory.RequisitionDataFactory;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.robolectric.RuntimeEnvironment;
@@ -57,7 +58,7 @@ public class RequisitionFormAdapterTest {
     @Test
     public void shouldHighLightRequestAmount(){
         adapter.setStatus(RnRForm.STATUS.DRAFT);
-        adapter.onBindViewHolder(viewHolder, buildFakeRequisitionViewModel());
+        adapter.onBindViewHolder(viewHolder, RequisitionDataFactory.buildFakeRequisitionViewModel());
 
 
         int bgReqColor = ((ColorDrawable)viewHolder.requestAmount.getBackground()).getColor();
@@ -73,7 +74,7 @@ public class RequisitionFormAdapterTest {
     @Test
     public void shouldHighLightApprovedAmount(){
         adapter.setStatus(RnRForm.STATUS.SUBMITTED);
-        adapter.onBindViewHolder(viewHolder, buildFakeRequisitionViewModel());
+        adapter.onBindViewHolder(viewHolder, RequisitionDataFactory.buildFakeRequisitionViewModel());
 
         int bgReqColor = ((ColorDrawable) viewHolder.requestAmount.getBackground()).getColor();
         int bgAprColor = ((ColorDrawable) viewHolder.approvedAmount.getBackground()).getColor();
@@ -88,7 +89,7 @@ public class RequisitionFormAdapterTest {
     public void shouldUpdateApprovedAmountWhenRequestAmountChanged(){
         viewHolder = new RequisitionFormAdapter.ViewHolder(inflater.inflate(R.layout.item_requisition_body,null, false),false);
         adapter.setStatus(RnRForm.STATUS.DRAFT);
-        RequisitionFormItemViewModel viewModel = buildFakeRequisitionViewModel();
+        RequisitionFormItemViewModel viewModel = RequisitionDataFactory.buildFakeRequisitionViewModel();
         adapter.onBindViewHolder(viewHolder, viewModel);
 
         viewHolder.requestAmount.setText("123");
@@ -104,7 +105,7 @@ public class RequisitionFormAdapterTest {
         viewHolder = new RequisitionFormAdapter.ViewHolder(inflater.inflate(R.layout.item_requisition_body,null, false),false);
         adapter.setStatus(RnRForm.STATUS.SUBMITTED);
 
-        RequisitionFormItemViewModel viewModel = buildFakeRequisitionViewModel();
+        RequisitionFormItemViewModel viewModel = RequisitionDataFactory.buildFakeRequisitionViewModel();
         adapter.onBindViewHolder(viewHolder, viewModel);
 
         viewHolder.approvedAmount.setText("123");
@@ -114,22 +115,4 @@ public class RequisitionFormAdapterTest {
     }
 
 
-    private RequisitionFormItemViewModel buildFakeRequisitionViewModel(){
-        RequisitionFormItemViewModel viewModel = new RequisitionFormItemViewModel();
-        String text = String.valueOf(0);
-        viewModel.setFmn(text);
-        viewModel.setProductName(text);
-        viewModel.setInitAmount(text);
-        viewModel.setReceived(text);
-        viewModel.setIssued(text);
-        viewModel.setTheoretical(text);
-        viewModel.setTotal(text);
-        viewModel.setInventory(text);
-        viewModel.setDifferent(text);
-        viewModel.setTotalRequest(text);
-        viewModel.setRequestAmount(text);
-        viewModel.setApprovedAmount(text);
-
-        return viewModel;
-    }
 }

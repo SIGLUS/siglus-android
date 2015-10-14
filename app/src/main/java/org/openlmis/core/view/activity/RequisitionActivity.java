@@ -223,9 +223,15 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
             @Override
             public void run() {
                 View childAt = getViewByPosition(position, requisitionForm);
-                final EditText viewById = (EditText) childAt.findViewById(R.id.et_request_amount);
-                viewById.requestFocus();
-                viewById.setError(getString(R.string.hint_error_input));
+                EditText requestAmount = (EditText)childAt.findViewById(R.id.et_request_amount);
+                EditText approvedAmount = (EditText)childAt.findViewById(R.id.et_approved_amount);
+                if (requestAmount.isEnabled()){
+                    requestAmount.requestFocus();
+                    requestAmount.setError(getString(R.string.hint_error_input));
+                }else{
+                    approvedAmount.requestFocus();
+                    approvedAmount.setError(getString(R.string.hint_error_input));
+                }
             }
         });
     }
@@ -275,7 +281,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         btnComplete.setText(name);
     }
 
-    private void onProcessButtonClick() {
+    protected void onProcessButtonClick() {
         String consultationNumbers = etConsultationNumbers.getText().toString();
         if (TextUtils.isEmpty(consultationNumbers)) {
             etConsultationNumbers.setError(getString(R.string.hint_error_input));
