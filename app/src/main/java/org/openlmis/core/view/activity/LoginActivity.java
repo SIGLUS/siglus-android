@@ -66,19 +66,16 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!isTaskRoot()) {
-            Intent intent = getIntent();
-            String action = intent.getAction();
-            if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && action != null && action.equals(Intent.ACTION_MAIN)) {
-                finish();
-                return;
-            }
+        if (!isTaskRoot() && getIntent().hasCategory(Intent.CATEGORY_LAUNCHER) &&
+                Intent.ACTION_MAIN.equals(getIntent().getAction())) {
+            finish();
+            return;
         }
 
         initUI();
     }
 
-    void initUI() {
+    private void initUI() {
 
         ivVisibilityPwd.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
