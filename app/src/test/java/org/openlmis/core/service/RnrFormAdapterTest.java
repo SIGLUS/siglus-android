@@ -30,31 +30,49 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
+import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
+
+import java.util.Date;
 
 import roboguice.RoboGuice;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 @RunWith(LMISTestRunner.class)
 public class RnrFormAdapterTest {
     private RnrFormAdapter rnrFormAdapter;
+    private RnRForm rnRForm;
+    private Program program;
 
     @Before
     public void setUp() throws LMISException {
         rnrFormAdapter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormAdapter.class);
+        rnRForm = new RnRForm();
+        program = new Program();
+        program.setProgramCode(MMIARepository.MMIA_PROGRAM_CODE);
+        rnRForm.setProgram(program);
     }
 
     @Test
     public void shouldSerializeRnrFormWithCommentsToJsonObject() throws LMISException {
-        RnRForm rnRForm = new RnRForm();
-        Program program = new Program();
+
         UserInfoMgr.getInstance().setUser(new User("user", "password"));
-        program.setProgramCode(MMIARepository.MMIA_PROGRAM_CODE);
-        rnRForm.setProgram(program);
         rnRForm.setComments("XYZ");
 
         JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
         assertEquals("\"XYZ\"", rnrJson.getAsJsonObject().get("clientSubmittedNotes").toString());
+    }
+
+    @Test
+    public void shouldSerializeRnrFormWithSubmittedTime() throws Exception {
+        UserInfoMgr.getInstance().setUser(new User("user", "password"));
+
+        rnRForm.setUpdatedAt(DateUtil.parseString("2015-10-14 01:01:11", "yyyy-MM-dd HH:mm:ss"));
+
+        JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
+        assertThat(rnrJson.getAsJsonObject().get("clientSubmittedTime").toString(), is("\"2015-10-14 01:01:11\""));
     }
 }
