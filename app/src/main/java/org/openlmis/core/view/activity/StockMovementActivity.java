@@ -59,10 +59,10 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @Inject
     LayoutInflater layoutInflater;
 
-    @InjectView(R.id.btn_save)
-    View btnSave;
-
     @InjectView(R.id.btn_complete)
+    View btnComplete;
+
+    @InjectView(R.id.btn_cancel)
     Button btnCancel;
 
     @InjectView(R.id.tx_expire_data_stock_movement)
@@ -120,10 +120,8 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
         stockMovementList.addHeaderView(headerView);
         stockMovementList.setAdapter(stockMovementAdapter);
-
-        btnCancel.setText(getResources().getString(R.string.btn_cancel));
-
-        btnSave.setOnClickListener(new View.OnClickListener() {
+        
+        btnComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 presenter.submitStockMovement(stockMovementAdapter.getEditableStockMovement());

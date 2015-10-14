@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/btn_save"
+        android:id="@+id/btn_complete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -21,12 +21,12 @@
             android:background="@color/color_accent"
             android:clickable="false"
             android:drawableStart="@drawable/ic_save"
-            android:text="@string/btn_save"
+            android:text="@string/btn_complete"
             android:textColor="@color/white" />
     </LinearLayout>
 
     <Button
-        android:id="@+id/btn_complete"
+        android:id="@+id/btn_cancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
