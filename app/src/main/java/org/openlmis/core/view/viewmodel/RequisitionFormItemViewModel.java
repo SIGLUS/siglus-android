@@ -38,6 +38,10 @@ public class RequisitionFormItemViewModel {
     private String requestAmount;
     private String approvedAmount;
 
+    public RequisitionFormItemViewModel(){
+
+    }
+
     public RequisitionFormItemViewModel(RnrFormItem item) {
 
         this.fmn = (item.getProduct().getCode());

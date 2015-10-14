@@ -124,6 +124,16 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/hint_mmia_comment"
                             android:minHeight="50dp" />
+
+                        <TextView
+                            android:id="@+id/tv_total_mismatch"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:textColor="@color/color_error_title"
+                            android:visibility="invisible"
+                            android:text="@string/msg_reason_for_total_not_match"/>
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
             </LinearLayout>

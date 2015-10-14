@@ -26,8 +26,11 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
@@ -151,6 +154,13 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.SIMPLE_DATE_FORMAT), is("21/05/2015"));
         assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(), DateUtil.SIMPLE_DATE_FORMAT), is("20/06/2015"));
+
+
+        generateDate = DateUtil.parseString("25/01/2015", DateUtil.SIMPLE_DATE_FORMAT);
+        rnRForm = RnRForm.init(new Program(), generateDate);
+
+        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.SIMPLE_DATE_FORMAT), is("21/12/2014"));
+        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(), DateUtil.SIMPLE_DATE_FORMAT), is("20/01/2015"));
     }
 
     @Test
@@ -166,6 +176,13 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.SIMPLE_DATE_FORMAT), is("21/06/2015"));
         assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(), DateUtil.SIMPLE_DATE_FORMAT), is("20/07/2015"));
+
+
+        generateDate = DateUtil.parseString("28/12/2015", DateUtil.SIMPLE_DATE_FORMAT);
+        rnRForm = RnRForm.init(new Program(), generateDate);
+
+        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.SIMPLE_DATE_FORMAT), is("21/12/2015"));
+        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(), DateUtil.SIMPLE_DATE_FORMAT), is("20/01/2016"));
     }
 
     @Test
@@ -247,6 +264,26 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         RnRForm rnRForm = rnrFormRepository.queryRnRForm(1);
         assertThat(rnRForm.getComments(), is("DRAFT Form"));
     }
+
+    @Test
+    public void shouldRecordUpdateTimeWhenAuthorizeRnrForm() throws Exception{
+        Program program = new Program();
+
+        RnRForm form = RnRForm.init(program, DateUtil.parseString("01/01/2015", DateUtil.SIMPLE_DATE_FORMAT));
+        form.setId(1);
+        form.setComments("DRAFT Form");
+
+        form.setRnrFormItemListWrapper(new ArrayList<RnrFormItem>());
+        form.setRegimenItemListWrapper(new ArrayList<RegimenItem>());
+        form.setBaseInfoItemListWrapper(new ArrayList<BaseInfoItem>());
+
+        rnrFormRepository.create(form);
+        rnrFormRepository.authorise(form);
+
+        RnRForm rnRForm = rnrFormRepository.queryRnRForm(1);
+        assertThat(DateUtil.formatDate(rnRForm.getUpdatedAt(), DateUtil.SIMPLE_DATE_FORMAT), is(DateUtil.formatDate(DateUtil.today(), DateUtil.SIMPLE_DATE_FORMAT)));
+    }
+
 
     public class MyTestModule extends AbstractModule {
         @Override

@@ -108,7 +108,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
 
     private void initPhysicalInventoryUI() {
         final List<StockCardViewModel> list = new ArrayList<>();
-        ((ViewGroup)btnDone.getParent()).removeView(btnDone);
+        ((ViewGroup) btnDone.getParent()).removeView(btnDone);
         mAdapter = new PhysicalInventoryAdapter(this, list, btnDone);
         productListRecycleView.setAdapter(mAdapter);
 
@@ -193,7 +193,12 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
         saveBoolean(Constants.KEY_INIT_INVENTORY, false);
 
         Intent intent = getIntent();
-        intent.setClass(this, HomeActivity.class);
+        if (isAddNewDrug()) {
+            intent.setClass(this, StockCardListActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        } else {
+            intent.setClass(this, HomeActivity.class);
+        }
         startActivity(intent);
         this.finish();
     }

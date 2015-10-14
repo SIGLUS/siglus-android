@@ -140,11 +140,11 @@ public class MMIAFormPresenter implements Presenter {
         form.setBaseInfoItemListWrapper(baseInfoItemList);
         form.setComments(comments);
 
-        if (validate(form)) {
-            authoriseForm();
-        } else {
+        if (!validateTotalsMatch(form) && comments.length() < 5) {
             view.showValidationAlert();
+            return;
         }
+        authoriseForm();
     }
 
     private void authoriseForm() {
@@ -186,7 +186,7 @@ public class MMIAFormPresenter implements Presenter {
                 });
     }
 
-    private boolean validate(RnRForm form) {
+    private boolean validateTotalsMatch(RnRForm form) {
         return RnRForm.calculateTotalRegimenAmount(form.getRegimenItemListWrapper()) == mmiaRepository.getTotalPatients(form);
     }
 

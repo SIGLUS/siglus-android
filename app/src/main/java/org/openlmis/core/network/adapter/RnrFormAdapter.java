@@ -33,6 +33,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
+import org.openlmis.core.utils.DateUtil;
 
 import java.lang.reflect.Type;
 
@@ -60,6 +61,11 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
             root.add("patientQuantifications", serializePatientInfo(rnRForm.getBaseInfoItemList()));
         }
 
+        if (rnRForm.getComments() != null) {
+            root.addProperty("clientSubmittedNotes", rnRForm.getComments());
+        }
+
+        root.addProperty("clientSubmittedTime", DateUtil.formatDate(rnRForm.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
         return root;
     }
 

@@ -1,12 +1,11 @@
 @Mmia
 Feature: stock movement Page
 
-    Scenario: Navigate to Home Page
+    Background: Navigate to Home Page
         Given I am logged in
-        Given I am Initialized Inventory
 
     Scenario: Initial a MMIA
-            Given I am logged in
+            Given I have initialized inventory
             And I press "Stock Card"
             Then I wait for the "StockCardListActivity" screen to appear
             Then I wait for 1 second
@@ -24,18 +23,17 @@ Feature: stock movement Page
             Then I swipe left
             Then I scroll to "Complete"
             Then I wait for 1 second
-            And I enter regime total
+            And I enter regimen totals
             Then I press "Save"
             Then I wait for 1 second
             And I press "Create a MMIA"
             Then I scroll to "Complete"
-            And I enter patient total
+            And I enter patient totals
             Then I press "Complete"
             Then I should see text containing "Your MMIA form has been successfully saved,"
             Then I wait for the "HomeActivity" screen to appear
 
     Scenario: after editing if I go back without saving I should see pop up, if I say yes then go back without saving, else staying at mmia page
-            Given I am logged in
             And I press "Stock Card"
             Then I wait for the "StockCardListActivity" screen to appear
             Then I wait for 1 second
@@ -49,7 +47,7 @@ Feature: stock movement Page
             Then I should see text containing "Lamivudina 150mg/Zidovudina 300mg/Nevirapina 200mg"
             Then I scroll to "Complete"
             Then I wait for 1 second
-            And I enter patient total
+            And I enter patient totals
             Then I go back
             Then I should see text containing "Are you sure you want to quit without saving your work?"
             Then I press "No"

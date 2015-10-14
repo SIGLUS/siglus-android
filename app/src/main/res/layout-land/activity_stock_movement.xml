@@ -87,7 +87,7 @@
 
     <include
         android:id="@+id/action_panel"
-        layout="@layout/layout_form_action"
+        layout="@layout/layout_form_action_for_stock_movement"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" />

@@ -5,7 +5,9 @@ index = 0
 pre_name = ""
 
 When /^I enter username "([^\"]+)"$/ do |username|
-  enter_text("android.widget.EditText id:'tx_username'", username)
+  element = "android.widget.EditText id:'tx_username'"
+  clear_text_in(element)
+  enter_text(element, username)
   hide_soft_keyboard
 end
 
@@ -67,10 +69,9 @@ When(/^I select the checkbox$/) do
   end
 end
 
-Given(/^I am Initialized Inventory$/) do
+Given(/^I have initialized inventory$/) do
   steps %Q{
-        Then I wait for 10 seconds
-        Then I wait for the "InventoryActivity" screen to appear
+        Then I wait up to 30 seconds for the "InventoryActivity" screen to appear
         Then I wait for 1 second
 		When I Select MMIA Item
 		When I Select VIA Item

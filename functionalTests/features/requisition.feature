@@ -3,16 +3,16 @@ Feature: Requisition
 
   Scenario: Go to requisition page and display all VIA products
     Given I am logged in
-    Given I am Initialized Inventory
+    Given I have initialized inventory
 
-    And I press "Create a Via Classica Requesition"
+    And I press "Create a Via Classica Requisition"
     Then I wait for the "RequisitionActivity" screen to appear
     Then I should see text containing "Acyclovir, tablet 400mg"
     Then I should see "4" products
 
   Scenario: Pop up alert
     Given I am logged in
-    And I press "Create a Via Classica Requesition"
+    And I press "Create a Via Classica Requisition"
     Then I wait for the "RequisitionActivity" screen to appear
     Then I enter consultationsNub "2015"
     Then I wait for 1 second
@@ -23,7 +23,7 @@ Feature: Requisition
 
   Scenario: Save requisition draft and complete
     Given I am logged in
-    And I press "Create a Via Classica Requesition"
+    And I press "Create a Via Classica Requisition"
     When I enter consultationsNub "888"
     Then I swipe right
     Then I swipe right
@@ -37,7 +37,9 @@ Feature: Requisition
     Then I swipe right
     Then I swipe right
     Then I should see "345"
+    Then I go back
     Then I press "Submit"
+    And I wait for 1 second
     Then I press "Complete"
     Then I wait for the "RequisitionActivity" screen to appear
 

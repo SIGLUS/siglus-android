@@ -131,6 +131,7 @@ public class RequisitionPresenter implements Presenter {
     public void loadRequisitionFormList(final long formId) {
 
         if (requisitionFormItemViewModelList.size() > 0) {
+            updateRequisitionFormUI();
             return;
         }
 
@@ -144,7 +145,8 @@ public class RequisitionPresenter implements Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<List<RequisitionFormItemViewModel>>() {
             @Override
             public void call(List<RequisitionFormItemViewModel> requisitionFormItemViewModels) {
-                updateRequisitionFormUI(requisitionFormItemViewModels);
+                requisitionFormItemViewModelList.addAll(requisitionFormItemViewModels);
+                updateRequisitionFormUI();
                 view.loaded();
             }
         }, new Action1<Throwable>() {
@@ -155,25 +157,23 @@ public class RequisitionPresenter implements Presenter {
         });
     }
 
-    protected void updateRequisitionFormUI(List<RequisitionFormItemViewModel> requisitionFormItemViewModels) {
-        requisitionFormItemViewModelList.addAll(requisitionFormItemViewModels);
-
+    protected void updateRequisitionFormUI() {
         if (rnRForm.getStatus() == RnRForm.STATUS.DRAFT){
             view.highLightRequestAmount();
         }else if (rnRForm.getStatus() == RnRForm.STATUS.SUBMITTED){
             view.setProcessButtonName(context.getString(R.string.btn_complete));
             view.highLightApprovedAmount();
         }
-
         view.refreshRequisitionForm();
     }
 
 
-    protected boolean isRequisitionFormAmountCompleted() {
+    protected boolean validateFormInput() {
         List<RequisitionFormItemViewModel> requisitionViewModelList = getRequisitionViewModelList();
         for (int i = 0; i < requisitionViewModelList.size(); i++) {
             RequisitionFormItemViewModel itemViewModel = requisitionViewModelList.get(i);
-            if (TextUtils.isEmpty(itemViewModel.getRequestAmount())) {
+            if (TextUtils.isEmpty(itemViewModel.getRequestAmount())
+                    || TextUtils.isEmpty(itemViewModel.getApprovedAmount())) {
                 view.showListInputError(i);
                 return false;
             }
@@ -182,7 +182,7 @@ public class RequisitionPresenter implements Presenter {
     }
 
     public void processRequisition(String consultationNumbers){
-        if (!isRequisitionFormAmountCompleted()) {
+        if (!validateFormInput()) {
             return;
         }
         setRnrFormAmount();

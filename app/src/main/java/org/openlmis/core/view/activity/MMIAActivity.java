@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
+import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
@@ -34,9 +35,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIAFormPresenter;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.fragment.MMIATotalMismatchDialogFragment;
 import org.openlmis.core.view.fragment.OnBackConfirmDialog;
 import org.openlmis.core.view.fragment.RetainedFragment;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
@@ -57,16 +60,16 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     private MMIARnrForm rnrFormList;
 
     @InjectView(R.id.regime_list)
-    public MMIARegimeList regimeListView;
+    protected MMIARegimeList regimeListView;
 
     @InjectView(R.id.mmia_info_list)
-    private MMIAInfoList mmiaInfoListView;
+    protected MMIAInfoList mmiaInfoListView;
 
     @InjectView(R.id.btn_complete)
     private Button btnComplete;
 
     @InjectView(R.id.tv_regime_total)
-    private TextView tvRegimeTotal;
+    protected TextView tvRegimeTotal;
 
     @InjectView(R.id.et_comment)
     private TextView etComment;
@@ -77,6 +80,9 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     @InjectView(R.id.btn_save)
     private View btnSave;
 
+    @InjectView(R.id.tv_total_mismatch)
+    protected TextView tvMismatch;
+
     MMIAFormPresenter presenter;
 
     Boolean hasDataChanged;
@@ -84,6 +90,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     private RetainedFragment dataFragment;
     private boolean commentHasChanged = false;
     private boolean isHistoryForm;
+    private long formId;
 
     @Override
     public MMIAFormPresenter getPresenter() {
@@ -97,7 +104,6 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     }
 
     private void initPresenter() {
-        // find the retained fragment on activity restarts
         FragmentManager fm = getFragmentManager();
         dataFragment = (RetainedFragment) fm.findFragmentByTag("RetainedFragment");
 
@@ -117,12 +123,9 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         hasDataChanged = (Boolean) dataFragment.getData("hasDataChanged");
         scrollView.setVisibility(View.INVISIBLE);
 
-        long formId = getIntent().getLongExtra("formId", 0);
-        if (formId == 0) {
-            isHistoryForm = false;
-        } else {
-            isHistoryForm = true;
-        }
+        formId = getIntent().getLongExtra("formId", 0);
+        isHistoryForm = formId != 0;
+        
         presenter.loadData(formId);
     }
 
@@ -146,6 +149,8 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
             setTitle(new RnRFormViewModel(form).getPeriod());
         }
 
+        highlightTotalDifference();
+
         etComment.setText(form.getComments());
 
         etComment.post(new Runnable() {
@@ -158,7 +163,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         tvRegimeTotal.post(new Runnable() {
             @Override
             public void run() {
-                tvRegimeTotal.addTextChangedListener(regimeTotalTextWatcher);
+                tvRegimeTotal.addTextChangedListener(totalTextWatcher);
             }
         });
 
@@ -166,7 +171,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         patientTotalView.post(new Runnable() {
             @Override
             public void run() {
-                patientTotalView.addTextChangedListener(totalPatientTextWatcher);
+                patientTotalView.addTextChangedListener(totalTextWatcher);
             }
         });
 
@@ -186,46 +191,30 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     TextWatcher commentTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
         }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-
         }
 
         @Override
         public void afterTextChanged(Editable s) {
             commentHasChanged = true;
+            try {
+                presenter.getRnrForm(formId).setComments(s.toString());
+            } catch (LMISException e) {
+                e.printStackTrace();
+            }
         }
     };
 
-    TextWatcher regimeTotalTextWatcher = new TextWatcher() {
+    TextWatcher totalTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
         }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            highlightTotalDifference();
-        }
-    };
-
-    TextWatcher totalPatientTextWatcher  = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
         }
 
         @Override
@@ -235,12 +224,14 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     };
 
     private void highlightTotalDifference() {
-        if (regimeListView.getTotal() != mmiaInfoListView.getTotal()){
-            regimeListView.highLightTotal();
-            mmiaInfoListView.highLightTotal();
-        }else {
+        if (isTotalEqual()) {
             regimeListView.deHighLightTotal();
             mmiaInfoListView.deHighLightTotal();
+            tvMismatch.setVisibility(View.INVISIBLE);
+        } else {
+            regimeListView.highLightTotal();
+            mmiaInfoListView.highLightTotal();
+            tvMismatch.setVisibility(View.VISIBLE);
         }
     }
 
@@ -283,7 +274,8 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     @Override
     public void showValidationAlert() {
-
+        DialogFragment dialogFragment = new MMIATotalMismatchDialogFragment();
+        dialogFragment.show(getFragmentManager(), "tag");
     }
 
     @Override
@@ -319,10 +311,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         if (!regimeListView.isCompleted() || !mmiaInfoListView.isCompleted()) {
             return;
         }
-        if (!isTotalEqual()) {
-            ToastUtil.show(R.string.hint_mmia_total_not_equal);
-            return;
-        }
+
         presenter.completeMMIA(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
     }
 

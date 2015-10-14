@@ -155,6 +155,7 @@ public class MMIARnrForm extends LinearLayout {
             ViewGroup.LayoutParams layoutParams = leftView.getLayoutParams();
             layoutParams.height = rightHeight;
             leftView.setLayoutParams(layoutParams);
+            rightView.setLayoutParams(layoutParams);
         }
     }
 

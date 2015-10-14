@@ -185,13 +185,13 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     private void setPwdVisibility() {
         if (password.getInputType() == (InputType.TYPE_CLASS_TEXT
                 | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD)) {
-            ivVisibilityPwd.setImageResource(R.drawable.ic_visibility_off);
+            ivVisibilityPwd.setImageResource(R.drawable.ic_visibility);
             password.setInputType(InputType.TYPE_CLASS_TEXT
                     | EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
         } else {
             password.setInputType(InputType.TYPE_CLASS_TEXT
                     | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
-            ivVisibilityPwd.setImageResource(R.drawable.ic_visibility);
+            ivVisibilityPwd.setImageResource(R.drawable.ic_visibility_off);
         }
 
         password.setSelection(password.getText().length());

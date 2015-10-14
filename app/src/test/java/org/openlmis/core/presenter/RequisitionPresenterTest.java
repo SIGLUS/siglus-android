@@ -81,7 +81,7 @@ public class RequisitionPresenterTest {
         }
 
         presenter.requisitionFormItemViewModelList = list;
-        assertFalse(presenter.isRequisitionFormAmountCompleted());
+        assertFalse(presenter.validateFormInput());
         verify(mockActivity).showListInputError(anyInt());
     }
 
@@ -96,7 +96,7 @@ public class RequisitionPresenterTest {
         }
 
         presenter.requisitionFormItemViewModelList = list;
-        assertTrue(presenter.isRequisitionFormAmountCompleted());
+        assertTrue(presenter.validateFormInput());
     }
 
     @Test
@@ -185,7 +185,7 @@ public class RequisitionPresenterTest {
         RnRForm form = new RnRForm();
         form.setStatus(status);
         presenter.rnRForm = form;
-        presenter.updateRequisitionFormUI(new ArrayList<RequisitionFormItemViewModel>());
+        presenter.updateRequisitionFormUI();
     }
 
 
