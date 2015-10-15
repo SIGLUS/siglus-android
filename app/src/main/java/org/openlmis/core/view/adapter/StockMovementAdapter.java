@@ -69,14 +69,12 @@ public class StockMovementAdapter extends BaseAdapter {
 
     private final StockCard stockCard;
 
-    View buttonView;
 
-    public StockMovementAdapter(StockMovementActivity context, StockMovementPresenter presenter, View buttonView) {
+    public StockMovementAdapter(StockMovementActivity context, StockMovementPresenter presenter) {
         stockMovementViewModels = presenter.getStockMovementModelList();
         this.activity = context;
         stockCard = presenter.getStockCard();
         layoutInflater = LayoutInflater.from(context);
-        this.buttonView = buttonView;
         setupMovementTypeDialog();
     }
 

@@ -53,7 +53,7 @@
         <activity
             android:name=".view.activity.RequisitionActivity"
             android:label="@string/title_requisition"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <activity
             android:name=".view.activity.StockMovementActivity"
