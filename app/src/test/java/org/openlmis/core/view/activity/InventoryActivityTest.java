@@ -19,6 +19,7 @@
 package org.openlmis.core.view.activity;
 
 
+import android.content.Intent;
 import android.view.Menu;
 
 
@@ -36,8 +37,10 @@ import java.util.ArrayList;
 
 import roboguice.RoboGuice;
 
+import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class InventoryActivityTest {
@@ -68,6 +71,27 @@ public class InventoryActivityTest {
         ((StockCardViewModel)inventoryActivity.mAdapter.getData().get(0)).setChecked(true);
         inventoryActivity.btnDone.performClick();
         assertThat(((StockCardViewModel)inventoryActivity.mAdapter.getData().get(0)).isValidate(), is(false));
+    }
+
+    @Test
+    public void shouldGoToHomePageAfterInitInventoryOrDoPhysicalInventory(){
+        inventoryActivity.goToMainPage();
+
+        Intent startIntent = shadowOf(inventoryActivity).getNextStartedActivity();
+        assertEquals(startIntent.getComponent().getClassName(), HomeActivity.class.getName());
+    }
+
+    @Test
+    public void shouldGoToStockCardPageAfterAddedNewProduct(){
+        Intent intentToStockCard = new Intent();
+        intentToStockCard.putExtra(InventoryActivity.PARAM_IS_ADD_NEW_DRUG, true);
+        inventoryActivity = Robolectric.buildActivity(InventoryActivityMock.class).withIntent(intentToStockCard).create().get();
+
+        inventoryActivity.goToMainPage();
+
+        Intent startIntent = shadowOf(inventoryActivity).getNextStartedActivity();
+        assertEquals(startIntent.getComponent().getClassName(), StockCardListActivity.class.getName());
+        assertEquals(startIntent.getFlags(),Intent.FLAG_ACTIVITY_CLEAR_TOP);
     }
 
     static class InventoryActivityMock extends InventoryActivity {
