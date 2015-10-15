@@ -101,6 +101,7 @@ public class InventoryPresenter implements Presenter {
                     }).toList();
 
                     subscriber.onNext(list);
+                    subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.printStackTrace();
                     subscriber.onError(e);
@@ -122,6 +123,7 @@ public class InventoryPresenter implements Presenter {
                             return new StockCardViewModel(stockCard);
                         }
                     }).toList());
+                    subscriber.onCompleted();
                 } catch (LMISException e) {
                     subscriber.onError(e);
                 }
@@ -198,57 +200,60 @@ public class InventoryPresenter implements Presenter {
     public void doPhysicalInventory(final List<StockCardViewModel> list) {
         if (view.validateInventory()) {
             view.loading();
-            Observable.create(new Observable.OnSubscribe<Object>() {
-                @Override
-                public void call(Subscriber<? super Object> subscriber) {
-                    try {
-                        for (StockCardViewModel model : list) {
-                            stockRepository.addStockMovement(model.getStockCardId(), calculateAdjustment(model));
-                        }
-                        subscriber.onNext(null);
-                    } catch (LMISException e) {
-                        subscriber.onError(e);
-                        e.printStackTrace();
-                    } finally {
-                        subscriber.onCompleted();
-                    }
-                }
-            }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Object>() {
-                @Override
-                public void onCompleted() {
-                    view.loaded();
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    view.showErrorMessage(e.getMessage());
-                }
-
-                @Override
-                public void onNext(Object o) {
-                    view.goToMainPage();
-                }
-            });
+            stockMovementObservable(list).subscribe(nextMainPageAction, errorAction);
         }
     }
+
+    protected Observable<Object> stockMovementObservable(final List<StockCardViewModel> list) {
+        return Observable.create(new Observable.OnSubscribe<Object>() {
+            @Override
+            public void call(Subscriber<? super Object> subscriber) {
+                try {
+                    for (StockCardViewModel model : list) {
+                        stockRepository.addStockMovement(model.getStockCardId(), calculateAdjustment(model));
+                    }
+                    subscriber.onNext(null);
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    subscriber.onError(e);
+                    e.printStackTrace();
+                }
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    protected Action1<Object> nextMainPageAction = new Action1<Object>() {
+        @Override
+        public void call(Object o) {
+            view.loaded();
+            view.goToMainPage();
+        }
+    };
+
+    protected Action1<Throwable> errorAction = new Action1<Throwable>() {
+        @Override
+        public void call(Throwable throwable) {
+            view.loaded();
+            view.showErrorMessage(throwable.getMessage());
+        }
+    };
 
     public void doInitialInventory(final List<StockCardViewModel> list) {
         if (view.validateInventory()) {
             view.loading();
-            Observable.create(new Observable.OnSubscribe<Object>() {
-                @Override
-                public void call(Subscriber<? super Object> subscriber) {
-                    initStockCards(list);
-                    subscriber.onNext(null);
-                }
-            }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Object>() {
-                @Override
-                public void call(Object o) {
-                    view.loaded();
-                    view.goToMainPage();
-                }
-            });
+            initStockCardObservable(list).subscribe(nextMainPageAction);
         }
+    }
+
+    protected Observable<Object> initStockCardObservable(final List<StockCardViewModel> list) {
+        return Observable.create(new Observable.OnSubscribe<Object>() {
+            @Override
+            public void call(Subscriber<? super Object> subscriber) {
+                initStockCards(list);
+                subscriber.onNext(null);
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     public interface InventoryView extends View {

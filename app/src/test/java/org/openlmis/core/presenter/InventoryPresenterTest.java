@@ -30,18 +30,26 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockCardBuilder;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import roboguice.RoboGuice;
+import rx.Observable;
 import rx.Scheduler;
+import rx.Subscriber;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.observers.TestSubscriber;
 import rx.schedulers.Schedulers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -50,6 +58,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
 public class InventoryPresenterTest extends LMISRepositoryUnitTest {
@@ -94,6 +103,24 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
     }
 
     @Test
+    public void shouldLoadStockCardList() throws LMISException {
+        StockCard stockCard1 = StockCardBuilder.buildStockCard();
+        StockCard stockCard2 = StockCardBuilder.buildStockCard();
+        List<StockCard> stockCards = Arrays.asList(stockCard1, stockCard2);
+        when(stockRepositoryMock.list()).thenReturn(stockCards);
+
+        TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
+        Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadStockCardList();
+        observable.subscribe(subscriber);
+
+        subscriber.awaitTerminalEvent();
+
+        verify(stockRepositoryMock).list();
+        subscriber.assertNoErrors();
+        subscriber.assertValue(Arrays.asList(new StockCardViewModel(stockCard1), new StockCardViewModel(stockCard2)));
+    }
+
+    @Test
     public void shouldInitStockCardAndCreateAInitInventoryMovementItem() throws LMISException {
         StockCardViewModel model = new StockCardViewModel(product);
         model.setChecked(true);
@@ -111,6 +138,22 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         verify(stockRepositoryMock, times(1)).initStockCard(any(StockCard.class));
     }
 
+    @Test
+    public void shouldGoToMainPageWhenOnNextCalled() {
+        inventoryPresenter.nextMainPageAction.call(null);
+
+        verify(view).loaded();
+        verify(view).goToMainPage();
+    }
+
+    @Test
+    public void shouldShowErrorWhenOnErrorCalled() {
+        String errorMessage = "This is throwable error";
+        inventoryPresenter.errorAction.call(new Throwable(errorMessage));
+
+        verify(view).loaded();
+        verify(view).showErrorMessage(errorMessage);
+    }
 
     @Test
     public void shouldMakePositiveAdjustment() throws LMISException{
@@ -138,7 +181,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
 
     @Test
-    public void shouldMakePhysicalInventory() throws LMISException{
+    public void shouldCalculateStockAdjustment() throws LMISException{
         StockCardViewModel model = new StockCardViewModel(stockCard);
         model.setQuantity("100");
 
