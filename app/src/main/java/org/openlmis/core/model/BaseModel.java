@@ -22,6 +22,8 @@ package org.openlmis.core.model;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 
+import org.openlmis.core.utils.DateUtil;
+
 import java.util.Date;
 
 import lombok.Data;
@@ -38,9 +40,9 @@ public abstract class BaseModel {
         updatedAt = createdAt;
     }
 
-    @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = "yyyy-MM-dd")
+    @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DATE_TIME_FORMAT)
     private java.util.Date createdAt;
 
-    @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = "yyyy-MM-dd")
+    @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DATE_TIME_FORMAT)
     private java.util.Date updatedAt;
 }

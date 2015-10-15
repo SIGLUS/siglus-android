@@ -18,10 +18,8 @@
 
 package org.openlmis.core.persistence.migrations;
 
-import android.database.sqlite.SQLiteDatabase;
 
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.support.ConnectionSource;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Regimen;
@@ -30,16 +28,17 @@ import org.openlmis.core.persistence.Migration;
 
 import java.sql.SQLException;
 
-public class CreateDummyRegimes implements Migration {
+public class CreateDummyRegimes extends Migration {
 
     DbUtil dbUtil;
 
-    public CreateDummyRegimes() {
+
+    public CreateDummyRegimes(){
         dbUtil = new DbUtil();
     }
 
     @Override
-    public void up(SQLiteDatabase db, ConnectionSource connectionSource) {
+    public void up() {
 
         try {
             dbUtil.withDao(Regimen.class, new DbUtil.Operation<Regimen, String>() {
@@ -83,7 +82,7 @@ public class CreateDummyRegimes implements Migration {
     }
 
     @Override
-    public void down(SQLiteDatabase db, ConnectionSource connectionSource) {
+    public void down() {
 
     }
 }
