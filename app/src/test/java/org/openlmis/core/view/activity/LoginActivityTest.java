@@ -22,12 +22,12 @@ import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.text.InputType;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.inject.AbstractModule;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,6 +65,11 @@ public class LoginActivityTest {
             }
         });
         loginActivity = Robolectric.buildActivity(LoginActivity.class).create().get();
+    }
+
+    @After
+    public void teardown() {
+        RoboGuice.Util.reset();
     }
 
     @Test
