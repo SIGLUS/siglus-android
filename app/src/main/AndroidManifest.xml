@@ -33,19 +33,16 @@
 
         <activity
             android:name=".view.activity.InventoryActivity"
-            android:screenOrientation="portrait"
             android:label="@string/title_init_inventory" />
 
         <activity
             android:name=".view.activity.HomeActivity"
-            android:screenOrientation="portrait"
             android:label="@string/title_home">
 
         </activity>
 
         <activity
             android:name=".view.activity.StockCardListActivity"
-            android:screenOrientation="portrait"
             android:label="@string/title_stock_cards" />
 
         <activity
@@ -69,7 +66,6 @@
         <activity
             android:name=".view.activity.RnRFormListActivity"
             android:label="@string/title_stock_movement"
-            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <service
