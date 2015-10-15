@@ -21,6 +21,7 @@ package org.openlmis.core.presenter;
 import com.google.inject.AbstractModule;
 
 import org.apache.commons.lang3.StringUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +39,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.RoboGuice;
+import rx.Scheduler;
+import rx.android.plugins.RxAndroidPlugins;
+import rx.android.plugins.RxAndroidSchedulersHook;
+import rx.schedulers.Schedulers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -74,8 +79,19 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         stockCard.setStockOnHand(100);
         stockCard.setProduct(product);
         stockCard.setExpireDates(StringUtils.EMPTY);
+
+        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
+            @Override
+            public Scheduler getMainThreadScheduler() {
+                return Schedulers.immediate();
+            }
+        });
     }
 
+    @After
+    public void tearDown() {
+        RxAndroidPlugins.getInstance().reset();
+    }
 
     @Test
     public void shouldInitStockCardAndCreateAInitInventoryMovementItem() throws LMISException {

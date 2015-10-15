@@ -32,6 +32,11 @@ import org.robolectric.manifest.AndroidManifest;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
+import rx.Scheduler;
+import rx.plugins.RxJavaPlugins;
+import rx.plugins.RxJavaSchedulersHook;
+import rx.schedulers.Schedulers;
+
 public class LMISTestRunner extends RobolectricTestRunner {
 
     /**
@@ -52,6 +57,13 @@ public class LMISTestRunner extends RobolectricTestRunner {
         System.setProperty("android.manifest", intermediatesPath + "/manifests/full/" + buildVariant + "/AndroidManifest.xml");
         System.setProperty("android.resources", intermediatesPath + "/res/" + buildVariant);
         System.setProperty("android.assets", intermediatesPath + "/assets/" + buildVariant);
+
+        RxJavaPlugins.getInstance().registerSchedulersHook(new RxJavaSchedulersHook() {
+            @Override
+            public Scheduler getIOScheduler() {
+                return Schedulers.immediate();
+            }
+        });
     }
 
 
