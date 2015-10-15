@@ -192,13 +192,13 @@ public class LoginActivityTest {
     public void shouldSetPasswordVisibility() {
         ShadowImageView shadowPwdImageView = shadowOf(loginActivity.ivVisibilityPwd);
 
-        assertThat(shadowPwdImageView.getImageResourceId()).isEqualTo(R.drawable.ic_visibility);
+        assertThat(shadowPwdImageView.getImageResourceId()).isEqualTo(R.drawable.ic_visibility_off);
         assertThat(loginActivity.password.getInputType()).isEqualTo(InputType.TYPE_CLASS_TEXT
                 | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
 
         loginActivity.ivVisibilityPwd.performClick();
 
-        assertThat(shadowPwdImageView.getImageResourceId()).isEqualTo(R.drawable.ic_visibility_off);
+        assertThat(shadowPwdImageView.getImageResourceId()).isEqualTo(R.drawable.ic_visibility);
         assertThat(loginActivity.password.getInputType()).isEqualTo(InputType.TYPE_CLASS_TEXT
                 | EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
     }
