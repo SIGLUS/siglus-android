@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -157,7 +158,11 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
 
     public void loaded() {
         if (loadingDialog != null) {
-            loadingDialog.dismiss();
+            try {
+                loadingDialog.dismiss();
+            } catch (IllegalArgumentException e) {
+                Log.d("View", "loaded -> dialog already dismissed");
+            }
         }
     }
 
