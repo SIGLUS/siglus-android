@@ -20,6 +20,7 @@ package org.openlmis.core.view.viewmodel;
 
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 
 import org.apache.commons.lang3.StringUtils;
@@ -70,7 +71,11 @@ public class StockCardViewModel {
         Product product = stockCard.getProduct();
         formatProductDisplay(product);
 
-        this.expiryDates = newArrayList(stockCard.getExpireDates().split(StockCard.DIVIDER));
+        if (TextUtils.isEmpty(stockCard.getExpireDates())) {
+            expiryDates = new ArrayList<>();
+        } else {
+            expiryDates = newArrayList(stockCard.getExpireDates().split(StockCard.DIVIDER));
+        }
         this.stockOnHand = stockCard.getStockOnHand();
         this.checked = true;
     }
@@ -134,10 +139,7 @@ public class StockCardViewModel {
         if (!append) {
             expiryDates.clear();
         }
-        if (isExpireDateExists(date)) {
-            return false;
-        }
-        return expiryDates.add(date);
+        return !isExpireDateExists(date) && expiryDates.add(date);
     }
 
     public void removeExpiryDate(String date) {
