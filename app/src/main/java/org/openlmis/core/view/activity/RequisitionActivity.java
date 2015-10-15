@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
+import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
@@ -44,7 +45,7 @@ import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.RequisitionPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
-import org.openlmis.core.view.fragment.OnBackConfirmDialog;
+import org.openlmis.core.view.fragment.BaseDialogFragment;
 import org.openlmis.core.view.fragment.RetainedFragment;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
@@ -55,7 +56,7 @@ import roboguice.inject.InjectView;
 
 
 @ContentView(R.layout.activity_requisition)
-public class RequisitionActivity extends BaseActivity implements RequisitionPresenter.RequisitionView, View.OnClickListener {
+public class RequisitionActivity extends BaseActivity implements RequisitionPresenter.RequisitionView, View.OnClickListener, BaseDialogFragment.PositiveListener, BaseDialogFragment.NegativeListener {
 
     @InjectView(R.id.requisition_form)
     ListView requisitionForm;
@@ -106,6 +107,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     private boolean consultationNumbersHasChanged;
     private boolean isHistoryForm;
 
+    private static final String ON_BACK_PRESSED = "onBackPressed";
 
     private void initPresenter() {
         // find the retained fragment on activity restarts
@@ -228,12 +230,12 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
             @Override
             public void run() {
                 View childAt = getViewByPosition(position, requisitionForm);
-                EditText requestAmount = (EditText)childAt.findViewById(R.id.et_request_amount);
-                EditText approvedAmount = (EditText)childAt.findViewById(R.id.et_approved_amount);
-                if (requestAmount.isEnabled()){
+                EditText requestAmount = (EditText) childAt.findViewById(R.id.et_request_amount);
+                EditText approvedAmount = (EditText) childAt.findViewById(R.id.et_approved_amount);
+                if (requestAmount.isEnabled()) {
                     requestAmount.requestFocus();
                     requestAmount.setError(getString(R.string.hint_error_input));
-                }else{
+                } else {
                     approvedAmount.requestFocus();
                     approvedAmount.setError(getString(R.string.hint_error_input));
                 }
@@ -418,15 +420,13 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     @Override
     public void onBackPressed() {
         if (hasDataChanged()) {
-            OnBackConfirmDialog.showDialog(this, new OnBackConfirmDialog.ResultCallBack() {
-                @Override
-                public void callback(boolean flag) {
-                    if (flag) {
-                        removeTempForm();
-                        finish();
-                    }
-                }
-            });
+            DialogFragment dialogFragment = BaseDialogFragment
+                    .newInstance()
+                    .setMessage(getResources().getString(R.string.msg_mmia_onback_confirm))
+                    .setPositiveText(getResources().getString(R.string.btn_positive))
+                    .setNegativeText(getResources().getString(R.string.btn_negative))
+                    .setTag(ON_BACK_PRESSED);
+            dialogFragment.show(getFragmentManager(), "tag");
         } else {
             removeTempForm();
             super.onBackPressed();
@@ -443,5 +443,17 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         Intent intent = new Intent(context, RequisitionActivity.class);
         intent.putExtra("formId", formId);
         return intent;
+    }
+
+    @Override
+    public void positiveClick(String tag) {
+        if (tag.equals(ON_BACK_PRESSED)) {
+            removeTempForm();
+            finish();
+        }
+    }
+
+    @Override
+    public void negativeClick(String tag) {
     }
 }

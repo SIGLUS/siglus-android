@@ -39,8 +39,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIAFormPresenter;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.fragment.MMIATotalMismatchDialogFragment;
-import org.openlmis.core.view.fragment.OnBackConfirmDialog;
+import org.openlmis.core.view.fragment.BaseDialogFragment;
 import org.openlmis.core.view.fragment.RetainedFragment;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.openlmis.core.view.widget.MMIAInfoList;
@@ -54,7 +53,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_mmia)
-public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIAFormView, View.OnClickListener {
+public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIAFormView, View.OnClickListener,BaseDialogFragment.PositiveListener,BaseDialogFragment.NegativeListener{
 
     @InjectView(R.id.rnr_form_list)
     private MMIARnrForm rnrFormList;
@@ -91,6 +90,9 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     private boolean commentHasChanged = false;
     private boolean isHistoryForm;
     private long formId;
+
+    private static final String ON_BACK_PRESSED = "onBackPressed";
+    private static final String MISMATCH = "mismatch";
 
     @Override
     public MMIAFormPresenter getPresenter() {
@@ -237,15 +239,13 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     @Override
     public void onBackPressed() {
         if (hasDataChanged()) {
-            OnBackConfirmDialog.showDialog(this, new OnBackConfirmDialog.ResultCallBack() {
-                @Override
-                public void callback(boolean flag) {
-                    if (flag) {
-                        removeTempForm();
-                        finish();
-                    }
-                }
-            });
+            DialogFragment dialogFragment = BaseDialogFragment
+                    .newInstance()
+                    .setMessage(getResources().getString(R.string.msg_mmia_onback_confirm))
+                    .setPositiveText(getResources().getString(R.string.btn_positive))
+                    .setNegativeText(getResources().getString(R.string.btn_negative))
+                    .setTag(ON_BACK_PRESSED);
+            dialogFragment.show(getFragmentManager(), "tag");
         } else {
             removeTempForm();
             super.onBackPressed();
@@ -273,7 +273,11 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     @Override
     public void showValidationAlert() {
-        DialogFragment dialogFragment = new MMIATotalMismatchDialogFragment();
+        DialogFragment dialogFragment = BaseDialogFragment
+                .newInstance()
+                .setMessage(getResources().getString(R.string.msg_regime_total_and_patient_total_not_match))
+                .setPositiveText(getString(R.string.btn_ok))
+                .setTag(MISMATCH);
         dialogFragment.show(getFragmentManager(), "tag");
     }
 
@@ -337,5 +341,17 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         Intent intent = new Intent(context, MMIAActivity.class);
         intent.putExtra("formId", formId);
         return intent;
+    }
+
+    @Override
+    public void positiveClick(String tag) {
+        if (tag.equals(ON_BACK_PRESSED)){
+            removeTempForm();
+            finish();
+        }
+    }
+
+    @Override
+    public void negativeClick(String tag) {
     }
 }

@@ -66,6 +66,7 @@
     <string name="msg_mmia_not_unique">Cannot submit MMIA twice in a period!</string>
     <string name="msg_reason_for_total_not_match"><![CDATA[Add reason for regime & patient mismatch]]></string>
     <string name="msg_regime_total_and_patient_total_not_match">Totals do not match please check figures that you\'ve entered .If figures are correct please add a justification for differing totals in the observation box</string>
+    <string name="btn_ok">Ok</string>
 
 
     <!-- Requisition Form -->
