@@ -120,7 +120,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
         stockMovementList.addHeaderView(headerView);
         stockMovementList.setAdapter(stockMovementAdapter);
-        
+
         btnComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

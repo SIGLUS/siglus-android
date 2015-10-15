@@ -11,4 +11,7 @@
     <dimen name="card_view_padding">8dp</dimen>
     <dimen name="rnr_card_content_margin_left">37dp</dimen>
     <dimen name="rnr_card_content_text_size">12sp</dimen>
+    
+    <dimen name="homepage_button_margin">8dp</dimen>
+    <dimen name="homepage_group_margin">24dp</dimen>
 </resources>
