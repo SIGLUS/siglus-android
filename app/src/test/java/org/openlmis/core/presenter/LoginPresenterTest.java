@@ -147,6 +147,17 @@ public class LoginPresenterTest {
         verify(syncManager, times(1)).syncProductsWithProgramAsync(any(Observer.class));
     }
 
+    @Test
+    public void shouldShowUserNameEmptyErrorMessage() throws Exception {
+        presenter.startLogin("", "password1");
+        verify(mockActivity).showUserNameEmpty();
+    }
+
+    @Test
+    public void shouldShowPasswordEmptyErrorMessage() throws Exception {
+        presenter.startLogin("user", "");
+        verify(mockActivity).showPasswordEmpty();
+    }
 
     public class MyTestModule extends AbstractModule {
         @Override
