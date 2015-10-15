@@ -126,7 +126,7 @@ public class StockMovementPresenter implements Presenter {
 
 
     private void saveStockMovement(StockMovementItem stockMovementItem) throws LMISException {
-        stockRepository.addStockMovement(stockCard, stockMovementItem);
+        stockRepository.addStockMovementAndUpdateStockCard(stockCard, stockMovementItem);
     }
 
     public void submitStockMovement(StockMovementViewModel viewModel) {
