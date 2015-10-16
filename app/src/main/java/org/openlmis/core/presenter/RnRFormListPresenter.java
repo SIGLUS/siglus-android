@@ -80,10 +80,10 @@ public class RnRFormListPresenter implements Presenter{
             public void call(Subscriber<? super List<RnRFormViewModel>> subscriber) {
                 try {
                     subscriber.onNext(buildFormListViewModels());
+                    subscriber.onCompleted();
                 } catch (LMISException e) {
                     subscriber.onError(e);
                 }
-                subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }

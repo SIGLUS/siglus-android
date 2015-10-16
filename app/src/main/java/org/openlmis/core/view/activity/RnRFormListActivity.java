@@ -46,7 +46,9 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     @InjectView(R.id.rnr_form_list)
     RecyclerView listView;
 
-    String programCode;
+    private String programCode;
+
+    private RnRFormListAdapter adapter;
 
     @InjectPresenter(RnRFormListPresenter.class)
     RnRFormListPresenter presenter;
@@ -70,25 +72,28 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         listView.setLayoutManager(new LinearLayoutManager(this));
         listView.setHasFixedSize(true);
 
-        final RnRFormListAdapter adapter = new RnRFormListAdapter(this, programCode, new ArrayList<RnRFormViewModel>());
+        adapter = new RnRFormListAdapter(this, programCode, new ArrayList<RnRFormViewModel>());
         listView.setAdapter(adapter);
 
         loading();
-        presenter.loadRnRFormList().subscribe(new Subscriber<List<RnRFormViewModel>>() {
-            @Override
-            public void onCompleted() {
-                loaded();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                showMessage(e.getMessage());
-            }
-
-            @Override
-            public void onNext(List<RnRFormViewModel> rnRFormViewModels) {
-                adapter.refreshList(rnRFormViewModels);
-            }
-        });
+        presenter.loadRnRFormList().subscribe(subscriber);
     }
+
+    protected Subscriber<List<RnRFormViewModel>> subscriber = new Subscriber<List<RnRFormViewModel>>() {
+        @Override
+        public void onCompleted() {
+            loaded();
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            loaded();
+            showMessage(e.getMessage());
+        }
+
+        @Override
+        public void onNext(List<RnRFormViewModel> rnRFormViewModels) {
+            adapter.refreshList(rnRFormViewModels);
+        }
+    };
 }
