@@ -79,7 +79,7 @@ public class LMISTestRunner extends RobolectricTestRunner {
     public static class MyTestLifeCycle extends DefaultTestLifecycle {
         @Override
         public Application createApplication(Method method, AndroidManifest appManifest, Config config) {
-            return new TestApplication();
+            return new LMISTestApp();
         }
 
         @Override
@@ -88,11 +88,4 @@ public class LMISTestRunner extends RobolectricTestRunner {
             LmisSqliteOpenHelper.getInstance(RuntimeEnvironment.application).close();
         }
     }
-
-    public static class TestApplication extends LMISApp {
-        @Override
-        protected void setupFabric() {
-        }
-    }
-
 }

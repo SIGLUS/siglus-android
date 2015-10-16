@@ -24,11 +24,14 @@ import android.content.Context;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 
+import org.openlmis.core.network.NetworkConnectionManager;
+
 import io.fabric.sdk.android.Fabric;
 import roboguice.RoboGuice;
 
 public class LMISApp extends Application {
-    private static Context applicationContext;
+
+    private static LMISApp instance;
 
     public static long lastOperateTime = 0L;
 
@@ -37,8 +40,13 @@ public class LMISApp extends Application {
         super.onCreate();
 
         RoboGuice.getInjector(this).injectMembersWithoutViews(this);
-        applicationContext=getApplicationContext();
         setupFabric();
+
+        instance = this;
+    }
+
+    public static LMISApp getInstance() {
+        return instance;
     }
 
 
@@ -48,7 +56,11 @@ public class LMISApp extends Application {
                 .build());
     }
 
+    public boolean isConnectionAvailable() {
+        return NetworkConnectionManager.isConnectionAvailable(instance);
+    }
+
     public static Context getContext() {
-        return applicationContext;
+        return instance.getApplicationContext();
     }
 }

@@ -35,7 +35,6 @@ import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.common.Constants;
-import org.openlmis.core.network.NetworkConnectionManager;
 import org.openlmis.core.presenter.LoginPresenter;
 import org.openlmis.core.presenter.Presenter;
 
@@ -120,12 +119,6 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     @Override
     public boolean needInitInventory() {
         return getPreferences().getBoolean(Constants.KEY_INIT_INVENTORY, true);
-    }
-
-
-    @Override
-    public boolean isConnectionAvailable() {
-        return NetworkConnectionManager.isConnectionAvailable(LoginActivity.this);
     }
 
     @Override

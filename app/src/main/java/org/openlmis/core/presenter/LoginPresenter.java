@@ -23,6 +23,7 @@ package org.openlmis.core.presenter;
 import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
@@ -73,7 +74,7 @@ public class LoginPresenter implements Presenter {
         view.loading();
 
         User user = new User(userName.trim(), password);
-        if (view.isConnectionAvailable()) {
+        if (LMISApp.getInstance().isConnectionAvailable()) {
             authorizeUserRemote(user);
         } else {
             authorizeUserLocal(user);
@@ -187,8 +188,6 @@ public class LoginPresenter implements Presenter {
         void showUserNameEmpty();
 
         void showPasswordEmpty();
-
-        boolean isConnectionAvailable();
 
         boolean hasGetProducts();
 

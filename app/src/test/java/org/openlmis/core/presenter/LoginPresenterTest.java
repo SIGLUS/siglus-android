@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
@@ -60,8 +61,14 @@ public class LoginPresenterTest {
     @Captor
     private ArgumentCaptor<Observer<Void>> getProductsCB;
 
+    private LMISTestApp appInject;
+
     @Before
     public void setup() {
+
+        appInject = (LMISTestApp) RuntimeEnvironment.application;
+
+
         userRepository = mock(UserRepository.class);
         mockActivity = mock(LoginActivity.class);
         mockProductsResponse = mock(ProductsResponse.class);
@@ -82,7 +89,8 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldSaveUserToLocalDBWhenSuccess() throws InterruptedException {
-        when(mockActivity.isConnectionAvailable()).thenReturn(true);
+        appInject.setNetworkConnection(true);
+
         presenter.startLogin("user", "password");
 
         verify(mockActivity).loading();
@@ -95,7 +103,8 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldGetProductsWhenLoginSuccFromNet() {
-        when(mockActivity.isConnectionAvailable()).thenReturn(true);
+        appInject.setNetworkConnection(true);
+
         when(mockActivity.hasGetProducts()).thenReturn(false);
 
         presenter.startLogin("user", "password");
@@ -110,9 +119,8 @@ public class LoginPresenterTest {
     @Test
     public void shouldGoToInventoryPageIfGetProductsSuccess() throws InterruptedException {
         when(mockActivity.needInitInventory()).thenReturn(true);
-        when(mockActivity.isConnectionAvailable()).thenReturn(true);
+        appInject.setNetworkConnection(true);
         when(mockActivity.hasGetProducts()).thenReturn(false);
-
 
         presenter.startLogin("user", "password");
         verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
@@ -128,14 +136,15 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldDoOfflineLoginWhenNoConnection() {
-        when(mockActivity.isConnectionAvailable()).thenReturn(false);
+        appInject.setNetworkConnection(false);
         presenter.startLogin("user", "password");
         verify(userRepository).getUserFromLocal(any(User.class));
     }
 
     @Test
-    public void shouldCallGetProductOnlyOnceWhenClickLoginButtonTwice() throws Exception{
-        when(mockActivity.isConnectionAvailable()).thenReturn(true);
+    public void shouldCallGetProductOnlyOnceWhenClickLoginButtonTwice() throws Exception {
+        appInject.setNetworkConnection(true);
+
         when(mockActivity.hasGetProducts()).thenReturn(false);
 
         presenter.startLogin("user", "password");
