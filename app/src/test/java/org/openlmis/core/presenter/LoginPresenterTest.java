@@ -30,6 +30,7 @@ import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
@@ -41,6 +42,7 @@ import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 import rx.Observer;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -102,6 +104,39 @@ public class LoginPresenterTest {
     }
 
     @Test
+    public void shouldCreateSyncAccountWhenLoginSuccess() {
+        appInject.setNetworkConnection(true);
+
+        when(mockActivity.hasGetProducts()).thenReturn(false);
+
+        presenter.startLogin("user", "password");
+        User user = new User("user", "password");
+        verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
+
+        loginCB.getValue().success(user);
+
+        verify(syncManager).createSyncAccount(user);
+        verify(syncManager).kickOff();
+    }
+
+    @Test
+    public void shouldSaveUserInfoWhenLoginSuccess() {
+        appInject.setNetworkConnection(true);
+
+        when(mockActivity.hasGetProducts()).thenReturn(false);
+
+        presenter.startLogin("user", "password");
+        User user = new User("user", "password");
+        verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
+
+        loginCB.getValue().success(user);
+
+        verify(userRepository).save(user);
+        assertThat(UserInfoMgr.getInstance().getUser()).isEqualTo(user);
+        verify(mockActivity).clearErrorAlerts();
+    }
+
+    @Test
     public void shouldGetProductsWhenLoginSuccFromNet() {
         appInject.setNetworkConnection(true);
 
@@ -114,7 +149,6 @@ public class LoginPresenterTest {
         verify(syncManager).syncProductsWithProgramAsync(getProductsCB.capture());
         getProductsCB.getValue().onCompleted();
     }
-
 
     @Test
     public void shouldGoToInventoryPageIfGetProductsSuccess() throws InterruptedException {
@@ -135,14 +169,37 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldDoOfflineLoginWhenNoConnection() {
+    public void shouldDoOfflineLoginWhenNoConnectionAndHasLocalCache() {
         appInject.setNetworkConnection(false);
+        when(userRepository.getUserFromLocal(any(User.class))).thenReturn(new User("user", "password"));
+        when(mockActivity.needInitInventory()).thenReturn(false);
+
         presenter.startLogin("user", "password");
+
         verify(userRepository).getUserFromLocal(any(User.class));
+        assertThat(UserInfoMgr.getInstance().getUser().getUsername()).isEqualTo("user");
+
+        verify(mockActivity).loaded();
+        verify(mockActivity).goToHomePage();
     }
 
     @Test
-    public void shouldCallGetProductOnlyOnceWhenClickLoginButtonTwice() throws Exception {
+    public void shouldShowLoginFailErrorMsgWhenNoConnectionAndNoLocalCache() {
+        appInject.setNetworkConnection(false);
+        when(userRepository.getUserFromLocal(any(User.class))).thenReturn(null);
+
+        presenter.startLogin("user", "password");
+
+        verify(userRepository).getUserFromLocal(any(User.class));
+
+        verify(mockActivity).loaded();
+        verify(mockActivity).showInvalidAlert();
+        verify(mockActivity).clearPassword();
+    }
+
+
+    @Test
+    public void shouldCallGetProductOnlyOnceWhenClickLoginButtonTwice() {
         appInject.setNetworkConnection(true);
 
         when(mockActivity.hasGetProducts()).thenReturn(false);
@@ -157,13 +214,13 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldShowUserNameEmptyErrorMessage() throws Exception {
+    public void shouldShowUserNameEmptyErrorMessage() {
         presenter.startLogin("", "password1");
         verify(mockActivity).showUserNameEmpty();
     }
 
     @Test
-    public void shouldShowPasswordEmptyErrorMessage() throws Exception {
+    public void shouldShowPasswordEmptyErrorMessage() {
         presenter.startLogin("user", "");
         verify(mockActivity).showPasswordEmpty();
     }

@@ -19,7 +19,6 @@
 package org.openlmis.core.presenter;
 
 
-
 import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -114,11 +113,11 @@ public class LoginPresenter implements Presenter {
         });
     }
 
-    public void saveUserToLocalDatabase(User user) {
+    private void saveUserToLocalDatabase(User user) {
         userRepository.save(user);
     }
 
-    public void onLoginSuccess(User user) {
+    private void onLoginSuccess(User user) {
         syncManager.createSyncAccount(user);
         syncManager.kickOff();
 
@@ -129,7 +128,7 @@ public class LoginPresenter implements Presenter {
         getProgramWithProducts();
     }
 
-    public void goToNextPage() {
+    protected void goToNextPage() {
         view.loaded();
         if (view.needInitInventory()) {
             view.goToInitInventory();
@@ -145,12 +144,10 @@ public class LoginPresenter implements Presenter {
     }
 
 
-    public void getProgramWithProducts() {
-        if (!view.hasGetProducts()) {
-            if (isLoadingProducts){
-                return;
-            }
-
+    private void getProgramWithProducts() {
+        if (view.hasGetProducts()) {
+            goToNextPage();
+        } else if (!isLoadingProducts) {
             isLoadingProducts = true;
             view.loading();
             syncManager.syncProductsWithProgramAsync(new SyncSubscriber<Void>() {
@@ -167,9 +164,6 @@ public class LoginPresenter implements Presenter {
                     view.loaded();
                 }
             });
-
-        } else {
-            goToNextPage();
         }
     }
 
