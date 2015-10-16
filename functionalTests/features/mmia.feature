@@ -27,6 +27,7 @@ Feature: stock movement Page
             Then I press "Save"
             Then I wait for 1 second
             And I press "Create a MMIA"
+            And I wait for the "MMIAActivity" screen to appear
             Then I scroll to "Complete"
             And I enter patient totals
             Then I press "Complete"
