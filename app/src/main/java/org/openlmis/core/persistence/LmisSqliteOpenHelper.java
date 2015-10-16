@@ -67,7 +67,8 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
         for (Migration migration : MIGRATIONS) {
             Log.i("DB Creation", "Upgrading migration [" + migration.getClass().getSimpleName() + "]");
-            migration.up(database, connectionSource);
+            migration.setSQLiteDatabase(database);
+            migration.up();
         }
     }
 
@@ -76,7 +77,8 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
         for (int currentVersion = oldVersion; currentVersion < newVersion; currentVersion++) {
             Migration migration = MIGRATIONS.get(currentVersion);
             Log.i("DB Migration", "Upgrading migration [" + migration.getClass().getSimpleName() + "]");
-            migration.up(database, connectionSource);
+            migration.setSQLiteDatabase(database);
+            migration.up();
         }
     }
 
@@ -85,7 +87,8 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
         for (int currentVersion = newVersion - 1; currentVersion >= oldVersion; currentVersion--) {
             Migration migration = MIGRATIONS.get(currentVersion);
             Log.i("DB Migration", "Downgrading migration [" + migration.getClass().getSimpleName() + "]");
-            migration.down(database, connectionSource);
+            migration.setSQLiteDatabase(database);
+            migration.down();
         }
     }
 

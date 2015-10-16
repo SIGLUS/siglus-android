@@ -20,6 +20,7 @@ package org.openlmis.core.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.text.InputFilter;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,5 +67,6 @@ public class BorderedEditText extends LinearLayout{
         label.setWidth((int) width);
         editText.setEms(ems);
         editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        editText.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
     }
 }

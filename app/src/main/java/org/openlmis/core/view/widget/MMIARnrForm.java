@@ -18,6 +18,7 @@
 package org.openlmis.core.view.widget;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -231,7 +232,7 @@ public class MMIARnrForm extends LinearLayout {
             tvInventory.setText(String.valueOf(item.getInventory()));
 
             try {
-                if (item.getValidate() != null) {
+                if (!TextUtils.isEmpty(item.getValidate())) {
                     tvValidate.setText(DateUtil.convertDate(item.getValidate(), "dd/MM/yyyy", "MMM yyyy"));
                 }
             } catch (ParseException e) {

@@ -18,11 +18,66 @@
 
 package org.openlmis.core.persistence;
 
+import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
-import com.j256.ormlite.support.ConnectionSource;
 
-public interface Migration {
-    void up(SQLiteDatabase db, ConnectionSource connectionSource);
-    void down(SQLiteDatabase db, ConnectionSource connectionSource);
+import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.LMISApp;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+public abstract class Migration {
+
+    public static final String DIR_MIGRATION = "migrations";
+    public static final String TAG = "Migration";
+
+    protected SQLiteDatabase db;
+
+    public abstract void up();
+    public abstract void down();
+
+    public void setSQLiteDatabase(SQLiteDatabase db){
+        this.db = db;
+    }
+
+    protected void execSQL(String sql){
+        if (db != null){
+            Log.d("Migration","exec sql :" + sql);
+            db.execSQL(sql);
+        }
+    }
+
+    protected void execSQLScript(String filename){
+        AssetManager manager = LMISApp.getContext().getResources().getAssets();
+
+        String path = DIR_MIGRATION + File.separator + filename;
+        db.beginTransaction();
+        try {
+            InputStream io = manager.open(path);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(io));
+
+            String line = reader.readLine();
+            while (line !=null){
+                String cmd = line.trim();
+                if (!StringUtils.isEmpty(cmd)){
+                    execSQL(cmd);
+                }
+                line = reader.readLine();
+            }
+            reader.close();
+
+            db.setTransactionSuccessful();
+        }catch (IOException e){
+            Log.d(TAG, e.getMessage());
+            throw new RuntimeException("Invalid migration file :" + filename);
+        }finally {
+            db.endTransaction();
+        }
+    }
 }

@@ -53,9 +53,6 @@ public class StockRepository {
     GenericDao<StockMovementItem> stockItemGenericDao;
 
     @Inject
-    ProductRepository productRepository;
-
-    @Inject
     ProgramRepository programRepository;
 
     @Inject
@@ -129,7 +126,7 @@ public class StockRepository {
                     initInventory.setMovementQuantity(0);
 
                     save(stockCard);
-                    addStockMovement(stockCard, initInventory);
+                    addStockMovementAndUpdateStockCard(stockCard, initInventory);
                     return null;
                 }
             });
@@ -139,7 +136,7 @@ public class StockRepository {
         }
     }
 
-    public void addStockMovement(StockCard stockcard, StockMovementItem stockMovementItem) throws LMISException {
+    public void addStockMovementAndUpdateStockCard(StockCard stockcard, StockMovementItem stockMovementItem) throws LMISException {
         if (stockcard == null) {
             return;
         }
@@ -160,12 +157,6 @@ public class StockRepository {
         stockMovementItem.setStockCard(stockcard);
         saveStockItem(stockMovementItem);
     }
-
-    public void addStockMovement(long id, StockMovementItem stockMovementItem) throws LMISException {
-        StockCard stockCard = genericDao.getById(String.valueOf(id));
-        addStockMovement(stockCard, stockMovementItem);
-    }
-
 
     public List<StockCard> list() throws LMISException {
         return genericDao.queryForAll();

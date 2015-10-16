@@ -133,13 +133,13 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockMovementItem.setMovementQuantity(50L);
         stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
 
-        stockRepository.addStockMovement(stockCard, stockMovementItem);
+        stockRepository.addStockMovementAndUpdateStockCard(stockCard, stockMovementItem);
         assertThat(stockMovementItem.getStockOnHand(), is(150L));
 
         stockCard.setStockOnHand(100L);
         stockMovementItem.setStockOnHand(-1);
         stockMovementItem.setMovementType(StockMovementItem.MovementType.ISSUE);
-        stockRepository.addStockMovement(stockCard, stockMovementItem);
+        stockRepository.addStockMovementAndUpdateStockCard(stockCard, stockMovementItem);
 
         assertThat(stockMovementItem.getStockOnHand(), is(50L));
     }

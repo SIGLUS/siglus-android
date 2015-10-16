@@ -89,17 +89,13 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         stockCard.setProduct(product);
         stockCard.setExpireDates(StringUtils.EMPTY);
 
+        RxAndroidPlugins.getInstance().reset();
         RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
             @Override
             public Scheduler getMainThreadScheduler() {
                 return Schedulers.immediate();
             }
         });
-    }
-
-    @After
-    public void tearDown() {
-        RxAndroidPlugins.getInstance().reset();
     }
 
     @Test

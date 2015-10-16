@@ -20,6 +20,7 @@ package org.openlmis.core.view.viewmodel;
 
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 
 import org.apache.commons.lang3.StringUtils;
@@ -60,7 +61,7 @@ public class StockCardViewModel {
     boolean validate = true;
     boolean checked;
 
-    public StockCardViewModel(StockCard stockCard){
+    public StockCardViewModel(StockCard stockCard) {
         this.productName = stockCard.getProduct().getPrimaryName();
         this.fnm = stockCard.getProduct().getCode();
         this.strength = stockCard.getProduct().getStrength();
@@ -70,12 +71,16 @@ public class StockCardViewModel {
         Product product = stockCard.getProduct();
         formatProductDisplay(product);
 
-        this.expiryDates = newArrayList(stockCard.getExpireDates().split(StockCard.DIVIDER));
+        if (TextUtils.isEmpty(stockCard.getExpireDates())) {
+            expiryDates = new ArrayList<>();
+        } else {
+            expiryDates = newArrayList(stockCard.getExpireDates().split(StockCard.DIVIDER));
+        }
         this.stockOnHand = stockCard.getStockOnHand();
         this.checked = true;
     }
 
-    public StockCardViewModel(Product product){
+    public StockCardViewModel(Product product) {
         this.productName = product.getPrimaryName();
         this.fnm = product.getCode();
         this.strength = product.getStrength();
@@ -102,36 +107,50 @@ public class StockCardViewModel {
                 length, unit.length(), Spannable.SPAN_POINT_MARK);
     }
 
-    public String formatExpiryDateString(){
-        if (expiryDates ==null){
+    public String formatExpiryDateString() {
+        if (expiryDates == null) {
             return StringUtils.EMPTY;
         }
         return StringUtils.join(expiryDates, StockCard.DIVIDER);
     }
 
 
-    public String optFirstExpiryDate(){
-        if (expiryDates !=null && expiryDates.size() >0){
+    public String optFirstExpiryDate() {
+        if (expiryDates != null && expiryDates.size() > 0) {
             try {
                 return DateUtil.convertDate(expiryDates.get(0), "dd/MM/yyyy", "MMM yyyy");
             } catch (ParseException e) {
                 e.printStackTrace();
-                return  StringUtils.EMPTY;
+                return StringUtils.EMPTY;
             }
-        }else {
+        } else {
             return StringUtils.EMPTY;
         }
     }
 
-    public void addExpiryDate(String date, boolean append){
-        if (expiryDates == null){
+    public boolean addExpiryDate(String date) {
+        return addExpiryDate(date, true);
+    }
+
+    public boolean addExpiryDate(String date, boolean append) {
+        if (expiryDates == null) {
             expiryDates = new ArrayList<>();
         }
-        if (!append){
+        if (!append) {
             expiryDates.clear();
         }
+        return !isExpireDateExists(date) && expiryDates.add(date);
+    }
 
-        expiryDates.add(date);
+    public void removeExpiryDate(String date) {
+        if (expiryDates == null) {
+            return;
+        }
+        expiryDates.remove(date);
+    }
+
+    public boolean isExpireDateExists(String expireDate) {
+        return this.getExpiryDates().contains(expireDate);
     }
 
 

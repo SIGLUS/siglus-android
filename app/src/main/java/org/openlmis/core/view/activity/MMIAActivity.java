@@ -125,7 +125,6 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
         formId = getIntent().getLongExtra("formId", 0);
         isHistoryForm = formId != 0;
-        
         presenter.loadData(formId);
     }
 

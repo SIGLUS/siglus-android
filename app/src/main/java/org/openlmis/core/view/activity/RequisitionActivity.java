@@ -28,11 +28,13 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -89,6 +91,9 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     @InjectView(R.id.requisition_header_left)
     View productHeaderView;
+
+    @InjectView(R.id.form_layout)
+    HorizontalScrollView formLayout;
 
     @InjectView(R.id.tv_label_request)
     TextView headerRequestAmount;
@@ -264,6 +269,14 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
         etConsultationNumbers.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
         etConsultationNumbers.addTextChangedListener(etConsultationNumbersTextWatcher);
+
+        formLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                hideImm();
+                return false;
+            }
+        });
     }
 
     private void initRequisitionBodyList() {

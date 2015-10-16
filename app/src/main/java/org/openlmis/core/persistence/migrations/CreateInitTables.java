@@ -18,49 +18,17 @@
 
 package org.openlmis.core.persistence.migrations;
 
-import android.database.sqlite.SQLiteDatabase;
-
-import com.j256.ormlite.support.ConnectionSource;
-
-
-import org.openlmis.core.model.BaseInfoItem;
-import org.openlmis.core.model.Program;
-import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnrFormItem;
-import org.openlmis.core.model.Product;
-import org.openlmis.core.model.Regimen;
-import org.openlmis.core.model.RegimenItem;
-import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockMovementItem;
-import org.openlmis.core.model.User;
 import org.openlmis.core.persistence.Migration;
 
-import java.sql.SQLException;
+public class CreateInitTables extends Migration {
 
-import static com.j256.ormlite.table.TableUtils.createTable;
-
-public class CreateInitTables implements Migration {
     @Override
-    public void up(SQLiteDatabase db, ConnectionSource connectionSource) {
-        try {
-            createTable(connectionSource, User.class);
-            createTable(connectionSource, Program.class);
-            createTable(connectionSource, Product.class);
-            createTable(connectionSource, StockCard.class);
-            createTable(connectionSource, StockMovementItem.class);
-            createTable(connectionSource, RnRForm.class);
-            createTable(connectionSource, BaseInfoItem.class);
-            createTable(connectionSource, RnrFormItem.class);
-            createTable(connectionSource, Regimen.class);
-            createTable(connectionSource, RegimenItem.class);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public void up() {
+        execSQLScript("initdb.sql");
     }
 
     @Override
-    public void down(SQLiteDatabase db, ConnectionSource connectionSource) {
+    public void down() {
 
     }
 }

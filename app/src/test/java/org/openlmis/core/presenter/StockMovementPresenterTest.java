@@ -83,7 +83,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         when(viewModel.convertViewToModel()).thenReturn(item);
 
         stockMovementPresenter.submitStockMovement(viewModel);
-        verify(stockRepositoryMock).addStockMovement(stockCard, item);
+        verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(stockCard, item);
     }
 
     public class MyTestModule extends AbstractModule {

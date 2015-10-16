@@ -114,13 +114,13 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         buttonView = findViewById(R.id.action_panel);
         buttonView.setVisibility(View.GONE);
 
-        stockMovementAdapter = new StockMovementAdapter(this, presenter, buttonView);
+        stockMovementAdapter = new StockMovementAdapter(this, presenter);
         View headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
 
 
         stockMovementList.addHeaderView(headerView);
         stockMovementList.setAdapter(stockMovementAdapter);
-        
+
         btnComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

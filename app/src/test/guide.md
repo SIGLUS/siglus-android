@@ -135,17 +135,13 @@ the Schedulers reset should always be called in `@After tearDown()` method. Othe
         inventoryPresenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(InventoryPresenter.class);
         inventoryPresenter.attachView(view);
 
+        RxAndroidPlugins.getInstance().reset();
         RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
             @Override
             public Scheduler getMainThreadScheduler() {
                 return Schedulers.immediate();
             }
         });
-    }
-
-    @After
-    public void tearDown() {
-        RxAndroidPlugins.getInstance().reset();
     }
 ```
 
