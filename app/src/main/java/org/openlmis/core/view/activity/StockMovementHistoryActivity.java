@@ -24,8 +24,6 @@ import android.os.Bundle;
 import android.view.Menu;
 
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.ViewNotMatchException;
-import org.openlmis.core.presenter.Presenter;
 
 import roboguice.inject.ContentView;
 
@@ -36,26 +34,6 @@ public class StockMovementHistoryActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(getIntent().getStringExtra("stockName"));
-    }
-
-    @Override
-    public Presenter getPresenter() {
-        return new Presenter() {
-            @Override
-            public void onStart() {
-
-            }
-
-            @Override
-            public void onStop() {
-
-            }
-
-            @Override
-            public void attachView(org.openlmis.core.view.View v) throws ViewNotMatchException {
-
-            }
-        };
     }
 
     @Override

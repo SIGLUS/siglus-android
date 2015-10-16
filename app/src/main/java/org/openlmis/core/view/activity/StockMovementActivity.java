@@ -19,7 +19,6 @@
 package org.openlmis.core.view.activity;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -37,16 +36,14 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockMovementPresenter;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.StockMovementAdapter;
-import org.openlmis.core.view.fragment.RetainedFragment;
 
 import java.text.ParseException;
 
-import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -68,12 +65,12 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @InjectView(R.id.tx_expire_data_stock_movement)
     TextView expireDataView;
 
+    @InjectPresenter(StockMovementPresenter.class)
     StockMovementPresenter presenter;
 
     private long stockId;
     private StockMovementAdapter stockMovementAdapter;
 
-    private RetainedFragment dataFragment;
     private String stockName;
     private View buttonView;
 
@@ -91,21 +88,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         }
 
         initUI();
-    }
-
-    private void initPresenter() {
-        // find the retained fragment on activity restarts
-        FragmentManager fm = getFragmentManager();
-        dataFragment = (RetainedFragment) fm.findFragmentByTag("RetainedFragment");
-
-        if (dataFragment == null) {
-            dataFragment = new RetainedFragment();
-            fm.beginTransaction().add(dataFragment, "RetainedFragment").commit();
-            presenter = RoboGuice.getInjector(getApplicationContext()).getInstance(StockMovementPresenter.class);
-            dataFragment.putData("presenter", presenter);
-        } else {
-            presenter = (StockMovementPresenter) dataFragment.getData("presenter");
-        }
     }
 
     private void initUI() {
@@ -177,15 +159,9 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
     @Override
     protected void onDestroy() {
-        dataFragment.putData("presenter", presenter);
         super.onDestroy();
     }
 
-    @Override
-    public Presenter getPresenter() {
-        initPresenter();
-        return presenter;
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

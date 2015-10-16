@@ -19,7 +19,6 @@
 package org.openlmis.core.view.activity;
 
 import android.app.DialogFragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,9 +37,9 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIAFormPresenter;
+import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
-import org.openlmis.core.view.fragment.RetainedFragment;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
@@ -48,7 +47,6 @@ import org.openlmis.core.view.widget.MMIARnrForm;
 
 import java.util.ArrayList;
 
-import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -82,11 +80,11 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     @InjectView(R.id.tv_total_mismatch)
     protected TextView tvMismatch;
 
+    @InjectPresenter(MMIAFormPresenter.class)
     MMIAFormPresenter presenter;
 
     Boolean hasDataChanged;
 
-    private RetainedFragment dataFragment;
     private boolean commentHasChanged = false;
     private boolean isHistoryForm;
     private long formId;
@@ -95,28 +93,8 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     private static final String MISMATCH = "mismatch";
 
     @Override
-    public MMIAFormPresenter getPresenter() {
-        initPresenter();
-        return presenter;
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return false;
-    }
-
-    private void initPresenter() {
-        FragmentManager fm = getFragmentManager();
-        dataFragment = (RetainedFragment) fm.findFragmentByTag("RetainedFragment");
-
-        if (dataFragment == null) {
-            dataFragment = new RetainedFragment();
-            fm.beginTransaction().add(dataFragment, "RetainedFragment").commit();
-            presenter = RoboGuice.getInjector(getApplicationContext()).getInstance(MMIAFormPresenter.class);
-            dataFragment.putData("presenter", presenter);
-        } else {
-            presenter = (MMIAFormPresenter) dataFragment.getData("presenter");
-        }
     }
 
     @Override
@@ -288,7 +266,6 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     @Override
     protected void onDestroy() {
-        dataFragment.putData("presenter", presenter);
         if (hasDataChanged()) {
             dataFragment.putData("hasDataChanged", hasDataChanged());
         }

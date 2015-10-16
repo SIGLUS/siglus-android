@@ -28,14 +28,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.common.Constants;
 import org.openlmis.core.presenter.InventoryPresenter;
-import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.FeatureToggle;
+import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.InitialInventoryAdapter;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
@@ -62,7 +61,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     public Button btnDone;
 
 
-    @Inject
+    @InjectPresenter(InventoryPresenter.class)
     InventoryPresenter presenter;
 
     LinearLayoutManager mLayoutManager;
@@ -201,11 +200,6 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
         }
         startActivity(intent);
         this.finish();
-    }
-
-    @Override
-    public Presenter getPresenter() {
-        return presenter;
     }
 
     @Override

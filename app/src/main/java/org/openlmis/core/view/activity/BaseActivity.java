@@ -19,6 +19,7 @@
 
 package org.openlmis.core.view.activity;
 
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -36,38 +37,82 @@ import android.widget.Toast;
 import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.presenter.DummyPresenter;
 import org.openlmis.core.presenter.Presenter;
+import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.View;
+import org.openlmis.core.view.fragment.RetainedFragment;
+import org.roboguice.shaded.goole.common.base.Optional;
+import org.roboguice.shaded.goole.common.base.Predicate;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+import java.lang.reflect.Field;
+
+import roboguice.RoboGuice;
 import roboguice.activity.RoboActionBarActivity;
+
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public abstract class BaseActivity extends RoboActionBarActivity implements View {
 
 
+    protected RetainedFragment dataFragment;
     @Inject
     SharedPreferenceMgr preferencesMgr;
     protected SearchView searchView;
 
     private long APP_TIMEOUT;
 
-    public abstract Presenter getPresenter();
+    protected Presenter presenter;
+
+    public void injectPresenter() {
+        Field[] fields = FieldUtils.getAllFields(this.getClass());
+
+        Optional<Field> annotatedFiled = FluentIterable.from(newArrayList(fields)).firstMatch(new Predicate<Field>() {
+            @Override
+            public boolean apply(Field field) {
+                return field.getAnnotation(InjectPresenter.class) != null;
+            }
+        });
+
+        if (annotatedFiled.isPresent()) {
+            InjectPresenter annotation = annotatedFiled.get().getAnnotation(InjectPresenter.class);
+            if (!Presenter.class.isAssignableFrom(annotation.value())) {
+                throw new RuntimeException("Invalid InjectPresenter class :" + annotation.value());
+            }
+
+            presenter = initPresenter(annotation.value());
+            try {
+                annotatedFiled.get().setAccessible(true);
+                annotatedFiled.get().set(this, presenter);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("InjectPresenter type cast failed :" + annotation.value().getSimpleName());
+            }
+        }
+        if (presenter == null) {
+            presenter = new DummyPresenter();
+        }
+    }
 
     ProgressDialog loadingDialog;
+
+    protected Class<? extends Presenter> presenterClass;
 
     @Override
     protected void onStart() {
         super.onStart();
-        getPresenter().onStart();
+        presenter.onStart();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        getPresenter().onStop();
+        presenter.onStop();
     }
 
     @Override
@@ -95,8 +140,10 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initDataFragment();
+        injectPresenter();
         try {
-            getPresenter().attachView(BaseActivity.this);
+            presenter.attachView(BaseActivity.this);
         } catch (ViewNotMatchException e) {
             e.printStackTrace();
             showMessage(e.getMessage());
@@ -109,6 +156,36 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         }
 
         APP_TIMEOUT = Long.parseLong(getResources().getString(R.string.app_time_out));
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (presenter != null && presenterClass != null){
+            dataFragment.putData(presenterClass.getSimpleName(), presenter);
+        }
+        super.onDestroy();
+    }
+
+    private void initDataFragment(){
+        FragmentManager fm = getFragmentManager();
+        dataFragment = (RetainedFragment) fm.findFragmentByTag("RetainedFragment");
+
+        if (dataFragment == null){
+            dataFragment = new RetainedFragment();
+            fm.beginTransaction().add(dataFragment, "RetainedFragment").commit();
+        }
+    }
+
+    protected Presenter initPresenter(Class<? extends Presenter> clazz) {
+        // find the retained fragment on activity restarts
+        presenterClass = clazz;
+        Presenter presenter = (Presenter)dataFragment.getData(presenterClass.getSimpleName());
+        if (presenter == null){
+            presenter = RoboGuice.getInjector(getApplicationContext()).getInstance(presenterClass);
+            dataFragment.putData(presenterClass.getSimpleName(), presenter);
+        }
+
+        return presenter;
     }
 
     @Override

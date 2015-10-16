@@ -16,30 +16,24 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.view.activity;
+package org.openlmis.core.presenter;
 
-import android.os.Bundle;
+import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.view.View;
 
-import org.openlmis.core.R;
-import org.openlmis.core.component.Component;
-
-import roboguice.inject.ContentView;
-import roboguice.inject.InjectFragment;
-
-@ContentView(R.layout.activity_stockcard_list)
-public class StockCardListActivity extends BaseActivity {
-
-    @InjectFragment(R.id.stock_card_list)
-    Component stockCardFragment;
-
+public class DummyPresenter implements Presenter {
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onStart() {
+
     }
 
     @Override
-    public boolean onSearchStart(String query) {
-        stockCardFragment.onSearch(query);
-        return true;
+    public void onStop() {
+
+    }
+
+    @Override
+    public void attachView(View v) throws ViewNotMatchException {
+
     }
 }

@@ -30,11 +30,9 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
-import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.FeatureToggle;
-import org.openlmis.core.view.View;
 
 import java.util.Date;
 
@@ -172,25 +170,4 @@ public class HomeActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         return false;
     }
-
-    @Override
-    public Presenter getPresenter() {
-        return new Presenter() {
-            @Override
-            public void onStart() {
-
-            }
-
-            @Override
-            public void onStop() {
-
-            }
-
-            @Override
-            public void attachView(View v) {
-
-            }
-        };
-    }
-
 }

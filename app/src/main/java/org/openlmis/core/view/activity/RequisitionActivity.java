@@ -19,7 +19,6 @@
 package org.openlmis.core.view.activity;
 
 import android.app.DialogFragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -41,16 +40,14 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.RequisitionPresenter;
+import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
-import org.openlmis.core.view.fragment.RetainedFragment;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 
-import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -81,11 +78,10 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     LayoutInflater inflater;
 
+    @InjectPresenter(RequisitionPresenter.class)
     RequisitionPresenter presenter;
 
     Boolean hasDataChanged;
-
-    private RetainedFragment dataFragment;
 
     @InjectView(R.id.requisition_header_right)
     View bodyHeaderView;
@@ -108,22 +104,6 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     private boolean isHistoryForm;
 
     private static final String ON_BACK_PRESSED = "onBackPressed";
-
-    private void initPresenter() {
-        // find the retained fragment on activity restarts
-        FragmentManager fm = getFragmentManager();
-        dataFragment = (RetainedFragment) fm.findFragmentByTag("RetainedFragment");
-
-        if (dataFragment == null) {
-            dataFragment = new RetainedFragment();
-            fm.beginTransaction().add(dataFragment, "RetainedFragment").commit();
-            presenter = RoboGuice.getInjector(getApplicationContext()).getInstance(RequisitionPresenter.class);
-            dataFragment.putData("presenter", presenter);
-        } else {
-            presenter = (RequisitionPresenter) dataFragment.getData("presenter");
-        }
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -202,12 +182,6 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     }
 
     @Override
-    public Presenter getPresenter() {
-        initPresenter();
-        return presenter;
-    }
-
-    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_save:
@@ -245,7 +219,6 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     @Override
     protected void onDestroy() {
-        dataFragment.putData("presenter", presenter);
         if (hasDataChanged()) {
             dataFragment.putData("hasDataChanged", hasDataChanged());
         }

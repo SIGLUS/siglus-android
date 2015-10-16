@@ -23,12 +23,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 
-import com.google.inject.Inject;
 
 import org.openlmis.core.R;
 import org.openlmis.core.model.repository.MMIARepository;
-import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.RnRFormListPresenter;
+import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.RnRFormListAdapter;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 
@@ -49,13 +48,8 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
 
     String programCode;
 
-    @Inject
+    @InjectPresenter(RnRFormListPresenter.class)
     RnRFormListPresenter presenter;
-
-    @Override
-    public Presenter getPresenter() {
-        return presenter;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -30,13 +30,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.common.Constants;
 import org.openlmis.core.presenter.LoginPresenter;
-import org.openlmis.core.presenter.Presenter;
+import org.openlmis.core.utils.InjectPresenter;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -56,7 +55,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     public TextInputLayout lyPassword;
     @InjectView(R.id.iv_visibility_pwd)
     public ImageView ivVisibilityPwd;
-    @Inject
+    @InjectPresenter(LoginPresenter.class)
     LoginPresenter presenter;
 
     public static boolean isActive;
@@ -84,12 +83,6 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
             userName.setText(lastLoginUser);
             password.requestFocus();
         }
-    }
-
-
-    @Override
-    public Presenter getPresenter() {
-        return presenter;
     }
 
     public void goToInitInventory() {
