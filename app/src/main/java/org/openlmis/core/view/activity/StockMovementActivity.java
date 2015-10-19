@@ -20,12 +20,12 @@ package org.openlmis.core.view.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -62,8 +62,8 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @InjectView(R.id.btn_cancel)
     Button btnCancel;
 
-    @InjectView(R.id.tx_expire_data_stock_movement)
-    TextView expireDataView;
+    @InjectView(R.id.vg_expire_date_container)
+    ViewGroup expireDateContainer;
 
     @InjectPresenter(StockMovementPresenter.class)
     StockMovementPresenter presenter;
@@ -129,16 +129,29 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     }
 
     private void displayExpireDate() {
-        String expireDates = presenter.getStockCard().getExpireDates();
-        if (!TextUtils.isEmpty(expireDates)) {
-            String convertedDate = null;
-            try {
-                convertedDate = DateUtil.convertDate(expireDates, DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            expireDataView.setText(convertedDate);
+        View addView = expireDateContainer.getChildAt(expireDateContainer.getChildCount() - 1);
+        expireDateContainer.removeAllViews();
+        expireDateContainer.addView(addView);
+        for (String date : presenter.getStockCardExpireDates()) {
+            initExpireDateView(date, expireDateContainer);
         }
+    }
+
+    private void initExpireDateView(String date, final ViewGroup expireDateContainer) {
+        try {
+            final String expireDate = DateUtil.convertDate(date, DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+            addExpireDateView(expireDate, expireDateContainer);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private ViewGroup addExpireDateView(final String expireDate, final ViewGroup expireDateContainer) {
+        ViewGroup expireDateView = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.item_expire_date, null);
+        TextView tvExpireDate = (TextView) expireDateView.findViewById(R.id.tx_expire_data);
+        tvExpireDate.setText(expireDate);
+        expireDateContainer.addView(expireDateView, expireDateContainer.getChildCount() - 1);
+        return expireDateView;
     }
 
     @Override

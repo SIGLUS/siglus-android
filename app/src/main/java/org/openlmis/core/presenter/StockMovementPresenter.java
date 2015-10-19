@@ -20,6 +20,7 @@ package org.openlmis.core.presenter;
 
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.google.inject.Inject;
 
@@ -44,6 +45,7 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public class StockMovementPresenter implements Presenter {
 
@@ -84,12 +86,12 @@ public class StockMovementPresenter implements Presenter {
         }
     }
 
-    public void setStockCard(long stockCardId) throws LMISException{
+    public void setStockCard(long stockCardId) throws LMISException {
         this.stockCard = stockRepository.queryStockCardById(stockCardId);
     }
 
     public void loadStockMovementViewModels() {
-        if (!stockMovementModelList.isEmpty()){
+        if (!stockMovementModelList.isEmpty()) {
             view.loaded();
             return;
         }
@@ -107,7 +109,7 @@ public class StockMovementPresenter implements Presenter {
                     }).toList();
 
                     subscriber.onNext(list);
-                } catch (LMISException e){
+                } catch (LMISException e) {
                     subscriber.onError(e);
                 }
             }
@@ -142,9 +144,9 @@ public class StockMovementPresenter implements Presenter {
             } catch (LMISException e) {
                 e.printStackTrace();
             }
-        }else if(!viewModel.validateEmpty()) {
+        } else if (!viewModel.validateEmpty()) {
             view.showErrorAlert(context.getResources().getString(R.string.msg_validation_empty_error));
-        } else if(!viewModel.validateInputValid()) {
+        } else if (!viewModel.validateInputValid()) {
             view.showErrorAlert(context.getResources().getString(R.string.msg_validation_error));
         }
     }
@@ -153,10 +155,20 @@ public class StockMovementPresenter implements Presenter {
         return stockCard;
     }
 
+    public ArrayList<String> getStockCardExpireDates() {
+        if (stockCard == null || TextUtils.isEmpty(stockCard.getExpireDates())) {
+            return new ArrayList<>();
+        } else {
+            return newArrayList(stockCard.getExpireDates().split(StockCard.DIVIDER));
+        }
+    }
+
 
     public interface StockMovementView extends View {
         void showErrorAlert(String msg);
+
         void refreshStockMovement();
+
         void deactivatedStockDraft();
     }
 }
