@@ -16,46 +16,19 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.model;
+package org.openlmis.core.persistence.migrations;
 
+import org.openlmis.core.persistence.Migration;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+public class AddFacilityIdToUser extends Migration{
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+    @Override
+    public void down() {
 
-@Getter
-@Setter
-@DatabaseTable(tableName = "users")
-@NoArgsConstructor
-public class User extends BaseModel{
+    }
 
-    @DatabaseField
-    String username;
-
-    @DatabaseField
-    String userFirstName;
-
-    @DatabaseField
-    String userLastName;
-
-    @DatabaseField
-    String password;
-
-    @DatabaseField
-    String facilityCode;
-
-    @DatabaseField
-    String facilityName;
-
-
-    @DatabaseField
-    String facilityId;
-
-    public User(String username, String password){
-        this.username = username;
-        this.password = password;
+    @Override
+    public void up() {
+        execSQL("ALTER TABLE 'users' ADD COLUMN facilityId VARCHAR");
     }
 }
