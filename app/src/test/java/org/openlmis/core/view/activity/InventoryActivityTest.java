@@ -22,7 +22,6 @@ package org.openlmis.core.view.activity;
 import android.content.Intent;
 import android.view.Menu;
 
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,8 +37,8 @@ import java.util.ArrayList;
 import roboguice.RoboGuice;
 
 import static junit.framework.Assert.assertEquals;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)

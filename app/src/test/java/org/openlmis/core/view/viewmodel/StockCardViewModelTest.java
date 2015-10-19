@@ -7,9 +7,12 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.util.ArrayList;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(LMISTestRunner.class)
 public class StockCardViewModelTest {
@@ -28,10 +31,22 @@ public class StockCardViewModelTest {
     }
 
     @Test
-    public void shouldReturnTrueWhenAddExpireDate() throws Exception {
+    public void shouldReturnFalseWhenAddDuplicateDate() throws Exception {
         boolean addExpiryDate = model.addExpiryDate("2015");
         assertTrue(addExpiryDate);
         boolean addExpiryDateSec = model.addExpiryDate("2015");
         assertFalse(addExpiryDateSec);
+    }
+
+    @Test
+    public void shouldFormatExpiryDateAndSort() throws Exception {
+        ArrayList<String> list = new ArrayList<>();
+        list.add("18/10/2016");
+        list.add("18/10/2017");
+        list.add("18/10/2018");
+        list.add("18/10/2015");
+        model.setExpiryDates(list);
+        model.formatExpiryDateString();
+        assertThat(model.getExpiryDates().get(0), is("18/10/2015"));
     }
 }
