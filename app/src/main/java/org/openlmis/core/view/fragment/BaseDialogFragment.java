@@ -23,6 +23,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 
 public class BaseDialogFragment extends DialogFragment {
@@ -31,51 +32,44 @@ public class BaseDialogFragment extends DialogFragment {
     private static final String ARG_MESSAGE = "message";
     private static final String ARG_POSITIVE_BUTTON = "positive";
     private static final String ARG_NEGATIVE_BUTTON = "negative";
+    private static final String ARG_TAG = "tag";
 
-    public String title;
-    public String message;
-    public String positiveText;
-    public String negativeText;
-
-    protected static Bundle bundle;
+    private String title;
+    private String message;
+    private String positiveText;
+    private String negativeText;
     private String tag;
 
-    public static BaseDialogFragment newInstance() {
-        BaseDialogFragment frag = new BaseDialogFragment();
-        bundle = new Bundle();
-        frag.setArguments(bundle);
-        return frag;
+    private MsgDialogCallBack mListener;
+
+    public static BaseDialogFragment newInstance(String title, String message, String positiveText, String tag) {
+        return newInstance(title, message, positiveText, null, tag);
     }
 
-    private MsgDialogCallBack mListener;
+    public static BaseDialogFragment newInstance(String title, String message, String positiveText, String negativeText, String tag) {
+        Bundle bundle = new Bundle();
+
+        bundle.putString(ARG_TITLE, title);
+        bundle.putString(ARG_MESSAGE, message);
+        bundle.putString(ARG_POSITIVE_BUTTON, positiveText);
+        bundle.putString(ARG_NEGATIVE_BUTTON, negativeText);
+        bundle.putString(ARG_TAG, tag);
+
+        BaseDialogFragment fragment = new BaseDialogFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     public void setCallBackListener(MsgDialogCallBack listener) {
         mListener = listener;
     }
 
-    public BaseDialogFragment setTitle(String title){
-        bundle.putString(ARG_TITLE, title);
-        return this;
-    }
-
-    public BaseDialogFragment setMessage(String message){
-        bundle.putString(ARG_MESSAGE, message);
-        return this;
-    }
-
-    public BaseDialogFragment setPositiveText(String positiveText){
-        bundle.putString(ARG_POSITIVE_BUTTON, positiveText);
-        return this;
-    }
-
-    public BaseDialogFragment setNegativeText(String negativeText){
-        bundle.putString(ARG_NEGATIVE_BUTTON, negativeText);
-        return this;
-    }
-
-    public BaseDialogFragment setTag(String tag){
-        bundle.putString("tag",tag);
-        return this;
+    @Override
+    public void onAttach(Activity activity) {
+        if (activity instanceof MsgDialogCallBack) {
+            mListener = (MsgDialogCallBack) activity;
+        }
+        super.onAttach(activity);
     }
 
     @Override
@@ -87,19 +81,11 @@ public class BaseDialogFragment extends DialogFragment {
         message = arguments.getString(ARG_MESSAGE);
         positiveText = arguments.getString(ARG_POSITIVE_BUTTON);
         negativeText = arguments.getString(ARG_NEGATIVE_BUTTON);
-        tag = arguments.getString("tag");
-    }
-
-
-    @Override
-    public void onAttach(Activity activity) {
-        if (activity instanceof MsgDialogCallBack) {
-            mListener = (MsgDialogCallBack) activity;
-        }
-        super.onAttach(activity);
+        tag = arguments.getString(ARG_TAG);
     }
 
     @Override
+
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setTitle(title)
@@ -112,23 +98,18 @@ public class BaseDialogFragment extends DialogFragment {
                         }
                     }
                 });
-        if (negativeText != null && !negativeText.isEmpty()) {
+        if (!TextUtils.isEmpty(negativeText)) {
             builder.setNegativeButton(negativeText, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    try {
-                        if (mListener != null) {
-                            mListener.negativeClick(tag);
-                        }
-                    } catch (Exception exception) {
-                        throw new ClassCastException("Must implement BaseDialogFragment.NegativeListener");
+                    if (mListener != null) {
+                        mListener.negativeClick(tag);
                     }
                 }
             });
         }
 
         return builder.create();
-
     }
 
     public interface MsgDialogCallBack {

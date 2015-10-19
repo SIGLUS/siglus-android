@@ -393,13 +393,12 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     @Override
     public void onBackPressed() {
         if (hasDataChanged()) {
-            DialogFragment dialogFragment = BaseDialogFragment
-                    .newInstance()
-                    .setMessage(getResources().getString(R.string.msg_mmia_onback_confirm))
-                    .setPositiveText(getResources().getString(R.string.btn_positive))
-                    .setNegativeText(getResources().getString(R.string.btn_negative))
-                    .setTag(ON_BACK_PRESSED);
-            dialogFragment.show(getFragmentManager(), "tag");
+            DialogFragment dialogFragment = BaseDialogFragment.newInstance(null,
+                    getString(R.string.msg_mmia_onback_confirm),
+                    getString(R.string.btn_positive),
+                    getString(R.string.btn_negative),
+                    ON_BACK_PRESSED);
+            dialogFragment.show(getFragmentManager(), "");
         } else {
             removeTempForm();
             super.onBackPressed();

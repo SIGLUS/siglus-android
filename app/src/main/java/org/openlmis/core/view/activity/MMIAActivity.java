@@ -217,13 +217,13 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     @Override
     public void onBackPressed() {
         if (hasDataChanged()) {
-            DialogFragment dialogFragment = BaseDialogFragment
-                    .newInstance()
-                    .setMessage(getResources().getString(R.string.msg_mmia_onback_confirm))
-                    .setPositiveText(getResources().getString(R.string.btn_positive))
-                    .setNegativeText(getResources().getString(R.string.btn_negative))
-                    .setTag(ON_BACK_PRESSED);
-            dialogFragment.show(getFragmentManager(), "tag");
+            DialogFragment dialogFragment = BaseDialogFragment.newInstance(
+                    null,
+                    getString(R.string.msg_mmia_onback_confirm),
+                    getString(R.string.btn_positive),
+                    getString(R.string.btn_negative),
+                    ON_BACK_PRESSED);
+            dialogFragment.show(getFragmentManager(), "");
         } else {
             removeTempForm();
             super.onBackPressed();
@@ -251,12 +251,11 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     @Override
     public void showValidationAlert() {
-        DialogFragment dialogFragment = BaseDialogFragment
-                .newInstance()
-                .setMessage(getResources().getString(R.string.msg_regime_total_and_patient_total_not_match))
-                .setPositiveText(getString(R.string.btn_ok))
-                .setTag(MISMATCH);
-        dialogFragment.show(getFragmentManager(), "tag");
+        DialogFragment dialogFragment = BaseDialogFragment.newInstance(null,
+                getResources().getString(R.string.msg_regime_total_and_patient_total_not_match),
+                getString(R.string.btn_ok),
+                MISMATCH);
+        dialogFragment.show(getFragmentManager(), "");
     }
 
     @Override

@@ -28,17 +28,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.Product;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.robolectric.Robolectric;
 
-import java.util.ArrayList;
 
 import roboguice.RoboGuice;
 
 import static junit.framework.Assert.assertEquals;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
@@ -55,21 +50,6 @@ public class InventoryActivityTest {
     @After
     public void teardown() {
         RoboGuice.Util.reset();
-    }
-
-
-    @Test
-    public void shouldCheckQuantityNotEmpty() throws InterruptedException{
-        ArrayList<StockCardViewModel> products = new ArrayList<>();
-        Product product = new Product();
-        product.setPrimaryName("test product");
-        product.setStrength("500 ml");
-        products.add(new StockCardViewModel(product));
-
-        inventoryActivity.mAdapter.refreshList(products);
-        ((StockCardViewModel)inventoryActivity.mAdapter.getData().get(0)).setChecked(true);
-        inventoryActivity.btnDone.performClick();
-        assertThat(((StockCardViewModel)inventoryActivity.mAdapter.getData().get(0)).isValidate(), is(false));
     }
 
     @Test

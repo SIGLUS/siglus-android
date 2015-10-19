@@ -228,11 +228,11 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.
     }
 
     private void showMsgDialog(final ViewGroup expireDateContainer, final View expireDateView, final StockCardViewModel viewModel, final String expireDate) {
-        BaseDialogFragment dialogFragment = BaseDialogFragment
-                .newInstance()
-                .setMessage(context.getResources().getString(R.string.msg_remove_expire_date))
-                .setPositiveText(context.getString(R.string.btn_ok))
-                .setNegativeText(context.getString(R.string.btn_cancel));
+        BaseDialogFragment dialogFragment = BaseDialogFragment.newInstance(
+                        null,
+                        context.getString(R.string.msg_remove_expire_date),
+                        context.getString(R.string.btn_ok),
+                        context.getString(R.string.btn_cancel));
         dialogFragment.show(((Activity) context).getFragmentManager(), "MsgDialogFragment");
         dialogFragment.setCallBackListener(createListener(expireDateContainer, expireDateView, viewModel, expireDate));
     }
@@ -248,7 +248,6 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.
 
             @Override
             public void negativeClick(String tag) {
-
             }
         };
     }

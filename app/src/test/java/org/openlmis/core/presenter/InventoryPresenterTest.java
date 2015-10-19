@@ -39,16 +39,12 @@ import org.robolectric.RuntimeEnvironment;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Scheduler;
-import rx.Subscriber;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
-import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.observers.TestSubscriber;
 import rx.schedulers.Schedulers;
 
@@ -71,7 +67,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
     private StockCard stockCard;
 
     @Before
-    public void setup() throws Exception{
+    public void setup() throws Exception {
         stockRepositoryMock = mock(StockRepository.class);
 
         view = mock(InventoryPresenter.InventoryView.class);
@@ -96,6 +92,11 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
                 return Schedulers.immediate();
             }
         });
+    }
+
+    @After
+    public void tearDown() {
+        RoboGuice.Util.reset();
     }
 
     @Test
@@ -152,7 +153,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldMakePositiveAdjustment() throws LMISException{
+    public void shouldMakePositiveAdjustment() throws LMISException {
 
         StockCardViewModel model = new StockCardViewModel(stockCard);
         model.setQuantity("120");
@@ -164,7 +165,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldMakeNegativeAdjustment() throws LMISException{
+    public void shouldMakeNegativeAdjustment() throws LMISException {
         StockCardViewModel model = new StockCardViewModel(stockCard);
         model.setQuantity("80");
 
@@ -175,9 +176,8 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
     }
 
 
-
     @Test
-    public void shouldCalculateStockAdjustment() throws LMISException{
+    public void shouldCalculateStockAdjustment() throws LMISException {
         StockCardViewModel model = new StockCardViewModel(stockCard);
         model.setQuantity("100");
 
