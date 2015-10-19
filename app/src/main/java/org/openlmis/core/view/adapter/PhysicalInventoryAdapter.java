@@ -211,15 +211,15 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.
         }
     }
 
-    private void initExpireDateView(String date, final StockCardViewModel viewModel, final ViewGroup expireDateContainer) {
+    private void initExpireDateView(final String date, final StockCardViewModel viewModel, final ViewGroup expireDateContainer) {
         try {
-            final String expireDate = DateUtil.convertDate(date, DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+            String expireDate = DateUtil.convertDate(date, DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
             final View expireDateView = addExpireDateView(expireDate, expireDateContainer);
             View ivClear = expireDateView.findViewById(R.id.iv_clear);
             ivClear.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showMsgDialog(expireDateContainer, expireDateView, viewModel, expireDate);
+                    showMsgDialog(expireDateContainer, expireDateView, viewModel, date);
                 }
             });
         } catch (ParseException e) {

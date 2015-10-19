@@ -160,17 +160,17 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
 
     @Override
     protected void onDestroy() {
-        if (presenter != null && presenterClass != null){
+        if (presenter != null && presenterClass != null) {
             dataFragment.putData(presenterClass.getSimpleName(), presenter);
         }
         super.onDestroy();
     }
 
-    private void initDataFragment(){
+    private void initDataFragment() {
         FragmentManager fm = getFragmentManager();
         dataFragment = (RetainedFragment) fm.findFragmentByTag("RetainedFragment");
 
-        if (dataFragment == null){
+        if (dataFragment == null) {
             dataFragment = new RetainedFragment();
             fm.beginTransaction().add(dataFragment, "RetainedFragment").commit();
         }
@@ -179,8 +179,8 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     protected Presenter initPresenter(Class<? extends Presenter> clazz) {
         // find the retained fragment on activity restarts
         presenterClass = clazz;
-        Presenter presenter = (Presenter)dataFragment.getData(presenterClass.getSimpleName());
-        if (presenter == null){
+        Presenter presenter = (Presenter) dataFragment.getData(presenterClass.getSimpleName());
+        if (presenter == null) {
             presenter = RoboGuice.getInjector(getApplicationContext()).getInstance(presenterClass);
             dataFragment.putData(presenterClass.getSimpleName(), presenter);
         }
@@ -237,12 +237,11 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     public void loaded() {
         if (loadingDialog != null) {
             try {
-                loadingDialog.dismiss();
+                if (loadingDialog != null && !isFinishing()) {
+                    loadingDialog.dismiss();
+                }
             } catch (IllegalArgumentException e) {
                 Log.d("View", "loaded -> dialog already dismissed");
-            }
-            if (loadingDialog != null && !isFinishing()) {
-                loadingDialog.dismiss();
             }
         }
     }
