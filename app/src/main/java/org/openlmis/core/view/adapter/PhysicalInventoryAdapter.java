@@ -18,8 +18,10 @@
 
 package org.openlmis.core.view.adapter;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -35,6 +37,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.fragment.BaseDialogFragment;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 
@@ -216,13 +219,38 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.
             ivClear.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    expireDateContainer.removeView(expireDateView);
-                    viewModel.removeExpiryDate(expireDate);
+                    showMsgDialog(expireDateContainer, expireDateView, viewModel, expireDate);
                 }
             });
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showMsgDialog(final ViewGroup expireDateContainer, final View expireDateView, final StockCardViewModel viewModel, final String expireDate) {
+        BaseDialogFragment dialogFragment = BaseDialogFragment
+                .newInstance()
+                .setMessage(context.getResources().getString(R.string.msg_remove_expire_date))
+                .setPositiveText(context.getString(R.string.btn_ok))
+                .setNegativeText(context.getString(R.string.btn_cancel));
+        dialogFragment.show(((Activity) context).getFragmentManager(), "MsgDialogFragment");
+        dialogFragment.setCallBackListener(createListener(expireDateContainer, expireDateView, viewModel, expireDate));
+    }
+
+    @NonNull
+    private BaseDialogFragment.MsgDialogCallBack createListener(final ViewGroup expireDateContainer, final View expireDateView, final StockCardViewModel viewModel, final String expireDate) {
+        return new BaseDialogFragment.MsgDialogCallBack() {
+            @Override
+            public void positiveClick(String tag) {
+                expireDateContainer.removeView(expireDateView);
+                viewModel.removeExpiryDate(expireDate);
+            }
+
+            @Override
+            public void negativeClick(String tag) {
+
+            }
+        };
     }
 
     private ViewGroup addExpireDateView(final String expireDate, final ViewGroup expireDateContainer) {
