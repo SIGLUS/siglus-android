@@ -32,13 +32,11 @@ public class BaseDialogFragment extends DialogFragment {
     private static final String ARG_POSITIVE_BUTTON = "positive";
     private static final String ARG_NEGATIVE_BUTTON = "negative";
 
-    private String title;
-    private String message;
-    private String positiveText;
-    private String negativeText;
+    public String title;
+    public String message;
+    public String positiveText;
+    public String negativeText;
 
-    private PositiveListener positiveListener;
-    private NegativeListener negativeListener;
     protected static Bundle bundle;
     private String tag;
 
@@ -47,6 +45,12 @@ public class BaseDialogFragment extends DialogFragment {
         bundle = new Bundle();
         frag.setArguments(bundle);
         return frag;
+    }
+
+    private MsgDialogCallBack mListener;
+
+    public void setCallBackListener(MsgDialogCallBack listener) {
+        mListener = listener;
     }
 
     public BaseDialogFragment setTitle(String title){
@@ -89,16 +93,9 @@ public class BaseDialogFragment extends DialogFragment {
 
     @Override
     public void onAttach(Activity activity) {
-        try {
-            positiveListener = (PositiveListener) activity;
-        } catch (ClassCastException exception) {
-            throw new ClassCastException(activity.toString() + " must implement BaseDialogFragment.PositiveListener");
+        if (activity instanceof MsgDialogCallBack) {
+            mListener = (MsgDialogCallBack) activity;
         }
-
-        if (activity instanceof NegativeListener) {
-            negativeListener = (NegativeListener) activity;
-        }
-
         super.onAttach(activity);
     }
 
@@ -110,7 +107,9 @@ public class BaseDialogFragment extends DialogFragment {
                 .setPositiveButton(positiveText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        positiveListener.positiveClick(tag);
+                        if (mListener != null) {
+                            mListener.positiveClick(tag);
+                        }
                     }
                 });
         if (negativeText != null && !negativeText.isEmpty()) {
@@ -118,7 +117,9 @@ public class BaseDialogFragment extends DialogFragment {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     try {
-                        negativeListener.negativeClick(tag);
+                        if (mListener != null) {
+                            mListener.negativeClick(tag);
+                        }
                     } catch (Exception exception) {
                         throw new ClassCastException("Must implement BaseDialogFragment.NegativeListener");
                     }
@@ -130,11 +131,9 @@ public class BaseDialogFragment extends DialogFragment {
 
     }
 
-    public interface PositiveListener {
+    public interface MsgDialogCallBack {
         void positiveClick(String tag);
-    }
 
-    public interface NegativeListener {
         void negativeClick(String tag);
     }
 

@@ -53,7 +53,7 @@ import roboguice.inject.InjectView;
 
 
 @ContentView(R.layout.activity_requisition)
-public class RequisitionActivity extends BaseActivity implements RequisitionPresenter.RequisitionView, View.OnClickListener, BaseDialogFragment.PositiveListener, BaseDialogFragment.NegativeListener {
+public class RequisitionActivity extends BaseActivity implements RequisitionPresenter.RequisitionView, View.OnClickListener, BaseDialogFragment.MsgDialogCallBack {
 
     @InjectView(R.id.requisition_form)
     ListView requisitionForm;
