@@ -8,16 +8,12 @@ describe "log in to web server" do
     expect(response.code).to eq 200
 
     body = JSON.parse(response.body)
-    expected_body =
-      { "userInformation" =>
-        { "userName" => "superuser",
-          "userFirstName" => "Super",
-          "userLastName" => "User",
-          "facilityCode" => "F10",
-          "facilityName" => "Health Facility 1"
-        }
-      }
 
-    expect(body).to eq expected_body
+    expect(body['userInformation']['userName']).to eq 'superuser'
+    expect(body['userInformation']['userFirstName']).to eq 'Super'
+    expect(body['userInformation']['userLastName']).to eq 'User'
+    expect(body['userInformation']['facilityCode']).to eq 'F10'
+    expect(body['userInformation']['facilityId']).not_to be_nil
+    expect(body['userInformation']['facilityName']).to eq 'Health Facility 1'
   end
 end
