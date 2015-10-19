@@ -103,8 +103,20 @@ public class StockRepository {
         }
     }
 
+    public void batchUpdateStockMovements(final List<StockMovementItem> stockMovementItems) throws LMISException{
+        dbUtil.withDaoAsBatch(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, Void>() {
+            @Override
+            public Void operate(Dao<StockMovementItem, String> dao) throws SQLException {
+                for (StockMovementItem stockMovementItem : stockMovementItems){
+                    dao.update(stockMovementItem);
+                }
+                return null;
+            }
+        });
+    }
 
-    protected void saveStockItem(final StockMovementItem stockMovementItem) throws LMISException {
+
+    public void saveStockItem(final StockMovementItem stockMovementItem) throws LMISException {
         dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, Void>() {
             @Override
             public Void operate(Dao<StockMovementItem, String> dao) throws SQLException {

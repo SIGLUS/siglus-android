@@ -34,14 +34,20 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.model.ProductsResponse;
 import org.openlmis.core.network.model.RequisitionResponse;
+import org.openlmis.core.network.model.StockMovementEntry;
+import org.openlmis.core.utils.DateUtil;
+import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.List;
 
@@ -74,6 +80,9 @@ public class SyncManager {
 
     @Inject
     RnrFormRepository rnrFormRepository;
+
+    @Inject
+    StockRepository stockRepository;
 
     LMISRestApi lmisRestApi;
     @Inject
@@ -230,7 +239,52 @@ public class SyncManager {
         }
     }
 
-    public void syncStockCards(){
+    public boolean syncStockCards(){
+        User user = UserInfoMgr.getInstance().getUser();
+        if (user == null){
+            return false;
+        }
 
+        List<StockMovementItem> stockMovementItems;
+        try {
+            stockMovementItems = stockRepository.listUnSynced();
+        }catch (LMISException e){
+            e.printStackTrace();
+            return false;
+        }
+
+        if (stockMovementItems.isEmpty()){
+            return false;
+        }
+
+        List<StockMovementEntry> syncList = FluentIterable.from(stockMovementItems).transform(new Function<StockMovementItem, StockMovementEntry>() {
+            @Override
+            public StockMovementEntry apply(StockMovementItem stockMovementItem) {
+                StockMovementEntry entry = new StockMovementEntry();
+                String date = DateUtil.formatDate(stockMovementItem.getMovementDate(), "yyyyMMdd'T'HHmmssZ");
+                entry.setOccurred(date);
+                entry.setProductCode(stockMovementItem.getStockCard().getProduct().getCode());
+                entry.setQuantity(stockMovementItem.getMovementQuantity());
+                entry.setReasonName(stockMovementItem.getReason());
+                return entry;
+            }
+        }).toList();
+
+        try {
+            lmisRestApi.pushStockMovementData(user.getFacilityId(), syncList);
+            Observable.from(stockMovementItems).forEach(new Action1<StockMovementItem>() {
+                @Override
+                public void call(StockMovementItem stockMovementItem) {
+                    stockMovementItem.setSynced(true);
+                }
+            });
+
+            stockRepository.batchUpdateStockMovements(stockMovementItems);
+            return true;
+        } catch (Throwable e) {
+            Log.e(TAG, "===> SyncStockMovement : synced failed ->" + e.getMessage());
+        }
+
+        return false;
     }
 }

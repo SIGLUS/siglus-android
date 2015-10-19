@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
-import org.openlmis.core.factory.RequisitionDataFactory;
+import org.openlmis.core.model.RequisitionBuilder;
 import org.openlmis.core.presenter.RequisitionPresenter;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.robolectric.Robolectric;
@@ -63,7 +63,7 @@ public class RequisitionActivityTest {
         presenter = spy(new RequisitionPresenter());
 
         formItemList = new ArrayList<>();
-        formItemList.add(RequisitionDataFactory.buildFakeRequisitionViewModel());
+        formItemList.add(RequisitionBuilder.buildFakeRequisitionViewModel());
 
         doReturn(true).when(presenter).formIsEditable();
         doReturn("123").when(presenter).getConsultationNumbers();

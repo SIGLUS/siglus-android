@@ -16,11 +16,11 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.factory;
+package org.openlmis.core.model;
 
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 
-public class RequisitionDataFactory {
+public class RequisitionBuilder {
 
     public static RequisitionFormItemViewModel buildFakeRequisitionViewModel(){
         RequisitionFormItemViewModel viewModel = new RequisitionFormItemViewModel();

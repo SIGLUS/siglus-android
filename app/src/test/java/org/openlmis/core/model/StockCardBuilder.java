@@ -1,11 +1,37 @@
 package org.openlmis.core.model;
 
+import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.repository.StockRepository;
+
+import java.util.Date;
+
 public class StockCardBuilder {
 
     private StockCard stockCard;
 
     public StockCardBuilder() {
         stockCard = new StockCard();
+    }
+
+    public static StockCard buildStockCardWithOneMovement(StockRepository stockRepository) throws LMISException {
+
+        StockMovementItem stockMovementItem = new StockMovementItem();
+
+        StockCard stockCard = new StockCard();
+        stockRepository.save(stockCard);
+
+        stockMovementItem.setStockCard(stockCard);
+        stockMovementItem.setMovementQuantity(10L);
+        stockMovementItem.setStockOnHand(100L);
+        stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
+        stockMovementItem.setDocumentNumber("XXX123456");
+        stockMovementItem.setReason("some reason");
+        stockMovementItem.setMovementDate(new Date());
+
+        stockRepository.saveStockItem(stockMovementItem);
+        stockRepository.refresh(stockCard);
+
+        return stockCard;
     }
 
     public StockCardBuilder setExpireDates(String expireDates) {
