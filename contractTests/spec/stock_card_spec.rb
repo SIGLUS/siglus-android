@@ -11,21 +11,21 @@ describe "Sync stock card data" do
     stock_card_data =
       [
       {
-        facilityId: 408,
+        facilityId: facility_id,
         productCode: "08S42",
         quantity: 1000,
         reasonName: "CLINIC_RETURN",
         occurred: "20151010T030530Z"
       },
       {
-        facilityId: 408,
+        facilityId: facility_id,
         productCode: "08S42",
         quantity: 500,
         reasonName: "TRANSFER_OUT",
         occurred: "20151014T030530Z"
       },
       {
-        facilityId: 408,
+        facilityId: facility_id,
         productCode: "08S42",
         quantity: 20,
         reasonName: "STOLEN",
