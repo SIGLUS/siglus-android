@@ -63,4 +63,6 @@ public class StockMovementItem extends BaseModel{
     @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = "yyyy-MM-dd")
     private java.util.Date movementDate;
 
+    @DatabaseField
+    private boolean synced = false;
 }

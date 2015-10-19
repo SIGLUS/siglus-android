@@ -29,6 +29,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ import java.util.List;
 import roboguice.RoboGuice;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 
@@ -47,8 +49,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     StockRepository stockRepository;
     ProductRepository productRepository;
     Product product;
-    private StockMovementItem stockMovementItem;
-    private StockCard stockCard;
 
     @Before
     public void setup() throws LMISException{
@@ -61,10 +61,14 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         product.setStrength("200");
 
         productRepository.create(product);
+    }
 
-        stockMovementItem = new StockMovementItem();
+    private StockCard buildStockCardWithOneMovement() throws LMISException {
 
-        stockCard = new StockCard();
+        StockMovementItem stockMovementItem = new StockMovementItem();
+
+        StockCard stockCard = new StockCard();
+        stockRepository.save(stockCard);
 
         stockMovementItem.setStockCard(stockCard);
         stockMovementItem.setMovementQuantity(10L);
@@ -75,8 +79,10 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockMovementItem.setMovementDate(new Date());
 
         stockRepository.saveStockItem(stockMovementItem);
-    }
+        stockRepository.refresh(stockCard);
 
+        return stockCard;
+    }
 
 
     @Test
@@ -86,7 +92,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockCard.setStockOnHand(1);
         stockCard.setProduct(product);
         stockRepository.save(stockCard);
-
 
         assertThat(stockRepository.list().size(), is(1));
         assertThat(stockRepository.list().get(0).getProduct(), is(NotNull.NOT_NULL));
@@ -114,6 +119,9 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldGetCorrectDataAfterSavedStockMovementItem() throws Exception {
+        StockCard stockCard = buildStockCardWithOneMovement();
+        StockMovementItem stockMovementItem = stockCard.getStockMovementItems().iterator().next();
+
         List<StockMovementItem> stockMovementItems = stockRepository.listLastFive(stockCard.getId());
         StockMovementItem stockMovementItemActual = stockMovementItems.get(stockMovementItems.size() - 1);
 
@@ -128,10 +136,14 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldCalculateStockOnHandCorrectly() throws LMISException{
+        StockCard stockCard = buildStockCardWithOneMovement();
+        StockMovementItem stockMovementItem = new StockMovementItem();
+
         stockCard.setStockOnHand(100L);
         stockMovementItem.setStockOnHand(-1);
         stockMovementItem.setMovementQuantity(50L);
         stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
+        stockMovementItem.setMovementDate(DateUtil.today());
 
         stockRepository.addStockMovementAndUpdateStockCard(stockCard, stockMovementItem);
         assertThat(stockMovementItem.getStockOnHand(), is(150L));
@@ -143,4 +155,27 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
         assertThat(stockMovementItem.getStockOnHand(), is(50L));
     }
+
+    @Test
+    public void shouldListUnsyncedStockMovementItems() throws LMISException {
+        StockCard stockCard = buildStockCardWithOneMovement();
+
+        StockMovementItem item = new StockMovementItem();
+        item.setMovementQuantity(100L);
+        item.setStockOnHand(-1);
+        item.setMovementDate(DateUtil.today());
+        item.setMovementType(StockMovementItem.MovementType.RECEIVE);
+
+        item.setSynced(true);
+
+        assertThat(stockCard.getStockMovementItems().size(), is(1));
+        stockRepository.addStockMovementAndUpdateStockCard(stockCard, item);
+        stockRepository.refresh(stockCard);
+
+        assertThat(stockCard.getStockMovementItems().size(), is(2));
+
+        assertThat(stockRepository.listUnSynced(), notNullValue());
+        assertThat(stockRepository.listUnSynced().size(), is(1));
+    }
+
 }
