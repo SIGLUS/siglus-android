@@ -32,6 +32,7 @@ import org.openlmis.core.utils.DateUtil;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import lombok.Data;
@@ -111,6 +112,7 @@ public class StockCardViewModel {
         if (expiryDates == null) {
             return StringUtils.EMPTY;
         }
+        Collections.sort(expiryDates);
         return StringUtils.join(expiryDates, StockCard.DIVIDER);
     }
 
