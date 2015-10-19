@@ -16,7 +16,7 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.network.response;
+package org.openlmis.core.network.model;
 
 import org.openlmis.core.model.Program;
 

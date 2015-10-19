@@ -34,7 +34,7 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
-import org.openlmis.core.network.response.ProductsResponse;
+import org.openlmis.core.network.model.ProductsResponse;
 import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.RuntimeEnvironment;

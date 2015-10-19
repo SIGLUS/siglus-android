@@ -39,8 +39,8 @@ import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
-import org.openlmis.core.network.response.ProductsResponse;
-import org.openlmis.core.network.response.RequisitionResponse;
+import org.openlmis.core.network.model.ProductsResponse;
+import org.openlmis.core.network.model.RequisitionResponse;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.List;
@@ -153,7 +153,7 @@ public class SyncManager {
 
     public void syncProductsWithProgram() throws Exception {
         User user = UserInfoMgr.getInstance().getUser();
-        ProductsResponse response = lmisRestApi.getProducts(user.getFacilityCode());
+        ProductsResponse response = lmisRestApi.fetchProducts(user.getFacilityCode());
         List<Program> programsWithProducts = response.getProgramsWithProducts();
         for (Program programWithProducts : programsWithProducts) {
             try {
@@ -230,4 +230,7 @@ public class SyncManager {
         }
     }
 
+    public void syncStockCards(){
+
+    }
 }

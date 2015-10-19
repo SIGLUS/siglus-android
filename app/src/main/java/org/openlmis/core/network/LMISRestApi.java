@@ -22,14 +22,18 @@ package org.openlmis.core.network;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
-import org.openlmis.core.network.response.ProductsResponse;
-import org.openlmis.core.network.response.RequisitionResponse;
+import org.openlmis.core.network.model.ProductsResponse;
+import org.openlmis.core.network.model.RequisitionResponse;
+import org.openlmis.core.network.model.StockMovementEntry;
 
+
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 public interface LMISRestApi {
@@ -38,8 +42,11 @@ public interface LMISRestApi {
     void authorizeUser(@Body User user, Callback<UserRepository.UserResponse> callback);
 
     @GET("/rest-api/programs-with-products")
-    ProductsResponse getProducts(@Query("facilityCode") String facilityCode);
+    ProductsResponse fetchProducts(@Query("facilityCode") String facilityCode);
 
     @POST("/rest-api/requisitions")
     RequisitionResponse submitRequisition(@Body RnRForm rnRForm);
+
+    @POST("/rest-api/facilities/{facilityId}/stockCards")
+    void pushStockMovementData(@Path("facilityId") String facilityId, @Body List<StockMovementEntry> entries);
 }

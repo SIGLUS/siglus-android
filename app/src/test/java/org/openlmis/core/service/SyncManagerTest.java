@@ -29,8 +29,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.network.LMISRestApi;
-import org.openlmis.core.network.response.RequisitionResponse;
-import org.robolectric.Robolectric;
+import org.openlmis.core.network.model.RequisitionResponse;
 import org.robolectric.RuntimeEnvironment;
 
 import java.sql.SQLException;

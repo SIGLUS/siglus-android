@@ -16,14 +16,14 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.network.response;
+package org.openlmis.core.network.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-public class RequisitionResponse {
-    String error;
-    String requisitionId;
+@Data
+public class StockMovementEntry {
+    String productCode;
+    long quantity;
+    String reasonName;
+    String occurred;
 }
