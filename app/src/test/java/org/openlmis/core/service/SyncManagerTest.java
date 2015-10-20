@@ -19,6 +19,8 @@
 package org.openlmis.core.service;
 
 
+import android.support.annotation.NonNull;
+
 import com.google.inject.Binder;
 import com.google.inject.Module;
 
@@ -54,6 +56,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -114,7 +117,36 @@ public class SyncManagerTest {
 
     @Test
     public void shouldPushUnSyncedStockMovementData() throws LMISException, SQLException {
-        ProductRepository  productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
+        StockCard stockCard = createTestStockCardData();
+
+        doNothing().when(lmisRestApi).pushStockMovementData(anyString(), anyList());
+        syncManager.syncStockCards();
+        stockRepository.refresh(stockCard);
+        List<StockMovementItem> items = newArrayList(stockCard.getStockMovementItems());
+
+        assertThat(items.size(), is(2));
+        assertThat(items.get(0).isSynced(), is(true));
+        assertThat(items.get(1).isSynced(), is(true));
+    }
+
+    @Test
+    public void shouldNotMarkAsSyncedWhenStockMovementSyncFailed() throws LMISException{
+        StockCard stockCard = createTestStockCardData();
+
+        doThrow(new RuntimeException("Sync Failed")).when(lmisRestApi).pushStockMovementData(anyString(), anyList());
+
+        syncManager.syncStockCards();
+        stockRepository.refresh(stockCard);
+        List<StockMovementItem> items = newArrayList(stockCard.getStockMovementItems());
+
+        assertThat(items.size(), is(2));
+        assertThat(items.get(0).isSynced(), is(false));
+        assertThat(items.get(1).isSynced(), is(false));
+    }
+
+    @NonNull
+    private StockCard createTestStockCardData() throws LMISException {
+        ProductRepository productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
         StockCard stockCard = StockCardBuilder.buildStockCardWithOneMovement(stockRepository);
 
         Product product = new Product();
@@ -134,14 +166,6 @@ public class SyncManagerTest {
 
         stockRepository.addStockMovementAndUpdateStockCard(stockCard, item);
         stockRepository.refresh(stockCard);
-
-        doNothing().when(lmisRestApi).pushStockMovementData(anyString(), anyList());
-        syncManager.syncStockCards();
-        stockRepository.refresh(stockCard);
-        List<StockMovementItem> items = newArrayList(stockCard.getStockMovementItems());
-
-        assertThat(items.size(), is(2));
-        assertThat(items.get(0).isSynced(), is(true));
-        assertThat(items.get(1).isSynced(), is(true));
+        return stockCard;
     }
 }
