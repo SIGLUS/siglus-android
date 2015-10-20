@@ -18,6 +18,7 @@
 package org.openlmis.core.utils;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,8 +35,7 @@ public final class ToastUtil {
     }
 
     public static void show(CharSequence text) {
-        if (text == null)
-            return;
+        if (TextUtils.isEmpty(text)) return;
         Toast.makeText(LMISApp.getContext(), text, Toast.LENGTH_SHORT).show();
     }
 

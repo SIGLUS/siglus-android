@@ -21,25 +21,40 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.AbstractModule;
 
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.PeriodNotUniqueException;
+import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
+import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.service.SyncManager;
+import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import roboguice.RoboGuice;
+import rx.Scheduler;
+import rx.android.plugins.RxAndroidPlugins;
+import rx.android.plugins.RxAndroidSchedulersHook;
+import rx.observers.TestSubscriber;
+import rx.schedulers.Schedulers;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -48,19 +63,46 @@ import static org.mockito.Mockito.when;
 @RunWith(LMISTestRunner.class)
 public class MMIAFormPresenterTest {
 
-
+    private SyncManager syncManager;
     private MMIAFormPresenter presenter;
     private MMIARepository mmiaRepository;
+    private ProgramRepository programRepository;
     private MMIAFormPresenter.MMIAFormView mockMMIAformView;
 
     @Before
-    public void setup() {
+    public void setup() throws ViewNotMatchException {
         mmiaRepository = mock(MMIARepository.class);
+        programRepository = mock(ProgramRepository.class);
         mockMMIAformView = mock(MMIAFormPresenter.MMIAFormView.class);
+        syncManager = mock(SyncManager.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         MockitoAnnotations.initMocks(this);
 
         presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(MMIAFormPresenter.class);
+        presenter.attachView(mockMMIAformView);
+
+        RxAndroidPlugins.getInstance().reset();
+        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
+            @Override
+            public Scheduler getMainThreadScheduler() {
+                return Schedulers.immediate();
+            }
+        });
+    }
+
+    public class MyTestModule extends AbstractModule {
+        @Override
+        protected void configure() {
+            bind(MMIARepository.class).toInstance(mmiaRepository);
+            bind(ProgramRepository.class).toInstance(programRepository);
+            bind(MMIAFormPresenter.MMIAFormView.class).toInstance(mockMMIAformView);
+            bind(SyncManager.class).toInstance(syncManager);
+        }
+    }
+
+    @After
+    public void tearDown() {
+        RoboGuice.Util.reset();
     }
 
     @Test
@@ -79,24 +121,11 @@ public class MMIAFormPresenterTest {
         verify(mmiaRepository, never()).initMMIA(Matchers.<Program>anyObject());
     }
 
-    public class MyTestModule extends AbstractModule {
-        @Override
-        protected void configure() {
-            bind(MMIARepository.class).toInstance(mmiaRepository);
-            bind(MMIAFormPresenter.MMIAFormView.class).toInstance(mockMMIAformView);
-        }
-    }
-
     @Test
     public void shouldCompleteMMIAIfTotalsMatch() throws Exception {
-        ArrayList<RegimenItem> regimenItems = new ArrayList<>();
-        RegimenItem regimenItem = new RegimenItem();
-        regimenItem.setAmount(100L);
-        regimenItems.add(regimenItem);
-
+        ArrayList<RegimenItem> regimenItems = generateRegimenItems();
         ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
 
-        presenter.attachView(mockMMIAformView);
         RnRForm rnRForm = new RnRForm();
 
         when(mmiaRepository.initMMIA(Matchers.<Program>anyObject())).thenReturn(rnRForm);
@@ -109,14 +138,9 @@ public class MMIAFormPresenterTest {
 
     @Test
     public void shouldNotCompleteMMIAIfTotalsMismatchAndCommentInvalid() throws Exception {
-        ArrayList<RegimenItem> regimenItems = new ArrayList<>();
-        RegimenItem regimenItem = new RegimenItem();
-        regimenItem.setAmount(100L);
-        regimenItems.add(regimenItem);
-
+        ArrayList<RegimenItem> regimenItems = generateRegimenItems();
         ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
 
-        presenter.attachView(mockMMIAformView);
         RnRForm rnRForm = new RnRForm();
 
         when(mmiaRepository.initMMIA(Matchers.<Program>anyObject())).thenReturn(rnRForm);
@@ -125,5 +149,89 @@ public class MMIAFormPresenterTest {
 
         presenter.completeMMIA(regimenItems, baseInfoItems, "1234");
         verify(mockMMIAformView).showValidationAlert();
+    }
+
+    @Test
+    public void shouldShowErrorWhenLoadRnRFormOnError() {
+        presenter.rnRFormOnErrorAction.call(new Exception("I am testing the onError action"));
+
+        verify(mockMMIAformView).loaded();
+        verify(mockMMIAformView).showErrorMessage("I am testing the onError action");
+    }
+
+    @Test
+    public void shouldInitViewWhenLoadRnRFormOnNext() {
+        RnRForm rnRForm = new RnRForm();
+
+        presenter.rnRFormOnNextAction.call(rnRForm);
+
+        verify(mockMMIAformView).initView(rnRForm);
+        verify(mockMMIAformView).loaded();
+    }
+
+    @Test
+    public void shouldRnRFormObservableQueryRnRFormWhenFormIdIsValid() throws LMISException {
+        TestSubscriber<RnRForm> subscriber = new TestSubscriber<>();
+        presenter.getRnrFormObservable(100L).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        verify(mmiaRepository).queryRnRForm(100L);
+    }
+
+    @Test
+    public void shouldRnRFormObservableQueryProgramWhenFormIdIsInvalid() throws LMISException {
+        TestSubscriber<RnRForm> subscriber = new TestSubscriber<>();
+        presenter.getRnrFormObservable(-100L).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        verify(programRepository).queryByCode(MMIARepository.MMIA_PROGRAM_CODE);
+        verify(mmiaRepository).getUnCompletedMMIA(any(Program.class));
+    }
+
+    @Test
+    public void shouldAuthoriseFormObservableAuthoriseForm() throws LMISException {
+        RnRForm form = new RnRForm();
+
+        presenter.form = form;
+
+        TestSubscriber<Void> subscriber = new TestSubscriber<>();
+        presenter.getAuthoriseFormObservable().subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        verify(mmiaRepository).authorise(form);
+    }
+
+    @Test
+    public void shouldCompleteSuccessAndRequestSyncWhenAuthoriseFormOnNext() {
+        presenter.authoriseFormOnNextAction.call(null);
+
+        verify(mockMMIAformView).loaded();
+        verify(mockMMIAformView).completeSuccess();
+        verify(syncManager).requestSyncImmediately();
+    }
+
+    @Test
+    public void shouldShowAuthoriseFormErrorMessageWhenPeriodNotUnique() {
+        presenter.authorizeFormOnErrorAction.call(new PeriodNotUniqueException("Period not unique"));
+
+        verify(mockMMIAformView).loaded();
+        verify(mockMMIAformView).showErrorMessage("Cannot submit MMIA twice in a period!");
+    }
+
+    @Test
+    public void shouldShowAuthoriseFormErrorMessageWhenCompleteFailed() {
+        presenter.authorizeFormOnErrorAction.call(new LMISException("Period not unique"));
+
+        verify(mockMMIAformView).loaded();
+        verify(mockMMIAformView).showErrorMessage("Complete Failed");
+    }
+
+    private ArrayList<RegimenItem> generateRegimenItems() {
+        ArrayList<RegimenItem> regimenItems = new ArrayList<>();
+        RegimenItem regimenItem = new RegimenItem();
+        regimenItem.setAmount(100L);
+        regimenItems.add(regimenItem);
+
+        return regimenItems;
     }
 }

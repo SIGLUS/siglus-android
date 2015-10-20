@@ -89,8 +89,10 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     private boolean isHistoryForm;
     private long formId;
 
-    private static final String ON_BACK_PRESSED = "onBackPressed";
+    protected static final String ON_BACK_PRESSED = "onBackPressed";
     private static final String MISMATCH = "mismatch";
+
+    public static final String BUNDLE_FORM_ID = "formId";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -103,7 +105,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         hasDataChanged = (Boolean) dataFragment.getData("hasDataChanged");
         scrollView.setVisibility(View.INVISIBLE);
 
-        formId = getIntent().getLongExtra("formId", 0);
+        formId = getIntent().getLongExtra(BUNDLE_FORM_ID, 0);
         isHistoryForm = formId != 0;
         presenter.loadData(formId);
     }
@@ -114,7 +116,6 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         rnrFormList.initView(new ArrayList<>(form.getRnrFormItemListWrapper()));
         regimeListView.initView(form.getRegimenItemListWrapper(), tvRegimeTotal);
         mmiaInfoListView.initView(form.getBaseInfoItemListWrapper());
-
 
         if (presenter.formIsEditable()) {
             scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
@@ -132,6 +133,10 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
         etComment.setText(form.getComments());
 
+        bindListeners();
+    }
+
+    protected void bindListeners() {
         etComment.post(new Runnable() {
             @Override
             public void run() {
@@ -252,10 +257,10 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     @Override
     public void showValidationAlert() {
         DialogFragment dialogFragment = BaseDialogFragment.newInstance(null,
-                getResources().getString(R.string.msg_regime_total_and_patient_total_not_match),
+                getString(R.string.msg_regime_total_and_patient_total_not_match),
                 getString(R.string.btn_ok),
                 MISMATCH);
-        dialogFragment.show(getFragmentManager(), "");
+        dialogFragment.show(getFragmentManager(), "not_match_dialog");
     }
 
     @Override
@@ -315,7 +320,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     public static Intent getIntentToMe(Context context, long formId) {
         Intent intent = new Intent(context, MMIAActivity.class);
-        intent.putExtra("formId", formId);
+        intent.putExtra(BUNDLE_FORM_ID, formId);
         return intent;
     }
 

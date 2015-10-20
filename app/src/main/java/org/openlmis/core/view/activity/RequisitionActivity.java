@@ -104,6 +104,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     private boolean isHistoryForm;
 
     private static final String ON_BACK_PRESSED = "onBackPressed";
+    public static final String BUNDLE_FORM_ID = "formId";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -113,7 +114,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        long formId = getIntent().getLongExtra("formId", 0);
+        long formId = getIntent().getLongExtra(BUNDLE_FORM_ID, 0);
         isHistoryForm = formId != 0;
 
         inflater = LayoutInflater.from(this);
@@ -236,13 +237,18 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
             }
         });
 
-        setListViewOnTouchAndScrollListener(requisitionForm, requisitionNameList);
-        btnComplete.setText(getResources().getString(R.string.btn_submit));
+        btnComplete.setText(getString(R.string.btn_submit));
+        etConsultationNumbers.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
+
+        setUIListeners();
+    }
+
+    private void setUIListeners() {
+        requisitionForm.setOnScrollListener(new MyScrollListener(requisitionForm, requisitionNameList));
+        requisitionNameList.setOnScrollListener(new MyScrollListener(requisitionNameList, requisitionForm));
         btnComplete.setOnClickListener(this);
         btnSave.setOnClickListener(this);
 
-
-        etConsultationNumbers.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
         etConsultationNumbers.addTextChangedListener(etConsultationNumbersTextWatcher);
 
         formLayout.setOnTouchListener(new View.OnTouchListener() {
@@ -350,11 +356,6 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     }
 
 
-    private void setListViewOnTouchAndScrollListener(ListView listView1, ListView listView2) {
-        listView2.setOnScrollListener(new MyScrollListener(listView2, listView1));
-        listView1.setOnScrollListener(new MyScrollListener(listView1, listView2));
-    }
-
     @Override
     public void goToHomePage() {
         Intent intent = new Intent(RequisitionActivity.this, HomeActivity.class);
@@ -398,7 +399,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
                     getString(R.string.btn_positive),
                     getString(R.string.btn_negative),
                     ON_BACK_PRESSED);
-            dialogFragment.show(getFragmentManager(), "");
+            dialogFragment.show(getFragmentManager(), "back_confirm_dialog");
         } else {
             removeTempForm();
             super.onBackPressed();
@@ -413,7 +414,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     public static Intent getIntentToMe(Context context, long formId) {
         Intent intent = new Intent(context, RequisitionActivity.class);
-        intent.putExtra("formId", formId);
+        intent.putExtra(BUNDLE_FORM_ID, formId);
         return intent;
     }
 

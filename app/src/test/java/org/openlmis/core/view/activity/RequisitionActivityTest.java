@@ -18,6 +18,11 @@
 
 package org.openlmis.core.view.activity;
 
+import android.app.AlertDialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.EditText;
 
@@ -34,6 +39,8 @@ import org.openlmis.core.presenter.RequisitionPresenter;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.shadows.ShadowAlertDialog;
+import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowListView;
 
 import java.util.ArrayList;
@@ -41,7 +48,7 @@ import java.util.List;
 
 import roboguice.RoboGuice;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Matchers.anyLong;
@@ -49,6 +56,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
@@ -77,7 +85,11 @@ public class RequisitionActivityTest {
                 binder.bind(RequisitionPresenter.class).toInstance(presenter);
             }
         });
-        requisitionActivity = Robolectric.buildActivity(RequisitionActivity.class).create().get();
+
+        Intent intent = new Intent();
+        intent.putExtra(RequisitionActivity.BUNDLE_FORM_ID, 100L);
+
+        requisitionActivity = Robolectric.buildActivity(RequisitionActivity.class).withIntent(intent).create().get();
         requisitionActivity.refreshRequisitionForm();
     }
 
@@ -88,13 +100,13 @@ public class RequisitionActivityTest {
         View item = getFirstItemInForm();
         EditText etRequestAmount = (EditText) item.findViewById(R.id.et_request_amount);
 
-        assertThat(etRequestAmount, is(notNullValue()));
-        assertThat(etRequestAmount.getText().toString(), is("0"));
+        assertThat(etRequestAmount).isNotNull();
+        assertThat(etRequestAmount.getText().toString()).isEqualTo("0");
 
         formItemList.get(0).setRequestAmount("");
         presenter.processRequisition("123");
 
-        assertThat(etRequestAmount.getError().toString(), is(RuntimeEnvironment.application.getResources().getString(R.string.hint_error_input)));
+        assertThat(etRequestAmount.getError().toString()).isEqualTo(requisitionActivity.getString(R.string.hint_error_input));
     }
 
     @Test
@@ -103,13 +115,51 @@ public class RequisitionActivityTest {
         View item = getFirstItemInForm();
         EditText etApprovedAmount = (EditText) item.findViewById(R.id.et_approved_amount);
 
-        assertThat(etApprovedAmount, is(notNullValue()));
-        assertThat(etApprovedAmount.getText().toString(), is("0"));
+        assertThat(etApprovedAmount).isNotNull();
+        assertThat(etApprovedAmount.getText().toString()).isEqualTo("0");
 
         formItemList.get(0).setApprovedAmount("");
         presenter.processRequisition("123");
 
-        assertThat(etApprovedAmount.getError().toString(), is(RuntimeEnvironment.application.getResources().getString(R.string.hint_error_input)));
+        assertThat(etApprovedAmount.getError().toString()).isEqualTo(requisitionActivity.getString(R.string.hint_error_input));
+    }
+
+    @Test
+    public void shouldGetIntentToRequisitionActivity() {
+        long formId = 100L;
+        Intent intent = RequisitionActivity.getIntentToMe(requisitionActivity, formId);
+
+        assertThat(intent).isNotNull();
+        assertThat(intent.getLongExtra(RequisitionActivity.BUNDLE_FORM_ID, 0L)).isEqualTo(formId);
+    }
+
+    @Test
+    public void shouldShowAlertDialogWhenPressedBackWithDataChanges() {
+        requisitionActivity.hasDataChanged = true;
+
+        requisitionActivity.onBackPressed();
+
+        DialogFragment fragment = (DialogFragment)(requisitionActivity.getFragmentManager().findFragmentByTag("back_confirm_dialog"));
+
+        assertThat(fragment).isNotNull();
+
+        AlertDialog dialog = (AlertDialog) fragment.getDialog();
+        ShadowAlertDialog shadowAlertDialog = shadowOf(dialog);
+
+        assertThat(dialog).isNotNull();
+
+        String alertMessage = requisitionActivity.getString(R.string.msg_mmia_onback_confirm);
+        assertThat(shadowAlertDialog.getMessage()).isEqualTo(alertMessage);
+    }
+
+    @Test
+    public void shouldGoToHomePageWhenMethodCalled() {
+        requisitionActivity.goToHomePage();
+
+        Intent intent = ShadowApplication.getInstance().getNextStartedActivity();
+
+        assertThat(intent).isNotNull();
+        assertThat(intent.getComponent().getClassName()).isEqualTo(HomeActivity.class.getName());
     }
 
     private View getFirstItemInForm() {

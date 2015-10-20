@@ -83,33 +83,41 @@ public class MMIAFormPresenter implements Presenter {
 
     public void loadData(final long formId) {
         view.loading();
-        Observable.create(new Observable.OnSubscribe<RnRForm>() {
+        getRnrFormObservable(formId).subscribe(rnRFormOnNextAction, rnRFormOnErrorAction);
+    }
+
+    protected Observable<RnRForm> getRnrFormObservable(final long formId) {
+        return Observable.create(new Observable.OnSubscribe<RnRForm>() {
             @Override
             public void call(Subscriber<? super RnRForm> subscriber) {
                 try {
                     subscriber.onNext(getRnrForm(formId));
+                    subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.printStackTrace();
                     subscriber.onError(e);
                 }
             }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<RnRForm>() {
-
-            @Override
-            public void call(RnRForm form) {
-                if (form != null) {
-                    view.initView(form);
-                }
-                view.loaded();
-            }
-        }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                view.loaded();
-                view.showErrorMessage(throwable.getMessage());
-            }
-        });
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
+
+    protected Action1<RnRForm> rnRFormOnNextAction = new Action1<RnRForm>() {
+        @Override
+        public void call(RnRForm form) {
+            if (form != null) {
+                view.initView(form);
+            }
+            view.loaded();
+        }
+    };
+
+    protected Action1<Throwable> rnRFormOnErrorAction = new Action1<Throwable>() {
+        @Override
+        public void call(Throwable throwable) {
+            view.loaded();
+            view.showErrorMessage(throwable.getMessage());
+        }
+    };
 
     public RnRForm getRnrForm(final long formId) throws LMISException {
 
@@ -122,11 +130,7 @@ public class MMIAFormPresenter implements Presenter {
         } else {
             Program program = programRepository.queryByCode(MMIARepository.MMIA_PROGRAM_CODE);
             RnRForm draftMMIAForm = mmiaRepository.getUnCompletedMMIA(program);
-            if (draftMMIAForm != null) {
-                form = draftMMIAForm;
-            } else {
-                form = mmiaRepository.initMMIA(program);
-            }
+            form = draftMMIAForm == null ? mmiaRepository.initMMIA(program) : draftMMIAForm;
         }
         return form;
     }
@@ -149,42 +153,45 @@ public class MMIAFormPresenter implements Presenter {
 
     private void authoriseForm() {
         view.loading();
-        Observable.create(new Observable.OnSubscribe<Void>() {
+        getAuthoriseFormObservable().subscribe(authoriseFormOnNextAction, authorizeFormOnErrorAction);
+    }
+
+    protected Observable<Void> getAuthoriseFormObservable() {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
                     mmiaRepository.authorise(form);
                     subscriber.onNext(null);
+                    subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.printStackTrace();
                     subscriber.onError(e);
                 }
             }
-        }).observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Void>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        view.loaded();
-                        if (e instanceof PeriodNotUniqueException) {
-                            view.showErrorMessage(context.getResources().getString(R.string.msg_mmia_not_unique));
-                        } else {
-                            view.showErrorMessage(context.getString(R.string.hint_complete_failed));
-                        }
-                    }
-
-                    @Override
-                    public void onNext(Void e) {
-                        view.loaded();
-                        view.completeSuccess();
-                        syncManager.requestSyncImmediately();
-                    }
-                });
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
+
+    protected Action1<Void> authoriseFormOnNextAction = new Action1<Void>() {
+        @Override
+        public void call(Void aVoid) {
+            view.loaded();
+            view.completeSuccess();
+            syncManager.requestSyncImmediately();
+        }
+    };
+
+    protected Action1<Throwable> authorizeFormOnErrorAction = new Action1<Throwable>() {
+        @Override
+        public void call(Throwable throwable) {
+            view.loaded();
+            if (throwable instanceof PeriodNotUniqueException) {
+                view.showErrorMessage(context.getResources().getString(R.string.msg_mmia_not_unique));
+            } else {
+                view.showErrorMessage(context.getString(R.string.hint_complete_failed));
+            }
+        }
+    };
 
     private boolean validateTotalsMatch(RnRForm form) {
         return RnRForm.calculateTotalRegimenAmount(form.getRegimenItemListWrapper()) == mmiaRepository.getTotalPatients(form);
