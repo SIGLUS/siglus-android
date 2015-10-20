@@ -44,6 +44,18 @@ public final class DateUtil {
 
     }
 
+    public static Date truncateTimeStampInDate(Date date) {
+        String formattedDateStr = DateUtil.formatDate(date, DateUtil.SIMPLE_DATE_FORMAT);
+        Date formattedDate = date;
+        try {
+            formattedDate = DateUtil.parseString(formattedDateStr, DateUtil.SIMPLE_DATE_FORMAT);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return formattedDate;
+    }
+
     public static Date getMonthStartDate(Date date) {
         Calendar calendar = calendarDate(date);
 

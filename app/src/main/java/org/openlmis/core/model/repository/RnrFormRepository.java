@@ -253,7 +253,7 @@ public class RnrFormRepository {
         List<StockCard> stockCards = FluentIterable.from(stockRepository.list(form.getProgram().getProgramCode())).filter(new Predicate<StockCard>() {
             @Override
             public boolean apply(StockCard stockCard) {
-                return !form.getPeriodEnd().before(stockCard.getCreatedAt());
+                return !form.getPeriodEnd().before(DateUtil.truncateTimeStampInDate(stockCard.getCreatedAt()));
             }
         }).toList();
 
