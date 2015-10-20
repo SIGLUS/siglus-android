@@ -60,6 +60,10 @@ public class LMISApp extends Application {
         return NetworkConnectionManager.isConnectionAvailable(instance);
     }
 
+    public long getCurrentTimeMillis() {
+        return System.currentTimeMillis();
+    }
+
     public static Context getContext() {
         return instance.getApplicationContext();
     }

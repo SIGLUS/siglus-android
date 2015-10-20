@@ -117,11 +117,11 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (LMISApp.lastOperateTime > 0L && alreadyTimeOuted(ev.getEventTime())) {
+        if (LMISApp.lastOperateTime > 0L && alreadyTimeOuted(LMISApp.getInstance().getCurrentTimeMillis())) {
             logout();
             return true;
         } else {
-            LMISApp.lastOperateTime = ev.getEventTime();
+            LMISApp.lastOperateTime = LMISApp.getInstance().getCurrentTimeMillis();
             return super.dispatchTouchEvent(ev);
         }
     }
@@ -235,14 +235,12 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     }
 
     public void loaded() {
-        if (loadingDialog != null) {
-            try {
-                if (loadingDialog != null && !isFinishing()) {
-                    loadingDialog.dismiss();
-                }
-            } catch (IllegalArgumentException e) {
-                Log.d("View", "loaded -> dialog already dismissed");
+        try {
+            if (loadingDialog != null && !isFinishing()) {
+                loadingDialog.dismiss();
             }
+        } catch (IllegalArgumentException e) {
+            Log.d("View", "loaded -> dialog already dismissed");
         }
     }
 

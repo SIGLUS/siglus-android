@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -48,22 +49,18 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class HomeActivityTest {
 
-    HomeActivity homeActivity;
-    protected MotionEvent mockMotion1;
-    protected MotionEvent mockMotion2;
+    private HomeActivity homeActivity;
+    private LMISTestApp testApp;
 
     @Before
     public void setUp() {
+        testApp = (LMISTestApp) RuntimeEnvironment.application;
         homeActivity = Robolectric.buildActivity(HomeActivity.class).create().get();
-
-        mockMotion1 = mock(MotionEvent.class);
-        mockMotion2 = mock(MotionEvent.class);
     }
 
     @Test
@@ -116,18 +113,18 @@ public class HomeActivityTest {
         sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME, new Date().getTime() - 20 * DateUtil.MILLISECONDS_MINUTE).apply();
 
         homeActivity.onResume();
-        assertThat(homeActivity.txLastSynced.getText().toString(), equalTo(homeActivity.getResources().getString(R.string.label_last_synced_mins_ago, "20")));
+        assertThat(homeActivity.txLastSynced.getText().toString(), equalTo(homeActivity.getString(R.string.label_last_synced_mins_ago, "20")));
 
         sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME, new Date().getTime() - 20 * DateUtil.MILLISECONDS_HOUR).apply();
 
         homeActivity.onResume();
-        assertThat(homeActivity.txLastSynced.getText().toString(), equalTo(homeActivity.getResources().getString(R.string.label_last_synced_hours_ago, "20")));
+        assertThat(homeActivity.txLastSynced.getText().toString(), equalTo(homeActivity.getString(R.string.label_last_synced_hours_ago, "20")));
 
 
         sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME, new Date().getTime() - 20 * DateUtil.MILLISECONDS_DAY).apply();
 
         homeActivity.onResume();
-        assertThat(homeActivity.txLastSynced.getText().toString(), equalTo(homeActivity.getResources().getString(R.string.label_last_synced_days_ago, "20")));
+        assertThat(homeActivity.txLastSynced.getText().toString(), equalTo(homeActivity.getString(R.string.label_last_synced_days_ago, "20")));
 
     }
 
@@ -140,18 +137,18 @@ public class HomeActivityTest {
 
     @Test
     public void shouldNotLogOutOrResetTimeIfFirstTimeOperation() throws Exception {
-        when(mockMotion1.getEventTime()).thenReturn(1234L);
-        homeActivity.dispatchTouchEvent(mockMotion1);
+        testApp.setCurrentTimeMillis(1234L);
+        homeActivity.dispatchTouchEvent(mock(MotionEvent.class));
         Assert.assertThat(LMISApp.lastOperateTime, Is.is(not(0L)));
     }
 
     @Test
     public void shouldNotLogOutOrResetTimeIfNotTimeOut() throws Exception {
-        when(mockMotion1.getEventTime()).thenReturn(10000L);
-        homeActivity.dispatchTouchEvent(mockMotion1);
+        testApp.setCurrentTimeMillis(10000L);
+        homeActivity.dispatchTouchEvent(mock(MotionEvent.class));
 
-        when(mockMotion2.getEventTime()).thenReturn(9000L+Long.parseLong(homeActivity.getResources().getString(R.string.app_time_out)));
-        homeActivity.dispatchTouchEvent(mockMotion2);
+        testApp.setCurrentTimeMillis(9000L + Long.parseLong(homeActivity.getString(R.string.app_time_out)));
+        homeActivity.dispatchTouchEvent(mock(MotionEvent.class));
 
         Assert.assertThat(LMISApp.lastOperateTime, Is.is(not(0L)));
         Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
@@ -160,11 +157,11 @@ public class HomeActivityTest {
 
     @Test
     public void shouldLogOutAndResetTimeIfTimeOut() throws Exception {
-        when(mockMotion1.getEventTime()).thenReturn(10000L);
-        homeActivity.dispatchTouchEvent(mockMotion1);
+        testApp.setCurrentTimeMillis(10000L);
+        homeActivity.dispatchTouchEvent(mock(MotionEvent.class));
 
-        when(mockMotion2.getEventTime()).thenReturn(11000L+Long.parseLong(homeActivity.getResources().getString(R.string.app_time_out)));
-        homeActivity.dispatchTouchEvent(mockMotion2);
+        testApp.setCurrentTimeMillis(11000L + Long.parseLong(homeActivity.getString(R.string.app_time_out)));
+        homeActivity.dispatchTouchEvent(mock(MotionEvent.class));
 
         Assert.assertThat(LMISApp.lastOperateTime, is(0L));
 
