@@ -80,7 +80,7 @@ public class ChangeMovementReasonToCode extends Migration{
         }
     }
 
-    private void setDefaultReasonCode(StockMovementItem item) {
+    protected void setDefaultReasonCode(StockMovementItem item) {
         if ("physicalInventoryPositive".equalsIgnoreCase(item.getReason())){
             item.setReason("INVENTORY_POSITIVE");
         }else if ("physicalInventoryNegative".equalsIgnoreCase(item.getReason())){

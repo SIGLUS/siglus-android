@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
@@ -103,6 +104,25 @@ public class MovementReasonManagerTest {
         for (String reason : totalList){
             String code = reasonManager.queryForCode(reason);
             assertThat(StringUtils.isEmpty(code), is(false));
+        }
+    }
+
+    @Test
+    public void shouldNotDisplayPhysicalInventoryAndDefaultReasonOnMenu(){
+        assertThat(reasonManager.canBeDisplayOnMovementMenu("INVENTORY"), is(false));
+        assertThat(reasonManager.canBeDisplayOnMovementMenu("DEFAULT_ISSUE"), is(false));
+        assertThat(reasonManager.canBeDisplayOnMovementMenu("DEFAULT_RECEIVE"), is(false));
+        assertThat(reasonManager.canBeDisplayOnMovementMenu("DEFAULT_NEGATIVE_ADJUSTMENT"), is(false));
+        assertThat(reasonManager.canBeDisplayOnMovementMenu("DEFAULT_POSITIVE_ADJUSTMENT"), is(false));
+    }
+
+    @Test
+    public void shouldDisplayOnMovementReasonMenu() throws MovementReasonNotFoundException{
+        for (String reason : reasonDescListEN){
+            if (reason.equalsIgnoreCase("Inventory")){
+                continue;
+            }
+            assertThat(reasonManager.canBeDisplayOnMovementMenu(reasonManager.queryForCode(reason)), is(true));
         }
     }
 }

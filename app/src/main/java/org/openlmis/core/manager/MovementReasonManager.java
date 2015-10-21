@@ -94,22 +94,18 @@ public class MovementReasonManager {
         }
     }
 
-    public String queryForReason(final String code){
-        if (StringUtils.isEmpty(code)){
-            return StringUtils.EMPTY;
-        }
 
-        Optional<MovementReason> matched = FluentIterable.from(currentReasonList).firstMatch(new Predicate<MovementReason>() {
+    public List<MovementReason> buildReasonListForMovementType(final StockMovementItem.MovementType type){
+        return FluentIterable.from(currentReasonList).filter(new Predicate<MovementReason>() {
             @Override
             public boolean apply(MovementReason movementReason) {
-                return code.equalsIgnoreCase(movementReason.getCode());
+                return movementReason.getMovementType() == type && canBeDisplayOnMovementMenu(movementReason.getCode());
             }
-        });
+        }).toList();
+    }
 
-        if (matched.isPresent()){
-            return matched.get().getDescription();
-        }
-        return code;
+    protected boolean canBeDisplayOnMovementMenu(String code){
+        return !(code.startsWith("DEFAULT") || code.equalsIgnoreCase("INVENTORY"));
     }
 
     public String queryForCode(final String reason) throws MovementReasonNotFoundException{
