@@ -32,11 +32,23 @@ import lombok.Setter;
 public class StockMovementItem extends BaseModel{
 
     public enum MovementType {
-        RECEIVE,
-        ISSUE,
-        POSITIVE_ADJUST,
-        NEGATIVE_ADJUST,
-        PHYSICAL_INVENTORY
+        RECEIVE("RECEIVE"),
+        ISSUE("ISSUE"),
+        POSITIVE_ADJUST("POSITIVE_ADJUST"),
+        NEGATIVE_ADJUST("NEGATIVE_ADJUST"),
+        PHYSICAL_INVENTORY("PHYSICAL_INVENTORY");
+
+        private final String value;
+
+        MovementType(String receive) {
+            this.value = receive;
+        }
+
+
+        @Override
+        public String toString() {
+            return value;
+        }
     }
 
     @DatabaseField

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="reason_data">
+        <item>PHYSICAL_INVENTORY|INVENTORY|Inventory</item>
+        <item>RECEIVE|DISTRICT_DDM|District( DDM)</item>
+        <item>RECEIVE|PROVINCE_DPM|Province ( DPM)</item>
+
+        <item>ISSUE|PUB_PHARMACY|Public pharmacy</item>
+        <item>ISSUE|MATERNITY|Maternity</item>
+        <item>ISSUE|GENERAL_WARD|General Ward</item>
+        <item>ISSUE|ACC_EMERGENCY|Accident &amp; Emergency</item>
+        <item>ISSUE|MOBILE_UNIT|Mobile unit</item>
+        <item>ISSUE|LABORATORY|Laboratory</item>
+        <item>ISSUE|UATS|UATS</item>
+        <item>ISSUE|PNCTL|PNCTL</item>
+        <item>ISSUE|PAV|PAV</item>
+        <item>ISSUE|DENTAL_WARD|Dental ward</item>
+
+        <item>NEGATIVE_ADJUST|EXPIRED_RETURN_TO_SUPPLIER|Drugs in quarantine have expired, returned to Supplier</item>
+        <item>NEGATIVE_ADJUST|DAMAGED|Damaged on arrival</item>
+        <item>NEGATIVE_ADJUST|LOANS_DEPOSIT|Loans made from a health facility deposit</item>
+
+        <!-- Do not change -->
+        <item>NEGATIVE_ADJUST|INVENTORY_NEGATIVE|Inventory correction in case of over stock on Stock  card (Stock on  hand is less than stock in stock card)</item>
+        <item>NEGATIVE_ADJUST|PROD_DEFECTIVE|Product defective, moved to quarantine</item>
+
+        <item>POSITIVE_ADJUST|CUSTOMER_RETURN|Returns from Customers(HF and dependent wards)</item>
+        <item>POSITIVE_ADJUST|EXPIRED_RETURN_FROM_CUSTOMER|Returns of expired drugs (HF and dependent wards)</item>
+        <item>POSITIVE_ADJUST|DONATION|Donations to Deposit</item>
+        <item>POSITIVE_ADJUST|LOANS_RECEIVED|Loans received at the health facility deposit</item>
+
+        <!-- Do not change -->
+        <item>POSITIVE_ADJUST|INVENTORY_POSITIVE|Inventory correction in case of under stock on Stock card (Stock on hand is more than stock in stock card)</item>
+        <item>POSITIVE_ADJUST|RETURN_FROM_QUARANTINE|Returns from Quarantine, in the case of quarantined product being fit for use</item>
+
+        <!-- Default Code -->
+        <item>ISSUE|DEFAULT_ISSUE|Issued</item>
+        <item>RECEIVE|DEFAULT_RECEIVE|Received</item>
+        <item>NEGATIVE_ADJUST|DEFAULT_NEGATIVE_ADJUST|Negative adjustment</item>
+        <item>POSITIVE_ADJUST|DEFAULT_POSITIVE_ADJUST|Positive adjustment</item>
+    </string-array>
+</resources>
+
+
+
