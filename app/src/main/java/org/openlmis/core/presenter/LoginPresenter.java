@@ -38,6 +38,7 @@ public class LoginPresenter implements Presenter {
     LoginView view;
 
     boolean isLoadingProducts = false;
+    boolean isSyncingBackData = false;
 
     @Inject
     UserRepository userRepository;
@@ -149,23 +150,50 @@ public class LoginPresenter implements Presenter {
             goToNextPage();
         } else if (!isLoadingProducts) {
             isLoadingProducts = true;
-            view.loading();
-            syncManager.syncProductsWithProgramAsync(new SyncSubscriber<Void>() {
-                @Override
-                public void onCompleted() {
-                    isLoadingProducts = false;
-                    view.setHasGetProducts(true);
-                    goToNextPage();
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    ToastUtil.show(R.string.msg_user_not_facility);
-                    view.loaded();
-                }
-            });
+            view.loading(LMISApp.getInstance().getString(R.string.msg_fetching_products));
+            syncManager.syncProductsWithProgramAsync(productsSyncSubscriber);
         }
     }
+
+    protected SyncSubscriber<Void> productsSyncSubscriber = new SyncSubscriber<Void>() {
+        @Override
+        public void onCompleted() {
+            isLoadingProducts = false;
+            view.setHasGetProducts(true);
+            view.loaded();
+            syncBackData();
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            isLoadingProducts = false;
+            ToastUtil.show(R.string.msg_user_not_facility);
+            view.loaded();
+        }
+    };
+
+    private void syncBackData() {
+        if (!isSyncingBackData) {
+            isSyncingBackData = true;
+            view.loading(LMISApp.getInstance().getString(R.string.msg_sync_back_data));
+            syncManager.syncBackData(syncBackDataSubscriber);
+        }
+    }
+
+    protected SyncSubscriber<Void> syncBackDataSubscriber = new SyncSubscriber<Void>() {
+        @Override
+        public void onCompleted() {
+            isSyncingBackData = false;
+            goToNextPage();
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+            isSyncingBackData = false;
+            view.loaded();
+            ToastUtil.show(R.string.msg_sync_data_failed);
+        }
+    };
 
     public interface LoginView extends View {
 

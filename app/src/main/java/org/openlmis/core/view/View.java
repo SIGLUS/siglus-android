@@ -22,5 +22,7 @@ public interface View {
 
     void loading();
 
+    void loading(String message);
+
     void loaded();
 }

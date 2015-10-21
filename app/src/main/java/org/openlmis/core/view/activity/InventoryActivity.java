@@ -75,8 +75,9 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
         menu.findItem(R.id.action_add_new_drug).setVisible(false);
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     @Override

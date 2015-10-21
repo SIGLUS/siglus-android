@@ -24,11 +24,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 
 import org.apache.commons.lang3.StringUtils;
@@ -83,6 +85,19 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
             userName.setText(lastLoginUser);
             password.requestFocus();
         }
+
+        password.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    hideImm();
+                    startLogin();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     public void goToInitInventory() {
@@ -154,11 +169,15 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         isActive = false;
     }
 
+    private void startLogin() {
+        presenter.startLogin(userName.getText().toString(), password.getText().toString());
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_login:
-                presenter.startLogin(userName.getText().toString(), password.getText().toString());
+                startLogin();
                 break;
             case R.id.iv_visibility_pwd:
                 setPwdVisibility();

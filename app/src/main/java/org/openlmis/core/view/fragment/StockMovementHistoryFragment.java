@@ -171,6 +171,11 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
     }
 
     @Override
+    public void loading(String message) {
+
+    }
+
+    @Override
     public void loaded() {
     }
 }

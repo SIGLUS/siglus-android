@@ -17,6 +17,9 @@
     <string name="msg_invalid_user">Username or Password is incorrect.</string>
     <string name="msg_user_not_facility">No facility for this user, please contact your administrator</string>
     <string name="init_product_error">Initial Data Error,Please Retry</string>
+    <string name="msg_fetching_products">Pulling products…</string>
+    <string name="msg_sync_back_data">Syncing back data…</string>
+    <string name="msg_sync_data_failed">Sync data failed</string>
 
 
     <!-- Init Inventory -->

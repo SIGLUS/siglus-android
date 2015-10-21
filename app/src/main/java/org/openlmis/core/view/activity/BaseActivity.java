@@ -223,10 +223,12 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         }
     }
 
+    @Override
     public void loading() {
         loading(StringUtils.EMPTY);
     }
 
+    @Override
     public void loading(String message) {
         loaded();
 
@@ -240,6 +242,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         }
     }
 
+    @Override
     public void loaded() {
         try {
             if (loadingDialog != null && !isFinishing()) {

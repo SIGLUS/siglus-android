@@ -187,6 +187,22 @@ public class SyncManager {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
     }
 
+    public void syncBackData(Observer<Void> observer) {
+        rx.Observable.create(new rx.Observable.OnSubscribe<Void>() {
+
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                //TODO should make real api call
+                try {
+                    Thread.sleep(5 * 1000);
+                } catch (InterruptedException e) {
+                    subscriber.onError(new LMISException("Syncing back data failed"));
+                }
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
+    }
+
     public boolean syncRnr() {
         List<RnRForm> forms = null;
         try {

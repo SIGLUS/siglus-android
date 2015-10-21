@@ -30,6 +30,7 @@ import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
@@ -38,6 +39,7 @@ import org.openlmis.core.network.model.ProductsResponse;
 import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.shadows.ShadowToast;
 
 import roboguice.RoboGuice;
 import rx.Observer;
@@ -165,7 +167,6 @@ public class LoginPresenterTest {
         getProductsCB.getValue().onCompleted();
 
         verify(mockActivity).loaded();
-        verify(mockActivity).goToInitInventory();
     }
 
     @Test
@@ -223,6 +224,33 @@ public class LoginPresenterTest {
     public void shouldShowPasswordEmptyErrorMessage() {
         presenter.startLogin("user", "");
         verify(mockActivity).showPasswordEmpty();
+    }
+
+    @Test
+    public void shouldSyncDataBackWhenProductSyncCompleted() {
+        presenter.productsSyncSubscriber.onCompleted();
+
+        verify(mockActivity).setHasGetProducts(true);
+        verify(mockActivity).loading(RuntimeEnvironment.application.getString(R.string.msg_sync_back_data));
+        verify(syncManager).syncBackData(presenter.syncBackDataSubscriber);
+    }
+
+    @Test
+    public void shouldShowErrorMessageWhenProductSyncFailed() {
+        presenter.productsSyncSubscriber.onError(new Exception("Products sync failed"));
+
+        String message = RuntimeEnvironment.application.getString(R.string.msg_user_not_facility);
+        assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(message);
+        verify(mockActivity).loaded();
+    }
+
+    @Test
+    public void shouldGoToInitInventoryWhenDataBackCompleted() {
+        when(mockActivity.needInitInventory()).thenReturn(true);
+        presenter.syncBackDataSubscriber.onCompleted();
+
+        verify(mockActivity).loaded();
+        verify(mockActivity).goToInitInventory();
     }
 
     public class MyTestModule extends AbstractModule {

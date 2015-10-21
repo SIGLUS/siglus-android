@@ -155,6 +155,11 @@ public class Fragment extends Component implements Presenter.StockCardListView, 
     }
 
     @Override
+    public void loading(String message) {
+
+    }
+
+    @Override
     public void loaded() {
 
     }
