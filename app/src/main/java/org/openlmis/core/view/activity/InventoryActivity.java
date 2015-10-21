@@ -27,7 +27,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
+import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
@@ -56,6 +56,9 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
 
     @InjectView(R.id.products_list)
     public RecyclerView productListRecycleView;
+
+    @InjectView(R.id.tv_total)
+    public TextView tvTotal;
 
     @InjectView(R.id.btn_done)
     public Button btnDone;
@@ -128,6 +131,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
             @Override
             public void onNext(List<StockCardViewModel> stockCardViewModels) {
                 mAdapter.refreshList(stockCardViewModels);
+                setTotal(stockCardViewModels.size());
                 loaded();
             }
         });
@@ -162,6 +166,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
             @Override
             public void onNext(List<StockCardViewModel> stockCardViewModels) {
                 mAdapter.refreshList(stockCardViewModels);
+                setTotal(stockCardViewModels.size());
                 loaded();
             }
         });
@@ -220,8 +225,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     }
 
     public static Intent getIntentToMe(Context context) {
-        Intent intent = new Intent(context, InventoryActivity.class);
-        return intent;
+        return new Intent(context, InventoryActivity.class);
     }
 
     @Override
@@ -233,5 +237,9 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
                 super.onBackPressed();
             }
         }
+    }
+
+    private void setTotal(int total) {
+        tvTotal.setText(getString(R.string.label_total, total));
     }
 }

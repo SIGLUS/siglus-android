@@ -200,4 +200,6 @@
     <string name="label_current_period">Current period</string>
     <string name="label_previous_period">Previous periods</string>
 
+    <string name="label_total">Total:%1$s</string>
+
 </resources>

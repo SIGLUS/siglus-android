@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.inject.Inject;
 
@@ -50,6 +51,9 @@ public class Fragment extends Component implements Presenter.StockCardListView, 
 
     @InjectView(R.id.sort_spinner)
     Spinner sortSpinner;
+
+    @InjectView(R.id.tv_total)
+    TextView tvTotal;
 
     @InjectView(R.id.products_list)
     RecyclerView stockCardRecycleView;
@@ -160,6 +164,7 @@ public class Fragment extends Component implements Presenter.StockCardListView, 
         stockCards = presenter.getStockCards();
         mAdapter = new Adapter(this, presenter, stockCards, className);
         stockCardRecycleView.setAdapter(mAdapter);
+        tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
         onItemSelected(sortSpinner, null, currentPostion, 0L);
     }
 
