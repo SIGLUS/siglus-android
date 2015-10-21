@@ -224,11 +224,17 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     }
 
     public void loading() {
-        if (loadingDialog == null) {
-            loadingDialog = new ProgressDialog(this);
-            loadingDialog.setIndeterminate(false);
-            loadingDialog.setCanceledOnTouchOutside(false);
-        }
+        loading(StringUtils.EMPTY);
+    }
+
+    public void loading(String message) {
+        loaded();
+
+        loadingDialog = new ProgressDialog(this);
+        loadingDialog.setMessage(message);
+        loadingDialog.setIndeterminate(false);
+        loadingDialog.setCanceledOnTouchOutside(false);
+
         if (!isFinishing()) {
             loadingDialog.show();
         }
@@ -238,6 +244,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         try {
             if (loadingDialog != null && !isFinishing()) {
                 loadingDialog.dismiss();
+                loadingDialog = null;
             }
         } catch (IllegalArgumentException e) {
             Log.d("View", "loaded -> dialog already dismissed");

@@ -71,14 +71,12 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     InventoryListAdapter mAdapter;
 
     boolean isPhysicalInventory = false;
+    private boolean isAddNewDrug;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        boolean createOptionsMenu = super.onCreateOptionsMenu(menu);
-
         menu.findItem(R.id.action_add_new_drug).setVisible(false);
-
-        return createOptionsMenu;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -86,6 +84,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
         super.onCreate(savedInstanceState);
 
         isPhysicalInventory = getIntent().getBooleanExtra(PARAM_IS_PHYSICAL_INVENTORY, false);
+        isAddNewDrug = getIntent().getBooleanExtra(PARAM_IS_ADD_NEW_DRUG, false);
 
         mLayoutManager = new LinearLayoutManager(this);
         productListRecycleView.setLayoutManager(mLayoutManager);
@@ -93,48 +92,20 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
         if (isPhysicalInventory) {
             initPhysicalInventoryUI();
         } else {
-            if (isAddNewDrug()) {
-                setTitle(getResources().getString(R.string.title_add_new_drug));
-            }
             initInitialInventoryUI();
-
-            if (getSupportActionBar() != null && !isAddNewDrug()) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            }
         }
     }
 
-    private boolean isAddNewDrug() {
-        return getIntent().getBooleanExtra(PARAM_IS_ADD_NEW_DRUG, false);
-    }
-
     private void initPhysicalInventoryUI() {
+        setTitle(getResources().getString(R.string.title_physical_inventory));
+
         final List<StockCardViewModel> list = new ArrayList<>();
         ((ViewGroup) btnDone.getParent()).removeView(btnDone);
         mAdapter = new PhysicalInventoryAdapter(this, list, btnDone);
         productListRecycleView.setAdapter(mAdapter);
 
-        setTitle(getResources().getString(R.string.title_physical_inventory));
-
         loading();
-        presenter.loadStockCardList().subscribe(new Subscriber<List<StockCardViewModel>>() {
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                ToastUtil.show(e.getMessage());
-                loaded();
-            }
-
-            @Override
-            public void onNext(List<StockCardViewModel> stockCardViewModels) {
-                mAdapter.refreshList(stockCardViewModels);
-                setTotal(stockCardViewModels.size());
-                loaded();
-            }
-        });
+        presenter.loadStockCardList().subscribe(stockCardSubscriber);
 
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,33 +115,37 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
         });
     }
 
+    protected Subscriber<List<StockCardViewModel>> stockCardSubscriber = new Subscriber<List<StockCardViewModel>>() {
+        @Override
+        public void onCompleted() {
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            ToastUtil.show(e.getMessage());
+            loaded();
+        }
+
+        @Override
+        public void onNext(List<StockCardViewModel> stockCardViewModels) {
+            mAdapter.refreshList(stockCardViewModels);
+            setTotal(stockCardViewModels.size());
+            loaded();
+        }
+    };
 
     private void initInitialInventoryUI() {
-        final List<StockCardViewModel> list = new ArrayList<>();
-        mAdapter = new InitialInventoryAdapter(this, list);
+        if (isAddNewDrug) {
+            setTitle(getResources().getString(R.string.title_add_new_drug));
+        } else if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
+
+        mAdapter = new InitialInventoryAdapter(this, new ArrayList<StockCardViewModel>());
         productListRecycleView.setAdapter(mAdapter);
 
         loading();
-        presenter.loadMasterProductList().subscribe(new Subscriber<List<StockCardViewModel>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                loaded();
-                ToastUtil.show(e.getMessage());
-            }
-
-            @Override
-            public void onNext(List<StockCardViewModel> stockCardViewModels) {
-                mAdapter.refreshList(stockCardViewModels);
-                setTotal(stockCardViewModels.size());
-                loaded();
-            }
-        });
-
+        presenter.loadMasterProductList().subscribe(loadMasterSubscriber);
 
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,8 +153,27 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
                 presenter.doInitialInventory(((InitialInventoryAdapter) mAdapter).getData());
             }
         });
-
     }
+
+    protected Subscriber<List<StockCardViewModel>> loadMasterSubscriber = new Subscriber<List<StockCardViewModel>>() {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            loaded();
+            ToastUtil.show(e.getMessage());
+        }
+
+        @Override
+        public void onNext(List<StockCardViewModel> stockCardViewModels) {
+            mAdapter.refreshList(stockCardViewModels);
+            setTotal(stockCardViewModels.size());
+            loaded();
+        }
+    };
 
     @Override
     public boolean onSearchStart(String query) {
@@ -196,8 +190,8 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     public void goToMainPage() {
         saveBoolean(Constants.KEY_INIT_INVENTORY, false);
 
-        Intent intent = getIntent();
-        if (isAddNewDrug()) {
+        Intent intent = new Intent();
+        if (isAddNewDrug) {
             intent.setClass(this, StockCardListActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         } else {
@@ -231,10 +225,10 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     @Override
     public void onBackPressed() {
         if (FeatureToggle.isOpen(R.bool.time_out_235)) {
-            if (!isPhysicalInventory && !isAddNewDrug()) {
-                moveTaskToBack(true);
-            } else {
+            if (isPhysicalInventory || isAddNewDrug) {
                 super.onBackPressed();
+            } else {
+                moveTaskToBack(true);
             }
         }
     }
