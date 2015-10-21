@@ -1,5 +1,9 @@
 require 'calabash-android/calabash_steps'
 require 'pry'
+require File.dirname(__FILE__) + '/env_config'
+
+username = EnvConfig.getConfig()[:username]
+password = EnvConfig.getConfig()[:password]
 
 index = 0
 pre_name = ""
@@ -18,8 +22,8 @@ end
 
 Given(/^I am logged in$/) do
   steps %Q{
-		When I enter username "superuser"
-        And I enter password "password1"
+		When I enter username "#{username}"
+        And I enter password "#{password}"
         And I press "LOG IN"
 	}
 end
