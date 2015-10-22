@@ -27,11 +27,11 @@
         <item>POSITIVE_ADJUST|RETURN_FROM_QUARANTINE|Returns from Quarantine, in the case of quarantined product being fit for use</item>
 
         <!-- Do not change -->
+        <item>PHYSICAL_INVENTORY|INVENTORY|Inventory</item>
         <item>NEGATIVE_ADJUST|INVENTORY_NEGATIVE|Inventory correction in case of over stock on Stock  card (Stock on  hand is less than stock in stock card)</item>
         <item>POSITIVE_ADJUST|INVENTORY_POSITIVE|Inventory correction in case of under stock on Stock card (Stock on hand is more than stock in stock card)</item>
 
         <!-- Default Code , Do not change -->
-        <item>PHYSICAL_INVENTORY|INVENTORY|Inventory</item>
         <item>ISSUE|DEFAULT_ISSUE|Issued</item>
         <item>RECEIVE|DEFAULT_RECEIVE|Received</item>
         <item>NEGATIVE_ADJUST|DEFAULT_NEGATIVE_ADJUSTMENT|Negative adjustment</item>

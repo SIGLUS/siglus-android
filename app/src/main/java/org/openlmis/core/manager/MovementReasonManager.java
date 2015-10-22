@@ -53,9 +53,9 @@ public final class MovementReasonManager {
 
     public static final String INVENTORY_POSITIVE = "INVENTORY_POSITIVE";
     public static final String INVENTORY_NEGATIVE = "INVENTORY_NEGATIVE";
-    public static final String DEFAULT = "DEFAULT";
-    public static final String INVENTORY = "INVENTORY";
 
+    private static final String DEFAULT_PREFIX = "DEFAULT";
+    public static final String INVENTORY = "INVENTORY";
     public static final String DEFAULT_ISSUE = "DEFAULT_ISSUE";
     public static final String DEFAULT_RECEIVE = "DEFAULT_RECEIVE";
     public static final String DEFAULT_NEGATIVE_ADJUSTMENT = "DEFAULT_NEGATIVE_ADJUSTMENT";
@@ -189,7 +189,7 @@ public final class MovementReasonManager {
         }
 
         protected boolean canBeDisplayOnMovementMenu(){
-            return !(code.startsWith(DEFAULT) || code.equalsIgnoreCase(INVENTORY));
+            return !(code.startsWith(DEFAULT_PREFIX) || code.equalsIgnoreCase(INVENTORY));
         }
     }
 }
