@@ -20,10 +20,12 @@ package org.openlmis.core;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.res.Configuration;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.network.NetworkConnectionManager;
 
 import io.fabric.sdk.android.Fabric;
@@ -66,5 +68,11 @@ public class LMISApp extends Application {
 
     public static Context getContext() {
         return instance.getApplicationContext();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        MovementReasonManager.getInstance().refresh();
     }
 }

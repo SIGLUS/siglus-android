@@ -20,6 +20,8 @@ package org.openlmis.core.view.viewmodel;
 
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.exceptions.MovementReasonNotFoundException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
 
@@ -44,10 +46,12 @@ public class StockMovementViewModel {
     StockMovementItem.MovementType movementType;
     boolean isDraft = true;
 
+
     public StockMovementViewModel(StockMovementItem item) {
         movementDate = DateUtil.formatDate(item.getMovementDate());
         documentNo = item.getDocumentNumber();
-        reason = item.getReason();
+
+        reason = MovementReasonManager.getInstance().queryForReason(item.getReason());
         movementType = item.getMovementType();
         isDraft = false;
 
@@ -72,7 +76,14 @@ public class StockMovementViewModel {
     public StockMovementItem convertViewToModel() {
         StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setStockOnHand(Long.parseLong(getStockExistence()));
-        stockMovementItem.setReason(getReason());
+
+        String code;
+        try {
+            code = MovementReasonManager.getInstance().queryForCode(getReason());
+        }catch (MovementReasonNotFoundException e){
+            code = MovementReasonManager.DEFAULT;
+        }
+        stockMovementItem.setReason(code);
         stockMovementItem.setDocumentNumber(getDocumentNo());
         stockMovementItem.setMovementType(movementType);
 

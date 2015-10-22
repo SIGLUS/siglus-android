@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -29,6 +30,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.model.StockMovementItem;
@@ -38,50 +40,71 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import lombok.Data;
 
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
+
 
 @Singleton
-public class MovementReasonManager {
+public final class MovementReasonManager {
+
+    public static final String INVENTORY_POSITIVE = "INVENTORY_POSITIVE";
+    public static final String INVENTORY_NEGATIVE = "INVENTORY_NEGATIVE";
+    public static final String DEFAULT = "DEFAULT";
+    public static final String INVENTORY = "INVENTORY";
+
+    public static final String DEFAULT_ISSUE = "DEFAULT_ISSUE";
+    public static final String DEFAULT_RECEIVE = "DEFAULT_RECEIVE";
+    public static final String DEFAULT_NEGATIVE_ADJUSTMENT = "DEFAULT_NEGATIVE_ADJUSTMENT";
+    public static final String DEFAULT_POSITIVE_ADJUSTMENT = "DEFAULT_POSITIVE_ADJUSTMENT";
 
     Context context;
     public static final String RES_DIVIDER = "[|]";
 
-    List<MovementReason> reasonListEN;
-    List<MovementReason> reasonListPT;
-    List<MovementReason> fullList;
-
     List<MovementReason> currentReasonList;
+    private static MovementReasonManager instance;
+
+
+    Map<String, ArrayList<MovementReason>> reasonCache;
 
     @Inject
-    public MovementReasonManager(Context context){
+    private MovementReasonManager(Context context){
         this.context = context;
-        reasonListEN = new ArrayList<>();
-        reasonListPT = new ArrayList<>();
-
-        initReasonList();
+        reasonCache = new HashMap<>();
+        currentReasonList = initReasonList(this.context.getResources().getConfiguration().locale);
     }
 
-    private void initReasonList() {
-        initReasonList(getResourceByLocal(new Locale("pt", "pt")).getStringArray(R.array.reason_data), reasonListPT);
-        initReasonList(getResourceByLocal(Locale.ENGLISH).getStringArray(R.array.reason_data), reasonListEN);
+    public static MovementReasonManager getInstance(){
+        if (instance == null){
+            instance = new MovementReasonManager(LMISApp.getContext());
+        }
+        return instance;
+    }
 
-        if (context.getResources().getConfiguration().locale.getLanguage().equalsIgnoreCase("pt")){
-            currentReasonList = newArrayList(reasonListPT);
-        }else {
-            currentReasonList = newArrayList(reasonListEN);
+
+    public void refresh(){
+        instance = new MovementReasonManager(LMISApp.getContext());
+    }
+
+    private ArrayList<MovementReason> initReasonList(Locale locale) {
+        if (reasonCache.containsKey(locale.getLanguage())){
+            return reasonCache.get(locale.getLanguage());
         }
 
-        fullList = newArrayList(reasonListEN);
-        fullList.addAll(reasonListPT);
+        String[] reasonData = getResourceByLocal(locale).getStringArray(R.array.reason_data);
+        ArrayList<MovementReason> reasonList = parseReasonListFromConfig(reasonData);
+        reasonCache.put(locale.getLanguage(), reasonList);
+        return reasonList;
     }
 
-    private void initReasonList(String[] reasonList, List<MovementReason> fullList) {
-        for (String s : reasonList) {
+    @NonNull
+    private ArrayList<MovementReason> parseReasonListFromConfig(String[] reasonData) {
+        ArrayList<MovementReason>  reasonList = new ArrayList<>();
+        for (String s : reasonData) {
             String[] values = s.split(RES_DIVIDER);
 
             if (values.length < 3) {
@@ -90,8 +113,9 @@ public class MovementReasonManager {
             }
 
             MovementReason reason = new MovementReason(StockMovementItem.MovementType.valueOf(values[0]), values[1], values[2]);
-            fullList.add(reason);
+            reasonList.add(reason);
         }
+        return reasonList;
     }
 
 
@@ -105,27 +129,50 @@ public class MovementReasonManager {
     }
 
     protected boolean canBeDisplayOnMovementMenu(String code){
-        return !(code.startsWith("DEFAULT") || code.equalsIgnoreCase("INVENTORY"));
+        return !(code.startsWith(DEFAULT) || code.equalsIgnoreCase(INVENTORY));
+    }
+
+    public boolean isInventoryAdjustmentCode(String code){
+        return INVENTORY_NEGATIVE.equalsIgnoreCase(code) || INVENTORY_POSITIVE.equalsIgnoreCase(code);
     }
 
     public String queryForCode(final String reason) throws MovementReasonNotFoundException{
-        if (StringUtils.isEmpty(reason)){
-            return StringUtils.EMPTY;
-        }
+        return queryForCode(reason, context.getResources().getConfiguration().locale);
+    }
 
-        Optional<MovementReason> matched = FluentIterable.from(fullList).firstMatch(new Predicate<MovementReason>() {
+    public String queryForCode(final String reason, Locale locale) throws MovementReasonNotFoundException{
+        ArrayList<MovementReason> reasonList = initReasonList(locale);
+
+        Optional<MovementReason> matched = FluentIterable.from(reasonList).firstMatch(new Predicate<MovementReason>() {
             @Override
             public boolean apply(MovementReason movementReason) {
                 return reason.equalsIgnoreCase(movementReason.getDescription());
             }
         });
 
-
         if (!matched.isPresent()){
             throw new MovementReasonNotFoundException(reason);
         }
-
         return matched.get().getCode();
+    }
+
+
+    public String queryForReason(final String code){
+        if (StringUtils.isEmpty(code)){
+            return StringUtils.EMPTY;
+        }
+
+        Optional<MovementReason> matched = FluentIterable.from(currentReasonList).firstMatch(new Predicate<MovementReason>() {
+            @Override
+            public boolean apply(MovementReason movementReason) {
+                return code.equalsIgnoreCase(movementReason.getCode());
+            }
+        });
+
+        if (matched.isPresent()){
+            return matched.get().getDescription();
+        }
+        return code;
     }
 
     public Resources getResourceByLocal(Locale locale){

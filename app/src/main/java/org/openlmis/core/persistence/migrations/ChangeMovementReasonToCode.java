@@ -34,7 +34,7 @@ import org.openlmis.core.persistence.Migration;
 
 import java.sql.SQLException;
 import java.util.List;
-
+import java.util.Locale;
 
 
 public class ChangeMovementReasonToCode extends Migration{
@@ -43,11 +43,11 @@ public class ChangeMovementReasonToCode extends Migration{
 
 
     MovementReasonManager reasonManager;
-    private DbUtil dbUtil;
+    DbUtil dbUtil;
 
     public ChangeMovementReasonToCode(){
         stockItemGenericDao = new GenericDao<>(StockMovementItem.class, LMISApp.getContext());
-        reasonManager = new MovementReasonManager(LMISApp.getContext());
+        reasonManager = MovementReasonManager.getInstance();
         dbUtil = new DbUtil();
     }
 
@@ -63,13 +63,18 @@ public class ChangeMovementReasonToCode extends Migration{
             if (itemList == null || itemList.size() == 0){
                 return;
             }
-
             for (StockMovementItem item : itemList){
+                String newReasonCode;
                 try {
-                    String newReasonCode = reasonManager.queryForCode(item.getReason());
+                    newReasonCode = reasonManager.queryForCode(item.getReason(), new Locale("pt", "pt"));
                     item.setReason(newReasonCode);
                 }catch (MovementReasonNotFoundException e){
-                    setDefaultReasonCode(item);
+                    try {
+                        newReasonCode = reasonManager.queryForCode(item.getReason(), new Locale("en", "us"));
+                        item.setReason(newReasonCode);
+                    }catch (MovementReasonNotFoundException e1){
+                        setDefaultReasonCode(item);
+                    }
                 }
             }
             updateStockMovementItems(itemList);
@@ -82,25 +87,25 @@ public class ChangeMovementReasonToCode extends Migration{
 
     protected void setDefaultReasonCode(StockMovementItem item) {
         if ("physicalInventoryPositive".equalsIgnoreCase(item.getReason())){
-            item.setReason("INVENTORY_POSITIVE");
+            item.setReason(MovementReasonManager.INVENTORY_POSITIVE);
         }else if ("physicalInventoryNegative".equalsIgnoreCase(item.getReason())){
-            item.setReason("INVENTORY_NEGATIVE");
+            item.setReason(MovementReasonManager.INVENTORY_NEGATIVE);
         }else {
             switch (item.getMovementType()){
                 case ISSUE:
-                    item.setReason("DEFAULT_ISSUE");
+                    item.setReason(MovementReasonManager.DEFAULT_ISSUE);
                     break;
                 case POSITIVE_ADJUST:
-                    item.setReason("DEFAULT_POSITIVE_ADJUSTMENT");
+                    item.setReason(MovementReasonManager.DEFAULT_POSITIVE_ADJUSTMENT);
                     break;
                 case NEGATIVE_ADJUST:
-                    item.setReason("DEFAULT_NEGATIVE_ADJUSTMENT");
+                    item.setReason(MovementReasonManager.DEFAULT_NEGATIVE_ADJUSTMENT);
                     break;
                 case RECEIVE:
-                    item.setReason("DEFAULT_RECEIVE");
+                    item.setReason(MovementReasonManager.DEFAULT_RECEIVE);
                     break;
                 case PHYSICAL_INVENTORY:
-                    item.setReason("INVENTORY");
+                    item.setReason(MovementReasonManager.INVENTORY);
                     break;
                 default:
                     throw new RuntimeException("Invalid MovementType :" + item.getMovementType());

@@ -25,6 +25,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import org.openlmis.core.R;
+import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.model.StockMovementItem;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
 
@@ -45,6 +49,8 @@ public class MovementTypeDialog {
     Context context;
     OnMovementSelectListener listener;
     int status = STATUS_FIRST_MENU;
+
+    protected MovementReasonManager reasonManager;
 
 
     public MovementTypeDialog(Context context, final OnMovementSelectListener listener) {
@@ -72,6 +78,8 @@ public class MovementTypeDialog {
                 }
             }
         });
+
+        reasonManager = MovementReasonManager.getInstance();
     }
 
     private void performOnSelect(int position) {
@@ -103,22 +111,32 @@ public class MovementTypeDialog {
 
     private void showSecondaryList() {
         contentList.clear();
-        int resId = 0;
+
+        StockMovementItem.MovementType type = null;
         switch (status) {
             case STATUS_SELECT_RECEIVE:
-                resId = R.array.movement_receive_items_array;
+                type = StockMovementItem.MovementType.RECEIVE;
                 break;
             case STATUS_SELECT_NEGATIVE:
-                resId = R.array.movement_negative_items_array;
+                type = StockMovementItem.MovementType.NEGATIVE_ADJUST;
                 break;
             case STATUS_SELECT_POSITIVE:
-                resId = R.array.movement_positive_items_array;
+                type = StockMovementItem.MovementType.POSITIVE_ADJUST;
                 break;
             case STATUS_SELECT_ISSUE:
-                resId = R.array.movement_issue_items_array;
+                type = StockMovementItem.MovementType.ISSUE;
                 break;
         }
-        contentList.addAll(newArrayList(context.getResources().getStringArray(resId)));
+
+        if (type !=null){
+            contentList.addAll(FluentIterable.from(reasonManager.buildReasonListForMovementType(type)).transform(new Function<MovementReasonManager.MovementReason, String>() {
+                @Override
+                public String apply(MovementReasonManager.MovementReason reason) {
+                    return reason.getDescription();
+                }
+            }).toList());
+        }
+
         adapter.notifyDataSetChanged();
     }
 

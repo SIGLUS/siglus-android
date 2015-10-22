@@ -23,14 +23,13 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.utils.FeatureToggle;
 import org.openlmis.core.view.View;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
@@ -171,29 +170,16 @@ public class InventoryPresenter implements Presenter {
         item.setMovementDate(new Date());
         item.setMovementQuantity(Math.abs(inventory - stockOnHand));
 
-        if (FeatureToggle.isOpen(R.bool.red_font_color_267)) {
             if (inventory > stockOnHand) {
-                item.setReason(context.getResources().getString(R.string.physical_inventory_positive));
+                item.setReason(MovementReasonManager.INVENTORY_POSITIVE);
                 item.setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
             } else if (inventory < stockOnHand) {
-                item.setReason(context.getResources().getString(R.string.physical_inventory_negative));
+                item.setReason(MovementReasonManager.INVENTORY_NEGATIVE);
                 item.setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
             } else {
-                item.setReason(context.getResources().getString(R.string.title_physical_inventory));
+                item.setReason(MovementReasonManager.INVENTORY);
                 item.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
             }
-        } else {
-            if (inventory > stockOnHand) {
-                item.setReason(context.getResources().getStringArray(R.array.movement_positive_items_array)[4]);
-                item.setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
-            } else if (inventory < stockOnHand) {
-                item.setReason(context.getResources().getStringArray(R.array.movement_negative_items_array)[3]);
-                item.setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
-            } else {
-                item.setReason(context.getResources().getString(R.string.title_physical_inventory));
-                item.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
-            }
-        }
         return item;
     }
 

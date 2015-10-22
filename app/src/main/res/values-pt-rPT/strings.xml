@@ -128,41 +128,6 @@
         <item>Saídas</item>
     </string-array>
 
-    <string-array name="movement_receive_items_array">
-        <item>Distrito (DDM)</item>
-        <item>Província (DPM)</item>
-    </string-array>
-
-    <string-array name="movement_issue_items_array">
-        <item>Farmácia Pública</item>
-        <item>Maternidade-SMI</item>
-        <item>Enfermaria</item>
-        <item>Banco de Socorro-BIS</item>
-        <item>Brigada móvel</item>
-        <item>Laboratório</item>
-        <item>UATS</item>
-        <item>PNCTL</item>
-        <item>PAV</item>
-        <item>Estomalogia</item>
-    </string-array>
-
-    <string-array name="movement_negative_items_array">
-        <item>Devolução de Expirados Quarentena (ou Depósito fornecedor)</item>
-        <item>Danificados no Depósito</item>
-        <item>Empréstimo (de todos os Níveis) que dão saída do Depósito</item>
-        <item>Correção do Inventário, no caso de excesso de stock (stock é superior ao existente na ficha)</item>
-        <item>Saída para Quarentena no Caso de Problemas relativos as Qualidade</item>
-    </string-array>
-
-    <string-array name="movement_positive_items_array">
-        <item>Devolução dos seus dependentes (US e Depósitos Beneficiários)</item>
-        <item>Devolução de Expirados (US e Depósitos Beneficiários)</item>
-        <item>Doação ao Depósito</item>
-        <item>Empréstimo (de todos os Níveis) que dão entrada no Depósito</item>
-        <item>Correção do Inventário, no caso de stock em falta (stock é inferior ao existente na ficha)</item>
-        <item>Retorno da Quarentena no caso de se confirmar a qualidade do produto</item>
-    </string-array>
-
 
     <!-- Stock Card List Page -->
     <string name="search_hint">Procurar…</string>

@@ -20,6 +20,7 @@ package org.openlmis.core.view.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +28,9 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.MovementReasonNotFoundException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockMovementItem;
-import org.openlmis.core.utils.FeatureToggle;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
 import java.util.List;
@@ -94,27 +96,24 @@ public class StockMovementHistoryAdapter extends BaseAdapter {
         holder.etIssued.setText(model.getIssued());
         holder.txStockExistence.setText(model.getStockExistence());
 
-        if (FeatureToggle.isOpen(R.bool.red_font_color_267)){
-            cleanFontColor(holder);
-            setReasonAndFontColor(holder, model);
-            if (model.getReceived() != null || model.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
-                setFontColorToRed(holder);
-            }
-        }else {
-            holder.txReason.setText(model.getReason());
+        cleanFontColor(holder);
+        setReasonAndFontColor(holder, model);
+        if (model.getReceived() != null || model.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
+            setFontColorToRed(holder);
         }
     }
 
     private void setReasonAndFontColor(ViewHolder holder, StockMovementViewModel model) {
-        if (model.getReason().equals(context.getResources().getString(R.string.physical_inventory_positive))){
-            holder.txReason.setText(context.getResources().getStringArray(R.array.movement_positive_items_array)[4]);
-            setFontColorToRed(holder);
-        }else if (model.getReason().equals(context.getResources().getString(R.string.physical_inventory_negative))){
-            holder.txReason.setText(context.getResources().getStringArray(R.array.movement_negative_items_array)[3]);
-            setFontColorToRed(holder);
-        }else {
-            holder.txReason.setText(model.getReason());
+        holder.txReason.setText(model.getReason());
+        MovementReasonManager reasonManager = MovementReasonManager.getInstance();
+        try {
+            if (reasonManager.isInventoryAdjustmentCode(reasonManager.queryForCode(model.getReason()))){
+                setFontColorToRed(holder);
+            }
+        }catch (MovementReasonNotFoundException e){
+            Log.d(this.getClass().getSimpleName(), "Skip this reason :" + model.getReason());
         }
+
     }
 
     private void setFontColorToRed(ViewHolder holder) {
