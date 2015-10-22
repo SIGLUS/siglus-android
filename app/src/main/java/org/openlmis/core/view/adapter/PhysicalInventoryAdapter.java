@@ -59,6 +59,10 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.
     public PhysicalInventoryAdapter(Context context, List<StockCardViewModel> data, View footView) {
         this(context, data);
         this.footView = footView;
+
+        if (!(footView instanceof EditText)) {
+            footView.setFocusable(false);
+        }
     }
 
 
@@ -229,10 +233,10 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.
 
     private void showMsgDialog(final ViewGroup expireDateContainer, final View expireDateView, final StockCardViewModel viewModel, final String expireDate) {
         BaseDialogFragment dialogFragment = BaseDialogFragment.newInstance(
-                        null,
-                        context.getString(R.string.msg_remove_expire_date),
-                        context.getString(R.string.btn_ok),
-                        context.getString(R.string.btn_cancel));
+                null,
+                context.getString(R.string.msg_remove_expire_date),
+                context.getString(R.string.btn_ok),
+                context.getString(R.string.btn_cancel));
         dialogFragment.show(((Activity) context).getFragmentManager(), "MsgDialogFragment");
         dialogFragment.setCallBackListener(createListener(expireDateContainer, expireDateView, viewModel, expireDate));
     }
