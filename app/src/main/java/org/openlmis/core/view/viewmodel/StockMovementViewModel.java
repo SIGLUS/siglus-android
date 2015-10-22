@@ -35,7 +35,7 @@ import lombok.NoArgsConstructor;
 public class StockMovementViewModel {
 
     String movementDate;
-    String reason;
+    MovementReasonManager.MovementReason reason;
     String documentNo;
     String received;
     String negativeAdjustment;
@@ -43,16 +43,18 @@ public class StockMovementViewModel {
     String issued;
     String stockExistence;
 
-    StockMovementItem.MovementType movementType;
     boolean isDraft = true;
 
 
-    public StockMovementViewModel(StockMovementItem item) {
+    public StockMovementViewModel(StockMovementItem item){
         movementDate = DateUtil.formatDate(item.getMovementDate());
         documentNo = item.getDocumentNumber();
 
-        reason = MovementReasonManager.getInstance().queryForReason(item.getReason());
-        movementType = item.getMovementType();
+        try {
+            reason = MovementReasonManager.getInstance().queryByCode(item.getReason());
+        }catch (MovementReasonNotFoundException e){
+            throw new RuntimeException("MovementReason Cannot be find" + e.getMessage());
+        }
         isDraft = false;
 
         switch (item.getMovementType()) {
@@ -77,17 +79,11 @@ public class StockMovementViewModel {
         StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setStockOnHand(Long.parseLong(getStockExistence()));
 
-        String code;
-        try {
-            code = MovementReasonManager.getInstance().queryForCode(getReason());
-        }catch (MovementReasonNotFoundException e){
-            code = MovementReasonManager.DEFAULT;
-        }
-        stockMovementItem.setReason(code);
+        stockMovementItem.setReason(reason.getCode());
         stockMovementItem.setDocumentNumber(getDocumentNo());
-        stockMovementItem.setMovementType(movementType);
+        stockMovementItem.setMovementType(reason.getMovementType());
 
-        switch (movementType) {
+        switch (reason.getMovementType()) {
             case ISSUE:
                 stockMovementItem.setMovementQuantity(Long.parseLong(issued));
                 break;
@@ -111,7 +107,7 @@ public class StockMovementViewModel {
     }
 
     public boolean validateEmpty() {
-        return ((StringUtils.isNoneEmpty(reason)
+        return ((reason != null
                 && StringUtils.isNoneEmpty(movementDate)
                 && !(StringUtils.isEmpty(received)
                 && (StringUtils.isEmpty(negativeAdjustment)

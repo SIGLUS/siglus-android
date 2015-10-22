@@ -30,6 +30,7 @@ import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.View;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
@@ -98,7 +99,7 @@ public class StockMovementPresenter implements Presenter {
 
         Observable.create(new Observable.OnSubscribe<List<StockMovementViewModel>>() {
             @Override
-            public void call(Subscriber<? super List<StockMovementViewModel>> subscriber) {
+            public void call(final Subscriber<? super List<StockMovementViewModel>> subscriber) {
                 try {
 
                     List<StockMovementViewModel> list = from(stockRepository.listLastFive(stockCard.getId())).transform(new Function<StockMovementItem, StockMovementViewModel>() {
@@ -122,6 +123,11 @@ public class StockMovementPresenter implements Presenter {
 
                 view.refreshStockMovement();
                 view.loaded();
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                ToastUtil.show("Database query error :" + throwable.getMessage());
             }
         });
     }

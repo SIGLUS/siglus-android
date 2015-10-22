@@ -44,6 +44,9 @@ public class MovementTypeDialog {
     static final int STATUS_SELECT_ISSUE = 3;
     AlertDialog dialog;
     ArrayList<String> contentList;
+    ArrayList<MovementReasonManager.MovementReason> movementReasons;
+
+
     ArrayAdapter<String> adapter;
     AlertDialog.Builder builder;
     Context context;
@@ -80,6 +83,7 @@ public class MovementTypeDialog {
         });
 
         reasonManager = MovementReasonManager.getInstance();
+        movementReasons = new ArrayList<>();
     }
 
     private void performOnSelect(int position) {
@@ -87,7 +91,7 @@ public class MovementTypeDialog {
             return;
         }
 
-        listener.onComplete(contentList.get(position));
+        listener.onComplete(movementReasons.get(position));
 
         switch (status) {
             case STATUS_SELECT_RECEIVE:
@@ -129,6 +133,8 @@ public class MovementTypeDialog {
         }
 
         if (type !=null){
+            movementReasons.addAll(reasonManager.buildReasonListForMovementType(type));
+
             contentList.addAll(FluentIterable.from(reasonManager.buildReasonListForMovementType(type)).transform(new Function<MovementReasonManager.MovementReason, String>() {
                 @Override
                 public String apply(MovementReasonManager.MovementReason reason) {
@@ -149,7 +155,7 @@ public class MovementTypeDialog {
 
         void onNegativeAdjustment();
 
-        void onComplete(String result);
+        void onComplete(MovementReasonManager.MovementReason reason);
     }
 
 }

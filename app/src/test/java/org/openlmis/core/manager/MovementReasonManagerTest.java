@@ -90,7 +90,7 @@ public class MovementReasonManagerTest {
         totalList.addAll(reasonDescListEN);
 
         for (String reason : totalList){
-            String code = reasonManager.queryForCode(reason);
+            String code = reasonManager.queryByDesc(reason).getCode();
             assertThat(StringUtils.isEmpty(code), is(false));
         }
     }
@@ -102,18 +102,18 @@ public class MovementReasonManagerTest {
         totalList.addAll(reasonDescListPT);
 
         for (String reason : totalList){
-            String code = reasonManager.queryForCode(reason);
+            String code = reasonManager.queryByDesc(reason).getCode();
             assertThat(StringUtils.isEmpty(code), is(false));
         }
     }
 
     @Test
-    public void shouldNotDisplayPhysicalInventoryAndDefaultReasonOnMenu(){
-        assertThat(reasonManager.canBeDisplayOnMovementMenu("INVENTORY"), is(false));
-        assertThat(reasonManager.canBeDisplayOnMovementMenu("DEFAULT_ISSUE"), is(false));
-        assertThat(reasonManager.canBeDisplayOnMovementMenu("DEFAULT_RECEIVE"), is(false));
-        assertThat(reasonManager.canBeDisplayOnMovementMenu("DEFAULT_NEGATIVE_ADJUSTMENT"), is(false));
-        assertThat(reasonManager.canBeDisplayOnMovementMenu("DEFAULT_POSITIVE_ADJUSTMENT"), is(false));
+    public void shouldNotDisplayPhysicalInventoryAndDefaultReasonOnMenu() throws MovementReasonNotFoundException{
+        assertThat(reasonManager.queryByCode(MovementReasonManager.INVENTORY).canBeDisplayOnMovementMenu(), is(false));
+        assertThat(reasonManager.queryByCode(MovementReasonManager.DEFAULT_ISSUE).canBeDisplayOnMovementMenu(), is(false));
+        assertThat(reasonManager.queryByCode(MovementReasonManager.DEFAULT_RECEIVE).canBeDisplayOnMovementMenu(), is(false));
+        assertThat(reasonManager.queryByCode(MovementReasonManager.DEFAULT_NEGATIVE_ADJUSTMENT).canBeDisplayOnMovementMenu(), is(false));
+        assertThat(reasonManager.queryByCode(MovementReasonManager.DEFAULT_POSITIVE_ADJUSTMENT).canBeDisplayOnMovementMenu(), is(false));
     }
 
     @Test
@@ -122,7 +122,7 @@ public class MovementReasonManagerTest {
             if (reason.equalsIgnoreCase("Inventory")){
                 continue;
             }
-            assertThat(reasonManager.canBeDisplayOnMovementMenu(reasonManager.queryForCode(reason)), is(true));
+            assertThat(reasonManager.queryByDesc(reason).canBeDisplayOnMovementMenu(), is(true));
         }
     }
 }

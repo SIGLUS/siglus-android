@@ -29,7 +29,6 @@ import android.util.Log;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
@@ -102,13 +101,13 @@ public final class MovementReasonManager {
     }
 
     @NonNull
-    private ArrayList<MovementReason> parseReasonListFromConfig(String[] reasonData) {
+    private static ArrayList<MovementReason>  parseReasonListFromConfig(String[] reasonData) {
         ArrayList<MovementReason>  reasonList = new ArrayList<>();
         for (String s : reasonData) {
             String[] values = s.split(RES_DIVIDER);
 
             if (values.length < 3) {
-                Log.d(getClass().getSimpleName(), "Invalid Config =>" + s);
+                Log.d(MovementReasonManager.class.getSimpleName(), "Invalid Config =>" + s);
                 continue;
             }
 
@@ -123,56 +122,44 @@ public final class MovementReasonManager {
         return FluentIterable.from(currentReasonList).filter(new Predicate<MovementReason>() {
             @Override
             public boolean apply(MovementReason movementReason) {
-                return movementReason.getMovementType() == type && canBeDisplayOnMovementMenu(movementReason.getCode());
+                return movementReason.getMovementType() == type && movementReason.canBeDisplayOnMovementMenu();
             }
         }).toList();
     }
 
-    protected boolean canBeDisplayOnMovementMenu(String code){
-        return !(code.startsWith(DEFAULT) || code.equalsIgnoreCase(INVENTORY));
+    public MovementReason queryByDesc(final String reason) throws MovementReasonNotFoundException{
+        return queryByDesc(reason, context.getResources().getConfiguration().locale);
     }
 
-    public boolean isInventoryAdjustmentCode(String code){
-        return INVENTORY_NEGATIVE.equalsIgnoreCase(code) || INVENTORY_POSITIVE.equalsIgnoreCase(code);
-    }
-
-    public String queryForCode(final String reason) throws MovementReasonNotFoundException{
-        return queryForCode(reason, context.getResources().getConfiguration().locale);
-    }
-
-    public String queryForCode(final String reason, Locale locale) throws MovementReasonNotFoundException{
+    public MovementReason queryByDesc(final String desc, Locale locale) throws MovementReasonNotFoundException{
         ArrayList<MovementReason> reasonList = initReasonList(locale);
 
         Optional<MovementReason> matched = FluentIterable.from(reasonList).firstMatch(new Predicate<MovementReason>() {
             @Override
             public boolean apply(MovementReason movementReason) {
-                return reason.equalsIgnoreCase(movementReason.getDescription());
+                return movementReason.getDescription().equalsIgnoreCase(desc);
             }
         });
 
         if (!matched.isPresent()){
-            throw new MovementReasonNotFoundException(reason);
+            throw new MovementReasonNotFoundException(desc);
         }
-        return matched.get().getCode();
+        return matched.get();
     }
 
 
-    public String queryForReason(final String code){
-        if (StringUtils.isEmpty(code)){
-            return StringUtils.EMPTY;
-        }
-
+    public MovementReason queryByCode(final String code) throws MovementReasonNotFoundException{
         Optional<MovementReason> matched = FluentIterable.from(currentReasonList).firstMatch(new Predicate<MovementReason>() {
             @Override
             public boolean apply(MovementReason movementReason) {
-                return code.equalsIgnoreCase(movementReason.getCode());
+                return movementReason.getCode().equalsIgnoreCase(code);
             }
         });
 
-        if (matched.isPresent()){
-            return matched.get().getDescription();
+        if (!matched.isPresent()){
+            throw new MovementReasonNotFoundException(code);
         }
-        return code;
+        return matched.get();
     }
 
     public Resources getResourceByLocal(Locale locale){
@@ -195,6 +182,14 @@ public final class MovementReasonManager {
             this.movementType = type;
             this.code = code;
             this.description = description;
+        }
+
+        public boolean isInventoryAdjustment(){
+            return INVENTORY_NEGATIVE.equalsIgnoreCase(code) || INVENTORY_POSITIVE.equalsIgnoreCase(code);
+        }
+
+        protected boolean canBeDisplayOnMovementMenu(){
+            return !(code.startsWith(DEFAULT) || code.equalsIgnoreCase(INVENTORY));
         }
     }
 }

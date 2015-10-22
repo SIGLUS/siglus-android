@@ -64,14 +64,14 @@ public class ChangeMovementReasonToCode extends Migration{
                 return;
             }
             for (StockMovementItem item : itemList){
-                String newReasonCode;
+                MovementReasonManager.MovementReason reason;
                 try {
-                    newReasonCode = reasonManager.queryForCode(item.getReason(), new Locale("pt", "pt"));
-                    item.setReason(newReasonCode);
+                    reason = reasonManager.queryByDesc(item.getReason(), new Locale("pt", "pt"));
+                    item.setReason(reason.getCode());
                 }catch (MovementReasonNotFoundException e){
                     try {
-                        newReasonCode = reasonManager.queryForCode(item.getReason(), new Locale("en", "us"));
-                        item.setReason(newReasonCode);
+                        reason = reasonManager.queryByDesc(item.getReason(), new Locale("en", "us"));
+                        item.setReason(reason.getCode());
                     }catch (MovementReasonNotFoundException e1){
                         setDefaultReasonCode(item);
                     }

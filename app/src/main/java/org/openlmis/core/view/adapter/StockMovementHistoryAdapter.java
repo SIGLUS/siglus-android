@@ -20,7 +20,6 @@ package org.openlmis.core.view.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +27,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.MovementReasonNotFoundException;
-import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
@@ -98,22 +95,16 @@ public class StockMovementHistoryAdapter extends BaseAdapter {
 
         cleanFontColor(holder);
         setReasonAndFontColor(holder, model);
-        if (model.getReceived() != null || model.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
+        if (model.getReceived() != null || model.getReason().getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
             setFontColorToRed(holder);
         }
     }
 
     private void setReasonAndFontColor(ViewHolder holder, StockMovementViewModel model) {
-        holder.txReason.setText(model.getReason());
-        MovementReasonManager reasonManager = MovementReasonManager.getInstance();
-        try {
-            if (reasonManager.isInventoryAdjustmentCode(reasonManager.queryForCode(model.getReason()))){
-                setFontColorToRed(holder);
-            }
-        }catch (MovementReasonNotFoundException e){
-            Log.d(this.getClass().getSimpleName(), "Skip this reason :" + model.getReason());
+        holder.txReason.setText(model.getReason().getDescription());
+        if (model.getReason().isInventoryAdjustment()) {
+            setFontColorToRed(holder);
         }
-
     }
 
     private void setFontColorToRed(ViewHolder holder) {

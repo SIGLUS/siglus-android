@@ -24,8 +24,8 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -132,7 +132,7 @@ public class StockRepository {
                 @Override
                 public Object call() throws Exception {
                     StockMovementItem initInventory = new StockMovementItem();
-                    initInventory.setReason(context.getString(R.string.title_physical_inventory));
+                    initInventory.setReason(MovementReasonManager.INVENTORY);
                     initInventory.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
                     initInventory.setMovementDate(new Date());
                     initInventory.setMovementQuantity(0);

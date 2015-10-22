@@ -23,6 +23,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
 
 import java.util.Date;
@@ -35,10 +37,12 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
 
 
     private StockMovementViewModel stockMovementViewModel;
+    private MovementReasonManager.MovementReason movementReason;
 
     @Before
     public void setup() {
         stockMovementViewModel = new StockMovementViewModel();
+        movementReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.RECEIVE, "RECEIVE", "receive");
     }
 
     @Test
@@ -46,7 +50,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
         stockMovementViewModel.setMovementDate(DateUtil.formatDate(new Date()));
         stockMovementViewModel.setStockExistence("123");
         stockMovementViewModel.setDocumentNo("111");
-        stockMovementViewModel.setReason("abc");
+        stockMovementViewModel.setReason(movementReason);
         stockMovementViewModel.setReceived("100");
         assertTrue(stockMovementViewModel.validateInputValid());
     }
@@ -55,7 +59,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
     public void shouldReturnFalseIfMovementDateIsMissing() {
         stockMovementViewModel.setStockExistence("123");
         stockMovementViewModel.setDocumentNo("111");
-        stockMovementViewModel.setReason("abc");
+        stockMovementViewModel.setReason(movementReason);
         stockMovementViewModel.setReceived("100");
         assertFalse(stockMovementViewModel.validateEmpty());
     }
@@ -73,7 +77,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
     public void shouldReturnFalseIfAllQuantitiesAreEmpty() {
         stockMovementViewModel.setStockExistence("123");
         stockMovementViewModel.setDocumentNo("111");
-        stockMovementViewModel.setReason("abc");
+        stockMovementViewModel.setReason(movementReason);
         stockMovementViewModel.setMovementDate("2016-11-20");
         assertFalse(stockMovementViewModel.validateEmpty());
     }
