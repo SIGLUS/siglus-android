@@ -56,6 +56,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -119,7 +120,7 @@ public class SyncManagerTest {
     public void shouldPushUnSyncedStockMovementData() throws LMISException, SQLException {
         StockCard stockCard = createTestStockCardData();
 
-        doNothing().when(lmisRestApi).pushStockMovementData(anyString(), anyList());
+        doReturn(null).when(lmisRestApi).pushStockMovementData(anyString(), anyList());
         syncManager.syncStockCards();
         stockRepository.refresh(stockCard);
         List<StockMovementItem> items = newArrayList(stockCard.getStockMovementItems());

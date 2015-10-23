@@ -22,6 +22,7 @@ import lombok.Data;
 
 @Data
 public class StockMovementEntry {
+    String facilityId;
     String productCode;
     long quantity;
     String reasonName;

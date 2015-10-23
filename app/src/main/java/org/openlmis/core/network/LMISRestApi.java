@@ -19,6 +19,8 @@
 
 package org.openlmis.core.network;
 
+import com.google.gson.JsonObject;
+
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
@@ -48,5 +50,5 @@ public interface LMISRestApi {
     RequisitionResponse submitRequisition(@Body RnRForm rnRForm);
 
     @POST("/rest-api/facilities/{facilityId}/stockCards")
-    void pushStockMovementData(@Path("facilityId") String facilityId, @Body List<StockMovementEntry> entries);
+    JsonObject pushStockMovementData(@Path("facilityId") String facilityId, @Body List<StockMovementEntry> entries);
 }

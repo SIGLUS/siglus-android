@@ -59,9 +59,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             Log.d("SyncAdapter", "No user login, skip sync....");
             return;
         }
-        Log.d("SyncAdapter", "===> Sync : requisitions");
+        Log.d("SyncAdapter", "===> Syncing Data to server");
 
-        if (syncManager.syncRnr()) {
+        boolean rnRSynced = syncManager.syncRnr();
+        boolean stockCardSynced = syncManager.syncStockCards();
+
+        if (rnRSynced && stockCardSynced) {
             recordLastSyncedTime();
         }
     }

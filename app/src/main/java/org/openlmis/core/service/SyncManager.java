@@ -256,14 +256,10 @@ public class SyncManager {
     }
 
     public boolean syncStockCards(){
-        User user = UserInfoMgr.getInstance().getUser();
-        if (user == null){
-            return false;
-        }
-
         List<StockMovementItem> stockMovementItems;
         try {
             stockMovementItems = stockRepository.listUnSynced();
+            Log.d(TAG, "===> SyncStockMovement :" + stockMovementItems.size() + " StockMovement ready to sync...");
         }catch (LMISException e){
             e.printStackTrace();
             return false;
@@ -272,6 +268,8 @@ public class SyncManager {
         if (stockMovementItems.isEmpty()){
             return false;
         }
+
+        final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
 
         List<StockMovementEntry> syncList = FluentIterable.from(stockMovementItems).transform(new Function<StockMovementItem, StockMovementEntry>() {
             @Override
@@ -282,12 +280,13 @@ public class SyncManager {
                 entry.setProductCode(stockMovementItem.getStockCard().getProduct().getCode());
                 entry.setQuantity(stockMovementItem.getMovementQuantity());
                 entry.setReasonName(stockMovementItem.getReason());
+                entry.setFacilityId(facilityId);
                 return entry;
             }
         }).toList();
 
         try {
-            lmisRestApi.pushStockMovementData(user.getFacilityId(), syncList);
+            lmisRestApi.pushStockMovementData(facilityId, syncList);
             Observable.from(stockMovementItems).forEach(new Action1<StockMovementItem>() {
                 @Override
                 public void call(StockMovementItem stockMovementItem) {

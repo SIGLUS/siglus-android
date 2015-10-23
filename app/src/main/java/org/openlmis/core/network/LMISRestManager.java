@@ -39,6 +39,7 @@ import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -96,6 +97,12 @@ public class LMISRestManager {
 
     public OkHttpClient getSSLClient(){
         OkHttpClient client = new OkHttpClient();
+
+        //set timeout to 1 minutes
+        client.setReadTimeout(1, TimeUnit.MINUTES);
+        client.setConnectTimeout(15, TimeUnit.SECONDS);
+        client.setWriteTimeout(30, TimeUnit.SECONDS);
+
         // loading CAs from an InputStream
         try {
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
