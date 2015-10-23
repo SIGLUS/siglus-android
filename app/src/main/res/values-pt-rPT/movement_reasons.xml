@@ -18,18 +18,18 @@
         <item>NEGATIVE_ADJUST|EXPIRED_RETURN_TO_SUPPLIER|Devolução de Expirados Quarentena (ou Depósito fornecedor)</item>
         <item>NEGATIVE_ADJUST|DAMAGED|Danificados no Depósito</item>
         <item>NEGATIVE_ADJUST|LOANS_DEPOSIT|Empréstimo (de todos os Níveis) que dão saída do Depósito</item>
+        <item>NEGATIVE_ADJUST|INVENTORY_NEGATIVE|Correção do Inventário, no caso de excesso de stock (stock é superior ao existente na ficha)</item>
         <item>NEGATIVE_ADJUST|PROD_DEFECTIVE|Saída para Quarentena no Caso de Problemas relativos as Qualidade</item>
 
         <item>POSITIVE_ADJUST|CUSTOMER_RETURN|Devolução dos seus dependentes (US e Depósitos Beneficiários)</item>
         <item>POSITIVE_ADJUST|EXPIRED_RETURN_FROM_CUSTOMER|Devolução de Expirados (US e Depósitos Beneficiários)</item>
         <item>POSITIVE_ADJUST|DONATION|Doação ao Depósito</item>
         <item>POSITIVE_ADJUST|LOANS_RECEIVED|Empréstimo (de todos os Níveis) que dão entrada no Depósito</item>
+        <item>POSITIVE_ADJUST|INVENTORY_POSITIVE|Correção do Inventário, no caso de stock em falta (stock é inferior ao existente na ficha)</item>
         <item>POSITIVE_ADJUST|RETURN_FROM_QUARANTINE|Retorno da Quarentena no caso de se confirmar a qualidade do produto</item>
 
         <!-- Do not change -->
         <item>PHYSICAL_INVENTORY|INVENTORY|Inventario</item>
-        <item>NEGATIVE_ADJUST|INVENTORY_NEGATIVE|Correção do Inventário, no caso de excesso de stock (stock é superior ao existente na ficha)</item>
-        <item>POSITIVE_ADJUST|INVENTORY_POSITIVE|Correção do Inventário, no caso de stock em falta (stock é inferior ao existente na ficha)</item>
 
     </string-array>
 </resources>

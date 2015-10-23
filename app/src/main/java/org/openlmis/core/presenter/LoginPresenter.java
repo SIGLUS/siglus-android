@@ -24,6 +24,8 @@ import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.NoFacilityForUserException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
@@ -167,7 +169,13 @@ public class LoginPresenter implements Presenter {
         @Override
         public void onError(Throwable e) {
             isLoadingProducts = false;
-            ToastUtil.show(R.string.msg_user_not_facility);
+            if (e instanceof NoFacilityForUserException){
+                ToastUtil.show(R.string.msg_user_not_facility);
+            }else if (e instanceof LMISException){
+                ToastUtil.show(R.string.msg_save_products_failed);
+            }else {
+                ToastUtil.show(R.string.msg_sync_products_list_failed);
+            }
             view.loaded();
         }
     };

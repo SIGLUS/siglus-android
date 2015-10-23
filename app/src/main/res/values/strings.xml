@@ -16,6 +16,8 @@
     <string name="msg_empty_user">User Name and Password cannot left blank</string>
     <string name="msg_invalid_user">Username or Password is incorrect.</string>
     <string name="msg_user_not_facility">No facility for this user, please contact your administrator</string>
+    <string name="msg_save_products_failed">Save products to local db failed</string>
+    <string name="msg_sync_products_list_failed">Get products form server failed</string>
     <string name="init_product_error">Initial Data Error,Please Retry</string>
     <string name="msg_fetching_products">Pulling products…</string>
     <string name="msg_sync_back_data">Syncing back data…</string>

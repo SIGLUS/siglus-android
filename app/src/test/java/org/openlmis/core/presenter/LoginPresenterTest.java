@@ -31,6 +31,8 @@ import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.NoFacilityForUserException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
@@ -237,11 +239,20 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldShowErrorMessageWhenProductSyncFailed() {
-        presenter.productsSyncSubscriber.onError(new Exception("Products sync failed"));
+        presenter.productsSyncSubscriber.onError(new LMISException("Products save failed"));
 
-        String message = RuntimeEnvironment.application.getString(R.string.msg_user_not_facility);
+        String message = RuntimeEnvironment.application.getString(R.string.msg_save_products_failed);
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(message);
         verify(mockActivity).loaded();
+
+
+        presenter.productsSyncSubscriber.onError(new NoFacilityForUserException("No Facility"));
+        message = RuntimeEnvironment.application.getString(R.string.msg_user_not_facility);
+        assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(message);
+
+        presenter.productsSyncSubscriber.onError(new Exception("Sync products failed"));
+        message = RuntimeEnvironment.application.getString(R.string.msg_sync_products_list_failed);
+        assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(message);
     }
 
     @Test
@@ -251,6 +262,16 @@ public class LoginPresenterTest {
 
         verify(mockActivity).loaded();
         verify(mockActivity).goToInitInventory();
+    }
+
+    @Test
+    public void shouldNotStayInCurrentPageWhenSyncProductFailed(){
+        when(mockActivity.needInitInventory()).thenReturn(true);
+        presenter.syncBackDataSubscriber.onError(new Exception("error"));
+
+        verify(mockActivity, times(1)).loaded();
+        verify(mockActivity, times(0)).goToInitInventory();
+        verify(mockActivity, times(0)).goToHomePage();
     }
 
     public class MyTestModule extends AbstractModule {

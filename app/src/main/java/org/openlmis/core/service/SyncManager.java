@@ -31,6 +31,7 @@ import com.google.inject.Singleton;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.NoFacilityForUserException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
@@ -162,14 +163,14 @@ public class SyncManager {
 
     public void syncProductsWithProgram() throws Exception {
         User user = UserInfoMgr.getInstance().getUser();
+
+        if (StringUtils.isEmpty(user.getFacilityCode())){
+            throw new NoFacilityForUserException("No Facility for this User");
+        }
         ProductsResponse response = lmisRestApi.fetchProducts(user.getFacilityCode());
         List<Program> programsWithProducts = response.getProgramsWithProducts();
         for (Program programWithProducts : programsWithProducts) {
-            try {
-                programRepository.saveProgramWithProduct(programWithProducts);
-            } catch (LMISException e) {
-                e.printStackTrace();
-            }
+            programRepository.saveProgramWithProduct(programWithProducts);
         }
     }
 
@@ -179,10 +180,10 @@ public class SyncManager {
             public void call(Subscriber<? super Void> subscriber) {
                 try {
                     syncProductsWithProgram();
+                    subscriber.onCompleted();
                 } catch (Exception e) {
-                    subscriber.onError(new LMISException("Get Product List Failed."));
+                    subscriber.onError(e);
                 }
-                subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
     }
