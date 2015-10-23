@@ -31,6 +31,8 @@ public final class DateUtil {
     public static final String SIMPLE_DATE_FORMAT = "dd/MM/yyyy";
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
+    public static final String DB_DATE_FORMAT = "yyyy-MM-dd";
+
 
     public static final SimpleDateFormat DATE_FORMATER = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
     public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_DAY = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR);

@@ -26,6 +26,7 @@ import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.RnrFormItemRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.View;
 
 import java.util.ArrayList;
@@ -96,6 +97,7 @@ public class Presenter implements org.openlmis.core.presenter.Presenter {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
+                ToastUtil.show(e.getMessage());
             }
 
             @Override

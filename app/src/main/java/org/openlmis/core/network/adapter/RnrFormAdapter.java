@@ -65,7 +65,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
             root.addProperty("clientSubmittedNotes", rnRForm.getComments());
         }
 
-        root.addProperty("clientSubmittedTime", DateUtil.formatDate(rnRForm.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
+        root.addProperty("clientSubmittedTime", DateUtil.formatDate(rnRForm.getSubmittedTime(), "yyyy-MM-dd HH:mm:ss"));
         return root;
     }
 

@@ -23,6 +23,8 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import org.openlmis.core.utils.DateUtil;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -72,7 +74,7 @@ public class StockMovementItem extends BaseModel{
     @DatabaseField
     String signature;
 
-    @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = "yyyy-MM-dd")
+    @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DB_DATE_FORMAT)
     private java.util.Date movementDate;
 
     @DatabaseField

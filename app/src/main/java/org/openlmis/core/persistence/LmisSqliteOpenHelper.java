@@ -27,6 +27,7 @@ import com.j256.ormlite.support.ConnectionSource;
 
 import org.openlmis.core.persistence.migrations.AddFacilityIdToUser;
 import org.openlmis.core.persistence.migrations.AddSignatureFieldInStockMovementItemTable;
+import org.openlmis.core.persistence.migrations.AddSubmittedDateToRnRForm;
 import org.openlmis.core.persistence.migrations.AddSyncTagToStockMovementItem;
 import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
 import org.openlmis.core.persistence.migrations.CreateDummyRegimes;
@@ -45,6 +46,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new AddFacilityIdToUser());
             add(new AddSyncTagToStockMovementItem());
             add(new ChangeMovementReasonToCode());
+            add(new AddSubmittedDateToRnRForm());
         }
     };
     private static int instanceCount = 0;

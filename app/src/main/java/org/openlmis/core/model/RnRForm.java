@@ -19,13 +19,11 @@
 package org.openlmis.core.model;
 
 import com.j256.ormlite.dao.ForeignCollection;
-import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 
-import org.openlmis.core.utils.DateUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -76,11 +74,14 @@ public class RnRForm extends BaseModel {
     @DatabaseField
     private boolean synced = false;
 
-    @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DATE_TIME_FORMAT)
+    @DatabaseField
     private Date periodBegin;
 
-    @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DATE_TIME_FORMAT)
+    @DatabaseField
     private Date periodEnd;
+
+    @DatabaseField
+    private Date submittedTime;
 
 
     public static RnRForm init(Program program, Date generateDate){

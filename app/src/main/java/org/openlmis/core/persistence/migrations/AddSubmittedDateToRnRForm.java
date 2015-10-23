@@ -16,33 +16,18 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.model;
+package org.openlmis.core.persistence.migrations;
 
+import org.openlmis.core.persistence.Migration;
 
-import com.j256.ormlite.field.DataType;
-import com.j256.ormlite.field.DatabaseField;
+public class AddSubmittedDateToRnRForm extends Migration{
+    @Override
+    public void down() {
 
-import org.openlmis.core.utils.DateUtil;
-
-import java.util.Date;
-
-import lombok.Data;
-
-
-@Data
-public abstract class BaseModel {
-
-    @DatabaseField(uniqueIndex = true, generatedId = true)
-    private long id;
-
-    public BaseModel(){
-        createdAt = new Date();
-        updatedAt = createdAt;
     }
 
-    @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DB_DATE_FORMAT)
-    private java.util.Date createdAt;
-
-    @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DB_DATE_FORMAT)
-    private java.util.Date updatedAt;
+    @Override
+    public void up() {
+        execSQL("ALTER TABLE 'rnr_forms' ADD COLUMN submittedTime VARCHAR");
+    }
 }

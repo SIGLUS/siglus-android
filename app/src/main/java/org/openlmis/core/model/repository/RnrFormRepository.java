@@ -133,7 +133,7 @@ public class RnrFormRepository {
         }
 
         form.setStatus(RnRForm.STATUS.AUTHORIZED);
-        form.setUpdatedAt(DateUtil.today());
+        form.setSubmittedTime(DateUtil.today());
         save(form);
     }
 

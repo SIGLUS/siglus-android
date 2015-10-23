@@ -61,6 +61,7 @@ public class RnrFormAdapterTest {
 
         UserInfoMgr.getInstance().setUser(new User("user", "password"));
         rnRForm.setComments("XYZ");
+        rnRForm.setSubmittedTime(DateUtil.today());
 
         JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
         assertEquals("\"XYZ\"", rnrJson.getAsJsonObject().get("clientSubmittedNotes").toString());
@@ -70,7 +71,7 @@ public class RnrFormAdapterTest {
     public void shouldSerializeRnrFormWithSubmittedTime() throws Exception {
         UserInfoMgr.getInstance().setUser(new User("user", "password"));
 
-        rnRForm.setUpdatedAt(DateUtil.parseString("2015-10-14 01:01:11", "yyyy-MM-dd HH:mm:ss"));
+        rnRForm.setSubmittedTime(DateUtil.parseString("2015-10-14 01:01:11", "yyyy-MM-dd HH:mm:ss"));
 
         JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
         assertThat(rnrJson.getAsJsonObject().get("clientSubmittedTime").toString(), is("\"2015-10-14 01:01:11\""));
