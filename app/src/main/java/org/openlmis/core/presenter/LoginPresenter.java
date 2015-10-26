@@ -40,7 +40,7 @@ public class LoginPresenter implements Presenter {
     LoginView view;
 
     boolean isLoadingProducts = false;
-    boolean isSyncingBackData = false;
+    boolean isSyncingRequisitionData = false;
 
     @Inject
     UserRepository userRepository;
@@ -120,7 +120,7 @@ public class LoginPresenter implements Presenter {
         userRepository.save(user);
     }
 
-    private void onLoginSuccess(User user) {
+    protected void onLoginSuccess(User user) {
         syncManager.createSyncAccount(user);
         syncManager.kickOff();
 
@@ -128,7 +128,37 @@ public class LoginPresenter implements Presenter {
         UserInfoMgr.getInstance().setUser(user);
         view.clearErrorAlerts();
 
-        getProgramWithProducts();
+        serverDataSyncNeeded();
+    }
+
+    public void onLoginFailed() {
+        view.loaded();
+        view.showInvalidAlert();
+        view.clearPassword();
+    }
+
+    private void serverDataSyncNeeded() {
+        if (view.hasGetProducts()) {
+            checkRequisitionData();
+        } else {
+            checkProductsWithProgram();
+        }
+    }
+
+    private void checkRequisitionData() {
+        if (view.isRequisitionDataSynced()) {
+            goToNextPage();
+        } else {
+            syncRequisitionData();
+        }
+    }
+
+    private void checkProductsWithProgram() {
+        if (!isLoadingProducts) {
+            isLoadingProducts = true;
+            view.loading(LMISApp.getInstance().getString(R.string.msg_fetching_products));
+            syncManager.syncProductsWithProgramAsync(productsSyncSubscriber);
+        }
     }
 
     protected void goToNextPage() {
@@ -140,66 +170,52 @@ public class LoginPresenter implements Presenter {
         }
     }
 
-    public void onLoginFailed() {
-        view.loaded();
-        view.showInvalidAlert();
-        view.clearPassword();
-    }
-
-
-    private void getProgramWithProducts() {
-        if (view.hasGetProducts()) {
-            goToNextPage();
-        } else if (!isLoadingProducts) {
-            isLoadingProducts = true;
-            view.loading(LMISApp.getInstance().getString(R.string.msg_fetching_products));
-            syncManager.syncProductsWithProgramAsync(productsSyncSubscriber);
-        }
-    }
-
     protected SyncSubscriber<Void> productsSyncSubscriber = new SyncSubscriber<Void>() {
         @Override
         public void onCompleted() {
             isLoadingProducts = false;
             view.setHasGetProducts(true);
             view.loaded();
-            syncBackData();
+            syncRequisitionData();
         }
 
         @Override
         public void onError(Throwable e) {
             isLoadingProducts = false;
-            if (e instanceof NoFacilityForUserException){
+            view.setHasGetProducts(false);
+            if (e instanceof NoFacilityForUserException) {
                 ToastUtil.show(R.string.msg_user_not_facility);
-            }else if (e instanceof LMISException){
+            } else if (e instanceof LMISException) {
                 ToastUtil.show(R.string.msg_save_products_failed);
-            }else {
+            } else {
                 ToastUtil.show(R.string.msg_sync_products_list_failed);
             }
             view.loaded();
         }
     };
 
-    private void syncBackData() {
-        if (!isSyncingBackData) {
-            isSyncingBackData = true;
-            view.loading(LMISApp.getInstance().getString(R.string.msg_sync_back_data));
-            syncManager.syncBackData(syncBackDataSubscriber);
+    private void syncRequisitionData() {
+        if (!isSyncingRequisitionData) {
+            isSyncingRequisitionData = true;
+            view.loading(LMISApp.getInstance().getString(R.string.msg_sync_requisition_data));
+            syncManager.syncRequisitionData(syncRequisitionDataSubscriber);
         }
     }
 
-    protected SyncSubscriber<Void> syncBackDataSubscriber = new SyncSubscriber<Void>() {
+    protected SyncSubscriber<Void> syncRequisitionDataSubscriber = new SyncSubscriber<Void>() {
         @Override
         public void onCompleted() {
-            isSyncingBackData = false;
+            isSyncingRequisitionData = false;
+            view.setRequisitionDataSynced(true);
             goToNextPage();
         }
 
         @Override
         public void onError(Throwable throwable) {
-            isSyncingBackData = false;
-            view.loaded();
+            isSyncingRequisitionData = false;
+            view.setRequisitionDataSynced(false);
             ToastUtil.show(R.string.msg_sync_data_failed);
+            goToNextPage();
         }
     };
 
@@ -222,6 +238,10 @@ public class LoginPresenter implements Presenter {
         boolean hasGetProducts();
 
         void setHasGetProducts(boolean hasGetProducts);
+
+        boolean isRequisitionDataSynced();
+
+        void setRequisitionDataSynced(boolean isBackDataSynced);
 
         void clearErrorAlerts();
     }

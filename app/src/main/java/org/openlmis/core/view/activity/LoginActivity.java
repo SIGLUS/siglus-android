@@ -140,6 +140,16 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     @Override
+    public boolean isRequisitionDataSynced() {
+        return getPreferences().getBoolean(Constants.KEY_IS_REQUISITION_DATA_SYNCED, false);
+    }
+
+    @Override
+    public void setRequisitionDataSynced(boolean isRequisitionDataSynced) {
+        saveBoolean(Constants.KEY_IS_REQUISITION_DATA_SYNCED, isRequisitionDataSynced);
+    }
+
+    @Override
     public void showInvalidAlert() {
         clearErrorAlerts();
         lyUserName.setError(getResources().getString(R.string.msg_invalid_user));

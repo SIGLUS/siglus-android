@@ -188,7 +188,7 @@ public class SyncManager {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
     }
 
-    public void syncBackData(Observer<Void> observer) {
+    public void syncRequisitionData(Observer<Void> observer) {
         rx.Observable.create(new rx.Observable.OnSubscribe<Void>() {
 
             @Override

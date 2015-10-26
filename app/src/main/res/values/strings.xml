@@ -20,7 +20,7 @@
     <string name="msg_sync_products_list_failed">Get products form server failed</string>
     <string name="init_product_error">Initial Data Error,Please Retry</string>
     <string name="msg_fetching_products">Pulling products…</string>
-    <string name="msg_sync_back_data">Syncing back data…</string>
+    <string name="msg_sync_requisition_data">Syncing Requisition data…</string>
     <string name="msg_sync_data_failed">Sync data failed</string>
 
 

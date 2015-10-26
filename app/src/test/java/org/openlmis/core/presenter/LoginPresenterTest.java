@@ -233,8 +233,8 @@ public class LoginPresenterTest {
         presenter.productsSyncSubscriber.onCompleted();
 
         verify(mockActivity).setHasGetProducts(true);
-        verify(mockActivity).loading(RuntimeEnvironment.application.getString(R.string.msg_sync_back_data));
-        verify(syncManager).syncBackData(presenter.syncBackDataSubscriber);
+        verify(mockActivity).loading(RuntimeEnvironment.application.getString(R.string.msg_sync_requisition_data));
+        verify(syncManager).syncRequisitionData(presenter.syncRequisitionDataSubscriber);
     }
 
     @Test
@@ -258,20 +258,47 @@ public class LoginPresenterTest {
     @Test
     public void shouldGoToInitInventoryWhenDataBackCompleted() {
         when(mockActivity.needInitInventory()).thenReturn(true);
-        presenter.syncBackDataSubscriber.onCompleted();
+        presenter.syncRequisitionDataSubscriber.onCompleted();
 
         verify(mockActivity).loaded();
         verify(mockActivity).goToInitInventory();
     }
 
     @Test
-    public void shouldNotStayInCurrentPageWhenSyncProductFailed(){
+    public void shouldGoToNextPageWhenSyncProductSucceedAndSyncRequisitionFailed(){
         when(mockActivity.needInitInventory()).thenReturn(true);
-        presenter.syncBackDataSubscriber.onError(new Exception("error"));
+        presenter.syncRequisitionDataSubscriber.onError(new Exception("error"));
+
+        verify(mockActivity, times(1)).loaded();
+        verify(mockActivity, times(1)).goToInitInventory();
+        verify(mockActivity, times(0)).goToHomePage();
+    }
+
+    @Test
+    public void shouldNotGoToNextPageWhenSyncProductFailed(){
+        presenter.productsSyncSubscriber.onError(new Exception("error"));
 
         verify(mockActivity, times(1)).loaded();
         verify(mockActivity, times(0)).goToInitInventory();
         verify(mockActivity, times(0)).goToHomePage();
+    }
+
+    @Test
+    public void shouldSyncRequisitionDataIfProductSyncExistButRequisitionDataNonExist() {
+        when(mockActivity.hasGetProducts()).thenReturn(true);
+        when(mockActivity.isRequisitionDataSynced()).thenReturn(false);
+
+        presenter.onLoginSuccess(any(User.class));
+
+        verify(mockActivity).loading(RuntimeEnvironment.application.getString(R.string.msg_sync_requisition_data));
+        verify(syncManager).syncRequisitionData(presenter.syncRequisitionDataSubscriber);
+    }
+
+    @Test
+    public void shouldSetRequisitionDataSharedPreference(){
+        presenter.syncRequisitionDataSubscriber.onCompleted();
+
+        verify(mockActivity).setRequisitionDataSynced(true);
     }
 
     public class MyTestModule extends AbstractModule {
