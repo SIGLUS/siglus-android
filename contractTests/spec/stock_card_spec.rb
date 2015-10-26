@@ -14,21 +14,21 @@ describe "Sync stock card data" do
         facilityId: facility_id,
         productCode: "08S42",
         quantity: 1000,
-        reasonName: "CLINIC_RETURN",
+        reasonName: "DISTRICT_DDM",
         occurred: "20151010T030530Z"
       },
       {
         facilityId: facility_id,
         productCode: "08S42",
         quantity: 500,
-        reasonName: "TRANSFER_OUT",
+        reasonName: "PUB_PHARMACY",
         occurred: "20151014T030530Z"
       },
       {
         facilityId: facility_id,
         productCode: "08S42",
         quantity: 20,
-        reasonName: "STOLEN",
+        reasonName: "LOANS_DEPOSIT",
         occurred: "20151015T030530Z"
       }
       ]
