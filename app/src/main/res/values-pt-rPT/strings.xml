@@ -60,7 +60,8 @@
     <string name="msg_mmia_submit_tip">O seu MMIA foi gravado com sucesso,e vai ser submetido \r\n automaticamente quando tiver coneccao a internet.</string>
     <string name="hint_mmia_total_not_equal">O Total dos regimes terapêuticos não confere com o Total de pacientes em TARV na US.</string>
     <string name="msg_mmia_not_unique">Não é possivel submeter duas vezes o MMIA no mesmo período.</string>
-
+    <string name="msg_reason_for_total_not_match">Adicionar razão para a diferença entre totais de regimes e pacientes</string>
+    <string name="msg_regime_total_and_patient_total_not_match">Os totais não correspondem. Por favor, verifique os números digitados. Se os valores continuam diferentes, adicione uma justificação nas \"Observações\".</string>
 
     <!-- Requisition Form -->
     <string name="label_consultation">No. de Consultas Externas Realizadas</string>
@@ -138,5 +139,8 @@
         <item>Ordenar por quantidade: Alta para Baixa</item>
         <item>Ordenar por quantidade: Baixa para Alta</item>
     </string-array>
+
+    <!-- Rnr form historical list -->
+    <string name="title_requisition_list">Requisições/Balancetes Históricas para Via Clássica</string>
 
 </resources>

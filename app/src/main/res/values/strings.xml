@@ -160,9 +160,9 @@
     <string name="label_submitted_message">%1$s successfully <![CDATA[<b>submitted</b>]]> on the  %2$s</string>
     <string name="btn_view_requisition">VIEW %s</string>
 
-    <string name="btn_requisition_list">See old VIA</string>
-    <string name="btn_mmia_list">See old MMIA</string>
-    <string name="title_requisition_list">Requisition of all balances</string>
+    <string name="btn_requisition_list">See Via Classica Requisitions History</string>
+    <string name="btn_mmia_list">See previous MMIAs History</string>
+    <string name="title_requisition_list">Historic Requisitions / Balances for VIA Classica</string>
     <string name="title_mmia_list">MMIA of all balances</string>
     
     <string name="label_current_period">Current period</string>
