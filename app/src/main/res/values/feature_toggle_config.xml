@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <bool name="red_font_color_267">true</bool>
-    <bool name="view_requisition_history_75">false</bool>
-    <bool name="time_out_235">true</bool>
+    <bool name="feature_sync_stock_card_279">false</bool>
+    <bool name="feature_sync_back_rnr_186">false</bool>
 </resources>

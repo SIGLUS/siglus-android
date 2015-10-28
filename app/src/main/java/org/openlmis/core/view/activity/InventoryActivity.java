@@ -33,7 +33,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.common.Constants;
 import org.openlmis.core.presenter.InventoryPresenter;
-import org.openlmis.core.utils.FeatureToggle;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.InitialInventoryAdapter;
@@ -225,12 +224,10 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
 
     @Override
     public void onBackPressed() {
-        if (FeatureToggle.isOpen(R.bool.time_out_235)) {
-            if (isPhysicalInventory || isAddNewDrug) {
-                super.onBackPressed();
-            } else {
-                moveTaskToBack(true);
-            }
+        if (isPhysicalInventory || isAddNewDrug) {
+            super.onBackPressed();
+        } else {
+            moveTaskToBack(true);
         }
     }
 

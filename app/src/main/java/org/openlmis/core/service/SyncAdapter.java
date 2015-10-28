@@ -28,9 +28,11 @@ import android.util.Log;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
+import org.openlmis.core.utils.FeatureToggle;
 
 import java.util.Date;
 
@@ -62,7 +64,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         Log.d("SyncAdapter", "===> Syncing Data to server");
 
         boolean rnRSynced = syncManager.syncRnr();
-        boolean stockCardSynced = syncManager.syncStockCards();
+
+        boolean stockCardSynced = true;
+        if (FeatureToggle.isOpen(R.bool.feature_sync_stock_card_279)){
+            stockCardSynced = syncManager.syncStockCards();
+        }
 
         if (rnRSynced && stockCardSynced) {
             recordLastSyncedTime();

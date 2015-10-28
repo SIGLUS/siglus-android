@@ -32,6 +32,7 @@ import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
 import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.service.SyncSubscriber;
+import org.openlmis.core.utils.FeatureToggle;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.View;
 
@@ -176,6 +177,7 @@ public class LoginPresenter implements Presenter {
             isLoadingProducts = false;
             view.setHasGetProducts(true);
             view.loaded();
+
             syncRequisitionData();
         }
 
@@ -195,6 +197,11 @@ public class LoginPresenter implements Presenter {
     };
 
     private void syncRequisitionData() {
+        if (!FeatureToggle.isOpen(R.bool.feature_sync_back_rnr_186)){
+            goToNextPage();
+            return;
+        }
+
         if (!isSyncingRequisitionData) {
             isSyncingRequisitionData = true;
             view.loading(LMISApp.getInstance().getString(R.string.msg_sync_requisition_data));
