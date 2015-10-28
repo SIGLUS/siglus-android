@@ -236,7 +236,7 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.
                 null,
                 context.getString(R.string.msg_remove_expire_date),
                 context.getString(R.string.btn_ok),
-                context.getString(R.string.btn_cancel));
+                context.getString(R.string.btn_cancel), null);
         dialogFragment.show(((Activity) context).getFragmentManager(), "MsgDialogFragment");
         dialogFragment.setCallBackListener(createListener(expireDateContainer, expireDateView, viewModel, expireDate));
     }
