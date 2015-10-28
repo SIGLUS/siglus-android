@@ -89,7 +89,7 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormListAdapter.
                 holder.txTitle.setText(model.getTitle());
                 break;
             case RnRFormViewModel.TYPE_DRAFT:
-                configHolder(holder, model.getPeriod(), Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName(), model.getName(), model.getName())), R.drawable.ic_description, R.color.color_draft_title);
+                configHolder(holder, model.getPeriod(), Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())), R.drawable.ic_description, R.color.color_draft_title);
                 break;
             case RnRFormViewModel.TYPE_UNSYNC:
                 configHolder(holder, model.getPeriod(), Html.fromHtml(context.getString(R.string.label_unsynced_requisition, model.getName())), R.drawable.ic_error, R.color.color_error_title);

@@ -7,7 +7,7 @@
     <string name="title_physical_inventory">Inventario</string>
     <string name="title_stock_cards">Fichas de Stock</string>
     <string name="title_mmia_spread">MMIA</string>
-    <string name="title_requisition">Elaborar Requisição/Balancete</string>
+    <string name="title_requisition">Elaborar Requisição/Balancete para Via Clássica</string>
 
     <!-- Login Page -->
     <string name="hint_username">Usuário</string>
@@ -45,6 +45,7 @@
     <string name="label_mmia_speed_info_header">Quantificaçāo dos doentes em TARV</string>
     <string name="hint_mmia_comment">Observações</string>
     <string name="btn_complete">Completar</string>
+    <string name="btn_submit">Submeter para aprovação</string>
     <string name="label_initial_amount">Saldo Inicial</string>
     <string name="label_received_mmia">Entradas</string>
     <string name="label_issued_mmia">Saídas</string>
@@ -141,6 +142,22 @@
     </string-array>
 
     <!-- Rnr form historical list -->
+    <string name="label_via_name">Requisição/Balancete Via Clássica</string>
+    <string name="label_mmia_name">MMIA</string>
+    <string name="label_incomplete_requisition">Este <![CDATA[<b>%1$s</b>]]> está incompleto. Para completá-lo, selecione \"Elaborar %1$s\" na página principal</string>
+    <string name="label_unsynced_requisition">Este <![CDATA[<b>%1$s</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
+    <string name="label_submitted_message">%1$s enviado com sucesso no dia on the  %2$s</string>
+    <string name="btn_view_requisition">Ver %s</string>
+    <string name="label_period_date">%1$s  a  %2$s</string>
+
+    <string name="btn_requisition_list">Ver Requisições/Balancetes históricas para Via Clássica</string>
+    <string name="btn_mmia_list">Ver MMIAs históricos</string>
     <string name="title_requisition_list">Requisições/Balancetes Históricas para Via Clássica</string>
+    <string name="title_mmia_list">MMIAs Históricos</string>
+
+    <string name="label_current_period">Período atual</string>
+    <string name="label_previous_period">Períodos anteriores</string>
+
+    <string name="label_total">Total:%1$s</string>
 
 </resources>

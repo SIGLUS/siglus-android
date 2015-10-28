@@ -66,7 +66,7 @@ public class RnRFormListAdapterTest {
         RnRFormListAdapter.ViewHolder viewHolder = createAdapterItem(viewModel);
 
         assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getPeriod()));
-        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_incomplete_requisition, viewModel.getName(), viewModel.getName(), viewModel.getName())));
+        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_incomplete_requisition, viewModel.getName())));
         assertThat(((ColorDrawable)viewHolder.lyPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_draft_title)));
     }
 

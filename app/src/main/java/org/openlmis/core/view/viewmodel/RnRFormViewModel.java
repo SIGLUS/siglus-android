@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.viewmodel;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.utils.DateUtil;
 
@@ -38,22 +40,36 @@ public class RnRFormViewModel {
     String name;
     long id;
 
-    public RnRFormViewModel(RnRForm form){
+    public RnRFormViewModel(RnRForm form) {
         this.syncedDate = DateUtil.formatDate(form.getUpdatedAt());
-        this.period = DateUtil.formatDate(form.getPeriodBegin()) + " to " + DateUtil.formatDate(form.getPeriodEnd());
-        this.name = form.getProgram().getProgramName();
+        this.period = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDate(form.getPeriodBegin()), DateUtil.formatDate(form.getPeriodEnd()));
+        setName(form);
         this.id = form.getId();
 
-        if (form.getStatus() != RnRForm.STATUS.AUTHORIZED){
+        if (form.getStatus() != RnRForm.STATUS.AUTHORIZED) {
             this.type = TYPE_DRAFT;
-        } else if (!form.isSynced()){
+        } else if (!form.isSynced()) {
             this.type = TYPE_UNSYNC;
         } else {
             this.type = TYPE_HISTORICAL;
         }
     }
 
-    public RnRFormViewModel(String title){
+    private void setName(RnRForm form) {
+        switch (form.getProgram().getProgramCode()) {
+            case "MMIA":
+                this.name = LMISApp.getContext().getString(R.string.label_mmia_name);
+                break;
+            case "ESS_MEDS":
+                this.name = LMISApp.getContext().getString(R.string.label_via_name);
+                break;
+            default:
+                this.name = "";
+                break;
+        }
+    }
+
+    public RnRFormViewModel(String title) {
         this.type = TYPE_GROUP;
         this.title = title;
     }
