@@ -9,6 +9,7 @@ describe "submit requisition to web server" do
     {
       agentCode: "F10",
       programCode: "ESS_MEDS",
+      clientSubmittedDate: "2015-10-27 11:11:20",
       products: [
       {
         productCode: "P1",
@@ -76,6 +77,7 @@ describe "submit requisition to web server" do
       agentCode: "F10",
       programCode: "MMIA",
       clientSubmittedNotes: "I don't know",
+      clientSubmittedDate: "2015-10-27 11:11:20",
       products: [
       {
         productCode: "08S23",
