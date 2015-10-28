@@ -39,6 +39,7 @@ import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
 import org.openlmis.core.network.model.ProductsResponse;
 import org.openlmis.core.service.SyncManager;
+import org.openlmis.core.utils.FeatureToggle;
 import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
@@ -168,7 +169,11 @@ public class LoginPresenterTest {
         verify(syncManager).syncProductsWithProgramAsync(getProductsCB.capture());
         getProductsCB.getValue().onCompleted();
 
-        verify(mockActivity).loaded();
+        if (FeatureToggle.isOpen(R.bool.feature_sync_back_rnr_186)){
+            verify(mockActivity).loaded();
+        }else {
+            verify(mockActivity, times(2)).loaded();
+        }
     }
 
     @Test
@@ -230,6 +235,9 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldSyncDataBackWhenProductSyncCompleted() {
+        if (!FeatureToggle.isOpen(R.bool.feature_sync_back_rnr_186)){
+            return;
+        }
         presenter.productsSyncSubscriber.onCompleted();
 
         verify(mockActivity).setHasGetProducts(true);
@@ -285,6 +293,10 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldSyncRequisitionDataIfProductSyncExistButRequisitionDataNonExist() {
+        if (!FeatureToggle.isOpen(R.bool.feature_sync_back_rnr_186)){
+            return;
+        }
+
         when(mockActivity.hasGetProducts()).thenReturn(true);
         when(mockActivity.isRequisitionDataSynced()).thenReturn(false);
 
