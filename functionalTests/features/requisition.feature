@@ -54,6 +54,5 @@ Scenario: Add A Issued Movement on VIA product,then the quantity should change
 
     When I press view with id "btn_requisition"
     Then I swipe right
-    Then I swipe right
     Then I should see "113" on index "1" of "tx_theoretical" field
 

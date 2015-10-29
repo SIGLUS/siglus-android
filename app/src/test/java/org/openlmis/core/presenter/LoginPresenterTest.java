@@ -69,6 +69,7 @@ public class LoginPresenterTest {
     private ArgumentCaptor<Observer<Void>> getProductsCB;
 
     private LMISTestApp appInject;
+    private LoginPresenter.ProductSyncSubscriber productSyncSubscriber;
 
     @Before
     public void setup() {
@@ -86,6 +87,7 @@ public class LoginPresenterTest {
 
         presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(LoginPresenter.class);
         presenter.attachView(mockActivity);
+        productSyncSubscriber = presenter.new ProductSyncSubscriber();
     }
 
     @After
@@ -238,7 +240,8 @@ public class LoginPresenterTest {
         if (!FeatureToggle.isOpen(R.bool.feature_sync_back_rnr_186)){
             return;
         }
-        presenter.productsSyncSubscriber.onCompleted();
+
+        productSyncSubscriber.onCompleted();
 
         verify(mockActivity).setHasGetProducts(true);
         verify(mockActivity).loading(RuntimeEnvironment.application.getString(R.string.msg_sync_requisition_data));
@@ -247,18 +250,18 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldShowErrorMessageWhenProductSyncFailed() {
-        presenter.productsSyncSubscriber.onError(new LMISException("Products save failed"));
+        productSyncSubscriber.onError(new LMISException("Products save failed"));
 
         String message = RuntimeEnvironment.application.getString(R.string.msg_save_products_failed);
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(message);
         verify(mockActivity).loaded();
 
 
-        presenter.productsSyncSubscriber.onError(new NoFacilityForUserException("No Facility"));
+        productSyncSubscriber.onError(new NoFacilityForUserException("No Facility"));
         message = RuntimeEnvironment.application.getString(R.string.msg_user_not_facility);
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(message);
 
-        presenter.productsSyncSubscriber.onError(new Exception("Sync products failed"));
+        productSyncSubscriber.onError(new Exception("Sync products failed"));
         message = RuntimeEnvironment.application.getString(R.string.msg_sync_products_list_failed);
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(message);
     }
@@ -284,7 +287,7 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldNotGoToNextPageWhenSyncProductFailed(){
-        presenter.productsSyncSubscriber.onError(new Exception("error"));
+        productSyncSubscriber.onError(new Exception("error"));
 
         verify(mockActivity, times(1)).loaded();
         verify(mockActivity, times(0)).goToInitInventory();

@@ -158,7 +158,7 @@ public class LoginPresenter implements Presenter {
         if (!isLoadingProducts) {
             isLoadingProducts = true;
             view.loading(LMISApp.getInstance().getString(R.string.msg_fetching_products));
-            syncManager.syncProductsWithProgramAsync(productsSyncSubscriber);
+            syncManager.syncProductsWithProgramAsync(new ProductSyncSubscriber());
         }
     }
 
@@ -171,7 +171,7 @@ public class LoginPresenter implements Presenter {
         }
     }
 
-    protected SyncSubscriber<Void> productsSyncSubscriber = new SyncSubscriber<Void>() {
+    class ProductSyncSubscriber extends SyncSubscriber<Void> {
         @Override
         public void onCompleted() {
             isLoadingProducts = false;
@@ -194,7 +194,7 @@ public class LoginPresenter implements Presenter {
             }
             view.loaded();
         }
-    };
+    }
 
     private void syncRequisitionData() {
         if (!FeatureToggle.isOpen(R.bool.feature_sync_back_rnr_186)){
