@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 
+@Deprecated
 public class FlowLinearLayout extends LinearLayout {
     public FlowLinearLayout(Context context) {
         super(context);

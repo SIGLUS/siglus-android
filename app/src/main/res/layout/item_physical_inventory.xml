@@ -63,7 +63,7 @@
             android:layout_height="1dp"
             android:background="@color/material_blue_grey_800" />
 
-        <org.openlmis.core.view.widget.FlowLinearLayout
+        <org.apmem.tools.layouts.FlowLayout
             android:id="@+id/vg_expire_date_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -81,6 +81,6 @@
                 android:padding="@dimen/abc_control_padding_material"
                 android:text="@string/btn_add_expiry_date" />
 
-        </org.openlmis.core.view.widget.FlowLinearLayout>
+        </org.apmem.tools.layouts.FlowLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

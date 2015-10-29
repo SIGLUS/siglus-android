@@ -142,6 +142,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.0.0'
 
     compile 'com.j256.ormlite:ormlite-android:4.45'
+    compile 'org.apmem.tools:layouts:1.10@aar'
 
     compile('org.roboguice:roboguice:3.0.1')
     provided ('org.roboguice:roboblender:3.0.1')
