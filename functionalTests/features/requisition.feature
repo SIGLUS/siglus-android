@@ -37,7 +37,7 @@ Feature: Requisition
     Then I swipe right
     Then I swipe right
     Then I should see "345"
-    Then I press "submit for approve"
+    Then I press "Submit for Approval"
     And I wait for 1 second
     Then I press "Complete"
     Then I wait for the "RequisitionActivity" screen to appear
