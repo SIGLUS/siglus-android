@@ -140,7 +140,9 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     private void initExpireDateView(String date, final ViewGroup expireDateContainer) {
         try {
             final String expireDate = DateUtil.convertDate(date, DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
-            addExpireDateView(expireDate, expireDateContainer);
+            final View expireDateView = addExpireDateView(expireDate, expireDateContainer);
+            View ivClear = expireDateView.findViewById(R.id.iv_clear);
+            ivClear.setVisibility(View.INVISIBLE);
         } catch (ParseException e) {
             e.printStackTrace();
         }
