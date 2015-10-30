@@ -24,7 +24,6 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -84,7 +83,7 @@ public class RnRForm extends BaseModel {
     private Date submittedTime;
 
 
-    public static RnRForm init(Program program, Date generateDate){
+    public static RnRForm init(Program program, Date generateDate) {
         RnRForm rnrForm = new RnRForm();
         rnrForm.program = program;
 
@@ -95,10 +94,10 @@ public class RnRForm extends BaseModel {
         int year = calendar.get(Calendar.YEAR);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        if (day <= DAY_PERIOD_END + 5){
+        if (day <= DAY_PERIOD_END + 5) {
             rnrForm.periodBegin = new GregorianCalendar(year, month - 1, DAY_PERIOD_END + 1).getTime();
-            rnrForm.periodEnd =  new GregorianCalendar(year, month, DAY_PERIOD_END).getTime();
-        } else{
+            rnrForm.periodEnd = new GregorianCalendar(year, month, DAY_PERIOD_END).getTime();
+        } else {
             rnrForm.periodBegin = new GregorianCalendar(year, month, DAY_PERIOD_END + 1).getTime();
             rnrForm.periodEnd = new GregorianCalendar(year, month + 1, DAY_PERIOD_END).getTime();
         }
@@ -119,21 +118,21 @@ public class RnRForm extends BaseModel {
 
     public ArrayList<RnrFormItem> getRnrFormItemListWrapper() {
         if (rnrFormItemListWrapper == null) {
-            rnrFormItemListWrapper = new ArrayList(rnrFormItemList);
+            rnrFormItemListWrapper = (rnrFormItemList == null ? new ArrayList<RnrFormItem>() : new ArrayList<>(rnrFormItemList));
         }
         return rnrFormItemListWrapper;
     }
 
     public ArrayList<BaseInfoItem> getBaseInfoItemListWrapper() {
         if (baseInfoItemListWrapper == null) {
-            baseInfoItemListWrapper = new ArrayList(baseInfoItemList);
+            baseInfoItemListWrapper = (baseInfoItemList == null ? new ArrayList<BaseInfoItem>() : new ArrayList<>(baseInfoItemList));
         }
         return baseInfoItemListWrapper;
     }
 
     public ArrayList<RegimenItem> getRegimenItemListWrapper() {
         if (regimenItemListWrapper == null) {
-            regimenItemListWrapper = new ArrayList(regimenItemList);
+            regimenItemListWrapper = (regimenItemList == null ? new ArrayList<RegimenItem>() : new ArrayList<>(regimenItemList));
         }
         return regimenItemListWrapper;
     }

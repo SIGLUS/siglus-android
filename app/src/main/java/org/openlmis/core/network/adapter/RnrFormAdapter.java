@@ -45,19 +45,19 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
         root.addProperty("agentCode", UserInfoMgr.getInstance().getUser().getFacilityCode());
         try {
             root.addProperty("programCode", programCode);
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             Log.e(RnrFormAdapter.class.getSimpleName(), "No Program associated !");
         }
 
-        if (rnRForm.getRnrFormItemList() != null){
-            root.add("products", serializeProductItems(rnRForm.getRnrFormItemList(), programCode));
+        if (rnRForm.getRnrFormItemListWrapper() != null && rnRForm.getRnrFormItemListWrapper().size() > 0) {
+            root.add("products", serializeProductItems(rnRForm.getRnrFormItemListWrapper(), programCode));
         }
 
-        if (rnRForm.getRegimenItemList() != null && programCode.equals(MMIARepository.MMIA_PROGRAM_CODE)){
+        if (rnRForm.getRegimenItemList() != null && programCode.equals(MMIARepository.MMIA_PROGRAM_CODE)) {
             root.add("regimens", serializeRegimens(rnRForm.getRegimenItemList()));
         }
 
-        if (rnRForm.getBaseInfoItemList() !=null){
+        if (rnRForm.getBaseInfoItemList() != null) {
             root.add("patientQuantifications", serializePatientInfo(rnRForm.getBaseInfoItemList()));
         }
 
@@ -69,9 +69,9 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
         return root;
     }
 
-    private JsonArray serializeProductItems(Iterable<RnrFormItem> productItems, String programCode){
+    private JsonArray serializeProductItems(Iterable<RnrFormItem> productItems, String programCode) {
         JsonArray products = new JsonArray();
-        for (RnrFormItem item : productItems){
+        for (RnrFormItem item : productItems) {
             JsonObject product = new JsonObject();
             product.addProperty("productCode", item.getProduct().getCode());
             product.addProperty("beginningBalance", item.getInitialAmount());
@@ -84,14 +84,15 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
                 product.addProperty("calculatedOrderQuantity", item.getCalculatedOrderQuantity());
             }
             product.addProperty("totalLossesAndAdjustments", item.getAdjustment());
+            product.addProperty("expirationDate", item.getValidate());
             products.add(product);
         }
         return products;
     }
 
-    private JsonArray serializeRegimens(Iterable<RegimenItem> regimenItems){
+    private JsonArray serializeRegimens(Iterable<RegimenItem> regimenItems) {
         JsonArray regimens = new JsonArray();
-        for (RegimenItem item : regimenItems){
+        for (RegimenItem item : regimenItems) {
             JsonObject regimenItem = new JsonObject();
             regimenItem.addProperty("code", item.getRegimen().getCode());
             regimenItem.addProperty("name", item.getRegimen().getName());
@@ -103,9 +104,9 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
         return regimens;
     }
 
-    private JsonArray serializePatientInfo(Iterable<BaseInfoItem> patientInfoItems){
+    private JsonArray serializePatientInfo(Iterable<BaseInfoItem> patientInfoItems) {
         JsonArray patientInfos = new JsonArray();
-        for (BaseInfoItem item : patientInfoItems){
+        for (BaseInfoItem item : patientInfoItems) {
             JsonObject patientInfo = new JsonObject();
             patientInfo.addProperty("category", item.getName());
             patientInfo.addProperty("total", item.getValue());

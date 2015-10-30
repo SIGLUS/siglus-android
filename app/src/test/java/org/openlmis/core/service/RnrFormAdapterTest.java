@@ -25,15 +25,17 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
-import java.util.Date;
+import java.util.ArrayList;
 
 import roboguice.RoboGuice;
 
@@ -75,5 +77,22 @@ public class RnrFormAdapterTest {
 
         JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
         assertThat(rnrJson.getAsJsonObject().get("clientSubmittedTime").toString(), is("\"2015-10-14 01:01:11\""));
+    }
+
+    @Test
+    public void shouldSerializeRnrFormWithExpirationDate() throws Exception {
+        UserInfoMgr.getInstance().setUser(new User("user", "password"));
+
+        ArrayList<RnrFormItem> rnrFormItemListWrapper=new ArrayList<>();
+        RnrFormItem rnrFormItem = new RnrFormItem();
+        rnrFormItem.setProduct(new Product());
+        rnrFormItem.setValidate("10/11/2015");
+        rnrFormItemListWrapper.add(rnrFormItem);
+        rnRForm.setRnrFormItemListWrapper(rnrFormItemListWrapper);
+
+        rnRForm.setSubmittedTime(DateUtil.parseString("2015-10-14 01:01:11", "yyyy-MM-dd HH:mm:ss"));
+
+        JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
+        assertThat(rnrJson.getAsJsonObject().get("products").getAsJsonArray().get(0).getAsJsonObject().get("expirationDate").toString(), is("\"10/11/2015\""));
     }
 }

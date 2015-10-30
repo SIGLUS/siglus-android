@@ -87,7 +87,8 @@ describe "submit requisition to web server" do
         totalLossesAndAdjustments: 0,
         stockInHand: 20,
         quantityRequested: 0,
-        reasonForRequestedQuantity: "reason"
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
       },
       {
         productCode: "08S17",
@@ -97,7 +98,8 @@ describe "submit requisition to web server" do
         totalLossesAndAdjustments: 0,
         stockInHand: 10,
         quantityRequested: 0,
-        reasonForRequestedQuantity: "reason"
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
       }
       ],
       regimens: [
