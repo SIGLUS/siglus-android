@@ -48,7 +48,6 @@ import org.openlmis.core.network.model.ProductsResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SubmitRequisitionResponse;
 import org.openlmis.core.network.model.SyncBackRequisitionsResponse;
-import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -304,14 +303,7 @@ public class SyncManager {
         List<StockMovementEntry> syncList = FluentIterable.from(stockMovementItems).transform(new Function<StockMovementItem, StockMovementEntry>() {
             @Override
             public StockMovementEntry apply(StockMovementItem stockMovementItem) {
-                StockMovementEntry entry = new StockMovementEntry();
-                String date = DateUtil.formatDate(stockMovementItem.getMovementDate(), "yyyyMMdd'T'HHmmssZ");
-                entry.setOccurred(date);
-                entry.setProductCode(stockMovementItem.getStockCard().getProduct().getCode());
-                entry.setQuantity(stockMovementItem.getMovementQuantity());
-                entry.setReasonName(stockMovementItem.getReason());
-                entry.setFacilityId(facilityId);
-                return entry;
+                return new StockMovementEntry(stockMovementItem, facilityId);
             }
         }).toList();
 
@@ -332,4 +324,5 @@ public class SyncManager {
 
         return false;
     }
+
 }

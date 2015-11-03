@@ -18,13 +18,38 @@
 
 package org.openlmis.core.network.model;
 
+import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.utils.DateUtil;
+
+import java.util.HashMap;
+
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class StockMovementEntry {
     String facilityId;
     String productCode;
     long quantity;
     String reasonName;
     String occurred;
+    String type;
+    HashMap<String,String> customProps = new HashMap<>();
+
+    public  StockMovementEntry(StockMovementItem stockMovementItem, String facilityId) {
+        String date = DateUtil.formatDate(stockMovementItem.getMovementDate(), "yyyyMMdd'T'HHmmssZ");
+        this.setOccurred(date);
+        this.setProductCode(stockMovementItem.getStockCard().getProduct().getCode());
+        if (MovementReasonManager.INVENTORY.equals(stockMovementItem.getReason())){
+            this.setQuantity(stockMovementItem.getStockOnHand());
+        }else{
+            this.setQuantity(stockMovementItem.getMovementQuantity());
+        }
+        this.setReasonName(stockMovementItem.getReason());
+        this.setFacilityId(facilityId);
+        this.setType("ADJUSTMENT");
+        this.getCustomProps().put("expirationDates", stockMovementItem.getStockCard().getExpireDates());
+    }
 }
