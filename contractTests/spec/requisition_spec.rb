@@ -239,7 +239,7 @@ describe "submit requisition to web server" do
 
     expect(requisition_id).not_to be_nil
 
-    response = RestClient.get "http://#{WEB_DEV_URI}/rest-api/requisitions/#{requisition_id}",
+    response = RestClient.get "http://#{WEB_DEV_URI}/rest-api/requisitions?facilityCode=F10",
       'Content-Type' => 'application/json',
       'Accept' => 'application/json',
       'Authorization' => http_basic_auth('superuser', 'password1')
@@ -248,7 +248,7 @@ describe "submit requisition to web server" do
 
     body = JSON.parse(response.body)
 
-    expect(body['requisition']['id']).to eq requisition_id
+    expect(body['requisitions']['periodStartDate']).not_to be_nil
     expect(body['requisition']['programCode']).to eq "MMIA"
     expect(body['requisition']['agentCode']).to eq "F10"
     expect(body['requisition']['emergency']).to be false
