@@ -31,16 +31,20 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockCardBuilder;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.network.LMISRestApi;
-import org.openlmis.core.network.model.RequisitionResponse;
+import org.openlmis.core.network.model.SubmitRequisitionResponse;
+import org.openlmis.core.network.model.SyncBackRequisitionsResponse;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -55,7 +59,6 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -69,6 +72,8 @@ public class SyncManagerTest {
 
     SyncManager syncManager;
     RnrFormRepository rnrFormRepository;
+    MMIARepository mmiaRepository;
+    VIARepository viaRepository;
     LMISRestApi lmisRestApi;
     StockRepository stockRepository;
 
@@ -76,11 +81,15 @@ public class SyncManagerTest {
     public void setup() throws LMISException {
         rnrFormRepository = mock(RnrFormRepository.class);
         lmisRestApi = mock(LMISRestApi.class);
+        mmiaRepository = mock(MMIARepository.class);
+        viaRepository = mock(VIARepository.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
             @Override
             public void configure(Binder binder) {
                 binder.bind(RnrFormRepository.class).toInstance(rnrFormRepository);
+                binder.bind(MMIARepository.class).toInstance(mmiaRepository);
+                binder.bind(VIARepository.class).toInstance(viaRepository);
             }
         });
 
@@ -98,14 +107,14 @@ public class SyncManagerTest {
     @Test
     public void shouldSubmitAllUnsyncedRequisitions() throws LMISException, SQLException {
         List<RnRForm> unSyncedList = new ArrayList<>();
-        for (int i=0;i<10;i++){
+        for (int i = 0; i < 10; i++) {
             RnRForm form = new RnRForm();
             unSyncedList.add(form);
         }
 
         when(rnrFormRepository.listUnSynced()).thenReturn(unSyncedList);
 
-        RequisitionResponse response =  new RequisitionResponse();
+        SubmitRequisitionResponse response = new SubmitRequisitionResponse();
         response.setRequisitionId("1");
         when(lmisRestApi.submitRequisition(any(RnRForm.class))).thenReturn(response);
 
@@ -131,7 +140,7 @@ public class SyncManagerTest {
     }
 
     @Test
-    public void shouldNotMarkAsSyncedWhenStockMovementSyncFailed() throws LMISException{
+    public void shouldNotMarkAsSyncedWhenStockMovementSyncFailed() throws LMISException {
         StockCard stockCard = createTestStockCardData();
 
         doThrow(new RuntimeException("Sync Failed")).when(lmisRestApi).pushStockMovementData(anyString(), anyList());
@@ -168,5 +177,28 @@ public class SyncManagerTest {
         stockRepository.addStockMovementAndUpdateStockCard(stockCard, item);
         stockRepository.refresh(stockCard);
         return stockCard;
+    }
+
+    @Test
+    public void shouldSyncRequisitionDataSuccess() throws LMISException, SQLException {
+        List<RnRForm> data = new ArrayList<>();
+        RnRForm MMIAForm = new RnRForm();
+        Program program = new Program();
+        program.setProgramCode(MMIARepository.MMIA_PROGRAM_CODE);
+        MMIAForm.setProgram(program);
+        data.add(MMIAForm);
+
+        RnRForm VIAForm = new RnRForm();
+        Program program2 = new Program();
+        program2.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
+        VIAForm.setProgram(program2);
+        data.add(VIAForm);
+
+        SyncBackRequisitionsResponse syncBackRequisitionsResponse = new SyncBackRequisitionsResponse();
+        syncBackRequisitionsResponse.setRequisitions(data);
+        when(lmisRestApi.fetchRequisitions(anyString())).thenReturn(syncBackRequisitionsResponse);
+        syncManager.fetchAndSaveRequisitionData();
+        verify(mmiaRepository).createFormAndItems(any(RnRForm.class));
+        verify(viaRepository).createFormAndItems(any(RnRForm.class));
     }
 }

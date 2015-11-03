@@ -26,8 +26,8 @@ import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.model.ProductsResponse;
 import org.openlmis.core.network.model.RequisitionResponse;
+import org.openlmis.core.network.model.SyncBackRequisitionsResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
-
 
 import java.util.List;
 
@@ -45,6 +45,9 @@ public interface LMISRestApi {
 
     @GET("/rest-api/programs-with-products")
     ProductsResponse fetchProducts(@Query("facilityCode") String facilityCode);
+
+    @GET("/rest-api/requisitions")
+    SyncBackRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode);
 
     @POST("/rest-api/requisitions")
     RequisitionResponse submitRequisition(@Body RnRForm rnRForm);

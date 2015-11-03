@@ -86,24 +86,28 @@ public class RnrFormRepository {
         }
         final RnRForm form = RnRForm.init(program, DateUtil.today());
         try {
-            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
-                @Override
-                public Object call() throws Exception {
-                    create(form);
-                    createRnrFormItems(generateRnrFormItems(form));
-                    createRegimenItems(generateRegimeItems(form));
-                    createBaseInfoItems(generateBaseInfoItems(form));
-                    genericDao.refresh(form);
-                    return null;
-                }
-            });
+            createFormAndItems(form);
         } catch (SQLException e) {
             throw new LMISException(e);
         }
         return form;
     }
 
-    protected void create(RnRForm rnRForm) throws LMISException {
+    public void createFormAndItems(final RnRForm form) throws SQLException {
+        TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                create(form);
+                createRnrFormItems(generateRnrFormItems(form));
+                createRegimenItems(generateRegimeItems(form));
+                createBaseInfoItems(generateBaseInfoItems(form));
+                genericDao.refresh(form);
+                return null;
+            }
+        });
+    }
+
+    public void create(RnRForm rnRForm) throws LMISException {
         genericDao.create(rnRForm);
     }
 

@@ -37,19 +37,23 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.model.ProductsResponse;
 import org.openlmis.core.network.model.RequisitionResponse;
+import org.openlmis.core.network.model.SyncBackRequisitionsResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import roboguice.inject.InjectResource;
@@ -81,6 +85,12 @@ public class SyncManager {
 
     @Inject
     RnrFormRepository rnrFormRepository;
+
+    @Inject
+    MMIARepository mmiaRepository;
+
+    @Inject
+    VIARepository viaRepository;
 
     @Inject
     StockRepository stockRepository;
@@ -164,7 +174,7 @@ public class SyncManager {
     public void syncProductsWithProgram() throws Exception {
         User user = UserInfoMgr.getInstance().getUser();
 
-        if (StringUtils.isEmpty(user.getFacilityCode())){
+        if (StringUtils.isEmpty(user.getFacilityCode())) {
             throw new NoFacilityForUserException("No Facility for this User");
         }
         ProductsResponse response = lmisRestApi.fetchProducts(user.getFacilityCode());
@@ -193,15 +203,34 @@ public class SyncManager {
 
             @Override
             public void call(Subscriber<? super Void> subscriber) {
-                //TODO should make real api call
                 try {
-                    Thread.sleep(5 * 1000);
-                } catch (InterruptedException e) {
+                    fetchAndSaveRequisitionData();
+                } catch (LMISException | SQLException e) {
                     subscriber.onError(new LMISException("Syncing back data failed"));
+                    e.printStackTrace();
                 }
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
+    }
+
+    protected void fetchAndSaveRequisitionData() throws LMISException, SQLException {
+        SyncBackRequisitionsResponse syncBackRequisitionsResponse = lmisRestApi.fetchRequisitions(UserInfoMgr.getInstance().getUser().getFacilityCode());
+        List<RnRForm> rnRForms = syncBackRequisitionsResponse.getRequisitions();
+        for (RnRForm form : rnRForms) {
+            String programCode = form.getProgram().getProgramCode();
+
+            switch (programCode){
+                case MMIARepository.MMIA_PROGRAM_CODE:
+                    mmiaRepository.createFormAndItems(form);
+                    break;
+                case VIARepository.VIA_PROGRAM_CODE:
+                    viaRepository.createFormAndItems(form);
+                    break;
+                default:
+                    throw new LMISException("this program code cannot be create");
+            }
+        }
     }
 
     public boolean syncRnr() {
@@ -210,7 +239,7 @@ public class SyncManager {
             forms = rnrFormRepository.listUnSynced();
             Log.d(TAG, "===> SyncRnR :" + forms.size() + " RnrForm ready to sync...");
 
-            if (forms.size() == 0){
+            if (forms.size() == 0) {
                 return false;
             }
         } catch (LMISException e) {
@@ -256,17 +285,17 @@ public class SyncManager {
         }
     }
 
-    public boolean syncStockCards(){
+    public boolean syncStockCards() {
         List<StockMovementItem> stockMovementItems;
         try {
             stockMovementItems = stockRepository.listUnSynced();
             Log.d(TAG, "===> SyncStockMovement :" + stockMovementItems.size() + " StockMovement ready to sync...");
-        }catch (LMISException e){
+        } catch (LMISException e) {
             e.printStackTrace();
             return false;
         }
 
-        if (stockMovementItems.isEmpty()){
+        if (stockMovementItems.isEmpty()) {
             return false;
         }
 

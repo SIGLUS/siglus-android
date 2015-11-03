@@ -78,6 +78,15 @@ public class ProductRepository {
         return null;
     }
 
+    public Product getByCode(final String code) throws LMISException {
+        return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, Product>() {
+            @Override
+            public Product operate(Dao<Product, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("code", code).queryForFirst();
+            }
+        });
+    }
+
 
     public List<Product> queryProducts(final long programId) throws LMISException {
         return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {

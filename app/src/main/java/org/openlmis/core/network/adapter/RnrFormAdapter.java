@@ -18,26 +18,51 @@
 
 package org.openlmis.core.network.adapter;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.MMIARepository;
+import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.VIARepository;
+import org.openlmis.core.network.model.SyncBackRequisitionsResponse;
 import org.openlmis.core.utils.DateUtil;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Date;
 
-public class RnrFormAdapter implements JsonSerializer<RnRForm> {
+import roboguice.RoboGuice;
+
+public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer<SyncBackRequisitionsResponse> {
+    @Inject
+    public ProductRepository productRepository;
+
+    @Inject
+    public ProgramRepository programRepository;
+
+    public RnrFormAdapter() {
+        RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
+    }
+
     @Override
     public JsonElement serialize(RnRForm rnRForm, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject root = new JsonObject();
@@ -112,6 +137,114 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
             patientInfo.addProperty("total", item.getValue());
 
             patientInfos.add(patientInfo);
+        }
+        return patientInfos;
+    }
+
+    @Override
+    public SyncBackRequisitionsResponse deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        return convertRnrForms(json);
+    }
+
+    public SyncBackRequisitionsResponse convertRnrForms(JsonElement json) {
+        ArrayList<RnRForm> rnRForms = new ArrayList<>();
+        JsonElement requisitions = json.getAsJsonObject().get("requisitions");
+        JsonArray asJsonArray = requisitions.getAsJsonArray();
+        for (JsonElement element : asJsonArray) {
+            JsonObject asJsonObject = element.getAsJsonObject();
+            JsonElement periodStartDate = asJsonObject.get("periodStartDate");
+
+            Program program = null;
+            try {
+                program = programRepository.queryByCode(asJsonObject.get("programCode").getAsString());
+            } catch (LMISException e) {
+                e.printStackTrace();
+            }
+            Date date = new Date(periodStartDate.getAsLong());
+            RnRForm rnRForm = RnRForm.init(program, date);
+
+            rnRForm.setStatus(RnRForm.STATUS.SUBMITTED);
+            rnRForm.setSynced(true);
+
+            JsonArray products = asJsonObject.get("products").getAsJsonArray();
+            rnRForm.setRnrFormItemListWrapper(deserializeProductItems(products));
+            JsonArray regimens = asJsonObject.get("regimens").getAsJsonArray();
+            rnRForm.setRegimenItemListWrapper(deserializeRegimens(regimens));
+            JsonArray patientQuantifications = asJsonObject.get("patientQuantifications").getAsJsonArray();
+            rnRForm.setBaseInfoItemListWrapper(deserializePatientInfo(patientQuantifications));
+            JsonElement submittedNotes = asJsonObject.get("clientSubmittedNotes");
+
+            if (submittedNotes != null) {
+                rnRForm.setComments(submittedNotes.getAsString());
+            }
+
+            rnRForm.setSubmittedTime(new Date(asJsonObject.get("clientSubmittedTime").getAsLong()));
+
+            rnRForms.add(rnRForm);
+        }
+        SyncBackRequisitionsResponse response = new SyncBackRequisitionsResponse();
+        response.setRequisitions(rnRForms);
+        return response;
+    }
+
+    @NonNull
+    private ArrayList<RnrFormItem> deserializeProductItems(JsonArray products) {
+        ArrayList<RnrFormItem> items = new ArrayList<>();
+        for (JsonElement productJson : products) {
+            JsonObject productJsonAsJsonObject = productJson.getAsJsonObject();
+            RnrFormItem item = new RnrFormItem();
+
+            if (productJsonAsJsonObject.has("beginningBalance")) {
+                item.setInitialAmount(productJsonAsJsonObject.get("beginningBalance").getAsLong());
+            }
+            if (productJsonAsJsonObject.has("quantityReceived")) {
+                item.setReceived(productJsonAsJsonObject.get("quantityReceived").getAsLong());
+            }
+            if (productJsonAsJsonObject.has("quantityDispensed")) {
+                item.setIssued(productJsonAsJsonObject.get("quantityDispensed").getAsLong());
+            }
+            if (productJsonAsJsonObject.has("stockInHand")) {
+                item.setInventory(productJsonAsJsonObject.get("stockInHand").getAsLong());
+            }
+            if (productJsonAsJsonObject.has("quantityRequested")) {
+                item.setRequestAmount(productJsonAsJsonObject.get("quantityRequested").getAsLong());
+            }
+            item.setAdjustment(productJsonAsJsonObject.get("totalLossesAndAdjustments").getAsLong());
+            if (productJsonAsJsonObject.has("expirationDate")) {
+                item.setValidate(productJsonAsJsonObject.get("expirationDate").getAsString());
+            }
+            if (productJsonAsJsonObject.has("calculatedOrderQuantity")) {
+                item.setCalculatedOrderQuantity(productJsonAsJsonObject.get("calculatedOrderQuantity").getAsLong());
+            }
+            try {
+                item.setProduct(productRepository.getByCode(productJsonAsJsonObject.get("productCode").getAsString()));
+            } catch (LMISException e) {
+                e.printStackTrace();
+            }
+            items.add(item);
+        }
+        return items;
+    }
+
+    private ArrayList<RegimenItem> deserializeRegimens(JsonArray regimenItems) {
+        ArrayList<RegimenItem> regimens = new ArrayList<>();
+        for (JsonElement regimenJson : regimenItems.getAsJsonArray()) {
+            RegimenItem regimenItem = new RegimenItem();
+            JsonObject asJsonObject = regimenJson.getAsJsonObject();
+            regimenItem.setAmount(asJsonObject.get("patientsOnTreatment").getAsLong());
+            regimens.add(regimenItem);
+        }
+        return regimens;
+    }
+
+    private ArrayList<BaseInfoItem> deserializePatientInfo(JsonArray patientInfoItems) {
+        ArrayList<BaseInfoItem> patientInfos = new ArrayList<>();
+        for (JsonElement element : patientInfoItems.getAsJsonArray()) {
+            BaseInfoItem baseInfoItem = new BaseInfoItem();
+            JsonObject asJsonObject = element.getAsJsonObject();
+            baseInfoItem.setName(asJsonObject.get("category").getAsString());
+            baseInfoItem.setValue(asJsonObject.get("total").getAsString());
+            patientInfos.add(baseInfoItem);
         }
         return patientInfos;
     }
