@@ -23,7 +23,6 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -135,5 +134,18 @@ public class RnRForm extends BaseModel {
             regimenItemListWrapper = (regimenItemList == null ? new ArrayList<RegimenItem>() : new ArrayList<>(regimenItemList));
         }
         return regimenItemListWrapper;
+    }
+
+    public static void setPeriodByPeriodBegin(Date periodBegin, RnRForm rnRForm) {
+        rnRForm.setPeriodBegin(periodBegin);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(periodBegin);
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+
+        Date periodEnd = new GregorianCalendar(year, month + 1, DAY_PERIOD_END).getTime();
+
+        rnRForm.setPeriodEnd(periodEnd);
     }
 }

@@ -31,17 +31,14 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockCardBuilder;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
-import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SubmitRequisitionResponse;
@@ -74,8 +71,6 @@ public class SyncManagerTest {
 
     SyncManager syncManager;
     RnrFormRepository rnrFormRepository;
-    MMIARepository mmiaRepository;
-    VIARepository viaRepository;
     LMISRestApi lmisRestApi;
     StockRepository stockRepository;
 
@@ -83,15 +78,11 @@ public class SyncManagerTest {
     public void setup() throws LMISException {
         rnrFormRepository = mock(RnrFormRepository.class);
         lmisRestApi = mock(LMISRestApi.class);
-        mmiaRepository = mock(MMIARepository.class);
-        viaRepository = mock(VIARepository.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
             @Override
             public void configure(Binder binder) {
                 binder.bind(RnrFormRepository.class).toInstance(rnrFormRepository);
-                binder.bind(MMIARepository.class).toInstance(mmiaRepository);
-                binder.bind(VIARepository.class).toInstance(viaRepository);
             }
         });
 
@@ -194,23 +185,13 @@ public class SyncManagerTest {
     @Test
     public void shouldSyncRequisitionDataSuccess() throws LMISException, SQLException {
         List<RnRForm> data = new ArrayList<>();
-        RnRForm MMIAForm = new RnRForm();
-        Program program = new Program();
-        program.setProgramCode(MMIARepository.MMIA_PROGRAM_CODE);
-        MMIAForm.setProgram(program);
-        data.add(MMIAForm);
-
-        RnRForm VIAForm = new RnRForm();
-        Program program2 = new Program();
-        program2.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
-        VIAForm.setProgram(program2);
-        data.add(VIAForm);
+        data.add(new RnRForm());
+        data.add(new RnRForm());
 
         SyncBackRequisitionsResponse syncBackRequisitionsResponse = new SyncBackRequisitionsResponse();
         syncBackRequisitionsResponse.setRequisitions(data);
         when(lmisRestApi.fetchRequisitions(anyString())).thenReturn(syncBackRequisitionsResponse);
         syncManager.fetchAndSaveRequisitionData();
-        verify(mmiaRepository).createFormAndItems(any(RnRForm.class));
-        verify(viaRepository).createFormAndItems(any(RnRForm.class));
+        verify(rnrFormRepository,times(2)).createFormAndItems(any(RnRForm.class));
     }
 }

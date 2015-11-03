@@ -152,18 +152,19 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
         JsonArray asJsonArray = requisitions.getAsJsonArray();
         for (JsonElement element : asJsonArray) {
             JsonObject asJsonObject = element.getAsJsonObject();
-            JsonElement periodStartDate = asJsonObject.get("periodStartDate");
+            long periodStartDate = asJsonObject.get("periodStartDate").getAsLong();
 
+            RnRForm rnRForm = new RnRForm();
             Program program = null;
             try {
                 program = programRepository.queryByCode(asJsonObject.get("programCode").getAsString());
             } catch (LMISException e) {
                 e.printStackTrace();
             }
-            Date date = new Date(periodStartDate.getAsLong());
-            RnRForm rnRForm = RnRForm.init(program, date);
+            rnRForm.setProgram(program);
+            RnRForm.setPeriodByPeriodBegin(new Date(periodStartDate), rnRForm);
 
-            rnRForm.setStatus(RnRForm.STATUS.SUBMITTED);
+            rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
             rnRForm.setSynced(true);
 
             JsonArray products = asJsonObject.get("products").getAsJsonArray();

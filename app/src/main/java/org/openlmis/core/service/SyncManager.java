@@ -37,11 +37,9 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
-import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.model.ProductsResponse;
@@ -84,12 +82,6 @@ public class SyncManager {
 
     @Inject
     RnrFormRepository rnrFormRepository;
-
-    @Inject
-    MMIARepository mmiaRepository;
-
-    @Inject
-    VIARepository viaRepository;
 
     @Inject
     StockRepository stockRepository;
@@ -217,18 +209,7 @@ public class SyncManager {
         SyncBackRequisitionsResponse syncBackRequisitionsResponse = lmisRestApi.fetchRequisitions(UserInfoMgr.getInstance().getUser().getFacilityCode());
         List<RnRForm> rnRForms = syncBackRequisitionsResponse.getRequisitions();
         for (RnRForm form : rnRForms) {
-            String programCode = form.getProgram().getProgramCode();
-
-            switch (programCode){
-                case MMIARepository.MMIA_PROGRAM_CODE:
-                    mmiaRepository.createFormAndItems(form);
-                    break;
-                case VIARepository.VIA_PROGRAM_CODE:
-                    viaRepository.createFormAndItems(form);
-                    break;
-                default:
-                    throw new LMISException("this program code cannot be create");
-            }
+            rnrFormRepository.createFormAndItems(form);
         }
     }
 
