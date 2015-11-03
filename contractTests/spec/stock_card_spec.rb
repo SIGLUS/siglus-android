@@ -16,7 +16,10 @@ describe "Sync stock card data" do
         quantity: 1000,
         type: "ADJUSTMENT",
         reasonName: "DISTRICT_DDM",
-        occurred: "20151010T030530Z"
+        occurred: "20151010T030530Z",
+        customProps: {
+          expirationDates: "10/10/2016, 12/12/2016"
+        }
       },
       {
         facilityId: facility_id,
@@ -24,7 +27,10 @@ describe "Sync stock card data" do
         quantity: 500,
         type: "ADJUSTMENT",
         reasonName: "PUB_PHARMACY",
-        occurred: "20151014T030530Z"
+        occurred: "20151014T030530Z",
+        customProps: {
+          expirationDates: "10/10/2017, 12/12/2017"
+        }
       },
       {
         facilityId: facility_id,
@@ -32,7 +38,10 @@ describe "Sync stock card data" do
         quantity: 20,
         type: "ADJUSTMENT",
         reasonName: "LOANS_DEPOSIT",
-        occurred: "20151015T030530Z"
+        occurred: "20151015T030530Z",
+        customProps: {
+          expirationDates: "10/10/2018, 12/12/2018"
+        }
       }
       ]
 
