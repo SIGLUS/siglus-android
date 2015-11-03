@@ -25,7 +25,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.model.ProductsResponse;
-import org.openlmis.core.network.model.RequisitionResponse;
+import org.openlmis.core.network.model.SubmitRequisitionResponse;
 import org.openlmis.core.network.model.SyncBackRequisitionsResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
 
@@ -50,7 +50,7 @@ public interface LMISRestApi {
     SyncBackRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode);
 
     @POST("/rest-api/requisitions")
-    RequisitionResponse submitRequisition(@Body RnRForm rnRForm);
+    SubmitRequisitionResponse submitRequisition(@Body RnRForm rnRForm);
 
     @POST("/rest-api/facilities/{facilityId}/stockCards")
     JsonObject pushStockMovementData(@Path("facilityId") String facilityId, @Body List<StockMovementEntry> entries);

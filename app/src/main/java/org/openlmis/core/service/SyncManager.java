@@ -45,9 +45,9 @@ import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.model.ProductsResponse;
-import org.openlmis.core.network.model.RequisitionResponse;
-import org.openlmis.core.network.model.SyncBackRequisitionsResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
+import org.openlmis.core.network.model.SubmitRequisitionResponse;
+import org.openlmis.core.network.model.SyncBackRequisitionsResponse;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
@@ -268,7 +268,7 @@ public class SyncManager {
 
     private boolean submitRequisition(RnRForm rnRForm) {
         try {
-            RequisitionResponse response = lmisRestApi.submitRequisition(rnRForm);
+            SubmitRequisitionResponse response = lmisRestApi.submitRequisition(rnRForm);
             return StringUtils.isEmpty(response.getError());
         } catch (Exception e) {
             Log.e(TAG, "===> SyncRnr : synced failed ->" + e.getMessage());
