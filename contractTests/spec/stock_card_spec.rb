@@ -14,6 +14,7 @@ describe "Sync stock card data" do
         facilityId: facility_id,
         productCode: "08S42",
         quantity: 1000,
+        type: "ADJUSTMENT",
         reasonName: "DISTRICT_DDM",
         occurred: "20151010T030530Z"
       },
@@ -21,6 +22,7 @@ describe "Sync stock card data" do
         facilityId: facility_id,
         productCode: "08S42",
         quantity: 500,
+        type: "ADJUSTMENT",
         reasonName: "PUB_PHARMACY",
         occurred: "20151014T030530Z"
       },
@@ -28,6 +30,7 @@ describe "Sync stock card data" do
         facilityId: facility_id,
         productCode: "08S42",
         quantity: 20,
+        type: "ADJUSTMENT",
         reasonName: "LOANS_DEPOSIT",
         occurred: "20151015T030530Z"
       }
