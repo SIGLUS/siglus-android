@@ -18,6 +18,8 @@
 
 package org.openlmis.core.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -28,28 +30,51 @@ import lombok.Setter;
 @Setter
 @DatabaseTable(tableName = "rnr_form_items")
 public class RnrFormItem extends BaseModel{
+    @Expose
+    @SerializedName("productCode")
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private Product product;
 
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private RnRForm form;
 
+    @Expose
+    @SerializedName("beginningBalance")
     @DatabaseField
     private long initialAmount;
+
+    @Expose
+    @SerializedName("quantityReceived")
     @DatabaseField
     private long received;
+
+    @Expose
+    @SerializedName("quantityDispensed")
     @DatabaseField
     private long issued;
+
+    @Expose
+    @SerializedName("totalLossesAndAdjustments")
     @DatabaseField
     private long adjustment;
+
+    @Expose
+    @SerializedName("stockInHand")
     @DatabaseField
     private long inventory;
+
+    @Expose
+    @SerializedName("expirationDate")
     @DatabaseField
     private String validate;
+
+    @SerializedName("quantityRequested")
     @DatabaseField
     private Long requestAmount;
     @DatabaseField
     private Long approvedAmount;
+
+    @SerializedName("calculatedOrderQuantity")
     @DatabaseField
     private long calculatedOrderQuantity;
 

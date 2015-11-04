@@ -18,7 +18,8 @@ public class RnRFormTest {
     public void shouldGetPeriodByPeriodBegin() throws Exception {
         RnRForm rnRForm=new RnRForm();
         Date periodBegin = DateUtil.parseString("21/09/2015", DateUtil.SIMPLE_DATE_FORMAT);
-        RnRForm.setPeriodByPeriodBegin(periodBegin,rnRForm);
+        rnRForm.setPeriodBegin(periodBegin);
+        RnRForm.setPeriodByPeriodBegin(rnRForm);
 
         assertThat(rnRForm.getPeriodBegin(), is(periodBegin));
         Date periodEnd = DateUtil.parseString("20/10/2015", DateUtil.SIMPLE_DATE_FORMAT);
@@ -29,7 +30,8 @@ public class RnRFormTest {
     public void shouldGetPeriodByPeriodBeginAtCriticalPoint() throws Exception {
         RnRForm rnRForm=new RnRForm();
         Date periodBegin = DateUtil.parseString("21/12/2015", DateUtil.SIMPLE_DATE_FORMAT);
-        RnRForm.setPeriodByPeriodBegin(periodBegin,rnRForm);
+        rnRForm.setPeriodBegin(periodBegin);
+        RnRForm.setPeriodByPeriodBegin(rnRForm);
 
         assertThat(rnRForm.getPeriodBegin(), is(periodBegin));
         Date periodEnd = DateUtil.parseString("20/01/2016", DateUtil.SIMPLE_DATE_FORMAT);

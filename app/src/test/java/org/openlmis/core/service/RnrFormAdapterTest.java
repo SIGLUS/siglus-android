@@ -42,7 +42,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
 import roboguice.RoboGuice;
 
@@ -58,18 +58,17 @@ import static org.mockito.Mockito.when;
 public class RnrFormAdapterTest {
     private RnrFormAdapter rnrFormAdapter;
     private RnRForm rnRForm;
-    private Program program;
     private ProductRepository mockProductRepository;
     private ProgramRepository mockProgramRepository;
 
     @Before
     public void setUp() throws LMISException {
-        mockProductRepository=mock(ProductRepository.class);
+        mockProductRepository = mock(ProductRepository.class);
         mockProgramRepository = mock(ProgramRepository.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         rnrFormAdapter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormAdapter.class);
         rnRForm = new RnRForm();
-        program = new Program();
+        Program program = new Program();
         program.setProgramCode(MMIARepository.MMIA_PROGRAM_CODE);
         rnRForm.setProgram(program);
     }
@@ -99,7 +98,7 @@ public class RnrFormAdapterTest {
     public void shouldSerializeRnrFormWithExpirationDate() throws Exception {
         UserInfoMgr.getInstance().setUser(new User("user", "password"));
 
-        ArrayList<RnrFormItem> rnrFormItemListWrapper=new ArrayList<>();
+        ArrayList<RnrFormItem> rnrFormItemListWrapper = new ArrayList<>();
         RnrFormItem rnrFormItem = new RnrFormItem();
         rnrFormItem.setProduct(new Product());
         rnrFormItem.setValidate("10/11/2015");
@@ -117,22 +116,24 @@ public class RnrFormAdapterTest {
         when(mockProductRepository.getByCode(anyString())).thenReturn(new Product());
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(new Program());
 
-        String json="{\"requisitions\":[{\"products\":[{\"id\":81,\"rnrId\":130,\"product\":\"Zidovudina 50mg/5ml Sol Oral Solution 10mg \",\"productDisplayOrder\":29,\"productCode\":\"08S17\",\"productCategory\":\"Antibiotics\",\"productCategoryDisplayOrder\":1,\"roundToZero\":false,\"packRoundingThreshold\":1,\"packSize\":10,\"dosesPerMonth\":13,\"dosesPerDispensingUnit\":10,\"dispensingUnit\":\"Strip\",\"maxMonthsOfStock\":3,\"fullSupply\":true,\"quantityReceived\":10,\"quantityDispensed\":10,\"beginningBalance\":10,\"totalLossesAndAdjustments\":0,\"stockInHand\":10,\"stockOutDays\":0,\"newPatientCount\":0,\"quantityRequested\":0,\"reasonForRequestedQuantity\":\"reason\",\"amc\":10,\"normalizedConsumption\":10,\"periodNormalizedConsumption\":10,\"calculatedOrderQuantity\":20,\"maxStockQuantity\":30,\"quantityApproved\":0,\"reportingDays\":30,\"packsToShip\":1,\"expirationDate\":\"10/10/2016\",\"price\":0,\"skipped\":false}],\"nonFullSupplyProducts\":[],\"regimens\":[{\"id\":21,\"rnrId\":130,\"code\":\"018\",\"name\":\"ABC+3TC+EFZ\",\"patientsOnTreatment\":1,\"category\":{\"id\":null,\"code\":null,\"name\":\"Paediatrics\",\"displayOrder\":2},\"regimenDisplayOrder\":3,\"skipped\":false}],\"patientQuantifications\":[{\"id\":17,\"rnrId\":130,\"category\":\"Total Patients\",\"total\":30}],\"emergency\":false,\"clientSubmittedTime\": 1445937080000,\"clientSubmittedNotes\":\"I don't know\",\"programCode\": \"ESS_MEDS\",\"periodStartDate\":1388527200000}]}";
-        List<RnRForm> rnRForms = rnrFormAdapter.convertRnrForms(new JsonParser().parse(json)).getRequisitions();
-        assertThat(rnRForms.get(0).getComments(), is("I don't know"));
+        String json = "{\"products\":[{\"id\":81,\"rnrId\":130,\"product\":\"Zidovudina 50mg/5ml Sol Oral Solution 10mg \",\"productDisplayOrder\":29,\"productCode\":\"08S17\",\"productCategory\":\"Antibiotics\",\"productCategoryDisplayOrder\":1,\"roundToZero\":false,\"packRoundingThreshold\":1,\"packSize\":10,\"dosesPerMonth\":13,\"dosesPerDispensingUnit\":10,\"dispensingUnit\":\"Strip\",\"maxMonthsOfStock\":3,\"fullSupply\":true,\"quantityReceived\":10,\"quantityDispensed\":10,\"beginningBalance\":10,\"totalLossesAndAdjustments\":0,\"stockInHand\":10,\"stockOutDays\":0,\"newPatientCount\":0,\"quantityRequested\":0,\"reasonForRequestedQuantity\":\"reason\",\"amc\":10,\"normalizedConsumption\":10,\"periodNormalizedConsumption\":10,\"calculatedOrderQuantity\":20,\"maxStockQuantity\":30,\"quantityApproved\":0,\"reportingDays\":30,\"packsToShip\":1,\"expirationDate\":\"10/10/2016\",\"price\":0,\"skipped\":false}],\"nonFullSupplyProducts\":[],\"regimens\":[{\"id\":21,\"rnrId\":130,\"code\":\"018\",\"name\":\"ABC+3TC+EFZ\",\"patientsOnTreatment\":1,\"category\":{\"id\":null,\"code\":null,\"name\":\"Paediatrics\",\"displayOrder\":2},\"regimenDisplayOrder\":3,\"skipped\":false}],\"patientQuantifications\":[{\"id\":17,\"rnrId\":130,\"category\":\"Total Patients\",\"total\":30}],\"emergency\":false,\"clientSubmittedTime\": 1445937080000,\"clientSubmittedNotes\":\"I don't know\",\"programCode\": \"ESS_MEDS\",\"periodStartDate\":1388527200000}";
 
-        RnrFormItem rnrFormItem = rnRForms.get(0).getRnrFormItemListWrapper().get(0);
+        RnRForm rnRForm = rnrFormAdapter.convertRnrForms(new JsonParser().parse(json));
+        assertThat(rnRForm.getComments(), is("I don't know"));
+
+        RnrFormItem rnrFormItem = rnRForm.getRnrFormItemListWrapper().get(0);
         assertThat(rnrFormItem.getInitialAmount(), is(10L));
         assertThat(rnrFormItem.getInventory(), is(10L));
         verify(mockProductRepository).getByCode("08S17");
 
-        RegimenItem regimenItem = rnRForms.get(0).getRegimenItemListWrapper().get(0);
+        RegimenItem regimenItem = rnRForm.getRegimenItemListWrapper().get(0);
         assertThat(regimenItem.getAmount(), is(1L));
 
-        BaseInfoItem baseInfoItem = rnRForms.get(0).getBaseInfoItemListWrapper().get(0);
+        BaseInfoItem baseInfoItem = rnRForm.getBaseInfoItemListWrapper().get(0);
         assertThat(baseInfoItem.getName(), is("Total Patients"));
         assertThat(baseInfoItem.getValue(), is("30"));
 
+        assertThat(rnRForm.getSubmittedTime(), is(new Date(1445937080000L)));
     }
 
     public class MyTestModule extends AbstractModule {

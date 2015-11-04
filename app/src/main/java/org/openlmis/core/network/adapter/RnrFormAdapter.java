@@ -18,9 +18,10 @@
 
 package org.openlmis.core.network.adapter;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -35,6 +36,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
@@ -43,24 +45,40 @@ import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.VIARepository;
-import org.openlmis.core.network.model.SyncBackRequisitionsResponse;
 import org.openlmis.core.utils.DateUtil;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
+import java.text.DateFormat;
 import java.util.Date;
 
 import roboguice.RoboGuice;
 
-public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer<SyncBackRequisitionsResponse> {
+public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer<RnRForm> {
     @Inject
     public ProductRepository productRepository;
 
     @Inject
     public ProgramRepository programRepository;
+    private final Gson gson;
 
     public RnrFormAdapter() {
         RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
+        gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().registerTypeAdapter(Date.class, new DateAdapter()).setDateFormat(DateFormat.LONG)
+                .registerTypeAdapter(Product.class, new ProductAdapter())
+                .create();
+    }
+
+    class ProductAdapter implements JsonDeserializer<Product> {
+
+        @Override
+        public Product deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            try {
+                return productRepository.getByCode(json.getAsString());
+            } catch (LMISException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
     }
 
     @Override
@@ -142,112 +160,24 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
     }
 
     @Override
-    public SyncBackRequisitionsResponse deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public RnRForm deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         return convertRnrForms(json);
     }
 
-    public SyncBackRequisitionsResponse convertRnrForms(JsonElement json) {
-        ArrayList<RnRForm> rnRForms = new ArrayList<>();
-        JsonElement requisitions = json.getAsJsonObject().get("requisitions");
-        JsonArray asJsonArray = requisitions.getAsJsonArray();
-        for (JsonElement element : asJsonArray) {
-            JsonObject asJsonObject = element.getAsJsonObject();
-            long periodStartDate = asJsonObject.get("periodStartDate").getAsLong();
+    public RnRForm convertRnrForms(JsonElement json) {
 
-            RnRForm rnRForm = new RnRForm();
-            Program program = null;
-            try {
-                program = programRepository.queryByCode(asJsonObject.get("programCode").getAsString());
-            } catch (LMISException e) {
-                e.printStackTrace();
-            }
+        RnRForm rnRForm = gson.fromJson(json.toString(), RnRForm.class);
+        JsonObject asJsonObject = json.getAsJsonObject();
+        try {
+            Program program = programRepository.queryByCode(asJsonObject.get("programCode").getAsString());
             rnRForm.setProgram(program);
-            RnRForm.setPeriodByPeriodBegin(new Date(periodStartDate), rnRForm);
-
-            rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
-            rnRForm.setSynced(true);
-
-            JsonArray products = asJsonObject.get("products").getAsJsonArray();
-            rnRForm.setRnrFormItemListWrapper(deserializeProductItems(products));
-            JsonArray regimens = asJsonObject.get("regimens").getAsJsonArray();
-            rnRForm.setRegimenItemListWrapper(deserializeRegimens(regimens));
-            JsonArray patientQuantifications = asJsonObject.get("patientQuantifications").getAsJsonArray();
-            rnRForm.setBaseInfoItemListWrapper(deserializePatientInfo(patientQuantifications));
-            JsonElement submittedNotes = asJsonObject.get("clientSubmittedNotes");
-
-            if (submittedNotes != null) {
-                rnRForm.setComments(submittedNotes.getAsString());
-            }
-
-            rnRForm.setSubmittedTime(new Date(asJsonObject.get("clientSubmittedTime").getAsLong()));
-
-            rnRForms.add(rnRForm);
+        } catch (LMISException e) {
+            e.printStackTrace();
         }
-        SyncBackRequisitionsResponse response = new SyncBackRequisitionsResponse();
-        response.setRequisitions(rnRForms);
-        return response;
-    }
-
-    @NonNull
-    private ArrayList<RnrFormItem> deserializeProductItems(JsonArray products) {
-        ArrayList<RnrFormItem> items = new ArrayList<>();
-        for (JsonElement productJson : products) {
-            JsonObject productJsonAsJsonObject = productJson.getAsJsonObject();
-            RnrFormItem item = new RnrFormItem();
-
-            if (productJsonAsJsonObject.has("beginningBalance")) {
-                item.setInitialAmount(productJsonAsJsonObject.get("beginningBalance").getAsLong());
-            }
-            if (productJsonAsJsonObject.has("quantityReceived")) {
-                item.setReceived(productJsonAsJsonObject.get("quantityReceived").getAsLong());
-            }
-            if (productJsonAsJsonObject.has("quantityDispensed")) {
-                item.setIssued(productJsonAsJsonObject.get("quantityDispensed").getAsLong());
-            }
-            if (productJsonAsJsonObject.has("stockInHand")) {
-                item.setInventory(productJsonAsJsonObject.get("stockInHand").getAsLong());
-            }
-            if (productJsonAsJsonObject.has("quantityRequested")) {
-                item.setRequestAmount(productJsonAsJsonObject.get("quantityRequested").getAsLong());
-            }
-            item.setAdjustment(productJsonAsJsonObject.get("totalLossesAndAdjustments").getAsLong());
-            if (productJsonAsJsonObject.has("expirationDate")) {
-                item.setValidate(productJsonAsJsonObject.get("expirationDate").getAsString());
-            }
-            if (productJsonAsJsonObject.has("calculatedOrderQuantity")) {
-                item.setCalculatedOrderQuantity(productJsonAsJsonObject.get("calculatedOrderQuantity").getAsLong());
-            }
-            try {
-                item.setProduct(productRepository.getByCode(productJsonAsJsonObject.get("productCode").getAsString()));
-            } catch (LMISException e) {
-                e.printStackTrace();
-            }
-            items.add(item);
-        }
-        return items;
-    }
-
-    private ArrayList<RegimenItem> deserializeRegimens(JsonArray regimenItems) {
-        ArrayList<RegimenItem> regimens = new ArrayList<>();
-        for (JsonElement regimenJson : regimenItems.getAsJsonArray()) {
-            RegimenItem regimenItem = new RegimenItem();
-            JsonObject asJsonObject = regimenJson.getAsJsonObject();
-            regimenItem.setAmount(asJsonObject.get("patientsOnTreatment").getAsLong());
-            regimens.add(regimenItem);
-        }
-        return regimens;
-    }
-
-    private ArrayList<BaseInfoItem> deserializePatientInfo(JsonArray patientInfoItems) {
-        ArrayList<BaseInfoItem> patientInfos = new ArrayList<>();
-        for (JsonElement element : patientInfoItems.getAsJsonArray()) {
-            BaseInfoItem baseInfoItem = new BaseInfoItem();
-            JsonObject asJsonObject = element.getAsJsonObject();
-            baseInfoItem.setName(asJsonObject.get("category").getAsString());
-            baseInfoItem.setValue(asJsonObject.get("total").getAsString());
-            patientInfos.add(baseInfoItem);
-        }
-        return patientInfos;
+        RnRForm.setPeriodByPeriodBegin(rnRForm);
+        rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
+        rnRForm.setSynced(true);
+        return rnRForm;
     }
 
 }

@@ -32,7 +32,6 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.network.adapter.ProductsAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
-import org.openlmis.core.network.model.SyncBackRequisitionsResponse;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -158,7 +157,6 @@ public class LMISRestManager {
     private GsonConverter registerTypeAdapter(){
         return new GsonConverter(new GsonBuilder()
                 .registerTypeAdapter(RnRForm.class, new RnrFormAdapter())
-                .registerTypeAdapter(SyncBackRequisitionsResponse.class, new RnrFormAdapter())
                 .registerTypeAdapter(Product.class, new ProductsAdapter())
                 .create());
     }

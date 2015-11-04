@@ -18,6 +18,8 @@
 
 package org.openlmis.core.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -35,13 +37,16 @@ public class BaseInfoItem extends BaseModel {
         DATE
     }
 
-
+    @Expose
+    @SerializedName("category")
     @DatabaseField
     private String name;
 
     @DatabaseField
     private TYPE type;
 
+    @Expose
+    @SerializedName("total")
     @DatabaseField
     private String value;
 

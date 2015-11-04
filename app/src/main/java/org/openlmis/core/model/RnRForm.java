@@ -18,6 +18,8 @@
 
 package org.openlmis.core.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
@@ -48,18 +50,26 @@ public class RnRForm extends BaseModel {
     @ForeignCollectionField()
     private ForeignCollection<RnrFormItem> rnrFormItemList;
 
+    @Expose
+    @SerializedName("products")
     private ArrayList<RnrFormItem> rnrFormItemListWrapper;
 
     @ForeignCollectionField()
     private ForeignCollection<RegimenItem> regimenItemList;
 
+    @Expose
+    @SerializedName("regimens")
     private ArrayList<RegimenItem> regimenItemListWrapper;
 
     @ForeignCollectionField()
     private ForeignCollection<BaseInfoItem> baseInfoItemList;
 
+    @Expose
+    @SerializedName("patientQuantifications")
     private ArrayList<BaseInfoItem> baseInfoItemListWrapper;
 
+    @Expose
+    @SerializedName("clientSubmittedNotes")
     @DatabaseField
     private String comments;
 
@@ -72,12 +82,16 @@ public class RnRForm extends BaseModel {
     @DatabaseField
     private boolean synced = false;
 
+    @Expose
+    @SerializedName("periodStartDate")
     @DatabaseField
     private Date periodBegin;
 
     @DatabaseField
     private Date periodEnd;
 
+    @Expose
+    @SerializedName("clientSubmittedTime")
     @DatabaseField
     private Date submittedTime;
 
@@ -136,11 +150,9 @@ public class RnRForm extends BaseModel {
         return regimenItemListWrapper;
     }
 
-    public static void setPeriodByPeriodBegin(Date periodBegin, RnRForm rnRForm) {
-        rnRForm.setPeriodBegin(periodBegin);
-
+    public static void setPeriodByPeriodBegin(RnRForm rnRForm) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(periodBegin);
+        calendar.setTime(rnRForm.getPeriodBegin());
         int month = calendar.get(Calendar.MONTH);
         int year = calendar.get(Calendar.YEAR);
 

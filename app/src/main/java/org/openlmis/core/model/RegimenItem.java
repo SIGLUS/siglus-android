@@ -18,6 +18,8 @@
 
 package org.openlmis.core.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -35,6 +37,8 @@ public class RegimenItem extends BaseModel{
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private Regimen regimen;
 
+    @Expose
+    @SerializedName("patientsOnTreatment")
     @DatabaseField
     private Long amount;
 }
