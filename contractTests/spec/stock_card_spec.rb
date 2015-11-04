@@ -42,6 +42,17 @@ describe "Sync stock card data" do
         customProps: {
           expirationDates: "10/10/2018, 12/12/2018"
         }
+      },
+      {
+        facilityId: facility_id,
+        productCode: "08S34B",
+        quantity: 10,
+        type: "ADJUSTMENT",
+        reasonName: "LOANS_DEPOSIT",
+        occurred: "20151015T030530Z",
+        customProps: {
+          expirationDates: "10/10/2019"
+        }
       }
       ]
 
