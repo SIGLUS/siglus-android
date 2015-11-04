@@ -43,6 +43,7 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.network.LMISRestApi;
+import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SubmitRequisitionResponse;
 import org.openlmis.core.network.model.SyncBackRequisitionsResponse;
 import org.openlmis.core.utils.DateUtil;
@@ -54,6 +55,7 @@ import java.util.List;
 
 import roboguice.RoboGuice;
 
+import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.any;
@@ -177,6 +179,16 @@ public class SyncManagerTest {
         stockRepository.addStockMovementAndUpdateStockCard(stockCard, item);
         stockRepository.refresh(stockCard);
         return stockCard;
+    }
+
+    @Test
+    public void shouldSetTypeAndCustomPropsAfterNewStockMovementEntry() throws LMISException{
+        StockCard stockCard = createTestStockCardData();
+        StockMovementItem stockMovementItem = stockCard.getStockMovementItems().iterator().next();
+        StockMovementEntry stockMovementEntry = new StockMovementEntry(stockMovementItem,null);
+
+        assertEquals(stockMovementEntry.getType(),"ADJUSTMENT");
+        assertEquals(stockMovementEntry.getCustomProps().get("expirationDates"),stockMovementItem.getStockCard().getExpireDates());
     }
 
     @Test
