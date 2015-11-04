@@ -248,10 +248,9 @@ describe "submit requisition to web server" do
 
     body = JSON.parse(response.body)
 
-    expect(body['requisitions']['periodStartDate']).not_to be_nil
-    expect(body['requisition']['programCode']).to eq "MMIA"
-    expect(body['requisition']['agentCode']).to eq "F10"
-    expect(body['requisition']['emergency']).to be false
-    expect(body['requisition']['requisitionStatus']).to eq "AUTHORIZED"
+    expect(body['requisitions'][0]['periodStartDate']).not_to be_nil
+    expect(body['requisitions'][0]['programCode']).to eq "ESS_MEDS"
+    expect(body['requisitions'][1]['programCode']).to eq "MMIA"
+    expect(body['requisitions'][1]['products'].length).to eq 24
   end
 end
