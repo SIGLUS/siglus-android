@@ -21,6 +21,7 @@ package org.openlmis.core.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -44,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
 
@@ -62,12 +64,16 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     @InjectView(R.id.btn_done)
     public Button btnDone;
 
+    @InjectResource(R.integer.back_twice_interval)
+    int BACK_TWICE_INTERVAL;
 
     @InjectPresenter(InventoryPresenter.class)
     InventoryPresenter presenter;
 
     LinearLayoutManager mLayoutManager;
     InventoryListAdapter mAdapter;
+
+    private boolean exitPressedOnce = false;
 
     boolean isPhysicalInventory = false;
     private boolean isAddNewDrug;
@@ -208,6 +214,25 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isPhysicalInventory || isAddNewDrug) {
+            super.onBackPressed();
+        } else if (exitPressedOnce) {
+            super.onBackPressed();
+            exitPressedOnce = false;
+        } else {
+            ToastUtil.show(R.string.msg_back_twice_to_exit);
+            exitPressedOnce = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    exitPressedOnce = false;
+                }
+            }, BACK_TWICE_INTERVAL);
+        }
     }
 
     public static Intent getIntentToMe(Context context) {

@@ -41,6 +41,7 @@ import org.openlmis.core.utils.ToastUtil;
 import java.util.Date;
 
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 
@@ -71,11 +72,13 @@ public class HomeActivity extends BaseActivity {
     @InjectView(R.id.btn_via_list)
     Button btnVIAList;
 
+    @InjectResource(R.integer.back_twice_interval)
+    int BACK_TWICE_INTERVAL;
+
     @Inject
     SyncManager syncManager;
 
     private boolean exitPressedOnce = false;
-    private final static int BACK_TWICE_INTERVAL = 5000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
