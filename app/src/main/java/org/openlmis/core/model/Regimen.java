@@ -18,6 +18,8 @@
 
 package org.openlmis.core.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -34,9 +36,13 @@ public class Regimen extends BaseModel {
         BABY,
     }
 
+    @Expose
+    @SerializedName("name")
     @DatabaseField
     private String name;
 
+    @Expose
+    @SerializedName("code")
     @DatabaseField
     private String code;
 

@@ -22,16 +22,22 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 
 import com.google.inject.Inject;
+import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Regimen;
+import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class RegimenRepository {
 
     GenericDao<Regimen> regimenGenericDao;
+
+    @Inject
+    DbUtil dbUtil;
 
     @Inject
     public RegimenRepository(Context context){
@@ -41,6 +47,15 @@ public class RegimenRepository {
 
     public List<Regimen> list() throws LMISException {
         return  regimenGenericDao.queryForAll();
+    }
+
+    public Regimen getByCode(final String code) throws LMISException {
+        return dbUtil.withDao(Regimen.class, new DbUtil.Operation<Regimen, Regimen>() {
+            @Override
+            public Regimen operate(Dao<Regimen, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("code", code).queryForFirst();
+            }
+        });
     }
 
     public void create(Regimen regimen) throws LMISException{
