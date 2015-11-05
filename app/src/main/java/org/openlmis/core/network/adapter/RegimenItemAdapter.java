@@ -40,6 +40,7 @@ public class RegimenItemAdapter implements JsonSerializer<RegimenItem>, JsonDese
             regimenItem.setRegimen(regimenRepository.getByCode(json.getAsJsonObject().get("code").getAsString()));
         } catch (LMISException e) {
             e.printStackTrace();
+            throw new JsonParseException("can not find RegimenItem by code");
         }
         return regimenItem;
     }

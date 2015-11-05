@@ -90,6 +90,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
             rnRForm.setProgram(program);
         } catch (LMISException e) {
             e.printStackTrace();
+            throw new JsonParseException("can not find Program by programCode");
         }
         RnRForm.setPeriodByPeriodBegin(rnRForm);
         rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);

@@ -43,7 +43,7 @@ public class BaseInfoItem extends BaseModel {
     private String name;
 
     @DatabaseField
-    private TYPE type;
+    private TYPE type = TYPE.STRING;
 
     @Expose
     @SerializedName("total")

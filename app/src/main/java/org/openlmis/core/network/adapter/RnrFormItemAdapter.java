@@ -59,7 +59,7 @@ public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>, JsonDese
                 return productRepository.getByCode(json.getAsString());
             } catch (LMISException e) {
                 e.printStackTrace();
-                return null;
+                throw new JsonParseException("can not find Product by code");
             }
         }
     }
