@@ -189,15 +189,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
 
     public void goToMainPage() {
         saveBoolean(Constants.KEY_INIT_INVENTORY, false);
-
-        Intent intent = new Intent();
-        if (isAddNewDrug) {
-            intent.setClass(this, StockCardListActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        } else {
-            intent.setClass(this, HomeActivity.class);
-        }
-        startActivity(intent);
+        startActivity(isAddNewDrug ? StockCardListActivity.getIntentToMe(this) : HomeActivity.getIntentToMe(this));
         this.finish();
     }
 
@@ -220,15 +212,6 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
 
     public static Intent getIntentToMe(Context context) {
         return new Intent(context, InventoryActivity.class);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (isPhysicalInventory || isAddNewDrug) {
-            super.onBackPressed();
-        } else {
-            moveTaskToBack(true);
-        }
     }
 
     private void setTotal(int total) {

@@ -101,16 +101,17 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     public void goToInitInventory() {
-        startActivity(InventoryActivity.getIntentToMe(this));
+        launchActivity(InventoryActivity.getIntentToMe(this));
     }
 
     public void goToHomePage() {
-        startActivity(HomeActivity.class);
+        launchActivity(HomeActivity.getIntentToMe(this));
     }
 
-    public void startActivity(Class activityName) {
+    public void launchActivity(Intent intent) {
         saveString(Constants.KEY_LAST_LOGIN_USER, userName.getText().toString().trim());
-        super.startActivity(activityName);
+        startActivity(intent);
+        finish();
     }
 
 
@@ -195,6 +196,11 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 
     private void setPwdVisibility() {

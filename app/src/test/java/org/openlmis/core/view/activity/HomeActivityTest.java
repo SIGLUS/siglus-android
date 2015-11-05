@@ -18,10 +18,10 @@
 
 package org.openlmis.core.view.activity;
 
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 
 import org.hamcrest.core.Is;
@@ -39,14 +39,13 @@ import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.fakes.RoboMenuItem;
 import org.robolectric.shadows.ShadowActivity;
-import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.shadows.ShadowToast;
 
 import java.util.Date;
 
-import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -181,5 +180,14 @@ public class HomeActivityTest {
         String warningMessage = ShadowToast.getTextOfLatestToast();
 
         assertThat(warningMessage, equalTo(homeActivity.getString(R.string.msg_back_twice_to_exit)));
+    }
+
+    @Test
+    public void shouldFinishMainActivityWhenSighOurClicked() {
+        MenuItem signoutAction = new RoboMenuItem(R.id.action_sign_out);
+
+        homeActivity.onOptionsItemSelected(signoutAction);
+
+        assertTrue(homeActivity.isFinishing());
     }
 }

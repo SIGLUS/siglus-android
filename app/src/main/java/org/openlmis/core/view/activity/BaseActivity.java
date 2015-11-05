@@ -117,7 +117,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (LMISApp.lastOperateTime > 0L && alreadyTimeOuted(LMISApp.getInstance().getCurrentTimeMillis())) {
+        if (LMISApp.lastOperateTime > 0L && alreadyTimeOuted() && !LoginActivity.isActive) {
             logout();
             return true;
         } else {
@@ -127,14 +127,13 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     }
 
     private void logout() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        startActivity(new Intent(this, LoginActivity.class));
         LMISApp.lastOperateTime = 0L;
     }
 
-    private boolean alreadyTimeOuted(Long eventTime) {
-        return eventTime - LMISApp.lastOperateTime > APP_TIMEOUT;
+    private boolean alreadyTimeOuted() {
+        Long currentTimeMillis = LMISApp.getInstance().getCurrentTimeMillis();
+        return currentTimeMillis - LMISApp.lastOperateTime > APP_TIMEOUT;
     }
 
     @Override
@@ -191,7 +190,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
+        inflater.inflate(R.menu.menu_base, menu);
 
         searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setQueryHint(getResources().getString(R.string.search_hint));

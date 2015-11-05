@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import org.openlmis.core.R;
@@ -41,5 +43,11 @@ public class StockCardListActivity extends BaseActivity {
     public boolean onSearchStart(String query) {
         stockCardFragment.onSearch(query);
         return true;
+    }
+
+    public static Intent getIntentToMe(Context context) {
+        Intent intent = new Intent(context, StockCardListActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        return intent;
     }
 }
