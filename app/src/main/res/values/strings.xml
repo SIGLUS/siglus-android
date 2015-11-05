@@ -45,6 +45,7 @@
     <string name="label_last_synced_mins_ago">Last synced %s minutes ago</string>
     <string name="label_last_synced_hours_ago">Last synced %s hours ago</string>
     <string name="label_last_synced_days_ago">Last synced %s days ago</string>
+    <string name="msg_back_twice_to_exit">Press back button again to exit</string>
 
     <!--MMIA-->
     <string name="label_rnrfrom_left_header">Medicine</string>

@@ -20,6 +20,7 @@ package org.openlmis.core.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.widget.Button;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.ToastUtil;
 
 import java.util.Date;
 
@@ -68,6 +70,9 @@ public class HomeActivity extends BaseActivity {
 
     @Inject
     SyncManager syncManager;
+
+    private boolean exitPressedOnce = false;
+    private final static int BACK_TWICE_INTERVAL = 5000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,7 +160,18 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        moveTaskToBack(true);
+        if (exitPressedOnce) {
+            moveTaskToBack(true);
+        } else {
+            ToastUtil.show(R.string.msg_back_twice_to_exit);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    exitPressedOnce = false;
+                }
+            }, BACK_TWICE_INTERVAL);
+        }
+        exitPressedOnce = !exitPressedOnce;
     }
 
     @Override

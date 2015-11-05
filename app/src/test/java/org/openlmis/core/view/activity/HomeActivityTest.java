@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -39,11 +40,15 @@ import org.openlmis.core.utils.DateUtil;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowActivity;
+import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowIntent;
+import org.robolectric.shadows.ShadowToast;
 
 import java.util.Date;
 
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -167,5 +172,14 @@ public class HomeActivityTest {
 
         Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
         assertThat(startedIntent.getComponent().getClassName(), equalTo(LoginActivity.class.getName()));
+    }
+
+    @Test
+    public void shouldToastWarningMessageWhenClickBackButtonFirstTime() {
+        homeActivity.onBackPressed();
+
+        String warningMessage = ShadowToast.getTextOfLatestToast();
+
+        assertThat(warningMessage, equalTo(homeActivity.getString(R.string.msg_back_twice_to_exit)));
     }
 }
