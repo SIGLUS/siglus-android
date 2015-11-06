@@ -221,7 +221,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
         if (isPhysicalInventory || isAddNewDrug) {
             super.onBackPressed();
         } else if (exitPressedOnce) {
-            super.onBackPressed();
+            moveTaskToBack(true);
             exitPressedOnce = false;
         } else {
             ToastUtil.show(R.string.msg_back_twice_to_exit);
