@@ -64,6 +64,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
         jsonParser = new JsonParser();
     }
 
+    @Override
     public JsonElement serialize(RnRForm rnRForm, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject root = gson.toJsonTree(rnRForm).getAsJsonObject();
         root.addProperty("agentCode", UserInfoMgr.getInstance().getUser().getFacilityCode());

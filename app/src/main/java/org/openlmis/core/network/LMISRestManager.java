@@ -19,7 +19,10 @@
 package org.openlmis.core.network;
 
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSerializer;
 import com.squareup.okhttp.Credentials;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -32,6 +35,8 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.network.adapter.ProductsAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
+import org.openlmis.core.network.adapter.RnrFormAdapterForFeatureToggle;
+import org.openlmis.core.utils.FeatureToggle;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -68,7 +73,7 @@ public class LMISRestManager {
         END_POINT = LMISApp.getContext().getResources().getString(R.string.server_base_url);
         try {
             hostName = new URL(END_POINT).getHost();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -95,7 +100,7 @@ public class LMISRestManager {
         lmisRestApi = restAdapter.create(LMISRestApi.class);
     }
 
-    public OkHttpClient getSSLClient(){
+    public OkHttpClient getSSLClient() {
         OkHttpClient client = new OkHttpClient();
 
         //set timeout to 1 minutes
@@ -111,9 +116,11 @@ public class LMISRestManager {
             try {
                 ca = cf.generateCertificate(cert);
                 System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
-            }finally { cert.close(); }
+            } finally {
+                cert.close();
+            }
 
             // creating a KeyStore containing our trusted CAs
             String keyStoreType = KeyStore.getDefaultType();
@@ -133,7 +140,7 @@ public class LMISRestManager {
             client.setHostnameVerifier(new HostnameVerifier() {
                 @Override
                 public boolean verify(String hostname, SSLSession session) {
-                    if (hostname.equals(hostName)){
+                    if (hostname.equals(hostName)) {
                         return true;
                     }
 
@@ -142,7 +149,7 @@ public class LMISRestManager {
                     return hv.verify(hostname, session);
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -150,15 +157,24 @@ public class LMISRestManager {
     }
 
 
-    public LMISRestApi getLmisRestApi(){
+    public LMISRestApi getLmisRestApi() {
         return lmisRestApi;
     }
 
-    private GsonConverter registerTypeAdapter(){
+    private GsonConverter registerTypeAdapter() {
         return new GsonConverter(new GsonBuilder()
-                .registerTypeAdapter(RnRForm.class, new RnrFormAdapter())
+                .registerTypeAdapter(RnRForm.class, getTypeAdapter())
                 .registerTypeAdapter(Product.class, new ProductsAdapter())
                 .create());
+    }
+
+    @NonNull
+    private JsonSerializer getTypeAdapter() {
+        if (!FeatureToggle.isOpen(R.bool.feature_sync_back_rnr_186)) {
+            return new RnrFormAdapterForFeatureToggle();
+        } else {
+            return new RnrFormAdapter();
+        }
     }
 
     @Data
