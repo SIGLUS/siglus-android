@@ -25,24 +25,20 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.inject.Inject;
 
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.presenter.StockMovementPresenter;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.StockMovementAdapter;
-
-import java.text.ParseException;
+import org.openlmis.core.view.widget.ExpireDateViewGroup;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -63,7 +59,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     Button btnCancel;
 
     @InjectView(R.id.vg_expire_date_container)
-    ViewGroup expireDateContainer;
+    ExpireDateViewGroup expireDateViewGroup;
 
     @InjectPresenter(StockMovementPresenter.class)
     StockMovementPresenter presenter;
@@ -91,7 +87,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     }
 
     private void initUI() {
-        displayExpireDate();
+        expireDateViewGroup.initExpireDateViewGroup(presenter.getStockCard(),true);
 
         buttonView = findViewById(R.id.action_panel);
         buttonView.setVisibility(View.GONE);
@@ -126,34 +122,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     public void deactivatedStockDraft() {
         buttonView.setVisibility(View.GONE);
         stockMovementAdapter.cleanHighLight();
-    }
-
-    private void displayExpireDate() {
-        View addView = expireDateContainer.getChildAt(expireDateContainer.getChildCount() - 1);
-        expireDateContainer.removeAllViews();
-        expireDateContainer.addView(addView);
-        for (String date : presenter.getStockCardExpireDates()) {
-            initExpireDateView(date, expireDateContainer);
-        }
-    }
-
-    private void initExpireDateView(String date, final ViewGroup expireDateContainer) {
-        try {
-            final String expireDate = DateUtil.convertDate(date, DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
-            final View expireDateView = addExpireDateView(expireDate, expireDateContainer);
-            View ivClear = expireDateView.findViewById(R.id.iv_clear);
-            ivClear.setVisibility(View.INVISIBLE);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private ViewGroup addExpireDateView(final String expireDate, final ViewGroup expireDateContainer) {
-        ViewGroup expireDateView = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.item_expire_date, null);
-        TextView tvExpireDate = (TextView) expireDateView.findViewById(R.id.tx_expire_data);
-        tvExpireDate.setText(expireDate);
-        expireDateContainer.addView(expireDateView, expireDateContainer.getChildCount() - 1);
-        return expireDateView;
     }
 
     @Override

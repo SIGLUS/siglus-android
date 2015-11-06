@@ -44,26 +44,29 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 public class StockCardViewModel {
 
     long productId;
-
     String productName;
+
     String fnm;
     String strength;
     String type;
-
     String quantity;
 
     List<String> expiryDates;
 
     long stockCardId;
-    long stockOnHand;
 
+    long stockOnHand;
     SpannableStringBuilder styledName;
+
     SpannableStringBuilder styledUnit;
 
     boolean validate = true;
     boolean checked;
 
+    private StockCard stockCard;
+
     public StockCardViewModel(StockCard stockCard) {
+        this.stockCard = stockCard;
         this.productName = stockCard.getProduct().getPrimaryName();
         this.fnm = stockCard.getProduct().getCode();
         this.strength = stockCard.getProduct().getStrength();

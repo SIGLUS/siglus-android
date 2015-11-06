@@ -148,4 +148,8 @@ public final class DateUtil {
     public static String convertDate(String date, String currentFormat, String expectFormat) throws ParseException {
         return formatDate(parseString(date, currentFormat), expectFormat);
     }
+
+    public static String formatDateFromIntToString(int year, int monthOfYear, int dayOfMonth) {
+        return new StringBuilder().append(dayOfMonth).append("/").append(monthOfYear + 1).append("/").append(year).toString();
+    }
 }

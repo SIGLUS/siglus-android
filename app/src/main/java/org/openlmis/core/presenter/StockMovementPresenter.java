@@ -20,7 +20,6 @@ package org.openlmis.core.presenter;
 
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.google.inject.Inject;
 
@@ -46,7 +45,6 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public class StockMovementPresenter implements Presenter {
 
@@ -159,14 +157,6 @@ public class StockMovementPresenter implements Presenter {
 
     public StockCard getStockCard() {
         return stockCard;
-    }
-
-    public ArrayList<String> getStockCardExpireDates() {
-        if (stockCard == null || TextUtils.isEmpty(stockCard.getExpireDates())) {
-            return new ArrayList<>();
-        } else {
-            return newArrayList(stockCard.getExpireDates().split(StockCard.DIVIDER));
-        }
     }
 
 

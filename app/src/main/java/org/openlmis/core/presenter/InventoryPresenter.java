@@ -196,9 +196,7 @@ public class InventoryPresenter implements Presenter {
             public void call(Subscriber<? super Object> subscriber) {
                 try {
                     for (StockCardViewModel model : list) {
-                        StockCard stockCard = stockRepository.queryStockCardById(model.getStockCardId());
-                        stockCard.setExpireDates(model.formatExpiryDateString());
-                        stockRepository.addStockMovementAndUpdateStockCard(stockCard, calculateAdjustment(model));
+                        stockRepository.addStockMovementAndUpdateStockCard(model.getStockCard(), calculateAdjustment(model));
                     }
                     subscriber.onNext(null);
                     subscriber.onCompleted();

@@ -18,32 +18,22 @@
 
 package org.openlmis.core.view.adapter;
 
-import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
-import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.fragment.BaseDialogFragment;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.widget.ExpireDateViewGroup;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 
-import java.text.ParseException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 
@@ -93,39 +83,13 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.
         holder.etQuantity.setText(viewModel.getQuantity());
         holder.etQuantity.addTextChangedListener(textWatcher);
 
-        initDate(holder.expireDateContainer, viewModel);
-
-        holder.tvAddExpiryDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDatePicker(holder.expireDateContainer, viewModel);
-            }
-        });
+        holder.expireDateViewGroup.initExpireDateViewGroup(viewModel.getStockCard(),false);
 
         if (!viewModel.isValidate()) {
             holder.lyQuantity.setError(context.getResources().getString(R.string.msg_inventory_check_failed));
         } else {
             holder.lyQuantity.setErrorEnabled(false);
         }
-    }
-
-    private void showDatePicker(final ViewGroup expireDateContainer, final StockCardViewModel viewModel) {
-        final Calendar today = GregorianCalendar.getInstance();
-
-        DatePickerDialog dialog = new DatePickerDialog(context, DatePickerDialog.BUTTON_NEUTRAL, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                GregorianCalendar date = new GregorianCalendar(year, monthOfYear, dayOfMonth);
-                if (today.before(date)) {
-                    String dateString = new StringBuilder().append(dayOfMonth).append("/").append(monthOfYear + 1).append("/").append(year).toString();
-                    addDate(dateString, expireDateContainer, viewModel);
-                } else {
-                    ToastUtil.show(R.string.msg_invalid_date);
-                }
-            }
-        }, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
-
-        dialog.show();
     }
 
     class EditTextWatcher extends SimpleTextWatcher {
@@ -158,7 +122,7 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.
         EditText etQuantity;
         TextView tvAddExpiryDate;
         TextInputLayout lyQuantity;
-        ViewGroup expireDateContainer;
+        ExpireDateViewGroup expireDateViewGroup;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -168,7 +132,7 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.
             etQuantity = (EditText) itemView.findViewById(R.id.tx_quantity);
             lyQuantity = (TextInputLayout) itemView.findViewById(R.id.ly_quantity);
             tvAddExpiryDate = (TextView) itemView.findViewById(R.id.tx_expire_date);
-            expireDateContainer = (ViewGroup) itemView.findViewById(R.id.vg_expire_date_container);
+            expireDateViewGroup = (ExpireDateViewGroup) itemView.findViewById(R.id.vg_expire_date_container);
 
             etQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
         }
@@ -198,70 +162,6 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.
 
     private boolean isPositionFooter(int position) {
         return position == currentList.size();
-    }
-
-    private void initDate(ViewGroup expireDateContainer, StockCardViewModel viewModel) {
-        View addView = expireDateContainer.getChildAt(expireDateContainer.getChildCount() - 1);
-        expireDateContainer.removeAllViews();
-        expireDateContainer.addView(addView);
-        for (String date : viewModel.getExpiryDates()) {
-            initExpireDateView(date, viewModel, expireDateContainer);
-        }
-    }
-
-    private void addDate(String date, ViewGroup expireDateContainer, StockCardViewModel viewModel) {
-        if (viewModel.addExpiryDate(date)) {
-            initExpireDateView(date, viewModel, expireDateContainer);
-        }
-    }
-
-    private void initExpireDateView(final String date, final StockCardViewModel viewModel, final ViewGroup expireDateContainer) {
-        try {
-            String expireDate = DateUtil.convertDate(date, DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
-            final View expireDateView = addExpireDateView(expireDate, expireDateContainer);
-            View ivClear = expireDateView.findViewById(R.id.iv_clear);
-            ivClear.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showMsgDialog(expireDateContainer, expireDateView, viewModel, date);
-                }
-            });
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void showMsgDialog(final ViewGroup expireDateContainer, final View expireDateView, final StockCardViewModel viewModel, final String expireDate) {
-        BaseDialogFragment dialogFragment = BaseDialogFragment.newInstance(
-                null,
-                context.getString(R.string.msg_remove_expire_date),
-                context.getString(R.string.btn_ok),
-                context.getString(R.string.btn_cancel), null);
-        dialogFragment.show(((Activity) context).getFragmentManager(), "MsgDialogFragment");
-        dialogFragment.setCallBackListener(createListener(expireDateContainer, expireDateView, viewModel, expireDate));
-    }
-
-    @NonNull
-    private BaseDialogFragment.MsgDialogCallBack createListener(final ViewGroup expireDateContainer, final View expireDateView, final StockCardViewModel viewModel, final String expireDate) {
-        return new BaseDialogFragment.MsgDialogCallBack() {
-            @Override
-            public void positiveClick(String tag) {
-                expireDateContainer.removeView(expireDateView);
-                viewModel.removeExpiryDate(expireDate);
-            }
-
-            @Override
-            public void negativeClick(String tag) {
-            }
-        };
-    }
-
-    private ViewGroup addExpireDateView(final String expireDate, final ViewGroup expireDateContainer) {
-        ViewGroup expireDateView = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.item_expire_date, null);
-        TextView tvExpireDate = (TextView) expireDateView.findViewById(R.id.tx_expire_data);
-        tvExpireDate.setText(expireDate);
-        expireDateContainer.addView(expireDateView, expireDateContainer.getChildCount() - 1);
-        return expireDateView;
     }
 
 }
