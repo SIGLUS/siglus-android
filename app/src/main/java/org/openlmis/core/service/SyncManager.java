@@ -207,6 +207,9 @@ public class SyncManager {
 
     protected void fetchAndSaveRequisitionData() throws LMISException, SQLException {
         SyncBackRequisitionsResponse syncBackRequisitionsResponse = lmisRestApi.fetchRequisitions(UserInfoMgr.getInstance().getUser().getFacilityCode());
+        if (syncBackRequisitionsResponse == null) {
+            throw new LMISException("Can't get SyncBackRequisitionsResponse, you can check json parse to POJO logic");
+        }
         List<RnRForm> rnRForms = syncBackRequisitionsResponse.getRequisitions();
         for (RnRForm form : rnRForms) {
             rnrFormRepository.createFormAndItems(form);
