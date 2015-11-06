@@ -73,6 +73,8 @@ public class RnrFormItem extends BaseModel{
     @DatabaseField
     private Long requestAmount;
 
+    @Expose
+    @SerializedName("quantityApproved")
     @DatabaseField
     private Long approvedAmount;
 

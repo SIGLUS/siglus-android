@@ -118,10 +118,12 @@ public class RnrFormAdapterTest {
         ArrayList<RnrFormItem> rnrFormItemListWrapper = new ArrayList<>();
         RnrFormItem object = new RnrFormItem();
         Product product = new Product();
-        product.setCode("123");
+        product.setCode("P1");
         object.setProduct(product);
         object.setInventory(100L);
         object.setValidate("10/11/2015");
+        object.setRequestAmount(111L);
+        object.setApprovedAmount(222L);
         rnrFormItemListWrapper.add(object);
         rnRForm.setRnrFormItemListWrapper(rnrFormItemListWrapper);
 
@@ -129,10 +131,13 @@ public class RnrFormAdapterTest {
         JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
 
         JsonObject regimens = rnrJson.getAsJsonObject().get("products").getAsJsonArray().get(0).getAsJsonObject();
-        assertThat(regimens.get("productCode").toString(), is("\"123\""));
+        assertThat(regimens.get("productCode").toString(), is("\"P1\""));
         assertThat(regimens.get("stockInHand").toString(), is("100"));
         assertThat(regimens.get("reasonForRequestedQuantity").toString(), is("\"reason\""));
         assertThat(regimens.get("expirationDate").toString(), is("\"10/11/2015\""));
+        assertThat(regimens.get("quantityRequested").toString(), is("111"));
+        assertThat(regimens.get("quantityApproved").toString(), is("222"));
+
     }
 
     @Test

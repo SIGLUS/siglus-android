@@ -7,6 +7,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.inject.Inject;
@@ -40,7 +41,6 @@ public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>, JsonDese
     public JsonElement serialize(RnrFormItem src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject jsonObject = gson.toJsonTree(src).getAsJsonObject();
         jsonObject.addProperty("reasonForRequestedQuantity", "reason");
-        jsonObject.addProperty("productCode", src.getProduct().getCode());
         return jsonObject;
     }
 
@@ -51,7 +51,7 @@ public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>, JsonDese
         return rnrFormItem;
     }
 
-    class ProductAdapter implements JsonDeserializer<Product> {
+    class ProductAdapter implements JsonDeserializer<Product>, JsonSerializer<Product> {
 
         @Override
         public Product deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
@@ -61,6 +61,11 @@ public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>, JsonDese
                 e.printStackTrace();
                 throw new JsonParseException("can not find Product by code");
             }
+        }
+
+        @Override
+        public JsonElement serialize(Product src, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonParser().parse(src.getCode());
         }
     }
 }
