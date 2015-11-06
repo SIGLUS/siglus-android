@@ -20,7 +20,6 @@ package org.openlmis.core.network.model;
 
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockMovementItem;
-import org.openlmis.core.utils.DateUtil;
 
 import java.util.HashMap;
 
@@ -39,8 +38,6 @@ public class StockMovementEntry {
     HashMap<String,String> customProps = new HashMap<>();
 
     public  StockMovementEntry(StockMovementItem stockMovementItem, String facilityId) {
-        String date = DateUtil.formatDate(stockMovementItem.getMovementDate(), "yyyyMMdd'T'HHmmssZ");
-        this.setOccurred(date);
         this.setProductCode(stockMovementItem.getStockCard().getProduct().getCode());
         if (MovementReasonManager.INVENTORY.equals(stockMovementItem.getReason())){
             this.setQuantity(stockMovementItem.getStockOnHand());
