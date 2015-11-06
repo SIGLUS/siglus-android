@@ -291,7 +291,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldRecordUpdateTimeWhenAuthorizeRnrForm() throws Exception{
+    public void shouldRecordUpdateTimeWhenAuthorizeRnrForm() throws Exception {
         Program program = new Program();
 
         RnRForm form = RnRForm.init(program, DateUtil.parseString("01/01/2015", DateUtil.SIMPLE_DATE_FORMAT));
@@ -307,6 +307,30 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         RnRForm rnRForm = rnrFormRepository.queryRnRForm(1);
         assertThat(DateUtil.formatDate(rnRForm.getUpdatedAt(), DateUtil.SIMPLE_DATE_FORMAT), is(DateUtil.formatDate(DateUtil.today(), DateUtil.SIMPLE_DATE_FORMAT)));
+    }
+
+    @Test
+    public void shouldCreateSuccess() throws Exception {
+        Program program = new Program();
+        RnRForm form = RnRForm.init(program, DateUtil.parseString("01/01/2015", DateUtil.SIMPLE_DATE_FORMAT));
+
+        rnrFormRepository.createFormAndItems(form);
+
+        RnRForm form2 = RnRForm.init(program, DateUtil.parseString("01/01/2015", DateUtil.SIMPLE_DATE_FORMAT));
+        ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
+        BaseInfoItem baseInfoItem = new BaseInfoItem();
+        baseInfoItem.setValue("Value1");
+        baseInfoItem.setName("Name1");
+        baseInfoItems.add(baseInfoItem);
+        form2.setBaseInfoItemListWrapper(baseInfoItems);
+        form2.setComments("Comments");
+        RnRForm.fillFormId(form2);
+        rnrFormRepository.createFormAndItems(form2);
+        assertThat(form.getId(), is(1L));
+        assertThat(form2.getId(), is(2L));
+        RnRForm rnRForm = rnrFormRepository.queryRnRForm(2L);
+        assertThat(rnRForm.getBaseInfoItemListWrapper().get(0).getName(),is("Name1"));
+        assertThat(rnRForm.getComments(),is("Comments"));
     }
 
 
