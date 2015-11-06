@@ -22,7 +22,6 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +31,6 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.StockCard;
@@ -40,32 +38,30 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
+import org.openlmis.core.view.viewmodel.StockCardViewModel;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import lombok.Setter;
 import roboguice.RoboGuice;
 
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
-
 public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout {
 
     private Context context;
     private List<String> expireDates;
-
     @Inject
     private StockRepository stockRepository;
 
-    private StockCard stockCard;
-
     @Setter
     private boolean isUpdateDBImmediately;
+
+    private StockCardViewModel model;
+
+    private static final String FRAGMENT_TAG = "MsgDialogFragment";
 
     public ExpireDateViewGroup(Context context) {
         super(context);
@@ -82,7 +78,7 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout {
         init(context);
     }
 
-    public void init(Context context) {
+    private void init(Context context) {
         this.context = context;
 
         RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
@@ -141,25 +137,25 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout {
         return expireDateView;
     }
 
-    public void initExpireDateViewGroup(StockCard stockCard,boolean isUpdateDBImmediately) {
-        this.stockCard = stockCard;
+    public void initExpireDateViewGroup(StockCardViewModel model,boolean isUpdateDBImmediately) {
+        this.model = model;
         this.isUpdateDBImmediately = isUpdateDBImmediately;
 
         View addViewBtn = getChildAt(getChildCount() - 1);
         removeAllViews();
         addView(addViewBtn);
 
-        this.expireDates = getStockCardExpireDates(stockCard);
+        this.expireDates = getStockCardExpireDates(model);
         for (String date : expireDates) {
             initExpireDateView(date);
         }
     }
 
-    private ArrayList<String> getStockCardExpireDates(StockCard stockCard) {
-        if (stockCard == null || TextUtils.isEmpty(stockCard.getExpireDates())) {
+    private List<String> getStockCardExpireDates(StockCardViewModel model) {
+        if (model == null) {
             return new ArrayList<>();
         } else {
-            return newArrayList(stockCard.getExpireDates().split(StockCard.DIVIDER));
+            return model.getExpiryDates();
         }
     }
 
@@ -179,44 +175,13 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout {
         }
     }
 
-
-
-    private void updateExpireDateToDB() {
-        stockCard.setExpireDates(formatExpiryDateString());
-        if (isUpdateDBImmediately) {
-            stockRepository.update(stockCard);
-        }
-    }
-
-    public String formatExpiryDateString() {
-        if (expireDates == null) {
-            return StringUtils.EMPTY;
-        }
-        sortByDate();
-        return StringUtils.join(expireDates, StockCard.DIVIDER);
-    }
-
-    private void sortByDate() {
-        Collections.sort(expireDates, new Comparator<String>() {
-            @Override
-            public int compare(String lhs, String rhs) {
-                try {
-                    return DateUtil.parseString(lhs, DateUtil.SIMPLE_DATE_FORMAT).compareTo(DateUtil.parseString(rhs, DateUtil.SIMPLE_DATE_FORMAT));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                return 0;
-            }
-        });
-    }
-
     private void showMsgDialog(final View expireDateView, final String expireDate) {
         BaseDialogFragment dialogFragment = BaseDialogFragment.newInstance(
                 null,
                 context.getString(R.string.msg_remove_expire_date),
                 context.getString(R.string.btn_ok),
                 context.getString(R.string.btn_do_not_remove), null);
-        dialogFragment.show(((Activity) context).getFragmentManager(), "MsgDialogFragment");
+        dialogFragment.show(((Activity) context).getFragmentManager(), FRAGMENT_TAG);
         dialogFragment.setCallBackListener(createListener(expireDateView, expireDate));
     }
 
@@ -229,10 +194,18 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout {
                 expireDates.remove(expireDate);
                 updateExpireDateToDB();
             }
-
             @Override
             public void negativeClick(String tag) {
             }
         };
     }
+
+    private void updateExpireDateToDB() {
+        final StockCard stockCard = model.getStockCard();
+        stockCard.setExpireDates(model.formatExpiryDateString());
+        if (isUpdateDBImmediately) {
+            stockRepository.update(stockCard);
+        }
+    }
+
 }

@@ -38,6 +38,7 @@ import org.openlmis.core.presenter.StockMovementPresenter;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.StockMovementAdapter;
+import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.openlmis.core.view.widget.ExpireDateViewGroup;
 
 import roboguice.inject.ContentView;
@@ -87,14 +88,13 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     }
 
     private void initUI() {
-        expireDateViewGroup.initExpireDateViewGroup(presenter.getStockCard(),true);
+        expireDateViewGroup.initExpireDateViewGroup(new StockCardViewModel(presenter.getStockCard()),true);
 
         buttonView = findViewById(R.id.action_panel);
         buttonView.setVisibility(View.GONE);
 
         stockMovementAdapter = new StockMovementAdapter(this, presenter);
         View headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
-
 
         stockMovementList.addHeaderView(headerView);
         stockMovementList.setAdapter(stockMovementAdapter);

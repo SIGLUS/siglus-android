@@ -83,7 +83,7 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.
         holder.etQuantity.setText(viewModel.getQuantity());
         holder.etQuantity.addTextChangedListener(textWatcher);
 
-        holder.expireDateViewGroup.initExpireDateViewGroup(viewModel.getStockCard(),false);
+        holder.expireDateViewGroup.initExpireDateViewGroup(viewModel,false);
 
         if (!viewModel.isValidate()) {
             holder.lyQuantity.setError(context.getResources().getString(R.string.msg_inventory_check_failed));

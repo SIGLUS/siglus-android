@@ -1,5 +1,6 @@
 <resources>
-    <string name="server_base_url">http://52.69.16.156:8000/</string>
+    <!--<string name="server_base_url">http://52.69.16.156:8000/</string>-->
+    <string name="server_base_url">http://10.203.21.220:9091/</string>
     <string name="sync_account_type">org.clintonhealthaccess.lmismoz.dev</string>
     <integer name="sync_interval">3600</integer>
     <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.dev</string>

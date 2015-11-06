@@ -32,12 +32,8 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.robolectric.RuntimeEnvironment;
 
-import java.util.ArrayList;
-
 import roboguice.RoboGuice;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -95,14 +91,5 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         protected void configure() {
             bind(StockRepository.class).toInstance(stockRepositoryMock);
         }
-    }
-
-    @Test
-    public void shouldGetStockCardExpireDates() throws Exception {
-        StockCard stockCard = new StockCard();
-        when(stockRepositoryMock.queryStockCardById(123)).thenReturn(stockCard);
-        stockMovementPresenter.setStockCard(123);
-        ArrayList<String> stockCardExpireDates = stockMovementPresenter.getStockCardExpireDates();
-        assertThat(stockCardExpireDates.size(), is(0));
     }
 }
