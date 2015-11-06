@@ -35,7 +35,6 @@ import com.google.inject.Inject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
@@ -84,7 +83,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
     @Override
     public RnRForm deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         RnRForm rnRForm = gson.fromJson(json.toString(), RnRForm.class);
-        fillFormId(rnRForm);
+        RnRForm.fillFormId(rnRForm);
 
         try {
             Program program = programRepository.queryByCode(json.getAsJsonObject().get("programCode").getAsString());
@@ -99,15 +98,4 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
         return rnRForm;
     }
 
-    private void fillFormId(RnRForm rnRForm) {
-        for (RnrFormItem item : rnRForm.getRnrFormItemListWrapper()) {
-            item.setForm(rnRForm);
-        }
-        for (RegimenItem regimenItem : rnRForm.getRegimenItemListWrapper()) {
-            regimenItem.setForm(rnRForm);
-        }
-        for (BaseInfoItem item : rnRForm.getBaseInfoItemListWrapper()) {
-            item.setRnRForm(rnRForm);
-        }
-    }
 }

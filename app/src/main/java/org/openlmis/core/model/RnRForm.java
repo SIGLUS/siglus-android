@@ -160,4 +160,16 @@ public class RnRForm extends BaseModel {
 
         rnRForm.setPeriodEnd(periodEnd);
     }
+
+    public static void fillFormId(RnRForm rnRForm) {
+        for (RnrFormItem item : rnRForm.getRnrFormItemListWrapper()) {
+            item.setForm(rnRForm);
+        }
+        for (RegimenItem regimenItem : rnRForm.getRegimenItemListWrapper()) {
+            regimenItem.setForm(rnRForm);
+        }
+        for (BaseInfoItem item : rnRForm.getBaseInfoItemListWrapper()) {
+            item.setRnRForm(rnRForm);
+        }
+    }
 }
