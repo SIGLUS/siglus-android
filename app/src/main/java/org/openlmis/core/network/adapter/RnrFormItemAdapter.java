@@ -46,9 +46,7 @@ public class RnrFormItemAdapter implements JsonSerializer<RnrFormItem>, JsonDese
 
     @Override
     public RnrFormItem deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        RnrFormItem rnrFormItem = gson.fromJson(json.toString(), RnrFormItem.class);
-        rnrFormItem.setApprovedAmount(rnrFormItem.getRequestAmount());
-        return rnrFormItem;
+        return gson.fromJson(json.toString(), RnrFormItem.class);
     }
 
     class ProductAdapter implements JsonDeserializer<Product>, JsonSerializer<Product> {

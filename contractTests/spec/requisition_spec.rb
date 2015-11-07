@@ -19,7 +19,8 @@ describe "submit requisition to web server" do
         stockInHand: 20,
         totalLossesAndAdjustments: 10,
         calculatedOrderQuantity: 0,
-        quantityRequested: 0,
+        quantityRequested: 10,
+        quantityApproved: 20,
         reasonForRequestedQuantity: "reason"
       },
       {
@@ -31,6 +32,7 @@ describe "submit requisition to web server" do
         totalLossesAndAdjustments: 0,
         calculatedOrderQuantity: 0,
         quantityRequested: 0,
+        quantityApproved: 0,
         reasonForRequestedQuantity: "reason"
       }
       ] ,
@@ -87,6 +89,7 @@ describe "submit requisition to web server" do
         totalLossesAndAdjustments: 0,
         stockInHand: 20,
         quantityRequested: 0,
+        quantityApproved: 0,
         reasonForRequestedQuantity: "reason",
         expirationDate: "10/10/2016"
       },
@@ -98,6 +101,7 @@ describe "submit requisition to web server" do
         totalLossesAndAdjustments: 0,
         stockInHand: 10,
         quantityRequested: 0,
+        quantityApproved: 0,
         reasonForRequestedQuantity: "reason",
         expirationDate: "10/10/2016"
       }
@@ -250,6 +254,8 @@ describe "submit requisition to web server" do
 
     expect(body['requisitions'][0]['periodStartDate']).not_to be_nil
     expect(body['requisitions'][0]['programCode']).to eq "ESS_MEDS"
+    expect(body['requisitions'][0]['products'][0]['quantityRequested']).to eq 10
+    expect(body['requisitions'][0]['products'][0]['quantityApproved']).to eq 20
     expect(body['requisitions'][1]['periodStartDate']).not_to be_nil
     expect(body['requisitions'][1]['programCode']).to eq "MMIA"
     expect(body['requisitions'][1]['products'].length).to eq 24

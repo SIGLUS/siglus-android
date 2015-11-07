@@ -79,6 +79,7 @@ public class RnrFormAdapterForFeatureToggle implements JsonSerializer<RnRForm> {
             product.addProperty("quantityDispensed", item.getIssued());
             product.addProperty("stockInHand", item.getInventory());
             product.addProperty("quantityRequested", item.getRequestAmount());
+            product.addProperty("quantityApproved", item.getApprovedAmount());
             product.addProperty("reasonForRequestedQuantity", "reason");
             if (programCode.equals(VIARepository.VIA_PROGRAM_CODE)) {
                 product.addProperty("calculatedOrderQuantity", item.getCalculatedOrderQuantity());
