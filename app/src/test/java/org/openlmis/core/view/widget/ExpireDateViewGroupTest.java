@@ -21,7 +21,7 @@ public class ExpireDateViewGroupTest extends LMISRepositoryUnitTest {
 
     @Before
     public void setUp() {
-        expireDateViewGroup = new ExpireDateViewGroup(LMISApp.getContext());
+        expireDateViewGroup = new ExpireDateViewGroup(LMISApp.getContext(),null);
 
         StockCard stockCard = new StockCard();
         final Product product = new Product();

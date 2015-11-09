@@ -65,27 +65,16 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout {
 
     LayoutInflater inflater;
 
-    public ExpireDateViewGroup(Context context) {
-        super(context);
-        inflater = LayoutInflater.from(context);
-        init(context);
-    }
-
     public ExpireDateViewGroup(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         init(context);
     }
 
-    public ExpireDateViewGroup(Context context, AttributeSet attributeSet, int defStyle) {
-        super(context, attributeSet, defStyle);
-        init(context);
-    }
-
     private void init(Context context) {
         this.context = context;
+        inflater = LayoutInflater.from(context);
 
         RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
-
         initView();
     }
 
