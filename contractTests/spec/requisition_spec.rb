@@ -5,7 +5,7 @@ describe "submit requisition to web server" do
 
   it "should sync VIA requisition to server successfully and return expected response" do
 
-    requisition =
+    via_requisition =
     {
       agentCode: "F10",
       programCode: "ESS_MEDS",
@@ -44,37 +44,19 @@ describe "submit requisition to web server" do
       ]
     }
 
-    response = RestClient.post "http://#{WEB_DEV_URI}/rest-api/requisitions",
-      requisition.to_json, 'Content-Type' => 'application/json',
+    via_response = RestClient.post "http://#{WEB_DEV_URI}/rest-api/requisitions",
+      via_requisition.to_json, 'Content-Type' => 'application/json',
       'Accept' => 'application/json',
       'Authorization' => http_basic_auth('superuser', 'password1')
 
-    expect(response.code).to eq 201
+    expect(via_response.code).to eq 201
 
-    body = JSON.parse(response.body)
+    body = JSON.parse(via_response.body)
     requisition_id = body['requisitionId']
 
     expect(requisition_id).not_to be_nil
 
-    response = RestClient.get "http://#{WEB_DEV_URI}/rest-api/requisitions/#{requisition_id}",
-      'Content-Type' => 'application/json',
-      'Accept' => 'application/json',
-      'Authorization' => http_basic_auth('superuser', 'password1')
-
-    expect(response.code).to eq 200
-
-    body = JSON.parse(response.body)
-
-    expect(body['requisition']['id']).to eq requisition_id
-    expect(body['requisition']['programCode']).to eq "ESS_MEDS"
-    expect(body['requisition']['agentCode']).to eq "F10"
-    expect(body['requisition']['emergency']).to be false
-    expect(body['requisition']['requisitionStatus']).to eq "AUTHORIZED"
-
-  end
-
-  it "should sync MMIA requisition to server successfully and return expected response" do
-    requisition =
+    mmia_requisition =
     {
       agentCode: "F10",
       programCode: "MMIA",
@@ -230,15 +212,14 @@ describe "submit requisition to web server" do
       ]
     }
 
-
-    response = RestClient.post "http://#{WEB_DEV_URI}/rest-api/requisitions",
-      requisition.to_json, 'Content-Type' => 'application/json',
+    mmia_response = RestClient.post "http://#{WEB_DEV_URI}/rest-api/requisitions",
+      mmia_requisition.to_json, 'Content-Type' => 'application/json',
       'Accept' => 'application/json',
       'Authorization' => http_basic_auth('superuser', 'password1')
 
-    expect(response.code).to eq 201
+    expect(mmia_response.code).to eq 201
 
-    body = JSON.parse(response.body)
+    body = JSON.parse(mmia_response.body)
     requisition_id = body['requisitionId']
 
     expect(requisition_id).not_to be_nil
