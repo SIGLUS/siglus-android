@@ -20,6 +20,7 @@ package org.openlmis.core.network.model;
 
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.utils.DateUtil;
 
 import java.util.HashMap;
 
@@ -47,6 +48,7 @@ public class StockMovementEntry {
         this.setReasonName(stockMovementItem.getReason());
         this.setFacilityId(facilityId);
         this.setType("ADJUSTMENT");
+        this.setOccurred(DateUtil.formatDate(stockMovementItem.getMovementDate(), DateUtil.DB_DATE_FORMAT));
         this.getCustomProps().put("expirationDates", stockMovementItem.getStockCard().getExpireDates());
     }
 }
