@@ -17,14 +17,12 @@ import static junit.framework.Assert.assertEquals;
 public class ExpireDateViewGroupTest extends LMISRepositoryUnitTest {
 
     private ExpireDateViewGroup expireDateViewGroup;
+    protected StockCardViewModel model;
 
     @Before
     public void setUp() {
         expireDateViewGroup = new ExpireDateViewGroup(LMISApp.getContext());
-    }
 
-    @Test
-    public void shouldInitExpireDateViewGroup () throws LMISException {
         StockCard stockCard = new StockCard();
         final Product product = new Product();
         product.setCode("08S42");
@@ -33,11 +31,24 @@ public class ExpireDateViewGroupTest extends LMISRepositoryUnitTest {
 
         stockCard.setId(1L);
         stockCard.setStockOnHand(1L);
-        stockCard.setExpireDates("10/10/2016, 12/12/2016, 3/8/2017");
+        stockCard.setExpireDates("10/10/2016, 11/10/2016, 12/10/2017");
 
-        final StockCardViewModel model = new StockCardViewModel(stockCard);
+        model = new StockCardViewModel(stockCard);
+    }
 
+    @Test
+    public void shouldInitExpireDateViewGroup () throws LMISException {
         expireDateViewGroup.initExpireDateViewGroup(model, true);
-        assertEquals(expireDateViewGroup.getChildCount(),4);
+        assertEquals(4,expireDateViewGroup.getChildCount());
+    }
+
+    @Test
+    public void shouldNotAddDateIfExisted() throws Exception {
+        expireDateViewGroup.initExpireDateViewGroup(model,true);
+        expireDateViewGroup.addDate("10/10/2016");
+        expireDateViewGroup.addDate("13/10/2016");
+
+        assertEquals(4,expireDateViewGroup.expireDates.size());
+        assertEquals(5, expireDateViewGroup.getChildCount());
     }
 }

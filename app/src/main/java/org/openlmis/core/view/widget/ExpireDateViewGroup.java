@@ -52,7 +52,7 @@ import roboguice.RoboGuice;
 public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout {
 
     private Context context;
-    private List<String> expireDates;
+    protected List<String> expireDates;
     @Inject
     private StockRepository stockRepository;
 
@@ -63,8 +63,11 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout {
 
     private static final String FRAGMENT_TAG = "MsgDialogFragment";
 
+    LayoutInflater inflater;
+
     public ExpireDateViewGroup(Context context) {
         super(context);
+        inflater = LayoutInflater.from(context);
         init(context);
     }
 
@@ -83,11 +86,11 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout {
 
         RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
 
-        initView(context);
+        initView();
     }
 
-    private void initView(Context context) {
-        View tvAddExpiryDate = LayoutInflater.from(context).inflate(R.layout.view_add_expire_date, this);
+    private void initView() {
+        View tvAddExpiryDate = inflater.inflate(R.layout.view_add_expire_date, this);
         tvAddExpiryDate.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,7 +117,7 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout {
         dialog.show();
     }
 
-    private void addDate(String date) {
+    protected void addDate(String date) {
         if (expireDates.contains(date)) {
             return;
         }
@@ -129,7 +132,7 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout {
     }
 
     private ViewGroup addExpireDateView(String date) throws ParseException {
-        final ViewGroup expireDateView = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.item_expire_date, null);
+        final ViewGroup expireDateView = (ViewGroup) inflater.inflate(R.layout.item_expire_date, null);
         TextView tvExpireDate = (TextView) expireDateView.findViewById(R.id.tx_expire_data);
 
         tvExpireDate.setText(DateUtil.convertDate(date, DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
