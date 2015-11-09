@@ -3,7 +3,9 @@
 # clean up data regularly
 describe "submit requisition to web server" do
 
-  it "should sync VIA requisition to server successfully and return expected response" do
+  it "should sync requisitions to server successfully and return expected response" do
+
+    #POST VIA requisition
 
     via_requisition =
     {
@@ -14,13 +16,13 @@ describe "submit requisition to web server" do
       {
         productCode: "P1",
         beginningBalance: 10,
-        quantityReceived: 0,
-        quantityDispensed: 0,
-        stockInHand: 20,
-        totalLossesAndAdjustments: 10,
-        calculatedOrderQuantity: 0,
-        quantityRequested: 10,
-        quantityApproved: 20,
+        quantityReceived: 30,
+        quantityDispensed: 20,
+        stockInHand: 25,
+        totalLossesAndAdjustments: 5,
+        calculatedOrderQuantity: 15,
+        quantityRequested: 20,
+        quantityApproved: 15,
         reasonForRequestedQuantity: "reason"
       },
       {
@@ -56,12 +58,14 @@ describe "submit requisition to web server" do
 
     expect(requisition_id).not_to be_nil
 
+    #POST MMIA requisition
+
     mmia_requisition =
     {
       agentCode: "F10",
       programCode: "MMIA",
       clientSubmittedNotes: "I don't know",
-      clientSubmittedTime: "2015-10-27 11:11:20",
+      clientSubmittedTime: "2015-10-27 11:20:20",
       products: [
       {
         productCode: "08S23",
@@ -92,7 +96,7 @@ describe "submit requisition to web server" do
       {
         code: "001",
         name: "AZT+3TC+NVP",
-        patientsOnTreatment: 1
+        patientsOnTreatment: 8
       },
       {
         code: "002",
@@ -183,7 +187,7 @@ describe "submit requisition to web server" do
       patientQuantifications: [
       {
         category: "New Patients",
-        total: 1
+        total: 5
       },
       {
         category: "Sustaining",
@@ -224,6 +228,8 @@ describe "submit requisition to web server" do
 
     expect(requisition_id).not_to be_nil
 
+    #Retrieve all requisitions
+
     response = RestClient.get "http://#{WEB_DEV_URI}/rest-api/requisitions?facilityCode=F10",
       'Content-Type' => 'application/json',
       'Accept' => 'application/json',
@@ -233,15 +239,51 @@ describe "submit requisition to web server" do
 
     body = JSON.parse(response.body)
 
-    expect(body['requisitions'][0]['periodStartDate']).not_to be_nil
-    expect(body['requisitions'][0]['programCode']).to eq "ESS_MEDS"
-    expect(body['requisitions'][0]['products'][0]['quantityRequested']).to eq 10
-    expect(body['requisitions'][0]['products'][0]['quantityApproved']).to eq 20
-    expect(body['requisitions'][1]['periodStartDate']).not_to be_nil
-    expect(body['requisitions'][1]['programCode']).to eq "MMIA"
-    expect(body['requisitions'][1]['products'].length).to eq 24
-    expect(body['requisitions'][1]['emergency']).to be false
-    expect(body['requisitions'][1]['periodStartDate']).not_to be_nil
-    expect(body['requisitions'][1]['clientSubmittedNotes']).to eq "I don't know"
+    #Check VIA requisition fields
+
+    via_requisition = body['requisitions'].detect { |r| r['programCode'] == 'ESS_MEDS'}
+
+    expect(via_requisition['products'].length).to eq 2
+    expect(via_requisition['patientQuantifications'].length).to eq 1
+    expect(via_requisition['periodStartDate']).not_to be_nil
+    expect(via_requisition['clientSubmittedTime']).not_to be_nil
+
+    product1 = via_requisition['products'].detect { |p| p['productCode'] == 'P1' }
+    expect(product1['beginningBalance']).to eq 10
+    expect(product1['quantityReceived']).to eq 30
+    expect(product1['quantityDispensed']).to eq 20
+    expect(product1['stockInHand']).to eq 25
+    expect(product1['totalLossesAndAdjustments']).to eq 5
+    expect(product1['calculatedOrderQuantity']).to eq 15
+    expect(product1['quantityRequested']).to eq 20
+    expect(product1['quantityApproved']).to eq 15
+
+    patient_consultation = via_requisition['patientQuantifications'].detect { |p| p['category'] == 'consultation'}
+    expect(patient_consultation['total']).to eq 100
+
+    #Check MMIA requisition fields
+
+    mmia_requisition = body['requisitions'].detect { |r| r['programCode'] == 'MMIA'}
+
+    expect(mmia_requisition['products'].length).to eq 2
+    expect(mmia_requisition['clientSubmittedNotes']).to eq "I don't know"
+    expect(mmia_requisition['regimens'].length).to eq 18
+    expect(mmia_requisition['patientQuantifications'].length).to eq 7
+    expect(mmia_requisition['periodStartDate']).not_to be_nil
+    expect(mmia_requisition['clientSubmittedTime']).not_to be_nil
+
+    product1 = mmia_requisition['products'].detect { |p| p['productCode'] == '08S23' }
+    expect(product1['beginningBalance']).to eq 30
+    expect(product1['quantityReceived']).to eq 10
+    expect(product1['quantityDispensed']).to eq 20
+    expect(product1['stockInHand']).to eq 20
+    expect(product1['totalLossesAndAdjustments']).to eq 0
+    expect(product1['expirationDate']).to eq '10/10/2016'
+
+    regimen1 = mmia_requisition['regimens'].detect { |r| r['code'] == '001'}
+    expect(regimen1['patientsOnTreatment']).to eq 8
+
+    patient_quantification1 = mmia_requisition['patientQuantifications'].detect { |p| p['category'] == 'New Patients'}
+    expect(patient_quantification1['total']).to eq 5
   end
 end
