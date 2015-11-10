@@ -49,7 +49,7 @@ import java.util.List;
 import lombok.Setter;
 import roboguice.RoboGuice;
 
-public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout {
+public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout implements View.OnClickListener{
 
     private Context context;
     protected List<String> expireDates;
@@ -79,13 +79,14 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout {
     }
 
     private void initView() {
-        View tvAddExpiryDate = inflater.inflate(R.layout.view_add_expire_date, this);
-        tvAddExpiryDate.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDatePicker();
-            }
-        });
+        View tvAddExpiryDate = inflater.inflate(R.layout.view_add_expire_date, null);
+        tvAddExpiryDate.setOnClickListener(this);
+        addView(tvAddExpiryDate);
+    }
+
+    @Override
+    public void onClick(View v) {
+        showDatePicker();
     }
 
     private void showDatePicker() {
@@ -112,20 +113,30 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout {
         }
         expireDates.add(date);
 
-        try {
-            addExpireDateView(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        addExpireDateView(date);
         updateExpireDateToDB();
     }
 
-    private ViewGroup addExpireDateView(String date) throws ParseException {
+    private ViewGroup addExpireDateView(final String date) {
         final ViewGroup expireDateView = (ViewGroup) inflater.inflate(R.layout.item_expire_date, null);
         TextView tvExpireDate = (TextView) expireDateView.findViewById(R.id.tx_expire_data);
 
-        tvExpireDate.setText(DateUtil.convertDate(date, DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+        try {
+            tvExpireDate.setText(DateUtil.convertDate(date, DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+        }catch (ParseException e){
+            e.printStackTrace();
+        }
         addView(expireDateView, getChildCount() - 1);
+
+
+        View ivClear = expireDateView.findViewById(R.id.iv_clear);
+        ivClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showMsgDialog(expireDateView, date);
+            }
+        });
+
         return expireDateView;
     }
 
@@ -139,7 +150,7 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout {
 
         this.expireDates = getStockCardExpireDates(model);
         for (String date : expireDates) {
-            initExpireDateView(date);
+            addExpireDateView(date);
         }
     }
 
@@ -148,22 +159,6 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout {
             return new ArrayList<>();
         } else {
             return model.getExpiryDates();
-        }
-    }
-
-    private void initExpireDateView(final String date) {
-        try {
-            final ViewGroup expireDateView = addExpireDateView(date);
-
-            View ivClear = expireDateView.findViewById(R.id.iv_clear);
-            ivClear.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showMsgDialog(expireDateView, date);
-                }
-            });
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
     }
 
@@ -199,5 +194,4 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout {
             stockRepository.update(stockCard);
         }
     }
-
 }
