@@ -131,14 +131,8 @@ public class StockRepository {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-                    StockMovementItem initInventory = new StockMovementItem();
-                    initInventory.setReason(MovementReasonManager.INVENTORY);
-                    initInventory.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
-                    initInventory.setMovementDate(new Date());
-                    initInventory.setMovementQuantity(0);
-
                     save(stockCard);
-                    addStockMovementAndUpdateStockCard(stockCard, initInventory);
+                    addStockMovementAndUpdateStockCard(stockCard, initStockMovementItem(stockCard));
                     return null;
                 }
             });
@@ -146,6 +140,15 @@ public class StockRepository {
             e.printStackTrace();
             throw new LMISException(e);
         }
+    }
+
+    protected StockMovementItem initStockMovementItem(StockCard stockCard) {
+        StockMovementItem initInventory = new StockMovementItem();
+        initInventory.setReason(MovementReasonManager.INVENTORY);
+        initInventory.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
+        initInventory.setMovementDate(new Date());
+        initInventory.setMovementQuantity(stockCard.getStockOnHand());
+        return initInventory;
     }
 
     public void addStockMovementAndUpdateStockCard(StockCard stockcard, StockMovementItem stockMovementItem) throws LMISException {

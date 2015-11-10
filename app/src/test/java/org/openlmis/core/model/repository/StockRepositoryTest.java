@@ -26,6 +26,7 @@ import org.mockito.internal.matchers.NotNull;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockCardBuilder;
@@ -189,4 +190,13 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(items.get(1).isSynced(), is(true));
     }
 
+    @Test
+    public void shouldInitStockMovementFromStockCard() throws Exception {
+        StockCard stockCard = StockCardBuilder.buildStockCard();
+        stockCard.setStockOnHand(200);
+        StockMovementItem stockMovementItem = stockRepository.initStockMovementItem(stockCard);
+        assertThat(stockMovementItem.getMovementQuantity(),is(200L));
+        assertThat(stockMovementItem.getReason(), is(MovementReasonManager.INVENTORY));
+        assertThat(stockMovementItem.getMovementType(), is(StockMovementItem.MovementType.PHYSICAL_INVENTORY));
+    }
 }
