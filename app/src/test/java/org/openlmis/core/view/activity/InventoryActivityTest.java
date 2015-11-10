@@ -27,13 +27,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.robolectric.Robolectric;
+import org.robolectric.shadows.ShadowToast;
 
 
 import roboguice.RoboGuice;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
@@ -70,7 +73,18 @@ public class InventoryActivityTest {
 
         Intent startIntent = shadowOf(inventoryActivity).getNextStartedActivity();
         assertEquals(startIntent.getComponent().getClassName(), StockCardListActivity.class.getName());
-        assertEquals(startIntent.getFlags(),Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        assertEquals(startIntent.getFlags(), Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    }
+
+    @Test
+    public void shouldShowMessageAndNeverBackWhenPressBackInInitInventory() {
+        inventoryActivity.onBackPressed();
+
+        assertEquals(ShadowToast.getTextOfLatestToast(), inventoryActivity.getString(R.string.msg_save_before_exit));
+
+        inventoryActivity.onBackPressed();
+
+        assertFalse(inventoryActivity.isFinishing());
     }
 
     static class InventoryActivityMock extends InventoryActivity {

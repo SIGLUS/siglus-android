@@ -52,7 +52,7 @@ import rx.Subscriber;
 @ContentView(R.layout.activity_inventory)
 public class InventoryActivity extends BaseActivity implements InventoryPresenter.InventoryView {
 
-    public static final String PARAM_IS_PHYSICAL_INVENTORY = "isInitialInventory";
+    public static final String PARAM_IS_PHYSICAL_INVENTORY = "isPhysicalInventory";
     public static final String PARAM_IS_ADD_NEW_DRUG = "isAddNewDrug";
 
     @InjectView(R.id.products_list)
@@ -63,9 +63,6 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
 
     @InjectView(R.id.btn_done)
     public Button btnDone;
-
-    @InjectResource(R.integer.back_twice_interval)
-    int BACK_TWICE_INTERVAL;
 
     @InjectPresenter(InventoryPresenter.class)
     InventoryPresenter presenter;
@@ -220,18 +217,8 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     public void onBackPressed() {
         if (isPhysicalInventory || isAddNewDrug) {
             super.onBackPressed();
-        } else if (exitPressedOnce) {
-            moveTaskToBack(true);
-            exitPressedOnce = false;
         } else {
-            ToastUtil.show(R.string.msg_back_twice_to_exit);
-            exitPressedOnce = true;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    exitPressedOnce = false;
-                }
-            }, BACK_TWICE_INTERVAL);
+            ToastUtil.show(R.string.msg_save_before_exit);
         }
     }
 
