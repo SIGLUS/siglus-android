@@ -63,9 +63,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     @InjectPresenter(InventoryPresenter.class)
     InventoryPresenter presenter;
 
-    LinearLayoutManager mLayoutManager;
-    InventoryListAdapter mAdapter;
-
+    private InventoryListAdapter mAdapter;
     private boolean isPhysicalInventory;
     private boolean isAddNewDrug;
 
@@ -83,8 +81,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
         isPhysicalInventory = getIntent().getBooleanExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, false);
         isAddNewDrug = getIntent().getBooleanExtra(Constants.PARAM_IS_ADD_NEW_DRUG, false);
 
-        mLayoutManager = new LinearLayoutManager(this);
-        productListRecycleView.setLayoutManager(mLayoutManager);
+        productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
 
         if (isPhysicalInventory) {
             initPhysicalInventoryUI();

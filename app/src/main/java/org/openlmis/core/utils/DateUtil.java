@@ -34,7 +34,7 @@ public final class DateUtil {
     public static final String DB_DATE_FORMAT = "yyyy-MM-dd";
 
 
-    public static final SimpleDateFormat DATE_FORMATER = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
+    public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
     public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_DAY = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR);
     private static Locale locale = Locale.getDefault();
 
@@ -104,7 +104,7 @@ public final class DateUtil {
     }
 
     public static boolean equal(Date date1, Date date2) {
-        return DATE_FORMATER.format(date1).equals(DATE_FORMATER.format(date2));
+        return DATE_FORMATTER.format(date1).equals(DATE_FORMATTER.format(date2));
     }
 
     public static int dayNumber(Date date) {
@@ -113,7 +113,7 @@ public final class DateUtil {
     }
 
     public static String formatDate(Date date) {
-        return DATE_FORMATER.format(date);
+        return DATE_FORMATTER.format(date);
     }
 
     public static String formatDateWithYearAndMonth(Date date) {

@@ -15,14 +15,35 @@
  * this program. If not, see http://www.gnu.org/licenses. For additional
  * information contact info@OpenLMIS.org
  */
+package org.openlmis.core.utils;
 
-package org.openlmis.core.view;
+import android.text.Editable;
+import android.text.TextWatcher;
 
-public interface View {
+public class SingleTextWatcher implements TextWatcher {
+    @Override
+    public void beforeTextChanged(final CharSequence sequence, final int start, final int count, final int after) {
+        // nothing to do
+    }
 
-    void loading();
+    @Override
+    public void afterTextChanged(final Editable editable) {
+        // nothing to do
+    }
 
-    void loading(String message);
+    @Override
+    public void onTextChanged(final CharSequence sequence, final int start, final int before, final int count) {
+        // nothing to do
+    }
 
-    void loaded();
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        // Used to avoid add multiple Listeners in ListView
+        return true;
+    }
 }

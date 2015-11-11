@@ -19,7 +19,7 @@
 package org.openlmis.core.presenter;
 
 import org.openlmis.core.exceptions.ViewNotMatchException;
-import org.openlmis.core.view.View;
+import org.openlmis.core.view.LoadingView;
 
 public class DummyPresenter implements Presenter {
     @Override
@@ -33,7 +33,7 @@ public class DummyPresenter implements Presenter {
     }
 
     @Override
-    public void attachView(View v) throws ViewNotMatchException {
+    public void attachView(LoadingView v) throws ViewNotMatchException {
 
     }
 }

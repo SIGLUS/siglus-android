@@ -51,9 +51,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @InjectView(R.id.list_stock_movement)
     ListView stockMovementList;
 
-    @Inject
-    LayoutInflater layoutInflater;
-
     @InjectView(R.id.btn_complete)
     View btnComplete;
 
@@ -66,11 +63,13 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @InjectPresenter(StockMovementPresenter.class)
     StockMovementPresenter presenter;
 
-    private long stockId;
-    private StockMovementAdapter stockMovementAdapter;
+    @Inject
+    LayoutInflater layoutInflater;
 
+    private long stockId;
     private String stockName;
     private View buttonView;
+    private StockMovementAdapter stockMovementAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,12 +141,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_stock_movement, menu);
@@ -166,17 +159,16 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     }
 
     public void showBottomBtn() {
-        if (buttonView.getVisibility() == View.VISIBLE) {
-            return;
+        if (buttonView.getVisibility() != View.VISIBLE) {
+            buttonView.setVisibility(View.VISIBLE);
+            Animation animation = AnimationUtils.loadAnimation(this, R.anim.anim_from_bottom_in);
+            buttonView.startAnimation(animation);
+            stockMovementList.post(new Runnable() {
+                @Override
+                public void run() {
+                    stockMovementList.setSelection(stockMovementList.getCount() - 1);
+                }
+            });
         }
-        buttonView.setVisibility(View.VISIBLE);
-        Animation animation = AnimationUtils.loadAnimation(this, R.anim.anim_from_bottom_in);
-        buttonView.startAnimation(animation);
-        stockMovementList.post(new Runnable() {
-            @Override
-            public void run() {
-                stockMovementList.setSelection(stockMovementList.getCount() - 1);
-            }
-        });
     }
 }

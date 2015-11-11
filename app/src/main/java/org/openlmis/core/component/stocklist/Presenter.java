@@ -27,7 +27,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.RnrFormItemRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.View;
+import org.openlmis.core.view.LoadingView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,11 +116,11 @@ public class Presenter implements org.openlmis.core.presenter.Presenter {
     }
 
     @Override
-    public void attachView(View v) {
+    public void attachView(LoadingView v) {
         view = (StockCardListView)v;
     }
 
-    public interface StockCardListView extends View {
+    public interface StockCardListView extends LoadingView {
         void refresh();
     }
 

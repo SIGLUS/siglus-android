@@ -46,7 +46,7 @@ import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.View;
+import org.openlmis.core.view.LoadingView;
 import org.openlmis.core.view.fragment.RetainedFragment;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.base.Predicate;
@@ -59,17 +59,18 @@ import roboguice.activity.RoboActionBarActivity;
 
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
-public abstract class BaseActivity extends RoboActionBarActivity implements View {
+public abstract class BaseActivity extends RoboActionBarActivity implements LoadingView {
 
-
-    protected RetainedFragment dataFragment;
     @Inject
     SharedPreferenceMgr preferencesMgr;
-    protected SearchView searchView;
 
-    private long APP_TIMEOUT;
-
+    protected RetainedFragment dataFragment;
     protected Presenter presenter;
+    protected SearchView searchView;
+    protected Class<? extends Presenter> presenterClass;
+
+    private ProgressDialog loadingDialog;
+    private long APP_TIMEOUT;
 
     public void injectPresenter() {
         Field[] fields = FieldUtils.getAllFields(this.getClass());
@@ -100,10 +101,6 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
         }
     }
 
-    ProgressDialog loadingDialog;
-
-    protected Class<? extends Presenter> presenterClass;
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -112,7 +109,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (LMISApp.lastOperateTime > 0L && alreadyTimeOuted() && !LoginActivity.isActive) {
+        if (LMISApp.lastOperateTime > 0L && alreadyTimeOuted() && !isLoginActivityActive()) {
             logout();
             return true;
         } else {
@@ -124,6 +121,10 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     private void logout() {
         startActivity(new Intent(this, LoginActivity.class));
         LMISApp.lastOperateTime = 0L;
+    }
+
+    private boolean isLoginActivityActive() {
+        return this instanceof LoginActivity;
     }
 
     private boolean alreadyTimeOuted() {

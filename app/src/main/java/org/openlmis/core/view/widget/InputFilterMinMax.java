@@ -23,7 +23,7 @@ import android.text.Spanned;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class InputFilterMinMax  implements InputFilter {
+public class InputFilterMinMax implements InputFilter {
 
     int min = 0;
     int max = 0;

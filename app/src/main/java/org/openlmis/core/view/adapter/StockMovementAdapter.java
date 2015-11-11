@@ -39,7 +39,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.presenter.StockMovementPresenter;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.utils.SimpleTextWatcher;
+import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.StockMovementActivity;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
@@ -411,7 +411,7 @@ public class StockMovementAdapter extends BaseAdapter {
 
     }
 
-    class EditTextWatcher extends SimpleTextWatcher {
+    class EditTextWatcher extends SingleTextWatcher {
 
         private final View view;
         private final ViewHolder viewHolder;
@@ -419,16 +419,6 @@ public class StockMovementAdapter extends BaseAdapter {
         public EditTextWatcher(View view, ViewHolder viewHolder) {
             this.view = view;
             this.viewHolder = viewHolder;
-        }
-
-        @Override
-        public int hashCode() {
-            return super.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return true;
         }
 
         @Override

@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -88,52 +89,38 @@ public class HomeActivity extends BaseActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
-
-        btnStockCard.setOnClickListener(new android.view.View.OnClickListener() {
-            @Override
-            public void onClick(android.view.View v) {
-                startActivity(StockCardListActivity.class, false);
-            }
-        });
-
-        btnInventory.setOnClickListener(new android.view.View.OnClickListener() {
-            @Override
-            public void onClick(android.view.View v) {
-                Intent intent = new Intent(HomeActivity.this, InventoryActivity.class);
-                intent.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
-                startActivity(intent);
-            }
-        });
-
-        btnMMIA.setOnClickListener(new android.view.View.OnClickListener() {
-            @Override
-            public void onClick(android.view.View v) {
-                startActivity(MMIAActivity.class, false);
-            }
-        });
-
-        btnRequisition.setOnClickListener(new android.view.View.OnClickListener() {
-            @Override
-            public void onClick(android.view.View v) {
-                startActivity(RequisitionActivity.class, false);
-            }
-        });
-
-        btnSyncData.setOnClickListener(new android.view.View.OnClickListener() {
-            @Override
-            public void onClick(android.view.View v) {
-                syncManager.requestSyncImmediately();
-            }
-        });
     }
 
-    public void showMMIAHistoryList(android.view.View view) {
+    public void onClickStockCard(View view) {
+        startActivity(StockCardListActivity.class, false);
+    }
+
+    public void onClickInventory(View view) {
+        Intent intent = new Intent(HomeActivity.this, InventoryActivity.class);
+        intent.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
+        startActivity(intent);
+    }
+
+    public void onClickMMIA(View view) {
+        startActivity(MMIAActivity.class, false);
+    }
+
+    public void onClickRequisition(View view) {
+        startActivity(RequisitionActivity.class, false);
+    }
+
+    public void onClickSyncData(View view) {
+        syncManager.requestSyncImmediately();
+    }
+
+
+    public void onClickMMIAHistory(View view) {
         Intent intent = new Intent(this, RnRFormListActivity.class);
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, MMIARepository.MMIA_PROGRAM_CODE);
         startActivity(intent);
     }
 
-    public void showVIAHistoryList(android.view.View view) {
+    public void onClickVIAHistory(View view) {
         Intent intent = new Intent(this, RnRFormListActivity.class);
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE);
         startActivity(intent);

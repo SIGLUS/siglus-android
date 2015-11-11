@@ -32,8 +32,10 @@ import java.util.List;
 
 
 public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.ViewHolder> implements FilterableAdapter {
+
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_FOOTER = 1;
+
     private View footView;
 
     public PhysicalInventoryAdapter(Context context, List<StockCardViewModel> data) {

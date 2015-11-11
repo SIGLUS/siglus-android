@@ -83,7 +83,7 @@ public class MMIAActivityTest {
 
     @Test
     public void shouldRemoveRnrFormWhenPositiveButtonClicked() {
-        mmiaActivity.positiveClick(MMIAActivity.ON_BACK_PRESSED);
+        mmiaActivity.positiveClick(MMIAActivity.TAG_BACK_PRESSED);
 
         verify(mmiaFormPresenter).removeRnrForm();
     }

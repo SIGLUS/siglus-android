@@ -26,7 +26,7 @@ import com.google.inject.Inject;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.view.View;
+import org.openlmis.core.view.LoadingView;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 
@@ -69,7 +69,7 @@ public class StockMovementHistoryPresenter implements Presenter {
     }
 
     @Override
-    public void attachView(View v) {
+    public void attachView(LoadingView v) {
         this.view = (StockMovementHistoryView) v;
     }
 
@@ -109,7 +109,7 @@ public class StockMovementHistoryPresenter implements Presenter {
         this.stockCardId = stockId;
     }
 
-    public interface StockMovementHistoryView extends View {
+    public interface StockMovementHistoryView extends LoadingView {
         void refreshStockMovement(boolean hasNewData);
     }
 

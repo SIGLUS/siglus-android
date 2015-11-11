@@ -12,6 +12,7 @@ public class RequisitionProductViewHolder extends BaseViewHolder {
 
     @InjectView(R.id.tx_FNM)
     TextView productCode;
+
     @InjectView(R.id.tx_product_name)
     TextView productName;
 

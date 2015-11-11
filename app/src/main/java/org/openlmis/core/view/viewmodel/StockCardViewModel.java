@@ -66,31 +66,34 @@ public class StockCardViewModel {
     private StockCard stockCard;
 
     public StockCardViewModel(StockCard stockCard) {
-        this.stockCard = stockCard;
-        this.productName = stockCard.getProduct().getPrimaryName();
-        this.fnm = stockCard.getProduct().getCode();
-        this.strength = stockCard.getProduct().getStrength();
-        this.stockCardId = stockCard.getId();
-        this.productId = stockCard.getProduct().getId();
 
-        Product product = stockCard.getProduct();
-        formatProductDisplay(product);
+        this.stockCard = stockCard;
+        this.stockCardId = stockCard.getId();
+        this.stockOnHand = stockCard.getStockOnHand();
+        this.checked = true;
 
         if (!TextUtils.isEmpty(stockCard.getExpireDates())) {
             this.expiryDates = newArrayList(stockCard.getExpireDates().split(StockCard.DIVIDER));
         }
-        this.stockOnHand = stockCard.getStockOnHand();
-        this.checked = true;
+
+        setProductAttributes(stockCard.getProduct());
+
+        formatProductDisplay(stockCard.getProduct());
     }
 
     public StockCardViewModel(Product product) {
+        this.type = product.getType();
+        this.checked = false;
+
+        setProductAttributes(product);
+        formatProductDisplay(product);
+    }
+
+    private void setProductAttributes(Product product) {
         this.productName = product.getPrimaryName();
         this.fnm = product.getCode();
         this.strength = product.getStrength();
-        this.type = product.getType();
         this.productId = product.getId();
-        this.checked = false;
-        formatProductDisplay(product);
     }
 
     private void formatProductDisplay(Product product) {

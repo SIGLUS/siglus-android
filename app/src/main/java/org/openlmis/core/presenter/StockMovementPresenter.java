@@ -30,7 +30,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.View;
+import org.openlmis.core.view.LoadingView;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 
@@ -77,7 +77,7 @@ public class StockMovementPresenter implements Presenter {
     }
 
     @Override
-    public void attachView(View v) throws ViewNotMatchException {
+    public void attachView(LoadingView v) throws ViewNotMatchException {
         if (v instanceof StockMovementView) {
             this.view = (StockMovementView) v;
         } else {
@@ -160,7 +160,7 @@ public class StockMovementPresenter implements Presenter {
     }
 
 
-    public interface StockMovementView extends View {
+    public interface StockMovementView extends LoadingView {
         void showErrorAlert(String msg);
 
         void refreshStockMovement();

@@ -14,7 +14,7 @@ import android.widget.TextView;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.utils.SimpleTextWatcher;
+import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
@@ -123,22 +123,12 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         actionPanel.setVisibility(visible);
     }
 
-    class EditTextWatcher extends SimpleTextWatcher {
+    class EditTextWatcher extends SingleTextWatcher {
 
         private final StockCardViewModel viewModel;
 
         public EditTextWatcher(StockCardViewModel viewModel) {
             this.viewModel = viewModel;
-        }
-
-        @Override
-        public int hashCode() {
-            return super.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return true;
         }
 
         @Override

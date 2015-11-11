@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
@@ -35,38 +36,59 @@ import org.openlmis.core.R;
 import org.openlmis.core.presenter.StockMovementHistoryPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.activity.BaseActivity;
+import org.openlmis.core.view.LoadingView;
 import org.openlmis.core.view.adapter.StockMovementHistoryAdapter;
 
 public class StockMovementHistoryFragment extends BaseFragment implements StockMovementHistoryPresenter.StockMovementHistoryView, OnRefreshListener {
-    ListView historyListView;
-    View horizontalScrollView;
 
     @Inject
     StockMovementHistoryPresenter presenter;
 
     private long startIndex = 0;
-    private BaseAdapter adapter;
     private boolean isLoading;
     private boolean isFirstLoading;
+    private boolean isRotated;
+
     private View contentView;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private boolean isRotated;
+    private LoadingView loadingView;
+    private ListView historyListView;
+
+    private BaseAdapter adapter;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contentView = inflater.inflate(R.layout.fragment_stock_movement_history, container, false);
+
         presenter.attachView(this);
         presenter.setStockCardId(getActivity().getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0));
-        initUI();
 
-        if (isRotated) {
-            reCreateView();
-        } else {
-            initData();
-        }
         return contentView;
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        if (activity instanceof LoadingView) {
+            loadingView = (LoadingView) activity;
+        } else {
+            throw new ClassCastException("Host Activity should implements LoadingView method");
+        }
+
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        initUI();
+
+        if (isRotated) {
+            addFooterViewIfMoreThanOneScreen();
+        } else {
+            initData();
+        }
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -74,13 +96,8 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
         super.onSaveInstanceState(outState);
     }
 
-    private void reCreateView() {
-        addFooterViewIfMoreThanOneScreen();
-    }
-
     private void initUI() {
         historyListView = (ListView) contentView.findViewById(R.id.list);
-        horizontalScrollView = contentView.findViewById(R.id.horizontal_scrollview);
 
         adapter = new StockMovementHistoryAdapter(getActivity(), presenter.getStockMovementModelList());
         historyListView.setAdapter(adapter);
@@ -92,7 +109,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
 
     public void initData() {
         isFirstLoading = true;
-        ((BaseActivity) getActivity()).loading();
+        loadingView.loading();
         swipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -125,7 +142,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
             }
         } else {
             ToastUtil.showInCenter(R.string.hint_has_not_new_data);
-            ((BaseActivity) getActivity()).loaded();
+            loadingView.loaded();
         }
         isLoading = false;
         swipeRefreshLayout.setRefreshing(false);
@@ -137,7 +154,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
             @Override
             public void run() {
                 historyListView.setSelection(historyListView.getCount() - 1);
-                ((BaseActivity) getActivity()).loaded();
+                loadingView.loaded();
             }
         });
     }
@@ -168,15 +185,16 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
 
     @Override
     public void loading() {
-
+        loadingView.loading();
     }
 
     @Override
     public void loading(String message) {
-
+        loadingView.loading(message);
     }
 
     @Override
     public void loaded() {
+        loadingView.loaded();
     }
 }

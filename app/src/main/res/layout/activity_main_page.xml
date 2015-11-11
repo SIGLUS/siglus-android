@@ -5,10 +5,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="20dp">
-
 
         <Button
             android:id="@+id/btn_stock_card"
@@ -16,6 +15,7 @@
             android:layout_marginTop="20dp"
             android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
             android:text="@string/label_stock_cards"
+            android:onClick="onClickStockCard"
             android:layout_marginBottom="@dimen/homepage_group_margin"/>
 
         <Button
@@ -23,38 +23,42 @@
             style="@style/home_page_button"
             android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
             android:text="@string/label_inventory"
+            android:onClick="onClickInventory"
             android:layout_marginBottom="@dimen/homepage_group_margin"/>
 
         <Button
             android:id="@+id/btn_mmia"
             style="@style/home_page_button"
             android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+            android:onClick="onClickMMIA"
             android:text="@string/label_mmia"/>
 
         <Button android:id="@+id/btn_mmia_list"
             android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
             style="@style/home_page_button"
             android:text="@string/btn_mmia_list"
-            android:onClick="showMMIAHistoryList"
+            android:onClick="onClickMMIAHistory"
             android:layout_marginBottom="@dimen/homepage_group_margin"/>
 
         <Button
             android:id="@+id/btn_requisition"
             style="@style/home_page_button"
             android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+            android:onClick="onClickRequisition"
             android:text="@string/title_requisition" />
 
         <Button android:id="@+id/btn_via_list"
             android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
             style="@style/home_page_button"
             android:text="@string/btn_requisition_list"
-            android:onClick="showVIAHistoryList"
+            android:onClick="onClickVIAHistory"
             android:layout_marginBottom="@dimen/homepage_group_margin"/>
 
         <Button
             android:id="@+id/btn_sync_data"
             style="@style/home_page_button"
             android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+            android:onClick="onClickSyncData"
             android:text="@string/label_sync" />
 
         <TextView

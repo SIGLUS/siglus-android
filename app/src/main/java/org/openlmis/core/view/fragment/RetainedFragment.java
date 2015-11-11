@@ -23,10 +23,7 @@ import java.util.HashMap;
 
 public class RetainedFragment extends BaseFragment {
 
-    // data object we want to retain
-    private Object data;
-
-    private HashMap map = new HashMap();
+    private HashMap map = new HashMap<>();
 
     // this method is only called once for this fragment
     @Override

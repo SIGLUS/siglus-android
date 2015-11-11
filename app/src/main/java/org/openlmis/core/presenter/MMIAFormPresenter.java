@@ -33,7 +33,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.service.SyncManager;
-import org.openlmis.core.view.View;
+import org.openlmis.core.view.LoadingView;
 
 import java.util.ArrayList;
 
@@ -73,7 +73,7 @@ public class MMIAFormPresenter implements Presenter {
     }
 
     @Override
-    public void attachView(View v) throws ViewNotMatchException {
+    public void attachView(LoadingView v) throws ViewNotMatchException {
         if (v instanceof MMIAFormView) {
             this.view = (MMIAFormView) v;
         } else {
@@ -242,7 +242,7 @@ public class MMIAFormPresenter implements Presenter {
     }
 
 
-    public interface MMIAFormView extends View {
+    public interface MMIAFormView extends LoadingView {
         void showValidationAlert();
 
         void showErrorMessage(String msg);

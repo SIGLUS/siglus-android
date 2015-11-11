@@ -64,22 +64,19 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     ListView requisitionNameList;
 
     @InjectView(R.id.btn_complete)
-    private Button btnComplete;
+    Button btnComplete;
 
     @InjectView(R.id.btn_save)
-    private View btnSave;
+    View btnSave;
 
     @InjectView(R.id.action_panel)
-    private View actionPanel;
+    View actionPanel;
 
     @InjectView(R.id.vg_container)
-    private ViewGroup vgContainer;
+    ViewGroup vgContainer;
 
     @InjectView(R.id.edit_text)
-    private EditText etConsultationNumbers;
-
-    @InjectPresenter(RequisitionPresenter.class)
-    RequisitionPresenter presenter;
+    EditText etConsultationNumbers;
 
     @InjectView(R.id.requisition_header_right)
     View bodyHeaderView;
@@ -96,13 +93,17 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     @InjectView(R.id.tv_label_approve)
     TextView headerApproveAmount;
 
-    RequisitionProductAdapter requisitionProductAdapter;
-    RequisitionFormAdapter requisitionFormAdapter;
+    @InjectPresenter(RequisitionPresenter.class)
+    RequisitionPresenter presenter;
 
+    protected Boolean hasDataChanged;
+
+    private RequisitionProductAdapter requisitionProductAdapter;
+    private RequisitionFormAdapter requisitionFormAdapter;
     private boolean consultationNumbersHasChanged;
     private boolean isHistoryForm;
-    protected Boolean hasDataChanged;
-    private static final String ON_BACK_PRESSED = "onBackPressed";
+
+    private static final String TAG_BACK_PRESSED = "onBackPressed";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -112,11 +113,13 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         long formId = getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
         isHistoryForm = formId != 0;
-
         hasDataChanged = (Boolean) dataFragment.getData(Constants.KEY_HAS_DATA_CHANGED);
+
         initUI();
+
         presenter.loadRequisitionFormList(formId);
     }
 
@@ -234,11 +237,11 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         btnComplete.setText(getString(R.string.btn_submit));
         etConsultationNumbers.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
 
-        setUIListeners();
+        bindListeners();
         setEditable();
     }
 
-    private void setUIListeners() {
+    private void bindListeners() {
         requisitionForm.setOnScrollListener(new MyScrollListener(requisitionForm, requisitionNameList));
         requisitionNameList.setOnScrollListener(new MyScrollListener(requisitionNameList, requisitionForm));
         btnComplete.setOnClickListener(this);
@@ -410,7 +413,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
                     getString(R.string.msg_mmia_onback_confirm),
                     getString(R.string.btn_positive),
                     getString(R.string.btn_negative),
-                    ON_BACK_PRESSED);
+                    TAG_BACK_PRESSED);
             dialogFragment.show(getFragmentManager(), "back_confirm_dialog");
         } else {
             removeTempForm();
@@ -432,7 +435,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     @Override
     public void positiveClick(String tag) {
-        if (tag.equals(ON_BACK_PRESSED)) {
+        if (tag.equals(TAG_BACK_PRESSED)) {
             removeTempForm();
             finish();
         }

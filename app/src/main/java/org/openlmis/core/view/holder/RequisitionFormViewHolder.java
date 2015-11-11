@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.utils.SimpleTextWatcher;
+import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 
@@ -65,7 +65,10 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
         different.setText(entry.getDifferent());
         totalRequest.setText(entry.getTotalRequest());
 
+        populateRequestApprovedAmount(entry, status);
+    }
 
+    private void populateRequestApprovedAmount(RequisitionFormItemViewModel entry, RnRForm.STATUS status) {
         MyTextWatcher mySimpleTextWatcher = new MyTextWatcher(entry, status);
         requestAmount.removeTextChangedListener(mySimpleTextWatcher);
         approvedAmount.removeTextChangedListener(mySimpleTextWatcher);
@@ -74,26 +77,29 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
         requestAmount.setError(null);
         approvedAmount.setText(entry.getApprovedAmount());
 
-
         if (status == RnRForm.STATUS.SUBMITTED) {
-            requestAmount.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
-            approvedAmount.setBackgroundColor(context.getResources().getColor(R.color.white));
-
-            requestAmount.setEnabled(false);
-            approvedAmount.setEnabled(true);
+            showDisabledAmount(requestAmount);
+            showEnabledAmount(approvedAmount);
             approvedAmount.addTextChangedListener(mySimpleTextWatcher);
 
         } else if (status == RnRForm.STATUS.DRAFT) {
-            requestAmount.setBackgroundColor(context.getResources().getColor(R.color.white));
-            approvedAmount.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
-
-            requestAmount.setEnabled(true);
-            approvedAmount.setEnabled(false);
+            showEnabledAmount(requestAmount);
+            showDisabledAmount(approvedAmount);
             requestAmount.addTextChangedListener(mySimpleTextWatcher);
         }
     }
 
-    class MyTextWatcher extends SimpleTextWatcher {
+    private void showDisabledAmount(View view) {
+        view.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
+        view.setEnabled(false);
+    }
+
+    private void showEnabledAmount(View view) {
+        view.setBackgroundColor(context.getResources().getColor(R.color.white));
+        view.setEnabled(true);
+    }
+
+    class MyTextWatcher extends SingleTextWatcher {
 
         private final RequisitionFormItemViewModel entry;
         private RnRForm.STATUS status;
@@ -101,16 +107,6 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
         public MyTextWatcher(RequisitionFormItemViewModel entry, RnRForm.STATUS status) {
             this.entry = entry;
             this.status = status;
-        }
-
-        @Override
-        public int hashCode() {
-            return super.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return true;
         }
 
         @Override

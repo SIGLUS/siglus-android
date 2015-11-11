@@ -31,10 +31,8 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 
-public class BorderedEditText extends LinearLayout{
+public class BorderedEditText extends LinearLayout {
 
-    LayoutInflater layoutInflater;
-    Context context;
     String text;
     int ems;
     float width;
@@ -42,9 +40,8 @@ public class BorderedEditText extends LinearLayout{
     TextView label;
     EditText editText;
 
-    public BorderedEditText(Context context, AttributeSet attrs){
+    public BorderedEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.context = context;
 
         TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.BorderedEditText, 0,
                 R.style.DefaultBorderedEditText);
@@ -56,11 +53,10 @@ public class BorderedEditText extends LinearLayout{
         initUI();
     }
 
-    private void initUI(){
-        layoutInflater = LayoutInflater.from(context);
-        View contentView = layoutInflater.inflate(R.layout.view_bordered_edittext, this, true);
+    private void initUI() {
+        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.view_bordered_edittext, this, true);
 
-        label = (TextView)contentView.findViewById(R.id.label);
+        label = (TextView) contentView.findViewById(R.id.label);
         editText = (EditText) contentView.findViewById(R.id.edit_text);
 
         label.setText(text);

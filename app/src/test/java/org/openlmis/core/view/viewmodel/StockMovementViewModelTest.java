@@ -35,7 +35,6 @@ import static org.junit.Assert.assertTrue;
 @RunWith(LMISTestRunner.class)
 public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
 
-
     private StockMovementViewModel stockMovementViewModel;
     private MovementReasonManager.MovementReason movementReason;
 

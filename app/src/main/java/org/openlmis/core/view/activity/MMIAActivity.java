@@ -85,13 +85,12 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     MMIAFormPresenter presenter;
 
     private Boolean hasDataChanged;
-
     private boolean commentHasChanged = false;
     private boolean isHistoryForm;
     private long formId;
 
-    protected static final String ON_BACK_PRESSED = "onBackPressed";
-    private static final String MISMATCH = "mismatch";
+    protected static final String TAG_BACK_PRESSED = "onBackPressed";
+    private static final String TAG_MISMATCH = "mismatch";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -227,7 +226,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
                     getString(R.string.msg_mmia_onback_confirm),
                     getString(R.string.btn_positive),
                     getString(R.string.btn_negative),
-                    ON_BACK_PRESSED);
+                    TAG_BACK_PRESSED);
             dialogFragment.show(getFragmentManager(), "");
         } else {
             removeTempForm();
@@ -259,7 +258,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         DialogFragment dialogFragment = BaseDialogFragment.newInstance(null,
                 getString(R.string.msg_regime_total_and_patient_total_not_match),
                 getString(R.string.btn_ok),
-                MISMATCH);
+                TAG_MISMATCH);
         dialogFragment.show(getFragmentManager(), "not_match_dialog");
     }
 
@@ -292,11 +291,9 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     }
 
     private void onCompleteBtnClick() {
-        if (!regimeListView.isCompleted() || !mmiaInfoListView.isCompleted()) {
-            return;
+        if (regimeListView.isCompleted() && mmiaInfoListView.isCompleted()) {
+            presenter.completeMMIA(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
         }
-
-        presenter.completeMMIA(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
     }
 
     @Override
@@ -326,7 +323,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     @Override
     public void positiveClick(String tag) {
-        if (tag.equals(ON_BACK_PRESSED)){
+        if (tag.equals(TAG_BACK_PRESSED)){
             removeTempForm();
             finish();
         }

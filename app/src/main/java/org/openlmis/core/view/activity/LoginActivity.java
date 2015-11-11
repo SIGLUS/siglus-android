@@ -60,8 +60,6 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     @InjectPresenter(LoginPresenter.class)
     LoginPresenter presenter;
 
-    public static boolean isActive;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,18 +162,6 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     public void showUserNameEmpty() {
         clearErrorAlerts();
         lyUserName.setError(getResources().getString(R.string.msg_empty_user));
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        isActive = true;
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        isActive = false;
     }
 
     private void startLogin() {

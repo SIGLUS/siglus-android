@@ -29,7 +29,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.RnrFormRepository;
-import org.openlmis.core.view.View;
+import org.openlmis.core.view.LoadingView;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -65,7 +65,7 @@ public class RnRFormListPresenter implements Presenter{
     }
 
     @Override
-    public void attachView(View v) throws ViewNotMatchException {
+    public void attachView(LoadingView v) throws ViewNotMatchException {
         if (v instanceof RnRFormListView) {
             view = (RnRFormListView) v;
         } else {
@@ -117,7 +117,7 @@ public class RnRFormListPresenter implements Presenter{
     }
 
 
-    public interface RnRFormListView extends View {
+    public interface RnRFormListView extends LoadingView {
 
     }
 }
