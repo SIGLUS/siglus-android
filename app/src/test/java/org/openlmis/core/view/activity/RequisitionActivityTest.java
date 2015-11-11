@@ -81,14 +81,9 @@ public class RequisitionActivityTest {
                 binder.bind(RequisitionPresenter.class).toInstance(presenter);
             }
         });
-
-        Intent intent = new Intent();
-        intent.putExtra(Constants.PARAM_FORM_ID, 100L);
-
-        requisitionActivity = Robolectric.buildActivity(RequisitionActivity.class).withIntent(intent).create().get();
+        requisitionActivity = Robolectric.buildActivity(RequisitionActivity.class).create().get();
         requisitionActivity.refreshRequisitionForm();
     }
-
 
     @Test
     public void shouldShowErrorOnRequestAmountWhenInputInvalid() {
