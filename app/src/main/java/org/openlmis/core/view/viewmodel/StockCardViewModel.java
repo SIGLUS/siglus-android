@@ -51,7 +51,7 @@ public class StockCardViewModel {
     String type;
     String quantity;
 
-    List<String> expiryDates;
+    List<String> expiryDates = new ArrayList<>();
 
     long stockCardId;
 
@@ -76,10 +76,8 @@ public class StockCardViewModel {
         Product product = stockCard.getProduct();
         formatProductDisplay(product);
 
-        if (TextUtils.isEmpty(stockCard.getExpireDates())) {
-            expiryDates = new ArrayList<>();
-        } else {
-            expiryDates = newArrayList(stockCard.getExpireDates().split(StockCard.DIVIDER));
+        if (!TextUtils.isEmpty(stockCard.getExpireDates())) {
+            this.expiryDates = newArrayList(stockCard.getExpireDates().split(StockCard.DIVIDER));
         }
         this.stockOnHand = stockCard.getStockOnHand();
         this.checked = true;
@@ -94,7 +92,6 @@ public class StockCardViewModel {
         this.checked = false;
         formatProductDisplay(product);
     }
-
 
     private void formatProductDisplay(Product product) {
         String productName = product.getPrimaryName() + " [" + product.getCode() + "]";
@@ -134,11 +131,10 @@ public class StockCardViewModel {
         });
     }
 
-
     public String optFirstExpiryDate() {
-        if (expiryDates != null && expiryDates.size() > 0) {
+        if (expiryDates.size() > 0) {
             try {
-                return DateUtil.convertDate(expiryDates.get(0), "dd/MM/yyyy", "MMM yyyy");
+                return DateUtil.convertDate(expiryDates.get(0), DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
             } catch (ParseException e) {
                 e.printStackTrace();
                 return StringUtils.EMPTY;
@@ -153,9 +149,6 @@ public class StockCardViewModel {
     }
 
     public boolean addExpiryDate(String date, boolean append) {
-        if (expiryDates == null) {
-            expiryDates = new ArrayList<>();
-        }
         if (!append) {
             expiryDates.clear();
         }
@@ -163,16 +156,12 @@ public class StockCardViewModel {
     }
 
     public void removeExpiryDate(String date) {
-        if (expiryDates == null) {
-            return;
-        }
         expiryDates.remove(date);
     }
 
     public boolean isExpireDateExists(String expireDate) {
         return this.getExpiryDates().contains(expireDate);
     }
-
 
     public boolean validate() {
         validate = !checked || StringUtils.isNumeric(quantity);

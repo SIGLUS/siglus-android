@@ -1,7 +1,6 @@
 package org.openlmis.core.view.holder;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -46,12 +45,8 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     @InjectView(R.id.action_panel)
     View actionPanel;
 
-    protected Context context;
-
     public InitialInventoryViewHolder(View itemView) {
         super(itemView);
-        this.context = itemView.getContext();
-
         initView();
     }
 

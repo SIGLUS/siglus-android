@@ -20,58 +20,38 @@ package org.openlmis.core.view.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.text.Editable;
-import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.utils.SimpleTextWatcher;
+import org.openlmis.core.view.holder.RequisitionFormViewHolder;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
-import org.openlmis.core.view.widget.InputFilterMinMax;
 
 import java.util.List;
 
-import lombok.Setter;
-
 public class RequisitionFormAdapter extends BaseAdapter {
 
-    Context context;
-    List<RequisitionFormItemViewModel> data;
-    LayoutInflater inflater;
-    boolean isNameList;
-    private boolean hasDataChanged = false;
+    private Context context;
+    private List<RequisitionFormItemViewModel> data;
 
-    int itemLayoutResId;
+    private RnRForm.STATUS status = RnRForm.STATUS.AUTHORIZED;
 
-    @Setter
-    RnRForm.STATUS status = RnRForm.STATUS.AUTHORIZED;
-
-    public RequisitionFormAdapter(Context context, List<RequisitionFormItemViewModel> data, boolean isNameList) {
-        this.context = context;
+    public RequisitionFormAdapter(Context context, List<RequisitionFormItemViewModel> data) {
         this.data = data;
-        inflater = LayoutInflater.from(context);
-        this.isNameList = isNameList;
-        if (isNameList) {
-            itemLayoutResId = R.layout.item_requisition_body_left;
-        } else {
-            itemLayoutResId = R.layout.item_requisition_body;
-        }
+        this.context = context;
     }
 
     @Override
     public int getCount() {
-        return data.size();
+        return data == null ? 0 : data.size();
     }
 
     @Override
     public RequisitionFormItemViewModel getItem(int position) {
-        return data.get(position);
+        return data == null ? null : data.get(position);
     }
 
     @Override
@@ -81,144 +61,30 @@ public class RequisitionFormAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
-        final RequisitionFormItemViewModel entry = getItem(position);
+        RequisitionFormViewHolder viewHolder;
+
         if (convertView == null) {
-            convertView = inflater.inflate(itemLayoutResId, parent, false);
-            viewHolder = new ViewHolder(convertView, isNameList);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_requisition_body, parent, false);
+            viewHolder = new RequisitionFormViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {
-            viewHolder = (ViewHolder) convertView.getTag();
+            viewHolder = (RequisitionFormViewHolder) convertView.getTag();
         }
 
         View currentFocus = ((Activity) context).getCurrentFocus();
         if (currentFocus != null) {
             currentFocus.clearFocus();
         }
-        onBindViewHolder(viewHolder, entry);
+
+        final RequisitionFormItemViewModel entry = getItem(position);
+        viewHolder.populate(entry, status);
 
         return convertView;
     }
 
-    public void onBindViewHolder(final ViewHolder holder, final RequisitionFormItemViewModel entry) {
-
-        holder.productCode.setText(entry.getFmn());
-        holder.productName.setText(entry.getProductName());
-
-        if (!isNameList) {
-            holder.initAmount.setText(entry.getInitAmount());
-            holder.received.setText(entry.getReceived());
-            holder.issued.setText(entry.getIssued());
-            holder.theoretical.setText(entry.getTheoretical());
-            holder.total.setText(entry.getTotal());
-            holder.inventory.setText(entry.getInventory());
-            holder.different.setText(entry.getDifferent());
-            holder.totalRequest.setText(entry.getTotalRequest());
-
-
-            MyTextWatcher mySimpleTextWatcher = new MyTextWatcher(holder.approvedAmount, entry);
-            holder.requestAmount.removeTextChangedListener(mySimpleTextWatcher);
-            holder.approvedAmount.removeTextChangedListener(mySimpleTextWatcher);
-
-            holder.requestAmount.setText(entry.getRequestAmount());
-            holder.requestAmount.setError(null);
-            holder.approvedAmount.setText(entry.getApprovedAmount());
-
-
-            if (status == RnRForm.STATUS.SUBMITTED){
-                holder.requestAmount.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
-                holder.approvedAmount.setBackgroundColor(context.getResources().getColor(R.color.white));
-
-                holder.requestAmount.setEnabled(false);
-                holder.approvedAmount.setEnabled(true);
-                holder.approvedAmount.addTextChangedListener(mySimpleTextWatcher);
-
-            } else if (status == RnRForm.STATUS.DRAFT){
-                holder.requestAmount.setBackgroundColor(context.getResources().getColor(R.color.white));
-                holder.approvedAmount.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
-
-                holder.requestAmount.setEnabled(true);
-                holder.approvedAmount.setEnabled(false);
-                holder.requestAmount.addTextChangedListener(mySimpleTextWatcher);
-            }
-        }
-    }
-
-
-    public boolean hasDataChanged() {
-        return hasDataChanged;
-    }
-
-    class MyTextWatcher extends SimpleTextWatcher {
-
-        private final EditText approvedAmount;
-        private final RequisitionFormItemViewModel entry;
-
-        public MyTextWatcher(EditText approvedAmount, RequisitionFormItemViewModel entry) {
-            this.approvedAmount = approvedAmount;
-            this.entry = entry;
-        }
-
-        @Override
-        public int hashCode() {
-            return super.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return true;
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            hasDataChanged = true;
-            String value = editable.toString();
-            if (status == RnRForm.STATUS.SUBMITTED) {
-                entry.setApprovedAmount(value);
-            } else if (status == RnRForm.STATUS.DRAFT) {
-                approvedAmount.setText(value);
-                entry.setApprovedAmount(value);
-                entry.setRequestAmount(value);
-            }
-        }
-    }
-
-    static class ViewHolder{
-
-        public TextView productCode;
-        public TextView productName;
-        public TextView initAmount;
-        public TextView received;
-        public TextView issued;
-        public TextView theoretical;
-        public TextView total;
-        public TextView inventory;
-        public TextView different;
-        public TextView totalRequest;
-        public EditText requestAmount;
-        public EditText approvedAmount;
-
-        public ViewHolder(View itemView, boolean isNameList) {
-            productCode = ((TextView) itemView.findViewById(R.id.tx_FNM));
-            productName = ((TextView) itemView.findViewById(R.id.tx_product_name));
-
-
-            if (!isNameList) {
-                received = ((TextView) itemView.findViewById(R.id.tx_received));
-                initAmount = ((TextView) itemView.findViewById(R.id.tx_initial_amount));
-                issued = ((TextView) itemView.findViewById(R.id.tx_issued));
-                theoretical = ((TextView) itemView.findViewById(R.id.tx_theoretical));
-                total = ((TextView) itemView.findViewById(R.id.tx_total));
-                inventory = ((TextView) itemView.findViewById(R.id.tx_inventory));
-                different = ((TextView) itemView.findViewById(R.id.tx_different));
-                totalRequest = ((TextView) itemView.findViewById(R.id.tx_total_request));
-                requestAmount = ((EditText) itemView.findViewById(R.id.et_request_amount));
-                approvedAmount = ((EditText) itemView.findViewById(R.id.et_approved_amount));
-
-                requestAmount.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
-                approvedAmount.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
-            }
-        }
+    public void updateStatus(RnRForm.STATUS status) {
+        this.status = status;
+        this.notifyDataSetChanged();
     }
 
 }

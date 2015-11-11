@@ -1,25 +1,8 @@
-/*
- * This program is part of the OpenLMIS logistics management information
- * system platform software.
- *
- * Copyright © 2015 ThoughtWorks, Inc.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version. This program is distributed in the
- * hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
- * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details. You should
- * have received a copy of the GNU Affero General Public License along with
- * this program. If not, see http://www.gnu.org/licenses. For additional
- * information contact info@OpenLMIS.org
- */
-
-package org.openlmis.core.view.adapter;
+package org.openlmis.core.view.holder;
 
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
+import android.view.View;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,35 +14,23 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.robolectric.RuntimeEnvironment;
 
-import java.util.ArrayList;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-
 @RunWith(LMISTestRunner.class)
-public class RequisitionFormAdapterTest {
+public class RequisitionFormViewHolderTest {
 
-
-    private RequisitionFormAdapter adapter;
-    private LayoutInflater inflater;
-    private RequisitionFormAdapter.ViewHolder viewHolder;
-
+    private RequisitionFormViewHolder viewHolder;
 
     @Before
     public void setup() {
-        ArrayList<RequisitionFormItemViewModel> data = new ArrayList<>();
-        adapter = new RequisitionFormAdapter(RuntimeEnvironment.application, data, false);
-        inflater = LayoutInflater.from(RuntimeEnvironment.application);
-        viewHolder = new RequisitionFormAdapter.ViewHolder(inflater.inflate(R.layout.item_requisition_body,null, false),false);
+        View itemView = LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_requisition_body, null, false);
+        viewHolder = new RequisitionFormViewHolder(itemView);
     }
-
 
     @Test
     public void shouldHighLightRequestAmount(){
-        adapter.setStatus(RnRForm.STATUS.DRAFT);
-        adapter.onBindViewHolder(viewHolder, RequisitionBuilder.buildFakeRequisitionViewModel());
-
+        viewHolder.populate(RequisitionBuilder.buildFakeRequisitionViewModel(), RnRForm.STATUS.DRAFT);
 
         int bgReqColor = ((ColorDrawable)viewHolder.requestAmount.getBackground()).getColor();
         int bgAprColor = ((ColorDrawable)viewHolder.approvedAmount.getBackground()).getColor();
@@ -73,8 +44,7 @@ public class RequisitionFormAdapterTest {
 
     @Test
     public void shouldHighLightApprovedAmount(){
-        adapter.setStatus(RnRForm.STATUS.SUBMITTED);
-        adapter.onBindViewHolder(viewHolder, RequisitionBuilder.buildFakeRequisitionViewModel());
+        viewHolder.populate(RequisitionBuilder.buildFakeRequisitionViewModel(), RnRForm.STATUS.SUBMITTED);
 
         int bgReqColor = ((ColorDrawable) viewHolder.requestAmount.getBackground()).getColor();
         int bgAprColor = ((ColorDrawable) viewHolder.approvedAmount.getBackground()).getColor();
@@ -87,11 +57,8 @@ public class RequisitionFormAdapterTest {
 
     @Test
     public void shouldUpdateApprovedAmountWhenRequestAmountChanged(){
-        viewHolder = new RequisitionFormAdapter.ViewHolder(inflater.inflate(R.layout.item_requisition_body,null, false),false);
-        adapter.setStatus(RnRForm.STATUS.DRAFT);
         RequisitionFormItemViewModel viewModel = RequisitionBuilder.buildFakeRequisitionViewModel();
-        adapter.onBindViewHolder(viewHolder, viewModel);
-
+        viewHolder.populate(viewModel, RnRForm.STATUS.DRAFT);
         viewHolder.requestAmount.setText("123");
 
         assertThat(viewModel.getRequestAmount(), is("123"));
@@ -102,17 +69,12 @@ public class RequisitionFormAdapterTest {
 
     @Test
     public void shouldUpdateApprovedAmountModelWhenTextChanged(){
-        viewHolder = new RequisitionFormAdapter.ViewHolder(inflater.inflate(R.layout.item_requisition_body,null, false),false);
-        adapter.setStatus(RnRForm.STATUS.SUBMITTED);
-
         RequisitionFormItemViewModel viewModel = RequisitionBuilder.buildFakeRequisitionViewModel();
-        adapter.onBindViewHolder(viewHolder, viewModel);
+        viewHolder.populate(viewModel, RnRForm.STATUS.SUBMITTED);
 
         viewHolder.approvedAmount.setText("123");
 
         assertThat(viewModel.getRequestAmount(), is("0"));
         assertThat(viewModel.getApprovedAmount(), is("123"));
     }
-
-
 }

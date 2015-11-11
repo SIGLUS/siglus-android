@@ -21,7 +21,6 @@ package org.openlmis.core.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -45,7 +44,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.inject.ContentView;
-import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
 
@@ -69,8 +67,6 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
 
     LinearLayoutManager mLayoutManager;
     InventoryListAdapter mAdapter;
-
-    private boolean exitPressedOnce = false;
 
     boolean isPhysicalInventory = false;
     private boolean isAddNewDrug;

@@ -26,7 +26,6 @@ import android.widget.TextView;
 
 import com.google.inject.AbstractModule;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,11 +34,10 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.common.Constants;
 import org.openlmis.core.presenter.LoginPresenter;
+import org.openlmis.core.utils.RobolectricUtils;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowImageView;
-
-import java.lang.reflect.Field;
 
 import roboguice.RoboGuice;
 
@@ -91,7 +89,6 @@ public class LoginActivityTest {
         assertThat(secondLoginActivity.userName.getText().toString()).isEqualTo("superuser");
     }
 
-
     @Test
     public void shouldClearPasswordAfterMethodInvoked() {
         loginActivity.userName.setText("superuser");
@@ -128,8 +125,8 @@ public class LoginActivityTest {
 
         String invalidUserMessage = loginActivity.getResources().getString(R.string.msg_invalid_user);
 
-        TextView usernameErrorView = getErrorTextView(loginActivity.lyUserName);
-        TextView passwordErrorView = getErrorTextView(loginActivity.lyPassword);
+        TextView usernameErrorView = RobolectricUtils.getErrorTextView(loginActivity.lyUserName);
+        TextView passwordErrorView = RobolectricUtils.getErrorTextView(loginActivity.lyPassword);
 
         assertThat(usernameErrorView).isNotNull();
         assertThat(usernameErrorView.getText().toString()).isEqualTo(invalidUserMessage);
@@ -142,8 +139,8 @@ public class LoginActivityTest {
 
         String emptyErrorMessage = loginActivity.getResources().getString(R.string.msg_empty_user);
 
-        TextView usernameErrorView = getErrorTextView(loginActivity.lyUserName);
-        TextView passwordErrorView = getErrorTextView(loginActivity.lyPassword);
+        TextView usernameErrorView = RobolectricUtils.getErrorTextView(loginActivity.lyUserName);
+        TextView passwordErrorView = RobolectricUtils.getErrorTextView(loginActivity.lyPassword);
 
         assertThat(usernameErrorView).isNotNull();
         assertThat(usernameErrorView.getText().toString()).isEqualTo(emptyErrorMessage);
@@ -156,8 +153,8 @@ public class LoginActivityTest {
 
         String emptyErrorMessage = loginActivity.getResources().getString(R.string.msg_empty_user);
 
-        TextView usernameErrorView = getErrorTextView(loginActivity.lyUserName);
-        TextView passwordErrorView = getErrorTextView(loginActivity.lyPassword);
+        TextView usernameErrorView = RobolectricUtils.getErrorTextView(loginActivity.lyUserName);
+        TextView passwordErrorView = RobolectricUtils.getErrorTextView(loginActivity.lyPassword);
 
         assertThat(usernameErrorView).isNull();
         assertThat(passwordErrorView).isNotNull();
@@ -178,14 +175,14 @@ public class LoginActivityTest {
         loginActivity.showInvalidAlert();
         loginActivity.clearErrorAlerts();
 
-        assertThat(getErrorTextView(loginActivity.lyUserName)).isNull();
-        assertThat(getErrorTextView(loginActivity.lyPassword)).isNull();
+        assertThat(RobolectricUtils.getErrorTextView(loginActivity.lyUserName)).isNull();
+        assertThat(RobolectricUtils.getErrorTextView(loginActivity.lyPassword)).isNull();
 
         loginActivity.showPasswordEmpty();
         loginActivity.clearErrorAlerts();
 
-        assertThat(getErrorTextView(loginActivity.lyUserName)).isNull();
-        assertThat(getErrorTextView(loginActivity.lyPassword)).isNull();
+        assertThat(RobolectricUtils.getErrorTextView(loginActivity.lyUserName)).isNull();
+        assertThat(RobolectricUtils.getErrorTextView(loginActivity.lyPassword)).isNull();
     }
 
     @Test
@@ -202,17 +199,4 @@ public class LoginActivityTest {
         assertThat(loginActivity.password.getInputType()).isEqualTo(InputType.TYPE_CLASS_TEXT
                 | EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
     }
-
-    private TextView getErrorTextView(TextInputLayout inputLayout) {
-        // Will use getError() method after support design library upgraded
-        TextView errorText = null;
-        Field field = FieldUtils.getField(TextInputLayout.class, "mErrorView", true);
-        try {
-            errorText = (TextView) field.get(inputLayout);
-        } catch (IllegalAccessException ignored) {
-        }
-        return errorText;
-    }
-
-
 }

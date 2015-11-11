@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,12 +12,12 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.ProductBuilder;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowAlertDialog;
 
-import java.lang.reflect.Field;
 import java.text.ParseException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -91,7 +90,7 @@ public class InitialInventoryViewHolderTest {
 
         viewHolder.populate(viewModel);
 
-        TextView errorTextView = getErrorTextView(viewHolder.lyQuantity);
+        TextView errorTextView = RobolectricUtils.getErrorTextView(viewHolder.lyQuantity);
 
         assertThat(errorTextView).isNotNull();
         assertThat(errorTextView.getText().toString()).isEqualTo(viewHolder.context.getString(R.string.msg_inventory_check_failed));
@@ -143,17 +142,6 @@ public class InitialInventoryViewHolderTest {
         viewHolder.txQuantity.setText("120");
 
         assertThat(viewModel.getQuantity()).isEqualTo("120");
-    }
-
-    private TextView getErrorTextView(TextInputLayout inputLayout) {
-        // Will use getError() method after support design library upgraded
-        TextView errorText = null;
-        Field field = FieldUtils.getField(TextInputLayout.class, "mErrorView", true);
-        try {
-            errorText = (TextView) field.get(inputLayout);
-        } catch (IllegalAccessException ignored) {
-        }
-        return errorText;
     }
 
 

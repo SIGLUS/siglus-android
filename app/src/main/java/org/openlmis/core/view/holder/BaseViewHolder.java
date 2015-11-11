@@ -1,5 +1,6 @@
 package org.openlmis.core.view.holder;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -11,8 +12,11 @@ import roboguice.inject.InjectView;
 public class BaseViewHolder extends RecyclerView.ViewHolder {
     private ArrayList<ViewMembersInjector> viewsForInjection;
 
+    protected Context context;
+
     public BaseViewHolder(View itemView) {
         super(itemView);
+        this.context = itemView.getContext();
         prepareFields();
         injectViews(itemView);
     }
@@ -47,11 +51,10 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
             Object value = null;
             try {
                 value = view.findViewById(annotation.value());
-                if (value == null) {
-                    throw new NullPointerException(String.format("Can't inject null value into %s.%s when field is not @Nullable", field.getDeclaringClass(), field.getName()));
+                if (value != null) {
+                    field.setAccessible(true);
+                    field.set(holder, value);
                 }
-                field.setAccessible(true);
-                field.set(holder, value);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             } catch (IllegalArgumentException f) {

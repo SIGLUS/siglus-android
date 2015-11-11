@@ -43,8 +43,10 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.RequisitionPresenter;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.adapter.RequisitionProductAdapter;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
+import org.openlmis.core.view.holder.RequisitionFormViewHolder;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 
@@ -98,7 +100,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     @InjectView(R.id.tv_label_approve)
     TextView headerApproveAmount;
 
-    RequisitionFormAdapter productListAdapter;
+    RequisitionProductAdapter requisitionProductAdapter;
     RequisitionFormAdapter requisitionFormAdapter;
     private boolean consultationNumbersHasChanged;
     private boolean isHistoryForm;
@@ -127,7 +129,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     @Override
     public void refreshRequisitionForm() {
         setEditable();
-        productListAdapter.notifyDataSetChanged();
+        requisitionProductAdapter.notifyDataSetChanged();
         requisitionFormAdapter.notifyDataSetChanged();
         setConsultationNumbers();
     }
@@ -141,7 +143,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         headerApproveAmount.setBackgroundResource(R.color.color_accent);
         headerApproveAmount.setTextColor(getResources().getColor(R.color.white));
 
-        requisitionFormAdapter.setStatus(RnRForm.STATUS.SUBMITTED);
+        requisitionFormAdapter.updateStatus(RnRForm.STATUS.SUBMITTED);
     }
 
     @Override
@@ -152,7 +154,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         headerApproveAmount.setBackgroundResource(android.R.color.transparent);
         headerApproveAmount.setTextColor(getResources().getColor(R.color.primary_text));
 
-        requisitionFormAdapter.setStatus(RnRForm.STATUS.DRAFT);
+        requisitionFormAdapter.updateStatus(RnRForm.STATUS.DRAFT);
     }
 
     private void setEditable() {
@@ -261,13 +263,13 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     }
 
     private void initRequisitionBodyList() {
-        requisitionFormAdapter = new RequisitionFormAdapter(this, presenter.getRequisitionViewModelList(), false);
+        requisitionFormAdapter = new RequisitionFormAdapter(this, presenter.getRequisitionViewModelList());
         requisitionForm.setAdapter(requisitionFormAdapter);
     }
 
     private void initRequisitionProductList() {
-        productListAdapter = new RequisitionFormAdapter(this, presenter.getRequisitionViewModelList(), true);
-        requisitionNameList.setAdapter(productListAdapter);
+        requisitionProductAdapter = new RequisitionProductAdapter(this, presenter.getRequisitionViewModelList());
+        requisitionNameList.setAdapter(requisitionProductAdapter);
     }
 
     @Override
@@ -365,9 +367,21 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     private boolean hasDataChanged() {
         if (hasDataChanged == null) {
-            hasDataChanged = requisitionFormAdapter.hasDataChanged() || consultationNumbersHasChanged;
+            hasDataChanged = requisitionFormChanged() || consultationNumbersHasChanged;
         }
         return hasDataChanged;
+    }
+
+    private boolean requisitionFormChanged() {
+        for (int index = 0; index < requisitionForm.getChildCount(); index++) {
+            Object requisitionItemTag = requisitionForm.getChildAt(index).getTag();
+            if (requisitionItemTag != null &&
+                    requisitionItemTag instanceof RequisitionFormViewHolder &&
+                    ((RequisitionFormViewHolder)requisitionItemTag).isHasDataChanged()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     TextWatcher etConsultationNumbersTextWatcher = new TextWatcher() {
