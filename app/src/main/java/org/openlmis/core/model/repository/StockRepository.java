@@ -161,7 +161,9 @@ public class StockRepository {
             if (stockMovementItem.getMovementType() == StockMovementItem.MovementType.ISSUE
                     || stockMovementItem.getMovementType() == StockMovementItem.MovementType.NEGATIVE_ADJUST) {
                 stockExistence -= stockMovementItem.getMovementQuantity();
-            } else {
+            } else if(stockMovementItem.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
+               stockExistence = stockcard.getStockOnHand();
+            }else {
                 stockExistence += stockMovementItem.getMovementQuantity();
             }
             stockMovementItem.setStockOnHand(stockExistence);

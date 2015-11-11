@@ -18,7 +18,6 @@
 
 package org.openlmis.core.network.model;
 
-import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
 
@@ -40,11 +39,7 @@ public class StockMovementEntry {
 
     public  StockMovementEntry(StockMovementItem stockMovementItem, String facilityId) {
         this.setProductCode(stockMovementItem.getStockCard().getProduct().getCode());
-        if (MovementReasonManager.INVENTORY.equals(stockMovementItem.getReason())){
-            this.setQuantity(stockMovementItem.getStockOnHand());
-        }else{
-            this.setQuantity(stockMovementItem.getMovementQuantity());
-        }
+        this.setQuantity(stockMovementItem.getMovementQuantity());
         this.setReasonName(stockMovementItem.getReason());
         this.setFacilityId(facilityId);
         this.setType("ADJUSTMENT");

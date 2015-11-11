@@ -18,22 +18,19 @@
 
 package org.openlmis.core.persistence.migrations;
 
-import android.util.Log;
-
 import org.openlmis.core.persistence.Migration;
 
 public class SetQuantityOfStockMovementForInitialInventory extends Migration{
 
     @Override
     public void down() {
-
+        execSQL("UPDATE stock_items SET movementQuantity = 0 WHERE id IN" +
+                " (SELECT id FROM (SELECT * FROM stock_items ORDER BY id DESC) si GROUP BY stockCard_id)");
     }
 
     @Override
     public void up() {
         execSQL("UPDATE stock_items SET movementQuantity = stockOnHand WHERE id IN" +
                 " (SELECT id FROM (SELECT * FROM stock_items ORDER BY id DESC) si GROUP BY stockCard_id)");
-
-        Log.i("test", "sadfasdfsafdsdaf");
     }
 }
