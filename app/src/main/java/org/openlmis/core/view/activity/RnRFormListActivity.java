@@ -27,6 +27,7 @@ import android.view.Menu;
 import org.openlmis.core.R;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.presenter.RnRFormListPresenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.RnRFormListAdapter;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
@@ -41,22 +42,19 @@ import rx.Subscriber;
 @ContentView(R.layout.activity_rnr_list)
 public class RnRFormListActivity extends BaseActivity implements RnRFormListPresenter.RnRFormListView {
 
-    public static final String PARAM_PROGRAM_CODE = "programCode";
-
     @InjectView(R.id.rnr_form_list)
     RecyclerView listView;
-
-    private String programCode;
-
-    private RnRFormListAdapter adapter;
 
     @InjectPresenter(RnRFormListPresenter.class)
     RnRFormListPresenter presenter;
 
+    private String programCode;
+    private RnRFormListAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        programCode = getIntent().getStringExtra(PARAM_PROGRAM_CODE);
+        programCode = getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE);
         presenter.setProgramCode(programCode);
         initUI();
     }

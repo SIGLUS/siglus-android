@@ -29,6 +29,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.utils.Constants;
 import org.robolectric.Robolectric;
 import org.robolectric.shadows.ShadowToast;
 
@@ -66,7 +67,7 @@ public class InventoryActivityTest {
     @Test
     public void shouldGoToStockCardPageAfterAddedNewProduct(){
         Intent intentToStockCard = new Intent();
-        intentToStockCard.putExtra(InventoryActivity.PARAM_IS_ADD_NEW_DRUG, true);
+        intentToStockCard.putExtra(Constants.PARAM_IS_ADD_NEW_DRUG, true);
         inventoryActivity = Robolectric.buildActivity(InventoryActivityMock.class).withIntent(intentToStockCard).create().get();
 
         inventoryActivity.goToMainPage();

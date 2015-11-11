@@ -20,9 +20,7 @@ package org.openlmis.core.view.activity;
 
 import android.app.AlertDialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.EditText;
 
@@ -36,6 +34,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RequisitionBuilder;
 import org.openlmis.core.presenter.RequisitionPresenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
@@ -49,14 +48,11 @@ import java.util.List;
 import roboguice.RoboGuice;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
@@ -87,7 +83,7 @@ public class RequisitionActivityTest {
         });
 
         Intent intent = new Intent();
-        intent.putExtra(RequisitionActivity.BUNDLE_FORM_ID, 100L);
+        intent.putExtra(Constants.PARAM_FORM_ID, 100L);
 
         requisitionActivity = Robolectric.buildActivity(RequisitionActivity.class).withIntent(intent).create().get();
         requisitionActivity.refreshRequisitionForm();
@@ -130,7 +126,7 @@ public class RequisitionActivityTest {
         Intent intent = RequisitionActivity.getIntentToMe(requisitionActivity, formId);
 
         assertThat(intent).isNotNull();
-        assertThat(intent.getLongExtra(RequisitionActivity.BUNDLE_FORM_ID, 0L)).isEqualTo(formId);
+        assertThat(intent.getLongExtra(Constants.PARAM_FORM_ID, 0L)).isEqualTo(formId);
     }
 
     @Test

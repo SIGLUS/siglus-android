@@ -35,6 +35,7 @@ import com.google.inject.Inject;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.presenter.StockMovementPresenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.StockMovementAdapter;
@@ -75,8 +76,8 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        stockId = getIntent().getLongExtra("stockCardId", 0);
-        stockName = getIntent().getStringExtra("stockName");
+        stockId = getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
+        stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
         try {
             presenter.setStockCard(stockId);
         } catch (LMISException e) {

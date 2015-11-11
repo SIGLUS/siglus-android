@@ -33,6 +33,7 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.StockMovementHistoryPresenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.adapter.StockMovementHistoryAdapter;
@@ -55,7 +56,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contentView = inflater.inflate(R.layout.fragment_stock_movement_history, container, false);
         presenter.attachView(this);
-        presenter.setStockCardId(getActivity().getIntent().getLongExtra("stockCardId", 0));
+        presenter.setStockCardId(getActivity().getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0));
         initUI();
 
         if (isRotated) {

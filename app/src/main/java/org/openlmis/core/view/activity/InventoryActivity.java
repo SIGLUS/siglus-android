@@ -31,7 +31,7 @@ import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
-import org.openlmis.core.common.Constants;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.presenter.InventoryPresenter;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
@@ -50,9 +50,6 @@ import rx.Subscriber;
 @ContentView(R.layout.activity_inventory)
 public class InventoryActivity extends BaseActivity implements InventoryPresenter.InventoryView {
 
-    public static final String PARAM_IS_PHYSICAL_INVENTORY = "isPhysicalInventory";
-    public static final String PARAM_IS_ADD_NEW_DRUG = "isAddNewDrug";
-
     @InjectView(R.id.products_list)
     public RecyclerView productListRecycleView;
 
@@ -68,7 +65,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     LinearLayoutManager mLayoutManager;
     InventoryListAdapter mAdapter;
 
-    boolean isPhysicalInventory = false;
+    private boolean isPhysicalInventory;
     private boolean isAddNewDrug;
 
     @Override
@@ -82,8 +79,8 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        isPhysicalInventory = getIntent().getBooleanExtra(PARAM_IS_PHYSICAL_INVENTORY, false);
-        isAddNewDrug = getIntent().getBooleanExtra(PARAM_IS_ADD_NEW_DRUG, false);
+        isPhysicalInventory = getIntent().getBooleanExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, false);
+        isAddNewDrug = getIntent().getBooleanExtra(Constants.PARAM_IS_ADD_NEW_DRUG, false);
 
         mLayoutManager = new LinearLayoutManager(this);
         productListRecycleView.setLayoutManager(mLayoutManager);

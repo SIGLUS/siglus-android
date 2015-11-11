@@ -41,6 +41,7 @@ import android.widget.TextView;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.RequisitionPresenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
@@ -78,12 +79,8 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     @InjectView(R.id.edit_text)
     private EditText etConsultationNumbers;
 
-    LayoutInflater inflater;
-
     @InjectPresenter(RequisitionPresenter.class)
     RequisitionPresenter presenter;
-
-    Boolean hasDataChanged;
 
     @InjectView(R.id.requisition_header_right)
     View bodyHeaderView;
@@ -102,11 +99,11 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     RequisitionProductAdapter requisitionProductAdapter;
     RequisitionFormAdapter requisitionFormAdapter;
+
     private boolean consultationNumbersHasChanged;
     private boolean isHistoryForm;
-
+    protected Boolean hasDataChanged;
     private static final String ON_BACK_PRESSED = "onBackPressed";
-    public static final String BUNDLE_FORM_ID = "formId";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -116,11 +113,10 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        long formId = getIntent().getLongExtra(BUNDLE_FORM_ID, 0);
+        long formId = getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
         isHistoryForm = formId != 0;
 
-        inflater = LayoutInflater.from(this);
-        hasDataChanged = (Boolean) dataFragment.getData("hasDataChanged");
+        hasDataChanged = (Boolean) dataFragment.getData(Constants.KEY_HAS_DATA_CHANGED);
         initUI();
         presenter.loadRequisitionFormList(formId);
     }
@@ -193,9 +189,6 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
             case R.id.btn_complete:
                 onProcessButtonClick();
                 break;
-            default:
-                break;
-
         }
     }
 
@@ -223,7 +216,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     @Override
     protected void onDestroy() {
         if (hasDataChanged()) {
-            dataFragment.putData("hasDataChanged", hasDataChanged());
+            dataFragment.putData(Constants.KEY_HAS_DATA_CHANGED, hasDataChanged());
         }
         super.onDestroy();
     }
@@ -434,7 +427,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     public static Intent getIntentToMe(Context context, long formId) {
         Intent intent = new Intent(context, RequisitionActivity.class);
-        intent.putExtra(BUNDLE_FORM_ID, formId);
+        intent.putExtra(Constants.PARAM_FORM_ID, formId);
         return intent;
     }
 

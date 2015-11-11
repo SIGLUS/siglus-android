@@ -44,6 +44,7 @@ import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.DummyPresenter;
 import org.openlmis.core.presenter.Presenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.View;
 import org.openlmis.core.view.fragment.RetainedFragment;
@@ -301,9 +302,8 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
             case R.id.action_settings:
                 return onSettingClick();
             case R.id.action_add_new_drug:
-                startActivity(new Intent()
-                        .setClass(this, InventoryActivity.class)
-                        .putExtra(InventoryActivity.PARAM_IS_ADD_NEW_DRUG, true));
+                startActivity(new Intent(this, InventoryActivity.class)
+                        .putExtra(Constants.PARAM_IS_ADD_NEW_DRUG, true));
             default:
                 return super.onOptionsItemSelected(item);
         }

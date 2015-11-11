@@ -2,7 +2,6 @@ package org.openlmis.core.view.activity;
 
 import android.app.AlertDialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.content.Intent;
 
 import com.google.inject.AbstractModule;
@@ -13,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.MMIAFormPresenter;
+import org.openlmis.core.utils.Constants;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowAlertDialog;
@@ -43,7 +43,7 @@ public class MMIAActivityTest {
         });
 
         Intent intent = new Intent();
-        intent.putExtra(MMIAActivity.BUNDLE_FORM_ID, 3);
+        intent.putExtra(Constants.PARAM_FORM_ID, 3);
         mmiaActivity = Robolectric.buildActivity(MMIAActivity.class).withIntent(intent).create().get();
     }
 

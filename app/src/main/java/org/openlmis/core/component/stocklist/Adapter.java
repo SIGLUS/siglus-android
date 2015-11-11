@@ -34,6 +34,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
 
 import java.util.ArrayList;
@@ -103,8 +104,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
                 Intent intent = new Intent();
                 intent.setClass(v.getContext(), detailActivity);
-                intent.putExtra("stockCardId", currentStockCards.get(position).getId());
-                intent.putExtra("stockName", currentStockCards.get(position).getProduct().getPrimaryName());
+                intent.putExtra(Constants.PARAM_STOCK_CARD_ID, currentStockCards.get(position).getId());
+                intent.putExtra(Constants.PARAM_STOCK_NAME, currentStockCards.get(position).getProduct().getPrimaryName());
                 fragment.startActivityForResult(intent, Fragment.REQUEST_CODE_CHANGE);
             }
         });

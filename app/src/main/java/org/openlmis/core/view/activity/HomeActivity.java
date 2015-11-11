@@ -35,6 +35,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.service.SyncManager;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 
@@ -99,7 +100,7 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onClick(android.view.View v) {
                 Intent intent = new Intent(HomeActivity.this, InventoryActivity.class);
-                intent.putExtra(InventoryActivity.PARAM_IS_PHYSICAL_INVENTORY, true);
+                intent.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
                 startActivity(intent);
             }
         });
@@ -128,13 +129,13 @@ public class HomeActivity extends BaseActivity {
 
     public void showMMIAHistoryList(android.view.View view) {
         Intent intent = new Intent(this, RnRFormListActivity.class);
-        intent.putExtra(RnRFormListActivity.PARAM_PROGRAM_CODE, MMIARepository.MMIA_PROGRAM_CODE);
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, MMIARepository.MMIA_PROGRAM_CODE);
         startActivity(intent);
     }
 
     public void showVIAHistoryList(android.view.View view) {
         Intent intent = new Intent(this, RnRFormListActivity.class);
-        intent.putExtra(RnRFormListActivity.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE);
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE);
         startActivity(intent);
     }
 
@@ -143,7 +144,6 @@ public class HomeActivity extends BaseActivity {
         super.onResume();
         showLastSyncedTime();
     }
-
 
     private void showLastSyncedTime() {
         long lastSyncedTimestamp = getPreferences().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME, 0);

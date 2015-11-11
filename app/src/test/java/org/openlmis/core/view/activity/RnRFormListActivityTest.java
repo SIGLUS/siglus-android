@@ -14,6 +14,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.presenter.RnRFormListPresenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
@@ -50,7 +51,7 @@ public class RnRFormListActivityTest {
         });
 
         intent = new Intent();
-        intent.putExtra(RnRFormListActivity.PARAM_PROGRAM_CODE, MMIARepository.MMIA_PROGRAM_CODE);
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, MMIARepository.MMIA_PROGRAM_CODE);
         rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).withIntent(intent).create().get();
     }
 
@@ -68,7 +69,7 @@ public class RnRFormListActivityTest {
     @Test
     public void shouldSetViaTitleAndProgramCodeWhenProgramCodeIsVia() {
 
-        intent.putExtra(RnRFormListActivity.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE);
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE);
         rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).withIntent(intent).create().get();
 
         assertThat(rnRFormListActivity.getTitle()).isEqualTo(rnRFormListActivity.getResources().getString(R.string.title_requisition_list));

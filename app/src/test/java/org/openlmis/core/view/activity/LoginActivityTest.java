@@ -19,7 +19,6 @@
 package org.openlmis.core.view.activity;
 
 import android.content.Intent;
-import android.support.design.widget.TextInputLayout;
 import android.text.InputType;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
@@ -32,7 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
-import org.openlmis.core.common.Constants;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.presenter.LoginPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.robolectric.Robolectric;

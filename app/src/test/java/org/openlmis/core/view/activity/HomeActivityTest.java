@@ -36,6 +36,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
@@ -88,7 +89,7 @@ public class HomeActivityTest {
         Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
 
         assertThat(startedIntent.getComponent().getClassName(), equalTo(InventoryActivity.class.getName()));
-        assertThat(startedIntent.getBooleanExtra(InventoryActivity.PARAM_IS_PHYSICAL_INVENTORY, false), is(true));
+        assertThat(startedIntent.getBooleanExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, false), is(true));
     }
 
     @Test
@@ -98,7 +99,7 @@ public class HomeActivityTest {
         Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
 
         assertThat(startedIntent.getComponent().getClassName(), equalTo(RnRFormListActivity.class.getName()));
-        assertThat(startedIntent.getStringExtra(RnRFormListActivity.PARAM_PROGRAM_CODE), is(MMIARepository.MMIA_PROGRAM_CODE));
+        assertThat(startedIntent.getStringExtra(Constants.PARAM_PROGRAM_CODE), is(MMIARepository.MMIA_PROGRAM_CODE));
     }
 
     @Test
@@ -108,7 +109,7 @@ public class HomeActivityTest {
         Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
 
         assertThat(startedIntent.getComponent().getClassName(), equalTo(RnRFormListActivity.class.getName()));
-        assertThat(startedIntent.getStringExtra(RnRFormListActivity.PARAM_PROGRAM_CODE), is(VIARepository.VIA_PROGRAM_CODE));
+        assertThat(startedIntent.getStringExtra(Constants.PARAM_PROGRAM_CODE), is(VIARepository.VIA_PROGRAM_CODE));
     }
 
     @Test

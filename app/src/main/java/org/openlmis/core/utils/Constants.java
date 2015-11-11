@@ -16,9 +16,19 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.common;
+package org.openlmis.core.utils;
 
 public final class Constants {
+    // Intent Params
+    public static final String PARAM_STOCK_CARD_ID = "stockCardId";
+    public static final String PARAM_STOCK_NAME = "stockName";
+    public static final String PARAM_IS_PHYSICAL_INVENTORY = "isPhysicalInventory";
+    public static final String PARAM_IS_ADD_NEW_DRUG = "isAddNewDrug";
+    public static final String PARAM_PROGRAM_CODE = "programCode";
+    public static final String PARAM_FORM_ID = "formId";
+    // Keys of Map
+    public static final String KEY_HAS_DATA_CHANGED = "hasDataChanged";
+    // Keys of SharedPreferences
     public static final String KEY_LAST_LOGIN_USER = "last_user";
     public static final String KEY_INIT_INVENTORY = "init_inventory";
     public static final String KEY_HAS_GET_PRODUCTS = "has_get_products";

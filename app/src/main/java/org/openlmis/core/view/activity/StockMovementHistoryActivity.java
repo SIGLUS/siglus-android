@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.view.Menu;
 
 import org.openlmis.core.R;
+import org.openlmis.core.utils.Constants;
 
 import roboguice.inject.ContentView;
 
@@ -33,7 +34,7 @@ public class StockMovementHistoryActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(getIntent().getStringExtra("stockName"));
+        setTitle(getIntent().getStringExtra(Constants.PARAM_STOCK_NAME));
     }
 
     @Override
@@ -43,8 +44,8 @@ public class StockMovementHistoryActivity extends BaseActivity {
 
     public static Intent getIntentToMe(Context context, long stockCardId, String stockName) {
         Intent intent = new Intent(context, StockMovementHistoryActivity.class);
-        intent.putExtra("stockCardId", stockCardId);
-        intent.putExtra("stockName", stockName);
+        intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCardId);
+        intent.putExtra(Constants.PARAM_STOCK_NAME, stockName);
         return intent;
     }
 }

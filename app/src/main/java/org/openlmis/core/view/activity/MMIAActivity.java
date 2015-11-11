@@ -37,6 +37,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIAFormPresenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
@@ -83,7 +84,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     @InjectPresenter(MMIAFormPresenter.class)
     MMIAFormPresenter presenter;
 
-    Boolean hasDataChanged;
+    private Boolean hasDataChanged;
 
     private boolean commentHasChanged = false;
     private boolean isHistoryForm;
@@ -91,8 +92,6 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     protected static final String ON_BACK_PRESSED = "onBackPressed";
     private static final String MISMATCH = "mismatch";
-
-    public static final String BUNDLE_FORM_ID = "formId";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -102,11 +101,12 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        hasDataChanged = (Boolean) dataFragment.getData("hasDataChanged");
+        hasDataChanged = (Boolean) dataFragment.getData(Constants.KEY_HAS_DATA_CHANGED);
+        formId = getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
+        isHistoryForm = formId != 0;
+
         scrollView.setVisibility(View.INVISIBLE);
 
-        formId = getIntent().getLongExtra(BUNDLE_FORM_ID, 0);
-        isHistoryForm = formId != 0;
         presenter.loadData(formId);
     }
 
@@ -271,7 +271,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     @Override
     protected void onDestroy() {
         if (hasDataChanged()) {
-            dataFragment.putData("hasDataChanged", hasDataChanged());
+            dataFragment.putData(Constants.KEY_HAS_DATA_CHANGED, hasDataChanged());
         }
         super.onDestroy();
     }
@@ -320,7 +320,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     public static Intent getIntentToMe(Context context, long formId) {
         Intent intent = new Intent(context, MMIAActivity.class);
-        intent.putExtra(BUNDLE_FORM_ID, formId);
+        intent.putExtra(Constants.PARAM_FORM_ID, formId);
         return intent;
     }
 

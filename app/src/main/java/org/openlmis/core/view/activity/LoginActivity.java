@@ -35,7 +35,7 @@ import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
-import org.openlmis.core.common.Constants;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.presenter.LoginPresenter;
 import org.openlmis.core.utils.InjectPresenter;
 
@@ -76,7 +76,6 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     private void initUI() {
-
         ivVisibilityPwd.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
 
@@ -123,7 +122,6 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         lyUserName.setErrorEnabled(false);
         lyPassword.setErrorEnabled(false);
     }
-
 
     @Override
     public boolean needInitInventory() {
