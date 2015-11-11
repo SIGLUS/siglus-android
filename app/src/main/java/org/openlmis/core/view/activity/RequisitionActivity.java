@@ -43,8 +43,8 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.RequisitionPresenter;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.adapter.RequisitionProductAdapter;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
+import org.openlmis.core.view.adapter.RequisitionProductAdapter;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
 import org.openlmis.core.view.holder.RequisitionFormViewHolder;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
@@ -128,7 +128,9 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     @Override
     public void refreshRequisitionForm() {
-        setEditable();
+        if (isHistoryForm) {
+            setTitle(new RnRFormViewModel(presenter.getRnRForm()).getPeriod());
+        }
         requisitionProductAdapter.notifyDataSetChanged();
         requisitionFormAdapter.notifyDataSetChanged();
         setConsultationNumbers();
@@ -158,14 +160,12 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     }
 
     private void setEditable() {
-        if (presenter.formIsEditable()) {
-            vgContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
-            actionPanel.setVisibility(View.VISIBLE);
-        } else {
+        if (isHistoryForm) {
             vgContainer.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             actionPanel.setVisibility(View.GONE);
-
-            setTitle(new RnRFormViewModel(presenter.getRnRForm()).getPeriod());
+        } else {
+            vgContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+            actionPanel.setVisibility(View.VISIBLE);
         }
     }
 
@@ -243,6 +243,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         etConsultationNumbers.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
 
         setUIListeners();
+        setEditable();
     }
 
     private void setUIListeners() {
@@ -251,7 +252,12 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         btnComplete.setOnClickListener(this);
         btnSave.setOnClickListener(this);
 
-        etConsultationNumbers.addTextChangedListener(etConsultationNumbersTextWatcher);
+        etConsultationNumbers.post(new Runnable() {
+            @Override
+            public void run() {
+                etConsultationNumbers.addTextChangedListener(etConsultationNumbersTextWatcher);
+            }
+        });
 
         formLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -377,7 +383,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
             Object requisitionItemTag = requisitionForm.getChildAt(index).getTag();
             if (requisitionItemTag != null &&
                     requisitionItemTag instanceof RequisitionFormViewHolder &&
-                    ((RequisitionFormViewHolder)requisitionItemTag).isHasDataChanged()) {
+                    ((RequisitionFormViewHolder) requisitionItemTag).isHasDataChanged()) {
                 return true;
             }
         }

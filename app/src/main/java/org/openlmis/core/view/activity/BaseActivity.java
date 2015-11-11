@@ -110,12 +110,6 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        presenter.onStop();
-    }
-
-    @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (LMISApp.lastOperateTime > 0L && alreadyTimeOuted() && !LoginActivity.isActive) {
             logout();
@@ -160,6 +154,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
     @Override
     protected void onDestroy() {
         if (presenter != null && presenterClass != null) {
+            presenter.onStop();
             dataFragment.putData(presenterClass.getSimpleName(), presenter);
         }
         super.onDestroy();

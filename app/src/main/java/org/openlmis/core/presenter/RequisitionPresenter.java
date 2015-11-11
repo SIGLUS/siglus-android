@@ -42,6 +42,7 @@ import java.util.List;
 import lombok.Getter;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -66,6 +67,7 @@ public class RequisitionPresenter implements Presenter {
     @Getter
     protected RnRForm rnRForm;
     protected List<RequisitionFormItemViewModel> requisitionFormItemViewModelList;
+    private Subscription subscribe;
 
     public RequisitionPresenter() {
         requisitionFormItemViewModelList = new ArrayList<>();
@@ -79,7 +81,10 @@ public class RequisitionPresenter implements Presenter {
 
     @Override
     public void onStop() {
-
+        if (subscribe != null) {
+            subscribe.unsubscribe();
+            subscribe = null;
+        }
     }
 
     @Override
@@ -137,10 +142,11 @@ public class RequisitionPresenter implements Presenter {
 
         view.loading();
 
-        Observable.create(new Observable.OnSubscribe<List<RequisitionFormItemViewModel>>() {
+        subscribe = Observable.create(new Observable.OnSubscribe<List<RequisitionFormItemViewModel>>() {
             @Override
             public void call(Subscriber<? super List<RequisitionFormItemViewModel>> subscriber) {
                 subscriber.onNext(createViewModelsFromRnrForm(formId));
+                subscriber.onCompleted();
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<List<RequisitionFormItemViewModel>>() {
             @Override
@@ -158,9 +164,9 @@ public class RequisitionPresenter implements Presenter {
     }
 
     protected void updateRequisitionFormUI() {
-        if (rnRForm.getStatus() == RnRForm.STATUS.DRAFT){
+        if (rnRForm.getStatus() == RnRForm.STATUS.DRAFT) {
             view.highLightRequestAmount();
-        }else if (rnRForm.getStatus() == RnRForm.STATUS.SUBMITTED){
+        } else if (rnRForm.getStatus() == RnRForm.STATUS.SUBMITTED) {
             view.setProcessButtonName(context.getString(R.string.btn_complete));
             view.highLightApprovedAmount();
         }
@@ -181,7 +187,7 @@ public class RequisitionPresenter implements Presenter {
         return true;
     }
 
-    public void processRequisition(String consultationNumbers){
+    public void processRequisition(String consultationNumbers) {
         if (!validateFormInput()) {
             return;
         }
@@ -190,7 +196,7 @@ public class RequisitionPresenter implements Presenter {
 
         if (rnRForm.getStatus() == RnRForm.STATUS.DRAFT) {
             submitRequisition();
-        }else {
+        } else {
             authorise();
         }
     }
@@ -268,9 +274,9 @@ public class RequisitionPresenter implements Presenter {
             }
         });
 
-        }
+    }
 
-        private void setRnrFormAmount() {
+    private void setRnrFormAmount() {
         ArrayList<RnrFormItem> rnrFormItemListWrapper = rnRForm.getRnrFormItemListWrapper();
         for (int i = 0; i < rnrFormItemListWrapper.size(); i++) {
             String requestAmount = requisitionFormItemViewModelList.get(i).getRequestAmount();
