@@ -26,7 +26,6 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -374,9 +373,9 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     private boolean requisitionFormChanged() {
         for (int index = 0; index < requisitionForm.getChildCount(); index++) {
             Object requisitionItemTag = requisitionForm.getChildAt(index).getTag();
-            if (requisitionItemTag != null &&
-                    requisitionItemTag instanceof RequisitionFormViewHolder &&
-                    ((RequisitionFormViewHolder) requisitionItemTag).isHasDataChanged()) {
+            if (requisitionItemTag != null
+                    && requisitionItemTag instanceof RequisitionFormViewHolder
+                    && ((RequisitionFormViewHolder) requisitionItemTag).isHasDataChanged()) {
                 return true;
             }
         }

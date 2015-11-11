@@ -35,7 +35,7 @@ import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
-import org.openlmis.core.utils.Constants;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.LoginPresenter;
 import org.openlmis.core.utils.InjectPresenter;
 
@@ -79,7 +79,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         ivVisibilityPwd.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
 
-        String lastLoginUser = getPreferences().getString(Constants.KEY_LAST_LOGIN_USER, StringUtils.EMPTY);
+        String lastLoginUser = getPreferences().getString(SharedPreferenceMgr.KEY_LAST_LOGIN_USER, StringUtils.EMPTY);
         if (StringUtils.isNotBlank(lastLoginUser)) {
             userName.setText(lastLoginUser);
             password.requestFocus();
@@ -108,7 +108,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     public void launchActivity(Intent intent) {
-        saveString(Constants.KEY_LAST_LOGIN_USER, userName.getText().toString().trim());
+        saveString(SharedPreferenceMgr.KEY_LAST_LOGIN_USER, userName.getText().toString().trim());
         startActivity(intent);
         finish();
     }
@@ -125,27 +125,27 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
     @Override
     public boolean needInitInventory() {
-        return getPreferences().getBoolean(Constants.KEY_INIT_INVENTORY, true);
+        return getPreferences().getBoolean(SharedPreferenceMgr.KEY_INIT_INVENTORY, true);
     }
 
     @Override
     public boolean hasGetProducts() {
-        return getPreferences().getBoolean(Constants.KEY_HAS_GET_PRODUCTS, false);
+        return getPreferences().getBoolean(SharedPreferenceMgr.KEY_HAS_GET_PRODUCTS, false);
     }
 
     @Override
     public void setHasGetProducts(boolean hasGetProducts) {
-        saveBoolean(Constants.KEY_HAS_GET_PRODUCTS, hasGetProducts);
+        saveBoolean(SharedPreferenceMgr.KEY_HAS_GET_PRODUCTS, hasGetProducts);
     }
 
     @Override
     public boolean isRequisitionDataSynced() {
-        return getPreferences().getBoolean(Constants.KEY_IS_REQUISITION_DATA_SYNCED, false);
+        return getPreferences().getBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, false);
     }
 
     @Override
     public void setRequisitionDataSynced(boolean isRequisitionDataSynced) {
-        saveBoolean(Constants.KEY_IS_REQUISITION_DATA_SYNCED, isRequisitionDataSynced);
+        saveBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, isRequisitionDataSynced);
     }
 
     @Override

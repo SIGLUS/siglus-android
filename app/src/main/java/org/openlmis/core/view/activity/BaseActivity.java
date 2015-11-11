@@ -32,7 +32,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
 import com.google.inject.Inject;
 
@@ -46,6 +45,7 @@ import org.openlmis.core.presenter.DummyPresenter;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.View;
 import org.openlmis.core.view.fragment.RetainedFragment;
 import org.roboguice.shaded.goole.common.base.Optional;
@@ -140,7 +140,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
             presenter.attachView(BaseActivity.this);
         } catch (ViewNotMatchException e) {
             e.printStackTrace();
-            showMessage(e.getMessage());
+            ToastUtil.show(e.getMessage());
             return;
         }
 
@@ -263,20 +263,6 @@ public abstract class BaseActivity extends RoboActionBarActivity implements View
 
     public SharedPreferences getPreferences() {
         return preferencesMgr.getPreference();
-    }
-
-    public void showMessage(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
-
-    public void showMessage(int resId) {
-        String msg = getResources().getString(resId);
-        showMessage(msg);
-    }
-
-    public void showMessage(int resId, Object... args) {
-        String msg = getResources().getString(resId, args);
-        showMessage(msg);
     }
 
     public void startActivity(Class activityName, boolean closeThis) {

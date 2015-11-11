@@ -127,7 +127,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
     @Override
     public void showErrorAlert(String msg) {
-        showMessage(msg);
+        ToastUtil.show(msg);
     }
 
     @Override

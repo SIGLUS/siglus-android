@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.presenter.InventoryPresenter;
 import org.openlmis.core.utils.InjectPresenter;
@@ -184,7 +185,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     }
 
     public void goToMainPage() {
-        saveBoolean(Constants.KEY_INIT_INVENTORY, false);
+        saveBoolean(SharedPreferenceMgr.KEY_INIT_INVENTORY, false);
         startActivity(isAddNewDrug ? StockCardListActivity.getIntentToMe(this) : HomeActivity.getIntentToMe(this));
         this.finish();
     }

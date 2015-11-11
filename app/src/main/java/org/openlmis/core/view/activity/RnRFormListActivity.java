@@ -29,6 +29,7 @@ import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.presenter.RnRFormListPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.RnRFormListAdapter;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 
@@ -86,7 +87,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         @Override
         public void onError(Throwable e) {
             loaded();
-            showMessage(e.getMessage());
+            ToastUtil.show(e.getMessage());
         }
 
         @Override

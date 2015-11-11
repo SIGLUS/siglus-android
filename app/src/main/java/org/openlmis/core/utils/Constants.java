@@ -28,11 +28,6 @@ public final class Constants {
     public static final String PARAM_FORM_ID = "formId";
     // Keys of Map
     public static final String KEY_HAS_DATA_CHANGED = "hasDataChanged";
-    // Keys of SharedPreferences
-    public static final String KEY_LAST_LOGIN_USER = "last_user";
-    public static final String KEY_INIT_INVENTORY = "init_inventory";
-    public static final String KEY_HAS_GET_PRODUCTS = "has_get_products";
-    public static final String KEY_IS_REQUISITION_DATA_SYNCED = "is_requisition_data_synced";
 
     private Constants(){
 

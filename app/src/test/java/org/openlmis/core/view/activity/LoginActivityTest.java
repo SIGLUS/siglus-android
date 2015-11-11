@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
-import org.openlmis.core.utils.Constants;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.LoginPresenter;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.robolectric.Robolectric;
@@ -81,7 +81,7 @@ public class LoginActivityTest {
 
     @Test
     public void shouldFilledLastLoginUser() {
-        loginActivity.saveString(Constants.KEY_LAST_LOGIN_USER, "superuser");
+        loginActivity.saveString(SharedPreferenceMgr.KEY_LAST_LOGIN_USER, "superuser");
 
         LoginActivity secondLoginActivity = Robolectric.buildActivity(LoginActivity.class).create().get();
 
@@ -162,11 +162,11 @@ public class LoginActivityTest {
 
     @Test
     public void shouldSetHasGetProducts() {
-        loginActivity.saveBoolean(Constants.KEY_HAS_GET_PRODUCTS, false);
+        loginActivity.saveBoolean(SharedPreferenceMgr.KEY_HAS_GET_PRODUCTS, false);
 
         loginActivity.setHasGetProducts(true);
 
-        assertThat(loginActivity.getPreferences().getBoolean(Constants.KEY_HAS_GET_PRODUCTS, false)).isTrue();
+        assertThat(loginActivity.getPreferences().getBoolean(SharedPreferenceMgr.KEY_HAS_GET_PRODUCTS, false)).isTrue();
     }
 
     @Test
