@@ -16,15 +16,13 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.component.stocklist;
+package org.openlmis.core.presenter;
 
 
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.repository.RnrFormItemRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.LoadingView;
@@ -38,23 +36,16 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class Presenter implements org.openlmis.core.presenter.Presenter {
+public class StockCardPresenter implements Presenter {
 
     @Inject
     StockRepository stockRepository;
 
-    @Inject
-    RnrFormItemRepository rnrFormItemRepository;
+    private StockCardListView view;
 
-    StockCardListView view;
+    private List<StockCard> stockCardList;
 
-    List<StockCard> stockCardList;
-
-    public static final int STOCK_ON_HAND_NORMAL = 1;
-    public static final int STOCK_ON_HAND_LOW_STOCK = 2;
-    public static final int STOCK_ON_HAND_STOCK_OUT = 3;
-
-    public Presenter(){
+    public StockCardPresenter() {
         stockCardList = new ArrayList<>();
     }
 
@@ -70,7 +61,7 @@ public class Presenter implements org.openlmis.core.presenter.Presenter {
     }
 
 
-    public List<StockCard> getStockCards(){
+    public List<StockCard> getStockCards() {
         return stockCardList;
     }
 
@@ -82,10 +73,9 @@ public class Presenter implements org.openlmis.core.presenter.Presenter {
             public void call(Subscriber<? super List<StockCard>> subscriber) {
                 try {
                     subscriber.onNext(stockRepository.list());
-                }catch (LMISException e){
-                    subscriber.onError(e);
-                }finally {
                     subscriber.onCompleted();
+                } catch (LMISException e) {
+                    subscriber.onError(e);
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<List<StockCard>>() {
@@ -98,6 +88,7 @@ public class Presenter implements org.openlmis.core.presenter.Presenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 ToastUtil.show(e.getMessage());
+                view.loaded();
             }
 
             @Override
@@ -109,46 +100,18 @@ public class Presenter implements org.openlmis.core.presenter.Presenter {
         });
     }
 
-    public void refreshStockCards(){
-        for (StockCard stockCard : stockCardList){
+    public void refreshStockCards() {
+        for (StockCard stockCard : stockCardList) {
             stockRepository.refresh(stockCard);
         }
     }
 
     @Override
     public void attachView(LoadingView v) {
-        view = (StockCardListView)v;
+        view = (StockCardListView) v;
     }
 
     public interface StockCardListView extends LoadingView {
         void refresh();
-    }
-
-    public int getStockOnHandLevel(StockCard stockCard) {
-        int lowStockAvg = getLowStockAvg(stockCard);
-        long stockOnHand = stockCard.getStockOnHand();
-        if (stockOnHand > lowStockAvg) {
-            return STOCK_ON_HAND_NORMAL;
-        } else if (stockOnHand > 0) {
-            return STOCK_ON_HAND_LOW_STOCK;
-        } else {
-            return STOCK_ON_HAND_STOCK_OUT;
-        }
-    }
-
-    private int getLowStockAvg(StockCard stockCard) {
-        try {
-            List<RnrFormItem> rnrFormItemList = rnrFormItemRepository.queryListForLowStockByProductId(stockCard.getProduct());
-            long total = 0;
-            for (RnrFormItem item : rnrFormItemList) {
-                total += item.getIssued();
-            }
-            if (rnrFormItemList.size() > 0) {
-                return (int) Math.ceil((total / rnrFormItemList.size()) * 0.05);
-            }
-        } catch (LMISException e) {
-            e.printStackTrace();
-        }
-        return 0;
     }
 }

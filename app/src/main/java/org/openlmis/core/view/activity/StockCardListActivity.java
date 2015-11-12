@@ -23,7 +23,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import org.openlmis.core.R;
-import org.openlmis.core.component.Component;
+import org.openlmis.core.view.fragment.StockCardListFragment;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectFragment;
@@ -32,7 +32,7 @@ import roboguice.inject.InjectFragment;
 public class StockCardListActivity extends BaseActivity {
 
     @InjectFragment(R.id.stock_card_list)
-    Component stockCardFragment;
+    StockCardListFragment stockCardFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

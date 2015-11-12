@@ -97,7 +97,7 @@ public class StockCardViewModel {
     }
 
     private void formatProductDisplay(Product product) {
-        String productName = product.getPrimaryName() + " [" + product.getCode() + "]";
+        String productName = product.getFormattedProductName();
         styledName = new SpannableStringBuilder(productName);
         styledName.setSpan(new ForegroundColorSpan(LMISApp.getContext().getResources().getColor(R.color.secondary_text)),
                 product.getPrimaryName().length(), productName.length(), Spannable.SPAN_POINT_MARK);

@@ -16,10 +16,7 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.component.stocklist;
-
-
-import android.view.Menu;
+package org.openlmis.core.view.fragment;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,8 +24,9 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.view.activity.StockCardListActivity;
-import org.openlmis.core.view.activity.StockMovementActivity;
+import org.openlmis.core.presenter.StockCardPresenter;
+import org.openlmis.core.view.adapter.StockCardListAdapter;
+import org.robolectric.util.FragmentTestUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,20 +36,19 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.robolectric.shadows.support.v4.SupportFragmentTestUtil.startFragment;
 
 @RunWith(LMISTestRunner.class)
-public class FragmentTest {
+public class StockCardListFragmentTest {
 
-    Fragment fragment;
-    List<StockCard> stockCards;
+    private StockCardListFragment fragment;
+    private List<StockCard> stockCards;
 
     @Before
     public void setUp() {
-        fragment = new Fragment();
-        startFragment(fragment);
-        fragment.presenter = mock(Presenter.class);
-        fragment.mAdapter = mock(Adapter.class);
+        fragment = new StockCardListFragment();
+        FragmentTestUtil.startFragment(fragment);
+        fragment.presenter = mock(StockCardPresenter.class);
+        fragment.mAdapter = mock(StockCardListAdapter.class);
 
         stockCards = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -85,7 +82,7 @@ public class FragmentTest {
     public void shouldSortListByProductName() {
         when(fragment.presenter.getStockCards()).thenReturn(stockCards);
         List<StockCard> stockCards = fragment.presenter.getStockCards();
-        Adapter adapter = new Adapter(fragment, fragment.presenter, stockCards, StockMovementActivity.class.getName());
+        StockCardListAdapter adapter = new StockCardListAdapter(stockCards, null);
         adapter.sortByName(true);
 
         List<StockCard> sortedList = adapter.getCurrentStockCards();
@@ -97,7 +94,7 @@ public class FragmentTest {
     @Test
     public void shouldSortListBySOH() {
         when(fragment.presenter.getStockCards()).thenReturn(stockCards);
-        Adapter adapter = new Adapter(fragment, fragment.presenter, stockCards, StockMovementActivity.class.getName());
+        StockCardListAdapter adapter = new StockCardListAdapter(stockCards, null);
         adapter.sortBySOH(true);
 
         List<StockCard> sortedList = adapter.getCurrentStockCards();
@@ -107,11 +104,11 @@ public class FragmentTest {
     }
 
 
-    static class StockCardListActivityMock extends StockCardListActivity {
-        @Override
-        public boolean onCreateOptionsMenu(Menu menu) {
-            return false;
-        }
-    }
+//    static class StockCardListActivityMock extends StockCardListActivity {
+//        @Override
+//        public boolean onCreateOptionsMenu(Menu menu) {
+//            return false;
+//        }
+//    }
 
 }

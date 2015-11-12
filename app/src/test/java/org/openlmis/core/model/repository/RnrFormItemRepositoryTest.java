@@ -24,6 +24,7 @@ import static org.hamcrest.core.Is.is;
 
 @RunWith(LMISTestRunner.class)
 public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
+
     RnrFormItemRepository rnrFormItemRepository;
     private RnrFormRepository rnrFormRepository;
 
@@ -73,6 +74,4 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
         rnrFormItem.setInventory(inventory);
         return rnrFormItem;
     }
-
-
 }

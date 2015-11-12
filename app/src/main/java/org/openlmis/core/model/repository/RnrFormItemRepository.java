@@ -58,4 +58,20 @@ public class RnrFormItemRepository {
             }
         });
     }
+
+    public int getLowStockAvg(final Product product) {
+        try {
+            List<RnrFormItem> rnrFormItemList = queryListForLowStockByProductId(product);
+            long total = 0;
+            for (RnrFormItem item : rnrFormItemList) {
+                total += item.getIssued();
+            }
+            if (rnrFormItemList.size() > 0) {
+                return (int) Math.ceil((total / rnrFormItemList.size()) * 0.05);
+            }
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

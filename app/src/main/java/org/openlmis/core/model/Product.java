@@ -63,6 +63,10 @@ public class Product extends BaseModel{
         }
     }
 
+    public String getFormattedProductName() {
+        return getPrimaryName() + " [" + getCode() + "]";
+    }
+
     @Override
     public int hashCode() {
         return getCode().hashCode();

@@ -50,7 +50,7 @@ public final class ToastUtil {
     }
 
     public static void showCustomToast(CharSequence text) {
-        if (text == null)
+        if (TextUtils.isEmpty(text))
             return;
         Toast toast = new Toast(LMISApp.getContext());
         LayoutInflater inflate = (LayoutInflater)

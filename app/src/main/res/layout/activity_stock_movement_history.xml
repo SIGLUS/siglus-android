@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/stock_card_history_fragment"
-    class="org.openlmis.core.view.fragment.StockMovementHistoryFragment"
+    android:name="org.openlmis.core.view.fragment.StockMovementHistoryFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />
 

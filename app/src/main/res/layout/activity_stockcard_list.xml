@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
 
-    <fragment android:id="@+id/stock_card_list"
-        class="org.openlmis.core.component.stocklist.Fragment"
+    <fragment
+        android:id="@+id/stock_card_list"
+        android:name="org.openlmis.core.view.fragment.StockCardListFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:className="org.openlmis.core.view.activity.StockMovementActivity"/>
+        android:layout_height="match_parent" />
 </LinearLayout>

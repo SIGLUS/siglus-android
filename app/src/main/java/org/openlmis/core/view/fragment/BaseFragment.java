@@ -20,16 +20,25 @@ package org.openlmis.core.view.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.view.View;
 
 import roboguice.RoboGuice;
 
 public class BaseFragment extends Fragment {
+    /*
+    * Life cycle of Fragment: onAttach -> onCreate -> onCreateView -> onViewCreated -> onActivityCreated -> onPause -> onStop
+    * */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // retain this fragment
         setRetainInstance(true);
         RoboGuice.getInjector(getActivity()).injectMembersWithoutViews(this);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         RoboGuice.getInjector(getActivity()).injectViewMembers(this);
     }
 }

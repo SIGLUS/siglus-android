@@ -48,41 +48,43 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
     private boolean isLoading;
     private boolean isFirstLoading;
     private boolean isRotated;
+    private long stockCardID;
 
-    private View contentView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private LoadingView loadingView;
     private ListView historyListView;
 
     private BaseAdapter adapter;
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        contentView = inflater.inflate(R.layout.fragment_stock_movement_history, container, false);
-
-        presenter.attachView(this);
-        presenter.setStockCardId(getActivity().getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0));
-
-        return contentView;
-    }
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
+        stockCardID = activity.getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
         if (activity instanceof LoadingView) {
             loadingView = (LoadingView) activity;
         } else {
             throw new ClassCastException("Host Activity should implements LoadingView method");
         }
+    }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        presenter.attachView(this);
+        presenter.setStockCardId(stockCardID);
+    }
+
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_stock_movement_history, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initUI();
-
+        initUI(view);
         if (isRotated) {
             addFooterViewIfMoreThanOneScreen();
         } else {
@@ -96,13 +98,13 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
         super.onSaveInstanceState(outState);
     }
 
-    private void initUI() {
-        historyListView = (ListView) contentView.findViewById(R.id.list);
+    private void initUI(View view) {
+        historyListView = (ListView) view.findViewById(R.id.list);
 
         adapter = new StockMovementHistoryAdapter(getActivity(), presenter.getStockMovementModelList());
         historyListView.setAdapter(adapter);
 
-        swipeRefreshLayout = (SwipeRefreshLayout) contentView.findViewById(R.id.stock_movement_history_swipe_container);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.stock_movement_history_swipe_container);
         swipeRefreshLayout.setOnRefreshListener(this);
     }
 
