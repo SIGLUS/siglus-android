@@ -30,10 +30,11 @@ import org.openlmis.core.persistence.migrations.AddSignatureFieldInStockMovement
 import org.openlmis.core.persistence.migrations.AddSubmittedDateToRnRForm;
 import org.openlmis.core.persistence.migrations.AddSyncTagToStockMovementItem;
 import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
+import org.openlmis.core.persistence.migrations.CreateDraftInventoryTable;
 import org.openlmis.core.persistence.migrations.CreateDummyRegimes;
 import org.openlmis.core.persistence.migrations.CreateInitTables;
-import org.openlmis.core.persistence.migrations.SetQuantityOfStockMovementForInitialInventory;
 import org.openlmis.core.persistence.migrations.CreateRnRFormSignature;
+import org.openlmis.core.persistence.migrations.SetQuantityOfStockMovementForInitialInventory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new AddSubmittedDateToRnRForm());
             add(new SetQuantityOfStockMovementForInitialInventory());
             add(new CreateRnRFormSignature());
+            add(new CreateDraftInventoryTable());
         }
     };
     private static int instanceCount = 0;
