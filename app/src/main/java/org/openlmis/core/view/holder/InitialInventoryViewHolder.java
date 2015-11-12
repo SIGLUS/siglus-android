@@ -104,7 +104,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
                     populateEditPanel(StringUtils.EMPTY, StringUtils.EMPTY);
 
                     viewModel.setQuantity(StringUtils.EMPTY);
-                    viewModel.setExpiryDates(null);
+                    viewModel.setExpiryDates(StringUtils.EMPTY);
                 }
                 viewModel.setChecked(isChecked);
             }

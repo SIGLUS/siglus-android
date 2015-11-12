@@ -57,8 +57,14 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     @InjectView(R.id.tv_total)
     public TextView tvTotal;
 
-    @InjectView(R.id.btn_done)
+    @InjectView(R.id.action_panel)
+    public ViewGroup bottomBtn;
+
+    @InjectView(R.id.btn_complete)
     public Button btnDone;
+
+    @InjectView(R.id.btn_save)
+    public View btnSave;
 
     @InjectPresenter(InventoryPresenter.class)
     InventoryPresenter presenter;
@@ -94,13 +100,19 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
         setTitle(getResources().getString(R.string.title_physical_inventory));
 
         final List<StockCardViewModel> list = new ArrayList<>();
-        ((ViewGroup) btnDone.getParent()).removeView(btnDone);
-        mAdapter = new PhysicalInventoryAdapter(this, list, btnDone);
+        ((ViewGroup) bottomBtn.getParent()).removeView(bottomBtn);
+        mAdapter = new PhysicalInventoryAdapter(this, list, bottomBtn);
         productListRecycleView.setAdapter(mAdapter);
 
         loading();
         presenter.loadStockCardList().subscribe(stockCardSubscriber);
 
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.savePhysicalInventory(((PhysicalInventoryAdapter) mAdapter).getData());
+            }
+        });
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,6 +141,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     };
 
     private void initInitialInventoryUI() {
+        btnSave.setVisibility(View.GONE);
         if (isAddNewDrug) {
             setTitle(getResources().getString(R.string.title_add_new_drug));
         } else if (getSupportActionBar() != null) {

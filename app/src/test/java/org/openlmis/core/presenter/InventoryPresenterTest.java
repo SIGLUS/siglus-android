@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockCardBuilder;
@@ -185,6 +186,41 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
         assertThat(item.getMovementType(), is(StockMovementItem.MovementType.PHYSICAL_INVENTORY));
         assertThat(item.getMovementQuantity(), is(0L));
+    }
+
+    @Test
+    public void shouldRestoreDraftInventory() throws Exception {
+        StockCard stockCard = StockCardBuilder.buildStockCard();
+        stockCard.setId(9);
+
+        ArrayList<StockCardViewModel> stockCardViewModels = new ArrayList<>();
+        StockCardViewModel build = new StockCardViewModel(stockCard);
+        build.setQuantity("11");
+        build.setExpiryDates(new ArrayList<String>());
+        build.setStockCardId(stockCard.getId());
+        stockCardViewModels.add(build);
+
+        StockCardViewModel build2 = new StockCardViewModel(stockCard);
+        build2.setStockCardId(3);
+        build2.setQuantity("15");
+        ArrayList<String> expireDates = new ArrayList<>();
+        expireDates.add("11/02/2015");
+        build2.setExpiryDates(expireDates);
+        stockCardViewModels.add(build2);
+
+        ArrayList<DraftInventory> draftInventories = new ArrayList<>();
+        DraftInventory draftInventory = new DraftInventory();
+        draftInventory.setStockCard(stockCard);
+        draftInventory.setQuantity(20L);
+        draftInventory.setExpireDates("11/10/2015");
+        draftInventories.add(draftInventory);
+        when(stockRepositoryMock.listDraftInventory()).thenReturn(draftInventories);
+
+        inventoryPresenter.restoreDraftInventory(stockCardViewModels);
+        assertThat(stockCardViewModels.get(0).getQuantity(), is("20"));
+        assertThat(stockCardViewModels.get(0).getExpiryDates().get(0),is("11/10/2015"));
+        assertThat(stockCardViewModels.get(1).getQuantity(), is("15"));
+        assertThat(stockCardViewModels.get(1).getExpiryDates().get(0), is("11/02/2015"));
     }
 
     public class MyTestModule extends AbstractModule {

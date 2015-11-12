@@ -23,9 +23,12 @@ import android.content.Context;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
+import com.j256.ormlite.table.TableUtils;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -51,6 +54,7 @@ public class StockRepository {
 
     GenericDao<StockCard> genericDao;
     GenericDao<StockMovementItem> stockItemGenericDao;
+    GenericDao<DraftInventory> draftInventoryGenericDao;
 
     @Inject
     ProgramRepository programRepository;
@@ -59,6 +63,7 @@ public class StockRepository {
     public StockRepository(Context context) {
         genericDao = new GenericDao<>(StockCard.class, context);
         stockItemGenericDao = new GenericDao<>(StockMovementItem.class, context);
+        draftInventoryGenericDao = new GenericDao<>(DraftInventory.class, context);
     }
 
 
@@ -103,11 +108,11 @@ public class StockRepository {
         }
     }
 
-    public void batchUpdateStockMovements(final List<StockMovementItem> stockMovementItems) throws LMISException{
+    public void batchUpdateStockMovements(final List<StockMovementItem> stockMovementItems) throws LMISException {
         dbUtil.withDaoAsBatch(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, Void>() {
             @Override
             public Void operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                for (StockMovementItem stockMovementItem : stockMovementItems){
+                for (StockMovementItem stockMovementItem : stockMovementItems) {
                     dao.update(stockMovementItem);
                 }
                 return null;
@@ -136,7 +141,7 @@ public class StockRepository {
                     return null;
                 }
             });
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             throw new LMISException(e);
         }
@@ -161,9 +166,9 @@ public class StockRepository {
             if (stockMovementItem.getMovementType() == StockMovementItem.MovementType.ISSUE
                     || stockMovementItem.getMovementType() == StockMovementItem.MovementType.NEGATIVE_ADJUST) {
                 stockExistence -= stockMovementItem.getMovementQuantity();
-            } else if(stockMovementItem.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
-               stockExistence = stockcard.getStockOnHand();
-            }else {
+            } else if (stockMovementItem.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
+                stockExistence = stockcard.getStockOnHand();
+            } else {
                 stockExistence += stockMovementItem.getMovementQuantity();
             }
             stockMovementItem.setStockOnHand(stockExistence);
@@ -242,4 +247,15 @@ public class StockRepository {
         });
     }
 
+    public void saveDraftInventory(DraftInventory draftInventory) throws LMISException {
+        draftInventoryGenericDao.create(draftInventory);
+    }
+
+    public List<DraftInventory> listDraftInventory() throws LMISException {
+        return draftInventoryGenericDao.queryForAll();
+    }
+
+    public void clearDraftInventory() throws SQLException {
+        TableUtils.clearTable(LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(), DraftInventory.class);
+    }
 }

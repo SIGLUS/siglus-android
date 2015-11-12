@@ -26,6 +26,7 @@ import android.text.style.ForegroundColorSpan;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.DateUtil;
@@ -51,7 +52,7 @@ public class StockCardViewModel {
     String type;
     String quantity;
 
-    List<String> expiryDates;
+    List<String> expiryDates = new ArrayList<>();
 
     long stockCardId;
 
@@ -72,15 +73,21 @@ public class StockCardViewModel {
         this.stockOnHand = stockCard.getStockOnHand();
         this.checked = true;
 
-        if (TextUtils.isEmpty(stockCard.getExpireDates())) {
-            this.expiryDates = new ArrayList<>();
-        } else {
-            this.expiryDates = newArrayList(stockCard.getExpireDates().split(StockCard.DIVIDER));
-        }
+        setExpiryDates(stockCard.getExpireDates());
 
         setProductAttributes(stockCard.getProduct());
 
         formatProductDisplay(stockCard.getProduct());
+    }
+
+    public void setExpiryDates(List<String> expireDates) {
+        this.expiryDates = expireDates;
+    }
+
+    public void setExpiryDates(String expireDates) {
+        if (!TextUtils.isEmpty(expireDates)) {
+            this.expiryDates = newArrayList(expireDates.split(StockCard.DIVIDER));
+        }
     }
 
     public StockCardViewModel(Product product) {
@@ -177,5 +184,21 @@ public class StockCardViewModel {
     public boolean validate() {
         validate = !checked || StringUtils.isNumeric(quantity);
         return validate;
+    }
+
+    public DraftInventory parseDraftInventory() {
+        DraftInventory draftInventory = new DraftInventory();
+        draftInventory.setExpireDates(formatExpiryDateString());
+
+        long quantity;
+        try {
+            quantity = Long.parseLong(getQuantity());
+        } catch (NumberFormatException e) {
+            quantity = 0L;
+        }
+        draftInventory.setQuantity(quantity);
+
+        draftInventory.setStockCard(getStockCard());
+        return draftInventory;
     }
 }

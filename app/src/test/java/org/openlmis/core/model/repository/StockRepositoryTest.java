@@ -19,6 +19,7 @@
 package org.openlmis.core.model.repository;
 
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +28,7 @@ import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockCardBuilder;
@@ -173,7 +175,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
         List<StockMovementItem> items = newArrayList(stockCard.getStockMovementItems());
         assertThat(items.size(), is(2));
-        assertThat(items.get(0).isSynced() , is(false));
+        assertThat(items.get(0).isSynced(), is(false));
         assertThat(items.get(1).isSynced(), is(false));
 
         for (StockMovementItem entry : items){
@@ -199,4 +201,36 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(stockMovementItem.getReason(), is(MovementReasonManager.INVENTORY));
         assertThat(stockMovementItem.getMovementType(), is(StockMovementItem.MovementType.PHYSICAL_INVENTORY));
     }
+
+    @Test
+    public void shouldListDraftInventory() throws Exception {
+        saveDraftInventory();
+
+        List<DraftInventory> draftInventories = stockRepository.listDraftInventory();
+        assertThat(draftInventories.get(0).getQuantity(),is(10L));
+        assertThat(draftInventories.get(0).getExpireDates(),is("11/10/2015"));
+        assertThat(draftInventories.get(1).getQuantity(),is(20L));
+        assertThat(draftInventories.get(1).getExpireDates(),is("12/10/2015"));
+    }
+
+    private void saveDraftInventory() throws LMISException {
+        DraftInventory draftInventory1 = new DraftInventory();
+        draftInventory1.setQuantity(10L);
+        draftInventory1.setExpireDates("11/10/2015");
+        DraftInventory draftInventory2 = new DraftInventory();
+        draftInventory2.setQuantity(20L);
+        draftInventory2.setExpireDates("12/10/2015");
+
+        stockRepository.saveDraftInventory(draftInventory1);
+        stockRepository.saveDraftInventory(draftInventory2);
+    }
+
+    @Test
+    public void shouldClearDraftInventory() throws Exception {
+        saveDraftInventory();
+        Assert.assertThat(stockRepository.listDraftInventory().size(), is(2));
+        stockRepository.clearDraftInventory();
+        Assert.assertThat(stockRepository.listDraftInventory().size(),is(0));
+    }
+
 }

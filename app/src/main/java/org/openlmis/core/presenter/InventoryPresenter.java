@@ -19,12 +19,11 @@
 
 package org.openlmis.core.presenter;
 
-import android.content.Context;
-
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -35,6 +34,7 @@ import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -55,9 +55,6 @@ public class InventoryPresenter implements Presenter {
     StockRepository stockRepository;
 
     InventoryView view;
-
-    @Inject
-    Context context;
 
     @Override
     public void onStart() {
@@ -116,12 +113,15 @@ public class InventoryPresenter implements Presenter {
                 List<StockCard> list;
                 try {
                     list = stockRepository.list();
-                    subscriber.onNext(from(list).transform(new Function<StockCard, StockCardViewModel>() {
+                    List<StockCardViewModel> stockCardViewModels = from(list).transform(new Function<StockCard, StockCardViewModel>() {
                         @Override
                         public StockCardViewModel apply(StockCard stockCard) {
                             return new StockCardViewModel(stockCard);
                         }
-                    }).toList());
+                    }).toList();
+
+                    restoreDraftInventory(stockCardViewModels);
+                    subscriber.onNext(stockCardViewModels);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     subscriber.onError(e);
@@ -130,6 +130,18 @@ public class InventoryPresenter implements Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
+    protected void restoreDraftInventory(List<StockCardViewModel> stockCardViewModels) throws LMISException {
+        List<DraftInventory> draftList = stockRepository.listDraftInventory();
+
+        for (StockCardViewModel model : stockCardViewModels) {
+            for (DraftInventory draftInventory : draftList) {
+                if (model.getStockCardId() == draftInventory.getStockCard().getId()) {
+                    model.setExpiryDates(draftInventory.getExpireDates());
+                    model.setQuantity(String.valueOf(draftInventory.getQuantity()));
+                }
+            }
+        }
+    }
 
     public void initStockCards(List<StockCardViewModel> list) {
 
@@ -170,17 +182,40 @@ public class InventoryPresenter implements Presenter {
         item.setMovementDate(new Date());
         item.setMovementQuantity(Math.abs(inventory - stockOnHand));
 
-            if (inventory > stockOnHand) {
-                item.setReason(MovementReasonManager.INVENTORY_POSITIVE);
-                item.setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
-            } else if (inventory < stockOnHand) {
-                item.setReason(MovementReasonManager.INVENTORY_NEGATIVE);
-                item.setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
-            } else {
-                item.setReason(MovementReasonManager.INVENTORY);
-                item.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
-            }
+        if (inventory > stockOnHand) {
+            item.setReason(MovementReasonManager.INVENTORY_POSITIVE);
+            item.setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
+        } else if (inventory < stockOnHand) {
+            item.setReason(MovementReasonManager.INVENTORY_NEGATIVE);
+            item.setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
+        } else {
+            item.setReason(MovementReasonManager.INVENTORY);
+            item.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
+        }
         return item;
+    }
+
+    public void savePhysicalInventory(List<StockCardViewModel> list) {
+        view.loading();
+        saveDraftInventoryObservable(list).subscribe(nextMainPageAction, errorAction);
+    }
+
+    private Observable<Object> saveDraftInventoryObservable(final List<StockCardViewModel> list) {
+        return Observable.create(new Observable.OnSubscribe<Object>() {
+            @Override
+            public void call(Subscriber<? super Object> subscriber) {
+                try {
+                    for (StockCardViewModel model : list) {
+                        stockRepository.saveDraftInventory(model.parseDraftInventory());
+                    }
+                    subscriber.onNext(null);
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    subscriber.onError(e);
+                    e.printStackTrace();
+                }
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     public void doPhysicalInventory(final List<StockCardViewModel> list) {
@@ -198,9 +233,10 @@ public class InventoryPresenter implements Presenter {
                     for (StockCardViewModel model : list) {
                         stockRepository.addStockMovementAndUpdateStockCard(model.getStockCard(), calculateAdjustment(model));
                     }
+                    stockRepository.clearDraftInventory();
                     subscriber.onNext(null);
                     subscriber.onCompleted();
-                } catch (LMISException e) {
+                } catch (LMISException | SQLException e) {
                     subscriber.onError(e);
                     e.printStackTrace();
                 }

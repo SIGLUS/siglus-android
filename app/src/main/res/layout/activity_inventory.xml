@@ -7,26 +7,25 @@
         android:id="@+id/tv_total"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="end"
         android:layout_alignParentTop="true"
+        android:gravity="end"
+        android:paddingEnd="15dp"
         android:paddingStart="0dp"
-        android:textSize="15sp"
-        android:paddingEnd="15dp" />
+        android:textSize="15sp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/products_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/btn_done"
+        android:layout_above="@+id/action_panel"
         android:layout_below="@+id/tv_total"
         android:scrollbars="vertical" />
 
-    <Button
-        android:id="@+id/btn_done"
+    <include
+        android:id="@+id/action_panel"
+        layout="@layout/layout_form_action"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/blue_button"
-        android:padding="20dp"
-        android:text="@string/btn_done" />
+        android:layout_alignParentBottom="true" />
+
 </RelativeLayout>

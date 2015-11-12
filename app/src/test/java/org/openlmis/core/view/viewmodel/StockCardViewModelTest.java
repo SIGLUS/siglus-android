@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 
@@ -28,25 +29,35 @@ public class StockCardViewModelTest {
         stockCard.setProduct(product);
         stockCard.setExpireDates("");
         model = new StockCardViewModel(stockCard);
-    }
-
-    @Test
-    public void shouldReturnFalseWhenAddDuplicateDate() throws Exception {
-        boolean addExpiryDate = model.addExpiryDate("2015");
-        assertTrue(addExpiryDate);
-        boolean addExpiryDateSec = model.addExpiryDate("2015");
-        assertFalse(addExpiryDateSec);
-    }
-
-    @Test
-    public void shouldFormatExpiryDateAndSort() throws Exception {
         ArrayList<String> list = new ArrayList<>();
         list.add("18/10/2016");
         list.add("18/10/2017");
         list.add("18/10/2018");
         list.add("18/10/2015");
         model.setExpiryDates(list);
+    }
+
+    @Test
+    public void shouldReturnFalseWhenAddDuplicateDate() throws Exception {
+        boolean addExpiryDate = model.addExpiryDate("28/10/2016");
+        assertTrue(addExpiryDate);
+        boolean addExpiryDateSec = model.addExpiryDate("28/10/2016");
+        assertFalse(addExpiryDateSec);
+    }
+
+    @Test
+    public void shouldFormatExpiryDateAndSort() throws Exception {
         model.formatExpiryDateString();
         assertThat(model.getExpiryDates().get(0), is("18/10/2015"));
+    }
+
+
+    @Test
+    public void shouldParseDraftInventory() throws Exception {
+        model.setQuantity("10");
+        DraftInventory draftInventory = model.parseDraftInventory();
+
+        assertThat(draftInventory.getQuantity(), is(10L));
+        assertThat(draftInventory.getExpireDates(), is("18/10/2015,18/10/2016,18/10/2017,18/10/2018"));
     }
 }
