@@ -88,12 +88,276 @@ describe "submit requisition to web server" do
       ],
       products: [
       {
-        productCode: "08S23",
+        productCode: "08S42",
         beginningBalance: 30,
         quantityReceived: 10,
         quantityDispensed: 20,
         totalLossesAndAdjustments: 0,
         stockInHand: 20,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S18Y",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S40",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S36",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S32",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S18Z",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S39Z",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S21",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S01",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S22",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S13",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S15",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S34B",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S32Z",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S42B",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S40Z",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S39B",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S39Y",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S01ZZ",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S20",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S19",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S01B",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
+        quantityRequested: 0,
+        quantityApproved: 0,
+        reasonForRequestedQuantity: "reason",
+        expirationDate: "10/10/2016"
+      },
+      {
+        productCode: "08S23",
+        beginningBalance: 10,
+        quantityReceived: 10,
+        quantityDispensed: 10,
+        totalLossesAndAdjustments: 0,
+        stockInHand: 10,
         quantityRequested: 0,
         quantityApproved: 0,
         reasonForRequestedQuantity: "reason",
@@ -308,10 +572,10 @@ describe "submit requisition to web server" do
     expect(mmia_approver_signature['text']).to eq 'professor-x'
 
     product1 = mmia_requisition['products'].detect { |p| p['productCode'] == '08S23' }
-    expect(product1['beginningBalance']).to eq 30
+    expect(product1['beginningBalance']).to eq 10
     expect(product1['quantityReceived']).to eq 10
-    expect(product1['quantityDispensed']).to eq 20
-    expect(product1['stockInHand']).to eq 20
+    expect(product1['quantityDispensed']).to eq 10
+    expect(product1['stockInHand']).to eq 10
     expect(product1['totalLossesAndAdjustments']).to eq 0
     expect(product1['expirationDate']).to eq '10/10/2016'
 
