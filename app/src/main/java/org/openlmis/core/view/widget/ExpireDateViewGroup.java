@@ -149,8 +149,10 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
         addView(addViewBtn);
 
         this.expireDates = getStockCardExpireDates(model);
-        for (String date : expireDates) {
-            addExpireDateView(date);
+        if (expireDates != null) {
+            for (String date : expireDates) {
+                addExpireDateView(date);
+            }
         }
     }
 

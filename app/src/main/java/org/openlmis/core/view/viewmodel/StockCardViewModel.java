@@ -51,7 +51,7 @@ public class StockCardViewModel {
     String type;
     String quantity;
 
-    List<String> expiryDates = new ArrayList<>();
+    List<String> expiryDates;
 
     long stockCardId;
 
@@ -72,7 +72,9 @@ public class StockCardViewModel {
         this.stockOnHand = stockCard.getStockOnHand();
         this.checked = true;
 
-        if (!TextUtils.isEmpty(stockCard.getExpireDates())) {
+        if (TextUtils.isEmpty(stockCard.getExpireDates())) {
+            this.expiryDates = new ArrayList<>();
+        } else {
             this.expiryDates = newArrayList(stockCard.getExpireDates().split(StockCard.DIVIDER));
         }
 
@@ -135,7 +137,7 @@ public class StockCardViewModel {
     }
 
     public String optFirstExpiryDate() {
-        if (expiryDates.size() > 0) {
+        if (expiryDates != null && expiryDates.size() > 0) {
             try {
                 return DateUtil.convertDate(expiryDates.get(0), DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
             } catch (ParseException e) {
@@ -152,6 +154,10 @@ public class StockCardViewModel {
     }
 
     public boolean addExpiryDate(String date, boolean append) {
+        if (expiryDates == null) {
+            expiryDates = new ArrayList<>();
+        }
+
         if (!append) {
             expiryDates.clear();
         }
@@ -159,7 +165,9 @@ public class StockCardViewModel {
     }
 
     public void removeExpiryDate(String date) {
-        expiryDates.remove(date);
+        if (expiryDates != null) {
+            expiryDates.remove(date);
+        }
     }
 
     public boolean isExpireDateExists(String expireDate) {
