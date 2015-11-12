@@ -5,6 +5,7 @@
     android:layout_height="fill_parent"
     android:focusable="false"
     android:gravity="center_vertical"
+    android:textSize="20sp"
     android:padding="@dimen/abc_control_padding_material"
     android:text="@string/btn_add_expiry_date"
     android:textColor="@color/color_accent" />
