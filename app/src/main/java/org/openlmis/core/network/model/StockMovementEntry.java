@@ -34,6 +34,7 @@ public class StockMovementEntry {
     long quantity;
     String reasonName;
     String occurred;
+    String referenceNumber;
     String type;
     HashMap<String,String> customProps = new HashMap<>();
 
@@ -44,6 +45,7 @@ public class StockMovementEntry {
         this.setFacilityId(facilityId);
         this.setType("ADJUSTMENT");
         this.setOccurred(DateUtil.formatDate(stockMovementItem.getMovementDate(), DateUtil.DB_DATE_FORMAT));
+        this.setReferenceNumber(stockMovementItem.getDocumentNumber());
         this.getCustomProps().put("expirationDates", stockMovementItem.getStockCard().getExpireDates());
     }
 }
