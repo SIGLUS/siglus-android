@@ -121,8 +121,8 @@
     <string name="msg_invalid_stock_movement_date">Invalid date</string>
     <string name="msg_db_error">An unexpected error has occurred. Please contact your administrator.</string>
     <string name="label_cmm">CMM</string>
-    <string name="label_validate_period">Validate Period</string>
-    <string name="btn_add_expiry_date">+ Expiration Date</string>
+    <string name="label_validate_period">Expiry Date</string>
+    <string name="btn_add_expiry_date">+ Expiry Date</string>
     <string name="menu_item_stock_movement_history">Movement History</string>
     <string name="title_add_new_drug">Add new product</string>
 
