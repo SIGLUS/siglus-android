@@ -46,7 +46,7 @@ import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.LoadingView;
+import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.fragment.RetainedFragment;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.base.Predicate;
@@ -59,7 +59,7 @@ import roboguice.activity.RoboActionBarActivity;
 
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
-public abstract class BaseActivity extends RoboActionBarActivity implements LoadingView {
+public abstract class BaseActivity extends RoboActionBarActivity implements BaseView {
 
     @Inject
     SharedPreferenceMgr preferencesMgr;

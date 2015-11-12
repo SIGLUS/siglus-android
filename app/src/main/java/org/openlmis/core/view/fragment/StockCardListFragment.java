@@ -38,7 +38,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.view.LoadingView;
+import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.activity.StockMovementActivity;
 import org.openlmis.core.view.adapter.StockCardListAdapter;
 import org.openlmis.core.view.holder.StockCardViewHolder;
@@ -67,16 +67,16 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
 
     private List<StockCard> stockCards;
     private int currentPosition;
-    private LoadingView loadingView;
+    private BaseView baseView;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        if (activity instanceof LoadingView) {
-            loadingView = (LoadingView) activity;
+        if (activity instanceof BaseView) {
+            baseView = (BaseView) activity;
         } else {
-            loadingView = new LoadingView() {
+            baseView = new BaseView() {
                 @Override
                 public void loading() {
                 }
@@ -176,17 +176,17 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
 
     @Override
     public void loading() {
-        loadingView.loading();
+        baseView.loading();
     }
 
     @Override
     public void loading(String message) {
-        loadingView.loading(message);
+        baseView.loading(message);
     }
 
     @Override
     public void loaded() {
-        loadingView.loaded();
+        baseView.loaded();
     }
 
     @Override

@@ -30,7 +30,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.view.LoadingView;
+import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
@@ -70,7 +70,7 @@ public class InventoryPresenter implements Presenter {
     }
 
     @Override
-    public void attachView(LoadingView v) {
+    public void attachView(BaseView v) {
         view = (InventoryView) v;
     }
 
@@ -242,7 +242,7 @@ public class InventoryPresenter implements Presenter {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public interface InventoryView extends LoadingView {
+    public interface InventoryView extends BaseView {
         void goToMainPage();
 
         boolean validateInventory();

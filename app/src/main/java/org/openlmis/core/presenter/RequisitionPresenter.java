@@ -32,7 +32,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.service.SyncManager;
-import org.openlmis.core.view.LoadingView;
+import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 
@@ -88,7 +88,7 @@ public class RequisitionPresenter implements Presenter {
     }
 
     @Override
-    public void attachView(LoadingView v) throws ViewNotMatchException {
+    public void attachView(BaseView v) throws ViewNotMatchException {
         if (v instanceof RequisitionView) {
             this.view = (RequisitionView) v;
         } else {
@@ -354,7 +354,7 @@ public class RequisitionPresenter implements Presenter {
     }
 
 
-    public interface RequisitionView extends LoadingView {
+    public interface RequisitionView extends BaseView {
 
         void showListInputError(int index);
 

@@ -34,7 +34,7 @@ import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.service.SyncSubscriber;
 import org.openlmis.core.utils.FeatureToggle;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.LoadingView;
+import org.openlmis.core.view.BaseView;
 
 public class LoginPresenter implements Presenter {
 
@@ -60,7 +60,7 @@ public class LoginPresenter implements Presenter {
     }
 
     @Override
-    public void attachView(LoadingView v) {
+    public void attachView(BaseView v) {
         this.view = (LoginView) v;
     }
 
@@ -226,7 +226,7 @@ public class LoginPresenter implements Presenter {
         }
     };
 
-    public interface LoginView extends LoadingView {
+    public interface LoginView extends BaseView {
 
         void clearPassword();
 

@@ -25,7 +25,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.LoadingView;
+import org.openlmis.core.view.BaseView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,11 +107,11 @@ public class StockCardPresenter implements Presenter {
     }
 
     @Override
-    public void attachView(LoadingView v) {
+    public void attachView(BaseView v) {
         view = (StockCardListView) v;
     }
 
-    public interface StockCardListView extends LoadingView {
+    public interface StockCardListView extends BaseView {
         void refresh();
     }
 }

@@ -36,7 +36,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.presenter.StockMovementHistoryPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.LoadingView;
+import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.adapter.StockMovementHistoryAdapter;
 
 import roboguice.inject.InjectView;
@@ -58,7 +58,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
     private boolean isLoading;
     private boolean isFirstLoading;
 
-    private LoadingView loadingView;
+    private BaseView baseView;
     private BaseAdapter adapter;
 
     @Override
@@ -66,8 +66,8 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
         super.onAttach(activity);
 
         stockCardID = activity.getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
-        if (activity instanceof LoadingView) {
-            loadingView = (LoadingView) activity;
+        if (activity instanceof BaseView) {
+            baseView = (BaseView) activity;
         } else {
             throw new ClassCastException("Host Activity should implements LoadingView method");
         }
@@ -113,7 +113,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
 
     public void initData() {
         isFirstLoading = true;
-        loadingView.loading();
+        baseView.loading();
         swipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -146,7 +146,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
             }
         } else {
             ToastUtil.showInCenter(R.string.hint_has_not_new_data);
-            loadingView.loaded();
+            baseView.loaded();
         }
         isLoading = false;
         swipeRefreshLayout.setRefreshing(false);
@@ -158,7 +158,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
             @Override
             public void run() {
                 historyListView.setSelection(historyListView.getCount() - 1);
-                loadingView.loaded();
+                baseView.loaded();
             }
         });
     }
@@ -189,16 +189,16 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
 
     @Override
     public void loading() {
-        loadingView.loading();
+        baseView.loading();
     }
 
     @Override
     public void loading(String message) {
-        loadingView.loading(message);
+        baseView.loading(message);
     }
 
     @Override
     public void loaded() {
-        loadingView.loaded();
+        baseView.loaded();
     }
 }

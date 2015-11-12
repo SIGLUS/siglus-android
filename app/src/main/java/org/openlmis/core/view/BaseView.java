@@ -18,7 +18,7 @@
 
 package org.openlmis.core.view;
 
-public interface LoadingView {
+public interface BaseView {
 
     void loading();
 
