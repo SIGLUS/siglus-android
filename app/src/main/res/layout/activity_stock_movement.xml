@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:padding="@dimen/abc_list_item_padding_horizontal_material">
+                android:padding="8dp">
 
             </org.openlmis.core.view.widget.ExpireDateViewGroup>
         </LinearLayout>
