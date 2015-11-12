@@ -293,7 +293,7 @@ describe "submit requisition to web server" do
 
     mmia_requisition = body['requisitions'].detect { |r| r['programCode'] == 'MMIA'}
 
-    expect(mmia_requisition['products'].length).to eq 2
+    expect(mmia_requisition['products'].length).to eq 24
     expect(mmia_requisition['clientSubmittedNotes']).to eq "I don't know"
     expect(mmia_requisition['regimens'].length).to eq 18
     expect(mmia_requisition['patientQuantifications'].length).to eq 7
