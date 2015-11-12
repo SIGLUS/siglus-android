@@ -12,6 +12,16 @@ describe "submit requisition to web server" do
       agentCode: "F10",
       programCode: "ESS_MEDS",
       clientSubmittedTime: "2015-10-27 11:11:20",
+      rnrSignatures: [
+      {
+        type: "SUBMITTER",
+        text: "mystique"
+      },
+      {
+        type: "APPROVER",
+        text: "magneto"
+      }
+      ],
       products: [
       {
         productCode: "P1",
@@ -66,6 +76,16 @@ describe "submit requisition to web server" do
       programCode: "MMIA",
       clientSubmittedNotes: "I don't know",
       clientSubmittedTime: "2015-10-27 11:20:20",
+      rnrSignatures: [
+      {
+        type: "SUBMITTER",
+        text: "raven"
+      },
+      {
+        type: "APPROVER",
+        text: "professor-x"
+      }
+      ],
       products: [
       {
         productCode: "08S23",
@@ -248,6 +268,14 @@ describe "submit requisition to web server" do
     expect(via_requisition['periodStartDate']).not_to be_nil
     expect(via_requisition['clientSubmittedTime']).not_to be_nil
 
+    expect(via_requisition['rnrSignatures'].length).to eq 2
+
+    via_submitter_signature = via_requisition['rnrSignatures'].detect { |s| s['type'] == 'SUBMITTER'}
+    expect(via_submitter_signature['text']).to eq 'mystique'
+    via_approver_signature = via_requisition['rnrSignatures'].detect { |s| s['type'] == 'APPROVER'}    
+    expect(via_approver_signature['text']).to eq 'magneto'
+
+
     product1 = via_requisition['products'].detect { |p| p['productCode'] == 'P1' }
     expect(product1['beginningBalance']).to eq 10
     expect(product1['quantityReceived']).to eq 30
@@ -271,6 +299,13 @@ describe "submit requisition to web server" do
     expect(mmia_requisition['patientQuantifications'].length).to eq 7
     expect(mmia_requisition['periodStartDate']).not_to be_nil
     expect(mmia_requisition['clientSubmittedTime']).not_to be_nil
+
+    expect(mmia_requisition['rnrSignatures'].length).to eq 2
+
+    mmia_submitter_signature = mmia_requisition['rnrSignatures'].detect { |s| s['type'] == 'SUBMITTER'}
+    expect(mmia_submitter_signature['text']).to eq 'raven'
+    mmia_approver_signature = mmia_requisition['rnrSignatures'].detect { |s| s['type'] == 'APPROVER'}    
+    expect(mmia_approver_signature['text']).to eq 'professor-x'
 
     product1 = mmia_requisition['products'].detect { |p| p['productCode'] == '08S23' }
     expect(product1['beginningBalance']).to eq 30
