@@ -26,17 +26,16 @@ import org.openlmis.core.R;
 import org.openlmis.core.view.fragment.StockCardListFragment;
 
 import roboguice.inject.ContentView;
-import roboguice.inject.InjectFragment;
 
 @ContentView(R.layout.activity_stockcard_list)
 public class StockCardListActivity extends BaseActivity {
 
-    @InjectFragment(R.id.stock_card_list)
-    StockCardListFragment stockCardFragment;
+    protected StockCardListFragment stockCardFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        stockCardFragment = (StockCardListFragment) getFragmentManager().findFragmentById(R.id.stock_card_list);
     }
 
     @Override
