@@ -78,6 +78,22 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
         initView();
     }
 
+    public void initExpireDateViewGroup(StockCardViewModel model,boolean isUpdateDBImmediately) {
+        this.model = model;
+        this.isUpdateDBImmediately = isUpdateDBImmediately;
+
+        View addViewBtn = getChildAt(getChildCount() - 1);
+        removeAllViews();
+        addView(addViewBtn);
+
+        this.expireDates = getStockCardExpireDates(model);
+        if (expireDates != null) {
+            for (String date : expireDates) {
+                addExpireDateView(date);
+            }
+        }
+    }
+
     private void initView() {
         View tvAddExpiryDate = inflater.inflate(R.layout.view_add_expire_date, null);
         tvAddExpiryDate.setOnClickListener(this);
@@ -138,22 +154,6 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
         });
 
         return expireDateView;
-    }
-
-    public void initExpireDateViewGroup(StockCardViewModel model,boolean isUpdateDBImmediately) {
-        this.model = model;
-        this.isUpdateDBImmediately = isUpdateDBImmediately;
-
-        View addViewBtn = getChildAt(getChildCount() - 1);
-        removeAllViews();
-        addView(addViewBtn);
-
-        this.expireDates = getStockCardExpireDates(model);
-        if (expireDates != null) {
-            for (String date : expireDates) {
-                addExpireDateView(date);
-            }
-        }
     }
 
     private List<String> getStockCardExpireDates(StockCardViewModel model) {

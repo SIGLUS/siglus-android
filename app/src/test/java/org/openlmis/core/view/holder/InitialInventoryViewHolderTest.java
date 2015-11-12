@@ -1,6 +1,5 @@
 package org.openlmis.core.view.holder;
 
-import android.support.design.widget.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -125,7 +124,7 @@ public class InitialInventoryViewHolderTest {
 
         viewHolder.itemView.performClick();
 
-        assertThat(viewModel.getExpiryDates()).isNull();
+        assertThat(viewModel.getExpiryDates()).isEmpty();
         assertThat(viewModel.getQuantity()).isEmpty();
     }
 

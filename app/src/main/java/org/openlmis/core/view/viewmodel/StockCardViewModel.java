@@ -90,6 +90,10 @@ public class StockCardViewModel {
         }
     }
 
+    public void clearExpiryDates() {
+        this.expiryDates=new ArrayList<>();
+    }
+
     public StockCardViewModel(Product product) {
         this.type = product.getType();
         this.checked = false;
@@ -201,4 +205,5 @@ public class StockCardViewModel {
         draftInventory.setStockCard(getStockCard());
         return draftInventory;
     }
+
 }

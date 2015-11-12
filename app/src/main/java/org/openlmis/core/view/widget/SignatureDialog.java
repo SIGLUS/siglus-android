@@ -13,11 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-
 import org.openlmis.core.R;
-
-import java.security.Signature;
-
 import lombok.Getter;
 import lombok.Setter;
 
