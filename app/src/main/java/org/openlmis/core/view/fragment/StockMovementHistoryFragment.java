@@ -39,21 +39,26 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.LoadingView;
 import org.openlmis.core.view.adapter.StockMovementHistoryAdapter;
 
+import roboguice.inject.InjectView;
+
 public class StockMovementHistoryFragment extends BaseFragment implements StockMovementHistoryPresenter.StockMovementHistoryView, OnRefreshListener {
 
     @Inject
     StockMovementHistoryPresenter presenter;
 
+    @InjectView(R.id.stock_movement_history_swipe_container)
+    SwipeRefreshLayout swipeRefreshLayout;
+
+    @InjectView(R.id.list)
+    ListView historyListView;
+
+    private long stockCardID;
     private long startIndex = 0;
+    private boolean isRotated;
     private boolean isLoading;
     private boolean isFirstLoading;
-    private boolean isRotated;
-    private long stockCardID;
 
-    private SwipeRefreshLayout swipeRefreshLayout;
     private LoadingView loadingView;
-    private ListView historyListView;
-
     private BaseAdapter adapter;
 
     @Override
@@ -84,7 +89,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initUI(view);
+        initUI();
         if (isRotated) {
             addFooterViewIfMoreThanOneScreen();
         } else {
@@ -98,13 +103,10 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
         super.onSaveInstanceState(outState);
     }
 
-    private void initUI(View view) {
-        historyListView = (ListView) view.findViewById(R.id.list);
-
+    private void initUI() {
         adapter = new StockMovementHistoryAdapter(getActivity(), presenter.getStockMovementModelList());
         historyListView.setAdapter(adapter);
 
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.stock_movement_history_swipe_container);
         swipeRefreshLayout.setOnRefreshListener(this);
     }
 
