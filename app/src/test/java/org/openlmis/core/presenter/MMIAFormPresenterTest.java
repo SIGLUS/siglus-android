@@ -40,12 +40,10 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.service.SyncManager;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 import roboguice.RoboGuice;
 import rx.Scheduler;
@@ -133,7 +131,39 @@ public class MMIAFormPresenterTest {
         presenter.getRnrForm(0);
 
         presenter.completeMMIA(regimenItems, baseInfoItems, "");
-        verify(mockMMIAformView,never()).showValidationAlert();
+        verify(mockMMIAformView, never()).showValidationAlert();
+    }
+
+    @Test
+    public void shouldShowSignDialogIfTotalsMatch() throws Exception {
+        ArrayList<RegimenItem> regimenItems = generateRegimenItems();
+        ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
+
+        RnRForm rnRForm = new RnRForm();
+
+        when(mmiaRepository.initMMIA(Matchers.<Program>anyObject())).thenReturn(rnRForm);
+        when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
+        presenter.getRnrForm(0);
+
+        presenter.completeMMIA(regimenItems, baseInfoItems, "");
+
+        verify(mockMMIAformView).showSignDialog();
+    }
+
+    @Test
+    public void shouldCompleteFormAfterSignSuccess() throws Exception {
+        ArrayList<RegimenItem> regimenItems = generateRegimenItems();
+        ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
+
+        RnRForm rnRForm = new RnRForm();
+
+        when(mmiaRepository.initMMIA(Matchers.<Program>anyObject())).thenReturn(rnRForm);
+        when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
+        presenter.getRnrForm(0);
+
+        presenter.completeMMIA(regimenItems, baseInfoItems, "");
+
+
     }
 
     @Test

@@ -30,6 +30,7 @@ import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.service.SyncManager;
@@ -148,11 +149,20 @@ public class MMIAFormPresenter implements Presenter {
             view.showValidationAlert();
             return;
         }
-        authoriseForm();
+
+        view.showSignDialog();
     }
 
-    private void authoriseForm() {
+    public void authoriseForm(String signName) {
         view.loading();
+
+        try {
+            mmiaRepository.setSignature(form, signName, RnRFormSignature.TYPE.SUBMITTER);
+        } catch (LMISException e) {
+            e.printStackTrace();
+            view.showErrorMessage(e.getMessage());
+        }
+
         getAuthoriseFormObservable().subscribe(authoriseFormOnNextAction, authorizeFormOnErrorAction);
     }
 
@@ -240,9 +250,9 @@ public class MMIAFormPresenter implements Presenter {
             e.printStackTrace();
         }
     }
-
-
+    
     public interface MMIAFormView extends BaseView {
+
         void showValidationAlert();
 
         void showErrorMessage(String msg);
@@ -252,5 +262,7 @@ public class MMIAFormPresenter implements Presenter {
         void initView(RnRForm form);
 
         void saveSuccess();
+
+        void showSignDialog();
     }
 }

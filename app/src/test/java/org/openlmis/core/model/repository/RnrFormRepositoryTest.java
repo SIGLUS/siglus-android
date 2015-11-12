@@ -30,6 +30,7 @@ import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.DateUtil;
@@ -140,6 +141,26 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(rnRForm.getComments(), is("Submitted Form"));
     }
 
+    @Test
+    public void shouldGetSubmitterSign() throws LMISException {
+        Program program = new Program();
+        RnRForm form = new RnRForm();
+
+        form.setProgram(program);
+        form.setComments("Submitted Form");
+        form.setStatus(RnRForm.STATUS.SUBMITTED);
+
+        rnrFormRepository.create(form);
+
+        rnrFormRepository.setSignature(form, "Submitter Signature", RnRFormSignature.TYPE.SUBMITTER);
+        rnrFormRepository.setSignature(form, "Approver Signature", RnRFormSignature.TYPE.APPROVER);
+
+        RnRFormSignature SubmitterSign = rnrFormRepository.querySignature(form, RnRFormSignature.TYPE.SUBMITTER);
+        RnRFormSignature ApproverSign = rnrFormRepository.querySignature(form, RnRFormSignature.TYPE.APPROVER);
+
+        assertThat(SubmitterSign.getSignature(), is("Submitter Signature"));
+        assertThat(ApproverSign.getSignature(), is("Approver Signature"));
+    }
 
     @Test
     public void shouldGenerateRnRFromByLastPeriod() throws Exception {
@@ -309,6 +330,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(DateUtil.formatDate(rnRForm.getUpdatedAt(), DateUtil.SIMPLE_DATE_FORMAT), is(DateUtil.formatDate(DateUtil.today(), DateUtil.SIMPLE_DATE_FORMAT)));
     }
 
+
     @Test
     public void shouldCreateSuccess() throws Exception {
         Program program = new Program();
@@ -332,7 +354,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(rnRForm.getBaseInfoItemListWrapper().get(0).getName(),is("Name1"));
         assertThat(rnRForm.getComments(),is("Comments"));
     }
-
 
     public class MyTestModule extends AbstractModule {
         @Override

@@ -1,6 +1,7 @@
 package org.openlmis.core.view.widget;
 
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,12 +15,13 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import org.openlmis.core.R;
-import org.openlmis.core.view.fragment.BaseDialogFragment;
+
+import java.security.Signature;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class SignatureDialog extends BaseDialogFragment implements View.OnClickListener {
+public class SignatureDialog extends DialogFragment implements View.OnClickListener {
 
     Button btnCancel;
     Button btnSign;
@@ -84,8 +86,9 @@ public class SignatureDialog extends BaseDialogFragment implements View.OnClickL
         }
 
         if (v.getId() == R.id.btn_done) {
-            if (checkSignature(etSignature.getText().toString())) {
-                delegate.onSign();
+            String signature = etSignature.getText().toString().trim();
+            if (checkSignature(signature)) {
+                delegate.onSign(signature);
                 dismiss();
             } else {
                 lySignature.setError("Signature not valid");
@@ -99,6 +102,6 @@ public class SignatureDialog extends BaseDialogFragment implements View.OnClickL
     public interface DialogDelegate {
         void onCancel();
 
-        void onSign();
+        void onSign(String sign);
     }
 }

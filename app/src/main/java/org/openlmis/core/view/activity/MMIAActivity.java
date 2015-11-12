@@ -45,6 +45,7 @@ import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARnrForm;
+import org.openlmis.core.view.widget.SignatureDialog;
 
 import java.util.ArrayList;
 
@@ -52,7 +53,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_mmia)
-public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIAFormView, View.OnClickListener,BaseDialogFragment.MsgDialogCallBack{
+public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIAFormView, View.OnClickListener, BaseDialogFragment.MsgDialogCallBack {
 
     @InjectView(R.id.rnr_form_list)
     private MMIARnrForm rnrFormList;
@@ -306,6 +307,25 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     public void saveSuccess() {
         goToHomePage();
     }
+
+    @Override
+    public void showSignDialog() {
+        SignatureDialog signatureDialog = new SignatureDialog();
+        signatureDialog.setDelegate(signatureDialogDelegate);
+        signatureDialog.show(getFragmentManager(), "signature_dialog");
+    }
+
+    protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
+        @Override
+        public void onCancel() {
+        }
+
+        @Override
+        public void onSign(String sign) {
+            System.out.println("CARWEST -- " + sign);
+            presenter.authoriseForm(sign);
+        }
+    };
 
     private boolean isTotalEqual() {
         return regimeListView.getTotal() == mmiaInfoListView.getTotal();

@@ -33,6 +33,7 @@ import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
 import org.openlmis.core.persistence.migrations.CreateDummyRegimes;
 import org.openlmis.core.persistence.migrations.CreateInitTables;
 import org.openlmis.core.persistence.migrations.SetQuantityOfStockMovementForInitialInventory;
+import org.openlmis.core.persistence.migrations.CreateRnRFormSignature;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new ChangeMovementReasonToCode());
             add(new AddSubmittedDateToRnRForm());
             add(new SetQuantityOfStockMovementForInitialInventory());
+            add(new CreateRnRFormSignature());
         }
     };
     private static int instanceCount = 0;

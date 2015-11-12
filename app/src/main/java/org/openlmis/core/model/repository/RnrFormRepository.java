@@ -31,6 +31,7 @@ import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -71,14 +72,15 @@ public class RnrFormRepository {
     GenericDao<RnrFormItem> rnrFormItemGenericDao;
 
     private Context context;
+    private GenericDao<RnRFormSignature> signatureDao;
 
     @Inject
     public RnrFormRepository(Context context) {
         genericDao = new GenericDao<>(RnRForm.class, context);
         rnrFormItemGenericDao = new GenericDao<>(RnrFormItem.class, context);
+        signatureDao = new GenericDao<>(RnRFormSignature.class, context);
         this.context = context;
     }
-
 
     public RnRForm initRnrForm(final Program program) throws LMISException {
         if (program == null) {
@@ -376,5 +378,21 @@ public class RnrFormRepository {
 
     private void deleteRnrFormItems(final List<RnrFormItem> rnrFormItemListWrapper) throws LMISException {
         rnrFormItemRepository.delete(rnrFormItemListWrapper);
+    }
+
+    public void setSignature(RnRForm form, String signature, RnRFormSignature.TYPE type) throws LMISException {
+        signatureDao.create(new RnRFormSignature(form, signature, type));
+    }
+
+    public RnRFormSignature querySignature(final RnRForm form, final RnRFormSignature.TYPE type) throws LMISException {
+        if (form == null) {
+            throw new LMISException("RnRForm cannot be null !");
+        }
+        return dbUtil.withDao(RnRFormSignature.class, new DbUtil.Operation<RnRFormSignature, RnRFormSignature>() {
+            @Override
+            public RnRFormSignature operate(Dao<RnRFormSignature, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("form_id", form.getId()).and().eq("type", type).queryForFirst();
+            }
+        });
     }
 }

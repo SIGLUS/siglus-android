@@ -13,6 +13,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.MMIAFormPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.widget.SignatureDialog;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowAlertDialog;
@@ -86,5 +87,20 @@ public class MMIAActivityTest {
         mmiaActivity.positiveClick(MMIAActivity.TAG_BACK_PRESSED);
 
         verify(mmiaFormPresenter).removeRnrForm();
+    }
+
+    @Test
+    public void shouldShowSignDialogWhenShowSignDialogCalled() {
+        mmiaActivity.showSignDialog();
+
+        SignatureDialog signatureDialog = (SignatureDialog) mmiaActivity.getFragmentManager().findFragmentByTag("signature_dialog");
+
+        assertThat(signatureDialog).isNotNull();
+    }
+
+    @Test
+    public void shouldAuthorizeFormWhenValidSign() throws Exception {
+        mmiaActivity.signatureDialogDelegate.onSign("valid");
+        verify(mmiaFormPresenter).authoriseForm("valid");
     }
 }
