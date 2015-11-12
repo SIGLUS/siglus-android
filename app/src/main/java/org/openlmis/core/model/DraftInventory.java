@@ -39,6 +39,6 @@ public class DraftInventory extends BaseModel{
     StockCard stockCard;
 
     @DatabaseField
-    long quantity;
+    Long quantity;
 
 }

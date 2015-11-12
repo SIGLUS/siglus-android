@@ -87,11 +87,13 @@ public class StockCardViewModel {
     public void setExpiryDates(String expireDates) {
         if (!TextUtils.isEmpty(expireDates)) {
             this.expiryDates = newArrayList(expireDates.split(StockCard.DIVIDER));
+        } else {
+            this.expiryDates = new ArrayList<>();
         }
     }
 
     public void clearExpiryDates() {
-        this.expiryDates=new ArrayList<>();
+        this.expiryDates = new ArrayList<>();
     }
 
     public StockCardViewModel(Product product) {
@@ -194,11 +196,12 @@ public class StockCardViewModel {
         DraftInventory draftInventory = new DraftInventory();
         draftInventory.setExpireDates(formatExpiryDateString());
 
-        long quantity;
+        Long quantity;
         try {
             quantity = Long.parseLong(getQuantity());
         } catch (NumberFormatException e) {
-            quantity = 0L;
+            e.printStackTrace();
+            quantity = null;
         }
         draftInventory.setQuantity(quantity);
 
