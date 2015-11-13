@@ -1,10 +1,10 @@
 describe "Get programs with products information for a facility" do
 
   it "should return all programs for the facility with products associated with the programs" do
-    response = RestClient.get "http://#{WEB_DEV_URI}/rest-api/programs-with-products?facilityCode=F10",
+    response = RestClient.get "http://#{WEB_DEV_URI}/rest-api/programs-with-products?facilityCode=HF2",
       :content_type => :json,
       :accept => :json,
-      :authorization => http_basic_auth('superuser', 'password1')
+      :authorization => http_basic_auth('mystique', 'password1')
 
     body = JSON.parse(response.body)
     expect(response.code).to eq 200

@@ -2,7 +2,7 @@ describe "Sync stock card data" do
 
   it "should sync all stock card data to web server" do
     login_response = RestClient.post "http://#{WEB_DEV_URI}/rest-api/login",
-      { username: 'superuser', password: 'password1' }.to_json,
+      { username: 'mystique', password: 'password1' }.to_json,
       :content_type => :json,
       :accept => :json
 

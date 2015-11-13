@@ -9,7 +9,7 @@ describe "submit requisition to web server" do
 
     via_requisition =
     {
-      agentCode: "F10",
+      agentCode: "HF2",
       programCode: "ESS_MEDS",
       clientSubmittedTime: "2015-10-27 11:11:20",
       rnrSignatures: [
@@ -59,7 +59,7 @@ describe "submit requisition to web server" do
     via_response = RestClient.post "http://#{WEB_DEV_URI}/rest-api/requisitions",
       via_requisition.to_json, 'Content-Type' => 'application/json',
       'Accept' => 'application/json',
-      'Authorization' => http_basic_auth('superuser', 'password1')
+      'Authorization' => http_basic_auth('mystique', 'password1')
 
     expect(via_response.code).to eq 201
 
@@ -72,7 +72,7 @@ describe "submit requisition to web server" do
 
     mmia_requisition =
     {
-      agentCode: "F10",
+      agentCode: "HF2",
       programCode: "MMIA",
       clientSubmittedNotes: "I don't know",
       clientSubmittedTime: "2015-10-27 11:20:20",
@@ -503,7 +503,7 @@ describe "submit requisition to web server" do
     mmia_response = RestClient.post "http://#{WEB_DEV_URI}/rest-api/requisitions",
       mmia_requisition.to_json, 'Content-Type' => 'application/json',
       'Accept' => 'application/json',
-      'Authorization' => http_basic_auth('superuser', 'password1')
+      'Authorization' => http_basic_auth('mystique', 'password1')
 
     expect(mmia_response.code).to eq 201
 
@@ -514,10 +514,10 @@ describe "submit requisition to web server" do
 
     #Retrieve all requisitions
 
-    response = RestClient.get "http://#{WEB_DEV_URI}/rest-api/requisitions?facilityCode=F10",
+    response = RestClient.get "http://#{WEB_DEV_URI}/rest-api/requisitions?facilityCode=HF2",
       'Content-Type' => 'application/json',
       'Accept' => 'application/json',
-      'Authorization' => http_basic_auth('superuser', 'password1')
+      'Authorization' => http_basic_auth('mystique', 'password1')
 
     expect(response.code).to eq 200
 
@@ -536,7 +536,7 @@ describe "submit requisition to web server" do
 
     via_submitter_signature = via_requisition['rnrSignatures'].detect { |s| s['type'] == 'SUBMITTER'}
     expect(via_submitter_signature['text']).to eq 'mystique'
-    via_approver_signature = via_requisition['rnrSignatures'].detect { |s| s['type'] == 'APPROVER'}    
+    via_approver_signature = via_requisition['rnrSignatures'].detect { |s| s['type'] == 'APPROVER'}
     expect(via_approver_signature['text']).to eq 'magneto'
 
 
@@ -568,7 +568,7 @@ describe "submit requisition to web server" do
 
     mmia_submitter_signature = mmia_requisition['rnrSignatures'].detect { |s| s['type'] == 'SUBMITTER'}
     expect(mmia_submitter_signature['text']).to eq 'raven'
-    mmia_approver_signature = mmia_requisition['rnrSignatures'].detect { |s| s['type'] == 'APPROVER'}    
+    mmia_approver_signature = mmia_requisition['rnrSignatures'].detect { |s| s['type'] == 'APPROVER'}
     expect(mmia_approver_signature['text']).to eq 'professor-x'
 
     product1 = mmia_requisition['products'].detect { |p| p['productCode'] == '08S23' }
