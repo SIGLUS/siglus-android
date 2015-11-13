@@ -40,6 +40,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.service.SyncManager;
+import org.openlmis.core.utils.FeatureToggle;
 import org.robolectric.RuntimeEnvironment;
 
 import java.sql.SQLException;
@@ -134,7 +135,7 @@ public class MMIAFormPresenterTest {
         verify(mockMMIAformView, never()).showValidationAlert();
     }
 
-    @Test
+    @Test @Ignore
     public void shouldShowSignDialogIfTotalsMatch() throws Exception {
         ArrayList<RegimenItem> regimenItems = generateRegimenItems();
         ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
@@ -150,7 +151,7 @@ public class MMIAFormPresenterTest {
         verify(mockMMIAformView).showSignDialog();
     }
 
-    @Test
+    @Test @Ignore
     public void shouldCompleteFormAfterSignSuccess() throws Exception {
         ArrayList<RegimenItem> regimenItems = generateRegimenItems();
         ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
