@@ -291,9 +291,10 @@ public class RnrFormRepository {
             StockMovementItem firstItem = stockMovementItems.get(0);
             if (firstItem.getMovementType() == StockMovementItem.MovementType.ISSUE
                     || firstItem.getMovementType() == StockMovementItem.MovementType.NEGATIVE_ADJUST) {
-
                 rnrFormItem.setInitialAmount(firstItem.getStockOnHand() + firstItem.getMovementQuantity());
-            } else {
+            }else if(firstItem.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
+                rnrFormItem.setInitialAmount(firstItem.getStockOnHand());
+            }else {
                 rnrFormItem.setInitialAmount(firstItem.getStockOnHand() - firstItem.getMovementQuantity());
             }
 
