@@ -3,7 +3,7 @@ Mozambique OpenLMIS Mobile
 
 Unit Tests
 --------------
-run `./gradlew test` to run the robolectric tests
+run `./gradlew test` to run the Robolectric tests
 
 Contract Tests
 --------------
@@ -11,3 +11,29 @@ Contract Tests
 2. Install Ruby via: `rvm install ruby-2.1.1`
 3. Install bundler via: `gem install bundler`
 4. Run `./gradlew contractTests`
+
+Functional Tests
+--------------
+
+Run all FunctionalTests
+
+```
+./gradlew assembleDevDebug
+./gradlew functionalTests
+```
+
+Run Specific Tag Functional Test
+
+```
+./gradlew assembleDevDebug
+cd functionalTests
+calabash-android run ../app/build/outputs/apk/app-dev-debug.apk --tags @Mmia
+```
+
+Run all tests except specific tag
+
+```
+./gradlew assembleDevDebug
+cd functionalTests
+calabash-android run ../app/build/outputs/apk/app-dev-debug.apk --tags ~@Mmia
+```

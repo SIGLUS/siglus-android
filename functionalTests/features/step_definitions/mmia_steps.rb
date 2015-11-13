@@ -24,6 +24,11 @@ And(/^I enter regimen totals$/) do
     hide_soft_keyboard
 end
 
+And(/^I sign with "(.*?)"$/) do |signing|
+    enter_text("android.widget.EditText id:'et_signature'", text)
+    hide_soft_keyboard
+end
+
 And(/^I enter patient totals$/) do
     q = query("android.widget.EditText id:'et_value'")
     for element in q
