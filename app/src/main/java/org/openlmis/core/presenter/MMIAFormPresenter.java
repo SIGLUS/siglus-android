@@ -34,6 +34,7 @@ import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.service.SyncManager;
+import org.openlmis.core.utils.FeatureToggle;
 import org.openlmis.core.view.BaseView;
 
 import java.util.ArrayList;
@@ -150,7 +151,11 @@ public class MMIAFormPresenter implements Presenter {
             return;
         }
 
-        view.showSignDialog();
+        if (FeatureToggle.isOpen(R.bool.display_form_signature)) {
+            view.showSignDialog();
+        } else {
+            authoriseForm();
+        }
     }
 
     public void authoriseForm(String signName) {
@@ -163,6 +168,11 @@ public class MMIAFormPresenter implements Presenter {
             view.showErrorMessage(e.getMessage());
         }
 
+        getAuthoriseFormObservable().subscribe(authoriseFormOnNextAction, authorizeFormOnErrorAction);
+    }
+
+    private void authoriseForm() {
+        view.loading();
         getAuthoriseFormObservable().subscribe(authoriseFormOnNextAction, authorizeFormOnErrorAction);
     }
 
