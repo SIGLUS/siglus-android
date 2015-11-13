@@ -88,6 +88,8 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     }
 
     private void initUI() {
+        setTitle(stockName);
+
         expireDateViewGroup.initExpireDateViewGroup(new StockCardViewModel(presenter.getStockCard()),true);
 
         buttonView = findViewById(R.id.action_panel);

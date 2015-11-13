@@ -8,14 +8,14 @@
 
     <TextView
         android:id="@+id/tx_date"
-        android:layout_width="120dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         style="@style/sheet_header2"
         android:text="@string/label_movement_date"/>
 
     <TextView
         android:id="@+id/tx_reason"
-        android:layout_width="150dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         style="@style/sheet_header2"
         android:text="@string/label_reason"/>

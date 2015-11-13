@@ -126,7 +126,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
         public void onItemViewClick(StockCard stockCard) {
             Intent intent = new Intent(getActivity(), StockMovementActivity.class);
             intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCard.getId());
-            intent.putExtra(Constants.PARAM_STOCK_NAME, stockCard.getProduct().getPrimaryName());
+            intent.putExtra(Constants.PARAM_STOCK_NAME, stockCard.getProduct().getFormattedProductName());
             startActivityForResult(intent, StockCardListFragment.REQUEST_CODE_CHANGE);
         }
     };
