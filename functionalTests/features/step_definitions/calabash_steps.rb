@@ -80,7 +80,7 @@ Given(/^I have initialized inventory$/) do
 		When I Select MMIA Item
 		When I Select VIA Item
 
-        And I press view with id "btn_done"
+        And I press view with id "btn_complete"
         Then I wait for the "HomeActivity" screen to appear
 	}
 end

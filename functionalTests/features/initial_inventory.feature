@@ -6,7 +6,7 @@ Feature: initial_inventory
             Then I wait for the "InventoryActivity" screen to appear
             Then I wait for 1 second
             When I Select initial inventory
-            And I press "Done"
+            And I press "Complete"
             Then I wait for the "HomeActivity" screen to appear
             And I press "Stock Card"
             Then I wait for the "StockCardListActivity" screen to appear
