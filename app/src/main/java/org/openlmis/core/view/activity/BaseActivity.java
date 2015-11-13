@@ -66,10 +66,10 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
 
     protected RetainedFragment dataFragment;
     protected Presenter presenter;
-    protected SearchView searchView;
-    protected Class<? extends Presenter> presenterClass;
 
-    private ProgressDialog loadingDialog;
+    protected Class<? extends Presenter> presenterClass;
+    protected ProgressDialog loadingDialog;
+
     private long APP_TIMEOUT;
 
     public void injectPresenter() {
@@ -185,41 +185,6 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_base, menu);
-
-        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        searchView.setQueryHint(getResources().getString(R.string.search_hint));
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return onSearchStart(newText);
-            }
-        });
-
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                return onSearchClosed();
-            }
-        });
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    public void clearSearch() {
-        if (searchView != null) {
-            searchView.setQuery(StringUtils.EMPTY, true);
-        }
-    }
-
-    @Override
     public void loading() {
         loading(StringUtils.EMPTY);
     }
@@ -284,13 +249,6 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            case R.id.action_search:
-                return true;
-            case R.id.action_settings:
-                return onSettingClick();
-            case R.id.action_add_new_drug:
-                startActivity(new Intent(this, InventoryActivity.class)
-                        .putExtra(Constants.PARAM_IS_ADD_NEW_DRUG, true));
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -302,18 +260,6 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
             mImm.hideSoftInputFromWindow(this.getCurrentFocus()
                     .getWindowToken(), 0);
         }
-    }
-
-    public boolean onSearchStart(String query) {
-        return false;
-    }
-
-    public boolean onSearchClosed() {
-        return false;
-    }
-
-    public boolean onSettingClick() {
-        return false;
     }
 }
 

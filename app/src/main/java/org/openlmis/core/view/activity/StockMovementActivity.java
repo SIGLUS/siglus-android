@@ -63,12 +63,15 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @InjectPresenter(StockMovementPresenter.class)
     StockMovementPresenter presenter;
 
+    @InjectView(R.id.action_panel)
+    View buttonView;
+
     @Inject
     LayoutInflater layoutInflater;
 
     private long stockId;
     private String stockName;
-    private View buttonView;
+
     private StockMovementAdapter stockMovementAdapter;
 
     @Override
@@ -92,12 +95,10 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
         expireDateViewGroup.initExpireDateViewGroup(new StockCardViewModel(presenter.getStockCard()),true);
 
-        buttonView = findViewById(R.id.action_panel);
         buttonView.setVisibility(View.GONE);
 
         stockMovementAdapter = new StockMovementAdapter(this, presenter);
         View headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
-
         stockMovementList.addHeaderView(headerView);
         stockMovementList.setAdapter(stockMovementAdapter);
 
@@ -144,6 +145,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_stock_movement, menu);
         return true;

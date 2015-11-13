@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.utils.Constants;
 import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,5 +29,15 @@ public class StockMovementHistoryActivityTest {
     public void shouldSetTitleWhenActivityCreated() {
         assertThat(activity).isNotNull();
         assertThat(activity.getTitle()).isEqualTo("Stock Name");
+    }
+
+    @Test
+    public void shouldGetIntentToMeWithStockIdAndStockName() {
+        Intent intent = StockMovementHistoryActivity.getIntentToMe(RuntimeEnvironment.application, 100L, "StockName");
+        
+        assertThat(intent).isNotNull();
+        assertThat(intent.getComponent().getClassName()).isEqualTo(StockMovementHistoryActivity.class.getName());
+        assertThat(intent.getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0)).isEqualTo(100L);
+        assertThat(intent.getStringExtra(Constants.PARAM_STOCK_NAME)).isEqualTo("StockName");
     }
 }

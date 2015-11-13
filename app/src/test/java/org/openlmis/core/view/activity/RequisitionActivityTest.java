@@ -39,7 +39,6 @@ import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowAlertDialog;
-import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowListView;
 
 import java.util.ArrayList;
@@ -145,12 +144,8 @@ public class RequisitionActivityTest {
 
     @Test
     public void shouldGoToHomePageWhenMethodCalled() {
-        requisitionActivity.goToHomePage();
-
-        Intent intent = ShadowApplication.getInstance().getNextStartedActivity();
-
-        assertThat(intent).isNotNull();
-        assertThat(intent.getComponent().getClassName()).isEqualTo(HomeActivity.class.getName());
+        requisitionActivity.backToHomePage();
+        assertThat(requisitionActivity.isFinishing()).isTrue();
     }
 
     private View getFirstItemInForm() {

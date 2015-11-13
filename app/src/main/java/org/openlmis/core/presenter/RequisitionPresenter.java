@@ -312,7 +312,7 @@ public class RequisitionPresenter implements Presenter {
             @Override
             public void call(Void aVoid) {
                 view.loaded();
-                view.goToHomePage();
+                view.backToHomePage();
             }
         }, new Action1<Throwable>() {
             @Override
@@ -364,7 +364,7 @@ public class RequisitionPresenter implements Presenter {
 
         void completeSuccess();
 
-        void goToHomePage();
+        void backToHomePage();
 
         void highLightRequestAmount();
 

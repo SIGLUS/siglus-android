@@ -37,11 +37,6 @@ public class StockMovementHistoryActivity extends BaseActivity {
         setTitle(getIntent().getStringExtra(Constants.PARAM_STOCK_NAME));
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return false;
-    }
-
     public static Intent getIntentToMe(Context context, long stockCardId, String stockName) {
         Intent intent = new Intent(context, StockMovementHistoryActivity.class);
         intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCardId);

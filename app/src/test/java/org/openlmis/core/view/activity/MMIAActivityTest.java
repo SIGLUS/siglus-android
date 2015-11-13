@@ -17,7 +17,6 @@ import org.openlmis.core.view.widget.SignatureDialog;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowAlertDialog;
-import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowToast;
 
 import roboguice.RoboGuice;
@@ -62,9 +61,7 @@ public class MMIAActivityTest {
         String successMessage = mmiaActivity.getString(R.string.msg_mmia_submit_tip);
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(successMessage);
 
-        Intent intent = ShadowApplication.getInstance().getNextStartedActivity();
-        assertThat(intent).isNotNull();
-        assertThat(intent.getComponent().getClassName()).isEqualTo(HomeActivity.class.getName());
+        assertThat(mmiaActivity.isFinishing()).isTrue();
     }
 
     @Test

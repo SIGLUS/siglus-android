@@ -60,11 +60,6 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         initUI();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return false;
-    }
-
     private void initUI() {
         setTitle(MMIARepository.MMIA_PROGRAM_CODE.equals(programCode) ? R.string.title_mmia_list : R.string.title_requisition_list);
 

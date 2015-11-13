@@ -23,7 +23,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -32,8 +31,8 @@ import android.widget.TextView;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.presenter.InventoryPresenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.InitialInventoryAdapter;
@@ -49,7 +48,7 @@ import roboguice.inject.InjectView;
 import rx.Subscriber;
 
 @ContentView(R.layout.activity_inventory)
-public class InventoryActivity extends BaseActivity implements InventoryPresenter.InventoryView {
+public class InventoryActivity extends SearchBarActivity implements InventoryPresenter.InventoryView {
 
     @InjectView(R.id.products_list)
     public RecyclerView productListRecycleView;
@@ -69,16 +68,10 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     @InjectPresenter(InventoryPresenter.class)
     InventoryPresenter presenter;
 
-    private InventoryListAdapter mAdapter;
+    protected InventoryListAdapter mAdapter;
+
     private boolean isPhysicalInventory;
     private boolean isAddNewDrug;
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        menu.findItem(R.id.action_add_new_drug).setVisible(false);
-        return true;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,13 +103,13 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.savePhysicalInventory(((PhysicalInventoryAdapter) mAdapter).getData());
+                presenter.savePhysicalInventory(mAdapter.getData());
             }
         });
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.doPhysicalInventory(((PhysicalInventoryAdapter) mAdapter).getData());
+                presenter.doPhysicalInventory(mAdapter.getData());
             }
         });
     }
@@ -157,7 +150,7 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.doInitialInventory(((InitialInventoryAdapter) mAdapter).getData());
+                presenter.doInitialInventory(mAdapter.getData());
             }
         });
     }
@@ -227,7 +220,12 @@ public class InventoryActivity extends BaseActivity implements InventoryPresente
     }
 
     public static Intent getIntentToMe(Context context) {
-        return new Intent(context, InventoryActivity.class);
+        return getIntentToMe(context, false);
+    }
+
+    public static Intent getIntentToMe(Context context, boolean isAddNewDrug) {
+        return new Intent(context, InventoryActivity.class)
+                .putExtra(Constants.PARAM_IS_ADD_NEW_DRUG, isAddNewDrug);
     }
 
     private void setTotal(int total) {

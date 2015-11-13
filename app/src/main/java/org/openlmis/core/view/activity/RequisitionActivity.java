@@ -26,7 +26,6 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,11 +103,6 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     private boolean isHistoryForm;
 
     private static final String TAG_BACK_PRESSED = "onBackPressed";
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return false;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -290,7 +284,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     @Override
     public void completeSuccess() {
         ToastUtil.showForLongTime(R.string.msg_requisition_submit_tip);
-        goToHomePage();
+        backToHomePage();
     }
 
     public View getViewByPosition(int pos, ListView listView) {
@@ -360,10 +354,8 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
 
     @Override
-    public void goToHomePage() {
-        Intent intent = new Intent(RequisitionActivity.this, HomeActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(HomeActivity.class, true);
+    public void backToHomePage() {
+        finish();
     }
 
     private boolean hasDataChanged() {

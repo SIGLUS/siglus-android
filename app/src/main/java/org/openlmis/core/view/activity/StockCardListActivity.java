@@ -21,6 +21,8 @@ package org.openlmis.core.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import org.openlmis.core.R;
 import org.openlmis.core.view.fragment.StockCardListFragment;
@@ -28,8 +30,9 @@ import org.openlmis.core.view.fragment.StockCardListFragment;
 import roboguice.inject.ContentView;
 
 @ContentView(R.layout.activity_stockcard_list)
-public class StockCardListActivity extends BaseActivity {
+public class StockCardListActivity extends SearchBarActivity {
 
+    protected static final int MENU_ID_ADD_NEW_DRUG = 100;
     protected StockCardListFragment stockCardFragment;
 
     @Override
@@ -39,9 +42,30 @@ public class StockCardListActivity extends BaseActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        menu.add(Menu.NONE, MENU_ID_ADD_NEW_DRUG, 100, getString(R.string.action_add_new_drug)).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == MENU_ID_ADD_NEW_DRUG) {
+            startActivity(InventoryActivity.getIntentToMe(this, true));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public boolean onSearchStart(String query) {
         stockCardFragment.onSearch(query);
         return true;
+    }
+
+    @Override
+    public boolean onSearchClosed() {
+        return false;
     }
 
     public static Intent getIntentToMe(Context context) {

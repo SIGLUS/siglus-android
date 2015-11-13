@@ -20,7 +20,9 @@ package org.openlmis.core.view.activity;
 
 
 import android.content.Intent;
-import android.view.Menu;
+import android.view.View;
+
+import com.google.inject.AbstractModule;
 
 import org.junit.After;
 import org.junit.Before;
@@ -29,26 +31,61 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Product;
+import org.openlmis.core.model.ProductBuilder;
+import org.openlmis.core.presenter.InventoryPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.adapter.InventoryListAdapter;
+import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
 
 
+import java.util.List;
+
 import roboguice.RoboGuice;
+import rx.Observable;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.util.Lists.newArrayList;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class InventoryActivityTest {
 
     private InventoryActivity inventoryActivity;
+    private InventoryPresenter mockedPresenter;
+
+    private List<StockCardViewModel> data;
 
     @Before
     public void setUp() throws LMISException{
+        mockedPresenter = mock(InventoryPresenter.class);
+        when(mockedPresenter.loadMasterProductList()).thenReturn(Observable.<List<StockCardViewModel>>empty());
 
-        inventoryActivity = Robolectric.buildActivity(InventoryActivityMock.class).create().get();
+        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(InventoryPresenter.class).toInstance(mockedPresenter);
+            }
+        });
+
+        inventoryActivity = Robolectric.buildActivity(InventoryActivity.class).create().get();
+
+        InventoryListAdapter mockedAdapter = mock(InventoryListAdapter.class);
+        Product product = new ProductBuilder().setCode("Product code").setPrimaryName("Primary name").setStrength("10mg").build();
+        data = newArrayList(new StockCardViewModel(product), new StockCardViewModel(product));
+        when(mockedAdapter.getData()).thenReturn(data);
+
+        inventoryActivity.mAdapter = mockedAdapter;
     }
 
     @After
@@ -68,7 +105,8 @@ public class InventoryActivityTest {
     public void shouldGoToStockCardPageAfterAddedNewProduct(){
         Intent intentToStockCard = new Intent();
         intentToStockCard.putExtra(Constants.PARAM_IS_ADD_NEW_DRUG, true);
-        inventoryActivity = Robolectric.buildActivity(InventoryActivityMock.class).withIntent(intentToStockCard).create().get();
+
+        inventoryActivity = Robolectric.buildActivity(InventoryActivity.class).withIntent(intentToStockCard).create().get();
 
         inventoryActivity.goToMainPage();
 
@@ -88,10 +126,27 @@ public class InventoryActivityTest {
         assertFalse(inventoryActivity.isFinishing());
     }
 
-    static class InventoryActivityMock extends InventoryActivity {
-        @Override
-        public boolean onCreateOptionsMenu(Menu menu) {
-            return false;
-        }
+    @Test
+    public void shouldGetAddNewDrugActivity() {
+        Intent intent = InventoryActivity.getIntentToMe(RuntimeEnvironment.application, true);
+
+        assertNotNull(intent);
+        assertEquals(intent.getComponent().getClassName(), InventoryActivity.class.getName());
+        assertTrue(intent.getBooleanExtra(Constants.PARAM_IS_ADD_NEW_DRUG, false));
+    }
+
+    @Test
+    public void shouldInitUIWhenInitialInventory() {
+        assertThat(inventoryActivity.btnSave.getVisibility()).isEqualTo(View.GONE);
+        assertTrue(inventoryActivity.loadingDialog.isShowing());
+
+        verify(mockedPresenter).loadMasterProductList();
+    }
+
+    @Test
+    public void shouldDoInitialInventoryWhenBtnDoneClicked() {
+        inventoryActivity.btnDone.performClick();
+
+        verify(mockedPresenter).doInitialInventory(data);
     }
 }

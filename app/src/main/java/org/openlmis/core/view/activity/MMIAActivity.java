@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,11 +91,6 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     protected static final String TAG_BACK_PRESSED = "onBackPressed";
     private static final String TAG_MISMATCH = "mismatch";
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return false;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -248,10 +242,8 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         return hasDataChanged;
     }
 
-    private void goToHomePage() {
-        Intent intent = new Intent(MMIAActivity.this, HomeActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(HomeActivity.class, true);
+    private void backHomePage() {
+        finish();
     }
 
     @Override
@@ -300,12 +292,12 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     @Override
     public void completeSuccess() {
         ToastUtil.showForLongTime(R.string.msg_mmia_submit_tip);
-        goToHomePage();
+        backHomePage();
     }
 
     @Override
     public void saveSuccess() {
-        goToHomePage();
+        backHomePage();
     }
 
     @Override
