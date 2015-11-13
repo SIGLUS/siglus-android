@@ -93,4 +93,13 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.
         return position == currentList.size();
     }
 
+    public boolean isHasDataChanged() {
+        List<StockCardViewModel> data = getData();
+        for (StockCardViewModel model : data) {
+            if (model.isHasDataChanged()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

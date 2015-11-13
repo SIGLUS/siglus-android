@@ -136,7 +136,7 @@ public class InventoryPresenter implements Presenter {
         for (StockCardViewModel model : stockCardViewModels) {
             for (DraftInventory draftInventory : draftList) {
                 if (model.getStockCardId() == draftInventory.getStockCard().getId()) {
-                    model.setExpiryDates(draftInventory.getExpireDates());
+                    model.initExpiryDates(draftInventory.getExpireDates());
                     model.setQuantity(String.valueOf(draftInventory.getQuantity()));
                 }
             }

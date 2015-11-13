@@ -30,8 +30,6 @@ import lombok.Setter;
 @DatabaseTable(tableName = "draft_inventory")
 public class DraftInventory extends BaseModel{
 
-    public static final String DIVIDER = ",";
-
     @DatabaseField
     String expireDates;
 

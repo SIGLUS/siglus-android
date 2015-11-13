@@ -49,7 +49,7 @@ import java.util.List;
 import lombok.Setter;
 import roboguice.RoboGuice;
 
-public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout implements View.OnClickListener{
+public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout implements View.OnClickListener {
 
     private Context context;
     protected List<String> expireDates;
@@ -78,7 +78,7 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
         initView();
     }
 
-    public void initExpireDateViewGroup(StockCardViewModel model,boolean isUpdateDBImmediately) {
+    public void initExpireDateViewGroup(StockCardViewModel model, boolean isUpdateDBImmediately) {
         this.model = model;
         this.isUpdateDBImmediately = isUpdateDBImmediately;
 
@@ -139,7 +139,7 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
 
         try {
             tvExpireDate.setText(DateUtil.convertDate(date, DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
-        }catch (ParseException e){
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         addView(expireDateView, getChildCount() - 1);
@@ -183,6 +183,7 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
                 expireDates.remove(expireDate);
                 updateExpireDateToDB();
             }
+
             @Override
             public void negativeClick(String tag) {
             }
@@ -190,6 +191,7 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
     }
 
     private void updateExpireDateToDB() {
+        model.setHasDataChanged(true);
         model.setExpiryDates(expireDates);
         final StockCard stockCard = model.getStockCard();
         stockCard.setExpireDates(model.formatExpiryDateString());

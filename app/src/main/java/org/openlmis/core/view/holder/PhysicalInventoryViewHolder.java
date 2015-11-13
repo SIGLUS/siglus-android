@@ -36,14 +36,19 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
 
 
     public void populate(StockCardViewModel stockCardViewModel) {
-        EditTextWatcher textWatcher = new EditTextWatcher(stockCardViewModel);
+        final EditTextWatcher textWatcher = new EditTextWatcher(stockCardViewModel);
         etQuantity.removeTextChangedListener(textWatcher);
 
         tvProductName.setText(stockCardViewModel.getStyledName());
         tvProductUnit.setText(stockCardViewModel.getStyledUnit());
 
         etQuantity.setText(stockCardViewModel.getQuantity());
-        etQuantity.addTextChangedListener(textWatcher);
+        etQuantity.post(new Runnable() {
+            @Override
+            public void run() {
+                etQuantity.addTextChangedListener(textWatcher);
+            }
+        });
 
         expireDateViewGroup.initExpireDateViewGroup(stockCardViewModel, false);
 
@@ -64,6 +69,7 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
 
         @Override
         public void afterTextChanged(Editable editable) {
+            viewModel.setHasDataChanged(true);
             viewModel.setQuantity(editable.toString());
         }
     }

@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.InitialInventoryAdapter;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
 import org.openlmis.core.view.adapter.PhysicalInventoryAdapter;
+import org.openlmis.core.view.fragment.BaseDialogFragment;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 
 import java.util.ArrayList;
@@ -48,7 +50,7 @@ import roboguice.inject.InjectView;
 import rx.Subscriber;
 
 @ContentView(R.layout.activity_inventory)
-public class InventoryActivity extends SearchBarActivity implements InventoryPresenter.InventoryView {
+public class InventoryActivity extends SearchBarActivity implements InventoryPresenter.InventoryView, BaseDialogFragment.MsgDialogCallBack {
 
     @InjectView(R.id.products_list)
     public RecyclerView productListRecycleView;
@@ -212,11 +214,36 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
 
     @Override
     public void onBackPressed() {
-        if (isPhysicalInventory || isAddNewDrug) {
-            super.onBackPressed();
-        } else {
+        if (isInitialInventory()) {
             ToastUtil.show(R.string.msg_save_before_exit);
+            return;
         }
+
+        if (isPhysicalDataChange()) {
+            showDataChangeConfirmDialog();
+            return;
+        }
+
+        super.onBackPressed();
+
+    }
+
+    private boolean isPhysicalDataChange() {
+        return isPhysicalInventory && ((PhysicalInventoryAdapter) mAdapter).isHasDataChanged();
+    }
+
+    private boolean isInitialInventory() {
+        return !isPhysicalInventory && !isAddNewDrug;
+    }
+
+    private void showDataChangeConfirmDialog() {
+        DialogFragment dialogFragment = BaseDialogFragment.newInstance(
+                null,
+                getString(R.string.msg_mmia_onback_confirm),
+                getString(R.string.btn_positive),
+                getString(R.string.btn_negative),
+                "onBackPressed");
+        dialogFragment.show(getFragmentManager(), "");
     }
 
     public static Intent getIntentToMe(Context context) {
@@ -230,5 +257,15 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
 
     private void setTotal(int total) {
         tvTotal.setText(getString(R.string.label_total, total));
+    }
+
+    @Override
+    public void positiveClick(String tag) {
+        this.finish();
+    }
+
+    @Override
+    public void negativeClick(String tag) {
+
     }
 }

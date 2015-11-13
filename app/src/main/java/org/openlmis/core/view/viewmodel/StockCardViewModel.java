@@ -51,6 +51,7 @@ public class StockCardViewModel {
     String strength;
     String type;
     String quantity;
+    boolean hasDataChanged;
 
     List<String> expiryDates = new ArrayList<>();
 
@@ -73,23 +74,27 @@ public class StockCardViewModel {
         this.stockOnHand = stockCard.getStockOnHand();
         this.checked = true;
 
-        setExpiryDates(stockCard.getExpireDates());
+        initExpiryDates(stockCard.getExpireDates());
 
         setProductAttributes(stockCard.getProduct());
 
         formatProductDisplay(stockCard.getProduct());
     }
 
-    public void setExpiryDates(List<String> expireDates) {
-        this.expiryDates = expireDates;
-    }
-
-    public void setExpiryDates(String expireDates) {
+    public void initExpiryDates(String expireDates) {
         if (!TextUtils.isEmpty(expireDates)) {
             this.expiryDates = newArrayList(expireDates.split(StockCard.DIVIDER));
         } else {
             this.expiryDates = new ArrayList<>();
         }
+    }
+
+    public void setExpiryDates(List<String> expireDates) {
+        this.expiryDates = expireDates;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
     }
 
     public void clearExpiryDates() {
@@ -205,7 +210,7 @@ public class StockCardViewModel {
         }
         draftInventory.setQuantity(quantity);
 
-        draftInventory.setStockCard(getStockCard());
+        draftInventory.setStockCard(stockCard);
         return draftInventory;
     }
 
