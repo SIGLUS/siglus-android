@@ -23,6 +23,7 @@ import roboguice.RoboGuice;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -84,6 +85,12 @@ public class MMIAActivityTest {
         mmiaActivity.positiveClick(MMIAActivity.TAG_BACK_PRESSED);
 
         verify(mmiaFormPresenter).removeRnrForm();
+    }
+
+    @Test
+    public void shouldNotRemoveRnrFormWhenGoBack() {
+        mmiaActivity.onBackPressed();
+        verify(mmiaFormPresenter,never()).removeRnrForm();
     }
 
     @Test

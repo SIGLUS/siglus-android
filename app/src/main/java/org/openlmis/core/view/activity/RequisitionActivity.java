@@ -408,7 +408,6 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
                     TAG_BACK_PRESSED);
             dialogFragment.show(getFragmentManager(), "back_confirm_dialog");
         } else {
-            removeTempForm();
             super.onBackPressed();
         }
     }

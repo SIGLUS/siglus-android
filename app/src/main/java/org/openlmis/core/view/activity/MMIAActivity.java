@@ -224,7 +224,6 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
                     TAG_BACK_PRESSED);
             dialogFragment.show(getFragmentManager(), "");
         } else {
-            removeTempForm();
             super.onBackPressed();
         }
     }

@@ -51,7 +51,9 @@ import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
@@ -146,6 +148,12 @@ public class RequisitionActivityTest {
     public void shouldGoToHomePageWhenMethodCalled() {
         requisitionActivity.backToHomePage();
         assertThat(requisitionActivity.isFinishing()).isTrue();
+    }
+
+    @Test
+    public void shouldNotRemoveRnrFormWhenGoBack() {
+        requisitionActivity.onBackPressed();
+        verify(presenter, never()).removeRnrForm();
     }
 
     private View getFirstItemInForm() {

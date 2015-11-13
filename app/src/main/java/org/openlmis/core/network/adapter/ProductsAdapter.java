@@ -24,7 +24,9 @@ public class ProductsAdapter implements JsonDeserializer<Product> {
             setCreatedAt(new Date());
             setUpdatedAt(this.getCreatedAt());
             Product product = this;
-            product.setType(form.code);
+            if (form != null){
+                product.setType(form.code);
+            }
             return product;
         }
     }
