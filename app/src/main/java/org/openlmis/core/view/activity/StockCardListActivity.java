@@ -45,7 +45,7 @@ public class StockCardListActivity extends SearchBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_ID_ADD_NEW_DRUG, 100, getString(R.string.action_add_new_drug)).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     @Override
