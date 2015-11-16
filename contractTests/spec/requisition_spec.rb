@@ -24,7 +24,7 @@ describe "submit requisition to web server" do
       ],
       products: [
       {
-        productCode: "P1",
+        productCode: "01A01",
         beginningBalance: 10,
         quantityReceived: 30,
         quantityDispensed: 20,
@@ -36,7 +36,7 @@ describe "submit requisition to web server" do
         reasonForRequestedQuantity: "reason"
       },
       {
-        productCode: "P2",
+        productCode: "01A02",
         beginningBalance: 100,
         quantityReceived: 300,
         quantityDispensed: 100,
@@ -540,7 +540,7 @@ describe "submit requisition to web server" do
     expect(via_approver_signature['text']).to eq 'magneto'
 
 
-    product1 = via_requisition['products'].detect { |p| p['productCode'] == 'P1' }
+    product1 = via_requisition['products'].detect { |p| p['productCode'] == '01A01' }
     expect(product1['beginningBalance']).to eq 10
     expect(product1['quantityReceived']).to eq 30
     expect(product1['quantityDispensed']).to eq 20
