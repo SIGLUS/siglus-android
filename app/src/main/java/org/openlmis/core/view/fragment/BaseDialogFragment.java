@@ -41,7 +41,6 @@ public class BaseDialogFragment extends DialogFragment {
     private String tag;
 
     private MsgDialogCallBack mListener;
-    private MsgDialogCallBack mSetListener;
 
     public static BaseDialogFragment newInstance(String title, String message, String positiveText, String tag) {
         return newInstance(title, message, positiveText, null, tag);
@@ -62,13 +61,13 @@ public class BaseDialogFragment extends DialogFragment {
     }
 
     public void setCallBackListener(MsgDialogCallBack listener) {
-        mSetListener = listener;
+        mListener = listener;
     }
 
     @Override
     public void onAttach(Activity activity) {
-        if (activity instanceof MsgDialogCallBack) {
-            mListener = (mSetListener == null ? (MsgDialogCallBack) activity : mSetListener);
+        if ((activity instanceof MsgDialogCallBack) && mListener == null) {
+            mListener = (MsgDialogCallBack) activity;
         }
         super.onAttach(activity);
     }
