@@ -7,7 +7,7 @@ Feature: Requisition
 
     And I press "Create a Via Classica Requisition"
     Then I wait for the "RequisitionActivity" screen to appear
-    Then I should see text containing "Acyclovir, tablet 400mg"
+    Then I should see text containing "Digoxina 0,25mg Comp"
     Then I should see "4" products
 
   Scenario: Pop up alert
@@ -47,7 +47,7 @@ Scenario: Add A Issued Movement on VIA product,then the quantity should change
     And I press "Stock Card"
     Then I wait for the "StockCardListActivity" screen to appear
     Then I wait for 1 second
-    And I make a movement "Acetylsalicylic Acid, tablet 300mg [P1]" "Issues" "PAV" "issued" "10"
+    And I make a movement "[01A01]" "Issues" "PAV" "issued" "10"
     Then I wait for 1 second
     Then I go back
     Then I wait for the "HomeActivity" screen to appear

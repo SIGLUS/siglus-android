@@ -1,5 +1,7 @@
 module EnvConfig
 
+    STRESS_TEST = false
+
     def self.getConfig()
 
         dev_env=true

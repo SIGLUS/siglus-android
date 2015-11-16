@@ -5,9 +5,7 @@ Feature: initial_inventory
             Given I am logged in
             Then I wait for the "InventoryActivity" screen to appear
             Then I wait for 1 second
-            When I Select initial inventory
-            And I press "Complete"
-            Then I wait for the "HomeActivity" screen to appear
+            Given I initialize inventory
             And I press "Stock Card"
             Then I wait for the "StockCardListActivity" screen to appear
             And I press "Sort alphabetically: A to Z"

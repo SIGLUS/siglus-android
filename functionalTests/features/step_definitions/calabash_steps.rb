@@ -30,10 +30,10 @@ end
 
 When(/^I select the item called "(.*?)"$/) do |name|
   p "When I select the item called #{name}"
-  q = query("android.widget.TextView text:'#{name}'")
+  q = query("android.widget.TextView {text CONTAINS '#{name}'}")
   while q.empty?
     scroll("RecyclerView", :down)
-    q = query("android.widget.TextView text:'#{name}'")
+    q = query("android.widget.TextView {text CONTAINS '#{name}'}")
    end
 
   touch(q)
@@ -87,21 +87,21 @@ end
 
 When(/^I Select MMIA Item$/) do
   steps %Q{
-        When I select the item called "Lamivudina 150mg/Zidovudina 300mg/Nevirapina 200mg [08S42]"
-        When I select the item called "Tenofovir 300mg/Lamivudina 300mg/Efavirenze 600mg [08S18Y]"
-        When I select the item called "Lamivudina 30mg/ Zidovudina 60mg [08S40Z]"
-        When I select the item called "Lamivudina 30mg/Zidovudina 60mg/Nevirapina 50mg [08S42B]"
-        When I select the item called "Lopinavir/Ritonavir 80/20 ml Solução Oral [08S39Y]"
+        When I select the item called "[08S42]"
+        When I select the item called "[08S18Y]"
+        When I select the item called "[08S40]"
+        When I select the item called "[08S36]"
+        When I select the item called "[08S32]"
 	}
 end
 
 When(/^I Select VIA Item$/) do
   steps %Q{
-        When I select the item called "Acetylsalicylic Acid, tablet 300mg [P1]"
-        When I select the item called "Acyclovir, tablet 400mg [P2]"
-        When I select the item called "Aminophylline Injection 250mg/10ml [P3]"
-        When I select the item called "Amoxicillin (Trihydrate), Dry powder for suspension 125mg/5ml [P4]"
-        When I select the item called "Atenolol 50mg tab [P5]"
+        When I select the item called "[01A01]"
+        When I select the item called "[01A02]"
+        When I select the item called "[01A03]"
+        When I select the item called "[01A03Z]"
+        When I select the item called "[01A04]"
 	}
 end
 
@@ -117,13 +117,27 @@ When(/^I Select initial inventory in Screen$/) do
     end
 end
 
-When(/^I Select initial inventory$/) do
-    checkBox = query("android.widget.CheckBox id:'checkbox' checked:'false'").first
-    while !checkBox.nil?
-        steps %Q{
-            When I select the checkbox
-    	}
-        scroll("RecyclerView", :down)
+When(/^I initialize inventory$/) do
+    if EnvConfig::STRESS_TEST
         checkBox = query("android.widget.CheckBox id:'checkbox' checked:'false'").first
+
+        while !checkBox.nil?
+            steps %Q{
+                When I select the checkbox
+            }
+            scroll("RecyclerView", :down)
+            checkBox = query("android.widget.CheckBox id:'checkbox' checked:'false'").first
+        end
+
+        steps %Q{
+            And I press "Complete"
+            Then I wait for the "HomeActivity" screen to appear
+        }
+    else
+       steps %Q{
+           Given I have initialized inventory
+       }
     end
+
+
 end

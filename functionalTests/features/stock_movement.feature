@@ -11,7 +11,7 @@ Feature: stock movement Page
         Then I wait for the "StockCardListActivity" screen to appear
         Then I see "Stock Card"
         Then I wait for 1 second
-        Then I select stock card called "Lamivudina 150mg/Zidovudina 300mg/Nevirapina 200mg [08S42]"
+        Then I select stock card code called "[08S42]"
         Then I wait for the "StockMovementActivity" screen to appear
         Then I wait for 1 second
         Then I don't see "Complete"
@@ -23,16 +23,13 @@ Feature: stock movement Page
         Then I wait for 1 second
         Then I don't see "Complete"
         Then I don't see "Cancel"
-        Then I don't see "Normal requisition/reinforcement"
-
-
 
     Scenario: Add A Receive Movement
         Given I am logged in
         And I press "Stock Card"
         Then I wait for the "StockCardListActivity" screen to appear
         Then I wait for 1 second
-        Then I select stock card called "Lamivudina 150mg/Zidovudina 300mg/Nevirapina 200mg [08S42]"
+        Then I select stock card code called "[08S42]"
         Then I wait for the "StockMovementActivity" screen to appear
         Then I wait for 1 second
         And I select a reason "Entries" "District( DDM)"
@@ -50,7 +47,7 @@ Feature: stock movement Page
         And I press "Stock Card"
         Then I wait for the "StockCardListActivity" screen to appear
         Then I wait for 1 second
-        Then I select stock card called "Acyclovir, tablet 400mg [P2]"
+        Then I select stock card code called "[01A03]"
         Then I wait for the "StockMovementActivity" screen to appear
         Then I wait for 1 second
         And I select a reason "Negative Adjustments" "Damaged on arrival"
@@ -68,7 +65,7 @@ Feature: stock movement Page
         And I press "Stock Card"
         Then I wait for the "StockCardListActivity" screen to appear
         Then I wait for 1 second
-        Then I select stock card called "Atenolol 50mg tab [P5]"
+        Then I select stock card code called "[01A04]"
         Then I wait for the "StockMovementActivity" screen to appear
         Then I wait for 1 second
         And I select a reason "Positive Adjustments" "Donations to Deposit"
@@ -87,7 +84,7 @@ Feature: stock movement Page
         And I press "Stock Card"
         Then I wait for the "StockCardListActivity" screen to appear
         Then I wait for 1 second
-        Then I select stock card called "Tenofovir 300mg/Lamivudina 300mg/Efavirenze 600mg [08S18Y]"
+        Then I select stock card code called "[08S18Y]"
         Then I wait for the "StockMovementActivity" screen to appear
         Then I wait for 1 second
         And I select a reason "Issues" "PAV"

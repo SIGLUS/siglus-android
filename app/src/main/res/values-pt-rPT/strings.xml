@@ -55,7 +55,7 @@
     <string name="label_issued_unit">Unidade de Saída</string>
     <string name="hint_error_input">Entrada inválida</string>
     <string name="btn_save">Guardar</string>
-    <string name="msg_mmia_onback_confirm">Tem certeza que quer sair sem gravar suas alteraçães?</string>
+    <string name="msg_mmia_onback_confirm">Tem certeza que quer sair sem gravar suas alteraçães? Se você clique sim, o seu projecto serão excluídos</string>
     <string name="btn_positive">Sim</string>
     <string name="btn_negative">Não</string>
     <string name="msg_mmia_submit_tip">O seu MMIA foi gravado com sucesso,e vai ser submetido \r\n automaticamente quando tiver coneccao a internet.</string>

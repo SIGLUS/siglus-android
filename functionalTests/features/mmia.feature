@@ -1,4 +1,4 @@
-@Mmia
+@MMIA
 Feature: stock movement Page
 
     Background: Navigate to Home Page
@@ -9,14 +9,14 @@ Feature: stock movement Page
             And I press "Stock Card"
             Then I wait for the "StockCardListActivity" screen to appear
             Then I wait for 1 second
-            And I make a movement "Lamivudina 150mg/Zidovudina 300mg/Nevirapina 200mg [08S42]" "Issues" "PAV" "issued" "2"
+            And I make a movement "[08S42]" "Issues" "PAV" "issued" "2"
             Then I wait for 1 second
             Then I go back
             Then I wait for the "HomeActivity" screen to appear
             And I press "Create a MMIA"
             Then I wait for the "MMIAActivity" screen to appear
             Then I wait for 1 second
-            Then I should see text containing "Lamivudina 150mg/Zidovudina 300mg/Nevirapina 200mg"
+            Then I should see text containing "Zidovudina/Lamivudina/Nevirapi; 300mg+150mg+200mg 60Comp; Embalagem"
             Then I swipe right
             Then I should see issued movement "2"
             Then I should see inventory "121"
@@ -38,14 +38,14 @@ Feature: stock movement Page
             And I press "Stock Card"
             Then I wait for the "StockCardListActivity" screen to appear
             Then I wait for 1 second
-            And I make a movement "Lamivudina 150mg/Zidovudina 300mg/Nevirapina 200mg [08S42]" "Issues" "PAV" "issued" "2"
+            And I make a movement "[08S42]" "Issues" "PAV" "issued" "2"
             Then I wait for 1 second
             Then I go back
             Then I wait for the "HomeActivity" screen to appear
             And I press "Create a MMIA"
             Then I wait for the "MMIAActivity" screen to appear
             Then I wait for 1 second
-            Then I should see text containing "Lamivudina 150mg/Zidovudina 300mg/Nevirapina 200mg"
+            Then I should see text containing "Zidovudina/Lamivudina/Nevirapi; 300mg+150mg+200mg 60Comp; Embalagem"
             Then I scroll to "Complete"
             Then I wait for 1 second
             And I enter patient totals
@@ -63,6 +63,6 @@ Feature: stock movement Page
             And I press "Create a MMIA"
             Then I wait for the "MMIAActivity" screen to appear
             Then I wait for 1 second
-            Then I should see text containing "Lamivudina 150mg/Zidovudina 300mg/Nevirapina 200mg"
+            Then I should see text containing "Zidovudina/Lamivudina/Nevirapi; 300mg+150mg+200mg 60Comp; Embalagem"
             Then I scroll to "Complete"
             And I should see empty patient total
