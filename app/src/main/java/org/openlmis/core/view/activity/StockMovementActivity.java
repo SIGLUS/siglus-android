@@ -39,6 +39,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.StockMovementAdapter;
+import org.openlmis.core.view.holder.StockMovementViewHolder;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.openlmis.core.view.widget.ExpireDateViewGroup;
@@ -99,7 +100,16 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
         buttonView.setVisibility(View.GONE);
 
-        stockMovementAdapter = new StockMovementAdapter(this, presenter);
+        stockMovementAdapter = new StockMovementAdapter(presenter.getStockMovementModelList(), presenter.getStockCard());
+        stockMovementAdapter.setMovementChangeListener(new StockMovementAdapter.MovementChangedListener() {
+
+            @Override
+            public void movementChange() {
+                showBottomBtn();
+            }
+        });
+
+
         View headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
         stockMovementList.addHeaderView(headerView);
         stockMovementList.setAdapter(stockMovementAdapter);
@@ -114,7 +124,10 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stockMovementAdapter.cancelStockMovement();
+
+                StockMovementViewHolder viewHolder = (StockMovementViewHolder) stockMovementList.getChildAt(stockMovementList.getChildCount() - 1).getTag();
+
+                stockMovementAdapter.cancelStockMovement(viewHolder);
 
                 deactivatedStockDraft();
             }
@@ -145,8 +158,9 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     };
 
     public void deactivatedStockDraft() {
+        StockMovementViewHolder viewHolder = (StockMovementViewHolder) stockMovementList.getChildAt(stockMovementList.getChildCount() - 1).getTag();
         buttonView.setVisibility(View.GONE);
-        stockMovementAdapter.cleanHighLight();
+        stockMovementAdapter.cleanHighLight(viewHolder);
     }
 
     @Override
@@ -162,7 +176,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
     @Override
     public void refreshStockMovement() {
-        stockMovementAdapter.refresh();
+        stockMovementAdapter.notifyDataSetChanged();
     }
 
     @Override

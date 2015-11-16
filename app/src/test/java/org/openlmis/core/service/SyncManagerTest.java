@@ -47,6 +47,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,7 +120,7 @@ public class SyncManagerTest {
 
 
     @Test
-    public void shouldPushUnSyncedStockMovementData() throws LMISException, SQLException {
+    public void shouldPushUnSyncedStockMovementData() throws LMISException, SQLException, ParseException {
         StockCard stockCard = createTestStockCardData();
 
         doReturn(null).when(lmisRestApi).pushStockMovementData(anyString(), anyList());
@@ -133,7 +134,7 @@ public class SyncManagerTest {
     }
 
     @Test
-    public void shouldNotMarkAsSyncedWhenStockMovementSyncFailed() throws LMISException {
+    public void shouldNotMarkAsSyncedWhenStockMovementSyncFailed() throws LMISException, ParseException {
         StockCard stockCard = createTestStockCardData();
 
         doThrow(new RuntimeException("Sync Failed")).when(lmisRestApi).pushStockMovementData(anyString(), anyList());
@@ -148,7 +149,7 @@ public class SyncManagerTest {
     }
 
     @NonNull
-    private StockCard createTestStockCardData() throws LMISException {
+    private StockCard createTestStockCardData() throws LMISException, ParseException {
         ProductRepository productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
         StockCard stockCard = StockCardBuilder.buildStockCardWithOneMovement(stockRepository);
 
@@ -173,7 +174,7 @@ public class SyncManagerTest {
     }
 
     @Test
-    public void shouldSetTypeAndCustomPropsAfterNewStockMovementEntry() throws LMISException{
+    public void shouldSetTypeAndCustomPropsAfterNewStockMovementEntry() throws LMISException, ParseException {
         StockCard stockCard = createTestStockCardData();
         StockMovementItem stockMovementItem = stockCard.getStockMovementItems().iterator().next();
         StockMovementEntry stockMovementEntry = new StockMovementEntry(stockMovementItem,null);

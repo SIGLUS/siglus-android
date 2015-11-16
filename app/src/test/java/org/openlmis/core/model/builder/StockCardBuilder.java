@@ -5,7 +5,9 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.utils.DateUtil;
 
+import java.text.ParseException;
 import java.util.Date;
 
 public class StockCardBuilder {
@@ -16,7 +18,7 @@ public class StockCardBuilder {
         stockCard = new StockCard();
     }
 
-    public static StockCard buildStockCardWithOneMovement(StockRepository stockRepository) throws LMISException {
+    public static StockCard buildStockCardWithOneMovement(StockRepository stockRepository) throws LMISException, ParseException {
 
         StockMovementItem stockMovementItem = new StockMovementItem();
 
@@ -29,9 +31,11 @@ public class StockCardBuilder {
         stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
         stockMovementItem.setDocumentNumber("XXX123456");
         stockMovementItem.setReason("some reason");
-        stockMovementItem.setMovementDate(new Date());
+        stockMovementItem.setMovementDate(DateUtil.parseString("2015-11-11", "yyyy-MM-dd"));
 
         stockRepository.saveStockItem(stockMovementItem);
+        stockCard.setStockOnHand(100L);
+        stockRepository.update(stockCard);
         stockRepository.refresh(stockCard);
 
         return stockCard;

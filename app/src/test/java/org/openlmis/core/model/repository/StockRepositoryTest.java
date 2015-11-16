@@ -36,6 +36,7 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,7 +119,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
 
     @Test
-    public void shouldCalculateStockOnHandCorrectly() throws LMISException{
+    public void shouldCalculateStockOnHandCorrectly() throws LMISException, ParseException {
         StockCard stockCard = StockCardBuilder.buildStockCardWithOneMovement(stockRepository);
         StockMovementItem stockMovementItem = new StockMovementItem();
 
@@ -140,7 +141,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldListUnsyncedStockMovementItems() throws LMISException {
+    public void shouldListUnsyncedStockMovementItems() throws LMISException, ParseException {
         StockCard stockCard = StockCardBuilder.buildStockCardWithOneMovement(stockRepository);
 
         StockMovementItem item = new StockMovementItem();
@@ -162,7 +163,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldBatchUpdateStockMovements() throws LMISException {
+    public void shouldBatchUpdateStockMovements() throws LMISException, ParseException {
         StockCard stockCard = StockCardBuilder.buildStockCardWithOneMovement(stockRepository);
         StockMovementItem item = new StockMovementItem();
         item.setMovementQuantity(100L);

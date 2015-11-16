@@ -101,10 +101,6 @@ public class GenericDao<Model> {
         });
     }
 
-    public void bulkOperation(DbUtil.Operation<Model, Object> operation) throws LMISException {
-        dbUtil.withDaoAsBatch(context, type, operation);
-    }
-
     public void refresh(final Model model) throws LMISException{
         dbUtil.withDao(context, type, new DbUtil.Operation<Model, Void>() {
             @Override
