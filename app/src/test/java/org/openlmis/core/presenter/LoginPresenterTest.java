@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
@@ -39,7 +40,6 @@ import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
 import org.openlmis.core.network.model.ProductsResponse;
 import org.openlmis.core.service.SyncManager;
-import org.openlmis.core.utils.FeatureToggle;
 import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
@@ -171,7 +171,7 @@ public class LoginPresenterTest {
         verify(syncManager).syncProductsWithProgramAsync(getProductsCB.capture());
         getProductsCB.getValue().onCompleted();
 
-        if (FeatureToggle.isOpen(R.bool.feature_sync_back_rnr_186)){
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_rnr_186)){
             verify(mockActivity).loaded();
         }else {
             verify(mockActivity, times(2)).loaded();
@@ -237,7 +237,7 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldSyncDataBackWhenProductSyncCompleted() {
-        if (!FeatureToggle.isOpen(R.bool.feature_sync_back_rnr_186)){
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_rnr_186)){
             return;
         }
 
@@ -296,7 +296,7 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldSyncRequisitionDataIfProductSyncExistButRequisitionDataNonExist() {
-        if (!FeatureToggle.isOpen(R.bool.feature_sync_back_rnr_186)){
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_rnr_186)){
             return;
         }
 

@@ -75,4 +75,8 @@ public class LMISApp extends Application {
         super.onConfigurationChanged(newConfig);
         MovementReasonManager.getInstance().refresh();
     }
+
+    public boolean getFeatureToggleFor(int id) {
+        return getResources().getBoolean(id);
+    }
 }

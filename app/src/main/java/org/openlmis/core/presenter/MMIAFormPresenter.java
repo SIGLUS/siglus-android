@@ -22,6 +22,7 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.PeriodNotUniqueException;
@@ -34,7 +35,6 @@ import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.service.SyncManager;
-import org.openlmis.core.utils.FeatureToggle;
 import org.openlmis.core.view.BaseView;
 
 import java.util.ArrayList;
@@ -151,7 +151,7 @@ public class MMIAFormPresenter implements Presenter {
             return;
         }
 
-        if (FeatureToggle.isOpen(R.bool.display_form_signature)) {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.display_form_signature)) {
             view.showSignDialog();
         } else {
             authoriseForm();

@@ -36,7 +36,6 @@ import org.openlmis.core.model.User;
 import org.openlmis.core.network.adapter.ProductsAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapterForFeatureToggle;
-import org.openlmis.core.utils.FeatureToggle;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -170,10 +169,10 @@ public class LMISRestManager {
 
     @NonNull
     private JsonSerializer getTypeAdapter() {
-        if (!FeatureToggle.isOpen(R.bool.feature_sync_back_rnr_186)) {
-            return new RnrFormAdapterForFeatureToggle();
-        } else {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_rnr_186)) {
             return new RnrFormAdapter();
+        } else {
+            return new RnrFormAdapterForFeatureToggle();
         }
     }
 

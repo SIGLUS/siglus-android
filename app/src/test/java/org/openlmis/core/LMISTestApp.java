@@ -5,6 +5,7 @@ public class LMISTestApp extends LMISApp {
 
     private boolean networkAvailable;
     private long currentTimeMillis;
+    private boolean featureToggle;
 
     @Override
     protected void setupFabric() {
@@ -12,6 +13,10 @@ public class LMISTestApp extends LMISApp {
 
     public void setNetworkConnection(boolean networkAvailable) {
         this.networkAvailable = networkAvailable;
+    }
+
+    public void setFeatureToggle(boolean featureToggle) {
+        this.featureToggle = featureToggle;
     }
 
     @Override
@@ -26,5 +31,10 @@ public class LMISTestApp extends LMISApp {
     @Override
     public long getCurrentTimeMillis() {
         return currentTimeMillis;
+    }
+
+    @Override
+    public boolean getFeatureToggleFor(int id) {
+        return featureToggle;
     }
 }

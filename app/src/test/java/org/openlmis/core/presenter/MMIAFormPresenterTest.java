@@ -23,13 +23,13 @@ import com.google.inject.AbstractModule;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.MockitoAnnotations;
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
@@ -40,7 +40,6 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.service.SyncManager;
-import org.openlmis.core.utils.FeatureToggle;
 import org.robolectric.RuntimeEnvironment;
 
 import java.sql.SQLException;
@@ -57,6 +56,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
@@ -136,7 +136,8 @@ public class MMIAFormPresenterTest {
     }
 
     @Test
-    public void shouldShowSignDialogIfTotalsMatch() throws Exception {
+    public void shouldShowSignDialogIfTotalsMatchIfFeatureToggleIsOn() throws Exception {
+        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
         ArrayList<RegimenItem> regimenItems = generateRegimenItems();
         ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
 
@@ -149,6 +150,24 @@ public class MMIAFormPresenterTest {
         presenter.completeMMIA(regimenItems, baseInfoItems, "");
 
         verify(mockMMIAformView).showSignDialog();
+    }
+
+    @Test
+    public void shouldNotShowSignDialogIfTotalsMatchIfFeatureToggleIsOff() throws Exception {
+        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(false);
+        ArrayList<RegimenItem> regimenItems = generateRegimenItems();
+        ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
+
+        RnRForm rnRForm = new RnRForm();
+
+        when(mmiaRepository.initMMIA(Matchers.<Program>anyObject())).thenReturn(rnRForm);
+        when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
+        presenter.getRnrForm(0);
+
+        presenter.completeMMIA(regimenItems, baseInfoItems, "");
+
+        verify(mockMMIAformView, never()).showSignDialog();
+        verify(mockMMIAformView).loading();
     }
 
     @Test
