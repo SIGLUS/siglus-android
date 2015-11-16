@@ -60,6 +60,9 @@ Then(/^I make a movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_ca
         Then I wait for 1 second
         And I enter #{movement_column} number "#{number}"
         And I press "Complete"
+        And I sign with "superuser"
+        Then I press "Sign"
+        Then I wait for 1 second
         Then I go back
     }
 end
