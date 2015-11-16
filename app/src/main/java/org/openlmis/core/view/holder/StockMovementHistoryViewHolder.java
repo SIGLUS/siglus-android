@@ -65,9 +65,9 @@ public class StockMovementHistoryViewHolder extends BaseViewHolder {
     }
 
     private void setInventoryItemsFontColorToRed(StockMovementViewModel model) {
-        if (model.getReceived() != null ||
-                model.getReason().getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY ||
-                model.getReason().isInventoryAdjustment()) {
+        if (model.getReceived() != null
+                || model.getReason().getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY
+                || model.getReason().isInventoryAdjustment()) {
             setRowFontColor(redColor);
         }
     }
