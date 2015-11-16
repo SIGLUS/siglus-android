@@ -135,7 +135,7 @@ public class MMIAFormPresenterTest {
         verify(mockMMIAformView, never()).showValidationAlert();
     }
 
-    @Test @Ignore
+    @Test
     public void shouldShowSignDialogIfTotalsMatch() throws Exception {
         ArrayList<RegimenItem> regimenItems = generateRegimenItems();
         ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
@@ -151,7 +151,7 @@ public class MMIAFormPresenterTest {
         verify(mockMMIAformView).showSignDialog();
     }
 
-    @Test @Ignore
+    @Test
     public void shouldCompleteFormAfterSignSuccess() throws Exception {
         ArrayList<RegimenItem> regimenItems = generateRegimenItems();
         ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
