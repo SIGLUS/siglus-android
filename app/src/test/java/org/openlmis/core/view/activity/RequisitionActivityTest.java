@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
-import org.openlmis.core.model.RequisitionBuilder;
+import org.openlmis.core.model.builder.RequisitionBuilder;
 import org.openlmis.core.presenter.RequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;

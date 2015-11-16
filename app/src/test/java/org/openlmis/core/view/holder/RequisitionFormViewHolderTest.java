@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
-import org.openlmis.core.model.RequisitionBuilder;
+import org.openlmis.core.model.builder.RequisitionBuilder;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.robolectric.RuntimeEnvironment;

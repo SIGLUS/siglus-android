@@ -1,4 +1,7 @@
-package org.openlmis.core.model;
+package org.openlmis.core.model.builder;
+
+import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Program;
 
 public class ProductBuilder {
     private Product product;

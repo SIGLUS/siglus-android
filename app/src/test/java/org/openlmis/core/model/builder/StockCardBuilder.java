@@ -1,6 +1,9 @@
-package org.openlmis.core.model;
+package org.openlmis.core.model.builder;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Product;
+import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
 
 import java.util.Date;

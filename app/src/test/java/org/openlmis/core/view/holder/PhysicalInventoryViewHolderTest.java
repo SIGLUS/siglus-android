@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.model.ProductBuilder;
+import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;

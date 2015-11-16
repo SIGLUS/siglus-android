@@ -31,7 +31,7 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockCardBuilder;
+import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;

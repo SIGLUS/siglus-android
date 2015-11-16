@@ -1,4 +1,6 @@
-package org.openlmis.core.model;
+package org.openlmis.core.model.builder;
+
+import org.openlmis.core.model.Program;
 
 public class ProgramBuilder {
     private Program program;

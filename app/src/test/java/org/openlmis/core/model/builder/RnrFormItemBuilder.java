@@ -1,4 +1,8 @@
-package org.openlmis.core.model;
+package org.openlmis.core.model.builder;
+
+import org.openlmis.core.model.Product;
+import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnrFormItem;
 
 public class RnrFormItemBuilder {
     private RnrFormItem rnrFormItem;

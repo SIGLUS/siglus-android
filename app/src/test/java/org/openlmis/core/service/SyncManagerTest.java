@@ -33,7 +33,7 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockCardBuilder;
+import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.ProductRepository;

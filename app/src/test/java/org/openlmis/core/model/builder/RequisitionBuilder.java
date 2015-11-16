@@ -16,7 +16,7 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.model;
+package org.openlmis.core.model.builder;
 
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 

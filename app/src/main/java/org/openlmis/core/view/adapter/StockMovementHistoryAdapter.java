@@ -19,15 +19,13 @@
 package org.openlmis.core.view.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.view.holder.StockMovementHistoryViewHolder;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
 import java.util.List;
@@ -64,107 +62,20 @@ public class StockMovementHistoryAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+        StockMovementHistoryViewHolder holder;
 
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.item_stock_movement, parent, false);
-            holder = new ViewHolder(convertView);
+            holder = new StockMovementHistoryViewHolder(convertView);
 
             convertView.setTag(holder);
         } else {
-            holder = (ViewHolder) convertView.getTag();
+            holder = (StockMovementHistoryViewHolder) convertView.getTag();
         }
-
-        onBindViewHolder(holder, position);
-        return convertView;
-    }
-
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final StockMovementViewModel model = getItem(position);
 
-        disableLine(holder);
-        hideUnderline(holder);
+        holder.populate(model);
 
-        holder.txMovementDate.setText(model.getMovementDate());
-        holder.etDocumentNo.setText(model.getDocumentNo());
-        holder.etReceived.setText(model.getReceived());
-        holder.etNegativeAdjustment.setText(model.getNegativeAdjustment());
-        holder.etPositiveAdjustment.setText(model.getPositiveAdjustment());
-        holder.etIssued.setText(model.getIssued());
-        holder.txStockExistence.setText(model.getStockExistence());
-
-        cleanFontColor(holder);
-        setReasonAndFontColor(holder, model);
-        if (model.getReceived() != null || model.getReason().getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
-            setFontColorToRed(holder);
-        }
+        return convertView;
     }
-
-    private void setReasonAndFontColor(ViewHolder holder, StockMovementViewModel model) {
-        holder.txReason.setText(model.getReason().getDescription());
-        if (model.getReason().isInventoryAdjustment()) {
-            setFontColorToRed(holder);
-        }
-    }
-
-    private void setFontColorToRed(ViewHolder holder) {
-        holder.txMovementDate.setTextColor(Color.RED);
-        holder.txReason.setTextColor(Color.RED);
-        holder.etDocumentNo.setTextColor(Color.RED);
-        holder.etReceived.setTextColor(Color.RED);
-        holder.etPositiveAdjustment.setTextColor(Color.RED);
-        holder.etNegativeAdjustment.setTextColor(Color.RED);
-        holder.txStockExistence.setTextColor(Color.RED);
-    }
-
-    private void cleanFontColor(ViewHolder holder){
-        holder.txMovementDate.setTextColor(Color.BLACK);
-        holder.txReason.setTextColor(Color.BLACK);
-        holder.etDocumentNo.setTextColor(Color.BLACK);
-        holder.etReceived.setTextColor(Color.BLACK);
-        holder.etPositiveAdjustment.setTextColor(Color.BLACK);
-        holder.etNegativeAdjustment.setTextColor(Color.BLACK);
-        holder.txStockExistence.setTextColor(Color.BLACK);
-    }
-
-    private void hideUnderline(ViewHolder holder) {
-        holder.etDocumentNo.setBackground(null);
-        holder.etIssued.setBackground(null);
-        holder.etNegativeAdjustment.setBackground(null);
-        holder.etPositiveAdjustment.setBackground(null);
-        holder.etReceived.setBackground(null);
-    }
-
-    private void disableLine(ViewHolder holder) {
-        holder.etDocumentNo.setEnabled(false);
-        holder.etReceived.setEnabled(false);
-        holder.etNegativeAdjustment.setEnabled(false);
-        holder.etPositiveAdjustment.setEnabled(false);
-        holder.etIssued.setEnabled(false);
-    }
-
-    class ViewHolder {
-
-        TextView txMovementDate;
-        TextView txReason;
-        TextView etDocumentNo;
-        TextView etReceived;
-        TextView etNegativeAdjustment;
-        TextView etPositiveAdjustment;
-        TextView etIssued;
-        TextView txStockExistence;
-
-
-        public ViewHolder(View view) {
-            txMovementDate = (TextView) view.findViewById(R.id.tx_date);
-            txReason = (TextView) view.findViewById(R.id.tx_reason);
-            etDocumentNo = (TextView) view.findViewById(R.id.et_document_no);
-            etReceived = (TextView) view.findViewById(R.id.et_received);
-            etNegativeAdjustment = (TextView) view.findViewById(R.id.et_negative_adjustment);
-            etPositiveAdjustment = (TextView) view.findViewById(R.id.et_positive_adjustment);
-            etIssued = (TextView) view.findViewById(R.id.et_issued);
-            txStockExistence = (TextView) view.findViewById(R.id.tx_stock_on_hand);
-        }
-    }
-
 }
