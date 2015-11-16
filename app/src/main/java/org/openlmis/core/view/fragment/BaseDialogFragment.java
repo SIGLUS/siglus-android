@@ -41,6 +41,7 @@ public class BaseDialogFragment extends DialogFragment {
     private String tag;
 
     private MsgDialogCallBack mListener;
+    private MsgDialogCallBack mSetListener;
 
     public static BaseDialogFragment newInstance(String title, String message, String positiveText, String tag) {
         return newInstance(title, message, positiveText, null, tag);
@@ -61,13 +62,13 @@ public class BaseDialogFragment extends DialogFragment {
     }
 
     public void setCallBackListener(MsgDialogCallBack listener) {
-        mListener = listener;
+        mSetListener = listener;
     }
 
     @Override
     public void onAttach(Activity activity) {
         if (activity instanceof MsgDialogCallBack) {
-            mListener = (MsgDialogCallBack) activity;
+            mListener = (mSetListener == null ? (MsgDialogCallBack) activity : mSetListener);
         }
         super.onAttach(activity);
     }
@@ -85,7 +86,6 @@ public class BaseDialogFragment extends DialogFragment {
     }
 
     @Override
-
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setTitle(title)
