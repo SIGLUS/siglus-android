@@ -104,7 +104,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
     }
 
     private void initUI() {
-        adapter = new StockMovementHistoryAdapter(getActivity(), presenter.getStockMovementModelList());
+        adapter = new StockMovementHistoryAdapter(presenter.getStockMovementModelList());
         historyListView.setAdapter(adapter);
 
         swipeRefreshLayout.setOnRefreshListener(this);

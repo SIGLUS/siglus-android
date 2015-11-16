@@ -18,7 +18,6 @@
 
 package org.openlmis.core.view.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,14 +34,8 @@ public class StockMovementHistoryAdapter extends BaseAdapter {
 
     List<StockMovementViewModel> stockMovementViewModels;
 
-    LayoutInflater layoutInflater;
-
-    Context context;
-
-    public StockMovementHistoryAdapter(Context context, List<StockMovementViewModel> list) {
+    public StockMovementHistoryAdapter(List<StockMovementViewModel> list) {
         stockMovementViewModels = list;
-        this.context = context;
-        layoutInflater = LayoutInflater.from(context);
     }
 
     @Override
@@ -65,7 +58,7 @@ public class StockMovementHistoryAdapter extends BaseAdapter {
         StockMovementHistoryViewHolder holder;
 
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.item_stock_movement, parent, false);
+            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_stock_movement, parent, false);
             holder = new StockMovementHistoryViewHolder(convertView);
 
             convertView.setTag(holder);
