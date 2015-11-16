@@ -260,7 +260,7 @@ public class MMIAFormPresenter implements Presenter {
             e.printStackTrace();
         }
     }
-    
+
     public interface MMIAFormView extends BaseView {
 
         void showValidationAlert();

@@ -21,7 +21,6 @@ package org.openlmis.core.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 
 import org.openlmis.core.R;
 import org.openlmis.core.utils.Constants;

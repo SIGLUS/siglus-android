@@ -21,8 +21,6 @@ package org.openlmis.core.view.activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-
 
 import org.openlmis.core.R;
 import org.openlmis.core.model.repository.MMIARepository;
