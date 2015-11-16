@@ -137,21 +137,25 @@ public class StockMovementPresenter implements Presenter {
 
     public void submitStockMovement(StockMovementViewModel viewModel) {
         if (viewModel.validateEmpty() && viewModel.validateInputValid()) {
-            try {
-                saveStockMovement(viewModel.convertViewToModel());
-
-                viewModel.setDraft(false);
-                stockMovementModelList.add(new StockMovementViewModel());
-
-                view.refreshStockMovement();
-                view.deactivatedStockDraft();
-            } catch (LMISException e) {
-                e.printStackTrace();
-            }
+            view.showSignDialog();
         } else if (!viewModel.validateEmpty()) {
             view.showErrorAlert(context.getResources().getString(R.string.msg_validation_empty_error));
         } else if (!viewModel.validateInputValid()) {
             view.showErrorAlert(context.getResources().getString(R.string.msg_validation_error));
+        }
+    }
+
+    public void saveAndRefresh(StockMovementViewModel viewModel) {
+        try {
+            saveStockMovement(viewModel.convertViewToModel());
+
+            viewModel.setDraft(false);
+            stockMovementModelList.add(new StockMovementViewModel());
+
+            view.refreshStockMovement();
+            view.deactivatedStockDraft();
+        } catch (LMISException e) {
+            e.printStackTrace();
         }
     }
 
@@ -166,5 +170,7 @@ public class StockMovementPresenter implements Presenter {
         void refreshStockMovement();
 
         void deactivatedStockDraft();
+
+        void showSignDialog();
     }
 }

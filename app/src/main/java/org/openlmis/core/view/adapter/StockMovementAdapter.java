@@ -138,6 +138,7 @@ public class StockMovementAdapter extends BaseAdapter {
         holder.etPositiveAdjustment.setText(model.getPositiveAdjustment());
         holder.etIssued.setText(model.getIssued());
         holder.txStockExistence.setText(model.getStockExistence());
+        holder.txSignature.setText(model.getSignature());
 
         cleanFontColor(holder);
 
@@ -384,6 +385,7 @@ public class StockMovementAdapter extends BaseAdapter {
         EditText etNegativeAdjustment;
         EditText etPositiveAdjustment;
         EditText etIssued;
+        TextView txSignature;
         TextView txStockExistence;
         private Drawable editTextBackground;
 
@@ -395,6 +397,7 @@ public class StockMovementAdapter extends BaseAdapter {
             etDocumentNo = (EditText) view.findViewById(R.id.et_document_no);
             etReceived = (EditText) view.findViewById(R.id.et_received);
             etNegativeAdjustment = (EditText) view.findViewById(R.id.et_negative_adjustment);
+            txSignature = (TextView) view.findViewById(R.id.tx_signature);
             etPositiveAdjustment = (EditText) view.findViewById(R.id.et_positive_adjustment);
             etIssued = (EditText) view.findViewById(R.id.et_issued);
             txStockExistence = (TextView) view.findViewById(R.id.tx_stock_on_hand);

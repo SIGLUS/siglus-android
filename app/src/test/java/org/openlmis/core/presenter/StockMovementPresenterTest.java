@@ -83,6 +83,21 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         when(viewModel.convertViewToModel()).thenReturn(item);
 
         stockMovementPresenter.submitStockMovement(viewModel);
+
+        verify(view).showSignDialog();
+    }
+
+    @Test
+    public void shouldSaveAndRefresh() throws Exception {
+        StockCard stockCard = new StockCard();
+        when(stockRepositoryMock.queryStockCardById(123)).thenReturn(stockCard);
+        stockMovementPresenter.setStockCard(123);
+
+        StockMovementItem item = new StockMovementItem();
+        StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
+        when(viewModel.convertViewToModel()).thenReturn(item);
+
+        stockMovementPresenter.saveAndRefresh(viewModel);
         verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(stockCard, item);
     }
 

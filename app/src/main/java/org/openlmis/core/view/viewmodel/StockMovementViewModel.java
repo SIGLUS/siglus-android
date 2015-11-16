@@ -40,6 +40,7 @@ public class StockMovementViewModel {
     String movementDate;
     String stockExistence;
     String documentNo;
+    String signature;
     boolean isDraft = true;
 
     private HashMap<StockMovementItem.MovementType, String> typeQuantityMap = new HashMap<>();
@@ -48,6 +49,7 @@ public class StockMovementViewModel {
         movementDate = DateUtil.formatDate(item.getMovementDate());
         documentNo = item.getDocumentNumber();
         stockExistence = String.valueOf(item.getStockOnHand());
+        signature = item.getSignature();
         isDraft = false;
 
         try {
@@ -101,6 +103,7 @@ public class StockMovementViewModel {
 
         Long movementQuantity = Long.parseLong(typeQuantityMap.get(reason.getMovementType()));
         stockMovementItem.setMovementQuantity(movementQuantity);
+        stockMovementItem.setSignature(signature);
 
         try {
             stockMovementItem.setMovementDate(DateUtil.parseString(getMovementDate(), DateUtil.DEFAULT_DATE_FORMAT));

@@ -40,7 +40,9 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.StockMovementAdapter;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.openlmis.core.view.widget.ExpireDateViewGroup;
+import org.openlmis.core.view.widget.SignatureDialog;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -93,7 +95,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     private void initUI() {
         setTitle(stockName);
 
-        expireDateViewGroup.initExpireDateViewGroup(new StockCardViewModel(presenter.getStockCard()),true);
+        expireDateViewGroup.initExpireDateViewGroup(new StockCardViewModel(presenter.getStockCard()), true);
 
         buttonView.setVisibility(View.GONE);
 
@@ -121,6 +123,26 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         loading();
         presenter.loadStockMovementViewModels();
     }
+
+    @Override
+    public void showSignDialog() {
+        SignatureDialog signatureDialog = new SignatureDialog();
+        signatureDialog.setDelegate(signatureDialogDelegate);
+        signatureDialog.show(getFragmentManager(), "signature_dialog");
+    }
+
+    protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
+        @Override
+        public void onCancel() {
+        }
+
+        @Override
+        public void onSign(String sign) {
+            StockMovementViewModel stockMovementViewModel = stockMovementAdapter.getEditableStockMovement();
+            stockMovementViewModel.setSignature(sign);
+            presenter.saveAndRefresh(stockMovementViewModel);
+        }
+    };
 
     public void deactivatedStockDraft() {
         buttonView.setVisibility(View.GONE);
