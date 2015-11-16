@@ -71,6 +71,13 @@
             style="@style/sheet_header2"
             android:text="@string/label_stock_existence"/>
 
+        <TextView
+            android:id="@+id/tx_signature"
+            android:layout_width="@dimen/stock_movement_item_common_width"
+            android:layout_height="wrap_content"
+            style="@style/sheet_header2"
+            android:text="@string/label_signature"/>
+
     </LinearLayout>
 
 </LinearLayout>

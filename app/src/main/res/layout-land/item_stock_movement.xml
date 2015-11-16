@@ -1,82 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
     android:divider="@drawable/divider_vertical"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
     android:showDividers="middle">
 
     <TextView
         android:id="@+id/tx_date"
+        style="@style/sheet_header2"
         android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        style="@style/sheet_header2" />
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/tx_reason"
+        style="@style/sheet_header2"
         android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        style="@style/sheet_header2"/>
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
         android:divider="@drawable/divider_vertical"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:showDividers="middle">
 
         <EditText
             android:id="@+id/et_document_no"
-            android:minWidth="@dimen/stock_movement_item_common_width"
+            style="@style/sheet_header2"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            style="@style/sheet_header2"/>
+            android:layout_weight="1"
+            android:minWidth="@dimen/stock_movement_item_common_width" />
 
         <EditText
             android:id="@+id/et_received"
-            android:minWidth="@dimen/stock_movement_item_common_width"
+            style="@style/sheet_header2"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:inputType="text"
-            style="@style/sheet_header2"/>
+            android:minWidth="@dimen/stock_movement_item_common_width" />
 
         <EditText
             android:id="@+id/et_negative_adjustment"
-            android:minWidth="@dimen/stock_movement_item_common_width"
+            style="@style/sheet_header2"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:inputType="text"
-            style="@style/sheet_header2"/>
+            android:minWidth="@dimen/stock_movement_item_common_width" />
 
         <EditText
             android:id="@+id/et_positive_adjustment"
-            android:minWidth="@dimen/stock_movement_item_common_width"
+            style="@style/sheet_header2"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:inputType="text"
-            style="@style/sheet_header2"/>
+            android:minWidth="@dimen/stock_movement_item_common_width" />
 
         <EditText
             android:id="@+id/et_issued"
-            android:minWidth="@dimen/stock_movement_item_common_width"
+            style="@style/sheet_header2"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:inputType="text"
-            style="@style/sheet_header2"/>
+            android:minWidth="@dimen/stock_movement_item_common_width" />
 
         <TextView
             android:id="@+id/tx_stock_on_hand"
-            android:minWidth="@dimen/stock_movement_item_common_width"
+            style="@style/sheet_header2"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            style="@style/sheet_header2"/>
+            android:layout_weight="1"
+            android:minWidth="@dimen/stock_movement_item_common_width" />
+
+        <TextView
+            android:id="@+id/tx_signature"
+            style="@style/sheet_header2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minWidth="@dimen/stock_movement_item_common_width" />
     </LinearLayout>
 
 </LinearLayout>
