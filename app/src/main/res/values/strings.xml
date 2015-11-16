@@ -67,7 +67,7 @@
     <string name="label_issued_unit">Unit of Issue</string>
     <string name="hint_error_input">Invalid Input</string>
     <string name="btn_save">Save</string>
-    <string name="msg_mmia_onback_confirm">Are you sure you want to quit without saving your work?</string>
+    <string name="msg_mmia_onback_confirm">Are you sure you want to quit without saving your work? If you click \'yes\', your draft will be deleted.</string>
     <string name="btn_positive">Yes</string>
     <string name="btn_negative">No</string>
     <string name="msg_mmia_submit_tip">Your MMIA form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>

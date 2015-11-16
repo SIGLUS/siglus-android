@@ -400,6 +400,10 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     @Override
     public void onBackPressed() {
+        if (getResources().getBoolean(R.bool.feature_show_pop_up_even_no_data_changed_418)){
+            hasDataChanged = true;
+        }
+
         if (hasDataChanged()) {
             DialogFragment dialogFragment = BaseDialogFragment.newInstance(null,
                     getString(R.string.msg_mmia_onback_confirm),

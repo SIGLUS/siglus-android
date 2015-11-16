@@ -2,4 +2,6 @@
 <resources>
     <bool name="feature_sync_stock_card_279">true</bool>
     <bool name="feature_sync_back_rnr_186">true</bool>
+    <bool name="display_form_signature">false</bool>
+    <bool name="feature_show_pop_up_even_no_data_changed_418">true</bool>
 </resources>
