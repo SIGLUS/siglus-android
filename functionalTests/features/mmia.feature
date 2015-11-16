@@ -31,6 +31,8 @@ Feature: stock movement Page
             Then I scroll to "Complete"
             And I enter patient totals
             Then I press "Complete"
+            And I sign with "superuser"
+            Then I press "Sign"
             Then I should see text containing "Your MMIA form has been successfully saved,"
             Then I wait for the "HomeActivity" screen to appear
 
