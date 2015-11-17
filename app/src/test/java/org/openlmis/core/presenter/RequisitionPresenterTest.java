@@ -32,6 +32,7 @@ import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.activity.RequisitionActivity;
@@ -123,7 +124,7 @@ public class RequisitionPresenterTest {
     }
 
     @Test
-    public void shouldSubmitWhenStatusIsDraftAndAuthorizeWhenStatusIsSubmitted() throws LMISException{
+    public void shouldSubmitAfterSignedAndStatusIsDraft() throws LMISException{
         final RnRForm form = new RnRForm();
         form.setStatus(RnRForm.STATUS.DRAFT);
         form.setRnrFormItemListWrapper(new ArrayList<RnrFormItem>());
@@ -137,11 +138,11 @@ public class RequisitionPresenterTest {
         presenter.loadRnrForm(0);
 
         presenter.requisitionFormItemViewModelList = new ArrayList<>();
-        presenter.processRequisition("123");
+        presenter.processSign("username");
 
         waitObservableToExeute();
 
-        verify(mockVIARepository).submit(form);
+        verify(mockVIARepository).setSignature(form, "userSignature", RnRFormSignature.TYPE.SUBMITTER);
 
         form.setStatus(RnRForm.STATUS.SUBMITTED);
         presenter.processRequisition("123");

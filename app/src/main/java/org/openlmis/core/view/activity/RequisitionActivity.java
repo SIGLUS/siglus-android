@@ -48,6 +48,7 @@ import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.holder.RequisitionFormViewHolder;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
+import org.openlmis.core.view.widget.SignatureDialog;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -58,7 +59,6 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     @InjectView(R.id.requisition_form)
     ListView requisitionForm;
-
     @InjectView(R.id.product_name_list_view)
     ListView requisitionNameList;
 
@@ -98,11 +98,12 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     protected Boolean hasDataChanged;
 
     private RequisitionProductAdapter requisitionProductAdapter;
+
     private RequisitionFormAdapter requisitionFormAdapter;
     private boolean consultationNumbersHasChanged;
     private boolean isHistoryForm;
-
     private static final String TAG_BACK_PRESSED = "onBackPressed";
+    private static final String TAG_SHOW_MESSAGE_NOTIFY_DIALOG = "showMessageNotifyDialog";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -279,6 +280,34 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
             return;
         }
         presenter.processRequisition(consultationNumbers);
+    }
+
+    @Override
+    public void showSignDialog() {
+        SignatureDialog signatureDialog = new SignatureDialog();
+        signatureDialog.setDelegate(signatureDialogDelegate);
+        signatureDialog.show(getFragmentManager(), "signature_dialog");
+    }
+
+    protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
+        @Override
+        public void onCancel() {
+        }
+
+        @Override
+        public void onSign(String sign) {
+            presenter.processSign(sign);
+        }
+    };
+
+    @Override
+    public void showMessageNotifyDialog(){
+        DialogFragment dialogFragment = BaseDialogFragment.newInstance(null,
+                getString(R.string.msg_via_message_notify),
+                getString(R.string.btn_ok),
+                null,
+                TAG_SHOW_MESSAGE_NOTIFY_DIALOG);
+        dialogFragment.show(getFragmentManager(), "TAG_SHOW_MESSAGE_NOTIFY_DIALOG");
     }
 
     @Override

@@ -194,14 +194,10 @@ public class RequisitionPresenter implements Presenter {
         setRnrFormAmount();
         rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
 
-        if (rnRForm.getStatus() == RnRForm.STATUS.DRAFT) {
-            submitRequisition();
-        } else {
-            authorise();
-        }
+        view.showSignDialog();
     }
 
-    public void submitRequisition() {
+    private void submitRequisition() {
         view.loading();
         Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
@@ -353,12 +349,53 @@ public class RequisitionPresenter implements Presenter {
         return !checkNotNull(rnRForm).getStatus().equals(RnRForm.STATUS.AUTHORIZED);
     }
 
+    public void processSign(String signName) {
+        if (rnRForm.getStatus() == RnRForm.STATUS.DRAFT) {
+            submitSignature(signName, RnRFormSignature.TYPE.SUBMITTER);
+            submitRequisition();
+            view.showMessageNotifyDialog();
+        } else {
+            submitSignature(signName, RnRFormSignature.TYPE.APPROVER);
+            authorise();
+        }
+    }
     public RnRForm.STATUS getRnrFormStatus() {
         if(rnRForm != null) {
             return rnRForm.getStatus();
         } else {
             return RnRForm.STATUS.DRAFT;
         }
+    }
+
+
+    private void submitSignature(final String signName, final RnRFormSignature.TYPE type) {
+        view.loading();
+        Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    viaRepository.setSignature(rnRForm, signName, type);
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                    view.showErrorMessage(e.getMessage());
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.loaded();
+                view.showErrorMessage(e.getMessage());
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+                view.loaded();
+            }
+        });
     }
 
 
@@ -379,6 +416,10 @@ public class RequisitionPresenter implements Presenter {
         void highLightApprovedAmount();
 
         void setProcessButtonName(String name);
+
+        void showSignDialog();
+
+        void showMessageNotifyDialog();
     }
 
 }
