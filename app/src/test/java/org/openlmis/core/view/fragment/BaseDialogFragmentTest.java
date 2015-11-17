@@ -34,14 +34,14 @@ public class BaseDialogFragmentTest {
 
     @Test
     public void shouldSetCallBack() {
-        BaseDialogFragment fragment = BaseDialogFragment.newInstance(
+        SimpleDialogFragment fragment = SimpleDialogFragment.newInstance(
                 "title",
                 "message",
                 "btn_positive",
                 "btn_negative",
                 "onBackPressed");
 
-        BaseDialogFragment.MsgDialogCallBack dialogCallBack = mock(BaseDialogFragment.MsgDialogCallBack.class);
+        SimpleDialogFragment.MsgDialogCallBack dialogCallBack = mock(SimpleDialogFragment.MsgDialogCallBack.class);
         fragment.setCallBackListener(dialogCallBack);
         FragmentTestUtil.startFragment(fragment);
 

@@ -39,7 +39,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.InitialInventoryAdapter;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
 import org.openlmis.core.view.adapter.PhysicalInventoryAdapter;
-import org.openlmis.core.view.fragment.BaseDialogFragment;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ import roboguice.inject.InjectView;
 import rx.Subscriber;
 
 @ContentView(R.layout.activity_inventory)
-public class InventoryActivity extends SearchBarActivity implements InventoryPresenter.InventoryView, BaseDialogFragment.MsgDialogCallBack {
+public class InventoryActivity extends SearchBarActivity implements InventoryPresenter.InventoryView, SimpleDialogFragment.MsgDialogCallBack {
 
     @InjectView(R.id.products_list)
     public RecyclerView productListRecycleView;
@@ -237,7 +237,7 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
     }
 
     private void showDataChangeConfirmDialog() {
-        DialogFragment dialogFragment = BaseDialogFragment.newInstance(
+        DialogFragment dialogFragment = SimpleDialogFragment.newInstance(
                 null,
                 getString(R.string.msg_mmia_onback_confirm),
                 getString(R.string.btn_positive),

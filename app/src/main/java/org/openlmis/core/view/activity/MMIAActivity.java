@@ -39,7 +39,7 @@ import org.openlmis.core.presenter.MMIAFormPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.fragment.BaseDialogFragment;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
@@ -52,7 +52,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_mmia)
-public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIAFormView, View.OnClickListener, BaseDialogFragment.MsgDialogCallBack {
+public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIAFormView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
 
     @InjectView(R.id.rnr_form_list)
     private MMIARnrForm rnrFormList;
@@ -223,7 +223,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         }
 
         if (hasDataChanged()) {
-            DialogFragment dialogFragment = BaseDialogFragment.newInstance(
+            DialogFragment dialogFragment = SimpleDialogFragment.newInstance(
                     null,
                     getString(R.string.msg_mmia_onback_confirm),
                     getString(R.string.btn_positive),
@@ -254,7 +254,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
     @Override
     public void showValidationAlert() {
-        DialogFragment dialogFragment = BaseDialogFragment.newInstance(null,
+        DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
                 getString(R.string.msg_regime_total_and_patient_total_not_match),
                 getString(R.string.btn_ok),
                 TAG_MISMATCH);

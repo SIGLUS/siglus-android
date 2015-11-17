@@ -37,7 +37,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.fragment.BaseDialogFragment;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 
 import java.text.ParseException;
@@ -165,7 +165,7 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
     }
 
     private void showMsgDialog(final View expireDateView, final String expireDate) {
-        BaseDialogFragment dialogFragment = BaseDialogFragment.newInstance(
+        SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
                 null,
                 context.getString(R.string.msg_remove_expire_date),
                 context.getString(R.string.btn_ok),
@@ -175,8 +175,8 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
     }
 
     @NonNull
-    private BaseDialogFragment.MsgDialogCallBack createListener(final View expireDateView, final String expireDate) {
-        return new BaseDialogFragment.MsgDialogCallBack() {
+    private SimpleDialogFragment.MsgDialogCallBack createListener(final View expireDateView, final String expireDate) {
+        return new SimpleDialogFragment.MsgDialogCallBack() {
             @Override
             public void positiveClick(String tag) {
                 removeView(expireDateView);

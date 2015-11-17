@@ -44,7 +44,7 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 import org.openlmis.core.view.adapter.RequisitionProductAdapter;
-import org.openlmis.core.view.fragment.BaseDialogFragment;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.holder.RequisitionFormViewHolder;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
@@ -54,7 +54,7 @@ import roboguice.inject.InjectView;
 
 
 @ContentView(R.layout.activity_requisition)
-public class RequisitionActivity extends BaseActivity implements RequisitionPresenter.RequisitionView, View.OnClickListener, BaseDialogFragment.MsgDialogCallBack {
+public class RequisitionActivity extends BaseActivity implements RequisitionPresenter.RequisitionView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
 
     @InjectView(R.id.requisition_form)
     ListView requisitionForm;
@@ -407,7 +407,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
         }
 
         if (hasDataChanged()) {
-            DialogFragment dialogFragment = BaseDialogFragment.newInstance(null,
+            DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
                     getString(R.string.msg_mmia_onback_confirm),
                     getString(R.string.btn_positive),
                     getString(R.string.btn_negative),
