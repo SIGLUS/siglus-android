@@ -199,4 +199,43 @@ public class StockMovementViewHolderTest {
         assertEquals("70", viewModel.getStockExistence());
         assertEquals("70", viewHolder.txStockExistence.getText().toString());
     }
+
+    @Test
+    public void shouldEnableIssueEditTextWhenModelWithIssueType() {
+        viewModel.setDraft(true);
+        viewHolder.populate(viewModel, stockCard);
+
+        assertTrue(viewHolder.etIssued.isEnabled());
+    }
+
+    @Test
+    public void shouldEnableReceivedEditTextWhenModelWithReceivedType() {
+        MovementReasonManager.MovementReason receivedReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.RECEIVE, "RECEIVE_1", "receive description");
+        viewModel.setDraft(true);
+        viewModel.setReason(receivedReason);
+        viewHolder.populate(viewModel, stockCard);
+
+        assertTrue(viewHolder.etReceived.isEnabled());
+    }
+
+    @Test
+    public void shouldEnableNegativeAdjustmentEditTextWhenModelWithNegativeAdjustmentType() {
+        MovementReasonManager.MovementReason negativeReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.NEGATIVE_ADJUST, "NEGATIVE_1", "negative adjustment description");
+        viewModel.setDraft(true);
+        viewModel.setReason(negativeReason);
+        viewHolder.populate(viewModel, stockCard);
+
+        assertTrue(viewHolder.etNegativeAdjustment.isEnabled());
+    }
+
+    @Test
+    public void shouldEnablePositiveAdjustmentEditTextWhenModelWithPositiveAdjustmentType() {
+        MovementReasonManager.MovementReason positiveReaspn = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.POSITIVE_ADJUST, "POSITIVE_1", "positive adjustment description");
+        viewModel.setDraft(true);
+        viewModel.setReason(positiveReaspn);
+        viewHolder.populate(viewModel, stockCard);
+
+        assertTrue(viewHolder.etPositiveAdjustment.isEnabled());
+    }
+
 }
