@@ -137,11 +137,8 @@
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
             </LinearLayout>
-
-
             <include layout="@layout/layout_form_action" />
 
         </LinearLayout>
     </ScrollView>
-
-</merge>
+    </merge>

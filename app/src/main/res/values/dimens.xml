@@ -15,4 +15,10 @@
     
     <dimen name="homepage_button_margin">8dp</dimen>
     <dimen name="homepage_group_margin">24dp</dimen>
+
+    <dimen name="default_button_height">36dp</dimen>
+    <dimen name="default_button_bar_height">48dp</dimen>
+    <dimen name="default_button_font">14sp</dimen>
+
+    <dimen name="default_action_bar_margin_right">16dp</dimen>
 </resources>

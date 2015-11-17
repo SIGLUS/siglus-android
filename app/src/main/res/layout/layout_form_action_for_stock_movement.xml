@@ -1,36 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/action_panel"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_marginTop="10dp">
 
-    <LinearLayout
-        android:id="@+id/btn_complete"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/action_panel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/blue_button"
-        android:clickable="true"
-        android:gravity="center">
+        android:layout_height="@dimen/default_button_bar_height"
+        android:orientation="horizontal"
+        android:gravity="right">
+
+        <LinearLayout
+            android:id="@+id/btn_complete"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/default_button_height"
+            android:layout_margin="6dp"
+            android:background="@drawable/blue_button"
+            android:clickable="true"
+            android:gravity="center">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/default_button_height"
+                android:layout_gravity="center"
+                android:textSize="@dimen/default_button_font"
+                android:background="@color/color_accent"
+                android:clickable="false"
+                android:drawableStart="@drawable/ic_save"
+                android:text="@string/btn_complete"
+                android:textColor="@color/white"
+                android:padding="2dp"/>
+        </LinearLayout>
 
         <Button
+            android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@color/color_accent"
-            android:clickable="false"
-            android:drawableStart="@drawable/ic_save"
-            android:text="@string/btn_complete"
-            android:textColor="@color/white" />
+            android:layout_height="@dimen/default_button_height"
+            android:textSize="@dimen/default_button_font"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/white_button"
+            android:text="@string/btn_cancel"
+            android:textColor="@color/color_accent"
+            android:padding="2dp"/>
     </LinearLayout>
-
-    <Button
-        android:id="@+id/btn_cancel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/white_button"
-        android:text="@string/btn_cancel"
-        android:textColor="@color/color_accent" />
-</LinearLayout>
+</android.support.v7.widget.CardView>
