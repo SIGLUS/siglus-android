@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockCard;
@@ -59,7 +60,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
     @InjectView(R.id.et_positive_adjustment)EditText etPositiveAdjustment;
     @InjectView(R.id.et_issued)EditText etIssued;
     @InjectView(R.id.tx_stock_on_hand)TextView txStockExistence;
-//    @InjectView(R.id.tx_signature)TextView txSignature;
+    @InjectView(R.id.tx_signature)TextView txSignature;
     private final int blackColor;
     private final int redColor;
     private Drawable editTextBackground;
@@ -98,7 +99,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
         etPositiveAdjustment.setText(model.getPositiveAdjustment());
         etIssued.setText(model.getIssued());
         txStockExistence.setText(model.getStockExistence());
-//        txSignature.setText(model.getSignature());
+        txSignature.setText(model.getSignature());
 
         if (model.getReason() != null) {
             txReason.setText(model.getReason().getDescription());
@@ -117,6 +118,10 @@ public class StockMovementViewHolder extends BaseViewHolder {
         addClickListeners(model, getPreviousMovementDate(stockCard));
 
         addTextChangedListeners(model, stockCard.getStockOnHand());
+
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.display_stock_movement_signature)) {
+            txSignature.setVisibility(View.GONE);
+        }
 
     }
 

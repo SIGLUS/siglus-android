@@ -32,6 +32,7 @@ import android.widget.ListView;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.presenter.StockMovementPresenter;
@@ -113,6 +114,9 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         View headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
         stockMovementList.addHeaderView(headerView);
         stockMovementList.setAdapter(stockMovementAdapter);
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.display_stock_movement_signature)) {
+            headerView.findViewById(R.id.tx_signature).setVisibility(View.GONE);
+        }
 
         btnComplete.setOnClickListener(new View.OnClickListener() {
             @Override
