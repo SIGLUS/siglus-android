@@ -22,6 +22,7 @@ import android.app.DatePickerDialog;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -82,6 +83,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
 
     public void populate(final StockMovementViewModel model, StockCard stockCard) {
 
+        Log.i("gongmingqm10","@@@@populate@@@@");
         disableLine();
         hideUnderline();
 
@@ -106,6 +108,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
         if (model.isDraft()) {
             txMovementDate.setEnabled(true);
             txReason.setEnabled(true);
+            setEditableQuantityField(model);
         } else {
             itemView.setBackgroundResource(R.color.white);
         }
@@ -130,6 +133,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
                     enableAndUnderlineEditText(etNegativeAdjustment);
                     break;
                 case POSITIVE_ADJUST:
+                    enableAndUnderlineEditText(etPositiveAdjustment);
                     break;
             }
         }
