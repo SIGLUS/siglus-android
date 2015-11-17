@@ -25,7 +25,7 @@
                 android:layout_height="@dimen/default_button_height"
                 android:layout_gravity="center"
                 android:textSize="@dimen/default_button_font"
-                android:background="@color/color_accent"
+                android:background="@null"
                 android:clickable="false"
                 android:drawableStart="@drawable/ic_save"
                 android:text="@string/btn_complete"
