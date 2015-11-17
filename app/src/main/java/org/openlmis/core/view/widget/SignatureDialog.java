@@ -1,7 +1,6 @@
 package org.openlmis.core.view.widget;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,30 +12,48 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+
 import org.openlmis.core.R;
+
 import lombok.Getter;
 import lombok.Setter;
+import roboguice.fragment.provided.RoboDialogFragment;
+import roboguice.inject.InjectView;
 
-public class SignatureDialog extends DialogFragment implements View.OnClickListener {
-
-    Button btnCancel;
-    Button btnSign;
-
-    EditText etSignature;
-    TextInputLayout lySignature;
+public class SignatureDialog extends RoboDialogFragment implements View.OnClickListener {
 
     @Getter
     @Setter
     DialogDelegate delegate;
     private View contentView;
 
+    @InjectView(R.id.btn_cancel)
+    public TextView btnCancel;
+
+    @InjectView(R.id.btn_done)
+    public Button btnSign;
+
+    @InjectView(R.id.et_signature)
+    public EditText etSignature;
+
+    @InjectView(R.id.ly_signature)
+    public TextInputLayout lySignature;
+
+    @InjectView(R.id.tv_signature_title)
+    public TextView tvSignatureTitle;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contentView = inflater.inflate(R.layout.dialog_inventory_signature, container, false);
-
-        initUI();
         return contentView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initUI();
     }
 
     @NonNull
@@ -54,11 +71,7 @@ public class SignatureDialog extends DialogFragment implements View.OnClickListe
     }
 
     private void initUI() {
-        btnCancel = (Button) contentView.findViewById(R.id.btn_cancel);
-        btnSign = (Button) contentView.findViewById(R.id.btn_done);
-        etSignature = (EditText) contentView.findViewById(R.id.et_signature);
-        lySignature = (TextInputLayout) contentView.findViewById(R.id.ly_signature);
-
+        tvSignatureTitle.setText(getArguments().getString("title"));
         btnCancel.setOnClickListener(this);
         btnSign.setOnClickListener(this);
     }
@@ -72,7 +85,7 @@ public class SignatureDialog extends DialogFragment implements View.OnClickListe
 
     private boolean checkSignature(String signature) {
         System.out.println(signature);
-        return signature.length() >= 2 && signature.matches("[a-zA-Z.]+");
+        return signature.length() >= 2 && signature.matches("[a-zA-Z._]+");
     }
 
     @Override
@@ -99,5 +112,11 @@ public class SignatureDialog extends DialogFragment implements View.OnClickListe
         void onCancel();
 
         void onSign(String sign);
+    }
+
+    public static Bundle getBundleToMe(String title) {
+        Bundle bundle = new Bundle();
+        bundle.putString("title", title);
+        return bundle;
     }
 }

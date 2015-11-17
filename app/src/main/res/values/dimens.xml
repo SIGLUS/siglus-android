@@ -8,7 +8,8 @@
     <dimen name="divider">1dp</dimen>
     <dimen name="stock_movement_item_common_width">100dp</dimen>
     <dimen name="list_item_padding">12dp</dimen>
-    <dimen name="card_view_padding">8dp</dimen>
+    <dimen name="card_view_margin">16dp</dimen>
+    <dimen name="card_view_padding">32dp</dimen>
     <dimen name="rnr_card_content_margin_left">37dp</dimen>
     <dimen name="rnr_card_content_text_size">12sp</dimen>
     
