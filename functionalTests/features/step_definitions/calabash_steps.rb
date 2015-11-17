@@ -77,8 +77,8 @@ Given(/^I have initialized inventory$/) do
   steps %Q{
         Then I wait up to 30 seconds for the "InventoryActivity" screen to appear
         Then I wait for 1 second
-		When I Select MMIA Item
 		When I Select VIA Item
+		When I Select MMIA Item
 
         And I press "Complete"
         Then I wait for the "HomeActivity" screen to appear
