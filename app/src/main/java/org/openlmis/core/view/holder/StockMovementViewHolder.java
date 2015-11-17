@@ -22,6 +22,7 @@ import android.app.DatePickerDialog;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -109,6 +110,9 @@ public class StockMovementViewHolder extends BaseViewHolder {
             txMovementDate.setEnabled(true);
             txReason.setEnabled(true);
             setEditableQuantityField(model);
+            if (!TextUtils.isEmpty(model.getMovementDate())) {
+                highLightAndShowBottomBtn();
+            }
         } else {
             itemView.setBackgroundResource(R.color.white);
         }
