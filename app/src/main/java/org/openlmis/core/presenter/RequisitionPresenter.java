@@ -353,6 +353,14 @@ public class RequisitionPresenter implements Presenter {
         return !checkNotNull(rnRForm).getStatus().equals(RnRForm.STATUS.AUTHORIZED);
     }
 
+    public RnRForm.STATUS getRnrFormStatus() {
+        if(rnRForm != null) {
+            return rnRForm.getStatus();
+        } else {
+            return RnRForm.STATUS.DRAFT;
+        }
+    }
+
 
     public interface RequisitionView extends BaseView {
 

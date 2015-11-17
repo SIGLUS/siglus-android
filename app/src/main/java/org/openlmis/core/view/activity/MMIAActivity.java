@@ -217,7 +217,9 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     public void onBackPressed() {
 
         if (getResources().getBoolean(R.bool.feature_show_pop_up_even_no_data_changed_418)){
-            hasDataChanged = true;
+            if(presenter.getRnrFormStatus() == RnRForm.STATUS.DRAFT) {
+                hasDataChanged = true;
+            }
         }
 
         if (hasDataChanged()) {

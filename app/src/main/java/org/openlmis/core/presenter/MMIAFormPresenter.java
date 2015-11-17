@@ -261,6 +261,13 @@ public class MMIAFormPresenter implements Presenter {
         }
     }
 
+    public RnRForm.STATUS getRnrFormStatus() {
+        if(form != null)
+            return form.getStatus();
+        else
+            return RnRForm.STATUS.DRAFT;
+    }
+
     public interface MMIAFormView extends BaseView {
 
         void showValidationAlert();
