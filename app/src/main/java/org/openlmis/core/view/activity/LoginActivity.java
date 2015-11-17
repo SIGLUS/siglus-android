@@ -138,7 +138,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
     @Override
     public boolean isRequisitionDataSynced() {
-        return getPreferences().getBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, false);
+        return getPreferences().getBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, true);
     }
 
     @Override
