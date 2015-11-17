@@ -1,6 +1,7 @@
 package org.openlmis.core.view.widget;
 
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -71,7 +72,10 @@ public class SignatureDialog extends RoboDialogFragment implements View.OnClickL
     }
 
     private void initUI() {
-        tvSignatureTitle.setText(getArguments().getString("title"));
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            tvSignatureTitle.setText(arguments.getString("title"));
+        }
         btnCancel.setOnClickListener(this);
         btnSign.setOnClickListener(this);
     }
@@ -84,7 +88,6 @@ public class SignatureDialog extends RoboDialogFragment implements View.OnClickL
     }
 
     private boolean checkSignature(String signature) {
-        System.out.println(signature);
         return signature.length() >= 2 && signature.matches("[a-zA-Z._]+");
     }
 
@@ -119,4 +122,9 @@ public class SignatureDialog extends RoboDialogFragment implements View.OnClickL
         bundle.putString("title", title);
         return bundle;
     }
+
+    public void show(FragmentManager manager) {
+        super.show(manager, "signature_dialog");
+    }
+
 }
