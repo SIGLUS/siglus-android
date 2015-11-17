@@ -102,6 +102,8 @@ public class StockMovementViewHolder extends BaseViewHolder {
 
         if (model.getReason() != null) {
             txReason.setText(model.getReason().getDescription());
+        } else {
+            txReason.setText(StringUtils.EMPTY);
         }
 
         setInventoryItemsFontColorToRed(model);
