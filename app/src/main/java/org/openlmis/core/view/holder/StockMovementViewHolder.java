@@ -83,7 +83,6 @@ public class StockMovementViewHolder extends BaseViewHolder {
 
     public void populate(final StockMovementViewModel model, StockCard stockCard) {
 
-        Log.i("gongmingqm10","@@@@populate@@@@");
         disableLine();
         hideUnderline();
 

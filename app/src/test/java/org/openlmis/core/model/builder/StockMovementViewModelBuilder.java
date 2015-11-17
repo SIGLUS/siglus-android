@@ -14,6 +14,7 @@ public class StockMovementViewModelBuilder {
     String negativeAdjustment;
     String positiveAdjustment;
     String received;
+    private boolean isDraft;
 
     public StockMovementViewModel build() {
         StockMovementViewModel viewModel = new StockMovementViewModel();
@@ -25,6 +26,7 @@ public class StockMovementViewModelBuilder {
         viewModel.setReceived(received);
         viewModel.setNegativeAdjustment(negativeAdjustment);
         viewModel.setPositiveAdjustment(positiveAdjustment);
+        viewModel.setDraft(isDraft);
         return viewModel;
     }
 
@@ -65,6 +67,11 @@ public class StockMovementViewModelBuilder {
 
     public StockMovementViewModelBuilder withStockExistence(String stockExistence) {
         this.stockExistence = stockExistence;
+        return this;
+    }
+
+    public StockMovementViewModelBuilder withIsDraft(boolean isDraft) {
+        this.isDraft = isDraft;
         return this;
     }
 }

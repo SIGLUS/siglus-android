@@ -26,7 +26,6 @@ import org.robolectric.shadows.ShadowAlertDialog;
 import org.robolectric.shadows.ShadowDatePickerDialog;
 import org.robolectric.shadows.ShadowToast;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -63,6 +62,7 @@ public class StockMovementViewHolderTest {
                 .withIssued("30")
                 .withReceived(null)
                 .withStockExistence("70")
+                .withIsDraft(false)
                 .withMovementReason(new MovementReasonManager.MovementReason(StockMovementItem.MovementType.ISSUE, "ISSUE_1", "issue description")).build();
 
         StockRepository stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockRepository.class);
@@ -123,6 +123,7 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldShowMovementTypeDialogOnClick() {
+        viewModel.setDraft(true);
         viewHolder.populate(viewModel, stockCard);
 
         viewHolder.txReason.performClick();
@@ -151,6 +152,7 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldShowMovementDateDialogOnClick() {
+        viewModel.setDraft(true);
         viewHolder.populate(viewModel, stockCard);
 
         viewHolder.txMovementDate.performClick();
@@ -196,7 +198,5 @@ public class StockMovementViewHolderTest {
         assertEquals("30", viewModel.getIssued());
         assertEquals("70", viewModel.getStockExistence());
         assertEquals("70", viewHolder.txStockExistence.getText().toString());
-
-
     }
 }
