@@ -59,6 +59,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
     @InjectView(R.id.et_positive_adjustment)EditText etPositiveAdjustment;
     @InjectView(R.id.et_issued)EditText etIssued;
     @InjectView(R.id.tx_stock_on_hand)TextView txStockExistence;
+    @InjectView(R.id.tx_signature)TextView txSignature;
     private final int blackColor;
     private final int redColor;
     private Drawable editTextBackground;
@@ -97,6 +98,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
         etPositiveAdjustment.setText(model.getPositiveAdjustment());
         etIssued.setText(model.getIssued());
         txStockExistence.setText(model.getStockExistence());
+        txSignature.setText(model.getSignature());
 
         if (model.getReason() != null) {
             txReason.setText(model.getReason().getDescription());
