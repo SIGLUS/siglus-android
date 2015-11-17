@@ -73,6 +73,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldSaveStockMovement() throws LMISException {
+        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
         StockCard stockCard = new StockCard();
         when(stockRepositoryMock.queryStockCardById(123)).thenReturn(stockCard);
         stockMovementPresenter.setStockCard(123);
