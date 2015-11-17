@@ -79,13 +79,6 @@
             android:layout_weight="1"
             android:minWidth="@dimen/stock_movement_item_common_width" />
 
-        <TextView
-            android:id="@+id/tx_signature"
-            style="@style/sheet_header2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minWidth="@dimen/stock_movement_item_common_width" />
     </LinearLayout>
 
 </LinearLayout>
