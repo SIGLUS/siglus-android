@@ -182,6 +182,32 @@ public class StockMovementViewHolderTest {
     }
 
     @Test
+    public void shouldOnlyEnableCurrentSelectedEditTextWhenChoseMovementType() throws ParseException, LMISException {
+
+        viewModel.setDraft(true);
+        viewHolder.populate(viewModel, stockCard);
+        viewHolder.txMovementDate.setText("");
+
+        StockMovementViewHolder.MovementSelectListener listener = viewHolder.new MovementSelectListener(viewModel);
+
+        MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.RECEIVE, "DON", "Donations");
+        listener.onComplete(receiveReason);
+
+        assertTrue(viewHolder.etReceived.isEnabled());
+        assertFalse(viewHolder.etPositiveAdjustment.isEnabled());
+        assertFalse(viewHolder.etNegativeAdjustment.isEnabled());
+        assertFalse(viewHolder.etIssued.isEnabled());
+
+        MovementReasonManager.MovementReason positiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.POSITIVE_ADJUST, "POSITIVE", "BOUGHT");
+        listener.onComplete(positiveReason);
+
+        assertFalse(viewHolder.etReceived.isEnabled());
+        assertTrue(viewHolder.etPositiveAdjustment.isEnabled());
+        assertFalse(viewHolder.etNegativeAdjustment.isEnabled());
+        assertFalse(viewHolder.etIssued.isEnabled());
+    }
+
+    @Test
     public void shouldEnableMovementTypeAndReasonIfModelIsDraft() {
         viewModel.setDraft(true);
         viewHolder.populate(viewModel, stockCard);
@@ -230,12 +256,25 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldEnablePositiveAdjustmentEditTextWhenModelWithPositiveAdjustmentType() {
-        MovementReasonManager.MovementReason positiveReaspn = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.POSITIVE_ADJUST, "POSITIVE_1", "positive adjustment description");
+        MovementReasonManager.MovementReason positiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.POSITIVE_ADJUST, "POSITIVE_1", "positive adjustment description");
         viewModel.setDraft(true);
-        viewModel.setReason(positiveReaspn);
+        viewModel.setReason(positiveReason);
         viewHolder.populate(viewModel, stockCard);
 
         assertTrue(viewHolder.etPositiveAdjustment.isEnabled());
+    }
+
+    @Test
+    public void shouldResetTxReasonValueWhenReuseViewModel() {
+        viewHolder.populate(viewModel, stockCard);
+
+        assertEquals(viewHolder.txReason.getText().toString(), "issue description");
+
+        viewModel.setDraft(true);
+        viewModel.setReason(null);
+        viewHolder.populate(viewModel, stockCard);
+
+        assertEquals(viewHolder.txReason.getText().toString(), "");
     }
 
 }

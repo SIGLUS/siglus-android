@@ -109,12 +109,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
         setInventoryItemsFontColorToRed(model);
 
         if (model.isDraft()) {
-            txMovementDate.setEnabled(true);
-            txReason.setEnabled(true);
-            setEditableQuantityField(model);
-            if (!TextUtils.isEmpty(model.getMovementDate())) {
-                highLightAndShowBottomBtn();
-            }
+            setInitialDraftStyle(model);
         } else {
             itemView.setBackgroundResource(R.color.white);
         }
@@ -123,6 +118,15 @@ public class StockMovementViewHolder extends BaseViewHolder {
 
         addTextChangedListeners(model, stockCard.getStockOnHand());
 
+    }
+
+    private void setInitialDraftStyle(final StockMovementViewModel model) {
+        txMovementDate.setEnabled(true);
+        txReason.setEnabled(true);
+        setEditableQuantityField(model);
+        if (!TextUtils.isEmpty(model.getMovementDate())) {
+            highLightAndShowBottomBtn();
+        }
     }
 
     private void setEditableQuantityField(StockMovementViewModel model) {
