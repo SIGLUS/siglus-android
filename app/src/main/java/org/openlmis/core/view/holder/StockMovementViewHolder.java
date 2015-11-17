@@ -129,15 +129,31 @@ public class StockMovementViewHolder extends BaseViewHolder {
             switch (model.getReason().getMovementType()) {
                 case ISSUE:
                     enableAndUnderlineEditText(etIssued);
+
+                    disableAndRemoveUnderlineEditText(etReceived);
+                    disableAndRemoveUnderlineEditText(etNegativeAdjustment);
+                    disableAndRemoveUnderlineEditText(etPositiveAdjustment);
                     break;
                 case RECEIVE:
                     enableAndUnderlineEditText(etReceived);
+
+                    disableAndRemoveUnderlineEditText(etIssued);
+                    disableAndRemoveUnderlineEditText(etNegativeAdjustment);
+                    disableAndRemoveUnderlineEditText(etPositiveAdjustment);
                     break;
                 case NEGATIVE_ADJUST:
                     enableAndUnderlineEditText(etNegativeAdjustment);
+
+                    disableAndRemoveUnderlineEditText(etReceived);
+                    disableAndRemoveUnderlineEditText(etIssued);
+                    disableAndRemoveUnderlineEditText(etPositiveAdjustment);
                     break;
                 case POSITIVE_ADJUST:
                     enableAndUnderlineEditText(etPositiveAdjustment);
+
+                    disableAndRemoveUnderlineEditText(etReceived);
+                    disableAndRemoveUnderlineEditText(etIssued);
+                    disableAndRemoveUnderlineEditText(etNegativeAdjustment);
                     break;
             }
         }
@@ -154,6 +170,11 @@ public class StockMovementViewHolder extends BaseViewHolder {
     private void enableAndUnderlineEditText(EditText editText) {
         editText.setEnabled(true);
         editText.setBackground(editTextBackground);
+    }
+
+    private void disableAndRemoveUnderlineEditText(EditText editText) {
+        editText.setEnabled(false);
+        editText.setBackground(null);
     }
 
 
