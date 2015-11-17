@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <bool name="feature_sync_stock_card_279">false</bool>
+    <bool name="feature_sync_stock_card_279">true</bool>
     <bool name="feature_sync_back_rnr_186">false</bool>
     <bool name="display_form_signature">false</bool>
     <bool name="display_stock_movement_signature">false</bool>
