@@ -146,7 +146,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         SignatureDialog signatureDialog = new SignatureDialog();
         signatureDialog.setArguments(SignatureDialog.getBundleToMe(getString(R.string.label_stock_movement_signature_title)));
         signatureDialog.setDelegate(signatureDialogDelegate);
-        signatureDialog.show(getFragmentManager(), "signature_dialog");
+        signatureDialog.show(getFragmentManager());
     }
 
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {

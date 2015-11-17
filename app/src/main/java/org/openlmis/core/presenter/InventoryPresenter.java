@@ -179,6 +179,7 @@ public class InventoryPresenter implements Presenter {
         long stockOnHand = model.getStockOnHand();
 
         StockMovementItem item = new StockMovementItem();
+        item.setSignature(model.getSignature());
         item.setMovementDate(new Date());
         item.setMovementQuantity(Math.abs(inventory - stockOnHand));
 
@@ -218,11 +219,19 @@ public class InventoryPresenter implements Presenter {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public void doPhysicalInventory(final List<StockCardViewModel> list) {
+    public void signPhysicalInventory() {
         if (view.validateInventory()) {
-            view.loading();
-            stockMovementObservable(list).subscribe(nextMainPageAction, errorAction);
+            view.showSignDialog();
         }
+    }
+
+    public void doPhysicalInventory(List<StockCardViewModel> list, final String sign) {
+        view.loading();
+
+        for (StockCardViewModel viewModel:list){
+            viewModel.setSignature(sign);
+        }
+        stockMovementObservable(list).subscribe(nextMainPageAction, errorAction);
     }
 
     protected Observable<Object> stockMovementObservable(final List<StockCardViewModel> list) {
@@ -286,5 +295,7 @@ public class InventoryPresenter implements Presenter {
         boolean validateInventory();
 
         void showErrorMessage(String msg);
+
+        void showSignDialog();
     }
 }

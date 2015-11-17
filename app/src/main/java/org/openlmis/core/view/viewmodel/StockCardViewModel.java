@@ -67,6 +67,8 @@ public class StockCardViewModel {
 
     private StockCard stockCard;
 
+    private String signature;
+
     public StockCardViewModel(StockCard stockCard) {
 
         this.stockCard = stockCard;

@@ -41,6 +41,7 @@ import org.openlmis.core.view.adapter.InventoryListAdapter;
 import org.openlmis.core.view.adapter.PhysicalInventoryAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.widget.SignatureDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +112,7 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.doPhysicalInventory(mAdapter.getData());
+                presenter.signPhysicalInventory();
             }
         });
     }
@@ -199,6 +200,25 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
     public void showErrorMessage(String msg) {
         ToastUtil.show(msg);
     }
+
+    @Override
+    public void showSignDialog() {
+        SignatureDialog signatureDialog = new SignatureDialog();
+        signatureDialog.setArguments(SignatureDialog.getBundleToMe(getString(R.string.label_stock_movement_signature_title)));
+        signatureDialog.setDelegate(signatureDialogDelegate);
+        signatureDialog.show(getFragmentManager());
+    }
+
+    protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
+        @Override
+        public void onCancel() {
+        }
+
+        @Override
+        public void onSign(String sign) {
+            presenter.doPhysicalInventory(mAdapter.getData(), sign);
+        }
+    };
 
     @Override
     public boolean validateInventory() {

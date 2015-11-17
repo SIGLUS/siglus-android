@@ -18,6 +18,8 @@
 
 package org.openlmis.core.presenter;
 
+import android.support.annotation.NonNull;
+
 import com.google.inject.AbstractModule;
 
 import org.apache.commons.lang3.StringUtils;
@@ -31,8 +33,8 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.robolectric.RuntimeEnvironment;
@@ -190,26 +192,12 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldRestoreDraftInventory() throws Exception {
-        StockCard stockCard = StockCardBuilder.buildStockCard();
-        stockCard.setId(9);
 
-        ArrayList<StockCardViewModel> stockCardViewModels = new ArrayList<>();
-        StockCardViewModel build = new StockCardViewModel(stockCard);
-        build.setQuantity("11");
-        build.setExpiryDates(new ArrayList<String>());
-        build.setStockCardId(stockCard.getId());
-        stockCardViewModels.add(build);
-
-        StockCardViewModel build2 = new StockCardViewModel(stockCard);
-        build2.setStockCardId(3);
-        build2.setQuantity("15");
-        ArrayList<String> expireDates = new ArrayList<>();
-        expireDates.add("11/02/2015");
-        build2.setExpiryDates(expireDates);
-        stockCardViewModels.add(build2);
+        ArrayList<StockCardViewModel> stockCardViewModels = getStockCardViewModels();
 
         ArrayList<DraftInventory> draftInventories = new ArrayList<>();
         DraftInventory draftInventory = new DraftInventory();
+        stockCard.setId(9);
         draftInventory.setStockCard(stockCard);
         draftInventory.setQuantity(20L);
         draftInventory.setExpireDates("11/10/2015");
@@ -218,9 +206,44 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
         inventoryPresenter.restoreDraftInventory(stockCardViewModels);
         assertThat(stockCardViewModels.get(0).getQuantity(), is("20"));
-        assertThat(stockCardViewModels.get(0).getExpiryDates().get(0),is("11/10/2015"));
+        assertThat(stockCardViewModels.get(0).getExpiryDates().get(0), is("11/10/2015"));
         assertThat(stockCardViewModels.get(1).getQuantity(), is("15"));
         assertThat(stockCardViewModels.get(1).getExpiryDates().get(0), is("11/02/2015"));
+    }
+
+    private ArrayList<StockCardViewModel> getStockCardViewModels() {
+        ArrayList<StockCardViewModel> stockCardViewModels = new ArrayList<>();
+        stockCardViewModels.add(buildStockCardWithOutDraft(9,"11",null));
+        StockCardViewModel stockCardViewModelWithOutDraft = buildStockCardWithOutDraft(3, "15", "11/02/2015");
+        stockCardViewModels.add(stockCardViewModelWithOutDraft);
+        return stockCardViewModels;
+    }
+
+    @NonNull
+    private StockCardViewModel buildStockCardWithOutDraft(int stockCardId, String quantity, String expireDate) {
+        StockCardViewModel stockCardViewModelWithOutDraft = new StockCardViewModel(stockCard);
+        stockCardViewModelWithOutDraft.setStockCardId(stockCardId);
+        stockCardViewModelWithOutDraft.setQuantity(quantity);
+        ArrayList<String> expireDates = new ArrayList<>();
+        expireDates.add(expireDate);
+        stockCardViewModelWithOutDraft.setExpiryDates(expireDates);
+        return stockCardViewModelWithOutDraft;
+    }
+
+    @Test
+    public void shouldShowSignatureDialog() throws Exception {
+        when(view.validateInventory()).thenReturn(true);
+        inventoryPresenter.signPhysicalInventory();
+        verify(view).showSignDialog();
+    }
+
+    @Test
+    public void shouldSetSignatureToViewModel() throws Exception {
+        ArrayList<StockCardViewModel> stockCardViewModels = getStockCardViewModels();
+        String signature = "signature";
+        inventoryPresenter.doPhysicalInventory(stockCardViewModels, signature);
+        assertThat(stockCardViewModels.get(0).getSignature(),is(signature));
+        assertThat(stockCardViewModels.get(1).getSignature(),is(signature));
     }
 
     public class MyTestModule extends AbstractModule {
