@@ -16,7 +16,6 @@ Feature: MMIA Page total mismatch
     When I press "OK"
     And I enter "just because!" in "Observations"
     Then I press "Complete"
-    And I sign with "superuser"
-    Then I press "Sign"
+    And I sign mmia with "superuser"
     Then I should see text containing "Your MMIA form has been successfully saved,"
     Then I wait for the "HomeActivity" screen to appear

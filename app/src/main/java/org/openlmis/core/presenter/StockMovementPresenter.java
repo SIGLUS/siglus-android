@@ -23,6 +23,7 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
@@ -137,7 +138,11 @@ public class StockMovementPresenter implements Presenter {
 
     public void submitStockMovement(StockMovementViewModel viewModel) {
         if (viewModel.validateEmpty() && viewModel.validateInputValid()) {
-            view.showSignDialog();
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.display_stock_movement_signature)) {
+                view.showSignDialog();
+            } else {
+                saveAndRefresh(viewModel);
+            }
         } else if (!viewModel.validateEmpty()) {
             view.showErrorAlert(context.getResources().getString(R.string.msg_validation_empty_error));
         } else if (!viewModel.validateInputValid()) {

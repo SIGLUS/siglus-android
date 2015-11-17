@@ -10,11 +10,15 @@ module EnvConfig
             {
                 username:"superuser",
                 password:"password1",
+                mmiaSignature:true,
+                stockMovementSignature:true,
             }
         else
             {
                 username:"test_user",
                 password:"testuser",
+                mmiaSignature:false,
+                stockMovementSignature:false,
             }
         end
     end

@@ -60,9 +60,19 @@ Then(/^I make a movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_ca
         Then I wait for 1 second
         And I enter #{movement_column} number "#{number}"
         And I press "Complete"
-        And I sign with "superuser"
-        Then I press "Sign"
+        And I sign stock movement with "superuser"
         Then I wait for 1 second
         Then I go back
     }
+end
+
+And(/^I sign stock movement with "(.*?)"$/) do |text|
+    if EnvConfig.getConfig()[:stockMovementSignature]
+        enter_text("android.widget.EditText id:'et_signature'", text)
+        hide_soft_keyboard
+
+        steps %Q{
+            Then I press "Sign"
+        }
+    end
 end

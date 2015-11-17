@@ -24,9 +24,15 @@ And(/^I enter regimen totals$/) do
     hide_soft_keyboard
 end
 
-And(/^I sign with "(.*?)"$/) do |text|
-    enter_text("android.widget.EditText id:'et_signature'", text)
-    hide_soft_keyboard
+And(/^I sign mmia with "(.*?)"$/) do |text|
+    if EnvConfig.getConfig()[:mmiaSignature]
+        enter_text("android.widget.EditText id:'et_signature'", text)
+        hide_soft_keyboard
+
+        steps %Q{
+            Then I press "Sign"
+        }
+    end
 end
 
 And(/^I enter patient totals$/) do

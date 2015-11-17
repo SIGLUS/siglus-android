@@ -27,9 +27,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.MockitoAnnotations;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
@@ -56,7 +56,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
@@ -149,7 +148,9 @@ public class MMIAFormPresenterTest {
 
         presenter.completeMMIA(regimenItems, baseInfoItems, "");
 
-        verify(mockMMIAformView).showSignDialog();
+        if(LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_form_signature)) {
+            verify(mockMMIAformView).showSignDialog();
+        }
     }
 
     @Test

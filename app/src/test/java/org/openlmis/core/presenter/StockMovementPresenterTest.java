@@ -24,7 +24,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -84,7 +86,9 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
 
         stockMovementPresenter.submitStockMovement(viewModel);
 
-        verify(view).showSignDialog();
+        if(LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_stock_movement_signature)) {
+            verify(view).showSignDialog();
+        }
     }
 
     @Test
