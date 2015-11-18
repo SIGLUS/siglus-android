@@ -93,22 +93,41 @@ public class SignatureDialog extends RoboDialogFragment implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        if (delegate == null) {
+        switch (v.getId()) {
+            case R.id.btn_done:
+                onDone();
+                break;
+            case R.id.btn_cancel:
+                onCancel();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void onDone() {
+        if (!hasDelegate()) {
             return;
         }
 
-        if (v.getId() == R.id.btn_done) {
-            String signature = etSignature.getText().toString().trim();
-            if (checkSignature(signature)) {
-                delegate.onSign(signature);
-                dismiss();
-            } else {
-                lySignature.setError("Signature not valid");
-            }
-        } else {
-            delegate.onCancel();
+        String signature = etSignature.getText().toString().trim();
+        if (checkSignature(signature)) {
+            delegate.onSign(signature);
             dismiss();
+        } else {
+            lySignature.setError("Signature not valid");
         }
+    }
+
+    private void onCancel() {
+        dismiss();
+        if (hasDelegate()) {
+            delegate.onCancel();
+        }
+    }
+
+    private boolean hasDelegate() {
+        return delegate != null;
     }
 
     public interface DialogDelegate {
