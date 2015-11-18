@@ -196,7 +196,7 @@ public class RequisitionPresenter implements Presenter {
         setRnrFormAmount();
         rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
 
-        if(LMISApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature)) {
+        if(LMISApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature_10)) {
             view.showSignDialog();
         } else {
             if (rnRForm.getStatus() == RnRForm.STATUS.DRAFT) {

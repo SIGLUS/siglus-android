@@ -141,7 +141,7 @@ public class RequisitionPresenterTest {
 
         waitObservableToExeute();
 
-        if (LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature)) {
+        if (LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature_10)) {
             verify(mockVIARepository).setSignature(form, "userSignature", RnRFormSignature.TYPE.SUBMITTER);
             verify(presenter.view).showMessageNotifyDialog();
         }
@@ -163,7 +163,7 @@ public class RequisitionPresenterTest {
 
         waitObservableToExeute();
 
-        if (LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature)) {
+        if (LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature_10)) {
             verify(mockVIARepository).setSignature(form, "userSignature", RnRFormSignature.TYPE.APPROVER);
         }
         verify(mockVIARepository).authorise(form);

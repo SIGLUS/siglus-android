@@ -29,3 +29,24 @@ Then(/^I should see "(\d+)" on index "(\d+)" of "(.*?)" field/) do |num,index,fi
     end
 end
 
+
+And(/^I sign via with "(.*?)" "(.*?)" and complete$/) do |submitSignature, completeSignature|
+    if EnvConfig.getConfig()[:viaSignature]
+        enter_text("android.widget.EditText id:'et_signature'", submitSignature)
+        hide_soft_keyboard
+
+        steps %Q{
+            Then I press "Sign"
+            And I wait for 1 second
+            Then I press "OK"
+            Then I press "Complete"
+        }
+
+        enter_text("android.widget.EditText id:'et_signature'", completeSignature)
+        hide_soft_keyboard
+        steps %Q{
+            Then I press "Sign"
+        }
+    end
+end
+

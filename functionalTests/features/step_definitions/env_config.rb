@@ -12,6 +12,7 @@ module EnvConfig
                 password:"password1",
                 mmiaSignature:true,
                 stockMovementSignature:true,
+                viaSignature:true,
             }
         else
             {
@@ -19,6 +20,7 @@ module EnvConfig
                 password:"testuser",
                 mmiaSignature:false,
                 stockMovementSignature:false,
+                viaSignature:false,
             }
         end
     end

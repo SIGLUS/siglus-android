@@ -87,21 +87,21 @@ end
 
 When(/^I Select MMIA Item$/) do
   steps %Q{
-        When I select the item called "[08S42]"
-        When I select the item called "[08S18Y]"
-        When I select the item called "[08S40]"
-        When I select the item called "[08S36]"
-        When I select the item called "[08S32]"
+    When I search product by fnm "08S42" and select this item
+    When I search product by fnm "08S18Y" and select this item
+    When I search product by fnm "08S40" and select this item
+    When I search product by fnm "08S36" and select this item
+    When I search product by fnm "08S32" and select this item
 	}
 end
 
 When(/^I Select VIA Item$/) do
   steps %Q{
-        When I select the item called "[01A01]"
-        When I select the item called "[01A02]"
-        When I select the item called "[01A03]"
-        When I select the item called "[01A03Z]"
-        When I select the item called "[01A04]"
+    When I select the item called "[01A01]"
+    When I select the item called "[01A02]"
+    When I select the item called "[01A03]"
+    When I select the item called "[01A03Z]"
+    When I select the item called "[01A04]"
 	}
 end
 
@@ -138,6 +138,15 @@ When(/^I initialize inventory$/) do
            Given I have initialized inventory
        }
     end
+end
 
+When(/^I search product by fnm "(.*?)" and select this item$/) do |fnm|
+    search_bar = query("android.support.v7.widget.SearchView id:'action_search'")
+    touch(search_bar)
+    enter_text("android.support.v7.widget.SearchView id:'action_search'", fnm)
 
+    steps %Q{
+        When I select the item called "#{fnm}"
+    }
+    clear_text_in(search_bar)
 end

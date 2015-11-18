@@ -38,8 +38,7 @@ Feature: Requisition
     Then I swipe right
     Then I should see "345"
     Then I press "Submit for Approval"
-    And I wait for 1 second
-    Then I press "Complete"
+    And I sign via with "superuser" "testUser" and complete
     Then I wait for the "RequisitionActivity" screen to appear
 
 Scenario: Add A Issued Movement on VIA product,then the quantity should change
