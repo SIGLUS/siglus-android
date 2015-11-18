@@ -33,6 +33,7 @@
 
         <activity
             android:name=".view.activity.InventoryActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_init_inventory" />
 
         <activity
