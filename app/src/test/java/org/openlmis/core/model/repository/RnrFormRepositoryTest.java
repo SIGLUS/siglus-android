@@ -355,6 +355,27 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(rnRForm.getComments(),is("Comments"));
     }
 
+    @Test
+    public void shouldGetAllSignaturesByRnrFormId() throws LMISException {
+        Program program = new Program();
+        RnRForm form = new RnRForm();
+
+        form.setProgram(program);
+        form.setComments("Submitted Form");
+        form.setStatus(RnRForm.STATUS.SUBMITTED);
+
+        rnrFormRepository.create(form);
+
+        rnrFormRepository.setSignature(form, "Submitter Signature", RnRFormSignature.TYPE.SUBMITTER);
+        rnrFormRepository.setSignature(form, "Approver Signature", RnRFormSignature.TYPE.APPROVER);
+
+        List<RnRFormSignature> signatures = rnrFormRepository.querySignaturesByRnrForm(form);
+
+        assertThat(signatures.size(), is(2));
+        assertThat(signatures.get(0).getSignature(),is("Submitter Signature"));
+        assertThat(signatures.get(1).getSignature(),is("Approver Signature"));
+    }
+
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {

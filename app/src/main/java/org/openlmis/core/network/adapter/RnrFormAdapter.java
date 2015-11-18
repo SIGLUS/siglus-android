@@ -38,12 +38,15 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.RnrFormRepository;
 
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 
 import roboguice.RoboGuice;
 
@@ -51,6 +54,9 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
 
     @Inject
     public ProgramRepository programRepository;
+    @Inject
+    RnrFormRepository rnrFormRepository;
+
     private final Gson gson;
     private final JsonParser jsonParser;
 
@@ -70,6 +76,14 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
         root.add("products", jsonParser.parse(gson.toJson(rnRForm.getRnrFormItemListWrapper())));
         root.add("regimens", jsonParser.parse(gson.toJson(rnRForm.getRegimenItemListWrapper())));
         root.add("patientQuantifications", jsonParser.parse(gson.toJson(rnRForm.getBaseInfoItemListWrapper())));
+
+        try {
+            final List<RnRFormSignature> signatureList = rnrFormRepository.querySignaturesByRnrForm(rnRForm);
+            root.add("rnrSignatures", jsonParser.parse(gson.toJson(signatureList)));
+        } catch (LMISException e) {
+            e.printStackTrace();
+            throw new JsonParseException("can not find Signature by rnrForm");
+        }
 
         String programCode = rnRForm.getProgram().getProgramCode();
         try {

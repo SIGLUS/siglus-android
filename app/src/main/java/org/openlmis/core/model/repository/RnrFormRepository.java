@@ -396,4 +396,16 @@ public class RnrFormRepository {
             }
         });
     }
+
+    public List<RnRFormSignature> querySignaturesByRnrForm(final RnRForm form) throws LMISException {
+        if (form == null) {
+            throw new LMISException("RnRForm cannot be null !");
+        }
+        return dbUtil.withDao(RnRFormSignature.class,new DbUtil.Operation<RnRFormSignature, List<RnRFormSignature>>(){
+            @Override
+            public List<RnRFormSignature> operate(Dao<RnRFormSignature, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("form_id",form.getId()).query();
+            }
+        });
+    }
 }

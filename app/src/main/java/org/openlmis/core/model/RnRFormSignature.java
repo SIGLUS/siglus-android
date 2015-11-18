@@ -18,6 +18,8 @@
 
 package org.openlmis.core.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -45,9 +47,12 @@ public class RnRFormSignature {
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private RnRForm form;
 
+    @Expose
+    @SerializedName("text")
     @DatabaseField
     private String signature;
 
+    @Expose
     @DatabaseField
     private TYPE type;
 }
