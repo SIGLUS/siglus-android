@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/card_view_margin"
     android:background="@color/white"
-    android:padding="@dimen/card_view_padding"
+    android:padding="32dp"
     android:paddingTop="20dp">
 
     <LinearLayout
