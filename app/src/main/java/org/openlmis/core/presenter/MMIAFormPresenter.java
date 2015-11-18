@@ -151,7 +151,7 @@ public class MMIAFormPresenter implements Presenter {
             return;
         }
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.display_form_signature)) {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
             view.showSignDialog();
         } else {
             authoriseForm();

@@ -25,7 +25,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
@@ -125,12 +127,9 @@ public class RequisitionPresenterTest {
 
     @Test
     public void shouldSubmitAfterSignedAndStatusIsDraft() throws LMISException{
-        final RnRForm form = new RnRForm();
-        form.setStatus(RnRForm.STATUS.DRAFT);
-        form.setRnrFormItemListWrapper(new ArrayList<RnrFormItem>());
-        form.setBaseInfoItemListWrapper(new ArrayList<BaseInfoItem>() {{
-            add(new BaseInfoItem(VIARepository.ATTR_CONSULTATION, BaseInfoItem.TYPE.STRING, form));
-        }});
+        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
+
+        RnRForm form = getRnRFormWithStatus(RnRForm.STATUS.DRAFT);
 
         when(mockVIARepository.getDraftVIA()).thenReturn(form);
 
@@ -138,18 +137,46 @@ public class RequisitionPresenterTest {
         presenter.loadRnrForm(0);
 
         presenter.requisitionFormItemViewModelList = new ArrayList<>();
-        presenter.processSign("username");
+        presenter.processSign("userSignature");
 
         waitObservableToExeute();
 
-        verify(mockVIARepository).setSignature(form, "userSignature", RnRFormSignature.TYPE.SUBMITTER);
+        if (LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature)) {
+            verify(mockVIARepository).setSignature(form, "userSignature", RnRFormSignature.TYPE.SUBMITTER);
+            verify(presenter.view).showMessageNotifyDialog();
+        }
+        verify(mockVIARepository).submit(form);
+    }
 
-        form.setStatus(RnRForm.STATUS.SUBMITTED);
-        presenter.processRequisition("123");
+    @Test
+    public void shouldCompleteAfterSignedAndStatusIsSubmit() throws LMISException{
+        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
+        RnRForm form = getRnRFormWithStatus(RnRForm.STATUS.SUBMITTED);
+
+        when(mockVIARepository.getDraftVIA()).thenReturn(form);
+
+        mockVIARepository.initVIA();
+        presenter.loadRnrForm(0);
+
+        presenter.requisitionFormItemViewModelList = new ArrayList<>();
+        presenter.processSign("userSignature");
 
         waitObservableToExeute();
 
+        if (LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature)) {
+            verify(mockVIARepository).setSignature(form, "userSignature", RnRFormSignature.TYPE.APPROVER);
+        }
         verify(mockVIARepository).authorise(form);
+    }
+
+    private RnRForm getRnRFormWithStatus(RnRForm.STATUS status) {
+        final RnRForm form = new RnRForm();
+        form.setStatus(status);
+        form.setRnrFormItemListWrapper(new ArrayList<RnrFormItem>());
+        form.setBaseInfoItemListWrapper(new ArrayList<BaseInfoItem>() {{
+            add(new BaseInfoItem(VIARepository.ATTR_CONSULTATION, BaseInfoItem.TYPE.STRING, form));
+        }});
+        return form;
     }
 
     private void waitObservableToExeute() {

@@ -148,7 +148,7 @@ public class MMIAFormPresenterTest {
 
         presenter.completeMMIA(regimenItems, baseInfoItems, "");
 
-        if(LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_form_signature)) {
+        if(LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
             verify(mockMMIAformView).showSignDialog();
         }
     }

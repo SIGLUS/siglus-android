@@ -30,7 +30,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LMISTestRunner.class)
-public class BaseDialogFragmentTest {
+public class SimpleDialogFragmentTest {
 
     @Test
     public void shouldSetCallBack() {

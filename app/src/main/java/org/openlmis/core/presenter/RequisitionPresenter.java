@@ -23,12 +23,14 @@ import android.text.TextUtils;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.service.SyncManager;
@@ -194,7 +196,15 @@ public class RequisitionPresenter implements Presenter {
         setRnrFormAmount();
         rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
 
-        view.showSignDialog();
+        if(LMISApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature)) {
+            view.showSignDialog();
+        } else {
+            if (rnRForm.getStatus() == RnRForm.STATUS.DRAFT) {
+                submitRequisition();
+            } else {
+                authorise();
+            }
+        }
     }
 
     private void submitRequisition() {
@@ -272,7 +282,7 @@ public class RequisitionPresenter implements Presenter {
 
     }
 
-    private void setRnrFormAmount() {
+    protected void setRnrFormAmount() {
         ArrayList<RnrFormItem> rnrFormItemListWrapper = rnRForm.getRnrFormItemListWrapper();
         for (int i = 0; i < rnrFormItemListWrapper.size(); i++) {
             String requestAmount = requisitionFormItemViewModelList.get(i).getRequestAmount();

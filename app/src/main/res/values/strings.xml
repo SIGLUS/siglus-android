@@ -33,7 +33,7 @@
     <string name="msg_invalid_date">Cannot choose past date</string>
     <string name="btn_done">Done</string>
     <string name="dialog_request_signature">Sign the movement with your details</string>
-    <string name="dialog_request_signature_cancel">Cancel</string>
+    <string name="dialog_request_signature_cancel">Don\'t Sign</string>
     <string name="dialog_request_signature_sign">Sign</string>
     <string name="msg_remove_expire_date">Do you want to remove this expiry date?</string>
     <string name="msg_save_before_exit">Please save initial inventory before exiting the app</string>

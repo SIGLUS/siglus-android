@@ -19,6 +19,7 @@
 package org.openlmis.core.view.activity;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.view.View;
@@ -154,6 +155,39 @@ public class RequisitionActivityTest {
     public void shouldNotRemoveRnrFormWhenGoBack() {
         requisitionActivity.onBackPressed();
         verify(presenter, never()).removeRnrForm();
+    }
+
+    @Test
+    public void shouldShowSignatureDialog() {
+        requisitionActivity.showSignDialog();
+
+        DialogFragment fragment = (DialogFragment)(requisitionActivity.getFragmentManager().findFragmentByTag("signature_dialog"));
+
+        assertThat(fragment).isNotNull();
+
+        Dialog dialog = fragment.getDialog();
+
+        assertThat(dialog).isNotNull();
+
+        String alertMessage = requisitionActivity.getString(R.string.dialog_request_signature);
+        assertThat(fragment.getArguments().getString("title")).isEqualTo(alertMessage);
+    }
+
+    @Test
+    public void shouldMessageNotifyDialog() {
+        requisitionActivity.showMessageNotifyDialog();
+
+        DialogFragment fragment = (DialogFragment)(requisitionActivity.getFragmentManager().findFragmentByTag("showMessageNotifyDialog"));
+
+        assertThat(fragment).isNotNull();
+
+        AlertDialog dialog = (AlertDialog)fragment.getDialog();
+        ShadowAlertDialog shadowAlertDialog = shadowOf(dialog);
+
+        assertThat(dialog).isNotNull();
+
+        String alertMessage = requisitionActivity.getString(R.string.msg_via_message_notify);
+        assertThat(shadowAlertDialog.getMessage()).isEqualTo(alertMessage);
     }
 
     private View getFirstItemInForm() {

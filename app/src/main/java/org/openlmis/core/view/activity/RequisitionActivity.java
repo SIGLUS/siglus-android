@@ -285,6 +285,8 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     @Override
     public void showSignDialog() {
         SignatureDialog signatureDialog = new SignatureDialog();
+        signatureDialog.setArguments(signatureDialog.getBundleToMe(getResources().getString(R.string.dialog_request_signature)));
+
         signatureDialog.setDelegate(signatureDialogDelegate);
         signatureDialog.show(getFragmentManager(), "signature_dialog");
     }
@@ -302,12 +304,12 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
 
     @Override
     public void showMessageNotifyDialog(){
-        DialogFragment dialogFragment = BaseDialogFragment.newInstance(null,
+        DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
                 getString(R.string.msg_via_message_notify),
                 getString(R.string.btn_ok),
                 null,
                 TAG_SHOW_MESSAGE_NOTIFY_DIALOG);
-        dialogFragment.show(getFragmentManager(), "TAG_SHOW_MESSAGE_NOTIFY_DIALOG");
+        dialogFragment.show(getFragmentManager(), TAG_SHOW_MESSAGE_NOTIFY_DIALOG);
     }
 
     @Override
