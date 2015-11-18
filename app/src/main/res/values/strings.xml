@@ -161,6 +161,9 @@
         <item>Sort by quantity: Low to High</item>
     </string-array>
 
+    <!-- Physical Inventory Page -->
+    <string name="label_physical_inventory_stock_on_hand">Current stock on hand: %1$s</string>
+
     
     <!-- Rnr form historical list -->
     <string name="label_via_name">Via Classica Requisition</string>

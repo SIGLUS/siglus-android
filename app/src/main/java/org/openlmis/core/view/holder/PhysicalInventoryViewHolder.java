@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
@@ -19,6 +20,8 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
 
     @InjectView(R.id.product_name)
     TextView tvProductName;
+    @InjectView(R.id.stock_on_hand_in_inventory)
+    TextView tvStockOnHandInInventory;
     @InjectView(R.id.product_unit)
     TextView tvProductUnit;
     @InjectView(R.id.tx_quantity)
@@ -41,6 +44,13 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
 
         tvProductName.setText(stockCardViewModel.getStyledName());
         tvProductUnit.setText(stockCardViewModel.getStyledUnit());
+
+        tvStockOnHandInInventory.setText(context.getString(R.string.label_physical_inventory_stock_on_hand,
+                Long.toString(stockCardViewModel.getStockOnHand())));
+
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.show_stock_on_hand_in_inventory_345)){
+            tvStockOnHandInInventory.setVisibility(View.GONE);
+        }
 
         etQuantity.setText(stockCardViewModel.getQuantity());
         etQuantity.post(new Runnable() {
