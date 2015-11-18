@@ -37,6 +37,7 @@
     <string name="dialog_request_signature_sign">Sign</string>
     <string name="msg_remove_expire_date">Do you want to remove this expiry date?</string>
     <string name="msg_save_before_exit">Please save initial inventory before exiting the app</string>
+    <string name="label_physical_inventory_signature_title">Enter your initials to sign all inventory movements</string>
 
     <!-- Home Page -->
     <string name="label_stock_cards">Stock Card</string>

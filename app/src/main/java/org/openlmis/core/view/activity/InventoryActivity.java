@@ -204,7 +204,7 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
     @Override
     public void showSignDialog() {
         SignatureDialog signatureDialog = new SignatureDialog();
-        signatureDialog.setArguments(SignatureDialog.getBundleToMe(getString(R.string.label_stock_movement_signature_title)));
+        signatureDialog.setArguments(SignatureDialog.getBundleToMe(getString(R.string.label_physical_inventory_signature_title)));
         signatureDialog.setDelegate(signatureDialogDelegate);
         signatureDialog.show(getFragmentManager());
     }
