@@ -6,7 +6,7 @@ Feature: stock movement Page
 
     Scenario: Initial a MMIA
             Given I have initialized inventory
-            And I press "Stock Card"
+            And I press "stock cards & overview"
             Then I wait for the "StockCardListActivity" screen to appear
             Then I wait for 1 second
             And I make a movement "[08S42]" "Issues" "PAV" "issued" "2"
@@ -36,7 +36,7 @@ Feature: stock movement Page
             Then I wait for the "HomeActivity" screen to appear
 
     Scenario: after editing if I go back without saving I should see pop up, if I say yes then go back without saving, else staying at mmia page
-            And I press "Stock Card"
+            And I press "stock cards & overview"
             Then I wait for the "StockCardListActivity" screen to appear
             Then I wait for 1 second
             And I make a movement "[08S42]" "Issues" "PAV" "issued" "2"

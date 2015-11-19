@@ -5,7 +5,7 @@
     <string name="title_login">Login</string>
     <string name="title_init_inventory">Initial Inventory</string>
     <string name="title_physical_inventory">Inventory</string>
-    <string name="title_stock_cards">Stock Cards</string>
+    <string name="title_stock_cards">Stock overview</string>
     <string name="title_mmia_spread">MMIA</string>
     <string name="title_requisition">Create a Via Classica Requisition</string>
 
@@ -43,7 +43,7 @@
     <string name="hint_signature_error_message">Please enter at lease 2 characters and only letters , \'_\' &amp; \'.\' acceptable.</string>
 
     <!-- Home Page -->
-    <string name="label_stock_cards">Stock Card</string>
+    <string name="label_stock_cards">stock cards &amp; overview</string>
     <string name="label_mmia">Create a MMIA</string>
     <string name="label_sync">Sync Data</string>
     <string name="action_add_new_drug">Add new product</string>

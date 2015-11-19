@@ -7,9 +7,9 @@ Feature: stock movement Page
 
     Scenario: Bottom Btn Logic
         Given I am logged in
-        And I press "Stock Card"
+        And I press "stock cards & overview"
         Then I wait for the "StockCardListActivity" screen to appear
-        Then I see "Stock Card"
+        Then I see "Stock overview"
         Then I wait for 1 second
         Then I select stock card code called "[08S42]"
         Then I wait for the "StockMovementActivity" screen to appear
@@ -26,7 +26,7 @@ Feature: stock movement Page
 
     Scenario: Add A Receive Movement
         Given I am logged in
-        And I press "Stock Card"
+        And I press "stock cards & overview"
         Then I wait for the "StockCardListActivity" screen to appear
         Then I wait for 1 second
         Then I select stock card code called "[08S42]"
@@ -45,7 +45,7 @@ Feature: stock movement Page
 
     Scenario: Add A Negative Adjustment
         Given I am logged in
-        And I press "Stock Card"
+        And I press "stock cards & overview"
         Then I wait for the "StockCardListActivity" screen to appear
         Then I wait for 1 second
         Then I select stock card code called "[01A03]"
@@ -64,7 +64,7 @@ Feature: stock movement Page
 
     Scenario: Add A Positive Adjustment
         Given I am logged in
-        And I press "Stock Card"
+        And I press "stock cards & overview"
         Then I wait for the "StockCardListActivity" screen to appear
         Then I wait for 1 second
         Then I select stock card code called "[01A04]"
@@ -84,7 +84,7 @@ Feature: stock movement Page
 
     Scenario: Add A Issued Movement
         Given I am logged in
-        And I press "Stock Card"
+        And I press "stock cards & overview"
         Then I wait for the "StockCardListActivity" screen to appear
         Then I wait for 1 second
         Then I select stock card code called "[08S18Y]"

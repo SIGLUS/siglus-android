@@ -30,7 +30,6 @@ Feature: Requisition
     Then I swipe right
     Then I enter QuantityRequested "345"
     And I press "Save"
-
     And I wait for the "HomeActivity" screen to appear
     When I press view with id "btn_requisition"
     Then I wait for the "RequisitionActivity" screen to appear
@@ -43,14 +42,13 @@ Feature: Requisition
 
 Scenario: Add A Issued Movement on VIA product,then the quantity should change
     Given I am logged in
-    And I press "Stock Card"
+    And I press "stock cards & overview"
     Then I wait for the "StockCardListActivity" screen to appear
     Then I wait for 1 second
     And I make a movement "[01A01]" "Issues" "PAV" "issued" "10"
     Then I wait for 1 second
     Then I go back
     Then I wait for the "HomeActivity" screen to appear
-
     When I press view with id "btn_requisition"
     Then I swipe right
     Then I should see "113" on index "1" of "tx_theoretical" field

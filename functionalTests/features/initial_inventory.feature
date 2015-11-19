@@ -6,7 +6,7 @@ Feature: initial_inventory
             Then I wait for the "InventoryActivity" screen to appear
             Then I wait for 1 second
             Given I initialize inventory
-            And I press "Stock Card"
+            And I press "stock cards & overview"
             Then I wait for the "StockCardListActivity" screen to appear
             And I press "Sort alphabetically: A to Z"
             And I press "Sort by quantity: High to Low"
