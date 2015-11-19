@@ -45,12 +45,14 @@ public class PhysicalInventoryViewHolderTest {
                 .setQuantity("10")
                 .setChecked(false)
                 .setType("Embalagem")
+                .setSOH(123L)
                 .build();
         viewHolder.populate(viewModel);
 
         assertThat(viewHolder.tvProductName.getText().toString()).isEqualTo("Lamivudina 150mg [08S40]");
         assertThat(viewHolder.tvProductUnit.getText().toString()).isEqualTo("10mg VIA");
         assertThat(viewHolder.etQuantity.getText().toString()).isEqualTo("10");
+        assertThat(viewHolder.tvStockOnHandInInventory.getText().toString()).isEqualTo("Current stock on hand: 123");
         assertThat(RobolectricUtils.getErrorTextView(viewHolder.lyQuantity)).isNull();
 
         verify(mockedExpireDateView).initExpireDateViewGroup(viewModel, false);

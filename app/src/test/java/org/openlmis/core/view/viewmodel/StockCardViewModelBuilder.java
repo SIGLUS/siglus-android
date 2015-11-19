@@ -12,6 +12,11 @@ public class StockCardViewModelBuilder {
         viewModel = new StockCardViewModel(product);
     }
 
+    public StockCardViewModelBuilder setSOH(Long soh){
+        viewModel.setStockOnHand(soh);
+        return this;
+    }
+
     public StockCardViewModelBuilder setChecked(boolean isChecked) {
         viewModel.setChecked(isChecked);
         return this;
