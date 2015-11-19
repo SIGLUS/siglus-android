@@ -61,6 +61,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
 
     private BaseView baseView;
     private BaseAdapter adapter;
+    private View containerView;
 
     @Override
     public void onAttach(Activity activity) {
@@ -83,7 +84,8 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_stock_movement_history, container, false);
+        containerView = inflater.inflate(R.layout.fragment_stock_movement_history, container, false);
+        return containerView;
     }
 
     @Override
@@ -106,7 +108,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
 
     private void initUI() {
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.display_stock_movement_signature)) {
-            getActivity().findViewById(R.id.tx_signature).setVisibility(View.GONE);
+            containerView.findViewById(R.id.tx_signature).setVisibility(View.GONE);
         }
 
         adapter = new StockMovementHistoryAdapter(presenter.getStockMovementModelList());
