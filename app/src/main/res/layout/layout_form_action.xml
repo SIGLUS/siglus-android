@@ -9,16 +9,22 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/default_button_bar_height"
         android:orientation="horizontal"
-        android:gravity="right">
+        android:paddingLeft="@dimen/default_action_bar_padding_left_and_right"
+        android:paddingRight="@dimen/default_action_bar_padding_left_and_right"
+        android:paddingBottom="@dimen/default_action_bar_padding_top_and_bottom"
+        android:paddingTop="@dimen/default_action_bar_padding_top_and_bottom"
+        android:gravity="center">
 
         <LinearLayout
             android:id="@+id/btn_save"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="@dimen/default_button_height"
-            android:layout_margin="6dp"
+            android:layout_marginRight="@dimen/default_action_button_margin"
             android:background="@drawable/white_button"
             android:clickable="true"
-            android:gravity="center">
+            android:gravity="center"
+            android:elevation="1dp">
 
             <Button
                 android:layout_width="wrap_content"
@@ -35,15 +41,15 @@
 
         <Button
             android:id="@+id/btn_complete"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="@dimen/default_button_height"
             android:textSize="@dimen/default_button_font"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
-            android:layout_marginRight="@dimen/default_action_bar_margin_right"
+            android:layout_marginLeft="@dimen/default_action_button_margin"
             android:background="@drawable/blue_button"
             android:text="@string/btn_complete"
             android:textColor="@color/white"
             android:padding="2dp"/>
     </LinearLayout>
 </android.support.v7.widget.CardView>
+

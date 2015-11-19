@@ -27,8 +27,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.inject.Inject;
 
@@ -59,7 +59,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     View btnComplete;
 
     @InjectView(R.id.btn_cancel)
-    Button btnCancel;
+    TextView tvCancel;
 
     @InjectView(R.id.vg_expire_date_container)
     ExpireDateViewGroup expireDateViewGroup;
@@ -125,7 +125,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             }
         });
 
-        btnCancel.setOnClickListener(new View.OnClickListener() {
+        tvCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 

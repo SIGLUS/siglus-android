@@ -18,11 +18,11 @@ Feature: stock movement Page
         Then I don't see "Cancel"
         Then I select a reason "Entries" "District( DDM)"
         Then I should see "Complete"
-        Then I should see "Cancel"
-        And I press "Cancel"
+        Then I should see "CANCEL"
+        And I press "CANCEL"
         Then I wait for 1 second
         Then I don't see "Complete"
-        Then I don't see "Cancel"
+        Then I don't see "CANCEL"
 
     Scenario: Add A Receive Movement
         Given I am logged in

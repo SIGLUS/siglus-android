@@ -120,7 +120,7 @@
     <string name="label_positive_adjustment">Positive Adjustment</string>
     <string name="label_stock_existence">Stock on Hand</string>
     <string name="label_signature">Signature</string>
-    <string name="btn_cancel">Cancel</string>
+    <string name="btn_cancel">CANCEL</string>
     <string name="btn_do_not_remove">Don\'t remove</string>
     <string name="msg_validation_error">Invalid Input</string>
     <string name="msg_validation_empty_error">Missing required field</string>

@@ -100,7 +100,7 @@
     <string name="label_negative_adjustment">Ajustes Negativos</string>
     <string name="label_positive_adjustment">Ajustes Positivos</string>
     <string name="label_stock_existence">Stock Existente</string>
-    <string name="btn_cancel">Cancelar</string>
+    <string name="btn_cancel">CANCELAR</string>
     <string name="msg_validation_error">Entrada inválida</string>
     <string name="msg_validation_empty_error">Falta um campo obrigatório</string>
     <string name="msg_invalid_stock_movement_date">Dados Inválidos</string>
