@@ -21,6 +21,7 @@ package org.openlmis.core.view.holder;
 import android.view.View;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
@@ -37,6 +38,7 @@ public class StockMovementHistoryViewHolder extends BaseViewHolder {
     @InjectView(R.id.et_positive_adjustment)TextView etPositiveAdjustment;
     @InjectView(R.id.et_issued)TextView etIssued;
     @InjectView(R.id.tx_stock_on_hand)TextView txStockExistence;
+    @InjectView(R.id.tx_signature)TextView txSignature;
     private final int blackColor;
     private final int redColor;
 
@@ -60,6 +62,11 @@ public class StockMovementHistoryViewHolder extends BaseViewHolder {
         etIssued.setText(model.getIssued());
         txStockExistence.setText(model.getStockExistence());
         txReason.setText(model.getReason().getDescription());
+        txSignature.setText(model.getSignature());
+
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.display_stock_movement_signature)) {
+            txSignature.setVisibility(View.GONE);
+        }
 
         setInventoryItemsFontColorToRed(model);
     }
