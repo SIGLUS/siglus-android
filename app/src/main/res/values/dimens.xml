@@ -22,4 +22,8 @@
     <dimen name="default_action_button_margin">8dp</dimen>
     <dimen name="default_action_bar_padding_left_and_right">55dp</dimen>
     <dimen name="default_action_bar_padding_top_and_bottom">8dp</dimen>
+
+    <dimen name="default_action_bar_margin_right">16dp</dimen>
+
+    <dimen name="signature_dialog_padding">20dp</dimen>
 </resources>

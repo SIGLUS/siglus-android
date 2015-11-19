@@ -4,8 +4,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/card_view_margin"
     android:background="@color/white"
-    android:padding="32dp"
-    android:paddingTop="20dp">
+    android:padding="@dimen/signature_dialog_padding">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +19,7 @@
             android:text="@string/dialog_request_signature"
             android:textColor="@color/primary_text"
             android:textIsSelectable="true"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/ly_signature"
@@ -42,34 +41,33 @@
             android:layout_height="48dp"
             android:orientation="horizontal"
             android:paddingBottom="6dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="6dp">
+            android:paddingStart="16dp"
+            android:paddingTop="6dp"
+            android:gravity="end">
 
             <TextView
                 android:id="@+id/btn_cancel"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="36dp"
-                android:layout_marginLeft="8dp"
-                android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:gravity="center"
-                android:text="@string/dialog_request_signature_cancel"
+                android:text="@string/btn_cancel"
                 android:textColor="@color/color_accent"
                 android:textSize="16sp"
+                android:textAllCaps="true"
                 android:textStyle="bold" />
 
             <Button
                 android:id="@+id/btn_done"
-                android:layout_width="0dp"
-                android:layout_height="36dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/default_button_height"
                 android:background="@drawable/blue_button"
                 android:gravity="center"
-                android:text="@string/dialog_request_signature_sign"
+                android:text="@string/btn_approve"
                 android:textColor="@color/white"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginStart="16dp" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

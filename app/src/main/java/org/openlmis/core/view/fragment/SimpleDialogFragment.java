@@ -18,11 +18,17 @@
 package org.openlmis.core.view.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import org.openlmis.core.R;
 
 import roboguice.fragment.provided.RoboDialogFragment;
 
@@ -98,7 +104,7 @@ public class SimpleDialogFragment extends RoboDialogFragment {
                         }
                     }
                 });
-        if (!TextUtils.isEmpty(negativeText)) {
+        if (hasNegativeButton()) {
             builder.setNegativeButton(negativeText, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -109,7 +115,36 @@ public class SimpleDialogFragment extends RoboDialogFragment {
             });
         }
 
-        return builder.create();
+        final AlertDialog alertDialog = builder.create();
+        changeUserInterface(alertDialog);
+        return alertDialog;
+    }
+
+    private void changeUserInterface(AlertDialog alertDialog) {
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button positiveButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_POSITIVE);
+                positiveButton.setTypeface(null, Typeface.BOLD);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        (int) getResources().getDimension(R.dimen.default_button_height));
+                positiveButton.setLayoutParams(layoutParams);
+                positiveButton.setTextColor(getResources().getColor(R.color.color_accent));
+
+                if (hasNegativeButton()) {
+                    final Button negativeButton = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_NEGATIVE);
+                    negativeButton.setTypeface(null, Typeface.BOLD);
+                    negativeButton.setTextColor(getResources().getColor(R.color.color_accent));
+                }
+
+                TextView textView = (TextView) ((AlertDialog)dialog).findViewById(android.R.id.message);
+                textView.setTextSize(20);
+            }
+        });
+    }
+
+    private boolean hasNegativeButton() {
+        return !TextUtils.isEmpty(negativeText);
     }
 
     public interface MsgDialogCallBack {

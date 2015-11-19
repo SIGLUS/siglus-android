@@ -17,7 +17,7 @@
  */
 package org.openlmis.core.view.fragment;
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 
 import org.junit.Test;
@@ -45,9 +45,7 @@ public class SimpleDialogFragmentTest {
         fragment.setCallBackListener(dialogCallBack);
         FragmentTestUtil.startFragment(fragment);
 
-        Dialog dialog =
-
-                fragment.getDialog();
+        Dialog dialog = fragment.getDialog();
         (((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE)).performClick();
         verify(dialogCallBack).positiveClick(anyString());
     }

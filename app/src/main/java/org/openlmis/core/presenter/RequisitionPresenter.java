@@ -166,7 +166,7 @@ public class RequisitionPresenter implements Presenter {
     }
 
     protected void updateRequisitionFormUI() {
-        if (rnRForm.getStatus() == RnRForm.STATUS.DRAFT) {
+        if (isFormStatusDraft()) {
             view.highLightRequestAmount();
         } else if (rnRForm.getStatus() == RnRForm.STATUS.SUBMITTED) {
             view.setProcessButtonName(context.getString(R.string.btn_complete));
@@ -197,14 +197,18 @@ public class RequisitionPresenter implements Presenter {
         rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
 
         if(LMISApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature_10)) {
-            view.showSignDialog();
+            view.showSignDialog(isFormStatusDraft());
         } else {
-            if (rnRForm.getStatus() == RnRForm.STATUS.DRAFT) {
+            if (isFormStatusDraft()) {
                 submitRequisition();
             } else {
                 authorise();
             }
         }
+    }
+
+    private boolean isFormStatusDraft() {
+        return rnRForm.getStatus() == RnRForm.STATUS.DRAFT;
     }
 
     private void submitRequisition() {
@@ -360,7 +364,7 @@ public class RequisitionPresenter implements Presenter {
     }
 
     public void processSign(String signName) {
-        if (rnRForm.getStatus() == RnRForm.STATUS.DRAFT) {
+        if (isFormStatusDraft()) {
             submitSignature(signName, RnRFormSignature.TYPE.SUBMITTER);
             submitRequisition();
             view.showMessageNotifyDialog();
@@ -427,7 +431,7 @@ public class RequisitionPresenter implements Presenter {
 
         void setProcessButtonName(String name);
 
-        void showSignDialog();
+        void showSignDialog(boolean isFormStatusDraft);
 
         void showMessageNotifyDialog();
     }

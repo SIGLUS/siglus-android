@@ -18,7 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Intent;
@@ -39,7 +39,6 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.shadows.ShadowAlertDialog;
 import org.robolectric.shadows.ShadowListView;
 
 import java.util.ArrayList;
@@ -137,12 +136,8 @@ public class RequisitionActivityTest {
         assertThat(fragment).isNotNull();
 
         AlertDialog dialog = (AlertDialog) fragment.getDialog();
-        ShadowAlertDialog shadowAlertDialog = shadowOf(dialog);
 
         assertThat(dialog).isNotNull();
-
-        String alertMessage = requisitionActivity.getString(R.string.msg_mmia_onback_confirm);
-        assertThat(shadowAlertDialog.getMessage()).isEqualTo(alertMessage);
     }
 
     @Test
@@ -158,8 +153,8 @@ public class RequisitionActivityTest {
     }
 
     @Test
-    public void shouldShowSignatureDialog() {
-        requisitionActivity.showSignDialog();
+    public void shouldShowSubmitSignatureDialog() {
+        requisitionActivity.showSignDialog(true);
 
         DialogFragment fragment = (DialogFragment)(requisitionActivity.getFragmentManager().findFragmentByTag("signature_dialog"));
 
@@ -169,7 +164,23 @@ public class RequisitionActivityTest {
 
         assertThat(dialog).isNotNull();
 
-        String alertMessage = requisitionActivity.getString(R.string.dialog_request_signature);
+        String alertMessage = requisitionActivity.getString(R.string.msg_via_submit_signature);
+        assertThat(fragment.getArguments().getString("title")).isEqualTo(alertMessage);
+    }
+
+    @Test
+    public void shouldShowApproveSignatureDialog() {
+        requisitionActivity.showSignDialog(false);
+
+        DialogFragment fragment = (DialogFragment)(requisitionActivity.getFragmentManager().findFragmentByTag("signature_dialog"));
+
+        assertThat(fragment).isNotNull();
+
+        Dialog dialog = fragment.getDialog();
+
+        assertThat(dialog).isNotNull();
+
+        String alertMessage = requisitionActivity.getString(R.string.msg_via_approve_signature);
         assertThat(fragment.getArguments().getString("title")).isEqualTo(alertMessage);
     }
 
@@ -182,12 +193,8 @@ public class RequisitionActivityTest {
         assertThat(fragment).isNotNull();
 
         AlertDialog dialog = (AlertDialog)fragment.getDialog();
-        ShadowAlertDialog shadowAlertDialog = shadowOf(dialog);
 
         assertThat(dialog).isNotNull();
-
-        String alertMessage = requisitionActivity.getString(R.string.msg_via_message_notify);
-        assertThat(shadowAlertDialog.getMessage()).isEqualTo(alertMessage);
     }
 
     private View getFirstItemInForm() {

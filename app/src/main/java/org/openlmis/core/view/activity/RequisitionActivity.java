@@ -283,11 +283,13 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     }
 
     @Override
-    public void showSignDialog() {
+    public void showSignDialog(boolean isFormStatusDraft) {
         SignatureDialog signatureDialog = new SignatureDialog();
-        signatureDialog.setArguments(signatureDialog.getBundleToMe(getResources().getString(R.string.dialog_request_signature)));
+        String signatureDialogTitle = isFormStatusDraft ? getResources().getString(R.string.msg_via_submit_signature) :getResources().getString(R.string.msg_via_approve_signature);
 
+        signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));
         signatureDialog.setDelegate(signatureDialogDelegate);
+
         signatureDialog.show(getFragmentManager(), "signature_dialog");
     }
 
@@ -306,7 +308,7 @@ public class RequisitionActivity extends BaseActivity implements RequisitionPres
     public void showMessageNotifyDialog(){
         DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
                 getString(R.string.msg_via_message_notify),
-                getString(R.string.btn_ok),
+                getString(R.string.btn_continue),
                 null,
                 TAG_SHOW_MESSAGE_NOTIFY_DIALOG);
         dialogFragment.show(getFragmentManager(), TAG_SHOW_MESSAGE_NOTIFY_DIALOG);

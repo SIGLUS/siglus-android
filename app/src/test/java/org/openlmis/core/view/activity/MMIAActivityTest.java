@@ -1,7 +1,6 @@
 package org.openlmis.core.view.activity;
 
-import android.app.AlertDialog;
-import android.app.DialogFragment;
+import android.app.Dialog;
 import android.content.Intent;
 
 import com.google.inject.AbstractModule;
@@ -13,10 +12,10 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.MMIAFormPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.widget.SignatureDialog;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.shadows.ShadowAlertDialog;
 import org.robolectric.shadows.ShadowToast;
 
 import roboguice.RoboGuice;
@@ -25,7 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class MMIAActivityTest {
@@ -69,15 +67,12 @@ public class MMIAActivityTest {
     public void shouldShowValidationAlertWhenMethodCalled() {
         mmiaActivity.showValidationAlert();
 
-        DialogFragment fragment = (DialogFragment) mmiaActivity.getFragmentManager().findFragmentByTag("not_match_dialog");
+        SimpleDialogFragment fragment = (SimpleDialogFragment) mmiaActivity.getFragmentManager().findFragmentByTag("not_match_dialog");
 
         assertThat(fragment).isNotNull();
 
-        AlertDialog dialog = (AlertDialog) fragment.getDialog();
-        ShadowAlertDialog shadowAlertDialog = shadowOf(dialog);
-
-        String dialogMessage = mmiaActivity.getString(R.string.msg_regime_total_and_patient_total_not_match);
-        assertThat(shadowAlertDialog.getMessage()).isEqualTo(dialogMessage);
+        final Dialog dialog = fragment.getDialog();
+        assertThat(dialog).isNotNull();
     }
 
     @Test

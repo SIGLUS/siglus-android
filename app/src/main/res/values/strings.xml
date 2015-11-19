@@ -72,7 +72,6 @@
     <string name="hint_error_input">Invalid Input</string>
     <string name="btn_save">Save</string>
     <string name="msg_mmia_onback_confirm">Are you sure you want to quit without saving your work? If you click \'yes\', your draft will be deleted.</string>
-    <string name="msg_via_message_notify">Please hand the device to the person who will approve the requisitions?</string>
     <string name="btn_positive">Yes</string>
     <string name="btn_negative">No</string>
     <string name="msg_mmia_submit_tip">Your MMIA form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
@@ -106,9 +105,12 @@
     <string name="msg_low_stock_warning">Your product has low stock.</string>
     <string name="msg_stock_out_warning">Your product is stocked out.</string>
     <string name="msg_requisition_submit_tip">Your Requisition form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
-
     <string name="msg_requisition_not_unique">Cannot submit requisition twice in a period!</string>
-
+    <string name="btn_approve">Approve</string>
+    <string name="msg_via_submit_signature">Enter your initials to approve requisition amounts</string>
+    <string name="msg_via_approve_signature">Please enter your initials to approve and submit the requisition balancete</string>
+    <string name="msg_via_message_notify">Please hand the device to the person responsible for approval and submission of the requisition balancete</string>
+    <string name="btn_continue">Continue</string>
 
     <!-- Stock Movement -->
     <string name="title_stock_movement">Stock Card</string>
