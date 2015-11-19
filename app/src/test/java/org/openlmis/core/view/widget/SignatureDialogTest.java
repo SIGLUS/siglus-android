@@ -2,15 +2,10 @@ package org.openlmis.core.view.widget;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.theories.DataPoints;
-import org.junit.experimental.theories.Theories;
-import org.junit.experimental.theories.Theory;
-import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(Theories.class)
 public class SignatureDialogTest {
 
     private SignatureDialog signatureDialog;
@@ -20,14 +15,12 @@ public class SignatureDialogTest {
         signatureDialog = new SignatureDialog();
     }
 
-    @DataPoints
-    public static String[] signatures() {
-        return new String[]{"sign", "..", "__", "Sign"};
-    }
-
-    @Theory
-    public void shouldReturnTrueWhenGivenValidSignature(String signature) throws Exception {
-        assertTrue(signatureDialog.checkSignature(signature));
+    @Test
+    public void shouldReturnTrueWhenGivenValidSignature() throws Exception {
+        assertTrue(signatureDialog.checkSignature("sign"));
+        assertTrue(signatureDialog.checkSignature(".."));
+        assertTrue(signatureDialog.checkSignature("__"));
+        assertTrue(signatureDialog.checkSignature("Sign"));
     }
 
     @Test
