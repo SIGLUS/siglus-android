@@ -115,7 +115,7 @@ public class SignatureDialog extends RoboDialogFragment implements View.OnClickL
             delegate.onSign(signature);
             dismiss();
         } else {
-            lySignature.setError("Signature not valid");
+            lySignature.setError(getString(R.string.hint_signature_error_message));
         }
     }
 
