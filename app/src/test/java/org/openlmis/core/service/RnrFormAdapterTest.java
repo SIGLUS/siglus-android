@@ -34,17 +34,20 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import roboguice.RoboGuice;
 
@@ -62,11 +65,14 @@ public class RnrFormAdapterTest {
     private RnRForm rnRForm;
     private ProductRepository mockProductRepository;
     private ProgramRepository mockProgramRepository;
+    private RnrFormRepository mockRnrFormRepository;
 
     @Before
     public void setUp() throws LMISException {
         mockProductRepository = mock(ProductRepository.class);
         mockProgramRepository = mock(ProgramRepository.class);
+        mockRnrFormRepository = mock(RnrFormRepository.class);
+
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         rnrFormAdapter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormAdapter.class);
         rnRForm = new RnRForm();
@@ -179,6 +185,19 @@ public class RnrFormAdapterTest {
     }
 
     @Test
+    public void shouldSerializeRnrFormSignatureWithBaseInfo() throws Exception {
+        List<RnRFormSignature> rnRFormSignatureList = new ArrayList<>();
+        rnRFormSignatureList.add(new RnRFormSignature(rnRForm, "abc", RnRFormSignature.TYPE.SUBMITTER));
+
+        when(mockRnrFormRepository.querySignaturesByRnrForm(rnRForm)).thenReturn(rnRFormSignatureList);
+        JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm,RnRForm.class,null);
+        JsonObject rnrSignature = rnrJson.getAsJsonObject().get("rnrSignatures").getAsJsonArray().get(0).getAsJsonObject();
+
+        assertThat(rnrSignature.get("text").toString(),is("\"abc\""));
+        assertThat(rnrSignature.get("type").toString(),is("\""+RnRFormSignature.TYPE.SUBMITTER.toString()+"\""));
+    }
+
+    @Test
     public void shouldDeserializeRnrFormJson() throws LMISException {
         when(mockProductRepository.getByCode(anyString())).thenReturn(new Product());
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(new Program());
@@ -212,6 +231,7 @@ public class RnrFormAdapterTest {
         protected void configure() {
             bind(ProductRepository.class).toInstance(mockProductRepository);
             bind(ProgramRepository.class).toInstance(mockProgramRepository);
+            bind(RnrFormRepository.class).toInstance(mockRnrFormRepository);
         }
     }
 
