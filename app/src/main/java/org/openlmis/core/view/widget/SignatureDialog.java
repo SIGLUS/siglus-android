@@ -88,7 +88,7 @@ public class SignatureDialog extends RoboDialogFragment implements View.OnClickL
     }
 
     protected boolean checkSignature(String signature) {
-        return signature.length() >= 2 && signature.length() <= 100 && signature.matches("[a-zA-Z._]+");
+        return signature.length() >= 2 && signature.length() <= 100 && signature.matches("\\D+");
     }
 
     @Override
