@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:id="@+id/vg_container"
     android:layout_height="match_parent"
-    android:padding="5dp"
     android:orientation="vertical">
 
     <org.openlmis.core.view.widget.BorderedEditText
@@ -13,6 +12,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:background="@drawable/border_bg"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         app:ems="4"
         app:labelWidth="100dp"
         app:text="@string/label_consultation"
@@ -24,7 +26,10 @@
         android:layout_height="match_parent"
         android:background="@drawable/border_bg_light_gray"
         android:layout_below="@id/tx_consultation"
-        android:layout_above="@+id/action_panel">
+        android:layout_above="@+id/action_panel"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp">
         <HorizontalScrollView android:id="@+id/form_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">

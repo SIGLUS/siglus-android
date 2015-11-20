@@ -16,8 +16,7 @@
             android:layout_height="wrap_content"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:orientation="vertical"
-            android:padding="5dp">
+            android:orientation="vertical">
 
             <org.openlmis.core.view.widget.MMIARnrForm
                 android:id="@+id/rnr_form_list"
@@ -26,6 +25,9 @@
                 android:background="@drawable/mmia_spread_list_bg"
                 android:divider="@drawable/divider_vertical"
                 android:orientation="horizontal"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:padding="@dimen/divider"
                 android:showDividers="middle" />
 
@@ -34,6 +36,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
@@ -138,7 +143,6 @@
                 </LinearLayout>
             </LinearLayout>
             <include layout="@layout/layout_form_action" />
-
         </LinearLayout>
     </ScrollView>
     </merge>
