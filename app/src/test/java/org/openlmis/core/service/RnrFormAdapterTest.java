@@ -51,6 +51,7 @@ import java.util.List;
 
 import roboguice.RoboGuice;
 
+import static junit.framework.Assert.assertNull;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -100,6 +101,16 @@ public class RnrFormAdapterTest {
         JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
         System.out.println(rnrJson);
         assertThat(rnrJson.getAsJsonObject().get("clientSubmittedTime").toString(), is("\"2015-10-14 01:01:11\""));
+    }
+
+    @Test
+    public void shouldSerializeRnrFormWithoutSubmittedTime() throws Exception {
+        UserInfoMgr.getInstance().setUser(new User("user", "password"));
+
+        rnRForm.setSubmittedTime(null);
+
+        JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
+        assertNull(rnrJson.getAsJsonObject().get("clientSubmittedTime"));
     }
 
     @Test
