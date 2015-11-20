@@ -33,12 +33,11 @@ import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
-import java.util.Date;
-
 import roboguice.RoboGuice;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 @RunWith(LMISTestRunner.class)
@@ -75,5 +74,15 @@ public class RnrFormAdapterTest {
 
         JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
         assertThat(rnrJson.getAsJsonObject().get("clientSubmittedTime").toString(), is("\"2015-10-14 01:01:11\""));
+    }
+
+    @Test
+    public void shouldSerializeRnrFormWithoutSubmittedTime() throws Exception {
+        UserInfoMgr.getInstance().setUser(new User("user", "password"));
+
+        rnRForm.setSubmittedTime(null);
+
+        JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
+        assertNull(rnrJson.getAsJsonObject().get("clientSubmittedTime"));
     }
 }
