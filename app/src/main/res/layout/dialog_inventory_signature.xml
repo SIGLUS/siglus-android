@@ -65,6 +65,7 @@
                 android:gravity="center"
                 android:text="@string/btn_approve"
                 android:textColor="@color/white"
+                android:textAllCaps="true"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_marginStart="16dp" />
