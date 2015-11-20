@@ -155,6 +155,7 @@ public class RequisitionPresenter implements Presenter {
             public void call(List<RequisitionFormItemViewModel> requisitionFormItemViewModels) {
                 requisitionFormItemViewModelList.addAll(requisitionFormItemViewModels);
                 updateRequisitionFormUI();
+                loadAlertDialogIsFormStatusIsDraft();
                 view.loaded();
             }
         }, new Action1<Throwable>() {
@@ -168,13 +169,12 @@ public class RequisitionPresenter implements Presenter {
     protected void updateRequisitionFormUI() {
         if (isFormStatusDraft()) {
             view.highLightRequestAmount();
-        } else if (rnRForm.getStatus() == RnRForm.STATUS.SUBMITTED) {
+        } else if (isFormStatusSubmitted()) {
             view.setProcessButtonName(context.getString(R.string.btn_complete));
             view.highLightApprovedAmount();
         }
         view.refreshRequisitionForm();
     }
-
 
     protected boolean validateFormInput() {
         List<RequisitionFormItemViewModel> requisitionViewModelList = getRequisitionViewModelList();
@@ -209,6 +209,10 @@ public class RequisitionPresenter implements Presenter {
 
     private boolean isFormStatusDraft() {
         return rnRForm.getStatus() == RnRForm.STATUS.DRAFT;
+    }
+
+    private boolean isFormStatusSubmitted() {
+        return rnRForm.getStatus() == RnRForm.STATUS.SUBMITTED;
     }
 
     private void submitRequisition() {
@@ -410,6 +414,12 @@ public class RequisitionPresenter implements Presenter {
                 view.loaded();
             }
         });
+    }
+
+    public void loadAlertDialogIsFormStatusIsDraft() {
+        if (isFormStatusSubmitted()){
+            view.showMessageNotifyDialog();
+        }
     }
 
 
