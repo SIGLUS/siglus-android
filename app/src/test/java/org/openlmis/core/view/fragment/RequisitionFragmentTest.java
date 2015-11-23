@@ -1,4 +1,4 @@
-/*
+package org.openlmis.core.view.fragment;/*
  * This program is part of the OpenLMIS logistics management information
  * system platform software.
  *
@@ -16,12 +16,11 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.view.activity;
 
-import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.EditText;
 
@@ -36,10 +35,11 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.builder.RequisitionBuilder;
 import org.openlmis.core.presenter.RequisitionPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.activity.RequisitionActivity;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
-import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowListView;
+import org.robolectric.util.FragmentTestUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,9 +57,9 @@ import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
-public class RequisitionActivityTest {
+public class RequisitionFragmentTest {
 
-    RequisitionActivity requisitionActivity;
+    RequisitionFragment requisitionFragment;
     RequisitionPresenter presenter;
     private List<RequisitionFormItemViewModel> formItemList;
 
@@ -82,13 +82,15 @@ public class RequisitionActivityTest {
                 binder.bind(RequisitionPresenter.class).toInstance(presenter);
             }
         });
-        requisitionActivity = Robolectric.buildActivity(RequisitionActivity.class).create().get();
-        requisitionActivity.refreshRequisitionForm();
+        requisitionFragment = new RequisitionFragment();
+        FragmentTestUtil.startFragment(requisitionFragment);
+        requisitionFragment.refreshRequisitionForm();
+
     }
 
     @Test
     public void shouldShowErrorOnRequestAmountWhenInputInvalid() {
-        requisitionActivity.highLightRequestAmount();
+        requisitionFragment.highLightRequestAmount();
         View item = getFirstItemInForm();
         EditText etRequestAmount = (EditText) item.findViewById(R.id.et_request_amount);
 
@@ -98,12 +100,12 @@ public class RequisitionActivityTest {
         formItemList.get(0).setRequestAmount("");
         presenter.processRequisition("123");
 
-        assertThat(etRequestAmount.getError().toString()).isEqualTo(requisitionActivity.getString(R.string.hint_error_input));
+        assertThat(etRequestAmount.getError().toString()).isEqualTo(requisitionFragment.getString(R.string.hint_error_input));
     }
 
     @Test
     public void shouldShowErrorOnApprovedAmountWhenInputInvalid() {
-        requisitionActivity.highLightApprovedAmount();
+        requisitionFragment.highLightApprovedAmount();
         View item = getFirstItemInForm();
         EditText etApprovedAmount = (EditText) item.findViewById(R.id.et_approved_amount);
 
@@ -113,13 +115,13 @@ public class RequisitionActivityTest {
         formItemList.get(0).setApprovedAmount("");
         presenter.processRequisition("123");
 
-        assertThat(etApprovedAmount.getError().toString()).isEqualTo(requisitionActivity.getString(R.string.hint_error_input));
+        assertThat(etApprovedAmount.getError().toString()).isEqualTo(requisitionFragment.getString(R.string.hint_error_input));
     }
 
     @Test
     public void shouldGetIntentToRequisitionActivity() {
         long formId = 100L;
-        Intent intent = RequisitionActivity.getIntentToMe(requisitionActivity, formId);
+        Intent intent = RequisitionActivity.getIntentToMe(requisitionFragment.getActivity(), formId);
 
         assertThat(intent).isNotNull();
         assertThat(intent.getLongExtra(Constants.PARAM_FORM_ID, 0L)).isEqualTo(formId);
@@ -127,11 +129,11 @@ public class RequisitionActivityTest {
 
     @Test
     public void shouldShowAlertDialogWhenPressedBackWithDataChanges() {
-        requisitionActivity.hasDataChanged = true;
+        requisitionFragment.hasDataChanged = true;
 
-        requisitionActivity.onBackPressed();
+        requisitionFragment.onBackPressed();
 
-        DialogFragment fragment = (DialogFragment)(requisitionActivity.getFragmentManager().findFragmentByTag("back_confirm_dialog"));
+        DialogFragment fragment = (DialogFragment) (requisitionFragment.getActivity().getFragmentManager().findFragmentByTag("back_confirm_dialog"));
 
         assertThat(fragment).isNotNull();
 
@@ -142,21 +144,21 @@ public class RequisitionActivityTest {
 
     @Test
     public void shouldGoToHomePageWhenMethodCalled() {
-        requisitionActivity.backToHomePage();
-        assertThat(requisitionActivity.isFinishing()).isTrue();
+        requisitionFragment.backToHomePage();
+        assertThat(requisitionFragment.getActivity().isFinishing()).isTrue();
     }
 
     @Test
     public void shouldNotRemoveRnrFormWhenGoBack() {
-        requisitionActivity.onBackPressed();
+        requisitionFragment.onBackPressed();
         verify(presenter, never()).removeRnrForm();
     }
 
     @Test
     public void shouldShowSubmitSignatureDialog() {
-        requisitionActivity.showSignDialog(true);
+        requisitionFragment.showSignDialog(true);
 
-        DialogFragment fragment = (DialogFragment)(requisitionActivity.getFragmentManager().findFragmentByTag("signature_dialog"));
+        DialogFragment fragment = (DialogFragment) (requisitionFragment.getActivity().getFragmentManager().findFragmentByTag("signature_dialog"));
 
         assertThat(fragment).isNotNull();
 
@@ -164,15 +166,15 @@ public class RequisitionActivityTest {
 
         assertThat(dialog).isNotNull();
 
-        String alertMessage = requisitionActivity.getString(R.string.msg_via_submit_signature);
+        String alertMessage = requisitionFragment.getString(R.string.msg_via_submit_signature);
         assertThat(fragment.getArguments().getString("title")).isEqualTo(alertMessage);
     }
 
     @Test
     public void shouldShowApproveSignatureDialog() {
-        requisitionActivity.showSignDialog(false);
+        requisitionFragment.showSignDialog(false);
 
-        DialogFragment fragment = (DialogFragment)(requisitionActivity.getFragmentManager().findFragmentByTag("signature_dialog"));
+        DialogFragment fragment = (DialogFragment) (requisitionFragment.getActivity().getFragmentManager().findFragmentByTag("signature_dialog"));
 
         assertThat(fragment).isNotNull();
 
@@ -180,29 +182,29 @@ public class RequisitionActivityTest {
 
         assertThat(dialog).isNotNull();
 
-        String alertMessage = requisitionActivity.getString(R.string.msg_via_approve_signature);
+        String alertMessage = requisitionFragment.getString(R.string.msg_via_approve_signature);
         assertThat(fragment.getArguments().getString("title")).isEqualTo(alertMessage);
     }
 
     @Test
     public void shouldMessageNotifyDialog() {
-        requisitionActivity.showMessageNotifyDialog();
+        requisitionFragment.showMessageNotifyDialog();
 
-        DialogFragment fragment = (DialogFragment)(requisitionActivity.getFragmentManager().findFragmentByTag("showMessageNotifyDialog"));
+        DialogFragment fragment = (DialogFragment) (requisitionFragment.getActivity().getFragmentManager().findFragmentByTag("showMessageNotifyDialog"));
 
         assertThat(fragment).isNotNull();
 
-        AlertDialog dialog = (AlertDialog)fragment.getDialog();
+        AlertDialog dialog = (AlertDialog) fragment.getDialog();
 
         assertThat(dialog).isNotNull();
     }
 
     private View getFirstItemInForm() {
-        requisitionActivity.refreshRequisitionForm();
-        ShadowListView shadowListView = shadowOf(requisitionActivity.requisitionForm);
+        requisitionFragment.refreshRequisitionForm();
+        ShadowListView shadowListView = shadowOf(requisitionFragment.requisitionForm);
         shadowListView.populateItems();
 
-        return requisitionActivity.requisitionForm.getChildAt(0);
+        return requisitionFragment.requisitionForm.getChildAt(0);
     }
 }
 

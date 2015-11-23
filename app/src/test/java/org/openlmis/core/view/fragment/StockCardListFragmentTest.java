@@ -26,7 +26,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.view.adapter.StockCardListAdapter;
-import org.robolectric.shadows.support.v4.SupportFragmentTestUtil;
+import org.robolectric.util.FragmentTestUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ public class StockCardListFragmentTest {
     @Before
     public void setUp() {
         fragment = new StockCardListFragment();
-        SupportFragmentTestUtil.startFragment(fragment);
+        FragmentTestUtil.startFragment(fragment);
 
         fragment.presenter = mock(StockCardPresenter.class);
         fragment.mAdapter = mock(StockCardListAdapter.class);

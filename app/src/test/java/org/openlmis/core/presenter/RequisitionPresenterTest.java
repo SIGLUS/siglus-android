@@ -37,7 +37,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.VIARepository;
-import org.openlmis.core.view.activity.RequisitionActivity;
+import org.openlmis.core.view.fragment.RequisitionFragment;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.robolectric.RuntimeEnvironment;
 
@@ -59,19 +59,19 @@ import static org.mockito.Mockito.when;
 public class RequisitionPresenterTest {
 
     private RequisitionPresenter presenter;
-    private RequisitionActivity mockActivity;
+    private RequisitionFragment requisitionFragment;
     private VIARepository mockVIARepository;
 
     @Before
     public void setup() throws ViewNotMatchException {
         mockVIARepository = mock(VIARepository.class);
-        mockActivity = mock(RequisitionActivity.class);
+        requisitionFragment = mock(RequisitionFragment.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         MockitoAnnotations.initMocks(this);
 
         presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RequisitionPresenter.class);
-        presenter.attachView(mockActivity);
+        presenter.attachView(requisitionFragment);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class RequisitionPresenterTest {
 
         presenter.requisitionFormItemViewModelList = list;
         assertFalse(presenter.validateFormInput());
-        verify(mockActivity).showListInputError(anyInt());
+        verify(requisitionFragment).showListInputError(anyInt());
     }
 
     @Test
@@ -191,22 +191,22 @@ public class RequisitionPresenterTest {
     @Test
     public void shouldHighLightRequestAmountWhenFormStatusIsDraft(){
         highLightForm(RnRForm.STATUS.DRAFT);
-        verify(mockActivity).highLightRequestAmount();
-        verify(mockActivity, never()).highLightApprovedAmount();
+        verify(requisitionFragment).highLightRequestAmount();
+        verify(requisitionFragment, never()).highLightApprovedAmount();
     }
 
     @Test
     public void shouldHighLightApproveAmountWhenFormStatusIsSubmitted(){
         highLightForm(RnRForm.STATUS.SUBMITTED);
-        verify(mockActivity).highLightApprovedAmount();
-        verify(mockActivity, never()).highLightRequestAmount();
+        verify(requisitionFragment).highLightApprovedAmount();
+        verify(requisitionFragment, never()).highLightRequestAmount();
     }
 
     @Test
     public void shouldNotHighLightAnyColumnWhenFormStatusIsAuthorized() {
         highLightForm(RnRForm.STATUS.AUTHORIZED);
-        verify(mockActivity, never()).highLightApprovedAmount();
-        verify(mockActivity, never()).highLightRequestAmount();
+        verify(requisitionFragment, never()).highLightApprovedAmount();
+        verify(requisitionFragment, never()).highLightRequestAmount();
     }
 
     private void highLightForm(RnRForm.STATUS status) {
