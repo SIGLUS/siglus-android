@@ -160,10 +160,15 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         scrollView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                clearEditErrorFocus();
                 hideImm();
                 return false;
             }
         });
+    }
+
+    private void clearEditErrorFocus() {
+        scrollView.requestFocus();
     }
 
     TextWatcher commentTextWatcher = new TextWatcher() {
@@ -320,7 +325,6 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
 
         @Override
         public void onSign(String sign) {
-            System.out.println("CARWEST -- " + sign);
             presenter.authoriseForm(sign);
         }
     };
