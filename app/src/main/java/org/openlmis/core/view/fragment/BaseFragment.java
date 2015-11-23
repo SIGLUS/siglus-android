@@ -20,7 +20,8 @@ package org.openlmis.core.view.fragment;
 
 import android.os.Bundle;
 
-import roboguice.fragment.RoboFragment;
+import roboguice.fragment.provided.RoboFragment;
+
 
 public class BaseFragment extends RoboFragment {
     /*

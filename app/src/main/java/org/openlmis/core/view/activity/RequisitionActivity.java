@@ -33,7 +33,7 @@ public class RequisitionActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        ((RequisitionFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_requisition)).onBackPressed();
+        ((RequisitionFragment) getFragmentManager().findFragmentById(R.id.fragment_requisition)).onBackPressed();
     }
 
     public static Intent getIntentToMe(Context context, long formId) {
