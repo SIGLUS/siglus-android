@@ -19,7 +19,8 @@ describe "Sync stock card data" do
         occurred: "2015-10-15",
         referenceNumber: "referenceNumber1",
         customProps: {
-          expirationDates: "10/10/2016, 12/12/2016"
+          expirationDates: "10/10/2016, 12/12/2016",
+          signature: "signature"
         }
       },
       {
@@ -31,7 +32,8 @@ describe "Sync stock card data" do
         occurred: "2015-10-24",
         referenceNumber: "referenceNumber2",
         customProps: {
-          expirationDates: "10/10/2017, 12/12/2017"
+          expirationDates: "10/10/2017, 12/12/2017",
+          signature: "signature"
         }
       },
       {
@@ -43,7 +45,8 @@ describe "Sync stock card data" do
         occurred: "2015-10-30",
         referenceNumber: "referenceNumber3",
         customProps: {
-          expirationDates: "10/10/2018, 12/12/2018"
+          expirationDates: "10/10/2018, 12/12/2018",
+          signature: "signature"
         }
       },
       {
@@ -55,7 +58,8 @@ describe "Sync stock card data" do
         occurred: "2015-10-30",
         referenceNumber: "referenceNumber4",
         customProps: {
-          expirationDates: "10/10/2019"
+          expirationDates: "10/10/2019",
+          signature: "signature"
         }
       }
       ]

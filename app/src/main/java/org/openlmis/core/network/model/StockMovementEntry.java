@@ -47,5 +47,6 @@ public class StockMovementEntry {
         this.setOccurred(DateUtil.formatDate(stockMovementItem.getMovementDate(), DateUtil.DB_DATE_FORMAT));
         this.setReferenceNumber(stockMovementItem.getDocumentNumber());
         this.getCustomProps().put("expirationDates", stockMovementItem.getStockCard().getExpireDates());
+        this.getCustomProps().put("signature", stockMovementItem.getSignature());
     }
 }
