@@ -87,6 +87,7 @@ public class StockMovementHistoryViewHolder extends BaseViewHolder {
         etPositiveAdjustment.setTextColor(color);
         etNegativeAdjustment.setTextColor(color);
         txStockExistence.setTextColor(color);
+        txSignature.setTextColor(color);
     }
 
     private void hideUnderline() {
