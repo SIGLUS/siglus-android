@@ -156,7 +156,8 @@ public class SignatureDialog extends RoboDialogFragment implements View.OnClickL
         return bundle;
     }
 
-    public void show(FragmentManager manager) {
+    public void show(
+            FragmentManager manager) {
         super.show(manager, "signature_dialog");
     }
 
