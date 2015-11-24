@@ -16,10 +16,10 @@ import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.presenter.MMIAFormPresenter;
+import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARnrForm;
@@ -44,7 +44,7 @@ import static org.mockito.Mockito.when;
 @RunWith(LMISTestRunner.class)
 public class MMIAActivityTest {
 
-    private MMIAFormPresenter mmiaFormPresenter;
+    private MMIARequisitionPresenter mmiaFormPresenter;
     private MMIAActivity mmiaActivity;
     private Program program;
     private RnRForm form;
@@ -54,11 +54,11 @@ public class MMIAActivityTest {
 
     @Before
     public void setUp() throws Exception{
-        mmiaFormPresenter = mock(MMIAFormPresenter.class);
+        mmiaFormPresenter = mock(MMIARequisitionPresenter.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
             protected void configure() {
-                bind(MMIAFormPresenter.class).toInstance(mmiaFormPresenter);
+                bind(MMIARequisitionPresenter.class).toInstance(mmiaFormPresenter);
             }
         });
 
