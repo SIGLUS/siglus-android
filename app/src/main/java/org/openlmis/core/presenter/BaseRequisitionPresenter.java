@@ -3,7 +3,11 @@ package org.openlmis.core.presenter;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.view.BaseView;
 
+import rx.Subscription;
+
 public class BaseRequisitionPresenter implements Presenter {
+    protected Subscription subscribe;
+
     @Override
     public void onStart() {
 
@@ -11,7 +15,10 @@ public class BaseRequisitionPresenter implements Presenter {
 
     @Override
     public void onStop() {
-
+        if (subscribe != null) {
+            subscribe.unsubscribe();
+            subscribe = null;
+        }
     }
 
     @Override

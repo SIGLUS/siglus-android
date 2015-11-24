@@ -65,16 +65,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     SyncManager syncManager;
 
     @Override
-    public void onStart() {
-
-    }
-
-    @Override
-    public void onStop() {
-
-    }
-
-    @Override
     public void attachView(BaseView v) throws ViewNotMatchException {
         if (v instanceof MMIAFormView) {
             this.view = (MMIAFormView) v;
@@ -85,7 +75,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
 
     public void loadData(final long formId) {
         view.loading();
-        getRnrFormObservable(formId).subscribe(rnRFormOnNextAction, rnRFormOnErrorAction);
+        subscribe = getRnrFormObservable(formId).subscribe(rnRFormOnNextAction, rnRFormOnErrorAction);
     }
 
     protected Observable<RnRForm> getRnrFormObservable(final long formId) {

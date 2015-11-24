@@ -45,7 +45,6 @@ import java.util.List;
 import lombok.Getter;
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -69,23 +68,9 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     @Getter
     protected RnRForm rnRForm;
     protected List<RequisitionFormItemViewModel> requisitionFormItemViewModelList;
-    private Subscription subscribe;
 
     public VIARequisitionPresenter() {
         requisitionFormItemViewModelList = new ArrayList<>();
-    }
-
-    @Override
-    public void onStart() {
-
-    }
-
-    @Override
-    public void onStop() {
-        if (subscribe != null) {
-            subscribe.unsubscribe();
-            subscribe = null;
-        }
     }
 
     @Override
