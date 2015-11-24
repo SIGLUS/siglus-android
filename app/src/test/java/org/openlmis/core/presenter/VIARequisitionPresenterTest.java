@@ -37,7 +37,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.VIARepository;
-import org.openlmis.core.view.fragment.RequisitionFragment;
+import org.openlmis.core.view.fragment.VIARequisitionFragment;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.robolectric.RuntimeEnvironment;
 
@@ -59,19 +59,19 @@ import static org.mockito.Mockito.when;
 public class VIARequisitionPresenterTest {
 
     private VIARequisitionPresenter presenter;
-    private RequisitionFragment requisitionFragment;
+    private VIARequisitionFragment VIARequisitionFragment;
     private VIARepository mockVIARepository;
 
     @Before
     public void setup() throws ViewNotMatchException {
         mockVIARepository = mock(VIARepository.class);
-        requisitionFragment = mock(RequisitionFragment.class);
+        VIARequisitionFragment = mock(VIARequisitionFragment.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         MockitoAnnotations.initMocks(this);
 
         presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(VIARequisitionPresenter.class);
-        presenter.attachView(requisitionFragment);
+        presenter.attachView(VIARequisitionFragment);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class VIARequisitionPresenterTest {
 
         presenter.requisitionFormItemViewModelList = list;
         assertFalse(presenter.validateFormInput());
-        verify(requisitionFragment).showListInputError(anyInt());
+        verify(VIARequisitionFragment).showListInputError(anyInt());
     }
 
     @Test
@@ -176,22 +176,22 @@ public class VIARequisitionPresenterTest {
     @Test
     public void shouldHighLightRequestAmountWhenFormStatusIsDraft() {
         highLightForm(RnRForm.STATUS.DRAFT);
-        verify(requisitionFragment).highLightRequestAmount();
-        verify(requisitionFragment, never()).highLightApprovedAmount();
+        verify(VIARequisitionFragment).highLightRequestAmount();
+        verify(VIARequisitionFragment, never()).highLightApprovedAmount();
     }
 
     @Test
     public void shouldHighLightApproveAmountWhenFormStatusIsSubmitted() {
         highLightForm(RnRForm.STATUS.SUBMITTED);
-        verify(requisitionFragment).highLightApprovedAmount();
-        verify(requisitionFragment, never()).highLightRequestAmount();
+        verify(VIARequisitionFragment).highLightApprovedAmount();
+        verify(VIARequisitionFragment, never()).highLightRequestAmount();
     }
 
     @Test
     public void shouldNotHighLightAnyColumnWhenFormStatusIsAuthorized() {
         highLightForm(RnRForm.STATUS.AUTHORIZED);
-        verify(requisitionFragment, never()).highLightApprovedAmount();
-        verify(requisitionFragment, never()).highLightRequestAmount();
+        verify(VIARequisitionFragment, never()).highLightApprovedAmount();
+        verify(VIARequisitionFragment, never()).highLightRequestAmount();
     }
 
     @Test
@@ -200,7 +200,7 @@ public class VIARequisitionPresenterTest {
 
         presenter.setBtnCompleteText();
 
-        verify(requisitionFragment).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_submit));
+        verify(VIARequisitionFragment).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_submit));
     }
 
     @Test
@@ -209,7 +209,7 @@ public class VIARequisitionPresenterTest {
 
         presenter.setBtnCompleteText();
 
-        verify(requisitionFragment).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_complete));
+        verify(VIARequisitionFragment).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_complete));
     }
 
     private void highLightForm(RnRForm.STATUS status) {

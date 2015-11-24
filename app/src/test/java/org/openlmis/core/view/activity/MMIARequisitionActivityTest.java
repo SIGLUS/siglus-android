@@ -42,10 +42,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
-public class MMIAActivityTest {
+public class MMIARequisitionActivityTest {
 
     private MMIARequisitionPresenter mmiaFormPresenter;
-    private MMIAActivity mmiaActivity;
+    private MMIARequisitionActivity mmiaRequisitionActivity;
     private Program program;
     private RnRForm form;
     private MMIARegimeList regimeListView;
@@ -64,15 +64,15 @@ public class MMIAActivityTest {
 
         Intent intent = new Intent();
         intent.putExtra(Constants.PARAM_FORM_ID, 3);
-        mmiaActivity = Robolectric.buildActivity(MMIAActivity.class).withIntent(intent).create().get();
+        mmiaRequisitionActivity = Robolectric.buildActivity(MMIARequisitionActivity.class).withIntent(intent).create().get();
 
         regimeListView = mock(MMIARegimeList.class);
         mmiaInfoListView = mock(MMIAInfoList.class);
         rnrFormList = mock(MMIARnrForm.class);
 
-        mmiaActivity.regimeListView = regimeListView;
-        mmiaActivity.mmiaInfoListView = mmiaInfoListView;
-        mmiaActivity.rnrFormList = rnrFormList;
+        mmiaRequisitionActivity.regimeListView = regimeListView;
+        mmiaRequisitionActivity.mmiaInfoListView = mmiaInfoListView;
+        mmiaRequisitionActivity.rnrFormList = rnrFormList;
 
         program = new Program();
         program.setProgramCode("MMIA");
@@ -90,36 +90,36 @@ public class MMIAActivityTest {
         form.setBaseInfoItemListWrapper(baseInfoItems);
         form.setRegimenItemListWrapper(regimenItems);
 
-        mmiaActivity.initView(form);
+        mmiaRequisitionActivity.initView(form);
 
         verify(rnrFormList).initView(any(ArrayList.class));
-        verify(regimeListView).initView(regimenItems, mmiaActivity.tvRegimeTotal);
+        verify(regimeListView).initView(regimenItems, mmiaRequisitionActivity.tvRegimeTotal);
         verify(mmiaInfoListView).initView(baseInfoItems);
 
     }
 
     @Test
     public void shouldShowErrorMessageWhenMethodCalled() {
-        mmiaActivity.showErrorMessage("Hello message");
+        mmiaRequisitionActivity.showErrorMessage("Hello message");
 
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo("Hello message");
     }
 
     @Test
     public void shouldSaveCompleteWhenMethodCalled() {
-        mmiaActivity.completeSuccess();
+        mmiaRequisitionActivity.completeSuccess();
 
-        String successMessage = mmiaActivity.getString(R.string.msg_mmia_submit_tip);
+        String successMessage = mmiaRequisitionActivity.getString(R.string.msg_mmia_submit_tip);
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(successMessage);
 
-        assertThat(mmiaActivity.isFinishing()).isTrue();
+        assertThat(mmiaRequisitionActivity.isFinishing()).isTrue();
     }
 
     @Test
     public void shouldShowValidationAlertWhenMethodCalled() {
-        mmiaActivity.showValidationAlert();
+        mmiaRequisitionActivity.showValidationAlert();
 
-        SimpleDialogFragment fragment = (SimpleDialogFragment) mmiaActivity.getFragmentManager().findFragmentByTag("not_match_dialog");
+        SimpleDialogFragment fragment = (SimpleDialogFragment) mmiaRequisitionActivity.getFragmentManager().findFragmentByTag("not_match_dialog");
 
         assertThat(fragment).isNotNull();
 
@@ -129,29 +129,29 @@ public class MMIAActivityTest {
 
     @Test
     public void shouldRemoveRnrFormWhenPositiveButtonClicked() {
-        mmiaActivity.positiveClick(MMIAActivity.TAG_BACK_PRESSED);
+        mmiaRequisitionActivity.positiveClick(MMIARequisitionActivity.TAG_BACK_PRESSED);
 
         verify(mmiaFormPresenter).removeRnrForm();
     }
 
     @Test
     public void shouldNotRemoveRnrFormWhenGoBack() {
-        mmiaActivity.onBackPressed();
+        mmiaRequisitionActivity.onBackPressed();
         verify(mmiaFormPresenter,never()).removeRnrForm();
     }
 
     @Test
     public void shouldShowSignDialogWhenShowSignDialogCalled() {
-        mmiaActivity.showSignDialog();
+        mmiaRequisitionActivity.showSignDialog();
 
-        SignatureDialog signatureDialog = (SignatureDialog) mmiaActivity.getFragmentManager().findFragmentByTag("signature_dialog");
+        SignatureDialog signatureDialog = (SignatureDialog) mmiaRequisitionActivity.getFragmentManager().findFragmentByTag("signature_dialog");
 
         assertThat(signatureDialog).isNotNull();
     }
 
     @Test
     public void shouldAuthorizeFormWhenValidSign() throws Exception {
-        mmiaActivity.signatureDialogDelegate.onSign("valid");
+        mmiaRequisitionActivity.signatureDialogDelegate.onSign("valid");
         verify(mmiaFormPresenter).authoriseForm("valid");
     }
 
@@ -159,20 +159,20 @@ public class MMIAActivityTest {
     public void shouldShowSaveAndCompleteButtonWhenFormIsEditable() {
         when(mmiaFormPresenter.formIsEditable()).thenReturn(true);
 
-        mmiaActivity.initView(form);
+        mmiaRequisitionActivity.initView(form);
 
-        assertThat(mmiaActivity.btnSave.getVisibility()).isEqualTo(View.VISIBLE);
-        assertThat(mmiaActivity.btnComplete.getVisibility()).isEqualTo(View.VISIBLE);
+        assertThat(mmiaRequisitionActivity.btnSave.getVisibility()).isEqualTo(View.VISIBLE);
+        assertThat(mmiaRequisitionActivity.btnComplete.getVisibility()).isEqualTo(View.VISIBLE);
     }
 
     @Test
     public void shouldNotShowSaveAndCompleteButtonWhenFormIsNotEditable() {
         when(mmiaFormPresenter.formIsEditable()).thenReturn(false);
 
-        mmiaActivity.initView(form);
+        mmiaRequisitionActivity.initView(form);
 
-        assertThat(mmiaActivity.btnSave.getVisibility()).isEqualTo(View.GONE);
-        assertThat(mmiaActivity.btnComplete.getVisibility()).isEqualTo(View.GONE);
+        assertThat(mmiaRequisitionActivity.btnSave.getVisibility()).isEqualTo(View.GONE);
+        assertThat(mmiaRequisitionActivity.btnComplete.getVisibility()).isEqualTo(View.GONE);
     }
 
     @Test
@@ -182,9 +182,9 @@ public class MMIAActivityTest {
 
         ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
 
-        mmiaActivity.initView(form);
+        mmiaRequisitionActivity.initView(form);
 
-        assertThat(mmiaActivity.getTitle()).isEqualTo("MMIA - 21 Apr to 20 May");
+        assertThat(mmiaRequisitionActivity.getTitle()).isEqualTo("MMIA - 21 Apr to 20 May");
     }
 
     @Test
@@ -196,14 +196,14 @@ public class MMIAActivityTest {
         when(mmiaFormPresenter.getRnrForm(form.getId())).thenReturn(form);
 
         when(mmiaFormPresenter.formIsEditable()).thenReturn(true);
-        mmiaActivity.initView(form);
-        assertThat(mmiaActivity.getTitle()).isEqualTo("MMIA");
+        mmiaRequisitionActivity.initView(form);
+        assertThat(mmiaRequisitionActivity.getTitle()).isEqualTo("MMIA");
 
 
         when(mmiaFormPresenter.formIsEditable()).thenReturn(false);
         when(mmiaFormPresenter.getRnrForm(1L)).thenReturn(form);
-        mmiaActivity.initView(form);
-        assertThat(mmiaActivity.getTitle()).isEqualTo("21 Apr 2015  to  20 May 2015");
+        mmiaRequisitionActivity.initView(form);
+        assertThat(mmiaRequisitionActivity.getTitle()).isEqualTo("21 Apr 2015  to  20 May 2015");
     }
 
     @Test
@@ -211,14 +211,14 @@ public class MMIAActivityTest {
         when(regimeListView.getTotal()).thenReturn(20L);
         when(mmiaInfoListView.getTotal()).thenReturn(20L);
 
-        mmiaActivity.regimeListView = regimeListView;
-        mmiaActivity.mmiaInfoListView = mmiaInfoListView;
+        mmiaRequisitionActivity.regimeListView = regimeListView;
+        mmiaRequisitionActivity.mmiaInfoListView = mmiaInfoListView;
 
-        mmiaActivity.initView(form);
+        mmiaRequisitionActivity.initView(form);
 
         verify(regimeListView).deHighLightTotal();
         verify(mmiaInfoListView).deHighLightTotal();
-        assertThat(mmiaActivity.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
+        assertThat(mmiaRequisitionActivity.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
     }
 
     @Test
@@ -226,13 +226,13 @@ public class MMIAActivityTest {
         when(regimeListView.getTotal()).thenReturn(20L);
         when(mmiaInfoListView.getTotal()).thenReturn(40L);
 
-        mmiaActivity.regimeListView = regimeListView;
-        mmiaActivity.mmiaInfoListView = mmiaInfoListView;
+        mmiaRequisitionActivity.regimeListView = regimeListView;
+        mmiaRequisitionActivity.mmiaInfoListView = mmiaInfoListView;
 
-        mmiaActivity.initView(form);
+        mmiaRequisitionActivity.initView(form);
 
         verify(regimeListView).highLightTotal();
         verify(mmiaInfoListView).highLightTotal();
-        assertThat(mmiaActivity.tvMismatch.getVisibility()).isEqualTo(View.VISIBLE);
+        assertThat(mmiaRequisitionActivity.tvMismatch.getVisibility()).isEqualTo(View.VISIBLE);
     }
 }

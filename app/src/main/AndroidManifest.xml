@@ -47,12 +47,12 @@
             android:label="@string/title_stock_cards" />
 
         <activity
-            android:name=".view.activity.MMIAActivity"
+            android:name=".view.activity.MMIARequisitionActivity"
             android:label="@string/title_mmia_spread"
             android:windowSoftInputMode="stateHidden" />
 
         <activity
-            android:name=".view.activity.RequisitionActivity"
+            android:name=".view.activity.VIARequisitionActivity"
             android:label="@string/title_requisition"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 

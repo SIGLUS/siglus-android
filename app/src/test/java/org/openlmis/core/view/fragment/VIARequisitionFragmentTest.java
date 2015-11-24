@@ -38,7 +38,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.builder.RequisitionBuilder;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.view.activity.RequisitionActivity;
+import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.robolectric.RuntimeEnvironment;
@@ -62,9 +62,9 @@ import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
-public class RequisitionFragmentTest {
+public class VIARequisitionFragmentTest {
 
-    RequisitionFragment requisitionFragment;
+    VIARequisitionFragment VIARequisitionFragment;
     VIARequisitionPresenter presenter;
     private List<RequisitionFormItemViewModel> formItemList;
     private Program program;
@@ -90,9 +90,9 @@ public class RequisitionFragmentTest {
             }
         });
 
-        requisitionFragment = new RequisitionFragment();
-        FragmentTestUtil.startFragment(requisitionFragment);
-        requisitionFragment.refreshRequisitionForm();
+        VIARequisitionFragment = new VIARequisitionFragment();
+        FragmentTestUtil.startFragment(VIARequisitionFragment);
+        VIARequisitionFragment.refreshRequisitionForm();
 
         program = new Program();
         program.setProgramCode("ESS_MEDS");
@@ -108,9 +108,9 @@ public class RequisitionFragmentTest {
         form.setPeriodEnd(Date.valueOf("2015-05-20"));
 
         doReturn(form).when(presenter).getRnRForm();
-        requisitionFragment.refreshRequisitionForm();
+        VIARequisitionFragment.refreshRequisitionForm();
 
-        assertThat(requisitionFragment.getActivity().getTitle()).isEqualTo("Requisition - 21 Apr to 20 May");
+        assertThat(VIARequisitionFragment.getActivity().getTitle()).isEqualTo("Requisition - 21 Apr to 20 May");
     }
 
     @Test
@@ -120,17 +120,17 @@ public class RequisitionFragmentTest {
         RnRForm form = RnRForm.init(program, DateUtil.today());
         form.setPeriodBegin(Date.valueOf("2015-04-21"));
         form.setPeriodEnd(Date.valueOf("2015-05-20"));
-        requisitionFragment.isHistoryForm = true;
+        VIARequisitionFragment.isHistoryForm = true;
 
         doReturn(form).when(presenter).getRnRForm();
-        requisitionFragment.refreshRequisitionForm();
+        VIARequisitionFragment.refreshRequisitionForm();
 
-        assertThat(requisitionFragment.getActivity().getTitle()).isEqualTo("21 Apr 2015  to  20 May 2015");
+        assertThat(VIARequisitionFragment.getActivity().getTitle()).isEqualTo("21 Apr 2015  to  20 May 2015");
     }
 
     @Test
     public void shouldShowErrorOnRequestAmountWhenInputInvalid() {
-        requisitionFragment.highLightRequestAmount();
+        VIARequisitionFragment.highLightRequestAmount();
         View item = getFirstItemInForm();
         EditText etRequestAmount = (EditText) item.findViewById(R.id.et_request_amount);
 
@@ -140,12 +140,12 @@ public class RequisitionFragmentTest {
         formItemList.get(0).setRequestAmount("");
         presenter.processRequisition("123");
 
-        assertThat(etRequestAmount.getError().toString()).isEqualTo(requisitionFragment.getString(R.string.hint_error_input));
+        assertThat(etRequestAmount.getError().toString()).isEqualTo(VIARequisitionFragment.getString(R.string.hint_error_input));
     }
 
     @Test
     public void shouldShowErrorOnApprovedAmountWhenInputInvalid() {
-        requisitionFragment.highLightApprovedAmount();
+        VIARequisitionFragment.highLightApprovedAmount();
         View item = getFirstItemInForm();
         EditText etApprovedAmount = (EditText) item.findViewById(R.id.et_approved_amount);
 
@@ -155,13 +155,13 @@ public class RequisitionFragmentTest {
         formItemList.get(0).setApprovedAmount("");
         presenter.processRequisition("123");
 
-        assertThat(etApprovedAmount.getError().toString()).isEqualTo(requisitionFragment.getString(R.string.hint_error_input));
+        assertThat(etApprovedAmount.getError().toString()).isEqualTo(VIARequisitionFragment.getString(R.string.hint_error_input));
     }
 
     @Test
     public void shouldGetIntentToRequisitionActivity() {
         long formId = 100L;
-        Intent intent = RequisitionActivity.getIntentToMe(requisitionFragment.getActivity(), formId);
+        Intent intent = VIARequisitionActivity.getIntentToMe(VIARequisitionFragment.getActivity(), formId);
 
         assertThat(intent).isNotNull();
         assertThat(intent.getLongExtra(Constants.PARAM_FORM_ID, 0L)).isEqualTo(formId);
@@ -169,11 +169,11 @@ public class RequisitionFragmentTest {
 
     @Test
     public void shouldShowAlertDialogWhenPressedBackWithDataChanges() {
-        requisitionFragment.hasDataChanged = true;
+        VIARequisitionFragment.hasDataChanged = true;
 
-        requisitionFragment.onBackPressed();
+        VIARequisitionFragment.onBackPressed();
 
-        DialogFragment fragment = (DialogFragment) (requisitionFragment.getActivity().getFragmentManager().findFragmentByTag("back_confirm_dialog"));
+        DialogFragment fragment = (DialogFragment) (VIARequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("back_confirm_dialog"));
 
         assertThat(fragment).isNotNull();
 
@@ -184,21 +184,21 @@ public class RequisitionFragmentTest {
 
     @Test
     public void shouldGoToHomePageWhenMethodCalled() {
-        requisitionFragment.backToHomePage();
-        assertThat(requisitionFragment.getActivity().isFinishing()).isTrue();
+        VIARequisitionFragment.backToHomePage();
+        assertThat(VIARequisitionFragment.getActivity().isFinishing()).isTrue();
     }
 
     @Test
     public void shouldNotRemoveRnrFormWhenGoBack() {
-        requisitionFragment.onBackPressed();
+        VIARequisitionFragment.onBackPressed();
         verify(presenter, never()).removeRnrForm();
     }
 
     @Test
     public void shouldShowSubmitSignatureDialog() {
-        requisitionFragment.showSignDialog(true);
+        VIARequisitionFragment.showSignDialog(true);
 
-        DialogFragment fragment = (DialogFragment) (requisitionFragment.getActivity().getFragmentManager().findFragmentByTag("signature_dialog"));
+        DialogFragment fragment = (DialogFragment) (VIARequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("signature_dialog"));
 
         assertThat(fragment).isNotNull();
 
@@ -206,15 +206,15 @@ public class RequisitionFragmentTest {
 
         assertThat(dialog).isNotNull();
 
-        String alertMessage = requisitionFragment.getString(R.string.msg_via_submit_signature);
+        String alertMessage = VIARequisitionFragment.getString(R.string.msg_via_submit_signature);
         assertThat(fragment.getArguments().getString("title")).isEqualTo(alertMessage);
     }
 
     @Test
     public void shouldShowApproveSignatureDialog() {
-        requisitionFragment.showSignDialog(false);
+        VIARequisitionFragment.showSignDialog(false);
 
-        DialogFragment fragment = (DialogFragment) (requisitionFragment.getActivity().getFragmentManager().findFragmentByTag("signature_dialog"));
+        DialogFragment fragment = (DialogFragment) (VIARequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("signature_dialog"));
 
         assertThat(fragment).isNotNull();
 
@@ -222,15 +222,15 @@ public class RequisitionFragmentTest {
 
         assertThat(dialog).isNotNull();
 
-        String alertMessage = requisitionFragment.getString(R.string.msg_via_approve_signature);
+        String alertMessage = VIARequisitionFragment.getString(R.string.msg_via_approve_signature);
         assertThat(fragment.getArguments().getString("title")).isEqualTo(alertMessage);
     }
 
     @Test
     public void shouldMessageNotifyDialog() {
-        requisitionFragment.showMessageNotifyDialog();
+        VIARequisitionFragment.showMessageNotifyDialog();
 
-        DialogFragment fragment = (DialogFragment) (requisitionFragment.getActivity().getFragmentManager().findFragmentByTag("showMessageNotifyDialog"));
+        DialogFragment fragment = (DialogFragment) (VIARequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("showMessageNotifyDialog"));
 
         assertThat(fragment).isNotNull();
 
@@ -240,11 +240,11 @@ public class RequisitionFragmentTest {
     }
 
     private View getFirstItemInForm() {
-        requisitionFragment.refreshRequisitionForm();
-        ShadowListView shadowListView = shadowOf(requisitionFragment.requisitionForm);
+        VIARequisitionFragment.refreshRequisitionForm();
+        ShadowListView shadowListView = shadowOf(VIARequisitionFragment.requisitionForm);
         shadowListView.populateItems();
 
-        return requisitionFragment.requisitionForm.getChildAt(0);
+        return VIARequisitionFragment.requisitionForm.getChildAt(0);
     }
 }
 

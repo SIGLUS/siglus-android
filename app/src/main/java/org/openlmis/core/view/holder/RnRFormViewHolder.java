@@ -9,8 +9,8 @@ import android.widget.TextView;
 import org.openlmis.core.R;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
-import org.openlmis.core.view.activity.MMIAActivity;
-import org.openlmis.core.view.activity.RequisitionActivity;
+import org.openlmis.core.view.activity.MMIARequisitionActivity;
+import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 
 import roboguice.inject.InjectView;
@@ -82,9 +82,9 @@ public class RnRFormViewHolder extends BaseViewHolder {
         @Override
         public void onClick(View v) {
             if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
-                context.startActivity(MMIAActivity.getIntentToMe(context, model.getId()));
+                context.startActivity(MMIARequisitionActivity.getIntentToMe(context, model.getId()));
             } else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)) {
-                context.startActivity(RequisitionActivity.getIntentToMe(context, model.getId()));
+                context.startActivity(VIARequisitionActivity.getIntentToMe(context, model.getId()));
             }
         }
     }

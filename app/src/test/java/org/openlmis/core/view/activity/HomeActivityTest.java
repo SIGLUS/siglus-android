@@ -79,7 +79,7 @@ public class HomeActivityTest {
     public void shouldGoToMMIAFormPage() {
         homeActivity.btnMMIA.performClick();
 
-        verifyNextPage(MMIAActivity.class.getName());
+        verifyNextPage(MMIARequisitionActivity.class.getName());
     }
 
     @Test

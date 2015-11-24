@@ -11,7 +11,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
-import org.openlmis.core.view.activity.MMIAActivity;
+import org.openlmis.core.view.activity.MMIARequisitionActivity;
 import org.robolectric.Robolectric;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class MMIARnrFormTest  extends LMISRepositoryUnitTest {
 
     @Before
     public void setUp() {
-        MMIAActivity activity = Robolectric.buildActivity(MMIAActivity.class).attach().get();
+        MMIARequisitionActivity activity = Robolectric.buildActivity(MMIARequisitionActivity.class).attach().get();
         mmiaRnrForm = new MMIARnrForm(activity);
     }
 

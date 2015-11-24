@@ -59,12 +59,6 @@ public class HomeActivity extends BaseActivity {
     @InjectView(R.id.btn_mmia)
     Button btnMMIA;
 
-    @InjectView(R.id.btn_requisition)
-    Button btnRequisition;
-
-    @InjectView(R.id.btn_sync_data)
-    Button btnSyncData;
-
     @InjectView(R.id.tx_last_synced)
     TextView txLastSynced;
 
@@ -102,11 +96,11 @@ public class HomeActivity extends BaseActivity {
     }
 
     public void onClickMMIA(View view) {
-        startActivity(MMIAActivity.class, false);
+        startActivity(MMIARequisitionActivity.class, false);
     }
 
     public void onClickRequisition(View view) {
-        startActivity(RequisitionActivity.class, false);
+        startActivity(VIARequisitionActivity.class, false);
     }
 
     public void onClickSyncData(View view) {

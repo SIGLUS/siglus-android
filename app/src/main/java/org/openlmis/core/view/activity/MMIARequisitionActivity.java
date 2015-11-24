@@ -54,7 +54,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_mmia)
-public class MMIAActivity extends BaseActivity implements MMIARequisitionPresenter.MMIAFormView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
+public class MMIARequisitionActivity extends BaseActivity implements MMIARequisitionPresenter.MMIAFormView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
 
     @InjectView(R.id.rnr_form_list)
     protected MMIARnrForm rnrFormList;
@@ -348,7 +348,7 @@ public class MMIAActivity extends BaseActivity implements MMIARequisitionPresent
     }
 
     public static Intent getIntentToMe(Context context, long formId) {
-        Intent intent = new Intent(context, MMIAActivity.class);
+        Intent intent = new Intent(context, MMIARequisitionActivity.class);
         intent.putExtra(Constants.PARAM_FORM_ID, formId);
         return intent;
     }

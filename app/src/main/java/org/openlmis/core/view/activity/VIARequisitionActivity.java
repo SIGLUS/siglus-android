@@ -23,19 +23,19 @@ import android.content.Intent;
 
 import org.openlmis.core.R;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.view.fragment.RequisitionFragment;
+import org.openlmis.core.view.fragment.VIARequisitionFragment;
 import roboguice.inject.ContentView;
 
 
 @ContentView(R.layout.activity_requisition)
-public class RequisitionActivity extends BaseActivity {
+public class VIARequisitionActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
-        ((RequisitionFragment) getFragmentManager().findFragmentById(R.id.fragment_requisition)).onBackPressed();
+        ((VIARequisitionFragment) getFragmentManager().findFragmentById(R.id.fragment_requisition)).onBackPressed();
     }
 
     public static Intent getIntentToMe(Context context, long formId) {
-        Intent intent = new Intent(context, RequisitionActivity.class);
+        Intent intent = new Intent(context, VIARequisitionActivity.class);
         intent.putExtra(Constants.PARAM_FORM_ID, formId);
         return intent;
     }
