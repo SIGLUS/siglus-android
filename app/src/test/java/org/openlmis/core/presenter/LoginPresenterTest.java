@@ -179,10 +179,11 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldDoOfflineLoginWhenNoConnectionAndHasLocalCache() {
+    public void shouldDoOfflineLoginWhenNoConnectionAndHasLocalCacheAndHasGetProducts() {
         appInject.setNetworkConnection(false);
         when(userRepository.getUserFromLocal(any(User.class))).thenReturn(new User("user", "password"));
         when(mockActivity.needInitInventory()).thenReturn(false);
+        when(mockActivity.hasGetProducts()).thenReturn(true);
 
         presenter.startLogin("user", "password");
 
@@ -191,6 +192,23 @@ public class LoginPresenterTest {
 
         verify(mockActivity).loaded();
         verify(mockActivity).goToHomePage();
+    }
+
+
+    @Test
+    public void shouldShowMessageWhenNoConnectionAndHasNotGetProducts() {
+        appInject.setNetworkConnection(false);
+        when(userRepository.getUserFromLocal(any(User.class))).thenReturn(new User("user", "password"));
+        when(mockActivity.needInitInventory()).thenReturn(false);
+        when(mockActivity.hasGetProducts()).thenReturn(false);
+
+        presenter.startLogin("user", "password");
+
+        verify(userRepository).getUserFromLocal(any(User.class));
+        assertThat(UserInfoMgr.getInstance().getUser().getUsername()).isEqualTo("user");
+
+        verify(mockActivity).loaded();
+        assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(RuntimeEnvironment.application.getString(R.string.msg_sync_products_list_failed));
     }
 
     @Test

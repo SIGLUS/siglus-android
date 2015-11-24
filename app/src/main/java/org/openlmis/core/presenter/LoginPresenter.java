@@ -91,7 +91,12 @@ public class LoginPresenter implements Presenter {
         } else {
             user = localUser;
             UserInfoMgr.getInstance().setUser(user);
-            goToNextPage();
+            if (view.hasGetProducts()) {
+                goToNextPage();
+            } else {
+                view.loaded();
+                ToastUtil.show(R.string.msg_sync_products_list_failed);
+            }
         }
     }
 
