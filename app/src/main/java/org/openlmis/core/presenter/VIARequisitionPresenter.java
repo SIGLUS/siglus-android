@@ -170,9 +170,9 @@ public class VIARequisitionPresenter implements Presenter {
     }
 
     protected void updateRequisitionFormUI() {
-        if (isFormStatusDraft(rnRForm)) {
+        if (rnRForm.isDraft()) {
             view.highLightRequestAmount();
-        } else if (isFormStatusSubmitted()) {
+        } else if (rnRForm.isSubmitted()) {
             view.setProcessButtonName(context.getString(R.string.btn_complete));
             view.highLightApprovedAmount();
         }
@@ -200,22 +200,14 @@ public class VIARequisitionPresenter implements Presenter {
         rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature_10)) {
-            view.showSignDialog(isFormStatusDraft(rnRForm));
+            view.showSignDialog(rnRForm.isDraft());
         } else {
-            if (isFormStatusDraft(rnRForm)) {
+            if (rnRForm.isDraft()) {
                 submitRequisition(rnRForm);
             } else {
                 authorise(rnRForm);
             }
         }
-    }
-
-    private boolean isFormStatusDraft(RnRForm rnRForm) {
-        return rnRForm.getStatus() == RnRForm.STATUS.DRAFT;
-    }
-
-    private boolean isFormStatusSubmitted() {
-        return rnRForm.getStatus() == RnRForm.STATUS.SUBMITTED;
     }
 
     private void submitRequisition(final RnRForm rnRForm) {
@@ -371,7 +363,7 @@ public class VIARequisitionPresenter implements Presenter {
     }
 
     public void processSign(String signName, RnRForm rnRForm) {
-        if (isFormStatusDraft(rnRForm)) {
+        if (rnRForm.isDraft()) {
             submitSignature(signName, RnRFormSignature.TYPE.SUBMITTER, rnRForm);
             submitRequisition(rnRForm);
             view.showMessageNotifyDialog();
@@ -421,7 +413,7 @@ public class VIARequisitionPresenter implements Presenter {
     }
 
     public void loadAlertDialogIsFormStatusIsDraft() {
-        if (isFormStatusSubmitted()) {
+        if (rnRForm.isSubmitted()) {
             view.showMessageNotifyDialog();
         }
     }

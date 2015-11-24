@@ -46,7 +46,6 @@ public class RnRForm extends BaseModel {
     }
 
     public static final int DAY_PERIOD_END = 20;
-
     @ForeignCollectionField()
     private ForeignCollection<RnrFormItem> rnrFormItemList;
 
@@ -95,6 +94,13 @@ public class RnRForm extends BaseModel {
     @DatabaseField
     private Date submittedTime;
 
+    public boolean isDraft() {
+        return getStatus() == STATUS.DRAFT;
+    }
+
+    public boolean isSubmitted() {
+        return getStatus() == STATUS.SUBMITTED;
+    }
 
     public static RnRForm init(Program program, Date generateDate) {
         RnRForm rnrForm = new RnRForm();
