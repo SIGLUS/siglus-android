@@ -1,5 +1,5 @@
 GEM
-  remote: https://ruby.taobao.org/
+  remote: https://rubygems.org/
   specs:
     diff-lcs (1.2.5)
     domain_name (0.5.24)
@@ -35,3 +35,6 @@ PLATFORMS
 DEPENDENCIES
   rest-client
   rspec
+
+BUNDLED WITH
+   1.10.6
