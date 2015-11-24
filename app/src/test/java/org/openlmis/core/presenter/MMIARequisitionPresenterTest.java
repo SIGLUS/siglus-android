@@ -65,13 +65,13 @@ public class MMIARequisitionPresenterTest {
     private MMIARequisitionPresenter presenter;
     private MMIARepository mmiaRepository;
     private ProgramRepository programRepository;
-    private MMIARequisitionPresenter.MMIAFormView mockMMIAformView;
+    private MMIARequisitionPresenter.MMIARequisitionView mockMMIAformView;
 
     @Before
     public void setup() throws ViewNotMatchException {
         mmiaRepository = mock(MMIARepository.class);
         programRepository = mock(ProgramRepository.class);
-        mockMMIAformView = mock(MMIARequisitionPresenter.MMIAFormView.class);
+        mockMMIAformView = mock(MMIARequisitionPresenter.MMIARequisitionView.class);
         syncManager = mock(SyncManager.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         MockitoAnnotations.initMocks(this);
@@ -93,7 +93,7 @@ public class MMIARequisitionPresenterTest {
         protected void configure() {
             bind(MMIARepository.class).toInstance(mmiaRepository);
             bind(ProgramRepository.class).toInstance(programRepository);
-            bind(MMIARequisitionPresenter.MMIAFormView.class).toInstance(mockMMIAformView);
+            bind(MMIARequisitionPresenter.MMIARequisitionView.class).toInstance(mockMMIAformView);
             bind(SyncManager.class).toInstance(syncManager);
         }
     }

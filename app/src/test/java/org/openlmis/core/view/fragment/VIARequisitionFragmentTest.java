@@ -64,7 +64,7 @@ import static org.robolectric.Shadows.shadowOf;
 @RunWith(LMISTestRunner.class)
 public class VIARequisitionFragmentTest {
 
-    VIARequisitionFragment VIARequisitionFragment;
+    org.openlmis.core.view.fragment.VIARequisitionFragment VIARequisitionFragment;
     VIARequisitionPresenter presenter;
     private List<RequisitionFormItemViewModel> formItemList;
     private Program program;

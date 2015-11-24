@@ -55,7 +55,7 @@ import org.openlmis.core.view.widget.SignatureDialog;
 
 import roboguice.inject.InjectView;
 
-public class VIARequisitionFragment extends BaseFragment implements VIARequisitionPresenter.RequisitionView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
+public class VIARequisitionFragment extends BaseFragment implements VIARequisitionPresenter.VIARequisitionView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
 
     @InjectView(R.id.requisition_form)
     ListView requisitionForm;

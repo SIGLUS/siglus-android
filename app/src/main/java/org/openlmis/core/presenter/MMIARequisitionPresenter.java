@@ -50,7 +50,7 @@ import static org.roboguice.shaded.goole.common.base.Preconditions.checkNotNull;
 public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
 
     RnRForm form;
-    MMIAFormView view;
+    MMIARequisitionView view;
 
     @Inject
     MMIARepository mmiaRepository;
@@ -65,11 +65,11 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     SyncManager syncManager;
 
     @Override
-    public void attachView(BaseView v) throws ViewNotMatchException {
-        if (v instanceof MMIAFormView) {
-            this.view = (MMIAFormView) v;
+    public void attachView(BaseView baseView) throws ViewNotMatchException {
+        if (baseView instanceof MMIARequisitionView) {
+            this.view = (MMIARequisitionView) baseView;
         } else {
-            throw new ViewNotMatchException(MMIAFormView.class.getName());
+            throw new ViewNotMatchException(MMIARequisitionView.class.getName());
         }
     }
 
@@ -258,7 +258,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
             return RnRForm.STATUS.DRAFT;
     }
 
-    public interface MMIAFormView extends BaseView {
+    public interface MMIARequisitionView extends BaseView {
 
         void showValidationAlert();
 

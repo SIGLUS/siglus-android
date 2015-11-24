@@ -63,7 +63,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     @Inject
     SyncManager syncManager;
 
-    RequisitionView view;
+    VIARequisitionView view;
 
     @Getter
     protected RnRForm rnRForm;
@@ -75,10 +75,10 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
     @Override
     public void attachView(BaseView baseView) throws ViewNotMatchException {
-        if (baseView instanceof RequisitionView) {
-            this.view = (RequisitionView) baseView;
+        if (baseView instanceof VIARequisitionView) {
+            this.view = (VIARequisitionView) baseView;
         } else {
-            throw new ViewNotMatchException("required RequisitionView");
+            throw new ViewNotMatchException("required VIARequisitionView");
         }
     }
 
@@ -407,7 +407,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }
     }
 
-    public interface RequisitionView extends BaseView {
+    public interface VIARequisitionView extends BaseView {
 
         void showListInputError(int index);
 
