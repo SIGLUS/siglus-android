@@ -32,11 +32,13 @@ import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIAFormPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
@@ -55,7 +57,7 @@ import roboguice.inject.InjectView;
 public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIAFormView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
 
     @InjectView(R.id.rnr_form_list)
-    private MMIARnrForm rnrFormList;
+    protected MMIARnrForm rnrFormList;
 
     @InjectView(R.id.regime_list)
     protected MMIARegimeList regimeListView;
@@ -64,7 +66,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     protected MMIAInfoList mmiaInfoListView;
 
     @InjectView(R.id.btn_complete)
-    private Button btnComplete;
+    protected Button btnComplete;
 
     @InjectView(R.id.tv_regime_total)
     protected TextView tvRegimeTotal;
@@ -76,7 +78,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     private ScrollView scrollView;
 
     @InjectView(R.id.btn_save)
-    private View btnSave;
+    protected View btnSave;
 
     @InjectView(R.id.tv_total_mismatch)
     protected TextView tvMismatch;
@@ -119,8 +121,14 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
             scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             btnSave.setVisibility(View.GONE);
             btnComplete.setVisibility(View.GONE);
+        }
 
-            setTitle(new RnRFormViewModel(form).getPeriod());
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.add_header_info_reduce_header_size_348)) {
+            setTitle(getString(R.string.label_mmia_title,
+                    DateUtil.formatDateWithoutYear(form.getPeriodBegin()),
+                    DateUtil.formatDateWithoutYear(form.getPeriodEnd())));
+        } else {
+            setTitle(presenter.formIsEditable() ? getString(R.string.title_mmia_spread) : new RnRFormViewModel(form).getPeriod());
         }
 
         highlightTotalDifference();
@@ -146,12 +154,14 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         });
 
         final EditText patientTotalView = mmiaInfoListView.getPatientTotalView();
-        patientTotalView.post(new Runnable() {
-            @Override
-            public void run() {
-                patientTotalView.addTextChangedListener(totalTextWatcher);
-            }
-        });
+        if (patientTotalView != null) {
+            patientTotalView.post(new Runnable() {
+                @Override
+                public void run() {
+                    patientTotalView.addTextChangedListener(totalTextWatcher);
+                }
+            });
+        }
 
         btnSave.setOnClickListener(this);
 

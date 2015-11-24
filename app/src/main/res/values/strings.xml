@@ -54,6 +54,7 @@
     <string name="action_sign_out">Sign Out</string>
 
     <!--MMIA-->
+    <string name="label_mmia_title">MMIA - %1$s to %2$s</string>
     <string name="label_rnrfrom_left_header">Medicine</string>
     <string name="label_regime_header_name">Therapeutic Regime</string>
     <string name="label_total_mmia">Total</string>
@@ -83,6 +84,8 @@
 
 
     <!-- Requisition Form -->
+    <string name="label_requisition_title">Requisition - %1$s to %2$s</string>
+    <string name="label_requisition_header_consultation_header">Normal Requisition</string>
     <string name="request_provincial_district_level">Requisition for Province or District Level</string>
     <string name="title_stock_move_ment">Stock Movements</string>
     <string name="title_inventory_info">Inventory</string>

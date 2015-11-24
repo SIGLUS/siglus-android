@@ -24,13 +24,11 @@ import android.content.Intent;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.RequisitionFragment;
-
 import roboguice.inject.ContentView;
 
 
 @ContentView(R.layout.activity_requisition)
 public class RequisitionActivity extends BaseActivity {
-
     @Override
     public void onBackPressed() {
         ((RequisitionFragment) getFragmentManager().findFragmentById(R.id.fragment_requisition)).onBackPressed();

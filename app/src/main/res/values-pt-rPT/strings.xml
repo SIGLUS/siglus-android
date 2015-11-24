@@ -38,6 +38,7 @@
     <string name="label_last_synced_days_ago">Última sincronização há %s dias</string>
 
     <!--MMIA-->
+    <string name="label_mmia_title">MMIA -&#160;</string>
     <string name="label_rnrfrom_left_header">Medicamento</string>
     <string name="label_regime_header_name">REGIME TERAPÊUTICO</string>
     <string name="label_total_mmia">Total</string>
@@ -65,6 +66,8 @@
     <string name="msg_regime_total_and_patient_total_not_match">Os totais não correspondem. Por favor, verifique os números digitados. Se os valores continuam diferentes, adicione uma justificação nas \"Observações\".</string>
 
     <!-- Requisition Form -->
+    <string name="label_requisition_title">Requisicao - %1$s a %2$s</string>
+    <string name="label_requisition_header_consultation_header">Normal Requisicao</string>
     <string name="label_consultation">No. de Consultas Externas Realizadas</string>
     <string name="request_provincial_district_level">Requisicao do nível provincial ou distrital</string>
     <string name="title_stock_move_ment">Movimento de stock</string>

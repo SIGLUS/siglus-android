@@ -22,22 +22,22 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.text.InputFilter;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 
 public class BorderedEditText extends LinearLayout {
 
-    String text;
+    String labelText;
+    String headerText;
     int ems;
     float width;
 
-    TextView label;
+    TextView tvLabel;
     EditText editText;
 
     public BorderedEditText(Context context, AttributeSet attrs) {
@@ -46,23 +46,40 @@ public class BorderedEditText extends LinearLayout {
         TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.BorderedEditText, 0,
                 R.style.DefaultBorderedEditText);
 
-        text = attributes.getString(R.styleable.BorderedEditText_text);
+        labelText = attributes.getString(R.styleable.BorderedEditText_text);
+        headerText = attributes.getString(R.styleable.BorderedEditText_headerText);
         ems = attributes.getInteger(R.styleable.BorderedEditText_ems, 4);
-        width = attributes.getDimension(R.styleable.BorderedEditText_labelWidth, 40);
+        width = attributes.getDimension(R.styleable.BorderedEditText_labelWidth, 70);
 
-        initUI();
+        attributes.recycle();
+
+        inflateLayout();
     }
 
-    private void initUI() {
-        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.view_bordered_edittext, this, true);
+    private void inflateLayout() {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.add_header_info_reduce_header_size_348)) {
+            inflate(getContext(), R.layout.item_requisition_report_consultation_form, this);
+        } else {
+            inflate(getContext(), R.layout.view_bordered_edittext, this);
+        }
+    }
 
-        label = (TextView) contentView.findViewById(R.id.label);
-        editText = (EditText) contentView.findViewById(R.id.edit_text);
 
-        label.setText(text);
-        label.setWidth((int) width);
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        tvLabel = (TextView) findViewById(R.id.label);
+        tvLabel.setText(labelText);
+        tvLabel.setWidth((int) width);
+
+        editText = (EditText) findViewById(R.id.edit_text);
         editText.setEms(ems);
         editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         editText.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
+
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.add_header_info_reduce_header_size_348)) {
+            ((TextView) findViewById(R.id.header)).setText(headerText);
+        }
     }
 }

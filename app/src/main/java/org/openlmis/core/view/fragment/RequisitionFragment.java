@@ -37,11 +37,13 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.RequisitionPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
@@ -99,7 +101,7 @@ public class RequisitionFragment extends BaseFragment implements RequisitionPres
 
     private RequisitionFormAdapter requisitionFormAdapter;
     private boolean consultationNumbersHasChanged;
-    private boolean isHistoryForm;
+    protected boolean isHistoryForm;
     private static final String TAG_BACK_PRESSED = "onBackPressed";
     private static final String TAG_SHOW_MESSAGE_NOTIFY_DIALOG = "showMessageNotifyDialog";
     protected View containerView;
@@ -134,8 +136,21 @@ public class RequisitionFragment extends BaseFragment implements RequisitionPres
 
     @Override
     public void refreshRequisitionForm() {
-        if (isHistoryForm) {
-            getActivity().setTitle(new RnRFormViewModel(presenter.getRnRForm()).getPeriod());
+        RnRForm rnRForm = presenter.getRnRForm();
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.add_header_info_reduce_header_size_348)) {
+            if (rnRForm != null) {
+                getActivity().setTitle(getString(R.string.label_requisition_title,
+                        DateUtil.formatDateWithoutYear(rnRForm.getPeriodBegin()),
+                        DateUtil.formatDateWithoutYear(rnRForm.getPeriodEnd())));
+            } else {
+                getActivity().setTitle(getString(R.string.title_requisition));
+            }
+        } else {
+            if (isHistoryForm) {
+                getActivity().setTitle(new RnRFormViewModel(rnRForm).getPeriod());
+            } else {
+                getActivity().setTitle(getString(R.string.title_requisition));
+            }
         }
         requisitionProductAdapter.notifyDataSetChanged();
         requisitionFormAdapter.notifyDataSetChanged();

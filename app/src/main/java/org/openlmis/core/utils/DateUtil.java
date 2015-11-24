@@ -30,12 +30,14 @@ public final class DateUtil {
     public static final String DATE_FORMAT_ONLY_MONTH_AND_YEAR = "MMM yyyy";
     public static final String SIMPLE_DATE_FORMAT = "dd/MM/yyyy";
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_FORMAT_ONLY_DAY_AND_MONTH = "dd MMM";
 
     public static final String DB_DATE_FORMAT = "yyyy-MM-dd";
 
 
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
     public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_DAY = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+    public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_YEAR = new SimpleDateFormat(DATE_FORMAT_ONLY_DAY_AND_MONTH);
     private static Locale locale = Locale.getDefault();
 
     public static final long MILLISECONDS_MINUTE = 60000;
@@ -114,6 +116,10 @@ public final class DateUtil {
 
     public static String formatDate(Date date) {
         return DATE_FORMATTER.format(date);
+    }
+
+    public static String formatDateWithoutYear(Date date){
+        return DATE_FORMAT_NOT_DISPLAY_YEAR.format(date);
     }
 
     public static String formatDateWithYearAndMonth(Date date) {

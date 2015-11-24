@@ -30,17 +30,22 @@ import com.google.inject.Module;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
+import org.openlmis.core.model.Program;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.builder.RequisitionBuilder;
 import org.openlmis.core.presenter.RequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.activity.RequisitionActivity;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowListView;
 import org.robolectric.util.FragmentTestUtil;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +67,7 @@ public class RequisitionFragmentTest {
     RequisitionFragment requisitionFragment;
     RequisitionPresenter presenter;
     private List<RequisitionFormItemViewModel> formItemList;
+    private Program program;
 
     @Before
     public void setup() {
@@ -82,10 +88,43 @@ public class RequisitionFragmentTest {
                 binder.bind(RequisitionPresenter.class).toInstance(presenter);
             }
         });
+
         requisitionFragment = new RequisitionFragment();
         FragmentTestUtil.startFragment(requisitionFragment);
         requisitionFragment.refreshRequisitionForm();
 
+        program = new Program();
+        program.setProgramCode("ESS_MEDS");
+        program.setProgramName("ESS_MEDS");
+    }
+
+    @Test
+    public void shouldShowRequisitionPeriodOnTitleWhenToggleOn() {
+        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
+
+        RnRForm form = RnRForm.init(program, DateUtil.today());
+        form.setPeriodBegin(Date.valueOf("2015-04-21"));
+        form.setPeriodEnd(Date.valueOf("2015-05-20"));
+
+        doReturn(form).when(presenter).getRnRForm();
+        requisitionFragment.refreshRequisitionForm();
+
+        assertThat(requisitionFragment.getActivity().getTitle()).isEqualTo("Requisition - 21 Apr to 20 May");
+    }
+
+    @Test
+    public void shouldShowOnlyPeriodWhenToggleOff() {
+        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(false);
+
+        RnRForm form = RnRForm.init(program, DateUtil.today());
+        form.setPeriodBegin(Date.valueOf("2015-04-21"));
+        form.setPeriodEnd(Date.valueOf("2015-05-20"));
+        requisitionFragment.isHistoryForm = true;
+
+        doReturn(form).when(presenter).getRnRForm();
+        requisitionFragment.refreshRequisitionForm();
+
+        assertThat(requisitionFragment.getActivity().getTitle()).isEqualTo("21 Apr 2015  to  20 May 2015");
     }
 
     @Test

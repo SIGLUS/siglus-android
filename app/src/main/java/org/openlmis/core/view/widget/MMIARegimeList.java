@@ -73,7 +73,9 @@ public class MMIARegimeList extends LinearLayout {
                 addItemView(item, i);
             }
         }
-        editTexts.get(editTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
+        if (editTexts.size() > 0) {
+            editTexts.get(editTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
+        }
         totalView.setText(String.valueOf(getTotal()));
     }
 
