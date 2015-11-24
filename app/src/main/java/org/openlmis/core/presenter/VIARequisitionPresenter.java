@@ -172,6 +172,7 @@ public class VIARequisitionPresenter implements Presenter {
             view.highLightApprovedAmount();
         }
         view.refreshRequisitionForm();
+        view.setEditable();
     }
 
     protected boolean validateFormInput() {
@@ -442,5 +443,7 @@ public class VIARequisitionPresenter implements Presenter {
         void showSignDialog(boolean isFormStatusDraft);
 
         void showMessageNotifyDialog();
+
+        void setEditable();
     }
 }

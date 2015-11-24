@@ -102,6 +102,10 @@ public class RnRForm extends BaseModel {
         return getStatus() == STATUS.SUBMITTED;
     }
 
+    public boolean isAuthorized() {
+        return getStatus() == STATUS.AUTHORIZED;
+    }
+
     public static RnRForm init(Program program, Date generateDate) {
         RnRForm rnrForm = new RnRForm();
         rnrForm.program = program;

@@ -89,24 +89,26 @@ public class VIARequisitionFragmentTest {
             }
         });
 
-        VIARequisitionFragment = new VIARequisitionFragment();
-        FragmentTestUtil.startFragment(VIARequisitionFragment);
-        VIARequisitionFragment.refreshRequisitionForm();
-
         program = new Program();
         program.setProgramCode("ESS_MEDS");
         program.setProgramName("ESS_MEDS");
-    }
 
-    @Test
-    public void shouldShowRequisitionPeriodOnTitleWhenToggleOn() {
-        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
 
         RnRForm form = RnRForm.init(program, DateUtil.today());
         form.setPeriodBegin(Date.valueOf("2015-04-21"));
         form.setPeriodEnd(Date.valueOf("2015-05-20"));
 
         doReturn(form).when(presenter).getRnRForm();
+        VIARequisitionFragment = new VIARequisitionFragment();
+        FragmentTestUtil.startFragment(VIARequisitionFragment);
+        doReturn(form).when(presenter).getRnRForm();
+        VIARequisitionFragment.refreshRequisitionForm();
+    }
+
+    @Test
+    public void shouldShowRequisitionPeriodOnTitleWhenToggleOn() {
+        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
+
         VIARequisitionFragment.refreshRequisitionForm();
 
         assertThat(VIARequisitionFragment.getActivity().getTitle()).isEqualTo("Requisition - 21 Apr to 20 May");
@@ -116,12 +118,7 @@ public class VIARequisitionFragmentTest {
     public void shouldShowOnlyPeriodWhenToggleOff() {
         ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(false);
 
-        RnRForm form = RnRForm.init(program, DateUtil.today());
-        form.setPeriodBegin(Date.valueOf("2015-04-21"));
-        form.setPeriodEnd(Date.valueOf("2015-05-20"));
-        VIARequisitionFragment.isHistoryForm = true;
-
-        doReturn(form).when(presenter).getRnRForm();
+        presenter.getRnRForm().setStatus(RnRForm.STATUS.AUTHORIZED);
         VIARequisitionFragment.refreshRequisitionForm();
 
         assertThat(VIARequisitionFragment.getActivity().getTitle()).isEqualTo("21 Apr 2015  to  20 May 2015");
@@ -147,6 +144,8 @@ public class VIARequisitionFragmentTest {
         VIARequisitionFragment.highLightApprovedAmount();
         View item = getFirstItemInForm();
         EditText etApprovedAmount = (EditText) item.findViewById(R.id.et_approved_amount);
+        EditText etRequestAmount = (EditText) item.findViewById(R.id.et_request_amount);
+        etRequestAmount.setEnabled(false);
 
         assertThat(etApprovedAmount).isNotNull();
         assertThat(etApprovedAmount.getText().toString()).isEqualTo("0");

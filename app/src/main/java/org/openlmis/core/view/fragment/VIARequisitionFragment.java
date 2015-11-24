@@ -106,6 +106,8 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     private static final String TAG_SHOW_MESSAGE_NOTIFY_DIALOG = "showMessageNotifyDialog";
     protected View containerView;
 
+    private long formId;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -117,10 +119,8 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             e.printStackTrace();
         }
 
-        long formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
+        formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
         isHistoryForm = formId != 0;
-
-        presenter.loadRequisitionFormList(formId);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -143,7 +143,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             setTitleWithPeriodWithoutToggle(rnRForm);
         }
         requisitionProductAdapter.notifyDataSetChanged();
-        requisitionFormAdapter.notifyDataSetChanged();
+        requisitionFormAdapter.updateStatus(rnRForm.getStatus());
         setConsultationNumbers();
     }
 
@@ -158,7 +158,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     public void setTitleWithPeriodWithoutToggle(RnRForm rnRForm) {
-        if (isHistoryForm) {
+        if (presenter.getRnRForm().isAuthorized()) {
             getActivity().setTitle(new RnRFormViewModel(rnRForm).getPeriod());
         } else {
             getActivity().setTitle(getString(R.string.title_requisition));
@@ -188,8 +188,9 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         requisitionFormAdapter.updateStatus(RnRForm.STATUS.DRAFT);
     }
 
-    private void setEditable() {
-        if (isHistoryForm) {
+    @Override
+    public void setEditable() {
+        if (presenter.getRnRForm().isAuthorized()) {
             vgContainer.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             actionPanel.setVisibility(View.GONE);
         } else {
@@ -250,6 +251,8 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         initRequisitionBodyList();
         initRequisitionProductList();
 
+        presenter.loadRequisitionFormList(formId);
+
         requisitionNameList.post(new Runnable() {
             @Override
             public void run() {
@@ -267,7 +270,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         etConsultationNumbers.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
 
         bindListeners();
-        setEditable();
     }
 
     private void bindListeners() {
