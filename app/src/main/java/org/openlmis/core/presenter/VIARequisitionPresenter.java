@@ -99,25 +99,28 @@ public class VIARequisitionPresenter implements Presenter {
     }
 
     public RnRForm loadRnrForm(long formId) {
+        RnRForm form=null;
         try {
-            if (formId > 0) {
-                rnRForm = viaRepository.queryRnRForm(formId);
-            } else {
-                RnRForm draftVIA = viaRepository.getDraftVIA();
-                if (draftVIA != null) {
-                    rnRForm = draftVIA;
-                } else {
-                    rnRForm = viaRepository.initVIA();
-                }
-            }
-            return rnRForm;
+            form= loadOrCreate(formId);
         } catch (LMISException e) {
             view.showErrorMessage(e.getMessage());
             e.printStackTrace();
         }
-        return null;
+        return form;
     }
 
+    private RnRForm loadOrCreate(long formId) throws LMISException {
+        //three branches: history, half completed draft, new draft
+        boolean isHistory = formId > 0;
+        if (isHistory) {
+            return viaRepository.queryRnRForm(formId);
+        }
+        RnRForm draftVIA = viaRepository.getDraftVIA();
+        if (draftVIA != null) {
+            return draftVIA;
+        }
+        return viaRepository.initVIA();
+    }
 
     public List<RequisitionFormItemViewModel> getRequisitionViewModelList() {
         return requisitionFormItemViewModelList;
@@ -125,7 +128,7 @@ public class VIARequisitionPresenter implements Presenter {
 
     protected List<RequisitionFormItemViewModel> createViewModelsFromRnrForm(long formId) {
         if (rnRForm == null) {
-            loadRnrForm(formId);
+            rnRForm = loadRnrForm(formId);
         }
         return from(rnRForm.getRnrFormItemList()).transform(new Function<RnrFormItem, RequisitionFormItemViewModel>() {
             @Override
@@ -167,7 +170,7 @@ public class VIARequisitionPresenter implements Presenter {
     }
 
     protected void updateRequisitionFormUI() {
-        if (isFormStatusDraft()) {
+        if (isFormStatusDraft(rnRForm)) {
             view.highLightRequestAmount();
         } else if (isFormStatusSubmitted()) {
             view.setProcessButtonName(context.getString(R.string.btn_complete));
@@ -196,18 +199,18 @@ public class VIARequisitionPresenter implements Presenter {
         setRnrFormAmount();
         rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
 
-        if(LMISApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature_10)) {
-            view.showSignDialog(isFormStatusDraft());
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature_10)) {
+            view.showSignDialog(isFormStatusDraft(rnRForm));
         } else {
-            if (isFormStatusDraft()) {
-                submitRequisition();
+            if (isFormStatusDraft(rnRForm)) {
+                submitRequisition(rnRForm);
             } else {
-                authorise();
+                authorise(rnRForm);
             }
         }
     }
 
-    private boolean isFormStatusDraft() {
+    private boolean isFormStatusDraft(RnRForm rnRForm) {
         return rnRForm.getStatus() == RnRForm.STATUS.DRAFT;
     }
 
@@ -215,7 +218,7 @@ public class VIARequisitionPresenter implements Presenter {
         return rnRForm.getStatus() == RnRForm.STATUS.SUBMITTED;
     }
 
-    private void submitRequisition() {
+    private void submitRequisition(final RnRForm rnRForm) {
         view.loading();
         Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
@@ -251,7 +254,7 @@ public class VIARequisitionPresenter implements Presenter {
         });
     }
 
-    private void authorise() {
+    private void authorise(final RnRForm rnRForm) {
         view.loading();
         Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
@@ -367,18 +370,19 @@ public class VIARequisitionPresenter implements Presenter {
         return !checkNotNull(rnRForm).getStatus().equals(RnRForm.STATUS.AUTHORIZED);
     }
 
-    public void processSign(String signName) {
-        if (isFormStatusDraft()) {
-            submitSignature(signName, RnRFormSignature.TYPE.SUBMITTER);
-            submitRequisition();
+    public void processSign(String signName, RnRForm rnRForm) {
+        if (isFormStatusDraft(rnRForm)) {
+            submitSignature(signName, RnRFormSignature.TYPE.SUBMITTER, rnRForm);
+            submitRequisition(rnRForm);
             view.showMessageNotifyDialog();
         } else {
-            submitSignature(signName, RnRFormSignature.TYPE.APPROVER);
-            authorise();
+            submitSignature(signName, RnRFormSignature.TYPE.APPROVER, rnRForm);
+            authorise(rnRForm);
         }
     }
+
     public RnRForm.STATUS getRnrFormStatus() {
-        if(rnRForm != null) {
+        if (rnRForm != null) {
             return rnRForm.getStatus();
         } else {
             return RnRForm.STATUS.DRAFT;
@@ -386,7 +390,7 @@ public class VIARequisitionPresenter implements Presenter {
     }
 
 
-    private void submitSignature(final String signName, final RnRFormSignature.TYPE type) {
+    private void submitSignature(final String signName, final RnRFormSignature.TYPE type, final RnRForm rnRForm) {
         view.loading();
         Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
@@ -417,7 +421,7 @@ public class VIARequisitionPresenter implements Presenter {
     }
 
     public void loadAlertDialogIsFormStatusIsDraft() {
-        if (isFormStatusSubmitted()){
+        if (isFormStatusSubmitted()) {
             view.showMessageNotifyDialog();
         }
     }

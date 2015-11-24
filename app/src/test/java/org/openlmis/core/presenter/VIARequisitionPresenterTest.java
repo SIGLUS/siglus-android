@@ -126,47 +126,32 @@ public class VIARequisitionPresenterTest {
     }
 
     @Test
-    public void shouldSubmitAfterSignedAndStatusIsDraft() throws LMISException{
-        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
-
-        RnRForm form = getRnRFormWithStatus(RnRForm.STATUS.DRAFT);
-
-        when(mockVIARepository.getDraftVIA()).thenReturn(form);
-
-        mockVIARepository.initVIA();
-        presenter.loadRnrForm(0);
-
-        presenter.requisitionFormItemViewModelList = new ArrayList<>();
-        presenter.processSign("userSignature");
-
-        waitObservableToExeute();
-
-        if (LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature_10)) {
-            verify(mockVIARepository).setSignature(form, "userSignature", RnRFormSignature.TYPE.SUBMITTER);
-            verify(presenter.view).showMessageNotifyDialog();
-        }
+    public void shouldSubmitAfterSignedAndStatusIsDraft() throws LMISException {
+        RnRForm form = testSignatureStatus(RnRForm.STATUS.DRAFT, RnRFormSignature.TYPE.SUBMITTER);
         verify(mockVIARepository).submit(form);
     }
 
     @Test
-    public void shouldCompleteAfterSignedAndStatusIsSubmit() throws LMISException{
+    public void shouldCompleteAfterSignedAndStatusIsSubmit() throws LMISException {
+        RnRForm form = testSignatureStatus(RnRForm.STATUS.SUBMITTED, RnRFormSignature.TYPE.APPROVER);
+        verify(mockVIARepository).authorise(form);
+    }
+
+    private RnRForm testSignatureStatus(RnRForm.STATUS formStatus, RnRFormSignature.TYPE signatureType)
+            throws LMISException {
+        //given
         ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
-        RnRForm form = getRnRFormWithStatus(RnRForm.STATUS.SUBMITTED);
+        RnRForm form = getRnRFormWithStatus(formStatus);
 
-        when(mockVIARepository.getDraftVIA()).thenReturn(form);
-
-        mockVIARepository.initVIA();
-        presenter.loadRnrForm(0);
-
-        presenter.requisitionFormItemViewModelList = new ArrayList<>();
-        presenter.processSign("userSignature");
-
+        //when
+        presenter.processSign("userSignature", form);
         waitObservableToExeute();
 
+        //then
         if (LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature_10)) {
-            verify(mockVIARepository).setSignature(form, "userSignature", RnRFormSignature.TYPE.APPROVER);
+            verify(mockVIARepository).setSignature(form, "userSignature", signatureType);
         }
-        verify(mockVIARepository).authorise(form);
+        return form;
     }
 
     private RnRForm getRnRFormWithStatus(RnRForm.STATUS status) {
@@ -189,14 +174,14 @@ public class VIARequisitionPresenterTest {
 
 
     @Test
-    public void shouldHighLightRequestAmountWhenFormStatusIsDraft(){
+    public void shouldHighLightRequestAmountWhenFormStatusIsDraft() {
         highLightForm(RnRForm.STATUS.DRAFT);
         verify(requisitionFragment).highLightRequestAmount();
         verify(requisitionFragment, never()).highLightApprovedAmount();
     }
 
     @Test
-    public void shouldHighLightApproveAmountWhenFormStatusIsSubmitted(){
+    public void shouldHighLightApproveAmountWhenFormStatusIsSubmitted() {
         highLightForm(RnRForm.STATUS.SUBMITTED);
         verify(requisitionFragment).highLightApprovedAmount();
         verify(requisitionFragment, never()).highLightRequestAmount();

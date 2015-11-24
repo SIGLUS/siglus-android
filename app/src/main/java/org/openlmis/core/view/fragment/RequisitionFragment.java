@@ -326,7 +326,7 @@ public class RequisitionFragment extends BaseFragment implements VIARequisitionP
 
         @Override
         public void onSign(String sign) {
-            presenter.processSign(sign);
+            presenter.processSign(sign, presenter.getRnRForm());
         }
     };
 
