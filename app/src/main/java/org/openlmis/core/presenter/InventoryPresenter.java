@@ -21,6 +21,8 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftInventory;
@@ -86,7 +88,9 @@ public class InventoryPresenter implements Presenter {
                     }).toList();
 
                     List<Product> productList = productRepository.list();
-                    Collections.sort(productList);
+                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.sort_product_list_alphabetically_435)) {
+                        Collections.sort(productList);
+                    }
 
                     List<StockCardViewModel> list = from(productList).filter(new Predicate<Product>() {
                         @Override
@@ -116,7 +120,10 @@ public class InventoryPresenter implements Presenter {
             public void call(Subscriber<? super List<StockCardViewModel>> subscriber) {
                 try {
                     List<StockCard> stockCards = stockRepository.list();
-                    Collections.sort(stockCards);
+                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.sort_product_list_alphabetically_435)) {
+                        Collections.sort(stockCards);
+                    }
+
                     List<StockCardViewModel> stockCardViewModels = from(stockCards).transform(new Function<StockCard, StockCardViewModel>() {
                         @Override
                         public StockCardViewModel apply(StockCard stockCard) {
