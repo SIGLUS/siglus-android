@@ -249,7 +249,13 @@ public class RequisitionFragment extends BaseFragment implements RequisitionPres
             }
         });
 
-        btnComplete.setText(getString(R.string.btn_submit));
+        btnComplete.post(new Runnable() {
+            @Override
+            public void run() {
+                presenter.setBtnCompleteText();
+            }
+        });
+
         etConsultationNumbers.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
 
         bindListeners();

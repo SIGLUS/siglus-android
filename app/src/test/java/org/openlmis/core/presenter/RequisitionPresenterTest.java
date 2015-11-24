@@ -209,6 +209,24 @@ public class RequisitionPresenterTest {
         verify(requisitionFragment, never()).highLightRequestAmount();
     }
 
+    @Test
+    public void shouldCallSetProcessButtonNameWithSubmit()  {
+        presenter.rnRForm = getRnRFormWithStatus(RnRForm.STATUS.DRAFT);
+
+        presenter.setBtnCompleteText();
+
+        verify(requisitionFragment).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_submit));
+    }
+
+    @Test
+    public void shouldCallSetProcessButtonNameWithComplete()  {
+        presenter.rnRForm = getRnRFormWithStatus(RnRForm.STATUS.SUBMITTED);
+
+        presenter.setBtnCompleteText();
+
+        verify(requisitionFragment).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_complete));
+    }
+
     private void highLightForm(RnRForm.STATUS status) {
         RnRForm form = new RnRForm();
         form.setStatus(status);

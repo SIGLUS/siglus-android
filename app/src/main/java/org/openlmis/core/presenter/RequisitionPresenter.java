@@ -422,6 +422,14 @@ public class RequisitionPresenter implements Presenter {
         }
     }
 
+    public void setBtnCompleteText() {
+        if(rnRForm.getStatus() == RnRForm.STATUS.DRAFT) {
+            view.setProcessButtonName(context.getResources().getString(R.string.btn_submit));
+        } else {
+            view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
+        }
+    }
+
 
     public interface RequisitionView extends BaseView {
 
