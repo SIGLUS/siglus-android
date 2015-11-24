@@ -53,7 +53,7 @@ import rx.schedulers.Schedulers;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 
-public class VIARequisitionPresenter implements Presenter {
+public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
     @Inject
     VIARepository viaRepository;
