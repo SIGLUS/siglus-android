@@ -19,6 +19,8 @@
 package org.openlmis.core.model;
 
 
+import android.support.annotation.NonNull;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -29,11 +31,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @DatabaseTable(tableName = "products")
-public class Product extends BaseModel{
+public class Product extends BaseModel implements Comparable<Product> {
 
-    public static final String MEDICINE_TYPE_ADULT="Adult";
-    public static final String MEDICINE_TYPE_BABY="Baby";
-    public static final String MEDICINE_TYPE_OTHER="Other";
+    public static final String MEDICINE_TYPE_ADULT = "Adult";
+    public static final String MEDICINE_TYPE_BABY = "Baby";
+    public static final String MEDICINE_TYPE_OTHER = "Other";
 
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private Program program;
@@ -52,13 +54,12 @@ public class Product extends BaseModel{
 
     String medicine_type;
 
-
     @Override
     public boolean equals(Object o) {
-        if (o instanceof  Product){
-            Product product = (Product)o;
+        if (o instanceof Product) {
+            Product product = (Product) o;
             return product.getCode().equals(getCode());
-        }else {
+        } else {
             return false;
         }
     }
@@ -70,5 +71,10 @@ public class Product extends BaseModel{
     @Override
     public int hashCode() {
         return getCode().hashCode();
+    }
+
+    @Override
+    public int compareTo(@NonNull Product another) {
+        return primaryName == null ? 0 : primaryName.compareTo(another.getPrimaryName());
     }
 }

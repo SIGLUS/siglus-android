@@ -35,6 +35,7 @@ import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -84,7 +85,10 @@ public class InventoryPresenter implements Presenter {
                         }
                     }).toList();
 
-                    List<StockCardViewModel> list = from(productRepository.list()).filter(new Predicate<Product>() {
+                    List<Product> productList = productRepository.list();
+                    Collections.sort(productList);
+
+                    List<StockCardViewModel> list = from(productList).filter(new Predicate<Product>() {
                         @Override
                         public boolean apply(Product product) {
                             return !existProductList.contains(product);
@@ -110,10 +114,10 @@ public class InventoryPresenter implements Presenter {
         return Observable.create(new Observable.OnSubscribe<List<StockCardViewModel>>() {
             @Override
             public void call(Subscriber<? super List<StockCardViewModel>> subscriber) {
-                List<StockCard> list;
                 try {
-                    list = stockRepository.list();
-                    List<StockCardViewModel> stockCardViewModels = from(list).transform(new Function<StockCard, StockCardViewModel>() {
+                    List<StockCard> stockCards = stockRepository.list();
+                    Collections.sort(stockCards);
+                    List<StockCardViewModel> stockCardViewModels = from(stockCards).transform(new Function<StockCard, StockCardViewModel>() {
                         @Override
                         public StockCardViewModel apply(StockCard stockCard) {
                             return new StockCardViewModel(stockCard);
@@ -228,7 +232,7 @@ public class InventoryPresenter implements Presenter {
     public void doPhysicalInventory(List<StockCardViewModel> list, final String sign) {
         view.loading();
 
-        for (StockCardViewModel viewModel:list){
+        for (StockCardViewModel viewModel : list) {
             viewModel.setSignature(sign);
         }
         stockMovementObservable(list).subscribe(nextMainPageAction, errorAction);

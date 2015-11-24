@@ -19,6 +19,8 @@
 package org.openlmis.core.model;
 
 
+import android.support.annotation.NonNull;
+
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
@@ -36,7 +38,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @DatabaseTable(tableName = "stock_cards")
-public class StockCard extends BaseModel{
+public class StockCard extends BaseModel implements Comparable<StockCard>{
 
     public static final String DIVIDER = ",";
 
@@ -61,4 +63,8 @@ public class StockCard extends BaseModel{
         return null;
     }
 
+    @Override
+    public int compareTo(@NonNull StockCard another) {
+        return product == null ? 0 : product.compareTo(another.getProduct());
+    }
 }
