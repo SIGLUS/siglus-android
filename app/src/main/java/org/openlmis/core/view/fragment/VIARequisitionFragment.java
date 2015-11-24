@@ -138,23 +138,31 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     public void refreshRequisitionForm() {
         RnRForm rnRForm = presenter.getRnRForm();
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.add_header_info_reduce_header_size_348)) {
-            if (rnRForm != null) {
-                getActivity().setTitle(getString(R.string.label_requisition_title,
-                        DateUtil.formatDateWithoutYear(rnRForm.getPeriodBegin()),
-                        DateUtil.formatDateWithoutYear(rnRForm.getPeriodEnd())));
-            } else {
-                getActivity().setTitle(getString(R.string.title_requisition));
-            }
+            setTitleWithPeriodWithToggle(rnRForm);
         } else {
-            if (isHistoryForm) {
-                getActivity().setTitle(new RnRFormViewModel(rnRForm).getPeriod());
-            } else {
-                getActivity().setTitle(getString(R.string.title_requisition));
-            }
+            setTitleWithPeriodWithoutToggle(rnRForm);
         }
         requisitionProductAdapter.notifyDataSetChanged();
         requisitionFormAdapter.notifyDataSetChanged();
         setConsultationNumbers();
+    }
+
+    public void setTitleWithPeriodWithToggle(RnRForm rnRForm) {
+        if (rnRForm != null) {
+            getActivity().setTitle(getString(R.string.label_requisition_title,
+                    DateUtil.formatDateWithoutYear(rnRForm.getPeriodBegin()),
+                    DateUtil.formatDateWithoutYear(rnRForm.getPeriodEnd())));
+        } else {
+            getActivity().setTitle(getString(R.string.title_requisition));
+        }
+    }
+
+    public void setTitleWithPeriodWithoutToggle(RnRForm rnRForm) {
+        if (isHistoryForm) {
+            getActivity().setTitle(new RnRFormViewModel(rnRForm).getPeriod());
+        } else {
+            getActivity().setTitle(getString(R.string.title_requisition));
+        }
     }
 
 

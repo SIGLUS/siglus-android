@@ -3,6 +3,7 @@ package org.openlmis.core.view.activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.view.View;
+import android.widget.EditText;
 
 import com.google.inject.AbstractModule;
 
@@ -74,6 +75,9 @@ public class MMIARequisitionActivityTest {
         mmiaRequisitionActivity.mmiaInfoListView = mmiaInfoListView;
         mmiaRequisitionActivity.rnrFormList = rnrFormList;
 
+        EditText patientTotalView = mock(EditText.class);
+        when(mmiaInfoListView.getPatientTotalView()).thenReturn(patientTotalView);
+        
         program = new Program();
         program.setProgramCode("MMIA");
         program.setProgramName("MMIA");

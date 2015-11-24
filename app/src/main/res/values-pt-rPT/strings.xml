@@ -38,7 +38,7 @@
     <string name="label_last_synced_days_ago">Última sincronização há %s dias</string>
 
     <!--MMIA-->
-    <string name="label_mmia_title">MMIA -&#160;</string>
+    <string name="label_mmia_title">MMIA - %1$s a %2$s</string>
     <string name="label_rnrfrom_left_header">Medicamento</string>
     <string name="label_regime_header_name">REGIME TERAPÊUTICO</string>
     <string name="label_total_mmia">Total</string>

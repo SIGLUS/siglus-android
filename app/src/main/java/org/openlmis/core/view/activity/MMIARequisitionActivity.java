@@ -154,14 +154,12 @@ public class MMIARequisitionActivity extends BaseActivity implements MMIARequisi
         });
 
         final EditText patientTotalView = mmiaInfoListView.getPatientTotalView();
-        if (patientTotalView != null) {
-            patientTotalView.post(new Runnable() {
-                @Override
-                public void run() {
-                    patientTotalView.addTextChangedListener(totalTextWatcher);
-                }
-            });
-        }
+        patientTotalView.post(new Runnable() {
+            @Override
+            public void run() {
+                patientTotalView.addTextChangedListener(totalTextWatcher);
+            }
+        });
 
         btnSave.setOnClickListener(this);
 

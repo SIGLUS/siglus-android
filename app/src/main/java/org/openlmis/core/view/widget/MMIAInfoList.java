@@ -76,9 +76,7 @@ public class MMIAInfoList extends LinearLayout {
             }
         }
 
-        if (editTexts.size() > 1) {
-            editTexts.get(editTexts.size() - 2).setImeOptions(EditorInfo.IME_ACTION_DONE);
-        }
+        editTexts.get(editTexts.size() - 2).setImeOptions(EditorInfo.IME_ACTION_DONE);
     }
 
     private void addItemView(BaseInfoItem item, int position) {
@@ -147,15 +145,11 @@ public class MMIAInfoList extends LinearLayout {
     }
 
     public void highLightTotal() {
-        if (totalView != null) {
-            totalView.setBackground(getResources().getDrawable(R.drawable.border_bg_red));
-        }
+        totalView.setBackground(getResources().getDrawable(R.drawable.border_bg_red));
     }
 
     public void deHighLightTotal() {
-        if (totalView != null) {
-            totalView.setBackground(getResources().getDrawable(R.color.mmia_spread_bg));
-        }
+        totalView.setBackground(getResources().getDrawable(R.color.mmia_spread_bg));
     }
 
     class EditTextWatcher implements android.text.TextWatcher {
