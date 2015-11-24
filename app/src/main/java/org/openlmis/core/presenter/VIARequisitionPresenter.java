@@ -37,6 +37,7 @@ import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-import static org.roboguice.shaded.goole.common.base.Preconditions.checkNotNull;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 
@@ -75,7 +75,6 @@ public class VIARequisitionPresenter implements Presenter {
         requisitionFormItemViewModelList = new ArrayList<>();
     }
 
-
     @Override
     public void onStart() {
 
@@ -90,26 +89,15 @@ public class VIARequisitionPresenter implements Presenter {
     }
 
     @Override
-    public void attachView(BaseView v) throws ViewNotMatchException {
-        if (v instanceof RequisitionView) {
-            this.view = (RequisitionView) v;
+    public void attachView(BaseView baseView) throws ViewNotMatchException {
+        if (baseView instanceof RequisitionView) {
+            this.view = (RequisitionView) baseView;
         } else {
             throw new ViewNotMatchException("required RequisitionView");
         }
     }
 
-    public RnRForm loadRnrForm(long formId) {
-        RnRForm form=null;
-        try {
-            form= loadOrCreate(formId);
-        } catch (LMISException e) {
-            view.showErrorMessage(e.getMessage());
-            e.printStackTrace();
-        }
-        return form;
-    }
-
-    private RnRForm loadOrCreate(long formId) throws LMISException {
+    public RnRForm loadRnrForm(long formId) throws LMISException {
         //three branches: history, half completed draft, new draft
         boolean isHistory = formId > 0;
         if (isHistory) {
@@ -126,7 +114,7 @@ public class VIARequisitionPresenter implements Presenter {
         return requisitionFormItemViewModelList;
     }
 
-    protected List<RequisitionFormItemViewModel> createViewModelsFromRnrForm(long formId) {
+    protected List<RequisitionFormItemViewModel> createViewModelsFromRnrForm(long formId) throws LMISException {
         if (rnRForm == null) {
             rnRForm = loadRnrForm(formId);
         }
@@ -150,8 +138,14 @@ public class VIARequisitionPresenter implements Presenter {
         subscribe = Observable.create(new Observable.OnSubscribe<List<RequisitionFormItemViewModel>>() {
             @Override
             public void call(Subscriber<? super List<RequisitionFormItemViewModel>> subscriber) {
-                subscriber.onNext(createViewModelsFromRnrForm(formId));
-                subscriber.onCompleted();
+                try {
+                    List<RequisitionFormItemViewModel> viewModelsFromRnrForm = createViewModelsFromRnrForm(formId);
+                    subscriber.onNext(viewModelsFromRnrForm);
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                    subscriber.onError(e);
+                }
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<List<RequisitionFormItemViewModel>>() {
             @Override
@@ -165,6 +159,7 @@ public class VIARequisitionPresenter implements Presenter {
             @Override
             public void call(Throwable throwable) {
                 view.loaded();
+                view.showErrorMessage(throwable.getMessage());
             }
         });
     }
@@ -196,8 +191,7 @@ public class VIARequisitionPresenter implements Presenter {
         if (!validateFormInput()) {
             return;
         }
-        setRnrFormAmount();
-        rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
+        dataViewToModel(consultationNumbers);
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature_10)) {
             view.showSignDialog(rnRForm.isDraft());
@@ -208,6 +202,17 @@ public class VIARequisitionPresenter implements Presenter {
                 authorise(rnRForm);
             }
         }
+    }
+
+    private void dataViewToModel(String consultationNumbers) {
+        ImmutableList<RnrFormItem> rnrFormItems = from(requisitionFormItemViewModelList).transform(new Function<RequisitionFormItemViewModel, RnrFormItem>() {
+            @Override
+            public RnrFormItem apply(RequisitionFormItemViewModel requisitionFormItemViewModel) {
+                return requisitionFormItemViewModel.toRnrFormItem();
+            }
+        }).toList();
+        rnRForm.setRnrFormItemListWrapper(new ArrayList<>(rnrFormItems));
+        rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
     }
 
     private void submitRequisition(final RnRForm rnRForm) {
@@ -285,24 +290,15 @@ public class VIARequisitionPresenter implements Presenter {
 
     }
 
-    protected void setRnrFormAmount() {
-        ArrayList<RnrFormItem> rnrFormItemListWrapper = rnRForm.getRnrFormItemListWrapper();
-        for (int i = 0; i < rnrFormItemListWrapper.size(); i++) {
-            String requestAmount = requisitionFormItemViewModelList.get(i).getRequestAmount();
-            if (!TextUtils.isEmpty(requestAmount)) {
-                rnrFormItemListWrapper.get(i).setRequestAmount(Long.valueOf(requestAmount));
-            }
-
-            String approvedAmount = requisitionFormItemViewModelList.get(i).getApprovedAmount();
-            if (!TextUtils.isEmpty(approvedAmount)) {
-                rnrFormItemListWrapper.get(i).setApprovedAmount(Long.valueOf(approvedAmount));
-            }
-        }
-    }
-
     public void saveRequisition(String consultationNumbers) {
         view.loading();
-        setRnrFormAmount();
+        ImmutableList<RnrFormItem> rnrFormItems = from(requisitionFormItemViewModelList).transform(new Function<RequisitionFormItemViewModel, RnrFormItem>() {
+            @Override
+            public RnrFormItem apply(RequisitionFormItemViewModel requisitionFormItemViewModel) {
+                return requisitionFormItemViewModel.toRnrFormItem();
+            }
+        }).toList();
+        rnRForm.setRnrFormItemListWrapper(new ArrayList<>(rnrFormItems));
         if (!TextUtils.isEmpty(consultationNumbers)) {
             rnRForm.getBaseInfoItemListWrapper().get(0).setValue(Long.valueOf(consultationNumbers).toString());
         }
@@ -333,14 +329,13 @@ public class VIARequisitionPresenter implements Presenter {
     }
 
     public String getConsultationNumbers() {
-        String value;
+        String value = null;
         try {
             value = rnRForm.getBaseInfoItemListWrapper().get(0).getValue();
         } catch (NullPointerException | IndexOutOfBoundsException e) {
             e.printStackTrace();
-            value = "";
         }
-        return value == null ? "" : value;
+        return value;
     }
 
     public void removeRnrForm() {
@@ -356,10 +351,6 @@ public class VIARequisitionPresenter implements Presenter {
         if (baseInfoItemListWrapper != null) {
             baseInfoItemListWrapper.get(0).setValue(consultationNumbers);
         }
-    }
-
-    public boolean formIsEditable() {
-        return !checkNotNull(rnRForm).getStatus().equals(RnRForm.STATUS.AUTHORIZED);
     }
 
     public void processSign(String signName, RnRForm rnRForm) {
@@ -391,7 +382,7 @@ public class VIARequisitionPresenter implements Presenter {
                     viaRepository.setSignature(rnRForm, signName, type);
                 } catch (LMISException e) {
                     e.printStackTrace();
-                    view.showErrorMessage(e.getMessage());
+                    subscriber.onError(e);
                 }
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Subscriber<Void>() {
@@ -419,13 +410,12 @@ public class VIARequisitionPresenter implements Presenter {
     }
 
     public void setBtnCompleteText() {
-        if(rnRForm.getStatus() == RnRForm.STATUS.DRAFT) {
+        if (rnRForm.isDraft()) {
             view.setProcessButtonName(context.getResources().getString(R.string.btn_submit));
         } else {
             view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
         }
     }
-
 
     public interface RequisitionView extends BaseView {
 
@@ -449,5 +439,4 @@ public class VIARequisitionPresenter implements Presenter {
 
         void showMessageNotifyDialog();
     }
-
 }

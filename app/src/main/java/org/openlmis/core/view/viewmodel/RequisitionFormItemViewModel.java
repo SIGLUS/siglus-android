@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.viewmodel;
 
+import android.text.TextUtils;
+
 import org.openlmis.core.model.RnrFormItem;
 
 import lombok.Data;
@@ -37,12 +39,14 @@ public class RequisitionFormItemViewModel {
     private String totalRequest;
     private String requestAmount;
     private String approvedAmount;
+    private RnrFormItem item;
 
-    public RequisitionFormItemViewModel(){
+    public RequisitionFormItemViewModel() {
 
     }
 
     public RequisitionFormItemViewModel(RnrFormItem item) {
+        this.item = item;
 
         this.fmn = (item.getProduct().getCode());
         this.productName = item.getProduct().getPrimaryName();
@@ -63,5 +67,15 @@ public class RequisitionFormItemViewModel {
         this.totalRequest = String.valueOf(item.getCalculatedOrderQuantity());
         this.requestAmount = (null == item.getRequestAmount()) ? this.totalRequest : String.valueOf(item.getRequestAmount());
         this.approvedAmount = (null == item.getApprovedAmount()) ? this.totalRequest : String.valueOf(item.getApprovedAmount());
+    }
+
+    public RnrFormItem toRnrFormItem() {
+        if (!TextUtils.isEmpty(requestAmount)) {
+            item.setRequestAmount(Long.valueOf(this.requestAmount));
+        }
+        if (!TextUtils.isEmpty(approvedAmount)) {
+            item.setApprovedAmount(Long.valueOf(approvedAmount));
+        }
+        return item;
     }
 }

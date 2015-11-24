@@ -76,7 +76,6 @@ public class VIARequisitionFragmentTest {
         formItemList = new ArrayList<>();
         formItemList.add(RequisitionBuilder.buildFakeRequisitionViewModel());
 
-        doReturn(true).when(presenter).formIsEditable();
         doReturn("123").when(presenter).getConsultationNumbers();
         doReturn(formItemList).when(presenter).getRequisitionViewModelList();
         doNothing().when(presenter).loadRequisitionFormList(anyLong());
