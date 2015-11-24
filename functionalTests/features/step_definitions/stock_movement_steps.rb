@@ -72,7 +72,13 @@ And(/^I sign stock movement with "(.*?)"$/) do |text|
         hide_soft_keyboard
 
         steps %Q{
-            Then I press "Sign"
+            Then I press "Approve"
         }
+    end
+end
+
+Then(/^I see "(.*?)" in signature field$/) do |text|
+    unless element_exists("android.widget.TextView id:'tx_signature' text:'#{text}'")
+     		fail(msg="not found #{text} in signature field")
     end
 end

@@ -38,6 +38,7 @@ Feature: stock movement Page
         And I press "Complete"
         And I sign stock movement with "superuser"
         Then I see "125"
+        Then I see "superuser" in signature field
         Then I go back
         Then I wait for 1 second
         Then I go back
@@ -97,6 +98,7 @@ Feature: stock movement Page
         And I press "Complete"
         And I sign stock movement with "superuser"
         Then I see "121"
+        Then I see "superuser" in signature field
         Then I go back
         Then I wait for 1 second
         Then I go back

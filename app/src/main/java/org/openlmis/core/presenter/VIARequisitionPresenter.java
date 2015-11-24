@@ -410,6 +410,10 @@ public class VIARequisitionPresenter implements Presenter {
     }
 
     public void setBtnCompleteText() {
+        if (rnRForm == null){
+            return;
+        }
+
         if (rnRForm.isDraft()) {
             view.setProcessButtonName(context.getResources().getString(R.string.btn_submit));
         } else {

@@ -8,7 +8,7 @@ Then(/^I should see "(\d+)" products$/) do |numberOfItems|
 	end
 end
 
-When(/^I enter consultationsNub "(\d+)"/) do |consultationsNub|
+Then(/^I enter consultationsNub "(\d+)"/) do |consultationsNub|
   enter_text("BorderedEditText id:'tx_consultation'", consultationsNub)
           hide_soft_keyboard
 end
@@ -36,16 +36,16 @@ And(/^I sign via with "(.*?)" "(.*?)" and complete$/) do |submitSignature, compl
         hide_soft_keyboard
 
         steps %Q{
-            Then I press "Sign"
+            Then I press "Approve"
             And I wait for 1 second
-            Then I press "OK"
+            Then I press "Continue"
             Then I press "Complete"
         }
 
         enter_text("android.widget.EditText id:'et_signature'", completeSignature)
         hide_soft_keyboard
         steps %Q{
-            Then I press "Sign"
+            Then I press "Approve"
         }
     end
 end

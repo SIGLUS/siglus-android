@@ -24,13 +24,13 @@ Feature: Requisition
   Scenario: Save requisition draft and complete
     Given I am logged in
     And I press "Create a Via Classica Requisition"
-    When I enter consultationsNub "888"
+    Then I enter consultationsNub "888"
     Then I swipe right
     Then I swipe right
     Then I swipe right
     Then I enter QuantityRequested "345"
-    And I press "Save"
-    And I wait for the "HomeActivity" screen to appear
+    Then I press "Save"
+    Then I wait for the "HomeActivity" screen to appear
     When I press view with id "btn_requisition"
     Then I wait for the "RequisitionActivity" screen to appear
     Then I swipe right

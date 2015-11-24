@@ -40,7 +40,7 @@ Feature: stock movement Page
             Then I wait for the "StockCardListActivity" screen to appear
             Then I wait for 1 second
             And I make a movement "[08S42]" "Issues" "PAV" "issued" "2"
-            Then I wait for 1 second
+            Then I wait for the "StockCardListActivity" screen to appear
             Then I go back
             Then I wait for the "HomeActivity" screen to appear
             And I press "Create a MMIA"

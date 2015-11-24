@@ -30,7 +30,7 @@ And(/^I sign mmia with "(.*?)"$/) do |text|
         hide_soft_keyboard
 
         steps %Q{
-            Then I press "Sign"
+            Then I press "Approve"
         }
     end
 end
