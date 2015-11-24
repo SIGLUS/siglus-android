@@ -27,7 +27,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
@@ -66,14 +65,7 @@ public class MMIARepository extends RnrFormRepository {
     @Inject
     public MMIARepository(Context context) {
         super(context);
-    }
-
-    public RnRForm initMMIA(Program program) throws LMISException {
-        return initRnrForm(program);
-    }
-
-    public RnRForm getUnCompletedMMIA(Program program) throws LMISException {
-        return queryUnAuthorized(program);
+        programCode = MMIA_PROGRAM_CODE;
     }
 
     @Override
@@ -112,7 +104,7 @@ public class MMIARepository extends RnrFormRepository {
         return baseInfoItemList;
     }
 
-
+    @Override
     public long getTotalPatients(RnRForm form) {
         for (BaseInfoItem item : form.getBaseInfoItemListWrapper()) {
             if (ATTR_TOTAL_PATIENTS.equals(item.getName())) {

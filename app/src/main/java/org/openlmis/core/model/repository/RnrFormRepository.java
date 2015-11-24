@@ -73,6 +73,7 @@ public class RnrFormRepository {
 
     private Context context;
     private GenericDao<RnRFormSignature> signatureDao;
+    protected String programCode;
 
     @Inject
     public RnrFormRepository(Context context) {
@@ -82,7 +83,11 @@ public class RnrFormRepository {
         this.context = context;
     }
 
-    public RnRForm initRnrForm(final Program program) throws LMISException {
+    public RnRForm initRnrForm() throws LMISException {
+        return initRnrForm(programRepository.queryByCode(programCode));
+    }
+
+    private RnRForm initRnrForm(final Program program) throws LMISException {
         if (program == null) {
             throw new LMISException("Program cannot be null !");
         }
@@ -103,6 +108,10 @@ public class RnrFormRepository {
             throw new LMISException(e);
         }
         return form;
+    }
+
+    public long getTotalPatients(RnRForm form) {
+        return 0;
     }
 
     public void createFormAndItems(final RnRForm form) throws SQLException {
@@ -210,7 +219,8 @@ public class RnrFormRepository {
     }
 
 
-    public RnRForm queryUnAuthorized(final Program program) throws LMISException {
+    public RnRForm queryUnAuthorized() throws LMISException {
+        final Program program = programRepository.queryByCode(programCode);
         if (program == null) {
             throw new LMISException("Program cannot be null !");
         }
@@ -292,9 +302,9 @@ public class RnrFormRepository {
             if (firstItem.getMovementType() == StockMovementItem.MovementType.ISSUE
                     || firstItem.getMovementType() == StockMovementItem.MovementType.NEGATIVE_ADJUST) {
                 rnrFormItem.setInitialAmount(firstItem.getStockOnHand() + firstItem.getMovementQuantity());
-            }else if(firstItem.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
+            } else if (firstItem.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
                 rnrFormItem.setInitialAmount(firstItem.getStockOnHand());
-            }else {
+            } else {
                 rnrFormItem.setInitialAmount(firstItem.getStockOnHand() - firstItem.getMovementQuantity());
             }
 
@@ -401,10 +411,10 @@ public class RnrFormRepository {
         if (form == null) {
             throw new LMISException("RnRForm cannot be null !");
         }
-        return dbUtil.withDao(RnRFormSignature.class,new DbUtil.Operation<RnRFormSignature, List<RnRFormSignature>>(){
+        return dbUtil.withDao(RnRFormSignature.class, new DbUtil.Operation<RnRFormSignature, List<RnRFormSignature>>() {
             @Override
             public List<RnRFormSignature> operate(Dao<RnRFormSignature, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("form_id",form.getId()).query();
+                return dao.queryBuilder().where().eq("form_id", form.getId()).query();
             }
         });
     }

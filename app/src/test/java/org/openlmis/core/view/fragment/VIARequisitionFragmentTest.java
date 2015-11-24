@@ -78,7 +78,7 @@ public class VIARequisitionFragmentTest {
 
         doReturn("123").when(presenter).getConsultationNumbers();
         doReturn(formItemList).when(presenter).getRequisitionViewModelList();
-        doNothing().when(presenter).loadRequisitionFormList(anyLong());
+        doNothing().when(presenter).loadData(anyLong());
         doNothing().when(presenter).setConsultationNumbers(anyString());
         doNothing().when(presenter).setBtnCompleteText();
 

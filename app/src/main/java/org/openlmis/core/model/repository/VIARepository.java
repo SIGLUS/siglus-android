@@ -22,9 +22,7 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 
 import java.util.ArrayList;
@@ -37,15 +35,9 @@ public class VIARepository extends RnrFormRepository {
     public static final String ATTR_CONSULTATION = "consultation";
 
     @Inject
-    ProgramRepository programRepository;
-
-    @Inject
     public VIARepository(Context context) {
         super(context);
-    }
-
-    public RnRForm initVIA() throws LMISException {
-        return initRnrForm(programRepository.queryByCode(VIA_PROGRAM_CODE));
+        programCode=VIA_PROGRAM_CODE;
     }
 
     @Override
@@ -56,11 +48,4 @@ public class VIARepository extends RnrFormRepository {
         return baseInfoItemList;
     }
 
-    public RnRForm getDraftVIA() throws LMISException {
-        Program program = programRepository.queryByCode(VIA_PROGRAM_CODE);
-        if (program == null) {
-            throw new LMISException("Program cannot be null !");
-        }
-        return queryUnAuthorized(program);
-    }
 }

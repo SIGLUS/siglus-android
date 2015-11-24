@@ -121,6 +121,8 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
         formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
         isHistoryForm = formId != 0;
+
+        presenter.loadData(formId);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

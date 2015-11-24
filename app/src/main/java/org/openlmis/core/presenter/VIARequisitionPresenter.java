@@ -70,6 +70,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     protected List<RequisitionFormItemViewModel> requisitionFormItemViewModelList;
 
     public VIARequisitionPresenter() {
+        viaRepository=new VIARepository(LMISApp.getContext());
         requisitionFormItemViewModelList = new ArrayList<>();
     }
 
@@ -88,11 +89,11 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         if (isHistory) {
             return viaRepository.queryRnRForm(formId);
         }
-        RnRForm draftVIA = viaRepository.getDraftVIA();
+        RnRForm draftVIA = viaRepository.queryUnAuthorized();
         if (draftVIA != null) {
             return draftVIA;
         }
-        return viaRepository.initVIA();
+        return viaRepository.initRnrForm();
     }
 
     public List<RequisitionFormItemViewModel> getRequisitionViewModelList() {
@@ -111,7 +112,8 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }).toList();
     }
 
-    public void loadRequisitionFormList(final long formId) {
+    @Override
+    public void loadData(final long formId) {
 
         if (requisitionFormItemViewModelList.size() > 0) {
             updateRequisitionFormUI();

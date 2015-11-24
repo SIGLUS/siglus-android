@@ -122,7 +122,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         when(mockStockRepository.list(anyString())).thenReturn(stockCards);
         when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(stockMovementItems);
 
-        RnRForm form = MMIARepository.initMMIA(program);
+        RnRForm form = MMIARepository.initRnrForm();
         assertThat(form.getRnrFormItemList().size(), is(24));
 
         RnrFormItem item = form.getRnrFormItemListWrapper().get(1);
@@ -143,7 +143,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldSaveSuccess() throws Exception {
-        RnRForm initForm = MMIARepository.initMMIA(program);
+        RnRForm initForm = MMIARepository.initRnrForm();
         ArrayList<RegimenItem> regimenItemListWrapper = initForm.getRegimenItemListWrapper();
 
         for (int i = 0; i < regimenItemListWrapper.size(); i++) {
@@ -177,9 +177,9 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         RnRForm rnRForm = new RnRForm();
         rnRForm.setProgram(program);
 
-        when(mockRnrFormRepository.initRnrForm(program)).thenReturn(rnRForm);
+        when(mockRnrFormRepository.initRnrForm()).thenReturn(rnRForm);
 
-        RnRForm rnRFormTest = MMIARepository.initMMIA(program);
+        RnRForm rnRFormTest = MMIARepository.initRnrForm();
 
         assertThat(rnRFormTest.getRnrFormItemListWrapper().size(), is(24));
     }

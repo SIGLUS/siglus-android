@@ -25,7 +25,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
@@ -34,7 +33,6 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
@@ -52,7 +50,6 @@ import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.observers.TestSubscriber;
 import rx.schedulers.Schedulers;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -105,18 +102,18 @@ public class MMIARequisitionPresenterTest {
 
     @Test
     public void shouldGetInitMMIAForm() throws LMISException, SQLException {
-        when(mmiaRepository.getUnCompletedMMIA(Matchers.<Program>anyObject())).thenReturn(null);
+        when(mmiaRepository.queryUnAuthorized()).thenReturn(null);
         presenter.getRnrForm(0);
-        verify(mmiaRepository).getUnCompletedMMIA(Matchers.<Program>anyObject());
-        verify(mmiaRepository).initMMIA(Matchers.<Program>anyObject());
+        verify(mmiaRepository).queryUnAuthorized();
+        verify(mmiaRepository).initRnrForm();
     }
 
     @Test
     public void shouldGetDraftMMIAForm() throws LMISException {
-        when(mmiaRepository.getUnCompletedMMIA(Matchers.<Program>anyObject())).thenReturn(new RnRForm());
+        when(mmiaRepository.queryUnAuthorized()).thenReturn(new RnRForm());
         presenter.getRnrForm(0);
-        verify(mmiaRepository).getUnCompletedMMIA(Matchers.<Program>anyObject());
-        verify(mmiaRepository, never()).initMMIA(Matchers.<Program>anyObject());
+        verify(mmiaRepository).queryUnAuthorized();
+        verify(mmiaRepository, never()).initRnrForm();
     }
 
     @Test
@@ -126,7 +123,7 @@ public class MMIARequisitionPresenterTest {
 
         RnRForm rnRForm = new RnRForm();
 
-        when(mmiaRepository.initMMIA(Matchers.<Program>anyObject())).thenReturn(rnRForm);
+        when(mmiaRepository.initRnrForm()).thenReturn(rnRForm);
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
         presenter.getRnrForm(0);
 
@@ -142,7 +139,7 @@ public class MMIARequisitionPresenterTest {
 
         RnRForm rnRForm = new RnRForm();
 
-        when(mmiaRepository.initMMIA(Matchers.<Program>anyObject())).thenReturn(rnRForm);
+        when(mmiaRepository.initRnrForm()).thenReturn(rnRForm);
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
         presenter.getRnrForm(0);
 
@@ -161,7 +158,7 @@ public class MMIARequisitionPresenterTest {
 
         RnRForm rnRForm = new RnRForm();
 
-        when(mmiaRepository.initMMIA(Matchers.<Program>anyObject())).thenReturn(rnRForm);
+        when(mmiaRepository.initRnrForm()).thenReturn(rnRForm);
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
         presenter.getRnrForm(0);
 
@@ -178,7 +175,7 @@ public class MMIARequisitionPresenterTest {
 
         RnRForm rnRForm = new RnRForm();
 
-        when(mmiaRepository.initMMIA(Matchers.<Program>anyObject())).thenReturn(rnRForm);
+        when(mmiaRepository.initRnrForm()).thenReturn(rnRForm);
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
         presenter.getRnrForm(0);
 
@@ -194,7 +191,7 @@ public class MMIARequisitionPresenterTest {
 
         RnRForm rnRForm = new RnRForm();
 
-        when(mmiaRepository.initMMIA(Matchers.<Program>anyObject())).thenReturn(rnRForm);
+        when(mmiaRepository.initRnrForm()).thenReturn(rnRForm);
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(99L);
         presenter.getRnrForm(0);
 
@@ -235,8 +232,7 @@ public class MMIARequisitionPresenterTest {
         presenter.getRnrFormObservable(-100L).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
-        verify(programRepository).queryByCode(MMIARepository.MMIA_PROGRAM_CODE);
-        verify(mmiaRepository).getUnCompletedMMIA(any(Program.class));
+        verify(mmiaRepository).queryUnAuthorized();
     }
 
     @Test

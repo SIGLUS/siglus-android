@@ -118,9 +118,11 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         form.setComments("DRAFT Form");
         form.setStatus(RnRForm.STATUS.DRAFT);
 
+        when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
+
         rnrFormRepository.create(form);
 
-        RnRForm rnRForm = rnrFormRepository.queryUnAuthorized(program);
+        RnRForm rnRForm = rnrFormRepository.queryUnAuthorized();
 
         assertThat(rnRForm.getComments(), is("DRAFT Form"));
     }
@@ -133,10 +135,10 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         form.setProgram(program);
         form.setComments("Submitted Form");
         form.setStatus(RnRForm.STATUS.SUBMITTED);
+        when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
 
         rnrFormRepository.create(form);
-
-        RnRForm rnRForm = rnrFormRepository.queryUnAuthorized(program);
+        RnRForm rnRForm = rnrFormRepository.queryUnAuthorized();
 
         assertThat(rnRForm.getComments(), is("Submitted Form"));
     }

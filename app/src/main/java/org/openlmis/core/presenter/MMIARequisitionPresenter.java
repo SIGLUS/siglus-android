@@ -28,12 +28,10 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.repository.MMIARepository;
-import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.view.BaseView;
 
@@ -56,9 +54,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     MMIARepository mmiaRepository;
 
     @Inject
-    ProgramRepository programRepository;
-
-    @Inject
     Context context;
 
     @Inject
@@ -73,6 +68,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         }
     }
 
+    @Override
     public void loadData(final long formId) {
         view.loading();
         subscribe = getRnrFormObservable(formId).subscribe(rnRFormOnNextAction, rnRFormOnErrorAction);
@@ -120,9 +116,8 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         if (formId > 0) {
             form = mmiaRepository.queryRnRForm(formId);
         } else {
-            Program program = programRepository.queryByCode(MMIARepository.MMIA_PROGRAM_CODE);
-            RnRForm draftMMIAForm = mmiaRepository.getUnCompletedMMIA(program);
-            form = draftMMIAForm == null ? mmiaRepository.initMMIA(program) : draftMMIAForm;
+            RnRForm draftMMIAForm = mmiaRepository.queryUnAuthorized();
+            form = draftMMIAForm == null ? mmiaRepository.initRnrForm() : draftMMIAForm;
         }
         return form;
     }

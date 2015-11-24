@@ -105,23 +105,23 @@ public class VIARequisitionPresenterTest {
     public void shouldGetRnRFormById() throws Exception {
         presenter.loadRnrForm(1);
         verify(mockVIARepository).queryRnRForm(anyInt());
-        verify(mockVIARepository, never()).getDraftVIA();
+        verify(mockVIARepository, never()).queryUnAuthorized();
     }
 
     @Test
     public void shouldGetInitForm() throws LMISException, SQLException {
-        when(mockVIARepository.getDraftVIA()).thenReturn(null);
+        when(mockVIARepository.queryUnAuthorized()).thenReturn(null);
         presenter.loadRnrForm(0);
-        verify(mockVIARepository).getDraftVIA();
-        verify(mockVIARepository).initVIA();
+        verify(mockVIARepository).queryUnAuthorized();
+        verify(mockVIARepository).initRnrForm();
     }
 
     @Test
     public void shouldGetDraftForm() throws LMISException {
-        when(mockVIARepository.getDraftVIA()).thenReturn(new RnRForm());
+        when(mockVIARepository.queryUnAuthorized()).thenReturn(new RnRForm());
         presenter.loadRnrForm(0);
-        verify(mockVIARepository).getDraftVIA();
-        verify(mockVIARepository, never()).initVIA();
+        verify(mockVIARepository).queryUnAuthorized();
+        verify(mockVIARepository, never()).initRnrForm();
     }
 
     @Test

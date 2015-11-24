@@ -5,7 +5,7 @@ import org.openlmis.core.view.BaseView;
 
 import rx.Subscription;
 
-public class BaseRequisitionPresenter implements Presenter {
+public abstract class BaseRequisitionPresenter implements Presenter {
     protected Subscription subscribe;
 
     @Override
@@ -25,4 +25,6 @@ public class BaseRequisitionPresenter implements Presenter {
     public void attachView(BaseView v) throws ViewNotMatchException {
 
     }
+
+    public abstract void loadData(final long formId);
 }
