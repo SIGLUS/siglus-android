@@ -36,7 +36,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.presenter.MMIAFormPresenter;
+import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.InjectPresenter;
@@ -54,7 +54,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_mmia)
-public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIAFormView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
+public class MMIAActivity extends BaseActivity implements MMIARequisitionPresenter.MMIAFormView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
 
     @InjectView(R.id.rnr_form_list)
     protected MMIARnrForm rnrFormList;
@@ -83,8 +83,8 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
     @InjectView(R.id.tv_total_mismatch)
     protected TextView tvMismatch;
 
-    @InjectPresenter(MMIAFormPresenter.class)
-    MMIAFormPresenter presenter;
+    @InjectPresenter(MMIARequisitionPresenter.class)
+    MMIARequisitionPresenter presenter;
 
     private Boolean hasDataChanged;
     private boolean commentHasChanged = false;

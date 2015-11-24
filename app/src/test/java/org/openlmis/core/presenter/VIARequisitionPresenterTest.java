@@ -56,9 +56,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
-public class RequisitionPresenterTest {
+public class VIARequisitionPresenterTest {
 
-    private RequisitionPresenter presenter;
+    private VIARequisitionPresenter presenter;
     private RequisitionFragment requisitionFragment;
     private VIARepository mockVIARepository;
 
@@ -70,7 +70,7 @@ public class RequisitionPresenterTest {
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         MockitoAnnotations.initMocks(this);
 
-        presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RequisitionPresenter.class);
+        presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(VIARequisitionPresenter.class);
         presenter.attachView(requisitionFragment);
     }
 

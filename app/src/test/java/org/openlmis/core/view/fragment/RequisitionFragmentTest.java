@@ -36,7 +36,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.builder.RequisitionBuilder;
-import org.openlmis.core.presenter.RequisitionPresenter;
+import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.activity.RequisitionActivity;
 import org.openlmis.core.utils.DateUtil;
@@ -65,13 +65,13 @@ import static org.robolectric.Shadows.shadowOf;
 public class RequisitionFragmentTest {
 
     RequisitionFragment requisitionFragment;
-    RequisitionPresenter presenter;
+    VIARequisitionPresenter presenter;
     private List<RequisitionFormItemViewModel> formItemList;
     private Program program;
 
     @Before
     public void setup() {
-        presenter = spy(new RequisitionPresenter());
+        presenter = spy(new VIARequisitionPresenter());
 
         formItemList = new ArrayList<>();
         formItemList.add(RequisitionBuilder.buildFakeRequisitionViewModel());
@@ -86,7 +86,7 @@ public class RequisitionFragmentTest {
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
             @Override
             public void configure(Binder binder) {
-                binder.bind(RequisitionPresenter.class).toInstance(presenter);
+                binder.bind(VIARequisitionPresenter.class).toInstance(presenter);
             }
         });
 

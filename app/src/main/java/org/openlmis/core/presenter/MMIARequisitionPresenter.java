@@ -47,7 +47,7 @@ import rx.schedulers.Schedulers;
 
 import static org.roboguice.shaded.goole.common.base.Preconditions.checkNotNull;
 
-public class MMIAFormPresenter implements Presenter {
+public class MMIARequisitionPresenter implements Presenter {
 
     RnRForm form;
     MMIAFormView view;

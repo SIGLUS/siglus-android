@@ -59,24 +59,24 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
-public class MMIAFormPresenterTest {
+public class MMIARequisitionPresenterTest {
 
     private SyncManager syncManager;
-    private MMIAFormPresenter presenter;
+    private MMIARequisitionPresenter presenter;
     private MMIARepository mmiaRepository;
     private ProgramRepository programRepository;
-    private MMIAFormPresenter.MMIAFormView mockMMIAformView;
+    private MMIARequisitionPresenter.MMIAFormView mockMMIAformView;
 
     @Before
     public void setup() throws ViewNotMatchException {
         mmiaRepository = mock(MMIARepository.class);
         programRepository = mock(ProgramRepository.class);
-        mockMMIAformView = mock(MMIAFormPresenter.MMIAFormView.class);
+        mockMMIAformView = mock(MMIARequisitionPresenter.MMIAFormView.class);
         syncManager = mock(SyncManager.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         MockitoAnnotations.initMocks(this);
 
-        presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(MMIAFormPresenter.class);
+        presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(MMIARequisitionPresenter.class);
         presenter.attachView(mockMMIAformView);
 
         RxAndroidPlugins.getInstance().reset();
@@ -93,7 +93,7 @@ public class MMIAFormPresenterTest {
         protected void configure() {
             bind(MMIARepository.class).toInstance(mmiaRepository);
             bind(ProgramRepository.class).toInstance(programRepository);
-            bind(MMIAFormPresenter.MMIAFormView.class).toInstance(mockMMIAformView);
+            bind(MMIARequisitionPresenter.MMIAFormView.class).toInstance(mockMMIAformView);
             bind(SyncManager.class).toInstance(syncManager);
         }
     }

@@ -41,7 +41,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.presenter.RequisitionPresenter;
+import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
@@ -55,7 +55,7 @@ import org.openlmis.core.view.widget.SignatureDialog;
 
 import roboguice.inject.InjectView;
 
-public class RequisitionFragment extends BaseFragment implements RequisitionPresenter.RequisitionView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
+public class RequisitionFragment extends BaseFragment implements VIARequisitionPresenter.RequisitionView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
 
     @InjectView(R.id.requisition_form)
     ListView requisitionForm;
@@ -93,7 +93,7 @@ public class RequisitionFragment extends BaseFragment implements RequisitionPres
     TextView headerApproveAmount;
 
     @Inject
-    RequisitionPresenter presenter;
+    VIARequisitionPresenter presenter;
 
     protected Boolean hasDataChanged;
 

@@ -53,7 +53,7 @@ import static org.roboguice.shaded.goole.common.base.Preconditions.checkNotNull;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 
-public class RequisitionPresenter implements Presenter {
+public class VIARequisitionPresenter implements Presenter {
 
     @Inject
     VIARepository viaRepository;
@@ -71,7 +71,7 @@ public class RequisitionPresenter implements Presenter {
     protected List<RequisitionFormItemViewModel> requisitionFormItemViewModelList;
     private Subscription subscribe;
 
-    public RequisitionPresenter() {
+    public VIARequisitionPresenter() {
         requisitionFormItemViewModelList = new ArrayList<>();
     }
 
