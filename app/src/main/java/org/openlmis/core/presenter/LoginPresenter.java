@@ -77,35 +77,39 @@ public class LoginPresenter implements Presenter {
 
         User user = new User(userName.trim(), password);
         if (LMISApp.getInstance().isConnectionAvailable()) {
-            authorizeUserRemote(user);
+            authorizeAndLoginUserRemote(user);
         } else {
-            authorizeUserLocal(user);
+            authorizeAndLoginUserLocal(user);
         }
     }
 
-    private void authorizeUserLocal(User user) {
+    private void authorizeAndLoginUserLocal(User user) {
         User localUser = userRepository.getUserFromLocal(user);
 
         if (localUser == null) {
             onLoginFailed();
-        } else {
-            user = localUser;
-            UserInfoMgr.getInstance().setUser(user);
-            if (view.hasGetProducts()) {
-                goToNextPage();
-            } else {
-                view.loaded();
-                ToastUtil.show(R.string.msg_sync_products_list_failed);
-            }
+            return;
         }
+
+        user = localUser;
+        UserInfoMgr.getInstance().setUser(user);
+
+        if (!view.hasGetProducts()) {
+            view.loaded();
+            ToastUtil.show(R.string.msg_sync_products_list_failed);
+            return;
+        }
+
+        goToNextPage();
     }
 
-    private void authorizeUserRemote(final User user) {
+    private void authorizeAndLoginUserRemote(final User user) {
         userRepository.authorizeUser(user, new NewCallback<User>() {
             @Override
             public void success(User remoteUser) {
                 remoteUser.setUsername(user.getUsername());
                 remoteUser.setPassword(user.getPassword());
+
                 onLoginSuccess(remoteUser);
             }
 
@@ -116,7 +120,7 @@ public class LoginPresenter implements Presenter {
 
             @Override
             public void timeout(String error) {
-                authorizeUserLocal(user);
+                authorizeAndLoginUserLocal(user);
             }
         });
     }
@@ -133,7 +137,7 @@ public class LoginPresenter implements Presenter {
         UserInfoMgr.getInstance().setUser(user);
         view.clearErrorAlerts();
 
-        serverDataSyncNeeded();
+        syncServerData();
     }
 
     public void onLoginFailed() {
@@ -142,7 +146,7 @@ public class LoginPresenter implements Presenter {
         view.clearPassword();
     }
 
-    private void serverDataSyncNeeded() {
+    private void syncServerData() {
         if (view.hasGetProducts()) {
             checkRequisitionData();
         } else {
@@ -162,7 +166,7 @@ public class LoginPresenter implements Presenter {
         if (!isLoadingProducts) {
             isLoadingProducts = true;
             view.loading(LMISApp.getInstance().getString(R.string.msg_fetching_products));
-            syncManager.syncProductsWithProgramAsync(new ProductSyncSubscriber());
+            syncManager.syncProductsWithProgramAsync(syncProductSubscriber);
         }
     }
 
@@ -175,7 +179,7 @@ public class LoginPresenter implements Presenter {
         }
     }
 
-    class ProductSyncSubscriber extends SyncSubscriber<Void> {
+    protected SyncSubscriber<Void> syncProductSubscriber = new SyncSubscriber<Void>() {
         @Override
         public void onCompleted() {
             isLoadingProducts = false;
@@ -198,7 +202,7 @@ public class LoginPresenter implements Presenter {
             }
             view.loaded();
         }
-    }
+    };
 
     private void syncRequisitionData() {
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_rnr_186)){
