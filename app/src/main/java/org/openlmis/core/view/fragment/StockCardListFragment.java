@@ -36,12 +36,12 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.StockCardPresenter;
-import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.activity.StockMovementActivity;
 import org.openlmis.core.view.adapter.StockCardListAdapter;
 import org.openlmis.core.view.holder.StockCardViewHolder;
+import org.openlmis.core.view.viewmodel.StockCardViewModel;
 
 import java.util.List;
 
@@ -65,7 +65,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
 
     StockCardListAdapter mAdapter;
 
-    private List<StockCard> stockCards;
+    private List<StockCardViewModel> stockCardViewModels;
     private int currentPosition;
     private BaseView baseView;
 
@@ -114,8 +114,8 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     private void initView(View view) {
         sortSpinner = (Spinner) view.findViewById(R.id.sort_spinner);
         stockCardRecycleView = (RecyclerView) view.findViewById(R.id.products_list);
-        stockCards = presenter.getStockCards();
-        mAdapter = new StockCardListAdapter(stockCards, onItemViewClickListener);
+        stockCardViewModels = presenter.getStockCardViewModels();
+        mAdapter = new StockCardListAdapter(stockCardViewModels, onItemViewClickListener);
 
         initProductList();
         initSortSpinner();
@@ -123,10 +123,10 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
 
     private StockCardViewHolder.OnItemViewClickListener onItemViewClickListener = new StockCardViewHolder.OnItemViewClickListener() {
         @Override
-        public void onItemViewClick(StockCard stockCard) {
+        public void onItemViewClick(StockCardViewModel stockCardViewModel) {
             Intent intent = new Intent(getActivity(), StockMovementActivity.class);
-            intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCard.getId());
-            intent.putExtra(Constants.PARAM_STOCK_NAME, stockCard.getProduct().getFormattedProductName());
+            intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCardViewModel.getStockCardId());
+            intent.putExtra(Constants.PARAM_STOCK_NAME, stockCardViewModel.getProduct().getFormattedProductName());
             startActivityForResult(intent, StockCardListFragment.REQUEST_CODE_CHANGE);
         }
     };
@@ -191,8 +191,8 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
 
     @Override
     public void refresh() {
-        stockCards = presenter.getStockCards();
-        mAdapter = new StockCardListAdapter(stockCards, onItemViewClickListener);
+        stockCardViewModels = presenter.getStockCardViewModels();
+        mAdapter = new StockCardListAdapter(stockCardViewModels, onItemViewClickListener);
         stockCardRecycleView.setAdapter(mAdapter);
         tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
         onItemSelected(sortSpinner, null, currentPosition, 0L);
@@ -201,7 +201,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CHANGE) {
-            presenter.refreshStockCards();
+            presenter.refreshStockCardViewModelsSOH();
             mAdapter.notifyDataSetChanged();
         }
     }

@@ -26,6 +26,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.view.adapter.StockCardListAdapter;
+import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.robolectric.util.FragmentTestUtil;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ import static org.mockito.Mockito.when;
 public class StockCardListFragmentTest {
 
     private StockCardListFragment fragment;
-    private List<StockCard> stockCards;
+    private List<StockCardViewModel> stockCardViewModels;
 
     @Before
     public void setUp() {
@@ -51,7 +52,7 @@ public class StockCardListFragmentTest {
         fragment.presenter = mock(StockCardPresenter.class);
         fragment.mAdapter = mock(StockCardListAdapter.class);
 
-        stockCards = new ArrayList<>();
+        stockCardViewModels = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             StockCard stockCard = new StockCard();
             stockCard.setStockOnHand(10 - i);
@@ -59,13 +60,13 @@ public class StockCardListFragmentTest {
             product.setPrimaryName((char) ('A' + i) + " Product");
 
             stockCard.setProduct(product);
-            stockCards.add(stockCard);
+            stockCardViewModels.add(new StockCardViewModel(stockCard));
         }
     }
 
     @Test
     public void shouldSortListWhenSelectSortSpinner() {
-        when(fragment.presenter.getStockCards()).thenReturn(stockCards);
+        when(fragment.presenter.getStockCardViewModels()).thenReturn(stockCardViewModels);
         fragment.sortSpinner.setSelection(0);
         verify(fragment.mAdapter).sortByName(true);
 
@@ -81,12 +82,12 @@ public class StockCardListFragmentTest {
 
     @Test
     public void shouldSortListByProductName() {
-        when(fragment.presenter.getStockCards()).thenReturn(stockCards);
-        List<StockCard> stockCards = fragment.presenter.getStockCards();
-        StockCardListAdapter adapter = new StockCardListAdapter(stockCards, null);
+        when(fragment.presenter.getStockCardViewModels()).thenReturn(stockCardViewModels);
+        List<StockCardViewModel> stockCardViewModels = fragment.presenter.getStockCardViewModels();
+        StockCardListAdapter adapter = new StockCardListAdapter(stockCardViewModels, null);
         adapter.sortByName(true);
 
-        List<StockCard> sortedList = adapter.getCurrentStockCards();
+        List<StockCardViewModel> sortedList = adapter.getCurrentStockCards();
         assertThat(sortedList.get(0).getProduct().getPrimaryName(), is("A Product"));
         assertThat(sortedList.get(1).getProduct().getPrimaryName(), is("B Product"));
         assertThat(sortedList.get(2).getProduct().getPrimaryName(), is("C Product"));
@@ -94,11 +95,11 @@ public class StockCardListFragmentTest {
 
     @Test
     public void shouldSortListBySOH() {
-        when(fragment.presenter.getStockCards()).thenReturn(stockCards);
-        StockCardListAdapter adapter = new StockCardListAdapter(stockCards, null);
+        when(fragment.presenter.getStockCardViewModels()).thenReturn(stockCardViewModels);
+        StockCardListAdapter adapter = new StockCardListAdapter(stockCardViewModels, null);
         adapter.sortBySOH(true);
 
-        List<StockCard> sortedList = adapter.getCurrentStockCards();
+        List<StockCardViewModel> sortedList = adapter.getCurrentStockCards();
         assertThat(sortedList.get(0).getStockOnHand(), is(1L));
         assertThat(sortedList.get(1).getStockOnHand(), is(2L));
         assertThat(sortedList.get(2).getStockOnHand(), is(3L));

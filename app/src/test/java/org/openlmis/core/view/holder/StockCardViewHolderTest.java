@@ -14,6 +14,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.RnrFormItemRepository;
+import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,6 +28,7 @@ public class StockCardViewHolderTest {
     private StockCardViewHolder viewHolder;
     private StockCardViewHolder.OnItemViewClickListener mockedListener;
     private RnrFormItemRepository rnrFormItemRepositoryMock;
+    protected StockCard stockCard;
 
     @Before
     public void setUp() {
@@ -37,16 +39,20 @@ public class StockCardViewHolderTest {
 
         rnrFormItemRepositoryMock = mock(RnrFormItemRepository.class);
         viewHolder.rnrFormItemRepository = rnrFormItemRepositoryMock;
+
+        stockCard = new StockCard();
+        final Product product = new Product();
+        product.setPrimaryName("product");
+        stockCard.setProduct(product);
     }
 
     @Test
     public void shouldGetNormalLevelWhenSOHGreaterThanAvg() throws LMISException {
         when(rnrFormItemRepositoryMock.getLowStockAvg(any(Product.class))).thenReturn(80);
 
-        StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(100);
 
-        int stockOnHandLevel = viewHolder.getStockOnHandLevel(stockCard);
+        int stockOnHandLevel = viewHolder.getStockOnHandLevel(new StockCardViewModel(stockCard));
 
         assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_NORMAL);
 
@@ -56,10 +62,9 @@ public class StockCardViewHolderTest {
     public void shouldGetLowLevelWhenSOHSmallerThanAvg() throws LMISException {
         when(rnrFormItemRepositoryMock.getLowStockAvg(any(Product.class))).thenReturn(100);
 
-        StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(2);
 
-        int stockOnHandLevel = viewHolder.getStockOnHandLevel(stockCard);
+        int stockOnHandLevel = viewHolder.getStockOnHandLevel(new StockCardViewModel(stockCard));
 
         assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_LOW_STOCK);
     }
@@ -68,10 +73,9 @@ public class StockCardViewHolderTest {
     public void shouldGetStockOutLevelWhenSOHIsZero() throws LMISException {
         when(rnrFormItemRepositoryMock.getLowStockAvg(any(Product.class))).thenReturn(80);
 
-        StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(0);
 
-        int stockOnHandLevel = viewHolder.getStockOnHandLevel(stockCard);
+        int stockOnHandLevel = viewHolder.getStockOnHandLevel(new StockCardViewModel(stockCard));
 
         assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_STOCK_OUT);
     }

@@ -26,6 +26,8 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
+import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.roboguice.shaded.goole.common.base.Function;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,8 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+
 public class StockCardPresenter implements Presenter {
 
     @Inject
@@ -43,10 +47,10 @@ public class StockCardPresenter implements Presenter {
 
     private StockCardListView view;
 
-    private List<StockCard> stockCardList;
+    private List<StockCardViewModel> stockCardViewModels;
 
     public StockCardPresenter() {
-        stockCardList = new ArrayList<>();
+        stockCardViewModels = new ArrayList<>();
     }
 
 
@@ -61,8 +65,8 @@ public class StockCardPresenter implements Presenter {
     }
 
 
-    public List<StockCard> getStockCards() {
-        return stockCardList;
+    public List<StockCardViewModel> getStockCardViewModels() {
+        return stockCardViewModels;
     }
 
     public void loadStockCards() {
@@ -93,16 +97,24 @@ public class StockCardPresenter implements Presenter {
 
             @Override
             public void onNext(List<StockCard> stockCards) {
-                stockCardList.clear();
-                stockCardList.addAll(stockCards);
+                List<StockCardViewModel> stockCardViewModelList = from(stockCards).transform(new Function<StockCard, StockCardViewModel>() {
+                    @Override
+                    public StockCardViewModel apply(StockCard stockCard) {
+                        return new StockCardViewModel(stockCard);
+                    }
+                }).toList();
+                stockCardViewModels.clear();
+                stockCardViewModels.addAll(stockCardViewModelList);
                 view.refresh();
             }
         });
     }
 
-    public void refreshStockCards() {
-        for (StockCard stockCard : stockCardList) {
+    public void refreshStockCardViewModelsSOH() {
+        for (StockCardViewModel stockCardViewModel : stockCardViewModels) {
+            final StockCard stockCard = stockCardViewModel.getStockCard();
             stockRepository.refresh(stockCard);
+            stockCardViewModel.setStockOnHand(stockCard.getStockOnHand());
         }
     }
 
