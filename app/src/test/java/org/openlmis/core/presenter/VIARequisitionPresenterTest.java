@@ -178,44 +178,38 @@ public class VIARequisitionPresenterTest {
 
     @Test
     public void shouldHighLightRequestAmountWhenFormStatusIsDraft() {
-        highLightForm(RnRForm.STATUS.DRAFT);
+        updateFormUIWithStatus(RnRForm.STATUS.DRAFT);
         verify(VIARequisitionFragment).highLightRequestAmount();
         verify(VIARequisitionFragment, never()).highLightApprovedAmount();
     }
 
     @Test
     public void shouldHighLightApproveAmountWhenFormStatusIsSubmitted() {
-        highLightForm(RnRForm.STATUS.SUBMITTED);
+        updateFormUIWithStatus(RnRForm.STATUS.SUBMITTED);
         verify(VIARequisitionFragment).highLightApprovedAmount();
         verify(VIARequisitionFragment, never()).highLightRequestAmount();
     }
 
     @Test
     public void shouldNotHighLightAnyColumnWhenFormStatusIsAuthorized() {
-        highLightForm(RnRForm.STATUS.AUTHORIZED);
+        updateFormUIWithStatus(RnRForm.STATUS.AUTHORIZED);
         verify(VIARequisitionFragment, never()).highLightApprovedAmount();
         verify(VIARequisitionFragment, never()).highLightRequestAmount();
     }
 
     @Test
-    public void shouldCallSetProcessButtonNameWithSubmit()  {
-        presenter.rnRForm = getRnRFormWithStatus(RnRForm.STATUS.DRAFT);
-
-        presenter.setBtnCompleteText();
-
+    public void shouldCallSetProcessButtonNameWithSubmitWhenFormStatusIsSubmitted()  {
+        updateFormUIWithStatus(RnRForm.STATUS.DRAFT);
         verify(VIARequisitionFragment).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_submit));
     }
 
     @Test
-    public void shouldCallSetProcessButtonNameWithComplete()  {
-        presenter.rnRForm = getRnRFormWithStatus(RnRForm.STATUS.SUBMITTED);
-
-        presenter.setBtnCompleteText();
-
+    public void shouldCallSetProcessButtonNameWithCompleteWhenFormStatusIsAuthorized()  {
+        updateFormUIWithStatus(RnRForm.STATUS.SUBMITTED);
         verify(VIARequisitionFragment).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_complete));
     }
 
-    private void highLightForm(RnRForm.STATUS status) {
+    private void updateFormUIWithStatus(RnRForm.STATUS status) {
         RnRForm form = new RnRForm();
         form.setStatus(status);
         presenter.rnRForm = form;

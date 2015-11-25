@@ -260,13 +260,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             }
         });
 
-        btnComplete.post(new Runnable() {
-            @Override
-            public void run() {
-                presenter.setBtnCompleteText();
-            }
-        });
-
         etConsultationNumbers.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
 
         bindListeners();

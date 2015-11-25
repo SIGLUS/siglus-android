@@ -81,7 +81,6 @@ public class VIARequisitionFragmentTest {
         doReturn(formItemList).when(presenter).getRequisitionViewModelList();
         doNothing().when(presenter).loadData(anyLong());
         doNothing().when(presenter).setConsultationNumbers(anyString());
-        doNothing().when(presenter).setBtnCompleteText();
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
             @Override
