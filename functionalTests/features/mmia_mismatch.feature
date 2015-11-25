@@ -6,7 +6,7 @@ Feature: MMIA Page total mismatch
     And I have initialized inventory
     Then I wait for the "HomeActivity" screen to appear
     When I press "Create a MMIA"
-    And I wait for the "MMIAActivity" screen to appear
+    And I wait for the "MMIARequisitionActivity" screen to appear
     And I scroll to "Complete"
     And I enter regimen totals
     And I should see text containing "Add reason for regime & patient mismatch"

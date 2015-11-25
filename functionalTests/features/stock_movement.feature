@@ -49,7 +49,7 @@ Feature: stock movement Page
         And I press "stock cards & overview"
         Then I wait for the "StockCardListActivity" screen to appear
         Then I wait for 1 second
-        Then I select stock card code called "[01A03]"
+        Then I select stock card code called "[01A02]"
         Then I wait for the "StockMovementActivity" screen to appear
         Then I wait for 1 second
         And I select a reason "Negative Adjustments" "Damaged on arrival"
@@ -68,7 +68,7 @@ Feature: stock movement Page
         And I press "stock cards & overview"
         Then I wait for the "StockCardListActivity" screen to appear
         Then I wait for 1 second
-        Then I select stock card code called "[01A04]"
+        Then I select stock card code called "[01A05]"
         Then I wait for the "StockMovementActivity" screen to appear
         Then I wait for 1 second
         And I select a reason "Positive Adjustments" "Donations to Deposit"

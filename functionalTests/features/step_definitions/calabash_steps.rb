@@ -57,12 +57,12 @@ end
 When(/^I select the checkbox$/) do
     wait_for_element_exists("android.widget.CheckBox id:'checkbox' checked:'false'", :timeout => 10)
     checkbox = query("android.widget.CheckBox id:'checkbox' checked:'false'").first
-    while !checkbox.nil?
+    until checkbox.nil?
       touch(checkbox)
       h = query("android.widget.EditText id:'tx_quantity' text:''")
       while h.empty?
-           scroll("RecyclerView", :down)
-           h = query("android.widget.EditText id:'tx_quantity' text:''")
+        scroll("RecyclerView", :down)
+        h = query("android.widget.EditText id:'tx_quantity' text:''")
       end
       tx_quantity = h.last
       touch(tx_quantity)
@@ -70,16 +70,15 @@ When(/^I select the checkbox$/) do
       index = index + 1
       hide_soft_keyboard
       checkbox = query("android.widget.CheckBox id:'checkbox' checked:'false'").first
-  end
+    end
 end
 
 Given(/^I have initialized inventory$/) do
   steps %Q{
         Then I wait up to 30 seconds for the "InventoryActivity" screen to appear
-        Then I wait for 1 second
-		When I Select VIA Item
-		When I Select MMIA Item
-
+        Then I wait for 3 seconds
+        When I Select VIA Item
+        When I Select MMIA Item
         And I press "Complete"
         Then I wait for the "HomeActivity" screen to appear
 	}
@@ -97,11 +96,11 @@ end
 
 When(/^I Select VIA Item$/) do
   steps %Q{
-    When I select the item called "[01A01]"
-    When I select the item called "[01A02]"
-    When I select the item called "[01A03]"
-    When I select the item called "[01A03Z]"
-    When I select the item called "[01A04]"
+    When I search product by fnm "01A01" and select this item
+    When I search product by fnm "01A02" and select this item
+    When I search product by fnm "01A03Z" and select this item
+    When I search product by fnm "01A04" and select this item
+    When I search product by fnm "01A05" and select this item
 	}
 end
 

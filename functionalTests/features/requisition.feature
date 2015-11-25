@@ -6,14 +6,14 @@ Feature: Requisition
     Given I have initialized inventory
 
     And I press "Create a Via Classica Requisition"
-    Then I wait for the "RequisitionActivity" screen to appear
+    Then I wait for the "VIARequisitionActivity" screen to appear
     Then I should see text containing "Digoxina 0,25mg Comp"
     Then I should see "4" products
 
   Scenario: Pop up alert
     Given I am logged in
     And I press "Create a Via Classica Requisition"
-    Then I wait for the "RequisitionActivity" screen to appear
+    Then I wait for the "VIARequisitionActivity" screen to appear
     Then I enter consultationsNub "2015"
     Then I wait for 1 second
     Then I go back
@@ -29,16 +29,17 @@ Feature: Requisition
     Then I swipe right
     Then I swipe right
     Then I enter QuantityRequested "345"
+    Then I wait for 1 second
     Then I press "Save"
     Then I wait for the "HomeActivity" screen to appear
     When I press view with id "btn_requisition"
-    Then I wait for the "RequisitionActivity" screen to appear
+    Then I wait for the "VIARequisitionActivity" screen to appear
     Then I swipe right
     Then I swipe right
     Then I should see "345"
     Then I press "Submit for Approval"
     And I sign via with "superuser" "testUser" and complete
-    Then I wait for the "RequisitionActivity" screen to appear
+    Then I wait for the "VIARequisitionActivity" screen to appear
 
 Scenario: Add A Issued Movement on VIA product,then the quantity should change
     Given I am logged in
