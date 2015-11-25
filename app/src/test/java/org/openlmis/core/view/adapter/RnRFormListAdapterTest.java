@@ -100,9 +100,10 @@ public class RnRFormListAdapterTest {
     }
 
     private RnRFormListAdapter.ViewHolder createAdapterItem(RnRFormViewModel viewModel) {
-        ArrayList<RnRFormViewModel> list = new ArrayList<>();
-        list.add(viewModel);
-        adapter.refreshList(list);
+        data.clear();
+        data.add(viewModel);
+
+        adapter.notifyDataSetChanged();
 
         RnRFormListAdapter.ViewHolder viewHolder = adapter.onCreateViewHolder(null, adapter.getItemViewType(0));
         adapter.onBindViewHolder(viewHolder, 0);

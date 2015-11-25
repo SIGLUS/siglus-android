@@ -101,6 +101,9 @@
 
     <string name="msg_requisition_not_unique">Cannot submit requisition twice in a period!</string>
 
+    <string name="btn_del">Delete</string>
+    <string name="msg_del_requisition">Warning!!! \n Are you sure you want to delete this? This requisition is already synced to the server. If you click DELETE then this requisition will disappear on your tablet, but remain saved on the server.</string>
+
 
     <!-- Stock Movement -->
     <string name="title_stock_movement">Stock Card</string>
@@ -172,5 +175,6 @@
     <string name="label_previous_period">Previous periods</string>
 
     <string name="label_total">Total:%1$s</string>
+    <string name="requisition_delete_failed">Delete failed</string>
 
 </resources>

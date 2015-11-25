@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.activity.MMIAActivity;
@@ -45,6 +46,7 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormListAdapter.
 
     List<RnRFormViewModel> data;
     String programCode;
+    private RnRFromDeleteListener formDeleteListener;
 
     public RnRFormListAdapter(Context context, String programCode, List<RnRFormViewModel> data){
         this.context =context;
@@ -52,14 +54,6 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormListAdapter.
         inflater = LayoutInflater.from(context);
         this.data = data;
     }
-
-
-    public void refreshList(List<RnRFormViewModel> data){
-        this.data.clear();
-        this.data.addAll(data);
-        notifyDataSetChanged();
-    }
-
 
     @Override
     public int getItemCount() {
@@ -104,8 +98,24 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormListAdapter.
                         showFormDetail(model.getId());
                     }
                 });
+                holder.ivDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (formDeleteListener != null) {
+                            formDeleteListener.deleteRnRForm(model.getForm());
+                        }
+                    }
+                });
                 break;
         }
+    }
+
+    public interface RnRFromDeleteListener{
+        void deleteRnRForm(RnRForm form);
+    }
+
+    public void setItemDeleteListener(RnRFromDeleteListener formDeleteListener) {
+        this.formDeleteListener = formDeleteListener;
     }
 
     private void configHolder(ViewHolder holder, String period, Spanned text, int icDescription, int colorDraftTitle) {
@@ -138,6 +148,7 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormListAdapter.
         TextView txMessage;
         TextView btnView;
         ImageView icon;
+        ImageView ivDelete;
         View lyPeriod;
 
         public ViewHolder(View itemView) {
@@ -149,6 +160,7 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormListAdapter.
             btnView = (TextView) itemView.findViewById(R.id.btn_view);
             icon = (ImageView) itemView.findViewById(R.id.icon);
             lyPeriod = itemView.findViewById(R.id.ly_period);
+            ivDelete = (ImageView) itemView.findViewById(R.id.iv_del);
         }
     }
 }

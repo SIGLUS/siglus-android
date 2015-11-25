@@ -39,8 +39,10 @@ public class RnRFormViewModel {
     String title;
     String name;
     long id;
+    private RnRForm form;
 
     public RnRFormViewModel(RnRForm form) {
+        this.form = form;
         this.syncedDate = DateUtil.formatDate(form.getUpdatedAt());
         this.period = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDate(form.getPeriodBegin()), DateUtil.formatDate(form.getPeriodEnd()));
         setName(form);
