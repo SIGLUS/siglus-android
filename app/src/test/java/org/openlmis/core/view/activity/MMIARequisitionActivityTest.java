@@ -157,8 +157,6 @@ public class MMIARequisitionActivityTest {
 
     @Test
     public void shouldShowSaveAndCompleteButtonWhenFormIsEditable() {
-        when(mmiaFormPresenter.formIsEditable()).thenReturn(true);
-
         mmiaRequisitionActivity.initView(form);
 
         assertThat(mmiaRequisitionActivity.btnSave.getVisibility()).isEqualTo(View.VISIBLE);

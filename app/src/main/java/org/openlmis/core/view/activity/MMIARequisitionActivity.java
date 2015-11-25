@@ -313,7 +313,7 @@ public class MMIARequisitionActivity extends BaseActivity implements MMIARequisi
 
     private void onProcessButtonClick() {
         if (regimeListView.isCompleted() && mmiaInfoListView.isCompleted()) {
-            presenter.completeMMIA(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
+            presenter.processRequisition(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
         }
     }
 

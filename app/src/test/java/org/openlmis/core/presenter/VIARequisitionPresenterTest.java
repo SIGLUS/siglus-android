@@ -36,6 +36,7 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.robolectric.RuntimeEnvironment;
@@ -60,10 +61,13 @@ public class VIARequisitionPresenterTest {
     private VIARequisitionPresenter presenter;
     private org.openlmis.core.view.fragment.VIARequisitionFragment VIARequisitionFragment;
     private VIARepository mockVIARepository;
+    private RnrFormRepository mockRnrFormRepository;
 
     @Before
     public void setup() throws ViewNotMatchException {
         mockVIARepository = mock(VIARepository.class);
+        mockRnrFormRepository = mock(RnrFormRepository.class);
+
         VIARequisitionFragment = mock(org.openlmis.core.view.fragment.VIARequisitionFragment.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
@@ -121,19 +125,19 @@ public class VIARequisitionPresenterTest {
         when(mockVIARepository.queryUnAuthorized()).thenReturn(new RnRForm());
         presenter.loadRnrForm(0);
         verify(mockVIARepository).queryUnAuthorized();
-        verify(mockVIARepository, never()).initRnrForm();
+        verify(mockRnrFormRepository, never()).initRnrForm();
     }
 
     @Test
     public void shouldSubmitAfterSignedAndStatusIsDraft() throws LMISException {
         RnRForm form = testSignatureStatus(RnRForm.STATUS.DRAFT, RnRFormSignature.TYPE.SUBMITTER);
-        verify(mockVIARepository).submit(form);
+        verify(mockRnrFormRepository).submit(form);
     }
 
     @Test
     public void shouldCompleteAfterSignedAndStatusIsSubmit() throws LMISException {
         RnRForm form = testSignatureStatus(RnRForm.STATUS.SUBMITTED, RnRFormSignature.TYPE.APPROVER);
-        verify(mockVIARepository).authorise(form);
+        verify(mockRnrFormRepository).authorise(form);
     }
 
     private RnRForm testSignatureStatus(RnRForm.STATUS formStatus, RnRFormSignature.TYPE signatureType)
@@ -148,7 +152,7 @@ public class VIARequisitionPresenterTest {
 
         //then
         if (LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature_10)) {
-            verify(mockVIARepository).setSignature(form, "userSignature", signatureType);
+            verify(mockRnrFormRepository).setSignature(form, "userSignature", signatureType);
         }
         return form;
     }
@@ -236,6 +240,7 @@ public class VIARequisitionPresenterTest {
         @Override
         protected void configure() {
             bind(VIARepository.class).toInstance(mockVIARepository);
+            bind(RnrFormRepository.class).toInstance(mockRnrFormRepository);
         }
     }
 

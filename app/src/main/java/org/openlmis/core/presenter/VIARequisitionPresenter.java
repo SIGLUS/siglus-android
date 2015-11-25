@@ -26,14 +26,12 @@ import com.google.inject.Inject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.VIARepository;
-import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
@@ -42,7 +40,6 @@ import org.roboguice.shaded.goole.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -60,17 +57,11 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     @Inject
     Context context;
 
-    @Inject
-    SyncManager syncManager;
-
     VIARequisitionView view;
-
-    @Getter
-    protected RnRForm rnRForm;
     protected List<RequisitionFormItemViewModel> requisitionFormItemViewModelList;
 
     public VIARequisitionPresenter() {
-        viaRepository=new VIARepository(LMISApp.getContext());
+        viaRepository = new VIARepository(LMISApp.getContext());
         requisitionFormItemViewModelList = new ArrayList<>();
     }
 
@@ -81,6 +72,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         } else {
             throw new ViewNotMatchException("required VIARequisitionView");
         }
+        super.attachView(baseView);
     }
 
     public RnRForm loadRnrForm(long formId) throws LMISException {
@@ -151,6 +143,13 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         });
     }
 
+    @Override
+    public void updateUI() {
+        view.highLightApprovedAmount();
+        view.refreshRequisitionForm();
+        view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
+    }
+
     protected void updateRequisitionFormUI() {
         if (rnRForm.isDraft()) {
             view.highLightRequestAmount();
@@ -187,7 +186,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             if (rnRForm.isDraft()) {
                 submitRequisition(rnRForm);
             } else {
-                authorise(rnRForm);
+                authoriseRequisition(rnRForm);
             }
         }
     }
@@ -201,81 +200,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }).toList();
         rnRForm.setRnrFormItemListWrapper(new ArrayList<>(rnrFormItems));
         rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
-    }
-
-    private void submitRequisition(final RnRForm rnRForm) {
-        view.loading();
-        Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    viaRepository.submit(rnRForm);
-                    subscriber.onNext(null);
-                } catch (LMISException e) {
-                    e.printStackTrace();
-                    subscriber.onError(e);
-                }
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Subscriber<Void>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                view.loaded();
-                view.showErrorMessage(e.getMessage());
-            }
-
-            @Override
-            public void onNext(Void aVoid) {
-                view.loaded();
-                view.highLightApprovedAmount();
-                view.refreshRequisitionForm();
-                view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
-
-            }
-        });
-    }
-
-    private void authorise(final RnRForm rnRForm) {
-        view.loading();
-        Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    viaRepository.authorise(rnRForm);
-                    subscriber.onNext(null);
-                } catch (LMISException e) {
-                    e.printStackTrace();
-                    subscriber.onError(e);
-                }
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Subscriber<Void>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                view.loaded();
-                if (e instanceof PeriodNotUniqueException) {
-                    view.showErrorMessage(context.getResources().getString(R.string.msg_requisition_not_unique));
-                } else {
-                    view.showErrorMessage(e.getMessage());
-                }
-            }
-
-            @Override
-            public void onNext(Void aVoid) {
-                view.loaded();
-                view.completeSuccess();
-                syncManager.requestSyncImmediately();
-            }
-        });
-
     }
 
     public void saveRequisition(String consultationNumbers) {
@@ -348,7 +272,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             view.showMessageNotifyDialog();
         } else {
             submitSignature(signName, RnRFormSignature.TYPE.APPROVER, rnRForm);
-            authorise(rnRForm);
+            authoriseRequisition(rnRForm);
         }
     }
 
@@ -360,37 +284,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }
     }
 
-
-    private void submitSignature(final String signName, final RnRFormSignature.TYPE type, final RnRForm rnRForm) {
-        view.loading();
-        Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    viaRepository.setSignature(rnRForm, signName, type);
-                } catch (LMISException e) {
-                    e.printStackTrace();
-                    subscriber.onError(e);
-                }
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Subscriber<Void>() {
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                view.loaded();
-                view.showErrorMessage(e.getMessage());
-            }
-
-            @Override
-            public void onNext(Void aVoid) {
-                view.loaded();
-            }
-        });
-    }
-
     public void loadAlertDialogIsFormStatusIsDraft() {
         if (rnRForm.isSubmitted()) {
             view.showMessageNotifyDialog();
@@ -398,7 +291,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     public void setBtnCompleteText() {
-        if (rnRForm == null){
+        if (rnRForm == null) {
             return;
         }
 
@@ -409,15 +302,11 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }
     }
 
-    public interface VIARequisitionView extends BaseView {
+    public interface VIARequisitionView extends BaseRequisitionView {
 
         void showListInputError(int index);
 
         void refreshRequisitionForm();
-
-        void showErrorMessage(String msg);
-
-        void completeSuccess();
 
         void backToHomePage();
 
@@ -426,8 +315,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         void highLightApprovedAmount();
 
         void setProcessButtonName(String name);
-
-        void showSignDialog(boolean isFormStatusDraft);
 
         void showMessageNotifyDialog();
 

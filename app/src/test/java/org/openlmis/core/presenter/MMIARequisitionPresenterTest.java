@@ -38,6 +38,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.service.SyncManager;
 import org.robolectric.RuntimeEnvironment;
 
@@ -62,12 +63,14 @@ public class MMIARequisitionPresenterTest {
     private SyncManager syncManager;
     private MMIARequisitionPresenter presenter;
     private MMIARepository mmiaRepository;
+    private RnrFormRepository rnrFormRepository;
     private ProgramRepository programRepository;
     private MMIARequisitionPresenter.MMIARequisitionView mockMMIAformView;
 
     @Before
     public void setup() throws ViewNotMatchException {
         mmiaRepository = mock(MMIARepository.class);
+        rnrFormRepository = mock(RnrFormRepository.class);
         programRepository = mock(ProgramRepository.class);
         mockMMIAformView = mock(MMIARequisitionPresenter.MMIARequisitionView.class);
         syncManager = mock(SyncManager.class);
@@ -84,16 +87,6 @@ public class MMIARequisitionPresenterTest {
                 return Schedulers.immediate();
             }
         });
-    }
-
-    public class MyTestModule extends AbstractModule {
-        @Override
-        protected void configure() {
-            bind(MMIARepository.class).toInstance(mmiaRepository);
-            bind(ProgramRepository.class).toInstance(programRepository);
-            bind(MMIARequisitionPresenter.MMIARequisitionView.class).toInstance(mockMMIAformView);
-            bind(SyncManager.class).toInstance(syncManager);
-        }
     }
 
     @After
@@ -128,7 +121,7 @@ public class MMIARequisitionPresenterTest {
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
         presenter.getRnrForm(0);
 
-        presenter.completeMMIA(regimenItems, baseInfoItems, "");
+        presenter.processRequisition(regimenItems, baseInfoItems, "");
         verify(mockMMIAformView, never()).showValidationAlert();
     }
 
@@ -146,7 +139,7 @@ public class MMIARequisitionPresenterTest {
 
         presenter.getRnrForm(0);
 
-        presenter.completeMMIA(regimenItems, baseInfoItems, "");
+        presenter.processRequisition(regimenItems, baseInfoItems, "");
 
         if(LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
             verify(mockMMIAformView).showSignDialog(true);
@@ -165,7 +158,7 @@ public class MMIARequisitionPresenterTest {
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
         presenter.getRnrForm(0);
 
-        presenter.completeMMIA(regimenItems, baseInfoItems, "");
+        presenter.processRequisition(regimenItems, baseInfoItems, "");
 
         verify(mockMMIAformView, never()).showSignDialog(true);
         verify(mockMMIAformView).loading();
@@ -182,7 +175,7 @@ public class MMIARequisitionPresenterTest {
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
         presenter.getRnrForm(0);
 
-        presenter.completeMMIA(regimenItems, baseInfoItems, "");
+        presenter.processRequisition(regimenItems, baseInfoItems, "");
 
 
     }
@@ -198,7 +191,7 @@ public class MMIARequisitionPresenterTest {
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(99L);
         presenter.getRnrForm(0);
 
-        presenter.completeMMIA(regimenItems, baseInfoItems, "1234");
+        presenter.processRequisition(regimenItems, baseInfoItems, "1234");
         verify(mockMMIAformView).showValidationAlert();
     }
 
@@ -242,7 +235,7 @@ public class MMIARequisitionPresenterTest {
     public void shouldAuthoriseFormObservableAuthoriseForm() throws LMISException {
         RnRForm form = new RnRForm();
 
-        presenter.form = form;
+        presenter.rnRForm = form;
 
         TestSubscriber<Void> subscriber = new TestSubscriber<>();
         presenter.getAuthoriseFormObservable().subscribe(subscriber);
@@ -281,15 +274,15 @@ public class MMIARequisitionPresenterTest {
         ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
         RnRForm form = new RnRForm();
         form.setStatus(RnRForm.STATUS.DRAFT);
-        presenter.form = form;
+        presenter.rnRForm = form;
 
         String signature = "signature";
         presenter.processSign(signature);
         waitObservableToExeute();
 
         if(LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
-            verify(mmiaRepository).setSignature(form, signature, RnRFormSignature.TYPE.SUBMITTER);
-            verify(mmiaRepository).submit(form);
+            verify(rnrFormRepository).setSignature(form, signature, RnRFormSignature.TYPE.SUBMITTER);
+            verify(rnrFormRepository).submit(form);
             verify(mockMMIAformView).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_complete));
             verify(mockMMIAformView).showMessageNotifyDialog();
         }
@@ -300,7 +293,7 @@ public class MMIARequisitionPresenterTest {
         ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
         RnRForm form = new RnRForm();
         form.setStatus(RnRForm.STATUS.SUBMITTED);
-        presenter.form = form;
+        presenter.rnRForm = form;
 
         String signature = "signature";
         presenter.processSign(signature);
@@ -308,8 +301,8 @@ public class MMIARequisitionPresenterTest {
         waitObservableToExeute();
 
         if(LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
-            verify(mmiaRepository).setSignature(form, signature, RnRFormSignature.TYPE.APPROVER);
-            verify(mmiaRepository).authorise(form);
+            verify(rnrFormRepository).setSignature(form, signature, RnRFormSignature.TYPE.APPROVER);
+            verify(rnrFormRepository).authorise(form);
         }
     }
 
@@ -328,5 +321,16 @@ public class MMIARequisitionPresenterTest {
         regimenItems.add(regimenItem);
 
         return regimenItems;
+    }
+
+    public class MyTestModule extends AbstractModule {
+        @Override
+        protected void configure() {
+            bind(MMIARepository.class).toInstance(mmiaRepository);
+            bind(RnrFormRepository.class).toInstance(rnrFormRepository);
+            bind(ProgramRepository.class).toInstance(programRepository);
+            bind(MMIARequisitionPresenter.MMIARequisitionView.class).toInstance(mockMMIAformView);
+            bind(SyncManager.class).toInstance(syncManager);
+        }
     }
 }
