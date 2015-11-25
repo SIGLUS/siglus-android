@@ -1,6 +1,5 @@
 package org.openlmis.core.view.holder;
 
-import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -8,10 +7,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.model.Product;
-import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.RnrFormItemRepository;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.viewmodel.StockCardViewModel;
 
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
@@ -42,49 +40,36 @@ public class StockCardViewHolder extends BaseViewHolder {
         this.rnrFormItemRepository = RoboGuice.getInjector(context).getInstance(RnrFormItemRepository.class);
     }
 
-    public void populate(final StockCard stockCard) {
+    public void populate(final StockCardViewModel stockCardViewModel, String queryKeyWord) {
+        tvProductName.setText(getHighlightQueryKeyWord(stockCardViewModel.getStyledName(), queryKeyWord));
+        tvProductUnit.setText(getHighlightQueryKeyWord(stockCardViewModel.getStyledUnit(), queryKeyWord));
 
-        final Product product = stockCard.getProduct();
-
-        tvProductName.setText(getStyledProductName(product));
-        tvProductUnit.setText(getStyledProductUnit(product));
-
-        initStockOnHand(stockCard);
+        initStockOnHand(stockCardViewModel);
+        initStockOnHand(stockCardViewModel);
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.onItemViewClick(stockCard);
+                    listener.onItemViewClick(stockCardViewModel);
                 }
             }
         });
     }
 
-    @NonNull
-    private SpannableStringBuilder getStyledProductUnit(Product product) {
-        String unit = product.getStrength() + " " + product.getType();
-        SpannableStringBuilder styledUnit = new SpannableStringBuilder(unit);
-        int length = 0;
-        if (product.getStrength() != null) {
-            length = product.getStrength().length();
+    private SpannableStringBuilder getHighlightQueryKeyWord(SpannableStringBuilder styledProductName, String queryKeyWord) {
+        if (queryKeyWord == null || !styledProductName.toString().toLowerCase().contains(queryKeyWord.toLowerCase())) {
+            return styledProductName;
         }
-        styledUnit.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.secondary_text)),
-                length, unit.length(), Spannable.SPAN_POINT_MARK);
-        return styledUnit;
+
+        final int startIndex = styledProductName.toString().toLowerCase().indexOf(queryKeyWord.toLowerCase());
+
+        styledProductName.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.color_accent)),
+                startIndex, startIndex + queryKeyWord.length(), Spannable.SPAN_POINT_MARK);
+        return styledProductName;
     }
 
-    @NonNull
-    private SpannableStringBuilder getStyledProductName(Product product) {
-        String productName = product.getFormattedProductName();
-        SpannableStringBuilder styledName = new SpannableStringBuilder(productName);
-        styledName.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.secondary_text)),
-                product.getPrimaryName().length(), productName.length(), Spannable.SPAN_POINT_MARK);
-        return styledName;
-    }
-
-
-    private void initStockOnHand(final StockCard stockCard) {
+    private void initStockOnHand(final StockCardViewModel stockCard) {
         tvStockOnHand.setText(stockCard.getStockOnHand() + "");
 
         int stockOnHandLevel = getStockOnHandLevel(stockCard);
@@ -116,9 +101,9 @@ public class StockCardViewHolder extends BaseViewHolder {
 
     }
 
-    protected int getStockOnHandLevel(StockCard stockCard) {
-        int lowStockAvg = rnrFormItemRepository.getLowStockAvg(stockCard.getProduct());
-        long stockOnHand = stockCard.getStockOnHand();
+    protected int getStockOnHandLevel(StockCardViewModel stockCardViewModel) {
+        int lowStockAvg = rnrFormItemRepository.getLowStockAvg(stockCardViewModel.getProduct());
+        long stockOnHand = stockCardViewModel.getStockOnHand();
 
         if (stockOnHand > lowStockAvg) {
             return STOCK_ON_HAND_NORMAL;
@@ -130,6 +115,6 @@ public class StockCardViewHolder extends BaseViewHolder {
     }
 
     public interface OnItemViewClickListener {
-        void onItemViewClick(StockCard stockCard);
+        void onItemViewClick(StockCardViewModel stockCardViewModel);
     }
 }

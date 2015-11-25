@@ -26,8 +26,8 @@ import android.view.ViewGroup;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
-import org.openlmis.core.model.StockCard;
 import org.openlmis.core.view.holder.StockCardViewHolder;
+import org.openlmis.core.view.viewmodel.StockCardViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,16 +38,17 @@ import lombok.Getter;
 
 public class StockCardListAdapter extends RecyclerView.Adapter<StockCardViewHolder> {
 
-    List<StockCard> stockCards;
+    List<StockCardViewModel> stockCardViewModels;
     private StockCardViewHolder.OnItemViewClickListener listener;
 
     @Getter
-    List<StockCard> currentStockCards;
+    List<StockCardViewModel> currentStockCards;
+    private String queryKeyWord;
 
-    public StockCardListAdapter(List<StockCard> stockCards, StockCardViewHolder.OnItemViewClickListener listener) {
-        this.stockCards = stockCards;
+    public StockCardListAdapter(List<StockCardViewModel> stockCardViewModel, StockCardViewHolder.OnItemViewClickListener listener) {
+        this.stockCardViewModels = stockCardViewModel;
         this.listener = listener;
-        this.currentStockCards = new ArrayList<>(stockCards);
+        this.currentStockCards = new ArrayList<>(stockCardViewModel);
     }
 
     @Override
@@ -61,8 +62,8 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardViewHold
     @Override
     public void onBindViewHolder(StockCardViewHolder holder, final int position) {
 
-        final StockCard stockCard = currentStockCards.get(position);
-        holder.populate(stockCard);
+        final StockCardViewModel stockCardViewModel = currentStockCards.get(position);
+        holder.populate(stockCardViewModel, queryKeyWord);
     }
 
 
@@ -73,16 +74,16 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardViewHold
     }
 
     public void filter(String query) {
+        this.queryKeyWord = query;
         if (StringUtils.isEmpty(query)) {
-            this.currentStockCards = new ArrayList<>(stockCards);
+            this.currentStockCards = new ArrayList<>(stockCardViewModels);
             this.notifyDataSetChanged();
         }
 
         this.currentStockCards = new ArrayList<>();
-        for (StockCard stockCard : stockCards) {
-            if (stockCard.getProduct().getPrimaryName().toLowerCase().contains(query.toLowerCase())
-                    || stockCard.getProduct().getCode().toLowerCase().contains(query.toLowerCase())) {
-                this.currentStockCards.add(stockCard);
+        for (StockCardViewModel stockCardViewModel : stockCardViewModels) {
+            if (stockCardViewModel.getProduct().getProductName().toLowerCase().contains(query.toLowerCase())) {
+                this.currentStockCards.add(stockCardViewModel);
             }
         }
 
@@ -91,9 +92,9 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardViewHold
 
     public void sortBySOH(final boolean asc) {
 
-        Comparator<StockCard> stockCardComparator = new Comparator<StockCard>() {
+        Comparator<StockCardViewModel> stockCardComparator = new Comparator<StockCardViewModel>() {
             @Override
-            public int compare(StockCard lhs, StockCard rhs) {
+            public int compare(StockCardViewModel lhs, StockCardViewModel rhs) {
                 if (asc) {
                     return (int) (lhs.getStockOnHand() - rhs.getStockOnHand());
                 } else {
@@ -103,16 +104,16 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardViewHold
         };
 
         Collections.sort(currentStockCards, stockCardComparator);
-        Collections.sort(stockCards, stockCardComparator);
+        Collections.sort(stockCardViewModels, stockCardComparator);
 
         this.notifyDataSetChanged();
     }
 
     public void sortByName(final boolean asc) {
 
-        Comparator<StockCard> stockCardComparator = new Comparator<StockCard>() {
+        Comparator<StockCardViewModel> stockCardComparator = new Comparator<StockCardViewModel>() {
             @Override
-            public int compare(StockCard lhs, StockCard rhs) {
+            public int compare(StockCardViewModel lhs, StockCardViewModel rhs) {
                 if (asc) {
                     return lhs.getProduct().getPrimaryName().compareTo(rhs.getProduct().getPrimaryName());
                 } else {
@@ -122,7 +123,7 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardViewHold
         };
 
         Collections.sort(currentStockCards, stockCardComparator);
-        Collections.sort(stockCards, stockCardComparator);
+        Collections.sort(stockCardViewModels, stockCardComparator);
 
         this.notifyDataSetChanged();
     }

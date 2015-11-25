@@ -23,7 +23,10 @@ import android.view.WindowManager;
 
 import org.openlmis.core.LMISApp;
 
-public class DisplayUtil {
+public final class DisplayUtil {
+    private DisplayUtil(){
+
+    }
 
     public static int getScreenWidth() {
         Point size = new Point();

@@ -58,6 +58,7 @@ public class StockCardViewModel {
     long stockCardId;
 
     long stockOnHand;
+
     SpannableStringBuilder styledName;
 
     SpannableStringBuilder styledUnit;
@@ -68,6 +69,7 @@ public class StockCardViewModel {
     private StockCard stockCard;
 
     private String signature;
+    protected Product product;
 
     public StockCardViewModel(StockCard stockCard) {
 
@@ -76,9 +78,11 @@ public class StockCardViewModel {
         this.stockOnHand = stockCard.getStockOnHand();
         this.checked = true;
 
+
         initExpiryDates(stockCard.getExpireDates());
 
-        setProductAttributes(stockCard.getProduct());
+        product = stockCard.getProduct();
+        setProductAttributes(product);
 
         formatProductDisplay(stockCard.getProduct());
     }
@@ -89,6 +93,16 @@ public class StockCardViewModel {
         } else {
             this.expiryDates = new ArrayList<>();
         }
+    }
+
+    public SpannableStringBuilder getStyledName() {
+        formatProductDisplay(product);
+        return styledName;
+    }
+
+    public SpannableStringBuilder getStyledUnit() {
+        formatProductDisplay(product);
+        return styledUnit;
     }
 
     public void setExpiryDates(List<String> expireDates) {
@@ -104,6 +118,7 @@ public class StockCardViewModel {
     }
 
     public StockCardViewModel(Product product) {
+        this.product = product;
         this.type = product.getType();
         this.checked = false;
 
