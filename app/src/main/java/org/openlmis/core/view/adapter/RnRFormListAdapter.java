@@ -102,7 +102,7 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormListAdapter.
                     @Override
                     public void onClick(View v) {
                         if (formDeleteListener != null) {
-                            formDeleteListener.deleteRnRForm(model.getForm());
+                            formDeleteListener.delete(model.getForm());
                         }
                     }
                 });
@@ -111,7 +111,7 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormListAdapter.
     }
 
     public interface RnRFromDeleteListener{
-        void deleteRnRForm(RnRForm form);
+        void delete(RnRForm form);
     }
 
     public void setItemDeleteListener(RnRFromDeleteListener formDeleteListener) {

@@ -77,14 +77,14 @@ public class RnRFormListActivityTest {
 
     @Test
     public void shouldShowErrorMsgWhenCalledSubscriberOnError() {
-        rnRFormListActivity.subscriber.onError(new Exception("test exception"));
+        rnRFormListActivity.getRnRFormSubscriber().onError(new Exception("test exception"));
 
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo("test exception");
     }
 
     @Test
     public void shouldLoadDataWhenCalledSubscriberOnNext() throws Exception {
-        rnRFormListActivity.subscriber.onNext(newArrayList(new RnRFormViewModel("hello"), new RnRFormViewModel("world")));
+        rnRFormListActivity.getRnRFormSubscriber().onNext(newArrayList(new RnRFormViewModel("hello"), new RnRFormViewModel("world")));
 
         assertThat(rnRFormListActivity.listView.getAdapter().getItemCount()).isEqualTo(2);
     }

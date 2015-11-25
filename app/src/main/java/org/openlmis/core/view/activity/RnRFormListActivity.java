@@ -87,12 +87,12 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
 
     private RnRFormListAdapter.RnRFromDeleteListener formDeleteListener = new RnRFormListAdapter.RnRFromDeleteListener() {
         @Override
-        public void deleteRnRForm(final RnRForm form) {
+        public void delete(final RnRForm form) {
             WarningDialog warningDialog = new WarningDialog();
             warningDialog.setDelegate(new WarningDialog.DialogDelegate() {
                 @Override
                 public void onDelete() {
-                    RnRFormListActivity.this.deleteRnRForm(form);
+                    deleteRnRForm(form);
                 }
             });
             warningDialog.show(getFragmentManager(), "WarningDialog");
@@ -130,24 +130,4 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
             }
         };
     }
-
-    protected Subscriber<List<RnRFormViewModel>> subscriber = new Subscriber<List<RnRFormViewModel>>() {
-        @Override
-        public void onCompleted() {
-            loaded();
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            loaded();
-            showMessage(e.getMessage());
-        }
-
-        @Override
-        public void onNext(List<RnRFormViewModel> rnRFormViewModels) {
-            data.clear();
-            data.addAll(rnRFormViewModels);
-            adapter.notifyDataSetChanged();
-        }
-    };
 }
