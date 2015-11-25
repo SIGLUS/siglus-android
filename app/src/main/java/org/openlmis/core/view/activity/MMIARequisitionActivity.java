@@ -93,6 +93,8 @@ public class MMIARequisitionActivity extends BaseActivity implements MMIARequisi
 
     protected static final String TAG_BACK_PRESSED = "onBackPressed";
     private static final String TAG_MISMATCH = "mismatch";
+    private static final String TAG_SHOW_MESSAGE_NOTIFY_DIALOG = "showMessageNotifyDialog";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +115,9 @@ public class MMIARequisitionActivity extends BaseActivity implements MMIARequisi
         regimeListView.initView(form.getRegimenItemListWrapper(), tvRegimeTotal);
         mmiaInfoListView.initView(form.getBaseInfoItemListWrapper());
 
-        if (presenter.formIsEditable()) {
+        presenter.setBtnCompleteText();
+
+        if (!isHistoryForm) {
             scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
             btnSave.setVisibility(View.VISIBLE);
             btnComplete.setVisibility(View.VISIBLE);
@@ -128,7 +132,7 @@ public class MMIARequisitionActivity extends BaseActivity implements MMIARequisi
                     DateUtil.formatDateWithoutYear(form.getPeriodBegin()),
                     DateUtil.formatDateWithoutYear(form.getPeriodEnd())));
         } else {
-            setTitle(presenter.formIsEditable() ? getString(R.string.title_mmia_spread) : new RnRFormViewModel(form).getPeriod());
+            setTitle(isHistoryForm ? new RnRFormViewModel(form).getPeriod() : getString(R.string.title_mmia_spread));
         }
 
         highlightTotalDifference();
@@ -136,6 +140,11 @@ public class MMIARequisitionActivity extends BaseActivity implements MMIARequisi
         etComment.setText(form.getComments());
 
         bindListeners();
+    }
+
+    @Override
+    public void setProcessButtonName(String name){
+        btnComplete.setText(name);
     }
 
     protected void bindListeners() {
@@ -294,7 +303,7 @@ public class MMIARequisitionActivity extends BaseActivity implements MMIARequisi
                 onSaveBtnClick();
                 break;
             case R.id.btn_complete:
-                onCompleteBtnClick();
+                onProcessButtonClick();
                 break;
             default:
                 break;
@@ -302,7 +311,7 @@ public class MMIARequisitionActivity extends BaseActivity implements MMIARequisi
         }
     }
 
-    private void onCompleteBtnClick() {
+    private void onProcessButtonClick() {
         if (regimeListView.isCompleted() && mmiaInfoListView.isCompleted()) {
             presenter.completeMMIA(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
         }
@@ -320,10 +329,14 @@ public class MMIARequisitionActivity extends BaseActivity implements MMIARequisi
     }
 
     @Override
-    public void showSignDialog() {
+    public void showSignDialog(boolean isFormStatusDraft) {
         SignatureDialog signatureDialog = new SignatureDialog();
+        String signatureDialogTitle = isFormStatusDraft ? getResources().getString(R.string.msg_mmia_submit_signature) : getResources().getString(R.string.msg_mmia_approve_signature);
+
+        signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));
         signatureDialog.setDelegate(signatureDialogDelegate);
-        signatureDialog.show(getFragmentManager(), "signature_dialog");
+
+        signatureDialog.show(this.getFragmentManager());
     }
 
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
@@ -333,9 +346,19 @@ public class MMIARequisitionActivity extends BaseActivity implements MMIARequisi
 
         @Override
         public void onSign(String sign) {
-            presenter.authoriseForm(sign);
+            presenter.processSign(sign);
         }
     };
+
+    @Override
+    public void showMessageNotifyDialog() {
+        DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
+                getString(R.string.msg_requisition_signature_message_notify),
+                getString(R.string.btn_continue),
+                null,
+                TAG_SHOW_MESSAGE_NOTIFY_DIALOG);
+        dialogFragment.show(this.getFragmentManager(), TAG_SHOW_MESSAGE_NOTIFY_DIALOG);
+    }
 
     private boolean isTotalEqual() {
         return regimeListView.getTotal() == mmiaInfoListView.getTotal();

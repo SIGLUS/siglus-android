@@ -137,28 +137,78 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         }
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
-            view.showSignDialog();
+            view.showSignDialog(form.isDraft());
         } else {
             authoriseForm();
         }
     }
 
-    public void authoriseForm(String signName) {
+    public void submitForm() {
         view.loading();
 
-        try {
-            mmiaRepository.setSignature(form, signName, RnRFormSignature.TYPE.SUBMITTER);
-        } catch (LMISException e) {
-            e.printStackTrace();
-            view.showErrorMessage(e.getMessage());
-        }
+        Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    mmiaRepository.submit(form);
+                    subscriber.onNext(null);
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+            }
 
-        getAuthoriseFormObservable().subscribe(authoriseFormOnNextAction, authorizeFormOnErrorAction);
+            @Override
+            public void onError(Throwable e) {
+                view.loaded();
+                view.showErrorMessage(e.getMessage());
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+                view.loaded();
+            }
+        });
     }
 
     private void authoriseForm() {
         view.loading();
-        getAuthoriseFormObservable().subscribe(authoriseFormOnNextAction, authorizeFormOnErrorAction);
+        Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    mmiaRepository.authorise(form);
+                    subscriber.onNext(null);
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.loaded();
+                view.showErrorMessage(e.getMessage());
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+                view.loaded();
+                view.completeSuccess();
+                syncManager.requestSyncImmediately();
+
+            }
+        });
     }
 
     protected Observable<Void> getAuthoriseFormObservable() {
@@ -172,9 +222,10 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
                 } catch (LMISException e) {
                     e.printStackTrace();
                     subscriber.onError(e);
+
                 }
             }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+        });
     }
 
     protected Action1<Void> authoriseFormOnNextAction = new Action1<Void>() {
@@ -253,6 +304,58 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
             return RnRForm.STATUS.DRAFT;
     }
 
+    public void setBtnCompleteText() {
+        if(form.getStatus() == RnRForm.STATUS.DRAFT) {
+            view.setProcessButtonName(context.getResources().getString(R.string.btn_submit));
+        } else {
+            view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
+        }
+    }
+
+    public void processSign(String signName) {
+        if (form.isDraft()) {
+            submitSignature(signName, RnRFormSignature.TYPE.SUBMITTER);
+            submitForm();
+            view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
+            view.showMessageNotifyDialog();
+        } else {
+            submitSignature(signName, RnRFormSignature.TYPE.APPROVER);
+            authoriseForm();
+        }
+    }
+
+    private void submitSignature(final String signName, final RnRFormSignature.TYPE type) {
+        view.loading();
+        Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    mmiaRepository.setSignature(form, signName, type);
+                    subscriber.onNext(null);
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                    view.showErrorMessage(e.getMessage());
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.loaded();
+                view.showErrorMessage(e.getMessage());
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+                view.loaded();
+            }
+        });
+    }
+
     public interface MMIARequisitionView extends BaseView {
 
         void showValidationAlert();
@@ -265,6 +368,10 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
 
         void saveSuccess();
 
-        void showSignDialog();
+        void showSignDialog(boolean isFormStatusDraft);
+
+        void setProcessButtonName(String name);
+
+        void showMessageNotifyDialog();
     }
 }

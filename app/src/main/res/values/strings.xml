@@ -111,8 +111,10 @@
     <string name="msg_requisition_not_unique">Cannot submit requisition twice in a period!</string>
     <string name="btn_approve">Approve</string>
     <string name="msg_via_submit_signature">Enter your initials to approve requisition amounts</string>
+    <string name="msg_mmia_submit_signature">Enter your initials to approve MMIA information</string>
     <string name="msg_via_approve_signature">Please enter your initials to approve and submit the requisition balancete</string>
-    <string name="msg_via_message_notify">Please hand the device to the person responsible for approval and submission of the requisition balancete</string>
+    <string name="msg_mmia_approve_signature">Please enter your initials to approve and submit the MMIA</string>
+    <string name="msg_requisition_signature_message_notify">Please hand the device to the person responsible for approval and submission of the requisition balancete</string>
     <string name="btn_continue">Continue</string>
 
     <!-- Stock Movement -->

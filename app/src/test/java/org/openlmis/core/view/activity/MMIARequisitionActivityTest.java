@@ -1,7 +1,9 @@
 package org.openlmis.core.view.activity;
 
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.EditText;
 
@@ -24,7 +26,6 @@ import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARnrForm;
-import org.openlmis.core.view.widget.SignatureDialog;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
@@ -63,9 +64,7 @@ public class MMIARequisitionActivityTest {
             }
         });
 
-        Intent intent = new Intent();
-        intent.putExtra(Constants.PARAM_FORM_ID, 3);
-        mmiaRequisitionActivity = Robolectric.buildActivity(MMIARequisitionActivity.class).withIntent(intent).create().get();
+        mmiaRequisitionActivity = Robolectric.buildActivity(MMIARequisitionActivity.class).create().get();
 
         regimeListView = mock(MMIARegimeList.class);
         mmiaInfoListView = mock(MMIAInfoList.class);
@@ -77,7 +76,7 @@ public class MMIARequisitionActivityTest {
 
         EditText patientTotalView = mock(EditText.class);
         when(mmiaInfoListView.getPatientTotalView()).thenReturn(patientTotalView);
-        
+
         program = new Program();
         program.setProgramCode("MMIA");
         program.setProgramName("MMIA");
@@ -85,6 +84,18 @@ public class MMIARequisitionActivityTest {
         form.setId(1L);
         form.setComments("");
         when(mmiaFormPresenter.getRnrForm(anyInt())).thenReturn(form);
+    }
+
+    private MMIARequisitionActivity getMMIARequisitionActivityWithIntent() {
+        Intent intent = new Intent();
+        intent.putExtra(Constants.PARAM_FORM_ID, 1L);
+        MMIARequisitionActivity mmiaRequisitionActivity = Robolectric.buildActivity(MMIARequisitionActivity.class).withIntent(intent).create().get();
+
+        mmiaRequisitionActivity.regimeListView = regimeListView;
+        mmiaRequisitionActivity.mmiaInfoListView = mmiaInfoListView;
+        mmiaRequisitionActivity.rnrFormList = rnrFormList;
+
+        return mmiaRequisitionActivity;
     }
 
     @Test
@@ -141,22 +152,7 @@ public class MMIARequisitionActivityTest {
     @Test
     public void shouldNotRemoveRnrFormWhenGoBack() {
         mmiaRequisitionActivity.onBackPressed();
-        verify(mmiaFormPresenter,never()).removeRnrForm();
-    }
-
-    @Test
-    public void shouldShowSignDialogWhenShowSignDialogCalled() {
-        mmiaRequisitionActivity.showSignDialog();
-
-        SignatureDialog signatureDialog = (SignatureDialog) mmiaRequisitionActivity.getFragmentManager().findFragmentByTag("signature_dialog");
-
-        assertThat(signatureDialog).isNotNull();
-    }
-
-    @Test
-    public void shouldAuthorizeFormWhenValidSign() throws Exception {
-        mmiaRequisitionActivity.signatureDialogDelegate.onSign("valid");
-        verify(mmiaFormPresenter).authoriseForm("valid");
+        verify(mmiaFormPresenter, never()).removeRnrForm();
     }
 
     @Test
@@ -171,7 +167,7 @@ public class MMIARequisitionActivityTest {
 
     @Test
     public void shouldNotShowSaveAndCompleteButtonWhenFormIsNotEditable() {
-        when(mmiaFormPresenter.formIsEditable()).thenReturn(false);
+        mmiaRequisitionActivity = getMMIARequisitionActivityWithIntent();
 
         mmiaRequisitionActivity.initView(form);
 
@@ -197,21 +193,17 @@ public class MMIARequisitionActivityTest {
         form.setPeriodEnd(Date.valueOf("2015-05-20"));
 
         ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(false);
-        when(mmiaFormPresenter.getRnrForm(form.getId())).thenReturn(form);
 
-        when(mmiaFormPresenter.formIsEditable()).thenReturn(true);
         mmiaRequisitionActivity.initView(form);
         assertThat(mmiaRequisitionActivity.getTitle()).isEqualTo("MMIA");
 
-
-        when(mmiaFormPresenter.formIsEditable()).thenReturn(false);
-        when(mmiaFormPresenter.getRnrForm(1L)).thenReturn(form);
+        mmiaRequisitionActivity = getMMIARequisitionActivityWithIntent();
         mmiaRequisitionActivity.initView(form);
         assertThat(mmiaRequisitionActivity.getTitle()).isEqualTo("21 Apr 2015  to  20 May 2015");
     }
 
     @Test
-    public void shouldDehighlightWhenTotalMatches() {
+    public void shouldDeHighLightWhenTotalMatches() {
         when(regimeListView.getTotal()).thenReturn(20L);
         when(mmiaInfoListView.getTotal()).thenReturn(20L);
 
@@ -238,5 +230,50 @@ public class MMIARequisitionActivityTest {
         verify(regimeListView).highLightTotal();
         verify(mmiaInfoListView).highLightTotal();
         assertThat(mmiaRequisitionActivity.tvMismatch.getVisibility()).isEqualTo(View.VISIBLE);
+    }
+
+    @Test
+    public void shouldShowSubmitSignatureDialog() {
+        mmiaRequisitionActivity.showSignDialog(true);
+
+        DialogFragment fragment = (DialogFragment) (mmiaRequisitionActivity.getFragmentManager().findFragmentByTag("signature_dialog"));
+
+        assertThat(fragment).isNotNull();
+
+        Dialog dialog = fragment.getDialog();
+
+        assertThat(dialog).isNotNull();
+
+        String alertMessage = mmiaRequisitionActivity.getString(R.string.msg_mmia_submit_signature);
+        assertThat(fragment.getArguments().getString("title")).isEqualTo(alertMessage);
+    }
+
+    @Test
+    public void shouldShowApproveSignatureDialog() {
+        mmiaRequisitionActivity.showSignDialog(false);
+
+        DialogFragment fragment = (DialogFragment) (mmiaRequisitionActivity.getFragmentManager().findFragmentByTag("signature_dialog"));
+
+        assertThat(fragment).isNotNull();
+
+        Dialog dialog = fragment.getDialog();
+
+        assertThat(dialog).isNotNull();
+
+        String alertMessage = mmiaRequisitionActivity.getString(R.string.msg_mmia_approve_signature);
+        assertThat(fragment.getArguments().getString("title")).isEqualTo(alertMessage);
+    }
+
+    @Test
+    public void shouldMessageNotifyDialog() {
+        mmiaRequisitionActivity.showMessageNotifyDialog();
+
+        DialogFragment fragment = (DialogFragment) (mmiaRequisitionActivity.getFragmentManager().findFragmentByTag("showMessageNotifyDialog"));
+
+        assertThat(fragment).isNotNull();
+
+        AlertDialog dialog = (AlertDialog) fragment.getDialog();
+
+        assertThat(dialog).isNotNull();
     }
 }

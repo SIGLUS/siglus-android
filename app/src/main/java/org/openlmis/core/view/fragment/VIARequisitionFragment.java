@@ -158,7 +158,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     public void setTitleWithPeriodWithoutToggle(RnRForm rnRForm) {
-        if (presenter.getRnRForm().isAuthorized()) {
+        if (isHistoryForm) {
             getActivity().setTitle(new RnRFormViewModel(rnRForm).getPeriod());
         } else {
             getActivity().setTitle(getString(R.string.title_requisition));
@@ -343,7 +343,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @Override
     public void showMessageNotifyDialog() {
         DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
-                getString(R.string.msg_via_message_notify),
+                getString(R.string.msg_requisition_signature_message_notify),
                 getString(R.string.btn_continue),
                 null,
                 TAG_SHOW_MESSAGE_NOTIFY_DIALOG);

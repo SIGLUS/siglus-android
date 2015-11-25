@@ -35,6 +35,7 @@ import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.service.SyncManager;
@@ -138,15 +139,17 @@ public class MMIARequisitionPresenterTest {
         ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
 
         RnRForm rnRForm = new RnRForm();
+        rnRForm.setStatus(RnRForm.STATUS.DRAFT);
 
         when(mmiaRepository.initRnrForm()).thenReturn(rnRForm);
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
+
         presenter.getRnrForm(0);
 
         presenter.completeMMIA(regimenItems, baseInfoItems, "");
 
         if(LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
-            verify(mockMMIAformView).showSignDialog();
+            verify(mockMMIAformView).showSignDialog(true);
         }
     }
 
@@ -164,7 +167,7 @@ public class MMIARequisitionPresenterTest {
 
         presenter.completeMMIA(regimenItems, baseInfoItems, "");
 
-        verify(mockMMIAformView, never()).showSignDialog();
+        verify(mockMMIAformView, never()).showSignDialog(true);
         verify(mockMMIAformView).loading();
     }
 
@@ -271,6 +274,51 @@ public class MMIARequisitionPresenterTest {
 
         verify(mockMMIAformView).loaded();
         verify(mockMMIAformView).showErrorMessage("Complete Failed");
+    }
+
+    @Test
+    public void shouldSubmitFormWhenTheStatusIsDraft() throws LMISException {
+        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
+        RnRForm form = new RnRForm();
+        form.setStatus(RnRForm.STATUS.DRAFT);
+        presenter.form = form;
+
+        String signature = "signature";
+        presenter.processSign(signature);
+        waitObservableToExeute();
+
+        if(LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
+            verify(mmiaRepository).setSignature(form, signature, RnRFormSignature.TYPE.SUBMITTER);
+            verify(mmiaRepository).submit(form);
+            verify(mockMMIAformView).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_complete));
+            verify(mockMMIAformView).showMessageNotifyDialog();
+        }
+    }
+
+    @Test
+    public void shouldAuthorizeFormWhenStatusIsSubmited() throws LMISException {
+        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
+        RnRForm form = new RnRForm();
+        form.setStatus(RnRForm.STATUS.SUBMITTED);
+        presenter.form = form;
+
+        String signature = "signature";
+        presenter.processSign(signature);
+
+        waitObservableToExeute();
+
+        if(LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
+            verify(mmiaRepository).setSignature(form, signature, RnRFormSignature.TYPE.APPROVER);
+            verify(mmiaRepository).authorise(form);
+        }
+    }
+
+    private void waitObservableToExeute() {
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private ArrayList<RegimenItem> generateRegimenItems() {

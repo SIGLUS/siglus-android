@@ -38,9 +38,10 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.builder.RequisitionBuilder;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
+import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowListView;
 import org.robolectric.util.FragmentTestUtil;
@@ -98,11 +99,17 @@ public class VIARequisitionFragmentTest {
         form.setPeriodBegin(Date.valueOf("2015-04-21"));
         form.setPeriodEnd(Date.valueOf("2015-05-20"));
 
-        doReturn(form).when(presenter).getRnRForm();
         VIARequisitionFragment = new VIARequisitionFragment();
         FragmentTestUtil.startFragment(VIARequisitionFragment);
         doReturn(form).when(presenter).getRnRForm();
         VIARequisitionFragment.refreshRequisitionForm();
+    }
+
+    private VIARequisitionFragment getVIARequisitionFragmentFromActivityWithIntent() {
+        Intent intent = new Intent();
+        intent.putExtra(Constants.PARAM_FORM_ID, 1L);
+        VIARequisitionActivity viaRequisitionActivity = Robolectric.buildActivity(VIARequisitionActivity.class).withIntent(intent).create().start().visible().get();
+        return (VIARequisitionFragment)viaRequisitionActivity.getFragmentManager().findFragmentById(R.id.fragment_requisition);
     }
 
     @Test
@@ -117,8 +124,8 @@ public class VIARequisitionFragmentTest {
     @Test
     public void shouldShowOnlyPeriodWhenToggleOff() {
         ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(false);
+        VIARequisitionFragment = getVIARequisitionFragmentFromActivityWithIntent();
 
-        presenter.getRnRForm().setStatus(RnRForm.STATUS.AUTHORIZED);
         VIARequisitionFragment.refreshRequisitionForm();
 
         assertThat(VIARequisitionFragment.getActivity().getTitle()).isEqualTo("21 Apr 2015  to  20 May 2015");
