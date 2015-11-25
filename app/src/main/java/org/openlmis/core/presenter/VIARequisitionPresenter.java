@@ -152,6 +152,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
     protected void updateRequisitionFormUI() {
         if (rnRForm.isDraft()) {
+            view.setProcessButtonName(context.getResources().getString(R.string.btn_submit));
             view.highLightRequestAmount();
         } else if (rnRForm.isSubmitted()) {
             view.setProcessButtonName(context.getString(R.string.btn_complete));
@@ -290,17 +291,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }
     }
 
-    public void setBtnCompleteText() {
-        if (rnRForm == null) {
-            return;
-        }
-
-        if (rnRForm.isDraft()) {
-            view.setProcessButtonName(context.getResources().getString(R.string.btn_submit));
-        } else {
-            view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
-        }
-    }
 
     public interface VIARequisitionView extends BaseRequisitionView {
 

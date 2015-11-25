@@ -202,6 +202,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CHANGE) {
             presenter.refreshStockCardViewModelsSOH();
+            presenter.loadStockCards();
             mAdapter.notifyDataSetChanged();
         }
     }
