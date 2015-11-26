@@ -82,7 +82,7 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardViewHold
 
         this.currentStockCards = new ArrayList<>();
         for (StockCardViewModel stockCardViewModel : stockCardViewModels) {
-            if (stockCardViewModel.getProduct().getProductName().toLowerCase().contains(query.toLowerCase())) {
+            if (stockCardViewModel.getProduct().getProductFullName().toLowerCase().contains(query.toLowerCase())) {
                 this.currentStockCards.add(stockCardViewModel);
             }
         }

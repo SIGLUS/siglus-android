@@ -68,7 +68,7 @@ public class Product extends BaseModel implements Comparable<Product> {
         return getPrimaryName() + " [" + getCode() + "]";
     }
 
-    public String getProductName() {
+    public String getProductFullName() {
         return getPrimaryName() + " [" + getCode() + "]" + getStrength() + getType();
     }
 
