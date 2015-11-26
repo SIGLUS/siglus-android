@@ -187,7 +187,7 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
     @Override
     public boolean onSearchClosed() {
         mAdapter.filter(StringUtils.EMPTY);
-        return false;
+        return true;
     }
 
     public void goToMainPage() {
