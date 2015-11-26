@@ -26,7 +26,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 
 public final class TextStyleUtil {
-    public TextStyleUtil() {
+    private TextStyleUtil() {
     }
 
     public static SpannableStringBuilder getHighlightQueryKeyWord(String queryKeyWord, SpannableStringBuilder spannableStringBuilder) {
