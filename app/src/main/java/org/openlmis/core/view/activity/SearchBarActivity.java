@@ -65,6 +65,15 @@ public abstract class SearchBarActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (!searchView.isIconified()){
+            searchView.onActionViewCollapsed();
+        }else{
+            super.onBackPressed();
+        }
+    }
+
     public abstract boolean onSearchStart(String query);
 
     public abstract boolean onSearchClosed();

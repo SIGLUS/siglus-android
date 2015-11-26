@@ -65,7 +65,7 @@ public class StockCardListActivity extends SearchBarActivity {
 
     @Override
     public boolean onSearchClosed() {
-        return false;
+        return true;
     }
 
     public static Intent getIntentToMe(Context context) {
