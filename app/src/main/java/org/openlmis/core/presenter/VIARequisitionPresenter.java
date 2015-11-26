@@ -108,49 +108,36 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     public void loadData(final long formId) {
 
         if (requisitionFormItemViewModelList.size() > 0) {
-            updateRequisitionFormUI();
+            updateFormUI();
             return;
         }
 
         view.loading();
-
-        subscribe = Observable.create(new Observable.OnSubscribe<List<RequisitionFormItemViewModel>>() {
+        subscribe = Observable.create(new Observable.OnSubscribe<RnRForm>() {
             @Override
-            public void call(Subscriber<? super List<RequisitionFormItemViewModel>> subscriber) {
+            public void call(Subscriber<? super RnRForm> subscriber) {
                 try {
                     List<RequisitionFormItemViewModel> viewModelsFromRnrForm = createViewModelsFromRnrForm(formId);
-                    subscriber.onNext(viewModelsFromRnrForm);
+                    requisitionFormItemViewModelList.addAll(viewModelsFromRnrForm);
+                    subscriber.onNext(null);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.printStackTrace();
                     subscriber.onError(e);
                 }
             }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<List<RequisitionFormItemViewModel>>() {
-            @Override
-            public void call(List<RequisitionFormItemViewModel> requisitionFormItemViewModels) {
-                requisitionFormItemViewModelList.addAll(requisitionFormItemViewModels);
-                updateRequisitionFormUI();
-                loadAlertDialogIsFormStatusIsDraft();
-                view.loaded();
-            }
-        }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                view.loaded();
-                view.showErrorMessage(throwable.getMessage());
-            }
-        });
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(loadDataOnNextAction, loadDataOnErrorAction);
     }
 
     @Override
     public void updateUIAfterSubmit() {
         view.highLightApprovedAmount();
-        view.refreshRequisitionForm();
+        view.refreshRequisitionForm(rnRForm);
         view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
     }
 
-    protected void updateRequisitionFormUI() {
+    @Override
+    protected void updateFormUI() {
         if (rnRForm.isDraft()) {
             view.setProcessButtonName(context.getResources().getString(R.string.btn_submit));
             view.highLightRequestAmount();
@@ -158,7 +145,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             view.setProcessButtonName(context.getString(R.string.btn_complete));
             view.highLightApprovedAmount();
         }
-        view.refreshRequisitionForm();
+        view.refreshRequisitionForm(rnRForm);
         view.setEditable();
     }
 
@@ -285,18 +272,11 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }
     }
 
-    public void loadAlertDialogIsFormStatusIsDraft() {
-        if (rnRForm.isSubmitted()) {
-            view.showMessageNotifyDialog();
-        }
-    }
-
-
     public interface VIARequisitionView extends BaseRequisitionView {
 
         void showListInputError(int index);
 
-        void refreshRequisitionForm();
+        void refreshRequisitionForm(RnRForm rnRForm);
 
         void backToHomePage();
 
@@ -305,8 +285,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         void highLightApprovedAmount();
 
         void setProcessButtonName(String name);
-
-        void showMessageNotifyDialog();
 
         void setEditable();
     }

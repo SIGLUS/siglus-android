@@ -135,8 +135,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     @Override
-    public void refreshRequisitionForm() {
-        RnRForm rnRForm = presenter.getRnRForm();
+    public void refreshRequisitionForm(RnRForm rnRForm) {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.add_header_info_reduce_header_size_348)) {
             setTitleWithPeriodWithToggle(rnRForm);
         } else {

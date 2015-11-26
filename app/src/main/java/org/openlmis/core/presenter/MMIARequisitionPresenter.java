@@ -60,7 +60,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     @Override
     public void loadData(final long formId) {
         view.loading();
-        subscribe = getRnrFormObservable(formId).subscribe(rnRFormOnNextAction, rnRFormOnErrorAction);
+        subscribe = getRnrFormObservable(formId).subscribe(loadDataOnNextAction, loadDataOnErrorAction);
     }
 
     @Override
@@ -73,7 +73,8 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
             @Override
             public void call(Subscriber<? super RnRForm> subscriber) {
                 try {
-                    subscriber.onNext(getRnrForm(formId));
+                    rnRForm = getRnrForm(formId);
+                    subscriber.onNext(rnRForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.printStackTrace();
@@ -83,23 +84,12 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    protected Action1<RnRForm> rnRFormOnNextAction = new Action1<RnRForm>() {
-        @Override
-        public void call(RnRForm form) {
-            if (form != null) {
-                view.initView(form);
-            }
-            view.loaded();
+    @Override
+    protected void updateFormUI() {
+        if (rnRForm != null) {
+            view.initView(rnRForm);
         }
-    };
-
-    protected Action1<Throwable> rnRFormOnErrorAction = new Action1<Throwable>() {
-        @Override
-        public void call(Throwable throwable) {
-            view.loaded();
-            view.showErrorMessage(throwable.getMessage());
-        }
-    };
+    }
 
     public RnRForm getRnrForm(final long formId) throws LMISException {
 
@@ -158,7 +148,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         rnRForm.setRegimenItemListWrapper(regimenItemList);
         rnRForm.setBaseInfoItemListWrapper(baseInfoItemList);
         rnRForm.setComments(comments);
-        rnRForm.setStatus(RnRForm.STATUS.DRAFT);
         saveForm();
     }
 

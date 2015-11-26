@@ -19,9 +19,11 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public abstract class BaseRequisitionPresenter implements Presenter {
+
     @Inject
     RnrFormRepository rnrFormRepository;
 
@@ -36,7 +38,6 @@ public abstract class BaseRequisitionPresenter implements Presenter {
 
     @Getter
     protected RnRForm rnRForm;
-
 
 
     @Override
@@ -59,8 +60,26 @@ public abstract class BaseRequisitionPresenter implements Presenter {
         } else {
             throw new ViewNotMatchException("required VIARequisitionView");
         }
-
     }
+
+
+    protected Action1<RnRForm> loadDataOnNextAction = new Action1<RnRForm>() {
+        @Override
+        public void call(RnRForm form) {
+            rnRForm = form;
+            updateFormUI();
+            loadAlertDialogIsFormStatusIsDraft();
+            view.loaded();
+        }
+    };
+
+    protected Action1<Throwable> loadDataOnErrorAction = new Action1<Throwable>() {
+        @Override
+        public void call(Throwable throwable) {
+            view.loaded();
+            view.showErrorMessage(throwable.getMessage());
+        }
+    };
 
     protected void submitRequisition(final RnRForm rnRForm) {
         view.loading();
@@ -167,7 +186,16 @@ public abstract class BaseRequisitionPresenter implements Presenter {
         });
     }
 
+    public void loadAlertDialogIsFormStatusIsDraft() {
+        if (rnRForm.isSubmitted()) {
+            view.showMessageNotifyDialog();
+        }
+    }
+
     public abstract void loadData(final long formId);
+
+    protected abstract void updateFormUI();
+
     public abstract void updateUIAfterSubmit();
 
     public interface BaseRequisitionView extends BaseView {
@@ -178,5 +206,6 @@ public abstract class BaseRequisitionPresenter implements Presenter {
 
         void completeSuccess();
 
+        void showMessageNotifyDialog();
     }
 }

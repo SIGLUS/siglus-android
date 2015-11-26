@@ -196,7 +196,7 @@ public class MMIARequisitionPresenterTest {
 
     @Test
     public void shouldShowErrorWhenLoadRnRFormOnError() {
-        presenter.rnRFormOnErrorAction.call(new Exception("I am testing the onError action"));
+        presenter.loadDataOnErrorAction.call(new Exception("I am testing the onError action"));
 
         verify(mockMMIAformView).loaded();
         verify(mockMMIAformView).showErrorMessage("I am testing the onError action");
@@ -205,8 +205,7 @@ public class MMIARequisitionPresenterTest {
     @Test
     public void shouldInitViewWhenLoadRnRFormOnNext() {
         RnRForm rnRForm = new RnRForm();
-
-        presenter.rnRFormOnNextAction.call(rnRForm);
+        presenter.loadDataOnNextAction.call(rnRForm);
 
         verify(mockMMIAformView).initView(rnRForm);
         verify(mockMMIAformView).loaded();

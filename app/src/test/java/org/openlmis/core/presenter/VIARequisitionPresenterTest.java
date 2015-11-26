@@ -213,7 +213,7 @@ public class VIARequisitionPresenterTest {
         RnRForm form = new RnRForm();
         form.setStatus(status);
         presenter.rnRForm = form;
-        presenter.updateRequisitionFormUI();
+        presenter.updateFormUI();
     }
 
 

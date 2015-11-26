@@ -101,7 +101,7 @@ public class VIARequisitionFragmentTest {
         VIARequisitionFragment = new VIARequisitionFragment();
         FragmentTestUtil.startFragment(VIARequisitionFragment);
         doReturn(form).when(presenter).getRnRForm();
-        VIARequisitionFragment.refreshRequisitionForm();
+        VIARequisitionFragment.refreshRequisitionForm(VIARequisitionFragment.presenter.getRnRForm());
     }
 
     private VIARequisitionFragment getVIARequisitionFragmentFromActivityWithIntent() {
@@ -115,7 +115,7 @@ public class VIARequisitionFragmentTest {
     public void shouldShowRequisitionPeriodOnTitleWhenToggleOn() {
         ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
 
-        VIARequisitionFragment.refreshRequisitionForm();
+        VIARequisitionFragment.refreshRequisitionForm(VIARequisitionFragment.presenter.getRnRForm());
 
         assertThat(VIARequisitionFragment.getActivity().getTitle()).isEqualTo("Requisition - 21 Apr to 20 May");
     }
@@ -125,7 +125,7 @@ public class VIARequisitionFragmentTest {
         ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(false);
         VIARequisitionFragment = getVIARequisitionFragmentFromActivityWithIntent();
 
-        VIARequisitionFragment.refreshRequisitionForm();
+        VIARequisitionFragment.refreshRequisitionForm(VIARequisitionFragment.presenter.getRnRForm());
 
         assertThat(VIARequisitionFragment.getActivity().getTitle()).isEqualTo("21 Apr 2015  to  20 May 2015");
     }
@@ -244,7 +244,7 @@ public class VIARequisitionFragmentTest {
     }
 
     private View getFirstItemInForm() {
-        VIARequisitionFragment.refreshRequisitionForm();
+        VIARequisitionFragment.refreshRequisitionForm(VIARequisitionFragment.presenter.getRnRForm());
         ShadowListView shadowListView = shadowOf(VIARequisitionFragment.requisitionForm);
         shadowListView.populateItems();
 
