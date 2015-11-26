@@ -109,19 +109,7 @@ public class RnRForm extends BaseModel {
     public static RnRForm init(Program program, Date generateDate) {
         RnRForm rnrForm = new RnRForm();
         rnrForm.program = program;
-
-        Calendar calendar = GregorianCalendar.getInstance();
-        calendar.setTime(generateDate);
-
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        if (day <= DAY_PERIOD_END + 5) {
-            rnrForm.periodBegin = new GregorianCalendar(year, month - 1, DAY_PERIOD_END + 1).getTime();
-        } else {
-            rnrForm.periodBegin = new GregorianCalendar(year, month, DAY_PERIOD_END + 1).getTime();
-        }
+        rnrForm.periodBegin = periodBeginBy(generateDate);
         rnrForm.matchPeriodEndByBegin();
         return rnrForm;
     }
@@ -177,6 +165,21 @@ public class RnRForm extends BaseModel {
         }
         for (BaseInfoItem item : rnRForm.getBaseInfoItemListWrapper()) {
             item.setRnRForm(rnRForm);
+        }
+    }
+
+    private static Date periodBeginBy(Date generateDate) {
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime(generateDate);
+
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        if (day <= DAY_PERIOD_END + 5) {
+            return new GregorianCalendar(year, month - 1, DAY_PERIOD_END + 1).getTime();
+        } else {
+            return new GregorianCalendar(year, month, DAY_PERIOD_END + 1).getTime();
         }
     }
 }
