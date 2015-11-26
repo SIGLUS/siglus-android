@@ -119,12 +119,10 @@ public class RnRForm extends BaseModel {
 
         if (day <= DAY_PERIOD_END + 5) {
             rnrForm.periodBegin = new GregorianCalendar(year, month - 1, DAY_PERIOD_END + 1).getTime();
-            rnrForm.periodEnd = new GregorianCalendar(year, month, DAY_PERIOD_END).getTime();
         } else {
             rnrForm.periodBegin = new GregorianCalendar(year, month, DAY_PERIOD_END + 1).getTime();
-            rnrForm.periodEnd = new GregorianCalendar(year, month + 1, DAY_PERIOD_END).getTime();
         }
-
+        rnrForm.matchPeriodEndByBegin();
         return rnrForm;
     }
 
