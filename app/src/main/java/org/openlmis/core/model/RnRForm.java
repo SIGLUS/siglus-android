@@ -126,23 +126,17 @@ public class RnRForm extends BaseModel {
     }
 
     public ArrayList<RnrFormItem> getRnrFormItemListWrapper() {
-        if (rnrFormItemListWrapper == null) {
-            rnrFormItemListWrapper = (rnrFormItemList == null ? new ArrayList<RnrFormItem>() : new ArrayList<>(rnrFormItemList));
-        }
+        rnrFormItemListWrapper = wrapOrEmpty(rnrFormItemList, rnrFormItemListWrapper);
         return rnrFormItemListWrapper;
     }
 
     public ArrayList<BaseInfoItem> getBaseInfoItemListWrapper() {
-        if (baseInfoItemListWrapper == null) {
-            baseInfoItemListWrapper = (baseInfoItemList == null ? new ArrayList<BaseInfoItem>() : new ArrayList<>(baseInfoItemList));
-        }
+        baseInfoItemListWrapper = wrapOrEmpty(baseInfoItemList, baseInfoItemListWrapper);
         return baseInfoItemListWrapper;
     }
 
     public ArrayList<RegimenItem> getRegimenItemListWrapper() {
-        if (regimenItemListWrapper == null) {
-            regimenItemListWrapper = (regimenItemList == null ? new ArrayList<RegimenItem>() : new ArrayList<>(regimenItemList));
-        }
+        regimenItemListWrapper = wrapOrEmpty(regimenItemList, regimenItemListWrapper);
         return regimenItemListWrapper;
     }
 
@@ -181,5 +175,12 @@ public class RnRForm extends BaseModel {
         } else {
             return new GregorianCalendar(year, month, DAY_PERIOD_END + 1).getTime();
         }
+    }
+
+    private <T> ArrayList<T> wrapOrEmpty(ForeignCollection<T> origin, ArrayList<T> target) {
+        if (target == null) {
+            return (origin == null ? new ArrayList<T>() : new ArrayList<>(origin));
+        }
+        return target;
     }
 }
