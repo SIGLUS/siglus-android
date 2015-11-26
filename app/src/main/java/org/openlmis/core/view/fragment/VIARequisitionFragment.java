@@ -39,6 +39,7 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
@@ -287,12 +288,12 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     private void initRequisitionBodyList() {
-        requisitionFormAdapter = new RequisitionFormAdapter(getActivity(), presenter.getRequisitionViewModelList());
+        requisitionFormAdapter = new RequisitionFormAdapter(getActivity(), presenter.getRequisitionFormItemViewModels());
         requisitionForm.setAdapter(requisitionFormAdapter);
     }
 
     private void initRequisitionProductList() {
-        requisitionProductAdapter = new RequisitionProductAdapter(getActivity(), presenter.getRequisitionViewModelList());
+        requisitionProductAdapter = new RequisitionProductAdapter(getActivity(), presenter.getRequisitionFormItemViewModels());
         requisitionNameList.setAdapter(requisitionProductAdapter);
     }
 
@@ -340,6 +341,11 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
                 null,
                 TAG_SHOW_MESSAGE_NOTIFY_DIALOG);
         dialogFragment.show(getActivity().getFragmentManager(), TAG_SHOW_MESSAGE_NOTIFY_DIALOG);
+    }
+
+    @Override
+    public void saveSuccess() {
+        backToHomePage();
     }
 
     @Override
@@ -496,7 +502,12 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     private void removeTempForm() {
         if (!isHistoryForm) {
-            presenter.removeRnrForm();
+            try {
+                presenter.removeRnrForm();
+            } catch (LMISException e) {
+                ToastUtil.show("Delete Failed");
+                e.printStackTrace();
+            }
         }
     }
 

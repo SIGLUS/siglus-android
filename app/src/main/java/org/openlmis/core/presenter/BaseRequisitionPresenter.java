@@ -24,7 +24,6 @@ import rx.schedulers.Schedulers;
 
 public abstract class BaseRequisitionPresenter implements Presenter {
 
-    @Inject
     RnrFormRepository rnrFormRepository;
 
     @Inject
@@ -39,6 +38,11 @@ public abstract class BaseRequisitionPresenter implements Presenter {
     @Getter
     protected RnRForm rnRForm;
 
+    public BaseRequisitionPresenter() {
+        rnrFormRepository = initRnrFormRepository();
+    }
+
+    protected abstract RnrFormRepository initRnrFormRepository();
 
     @Override
     public void onStart() {
@@ -62,8 +66,28 @@ public abstract class BaseRequisitionPresenter implements Presenter {
         }
     }
 
+    public void loadData(final long formId) {
+        view.loading();
+        subscribe = getRnrFormObservable(formId).subscribe(loadDataOnNextAction, loadDataOnErrorAction);
+    }
 
-    protected Action1<RnRForm> loadDataOnNextAction = new Action1<RnRForm>() {
+    public RnRForm getRnrForm(long formId) throws LMISException {
+        if (rnRForm != null) {
+            return rnRForm;
+        }
+        //three branches: history, half completed draft, new draft
+        boolean isHistory = formId > 0;
+        if (isHistory) {
+            return rnrFormRepository.queryRnRForm(formId);
+        }
+        RnRForm draftVIA = rnrFormRepository.queryUnAuthorized();
+        if (draftVIA != null) {
+            return draftVIA;
+        }
+        return rnrFormRepository.initRnrForm();
+    }
+
+    public Action1<RnRForm> loadDataOnNextAction = new Action1<RnRForm>() {
         @Override
         public void call(RnRForm form) {
             rnRForm = form;
@@ -72,6 +96,18 @@ public abstract class BaseRequisitionPresenter implements Presenter {
             view.loaded();
         }
     };
+
+
+    public void processSign(String signName, RnRForm rnRForm) {
+        if (rnRForm.isDraft()) {
+            submitSignature(signName, RnRFormSignature.TYPE.SUBMITTER, rnRForm);
+            submitRequisition(rnRForm);
+            view.showMessageNotifyDialog();
+        } else {
+            submitSignature(signName, RnRFormSignature.TYPE.APPROVER, rnRForm);
+            authoriseRequisition(rnRForm);
+        }
+    }
 
     protected Action1<Throwable> loadDataOnErrorAction = new Action1<Throwable>() {
         @Override
@@ -192,11 +228,51 @@ public abstract class BaseRequisitionPresenter implements Presenter {
         }
     }
 
-    public abstract void loadData(final long formId);
+    protected void saveForm() {
+        view.loading();
+        Observable.create(new Observable.OnSubscribe<Object>() {
+            @Override
+            public void call(Subscriber<? super Object> subscriber) {
+                try {
+                    rnrFormRepository.save(rnRForm);
+                    subscriber.onNext(null);
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<Object>() {
+            @Override
+            public void call(Object o) {
+                view.loaded();
+                view.saveSuccess();
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                view.loaded();
+                view.showErrorMessage(context.getString(R.string.hint_save_failed));
+            }
+        });
+    }
+
+    public void removeRnrForm() throws LMISException {
+        rnrFormRepository.removeRnrForm(rnRForm);
+    }
+
+    public RnRForm.STATUS getRnrFormStatus() {
+        if (rnRForm != null) {
+            return rnRForm.getStatus();
+        } else {
+            return RnRForm.STATUS.DRAFT;
+        }
+    }
+
+    public abstract void updateUIAfterSubmit();
 
     protected abstract void updateFormUI();
 
-    public abstract void updateUIAfterSubmit();
+    protected abstract Observable getRnrFormObservable(long formId);
 
     public interface BaseRequisitionView extends BaseView {
 
@@ -207,5 +283,7 @@ public abstract class BaseRequisitionPresenter implements Presenter {
         void completeSuccess();
 
         void showMessageNotifyDialog();
+
+        void saveSuccess();
     }
 }

@@ -36,7 +36,6 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
-import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.robolectric.RuntimeEnvironment;
@@ -60,13 +59,11 @@ public class VIARequisitionPresenterTest {
 
     private VIARequisitionPresenter presenter;
     private org.openlmis.core.view.fragment.VIARequisitionFragment VIARequisitionFragment;
-    private VIARepository mockVIARepository;
-    private RnrFormRepository mockRnrFormRepository;
+    private VIARepository mockRnrFormRepository;
 
     @Before
     public void setup() throws ViewNotMatchException {
-        mockVIARepository = mock(VIARepository.class);
-        mockRnrFormRepository = mock(RnrFormRepository.class);
+        mockRnrFormRepository = mock(VIARepository.class);
 
         VIARequisitionFragment = mock(org.openlmis.core.view.fragment.VIARequisitionFragment.class);
 
@@ -86,7 +83,7 @@ public class VIARequisitionPresenterTest {
             list.get(i).setRequestAmount("");
         }
 
-        presenter.requisitionFormItemViewModelList = list;
+        presenter.requisitionFormItemViewModels = list;
         assertFalse(presenter.validateFormInput());
         verify(VIARequisitionFragment).showListInputError(anyInt());
     }
@@ -101,30 +98,30 @@ public class VIARequisitionPresenterTest {
             list.add(requisitionFormItemViewModel);
         }
 
-        presenter.requisitionFormItemViewModelList = list;
+        presenter.requisitionFormItemViewModels = list;
         assertTrue(presenter.validateFormInput());
     }
 
     @Test
     public void shouldGetRnRFormById() throws Exception {
-        presenter.loadRnrForm(1);
-        verify(mockVIARepository).queryRnRForm(anyInt());
-        verify(mockVIARepository, never()).queryUnAuthorized();
+        presenter.getRnrForm(1);
+        verify(mockRnrFormRepository).queryRnRForm(anyInt());
+        verify(mockRnrFormRepository, never()).queryUnAuthorized();
     }
 
     @Test
     public void shouldGetInitForm() throws LMISException, SQLException {
-        when(mockVIARepository.queryUnAuthorized()).thenReturn(null);
-        presenter.loadRnrForm(0);
-        verify(mockVIARepository).queryUnAuthorized();
-        verify(mockVIARepository).initRnrForm();
+        when(mockRnrFormRepository.queryUnAuthorized()).thenReturn(null);
+        presenter.getRnrForm(0);
+        verify(mockRnrFormRepository).queryUnAuthorized();
+        verify(mockRnrFormRepository).initRnrForm();
     }
 
     @Test
     public void shouldGetDraftForm() throws LMISException {
-        when(mockVIARepository.queryUnAuthorized()).thenReturn(new RnRForm());
-        presenter.loadRnrForm(0);
-        verify(mockVIARepository).queryUnAuthorized();
+        when(mockRnrFormRepository.queryUnAuthorized()).thenReturn(new RnRForm());
+        presenter.getRnrForm(0);
+        verify(mockRnrFormRepository).queryUnAuthorized();
         verify(mockRnrFormRepository, never()).initRnrForm();
     }
 
@@ -233,8 +230,7 @@ public class VIARequisitionPresenterTest {
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
-            bind(VIARepository.class).toInstance(mockVIARepository);
-            bind(RnrFormRepository.class).toInstance(mockRnrFormRepository);
+            bind(VIARepository.class).toInstance(mockRnrFormRepository);
         }
     }
 

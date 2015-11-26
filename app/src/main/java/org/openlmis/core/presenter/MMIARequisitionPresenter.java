@@ -18,21 +18,21 @@
 
 package org.openlmis.core.presenter;
 
-import com.google.inject.Inject;
-
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.repository.MMIARepository;
+import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.view.BaseView;
 
 import java.util.ArrayList;
 
+import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -43,9 +43,10 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
 
     MMIARequisitionView view;
 
-    @Inject
-    MMIARepository mmiaRepository;
-
+    @Override
+    protected RnrFormRepository initRnrFormRepository() {
+        return RoboGuice.getInjector(LMISApp.getContext()).getInstance(MMIARepository.class);
+    }
 
     @Override
     public void attachView(BaseView baseView) throws ViewNotMatchException {
@@ -66,8 +67,10 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     @Override
     public void updateUIAfterSubmit() {
 
+        view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
     }
 
+    @Override
     protected Observable<RnRForm> getRnrFormObservable(final long formId) {
         return Observable.create(new Observable.OnSubscribe<RnRForm>() {
             @Override
@@ -91,6 +94,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         }
     }
 
+    @Override
     public RnRForm getRnrForm(final long formId) throws LMISException {
 
         if (rnRForm != null) {
@@ -98,10 +102,10 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         }
 
         if (formId > 0) {
-            rnRForm = mmiaRepository.queryRnRForm(formId);
+            rnRForm = rnrFormRepository.queryRnRForm(formId);
         } else {
-            RnRForm draftMMIAForm = mmiaRepository.queryUnAuthorized();
-            rnRForm = draftMMIAForm == null ? mmiaRepository.initRnrForm() : draftMMIAForm;
+            RnRForm draftMMIAForm = rnrFormRepository.queryUnAuthorized();
+            rnRForm = draftMMIAForm == null ? rnrFormRepository.initRnrForm() : draftMMIAForm;
         }
         return rnRForm;
     }
@@ -128,7 +132,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    mmiaRepository.authorise(rnRForm);
+                    rnrFormRepository.authorise(rnRForm);
                     subscriber.onNext(null);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
@@ -140,8 +144,29 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         });
     }
 
+    protected Action1<Void> authoriseFormOnNextAction = new Action1<Void>() {
+        @Override
+        public void call(Void aVoid) {
+            view.loaded();
+            view.completeSuccess();
+            syncManager.requestSyncImmediately();
+        }
+    };
+
+    protected Action1<Throwable> authorizeFormOnErrorAction = new Action1<Throwable>() {
+        @Override
+        public void call(Throwable throwable) {
+            view.loaded();
+            if (throwable instanceof PeriodNotUniqueException) {
+                view.showErrorMessage(context.getResources().getString(R.string.msg_mmia_not_unique));
+            } else {
+                view.showErrorMessage(context.getString(R.string.hint_complete_failed));
+            }
+        }
+    };
+
     private boolean validateTotalsMatch(RnRForm form) {
-        return RnRForm.calculateTotalRegimenAmount(form.getRegimenItemListWrapper()) == mmiaRepository.getTotalPatients(form);
+        return RnRForm.calculateTotalRegimenAmount(form.getRegimenItemListWrapper()) == rnrFormRepository.getTotalPatients(form);
     }
 
     public void saveDraftForm(ArrayList<RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) {
@@ -151,66 +176,13 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         saveForm();
     }
 
-    private void saveForm() {
-        view.loading();
-        Observable.create(new Observable.OnSubscribe<Object>() {
-            @Override
-            public void call(Subscriber<? super Object> subscriber) {
-                try {
-                    mmiaRepository.save(rnRForm);
-                    subscriber.onNext(null);
-                } catch (LMISException e) {
-                    e.printStackTrace();
-                    subscriber.onError(e);
-                }
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<Object>() {
-            @Override
-            public void call(Object o) {
-                view.loaded();
-                view.saveSuccess();
-            }
-        }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                view.loaded();
-                view.showErrorMessage(context.getString(R.string.hint_save_failed));
-            }
-        });
-    }
 
-    public void removeRnrForm() {
-        try {
-            mmiaRepository.removeRnrForm(rnRForm);
-        } catch (LMISException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public RnRForm.STATUS getRnrFormStatus() {
-        if(rnRForm != null)
-            return rnRForm.getStatus();
-        else
-            return RnRForm.STATUS.DRAFT;
-    }
 
     public void setBtnCompleteText() {
-        if(rnRForm.getStatus() == RnRForm.STATUS.DRAFT) {
+        if (rnRForm.getStatus() == RnRForm.STATUS.DRAFT) {
             view.setProcessButtonName(context.getResources().getString(R.string.btn_submit));
         } else {
             view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
-        }
-    }
-
-    public void processSign(String signName) {
-        if (rnRForm.isDraft()) {
-            submitSignature(signName, RnRFormSignature.TYPE.SUBMITTER, rnRForm);
-            submitRequisition(rnRForm);
-            view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
-            view.showMessageNotifyDialog();
-        } else {
-            submitSignature(signName, RnRFormSignature.TYPE.APPROVER, rnRForm);
-            authoriseRequisition(rnRForm);
         }
     }
 
@@ -219,8 +191,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         void showValidationAlert();
 
         void initView(RnRForm form);
-
-        void saveSuccess();
 
         void setProcessButtonName(String name);
 

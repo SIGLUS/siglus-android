@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
@@ -143,14 +144,14 @@ public class MMIARequisitionActivityTest {
     }
 
     @Test
-    public void shouldRemoveRnrFormWhenPositiveButtonClicked() {
+    public void shouldRemoveRnrFormWhenPositiveButtonClicked() throws LMISException {
         mmiaRequisitionActivity.positiveClick(MMIARequisitionActivity.TAG_BACK_PRESSED);
 
         verify(mmiaFormPresenter).removeRnrForm();
     }
 
     @Test
-    public void shouldNotRemoveRnrFormWhenGoBack() {
+    public void shouldNotRemoveRnrFormWhenGoBack() throws LMISException {
         mmiaRequisitionActivity.onBackPressed();
         verify(mmiaFormPresenter, never()).removeRnrForm();
     }

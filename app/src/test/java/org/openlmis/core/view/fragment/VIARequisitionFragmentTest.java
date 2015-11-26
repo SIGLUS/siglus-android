@@ -22,7 +22,6 @@ import android.app.DialogFragment;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
-import android.widget.EditText;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
@@ -33,6 +32,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.builder.RequisitionBuilder;
@@ -44,7 +44,6 @@ import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowListView;
-import org.robolectric.util.FragmentTestUtil;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -53,13 +52,10 @@ import java.util.List;
 import roboguice.RoboGuice;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
@@ -69,19 +65,11 @@ public class VIARequisitionFragmentTest {
     VIARequisitionPresenter presenter;
     private List<RequisitionFormItemViewModel> formItemList;
     private Program program;
+    private RnRForm form;
 
     @Before
-    public void setup() {
-        presenter = spy(new VIARequisitionPresenter());
-
-        formItemList = new ArrayList<>();
-        formItemList.add(RequisitionBuilder.buildFakeRequisitionViewModel());
-
-        doReturn("123").when(presenter).getConsultationNumbers();
-        doReturn(formItemList).when(presenter).getRequisitionViewModelList();
-        doNothing().when(presenter).loadData(anyLong());
-        doNothing().when(presenter).setConsultationNumbers(anyString());
-
+    public void setup() throws Exception {
+        presenter = mock(VIARequisitionPresenter.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
             @Override
             public void configure(Binder binder) {
@@ -93,15 +81,16 @@ public class VIARequisitionFragmentTest {
         program.setProgramCode("ESS_MEDS");
         program.setProgramName("ESS_MEDS");
 
-
-        RnRForm form = RnRForm.init(program, DateUtil.today());
+        form = RnRForm.init(program, DateUtil.today());
         form.setPeriodBegin(Date.valueOf("2015-04-21"));
         form.setPeriodEnd(Date.valueOf("2015-05-20"));
 
-        VIARequisitionFragment = new VIARequisitionFragment();
-        FragmentTestUtil.startFragment(VIARequisitionFragment);
-        doReturn(form).when(presenter).getRnRForm();
-        VIARequisitionFragment.refreshRequisitionForm(VIARequisitionFragment.presenter.getRnRForm());
+        formItemList = new ArrayList<>();
+        formItemList.add(RequisitionBuilder.buildFakeRequisitionViewModel());
+        when(presenter.getRequisitionFormItemViewModels()).thenReturn(formItemList);
+        when(presenter.getRnRForm()).thenReturn(form);
+
+        VIARequisitionFragment = getVIARequisitionFragmentFromActivityWithIntent();
     }
 
     private VIARequisitionFragment getVIARequisitionFragmentFromActivityWithIntent() {
@@ -128,38 +117,6 @@ public class VIARequisitionFragmentTest {
         VIARequisitionFragment.refreshRequisitionForm(VIARequisitionFragment.presenter.getRnRForm());
 
         assertThat(VIARequisitionFragment.getActivity().getTitle()).isEqualTo("21 Apr 2015  to  20 May 2015");
-    }
-
-    @Test
-    public void shouldShowErrorOnRequestAmountWhenInputInvalid() {
-        VIARequisitionFragment.highLightRequestAmount();
-        View item = getFirstItemInForm();
-        EditText etRequestAmount = (EditText) item.findViewById(R.id.et_request_amount);
-
-        assertThat(etRequestAmount).isNotNull();
-        assertThat(etRequestAmount.getText().toString()).isEqualTo("0");
-
-        formItemList.get(0).setRequestAmount("");
-        presenter.processRequisition("123");
-
-        assertThat(etRequestAmount.getError().toString()).isEqualTo(VIARequisitionFragment.getString(R.string.hint_error_input));
-    }
-
-    @Test
-    public void shouldShowErrorOnApprovedAmountWhenInputInvalid() {
-        VIARequisitionFragment.highLightApprovedAmount();
-        View item = getFirstItemInForm();
-        EditText etApprovedAmount = (EditText) item.findViewById(R.id.et_approved_amount);
-        EditText etRequestAmount = (EditText) item.findViewById(R.id.et_request_amount);
-        etRequestAmount.setEnabled(false);
-
-        assertThat(etApprovedAmount).isNotNull();
-        assertThat(etApprovedAmount.getText().toString()).isEqualTo("0");
-
-        formItemList.get(0).setApprovedAmount("");
-        presenter.processRequisition("123");
-
-        assertThat(etApprovedAmount.getError().toString()).isEqualTo(VIARequisitionFragment.getString(R.string.hint_error_input));
     }
 
     @Test
@@ -193,7 +150,7 @@ public class VIARequisitionFragmentTest {
     }
 
     @Test
-    public void shouldNotRemoveRnrFormWhenGoBack() {
+    public void shouldNotRemoveRnrFormWhenGoBack() throws LMISException {
         VIARequisitionFragment.onBackPressed();
         verify(presenter, never()).removeRnrForm();
     }
@@ -244,7 +201,7 @@ public class VIARequisitionFragmentTest {
     }
 
     private View getFirstItemInForm() {
-        VIARequisitionFragment.refreshRequisitionForm(VIARequisitionFragment.presenter.getRnRForm());
+        VIARequisitionFragment.refreshRequisitionForm(form);
         ShadowListView shadowListView = shadowOf(VIARequisitionFragment.requisitionForm);
         shadowListView.populateItems();
 

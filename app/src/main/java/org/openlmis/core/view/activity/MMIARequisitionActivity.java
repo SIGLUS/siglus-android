@@ -259,7 +259,12 @@ public class MMIARequisitionActivity extends BaseActivity implements MMIARequisi
 
     private void removeTempForm() {
         if (!isHistoryForm) {
-            presenter.removeRnrForm();
+            try {
+                presenter.removeRnrForm();
+            } catch (LMISException e) {
+                ToastUtil.show("Delete Failed");
+                e.printStackTrace();
+            }
         }
     }
 
@@ -346,7 +351,7 @@ public class MMIARequisitionActivity extends BaseActivity implements MMIARequisi
 
         @Override
         public void onSign(String sign) {
-            presenter.processSign(sign);
+            presenter.processSign(sign, presenter.getRnRForm());
         }
     };
 

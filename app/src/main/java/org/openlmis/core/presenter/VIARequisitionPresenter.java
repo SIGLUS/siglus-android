@@ -29,8 +29,8 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
@@ -40,10 +40,11 @@ import org.roboguice.shaded.goole.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
@@ -52,17 +53,20 @@ import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
     @Inject
-    VIARepository viaRepository;
-
-    @Inject
     Context context;
 
     VIARequisitionView view;
-    protected List<RequisitionFormItemViewModel> requisitionFormItemViewModelList;
+
+    @Getter
+    protected List<RequisitionFormItemViewModel> requisitionFormItemViewModels;
 
     public VIARequisitionPresenter() {
-        viaRepository = new VIARepository(LMISApp.getContext());
-        requisitionFormItemViewModelList = new ArrayList<>();
+        requisitionFormItemViewModels = new ArrayList<>();
+    }
+
+    @Override
+    protected RnrFormRepository initRnrFormRepository() {
+        return RoboGuice.getInjector(LMISApp.getContext()).getInstance(VIARepository.class);
     }
 
     @Override
@@ -75,28 +79,11 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         super.attachView(baseView);
     }
 
-    public RnRForm loadRnrForm(long formId) throws LMISException {
-        //three branches: history, half completed draft, new draft
-        boolean isHistory = formId > 0;
-        if (isHistory) {
-            return viaRepository.queryRnRForm(formId);
+    protected List<RequisitionFormItemViewModel> getViewModelsFromRnrForm(RnRForm form) throws LMISException {
+        if (requisitionFormItemViewModels.size() > 0) {
+            return requisitionFormItemViewModels;
         }
-        RnRForm draftVIA = viaRepository.queryUnAuthorized();
-        if (draftVIA != null) {
-            return draftVIA;
-        }
-        return viaRepository.initRnrForm();
-    }
-
-    public List<RequisitionFormItemViewModel> getRequisitionViewModelList() {
-        return requisitionFormItemViewModelList;
-    }
-
-    protected List<RequisitionFormItemViewModel> createViewModelsFromRnrForm(long formId) throws LMISException {
-        if (rnRForm == null) {
-            rnRForm = loadRnrForm(formId);
-        }
-        return from(rnRForm.getRnrFormItemList()).transform(new Function<RnrFormItem, RequisitionFormItemViewModel>() {
+        return from(form.getRnrFormItemList()).transform(new Function<RnrFormItem, RequisitionFormItemViewModel>() {
             @Override
             public RequisitionFormItemViewModel apply(RnrFormItem item) {
                 return new RequisitionFormItemViewModel(item);
@@ -105,28 +92,22 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     @Override
-    public void loadData(final long formId) {
-
-        if (requisitionFormItemViewModelList.size() > 0) {
-            updateFormUI();
-            return;
-        }
-
-        view.loading();
-        subscribe = Observable.create(new Observable.OnSubscribe<RnRForm>() {
+    protected Observable<RnRForm> getRnrFormObservable(final long formId) {
+        return Observable.create(new Observable.OnSubscribe<RnRForm>() {
             @Override
             public void call(Subscriber<? super RnRForm> subscriber) {
                 try {
-                    List<RequisitionFormItemViewModel> viewModelsFromRnrForm = createViewModelsFromRnrForm(formId);
-                    requisitionFormItemViewModelList.addAll(viewModelsFromRnrForm);
-                    subscriber.onNext(null);
+                    RnRForm rnrForm = getRnrForm(formId);
+                    requisitionFormItemViewModels.clear();
+                    requisitionFormItemViewModels.addAll(getViewModelsFromRnrForm(rnrForm));
+                    subscriber.onNext(rnrForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.printStackTrace();
                     subscriber.onError(e);
                 }
             }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(loadDataOnNextAction, loadDataOnErrorAction);
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
     @Override
@@ -137,7 +118,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     @Override
-    protected void updateFormUI() {
+    public void updateFormUI() {
         if (rnRForm.isDraft()) {
             view.setProcessButtonName(context.getResources().getString(R.string.btn_submit));
             view.highLightRequestAmount();
@@ -150,9 +131,8 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     protected boolean validateFormInput() {
-        List<RequisitionFormItemViewModel> requisitionViewModelList = getRequisitionViewModelList();
-        for (int i = 0; i < requisitionViewModelList.size(); i++) {
-            RequisitionFormItemViewModel itemViewModel = requisitionViewModelList.get(i);
+        for (int i = 0; i < requisitionFormItemViewModels.size(); i++) {
+            RequisitionFormItemViewModel itemViewModel = requisitionFormItemViewModels.get(i);
             if (TextUtils.isEmpty(itemViewModel.getRequestAmount())
                     || TextUtils.isEmpty(itemViewModel.getApprovedAmount())) {
                 view.showListInputError(i);
@@ -180,7 +160,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     private void dataViewToModel(String consultationNumbers) {
-        ImmutableList<RnrFormItem> rnrFormItems = from(requisitionFormItemViewModelList).transform(new Function<RequisitionFormItemViewModel, RnrFormItem>() {
+        ImmutableList<RnrFormItem> rnrFormItems = from(requisitionFormItemViewModels).transform(new Function<RequisitionFormItemViewModel, RnrFormItem>() {
             @Override
             public RnrFormItem apply(RequisitionFormItemViewModel requisitionFormItemViewModel) {
                 return requisitionFormItemViewModel.toRnrFormItem();
@@ -192,7 +172,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
     public void saveRequisition(String consultationNumbers) {
         view.loading();
-        ImmutableList<RnrFormItem> rnrFormItems = from(requisitionFormItemViewModelList).transform(new Function<RequisitionFormItemViewModel, RnrFormItem>() {
+        ImmutableList<RnrFormItem> rnrFormItems = from(requisitionFormItemViewModels).transform(new Function<RequisitionFormItemViewModel, RnrFormItem>() {
             @Override
             public RnrFormItem apply(RequisitionFormItemViewModel requisitionFormItemViewModel) {
                 return requisitionFormItemViewModel.toRnrFormItem();
@@ -203,72 +183,27 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             rnRForm.getBaseInfoItemListWrapper().get(0).setValue(Long.valueOf(consultationNumbers).toString());
         }
 
-        Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    viaRepository.save(rnRForm);
-                    subscriber.onNext(null);
-                } catch (LMISException e) {
-                    subscriber.onError(e);
-                }
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<Void>() {
-            @Override
-            public void call(Void aVoid) {
-                view.loaded();
-                view.backToHomePage();
-            }
-        }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                view.loaded();
-                view.showErrorMessage(context.getString(R.string.hint_save_failed));
-            }
-        });
+        saveForm();
     }
 
     public String getConsultationNumbers() {
-        String value = null;
-        try {
-            value = rnRForm.getBaseInfoItemListWrapper().get(0).getValue();
-        } catch (NullPointerException | IndexOutOfBoundsException e) {
-            e.printStackTrace();
+        if (rnRForm == null) {
+            return null;
         }
-        return value;
-    }
-
-    public void removeRnrForm() {
-        try {
-            viaRepository.removeRnrForm(rnRForm);
-        } catch (LMISException e) {
-            e.printStackTrace();
+        ArrayList<BaseInfoItem> baseInfoItemListWrapper = rnRForm.getBaseInfoItemListWrapper();
+        if (baseInfoItemListWrapper == null || baseInfoItemListWrapper.get(0) == null) {
+            return null;
         }
+        return rnRForm.getBaseInfoItemListWrapper().get(0).getValue();
     }
 
     public void setConsultationNumbers(String consultationNumbers) {
+        if (rnRForm == null) {
+            return;
+        }
         ArrayList<BaseInfoItem> baseInfoItemListWrapper = rnRForm.getBaseInfoItemListWrapper();
         if (baseInfoItemListWrapper != null) {
             baseInfoItemListWrapper.get(0).setValue(consultationNumbers);
-        }
-    }
-
-    public void processSign(String signName, RnRForm rnRForm) {
-        if (rnRForm.isDraft()) {
-            submitSignature(signName, RnRFormSignature.TYPE.SUBMITTER, rnRForm);
-            submitRequisition(rnRForm);
-            view.showMessageNotifyDialog();
-        } else {
-            submitSignature(signName, RnRFormSignature.TYPE.APPROVER, rnRForm);
-            authoriseRequisition(rnRForm);
-        }
-    }
-
-    public RnRForm.STATUS getRnrFormStatus() {
-        if (rnRForm != null) {
-            return rnRForm.getStatus();
-        } else {
-            return RnRForm.STATUS.DRAFT;
         }
     }
 

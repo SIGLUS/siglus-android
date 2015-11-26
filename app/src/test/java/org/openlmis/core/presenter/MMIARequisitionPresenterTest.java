@@ -37,7 +37,6 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
-import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.service.SyncManager;
 import org.robolectric.RuntimeEnvironment;
 
@@ -62,14 +61,12 @@ public class MMIARequisitionPresenterTest {
     private SyncManager syncManager;
     private MMIARequisitionPresenter presenter;
     private MMIARepository mmiaRepository;
-    private RnrFormRepository rnrFormRepository;
     private ProgramRepository programRepository;
     private MMIARequisitionPresenter.MMIARequisitionView mockMMIAformView;
 
     @Before
     public void setup() throws ViewNotMatchException {
         mmiaRepository = mock(MMIARepository.class);
-        rnrFormRepository = mock(RnrFormRepository.class);
         programRepository = mock(ProgramRepository.class);
         mockMMIAformView = mock(MMIARequisitionPresenter.MMIARequisitionView.class);
         syncManager = mock(SyncManager.class);
@@ -247,39 +244,37 @@ public class MMIARequisitionPresenterTest {
         ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
         RnRForm form = new RnRForm();
         form.setStatus(RnRForm.STATUS.DRAFT);
-        presenter.rnRForm = form;
 
         String signature = "signature";
-        presenter.processSign(signature);
-        waitObservableToExeute();
+        presenter.processSign(signature, form);
+        waitObservableToExecute();
 
         if(LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
-            verify(rnrFormRepository).setSignature(form, signature, RnRFormSignature.TYPE.SUBMITTER);
-            verify(rnrFormRepository).submit(form);
+            verify(mmiaRepository).setSignature(form, signature, RnRFormSignature.TYPE.SUBMITTER);
+            verify(mmiaRepository).submit(form);
             verify(mockMMIAformView).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_complete));
             verify(mockMMIAformView).showMessageNotifyDialog();
         }
     }
 
     @Test
-    public void shouldAuthorizeFormWhenStatusIsSubmited() throws LMISException {
+    public void shouldAuthorizeFormWhenStatusIsSubmitted() throws LMISException {
         ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
         RnRForm form = new RnRForm();
         form.setStatus(RnRForm.STATUS.SUBMITTED);
-        presenter.rnRForm = form;
 
         String signature = "signature";
-        presenter.processSign(signature);
+        presenter.processSign(signature, form);
 
-        waitObservableToExeute();
+        waitObservableToExecute();
 
         if(LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
-            verify(rnrFormRepository).setSignature(form, signature, RnRFormSignature.TYPE.APPROVER);
-            verify(rnrFormRepository).authorise(form);
+            verify(mmiaRepository).setSignature(form, signature, RnRFormSignature.TYPE.APPROVER);
+            verify(mmiaRepository).authorise(form);
         }
     }
 
-    private void waitObservableToExeute() {
+    private void waitObservableToExecute() {
         try {
             Thread.sleep(1500);
         } catch (InterruptedException e) {
@@ -300,7 +295,6 @@ public class MMIARequisitionPresenterTest {
         @Override
         protected void configure() {
             bind(MMIARepository.class).toInstance(mmiaRepository);
-            bind(RnrFormRepository.class).toInstance(rnrFormRepository);
             bind(ProgramRepository.class).toInstance(programRepository);
             bind(MMIARequisitionPresenter.MMIARequisitionView.class).toInstance(mockMMIAformView);
             bind(SyncManager.class).toInstance(syncManager);
