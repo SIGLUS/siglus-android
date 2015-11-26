@@ -30,7 +30,6 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RegimenItem;
@@ -242,31 +241,6 @@ public class MMIARequisitionPresenterTest {
         subscriber.awaitTerminalEvent();
 
         verify(mmiaRepository).authorise(form);
-    }
-
-    @Test
-    public void shouldCompleteSuccessAndRequestSyncWhenAuthoriseFormOnNext() {
-        presenter.authoriseFormOnNextAction.call(null);
-
-        verify(mockMMIAformView).loaded();
-        verify(mockMMIAformView).completeSuccess();
-        verify(syncManager).requestSyncImmediately();
-    }
-
-    @Test
-    public void shouldShowAuthoriseFormErrorMessageWhenPeriodNotUnique() {
-        presenter.authorizeFormOnErrorAction.call(new PeriodNotUniqueException("Period not unique"));
-
-        verify(mockMMIAformView).loaded();
-        verify(mockMMIAformView).showErrorMessage("Cannot submit MMIA twice in a period!");
-    }
-
-    @Test
-    public void shouldShowAuthoriseFormErrorMessageWhenCompleteFailed() {
-        presenter.authorizeFormOnErrorAction.call(new LMISException("Period not unique"));
-
-        verify(mockMMIAformView).loaded();
-        verify(mockMMIAformView).showErrorMessage("Complete Failed");
     }
 
     @Test

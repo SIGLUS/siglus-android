@@ -23,7 +23,6 @@ import com.google.inject.Inject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RegimenItem;
@@ -65,7 +64,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     @Override
-    public void updateUI() {
+    public void updateUIAfterSubmit() {
 
     }
 
@@ -150,27 +149,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
             }
         });
     }
-
-    protected Action1<Void> authoriseFormOnNextAction = new Action1<Void>() {
-        @Override
-        public void call(Void aVoid) {
-            view.loaded();
-            view.completeSuccess();
-            syncManager.requestSyncImmediately();
-        }
-    };
-
-    protected Action1<Throwable> authorizeFormOnErrorAction = new Action1<Throwable>() {
-        @Override
-        public void call(Throwable throwable) {
-            view.loaded();
-            if (throwable instanceof PeriodNotUniqueException) {
-                view.showErrorMessage(context.getResources().getString(R.string.msg_mmia_not_unique));
-            } else {
-                view.showErrorMessage(context.getString(R.string.hint_complete_failed));
-            }
-        }
-    };
 
     private boolean validateTotalsMatch(RnRForm form) {
         return RnRForm.calculateTotalRegimenAmount(form.getRegimenItemListWrapper()) == mmiaRepository.getTotalPatients(form);

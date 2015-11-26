@@ -90,7 +90,7 @@ public abstract class BaseRequisitionPresenter implements Presenter {
             @Override
             public void onNext(Void aVoid) {
                 view.loaded();
-                updateUI();
+                updateUIAfterSubmit();
 
             }
         });
@@ -121,7 +121,7 @@ public abstract class BaseRequisitionPresenter implements Presenter {
                 if (e instanceof PeriodNotUniqueException) {
                     view.showErrorMessage(context.getResources().getString(R.string.msg_requisition_not_unique));
                 } else {
-                    view.showErrorMessage(e.getMessage());
+                    view.showErrorMessage(context.getString(R.string.hint_complete_failed));
                 }
             }
 
@@ -168,7 +168,7 @@ public abstract class BaseRequisitionPresenter implements Presenter {
     }
 
     public abstract void loadData(final long formId);
-    public abstract void updateUI();
+    public abstract void updateUIAfterSubmit();
 
     public interface BaseRequisitionView extends BaseView {
 

@@ -144,7 +144,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     @Override
-    public void updateUI() {
+    public void updateUIAfterSubmit() {
         view.highLightApprovedAmount();
         view.refreshRequisitionForm();
         view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
@@ -236,7 +236,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             @Override
             public void call(Throwable throwable) {
                 view.loaded();
-                view.showErrorMessage(throwable.getMessage());
+                view.showErrorMessage(context.getString(R.string.hint_save_failed));
             }
         });
     }
