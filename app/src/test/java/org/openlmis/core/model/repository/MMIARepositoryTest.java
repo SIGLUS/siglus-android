@@ -70,24 +70,11 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         mockProductRepository = mock(ProductRepository.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
-
         MMIARepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(MMIARepository.class);
-
 
         program = new Program("ART", "ART", null);
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
-
-        ArrayList<Product> products = new ArrayList<>();
-
-        for (int i = 0; i < 24; i++) {
-            Product product = new Product();
-            product.setId(i);
-            product.setProgram(program);
-            product.setPrimaryName("mockProduct");
-            products.add(product);
-        }
-
-        when(mockProductRepository.queryProducts(anyLong())).thenReturn(products);
+        when(mockProductRepository.queryProducts(anyLong())).thenReturn(createProducts());
     }
 
     @Test
@@ -97,13 +84,13 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         product.setPrimaryName("Test Product");
         product.setStrength("200");
 
-        ArrayList<StockCard> stockCards = new ArrayList<>();
         StockCard stockCard = new StockCard();
         stockCard.setProduct(product);
         stockCard.setStockOnHand(10);
-        stockCards.add(stockCard);
-
         stockCard.setCreatedAt(RnRForm.init(program, DateUtil.today()).getPeriodEnd());
+
+        ArrayList<StockCard> stockCards = new ArrayList<>();
+        stockCards.add(stockCard);
 
         ArrayList<StockMovementItem> stockMovementItems = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -128,17 +115,6 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         RnrFormItem item = form.getRnrFormItemListWrapper().get(1);
         assertThat(item.getReceived(), is(25L));
         assertThat(item.getIssued(), is(20L));
-    }
-
-
-    public class MyTestModule extends AbstractModule {
-        @Override
-        protected void configure() {
-            bind(ProductRepository.class).toInstance(mockProductRepository);
-            bind(RnrFormRepository.class).toInstance(mockRnrFormRepository);
-            bind(StockRepository.class).toInstance(mockStockRepository);
-            bind(ProgramRepository.class).toInstance(mockProgramRepository);
-        }
     }
 
     @Test
@@ -170,7 +146,6 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldInflateMMIAProducts() throws Exception {
-
         Program program = new Program();
         program.setProgramCode(org.openlmis.core.model.repository.MMIARepository.MMIA_PROGRAM_CODE);
 
@@ -182,5 +157,28 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         RnRForm rnRFormTest = MMIARepository.initRnrForm();
 
         assertThat(rnRFormTest.getRnrFormItemListWrapper().size(), is(24));
+    }
+
+    private ArrayList<Product> createProducts() {
+        ArrayList<Product> products = new ArrayList<>();
+
+        for (int i = 0; i < 24; i++) {
+            Product product = new Product();
+            product.setId(i);
+            product.setProgram(program);
+            product.setPrimaryName("mockProduct");
+            products.add(product);
+        }
+        return products;
+    }
+
+    public class MyTestModule extends AbstractModule {
+        @Override
+        protected void configure() {
+            bind(ProductRepository.class).toInstance(mockProductRepository);
+            bind(RnrFormRepository.class).toInstance(mockRnrFormRepository);
+            bind(StockRepository.class).toInstance(mockStockRepository);
+            bind(ProgramRepository.class).toInstance(mockProgramRepository);
+        }
     }
 }
