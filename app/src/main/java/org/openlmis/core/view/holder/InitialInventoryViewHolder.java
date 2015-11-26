@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
+import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
@@ -67,12 +68,13 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         });
     }
 
-    public void populate(final StockCardViewModel viewModel) {
+    public void populate(final StockCardViewModel viewModel, String queryKeyWord) {
         setItemViewListener(viewModel);
 
         checkBox.setChecked(viewModel.isChecked());
-        productName.setText(viewModel.getStyledName());
-        productUnit.setText(viewModel.getType());
+
+        productName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyledName()));
+        productUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyleType()));
 
         populateEditPanel(viewModel.getQuantity(), viewModel.optFirstExpiryDate());
 

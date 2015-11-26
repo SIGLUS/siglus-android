@@ -26,6 +26,7 @@ import static org.assertj.core.util.Lists.newArrayList;
 public class InitialInventoryViewHolderTest {
 
     private InitialInventoryViewHolder viewHolder;
+    private String queryKeyWord = null;
 
     @Before
     public void setUp() {
@@ -42,7 +43,7 @@ public class InitialInventoryViewHolderTest {
                 .setType("Embalagem")
                 .build();
 
-        viewHolder.populate(viewModel);
+        viewHolder.populate(viewModel, queryKeyWord);
 
         String expectedDate = DateUtil.convertDate("28/11/2015", DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
 
@@ -66,7 +67,7 @@ public class InitialInventoryViewHolderTest {
                 .setType("Embalagem")
                 .build();
 
-        viewHolder.populate(viewModel);
+        viewHolder.populate(viewModel, queryKeyWord);
 
         assertThat(viewHolder.actionDivider.getVisibility()).isEqualTo(View.GONE);
         assertThat(viewHolder.actionPanel.getVisibility()).isEqualTo(View.GONE);
@@ -87,7 +88,7 @@ public class InitialInventoryViewHolderTest {
                 .setType("Embalagem")
                 .build();
 
-        viewHolder.populate(viewModel);
+        viewHolder.populate(viewModel, queryKeyWord);
 
         TextView errorTextView = RobolectricUtils.getErrorTextView(viewHolder.lyQuantity);
 
@@ -104,7 +105,7 @@ public class InitialInventoryViewHolderTest {
                 .setType("Embalagem")
                 .build();
 
-        viewHolder.populate(viewModel);
+        viewHolder.populate(viewModel, queryKeyWord);
 
         viewHolder.txExpireDate.performClick();
 
@@ -120,7 +121,7 @@ public class InitialInventoryViewHolderTest {
                 .setType("Embalagem")
                 .build();
 
-        viewHolder.populate(viewModel);
+        viewHolder.populate(viewModel, queryKeyWord);
 
         viewHolder.itemView.performClick();
 
@@ -136,7 +137,7 @@ public class InitialInventoryViewHolderTest {
                 .setType("Embalagem")
                 .build();
 
-        viewHolder.populate(viewModel);
+        viewHolder.populate(viewModel, queryKeyWord);
         viewHolder.itemView.performClick();
         viewHolder.txQuantity.setText("120");
 

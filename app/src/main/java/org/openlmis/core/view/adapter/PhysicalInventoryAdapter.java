@@ -69,7 +69,7 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.
         PhysicalInventoryViewHolder holder = (PhysicalInventoryViewHolder) viewHolder;
         final StockCardViewModel viewModel = currentList.get(position);
 
-        holder.populate(viewModel);
+        holder.populate(viewModel, queryKeyWord);
     }
 
     public static class VHFooter extends RecyclerView.ViewHolder {

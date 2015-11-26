@@ -10,6 +10,7 @@ import android.widget.TextView;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
+import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.openlmis.core.view.widget.ExpireDateViewGroup;
 import org.openlmis.core.view.widget.InputFilterMinMax;
@@ -38,12 +39,13 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
     }
 
 
-    public void populate(StockCardViewModel stockCardViewModel) {
+    public void populate(StockCardViewModel stockCardViewModel, String queryKeyWord) {
         final EditTextWatcher textWatcher = new EditTextWatcher(stockCardViewModel);
         etQuantity.removeTextChangedListener(textWatcher);
 
-        tvProductName.setText(stockCardViewModel.getStyledName());
-        tvProductUnit.setText(stockCardViewModel.getStyledUnit());
+        tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledName()));
+        tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledUnit()));
+
 
         tvStockOnHandInInventory.setText(context.getString(R.string.label_physical_inventory_stock_on_hand,
                 Long.toString(stockCardViewModel.getStockOnHand())));

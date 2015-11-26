@@ -37,6 +37,7 @@ public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> e
     Context context;
     List<StockCardViewModel> data;
     List<StockCardViewModel> currentList;
+    String queryKeyWord;
 
     public InventoryListAdapter(Context context, List<StockCardViewModel> data) {
         inflater = LayoutInflater.from(context);
@@ -57,6 +58,7 @@ public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> e
 
     @Override
     public void filter(final String keyword) {
+        this.queryKeyWord = keyword;
         if (StringUtils.isEmpty(keyword)) {
             this.currentList = data;
             this.notifyDataSetChanged();

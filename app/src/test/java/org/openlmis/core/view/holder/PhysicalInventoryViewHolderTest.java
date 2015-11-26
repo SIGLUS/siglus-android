@@ -27,6 +27,7 @@ public class PhysicalInventoryViewHolderTest {
 
     private PhysicalInventoryViewHolder viewHolder;
     private Product product;
+    private String queryKeyWord = null;
 
     @Before
     public void setUp() {
@@ -47,7 +48,7 @@ public class PhysicalInventoryViewHolderTest {
                 .setType("Embalagem")
                 .setSOH(123L)
                 .build();
-        viewHolder.populate(viewModel);
+        viewHolder.populate(viewModel, queryKeyWord);
 
         assertThat(viewHolder.tvProductName.getText().toString()).isEqualTo("Lamivudina 150mg [08S40]");
         assertThat(viewHolder.tvProductUnit.getText().toString()).isEqualTo("10mg VIA");
@@ -68,7 +69,7 @@ public class PhysicalInventoryViewHolderTest {
                 .setType("Embalagem")
                 .setValidate(false)
                 .build();
-        viewHolder.populate(viewModel);
+        viewHolder.populate(viewModel, queryKeyWord);
 
         TextView errorTextView = RobolectricUtils.getErrorTextView(viewHolder.lyQuantity);
         String errorMessage = RuntimeEnvironment.application.getString(R.string.msg_inventory_check_failed);
@@ -83,7 +84,7 @@ public class PhysicalInventoryViewHolderTest {
                 .setChecked(false)
                 .setType("Embalagem")
                 .build();
-        viewHolder.populate(viewModel);
+        viewHolder.populate(viewModel, queryKeyWord);
 
         viewHolder.etQuantity.setText("60");
 
@@ -102,7 +103,7 @@ public class PhysicalInventoryViewHolderTest {
                 .setChecked(false)
                 .setType("Embalagem")
                 .build();
-        viewHolder.populate(viewModel);
+        viewHolder.populate(viewModel, queryKeyWord);
 
         assertThat(viewHolder.tvStockOnHandInInventory.getVisibility()).isEqualTo(View.GONE);
     }

@@ -36,7 +36,7 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
     @Override
     public void onBindViewHolder(final InitialInventoryViewHolder holder, final int position) {
         final StockCardViewModel viewModel = currentList.get(position);
-        holder.populate(viewModel);
+        holder.populate(viewModel, queryKeyWord);
     }
 
 

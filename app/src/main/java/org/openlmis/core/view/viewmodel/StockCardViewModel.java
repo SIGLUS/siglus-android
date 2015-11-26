@@ -100,6 +100,9 @@ public class StockCardViewModel {
         return styledName;
     }
 
+    public SpannableStringBuilder getStyleType(){
+        return new SpannableStringBuilder(type);
+    }
     public SpannableStringBuilder getStyledUnit() {
         formatProductDisplay(product);
         return styledUnit;
