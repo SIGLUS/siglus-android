@@ -19,6 +19,8 @@
 package org.openlmis.core.presenter;
 
 
+import android.support.annotation.NonNull;
+
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
@@ -47,7 +49,7 @@ public class StockCardPresenter implements Presenter {
 
     private StockCardListView view;
 
-    private List<StockCardViewModel> stockCardViewModels;
+    protected List<StockCardViewModel> stockCardViewModels;
 
     public StockCardPresenter() {
         stockCardViewModels = new ArrayList<>();
@@ -70,19 +72,13 @@ public class StockCardPresenter implements Presenter {
     }
 
     public void loadStockCards() {
-
         view.loading();
-        Observable.create(new Observable.OnSubscribe<List<StockCard>>() {
-            @Override
-            public void call(Subscriber<? super List<StockCard>> subscriber) {
-                try {
-                    subscriber.onNext(stockRepository.list());
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    subscriber.onError(e);
-                }
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<List<StockCard>>() {
+        getLoadStockCardsObserver().subscribe(getLoadStockCardsSubscriber());
+    }
+
+    @NonNull
+    public Observer<List<StockCard>> getLoadStockCardsSubscriber() {
+        return new Observer<List<StockCard>>() {
             @Override
             public void onCompleted() {
                 view.loaded();
@@ -107,7 +103,21 @@ public class StockCardPresenter implements Presenter {
                 stockCardViewModels.addAll(stockCardViewModelList);
                 view.refresh();
             }
-        });
+        };
+    }
+
+    public Observable<List<StockCard>> getLoadStockCardsObserver() {
+        return Observable.create(new Observable.OnSubscribe<List<StockCard>>() {
+            @Override
+            public void call(Subscriber<? super List<StockCard>> subscriber) {
+                try {
+                    subscriber.onNext(stockRepository.list());
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    subscriber.onError(e);
+                }
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     public void refreshStockCardViewModelsSOH() {

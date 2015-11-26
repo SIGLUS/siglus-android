@@ -172,8 +172,6 @@ public class MMIARequisitionPresenterTest {
         presenter.getRnrForm(0);
 
         presenter.processRequisition(regimenItems, baseInfoItems, "");
-
-
     }
 
     @Test

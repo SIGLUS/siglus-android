@@ -45,12 +45,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.RoboGuice;
+import rx.Observer;
+import rx.Scheduler;
+import rx.android.plugins.RxAndroidPlugins;
+import rx.android.plugins.RxAndroidSchedulersHook;
+import rx.observers.TestSubscriber;
+import rx.schedulers.Schedulers;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -60,7 +67,8 @@ public class VIARequisitionPresenterTest {
     private VIARequisitionPresenter presenter;
     private org.openlmis.core.view.fragment.VIARequisitionFragment VIARequisitionFragment;
     private VIARepository mockRnrFormRepository;
-
+//    private RnrFormRepository mockRnrFormRepository;
+    private RnRForm rnRForm;
     @Before
     public void setup() throws ViewNotMatchException {
         mockRnrFormRepository = mock(VIARepository.class);
@@ -72,6 +80,14 @@ public class VIARequisitionPresenterTest {
 
         presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(VIARequisitionPresenter.class);
         presenter.attachView(VIARequisitionFragment);
+
+        RxAndroidPlugins.getInstance().reset();
+        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
+            @Override
+            public Scheduler getMainThreadScheduler() {
+                return Schedulers.immediate();
+            }
+        });
     }
 
     @Test
@@ -145,7 +161,7 @@ public class VIARequisitionPresenterTest {
 
         //when
         presenter.processSign("userSignature", form);
-        waitObservableToExeute();
+        waitObservableToExecute();
 
         //then
         if (LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature_10)) {
@@ -164,7 +180,7 @@ public class VIARequisitionPresenterTest {
         return form;
     }
 
-    private void waitObservableToExeute() {
+    private void waitObservableToExecute() {
         try {
             Thread.sleep(1500);
         } catch (InterruptedException e) {
@@ -206,6 +222,35 @@ public class VIARequisitionPresenterTest {
         verify(VIARequisitionFragment).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_complete));
     }
 
+    @Test
+    public void shouldSaveRnRFrom() throws Exception {
+        TestSubscriber<Void> subscriber = new TestSubscriber<>();
+        presenter.getSaveRnRFormObserver().subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+        verify(mockRnrFormRepository).save(presenter.getRnRForm());
+    }
+
+    @Test
+    public void shouldGoToHomePageAfterSaveRequisitionComplete() {
+        Observer<Void> subscriber = presenter.saveRequisitionSubscriber();
+
+        subscriber.onCompleted();
+
+        subscriber.onNext(null);
+        verify(VIARequisitionFragment).loaded();
+        verify(VIARequisitionFragment).backToHomePage();
+    }
+
+    @Test
+    public void shouldGoToHomePageAfterSaveRequisitionCompleteOnError() {
+        Observer<Void> subscriber = presenter.saveRequisitionSubscriber();
+
+        subscriber.onError(new Throwable("msg"));
+        verify(VIARequisitionFragment).loaded();
+        verify(VIARequisitionFragment).showErrorMessage("msg");
+    }
+
     private void updateFormUIWithStatus(RnRForm.STATUS status) {
         RnRForm form = new RnRForm();
         form.setStatus(status);
@@ -233,5 +278,4 @@ public class VIARequisitionPresenterTest {
             bind(VIARepository.class).toInstance(mockRnrFormRepository);
         }
     }
-
 }

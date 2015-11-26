@@ -19,6 +19,7 @@
 package org.openlmis.core.presenter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.inject.Inject;
@@ -43,6 +44,7 @@ import java.util.List;
 import lombok.Getter;
 import roboguice.RoboGuice;
 import rx.Observable;
+import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -183,7 +185,43 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             rnRForm.getBaseInfoItemListWrapper().get(0).setValue(Long.valueOf(consultationNumbers).toString());
         }
 
-        saveForm();
+        getSaveRnRFormObserver().subscribe(saveRequisitionSubscriber());
+    }
+
+    public Observer<Void> saveRequisitionSubscriber() {
+        return new Observer<Void>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                view.loaded();
+                view.showErrorMessage(throwable.getMessage());
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+                view.loaded();
+                view.backToHomePage();
+            }
+        };
+    }
+
+    @NonNull
+    public Observable<Void> getSaveRnRFormObserver() {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    rnrFormRepository.save(rnRForm);
+                    subscriber.onNext(null);
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
     public String getConsultationNumbers() {
