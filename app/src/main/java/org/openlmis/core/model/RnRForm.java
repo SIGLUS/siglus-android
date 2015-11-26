@@ -160,15 +160,14 @@ public class RnRForm extends BaseModel {
         return regimenItemListWrapper;
     }
 
-    public static void setPeriodByPeriodBegin(RnRForm rnRForm) {
+    public void matchPeriodEndByBegin() {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(rnRForm.getPeriodBegin());
+        calendar.setTime(getPeriodBegin());
         int month = calendar.get(Calendar.MONTH);
         int year = calendar.get(Calendar.YEAR);
-
         Date periodEnd = new GregorianCalendar(year, month + 1, DAY_PERIOD_END).getTime();
 
-        rnRForm.setPeriodEnd(periodEnd);
+        setPeriodEnd(periodEnd);
     }
 
     public static void fillFormId(RnRForm rnRForm) {

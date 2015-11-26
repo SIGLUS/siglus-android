@@ -30,7 +30,7 @@ public class RnRFormTest {
     private void testPeriodBeginEnd(Date givenBegin, Date expectedEnd) {
         RnRForm rnRForm = new RnRForm();
         rnRForm.setPeriodBegin(givenBegin);
-        RnRForm.setPeriodByPeriodBegin(rnRForm);
+        rnRForm.matchPeriodEndByBegin();
 
         assertThat(rnRForm.getPeriodBegin(), is(givenBegin));
         assertThat(rnRForm.getPeriodEnd(), is(expectedEnd));
