@@ -1,13 +1,11 @@
 package org.openlmis.core.view.holder;
 
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.model.repository.RnrFormItemRepository;
+import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 
@@ -41,8 +39,8 @@ public class StockCardViewHolder extends BaseViewHolder {
     }
 
     public void populate(final StockCardViewModel stockCardViewModel, String queryKeyWord) {
-        tvProductName.setText(getHighlightQueryKeyWord(stockCardViewModel.getStyledName(), queryKeyWord));
-        tvProductUnit.setText(getHighlightQueryKeyWord(stockCardViewModel.getStyledUnit(), queryKeyWord));
+        tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord,stockCardViewModel.getStyledName()));
+        tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord,stockCardViewModel.getStyledUnit()));
 
         initStockOnHand(stockCardViewModel);
         initStockOnHand(stockCardViewModel);
@@ -55,18 +53,6 @@ public class StockCardViewHolder extends BaseViewHolder {
                 }
             }
         });
-    }
-
-    private SpannableStringBuilder getHighlightQueryKeyWord(SpannableStringBuilder styledProductName, String queryKeyWord) {
-        if (queryKeyWord == null || !styledProductName.toString().toLowerCase().contains(queryKeyWord.toLowerCase())) {
-            return styledProductName;
-        }
-
-        final int startIndex = styledProductName.toString().toLowerCase().indexOf(queryKeyWord.toLowerCase());
-
-        styledProductName.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.color_accent)),
-                startIndex, startIndex + queryKeyWord.length(), Spannable.SPAN_POINT_MARK);
-        return styledProductName;
     }
 
     private void initStockOnHand(final StockCardViewModel stockCard) {
