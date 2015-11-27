@@ -46,6 +46,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.openlmis.core.model.StockMovementItem.MovementType.ISSUE;
+import static org.openlmis.core.model.StockMovementItem.MovementType.RECEIVE;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
@@ -120,25 +122,19 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockCard.setStockOnHand(100L);
 
         //when receive 50
-        StockMovementItem stockMovementItem = new StockMovementItem();
-        stockMovementItem.setMovementQuantity(50L);
-        stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
-        stockMovementItem.setMovementDate(DateUtil.today());
+        StockMovementItem stockMovementItem = createMovementItem(RECEIVE, 50L);
         stockRepository.addStockMovementAndUpdateStockCard(stockCard, stockMovementItem);
 
         //then SOH is 150
         assertThat(stockMovementItem.getStockOnHand(), is(150L));
 
         //when issue 100
-        stockMovementItem.setStockOnHand(-1);
-        stockMovementItem.setMovementQuantity(100L);
-        stockMovementItem.setMovementType(StockMovementItem.MovementType.ISSUE);
+        stockMovementItem = createMovementItem(ISSUE, 100L);
         stockRepository.addStockMovementAndUpdateStockCard(stockCard, stockMovementItem);
 
         //then SOH is 50
         assertThat(stockMovementItem.getStockOnHand(), is(50L));
     }
-
 
     @Test
     public void shouldListUnsyncedStockMovementItems() throws LMISException, ParseException {
@@ -148,7 +144,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         item.setMovementQuantity(100L);
         item.setStockOnHand(-1);
         item.setMovementDate(DateUtil.today());
-        item.setMovementType(StockMovementItem.MovementType.RECEIVE);
+        item.setMovementType(RECEIVE);
 
         item.setSynced(true);
 
@@ -169,7 +165,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         item.setMovementQuantity(100L);
         item.setStockOnHand(-1);
         item.setMovementDate(DateUtil.today());
-        item.setMovementType(StockMovementItem.MovementType.RECEIVE);
+        item.setMovementType(RECEIVE);
 
         stockRepository.addStockMovementAndUpdateStockCard(stockCard, item);
         stockRepository.refresh(stockCard);
@@ -242,5 +238,13 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         product.setStrength("200");
 
         productRepository.create(product);
+    }
+
+    private StockMovementItem createMovementItem(StockMovementItem.MovementType type, long quantity) {
+        StockMovementItem stockMovementItem = new StockMovementItem();
+        stockMovementItem.setMovementQuantity(quantity);
+        stockMovementItem.setMovementType(type);
+        stockMovementItem.setMovementDate(DateUtil.today());
+        return stockMovementItem;
     }
 }
