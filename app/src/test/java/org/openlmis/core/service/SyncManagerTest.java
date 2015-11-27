@@ -151,7 +151,7 @@ public class SyncManagerTest {
     @NonNull
     private StockCard createTestStockCardData() throws LMISException, ParseException {
         ProductRepository productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
-        StockCard stockCard = StockCardBuilder.buildStockCardWithOneMovement(stockRepository);
+        StockCard stockCard = StockCardBuilder.saveStockCardWithOneMovement(stockRepository);
 
         Product product = new Product();
         product.setCode("PD1");

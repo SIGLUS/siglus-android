@@ -56,25 +56,18 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     Product product;
 
     @Before
-    public void setup() throws LMISException{
+    public void setup() throws LMISException {
 
         stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockRepository.class);
-        productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
-
-        product = new Product();
-        product.setPrimaryName("Test Product");
-        product.setStrength("200");
-
-        productRepository.create(product);
+        saveTestProduct();
     }
 
-
     @Test
-    public void shouldSaveStockCardsSuccessful() throws LMISException{
-
+    public void shouldSaveStockCardsSuccessful() throws LMISException {
         StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(1);
         stockCard.setProduct(product);
+
         stockRepository.save(stockCard);
 
         assertThat(stockRepository.list().size(), is(1));
@@ -83,11 +76,11 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
 
     @Test
-    public void shouldBathSaveSuccessful() throws LMISException{
+    public void shouldBatchSaveSuccessful() throws LMISException {
 
         ArrayList<StockCard> stockCards = new ArrayList<>();
 
-        for (int i =0; i < 10;i++){
+        for (int i = 0; i < 10; i++) {
             StockCard stockCard = new StockCard();
             stockCard.setStockOnHand(i);
             stockCard.setProduct(product);
@@ -103,24 +96,26 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldGetCorrectDataAfterSavedStockMovementItem() throws Exception {
-        StockCard stockCard = StockCardBuilder.buildStockCardWithOneMovement(stockRepository);
-        StockMovementItem stockMovementItem = stockCard.getStockMovementItems().iterator().next();
+        //given saved
+        StockCard savedStockCard = StockCardBuilder.saveStockCardWithOneMovement(stockRepository);
+        StockMovementItem savedMovementItem = savedStockCard.getStockMovementItems().iterator().next();
 
-        List<StockMovementItem> stockMovementItems = stockRepository.listLastFive(stockCard.getId());
-        StockMovementItem stockMovementItemActual = stockMovementItems.get(stockMovementItems.size() - 1);
+        //when retrieve
+        List<StockMovementItem> retrievedStockMovementItems = stockRepository.listLastFive(savedStockCard.getId());
+        StockMovementItem retrievedMovementItem = retrievedStockMovementItems.get(retrievedStockMovementItems.size() - 1);
 
-        assertEquals(stockMovementItem.getId(), stockMovementItemActual.getId());
-        assertEquals(stockMovementItem.getMovementQuantity(), stockMovementItemActual.getMovementQuantity());
-        assertEquals(stockMovementItem.getStockOnHand(), stockMovementItemActual.getStockOnHand());
-        assertEquals(stockMovementItem.getMovementType(), stockMovementItemActual.getMovementType());
-        assertEquals(stockMovementItem.getDocumentNumber(), stockMovementItemActual.getDocumentNumber());
-        assertEquals(stockMovementItem.getReason(), stockMovementItemActual.getReason());
+        //then
+        assertEquals(savedMovementItem.getId(), retrievedMovementItem.getId());
+        assertEquals(savedMovementItem.getMovementQuantity(), retrievedMovementItem.getMovementQuantity());
+        assertEquals(savedMovementItem.getStockOnHand(), retrievedMovementItem.getStockOnHand());
+        assertEquals(savedMovementItem.getMovementType(), retrievedMovementItem.getMovementType());
+        assertEquals(savedMovementItem.getDocumentNumber(), retrievedMovementItem.getDocumentNumber());
+        assertEquals(savedMovementItem.getReason(), retrievedMovementItem.getReason());
     }
-
 
     @Test
     public void shouldCalculateStockOnHandCorrectly() throws LMISException, ParseException {
-        StockCard stockCard = StockCardBuilder.buildStockCardWithOneMovement(stockRepository);
+        StockCard stockCard = StockCardBuilder.saveStockCardWithOneMovement(stockRepository);
         StockMovementItem stockMovementItem = new StockMovementItem();
 
         stockCard.setStockOnHand(100L);
@@ -140,9 +135,10 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(stockMovementItem.getStockOnHand(), is(50L));
     }
 
+
     @Test
     public void shouldListUnsyncedStockMovementItems() throws LMISException, ParseException {
-        StockCard stockCard = StockCardBuilder.buildStockCardWithOneMovement(stockRepository);
+        StockCard stockCard = StockCardBuilder.saveStockCardWithOneMovement(stockRepository);
 
         StockMovementItem item = new StockMovementItem();
         item.setMovementQuantity(100L);
@@ -164,7 +160,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldBatchUpdateStockMovements() throws LMISException, ParseException {
-        StockCard stockCard = StockCardBuilder.buildStockCardWithOneMovement(stockRepository);
+        StockCard stockCard = StockCardBuilder.saveStockCardWithOneMovement(stockRepository);
         StockMovementItem item = new StockMovementItem();
         item.setMovementQuantity(100L);
         item.setStockOnHand(-1);
@@ -179,7 +175,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(items.get(0).isSynced(), is(false));
         assertThat(items.get(1).isSynced(), is(false));
 
-        for (StockMovementItem entry : items){
+        for (StockMovementItem entry : items) {
             entry.setSynced(true);
         }
 
@@ -189,7 +185,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         items = newArrayList(stockCard.getStockMovementItems());
 
         assertThat(items.size(), is(2));
-        assertThat(items.get(0).isSynced() , is(true));
+        assertThat(items.get(0).isSynced(), is(true));
         assertThat(items.get(1).isSynced(), is(true));
     }
 
@@ -198,7 +194,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         StockCard stockCard = StockCardBuilder.buildStockCard();
         stockCard.setStockOnHand(200);
         StockMovementItem stockMovementItem = stockRepository.initStockMovementItem(stockCard);
-        assertThat(stockMovementItem.getMovementQuantity(),is(200L));
+        assertThat(stockMovementItem.getMovementQuantity(), is(200L));
         assertThat(stockMovementItem.getReason(), is(MovementReasonManager.INVENTORY));
         assertThat(stockMovementItem.getMovementType(), is(StockMovementItem.MovementType.PHYSICAL_INVENTORY));
     }
@@ -208,10 +204,10 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         saveDraftInventory();
 
         List<DraftInventory> draftInventories = stockRepository.listDraftInventory();
-        assertThat(draftInventories.get(0).getQuantity(),is(10L));
-        assertThat(draftInventories.get(0).getExpireDates(),is("11/10/2015"));
-        assertThat(draftInventories.get(1).getQuantity(),is(20L));
-        assertThat(draftInventories.get(1).getExpireDates(),is("12/10/2015"));
+        assertThat(draftInventories.get(0).getQuantity(), is(10L));
+        assertThat(draftInventories.get(0).getExpireDates(), is("11/10/2015"));
+        assertThat(draftInventories.get(1).getQuantity(), is(20L));
+        assertThat(draftInventories.get(1).getExpireDates(), is("12/10/2015"));
     }
 
     private void saveDraftInventory() throws LMISException {
@@ -231,7 +227,16 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         saveDraftInventory();
         Assert.assertThat(stockRepository.listDraftInventory().size(), is(2));
         stockRepository.clearDraftInventory();
-        Assert.assertThat(stockRepository.listDraftInventory().size(),is(0));
+        Assert.assertThat(stockRepository.listDraftInventory().size(), is(0));
     }
 
+    private void saveTestProduct() throws LMISException {
+        productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
+
+        product = new Product();
+        product.setPrimaryName("Test Product");
+        product.setStrength("200");
+
+        productRepository.create(product);
+    }
 }

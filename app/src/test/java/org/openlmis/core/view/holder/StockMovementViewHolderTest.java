@@ -67,7 +67,7 @@ public class StockMovementViewHolderTest {
 
         StockRepository stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockRepository.class);
 
-        stockCard = StockCardBuilder.buildStockCardWithOneMovement(stockRepository);
+        stockCard = StockCardBuilder.saveStockCardWithOneMovement(stockRepository);
     }
 
     @Test
