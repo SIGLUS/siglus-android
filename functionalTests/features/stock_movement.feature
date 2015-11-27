@@ -11,7 +11,7 @@ Feature: stock movement Page
         Then I wait for the "StockCardListActivity" screen to appear
         Then I see "Stock overview"
         Then I wait for 1 second
-        Then I select stock card code called "[08S42]"
+        Then I select stock card code called "[08S42B]"
         Then I wait for the "StockMovementActivity" screen to appear
         Then I wait for 1 second
         Then I don't see "Complete"
@@ -29,7 +29,7 @@ Feature: stock movement Page
         And I press "stock cards & overview"
         Then I wait for the "StockCardListActivity" screen to appear
         Then I wait for 1 second
-        Then I select stock card code called "[08S42]"
+        Then I select stock card code called "[08S42B]"
         Then I wait for the "StockMovementActivity" screen to appear
         Then I wait for 1 second
         And I select a reason "Entries" "District( DDM)"

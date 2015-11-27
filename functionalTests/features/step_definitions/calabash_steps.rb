@@ -8,6 +8,12 @@ password = EnvConfig.getConfig()[:password]
 index = 0
 pre_name = ""
 
+Then /^I scroll down until I see the "([^\"]*)"/ do |text|
+  unless has_text?(text)
+    scroll_down
+  end
+end
+
 When /^I enter username "([^\"]+)"$/ do |username|
   element = "android.widget.EditText id:'tx_username'"
   clear_text_in(element)
@@ -86,11 +92,11 @@ end
 
 When(/^I Select MMIA Item$/) do
   steps %Q{
-    When I search product by fnm "08S42" and select this item
+    When I search product by fnm "08S42B" and select this item
     When I search product by fnm "08S18Y" and select this item
-    When I search product by fnm "08S40" and select this item
+    When I search product by fnm "08S40Z" and select this item
     When I search product by fnm "08S36" and select this item
-    When I search product by fnm "08S32" and select this item
+    When I search product by fnm "08S32Z" and select this item
 	}
 end
 
@@ -99,7 +105,7 @@ When(/^I Select VIA Item$/) do
     When I search product by fnm "01A01" and select this item
     When I search product by fnm "01A02" and select this item
     When I search product by fnm "01A03Z" and select this item
-    When I search product by fnm "01A04" and select this item
+    When I search product by fnm "01A04Z" and select this item
     When I search product by fnm "01A05" and select this item
 	}
 end
