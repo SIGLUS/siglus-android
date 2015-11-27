@@ -80,9 +80,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldBatchSaveSuccessful() throws LMISException {
-
         ArrayList<StockCard> stockCards = new ArrayList<>();
-
         for (int i = 0; i < 10; i++) {
             StockCard stockCard = new StockCard();
             stockCard.setStockOnHand(i);
@@ -158,30 +156,29 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldBatchUpdateStockMovements() throws LMISException, ParseException {
+        //given
         StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
-        StockMovementItem item = new StockMovementItem();
-        item.setMovementQuantity(100L);
-        item.setStockOnHand(-1);
-        item.setMovementDate(DateUtil.today());
-        item.setMovementType(RECEIVE);
 
+        //when
+        StockMovementItem item = createMovementItem(RECEIVE, 100);
         stockRepository.addStockMovementAndUpdateStockCard(stockCard, item);
         stockRepository.refresh(stockCard);
 
+        //then
         List<StockMovementItem> items = newArrayList(stockCard.getStockMovementItems());
         assertThat(items.size(), is(2));
         assertThat(items.get(0).isSynced(), is(false));
         assertThat(items.get(1).isSynced(), is(false));
 
+        //when
         for (StockMovementItem entry : items) {
             entry.setSynced(true);
         }
-
         stockRepository.batchUpdateStockMovements(items);
 
+        //then
         stockCard = stockRepository.list().get(0);
         items = newArrayList(stockCard.getStockMovementItems());
-
         assertThat(items.size(), is(2));
         assertThat(items.get(0).isSynced(), is(true));
         assertThat(items.get(1).isSynced(), is(true));
@@ -208,6 +205,14 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(draftInventories.get(1).getExpireDates(), is("12/10/2015"));
     }
 
+    @Test
+    public void shouldClearDraftInventory() throws Exception {
+        saveDraftInventory();
+        Assert.assertThat(stockRepository.listDraftInventory().size(), is(2));
+        stockRepository.clearDraftInventory();
+        Assert.assertThat(stockRepository.listDraftInventory().size(), is(0));
+    }
+
     private void saveDraftInventory() throws LMISException {
         DraftInventory draftInventory1 = new DraftInventory();
         draftInventory1.setQuantity(10L);
@@ -220,21 +225,12 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockRepository.saveDraftInventory(draftInventory2);
     }
 
-    @Test
-    public void shouldClearDraftInventory() throws Exception {
-        saveDraftInventory();
-        Assert.assertThat(stockRepository.listDraftInventory().size(), is(2));
-        stockRepository.clearDraftInventory();
-        Assert.assertThat(stockRepository.listDraftInventory().size(), is(0));
-    }
-
     private void saveTestProduct() throws LMISException {
-        productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
-
         product = new Product();
         product.setPrimaryName("Test Product");
         product.setStrength("200");
 
+        productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
         productRepository.create(product);
     }
 
