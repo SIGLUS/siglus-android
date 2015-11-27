@@ -48,6 +48,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.openlmis.core.model.StockMovementItem.MovementType.ISSUE;
 import static org.openlmis.core.model.StockMovementItem.MovementType.RECEIVE;
+import static org.openlmis.core.model.builder.StockCardBuilder.saveStockCardWithOneMovement;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
@@ -99,7 +100,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldGetCorrectDataAfterSavedStockMovementItem() throws Exception {
         //given saved
-        StockCard savedStockCard = StockCardBuilder.saveStockCardWithOneMovement(stockRepository);
+        StockCard savedStockCard = saveStockCardWithOneMovement(stockRepository);
         StockMovementItem savedMovementItem = savedStockCard.getStockMovementItems().iterator().next();
 
         //when retrieve
@@ -118,7 +119,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldCalculateStockOnHandCorrectly() throws LMISException, ParseException {
         //given SOH is 100
-        StockCard stockCard = StockCardBuilder.saveStockCardWithOneMovement(stockRepository);
+        StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
         stockCard.setStockOnHand(100L);
 
         //when receive 50
@@ -138,29 +139,26 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldListUnsyncedStockMovementItems() throws LMISException, ParseException {
-        StockCard stockCard = StockCardBuilder.saveStockCardWithOneMovement(stockRepository);
-
-        StockMovementItem item = new StockMovementItem();
-        item.setMovementQuantity(100L);
-        item.setStockOnHand(-1);
-        item.setMovementDate(DateUtil.today());
-        item.setMovementType(RECEIVE);
-
-        item.setSynced(true);
-
+        //given one movement was saved but NOT SYNCED
+        StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
         assertThat(stockCard.getStockMovementItems().size(), is(1));
+        assertThat(stockRepository.listUnSynced().size(), is(1));
+
+        //when save another SYNCED movement
+        StockMovementItem item = createMovementItem(RECEIVE, 100);
+        item.setSynced(true);
         stockRepository.addStockMovementAndUpdateStockCard(stockCard, item);
         stockRepository.refresh(stockCard);
 
+        //then
         assertThat(stockCard.getStockMovementItems().size(), is(2));
-
         assertThat(stockRepository.listUnSynced(), notNullValue());
         assertThat(stockRepository.listUnSynced().size(), is(1));
     }
 
     @Test
     public void shouldBatchUpdateStockMovements() throws LMISException, ParseException {
-        StockCard stockCard = StockCardBuilder.saveStockCardWithOneMovement(stockRepository);
+        StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
         StockMovementItem item = new StockMovementItem();
         item.setMovementQuantity(100L);
         item.setStockOnHand(-1);
