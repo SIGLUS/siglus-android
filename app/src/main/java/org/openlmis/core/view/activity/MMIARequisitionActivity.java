@@ -370,7 +370,7 @@ public class MMIARequisitionActivity extends BaseActivity implements MMIARequisi
     }
 
     private void onSaveBtnClick() {
-        presenter.saveDraftForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
+        presenter.saveMMIAForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
     }
 
     public static Intent getIntentToMe(Context context, long formId) {

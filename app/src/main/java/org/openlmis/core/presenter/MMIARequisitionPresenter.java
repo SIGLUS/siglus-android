@@ -21,7 +21,6 @@ package org.openlmis.core.presenter;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RegimenItem;
@@ -36,16 +35,17 @@ import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
 
     MMIARequisitionView view;
+    private MMIARepository mmiaRepository;
 
     @Override
     protected RnrFormRepository initRnrFormRepository() {
-        return RoboGuice.getInjector(LMISApp.getContext()).getInstance(MMIARepository.class);
+        mmiaRepository = RoboGuice.getInjector(LMISApp.getContext()).getInstance(MMIARepository.class);
+        return mmiaRepository;
     }
 
     @Override
@@ -66,7 +66,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
 
     @Override
     public void updateUIAfterSubmit() {
-
         view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
     }
 
@@ -92,22 +91,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         if (rnRForm != null) {
             view.initView(rnRForm);
         }
-    }
-
-    @Override
-    public RnRForm getRnrForm(final long formId) throws LMISException {
-
-        if (rnRForm != null) {
-            return rnRForm;
-        }
-
-        if (formId > 0) {
-            rnRForm = rnrFormRepository.queryRnRForm(formId);
-        } else {
-            RnRForm draftMMIAForm = rnrFormRepository.queryUnAuthorized();
-            rnRForm = draftMMIAForm == null ? rnrFormRepository.initRnrForm() : draftMMIAForm;
-        }
-        return rnRForm;
     }
 
     public void processRequisition(ArrayList<RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) {
@@ -144,40 +127,16 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         });
     }
 
-    protected Action1<Void> authoriseFormOnNextAction = new Action1<Void>() {
-        @Override
-        public void call(Void aVoid) {
-            view.loaded();
-            view.completeSuccess();
-            syncManager.requestSyncImmediately();
-        }
-    };
-
-    protected Action1<Throwable> authorizeFormOnErrorAction = new Action1<Throwable>() {
-        @Override
-        public void call(Throwable throwable) {
-            view.loaded();
-            if (throwable instanceof PeriodNotUniqueException) {
-                view.showErrorMessage(context.getResources().getString(R.string.msg_mmia_not_unique));
-            } else {
-                view.showErrorMessage(context.getString(R.string.hint_complete_failed));
-            }
-        }
-    };
-
     private boolean validateTotalsMatch(RnRForm form) {
-        return RnRForm.calculateTotalRegimenAmount(form.getRegimenItemListWrapper()) == rnrFormRepository.getTotalPatients(form);
+        return RnRForm.calculateTotalRegimenAmount(form.getRegimenItemListWrapper()) == mmiaRepository.getTotalPatients(form);
     }
 
-    public void saveDraftForm(ArrayList<RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) {
+    public void saveMMIAForm(ArrayList<RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) {
         rnRForm.setRegimenItemListWrapper(regimenItemList);
         rnRForm.setBaseInfoItemListWrapper(baseInfoItemList);
         rnRForm.setComments(comments);
         saveForm();
     }
-
-
-
 
     public void setBtnCompleteText() {
         if (rnRForm.getStatus() == RnRForm.STATUS.DRAFT) {

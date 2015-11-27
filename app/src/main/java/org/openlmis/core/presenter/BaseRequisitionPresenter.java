@@ -87,7 +87,7 @@ public abstract class BaseRequisitionPresenter implements Presenter {
         return rnrFormRepository.initRnrForm();
     }
 
-    public Action1<RnRForm> loadDataOnNextAction = new Action1<RnRForm>() {
+    protected Action1<RnRForm> loadDataOnNextAction = new Action1<RnRForm>() {
         @Override
         public void call(RnRForm form) {
             rnRForm = form;
@@ -97,6 +97,13 @@ public abstract class BaseRequisitionPresenter implements Presenter {
         }
     };
 
+    protected Action1<Throwable> loadDataOnErrorAction = new Action1<Throwable>() {
+        @Override
+        public void call(Throwable throwable) {
+            view.loaded();
+            view.showErrorMessage(throwable.getMessage());
+        }
+    };
 
     public void processSign(String signName, RnRForm rnRForm) {
         if (rnRForm.isDraft()) {
@@ -108,14 +115,6 @@ public abstract class BaseRequisitionPresenter implements Presenter {
             authoriseRequisition(rnRForm);
         }
     }
-
-    protected Action1<Throwable> loadDataOnErrorAction = new Action1<Throwable>() {
-        @Override
-        public void call(Throwable throwable) {
-            view.loaded();
-            view.showErrorMessage(throwable.getMessage());
-        }
-    };
 
     protected void submitRequisition(final RnRForm rnRForm) {
         view.loading();
@@ -230,30 +229,43 @@ public abstract class BaseRequisitionPresenter implements Presenter {
 
     protected void saveForm() {
         view.loading();
-        Observable.create(new Observable.OnSubscribe<Object>() {
+        getSaveFormObservable().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(getSaveFormSubscriber());
+    }
+
+    protected Observable<Void> getSaveFormObservable() {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
-            public void call(Subscriber<? super Object> subscriber) {
+            public void call(Subscriber<? super Void> subscriber) {
                 try {
                     rnrFormRepository.save(rnRForm);
-                    subscriber.onNext(null);
+                    subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.printStackTrace();
                     subscriber.onError(e);
                 }
             }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<Object>() {
+        });
+    }
+
+    protected Subscriber<Void> getSaveFormSubscriber() {
+        return new Subscriber<Void>() {
             @Override
-            public void call(Object o) {
+            public void onCompleted() {
                 view.loaded();
                 view.saveSuccess();
             }
-        }, new Action1<Throwable>() {
+
             @Override
-            public void call(Throwable throwable) {
+            public void onError(Throwable e) {
                 view.loaded();
                 view.showErrorMessage(context.getString(R.string.hint_save_failed));
             }
-        });
+
+            @Override
+            public void onNext(Void o) {
+
+            }
+        };
     }
 
     public void removeRnrForm() throws LMISException {
@@ -272,7 +284,7 @@ public abstract class BaseRequisitionPresenter implements Presenter {
 
     protected abstract void updateFormUI();
 
-    protected abstract Observable getRnrFormObservable(long formId);
+    protected abstract Observable<RnRForm> getRnrFormObservable(long formId);
 
     public interface BaseRequisitionView extends BaseView {
 

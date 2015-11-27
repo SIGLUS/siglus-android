@@ -104,7 +104,6 @@ public class MMIARepository extends RnrFormRepository {
         return baseInfoItemList;
     }
 
-    @Override
     public long getTotalPatients(RnRForm form) {
         for (BaseInfoItem item : form.getBaseInfoItemListWrapper()) {
             if (ATTR_TOTAL_PATIENTS.equals(item.getName())) {

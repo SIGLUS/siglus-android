@@ -59,7 +59,6 @@ import static org.assertj.core.util.Lists.newArrayList;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -69,7 +68,7 @@ public class VIARequisitionPresenterTest {
     private VIARequisitionPresenter presenter;
     private org.openlmis.core.view.fragment.VIARequisitionFragment VIARequisitionFragment;
     private VIARepository mockRnrFormRepository;
-    private RnRForm rnRForm;
+
     @Before
     public void setup() throws ViewNotMatchException {
         mockRnrFormRepository = mock(VIARepository.class);
@@ -226,7 +225,7 @@ public class VIARequisitionPresenterTest {
     @Test
     public void shouldSaveRnRFrom() throws Exception {
         TestSubscriber<Void> subscriber = new TestSubscriber<>();
-        presenter.getSaveRnRFormObserver().subscribe(subscriber);
+        presenter.getSaveFormObservable().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
         verify(mockRnrFormRepository).save(presenter.getRnRForm());
@@ -234,22 +233,22 @@ public class VIARequisitionPresenterTest {
 
     @Test
     public void shouldGoToHomePageAfterSaveRequisitionComplete() {
-        Observer<Void> subscriber = presenter.saveRequisitionSubscriber();
+        Observer<Void> subscriber = presenter.getSaveFormSubscriber();
 
         subscriber.onCompleted();
 
         subscriber.onNext(null);
         verify(VIARequisitionFragment).loaded();
-        verify(VIARequisitionFragment).backToHomePage();
+        verify(VIARequisitionFragment).saveSuccess();
     }
 
     @Test
     public void shouldGoToHomePageAfterSaveRequisitionCompleteOnError() {
-        Observer<Void> subscriber = presenter.saveRequisitionSubscriber();
+        Observer<Void> subscriber = presenter.getSaveFormSubscriber();
 
         subscriber.onError(new Throwable("msg"));
         verify(VIARequisitionFragment).loaded();
-        verify(VIARequisitionFragment).showErrorMessage("msg");
+        verify(VIARequisitionFragment).showErrorMessage(LMISTestApp.getContext().getString(R.string.hint_save_failed));
     }
 
     @Test

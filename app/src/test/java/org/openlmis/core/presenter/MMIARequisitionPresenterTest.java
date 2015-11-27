@@ -30,7 +30,6 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
@@ -52,6 +51,7 @@ import rx.schedulers.Schedulers;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -63,9 +63,10 @@ public class MMIARequisitionPresenterTest {
     private MMIARepository mmiaRepository;
     private ProgramRepository programRepository;
     private MMIARequisitionPresenter.MMIARequisitionView mockMMIAformView;
+    private RnRForm rnRForm;
 
     @Before
-    public void setup() throws ViewNotMatchException {
+    public void setup() throws Exception {
         mmiaRepository = mock(MMIARepository.class);
         programRepository = mock(ProgramRepository.class);
         mockMMIAformView = mock(MMIARequisitionPresenter.MMIARequisitionView.class);
@@ -75,6 +76,13 @@ public class MMIARequisitionPresenterTest {
 
         presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(MMIARequisitionPresenter.class);
         presenter.attachView(mockMMIAformView);
+        rnRForm = new RnRForm();
+        rnRForm.setStatus(RnRForm.STATUS.DRAFT);
+
+        when(mmiaRepository.initRnrForm()).thenReturn(rnRForm);
+        when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
+
+        presenter.loadDataOnNextAction.call(rnRForm);
 
         RxAndroidPlugins.getInstance().reset();
         RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
@@ -92,6 +100,7 @@ public class MMIARequisitionPresenterTest {
 
     @Test
     public void shouldGetInitMMIAForm() throws LMISException, SQLException {
+        presenter.rnRForm = null;
         when(mmiaRepository.queryUnAuthorized()).thenReturn(null);
         presenter.getRnrForm(0);
         verify(mmiaRepository).queryUnAuthorized();
@@ -100,6 +109,7 @@ public class MMIARequisitionPresenterTest {
 
     @Test
     public void shouldGetDraftMMIAForm() throws LMISException {
+        presenter.rnRForm = null;
         when(mmiaRepository.queryUnAuthorized()).thenReturn(new RnRForm());
         presenter.getRnrForm(0);
         verify(mmiaRepository).queryUnAuthorized();
@@ -127,17 +137,9 @@ public class MMIARequisitionPresenterTest {
         ArrayList<RegimenItem> regimenItems = generateRegimenItems();
         ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
 
-        RnRForm rnRForm = new RnRForm();
-        rnRForm.setStatus(RnRForm.STATUS.DRAFT);
-
-        when(mmiaRepository.initRnrForm()).thenReturn(rnRForm);
-        when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
-
-        presenter.getRnrForm(0);
-
         presenter.processRequisition(regimenItems, baseInfoItems, "");
 
-        if(LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
+        if (LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
             verify(mockMMIAformView).showSignDialog(true);
         }
     }
@@ -152,7 +154,8 @@ public class MMIARequisitionPresenterTest {
 
         when(mmiaRepository.initRnrForm()).thenReturn(rnRForm);
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
-        presenter.getRnrForm(0);
+
+        presenter.loadDataOnNextAction.call(rnRForm);
 
         presenter.processRequisition(regimenItems, baseInfoItems, "");
 
@@ -178,10 +181,9 @@ public class MMIARequisitionPresenterTest {
     public void shouldNotCompleteMMIAIfTotalsMismatchAndCommentInvalid() throws Exception {
         ArrayList<RegimenItem> regimenItems = generateRegimenItems();
         ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
-
         RnRForm rnRForm = new RnRForm();
+        presenter.rnRForm = rnRForm;
 
-        when(mmiaRepository.initRnrForm()).thenReturn(rnRForm);
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(99L);
         presenter.getRnrForm(0);
 
@@ -191,14 +193,15 @@ public class MMIARequisitionPresenterTest {
 
     @Test
     public void shouldShowErrorWhenLoadRnRFormOnError() {
+        reset(mockMMIAformView);
         presenter.loadDataOnErrorAction.call(new Exception("I am testing the onError action"));
-
         verify(mockMMIAformView).loaded();
         verify(mockMMIAformView).showErrorMessage("I am testing the onError action");
     }
 
     @Test
     public void shouldInitViewWhenLoadRnRFormOnNext() {
+        reset(mockMMIAformView);
         RnRForm rnRForm = new RnRForm();
         presenter.loadDataOnNextAction.call(rnRForm);
 
@@ -207,19 +210,16 @@ public class MMIARequisitionPresenterTest {
     }
 
     @Test
-    public void shouldRnRFormObservableQueryRnRFormWhenFormIdIsValid() throws LMISException {
-        TestSubscriber<RnRForm> subscriber = new TestSubscriber<>();
-        presenter.getRnrFormObservable(100L).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
+    public void shouldQueryRnRFormWhenFormIdIsValid() throws LMISException {
+        presenter.rnRForm = null;
+        presenter.getRnrForm(100L);
         verify(mmiaRepository).queryRnRForm(100L);
     }
 
     @Test
-    public void shouldRnRFormObservableQueryProgramWhenFormIdIsInvalid() throws LMISException {
-        TestSubscriber<RnRForm> subscriber = new TestSubscriber<>();
-        presenter.getRnrFormObservable(-100L).subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
+    public void shouldUnAuthorizedWhenFormIdIsInvalid() throws Exception {
+        presenter.rnRForm = null;
+        presenter.getRnrForm(0);
 
         verify(mmiaRepository).queryUnAuthorized();
     }
@@ -247,7 +247,7 @@ public class MMIARequisitionPresenterTest {
         presenter.processSign(signature, form);
         waitObservableToExecute();
 
-        if(LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
+        if (LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
             verify(mmiaRepository).setSignature(form, signature, RnRFormSignature.TYPE.SUBMITTER);
             verify(mmiaRepository).submit(form);
             verify(mockMMIAformView).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_complete));
@@ -266,7 +266,7 @@ public class MMIARequisitionPresenterTest {
 
         waitObservableToExecute();
 
-        if(LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
+        if (LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
             verify(mmiaRepository).setSignature(form, signature, RnRFormSignature.TYPE.APPROVER);
             verify(mmiaRepository).authorise(form);
         }

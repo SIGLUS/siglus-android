@@ -367,7 +367,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     private void onSaveBtnClick() {
-        presenter.saveRequisition(etConsultationNumbers.getText().toString());
+        presenter.saveVIAForm(etConsultationNumbers.getText().toString());
     }
 
     @Override
@@ -435,7 +435,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
 
-    @Override
     public void backToHomePage() {
         getActivity().finish();
     }

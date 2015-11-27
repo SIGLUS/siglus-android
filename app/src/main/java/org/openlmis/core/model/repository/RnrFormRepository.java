@@ -110,10 +110,6 @@ public class RnrFormRepository {
         return form;
     }
 
-    public long getTotalPatients(RnRForm form) {
-        return 0;
-    }
-
     public void createFormAndItems(final RnRForm form) throws SQLException {
         TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
             @Override
