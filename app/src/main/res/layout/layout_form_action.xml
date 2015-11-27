@@ -35,7 +35,7 @@
                 android:clickable="false"
                 android:drawableStart="@drawable/ic_save"
                 android:text="@string/btn_save"
-                android:textColor="@color/color_accent"
+                android:textColor="@color/primary_text"
                 android:padding="2dp"/>
         </LinearLayout>
 
