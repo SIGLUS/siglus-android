@@ -22,6 +22,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 
+import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 
@@ -30,7 +31,7 @@ public final class TextStyleUtil {
     }
 
     public static SpannableStringBuilder getHighlightQueryKeyWord(String queryKeyWord, SpannableStringBuilder spannableStringBuilder) {
-        if (queryKeyWord == null || !spannableStringBuilder.toString().toLowerCase().contains(queryKeyWord.toLowerCase())) {
+        if (queryKeyWord == null || queryKeyWord.equals(StringUtils.EMPTY) || !spannableStringBuilder.toString().toLowerCase().contains(queryKeyWord.toLowerCase())) {
             return spannableStringBuilder;
         }
 
