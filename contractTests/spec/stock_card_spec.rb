@@ -19,7 +19,7 @@ describe "Sync stock card data" do
         occurred: "2015-10-15",
         referenceNumber: "referenceNumber1",
         customProps: {
-          expirationDates: "10/10/2016, 12/12/2016",
+          expirationDates: "10/10/2017, 12/12/2017",
           signature: "signature"
         }
       },
@@ -45,7 +45,7 @@ describe "Sync stock card data" do
         occurred: "2015-10-30",
         referenceNumber: "referenceNumber3",
         customProps: {
-          expirationDates: "10/10/2018, 12/12/2018",
+          expirationDates: "10/10/2017, 12/12/2017",
           signature: "signature"
         }
       },
@@ -54,7 +54,7 @@ describe "Sync stock card data" do
         productCode: "08S34B",
         quantity: 10,
         type: "ADJUSTMENT",
-        reasonName: "LOANS_DEPOSIT",
+        reasonName: "LOANS_RECEIVED",
         occurred: "2015-10-30",
         referenceNumber: "referenceNumber4",
         customProps: {
