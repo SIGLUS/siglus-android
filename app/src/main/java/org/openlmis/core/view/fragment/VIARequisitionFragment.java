@@ -18,7 +18,6 @@
 
 package org.openlmis.core.view.fragment;
 
-import android.app.DialogFragment;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -109,11 +108,9 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     private long formId;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         try {
             presenter.attachView(this);
         } catch (ViewNotMatchException e) {
@@ -133,6 +130,10 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initUI();
+
+        if (!isSavedInstanceState) {
+            presenter.loadData(formId);
+        }
     }
 
     @Override
@@ -251,8 +252,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         initRequisitionBodyList();
         initRequisitionProductList();
 
-        presenter.loadData(formId);
-
         requisitionNameList.post(new Runnable() {
             @Override
             public void run() {
@@ -335,11 +334,12 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     @Override
     public void showMessageNotifyDialog() {
-        DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
+        SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
                 getString(R.string.msg_requisition_signature_message_notify),
                 getString(R.string.btn_continue),
                 null,
                 TAG_SHOW_MESSAGE_NOTIFY_DIALOG);
+
         dialogFragment.show(getActivity().getFragmentManager(), TAG_SHOW_MESSAGE_NOTIFY_DIALOG);
     }
 
