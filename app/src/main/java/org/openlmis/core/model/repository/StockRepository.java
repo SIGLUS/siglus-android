@@ -162,11 +162,12 @@ public class StockRepository {
         }
         stockMovementItem.setStockCard(stockcard);
 
-        long changedStock = stockcard.getStockOnHand() + stockMovementItem.getStockChange();
+        long changedStock = stockMovementItem.getStockOnHand() + stockMovementItem.getStockChange();
         stockMovementItem.setStockOnHand(changedStock);
         stockcard.setStockOnHand(changedStock);
 
         update(stockcard);
+        stockMovementItem.setStockCard(stockcard);
         saveStockItem(stockMovementItem);
     }
 
