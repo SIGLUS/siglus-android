@@ -9,4 +9,5 @@
     <bool name="show_stock_on_hand_in_inventory_345">true</bool>
     <bool name="add_header_info_reduce_header_size_348">true</bool>
     <bool name="sort_product_list_alphabetically_435">true</bool>
+    <bool name="search_view_enhancement">false</bool>
 </resources>

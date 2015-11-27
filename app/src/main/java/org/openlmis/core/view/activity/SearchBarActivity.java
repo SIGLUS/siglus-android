@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.DisplayUtil;
 
@@ -84,11 +85,19 @@ public abstract class SearchBarActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (!searchView.isIconified()){
-            searchView.onActionViewCollapsed();
-        }else{
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.search_view_enhancement)) {
+            if (isSearchViewActivity()) {
+                searchView.onActionViewCollapsed();
+            } else {
+                super.onBackPressed();
+            }
+        } else {
             super.onBackPressed();
         }
+    }
+
+    protected boolean isSearchViewActivity() {
+        return !searchView.isIconified();
     }
 
     public abstract boolean onSearchStart(String query);

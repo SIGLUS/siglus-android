@@ -30,6 +30,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.InventoryPresenter;
@@ -187,7 +188,11 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
     @Override
     public boolean onSearchClosed() {
         mAdapter.filter(StringUtils.EMPTY);
-        return true;
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.search_view_enhancement)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void goToMainPage() {
@@ -234,6 +239,13 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
 
     @Override
     public void onBackPressed() {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.search_view_enhancement  )){
+            if (isSearchViewActivity()) {
+                searchView.onActionViewCollapsed();
+                return;
+            }
+        }
+
         if (isInitialInventory()) {
             ToastUtil.show(R.string.msg_save_before_exit);
             return;

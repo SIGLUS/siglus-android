@@ -43,8 +43,15 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
         final EditTextWatcher textWatcher = new EditTextWatcher(stockCardViewModel);
         etQuantity.removeTextChangedListener(textWatcher);
 
-        tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledName()));
-        tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledUnit()));
+
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.search_view_enhancement)) {
+            tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledName()));
+            tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledUnit()));
+        } else {
+            tvProductName.setText(stockCardViewModel.getStyledName());
+            tvProductUnit.setText(stockCardViewModel.getStyledUnit());
+        }
+
 
 
         tvStockOnHandInInventory.setText(context.getString(R.string.label_physical_inventory_stock_on_hand,

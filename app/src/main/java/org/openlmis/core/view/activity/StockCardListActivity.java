@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.view.fragment.StockCardListFragment;
 
@@ -65,7 +66,10 @@ public class StockCardListActivity extends SearchBarActivity {
 
     @Override
     public boolean onSearchClosed() {
-        return true;
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.search_view_enhancement)){
+            return true;
+        }
+        return false;
     }
 
     public static Intent getIntentToMe(Context context) {

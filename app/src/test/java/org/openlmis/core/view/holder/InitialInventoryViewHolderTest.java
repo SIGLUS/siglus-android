@@ -7,6 +7,7 @@ import android.widget.TextView;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.builder.ProductBuilder;
@@ -36,6 +37,8 @@ public class InitialInventoryViewHolderTest {
 
     @Test
     public void shouldInitialViewHolder() throws ParseException {
+        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
+
         StockCardViewModel viewModel = new StockCardViewModelBuilder(new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").build())
                 .setExpiryDates(newArrayList("28/11/2015"))
                 .setQuantity("10")
