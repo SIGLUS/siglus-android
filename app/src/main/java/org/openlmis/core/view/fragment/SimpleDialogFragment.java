@@ -137,7 +137,7 @@ public class SimpleDialogFragment extends RoboDialogFragment {
                     negativeButton.setTextColor(getResources().getColor(R.color.color_accent));
                 }
 
-                TextView textView = (TextView) ((AlertDialog)dialog).findViewById(android.R.id.message);
+                TextView textView = (TextView) ((AlertDialog) dialog).findViewById(android.R.id.message);
                 textView.setTextSize(20);
             }
         });

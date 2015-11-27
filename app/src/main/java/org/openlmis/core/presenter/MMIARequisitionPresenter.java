@@ -153,7 +153,5 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         void initView(RnRForm form);
 
         void setProcessButtonName(String name);
-
-        void showMessageNotifyDialog();
     }
 }

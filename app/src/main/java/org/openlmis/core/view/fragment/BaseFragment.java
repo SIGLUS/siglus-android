@@ -24,6 +24,9 @@ import roboguice.fragment.provided.RoboFragment;
 
 
 public class BaseFragment extends RoboFragment {
+
+    protected boolean isSavedInstanceState;
+
     /*
     * Life cycle of Fragment: onAttach -> onCreate -> onCreateView -> onViewCreated -> onActivityCreated -> onPause -> onStop
     * */
@@ -32,5 +35,11 @@ public class BaseFragment extends RoboFragment {
         super.onCreate(savedInstanceState);
         // retain this fragment
         setRetainInstance(true);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        isSavedInstanceState = true;
+        super.onSaveInstanceState(outState);
     }
 }

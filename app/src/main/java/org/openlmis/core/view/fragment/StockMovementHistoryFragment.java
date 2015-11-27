@@ -55,7 +55,6 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
 
     private long stockCardID;
     private long startIndex = 0;
-    private boolean isRotated;
     private boolean isLoading;
     private boolean isFirstLoading;
 
@@ -93,17 +92,11 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
         super.onViewCreated(view, savedInstanceState);
 
         initUI();
-        if (isRotated) {
+        if (this.isSavedInstanceState) {
             addFooterViewIfMoreThanOneScreen();
         } else {
             initData();
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        isRotated = true;
-        super.onSaveInstanceState(outState);
     }
 
     private void initUI() {

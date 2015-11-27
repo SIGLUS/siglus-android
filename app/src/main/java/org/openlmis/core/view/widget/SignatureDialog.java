@@ -16,13 +16,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.view.fragment.BaseDialogFragment;
 
 import lombok.Getter;
 import lombok.Setter;
-import roboguice.fragment.provided.RoboDialogFragment;
 import roboguice.inject.InjectView;
 
-public class SignatureDialog extends RoboDialogFragment implements View.OnClickListener {
+public class SignatureDialog extends BaseDialogFragment implements View.OnClickListener {
 
     @Getter
     @Setter
@@ -43,12 +43,6 @@ public class SignatureDialog extends RoboDialogFragment implements View.OnClickL
 
     @InjectView(R.id.tv_signature_title)
     public TextView tvSignatureTitle;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-    }
 
     @Override
     public void onDestroyView() {
