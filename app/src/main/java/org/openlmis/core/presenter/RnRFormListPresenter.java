@@ -44,7 +44,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class RnRFormListPresenter implements Presenter{
+public class RnRFormListPresenter implements Presenter {
 
     RnRFormListView view;
 
@@ -73,7 +73,6 @@ public class RnRFormListPresenter implements Presenter{
         }
     }
 
-
     public Observable<List<RnRFormViewModel>> loadRnRFormList() {
         return Observable.create(new Observable.OnSubscribe<List<RnRFormViewModel>>() {
             @Override
@@ -89,22 +88,25 @@ public class RnRFormListPresenter implements Presenter{
     }
 
     @NonNull
-    private List<RnRFormViewModel> buildFormListViewModels() throws LMISException {
+    protected List<RnRFormViewModel> buildFormListViewModels() throws LMISException {
         List<RnRFormViewModel> viewModels = new ArrayList<>();
 
         List<RnRForm> rnRForms = repository.list(programCode);
 
-        if (rnRForms == null || rnRForms.isEmpty()){
+        if (rnRForms == null || rnRForms.isEmpty()) {
             return viewModels;
         }
 
-        viewModels.add(new RnRFormViewModel(LMISApp.getContext().getResources().getString(R.string.label_current_period)));
         Collections.reverse(rnRForms);
 
-        if (rnRForms.get(0).getStatus() != RnRForm.STATUS.AUTHORIZED){
-            viewModels.add(new RnRFormViewModel(rnRForms.get(0)));
-            rnRForms.remove(0);
-        }
+        addCurrentPeriodViewModel(viewModels, rnRForms);
+
+        addPreviousPeriodViewModels(viewModels, rnRForms);
+
+        return viewModels;
+    }
+
+    protected void addPreviousPeriodViewModels(List<RnRFormViewModel> viewModels, List<RnRForm> rnRForms) {
         viewModels.add(new RnRFormViewModel(LMISApp.getContext().getResources().getString(R.string.label_previous_period)));
 
         viewModels.addAll(FluentIterable.from(rnRForms).transform(new Function<RnRForm, RnRFormViewModel>() {
@@ -113,9 +115,16 @@ public class RnRFormListPresenter implements Presenter{
                 return new RnRFormViewModel(form);
             }
         }).toList());
-        return viewModels;
     }
 
+    protected void addCurrentPeriodViewModel(List<RnRFormViewModel> viewModels, List<RnRForm> rnRForms) {
+        viewModels.add(new RnRFormViewModel(LMISApp.getContext().getResources().getString(R.string.label_current_period)));
+
+        if (rnRForms.get(0).getStatus() != RnRForm.STATUS.AUTHORIZED) {
+            viewModels.add(new RnRFormViewModel(rnRForms.get(0)));
+            rnRForms.remove(0);
+        }
+    }
 
     public interface RnRFormListView extends BaseView {
 

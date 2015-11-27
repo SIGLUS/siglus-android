@@ -57,7 +57,7 @@ public class RnRFormViewModel {
         setType(form);
     }
 
-    protected void setType(RnRForm form) {
+    public void setType(RnRForm form) {
         if (form.getStatus() == RnRForm.STATUS.AUTHORIZED) {
             this.type = form.isSynced() ? TYPE_HISTORICAL : TYPE_UNSYNC;
         } else {
