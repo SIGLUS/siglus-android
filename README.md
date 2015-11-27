@@ -27,7 +27,7 @@ Run Specific Tag Functional Test
 ```
 ./gradlew assembleDevDebug
 cd functionalTests
-calabash-android run ../app/build/outputs/apk/app-dev-debug.apk --tags @Mmia
+calabash-android run ../app/build/outputs/apk/app-dev-debug.apk --tags @MMIA
 ```
 
 Run all tests except specific tag
