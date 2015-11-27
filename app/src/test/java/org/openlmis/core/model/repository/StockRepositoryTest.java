@@ -115,23 +115,27 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldCalculateStockOnHandCorrectly() throws LMISException, ParseException {
+        //given SOH is 100
         StockCard stockCard = StockCardBuilder.saveStockCardWithOneMovement(stockRepository);
-        StockMovementItem stockMovementItem = new StockMovementItem();
-
         stockCard.setStockOnHand(100L);
-        stockMovementItem.setStockOnHand(-1);
+
+        //when receive 50
+        StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setMovementQuantity(50L);
         stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
         stockMovementItem.setMovementDate(DateUtil.today());
-
         stockRepository.addStockMovementAndUpdateStockCard(stockCard, stockMovementItem);
+
+        //then SOH is 150
         assertThat(stockMovementItem.getStockOnHand(), is(150L));
 
-        stockCard.setStockOnHand(100L);
+        //when issue 100
         stockMovementItem.setStockOnHand(-1);
+        stockMovementItem.setMovementQuantity(100L);
         stockMovementItem.setMovementType(StockMovementItem.MovementType.ISSUE);
         stockRepository.addStockMovementAndUpdateStockCard(stockCard, stockMovementItem);
 
+        //then SOH is 50
         assertThat(stockMovementItem.getStockOnHand(), is(50L));
     }
 
