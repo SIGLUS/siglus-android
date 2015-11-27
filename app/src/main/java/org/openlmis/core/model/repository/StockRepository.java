@@ -66,7 +66,6 @@ public class StockRepository {
         draftInventoryGenericDao = new GenericDao<>(DraftInventory.class, context);
     }
 
-
     public void batchSave(final List<StockCard> stockCards) {
         try {
             dbUtil.withDaoAsBatch(StockCard.class, new DbUtil.Operation<StockCard, Object>() {
@@ -82,7 +81,6 @@ public class StockRepository {
             e.printStackTrace();
         }
     }
-
 
     public void save(final StockCard stockCard) {
         try {
@@ -119,7 +117,6 @@ public class StockRepository {
             }
         });
     }
-
 
     public void saveStockItem(final StockMovementItem stockMovementItem) throws LMISException {
         dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, Void>() {
@@ -171,7 +168,6 @@ public class StockRepository {
         saveStockItem(stockMovementItem);
     }
 
-
     public List<StockMovementItem> listUnSynced() throws LMISException {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
             @Override
@@ -189,7 +185,6 @@ public class StockRepository {
         List<StockCard> stockCards = new ArrayList<>();
         final Program program = programRepository.queryByCode(programCode);
         if (program != null) {
-
             stockCards = FluentIterable.from(genericDao.queryForAll()).filter(new Predicate<StockCard>() {
                 @Override
                 public boolean apply(StockCard stockCard) {
@@ -209,7 +204,6 @@ public class StockRepository {
         });
     }
 
-
     public List<StockMovementItem> queryStockItems(final StockCard stockCard, final Date startDate, final Date endDate) throws LMISException {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
             @Override
@@ -227,7 +221,6 @@ public class StockRepository {
             }
         });
     }
-
 
     public List<StockMovementItem> queryStockItemsHistory(final long stockCardId, final long startIndex, final long maxRows) throws LMISException {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
