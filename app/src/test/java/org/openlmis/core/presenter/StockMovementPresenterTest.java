@@ -28,14 +28,32 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.builder.ProductBuilder;
+import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.robolectric.RuntimeEnvironment;
 
-import roboguice.RoboGuice;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
+import roboguice.RoboGuice;
+import rx.Scheduler;
+import rx.android.plugins.RxAndroidPlugins;
+import rx.android.plugins.RxAndroidSchedulersHook;
+import rx.observers.TestSubscriber;
+import rx.schedulers.Schedulers;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.util.Lists.newArrayList;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -59,6 +77,14 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
 
         stockMovementPresenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockMovementPresenter.class);
         stockMovementPresenter.attachView(view);
+
+        RxAndroidPlugins.getInstance().reset();
+        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
+            @Override
+            public Scheduler getMainThreadScheduler() {
+                return Schedulers.immediate();
+            }
+        });
     }
 
     @Test
@@ -67,7 +93,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         when(stockMovementViewModelMock.validateEmpty()).thenReturn(false);
 
         stockMovementPresenter.submitStockMovement(stockMovementViewModelMock);
-        verify(stockMovementViewModelMock,times(2)).validateEmpty();
+        verify(stockMovementViewModelMock, times(2)).validateEmpty();
         verify(view).showErrorAlert(anyString());
     }
 
@@ -104,6 +130,32 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
 
         stockMovementPresenter.saveAndRefresh(viewModel);
         verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(stockCard, item);
+    }
+
+    @Test
+    public void shouldLoadStockMovementViewModelsObserver() throws Exception {
+        when(stockRepositoryMock.listLastFive(anyInt())).thenReturn(new ArrayList<StockMovementItem>());
+
+        stockMovementPresenter.stockCard = StockCardBuilder.buildStockCard();
+
+        TestSubscriber<List<StockMovementViewModel>> subscriber = new TestSubscriber<>();
+        stockMovementPresenter.loadStockMovementViewModelsObserver().subscribe(subscriber);
+
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+        subscriber.assertValue(new ArrayList<StockMovementViewModel>());
+    }
+
+    @Test
+    public void shouldAddStockMovementViewModelWhenSubscriberOnNext() throws ParseException {
+        Product product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setStrength("10mg").setType("VIA").build();
+        StockCardViewModel viewModel = new StockCardViewModelBuilder(product).build();
+
+        stockMovementPresenter.loadStockMovementViewModelSubscriber().onNext((List) newArrayList(viewModel, viewModel));
+
+        assertThat(stockMovementPresenter.stockMovementModelList.size()).isEqualTo(3);
+        verify(view).refreshStockMovement();
+        verify(view).loaded();
     }
 
     public class MyTestModule extends AbstractModule {

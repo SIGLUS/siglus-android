@@ -40,9 +40,9 @@ import java.util.List;
 
 import lombok.Getter;
 import rx.Observable;
+import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
@@ -96,11 +96,36 @@ public class StockMovementPresenter implements Presenter {
             return;
         }
 
-        Observable.create(new Observable.OnSubscribe<List<StockMovementViewModel>>() {
+        loadStockMovementViewModelsObserver().subscribe(loadStockMovementViewModelSubscriber());
+    }
+    public Observer<List<StockMovementViewModel>> loadStockMovementViewModelSubscriber(){
+        return new Observer<List<StockMovementViewModel>>(){
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                ToastUtil.show("Database query error :" + throwable.getMessage());
+            }
+
+            @Override
+            public void onNext(List<StockMovementViewModel> stockMovementViewModels) {
+                stockMovementModelList.clear();
+                stockMovementModelList.addAll(stockMovementViewModels);
+                stockMovementModelList.add(new StockMovementViewModel());
+
+                view.refreshStockMovement();
+                view.loaded();
+            }
+        };
+    }
+
+    public Observable<List<StockMovementViewModel>> loadStockMovementViewModelsObserver() {
+        return Observable.create(new Observable.OnSubscribe<List<StockMovementViewModel>>() {
             @Override
             public void call(final Subscriber<? super List<StockMovementViewModel>> subscriber) {
                 try {
-
                     List<StockMovementViewModel> list = from(stockRepository.listLastFive(stockCard.getId())).transform(new Function<StockMovementItem, StockMovementViewModel>() {
                         @Override
                         public StockMovementViewModel apply(StockMovementItem stockMovementItem) {
@@ -109,26 +134,12 @@ public class StockMovementPresenter implements Presenter {
                     }).toList();
 
                     subscriber.onNext(list);
+                    subscriber.onCompleted();
                 } catch (LMISException e) {
                     subscriber.onError(e);
                 }
             }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<List<StockMovementViewModel>>() {
-            @Override
-            public void call(List<StockMovementViewModel> stockMovementViewModels) {
-                stockMovementModelList.clear();
-                stockMovementModelList.addAll(stockMovementViewModels);
-                stockMovementModelList.add(new StockMovementViewModel());
-
-                view.refreshStockMovement();
-                view.loaded();
-            }
-        }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                ToastUtil.show("Database query error :" + throwable.getMessage());
-            }
-        });
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
 

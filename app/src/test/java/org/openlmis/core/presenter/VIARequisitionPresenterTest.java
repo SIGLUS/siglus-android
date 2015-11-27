@@ -54,6 +54,8 @@ import rx.schedulers.Schedulers;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.util.Lists.newArrayList;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -67,7 +69,6 @@ public class VIARequisitionPresenterTest {
     private VIARequisitionPresenter presenter;
     private org.openlmis.core.view.fragment.VIARequisitionFragment VIARequisitionFragment;
     private VIARepository mockRnrFormRepository;
-//    private RnrFormRepository mockRnrFormRepository;
     private RnRForm rnRForm;
     @Before
     public void setup() throws ViewNotMatchException {
@@ -249,6 +250,31 @@ public class VIARequisitionPresenterTest {
         subscriber.onError(new Throwable("msg"));
         verify(VIARequisitionFragment).loaded();
         verify(VIARequisitionFragment).showErrorMessage("msg");
+    }
+
+    @Test
+    public void shouldNotGetConsultantNumberWhenRnRFormIsNullOrInfoItemsIsNull(){
+        presenter.rnRForm = null;
+        assertThat(presenter.getConsultationNumbers()).isNull();
+
+        RnRForm rnRForm = mock(RnRForm.class);
+        when(rnRForm.getBaseInfoItemListWrapper()).thenReturn(null);
+        presenter.rnRForm = rnRForm;
+
+        assertThat(presenter.getConsultationNumbers()).isNull();
+    }
+
+    @Test
+    public void shouldGetConsultantNumber(){
+        BaseInfoItem baseInfoItem = new BaseInfoItem();
+        baseInfoItem.setValue("123");
+        ArrayList<BaseInfoItem> items = newArrayList(baseInfoItem);
+
+        RnRForm rnRForm = mock(RnRForm.class);
+        presenter.rnRForm = rnRForm;
+        when(rnRForm.getBaseInfoItemListWrapper()).thenReturn(items);
+
+        assertThat(presenter.getConsultationNumbers()).isEqualTo("123");
     }
 
     private void updateFormUIWithStatus(RnRForm.STATUS status) {
