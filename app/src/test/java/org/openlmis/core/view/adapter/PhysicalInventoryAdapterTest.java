@@ -77,8 +77,9 @@ public class PhysicalInventoryAdapterTest {
         for (int i = 0; i < 10; i++) {
             StockCardViewModel model = new StockCardViewModel(stockCard);
             list.add(model);
-            model.setProductName("Product" + i);
-            model.setFnm("");
+            final Product product = new Product();
+            product.setPrimaryName("Product" + i);
+            model.setProduct(product);
         }
 
         adapter.refreshList(list);
