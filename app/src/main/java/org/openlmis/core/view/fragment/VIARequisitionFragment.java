@@ -502,7 +502,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     private void removeTempForm() {
         if (!isHistoryForm) {
             try {
-                presenter.removeRnrForm();
+                presenter.removeRequisition();
             } catch (LMISException e) {
                 ToastUtil.show("Delete Failed");
                 e.printStackTrace();

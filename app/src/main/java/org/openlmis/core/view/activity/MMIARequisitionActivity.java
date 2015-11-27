@@ -260,7 +260,7 @@ public class MMIARequisitionActivity extends BaseActivity implements MMIARequisi
     private void removeTempForm() {
         if (!isHistoryForm) {
             try {
-                presenter.removeRnrForm();
+                presenter.removeRequisition();
             } catch (LMISException e) {
                 ToastUtil.show("Delete Failed");
                 e.printStackTrace();

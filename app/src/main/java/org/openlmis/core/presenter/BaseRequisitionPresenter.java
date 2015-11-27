@@ -71,22 +71,6 @@ public abstract class BaseRequisitionPresenter implements Presenter {
         subscribe = getRnrFormObservable(formId).subscribe(loadDataOnNextAction, loadDataOnErrorAction);
     }
 
-    public RnRForm getRnrForm(long formId) throws LMISException {
-        if (rnRForm != null) {
-            return rnRForm;
-        }
-        //three branches: history, half completed draft, new draft
-        boolean isHistory = formId > 0;
-        if (isHistory) {
-            return rnrFormRepository.queryRnRForm(formId);
-        }
-        RnRForm draftVIA = rnrFormRepository.queryUnAuthorized();
-        if (draftVIA != null) {
-            return draftVIA;
-        }
-        return rnrFormRepository.initRnrForm();
-    }
-
     protected Action1<RnRForm> loadDataOnNextAction = new Action1<RnRForm>() {
         @Override
         public void call(RnRForm form) {
@@ -105,15 +89,67 @@ public abstract class BaseRequisitionPresenter implements Presenter {
         }
     };
 
-    public void processSign(String signName, RnRForm rnRForm) {
-        if (rnRForm.isDraft()) {
-            submitSignature(signName, RnRFormSignature.TYPE.SUBMITTER, rnRForm);
-            submitRequisition(rnRForm);
+    public void loadAlertDialogIsFormStatusIsDraft() {
+        if (rnRForm.isSubmitted()) {
             view.showMessageNotifyDialog();
-        } else {
-            submitSignature(signName, RnRFormSignature.TYPE.APPROVER, rnRForm);
-            authoriseRequisition(rnRForm);
         }
+    }
+
+    public RnRForm getRnrForm(long formId) throws LMISException {
+        if (rnRForm != null) {
+            return rnRForm;
+        }
+        //three branches: history, half completed draft, new draft
+        boolean isHistory = formId > 0;
+        if (isHistory) {
+            return rnrFormRepository.queryRnRForm(formId);
+        }
+        RnRForm draftVIA = rnrFormRepository.queryUnAuthorized();
+        if (draftVIA != null) {
+            return draftVIA;
+        }
+        return rnrFormRepository.initRnrForm();
+    }
+
+    protected void saveRequisition() {
+        view.loading();
+        getSaveFormObservable().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(getSaveFormSubscriber());
+    }
+
+    protected Observable<Void> getSaveFormObservable() {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    rnrFormRepository.save(rnRForm);
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                    subscriber.onError(e);
+                }
+            }
+        });
+    }
+
+    protected Subscriber<Void> getSaveFormSubscriber() {
+        return new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+                view.loaded();
+                view.saveSuccess();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.loaded();
+                view.showErrorMessage(context.getString(R.string.hint_save_failed));
+            }
+
+            @Override
+            public void onNext(Void o) {
+
+            }
+        };
     }
 
     protected void submitRequisition(final RnRForm rnRForm) {
@@ -186,7 +222,21 @@ public abstract class BaseRequisitionPresenter implements Presenter {
                 syncManager.requestSyncImmediately();
             }
         });
+    }
 
+    public void removeRequisition() throws LMISException {
+        rnrFormRepository.removeRnrForm(rnRForm);
+    }
+
+    public void processSign(String signName, RnRForm rnRForm) {
+        if (rnRForm.isDraft()) {
+            submitSignature(signName, RnRFormSignature.TYPE.SUBMITTER, rnRForm);
+            submitRequisition(rnRForm);
+            view.showMessageNotifyDialog();
+        } else {
+            submitSignature(signName, RnRFormSignature.TYPE.APPROVER, rnRForm);
+            authoriseRequisition(rnRForm);
+        }
     }
 
     protected void submitSignature(final String signName, final RnRFormSignature.TYPE type, final RnRForm rnRForm) {
@@ -219,57 +269,6 @@ public abstract class BaseRequisitionPresenter implements Presenter {
                 view.loaded();
             }
         });
-    }
-
-    public void loadAlertDialogIsFormStatusIsDraft() {
-        if (rnRForm.isSubmitted()) {
-            view.showMessageNotifyDialog();
-        }
-    }
-
-    protected void saveForm() {
-        view.loading();
-        getSaveFormObservable().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(getSaveFormSubscriber());
-    }
-
-    protected Observable<Void> getSaveFormObservable() {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    rnrFormRepository.save(rnRForm);
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    e.printStackTrace();
-                    subscriber.onError(e);
-                }
-            }
-        });
-    }
-
-    protected Subscriber<Void> getSaveFormSubscriber() {
-        return new Subscriber<Void>() {
-            @Override
-            public void onCompleted() {
-                view.loaded();
-                view.saveSuccess();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                view.loaded();
-                view.showErrorMessage(context.getString(R.string.hint_save_failed));
-            }
-
-            @Override
-            public void onNext(Void o) {
-
-            }
-        };
-    }
-
-    public void removeRnrForm() throws LMISException {
-        rnrFormRepository.removeRnrForm(rnRForm);
     }
 
     public RnRForm.STATUS getRnrFormStatus() {

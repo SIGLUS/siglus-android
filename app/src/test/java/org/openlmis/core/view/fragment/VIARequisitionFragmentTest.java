@@ -152,7 +152,7 @@ public class VIARequisitionFragmentTest {
     @Test
     public void shouldNotRemoveRnrFormWhenGoBack() throws LMISException {
         VIARequisitionFragment.onBackPressed();
-        verify(presenter, never()).removeRnrForm();
+        verify(presenter, never()).removeRequisition();
     }
 
     @Test

@@ -147,13 +147,13 @@ public class MMIARequisitionActivityTest {
     public void shouldRemoveRnrFormWhenPositiveButtonClicked() throws LMISException {
         mmiaRequisitionActivity.positiveClick(MMIARequisitionActivity.TAG_BACK_PRESSED);
 
-        verify(mmiaFormPresenter).removeRnrForm();
+        verify(mmiaFormPresenter).removeRequisition();
     }
 
     @Test
     public void shouldNotRemoveRnrFormWhenGoBack() throws LMISException {
         mmiaRequisitionActivity.onBackPressed();
-        verify(mmiaFormPresenter, never()).removeRnrForm();
+        verify(mmiaFormPresenter, never()).removeRequisition();
     }
 
     @Test

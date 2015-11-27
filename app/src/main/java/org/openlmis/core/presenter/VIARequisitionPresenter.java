@@ -182,7 +182,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         if (!TextUtils.isEmpty(consultationNumbers)) {
             rnRForm.getBaseInfoItemListWrapper().get(0).setValue(Long.valueOf(consultationNumbers).toString());
         }
-        saveForm();
+        saveRequisition();
     }
 
     public String getConsultationNumbers() {

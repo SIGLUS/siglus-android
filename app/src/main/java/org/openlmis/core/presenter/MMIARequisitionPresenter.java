@@ -135,7 +135,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         rnRForm.setRegimenItemListWrapper(regimenItemList);
         rnRForm.setBaseInfoItemListWrapper(baseInfoItemList);
         rnRForm.setComments(comments);
-        saveForm();
+        saveRequisition();
     }
 
     public void setBtnCompleteText() {
