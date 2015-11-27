@@ -190,9 +190,8 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
         mAdapter.filter(StringUtils.EMPTY);
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.search_view_enhancement)) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     public void goToMainPage() {
@@ -239,7 +238,7 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
 
     @Override
     public void onBackPressed() {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.search_view_enhancement  )){
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.search_view_enhancement)){
             if (isSearchViewActivity()) {
                 searchView.onActionViewCollapsed();
                 return;
