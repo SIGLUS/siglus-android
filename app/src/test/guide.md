@@ -2,11 +2,11 @@
 
 This is the document about how to write our unit test in Android codebase. We used [Robolectric](http://robolectric.org/)
 to test-driven the development of Android app.
-(You need to install 'Andrid Studio Unit Test' plugin if you are using andriod studio.)
 
 Unit testing in Android should cover most UI interaction and details. Unlikely with Java unit test, Android unit tests can cover
 the UI interactions and UI details. For all the UI interaction, we should try to verify the UI element properties. For the logic
 that can not reflected in UI layer, maybe mock is a good choice.
+(Switch the Build Variants to "Unit Tests" in android studio to run unit test.)
 
 ## Libraries or patterns we used
 
