@@ -160,23 +160,13 @@ public class StockRepository {
         if (stockcard == null) {
             return;
         }
-
-        if (stockMovementItem.getStockOnHand() == -1) {
-            long stockExistence = stockcard.getStockOnHand();
-            if (stockMovementItem.getMovementType() == StockMovementItem.MovementType.ISSUE
-                    || stockMovementItem.getMovementType() == StockMovementItem.MovementType.NEGATIVE_ADJUST) {
-                stockExistence -= stockMovementItem.getMovementQuantity();
-            } else if (stockMovementItem.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
-                stockExistence = stockcard.getStockOnHand();
-            } else {
-                stockExistence += stockMovementItem.getMovementQuantity();
-            }
-            stockMovementItem.setStockOnHand(stockExistence);
-        }
-
-        stockcard.setStockOnHand(stockMovementItem.getStockOnHand());
-        update(stockcard);
         stockMovementItem.setStockCard(stockcard);
+
+        long changedStock = stockcard.getStockOnHand() + stockMovementItem.getStockChange();
+        stockMovementItem.setStockOnHand(changedStock);
+        stockcard.setStockOnHand(changedStock);
+
+        update(stockcard);
         saveStockItem(stockMovementItem);
     }
 

@@ -31,7 +31,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @DatabaseTable(tableName = "stock_items")
-public class StockMovementItem extends BaseModel{
+public class StockMovementItem extends BaseModel {
 
     public enum MovementType {
         RECEIVE("RECEIVE"),
@@ -46,11 +46,12 @@ public class StockMovementItem extends BaseModel{
             this.value = receive;
         }
 
-
         @Override
         public String toString() {
             return value;
         }
+
+
     }
 
     @DatabaseField
@@ -79,4 +80,15 @@ public class StockMovementItem extends BaseModel{
 
     @DatabaseField
     private boolean synced = false;
+
+    public long getStockChange() {
+        if (stockOnHand == -1) {
+            if (movementType == MovementType.ISSUE || movementType == MovementType.NEGATIVE_ADJUST) {
+                return -getMovementQuantity();
+            } else if (movementType != MovementType.PHYSICAL_INVENTORY) {
+                return getMovementQuantity();
+            }
+        }
+        return 0;
+    }
 }
