@@ -157,14 +157,12 @@ public class StockRepository {
         if (stockcard == null) {
             return;
         }
-        stockMovementItem.setStockCard(stockcard);
 
-        long changedStock = stockMovementItem.getStockOnHand() + stockMovementItem.getStockChange();
-        stockMovementItem.setStockOnHand(changedStock);
-        stockcard.setStockOnHand(changedStock);
+        stockMovementItem.setStockCard(stockcard);
+        stockMovementItem.updateStockOnHand(stockcard.getStockOnHand());
+        stockcard.setStockOnHand(stockMovementItem.getStockOnHand());
 
         update(stockcard);
-        stockMovementItem.setStockCard(stockcard);
         saveStockItem(stockMovementItem);
     }
 

@@ -28,6 +28,9 @@ import org.openlmis.core.utils.DateUtil;
 import lombok.Getter;
 import lombok.Setter;
 
+import static org.openlmis.core.model.StockMovementItem.MovementType.ISSUE;
+import static org.openlmis.core.model.StockMovementItem.MovementType.NEGATIVE_ADJUST;
+
 @Getter
 @Setter
 @DatabaseTable(tableName = "stock_items")
@@ -81,14 +84,14 @@ public class StockMovementItem extends BaseModel {
     @DatabaseField
     private boolean synced = false;
 
-    public long getStockChange() {
+    public void updateStockOnHand(long cardStockOnHand) {
         if (stockOnHand == -1) {
-            if (movementType == MovementType.ISSUE || movementType == MovementType.NEGATIVE_ADJUST) {
-                return -getMovementQuantity();
+            if (movementType == ISSUE || movementType == NEGATIVE_ADJUST) {
+                cardStockOnHand -= getMovementQuantity();
             } else if (movementType != MovementType.PHYSICAL_INVENTORY) {
-                return getMovementQuantity();
+                cardStockOnHand += getMovementQuantity();
             }
+            setStockOnHand(cardStockOnHand);
         }
-        return 0;
     }
 }
