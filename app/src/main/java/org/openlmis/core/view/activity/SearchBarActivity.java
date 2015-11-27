@@ -20,6 +20,8 @@ package org.openlmis.core.view.activity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
@@ -37,6 +39,9 @@ public abstract class SearchBarActivity extends BaseActivity {
         searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setQueryHint(getResources().getString(R.string.search_hint));
         searchView.setMaxWidth(DisplayUtil.getScreenWidth());
+
+        changeSearchButtonUI();
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -57,6 +62,18 @@ public abstract class SearchBarActivity extends BaseActivity {
         });
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private void changeSearchButtonUI() {
+        final View searchButton = searchView.findViewById(R.id.search_button);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.width = (int) getResources().getDimension(R.dimen.search_button_width);
+        params.setMargins(0, 0, (int) getResources().getDimension(R.dimen.search_button_right_margin), 0);
+        searchButton.setLayoutParams(params);
     }
 
     protected void clearSearch() {
