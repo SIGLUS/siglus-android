@@ -31,7 +31,6 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.view.BaseView;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import roboguice.RoboGuice;
 import rx.Observable;
