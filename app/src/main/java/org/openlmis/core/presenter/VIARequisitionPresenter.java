@@ -145,7 +145,14 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         if (!validateFormInput()) {
             return;
         }
+
+        if (!rnrFormRepository.isPeriodUnique(rnRForm)) {
+            view.showErrorMessage(context.getResources().getString(R.string.msg_requisition_not_unique));
+            return;
+        }
+
         dataViewToModel(consultationNumbers);
+
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature_10)) {
             view.showSignDialog(rnRForm.isDraft());

@@ -26,7 +26,6 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
@@ -148,16 +147,12 @@ public class RnrFormRepository {
     }
 
     public void authorise(RnRForm form) throws LMISException {
-        if (!isPeriodUnique(form)) {
-            throw new PeriodNotUniqueException("Already have a authorized form");
-        }
-
         form.setStatus(RnRForm.STATUS.AUTHORIZED);
         form.setSubmittedTime(DateUtil.today());
         save(form);
     }
 
-    protected boolean isPeriodUnique(final RnRForm form) {
+    public boolean isPeriodUnique(final RnRForm form) {
         try {
             RnRForm rnRForm = dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
                 @Override

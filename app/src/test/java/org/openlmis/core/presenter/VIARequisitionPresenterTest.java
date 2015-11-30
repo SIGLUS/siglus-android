@@ -56,7 +56,9 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.Lists.newArrayList;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -211,13 +213,13 @@ public class VIARequisitionPresenterTest {
     }
 
     @Test
-    public void shouldCallSetProcessButtonNameWithSubmitWhenFormStatusIsSubmitted()  {
+    public void shouldCallSetProcessButtonNameWithSubmitWhenFormStatusIsSubmitted() {
         updateFormUIWithStatus(RnRForm.STATUS.DRAFT);
         verify(VIARequisitionFragment).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_submit));
     }
 
     @Test
-    public void shouldCallSetProcessButtonNameWithCompleteWhenFormStatusIsAuthorized()  {
+    public void shouldCallSetProcessButtonNameWithCompleteWhenFormStatusIsAuthorized() {
         updateFormUIWithStatus(RnRForm.STATUS.SUBMITTED);
         verify(VIARequisitionFragment).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_complete));
     }
@@ -252,7 +254,7 @@ public class VIARequisitionPresenterTest {
     }
 
     @Test
-    public void shouldNotGetConsultantNumberWhenRnRFormIsNullOrInfoItemsIsNull(){
+    public void shouldNotGetConsultantNumberWhenRnRFormIsNullOrInfoItemsIsNull() {
         presenter.rnRForm = null;
         assertThat(presenter.getConsultationNumbers()).isNull();
 
@@ -264,7 +266,7 @@ public class VIARequisitionPresenterTest {
     }
 
     @Test
-    public void shouldGetConsultantNumber(){
+    public void shouldGetConsultantNumber() {
         BaseInfoItem baseInfoItem = new BaseInfoItem();
         baseInfoItem.setValue("123");
         ArrayList<BaseInfoItem> items = newArrayList(baseInfoItem);
@@ -274,6 +276,29 @@ public class VIARequisitionPresenterTest {
         when(rnRForm.getBaseInfoItemListWrapper()).thenReturn(items);
 
         assertThat(presenter.getConsultationNumbers()).isEqualTo("123");
+    }
+
+    @Test
+    public void shouldShowErrorMSGWhenThereWasARequisitionInTheSamePeriod() throws Exception {
+        when(mockRnrFormRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(false);
+        presenter.processRequisition(anyString());
+        verify(VIARequisitionFragment).showErrorMessage(LMISTestApp.getContext().getResources().getString(R.string.msg_requisition_not_unique));
+    }
+
+    @Test
+    public void shouldNotShowErrorMSGWhenThereWasNoARequisitionInTheSamePeriod() throws Exception {
+        BaseInfoItem baseInfoItem = new BaseInfoItem();
+        baseInfoItem.setValue("123");
+        ArrayList<BaseInfoItem> items = newArrayList(baseInfoItem);
+
+        RnRForm rnRForm = mock(RnRForm.class);
+        presenter.rnRForm = rnRForm;
+        when(rnRForm.getBaseInfoItemListWrapper()).thenReturn(items);
+
+        presenter.rnRForm = rnRForm;
+        when(mockRnrFormRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(true);
+        presenter.processRequisition(anyString());
+        verify(VIARequisitionFragment, never()).showErrorMessage(anyString());
     }
 
     private void updateFormUIWithStatus(RnRForm.STATUS status) {

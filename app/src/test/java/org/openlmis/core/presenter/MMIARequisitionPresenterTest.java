@@ -49,6 +49,8 @@ import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.observers.TestSubscriber;
 import rx.schedulers.Schedulers;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -137,6 +139,8 @@ public class MMIARequisitionPresenterTest {
         ArrayList<RegimenItem> regimenItems = generateRegimenItems();
         ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
 
+        when(mmiaRepository.isPeriodUnique(rnRForm)).thenReturn(true);
+
         presenter.processRequisition(regimenItems, baseInfoItems, "");
 
         if (LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
@@ -154,6 +158,7 @@ public class MMIARequisitionPresenterTest {
 
         when(mmiaRepository.initRnrForm()).thenReturn(rnRForm);
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
+        when(mmiaRepository.isPeriodUnique(rnRForm)).thenReturn(true);
 
         presenter.loadDataOnNextAction.call(rnRForm);
 
@@ -270,6 +275,37 @@ public class MMIARequisitionPresenterTest {
             verify(mmiaRepository).setSignature(form, signature, RnRFormSignature.TYPE.APPROVER);
             verify(mmiaRepository).authorise(form);
         }
+    }
+
+    @Test
+    public void shouldShowErrorMSGWhenThereWasARequisitionInTheSamePeriod() throws Exception {
+        ArrayList<RegimenItem> regimenItems = generateRegimenItems();
+        ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
+
+        RnRForm rnRForm = new RnRForm();
+
+        when(mmiaRepository.initRnrForm()).thenReturn(rnRForm);
+        when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
+        when(mmiaRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(false);
+
+        presenter.processRequisition(regimenItems, baseInfoItems, anyString());
+        verify(mockMMIAformView).showErrorMessage(LMISTestApp.getContext().getResources().getString(R.string.msg_requisition_not_unique));
+    }
+
+    @Test
+    public void shouldNotShowErrorMSGWhenThereWasNoARequisitionInTheSamePeriod() throws Exception {
+        ArrayList<RegimenItem> regimenItems = generateRegimenItems();
+        ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
+
+        RnRForm rnRForm = new RnRForm();
+
+        when(mmiaRepository.initRnrForm()).thenReturn(rnRForm);
+        when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
+        when(mmiaRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(true);
+
+        presenter.processRequisition(regimenItems, baseInfoItems, anyString());
+        verify(mockMMIAformView, never()).showErrorMessage(anyString());
+
     }
 
     private void waitObservableToExecute() {

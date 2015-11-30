@@ -23,7 +23,6 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
@@ -225,11 +224,7 @@ public abstract class BaseRequisitionPresenter implements Presenter {
             @Override
             public void onError(Throwable e) {
                 view.loaded();
-                if (e instanceof PeriodNotUniqueException) {
-                    view.showErrorMessage(context.getResources().getString(R.string.msg_requisition_not_unique));
-                } else {
-                    view.showErrorMessage(context.getString(R.string.hint_complete_failed));
-                }
+                view.showErrorMessage(context.getString(R.string.hint_complete_failed));
             }
 
             @Override

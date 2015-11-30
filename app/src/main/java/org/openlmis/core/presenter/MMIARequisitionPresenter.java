@@ -104,6 +104,11 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
             return;
         }
 
+        if (!rnrFormRepository.isPeriodUnique(rnRForm)) {
+            view.showErrorMessage(context.getResources().getString(R.string.msg_requisition_not_unique));
+            return;
+        }
+
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
             view.showSignDialog(rnRForm.isDraft());
         } else {
