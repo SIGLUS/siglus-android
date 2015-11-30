@@ -40,11 +40,13 @@ import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
 import org.openlmis.core.network.model.ProductsResponse;
 import org.openlmis.core.service.SyncManager;
+import org.openlmis.core.service.SyncSubscriber;
 import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
 
 import roboguice.RoboGuice;
+import rx.Observable;
 import rx.Observer;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -69,6 +71,8 @@ public class LoginPresenterTest {
     private ArgumentCaptor<Observer<Void>> getProductsCB;
 
     private LMISTestApp appInject;
+    private SyncSubscriber<Void> syncProductSubscriber;
+    private SyncSubscriber<Void> syncRequisitionDataSubscriber;
 
     @Before
     public void setup() {
@@ -86,6 +90,8 @@ public class LoginPresenterTest {
 
         presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(LoginPresenter.class);
         presenter.attachView(mockActivity);
+        syncProductSubscriber = presenter.getSyncProductSubscriber();
+        syncRequisitionDataSubscriber = presenter.getSyncRequisitionDataSubscriber();
     }
 
     @After
@@ -253,31 +259,32 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldSyncDataBackWhenProductSyncCompleted() {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_rnr_186)){
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_rnr_186)) {
             return;
         }
 
-        presenter.syncProductSubscriber.onCompleted();
+        syncProductSubscriber.onCompleted();
 
         verify(mockActivity).setHasGetProducts(true);
         verify(mockActivity).loading(RuntimeEnvironment.application.getString(R.string.msg_sync_requisition_data));
-        verify(syncManager).syncRequisitionData(presenter.syncRequisitionDataSubscriber);
+        verify(syncManager).syncRequisitionData(any(rx.Observer.class));
     }
 
     @Test
     public void shouldShowErrorMessageWhenProductSyncFailed() {
-        presenter.syncProductSubscriber.onError(new LMISException("Products save failed"));
+
+        syncProductSubscriber.onError(new LMISException("Products save failed"));
 
         String message = RuntimeEnvironment.application.getString(R.string.msg_save_products_failed);
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(message);
         verify(mockActivity).loaded();
 
 
-        presenter.syncProductSubscriber.onError(new NoFacilityForUserException("No Facility"));
+        syncProductSubscriber.onError(new NoFacilityForUserException("No Facility"));
         message = RuntimeEnvironment.application.getString(R.string.msg_user_not_facility);
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(message);
 
-        presenter.syncProductSubscriber.onError(new Exception("Sync products failed"));
+        syncProductSubscriber.onError(new Exception("Sync products failed"));
         message = RuntimeEnvironment.application.getString(R.string.msg_sync_products_list_failed);
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(message);
     }
@@ -285,16 +292,16 @@ public class LoginPresenterTest {
     @Test
     public void shouldGoToInitInventoryWhenDataBackCompleted() {
         when(mockActivity.needInitInventory()).thenReturn(true);
-        presenter.syncRequisitionDataSubscriber.onCompleted();
+        syncRequisitionDataSubscriber.onCompleted();
 
         verify(mockActivity).loaded();
         verify(mockActivity).goToInitInventory();
     }
 
     @Test
-    public void shouldGoToNextPageWhenSyncProductSucceedAndSyncRequisitionFailed(){
+    public void shouldGoToNextPageWhenSyncProductSucceedAndSyncRequisitionFailed() {
         when(mockActivity.needInitInventory()).thenReturn(true);
-        presenter.syncRequisitionDataSubscriber.onError(new Exception("error"));
+        syncRequisitionDataSubscriber.onError(new Exception("error"));
 
         verify(mockActivity, times(1)).loaded();
         verify(mockActivity, times(1)).goToInitInventory();
@@ -302,8 +309,8 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldNotGoToNextPageWhenSyncProductFailed(){
-        presenter.syncProductSubscriber.onError(new Exception("error"));
+    public void shouldNotGoToNextPageWhenSyncProductFailed() {
+        syncProductSubscriber.onError(new Exception("error"));
 
         verify(mockActivity, times(1)).loaded();
         verify(mockActivity, times(0)).goToInitInventory();
@@ -312,7 +319,7 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldSyncRequisitionDataIfProductSyncExistButRequisitionDataNonExist() {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_rnr_186)){
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_rnr_186)) {
             return;
         }
 
@@ -322,12 +329,12 @@ public class LoginPresenterTest {
         presenter.onLoginSuccess(any(User.class));
 
         verify(mockActivity).loading(RuntimeEnvironment.application.getString(R.string.msg_sync_requisition_data));
-        verify(syncManager).syncRequisitionData(presenter.syncRequisitionDataSubscriber);
+        verify(syncManager).syncRequisitionData(syncRequisitionDataSubscriber);
     }
 
     @Test
     public void shouldSetRequisitionDataSharedPreference(){
-        presenter.syncRequisitionDataSubscriber.onCompleted();
+        syncRequisitionDataSubscriber.onCompleted();
 
         verify(mockActivity).setRequisitionDataSynced(true);
     }

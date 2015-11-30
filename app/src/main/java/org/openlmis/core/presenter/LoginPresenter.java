@@ -166,7 +166,7 @@ public class LoginPresenter implements Presenter {
         if (!isLoadingProducts) {
             isLoadingProducts = true;
             view.loading(LMISApp.getInstance().getString(R.string.msg_fetching_products));
-            syncManager.syncProductsWithProgramAsync(syncProductSubscriber);
+            syncManager.syncProductsWithProgramAsync(getSyncProductSubscriber());
         }
     }
 
@@ -179,30 +179,32 @@ public class LoginPresenter implements Presenter {
         }
     }
 
-    protected SyncSubscriber<Void> syncProductSubscriber = new SyncSubscriber<Void>() {
-        @Override
-        public void onCompleted() {
-            isLoadingProducts = false;
-            view.setHasGetProducts(true);
-            view.loaded();
 
-            syncRequisitionData();
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            isLoadingProducts = false;
-            view.setHasGetProducts(false);
-            if (e instanceof NoFacilityForUserException) {
-                ToastUtil.show(R.string.msg_user_not_facility);
-            } else if (e instanceof LMISException) {
-                ToastUtil.show(R.string.msg_save_products_failed);
-            } else {
-                ToastUtil.show(R.string.msg_sync_products_list_failed);
+    protected SyncSubscriber<Void> getSyncProductSubscriber() {
+        return new SyncSubscriber<Void>() {
+            @Override
+            public void onCompleted() {
+                isLoadingProducts = false;
+                view.setHasGetProducts(true);
+                view.loaded();
+                syncRequisitionData();
             }
-            view.loaded();
-        }
-    };
+
+            @Override
+            public void onError(Throwable e) {
+                isLoadingProducts = false;
+                view.setHasGetProducts(false);
+                if (e instanceof NoFacilityForUserException) {
+                    ToastUtil.show(R.string.msg_user_not_facility);
+                } else if (e instanceof LMISException) {
+                    ToastUtil.show(R.string.msg_save_products_failed);
+                } else {
+                    ToastUtil.show(R.string.msg_sync_products_list_failed);
+                }
+                view.loaded();
+            }
+        };
+    }
 
     private void syncRequisitionData() {
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_rnr_186)){
@@ -213,26 +215,33 @@ public class LoginPresenter implements Presenter {
         if (!isSyncingRequisitionData) {
             isSyncingRequisitionData = true;
             view.loading(LMISApp.getInstance().getString(R.string.msg_sync_requisition_data));
-            syncManager.syncRequisitionData(syncRequisitionDataSubscriber);
+            syncManager.syncRequisitionData(getSyncRequisitionDataSubscriber());
         }
     }
 
-    protected SyncSubscriber<Void> syncRequisitionDataSubscriber = new SyncSubscriber<Void>() {
-        @Override
-        public void onCompleted() {
-            isSyncingRequisitionData = false;
-            view.setRequisitionDataSynced(true);
-            goToNextPage();
-        }
+    protected SyncSubscriber<Void> getSyncRequisitionDataSubscriber() {
+        return new SyncSubscriber<Void>() {
+            @Override
+            public void onCompleted() {
+                isSyncingRequisitionData = false;
+                view.setRequisitionDataSynced(true);
+                goToNextPage();
+            }
 
-        @Override
-        public void onError(Throwable throwable) {
-            isSyncingRequisitionData = false;
-            view.setRequisitionDataSynced(false);
-            ToastUtil.show(R.string.msg_sync_data_failed);
-            goToNextPage();
-        }
-    };
+            @Override
+            public void onError(Throwable throwable) {
+                isSyncingRequisitionData = false;
+                view.setRequisitionDataSynced(false);
+                ToastUtil.show(R.string.msg_sync_data_failed);
+                goToNextPage();
+            }
+        };
+    }
+
+    public void resetLoginProcess() {
+        isSyncingRequisitionData = false;
+        isLoadingProducts = false;
+    }
 
     public interface LoginView extends BaseView {
 

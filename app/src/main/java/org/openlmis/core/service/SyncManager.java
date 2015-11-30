@@ -32,6 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.NoFacilityForUserException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
@@ -84,6 +85,9 @@ public class SyncManager {
     RnrFormRepository rnrFormRepository;
 
     @Inject
+    SharedPreferenceMgr sharedPreferenceMgr;
+
+    @Inject
     StockRepository stockRepository;
 
     LMISRestApi lmisRestApi;
@@ -95,6 +99,9 @@ public class SyncManager {
     private String syncAccountType;
     @InjectResource(R.integer.sync_interval)
     private Integer syncInterval;
+    private boolean SaveProductLock=false;
+    private boolean saveRequisitionLock=false;
+    private Observable<Void> productObservable;
 
     public SyncManager() {
         lmisRestApi = new LMISRestManager().getLmisRestApi();
@@ -169,24 +176,39 @@ public class SyncManager {
             throw new NoFacilityForUserException("No Facility for this User");
         }
         ProductsResponse response = lmisRestApi.fetchProducts(user.getFacilityCode());
-        List<Program> programsWithProducts = response.getProgramsWithProducts();
-        for (Program programWithProducts : programsWithProducts) {
-            programRepository.saveProgramWithProduct(programWithProducts);
+
+        if (SaveProductLock || sharedPreferenceMgr.getPreference().getBoolean(SharedPreferenceMgr.KEY_HAS_GET_PRODUCTS, false)) {
+            throw new LMISException("It's Syncing in Background or Loaded");
+        }
+
+        SaveProductLock = true;
+        try {
+            List<Program> programsWithProducts = response.getProgramsWithProducts();
+            for (Program programWithProducts : programsWithProducts) {
+                programRepository.saveProgramWithProduct(programWithProducts);
+            }
+            sharedPreferenceMgr.getPreference().edit().putBoolean(SharedPreferenceMgr.KEY_HAS_GET_PRODUCTS, true);
+        } finally {
+            SaveProductLock = false;
         }
     }
 
     public void syncProductsWithProgramAsync(Observer<Void> observer) {
-        rx.Observable.create(new rx.Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    syncProductsWithProgram();
-                    subscriber.onCompleted();
-                } catch (Exception e) {
-                    subscriber.onError(e);
+        getProductsObservable().subscribe(observer);
+    }
+
+    public Observable<Void> getProductsObservable() {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+                @Override
+                public void call(Subscriber<? super Void> subscriber) {
+                    try {
+                        syncProductsWithProgram();
+                        subscriber.onCompleted();
+                    } catch (Exception e) {
+                        subscriber.onError(e);
+                    }
                 }
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
+            }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     public void syncRequisitionData(Observer<Void> observer) {
@@ -210,9 +232,20 @@ public class SyncManager {
         if (syncBackRequisitionsResponse == null) {
             throw new LMISException("Can't get SyncBackRequisitionsResponse, you can check json parse to POJO logic");
         }
-        List<RnRForm> rnRForms = syncBackRequisitionsResponse.getRequisitions();
-        for (RnRForm form : rnRForms) {
-            rnrFormRepository.createFormAndItems(form);
+
+        if (saveRequisitionLock || sharedPreferenceMgr.getPreference().getBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, false)) {
+            throw new LMISException("Sync Requisition Background or Loaded");
+        }
+        saveRequisitionLock = true;
+
+        try {
+            List<RnRForm> rnRForms = syncBackRequisitionsResponse.getRequisitions();
+            for (RnRForm form : rnRForms) {
+                rnrFormRepository.createFormAndItems(form);
+            }
+            sharedPreferenceMgr.getPreference().edit().putBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, true);
+        } finally {
+            saveRequisitionLock = false;
         }
     }
 
