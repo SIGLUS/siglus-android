@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mmia_spread_bg"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <org.openlmis.core.view.widget.MMIARnrForm
+            android:id="@+id/rnr_form_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/mmia_spread_list_bg"
+            android:divider="@drawable/divider_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/divider"
+            android:showDividers="middle" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:orientation="vertical">
+
+                <org.openlmis.core.view.widget.MMIARegimeList
+                    android:id="@+id/regime_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/mmia_spread_list_bg"
+                    android:divider="@drawable/divider_horizontal"
+                    android:padding="@dimen/divider"
+                    android:showDividers="middle" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:background="@drawable/mmia_spread_regime_total_bg"
+                    android:divider="@drawable/divider_vertical"
+                    android:orientation="horizontal"
+                    android:showDividers="middle">
+
+                    <TextView
+                        android:layout_width="80dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/color_mmia_info_name"
+                        android:gravity="end|center_vertical"
+                        android:labelFor="@+id/tv_regime_total"
+                        android:minHeight="30dp"
+                        android:paddingEnd="8dp"
+                        android:paddingStart="8dp"
+                        android:text="@string/label_total_mmia" />
+
+                    <TextView
+                        android:id="@+id/tv_regime_total"
+                        android:layout_width="@dimen/mmia_spread_item_common_width"
+                        android:layout_height="match_parent"
+                        android:background="@color/mmia_spread_bg"
+                        android:freezesText="true"
+                        android:gravity="center_vertical"
+                        android:minHeight="30dp"
+                        android:padding="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_weight="2"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/mmia_spread_list_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/black"
+                    android:gravity="center"
+                    android:minHeight="38dp"
+                    android:text="@string/label_mmia_speed_info_header"
+                    android:textColor="@color/white" />
+
+                <org.openlmis.core.view.widget.MMIAInfoList
+                    android:id="@+id/mmia_info_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/mmia_spread_list_bg"
+                    android:divider="@drawable/divider_horizontal"
+                    android:padding="@dimen/divider"
+                    android:showDividers="middle" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/ly_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/white">
+
+                    <EditText
+                        android:id="@+id/et_comment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_mmia_comment"
+                        android:minHeight="50dp" />
+
+                    <TextView
+                        android:id="@+id/tv_total_mismatch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/msg_reason_for_total_not_match"
+                        android:textColor="@color/color_error_title"
+                        android:visibility="invisible" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <include
+            android:id="@+id/action_panel"
+            layout="@layout/layout_form_action" />
+    </LinearLayout>
+</ScrollView>

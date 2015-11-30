@@ -127,7 +127,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             view.highLightApprovedAmount();
         }
         view.refreshRequisitionForm(rnRForm);
-        view.setEditable();
     }
 
     protected boolean validateFormInput() {
@@ -210,14 +209,10 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
         void showListInputError(int index);
 
-        void refreshRequisitionForm(RnRForm rnRForm);
-
         void highLightRequestAmount();
 
         void highLightApprovedAmount();
 
         void setProcessButtonName(String name);
-
-        void setEditable();
     }
 }

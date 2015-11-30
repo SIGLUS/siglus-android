@@ -200,12 +200,12 @@ public class MMIARequisitionPresenterTest {
     }
 
     @Test
-    public void shouldInitViewWhenLoadRnRFormOnNext() {
+    public void shouldRefreshViewWhenLoadRnRFormOnNext() {
         reset(mockMMIAformView);
         RnRForm rnRForm = new RnRForm();
         presenter.loadDataOnNextAction.call(rnRForm);
 
-        verify(mockMMIAformView).initView(rnRForm);
+        verify(mockMMIAformView).refreshRequisitionForm(rnRForm);
         verify(mockMMIAformView).loaded();
     }
 

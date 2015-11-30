@@ -89,7 +89,8 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     @Override
     protected void updateFormUI() {
         if (rnRForm != null) {
-            view.initView(rnRForm);
+            view.refreshRequisitionForm(rnRForm);
+            setBtnCompleteText();
         }
     }
 
@@ -149,8 +150,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     public interface MMIARequisitionView extends BaseRequisitionView {
 
         void showValidationAlert();
-
-        void initView(RnRForm form);
 
         void setProcessButtonName(String name);
     }

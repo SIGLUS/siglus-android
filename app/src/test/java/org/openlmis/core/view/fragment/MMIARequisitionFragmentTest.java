@@ -1,4 +1,21 @@
-package org.openlmis.core.view.activity;
+/*
+ * This program is part of the OpenLMIS logistics management information
+ * system platform software.
+ *
+ * Copyright © 2015 ThoughtWorks, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version. This program is distributed in the
+ * hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details. You should
+ * have received a copy of the GNU Affero General Public License along with
+ * this program. If not, see http://www.gnu.org/licenses. For additional
+ * information contact info@OpenLMIS.org
+ */
+package org.openlmis.core.view.fragment;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -23,7 +40,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.view.fragment.SimpleDialogFragment;
+import org.openlmis.core.view.activity.MMIARequisitionActivity;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARnrForm;
@@ -45,10 +62,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
-public class MMIARequisitionActivityTest {
+public class MMIARequisitionFragmentTest {
 
     private MMIARequisitionPresenter mmiaFormPresenter;
-    private MMIARequisitionActivity mmiaRequisitionActivity;
+    private MMIARequisitionFragment mmiaRequisitionFragment;
     private Program program;
     private RnRForm form;
     private MMIARegimeList regimeListView;
@@ -56,7 +73,7 @@ public class MMIARequisitionActivityTest {
     private MMIARnrForm rnrFormList;
 
     @Before
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         mmiaFormPresenter = mock(MMIARequisitionPresenter.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
@@ -65,15 +82,15 @@ public class MMIARequisitionActivityTest {
             }
         });
 
-        mmiaRequisitionActivity = Robolectric.buildActivity(MMIARequisitionActivity.class).create().get();
+        mmiaRequisitionFragment = getMMIARequisitionFragmentWithoutIntent();
 
         regimeListView = mock(MMIARegimeList.class);
         mmiaInfoListView = mock(MMIAInfoList.class);
         rnrFormList = mock(MMIARnrForm.class);
 
-        mmiaRequisitionActivity.regimeListView = regimeListView;
-        mmiaRequisitionActivity.mmiaInfoListView = mmiaInfoListView;
-        mmiaRequisitionActivity.rnrFormList = rnrFormList;
+        mmiaRequisitionFragment.regimeListView = regimeListView;
+        mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
+        mmiaRequisitionFragment.rnrFormList = rnrFormList;
 
         EditText patientTotalView = mock(EditText.class);
         when(mmiaInfoListView.getPatientTotalView()).thenReturn(patientTotalView);
@@ -87,16 +104,26 @@ public class MMIARequisitionActivityTest {
         when(mmiaFormPresenter.getRnrForm(anyInt())).thenReturn(form);
     }
 
-    private MMIARequisitionActivity getMMIARequisitionActivityWithIntent() {
+    private MMIARequisitionFragment getMMIARequisitionFragmentWithFormId() {
         Intent intent = new Intent();
         intent.putExtra(Constants.PARAM_FORM_ID, 1L);
         MMIARequisitionActivity mmiaRequisitionActivity = Robolectric.buildActivity(MMIARequisitionActivity.class).withIntent(intent).create().get();
+        MMIARequisitionFragment fragment = (MMIARequisitionFragment) mmiaRequisitionActivity.getFragmentManager().findFragmentById(R.id.fragment_requisition);
+        fragment.regimeListView = regimeListView;
+        fragment.mmiaInfoListView = mmiaInfoListView;
+        fragment.rnrFormList = rnrFormList;
 
-        mmiaRequisitionActivity.regimeListView = regimeListView;
-        mmiaRequisitionActivity.mmiaInfoListView = mmiaInfoListView;
-        mmiaRequisitionActivity.rnrFormList = rnrFormList;
+        return fragment;
+    }
 
-        return mmiaRequisitionActivity;
+    private MMIARequisitionFragment getMMIARequisitionFragmentWithoutIntent() {
+        MMIARequisitionActivity mmiaRequisitionActivity = Robolectric.buildActivity(MMIARequisitionActivity.class).create().get();
+        MMIARequisitionFragment fragment = (MMIARequisitionFragment) mmiaRequisitionActivity.getFragmentManager().findFragmentById(R.id.fragment_requisition);
+        fragment.regimeListView = regimeListView;
+        fragment.mmiaInfoListView = mmiaInfoListView;
+        fragment.rnrFormList = rnrFormList;
+
+        return fragment;
     }
 
     @Test
@@ -106,36 +133,36 @@ public class MMIARequisitionActivityTest {
         form.setBaseInfoItemListWrapper(baseInfoItems);
         form.setRegimenItemListWrapper(regimenItems);
 
-        mmiaRequisitionActivity.initView(form);
+        mmiaRequisitionFragment.refreshRequisitionForm(form);
 
         verify(rnrFormList).initView(any(ArrayList.class));
-        verify(regimeListView).initView(regimenItems, mmiaRequisitionActivity.tvRegimeTotal);
+        verify(regimeListView).initView(regimenItems, mmiaRequisitionFragment.tvRegimeTotal);
         verify(mmiaInfoListView).initView(baseInfoItems);
 
     }
 
     @Test
     public void shouldShowErrorMessageWhenMethodCalled() {
-        mmiaRequisitionActivity.showErrorMessage("Hello message");
+        mmiaRequisitionFragment.showErrorMessage("Hello message");
 
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo("Hello message");
     }
 
     @Test
     public void shouldSaveCompleteWhenMethodCalled() {
-        mmiaRequisitionActivity.completeSuccess();
+        mmiaRequisitionFragment.completeSuccess();
 
-        String successMessage = mmiaRequisitionActivity.getString(R.string.msg_mmia_submit_tip);
+        String successMessage = mmiaRequisitionFragment.getString(R.string.msg_mmia_submit_tip);
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(successMessage);
 
-        assertThat(mmiaRequisitionActivity.isFinishing()).isTrue();
+        assertThat(mmiaRequisitionFragment.getActivity().isFinishing()).isTrue();
     }
 
     @Test
     public void shouldShowValidationAlertWhenMethodCalled() {
-        mmiaRequisitionActivity.showValidationAlert();
+        mmiaRequisitionFragment.showValidationAlert();
 
-        SimpleDialogFragment fragment = (SimpleDialogFragment) mmiaRequisitionActivity.getFragmentManager().findFragmentByTag("not_match_dialog");
+        SimpleDialogFragment fragment = (SimpleDialogFragment) mmiaRequisitionFragment.getFragmentManager().findFragmentByTag("not_match_dialog");
 
         assertThat(fragment).isNotNull();
 
@@ -145,33 +172,32 @@ public class MMIARequisitionActivityTest {
 
     @Test
     public void shouldRemoveRnrFormWhenPositiveButtonClicked() throws LMISException {
-        mmiaRequisitionActivity.positiveClick(MMIARequisitionActivity.TAG_BACK_PRESSED);
+        mmiaRequisitionFragment.positiveClick(MMIARequisitionFragment.TAG_BACK_PRESSED);
 
         verify(mmiaFormPresenter).removeRequisition();
     }
 
     @Test
     public void shouldNotRemoveRnrFormWhenGoBack() throws LMISException {
-        mmiaRequisitionActivity.onBackPressed();
+        mmiaRequisitionFragment.onBackPressed();
         verify(mmiaFormPresenter, never()).removeRequisition();
     }
 
     @Test
     public void shouldShowSaveAndCompleteButtonWhenFormIsEditable() {
-        mmiaRequisitionActivity.initView(form);
+        mmiaRequisitionFragment.initUI();
 
-        assertThat(mmiaRequisitionActivity.btnSave.getVisibility()).isEqualTo(View.VISIBLE);
-        assertThat(mmiaRequisitionActivity.btnComplete.getVisibility()).isEqualTo(View.VISIBLE);
+        assertThat(mmiaRequisitionFragment.btnSave.getVisibility()).isEqualTo(View.VISIBLE);
+        assertThat(mmiaRequisitionFragment.btnComplete.getVisibility()).isEqualTo(View.VISIBLE);
     }
 
     @Test
     public void shouldNotShowSaveAndCompleteButtonWhenFormIsNotEditable() {
-        mmiaRequisitionActivity = getMMIARequisitionActivityWithIntent();
+        mmiaRequisitionFragment = getMMIARequisitionFragmentWithFormId();
 
-        mmiaRequisitionActivity.initView(form);
+        mmiaRequisitionFragment.initUI();
 
-        assertThat(mmiaRequisitionActivity.btnSave.getVisibility()).isEqualTo(View.GONE);
-        assertThat(mmiaRequisitionActivity.btnComplete.getVisibility()).isEqualTo(View.GONE);
+        assertThat(mmiaRequisitionFragment.bottomView.getVisibility()).isEqualTo(View.GONE);
     }
 
     @Test
@@ -181,9 +207,9 @@ public class MMIARequisitionActivityTest {
 
         ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
 
-        mmiaRequisitionActivity.initView(form);
+        mmiaRequisitionFragment.refreshRequisitionForm(form);
 
-        assertThat(mmiaRequisitionActivity.getTitle()).isEqualTo("MMIA - 21 Apr to 20 May");
+        assertThat(mmiaRequisitionFragment.getActivity().getTitle()).isEqualTo("MMIA - 21 Apr to 20 May");
     }
 
     @Test
@@ -193,12 +219,12 @@ public class MMIARequisitionActivityTest {
 
         ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(false);
 
-        mmiaRequisitionActivity.initView(form);
-        assertThat(mmiaRequisitionActivity.getTitle()).isEqualTo("MMIA");
+        mmiaRequisitionFragment.refreshRequisitionForm(form);
+        assertThat(mmiaRequisitionFragment.getActivity().getTitle()).isEqualTo("MMIA");
 
-        mmiaRequisitionActivity = getMMIARequisitionActivityWithIntent();
-        mmiaRequisitionActivity.initView(form);
-        assertThat(mmiaRequisitionActivity.getTitle()).isEqualTo("21 Apr 2015  to  20 May 2015");
+        mmiaRequisitionFragment = getMMIARequisitionFragmentWithFormId();
+        mmiaRequisitionFragment.refreshRequisitionForm(form);
+        assertThat(mmiaRequisitionFragment.getActivity().getTitle()).isEqualTo("21 Apr 2015  to  20 May 2015");
     }
 
     @Test
@@ -206,14 +232,14 @@ public class MMIARequisitionActivityTest {
         when(regimeListView.getTotal()).thenReturn(20L);
         when(mmiaInfoListView.getTotal()).thenReturn(20L);
 
-        mmiaRequisitionActivity.regimeListView = regimeListView;
-        mmiaRequisitionActivity.mmiaInfoListView = mmiaInfoListView;
+        mmiaRequisitionFragment.regimeListView = regimeListView;
+        mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
 
-        mmiaRequisitionActivity.initView(form);
+        mmiaRequisitionFragment.refreshRequisitionForm(form);
 
         verify(regimeListView).deHighLightTotal();
         verify(mmiaInfoListView).deHighLightTotal();
-        assertThat(mmiaRequisitionActivity.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
+        assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
     }
 
     @Test
@@ -221,21 +247,21 @@ public class MMIARequisitionActivityTest {
         when(regimeListView.getTotal()).thenReturn(20L);
         when(mmiaInfoListView.getTotal()).thenReturn(40L);
 
-        mmiaRequisitionActivity.regimeListView = regimeListView;
-        mmiaRequisitionActivity.mmiaInfoListView = mmiaInfoListView;
+        mmiaRequisitionFragment.regimeListView = regimeListView;
+        mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
 
-        mmiaRequisitionActivity.initView(form);
+        mmiaRequisitionFragment.refreshRequisitionForm(form);
 
         verify(regimeListView).highLightTotal();
         verify(mmiaInfoListView).highLightTotal();
-        assertThat(mmiaRequisitionActivity.tvMismatch.getVisibility()).isEqualTo(View.VISIBLE);
+        assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.VISIBLE);
     }
 
     @Test
     public void shouldShowSubmitSignatureDialog() {
-        mmiaRequisitionActivity.showSignDialog(true);
+        mmiaRequisitionFragment.showSignDialog(true);
 
-        DialogFragment fragment = (DialogFragment) (mmiaRequisitionActivity.getFragmentManager().findFragmentByTag("signature_dialog"));
+        DialogFragment fragment = (DialogFragment) (mmiaRequisitionFragment.getFragmentManager().findFragmentByTag("signature_dialog"));
 
         assertThat(fragment).isNotNull();
 
@@ -243,15 +269,15 @@ public class MMIARequisitionActivityTest {
 
         assertThat(dialog).isNotNull();
 
-        String alertMessage = mmiaRequisitionActivity.getString(R.string.msg_mmia_submit_signature);
+        String alertMessage = mmiaRequisitionFragment.getString(R.string.msg_mmia_submit_signature);
         assertThat(fragment.getArguments().getString("title")).isEqualTo(alertMessage);
     }
 
     @Test
     public void shouldShowApproveSignatureDialog() {
-        mmiaRequisitionActivity.showSignDialog(false);
+        mmiaRequisitionFragment.showSignDialog(false);
 
-        DialogFragment fragment = (DialogFragment) (mmiaRequisitionActivity.getFragmentManager().findFragmentByTag("signature_dialog"));
+        DialogFragment fragment = (DialogFragment) (mmiaRequisitionFragment.getFragmentManager().findFragmentByTag("signature_dialog"));
 
         assertThat(fragment).isNotNull();
 
@@ -259,15 +285,15 @@ public class MMIARequisitionActivityTest {
 
         assertThat(dialog).isNotNull();
 
-        String alertMessage = mmiaRequisitionActivity.getString(R.string.msg_mmia_approve_signature);
+        String alertMessage = mmiaRequisitionFragment.getString(R.string.msg_mmia_approve_signature);
         assertThat(fragment.getArguments().getString("title")).isEqualTo(alertMessage);
     }
 
     @Test
     public void shouldMessageNotifyDialog() {
-        mmiaRequisitionActivity.showMessageNotifyDialog();
+        mmiaRequisitionFragment.showMessageNotifyDialog();
 
-        DialogFragment fragment = (DialogFragment) (mmiaRequisitionActivity.getFragmentManager().findFragmentByTag("showMessageNotifyDialog"));
+        DialogFragment fragment = (DialogFragment) (mmiaRequisitionFragment.getFragmentManager().findFragmentByTag("showMessageNotifyDialog"));
 
         assertThat(fragment).isNotNull();
 
