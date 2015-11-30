@@ -19,13 +19,19 @@
 package org.openlmis.core.exceptions;
 
 
+import com.crashlytics.android.Crashlytics;
+
 public class LMISException extends Exception {
 
-    public LMISException(String msg){
+    public LMISException(String msg) {
         super(msg);
     }
 
-    public LMISException(Exception e){
+    public LMISException(Exception e) {
         super(e);
+    }
+
+    public void reportToFabric() {
+        Crashlytics.logException(this);
     }
 }

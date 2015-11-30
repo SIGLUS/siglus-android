@@ -81,7 +81,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
             final List<RnRFormSignature> signatureList = rnrFormRepository.querySignaturesByRnrForm(rnRForm);
             root.add("rnrSignatures", jsonParser.parse(gson.toJson(signatureList)));
         } catch (LMISException e) {
-            e.printStackTrace();
+            e.reportToFabric();
             throw new JsonParseException("can not find Signature by rnrForm");
         }
 
@@ -103,7 +103,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
             Program program = programRepository.queryByCode(json.getAsJsonObject().get("programCode").getAsString());
             rnRForm.setProgram(program);
         } catch (LMISException e) {
-            e.printStackTrace();
+            e.reportToFabric();
             throw new JsonParseException("can not find Program by programCode");
         }
         rnRForm.matchPeriodEndByBegin();

@@ -69,7 +69,7 @@ public class CreateDummyRegimes extends Migration {
                 }
             });
         } catch (LMISException e) {
-            e.printStackTrace();
+            e.reportToFabric();
         }
     }
 

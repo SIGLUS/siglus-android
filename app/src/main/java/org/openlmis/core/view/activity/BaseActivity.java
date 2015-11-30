@@ -136,7 +136,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
         try {
             presenter.attachView(BaseActivity.this);
         } catch (ViewNotMatchException e) {
-            e.printStackTrace();
+            e.reportToFabric();
             ToastUtil.show(e.getMessage());
             return;
         }

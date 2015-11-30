@@ -174,7 +174,7 @@ public class StockMovementPresenter implements Presenter {
             view.refreshStockMovement();
             view.deactivatedStockDraft();
         } catch (LMISException e) {
-            e.printStackTrace();
+            e.reportToFabric();
         }
     }
 

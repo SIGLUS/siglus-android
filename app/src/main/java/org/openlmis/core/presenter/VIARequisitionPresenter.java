@@ -103,7 +103,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                     subscriber.onNext(rnrForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    e.printStackTrace();
+                    e.reportToFabric();
                     subscriber.onError(e);
                 }
             }

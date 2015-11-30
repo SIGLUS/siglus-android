@@ -83,7 +83,7 @@ public class UserRepository extends LMISRestManager {
                 }
             });
         } catch (LMISException e) {
-            e.printStackTrace();
+            e.reportToFabric();
         }
 
         if (users !=null && users.size() >0){
@@ -97,7 +97,7 @@ public class UserRepository extends LMISRestManager {
         try {
             genericDao.createOrUpdate(user);
         } catch (LMISException e) {
-            e.printStackTrace();
+            e.reportToFabric();
         }
     }
 

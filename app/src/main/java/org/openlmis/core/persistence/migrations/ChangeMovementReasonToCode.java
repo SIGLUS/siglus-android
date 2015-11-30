@@ -80,7 +80,7 @@ public class ChangeMovementReasonToCode extends Migration{
             updateStockMovementItems(itemList);
 
         }catch (LMISException e){
-            e.printStackTrace();
+            e.reportToFabric();
             throw new RuntimeException(e.getMessage());
         }
     }

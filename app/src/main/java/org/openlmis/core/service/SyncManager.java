@@ -262,7 +262,7 @@ public class SyncManager {
                 return false;
             }
         } catch (LMISException e) {
-            e.printStackTrace();
+            e.reportToFabric();
         }
 
         Observable.from(forms).filter(new Func1<RnRForm, Boolean>() {
@@ -310,7 +310,7 @@ public class SyncManager {
             stockMovementItems = stockRepository.listUnSynced();
             Log.d(TAG, "===> SyncStockMovement :" + stockMovementItems.size() + " StockMovement ready to sync...");
         } catch (LMISException e) {
-            e.printStackTrace();
+            e.reportToFabric();
             return false;
         }
 

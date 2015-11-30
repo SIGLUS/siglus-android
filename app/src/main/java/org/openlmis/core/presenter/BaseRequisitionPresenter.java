@@ -140,7 +140,7 @@ public abstract class BaseRequisitionPresenter implements Presenter {
                     rnrFormRepository.save(rnRForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    e.printStackTrace();
+                    e.reportToFabric();
                     subscriber.onError(e);
                 }
             }
@@ -177,7 +177,7 @@ public abstract class BaseRequisitionPresenter implements Presenter {
                     rnrFormRepository.submit(rnRForm);
                     subscriber.onNext(null);
                 } catch (LMISException e) {
-                    e.printStackTrace();
+                    e.reportToFabric();
                     subscriber.onError(e);
                 }
             }
@@ -211,7 +211,7 @@ public abstract class BaseRequisitionPresenter implements Presenter {
                     rnrFormRepository.authorise(rnRForm);
                     subscriber.onNext(null);
                 } catch (LMISException e) {
-                    e.printStackTrace();
+                    e.reportToFabric();
                     subscriber.onError(e);
                 }
             }
@@ -261,7 +261,7 @@ public abstract class BaseRequisitionPresenter implements Presenter {
                     subscriber.onNext(null);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    e.printStackTrace();
+                    e.reportToFabric();
                     subscriber.onError(e);
                 }
             }

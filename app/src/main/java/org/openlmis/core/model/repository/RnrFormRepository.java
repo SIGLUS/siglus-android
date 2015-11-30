@@ -163,7 +163,7 @@ public class RnrFormRepository {
 
             return rnRForm == null;
         } catch (LMISException e) {
-            e.printStackTrace();
+            e.reportToFabric();
         }
         return false;
     }

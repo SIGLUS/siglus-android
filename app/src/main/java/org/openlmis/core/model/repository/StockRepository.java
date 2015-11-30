@@ -78,7 +78,7 @@ public class StockRepository {
                 }
             });
         } catch (LMISException e) {
-            e.printStackTrace();
+            e.reportToFabric();
         }
     }
 
@@ -86,7 +86,7 @@ public class StockRepository {
         try {
             genericDao.create(stockCard);
         } catch (LMISException e) {
-            e.printStackTrace();
+            e.reportToFabric();
         }
     }
 
@@ -94,7 +94,7 @@ public class StockRepository {
         try {
             genericDao.update(stockCard);
         } catch (LMISException e) {
-            e.printStackTrace();
+            e.reportToFabric();
         }
     }
 
@@ -102,7 +102,7 @@ public class StockRepository {
         try {
             genericDao.refresh(stockCard);
         } catch (LMISException e) {
-            e.printStackTrace();
+            e.reportToFabric();
         }
     }
 

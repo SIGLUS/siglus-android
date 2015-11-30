@@ -60,7 +60,7 @@ public class ProductRepository {
                 }
             });
         } catch (LMISException e) {
-            e.printStackTrace();
+            e.reportToFabric();
         }
     }
 
@@ -73,7 +73,7 @@ public class ProductRepository {
         try {
             return genericDao.getById(String.valueOf(id));
         }catch (LMISException e){
-            e.printStackTrace();
+            e.reportToFabric();
         }
         return null;
     }

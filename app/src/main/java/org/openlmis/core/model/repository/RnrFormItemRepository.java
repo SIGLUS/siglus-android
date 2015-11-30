@@ -70,7 +70,7 @@ public class RnrFormItemRepository {
                 return (int) Math.ceil((total / rnrFormItemList.size()) * 0.05);
             }
         } catch (LMISException e) {
-            e.printStackTrace();
+            e.reportToFabric();
         }
         return 0;
     }

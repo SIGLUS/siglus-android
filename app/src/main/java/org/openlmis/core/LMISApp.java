@@ -51,8 +51,7 @@ public class LMISApp extends Application {
         return instance;
     }
 
-
-    protected void setupFabric(){
+    protected void setupFabric() {
         Fabric.with(this, new Crashlytics.Builder()
                 .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
                 .build());

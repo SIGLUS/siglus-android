@@ -79,7 +79,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
                     subscriber.onNext(rnRForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    e.printStackTrace();
+                    e.reportToFabric();
                     subscriber.onError(e);
                 }
             }
@@ -125,7 +125,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
                     subscriber.onNext(null);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    e.printStackTrace();
+                    e.reportToFabric();
                     subscriber.onError(e);
 
                 }

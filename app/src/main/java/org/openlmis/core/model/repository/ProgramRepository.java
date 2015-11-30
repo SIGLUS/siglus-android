@@ -70,7 +70,7 @@ public class ProgramRepository {
         try {
             genericDao.refresh(programsWithProducts);
         } catch (LMISException e) {
-            e.printStackTrace();
+            e.reportToFabric();
         }
     }
 

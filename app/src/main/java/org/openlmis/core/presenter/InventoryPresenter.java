@@ -107,7 +107,7 @@ public class InventoryPresenter implements Presenter {
                     subscriber.onNext(list);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    e.printStackTrace();
+                    e.reportToFabric();
                     subscriber.onError(e);
                 }
             }
@@ -179,7 +179,7 @@ public class InventoryPresenter implements Presenter {
             stockRepository.initStockCard(stockCard);
             return stockCard;
         } catch (LMISException e) {
-            e.printStackTrace();
+            e.reportToFabric();
         }
         return null;
     }
@@ -226,7 +226,7 @@ public class InventoryPresenter implements Presenter {
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     subscriber.onError(e);
-                    e.printStackTrace();
+                    e.reportToFabric();
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());

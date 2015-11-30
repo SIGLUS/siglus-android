@@ -114,7 +114,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         try {
             presenter.attachView(this);
         } catch (ViewNotMatchException e) {
-            e.printStackTrace();
+            e.reportToFabric();
         }
 
         formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
@@ -507,7 +507,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
                 presenter.removeRequisition();
             } catch (LMISException e) {
                 ToastUtil.show("Delete Failed");
-                e.printStackTrace();
+                e.reportToFabric();
             }
         }
     }
