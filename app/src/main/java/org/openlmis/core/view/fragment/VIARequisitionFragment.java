@@ -122,7 +122,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        containerView = inflater.inflate(R.layout.fragment_requisition, container, false);
+        containerView = inflater.inflate(R.layout.fragment_via_requisition, container, false);
         return containerView;
     }
 
@@ -131,7 +131,9 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         super.onViewCreated(view, savedInstanceState);
         initUI();
 
-        if (!isSavedInstanceState) {
+        if (isSavedInstanceState) {
+            refreshRequisitionForm(presenter.getRnRForm());
+        }else {
             presenter.loadData(formId);
         }
     }
@@ -146,6 +148,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         requisitionProductAdapter.notifyDataSetChanged();
         requisitionFormAdapter.updateStatus(rnRForm.getStatus());
         setConsultationNumbers();
+        setEditable();
     }
 
     public void setTitleWithPeriodWithToggle(RnRForm rnRForm) {
@@ -189,7 +192,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         requisitionFormAdapter.updateStatus(RnRForm.STATUS.DRAFT);
     }
 
-    @Override
     public void setEditable() {
         if (presenter.getRnRForm().isAuthorized()) {
             vgContainer.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
