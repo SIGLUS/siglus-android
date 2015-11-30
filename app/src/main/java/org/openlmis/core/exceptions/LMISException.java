@@ -32,6 +32,9 @@ public class LMISException extends Exception {
     }
 
     public void reportToFabric() {
+        //this will save exception messages locally
+        //it only uploads to fabric server when network is available
+        //so this actually behaves analogously with our sync logic
         Crashlytics.logException(this);
     }
 }
