@@ -166,6 +166,7 @@ public class SyncManagerTest {
         item.setStockOnHand(-1);
         item.setMovementDate(DateUtil.today());
         item.setMovementType(StockMovementItem.MovementType.RECEIVE);
+        item.setStockCard(stockCard);
         item.setSynced(false);
 
         stockRepository.addStockMovementAndUpdateStockCard(stockCard, item);

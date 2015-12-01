@@ -150,6 +150,8 @@ public class StockRepository {
         initInventory.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
         initInventory.setMovementDate(new Date());
         initInventory.setMovementQuantity(stockCard.getStockOnHand());
+        initInventory.setStockOnHand(stockCard.getStockOnHand());
+        initInventory.setStockCard(stockCard);
         return initInventory;
     }
 
@@ -157,10 +159,6 @@ public class StockRepository {
         if (stockcard == null) {
             return;
         }
-
-        stockMovementItem.setStockCard(stockcard);
-        stockMovementItem.updateStockOnHand(stockcard.getStockOnHand());
-        stockcard.setStockOnHand(stockMovementItem.getStockOnHand());
 
         update(stockcard);
         saveStockItem(stockMovementItem);

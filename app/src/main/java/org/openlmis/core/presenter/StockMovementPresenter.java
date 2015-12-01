@@ -163,7 +163,10 @@ public class StockMovementPresenter implements Presenter {
 
     public void saveAndRefresh(StockMovementViewModel viewModel) {
         try {
-            saveStockMovement(viewModel.convertViewToModel());
+            StockMovementItem stockMovementItem = viewModel.convertViewToModel();
+            stockMovementItem.setStockCard(stockCard);
+            stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
+            saveStockMovement(stockMovementItem);
 
             viewModel.setDraft(false);
             stockMovementModelList.add(new StockMovementViewModel());

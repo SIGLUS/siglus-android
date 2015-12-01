@@ -185,7 +185,7 @@ public class InventoryPresenter implements Presenter {
     }
 
 
-    protected StockMovementItem calculateAdjustment(StockCardViewModel model) {
+    protected StockMovementItem calculateAdjustment(StockCardViewModel model, StockCard stockCard) {
         long inventory = Long.parseLong(model.getQuantity());
         long stockOnHand = model.getStockOnHand();
 
@@ -193,6 +193,8 @@ public class InventoryPresenter implements Presenter {
         item.setSignature(model.getSignature());
         item.setMovementDate(new Date());
         item.setMovementQuantity(Math.abs(inventory - stockOnHand));
+        item.setStockOnHand(inventory);
+        item.setStockCard(stockCard);
 
         if (inventory > stockOnHand) {
             item.setReason(MovementReasonManager.INVENTORY_POSITIVE);
@@ -253,7 +255,8 @@ public class InventoryPresenter implements Presenter {
                     for (StockCardViewModel model : list) {
                         StockCard stockCard = model.getStockCard();
                         stockCard.setExpireDates(model.formatExpiryDateString());
-                        stockRepository.addStockMovementAndUpdateStockCard(stockCard, calculateAdjustment(model));
+                        stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
+                        stockRepository.addStockMovementAndUpdateStockCard(stockCard, calculateAdjustment(model, stockCard));
                     }
                     stockRepository.clearDraftInventory();
                     subscriber.onNext(null);

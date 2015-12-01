@@ -52,7 +52,6 @@ import rx.schedulers.Schedulers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.Lists.newArrayList;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -124,11 +123,14 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         when(stockRepositoryMock.queryStockCardById(123)).thenReturn(stockCard);
         stockMovementPresenter.setStockCard(123);
 
-        StockMovementItem item = new StockMovementItem();
         StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
+        StockMovementItem item = new StockMovementItem();
+        item.setStockOnHand(100L);
         when(viewModel.convertViewToModel()).thenReturn(item);
 
         stockMovementPresenter.saveAndRefresh(viewModel);
+
+        assertThat(stockMovementPresenter.getStockCard().getStockOnHand()).isEqualTo(item.getStockOnHand());
         verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(stockCard, item);
     }
 

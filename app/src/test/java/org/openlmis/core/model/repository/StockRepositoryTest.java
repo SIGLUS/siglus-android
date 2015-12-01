@@ -31,8 +31,8 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -46,7 +46,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
-import static org.openlmis.core.model.StockMovementItem.MovementType.ISSUE;
 import static org.openlmis.core.model.StockMovementItem.MovementType.RECEIVE;
 import static org.openlmis.core.model.builder.StockCardBuilder.saveStockCardWithOneMovement;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
@@ -115,27 +114,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldCalculateStockOnHandCorrectly() throws LMISException, ParseException {
-        //given SOH is 100
-        StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
-        stockCard.setStockOnHand(100L);
-
-        //when receive 50
-        StockMovementItem stockMovementItem = createMovementItem(RECEIVE, 50L);
-        stockRepository.addStockMovementAndUpdateStockCard(stockCard, stockMovementItem);
-
-        //then SOH is 150
-        assertThat(stockMovementItem.getStockOnHand(), is(150L));
-
-        //when issue 100
-        stockMovementItem = createMovementItem(ISSUE, 100L);
-        stockRepository.addStockMovementAndUpdateStockCard(stockCard, stockMovementItem);
-
-        //then SOH is 50
-        assertThat(stockMovementItem.getStockOnHand(), is(50L));
-    }
-
-    @Test
     public void shouldListUnsyncedStockMovementItems() throws LMISException, ParseException {
         //given one movement was saved but NOT SYNCED
         StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
@@ -143,7 +121,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(stockRepository.listUnSynced().size(), is(1));
 
         //when save another SYNCED movement
-        StockMovementItem item = createMovementItem(RECEIVE, 100);
+        StockMovementItem item = createMovementItem(RECEIVE, 100, stockCard);
         item.setSynced(true);
         stockRepository.addStockMovementAndUpdateStockCard(stockCard, item);
         stockRepository.refresh(stockCard);
@@ -160,7 +138,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
 
         //when
-        StockMovementItem item = createMovementItem(RECEIVE, 100);
+        StockMovementItem item = createMovementItem(RECEIVE, 100, stockCard);
         stockRepository.addStockMovementAndUpdateStockCard(stockCard, item);
         stockRepository.refresh(stockCard);
 
@@ -190,8 +168,10 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockCard.setStockOnHand(200);
         StockMovementItem stockMovementItem = stockRepository.initStockMovementItem(stockCard);
         assertThat(stockMovementItem.getMovementQuantity(), is(200L));
+        assertThat(stockMovementItem.getStockOnHand(), is(200L));
         assertThat(stockMovementItem.getReason(), is(MovementReasonManager.INVENTORY));
         assertThat(stockMovementItem.getMovementType(), is(StockMovementItem.MovementType.PHYSICAL_INVENTORY));
+        assertThat(stockMovementItem.getStockCard(), is(stockCard));
     }
 
     @Test
@@ -234,11 +214,13 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         productRepository.create(product);
     }
 
-    private StockMovementItem createMovementItem(StockMovementItem.MovementType type, long quantity) {
+    private StockMovementItem createMovementItem(StockMovementItem.MovementType type, long quantity, StockCard stockCard) {
         StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setMovementQuantity(quantity);
         stockMovementItem.setMovementType(type);
         stockMovementItem.setMovementDate(DateUtil.today());
+        stockMovementItem.setStockCard(stockCard);
+        stockMovementItem.setStockOnHand(stockCard.getStockOnHand());
         return stockMovementItem;
     }
 }

@@ -207,10 +207,12 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         StockCardViewModel model = new StockCardViewModel(stockCard);
         model.setQuantity("120");
 
-        StockMovementItem item = inventoryPresenter.calculateAdjustment(model);
+        StockMovementItem item = inventoryPresenter.calculateAdjustment(model, stockCard);
 
         assertThat(item.getMovementType(), is(StockMovementItem.MovementType.POSITIVE_ADJUST));
         assertThat(item.getMovementQuantity(), is(20L));
+        assertThat(item.getStockOnHand(), is(Long.parseLong(model.getQuantity())));
+        assertThat(item.getStockCard(), is(stockCard));
     }
 
     @Test
@@ -218,10 +220,12 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         StockCardViewModel model = new StockCardViewModel(stockCard);
         model.setQuantity("80");
 
-        StockMovementItem item = inventoryPresenter.calculateAdjustment(model);
+        StockMovementItem item = inventoryPresenter.calculateAdjustment(model, stockCard);
 
         assertThat(item.getMovementType(), is(StockMovementItem.MovementType.NEGATIVE_ADJUST));
         assertThat(item.getMovementQuantity(), is(20L));
+        assertThat(item.getStockOnHand(), is(Long.parseLong(model.getQuantity())));
+        assertThat(item.getStockCard(), is(stockCard));
     }
 
 
@@ -230,10 +234,12 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         StockCardViewModel model = new StockCardViewModel(stockCard);
         model.setQuantity("100");
 
-        StockMovementItem item = inventoryPresenter.calculateAdjustment(model);
+        StockMovementItem item = inventoryPresenter.calculateAdjustment(model, stockCard);
 
         assertThat(item.getMovementType(), is(StockMovementItem.MovementType.PHYSICAL_INVENTORY));
         assertThat(item.getMovementQuantity(), is(0L));
+        assertThat(item.getStockOnHand(), is(Long.parseLong(model.getQuantity())));
+        assertThat(item.getStockCard(), is(stockCard));
     }
 
     @Test
