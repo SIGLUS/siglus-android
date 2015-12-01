@@ -18,11 +18,10 @@
 
 package org.openlmis.core.network.adapter;
 
-import android.util.Log;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
@@ -46,7 +45,7 @@ public class RnrFormAdapterForFeatureToggle implements JsonSerializer<RnRForm> {
         try {
             root.addProperty("programCode", programCode);
         } catch (NullPointerException e) {
-            Log.e(RnrFormAdapter.class.getSimpleName(), "No Program associated !");
+            throw new JsonParseException("No Program associated !");
         }
 
         if (rnRForm.getRnrFormItemListWrapper() != null && rnRForm.getRnrFormItemListWrapper().size() > 0) {

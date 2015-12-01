@@ -18,8 +18,6 @@
 
 package org.openlmis.core.network.adapter;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -71,27 +69,13 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
 
     @Override
     public JsonElement serialize(RnRForm rnRForm, Type typeOfSrc, JsonSerializationContext context) {
-        JsonObject root = gson.toJsonTree(rnRForm).getAsJsonObject();
-        root.addProperty("agentCode", UserInfoMgr.getInstance().getUser().getFacilityCode());
-        root.add("products", jsonParser.parse(gson.toJson(rnRForm.getRnrFormItemListWrapper())));
-        root.add("regimens", jsonParser.parse(gson.toJson(rnRForm.getRegimenItemListWrapper())));
-        root.add("patientQuantifications", jsonParser.parse(gson.toJson(rnRForm.getBaseInfoItemListWrapper())));
-
         try {
-            final List<RnRFormSignature> signatureList = rnrFormRepository.querySignaturesByRnrForm(rnRForm);
-            root.add("rnrSignatures", jsonParser.parse(gson.toJson(signatureList)));
+            return buildRnrFormJson(rnRForm);
         } catch (LMISException e) {
-            e.reportToFabric();
             throw new JsonParseException("can not find Signature by rnrForm");
-        }
-
-        String programCode = rnRForm.getProgram().getProgramCode();
-        try {
-            root.addProperty("programCode", programCode);
         } catch (NullPointerException e) {
-            Log.e(RnrFormAdapter.class.getSimpleName(), "No Program associated !");
+            throw new JsonParseException("No Program associated !");
         }
-        return root;
     }
 
     @Override
@@ -112,4 +96,17 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
         return rnRForm;
     }
 
+    private JsonElement buildRnrFormJson(RnRForm rnRForm) throws LMISException {
+        JsonObject root = gson.toJsonTree(rnRForm).getAsJsonObject();
+        String programCode = rnRForm.getProgram().getProgramCode();
+        List<RnRFormSignature> signatureList = rnrFormRepository.querySignaturesByRnrForm(rnRForm);
+
+        root.add("products", jsonParser.parse(gson.toJson(rnRForm.getRnrFormItemListWrapper())));
+        root.add("regimens", jsonParser.parse(gson.toJson(rnRForm.getRegimenItemListWrapper())));
+        root.add("patientQuantifications", jsonParser.parse(gson.toJson(rnRForm.getBaseInfoItemListWrapper())));
+        root.add("rnrSignatures", jsonParser.parse(gson.toJson(signatureList)));
+        root.addProperty("agentCode", UserInfoMgr.getInstance().getUser().getFacilityCode());
+        root.addProperty("programCode", programCode);
+        return root;
+    }
 }
