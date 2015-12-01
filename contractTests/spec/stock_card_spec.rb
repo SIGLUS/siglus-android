@@ -71,4 +71,25 @@ describe "Sync stock card data" do
     body = JSON.parse(response.body)
     expect(response.code).to eq 200
   end
+
+  it "should fetch stock card from web server " do
+    login_response = RestClient.post "http://#{WEB_DEV_URI}/rest-api/login",
+      { username: 'mystique', password: 'password1' }.to_json,
+      :content_type => :json,
+      :accept => :json
+
+     facility_id = JSON.parse(login_response.body)['userInformation']['facilityId']
+
+     startTime = Date.today.strftime('%Y-%m-%d')
+     endTime = (Date.today + 1).strftime('%Y-%m-%d')
+     response = RestClient.get "http://#{WEB_DEV_URI}/rest-api/facilities/#{facility_id}/stockCards?startTime=#{startTime}&endTime=#{endTime}",
+      :content_type => :json,
+      :accept => :json,
+      :authorization => http_basic_auth('superuser', 'password1')
+
+    body = JSON.parse(response.body)
+    expect(response.code).to eq 200
+    expect(body['stockCards'][0]['product']['code']).to eq '08S42'
+    expect(body['stockCards'].length).to be >= 2
+  end
 end
