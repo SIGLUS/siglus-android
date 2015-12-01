@@ -8,6 +8,10 @@ password = EnvConfig.getConfig()[:password]
 index = 0
 pre_name = ""
 
+Then /^I navigate back/ do
+    tap_when_element_exists("* contentDescription:'Navigate up'")
+end
+
 Then /^I scroll down until I see the "([^\"]*)"/ do |text|
   unless has_text?(text)
     scroll_down

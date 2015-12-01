@@ -39,9 +39,9 @@ Feature: stock movement Page
         And I sign stock movement with "superuser"
         Then I see "125"
         Then I see "superuser" in signature field
-        Then I go back
+        Then I navigate back
         Then I wait for 1 second
-        Then I go back
+        Then I navigate back
         Then I wait for the "HomeActivity" screen to appear
 
     Scenario: Add A Negative Adjustment
@@ -58,9 +58,9 @@ Feature: stock movement Page
         And I press "Complete"
         And I sign stock movement with "superuser"
         Then I see "121"
-        Then I go back
+        Then I navigate back
         Then I wait for 1 second
-        Then I go back
+        Then I navigate back
         Then I wait for the "HomeActivity" screen to appear
 
     Scenario: Add A Positive Adjustment
@@ -78,9 +78,9 @@ Feature: stock movement Page
         And I press "Complete"
         And I sign stock movement with "superuser"
         Then I see "125"
-        Then I go back
+        Then I navigate back
         Then I wait for 1 second
-        Then I go back
+        Then I navigate back
         Then I wait for the "HomeActivity" screen to appear
 
     Scenario: Add A Issued Movement
@@ -99,9 +99,9 @@ Feature: stock movement Page
         And I sign stock movement with "superuser"
         Then I see "121"
         Then I see "superuser" in signature field
-        Then I go back
+        Then I navigate back
         Then I wait for 1 second
-        Then I go back
+        Then I navigate back
         Then I wait for the "HomeActivity" screen to appear
 
 

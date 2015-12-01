@@ -12,7 +12,7 @@ Feature: stock movement Page
     And I make a movement "[08S42B]" "Issues" "PAV" "issued" "2"
     Then I wait for the "StockCardListActivity" screen to appear
     Then I wait for 1 second
-    Then I go back
+    Then I navigate back
     And I press "Create a MMIA"
     Then I wait for the "MMIARequisitionActivity" screen to appear
     Then I wait for 1 second
@@ -46,7 +46,7 @@ Feature: stock movement Page
     Then I wait for 1 second
     And I make a movement "[08S42B]" "Issues" "PAV" "issued" "2"
     Then I wait for the "StockCardListActivity" screen to appear
-    Then I go back
+    Then I navigate back
     Then I wait for the "HomeActivity" screen to appear
     And I press "Create a MMIA"
     Then I wait for the "MMIARequisitionActivity" screen to appear
@@ -55,13 +55,13 @@ Feature: stock movement Page
     Then I scroll to "Submit for Approval"
     Then I wait for 1 second
     And I enter patient totals
-    Then I go back
+    Then I navigate back
     Then I should see text containing "Are you sure you want to quit without saving your work?"
     Then I press "No"
     Then I wait for the "MMIARequisitionActivity" screen to appear
     Then I wait for 1 second
     Then I scroll to "Submit for Approval"
-    Then I go back
+    Then I navigate back
     Then I should see text containing "Are you sure you want to quit without saving your work?"
     Then I press "Yes"
     Then I wait for the "HomeActivity" screen to appear
