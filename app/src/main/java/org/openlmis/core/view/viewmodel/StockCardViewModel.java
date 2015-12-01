@@ -26,6 +26,7 @@ import android.text.style.ForegroundColorSpan;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
@@ -100,9 +101,10 @@ public class StockCardViewModel {
         return styledName;
     }
 
-    public SpannableStringBuilder getStyleType(){
+    public SpannableStringBuilder getStyleType() {
         return new SpannableStringBuilder(type);
     }
+
     public SpannableStringBuilder getStyledUnit() {
         formatProductDisplay(product);
         return styledUnit;
@@ -167,7 +169,7 @@ public class StockCardViewModel {
                 try {
                     return DateUtil.parseString(lhs, DateUtil.SIMPLE_DATE_FORMAT).compareTo(DateUtil.parseString(rhs, DateUtil.SIMPLE_DATE_FORMAT));
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    new LMISException(e).reportToFabric();
                 }
                 return 0;
             }
@@ -179,7 +181,7 @@ public class StockCardViewModel {
             try {
                 return DateUtil.convertDate(expiryDates.get(0), DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
             } catch (ParseException e) {
-                e.printStackTrace();
+                new LMISException(e).reportToFabric();
                 return StringUtils.EMPTY;
             }
         } else {
@@ -225,7 +227,7 @@ public class StockCardViewModel {
         try {
             quantity = Long.parseLong(getQuantity());
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            e.printStackTrace();//todo: ???
             quantity = null;
         }
         draftInventory.setQuantity(quantity);
