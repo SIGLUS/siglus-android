@@ -24,6 +24,7 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 
 public class LMISException extends Exception {
+    private static String openLMISError = "OpenLMISError";
 
     public LMISException(String msg) {
         super(msg);
@@ -38,6 +39,6 @@ public class LMISException extends Exception {
         //it only uploads to fabric server when network is available
         //so this actually behaves analogously with our sync data logic
         Crashlytics.logException(this);
-        Log.e("Unexpected exception", this.getMessage(), this);
+        Log.e(openLMISError, this.getMessage(), this);
     }
 }
