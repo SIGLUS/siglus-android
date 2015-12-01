@@ -28,6 +28,7 @@ import com.squareup.okhttp.OkHttpClient;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.UnauthorizedException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
@@ -73,7 +74,7 @@ public class LMISRestManager {
         try {
             hostName = new URL(END_POINT).getHost();
         } catch (Exception e) {
-            e.printStackTrace();
+            new LMISException(e).reportToFabric();
         }
 
         RequestInterceptor requestInterceptor = new RequestInterceptor() {
@@ -116,7 +117,7 @@ public class LMISRestManager {
                 ca = cf.generateCertificate(cert);
                 System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
             } catch (Exception e) {
-                e.printStackTrace();
+                new LMISException(e).reportToFabric();
             } finally {
                 cert.close();
             }
@@ -149,7 +150,7 @@ public class LMISRestManager {
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            new LMISException(e).reportToFabric();
         }
 
         return client;
