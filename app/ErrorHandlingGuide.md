@@ -1,0 +1,50 @@
+# Types of exceptions
+
+There are three types of exceptions:
+
+* the ones that we are expecting
+* the ones that we have to catch
+* the fatal ones that will cause the app to crash
+
+For the first type:
+
+We should handle them in our code, don't have to re-throw, don't have to send it to fabric.
+For example, something exception happens in UI, we catch it, show a toast, then we can forget about it.
+After all, it's an expected exception and we know what to do when it happens.
+
+For the second type:
+
+We should wrap them up in a LMISException and call reportToFabric to report it to server.
+
+For example, an API from some 3rd party lib is has throws XXXException on its signature, it does not happen under normal circumstances, 
+but since it has the exception on its signature, we have to catch it.
+
+But when it does throw that exception, that means something out of our expectation has happened, we wanna know, that's why we send it to fabric.
+
+For the third type:
+
+For example, an API call may cause a RuntimeException, we can either re-throw it or just let it pop up to higher level of stack and blow up the app.
+When the app does blow up, fabric will automatically report a fatal issue.
+We should not eat this type of exceptions up, since it leaves the app in a nondeterministic state.
+
+# Fatal and non-fatal issues
+
+When the app blows up because of a unhandled exception, fabric automatically uploads it as a fatal issue.
+
+Non-fatal issues are the ones created by us calling LMISException.reportToFabric.
+
+# Availability of error reports
+
+Since the devices in health facilities do not always have network connection, the error reports that we send to fabric follows
+a strategy that's similar to how we sync stock/requisition data.
+ 
+For fatal issues:
+
+Fabric tries to send fatal report to server right after it happens, but if network is not available at the time, the error report will be saved
+locally, and Fabric lib will retry to send it next time the app is started, until it gets any luck with the network.
+ 
+For non-fatal issues:
+
+Non-fatal issues are always saved locally and later on sent to server when network is available.
+
+(Tried and confirmed on virtual devices, should try in QA devices and demo devices)
