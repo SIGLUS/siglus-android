@@ -22,9 +22,9 @@ import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.exceptions.LMISException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -40,20 +40,21 @@ public abstract class Migration {
     protected SQLiteDatabase db;
 
     public abstract void up();
+
     public abstract void down();
 
-    public void setSQLiteDatabase(SQLiteDatabase db){
+    public void setSQLiteDatabase(SQLiteDatabase db) {
         this.db = db;
     }
 
-    protected void execSQL(String sql){
-        if (db != null){
-            Log.d("Migration","exec sql :" + sql);
+    protected void execSQL(String sql) {
+        if (db != null) {
+            Log.d("Migration", "exec sql :" + sql);
             db.execSQL(sql);
         }
     }
 
-    protected void execSQLScript(String filename){
+    protected void execSQLScript(String filename) {
         AssetManager manager = LMISApp.getContext().getResources().getAssets();
 
         String path = DIR_MIGRATION + File.separator + filename;
@@ -63,9 +64,9 @@ public abstract class Migration {
             BufferedReader reader = new BufferedReader(new InputStreamReader(io));
 
             String line = reader.readLine();
-            while (line !=null){
+            while (line != null) {
                 String cmd = line.trim();
-                if (!StringUtils.isEmpty(cmd)){
+                if (!StringUtils.isEmpty(cmd)) {
                     execSQL(cmd);
                 }
                 line = reader.readLine();
@@ -73,10 +74,10 @@ public abstract class Migration {
             reader.close();
 
             db.setTransactionSuccessful();
-        }catch (IOException e){
-            Log.d(TAG, e.getMessage());
+        } catch (IOException e) {
+            new LMISException(e).reportToFabric();
             throw new RuntimeException("Invalid migration file :" + filename);
-        }finally {
+        } finally {
             db.endTransaction();
         }
     }
