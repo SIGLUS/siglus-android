@@ -109,17 +109,21 @@ public class RnrFormRepository {
         return form;
     }
 
-    public void createFormAndItems(final RnRForm form) throws SQLException {
-        TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                create(form);
-                createRnrFormItems(form.getRnrFormItemListWrapper());
-                createRegimenItems(form.getRegimenItemListWrapper());
-                createBaseInfoItems(form.getBaseInfoItemListWrapper());
-                return null;
-            }
-        });
+    public void createFormAndItems(final RnRForm form) throws LMISException {
+        try {
+            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+                    create(form);
+                    createRnrFormItems(form.getRnrFormItemListWrapper());
+                    createRegimenItems(form.getRegimenItemListWrapper());
+                    createBaseInfoItems(form.getBaseInfoItemListWrapper());
+                    return null;
+                }
+            });
+        } catch (SQLException e) {
+            throw new LMISException(e);
+        }
     }
 
     public void create(RnRForm rnRForm) throws LMISException {

@@ -102,8 +102,8 @@ public class SyncManager {
     private String syncAccountType;
     @InjectResource(R.integer.sync_interval)
     private Integer syncInterval;
-    private boolean SaveProductLock=false;
-    private boolean saveRequisitionLock=false;
+    private boolean SaveProductLock = false;
+    private boolean saveRequisitionLock = false;
     private Observable<Void> productObservable;
 
     public SyncManager() {
@@ -202,16 +202,16 @@ public class SyncManager {
 
     public Observable<Void> getProductsObservable() {
         return Observable.create(new Observable.OnSubscribe<Void>() {
-                @Override
-                public void call(Subscriber<? super Void> subscriber) {
-                    try {
-                        syncProductsWithProgram();
-                        subscriber.onCompleted();
-                    } catch (Exception e) {
-                        subscriber.onError(e);
-                    }
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    syncProductsWithProgram();
+                    subscriber.onCompleted();
+                } catch (Exception e) {
+                    subscriber.onError(e);
                 }
-            }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     public void syncRequisitionData(Observer<Void> observer) {
@@ -221,16 +221,16 @@ public class SyncManager {
             public void call(Subscriber<? super Void> subscriber) {
                 try {
                     fetchAndSaveRequisitionData();
-                } catch (LMISException | SQLException e) {
+                } catch (LMISException e) {
                     subscriber.onError(new LMISException("Syncing back data failed"));
-                    e.printStackTrace();
+                    e.reportToFabric();
                 }
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
     }
 
-    protected void fetchAndSaveRequisitionData() throws LMISException, SQLException {
+    protected void fetchAndSaveRequisitionData() throws LMISException {
         SyncBackRequisitionsResponse syncBackRequisitionsResponse = lmisRestApi.fetchRequisitions(UserInfoMgr.getInstance().getUser().getFacilityCode());
         if (syncBackRequisitionsResponse == null) {
             throw new LMISException("Can't get SyncBackRequisitionsResponse, you can check json parse to POJO logic");
