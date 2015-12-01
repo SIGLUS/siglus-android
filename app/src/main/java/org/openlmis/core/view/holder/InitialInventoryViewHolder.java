@@ -14,6 +14,7 @@ import android.widget.TextView;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.TextStyleUtil;
@@ -157,7 +158,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
                     try {
                         txExpireDate.setText(DateUtil.convertDate(dateString, "dd/MM/yyyy", "MMM yyyy"));
                     } catch (ParseException e) {
-                        e.printStackTrace();
+                        new LMISException(e).reportToFabric();
                     }
                     viewModel.addExpiryDate(dateString, false);
                 } else {
@@ -168,5 +169,4 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
 
         dialog.show();
     }
-
 }
