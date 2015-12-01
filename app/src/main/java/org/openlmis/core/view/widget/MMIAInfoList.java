@@ -32,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class MMIAInfoList extends LinearLayout {
         init(context);
     }
 
-    public EditText getPatientTotalView(){
+    public EditText getPatientTotalView() {
         return totalView;
     }
 
@@ -192,7 +193,7 @@ public class MMIAInfoList extends LinearLayout {
             try {
                 totalRegimenNumber += Long.parseLong(item.getValue());
             } catch (NumberFormatException e) {
-                e.printStackTrace();
+                new LMISException(e).reportToFabric();
             }
         }
         return totalRegimenNumber;
