@@ -74,6 +74,7 @@ And(/^I sign stock movement with "(.*?)"$/) do |text|
         steps %Q{
             Then I press "Approve"
         }
+        hide_soft_keyboard
     end
 end
 
