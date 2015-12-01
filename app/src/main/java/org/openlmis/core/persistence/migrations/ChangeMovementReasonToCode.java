@@ -19,25 +19,24 @@
 package org.openlmis.core.persistence.migrations;
 
 
-
 import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.MovementReasonManager.MovementReason;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.Migration;
-
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
 
 
-public class ChangeMovementReasonToCode extends Migration{
+public class ChangeMovementReasonToCode extends Migration {
 
     GenericDao<StockMovementItem> stockItemGenericDao;
 
@@ -45,7 +44,7 @@ public class ChangeMovementReasonToCode extends Migration{
     MovementReasonManager reasonManager;
     DbUtil dbUtil;
 
-    public ChangeMovementReasonToCode(){
+    public ChangeMovementReasonToCode() {
         stockItemGenericDao = new GenericDao<>(StockMovementItem.class, LMISApp.getContext());
         reasonManager = MovementReasonManager.getInstance();
         dbUtil = new DbUtil();
@@ -60,38 +59,30 @@ public class ChangeMovementReasonToCode extends Migration{
     public void up() {
         try {
             List<StockMovementItem> itemList = stockItemGenericDao.queryForAll();
-            if (itemList == null || itemList.size() == 0){
+            if (itemList == null || itemList.size() == 0) {
                 return;
             }
-            for (StockMovementItem item : itemList){
-                MovementReasonManager.MovementReason reason;
-                try {
-                    reason = reasonManager.queryByDesc(item.getReason(), new Locale("pt", "pt"));
-                    item.setReason(reason.getCode());
-                }catch (MovementReasonNotFoundException e){
-                    try {
-                        reason = reasonManager.queryByDesc(item.getReason(), new Locale("en", "us"));
-                        item.setReason(reason.getCode());
-                    }catch (MovementReasonNotFoundException e1){
-                        setDefaultReasonCode(item);
-                    }
+            for (StockMovementItem item : itemList) {
+                boolean isReasonSet = trySetReason(item, "pt", "pt") || trySetReason(item, "en", "us");
+                if (!isReasonSet) {
+                    setDefaultReasonCode(item);
                 }
             }
             updateStockMovementItems(itemList);
 
-        }catch (LMISException e){
+        } catch (LMISException e) {
             e.reportToFabric();
             throw new RuntimeException(e.getMessage());
         }
     }
 
     protected void setDefaultReasonCode(StockMovementItem item) {
-        if ("physicalInventoryPositive".equalsIgnoreCase(item.getReason())){
+        if ("physicalInventoryPositive".equalsIgnoreCase(item.getReason())) {
             item.setReason(MovementReasonManager.INVENTORY_POSITIVE);
-        }else if ("physicalInventoryNegative".equalsIgnoreCase(item.getReason())){
+        } else if ("physicalInventoryNegative".equalsIgnoreCase(item.getReason())) {
             item.setReason(MovementReasonManager.INVENTORY_NEGATIVE);
-        }else {
-            switch (item.getMovementType()){
+        } else {
+            switch (item.getMovementType()) {
                 case ISSUE:
                     item.setReason(MovementReasonManager.DEFAULT_ISSUE);
                     break;
@@ -123,5 +114,15 @@ public class ChangeMovementReasonToCode extends Migration{
                 return null;
             }
         });
+    }
+
+    private boolean trySetReason(StockMovementItem item, String lang, String country) {
+        try {
+            MovementReason reason = reasonManager.queryByDesc(item.getReason(), new Locale(lang, country));
+            item.setReason(reason.getCode());
+            return true;
+        } catch (MovementReasonNotFoundException ignored) {
+            return false;
+        }
     }
 }
