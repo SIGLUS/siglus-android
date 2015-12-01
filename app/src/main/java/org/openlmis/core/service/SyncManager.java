@@ -47,11 +47,14 @@ import org.openlmis.core.network.model.ProductsResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SubmitRequisitionResponse;
 import org.openlmis.core.network.model.SyncBackRequisitionsResponse;
+import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import roboguice.inject.InjectResource;
@@ -340,6 +343,21 @@ public class SyncManager {
         }
 
         return false;
+    }
+
+    public int fetchStockCard(){
+        final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
+        Date startDate = new Date();
+        Date endDate = new Date();
+
+        try {
+            startDate = DateUtil.parseString("2015-09-01","yyyy-MM-dd");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        lmisRestApi.fetchStockMovementData(facilityId, startDate, endDate);
+        return 0;
     }
 
 }

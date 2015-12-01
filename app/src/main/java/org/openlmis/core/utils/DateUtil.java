@@ -158,4 +158,11 @@ public final class DateUtil {
     public static String formatDateFromIntToString(int year, int monthOfYear, int dayOfMonth) {
         return new StringBuilder().append(dayOfMonth).append("/").append(monthOfYear + 1).append("/").append(year).toString();
     }
+
+    public static Date dateMinusMonth(Date current, int months){
+        Calendar now = calendarDate(current);
+        int currentMonth = now.get(Calendar.MONTH);
+        now.set(Calendar.MONTH, currentMonth - months);
+        return now.getTime();
+    }
 }
