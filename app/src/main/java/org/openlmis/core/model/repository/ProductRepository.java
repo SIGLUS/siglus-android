@@ -68,14 +68,13 @@ public class ProductRepository {
         genericDao.create(product);
     }
 
-
-    public Product getById(long id){
+    public Product getById(long id) {
         try {
             return genericDao.getById(String.valueOf(id));
-        }catch (LMISException e){
+        } catch (LMISException e) {
             e.reportToFabric();
+            return null;
         }
-        return null;
     }
 
     public Product getByCode(final String code) throws LMISException {
@@ -86,7 +85,6 @@ public class ProductRepository {
             }
         });
     }
-
 
     public List<Product> queryProducts(final long programId) throws LMISException {
         return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
