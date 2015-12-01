@@ -19,6 +19,8 @@
 package org.openlmis.core.exceptions;
 
 
+import android.util.Log;
+
 import com.crashlytics.android.Crashlytics;
 
 public class LMISException extends Exception {
@@ -34,7 +36,8 @@ public class LMISException extends Exception {
     public void reportToFabric() {
         //this will save exception messages locally
         //it only uploads to fabric server when network is available
-        //so this actually behaves analogously with our sync logic
+        //so this actually behaves analogously with our sync data logic
         Crashlytics.logException(this);
+        Log.e("Unexpected exception", this.getMessage(), this);
     }
 }
