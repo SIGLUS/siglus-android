@@ -26,7 +26,6 @@ import com.j256.ormlite.android.AndroidConnectionSource;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 
-
 import org.openlmis.core.exceptions.LMISException;
 
 import java.sql.SQLException;
@@ -86,7 +85,6 @@ public class DbUtil {
         } catch (SQLException e) {
             throw new LMISException(e);
         } catch (Exception e) {
-            e.printStackTrace();
             throw new LMISException(e);
         }
     }
@@ -105,7 +103,6 @@ public class DbUtil {
         } catch (SQLException e) {
             throw new LMISException(e);
         } catch (Exception e) {
-            e.printStackTrace();
             throw new LMISException(e);
         }
     }
