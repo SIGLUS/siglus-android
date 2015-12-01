@@ -33,6 +33,7 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
@@ -140,7 +141,7 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
         try {
             tvExpireDate.setText(DateUtil.convertDate(date, DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
         } catch (ParseException e) {
-            e.printStackTrace();
+            new LMISException(e).reportToFabric();
         }
         addView(expireDateView, getChildCount() - 1);
 
