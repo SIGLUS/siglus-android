@@ -234,7 +234,11 @@ public class StockRepository {
         return draftInventoryGenericDao.queryForAll();
     }
 
-    public void clearDraftInventory() throws SQLException {
-        TableUtils.clearTable(LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(), DraftInventory.class);
+    public void clearDraftInventory() throws LMISException {
+        try {
+            TableUtils.clearTable(LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(), DraftInventory.class);
+        } catch (SQLException e) {
+            throw new LMISException(e);
+        }
     }
 }

@@ -36,7 +36,6 @@ import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -261,7 +260,7 @@ public class InventoryPresenter implements Presenter {
                     stockRepository.clearDraftInventory();
                     subscriber.onNext(null);
                     subscriber.onCompleted();
-                } catch (LMISException | SQLException e) {
+                } catch (LMISException e) {
                     subscriber.onError(e);
                     e.printStackTrace();
                 }

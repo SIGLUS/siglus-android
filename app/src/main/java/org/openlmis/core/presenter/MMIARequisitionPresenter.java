@@ -127,7 +127,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
                 } catch (LMISException e) {
                     e.reportToFabric();
                     subscriber.onError(e);
-
                 }
             }
         });
