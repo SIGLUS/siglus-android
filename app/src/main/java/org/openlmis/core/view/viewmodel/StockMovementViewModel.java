@@ -20,6 +20,7 @@ package org.openlmis.core.view.viewmodel;
 
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockMovementItem;
@@ -108,7 +109,7 @@ public class StockMovementViewModel {
         try {
             stockMovementItem.setMovementDate(DateUtil.parseString(getMovementDate(), DateUtil.DEFAULT_DATE_FORMAT));
         } catch (ParseException e) {
-            e.printStackTrace();
+            new LMISException(e).reportToFabric();
         }
 
         return stockMovementItem;
