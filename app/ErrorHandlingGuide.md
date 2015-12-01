@@ -2,11 +2,11 @@
 
 There are three types of exceptions:
 
-* the ones that we are expecting
-* the ones that we have to catch
-* the fatal ones that will cause the app to crash
+* the ones that we are **expecting and know how to handle**
+* the ones that we **don't know how to handle, but are catching anyways**
+* the fatal ones that will cause the app to **crash**
 
-For the first type:
+For the first type: 
 
 We should handle them in our code, don't have to re-throw, don't have to send it to fabric.
 For example, something exception happens in UI, we catch it, show a toast, then we can forget about it.
@@ -14,16 +14,15 @@ After all, it's an expected exception and we know what to do when it happens.
 
 For the second type:
 
-We should wrap them up in a LMISException and call reportToFabric to report it to server.
-
 For example, an API from some 3rd party lib is has throws XXXException on its signature, it does not happen under normal circumstances, 
 but since it has the exception on its signature, we have to catch it.
 
-But when it does throw that exception, that means something out of our expectation has happened, we wanna know, that's why we send it to fabric.
+But when it does throw that exception, that means something out of our expectation has happened, we wanna know.
+We should wrap them up in a LMISException and call reportToFabric to report it to fabric server.
 
 For the third type:
 
-For example, an API call may cause a RuntimeException, we can either re-throw it or just let it pop up to higher level of stack and blow up the app.
+For example, an API call may cause a RuntimeException, we can either re-throw it or just let it pop up to higher level of stack, both will blow up the app.
 When the app does blow up, fabric will automatically report a fatal issue.
 We should not eat this type of exceptions up, since it leaves the app in a nondeterministic state.
 
@@ -33,7 +32,11 @@ When the app blows up because of a unhandled exception, fabric automatically upl
 
 Non-fatal issues are the ones created by us calling LMISException.reportToFabric.
 
-# Availability of error reports
+# Logs during development
+
+LMISException.reportToFabric will also print the exception to console, so we are not losing the e.printStackTrace info during development.
+
+# Availability of network
 
 Since the devices in health facilities do not always have network connection, the error reports that we send to fabric follows
 a strategy that's similar to how we sync stock/requisition data.
