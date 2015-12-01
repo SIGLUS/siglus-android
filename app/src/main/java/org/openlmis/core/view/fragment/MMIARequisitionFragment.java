@@ -221,7 +221,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
             try {
                 presenter.getRnrForm(formId).setComments(s.toString());
             } catch (LMISException e) {
-                e.printStackTrace();
+                e.reportToFabric();
             }
         }
     };
@@ -280,7 +280,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
                 presenter.removeRequisition();
             } catch (LMISException e) {
                 ToastUtil.show("Delete Failed");
-                e.printStackTrace();
+                e.printStackTrace();//todo: maybe log this to logcat, not just print
             }
         }
     }
