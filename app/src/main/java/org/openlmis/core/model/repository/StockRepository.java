@@ -139,7 +139,6 @@ public class StockRepository {
                 }
             });
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new LMISException(e);
         }
     }
