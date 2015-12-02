@@ -306,8 +306,8 @@ public class StockMovementViewHolder extends BaseViewHolder {
     }
 
     public Date getPreviousMovementDate(StockCard stockCard) {
-        if (stockCard.getStockMovementItems() != null) {
-            List<StockMovementItem> stockMovements = new ArrayList<>(stockCard.getStockMovementItems());
+        if (stockCard.getForeignStockMovementItems() != null) {
+            List<StockMovementItem> stockMovements = new ArrayList<>(stockCard.getForeignStockMovementItems());
             if (!stockMovements.isEmpty()) {
                 return stockMovements.get(stockMovements.size() - 1).getMovementDate();
             }

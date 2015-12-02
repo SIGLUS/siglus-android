@@ -126,7 +126,7 @@ public class SyncManagerTest {
         doReturn(null).when(lmisRestApi).pushStockMovementData(anyString(), anyList());
         syncManager.syncStockCards();
         stockRepository.refresh(stockCard);
-        List<StockMovementItem> items = newArrayList(stockCard.getStockMovementItems());
+        List<StockMovementItem> items = newArrayList(stockCard.getForeignStockMovementItems());
 
         assertThat(items.size(), is(2));
         assertThat(items.get(0).isSynced(), is(true));
@@ -141,7 +141,7 @@ public class SyncManagerTest {
 
         syncManager.syncStockCards();
         stockRepository.refresh(stockCard);
-        List<StockMovementItem> items = newArrayList(stockCard.getStockMovementItems());
+        List<StockMovementItem> items = newArrayList(stockCard.getForeignStockMovementItems());
 
         assertThat(items.size(), is(2));
         assertThat(items.get(0).isSynced(), is(false));
@@ -177,7 +177,7 @@ public class SyncManagerTest {
     @Test
     public void shouldSetTypeAndCustomPropsAfterNewStockMovementEntry() throws LMISException, ParseException {
         StockCard stockCard = createTestStockCardData();
-        StockMovementItem stockMovementItem = stockCard.getStockMovementItems().iterator().next();
+        StockMovementItem stockMovementItem = stockCard.getForeignStockMovementItems().iterator().next();
         StockMovementEntry stockMovementEntry = new StockMovementEntry(stockMovementItem,null);
 
         assertEquals(stockMovementEntry.getType(),"ADJUSTMENT");

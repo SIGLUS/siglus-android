@@ -19,6 +19,7 @@
 package org.openlmis.core.model;
 
 
+import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -50,13 +51,13 @@ public class StockMovementItem extends BaseModel {
         public String toString() {
             return value;
         }
-
-
     }
 
+    @Expose
     @DatabaseField
     String documentNumber;
 
+    @Expose
     @DatabaseField
     long movementQuantity;
 
@@ -72,6 +73,7 @@ public class StockMovementItem extends BaseModel {
     @DatabaseField
     long stockOnHand = -1;
 
+    @Expose
     @DatabaseField
     String signature;
 

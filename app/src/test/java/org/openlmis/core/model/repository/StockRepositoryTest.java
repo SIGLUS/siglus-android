@@ -98,7 +98,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     public void shouldGetCorrectDataAfterSavedStockMovementItem() throws Exception {
         //given saved
         StockCard savedStockCard = saveStockCardWithOneMovement(stockRepository);
-        StockMovementItem savedMovementItem = savedStockCard.getStockMovementItems().iterator().next();
+        StockMovementItem savedMovementItem = savedStockCard.getForeignStockMovementItems().iterator().next();
 
         //when retrieve
         List<StockMovementItem> retrievedStockMovementItems = stockRepository.listLastFive(savedStockCard.getId());
@@ -117,7 +117,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     public void shouldListUnsyncedStockMovementItems() throws LMISException, ParseException {
         //given one movement was saved but NOT SYNCED
         StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
-        assertThat(stockCard.getStockMovementItems().size(), is(1));
+        assertThat(stockCard.getForeignStockMovementItems().size(), is(1));
         assertThat(stockRepository.listUnSynced().size(), is(1));
 
         //when save another SYNCED movement
@@ -127,7 +127,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockRepository.refresh(stockCard);
 
         //then
-        assertThat(stockCard.getStockMovementItems().size(), is(2));
+        assertThat(stockCard.getForeignStockMovementItems().size(), is(2));
         assertThat(stockRepository.listUnSynced(), notNullValue());
         assertThat(stockRepository.listUnSynced().size(), is(1));
     }
@@ -143,7 +143,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockRepository.refresh(stockCard);
 
         //then
-        List<StockMovementItem> items = newArrayList(stockCard.getStockMovementItems());
+        List<StockMovementItem> items = newArrayList(stockCard.getForeignStockMovementItems());
         assertThat(items.size(), is(2));
         assertThat(items.get(0).isSynced(), is(false));
         assertThat(items.get(1).isSynced(), is(false));
@@ -156,7 +156,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
         //then
         stockCard = stockRepository.list().get(0);
-        items = newArrayList(stockCard.getStockMovementItems());
+        items = newArrayList(stockCard.getForeignStockMovementItems());
         assertThat(items.size(), is(2));
         assertThat(items.get(0).isSynced(), is(true));
         assertThat(items.get(1).isSynced(), is(true));

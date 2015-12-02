@@ -21,6 +21,8 @@ package org.openlmis.core.model;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
@@ -45,13 +47,21 @@ public class StockCard extends BaseModel implements Comparable<StockCard>{
     @DatabaseField
     String expireDates;
 
+    @Expose
+    @SerializedName("product")
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     Product product;
 
-    @ForeignCollectionField()
-    private ForeignCollection<StockMovementItem> stockMovementItems;
+    @Expose
+    @SerializedName("stockMovementItems")
+    private List<StockMovementItem> stockMovementItemsWrapper;
 
+    @ForeignCollectionField()
+    private ForeignCollection<StockMovementItem> foreignStockMovementItems;
+
+    @Expose
     @DatabaseField
+    @SerializedName("stockOnHand")
     long stockOnHand;
 
     public String getEarliestExpireDate(){

@@ -21,11 +21,11 @@ package org.openlmis.core.network;
 
 import com.google.gson.JsonObject;
 
-import org.json.JSONObject;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.model.ProductsResponse;
+import org.openlmis.core.network.model.StockCardResponse;
 import org.openlmis.core.network.model.SubmitRequisitionResponse;
 import org.openlmis.core.network.model.SyncBackRequisitionsResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
@@ -58,5 +58,5 @@ public interface LMISRestApi {
     JsonObject pushStockMovementData(@Path("facilityId") String facilityId, @Body List<StockMovementEntry> entries);
 
     @GET("/rest-api/facilities/{facilityId}/stockCards")
-    JSONObject fetchStockMovementData(@Path("facilityId") String facilityId, @Query("startTime")Date start, @Query("endTime") Date end);
+    StockCardResponse fetchStockMovementData(@Path("facilityId") String facilityId, @Query("startTime") Date start, @Query("endTime") Date end);
 }
