@@ -19,9 +19,6 @@ package org.openlmis.core.utils;
 
 import android.content.Context;
 import android.graphics.Point;
-import android.graphics.Rect;
-import android.util.Log;
-import android.view.Window;
 import android.view.WindowManager;
 
 import org.openlmis.core.LMISApp;
@@ -37,12 +34,4 @@ public final class DisplayUtil {
         return size.x;
     }
 
-    public static int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = LMISApp.getContext().getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = LMISApp.getContext().getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
-    }
 }

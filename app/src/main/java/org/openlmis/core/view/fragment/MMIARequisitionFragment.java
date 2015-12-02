@@ -21,7 +21,6 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -42,7 +41,6 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.utils.DisplayUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
@@ -76,7 +74,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     private TextView etComment;
 
     @InjectView(R.id.scrollview)
-    private ScrollView scrollView;
+    protected ScrollView scrollView;
 
     @InjectView(R.id.btn_save)
     protected View btnSave;
@@ -86,6 +84,9 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
 
     @InjectView(R.id.action_panel)
     protected View bottomView;
+
+    @InjectView(R.id.mmia_rnr_items_header_freeze)
+    protected View rnrItemsHeaderFreeze;
 
     @Inject
     MMIARequisitionPresenter presenter;
@@ -99,9 +100,8 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     protected static final String TAG_BACK_PRESSED = "onBackPressed";
     private static final String TAG_MISMATCH = "mismatch";
     private static final String TAG_SHOW_MESSAGE_NOTIFY_DIALOG = "showMessageNotifyDialog";
-    private View rnrItemsHeaderFreeze;
-    private int initialTopLocationOfRnrFormY;
 
+    protected int initialTopLocationOfRnrFormY;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -152,7 +152,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         regimeListView.initView(form.getRegimenItemListWrapper(), tvRegimeTotal);
         mmiaInfoListView.initView(form.getBaseInfoItemListWrapper());
 
-        rnrItemsHeaderFreeze = containerView.findViewById(R.id.mmia_rnr_items_header_freeze);
         rnrFormList.post(new Runnable() {
             @Override
             public void run() {
@@ -227,15 +226,11 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
 
     }
 
-    private void hideOrDisplayRnrItemsHeader(){
+    protected void hideOrDisplayRnrItemsHeader(){
         int[] rnrItemsViewLocation = new int[2];
         rnrFormList.getLocationOnScreen(rnrItemsViewLocation);
 
         int lastItemHeight = rnrFormList.getRightViewGroup().getChildAt(rnrFormList.getRightViewGroup().getChildCount() - 1).getHeight();
-
-        Log.i("height:", rnrFormList.getHeight() + "@@@");
-        Log.i("last item height:", lastItemHeight + "");
-        Log.i("initial top location", initialTopLocationOfRnrFormY + "@@");
 
         if (-rnrItemsViewLocation[1] <= rnrFormList.getHeight() - rnrItemsHeaderFreeze.getHeight() - lastItemHeight - initialTopLocationOfRnrFormY) {
             rnrItemsHeaderFreeze.setVisibility(View.VISIBLE);
