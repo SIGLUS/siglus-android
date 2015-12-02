@@ -45,7 +45,7 @@ end
 Then(/^I make a movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_card_code, first_reason, second_reason, movement_column, number|
     steps %Q{
         Then I select stock card code called "#{stock_card_code}"
-        Then I wait for the "StockMovementActivity" screen to appear
+        Then I wait for "Stock Card" to appear
         Then I wait for 1 second
         And I select a reason "#{first_reason}" "#{second_reason}"
     }

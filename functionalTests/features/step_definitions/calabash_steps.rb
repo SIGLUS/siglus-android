@@ -8,6 +8,10 @@ password = EnvConfig.getConfig()[:password]
 index = 0
 pre_name = ""
 
+Given /^I cleared App data/ do
+    clear_app_data
+end
+
 Then /^I navigate back/ do
     tap_when_element_exists("* contentDescription:'Navigate up'")
 end
@@ -85,12 +89,12 @@ end
 
 Given(/^I have initialized inventory$/) do
   steps %Q{
-        Then I wait up to 30 seconds for the "InventoryActivity" screen to appear
+        Then I wait up to 30 seconds for "Initial Inventory" to appear
         Then I wait for 3 seconds
         When I Select VIA Item
         When I Select MMIA Item
         And I press "Complete"
-        Then I wait for the "HomeActivity" screen to appear
+        Then I wait for "Home Page" to appear
 	}
 end
 
@@ -140,7 +144,7 @@ When(/^I initialize inventory$/) do
 
         steps %Q{
             And I press "Complete"
-            Then I wait for the "HomeActivity" screen to appear
+            Then I wait for "Home Page" to appear
         }
     else
        steps %Q{
