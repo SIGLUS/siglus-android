@@ -77,6 +77,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     private String stockName;
 
     private StockMovementAdapter stockMovementAdapter;
+    private boolean isStockCardArchivable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +150,12 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         signatureDialog.show(getFragmentManager());
     }
 
+    @Override
+    public void updateArchiveMenus(boolean isArchivable) {
+        isStockCardArchivable = isArchivable;
+        invalidateOptionsMenu();
+    }
+
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
         @Override
         public void onCancel() {
@@ -182,6 +189,13 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @Override
     public void refreshStockMovement() {
         stockMovementAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean isPrepared = super.onPrepareOptionsMenu(menu);
+        menu.findItem(R.id.action_archive).setVisible(isStockCardArchivable);
+        return isPrepared;
     }
 
     @Override

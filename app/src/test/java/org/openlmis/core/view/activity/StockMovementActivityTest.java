@@ -1,6 +1,7 @@
 package org.openlmis.core.view.activity;
 
 import android.content.Intent;
+import android.view.MenuItem;
 
 import com.google.inject.AbstractModule;
 
@@ -57,7 +58,7 @@ public class StockMovementActivityTest {
         Intent intent = new Intent()
                 .putExtra(Constants.PARAM_STOCK_CARD_ID, 100L)
                 .putExtra(Constants.PARAM_STOCK_NAME, "Stock Name");
-        stockMovementActivity = Robolectric.buildActivity(StockMovementActivity.class).withIntent(intent).create().get();
+        stockMovementActivity = Robolectric.buildActivity(StockMovementActivity.class).withIntent(intent).create().visible().get();
     }
 
     @After
@@ -78,7 +79,6 @@ public class StockMovementActivityTest {
         verify(mockedPresenter).loadStockMovementViewModels();
     }
 
-
     @Test
     public void shouldGoToHistoryMovementWhenMenuItemSelected() {
         shadowOf(stockMovementActivity).clickMenuItem(R.id.action_history);
@@ -88,5 +88,15 @@ public class StockMovementActivityTest {
         assertThat(startedIntent.getComponent().getClassName()).isEqualTo(StockMovementHistoryActivity.class.getName());
         assertThat(startedIntent.getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0)).isEqualTo(100L);
         assertThat(startedIntent.getStringExtra(Constants.PARAM_STOCK_NAME)).isEqualTo("Stock Name");
+    }
+
+    @Test
+    public void shouldUpdateArchiveMenu() throws Exception {
+        MenuItem archiveMenu = shadowOf(stockMovementActivity).getOptionsMenu().findItem(R.id.action_archive);
+        assertThat(archiveMenu.isVisible()).isFalse();
+
+        stockMovementActivity.updateArchiveMenus(true);
+        archiveMenu = shadowOf(stockMovementActivity).getOptionsMenu().findItem(R.id.action_archive);
+        assertThat(archiveMenu.isVisible()).isTrue();
     }
 }

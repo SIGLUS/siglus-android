@@ -5,4 +5,9 @@
         android:icon="@drawable/ic_history"
         android:title="@string/menu_item_stock_movement_history"
         app:showAsAction="ifRoom|withText" />
+    <item
+        android:id="@+id/action_archive"
+        android:title="@string/menu_archive_stockcard"
+        android:visible="false"
+        app:showAsAction="never" />
 </menu>

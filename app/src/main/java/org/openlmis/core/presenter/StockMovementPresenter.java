@@ -88,6 +88,7 @@ public class StockMovementPresenter implements Presenter {
 
     public void setStockCard(long stockCardId) throws LMISException {
         this.stockCard = stockRepository.queryStockCardById(stockCardId);
+        view.updateArchiveMenus(stockCard.getStockOnHand() == 0);
     }
 
     public void loadStockMovementViewModels() {
@@ -98,8 +99,9 @@ public class StockMovementPresenter implements Presenter {
 
         loadStockMovementViewModelsObserver().subscribe(loadStockMovementViewModelSubscriber());
     }
-    public Observer<List<StockMovementViewModel>> loadStockMovementViewModelSubscriber(){
-        return new Observer<List<StockMovementViewModel>>(){
+
+    public Observer<List<StockMovementViewModel>> loadStockMovementViewModelSubscriber() {
+        return new Observer<List<StockMovementViewModel>>() {
             @Override
             public void onCompleted() {
             }
@@ -191,5 +193,7 @@ public class StockMovementPresenter implements Presenter {
         void deactivatedStockDraft();
 
         void showSignDialog();
+
+        void updateArchiveMenus(boolean isArchivable);
     }
 }
