@@ -18,7 +18,6 @@
 
 package org.openlmis.core.service;
 
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.ContentResolver;
@@ -52,7 +51,6 @@ import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -74,7 +72,6 @@ import static android.content.ContentResolver.setIsSyncable;
 import static android.content.ContentResolver.setSyncAutomatically;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
-
 
 @Singleton
 public class SyncManager {
@@ -345,13 +342,13 @@ public class SyncManager {
         return false;
     }
 
-    public int fetchStockCard(){
+    public int fetchStockCard() {
         final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
         Date startDate = new Date();
         Date endDate = new Date();
 
         try {
-            startDate = DateUtil.parseString("2015-09-01","yyyy-MM-dd");
+            startDate = DateUtil.parseString("2015-09-01", "yyyy-MM-dd");
         } catch (ParseException e) {
             e.printStackTrace();
         }
