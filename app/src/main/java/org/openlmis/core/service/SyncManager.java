@@ -44,6 +44,7 @@ import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.ProductsResponse;
+import org.openlmis.core.network.model.StockCardResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SubmitRequisitionResponse;
 import org.openlmis.core.network.model.SyncBackRequisitionsResponse;
@@ -357,7 +358,9 @@ public class SyncManager {
             e.printStackTrace();
         }
 
-        lmisRestApi.fetchStockMovementData(facilityId, startDate, endDate);
+        StockCardResponse stockCardResponse = lmisRestApi.fetchStockMovementData(facilityId, startDate, endDate);
+
+
         return 0;
     }
 

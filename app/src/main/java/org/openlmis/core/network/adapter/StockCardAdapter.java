@@ -13,6 +13,8 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 
+import java.util.List;
+
 import roboguice.RoboGuice;
 
 public class StockCardAdapter implements JsonDeserializer<StockCard> {
@@ -32,6 +34,31 @@ public class StockCardAdapter implements JsonDeserializer<StockCard> {
     public StockCard deserialize(JsonElement json, java.lang.reflect.Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         StockCard stockCard = gson.fromJson(json, StockCard.class);
 
+        List<StockMovementItem> wrapper = stockCard.getStockMovementItemsWrapper();
+        if (wrapper == null) {
+            return stockCard;
+        }
+
+        setupMovementStockOnHand(stockCard, wrapper);
+        setupStockCardExpireDates(stockCard, wrapper);
+
         return stockCard;
     }
+
+    public void setupStockCardExpireDates(StockCard stockCard, List<StockMovementItem> wrapper) {
+        if (wrapper.size() > 0) {
+            stockCard.setExpireDates(wrapper.get(0).getExpireDates());
+        }
+    }
+
+    public void setupMovementStockOnHand(StockCard stockCard, List<StockMovementItem> wrapper) {
+        long stockOnHand = stockCard.getStockOnHand();
+        for (StockMovementItem item : wrapper) {
+            item.setStockCard(stockCard);
+            item.setStockOnHand(stockOnHand);
+            stockOnHand = item.calculateStockMovementStockOnHand(stockOnHand);
+        }
+    }
+
+
 }

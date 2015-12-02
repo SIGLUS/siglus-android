@@ -77,9 +77,30 @@ public class StockMovementItem extends BaseModel {
     @DatabaseField
     String signature;
 
+    @Expose
+    String expireDates;
+
     @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DB_DATE_FORMAT)
     private java.util.Date movementDate;
 
     @DatabaseField
     private boolean synced = false;
+
+
+    public boolean isPositiveMovement() {
+        return movementType.equals(MovementType.RECEIVE) || movementType.equals(MovementType.POSITIVE_ADJUST);
+    }
+
+    public long calculateStockMovementStockOnHand(long stockOnHandOfStockCard) {
+        long nextMovementStockOnHand = stockOnHandOfStockCard;
+        if (isPositiveMovement()) {
+            nextMovementStockOnHand -= this.getMovementQuantity();
+        } else {
+            nextMovementStockOnHand += this.getMovementQuantity();
+        }
+
+        return nextMovementStockOnHand;
+    }
+
+
 }
