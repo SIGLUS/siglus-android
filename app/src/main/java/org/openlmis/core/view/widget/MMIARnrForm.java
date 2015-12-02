@@ -39,8 +39,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import lombok.Getter;
+
 public class MMIARnrForm extends LinearLayout {
     private ViewGroup leftViewGroup;
+
+    @Getter
     private ViewGroup rightViewGroup;
     private LayoutInflater layoutInflater;
     private ViewGroup vg_right_scrollview;
@@ -255,6 +259,7 @@ public class MMIARnrForm extends LinearLayout {
     private int getDividerWidth() {
         return (int) getResources().getDimension(R.dimen.divider);
     }
+
 
 
 }

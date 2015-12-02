@@ -21,10 +21,12 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
@@ -40,6 +42,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.DisplayUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
@@ -96,6 +99,8 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     protected static final String TAG_BACK_PRESSED = "onBackPressed";
     private static final String TAG_MISMATCH = "mismatch";
     private static final String TAG_SHOW_MESSAGE_NOTIFY_DIALOG = "showMessageNotifyDialog";
+    private View rnrItemsHeaderFreeze;
+    private int initialTopLocationOfRnrFormY;
 
 
     @Override
@@ -120,7 +125,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         initUI();
 
         if (isSavedInstanceState) {
@@ -147,6 +151,14 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         rnrFormList.initView(new ArrayList<>(form.getRnrFormItemListWrapper()));
         regimeListView.initView(form.getRegimenItemListWrapper(), tvRegimeTotal);
         mmiaInfoListView.initView(form.getBaseInfoItemListWrapper());
+
+        rnrItemsHeaderFreeze = containerView.findViewById(R.id.mmia_rnr_items_header_freeze);
+        rnrFormList.post(new Runnable() {
+            @Override
+            public void run() {
+                rnrItemsHeaderFreeze.getLayoutParams().height = rnrFormList.getRightViewGroup().getChildAt(0).getHeight();
+            }
+        });
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.add_header_info_reduce_header_size_348)) {
             getActivity().setTitle(getString(R.string.label_mmia_title,
@@ -200,6 +212,36 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
                 return false;
             }
         });
+
+        int[] initialTopLocationOfRnrForm = new int[2];
+        rnrFormList.getLocationOnScreen(initialTopLocationOfRnrForm);
+        initialTopLocationOfRnrFormY = initialTopLocationOfRnrForm[1];
+
+        ViewTreeObserver viewTreeObserver = scrollView.getViewTreeObserver();
+        viewTreeObserver.addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                hideOrDisplayRnrItemsHeader();
+            }
+        });
+
+    }
+
+    private void hideOrDisplayRnrItemsHeader(){
+        int[] rnrItemsViewLocation = new int[2];
+        rnrFormList.getLocationOnScreen(rnrItemsViewLocation);
+
+        int lastItemHeight = rnrFormList.getRightViewGroup().getChildAt(rnrFormList.getRightViewGroup().getChildCount() - 1).getHeight();
+
+        Log.i("height:", rnrFormList.getHeight() + "@@@");
+        Log.i("last item height:", lastItemHeight + "");
+        Log.i("initial top location", initialTopLocationOfRnrFormY + "@@");
+
+        if (-rnrItemsViewLocation[1] <= rnrFormList.getHeight() - rnrItemsHeaderFreeze.getHeight() - lastItemHeight - initialTopLocationOfRnrFormY) {
+            rnrItemsHeaderFreeze.setVisibility(View.VISIBLE);
+        } else {
+            rnrItemsHeaderFreeze.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void clearEditErrorFocus() {
