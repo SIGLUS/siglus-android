@@ -18,7 +18,11 @@
 package org.openlmis.core.manager;
 
 
+import com.crashlytics.android.Crashlytics;
+
 import org.openlmis.core.model.User;
+
+import io.fabric.sdk.android.Fabric;
 
 public final class UserInfoMgr {
     private static UserInfoMgr mInstance;
@@ -28,7 +32,6 @@ public final class UserInfoMgr {
     }
 
     public static UserInfoMgr getInstance() {
-
         if (mInstance == null) {
             mInstance = new UserInfoMgr();
         }
@@ -40,6 +43,9 @@ public final class UserInfoMgr {
     }
 
     public void setUser(User user) {
+        if (Fabric.isInitialized()) {
+            Crashlytics.setUserIdentifier(user.getFacilityName());
+        }
         this.user = user;
     }
 }
