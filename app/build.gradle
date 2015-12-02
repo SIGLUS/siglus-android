@@ -24,7 +24,7 @@ android {
     signingConfigs {
         release {
             storeFile file("../scripts/lmis_moz.jks")
-            storePassword  System.getenv("KSTOREPWD")
+            storePassword System.getenv("KSTOREPWD")
             keyAlias "clintonhealthaccess"
             keyPassword System.getenv("KEYPWD")
         }
@@ -158,20 +158,20 @@ dependencies {
     testCompile 'org.assertj:assertj-core:1.7.1'
 }
 
-task bundleInstall(type:Exec) {
+task bundleInstall(type: Exec) {
     workingDir "$projectDir/../functionalTests"
     executable 'bundle'
     args 'install'
 }
 
-task functionalTests(type:Exec, dependsOn: ['bundleInstall']) {
+task functionalTests(type: Exec, dependsOn: ['bundleInstall', 'assembleDevDebug']) {
     description 'Run Calabash Tests against specified apk (-PapkPath)'
     group JavaBasePlugin.VERIFICATION_GROUP
     workingDir "$projectDir/../functionalTests"
 
     def targetPath
 
-    if(project.hasProperty("apkPath")) {
+    if (project.hasProperty("apkPath")) {
         targetPath = "$apkPath"
     } else {
         targetPath = "$projectDir/build/outputs/apk/app-dev-debug.apk"
