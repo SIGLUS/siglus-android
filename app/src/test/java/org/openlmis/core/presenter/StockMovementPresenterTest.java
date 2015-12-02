@@ -68,7 +68,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
     StockMovementPresenter.StockMovementView view;
 
     @Before
-    public void setup() throws Exception{
+    public void setup() throws Exception {
         stockRepositoryMock = mock(StockRepository.class);
 
         view = mock(StockMovementPresenter.StockMovementView.class);
@@ -112,26 +112,32 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
 
         stockMovementPresenter.submitStockMovement(viewModel);
 
-        if(LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_stock_movement_signature)) {
+        if (LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_stock_movement_signature)) {
             verify(view).showSignDialog();
         }
     }
 
     @Test
     public void shouldSaveAndRefresh() throws Exception {
+        //given
         StockCard stockCard = new StockCard();
+        stockCard.setStockOnHand(1);
+
+        StockMovementItem item = new StockMovementItem();
+        item.setStockOnHand(0L);
+
+        StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
+        when(viewModel.convertViewToModel()).thenReturn(item);
         when(stockRepositoryMock.queryStockCardById(123)).thenReturn(stockCard);
         stockMovementPresenter.setStockCard(123);
 
-        StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
-        StockMovementItem item = new StockMovementItem();
-        item.setStockOnHand(100L);
-        when(viewModel.convertViewToModel()).thenReturn(item);
-
+        //when
         stockMovementPresenter.saveAndRefresh(viewModel);
 
+        //then
         assertThat(stockMovementPresenter.getStockCard().getStockOnHand()).isEqualTo(item.getStockOnHand());
         verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(stockCard, item);
+        verify(view).updateArchiveMenus(true);
     }
 
     @Test
