@@ -37,11 +37,19 @@ public class SharedPreferenceMgr {
     public static final String KEY_IS_REQUISITION_DATA_SYNCED = "is_requisition_data_synced";
 
     @Inject
-    public SharedPreferenceMgr(Context context){
+    public SharedPreferenceMgr(Context context) {
         sharedPreferences = context.getSharedPreferences(MY_PREFERENCE, Context.MODE_PRIVATE);
     }
 
-    public SharedPreferences getPreference(){
+    public SharedPreferences getPreference() {
         return sharedPreferences;
+    }
+
+    public boolean hasSyncedVersion() {
+        return sharedPreferences.getBoolean(UserInfoMgr.getInstance().getVersion(), false);
+    }
+
+    public void setSyncedVersion(boolean hasUpdated) {
+        sharedPreferences.edit().putBoolean(UserInfoMgr.getInstance().getVersion(), hasUpdated).apply();
     }
 }

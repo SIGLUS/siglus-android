@@ -42,6 +42,7 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
+import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.ProductsResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SubmitRequisitionResponse;
@@ -55,6 +56,9 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import roboguice.inject.InjectResource;
 import rx.Observable;
 import rx.Observer;
@@ -357,4 +361,21 @@ public class SyncManager {
         return 0;
     }
 
+    public void syncAppVersion() {
+        if (!sharedPreferenceMgr.hasSyncedVersion()) {
+            AppInfoRequest request = new AppInfoRequest(UserInfoMgr.getInstance().getFacilityCode(), UserInfoMgr.getInstance().getVersion());
+
+            lmisRestApi.updateAppVersion(request, new Callback<Void>() {
+                @Override
+                public void success(Void o, Response response) {
+                    sharedPreferenceMgr.setSyncedVersion(true);
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    sharedPreferenceMgr.setSyncedVersion(false);
+                }
+            });
+        }
+    }
 }

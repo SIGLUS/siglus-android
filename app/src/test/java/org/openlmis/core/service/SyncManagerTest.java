@@ -19,27 +19,30 @@
 package org.openlmis.core.service;
 
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.google.inject.Binder;
-import com.google.inject.Module;
+import com.google.inject.AbstractModule;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.network.LMISRestApi;
+import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SubmitRequisitionResponse;
 import org.openlmis.core.network.model.SyncBackRequisitionsResponse;
@@ -51,6 +54,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit.Callback;
 import roboguice.RoboGuice;
 
 import static junit.framework.Assert.assertEquals;
@@ -62,6 +66,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -74,18 +79,15 @@ public class SyncManagerTest {
     RnrFormRepository rnrFormRepository;
     LMISRestApi lmisRestApi;
     StockRepository stockRepository;
+    private SharedPreferenceMgr sharedPreferenceMgr;
 
     @Before
     public void setup() throws LMISException {
         rnrFormRepository = mock(RnrFormRepository.class);
         lmisRestApi = mock(LMISRestApi.class);
+        sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
 
-        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
-            @Override
-            public void configure(Binder binder) {
-                binder.bind(RnrFormRepository.class).toInstance(rnrFormRepository);
-            }
-        });
+        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
         syncManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncManager.class);
         syncManager.lmisRestApi = lmisRestApi;
@@ -180,12 +182,13 @@ public class SyncManagerTest {
         StockMovementItem stockMovementItem = stockCard.getForeignStockMovementItems().iterator().next();
         StockMovementEntry stockMovementEntry = new StockMovementEntry(stockMovementItem,null);
 
-        assertEquals(stockMovementEntry.getType(),"ADJUSTMENT");
-        assertEquals(stockMovementEntry.getCustomProps().get("expirationDates"),stockMovementItem.getStockCard().getExpireDates());
+        assertEquals(stockMovementEntry.getType(), "ADJUSTMENT");
+        assertEquals(stockMovementEntry.getCustomProps().get("expirationDates"), stockMovementItem.getStockCard().getExpireDates());
     }
 
     @Test
     public void shouldSyncRequisitionDataSuccess() throws LMISException, SQLException {
+        when(sharedPreferenceMgr.getPreference()).thenReturn(LMISTestApp.getContext().getSharedPreferences("LMISPreference", Context.MODE_PRIVATE));
         List<RnRForm> data = new ArrayList<>();
         data.add(new RnRForm());
         data.add(new RnRForm());
@@ -194,6 +197,30 @@ public class SyncManagerTest {
         syncBackRequisitionsResponse.setRequisitions(data);
         when(lmisRestApi.fetchRequisitions(anyString())).thenReturn(syncBackRequisitionsResponse);
         syncManager.fetchAndSaveRequisitionData();
-        verify(rnrFormRepository,times(2)).createFormAndItems(any(RnRForm.class));
+        verify(rnrFormRepository, times(2)).createFormAndItems(any(RnRForm.class));
+    }
+
+    @Test
+    public void shouldSyncAppVersion() throws Exception {
+        when(sharedPreferenceMgr.hasSyncedVersion()).thenReturn(false);
+        User user = new User();
+        UserInfoMgr.getInstance().setUser(user);
+        syncManager.syncAppVersion();
+        verify(lmisRestApi).updateAppVersion(any(AppInfoRequest.class), any(Callback.class));
+    }
+
+    @Test
+    public void shouldNotSyncAppVersion() throws Exception {
+        when(sharedPreferenceMgr.hasSyncedVersion()).thenReturn(true);
+        syncManager.syncAppVersion();
+        verify(lmisRestApi,never()).updateAppVersion(any(AppInfoRequest.class), any(Callback.class));
+    }
+
+    public class MyTestModule extends AbstractModule {
+        @Override
+        protected void configure() {
+            binder.bind(RnrFormRepository.class).toInstance(rnrFormRepository);
+            bind(SharedPreferenceMgr.class).toInstance(sharedPreferenceMgr);
+        }
     }
 }

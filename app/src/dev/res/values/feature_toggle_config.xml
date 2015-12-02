@@ -10,4 +10,5 @@
     <bool name="add_header_info_reduce_header_size_348">true</bool>
     <bool name="sort_product_list_alphabetically_435">true</bool>
     <bool name="search_view_enhancement">true</bool>
+    <bool name="feature_update_version">true</bool>
 </resources>
