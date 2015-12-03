@@ -128,13 +128,7 @@ public class StockRepository {
     }
 
     public void saveStockItem(final StockMovementItem stockMovementItem) throws LMISException {
-        dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, Void>() {
-            @Override
-            public Void operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                dao.create(stockMovementItem);
-                return null;
-            }
-        });
+        stockItemGenericDao.create(stockMovementItem);
     }
 
     public void initStockCard(final StockCard stockCard) throws LMISException {

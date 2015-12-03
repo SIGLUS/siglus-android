@@ -74,6 +74,13 @@ public class StockMovementActivityTest {
     }
 
     @Test
+    public void shouldArchiveStockMovementWhenArchiveMenuClicked() throws Exception {
+        shadowOf(stockMovementActivity).clickMenuItem(R.id.action_archive);
+
+        verify(mockedPresenter).archiveStockCard();
+    }
+
+    @Test
     public void shouldLoadingStockMovementModelsWhenActivityStarts() {
         assertThat(stockMovementActivity.loadingDialog.isShowing()).isTrue();
         verify(mockedPresenter).loadStockMovementViewModels();
