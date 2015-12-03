@@ -87,8 +87,8 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     @InjectView(R.id.action_panel)
     protected View bottomView;
 
-    @InjectView(R.id.mmia_rnr_items_header_freeze)
-    protected ViewGroup rnrItemsHeaderFreeze;
+    @InjectView(R.id.mmia_rnr_items_header_freeze_left)
+    protected ViewGroup rnrItemsHeaderFreezeLeft;
 
     @InjectView(R.id.mmia_rnr_items_header_freeze_right)
     protected ViewGroup rnrItemsHeaderFreezeRight;
@@ -162,7 +162,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
             public void run() {
                 final View leftHeaderView = rnrFormList.getLeftHeaderView();
                 ((ViewGroup)leftHeaderView.getParent()).removeView(leftHeaderView);
-                rnrItemsHeaderFreeze.addView(leftHeaderView);
+                rnrItemsHeaderFreezeLeft.addView(leftHeaderView);
 
                 final ViewGroup rightHeaderView = rnrFormList.getRightHeaderView();
                 ((ViewGroup)rightHeaderView.getParent()).removeView(rightHeaderView);
@@ -253,10 +253,12 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
 
         int lastItemHeight = rnrFormList.getRightViewGroup().getChildAt(rnrFormList.getRightViewGroup().getChildCount() - 1).getHeight();
 
-        if (-rnrItemsViewLocation[1] <= rnrFormList.getHeight() - rnrItemsHeaderFreeze.getHeight() - lastItemHeight - initialTopLocationOfRnrFormY) {
-            rnrItemsHeaderFreeze.setVisibility(View.VISIBLE);
+        if (-rnrItemsViewLocation[1] <= rnrFormList.getHeight() - rnrItemsHeaderFreezeLeft.getHeight() - lastItemHeight - initialTopLocationOfRnrFormY) {
+            rnrItemsHeaderFreezeLeft.setVisibility(View.VISIBLE);
+            rnrItemsHeaderFreezeRight.setVisibility(View.VISIBLE);
         } else {
-            rnrItemsHeaderFreeze.setVisibility(View.INVISIBLE);
+            rnrItemsHeaderFreezeLeft.setVisibility(View.INVISIBLE);
+            rnrItemsHeaderFreezeRight.setVisibility(View.INVISIBLE);
         }
     }
 

@@ -100,7 +100,7 @@ public class MMIARequisitionFragmentTest {
         mmiaRequisitionFragment.regimeListView = regimeListView;
         mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
         mmiaRequisitionFragment.rnrFormList = rnrFormList;
-        mmiaRequisitionFragment.rnrItemsHeaderFreeze = mockRnrItemsHeaderFreeze;
+        mmiaRequisitionFragment.rnrItemsHeaderFreezeLeft = mockRnrItemsHeaderFreeze;
 
         EditText patientTotalView = mock(EditText.class);
         when(mmiaInfoListView.getPatientTotalView()).thenReturn(patientTotalView);
@@ -334,7 +334,7 @@ public class MMIARequisitionFragmentTest {
             }
         }).when(rnrFormList).getLocationOnScreen(any(int[].class));
 
-        when(mmiaRequisitionFragment.rnrItemsHeaderFreeze.getHeight()).thenReturn(100);
+        when(mmiaRequisitionFragment.rnrItemsHeaderFreezeLeft.getHeight()).thenReturn(100);
 
         mmiaRequisitionFragment.hideOrDisplayRnrItemsHeader();
         verify(mockRnrItemsHeaderFreeze).setVisibility(View.VISIBLE);
@@ -362,7 +362,7 @@ public class MMIARequisitionFragmentTest {
             }
         }).when(rnrFormList).getLocationOnScreen(any(int[].class));
 
-        when(mmiaRequisitionFragment.rnrItemsHeaderFreeze.getHeight()).thenReturn(100);
+        when(mmiaRequisitionFragment.rnrItemsHeaderFreezeLeft.getHeight()).thenReturn(100);
 
         mmiaRequisitionFragment.hideOrDisplayRnrItemsHeader();
         verify(mockRnrItemsHeaderFreeze).setVisibility(View.INVISIBLE);

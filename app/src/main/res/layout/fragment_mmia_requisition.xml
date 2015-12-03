@@ -155,7 +155,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/mmia_rnr_items_header_freeze"
+            android:id="@+id/mmia_rnr_items_header_freeze_left"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
