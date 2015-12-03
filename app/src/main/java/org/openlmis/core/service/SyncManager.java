@@ -363,7 +363,7 @@ public class SyncManager {
 
     public void syncAppVersion() {
         if (!sharedPreferenceMgr.hasSyncedVersion()) {
-            AppInfoRequest request = new AppInfoRequest(UserInfoMgr.getInstance().getFacilityCode(), UserInfoMgr.getInstance().getVersion());
+            AppInfoRequest request = new AppInfoRequest(UserInfoMgr.getInstance().getFacilityCode(), UserInfoMgr.getInstance().getUser().getUsername(), UserInfoMgr.getInstance().getVersion());
 
             lmisRestApi.updateAppVersion(request, new Callback<Void>() {
                 @Override
