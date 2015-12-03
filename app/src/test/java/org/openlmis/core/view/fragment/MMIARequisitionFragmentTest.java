@@ -47,6 +47,7 @@ import org.openlmis.core.view.activity.MMIARequisitionActivity;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARnrForm;
+import org.openlmis.core.view.widget.RnrFormHorizontalScrollView;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
@@ -77,8 +78,7 @@ public class MMIARequisitionFragmentTest {
     private MMIARnrForm rnrFormList;
 
     protected ViewGroup mockRightViewGroup;
-    private View mockRnrItemsHeaderFreeze;
-    protected int[] locationCoords;
+    private ViewGroup mockRnrItemsHeaderFreeze;
 
     @Before
     public void setUp() throws Exception {
@@ -95,12 +95,16 @@ public class MMIARequisitionFragmentTest {
 
         regimeListView = mock(MMIARegimeList.class);
         mmiaInfoListView = mock(MMIAInfoList.class);
-        mockRnrItemsHeaderFreeze = mock(View.class);
+        mockRnrItemsHeaderFreeze = mock(ViewGroup.class);
 
         mmiaRequisitionFragment.regimeListView = regimeListView;
         mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
         mmiaRequisitionFragment.rnrFormList = rnrFormList;
-        mmiaRequisitionFragment.rnrItemsHeaderFreezeLeft = mockRnrItemsHeaderFreeze;
+        mmiaRequisitionFragment.rnrItemsHeaderFreeze = mockRnrItemsHeaderFreeze;
+
+        when(rnrFormList.getRightHeaderView()).thenReturn(mock(ViewGroup.class));
+        when(rnrFormList.getLeftHeaderView()).thenReturn(mock(ViewGroup.class));
+        when(rnrFormList.getRnrItemsHorizontalScrollView()).thenReturn(mock(RnrFormHorizontalScrollView.class));
 
         EditText patientTotalView = mock(EditText.class);
         when(mmiaInfoListView.getPatientTotalView()).thenReturn(patientTotalView);
@@ -316,7 +320,7 @@ public class MMIARequisitionFragmentTest {
     public void shouldDisplayFreezeHeaderWhenLocationIsAboveOrAtRnrItemsListWhenScrolling() {
         when(rnrFormList.getHeight()).thenReturn(2000);
         int numberOfItemsInRNR = 10;
-        mmiaRequisitionFragment.initialTopLocationOfRnrFormY = 100;
+        mmiaRequisitionFragment.actionBarHeight = 100;
 
         mockRightViewGroup = mock(ViewGroup.class);
         when(rnrFormList.getRightViewGroup()).thenReturn(mockRightViewGroup);
@@ -334,7 +338,7 @@ public class MMIARequisitionFragmentTest {
             }
         }).when(rnrFormList).getLocationOnScreen(any(int[].class));
 
-        when(mmiaRequisitionFragment.rnrItemsHeaderFreezeLeft.getHeight()).thenReturn(100);
+        when(mmiaRequisitionFragment.rnrItemsHeaderFreeze.getHeight()).thenReturn(100);
 
         mmiaRequisitionFragment.hideOrDisplayRnrItemsHeader();
         verify(mockRnrItemsHeaderFreeze).setVisibility(View.VISIBLE);
@@ -344,7 +348,7 @@ public class MMIARequisitionFragmentTest {
     public void shouldHideFreezeHeaderWhenLocationIsBelowRnrItemsListWhenScrolling() {
         when(rnrFormList.getHeight()).thenReturn(2000);
         int numberOfItemsInRNR = 10;
-        mmiaRequisitionFragment.initialTopLocationOfRnrFormY = 100;
+        mmiaRequisitionFragment.actionBarHeight = 100;
 
         mockRightViewGroup = mock(ViewGroup.class);
         when(rnrFormList.getRightViewGroup()).thenReturn(mockRightViewGroup);
@@ -362,7 +366,7 @@ public class MMIARequisitionFragmentTest {
             }
         }).when(rnrFormList).getLocationOnScreen(any(int[].class));
 
-        when(mmiaRequisitionFragment.rnrItemsHeaderFreezeLeft.getHeight()).thenReturn(100);
+        when(mmiaRequisitionFragment.rnrItemsHeaderFreeze.getHeight()).thenReturn(100);
 
         mmiaRequisitionFragment.hideOrDisplayRnrItemsHeader();
         verify(mockRnrItemsHeaderFreeze).setVisibility(View.INVISIBLE);

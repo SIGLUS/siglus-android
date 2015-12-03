@@ -24,7 +24,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -33,6 +32,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.ViewUtil;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -84,6 +84,20 @@ public class MMIARnrForm extends LinearLayout {
     private void addHeaderView() {
         leftHeaderView = addLeftHeaderView();
         rightHeaderView = addRightHeaderView();
+        setItemSize(leftHeaderView, rightHeaderView);
+
+        setMarginForFreezeHeader();
+    }
+
+    private void setMarginForFreezeHeader() {
+        post(new Runnable() {
+            @Override
+            public void run() {
+                final MarginLayoutParams marginLayoutParams = (MarginLayoutParams) getLayoutParams();
+                marginLayoutParams.topMargin = rightHeaderView.getLayoutParams().height;
+                setLayoutParams(marginLayoutParams);
+            }
+        });
     }
 
     private void addItemView(ArrayList<RnrFormItem> rnrFormItemList) {
@@ -139,7 +153,7 @@ public class MMIARnrForm extends LinearLayout {
             @Override
             public void run() {
                 setRightItemWidth(rightView);
-                syncItemHeight(leftView, rightView);
+                ViewUtil.syncViewHeight(leftView, rightView);
             }
         });
     }
@@ -154,26 +168,6 @@ public class MMIARnrForm extends LinearLayout {
                 rightView.getChildAt(i).getLayoutParams().width = getRightViewWidth(rightWidth, childCount);
             }
             rightView.getChildAt(0).getLayoutParams().width = getRightViewWidth(rightWidth, childCount) + getRightViewRemainderWidth(rightWidth, childCount);
-        }
-    }
-
-    public void syncItemHeight(final View leftView, final View rightView) {
-        int leftHeight = leftView.getHeight();
-        int rightHeight = rightView.getHeight();
-        if (leftHeight > rightHeight) {
-            ViewGroup.LayoutParams layoutParams = rightView.getLayoutParams();
-            layoutParams.height = leftHeight;
-            rightView.setLayoutParams(layoutParams);
-        } else {
-            ViewGroup.LayoutParams layoutParams = leftView.getLayoutParams();
-            layoutParams.height = rightHeight;
-            leftView.setLayoutParams(layoutParams);
-
-            if (rightView.getLayoutParams() instanceof FrameLayout.LayoutParams) {
-                rightView.setLayoutParams(new FrameLayout.LayoutParams(layoutParams.width, layoutParams.height));
-            } else {
-                rightView.setLayoutParams(layoutParams);
-            }
         }
     }
 
@@ -272,7 +266,6 @@ public class MMIARnrForm extends LinearLayout {
     private int getDividerWidth() {
         return (int) getResources().getDimension(R.dimen.divider);
     }
-
 
 
 }

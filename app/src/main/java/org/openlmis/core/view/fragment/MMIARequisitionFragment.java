@@ -41,8 +41,8 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.utils.LogUtil;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.utils.ViewUtil;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.openlmis.core.view.widget.MMIAInfoList;
@@ -87,6 +87,9 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     @InjectView(R.id.action_panel)
     protected View bottomView;
 
+    @InjectView(R.id.mmia_rnr_items_header_freeze)
+    protected ViewGroup rnrItemsHeaderFreeze;
+
     @InjectView(R.id.mmia_rnr_items_header_freeze_left)
     protected ViewGroup rnrItemsHeaderFreezeLeft;
 
@@ -106,7 +109,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     private static final String TAG_MISMATCH = "mismatch";
     private static final String TAG_SHOW_MESSAGE_NOTIFY_DIALOG = "showMessageNotifyDialog";
 
-    protected int initialTopLocationOfRnrFormY;
+    protected int actionBarHeight;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -148,6 +151,17 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
             scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             bottomView.setVisibility(View.GONE);
         }
+        disableFreezeHeaderScroll();
+        initActionBarHeight();
+    }
+
+    private void disableFreezeHeaderScroll() {
+        rnrItemsHeaderFreezeRight.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
     }
 
     @Override
@@ -157,18 +171,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         regimeListView.initView(form.getRegimenItemListWrapper(), tvRegimeTotal);
         mmiaInfoListView.initView(form.getBaseInfoItemListWrapper());
 
-        final View leftHeaderView = rnrFormList.getLeftHeaderView();
-        rnrItemsHeaderFreezeLeft.addView(leftHeaderView);
-
-        final ViewGroup rightHeaderView = rnrFormList.getRightHeaderView();
-        rnrItemsHeaderFreezeRight.addView(rightHeaderView);
-
-        rnrFormList.post(new Runnable() {
-            @Override
-            public void run() {
-                rnrFormList.syncItemHeight(leftHeaderView, rightHeaderView);
-            }
-        });
+        InflateFreezeHeaderView();
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.add_header_info_reduce_header_size_348)) {
             getActivity().setTitle(getString(R.string.label_mmia_title,
@@ -180,6 +183,21 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         highlightTotalDifference();
         etComment.setText(form.getComments());
         bindListeners();
+    }
+
+    private void InflateFreezeHeaderView() {
+        final View leftHeaderView = rnrFormList.getLeftHeaderView();
+        rnrItemsHeaderFreezeLeft.addView(leftHeaderView);
+
+        final ViewGroup rightHeaderView = rnrFormList.getRightHeaderView();
+        rnrItemsHeaderFreezeRight.addView(rightHeaderView);
+
+        rnrFormList.post(new Runnable() {
+            @Override
+            public void run() {
+                ViewUtil.syncViewHeight(leftHeaderView, rightHeaderView);
+            }
+        });
     }
 
     @Override
@@ -223,10 +241,10 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
             }
         });
 
-        int[] initialTopLocationOfRnrForm = new int[2];
-        rnrFormList.getLocationOnScreen(initialTopLocationOfRnrForm);
-        initialTopLocationOfRnrFormY = initialTopLocationOfRnrForm[1];
+        bindFreezeHeaderListener();
+    }
 
+    private void bindFreezeHeaderListener() {
         ViewTreeObserver verticalViewTreeObserver = scrollView.getViewTreeObserver();
         verticalViewTreeObserver.addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
@@ -238,28 +256,43 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         rnrFormList.getRnrItemsHorizontalScrollView().setOnScrollChangedListener(new RnrFormHorizontalScrollView.OnScrollChangedListener() {
             @Override
             public void onScrollChanged(int l, int t, int oldl, int oldt) {
-
                 rnrItemsHeaderFreezeRight.scrollBy(l - oldl, 0);
-                LogUtil.s("@@@" + (l - oldl));
             }
         });
+    }
 
+    private void initActionBarHeight() {
+        containerView.post(new Runnable() {
+            @Override
+            public void run() {
+                int[] initialTopLocationOfRnrForm = new int[2];
+                containerView.getLocationOnScreen(initialTopLocationOfRnrForm);
+                actionBarHeight = initialTopLocationOfRnrForm[1];
+            }
+        });
     }
 
 
     protected void hideOrDisplayRnrItemsHeader() {
+        if (isNeedHideFreezeHeader()) {
+            rnrItemsHeaderFreeze.setVisibility(View.INVISIBLE);
+        } else {
+            rnrItemsHeaderFreeze.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private boolean isNeedHideFreezeHeader() {
         int[] rnrItemsViewLocation = new int[2];
         rnrFormList.getLocationOnScreen(rnrItemsViewLocation);
+        final int rnrFormY = rnrItemsViewLocation[1];
 
         int lastItemHeight = rnrFormList.getRightViewGroup().getChildAt(rnrFormList.getRightViewGroup().getChildCount() - 1).getHeight();
 
-        if (-rnrItemsViewLocation[1] <= rnrFormList.getHeight() - rnrItemsHeaderFreezeLeft.getHeight() - lastItemHeight - initialTopLocationOfRnrFormY) {
-            rnrItemsHeaderFreezeLeft.setVisibility(View.VISIBLE);
-            rnrItemsHeaderFreezeRight.setVisibility(View.VISIBLE);
-        } else {
-            rnrItemsHeaderFreezeLeft.setVisibility(View.INVISIBLE);
-            rnrItemsHeaderFreezeRight.setVisibility(View.INVISIBLE);
-        }
+        final int offsetY = -rnrFormY + rnrItemsHeaderFreeze.getHeight() + actionBarHeight;
+
+        final int hiddenThresholdY = rnrFormList.getHeight() - lastItemHeight;
+
+        return offsetY > hiddenThresholdY;
     }
 
     private void clearEditErrorFocus() {

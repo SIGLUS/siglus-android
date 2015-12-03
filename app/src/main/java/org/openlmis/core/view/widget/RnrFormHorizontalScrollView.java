@@ -31,5 +31,9 @@ public class RnrFormHorizontalScrollView extends HorizontalScrollView {
         }
     }
 
+    @Override
+    public void fling(int velocityX) {
+        super.fling(0);
+    }
 
 }
