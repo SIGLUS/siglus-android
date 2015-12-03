@@ -40,6 +40,15 @@ public class StockCardListActivityTest {
     }
 
     @Test
+    public void shouldNavigateToStockCardArchiveListWhenMenuClicked() {
+        shadowOf(stockCardListActivity).clickMenuItem(StockCardListActivity.MENU_ID_ARCHIVE_LIST);
+
+        Intent nextIntent = ShadowApplication.getInstance().getNextStartedActivity();
+
+        assertThat(nextIntent.getComponent().getClassName()).isEqualTo(ArchivedDrugsListActivity.class.getName());
+    }
+
+    @Test
     public void shouldGetIntentToMe() {
         Intent intent = StockCardListActivity.getIntentToMe(RuntimeEnvironment.application);
 

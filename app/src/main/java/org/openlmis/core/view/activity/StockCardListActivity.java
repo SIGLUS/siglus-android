@@ -34,6 +34,7 @@ import roboguice.inject.ContentView;
 public class StockCardListActivity extends SearchBarActivity {
 
     protected static final int MENU_ID_ADD_NEW_DRUG = 100;
+    protected static final int MENU_ID_ARCHIVE_LIST = 200;
     protected StockCardListFragment stockCardFragment;
 
     @Override
@@ -46,16 +47,22 @@ public class StockCardListActivity extends SearchBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_ID_ADD_NEW_DRUG, 100, getString(R.string.action_add_new_drug)).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        menu.add(Menu.NONE, MENU_ID_ARCHIVE_LIST, 200, getString(R.string.action_navigate_archive)).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == MENU_ID_ADD_NEW_DRUG) {
-            startActivity(InventoryActivity.getIntentToMe(this, true));
-            return true;
+        switch(item.getItemId()) {
+            case MENU_ID_ADD_NEW_DRUG:
+                startActivity(InventoryActivity.getIntentToMe(this, true));
+                return true;
+            case MENU_ID_ARCHIVE_LIST:
+                startActivity(ArchivedDrugsListActivity.getIntentToMe(this));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

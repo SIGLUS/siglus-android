@@ -7,7 +7,7 @@
         app:showAsAction="ifRoom|withText" />
     <item
         android:id="@+id/action_archive"
-        android:title="@string/menu_archive_stockcard"
+        android:title="@string/menu_archive_drugs"
         android:visible="false"
         app:showAsAction="never" />
 </menu>

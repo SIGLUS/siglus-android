@@ -163,6 +163,7 @@
 
     <!-- Stock Card List Page -->
     <string name="search_hint">Search…</string>
+    <string name="action_navigate_archive">Archived drugs</string>
     <string name="hint_save_failed">Save Failed</string>
     <string name="hint_complete_failed">Complete Failed</string>
     <string-array name="sort_items_array">
@@ -194,6 +195,9 @@
     <string name="label_previous_period">Previous periods</string>
 
     <string name="label_total">Total:%1$s</string>
-    <string name="menu_archive_stockcard">Archive Stock Card</string>
+
+    <!-- Archived Drugs -->
+    <string name="menu_archive_drugs">Archive Stock Card</string>
+    <string name="title_archived_drugs">Archived drugs</string>
 
 </resources>
