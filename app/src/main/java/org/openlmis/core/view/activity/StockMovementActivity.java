@@ -212,6 +212,9 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             case R.id.action_history:
                 startActivity(StockMovementHistoryActivity.getIntentToMe(this, stockId, stockName));
                 return true;
+            case R.id.action_archive:
+                presenter.archiveStockCard();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

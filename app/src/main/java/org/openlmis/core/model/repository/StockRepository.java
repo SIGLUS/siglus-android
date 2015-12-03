@@ -29,6 +29,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftInventory;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -55,6 +56,7 @@ public class StockRepository {
     GenericDao<StockCard> genericDao;
     GenericDao<StockMovementItem> stockItemGenericDao;
     GenericDao<DraftInventory> draftInventoryGenericDao;
+
 
     @Inject
     ProgramRepository programRepository;
@@ -93,6 +95,13 @@ public class StockRepository {
     public void update(final StockCard stockCard) {
         try {
             genericDao.update(stockCard);
+            dbUtil.withDao(Product.class, new DbUtil.Operation<Product, Void>() {
+                @Override
+                public Void operate(Dao<Product, String> dao) throws SQLException {
+                    dao.update(stockCard.getProduct());
+                    return null;
+                }
+            });
         } catch (LMISException e) {
             e.reportToFabric();
         }
