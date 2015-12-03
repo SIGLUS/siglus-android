@@ -47,8 +47,15 @@ public class MMIARnrForm extends LinearLayout {
     @Getter
     private ViewGroup rightViewGroup;
     private LayoutInflater layoutInflater;
-    private ViewGroup vg_right_scrollview;
+
+    @Getter
+    private RnrFormHorizontalScrollView rnrItemsHorizontalScrollView;
     private HashMap<String, List<String>> rnrFormItemConfigList = new HashMap<>();
+
+    @Getter
+    private View leftHeaderView;
+    @Getter
+    private ViewGroup rightHeaderView;
 
     public MMIARnrForm(Context context) {
         super(context);
@@ -63,7 +70,7 @@ public class MMIARnrForm extends LinearLayout {
     private void init(Context context) {
         layoutInflater = LayoutInflater.from(context);
         View container = layoutInflater.inflate(R.layout.view_mmia_rnr_form, this, true);
-        vg_right_scrollview = (ViewGroup) container.findViewById(R.id.vg_right_scrollview);
+        rnrItemsHorizontalScrollView = (RnrFormHorizontalScrollView) container.findViewById(R.id.vg_right_scrollview);
         leftViewGroup = (ViewGroup) container.findViewById(R.id.rnr_from_list_product_name);
         rightViewGroup = (ViewGroup) container.findViewById(R.id.rnr_from_list);
     }
@@ -74,8 +81,8 @@ public class MMIARnrForm extends LinearLayout {
     }
 
     private void addHeaderView() {
-        View leftHeaderView = addLeftHeaderView();
-        ViewGroup rightHeaderView = addRightHeaderView();
+        leftHeaderView = addLeftHeaderView();
+        rightHeaderView = addRightHeaderView();
         setItemSize(leftHeaderView, rightHeaderView);
     }
 
@@ -127,7 +134,7 @@ public class MMIARnrForm extends LinearLayout {
         rnrFormItemConfigList.put(Product.MEDICINE_TYPE_OTHER, Arrays.asList(getResources().getStringArray(R.array.medicine_other)));
     }
 
-    private void setItemSize(final View leftView, final ViewGroup rightView) {
+    public void setItemSize(final View leftView, final ViewGroup rightView) {
         post(new Runnable() {
             @Override
             public void run() {
@@ -138,7 +145,7 @@ public class MMIARnrForm extends LinearLayout {
     }
 
     private void setRightItemWidth(final ViewGroup rightView) {
-        int rightWidth = vg_right_scrollview.getWidth();
+        int rightWidth = rnrItemsHorizontalScrollView.getWidth();
         int rightViewGroupWidth = rightViewGroup.getWidth();
 
         if (rightViewGroupWidth < rightWidth) {
@@ -165,7 +172,7 @@ public class MMIARnrForm extends LinearLayout {
         }
     }
 
-    private View addLeftHeaderView() {
+    public View addLeftHeaderView() {
         return addLeftView(null, true, null);
     }
 
@@ -203,7 +210,7 @@ public class MMIARnrForm extends LinearLayout {
     }
 
 
-    private ViewGroup addRightHeaderView() {
+    public ViewGroup addRightHeaderView() {
         return addRightView(null, true);
     }
 

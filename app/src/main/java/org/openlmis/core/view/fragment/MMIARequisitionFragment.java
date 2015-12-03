@@ -41,12 +41,14 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.LogUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARnrForm;
+import org.openlmis.core.view.widget.RnrFormHorizontalScrollView;
 import org.openlmis.core.view.widget.SignatureDialog;
 
 import java.util.ArrayList;
@@ -86,7 +88,10 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     protected View bottomView;
 
     @InjectView(R.id.mmia_rnr_items_header_freeze)
-    protected View rnrItemsHeaderFreeze;
+    protected ViewGroup rnrItemsHeaderFreeze;
+
+    @InjectView(R.id.mmia_rnr_items_header_freeze_right)
+    protected ViewGroup rnrItemsHeaderFreezeRight;
 
     @Inject
     MMIARequisitionPresenter presenter;
@@ -155,7 +160,13 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         rnrFormList.post(new Runnable() {
             @Override
             public void run() {
-                rnrItemsHeaderFreeze.getLayoutParams().height = rnrFormList.getRightViewGroup().getChildAt(0).getHeight();
+                final View leftHeaderView = rnrFormList.getLeftHeaderView();
+                ((ViewGroup)leftHeaderView.getParent()).removeView(leftHeaderView);
+                rnrItemsHeaderFreeze.addView(leftHeaderView);
+
+                final ViewGroup rightHeaderView = rnrFormList.getRightHeaderView();
+                ((ViewGroup)rightHeaderView.getParent()).removeView(rightHeaderView);
+                rnrItemsHeaderFreezeRight.addView(rightHeaderView);
             }
         });
 
@@ -216,17 +227,27 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         rnrFormList.getLocationOnScreen(initialTopLocationOfRnrForm);
         initialTopLocationOfRnrFormY = initialTopLocationOfRnrForm[1];
 
-        ViewTreeObserver viewTreeObserver = scrollView.getViewTreeObserver();
-        viewTreeObserver.addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+        ViewTreeObserver verticalViewTreeObserver = scrollView.getViewTreeObserver();
+        verticalViewTreeObserver.addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
                 hideOrDisplayRnrItemsHeader();
             }
         });
 
+        rnrFormList.getRnrItemsHorizontalScrollView().setOnScrollChangedListener(new RnrFormHorizontalScrollView.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged(int l, int t, int oldl, int oldt) {
+
+                rnrItemsHeaderFreezeRight.scrollBy(l - oldl, 0);
+                LogUtil.s("@@@" + (l - oldl));
+            }
+        });
+
     }
 
-    protected void hideOrDisplayRnrItemsHeader(){
+
+    protected void hideOrDisplayRnrItemsHeader() {
         int[] rnrItemsViewLocation = new int[2];
         rnrFormList.getLocationOnScreen(rnrItemsViewLocation);
 
