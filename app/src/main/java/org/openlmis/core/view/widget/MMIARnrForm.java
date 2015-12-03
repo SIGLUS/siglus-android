@@ -24,6 +24,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -83,7 +84,6 @@ public class MMIARnrForm extends LinearLayout {
     private void addHeaderView() {
         leftHeaderView = addLeftHeaderView();
         rightHeaderView = addRightHeaderView();
-        setItemSize(leftHeaderView, rightHeaderView);
     }
 
     private void addItemView(ArrayList<RnrFormItem> rnrFormItemList) {
@@ -157,7 +157,7 @@ public class MMIARnrForm extends LinearLayout {
         }
     }
 
-    private void syncItemHeight(final View leftView, final View rightView) {
+    public void syncItemHeight(final View leftView, final View rightView) {
         int leftHeight = leftView.getHeight();
         int rightHeight = rightView.getHeight();
         if (leftHeight > rightHeight) {
@@ -168,7 +168,12 @@ public class MMIARnrForm extends LinearLayout {
             ViewGroup.LayoutParams layoutParams = leftView.getLayoutParams();
             layoutParams.height = rightHeight;
             leftView.setLayoutParams(layoutParams);
-            rightView.setLayoutParams(layoutParams);
+
+            if (rightView.getLayoutParams() instanceof FrameLayout.LayoutParams) {
+                rightView.setLayoutParams(new FrameLayout.LayoutParams(layoutParams.width, layoutParams.height));
+            } else {
+                rightView.setLayoutParams(layoutParams);
+            }
         }
     }
 
@@ -187,9 +192,9 @@ public class MMIARnrForm extends LinearLayout {
             Product product = item.getProduct();
             tvPrimaryName.setText(product.getPrimaryName());
             setLeftViewColor(medicineType, view);
+            leftViewGroup.addView(view);
         }
 
-        leftViewGroup.addView(view);
         return view;
     }
 
@@ -235,6 +240,7 @@ public class MMIARnrForm extends LinearLayout {
             tvValidate.setText(R.string.label_validate);
 
             inflate.setBackgroundResource(R.color.color_mmia_info_name);
+
         } else {
             tvIssuedUnit.setText(item.getProduct().getStrength());
             tvInitialAmount.setText(String.valueOf(item.getInitialAmount()));
@@ -242,6 +248,7 @@ public class MMIARnrForm extends LinearLayout {
             tvIssued.setText(String.valueOf(item.getIssued()));
             tvAdjustment.setText(String.valueOf(item.getAdjustment()));
             tvInventory.setText(String.valueOf(item.getInventory()));
+            rightViewGroup.addView(inflate);
 
             try {
                 if (!TextUtils.isEmpty(item.getValidate())) {
@@ -251,7 +258,6 @@ public class MMIARnrForm extends LinearLayout {
                 new LMISException(e).reportToFabric();
             }
         }
-        rightViewGroup.addView(inflate);
         return inflate;
     }
 

@@ -157,16 +157,16 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         regimeListView.initView(form.getRegimenItemListWrapper(), tvRegimeTotal);
         mmiaInfoListView.initView(form.getBaseInfoItemListWrapper());
 
+        final View leftHeaderView = rnrFormList.getLeftHeaderView();
+        rnrItemsHeaderFreezeLeft.addView(leftHeaderView);
+
+        final ViewGroup rightHeaderView = rnrFormList.getRightHeaderView();
+        rnrItemsHeaderFreezeRight.addView(rightHeaderView);
+
         rnrFormList.post(new Runnable() {
             @Override
             public void run() {
-                final View leftHeaderView = rnrFormList.getLeftHeaderView();
-                ((ViewGroup)leftHeaderView.getParent()).removeView(leftHeaderView);
-                rnrItemsHeaderFreezeLeft.addView(leftHeaderView);
-
-                final ViewGroup rightHeaderView = rnrFormList.getRightHeaderView();
-                ((ViewGroup)rightHeaderView.getParent()).removeView(rightHeaderView);
-                rnrItemsHeaderFreezeRight.addView(rightHeaderView);
+                rnrFormList.syncItemHeight(leftHeaderView, rightHeaderView);
             }
         });
 
