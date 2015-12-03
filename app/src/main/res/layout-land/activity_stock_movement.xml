@@ -27,7 +27,7 @@
                 android:layout_height="match_parent"
                 android:text="@string/title_stock_movement"
                 android:textSize="24sp"
-                android:textColor="@color/primary_text"
+                android:textColor="@color/color_text_primary"
                 android:textStyle="bold"
                 android:gravity="center"/>
         </LinearLayout>

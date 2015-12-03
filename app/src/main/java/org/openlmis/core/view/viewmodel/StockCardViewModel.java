@@ -141,7 +141,7 @@ public class StockCardViewModel {
     private void formatProductDisplay(Product product) {
         String productName = product.getFormattedProductName();
         styledName = new SpannableStringBuilder(productName);
-        styledName.setSpan(new ForegroundColorSpan(LMISApp.getContext().getResources().getColor(R.color.secondary_text)),
+        styledName.setSpan(new ForegroundColorSpan(LMISApp.getContext().getResources().getColor(R.color.color_text_secondary)),
                 product.getPrimaryName().length(), productName.length(), Spannable.SPAN_POINT_MARK);
 
         String unit = product.getStrength() + " " + product.getType();
@@ -150,7 +150,7 @@ public class StockCardViewModel {
         if (product.getStrength() != null) {
             length = product.getStrength().length();
         }
-        styledUnit.setSpan(new ForegroundColorSpan(LMISApp.getContext().getResources().getColor(R.color.secondary_text)),
+        styledUnit.setSpan(new ForegroundColorSpan(LMISApp.getContext().getResources().getColor(R.color.color_text_secondary)),
                 length, unit.length(), Spannable.SPAN_POINT_MARK);
     }
 

@@ -73,7 +73,7 @@
             android:id="@+id/action_divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/divider" />
+            android:background="@color/color_divider" />
 
         <org.openlmis.core.view.widget.ExpireDateViewGroup
             android:id="@+id/vg_expire_date_container"

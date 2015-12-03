@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/dialog_request_signature"
-            android:textColor="@color/primary_text"
+            android:textColor="@color/color_text_primary"
             android:textIsSelectable="true"
             android:textSize="20sp" />
 
