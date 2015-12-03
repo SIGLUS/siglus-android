@@ -51,11 +51,6 @@ public class ChangeMovementReasonToCode extends Migration {
     }
 
     @Override
-    public void down() {
-
-    }
-
-    @Override
     public void up() {
         try {
             List<StockMovementItem> itemList = stockItemGenericDao.queryForAll();

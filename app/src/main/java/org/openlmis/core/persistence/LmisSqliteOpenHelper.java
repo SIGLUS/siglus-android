@@ -100,12 +100,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
     @Override
     public void onDowngrade(SQLiteDatabase database, int oldVersion, int newVersion) {
-        for (int currentVersion = newVersion - 1; currentVersion >= oldVersion; currentVersion--) {
-            Migration migration = MIGRATIONS.get(currentVersion);
-            Log.i("DB Migration", "Downgrading migration [" + migration.getClass().getSimpleName() + "]");
-            migration.setSQLiteDatabase(database);
-            migration.down();
-        }
+        throw new RuntimeException("Unexpected downgrade happened, users are not supposed to obtain older versions!!!");
     }
 
     @Override

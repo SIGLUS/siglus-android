@@ -27,9 +27,4 @@ public class CreateDraftInventoryTable extends Migration {
         execSQL("CREATE TABLE `draft_inventory` (`expireDates` VARCHAR , `quantity` BIGINT , `stockCard_id` BIGINT , `createdAt` VARCHAR NOT NULL , `updatedAt` VARCHAR NOT NULL , `id` INTEGER PRIMARY KEY AUTOINCREMENT )");
         execSQL("CREATE UNIQUE INDEX `draft_inventory_id_idx` ON `draft_inventory` ( `id` )");
     }
-
-    @Override
-    public void down() {
-
-    }
 }
