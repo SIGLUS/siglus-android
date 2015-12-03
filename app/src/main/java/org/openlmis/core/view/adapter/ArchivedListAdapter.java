@@ -1,6 +1,5 @@
 package org.openlmis.core.view.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -12,8 +11,8 @@ import java.util.List;
 
 public class ArchivedListAdapter extends InventoryListAdapter<ArchivedDrugsViewHolder> {
 
-    public ArchivedListAdapter(Context context, List<StockCardViewModel> data) {
-        super(context, data);
+    public ArchivedListAdapter(List<StockCardViewModel> data) {
+        super(data);
     }
 
     @Override

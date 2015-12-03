@@ -109,14 +109,14 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldLoadSortedStockCardList() throws LMISException {
+    public void shouldLoadStockCardList() throws LMISException {
         ((LMISTestApp)RuntimeEnvironment.application).setFeatureToggle(true);
 
         StockCard stockCardVIA = StockCardBuilder.buildStockCard();
         stockCardVIA.setProduct(new ProductBuilder().setPrimaryName("VIA Product").build());
         StockCard stockCardMMIA = StockCardBuilder.buildStockCard();
         stockCardMMIA.setProduct(new ProductBuilder().setPrimaryName("MMIA Product").build());
-        List<StockCard> stockCards = Arrays.asList(stockCardVIA, stockCardMMIA);
+        List<StockCard> stockCards = Arrays.asList(stockCardMMIA, stockCardVIA);
         when(stockRepositoryMock.list()).thenReturn(stockCards);
 
         TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
@@ -130,11 +130,10 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
         List<StockCardViewModel> receivedStockCardViewModels = subscriber.getOnNextEvents().get(0);
         assertEquals(receivedStockCardViewModels.size(), 2);
-        assertEquals(receivedStockCardViewModels.get(0).getProductName(), "MMIA Product");
     }
 
     @Test
-    public void shouldLoadSortedMasterProductsList() throws LMISException {
+    public void shouldLoadMasterProductsList() throws LMISException {
         ((LMISTestApp)RuntimeEnvironment.application).setFeatureToggle(true);
 
         StockCard stockCardVIA = StockCardBuilder.buildStockCard();
@@ -163,7 +162,6 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         subscriber.assertNoErrors();
         List<StockCardViewModel> receivedStockCardViewModels = subscriber.getOnNextEvents().get(0);
         assertEquals(receivedStockCardViewModels.size(), 2);
-        assertEquals(receivedStockCardViewModels.get(0).getProductName(), "A Unknown Product");
     }
 
     @Test

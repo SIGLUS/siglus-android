@@ -98,7 +98,7 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
 
         final List<StockCardViewModel> list = new ArrayList<>();
         ((ViewGroup) bottomBtn.getParent()).removeView(bottomBtn);
-        mAdapter = new PhysicalInventoryAdapter(this, list, bottomBtn);
+        mAdapter = new PhysicalInventoryAdapter(list, bottomBtn);
         productListRecycleView.setAdapter(mAdapter);
 
         loading();
@@ -145,7 +145,7 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
 
-        mAdapter = new InitialInventoryAdapter(this, new ArrayList<StockCardViewModel>());
+        mAdapter = new InitialInventoryAdapter(new ArrayList<StockCardViewModel>());
         productListRecycleView.setAdapter(mAdapter);
 
         loading();

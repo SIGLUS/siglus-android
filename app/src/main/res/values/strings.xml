@@ -197,7 +197,7 @@
     <string name="label_total">Total:%1$s</string>
 
     <!-- Archived Drugs -->
-    <string name="menu_archive_drugs">Archive Stock Card</string>
+    <string name="menu_archive_drug">Archive Stock Card</string>
     <string name="title_archived_drugs">Archived drugs</string>
 
 </resources>

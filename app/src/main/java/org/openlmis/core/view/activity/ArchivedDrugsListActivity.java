@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.presenter.ArchivedPresenter;
+import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.ArchivedListAdapter;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
@@ -19,16 +19,15 @@ import java.util.List;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
-import rx.Subscriber;
 
 @ContentView(R.layout.activity_archived_drugs)
-public class ArchivedDrugsListActivity extends SearchBarActivity {
+public class ArchivedDrugsListActivity extends SearchBarActivity implements StockCardPresenter.StockCardListView {
 
     @InjectView(R.id.archived_list)
     protected RecyclerView archivedList;
 
-    @InjectPresenter(ArchivedPresenter.class)
-    ArchivedPresenter presenter;
+    @InjectPresenter(StockCardPresenter.class)
+    StockCardPresenter presenter;
 
     private ArchivedListAdapter mAdapter;
 
@@ -42,26 +41,10 @@ public class ArchivedDrugsListActivity extends SearchBarActivity {
     private void initUI() {
         archivedList.setLayoutManager(new LinearLayoutManager(this));
 
-        mAdapter = new ArchivedListAdapter(this, new ArrayList<StockCardViewModel>());
+        mAdapter = new ArchivedListAdapter(new ArrayList<StockCardViewModel>());
         archivedList.setAdapter(mAdapter);
-        presenter.loadArchivedDrugs().subscribe(getArchivedSubscriber());
-    }
 
-    protected Subscriber<List<StockCardViewModel>> getArchivedSubscriber() {
-        return new Subscriber<List<StockCardViewModel>>() {
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-            }
-
-            @Override
-            public void onNext(List<StockCardViewModel> stockCardViewModels) {
-                mAdapter.refreshList(stockCardViewModels);
-            }
-        };
+        presenter.loadStockCards();
     }
 
     public static Intent getIntentToMe(Context context) {
@@ -83,4 +66,9 @@ public class ArchivedDrugsListActivity extends SearchBarActivity {
         return false;
     }
 
+    @Override
+    public void refresh() {
+        List<StockCardViewModel> stockCardViewModels = presenter.getStockCardViewModels();
+        mAdapter.refreshList(stockCardViewModels);
+    }
 }

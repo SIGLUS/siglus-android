@@ -19,36 +19,25 @@
 package org.openlmis.core.view.adapter;
 
 
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.StockCardViewHolder;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import lombok.Getter;
+public class StockCardListAdapter extends InventoryListAdapter<StockCardViewHolder> {
 
-public class StockCardListAdapter extends RecyclerView.Adapter<StockCardViewHolder> {
-
-    List<StockCardViewModel> stockCardViewModels;
     private StockCardViewHolder.OnItemViewClickListener listener;
 
-    @Getter
-    List<StockCardViewModel> currentStockCards;
-    private String queryKeyWord;
-
     public StockCardListAdapter(List<StockCardViewModel> stockCardViewModel, StockCardViewHolder.OnItemViewClickListener listener) {
-        this.stockCardViewModels = stockCardViewModel;
+        super(stockCardViewModel);
         this.listener = listener;
-        this.currentStockCards = new ArrayList<>(stockCardViewModel);
     }
 
     @Override
@@ -61,34 +50,10 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardViewHold
 
     @Override
     public void onBindViewHolder(StockCardViewHolder holder, final int position) {
-
-        final StockCardViewModel stockCardViewModel = currentStockCards.get(position);
+        final StockCardViewModel stockCardViewModel = currentList.get(position);
         holder.populate(stockCardViewModel, queryKeyWord);
     }
 
-
-
-    @Override
-    public int getItemCount() {
-        return currentStockCards.size();
-    }
-
-    public void filter(String query) {
-        this.queryKeyWord = query;
-        if (StringUtils.isEmpty(query)) {
-            this.currentStockCards = new ArrayList<>(stockCardViewModels);
-            this.notifyDataSetChanged();
-        }
-
-        this.currentStockCards = new ArrayList<>();
-        for (StockCardViewModel stockCardViewModel : stockCardViewModels) {
-            if (stockCardViewModel.getProduct().getProductFullName().toLowerCase().contains(query.toLowerCase())) {
-                this.currentStockCards.add(stockCardViewModel);
-            }
-        }
-
-        this.notifyDataSetChanged();
-    }
 
     public void sortBySOH(final boolean asc) {
 
@@ -103,8 +68,8 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardViewHold
             }
         };
 
-        Collections.sort(currentStockCards, stockCardComparator);
-        Collections.sort(stockCardViewModels, stockCardComparator);
+        Collections.sort(currentList, stockCardComparator);
+        Collections.sort(data, stockCardComparator);
 
         this.notifyDataSetChanged();
     }
@@ -122,8 +87,8 @@ public class StockCardListAdapter extends RecyclerView.Adapter<StockCardViewHold
             }
         };
 
-        Collections.sort(currentStockCards, stockCardComparator);
-        Collections.sort(stockCardViewModels, stockCardComparator);
+        Collections.sort(currentList, stockCardComparator);
+        Collections.sort(data, stockCardComparator);
 
         this.notifyDataSetChanged();
     }

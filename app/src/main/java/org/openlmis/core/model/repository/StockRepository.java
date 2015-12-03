@@ -26,6 +26,7 @@ import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.table.TableUtils;
 
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftInventory;
@@ -42,6 +43,7 @@ import org.roboguice.shaded.goole.common.collect.Lists;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -176,7 +178,11 @@ public class StockRepository {
     }
 
     public List<StockCard> list() throws LMISException {
-        return genericDao.queryForAll();
+        List<StockCard> stockCards = genericDao.queryForAll();
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.sort_product_list_alphabetically_435)) {
+            Collections.sort(stockCards);
+        }
+        return stockCards;
     }
 
     public List<StockCard> list(String programCode) throws LMISException {

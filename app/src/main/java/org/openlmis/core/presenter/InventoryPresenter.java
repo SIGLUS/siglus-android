@@ -21,8 +21,6 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftInventory;
@@ -36,7 +34,6 @@ import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -86,12 +83,7 @@ public class InventoryPresenter implements Presenter {
                         }
                     }).toList();
 
-                    List<Product> productList = productRepository.list();
-                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.sort_product_list_alphabetically_435)) {
-                        Collections.sort(productList);
-                    }
-
-                    List<StockCardViewModel> list = from(productList).filter(new Predicate<Product>() {
+                    List<StockCardViewModel> list = from(productRepository.list()).filter(new Predicate<Product>() {
                         @Override
                         public boolean apply(Product product) {
                             return !existProductList.contains(product);
@@ -118,12 +110,7 @@ public class InventoryPresenter implements Presenter {
             @Override
             public void call(Subscriber<? super List<StockCardViewModel>> subscriber) {
                 try {
-                    List<StockCard> stockCards = stockRepository.list();
-                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.sort_product_list_alphabetically_435)) {
-                        Collections.sort(stockCards);
-                    }
-
-                    List<StockCardViewModel> stockCardViewModels = from(stockCards).transform(new Function<StockCard, StockCardViewModel>() {
+                    List<StockCardViewModel> stockCardViewModels = from(stockRepository.list()).transform(new Function<StockCard, StockCardViewModel>() {
                         @Override
                         public StockCardViewModel apply(StockCard stockCard) {
                             return new StockCardViewModel(stockCard);

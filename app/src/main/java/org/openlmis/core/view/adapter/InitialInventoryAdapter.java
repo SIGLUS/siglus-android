@@ -18,7 +18,7 @@
 
 package org.openlmis.core.view.adapter;
 
-import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import org.openlmis.core.R;
@@ -29,8 +29,8 @@ import java.util.List;
 
 public class InitialInventoryAdapter extends InventoryListAdapter<InitialInventoryViewHolder> {
 
-    public InitialInventoryAdapter(Context context, List<StockCardViewModel> data) {
-        super(context, data);
+    public InitialInventoryAdapter(List<StockCardViewModel> data) {
+        super(data);
     }
 
     @Override
@@ -42,6 +42,6 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
 
     @Override
     public InitialInventoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new InitialInventoryViewHolder(inflater.inflate(R.layout.item_inventory, parent, false));
+        return new InitialInventoryViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_inventory, parent, false));
     }
 }
