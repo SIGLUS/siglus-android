@@ -4,7 +4,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-public class ViewUtil {
+public final class ViewUtil {
     private ViewUtil() {
     }
 
