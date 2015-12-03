@@ -6,6 +6,6 @@ public class AddIsArchivedToProduct extends Migration {
 
     @Override
     public void up() {
-        execSQL("ALTER TABLE 'products' ADD COLUMN is_archived BOOLEAN DEFAULT false");
+        execSQL("ALTER TABLE 'products' ADD COLUMN isArchived BOOLEAN DEFAULT false");
     }
 }
