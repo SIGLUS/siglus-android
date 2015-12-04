@@ -93,9 +93,9 @@ public class StockCardAdapterTest {
 
         stockCardAdapter.setupMovementStockOnHand(stockCard, wrapper);
 
-        assertThat(item1.getStockOnHand()).isEqualTo(100);
-        assertThat(item2.getStockOnHand()).isEqualTo(137);
-        assertThat(item3.getStockOnHand()).isEqualTo(125);
+        assertThat(item1.getStockOnHand()).isEqualTo(71);
+        assertThat(item2.getStockOnHand()).isEqualTo(83);
+        assertThat(item3.getStockOnHand()).isEqualTo(100);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class StockCardAdapterTest {
         item3.setExpireDates("2015-04-15");
         stockCardAdapter.setupStockCardExpireDates(stockCard, wrapper);
 
-        assertThat(stockCard.getExpireDates()).isEqualTo(item1.getExpireDates());
+        assertThat(stockCard.getExpireDates()).isEqualTo(item3.getExpireDates());
     }
 
     public class MyTestModule extends AbstractModule {

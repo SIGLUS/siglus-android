@@ -35,6 +35,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.ProgramRepository;
@@ -53,7 +54,6 @@ import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -106,6 +106,7 @@ public class SyncManager {
     private Integer syncInterval;
     private boolean SaveProductLock = false;
     private boolean saveRequisitionLock = false;
+    private boolean saveStockCardLock = false;
     private Observable<Void> productObservable;
 
     public SyncManager() {
@@ -306,6 +307,8 @@ public class SyncManager {
         }
     }
 
+
+
     public boolean syncStockCards() {
         List<StockMovementItem> stockMovementItems;
         try {
@@ -347,21 +350,51 @@ public class SyncManager {
         return false;
     }
 
-    public int fetchStockCard() {
+    public void fetchStockCardsData(Observer<Void> observer) {
+        rx.Observable.create(new rx.Observable.OnSubscribe<Void>() {
+
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    if (saveStockCardLock || sharedPreferenceMgr.getPreference().getBoolean(SharedPreferenceMgr.KEY_HAS_GET_STOCK, false)) {
+                        return;
+                    }
+                    saveStockCardLock = true;
+                    fetchAndSaveStockCards();
+                } catch (Throwable throwable) {
+                    subscriber.onError(new LMISException("Syncing StockCard back failed"));
+                    new LMISException(throwable).reportToFabric();
+                } finally {
+                    saveStockCardLock = false;
+                }
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
+    }
+
+    public void fetchAndSaveStockCards() throws Throwable {
+        //default start date is one month before and end date is one day after
         final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
-        Date startDate = new Date();
-        Date endDate = new Date();
 
-        try {
-            startDate = DateUtil.parseString("2015-09-01", "yyyy-MM-dd");
-        } catch (ParseException e) {
-            e.printStackTrace();
+        Date now = new Date();
+        Date startDate = DateUtil.addMonth(now, -1);
+        String startDateStr = DateUtil.formatDate(startDate, "yyyy-MM-dd");
+
+
+        Date endDate = DateUtil.addDayOfMonth(now, 1);
+        String endDateStr = DateUtil.formatDate(endDate, "yyyy-MM-dd");
+
+        StockCardResponse stockCardResponse = lmisRestApi.fetchStockMovementData(facilityId, startDateStr, endDateStr);
+
+        for (StockCard stockCard : stockCardResponse.getStockCards()) {
+            stockRepository.save(stockCard);
+            for (StockMovementItem item : stockCard.getStockMovementItemsWrapper()) {
+                item.setSynced(true);
+                stockRepository.saveStockItem(item);
+            }
         }
+        sharedPreferenceMgr.getPreference().edit().putBoolean(SharedPreferenceMgr.KEY_HAS_GET_STOCK, true);
 
-        StockCardResponse stockCardResponse = lmisRestApi.fetchStockMovementData(facilityId, startDate, endDate);
-
-
-        return 0;
     }
 
     public void syncAppVersion() {

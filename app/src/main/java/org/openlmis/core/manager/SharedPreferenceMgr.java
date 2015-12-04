@@ -34,6 +34,7 @@ public class SharedPreferenceMgr {
     public static final String KEY_LAST_LOGIN_USER = "last_user";
     public static final String KEY_INIT_INVENTORY = "init_inventory";
     public static final String KEY_HAS_GET_PRODUCTS = "has_get_products";
+    public static final String KEY_HAS_GET_STOCK = "has_get_stock_cards_synced";
     public static final String KEY_IS_REQUISITION_DATA_SYNCED = "is_requisition_data_synced";
 
     @Inject

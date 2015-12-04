@@ -2,8 +2,11 @@
   "documentNumber": "referenceNumber3",
   "movementQuantity": 20,
   "reason": "LOANS_DEPOSIT",
-  "signature": "signature",
-  "expireDates": "10/10/2017, 12/12/2017",
+  "type": "ADJUSTMENT",
+  "extensions": {
+    "expirationdates": "10/10/2017, 12/12/2017",
+    "signature": "signature"
+  },
   "createdDate": 1449032173262,
   "movementDate": 1449032173262
 }
