@@ -149,7 +149,7 @@ public class LoginPresenter implements Presenter {
 
     private void syncServerData() {
         if (view.hasGetProducts()) {
-            if ( LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273) && !view.isStockDataSynced() ){
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273) && !view.isStockDataSynced()){
                 syncStockCard();
             }
             checkRequisitionData();
@@ -216,7 +216,7 @@ public class LoginPresenter implements Presenter {
             return;
         }
 
-        if ( !isSyncingStockMovement ){
+        if (!isSyncingStockMovement){
             isSyncingStockMovement = true;
             view.loading("Syncing StockMovement data..");
             syncManager.fetchStockCardsData(getSyncStockCardDataSubscriber());
