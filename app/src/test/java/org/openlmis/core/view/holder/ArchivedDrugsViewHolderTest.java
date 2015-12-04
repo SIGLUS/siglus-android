@@ -16,6 +16,8 @@ import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
 import org.robolectric.RuntimeEnvironment;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(LMISTestRunner.class)
 public class ArchivedDrugsViewHolderTest {
@@ -23,10 +25,13 @@ public class ArchivedDrugsViewHolderTest {
     private ArchivedDrugsViewHolder viewHolder;
     private String queryKeyWord = null;
     private StockCardViewModel viewModel;
+    private ArchivedDrugsViewHolder.ArchiveStockCardListener mockedListener;
 
     @Before
     public void setUp() {
-        View itemView = LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_archive_drugs, null, false);
+        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
+
+        View itemView = LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_archived_drug, null, false);
         viewHolder = new ArchivedDrugsViewHolder(itemView);
 
         Product product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setStrength("10mg").setType("VIA").build();
@@ -36,15 +41,29 @@ public class ArchivedDrugsViewHolderTest {
                 .setType("Embalagem")
                 .setSOH(123L)
                 .build();
+
+        mockedListener = mock(ArchivedDrugsViewHolder.ArchiveStockCardListener.class);
+
+        viewHolder.populate(viewModel, queryKeyWord, mockedListener);
     }
 
     @Test
     public void shouldShowProductNameAndStyledUnit() {
-        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
-
-        viewHolder.populate(viewModel, queryKeyWord);
-
         assertThat(viewHolder.tvProductName.getText().toString()).isEqualTo("Lamivudina 150mg [08S40]");
         assertThat(viewHolder.tvProductUnit.getText().toString()).isEqualTo("10mg VIA");
+    }
+
+    @Test
+    public void shouldViewMovementHistoryWhenHistoryViewClicked() {
+        viewHolder.tvViewHistory.performClick();
+
+        verify(mockedListener).viewMovementHistory(viewModel.getStockCard());
+    }
+
+    @Test
+    public void shouldArchiveDrugBackWhenArchiveBackViewClicked() {
+        viewHolder.tvArchiveBack.performClick();
+
+        verify(mockedListener).archiveStockCardBack(viewModel.getStockCard());
     }
 }

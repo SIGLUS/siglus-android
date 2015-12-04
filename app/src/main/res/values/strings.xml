@@ -200,5 +200,8 @@
     <string name="menu_archive_drug">Archive Stock Card</string>
     <string name="title_archived_drugs">Archived drugs</string>
     <string name="msg_drug_archived">Drug archived</string>
+    <string name="label_removed_drug_from_stock">You removed this drug from your stock overview</string>
+    <string name="label_view_movement_history">View movement history</string>
+    <string name="label_add_drug_to_stock">Add drug to stock overview</string>
 
 </resources>

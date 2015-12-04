@@ -26,8 +26,10 @@ public final class Constants {
     public static final String PARAM_IS_ADD_NEW_DRUG = "isAddNewDrug";
     public static final String PARAM_PROGRAM_CODE = "programCode";
     public static final String PARAM_FORM_ID = "formId";
-    // Keys of Map
-    public static final String KEY_HAS_DATA_CHANGED = "hasDataChanged";
+    public static final String PARAM_IS_FROM_ARCHIVE = "isFromArchive";
+
+    // Request Params
+    public static final int REQUEST_CODE_CHANGE = 100;
 
     private Constants(){
 

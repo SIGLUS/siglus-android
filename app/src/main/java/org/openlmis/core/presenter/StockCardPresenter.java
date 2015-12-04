@@ -45,6 +45,7 @@ public class StockCardPresenter implements Presenter {
     protected List<StockCardViewModel> stockCardViewModels;
     @Inject
     StockRepository stockRepository;
+
     private StockCardListView view;
     Observer<List<StockCard>> afterLoadHandler = getLoadStockCardsSubscriber();
 
@@ -129,6 +130,11 @@ public class StockCardPresenter implements Presenter {
                 view.refresh();
             }
         };
+    }
+
+    public void archiveBackStockCard(StockCard stockCard) {
+        stockCard.getProduct().setIsArchived(false);
+        stockRepository.update(stockCard);
     }
 
     public enum ArchiveStatus {

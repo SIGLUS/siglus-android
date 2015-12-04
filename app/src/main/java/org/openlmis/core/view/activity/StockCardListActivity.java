@@ -26,6 +26,7 @@ import android.view.MenuItem;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.StockCardListFragment;
 
 import roboguice.inject.ContentView;
@@ -58,7 +59,7 @@ public class StockCardListActivity extends SearchBarActivity {
                 startActivity(InventoryActivity.getIntentToMe(this, true));
                 return true;
             case MENU_ID_ARCHIVE_LIST:
-                startActivity(ArchivedDrugsListActivity.getIntentToMe(this));
+                startActivityForResult(ArchivedDrugsListActivity.getIntentToMe(this), Constants.REQUEST_CODE_CHANGE);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -51,8 +51,6 @@ import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.Activ
 
 public class StockCardListFragment extends BaseFragment implements StockCardPresenter.StockCardListView, AdapterView.OnItemSelectedListener {
 
-    private static final int REQUEST_CODE_CHANGE = 1;
-
     @InjectView(R.id.sort_spinner)
     Spinner sortSpinner;
 
@@ -129,7 +127,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
             Intent intent = new Intent(getActivity(), StockMovementActivity.class);
             intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCardViewModel.getStockCardId());
             intent.putExtra(Constants.PARAM_STOCK_NAME, stockCardViewModel.getProduct().getFormattedProductName());
-            startActivityForResult(intent, StockCardListFragment.REQUEST_CODE_CHANGE);
+            startActivityForResult(intent, Constants.REQUEST_CODE_CHANGE);
         }
     };
 
@@ -202,7 +200,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CHANGE) {
+        if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_CODE_CHANGE) {
             presenter.refreshStockCardViewModelsSOH();
             presenter.loadStockCards(Active);
             mAdapter.notifyDataSetChanged();

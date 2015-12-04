@@ -67,6 +67,10 @@ public class Product extends BaseModel implements Comparable<Product> {
         }
     }
 
+    public boolean getIsArchived() {
+        return isArchived != null && isArchived;
+    }
+
     public String getFormattedProductName() {
         return getPrimaryName() + " [" + getCode() + "]";
     }

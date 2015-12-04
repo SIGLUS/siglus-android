@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.ArchivedListAdapter;
@@ -21,6 +22,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.Archived;
+import static org.openlmis.core.view.holder.ArchivedDrugsViewHolder.ArchiveStockCardListener;
 
 @ContentView(R.layout.activity_archived_drugs)
 public class ArchivedDrugsListActivity extends SearchBarActivity implements StockCardPresenter.StockCardListView {
@@ -47,7 +49,7 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements Stoc
     private void initUI() {
         archivedList.setLayoutManager(new LinearLayoutManager(this));
 
-        mAdapter = new ArchivedListAdapter(new ArrayList<StockCardViewModel>());
+        mAdapter = new ArchivedListAdapter(new ArrayList<StockCardViewModel>(), archiveStockCardListener);
         archivedList.setAdapter(mAdapter);
 
         presenter.loadStockCards(Archived);
@@ -73,4 +75,22 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements Stoc
         List<StockCardViewModel> stockCardViewModels = presenter.getStockCardViewModels();
         mAdapter.refreshList(stockCardViewModels);
     }
+
+    protected ArchiveStockCardListener archiveStockCardListener = new ArchiveStockCardListener() {
+        @Override
+        public void viewMovementHistory(StockCard stockCard) {
+            startActivity(StockMovementHistoryActivity.getIntentToMe(ArchivedDrugsListActivity.this,
+                    stockCard.getId(),
+                    stockCard.getProduct().getFormattedProductName(),
+                    true));
+        }
+
+        @Override
+        public void archiveStockCardBack(StockCard stockCard) {
+            presenter.archiveBackStockCard(stockCard);
+            presenter.loadStockCards(Archived);
+
+            setResult(RESULT_OK);
+        }
+    };
 }
