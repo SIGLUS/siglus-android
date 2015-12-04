@@ -66,7 +66,7 @@ public class RnrFormItemRepository {
             for (RnrFormItem item : rnrFormItemList) {
                 total += item.getIssued();
             }
-            if (rnrFormItemList.size() > 0) {
+            if (rnrFormItemList.size() >= 3) {
                 return (int) Math.ceil((total / rnrFormItemList.size()) * 0.05);
             }
         } catch (LMISException e) {
