@@ -6,7 +6,7 @@ Feature: MMIA
 
   Scenario: Initial a MMIA
     Given I have initialized inventory
-    And I press "stock cards & overview"
+    And I press "Stock Card Overview"
     Then I wait for "Stock overview" to appear
     Then I wait for 1 second
     And I make a movement "[08S42B]" "Issues" "PAV" "issued" "2"
@@ -41,7 +41,7 @@ Feature: MMIA
     Then I wait for "Home Page" to appear
 
   Scenario: after editing if I go back without saving I should see pop up, if I say yes then go back without saving, else staying at mmia page
-    And I press "stock cards & overview"
+    And I press "Stock Card Overview"
     Then I wait for "Stock overview" to appear
     Then I wait for 1 second
     And I make a movement "[08S42B]" "Issues" "PAV" "issued" "2"
