@@ -16,11 +16,11 @@ module EnvConfig
             }
         else
             {
-                username:"testuser",
+                username:"test_user",
                 password:"testuser123",
-                mmiaSignature:false,
-                stockMovementSignature:false,
-                viaSignature:false,
+                mmiaSignature:true,
+                stockMovementSignature:true,
+                viaSignature:true,
             }
         end
     end
