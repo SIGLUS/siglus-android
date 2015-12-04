@@ -18,9 +18,6 @@
 
 package org.openlmis.core.presenter;
 
-
-import android.support.annotation.NonNull;
-
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
@@ -30,6 +27,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +46,7 @@ public class StockCardPresenter implements Presenter {
     StockRepository stockRepository;
 
     private StockCardListView view;
-
+    Observer<List<StockCard>> afterLoadHandler = getLoadStockCardsSubscriber();
     protected List<StockCardViewModel> stockCardViewModels;
 
     public StockCardPresenter() {
@@ -58,26 +56,54 @@ public class StockCardPresenter implements Presenter {
 
     @Override
     public void onStart() {
-
     }
 
     @Override
     public void onStop() {
-
     }
-
 
     public List<StockCardViewModel> getStockCardViewModels() {
         return stockCardViewModels;
     }
 
-    public void loadStockCards() {
+    public void loadStockCards(boolean isArchived) {
         view.loading();
-        getLoadStockCardsObserver().subscribe(getLoadStockCardsSubscriber());
+        getLoadStockCardsObserver(isArchived).subscribe(afterLoadHandler);
     }
 
-    @NonNull
-    public Observer<List<StockCard>> getLoadStockCardsSubscriber() {
+    public void refreshStockCardViewModelsSOH() {
+        for (StockCardViewModel stockCardViewModel : stockCardViewModels) {
+            final StockCard stockCard = stockCardViewModel.getStockCard();
+            stockRepository.refresh(stockCard);
+            stockCardViewModel.setStockOnHand(stockCard.getStockOnHand());
+        }
+    }
+
+    @Override
+    public void attachView(BaseView v) {
+        view = (StockCardListView) v;
+    }
+
+    private Observable<List<StockCard>> getLoadStockCardsObserver(final boolean isArchived) {
+        return Observable.create(new Observable.OnSubscribe<List<StockCard>>() {
+            @Override
+            public void call(Subscriber<? super List<StockCard>> subscriber) {
+                try {
+                    subscriber.onNext(from(stockRepository.list()).filter(new Predicate<StockCard>() {
+                        @Override
+                        public boolean apply(StockCard stockCard) {
+                            return stockCard.getProduct().getIsArchived() == isArchived;
+                        }
+                    }).toList());
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    subscriber.onError(e);
+                }
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private Observer<List<StockCard>> getLoadStockCardsSubscriber() {
         return new Observer<List<StockCard>>() {
             @Override
             public void onCompleted() {
@@ -104,33 +130,6 @@ public class StockCardPresenter implements Presenter {
                 view.refresh();
             }
         };
-    }
-
-    public Observable<List<StockCard>> getLoadStockCardsObserver() {
-        return Observable.create(new Observable.OnSubscribe<List<StockCard>>() {
-            @Override
-            public void call(Subscriber<? super List<StockCard>> subscriber) {
-                try {
-                    subscriber.onNext(stockRepository.list());
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    subscriber.onError(e);
-                }
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-    }
-
-    public void refreshStockCardViewModelsSOH() {
-        for (StockCardViewModel stockCardViewModel : stockCardViewModels) {
-            final StockCard stockCard = stockCardViewModel.getStockCard();
-            stockRepository.refresh(stockCard);
-            stockCardViewModel.setStockOnHand(stockCard.getStockOnHand());
-        }
-    }
-
-    @Override
-    public void attachView(BaseView v) {
-        view = (StockCardListView) v;
     }
 
     public interface StockCardListView extends BaseView {
