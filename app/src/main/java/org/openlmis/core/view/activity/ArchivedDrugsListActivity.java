@@ -20,6 +20,8 @@ import java.util.List;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
+import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.Archived;
+
 @ContentView(R.layout.activity_archived_drugs)
 public class ArchivedDrugsListActivity extends SearchBarActivity implements StockCardPresenter.StockCardListView {
 
@@ -30,6 +32,10 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements Stoc
     StockCardPresenter presenter;
 
     private ArchivedListAdapter mAdapter;
+
+    public static Intent getIntentToMe(Context context) {
+        return new Intent(context, ArchivedDrugsListActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +50,7 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements Stoc
         mAdapter = new ArchivedListAdapter(new ArrayList<StockCardViewModel>());
         archivedList.setAdapter(mAdapter);
 
-        presenter.loadStockCards();
-    }
-
-    public static Intent getIntentToMe(Context context) {
-        return new Intent(context, ArchivedDrugsListActivity.class);
+        presenter.loadStockCards(Archived);
     }
 
     @Override

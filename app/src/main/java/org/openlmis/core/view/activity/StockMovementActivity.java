@@ -214,6 +214,8 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
                 return true;
             case R.id.action_archive:
                 presenter.archiveStockCard();
+                ToastUtil.show(getString(R.string.msg_drug_archived));
+                onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

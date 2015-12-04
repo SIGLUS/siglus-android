@@ -42,12 +42,11 @@ import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class StockCardPresenter implements Presenter {
 
+    protected List<StockCardViewModel> stockCardViewModels;
     @Inject
     StockRepository stockRepository;
-
     private StockCardListView view;
     Observer<List<StockCard>> afterLoadHandler = getLoadStockCardsSubscriber();
-    protected List<StockCardViewModel> stockCardViewModels;
 
     public StockCardPresenter() {
         stockCardViewModels = new ArrayList<>();
@@ -66,9 +65,9 @@ public class StockCardPresenter implements Presenter {
         return stockCardViewModels;
     }
 
-    public void loadStockCards(boolean isArchived) {
+    public void loadStockCards(ArchiveStatus status) {
         view.loading();
-        getLoadStockCardsObserver(isArchived).subscribe(afterLoadHandler);
+        getLoadStockCardsObserver(status).subscribe(afterLoadHandler);
     }
 
     public void refreshStockCardViewModelsSOH() {
@@ -84,7 +83,7 @@ public class StockCardPresenter implements Presenter {
         view = (StockCardListView) v;
     }
 
-    private Observable<List<StockCard>> getLoadStockCardsObserver(final boolean isArchived) {
+    private Observable<List<StockCard>> getLoadStockCardsObserver(final ArchiveStatus status) {
         return Observable.create(new Observable.OnSubscribe<List<StockCard>>() {
             @Override
             public void call(Subscriber<? super List<StockCard>> subscriber) {
@@ -92,7 +91,7 @@ public class StockCardPresenter implements Presenter {
                     subscriber.onNext(from(stockRepository.list()).filter(new Predicate<StockCard>() {
                         @Override
                         public boolean apply(StockCard stockCard) {
-                            return stockCard.getProduct().getIsArchived() == isArchived;
+                            return stockCard.getProduct().getIsArchived() == status.isArchived();
                         }
                     }).toList());
                     subscriber.onCompleted();
@@ -130,6 +129,21 @@ public class StockCardPresenter implements Presenter {
                 view.refresh();
             }
         };
+    }
+
+    public enum ArchiveStatus {
+        Archived(true),
+        Active(false);
+
+        private boolean isArchived;
+
+        ArchiveStatus(boolean isArchived) {
+            this.isArchived = isArchived;
+        }
+
+        public boolean isArchived() {
+            return isArchived;
+        }
     }
 
     public interface StockCardListView extends BaseView {

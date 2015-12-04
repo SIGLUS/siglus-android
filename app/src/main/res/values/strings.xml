@@ -176,7 +176,7 @@
     <!-- Physical Inventory Page -->
     <string name="label_physical_inventory_stock_on_hand">Current stock on hand: %1$s</string>
 
-    
+
     <!-- Rnr form historical list -->
     <string name="label_via_name">Via Classica Requisition</string>
     <string name="label_mmia_name">MMIA</string>
@@ -190,7 +190,7 @@
     <string name="btn_mmia_list">See previous MMIAs History</string>
     <string name="title_requisition_list">Historic Requisitions / Balances for VIA Classica</string>
     <string name="title_mmia_list">Historic MMIAs</string>
-    
+
     <string name="label_current_period">Current period</string>
     <string name="label_previous_period">Previous periods</string>
 
@@ -199,5 +199,6 @@
     <!-- Archived Drugs -->
     <string name="menu_archive_drug">Archive Stock Card</string>
     <string name="title_archived_drugs">Archived drugs</string>
+    <string name="msg_drug_archived">Drug archived</string>
 
 </resources>

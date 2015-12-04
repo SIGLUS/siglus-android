@@ -31,6 +31,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.Active;
+import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.Archived;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
@@ -101,22 +103,22 @@ public class StockCardPresenterTest {
 
     @Test
     public void shouldLoadActiveOrArchivedStockCards() throws Exception {
-        testLoadStockCard(false);
-        testLoadStockCard(true);
+        testLoadStockCard(Archived);
+        testLoadStockCard(Active);
     }
 
-    private void testLoadStockCard(boolean isArchived) throws LMISException {
+    private void testLoadStockCard(StockCardPresenter.ArchiveStatus status) throws LMISException {
         //given
         when(stockRepository.list()).thenReturn(newArrayList(stockCard(true), stockCard(false)));
         TestSubscriber<List<StockCard>> afterLoadHandler = new TestSubscriber<>();
         presenter.afterLoadHandler = afterLoadHandler;
 
         //when
-        presenter.loadStockCards(isArchived);
+        presenter.loadStockCards(status);
         afterLoadHandler.awaitTerminalEvent();
 
         //then
-        assertThat(afterLoadHandler.getOnNextEvents().get(0).get(0).getProduct().getIsArchived()).isEqualTo(isArchived);
+        assertThat(afterLoadHandler.getOnNextEvents().get(0).get(0).getProduct().getIsArchived()).isEqualTo(status.isArchived());
     }
 
     private StockCard stockCard(boolean isArchived) {

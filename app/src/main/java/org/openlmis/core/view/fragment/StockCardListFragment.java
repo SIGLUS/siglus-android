@@ -47,6 +47,8 @@ import java.util.List;
 
 import roboguice.inject.InjectView;
 
+import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.Active;
+
 public class StockCardListFragment extends BaseFragment implements StockCardPresenter.StockCardListView, AdapterView.OnItemSelectedListener {
 
     private static final int REQUEST_CODE_CHANGE = 1;
@@ -69,7 +71,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     private int currentPosition;
     private BaseView baseView;
 
-    @Override
+        @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
@@ -138,7 +140,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
         stockCardRecycleView.setLayoutManager(mLayoutManager);
         stockCardRecycleView.setAdapter(mAdapter);
 
-        presenter.loadStockCards();
+        presenter.loadStockCards(Active);
     }
 
     private void initSortSpinner() {
@@ -202,7 +204,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CHANGE) {
             presenter.refreshStockCardViewModelsSOH();
-            presenter.loadStockCards();
+            presenter.loadStockCards(Active);
             mAdapter.notifyDataSetChanged();
         }
     }

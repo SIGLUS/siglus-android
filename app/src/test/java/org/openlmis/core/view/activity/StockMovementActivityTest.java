@@ -21,6 +21,7 @@ import org.openlmis.core.utils.Constants;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowApplication;
+import org.robolectric.shadows.ShadowToast;
 
 import roboguice.RoboGuice;
 
@@ -75,9 +76,12 @@ public class StockMovementActivityTest {
 
     @Test
     public void shouldArchiveStockMovementWhenArchiveMenuClicked() throws Exception {
+
         shadowOf(stockMovementActivity).clickMenuItem(R.id.action_archive);
 
         verify(mockedPresenter).archiveStockCard();
+        assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo("Drug archived");
+        assertThat(stockMovementActivity.isFinishing()).isTrue();
     }
 
     @Test
