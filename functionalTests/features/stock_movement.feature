@@ -103,4 +103,12 @@ Feature: stock movement Page
     Then I navigate back
     Then I wait for "Home Page" to appear
 
+  Scenario: Add all movements for one drug
+    Given I am logged in
+    And I press "stock cards & overview"
+    Then I wait for "Stock overview" to appear
+    Then I wait for 1 second
+    Then I make all movements for "08S18Y"
+    Then I wait for 1 second
+
 
