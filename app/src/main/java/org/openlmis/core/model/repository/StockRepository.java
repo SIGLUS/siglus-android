@@ -133,12 +133,14 @@ public class StockRepository {
         stockItemGenericDao.create(stockMovementItem);
     }
 
-    public void initStockCard(final StockCard stockCard) throws LMISException {
+    public void initStockCard(final StockCard stockCard, final boolean isStockCardSaved) throws LMISException {
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-                    save(stockCard);
+                    if (!isStockCardSaved) {
+                        save(stockCard);
+                    }
                     addStockMovementAndUpdateStockCard(stockCard, initStockMovementItem(stockCard));
                     return null;
                 }
@@ -222,6 +224,15 @@ public class StockRepository {
             @Override
             public StockCard operate(Dao<StockCard, String> dao) throws SQLException {
                 return dao.queryBuilder().where().eq("id", id).queryForFirst();
+            }
+        });
+    }
+
+    public StockCard queryStockCardByProductId(final long productId) throws LMISException {
+        return dbUtil.withDao(StockCard.class, new DbUtil.Operation<StockCard, StockCard>() {
+            @Override
+            public StockCard operate(Dao<StockCard, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("product_id", productId).queryForFirst();
             }
         });
     }

@@ -38,12 +38,8 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.
 
     private View footView;
 
-    public PhysicalInventoryAdapter(List<StockCardViewModel> data) {
-        super(data);
-    }
-
     public PhysicalInventoryAdapter(List<StockCardViewModel> data, View footView) {
-        this(data);
+        super(data);
         this.footView = footView;
 
         if (!(footView instanceof EditText)) {

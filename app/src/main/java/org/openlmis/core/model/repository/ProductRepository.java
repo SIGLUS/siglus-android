@@ -75,6 +75,10 @@ public class ProductRepository {
         genericDao.create(product);
     }
 
+    public void update(Product product) throws LMISException {
+        genericDao.update(product);
+    }
+
     public Product getById(long id) {
         try {
             return genericDao.getById(String.valueOf(id));

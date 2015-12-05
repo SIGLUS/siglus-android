@@ -33,6 +33,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.InventoryPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
@@ -50,6 +51,8 @@ import java.util.List;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
+
+import static org.openlmis.core.view.holder.InitialInventoryViewHolder.*;
 
 @ContentView(R.layout.activity_inventory)
 public class InventoryActivity extends SearchBarActivity implements InventoryPresenter.InventoryView, SimpleDialogFragment.MsgDialogCallBack {
@@ -102,7 +105,7 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
         productListRecycleView.setAdapter(mAdapter);
 
         loading();
-        presenter.loadStockCardList().subscribe(stockCardSubscriber);
+        presenter.loadPhysicalStockCards().subscribe(stockCardSubscriber);
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,6 +120,16 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
             }
         });
     }
+
+    protected ViewHistoryListener viewHistoryListener = new ViewHistoryListener() {
+        @Override
+        public void viewHistory(StockCard stockCard) {
+            startActivity(StockMovementHistoryActivity.getIntentToMe(InventoryActivity.this,
+                    stockCard.getId(),
+                    stockCard.getProduct().getFormattedProductName(),
+                    true));
+        }
+    };
 
     protected Subscriber<List<StockCardViewModel>> stockCardSubscriber = new Subscriber<List<StockCardViewModel>>() {
         @Override
@@ -145,7 +158,7 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
 
-        mAdapter = new InitialInventoryAdapter(new ArrayList<StockCardViewModel>());
+        mAdapter = new InitialInventoryAdapter(new ArrayList<StockCardViewModel>(), viewHistoryListener);
         productListRecycleView.setAdapter(mAdapter);
 
         loading();

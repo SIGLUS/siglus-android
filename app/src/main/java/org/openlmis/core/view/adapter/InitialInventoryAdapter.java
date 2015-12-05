@@ -29,14 +29,17 @@ import java.util.List;
 
 public class InitialInventoryAdapter extends InventoryListAdapter<InitialInventoryViewHolder> {
 
-    public InitialInventoryAdapter(List<StockCardViewModel> data) {
+    private InitialInventoryViewHolder.ViewHistoryListener listener;
+
+    public InitialInventoryAdapter(List<StockCardViewModel> data, InitialInventoryViewHolder.ViewHistoryListener listener) {
         super(data);
+        this.listener = listener;
     }
 
     @Override
     public void onBindViewHolder(final InitialInventoryViewHolder holder, final int position) {
         final StockCardViewModel viewModel = currentList.get(position);
-        holder.populate(viewModel, queryKeyWord);
+        holder.populate(viewModel, queryKeyWord, listener);
     }
 
 

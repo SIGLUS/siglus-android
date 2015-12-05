@@ -58,6 +58,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -109,7 +110,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldLoadStockCardList() throws LMISException {
+    public void shouldLoadPhysicalStockCardList() throws LMISException {
         ((LMISTestApp)RuntimeEnvironment.application).setFeatureToggle(true);
 
         StockCard stockCardVIA = StockCardBuilder.buildStockCard();
@@ -120,7 +121,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         when(stockRepositoryMock.list()).thenReturn(stockCards);
 
         TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
-        Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadStockCardList();
+        Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadPhysicalStockCards();
         observable.subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
@@ -140,7 +141,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         Product productVIA = new ProductBuilder().setPrimaryName("VIA Product").setCode("VIA Code").build();
         stockCardVIA.setProduct(productVIA);
         StockCard stockCardMMIA = StockCardBuilder.buildStockCard();
-        Product productMMIA = new ProductBuilder().setPrimaryName("MMIA Product").setCode("MMIA Code").build();
+        Product productMMIA = new ProductBuilder().setProductId(10L).setPrimaryName("MMIA Product").setCode("MMIA Code").setIsArchived(true).build();
         stockCardMMIA.setProduct(productMMIA);
 
         StockCard unknownAStockCard = StockCardBuilder.buildStockCard();
@@ -152,6 +153,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
         when(stockRepositoryMock.list()).thenReturn(Arrays.asList(stockCardVIA, stockCardMMIA));
         when(productRepositoryMock.list()).thenReturn(Arrays.asList(productMMIA, productVIA, productUnknownB, productUnknownA));
+        when(stockRepositoryMock.queryStockCardByProductId(10L)).thenReturn(stockCardMMIA);
 
         TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
         Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadMasterProductList();
@@ -161,7 +163,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
         subscriber.assertNoErrors();
         List<StockCardViewModel> receivedStockCardViewModels = subscriber.getOnNextEvents().get(0);
-        assertEquals(receivedStockCardViewModels.size(), 2);
+        assertEquals(receivedStockCardViewModels.size(), 3);
     }
 
     @Test
@@ -179,7 +181,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
         inventoryPresenter.initStockCards(stockCardViewModelList);
 
-        verify(stockRepositoryMock, times(1)).initStockCard(any(StockCard.class));
+        verify(stockRepositoryMock, times(1)).initStockCard(any(StockCard.class), eq(false));
     }
 
     @Test

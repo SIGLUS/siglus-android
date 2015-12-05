@@ -74,7 +74,7 @@ public class InventoryPresenter implements Presenter {
 
         return Observable.create(new Observable.OnSubscribe<List<StockCardViewModel>>() {
             @Override
-            public void call(Subscriber<? super List<StockCardViewModel>> subscriber) {
+            public void call(final Subscriber<? super List<StockCardViewModel>> subscriber) {
                 try {
                     final List<Product> existProductList = from(stockRepository.list()).transform(new Function<StockCard, Product>() {
                         @Override
@@ -86,11 +86,18 @@ public class InventoryPresenter implements Presenter {
                     List<StockCardViewModel> list = from(productRepository.list()).filter(new Predicate<Product>() {
                         @Override
                         public boolean apply(Product product) {
-                            return !existProductList.contains(product);
+                            return product.getIsArchived() || !existProductList.contains(product);
                         }
                     }).transform(new Function<Product, StockCardViewModel>() {
                         @Override
                         public StockCardViewModel apply(Product product) {
+                            if (product.getIsArchived()) {
+                                try {
+                                    return new StockCardViewModel(stockRepository.queryStockCardByProductId(product.getId()));
+                                } catch (LMISException e) {
+                                    e.reportToFabric();
+                                }
+                            }
                             return new StockCardViewModel(product);
                         }
                     }).toList();
@@ -105,7 +112,7 @@ public class InventoryPresenter implements Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    public Observable<List<StockCardViewModel>> loadStockCardList() {
+    public Observable<List<StockCardViewModel>> loadPhysicalStockCards() {
         return Observable.create(new Observable.OnSubscribe<List<StockCardViewModel>>() {
             @Override
             public void call(Subscriber<? super List<StockCardViewModel>> subscriber) {
@@ -157,12 +164,23 @@ public class InventoryPresenter implements Presenter {
 
     private StockCard initStockCard(StockCardViewModel model) {
         try {
-            StockCard stockCard = new StockCard();
-            stockCard.setProduct(productRepository.getById(model.getProductId()));
+            boolean isStockCardSaved;
+            StockCard stockCard;
+
+            if (model.getStockCard() == null) {
+                isStockCardSaved = false;
+                stockCard = new StockCard();
+                stockCard.setProduct(productRepository.getById(model.getProductId()));
+            } else {
+                isStockCardSaved = true;
+                stockCard = model.getStockCard();
+                stockCard.getProduct().setIsArchived(false);
+                productRepository.update(stockCard.getProduct());
+            }
             stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
             stockCard.setExpireDates(model.formatExpiryDateString());
 
-            stockRepository.initStockCard(stockCard);
+            stockRepository.initStockCard(stockCard, isStockCardSaved);
             return stockCard;
         } catch (LMISException e) {
             e.reportToFabric();

@@ -85,4 +85,10 @@ public class StockCardListActivity extends SearchBarActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
     }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        stockCardFragment.onActivityResult(requestCode, resultCode, data);
+    }
 }
