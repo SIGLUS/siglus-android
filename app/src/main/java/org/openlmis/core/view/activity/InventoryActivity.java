@@ -42,6 +42,7 @@ import org.openlmis.core.view.adapter.InitialInventoryAdapter;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
 import org.openlmis.core.view.adapter.PhysicalInventoryAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
+import org.openlmis.core.view.holder.InitialInventoryViewHolder;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.openlmis.core.view.widget.SignatureDialog;
 
@@ -51,8 +52,6 @@ import java.util.List;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
-
-import static org.openlmis.core.view.holder.InitialInventoryViewHolder.*;
 
 @ContentView(R.layout.activity_inventory)
 public class InventoryActivity extends SearchBarActivity implements InventoryPresenter.InventoryView, SimpleDialogFragment.MsgDialogCallBack {
@@ -121,7 +120,7 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
         });
     }
 
-    protected ViewHistoryListener viewHistoryListener = new ViewHistoryListener() {
+    protected InitialInventoryViewHolder.ViewHistoryListener viewHistoryListener = new InitialInventoryViewHolder.ViewHistoryListener() {
         @Override
         public void viewHistory(StockCard stockCard) {
             startActivity(StockMovementHistoryActivity.getIntentToMe(InventoryActivity.this,

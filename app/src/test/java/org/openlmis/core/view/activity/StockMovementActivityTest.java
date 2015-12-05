@@ -9,6 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -39,6 +40,8 @@ public class StockMovementActivityTest {
 
     @Before
     public void setUp() throws Exception {
+        ((LMISTestApp)RuntimeEnvironment.application).setFeatureToggle(true);
+
         mockedPresenter = mock(StockMovementPresenter.class);
 
         Product product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setStrength("10mg").setType("VIA").build();

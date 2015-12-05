@@ -12,4 +12,5 @@
     <bool name="sort_product_list_alphabetically_435">false</bool>
     <bool name="search_view_enhancement">false</bool>
     <bool name="feature_update_version">false</bool>
+    <bool name="feature_archive_drugs_346">false</bool>
 </resources>

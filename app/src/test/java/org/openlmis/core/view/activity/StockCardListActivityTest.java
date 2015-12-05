@@ -5,6 +5,7 @@ import android.content.Intent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.utils.Constants;
 import org.robolectric.Robolectric;
@@ -21,6 +22,7 @@ public class StockCardListActivityTest {
 
     @Before
     public void setUp() {
+        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
         stockCardListActivity = Robolectric.buildActivity(StockCardListActivity.class).create().get();
     }
 

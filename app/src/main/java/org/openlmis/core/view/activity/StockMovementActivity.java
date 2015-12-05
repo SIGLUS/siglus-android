@@ -194,7 +194,9 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean isPrepared = super.onPrepareOptionsMenu(menu);
-        menu.findItem(R.id.action_archive).setVisible(isStockCardArchivable);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_archive_drugs_346)) {
+            menu.findItem(R.id.action_archive).setVisible(isStockCardArchivable);
+        }
         return isPrepared;
     }
 
