@@ -53,7 +53,7 @@ public class Product extends BaseModel implements Comparable<Product> {
     String type;
 
     @DatabaseField
-    Boolean isArchived;
+    boolean isArchived;
 
     String medicine_type;
 
@@ -65,10 +65,6 @@ public class Product extends BaseModel implements Comparable<Product> {
         } else {
             return false;
         }
-    }
-
-    public boolean getIsArchived() {
-        return isArchived != null && isArchived;
     }
 
     public String getFormattedProductName() {

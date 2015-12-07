@@ -92,7 +92,7 @@ public class StockCardPresenter implements Presenter {
                     subscriber.onNext(from(stockRepository.list()).filter(new Predicate<StockCard>() {
                         @Override
                         public boolean apply(StockCard stockCard) {
-                            return stockCard.getProduct().getIsArchived() == status.isArchived();
+                            return stockCard.getProduct().isArchived() == status.isArchived();
                         }
                     }).toList());
                     subscriber.onCompleted();
@@ -133,7 +133,7 @@ public class StockCardPresenter implements Presenter {
     }
 
     public void archiveBackStockCard(StockCard stockCard) {
-        stockCard.getProduct().setIsArchived(false);
+        stockCard.getProduct().setArchived(false);
         stockRepository.update(stockCard);
     }
 

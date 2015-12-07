@@ -128,7 +128,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     }
 
     private void initHistoryView(final StockCardViewModel viewModel, final ViewHistoryListener listener) {
-        tvHistoryAction.setVisibility(viewModel.getProduct().getIsArchived() ? View.VISIBLE : View.GONE);
+        tvHistoryAction.setVisibility(viewModel.getProduct().isArchived() ? View.VISIBLE : View.GONE);
         tvHistoryAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

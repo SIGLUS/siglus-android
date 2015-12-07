@@ -190,7 +190,7 @@ public class StockMovementPresenter implements Presenter {
     }
 
     public void archiveStockCard() {
-        stockCard.getProduct().setIsArchived(true);
+        stockCard.getProduct().setArchived(true);
         stockRepository.update(stockCard);
     }
 

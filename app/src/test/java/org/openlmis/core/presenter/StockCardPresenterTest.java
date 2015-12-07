@@ -118,7 +118,7 @@ public class StockCardPresenterTest {
         afterLoadHandler.awaitTerminalEvent();
 
         //then
-        assertThat(afterLoadHandler.getOnNextEvents().get(0).get(0).getProduct().getIsArchived()).isEqualTo(status.isArchived());
+        assertThat(afterLoadHandler.getOnNextEvents().get(0).get(0).getProduct().isArchived()).isEqualTo(status.isArchived());
     }
 
     private StockCard stockCard(boolean isArchived) {

@@ -86,12 +86,12 @@ public class InventoryPresenter implements Presenter {
                     List<StockCardViewModel> list = from(productRepository.list()).filter(new Predicate<Product>() {
                         @Override
                         public boolean apply(Product product) {
-                            return product.getIsArchived() || !existProductList.contains(product);
+                            return product.isArchived() || !existProductList.contains(product);
                         }
                     }).transform(new Function<Product, StockCardViewModel>() {
                         @Override
                         public StockCardViewModel apply(Product product) {
-                            if (product.getIsArchived()) {
+                            if (product.isArchived()) {
                                 try {
                                     return new StockCardViewModel(stockRepository.queryStockCardByProductId(product.getId()));
                                 } catch (LMISException e) {
@@ -174,7 +174,7 @@ public class InventoryPresenter implements Presenter {
             } else {
                 isStockCardSaved = true;
                 stockCard = model.getStockCard();
-                stockCard.getProduct().setIsArchived(false);
+                stockCard.getProduct().setArchived(false);
                 productRepository.update(stockCard.getProduct());
             }
             stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));

@@ -144,12 +144,12 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     }
 
     protected void initUI() {
-        if (!isHistoryForm) {
-            scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-            bottomView.setVisibility(View.VISIBLE);
-        } else {
+        if (isHistoryForm) {
             scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             bottomView.setVisibility(View.GONE);
+        } else {
+            scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+            bottomView.setVisibility(View.VISIBLE);
         }
         disableFreezeHeaderScroll();
         initActionBarHeight();
