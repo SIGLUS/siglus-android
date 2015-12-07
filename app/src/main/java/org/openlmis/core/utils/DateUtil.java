@@ -88,6 +88,10 @@ public final class DateUtil {
         return calendar.getTime();
     }
 
+    public static Date minusDayOfMonth(Date date, int difference) {
+        return addDayOfMonth(date, - difference);
+    }
+
     public static Date addMonth(Date date, int difference) {
         Calendar calendar = calendarDate(date);
         calendar.add(Calendar.MONTH, difference);

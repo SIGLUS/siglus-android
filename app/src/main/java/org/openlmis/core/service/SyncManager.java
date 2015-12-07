@@ -56,6 +56,7 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -82,6 +83,10 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 public class SyncManager {
 
     private static final String TAG = "SyncManager";
+    public static final int DAYS_OF_MONTH = 30;
+    public static final int MONTHS_OF_YEAR = 12;
+    private  final  Object STOCK_MONTH_SYNC_LOCK = new Object();
+    private  final  Object STOCK_YEAR_SYNC_LOCK = new Object();
 
     @Inject
     ProgramRepository programRepository;
@@ -95,7 +100,8 @@ public class SyncManager {
     @Inject
     StockRepository stockRepository;
 
-    LMISRestApi lmisRestApi;
+    protected LMISRestApi lmisRestApi;
+
     @Inject
     private AccountManager accountManager;
     @InjectResource(R.string.sync_content_authority)
@@ -348,51 +354,77 @@ public class SyncManager {
         }
     }
 
-    public void fetchStockCardsData(Observer<Void> observer) {
+    public void fetchStockCardsData(Observer<Void> observer, final boolean isSyncMonth) {
         rx.Observable.create(new rx.Observable.OnSubscribe<Void>() {
 
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    if (saveStockCardLock || sharedPreferenceMgr.getPreference().getBoolean(SharedPreferenceMgr.KEY_HAS_GET_STOCK, false)) {
-                        return;
+                    synchronized (STOCK_MONTH_SYNC_LOCK) {
+                        if (isSyncMonth && !sharedPreferenceMgr.getPreference().getBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, false)) {
+                            fetchLatestOneMonthMovements();
+                            sharedPreferenceMgr.getPreference().edit().putBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, true);
+                        }
                     }
-                    saveStockCardLock = true;
-                    fetchAndSaveStockCards();
-                } catch (LMISException e) {
-                    e.reportToFabric();
-                    subscriber.onError(e);
-                } finally {
-                    saveStockCardLock = false;
+
+                    synchronized (STOCK_YEAR_SYNC_LOCK) {
+                        if (!isSyncMonth && !sharedPreferenceMgr.getPreference().getBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_YEAR_STOCKMOVEMENTS, false)) {
+                            fetchLatestYearStockMovements();
+                            sharedPreferenceMgr.getPreference().edit().putBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_YEAR_STOCKMOVEMENTS, true);
+                        }
+                    }
+                }catch (Throwable throwable) {
+                    subscriber.onError(new LMISException("Syncing StockCard back failed"));
+                    new LMISException(throwable).reportToFabric();
                 }
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
     }
 
-    public void fetchAndSaveStockCards() throws LMISException {
-        //default start date is one month before and end date is one day after
-        final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
-
+    public void fetchLatestYearStockMovements() throws Throwable {
         Date now = new Date();
-        Date startDate = DateUtil.addMonth(now, -1);
-        String startDateStr = DateUtil.formatDate(startDate, "yyyy-MM-dd");
 
+        for (int month = 1; month <= MONTHS_OF_YEAR; month++) {
+            Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH * (month+1));
+            String startDateStr = DateUtil.formatDate(startDate, "yyyy-MM-dd");
+
+            Date endDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH * month);
+            String endDateStr = DateUtil.formatDate(endDate, "yyyy-MM-dd");
+
+            fetchAndSaveStockCards(startDateStr, endDateStr);
+        }
+    }
+
+    public void fetchLatestOneMonthMovements() throws Throwable {
+        Date now = new Date();
+        Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH);
+        String startDateStr = DateUtil.formatDate(startDate, "yyyy-MM-dd");
 
         Date endDate = DateUtil.addDayOfMonth(now, 1);
         String endDateStr = DateUtil.formatDate(endDate, "yyyy-MM-dd");
+        fetchAndSaveStockCards(startDateStr, endDateStr);
 
-        StockCardResponse stockCardResponse = lmisRestApi.fetchStockMovementData(facilityId, startDateStr, endDateStr);
+        sharedPreferenceMgr.getPreference().edit().putString(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_YEAR_STOCKMOVEMENTS, startDateStr);
+    }
+
+    public void fetchAndSaveStockCards(String startDate, String endDate) throws Throwable {
+        //default start date is one month before and end date is one day after
+        final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
+
+        StockCardResponse stockCardResponse = lmisRestApi.fetchStockMovementData(facilityId, startDate, endDate);
 
         for (StockCard stockCard : stockCardResponse.getStockCards()) {
-            stockRepository.save(stockCard);
+            if (stockCard.getId() <= 0) {
+                stockRepository.save(stockCard);
+            }
+
+
             for (StockMovementItem item : stockCard.getStockMovementItemsWrapper()) {
                 item.setSynced(true);
                 stockRepository.saveStockItem(item);
             }
         }
-        sharedPreferenceMgr.getPreference().edit().putBoolean(SharedPreferenceMgr.KEY_HAS_GET_STOCK, true);
-
     }
 
     public void syncAppVersion() {

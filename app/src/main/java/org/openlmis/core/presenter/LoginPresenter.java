@@ -176,11 +176,23 @@ public class LoginPresenter implements Presenter {
 
     protected void goToNextPage() {
         view.loaded();
+
         if (view.needInitInventory()) {
             view.goToInitInventory();
         } else {
             view.goToHomePage();
         }
+        fetchStockMovementSilent();
+
+    }
+
+    private void fetchStockMovementSilent() {
+        syncManager.fetchStockCardsData(new SyncSubscriber<Void>() {
+            @Override
+            public void onCompleted() {
+                //do nothing
+            }
+        }, false);
     }
 
 
@@ -219,7 +231,7 @@ public class LoginPresenter implements Presenter {
         if (!isSyncingStockMovement){
             isSyncingStockMovement = true;
             view.loading("Syncing StockMovement data..");
-            syncManager.fetchStockCardsData(getSyncStockCardDataSubscriber());
+            syncManager.fetchStockCardsData(getSyncStockCardDataSubscriber(), true);
         }
     }
 

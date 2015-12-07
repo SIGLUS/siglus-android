@@ -86,6 +86,9 @@ public class StockMovementItem extends BaseModel {
     @DatabaseField
     private boolean synced = false;
 
+    @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DATE_TIME_FORMAT)
+    private java.util.Date createdTime;
+
 
     public boolean isPositiveMovement() {
         return movementType.equals(MovementType.RECEIVE) || movementType.equals(MovementType.POSITIVE_ADJUST);

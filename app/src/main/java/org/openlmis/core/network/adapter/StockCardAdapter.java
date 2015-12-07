@@ -14,6 +14,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.model.repository.StockRepository;
 
 import java.util.List;
 
@@ -24,6 +25,9 @@ public class StockCardAdapter implements JsonDeserializer<StockCard> {
     private final Gson gson;
     @Inject
     private ProductRepository productRepository;
+
+    @Inject
+    private StockRepository stockRepository;
 
     @Inject
     public StockCardAdapter() {
@@ -42,9 +46,16 @@ public class StockCardAdapter implements JsonDeserializer<StockCard> {
         if (wrapper == null) {
             return stockCard;
         }
-
+        //the product is synced before stock card
+        //stock cards will be synced at the first time,
+        //if synced more than once, will be ignored and won't insert to local db
         try {
             stockCard.setProduct(productRepository.getByCode(stockCard.getProduct().getCode()));
+
+            StockCard stockCardInDB = stockRepository.queryStockCardByProductId(stockCard.getProduct().getId());
+            if (stockCardInDB != null) {
+                stockCard.setId(stockCardInDB.getId());
+            }
         } catch (LMISException e) {
             e.reportToFabric();
         }

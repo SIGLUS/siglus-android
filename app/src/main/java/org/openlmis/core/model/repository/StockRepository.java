@@ -117,6 +117,7 @@ public class StockRepository {
             @Override
             public Void operate(Dao<StockMovementItem, String> dao) throws SQLException {
                 for (StockMovementItem stockMovementItem : stockMovementItems) {
+                    stockMovementItem.setCreatedTime(new Date());
                     dao.update(stockMovementItem);
                 }
                 return null;
@@ -125,6 +126,7 @@ public class StockRepository {
     }
 
     public void saveStockItem(final StockMovementItem stockMovementItem) throws LMISException {
+        stockMovementItem.setCreatedTime(new Date());
         stockItemGenericDao.create(stockMovementItem);
     }
 
@@ -175,6 +177,7 @@ public class StockRepository {
         initInventory.setMovementQuantity(stockCard.getStockOnHand());
         initInventory.setStockOnHand(stockCard.getStockOnHand());
         initInventory.setStockCard(stockCard);
+        initInventory.setCreatedTime(new Date());
         return initInventory;
     }
 
@@ -222,7 +225,7 @@ public class StockRepository {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
             @Override
             public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                return Lists.reverse(dao.queryBuilder().limit(5L).orderBy("id", false).where().eq("stockCard_id", stockCardId).query());
+                return Lists.reverse(dao.queryBuilder().limit(5L).orderBy("createdTime", false).orderBy("id", false).where().eq("stockCard_id", stockCardId).query());
             }
         });
     }
@@ -231,7 +234,13 @@ public class StockRepository {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
             @Override
             public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("stockCard_id", stockCard.getId()).and().ge("movementDate", startDate).and().le("movementDate", endDate).query();
+                return dao.queryBuilder()
+                        .orderBy("createdTime",false)
+                        .where()
+                        .eq("stockCard_id", stockCard.getId())
+                        .and().ge("movementDate", startDate)
+                        .and().le("movementDate", endDate)
+                        .query();
             }
         });
     }
@@ -258,7 +267,7 @@ public class StockRepository {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
             @Override
             public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                return Lists.reverse(dao.queryBuilder().offset(startIndex).limit(maxRows).orderBy("id", false).where().eq("stockCard_id", stockCardId).query());
+                return Lists.reverse(dao.queryBuilder().offset(startIndex).limit(maxRows).orderBy("createdTime", false).orderBy("id", false).where().eq("stockCard_id", stockCardId).query());
             }
         });
     }

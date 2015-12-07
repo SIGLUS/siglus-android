@@ -38,11 +38,13 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.builder.StockCardBuilder;
+import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.AppInfoRequest;
+import org.openlmis.core.network.model.StockCardResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SubmitRequisitionResponse;
 import org.openlmis.core.network.model.SyncBackRequisitionsResponse;
@@ -80,6 +82,7 @@ public class SyncManagerTest {
     LMISRestApi lmisRestApi;
     StockRepository stockRepository;
     private SharedPreferenceMgr sharedPreferenceMgr;
+    private StockMovementItem stockMovementItem;
 
     @Before
     public void setup() throws LMISException {
@@ -217,6 +220,67 @@ public class SyncManagerTest {
         when(sharedPreferenceMgr.hasSyncedVersion()).thenReturn(true);
         syncManager.syncAppVersion();
         verify(lmisRestApi, never()).updateAppVersion(any(AppInfoRequest.class), any(Callback.class));
+    }
+
+    @Test
+    public void shouldFetchStockMovement() throws Throwable{
+
+        String facilityId = "HF2";
+
+        User user = new User();
+        user.setFacilityId(facilityId);
+        UserInfoMgr.getInstance().setUser(user);
+
+        String startDate = "2015-11-04";
+        String endDate = "2015-12-04";
+
+
+        StockCardResponse stockCardResponse = getStockCardResponse();
+
+
+        StockRepository stockRepository = mock(StockRepository.class);
+        syncManager.stockRepository = stockRepository;
+
+        when(lmisRestApi.fetchStockMovementData(facilityId, startDate, endDate)).thenReturn(stockCardResponse);
+
+        syncManager.fetchAndSaveStockCards(startDate, endDate);
+
+        verify(stockRepository, times(2)).save(any(StockCard.class));
+        verify(stockRepository, times(5)).saveStockItem(stockMovementItem);
+        assertThat(stockMovementItem.isSynced(), is(true));
+    }
+
+    @NonNull
+    public StockCardResponse getStockCardResponse() throws ParseException {
+        StockCard stockCard1= StockCardBuilder.buildStockCard();
+        StockCard stockCard2= StockCardBuilder.buildStockCard();
+
+        StockMovementItemBuilder builder = new StockMovementItemBuilder();
+
+        stockMovementItem = builder.build();
+        stockMovementItem.setSynced(false);
+
+        ArrayList<StockMovementItem> stockMovementItems1 = newArrayList(stockMovementItem, stockMovementItem, stockMovementItem);
+        stockCard1.setStockMovementItemsWrapper(stockMovementItems1);
+
+        ArrayList<StockMovementItem> stockMovementItems2 = newArrayList(stockMovementItem, stockMovementItem);
+        stockCard2.setStockMovementItemsWrapper(stockMovementItems2);
+
+        StockCardResponse stockCardResponse = new StockCardResponse();
+        stockCardResponse.setStockCards(newArrayList(stockCard1, stockCard2));
+        return stockCardResponse;
+    }
+
+    @Test
+    public void shouldFetchLatestYearStockMovement() throws Throwable{
+
+        StockRepository stockRepository = mock(StockRepository.class);
+        syncManager.stockRepository = stockRepository;
+        when(lmisRestApi.fetchStockMovementData(anyString(), anyString(), anyString())).thenReturn(getStockCardResponse());
+
+        syncManager.fetchLatestYearStockMovements();
+
+        verify(lmisRestApi,times(12)).fetchStockMovementData(anyString(), anyString(), anyString());
     }
 
     public class MyTestModule extends AbstractModule {
