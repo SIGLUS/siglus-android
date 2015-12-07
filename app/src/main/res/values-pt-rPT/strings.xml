@@ -18,6 +18,7 @@
     <string name="msg_user_not_facility">Não existe unidade sanitária para este usuário. Por favor contacte seu administrador.</string>
     <string name="init_product_error">Erro nos dados iniciais. Tente de novo.</string>
     <string name="msg_fetching_products">Descarregando lista de produtos…</string>
+    <string name="msg_sync_products_list_failed">Falha no descarregamento de productos do servidor</string>
 
 
     <!-- Init Inventory -->
