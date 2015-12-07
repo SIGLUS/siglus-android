@@ -237,11 +237,15 @@ public class MMIARnrForm extends LinearLayout {
 
         } else {
             tvIssuedUnit.setText(item.getProduct().getStrength());
-            tvInitialAmount.setText(String.valueOf(item.getInitialAmount()));
-            tvReceived.setText(String.valueOf(item.getReceived()));
-            tvIssued.setText(String.valueOf(item.getIssued()));
-            tvAdjustment.setText(String.valueOf(item.getAdjustment()));
-            tvInventory.setText(String.valueOf(item.getInventory()));
+
+            boolean isArchived = item.getProduct().isArchived();
+
+            tvInitialAmount.setText(String.valueOf(isArchived ? 0 : item.getInitialAmount()));
+            tvReceived.setText(String.valueOf(isArchived ? 0 : item.getReceived()));
+            tvIssued.setText(String.valueOf(isArchived ? 0 : item.getIssued()));
+            tvAdjustment.setText(String.valueOf(isArchived ? 0 : item.getAdjustment()));
+            tvInventory.setText(String.valueOf(isArchived ? 0 : item.getInventory()));
+
             rightViewGroup.addView(inflate);
 
             try {
