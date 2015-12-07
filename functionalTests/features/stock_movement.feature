@@ -8,7 +8,7 @@ Feature: stock movement Page
   Scenario: Bottom Btn Logic
     Given I am logged in
     And I press "Stock Card Overview"
-    Then I wait for "Stock overview" to appear
+    Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     Then I select stock card code called "[08S42B]"
     Then I wait for "Stock Card" to appear
@@ -26,7 +26,7 @@ Feature: stock movement Page
   Scenario: Add A Receive Movement
     Given I am logged in
     And I press "Stock Card Overview"
-    Then I wait for "Stock overview" to appear
+    Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     Then I select stock card code called "[08S42B]"
     Then I wait for "Stock Card" to appear
@@ -46,7 +46,7 @@ Feature: stock movement Page
   Scenario: Add A Negative Adjustment
     Given I am logged in
     And I press "Stock Card Overview"
-    Then I wait for "Stock overview" to appear
+    Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     Then I select stock card code called "[01A02]"
     Then I wait for "Stock Card" to appear
@@ -65,7 +65,7 @@ Feature: stock movement Page
   Scenario: Add A Positive Adjustment
     Given I am logged in
     And I press "Stock Card Overview"
-    Then I wait for "Stock overview" to appear
+    Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     Then I select stock card code called "[01A05]"
     Then I wait for "Stock Card" to appear
@@ -85,7 +85,7 @@ Feature: stock movement Page
   Scenario: Add A Issued Movement
     Given I am logged in
     And I press "Stock Card Overview"
-    Then I wait for "Stock overview" to appear
+    Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     Then I select stock card code called "[08S18Y]"
     Then I wait for "Stock Card" to appear
@@ -106,7 +106,7 @@ Feature: stock movement Page
   Scenario: Add all movements for one drug
     Given I am logged in
     And I press "stock cards & overview"
-    Then I wait for "Stock overview" to appear
+    Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     Then I make all movements for "08S18Y"
     Then I wait for 1 second

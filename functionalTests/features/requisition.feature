@@ -43,7 +43,7 @@ Feature: Requisition
   Scenario: Add A Issued Movement on VIA product,then the quantity should change
     Given I am logged in
     And I press "Stock Card Overview"
-    Then I wait for "Stock overview" to appear
+    Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     And I make a movement "[01A01]" "Issues" "PAV" "issued" "10"
     Then I wait for 1 second
