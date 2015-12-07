@@ -32,6 +32,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.ViewUtil;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -39,12 +40,23 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import lombok.Getter;
+
 public class MMIARnrForm extends LinearLayout {
     private ViewGroup leftViewGroup;
+
+    @Getter
     private ViewGroup rightViewGroup;
     private LayoutInflater layoutInflater;
-    private ViewGroup vg_right_scrollview;
+
+    @Getter
+    private RnrFormHorizontalScrollView rnrItemsHorizontalScrollView;
     private HashMap<String, List<String>> rnrFormItemConfigList = new HashMap<>();
+
+    @Getter
+    private View leftHeaderView;
+    @Getter
+    private ViewGroup rightHeaderView;
 
     public MMIARnrForm(Context context) {
         super(context);
@@ -59,7 +71,7 @@ public class MMIARnrForm extends LinearLayout {
     private void init(Context context) {
         layoutInflater = LayoutInflater.from(context);
         View container = layoutInflater.inflate(R.layout.view_mmia_rnr_form, this, true);
-        vg_right_scrollview = (ViewGroup) container.findViewById(R.id.vg_right_scrollview);
+        rnrItemsHorizontalScrollView = (RnrFormHorizontalScrollView) container.findViewById(R.id.vg_right_scrollview);
         leftViewGroup = (ViewGroup) container.findViewById(R.id.rnr_from_list_product_name);
         rightViewGroup = (ViewGroup) container.findViewById(R.id.rnr_from_list);
     }
@@ -70,9 +82,22 @@ public class MMIARnrForm extends LinearLayout {
     }
 
     private void addHeaderView() {
-        View leftHeaderView = addLeftHeaderView();
-        ViewGroup rightHeaderView = addRightHeaderView();
+        leftHeaderView = addLeftHeaderView();
+        rightHeaderView = addRightHeaderView();
         setItemSize(leftHeaderView, rightHeaderView);
+
+        setMarginForFreezeHeader();
+    }
+
+    private void setMarginForFreezeHeader() {
+        post(new Runnable() {
+            @Override
+            public void run() {
+                final MarginLayoutParams marginLayoutParams = (MarginLayoutParams) getLayoutParams();
+                marginLayoutParams.topMargin = rightHeaderView.getLayoutParams().height;
+                setLayoutParams(marginLayoutParams);
+            }
+        });
     }
 
     private void addItemView(ArrayList<RnrFormItem> rnrFormItemList) {
@@ -123,18 +148,18 @@ public class MMIARnrForm extends LinearLayout {
         rnrFormItemConfigList.put(Product.MEDICINE_TYPE_OTHER, Arrays.asList(getResources().getStringArray(R.array.medicine_other)));
     }
 
-    private void setItemSize(final View leftView, final ViewGroup rightView) {
+    public void setItemSize(final View leftView, final ViewGroup rightView) {
         post(new Runnable() {
             @Override
             public void run() {
                 setRightItemWidth(rightView);
-                syncItemHeight(leftView, rightView);
+                ViewUtil.syncViewHeight(leftView, rightView);
             }
         });
     }
 
     private void setRightItemWidth(final ViewGroup rightView) {
-        int rightWidth = vg_right_scrollview.getWidth();
+        int rightWidth = rnrItemsHorizontalScrollView.getWidth();
         int rightViewGroupWidth = rightViewGroup.getWidth();
 
         if (rightViewGroupWidth < rightWidth) {
@@ -146,22 +171,7 @@ public class MMIARnrForm extends LinearLayout {
         }
     }
 
-    private void syncItemHeight(final View leftView, final View rightView) {
-        int leftHeight = leftView.getHeight();
-        int rightHeight = rightView.getHeight();
-        if (leftHeight > rightHeight) {
-            ViewGroup.LayoutParams layoutParams = rightView.getLayoutParams();
-            layoutParams.height = leftHeight;
-            rightView.setLayoutParams(layoutParams);
-        } else {
-            ViewGroup.LayoutParams layoutParams = leftView.getLayoutParams();
-            layoutParams.height = rightHeight;
-            leftView.setLayoutParams(layoutParams);
-            rightView.setLayoutParams(layoutParams);
-        }
-    }
-
-    private View addLeftHeaderView() {
+    public View addLeftHeaderView() {
         return addLeftView(null, true, null);
     }
 
@@ -176,9 +186,9 @@ public class MMIARnrForm extends LinearLayout {
             Product product = item.getProduct();
             tvPrimaryName.setText(product.getPrimaryName());
             setLeftViewColor(medicineType, view);
+            leftViewGroup.addView(view);
         }
 
-        leftViewGroup.addView(view);
         return view;
     }
 
@@ -199,7 +209,7 @@ public class MMIARnrForm extends LinearLayout {
     }
 
 
-    private ViewGroup addRightHeaderView() {
+    public ViewGroup addRightHeaderView() {
         return addRightView(null, true);
     }
 
@@ -224,13 +234,19 @@ public class MMIARnrForm extends LinearLayout {
             tvValidate.setText(R.string.label_validate);
 
             inflate.setBackgroundResource(R.color.color_mmia_info_name);
+
         } else {
             tvIssuedUnit.setText(item.getProduct().getStrength());
-            tvInitialAmount.setText(String.valueOf(item.getInitialAmount()));
-            tvReceived.setText(String.valueOf(item.getReceived()));
-            tvIssued.setText(String.valueOf(item.getIssued()));
-            tvAdjustment.setText(String.valueOf(item.getAdjustment()));
-            tvInventory.setText(String.valueOf(item.getInventory()));
+
+            boolean isArchived = item.getProduct().isArchived();
+
+            tvInitialAmount.setText(String.valueOf(isArchived ? 0 : item.getInitialAmount()));
+            tvReceived.setText(String.valueOf(isArchived ? 0 : item.getReceived()));
+            tvIssued.setText(String.valueOf(isArchived ? 0 : item.getIssued()));
+            tvAdjustment.setText(String.valueOf(isArchived ? 0 : item.getAdjustment()));
+            tvInventory.setText(String.valueOf(isArchived ? 0 : item.getInventory()));
+
+            rightViewGroup.addView(inflate);
 
             try {
                 if (!TextUtils.isEmpty(item.getValidate())) {
@@ -240,7 +256,6 @@ public class MMIARnrForm extends LinearLayout {
                 new LMISException(e).reportToFabric();
             }
         }
-        rightViewGroup.addView(inflate);
         return inflate;
     }
 

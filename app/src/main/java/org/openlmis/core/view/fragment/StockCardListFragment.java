@@ -47,9 +47,9 @@ import java.util.List;
 
 import roboguice.inject.InjectView;
 
-public class StockCardListFragment extends BaseFragment implements StockCardPresenter.StockCardListView, AdapterView.OnItemSelectedListener {
+import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.Active;
 
-    private static final int REQUEST_CODE_CHANGE = 1;
+public class StockCardListFragment extends BaseFragment implements StockCardPresenter.StockCardListView, AdapterView.OnItemSelectedListener {
 
     @InjectView(R.id.sort_spinner)
     Spinner sortSpinner;
@@ -69,7 +69,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     private int currentPosition;
     private BaseView baseView;
 
-    @Override
+        @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
@@ -127,7 +127,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
             Intent intent = new Intent(getActivity(), StockMovementActivity.class);
             intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCardViewModel.getStockCardId());
             intent.putExtra(Constants.PARAM_STOCK_NAME, stockCardViewModel.getProduct().getFormattedProductName());
-            startActivityForResult(intent, StockCardListFragment.REQUEST_CODE_CHANGE);
+            startActivityForResult(intent, Constants.REQUEST_CODE_CHANGE);
         }
     };
 
@@ -138,7 +138,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
         stockCardRecycleView.setLayoutManager(mLayoutManager);
         stockCardRecycleView.setAdapter(mAdapter);
 
-        presenter.loadStockCards();
+        presenter.loadStockCards(Active);
     }
 
     private void initSortSpinner() {
@@ -200,9 +200,9 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CHANGE) {
+        if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_CODE_CHANGE) {
             presenter.refreshStockCardViewModelsSOH();
-            presenter.loadStockCards();
+            presenter.loadStockCards(Active);
             mAdapter.notifyDataSetChanged();
         }
     }

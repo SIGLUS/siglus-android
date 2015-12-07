@@ -33,7 +33,7 @@ public class StockMovementHistoryActivityTest {
 
     @Test
     public void shouldGetIntentToMeWithStockIdAndStockName() {
-        Intent intent = StockMovementHistoryActivity.getIntentToMe(RuntimeEnvironment.application, 100L, "StockName");
+        Intent intent = StockMovementHistoryActivity.getIntentToMe(RuntimeEnvironment.application, 100L, "StockName", false);
         
         assertThat(intent).isNotNull();
         assertThat(intent.getComponent().getClassName()).isEqualTo(StockMovementHistoryActivity.class.getName());

@@ -33,4 +33,5 @@ public final class DisplayUtil {
         ((WindowManager) LMISApp.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getSize(size);
         return size.x;
     }
+
 }

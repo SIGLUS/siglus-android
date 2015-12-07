@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.TextStyleUtil;
@@ -47,6 +48,8 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     CheckBox checkBox;
     @InjectView(R.id.action_panel)
     View actionPanel;
+    @InjectView(R.id.action_view_history)
+    TextView tvHistoryAction;
 
     public InitialInventoryViewHolder(View itemView) {
         super(itemView);
@@ -70,7 +73,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         });
     }
 
-    public void populate(final StockCardViewModel viewModel, String queryKeyWord) {
+    public void populate(final StockCardViewModel viewModel, String queryKeyWord, ViewHistoryListener listener) {
         setItemViewListener(viewModel);
 
         checkBox.setChecked(viewModel.isChecked());
@@ -90,6 +93,8 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         } else {
             lyQuantity.setError(context.getResources().getString(R.string.msg_inventory_check_failed));
         }
+
+        initHistoryView(viewModel, listener);
     }
 
     protected void setItemViewListener(final StockCardViewModel viewModel) {
@@ -120,6 +125,18 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         });
 
         txQuantity.addTextChangedListener(textWatcher);
+    }
+
+    private void initHistoryView(final StockCardViewModel viewModel, final ViewHistoryListener listener) {
+        tvHistoryAction.setVisibility(viewModel.getProduct().isArchived() ? View.VISIBLE : View.GONE);
+        tvHistoryAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.viewHistory(viewModel.getStockCard());
+                }
+            }
+        });
     }
 
     protected void populateEditPanel(String quantity, String expireDate) {
@@ -169,4 +186,9 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
 
         dialog.show();
     }
+
+    public interface ViewHistoryListener {
+        void viewHistory(StockCard stockCard);
+    }
+
 }

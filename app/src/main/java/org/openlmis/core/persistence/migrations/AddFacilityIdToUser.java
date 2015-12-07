@@ -20,13 +20,7 @@ package org.openlmis.core.persistence.migrations;
 
 import org.openlmis.core.persistence.Migration;
 
-public class AddFacilityIdToUser extends Migration{
-
-    @Override
-    public void down() {
-
-    }
-
+public class AddFacilityIdToUser extends Migration {
     @Override
     public void up() {
         execSQL("ALTER TABLE 'users' ADD COLUMN facilityId VARCHAR");

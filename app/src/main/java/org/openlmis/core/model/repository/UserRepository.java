@@ -47,7 +47,7 @@ public class UserRepository extends LMISRestManager {
 
 
     @Inject
-    public UserRepository(Context context){
+    public UserRepository(Context context) {
         genericDao = new GenericDao<>(User.class, context);
     }
 
@@ -55,7 +55,7 @@ public class UserRepository extends LMISRestManager {
         lmisRestApi.authorizeUser(user, new Callback<UserResponse>() {
             @Override
             public void success(UserResponse userResponse, Response response) {
-                if (userResponse.getUserInformation() !=null){
+                if (userResponse.getUserInformation() != null) {
                     callback.success(userResponse.getUserInformation());
                 } else {
                     callback.failure(null);
@@ -64,9 +64,9 @@ public class UserRepository extends LMISRestManager {
 
             @Override
             public void failure(RetrofitError error) {
-                if (error.getCause() instanceof ConnectException){
+                if (error.getCause() instanceof ConnectException) {
                     callback.timeout(error.getMessage());
-                }else {
+                } else {
                     callback.failure(error.getMessage());
                 }
             }
@@ -86,8 +86,8 @@ public class UserRepository extends LMISRestManager {
             e.reportToFabric();
         }
 
-        if (users !=null && users.size() >0){
-            return users.get(0);
+        if (users != null && users.size() > 0) {
+            return users.get(users.size() - 1);
         } else {
             return null;
         }
@@ -101,10 +101,11 @@ public class UserRepository extends LMISRestManager {
         }
     }
 
-
     public interface NewCallback<T> {
         void success(T t);
+
         void failure(String error);
+
         void timeout(String error);
     }
 }

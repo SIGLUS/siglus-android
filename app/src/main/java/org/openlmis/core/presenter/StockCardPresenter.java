@@ -18,9 +18,6 @@
 
 package org.openlmis.core.presenter;
 
-
-import android.support.annotation.NonNull;
-
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
@@ -30,6 +27,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,12 +42,12 @@ import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class StockCardPresenter implements Presenter {
 
+    protected List<StockCardViewModel> stockCardViewModels;
     @Inject
     StockRepository stockRepository;
 
     private StockCardListView view;
-
-    protected List<StockCardViewModel> stockCardViewModels;
+    Observer<List<StockCard>> afterLoadHandler = getLoadStockCardsSubscriber();
 
     public StockCardPresenter() {
         stockCardViewModels = new ArrayList<>();
@@ -58,26 +56,54 @@ public class StockCardPresenter implements Presenter {
 
     @Override
     public void onStart() {
-
     }
 
     @Override
     public void onStop() {
-
     }
-
 
     public List<StockCardViewModel> getStockCardViewModels() {
         return stockCardViewModels;
     }
 
-    public void loadStockCards() {
+    public void loadStockCards(ArchiveStatus status) {
         view.loading();
-        getLoadStockCardsObserver().subscribe(getLoadStockCardsSubscriber());
+        getLoadStockCardsObserver(status).subscribe(afterLoadHandler);
     }
 
-    @NonNull
-    public Observer<List<StockCard>> getLoadStockCardsSubscriber() {
+    public void refreshStockCardViewModelsSOH() {
+        for (StockCardViewModel stockCardViewModel : stockCardViewModels) {
+            final StockCard stockCard = stockCardViewModel.getStockCard();
+            stockRepository.refresh(stockCard);
+            stockCardViewModel.setStockOnHand(stockCard.getStockOnHand());
+        }
+    }
+
+    @Override
+    public void attachView(BaseView v) {
+        view = (StockCardListView) v;
+    }
+
+    private Observable<List<StockCard>> getLoadStockCardsObserver(final ArchiveStatus status) {
+        return Observable.create(new Observable.OnSubscribe<List<StockCard>>() {
+            @Override
+            public void call(Subscriber<? super List<StockCard>> subscriber) {
+                try {
+                    subscriber.onNext(from(stockRepository.list()).filter(new Predicate<StockCard>() {
+                        @Override
+                        public boolean apply(StockCard stockCard) {
+                            return stockCard.getProduct().isArchived() == status.isArchived();
+                        }
+                    }).toList());
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    subscriber.onError(e);
+                }
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private Observer<List<StockCard>> getLoadStockCardsSubscriber() {
         return new Observer<List<StockCard>>() {
             @Override
             public void onCompleted() {
@@ -106,31 +132,24 @@ public class StockCardPresenter implements Presenter {
         };
     }
 
-    public Observable<List<StockCard>> getLoadStockCardsObserver() {
-        return Observable.create(new Observable.OnSubscribe<List<StockCard>>() {
-            @Override
-            public void call(Subscriber<? super List<StockCard>> subscriber) {
-                try {
-                    subscriber.onNext(stockRepository.list());
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    subscriber.onError(e);
-                }
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    public void archiveBackStockCard(StockCard stockCard) {
+        stockCard.getProduct().setArchived(false);
+        stockRepository.updateProductOfStockCard(stockCard);
     }
 
-    public void refreshStockCardViewModelsSOH() {
-        for (StockCardViewModel stockCardViewModel : stockCardViewModels) {
-            final StockCard stockCard = stockCardViewModel.getStockCard();
-            stockRepository.refresh(stockCard);
-            stockCardViewModel.setStockOnHand(stockCard.getStockOnHand());
+    public enum ArchiveStatus {
+        Archived(true),
+        Active(false);
+
+        private boolean isArchived;
+
+        ArchiveStatus(boolean isArchived) {
+            this.isArchived = isArchived;
         }
-    }
 
-    @Override
-    public void attachView(BaseView v) {
-        view = (StockCardListView) v;
+        public boolean isArchived() {
+            return isArchived;
+        }
     }
 
     public interface StockCardListView extends BaseView {

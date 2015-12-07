@@ -10,7 +10,7 @@
         android:orientation="vertical"
         android:showDividers="middle" />
 
-    <HorizontalScrollView
+    <org.openlmis.core.view.widget.RnrFormHorizontalScrollView
         android:id="@+id/vg_right_scrollview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -24,5 +24,5 @@
             android:orientation="vertical"
             android:showDividers="middle" />
 
-    </HorizontalScrollView>
+    </org.openlmis.core.view.widget.RnrFormHorizontalScrollView>
 </merge>

@@ -7,6 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.StockRepository;
@@ -29,12 +31,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.Active;
+import static org.openlmis.core.presenter.StockCardPresenter.ArchiveStatus.Archived;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
+
 @RunWith(LMISTestRunner.class)
 public class StockCardPresenterTest {
 
     private StockCardPresenter presenter;
-    private List<StockCardViewModel> stockCardViewModels;
     private StockRepository stockRepository;
     private StockCardPresenter.StockCardListView stockCardListView;
     private ArrayList<StockCard> stockCardList;
@@ -83,32 +87,45 @@ public class StockCardPresenterTest {
     }
 
     @Test
-    public void shouldPostStockCardListWithLoadStockCardsObserver() throws Exception {
-
+    public void shouldRefreshStockCardModelListWithGetLoadStockCardsSubscriber() throws Exception {
         ArrayList<StockCard> cardList = new ArrayList<>();
         cardList.addAll(this.stockCardList);
 
-        when(stockRepository.list()).thenReturn(cardList);
-        TestSubscriber<List<StockCard>> subscriber = new TestSubscriber<>();
-
-        presenter.getLoadStockCardsObserver().subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-        subscriber.assertValue(cardList);
-        verify(stockRepository).list();
-    }
-
-    @Test
-    public void shouldRefreshStockCardModelListWithGetLoadStockCardsSubscriber() throws Exception{
-        ArrayList<StockCard> cardList = new ArrayList<>();
-        cardList.addAll(this.stockCardList);
-
-        presenter.getLoadStockCardsSubscriber().onNext(cardList);
+        presenter.afterLoadHandler.onNext(cardList);
 
         assertThat(presenter.stockCardViewModels.size()).isEqualTo(3);
         verify(stockCardListView).refresh();
 
-        presenter.getLoadStockCardsSubscriber().onCompleted();
+        presenter.afterLoadHandler.onCompleted();
 
         verify(stockCardListView).loaded();
+    }
+
+    @Test
+    public void shouldLoadActiveOrArchivedStockCards() throws Exception {
+        testLoadStockCard(Archived);
+        testLoadStockCard(Active);
+    }
+
+    private void testLoadStockCard(StockCardPresenter.ArchiveStatus status) throws LMISException {
+        //given
+        when(stockRepository.list()).thenReturn(newArrayList(stockCard(true), stockCard(false)));
+        TestSubscriber<List<StockCard>> afterLoadHandler = new TestSubscriber<>();
+        presenter.afterLoadHandler = afterLoadHandler;
+
+        //when
+        presenter.loadStockCards(status);
+        afterLoadHandler.awaitTerminalEvent();
+
+        //then
+        assertThat(afterLoadHandler.getOnNextEvents().get(0).get(0).getProduct().isArchived()).isEqualTo(status.isArchived());
+    }
+
+    private StockCard stockCard(boolean isArchived) {
+        Product product = new Product();
+        product.setArchived(isArchived);
+        StockCard stockCard = new StockCard();
+        stockCard.setProduct(product);
+        return stockCard;
     }
 }

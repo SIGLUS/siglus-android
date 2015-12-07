@@ -22,6 +22,7 @@ import android.app.DialogFragment;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.google.inject.AbstractModule;
@@ -29,6 +30,8 @@ import com.google.inject.AbstractModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
@@ -44,6 +47,7 @@ import org.openlmis.core.view.activity.MMIARequisitionActivity;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARnrForm;
+import org.openlmis.core.view.widget.RnrFormHorizontalScrollView;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
@@ -56,6 +60,7 @@ import roboguice.RoboGuice;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -72,6 +77,9 @@ public class MMIARequisitionFragmentTest {
     private MMIAInfoList mmiaInfoListView;
     private MMIARnrForm rnrFormList;
 
+    protected ViewGroup mockRightViewGroup;
+    private ViewGroup mockRnrItemsHeaderFreeze;
+
     @Before
     public void setUp() throws Exception {
         mmiaFormPresenter = mock(MMIARequisitionPresenter.class);
@@ -82,15 +90,21 @@ public class MMIARequisitionFragmentTest {
             }
         });
 
+        rnrFormList = mock(MMIARnrForm.class);
         mmiaRequisitionFragment = getMMIARequisitionFragmentWithoutIntent();
 
         regimeListView = mock(MMIARegimeList.class);
         mmiaInfoListView = mock(MMIAInfoList.class);
-        rnrFormList = mock(MMIARnrForm.class);
+        mockRnrItemsHeaderFreeze = mock(ViewGroup.class);
 
         mmiaRequisitionFragment.regimeListView = regimeListView;
         mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
         mmiaRequisitionFragment.rnrFormList = rnrFormList;
+        mmiaRequisitionFragment.rnrItemsHeaderFreeze = mockRnrItemsHeaderFreeze;
+
+        when(rnrFormList.getRightHeaderView()).thenReturn(mock(ViewGroup.class));
+        when(rnrFormList.getLeftHeaderView()).thenReturn(mock(ViewGroup.class));
+        when(rnrFormList.getRnrItemsHorizontalScrollView()).thenReturn(mock(RnrFormHorizontalScrollView.class));
 
         EditText patientTotalView = mock(EditText.class);
         when(mmiaInfoListView.getPatientTotalView()).thenReturn(patientTotalView);
@@ -300,5 +314,61 @@ public class MMIARequisitionFragmentTest {
         AlertDialog dialog = (AlertDialog) fragment.getDialog();
 
         assertThat(dialog).isNotNull();
+    }
+
+    @Test
+    public void shouldDisplayFreezeHeaderWhenLocationIsAboveOrAtRnrItemsListWhenScrolling() {
+        when(rnrFormList.getHeight()).thenReturn(2000);
+        int numberOfItemsInRNR = 10;
+        mmiaRequisitionFragment.actionBarHeight = 100;
+
+        mockRightViewGroup = mock(ViewGroup.class);
+        when(rnrFormList.getRightViewGroup()).thenReturn(mockRightViewGroup);
+        final View mockView = mock(View.class);
+        when(mockRightViewGroup.getChildAt(numberOfItemsInRNR - 1)).thenReturn(mockView);
+        when(mockView.getHeight()).thenReturn(100);
+        when(rnrFormList.getRightViewGroup().getChildCount()).thenReturn(numberOfItemsInRNR);
+
+        doAnswer(new Answer() {
+            public Object answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                ((int[]) args[0])[0] = 50;
+                ((int[]) args[0])[1] = -1700;
+                return null;
+            }
+        }).when(rnrFormList).getLocationOnScreen(any(int[].class));
+
+        when(mmiaRequisitionFragment.rnrItemsHeaderFreeze.getHeight()).thenReturn(100);
+
+        mmiaRequisitionFragment.hideOrDisplayRnrItemsHeader();
+        verify(mockRnrItemsHeaderFreeze).setVisibility(View.VISIBLE);
+    }
+
+    @Test
+    public void shouldHideFreezeHeaderWhenLocationIsBelowRnrItemsListWhenScrolling() {
+        when(rnrFormList.getHeight()).thenReturn(2000);
+        int numberOfItemsInRNR = 10;
+        mmiaRequisitionFragment.actionBarHeight = 100;
+
+        mockRightViewGroup = mock(ViewGroup.class);
+        when(rnrFormList.getRightViewGroup()).thenReturn(mockRightViewGroup);
+        final View mockView = mock(View.class);
+        when(mockRightViewGroup.getChildAt(numberOfItemsInRNR - 1)).thenReturn(mockView);
+        when(mockView.getHeight()).thenReturn(100);
+        when(rnrFormList.getRightViewGroup().getChildCount()).thenReturn(numberOfItemsInRNR);
+
+        doAnswer(new Answer() {
+            public Object answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                ((int[]) args[0])[0] = 50;
+                ((int[]) args[0])[1] = -1800;
+                return null;
+            }
+        }).when(rnrFormList).getLocationOnScreen(any(int[].class));
+
+        when(mmiaRequisitionFragment.rnrItemsHeaderFreeze.getHeight()).thenReturn(100);
+
+        mmiaRequisitionFragment.hideOrDisplayRnrItemsHeader();
+        verify(mockRnrItemsHeaderFreeze).setVisibility(View.INVISIBLE);
     }
 }

@@ -35,6 +35,11 @@ public class ProductBuilder {
         return this;
     }
 
+    public ProductBuilder setIsArchived(boolean isArchived) {
+        product.setArchived(isArchived);
+        return this;
+    }
+
     public Product build() {
         return product;
     }
@@ -48,4 +53,8 @@ public class ProductBuilder {
                 .build();
     }
 
+    public ProductBuilder setProductId(long productId) {
+        product.setId(productId);
+        return this;
+    }
 }

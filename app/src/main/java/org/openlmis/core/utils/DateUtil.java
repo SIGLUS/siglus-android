@@ -43,6 +43,7 @@ public final class DateUtil {
     public static final long MILLISECONDS_MINUTE = 60000;
     public static final long MILLISECONDS_HOUR = 3600000;
     public static final long MILLISECONDS_DAY = 86400000;
+    public static final Calendar CALENDAR_NOW = Calendar.getInstance();
 
     private DateUtil() {
 
@@ -81,12 +82,6 @@ public final class DateUtil {
         return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
 
-    public static Date addDayOfMonth(Date date) {
-        Calendar calendar = calendarDate(date);
-        calendar.add(Calendar.DAY_OF_MONTH, 1);
-        return calendar.getTime();
-    }
-
     public static Date addDayOfMonth(Date date, int difference) {
         Calendar calendar = calendarDate(date);
         calendar.add(Calendar.DAY_OF_MONTH, difference);
@@ -100,9 +95,8 @@ public final class DateUtil {
     }
 
     public static Calendar calendarDate(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        return calendar;
+        CALENDAR_NOW.setTime(date);
+        return CALENDAR_NOW;
     }
 
     public static boolean equal(Date date1, Date date2) {

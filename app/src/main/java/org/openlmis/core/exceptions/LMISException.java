@@ -34,6 +34,10 @@ public class LMISException extends Exception {
         super(e);
     }
 
+    public LMISException(Throwable throwable) {
+        super(throwable);
+    }
+
     public void reportToFabric() {
         //this will save exception messages locally
         //it only uploads to fabric server when network is available

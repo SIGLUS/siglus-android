@@ -26,6 +26,7 @@ import android.view.MenuItem;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.StockCardListFragment;
 
 import roboguice.inject.ContentView;
@@ -34,6 +35,7 @@ import roboguice.inject.ContentView;
 public class StockCardListActivity extends SearchBarActivity {
 
     protected static final int MENU_ID_ADD_NEW_DRUG = 100;
+    protected static final int MENU_ID_ARCHIVE_LIST = 200;
     protected StockCardListFragment stockCardFragment;
 
     @Override
@@ -46,16 +48,25 @@ public class StockCardListActivity extends SearchBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_ID_ADD_NEW_DRUG, 100, getString(R.string.action_add_new_drug)).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_archive_drugs_346)) {
+            menu.add(Menu.NONE, MENU_ID_ARCHIVE_LIST, 200, getString(R.string.action_navigate_archive)).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == MENU_ID_ADD_NEW_DRUG) {
-            startActivity(InventoryActivity.getIntentToMe(this, true));
-            return true;
+        switch(item.getItemId()) {
+            case MENU_ID_ADD_NEW_DRUG:
+                startActivity(InventoryActivity.getIntentToMe(this, true));
+                return true;
+            case MENU_ID_ARCHIVE_LIST:
+                startActivityForResult(ArchivedDrugsListActivity.getIntentToMe(this), Constants.REQUEST_CODE_CHANGE);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -76,5 +87,11 @@ public class StockCardListActivity extends SearchBarActivity {
         Intent intent = new Intent(context, StockCardListActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        stockCardFragment.onActivityResult(requestCode, resultCode, data);
     }
 }

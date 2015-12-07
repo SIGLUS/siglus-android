@@ -8,7 +8,6 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 
 import java.text.ParseException;
-import java.util.Date;
 
 public class StockCardBuilder {
 
@@ -63,5 +62,10 @@ public class StockCardBuilder {
                 .setProduct(ProductBuilder.buildAdultProduct())
                 .setStockOnHand(200)
                 .build();
+    }
+
+    public StockCardBuilder setStockCardId(long stockCardId) {
+        stockCard.setId(stockCardId);
+        return this;
     }
 }

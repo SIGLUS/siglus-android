@@ -99,7 +99,6 @@ public class RnrFormAdapterTest {
         rnRForm.setSubmittedTime(DateUtil.parseString("2015-10-14 01:01:11", "yyyy-MM-dd HH:mm:ss"));
 
         JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
-        System.out.println(rnrJson);
         assertThat(rnrJson.getAsJsonObject().get("clientSubmittedTime").toString(), is("\"2015-10-14 01:01:11\""));
     }
 

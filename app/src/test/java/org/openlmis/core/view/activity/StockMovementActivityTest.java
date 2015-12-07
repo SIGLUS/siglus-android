@@ -9,6 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -21,6 +22,7 @@ import org.openlmis.core.utils.Constants;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowApplication;
+import org.robolectric.shadows.ShadowToast;
 
 import roboguice.RoboGuice;
 
@@ -38,6 +40,8 @@ public class StockMovementActivityTest {
 
     @Before
     public void setUp() throws Exception {
+        ((LMISTestApp)RuntimeEnvironment.application).setFeatureToggle(true);
+
         mockedPresenter = mock(StockMovementPresenter.class);
 
         Product product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setStrength("10mg").setType("VIA").build();
@@ -71,6 +75,16 @@ public class StockMovementActivityTest {
         verify(mockedPresenter).setStockCard(100L);
 
         assertThat(stockMovementActivity.getTitle()).isEqualTo("Stock Name");
+    }
+
+    @Test
+    public void shouldArchiveStockMovementWhenArchiveMenuClicked() throws Exception {
+
+        shadowOf(stockMovementActivity).clickMenuItem(R.id.action_archive);
+
+        verify(mockedPresenter).archiveStockCard();
+        assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo("Drug archived");
+        assertThat(stockMovementActivity.isFinishing()).isTrue();
     }
 
     @Test

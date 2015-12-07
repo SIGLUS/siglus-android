@@ -40,6 +40,7 @@ public class LoginPresenter implements Presenter {
     LoginView view;
 
     boolean isLoadingProducts = false;
+    boolean isSyncingStockMovement = false;
     boolean isSyncingRequisitionData = false;
 
     @Inject
@@ -148,6 +149,9 @@ public class LoginPresenter implements Presenter {
 
     private void syncServerData() {
         if (view.hasGetProducts()) {
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273) && !view.isStockDataSynced()){
+                syncStockCard();
+            }
             checkRequisitionData();
         } else {
             checkProductsWithProgram();
@@ -187,7 +191,7 @@ public class LoginPresenter implements Presenter {
                 isLoadingProducts = false;
                 view.setHasGetProducts(true);
                 view.loaded();
-                syncRequisitionData();
+                syncStockCard();
             }
 
             @Override
@@ -201,6 +205,40 @@ public class LoginPresenter implements Presenter {
                 } else {
                     ToastUtil.show(R.string.msg_sync_products_list_failed);
                 }
+                view.loaded();
+            }
+        };
+    }
+
+    private void syncStockCard(){
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)){
+            syncRequisitionData();
+            return;
+        }
+
+        if (!isSyncingStockMovement){
+            isSyncingStockMovement = true;
+            view.loading("Syncing StockMovement data..");
+            syncManager.fetchStockCardsData(getSyncStockCardDataSubscriber());
+        }
+    }
+
+
+    protected SyncSubscriber<Void> getSyncStockCardDataSubscriber() {
+        return new SyncSubscriber<Void>() {
+            @Override
+            public void onCompleted() {
+                isSyncingStockMovement = false;
+                view.setStockCardDataSynced(true);
+                view.loaded();
+                syncRequisitionData();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                isSyncingStockMovement = false;
+                view.setStockCardDataSynced(false);
+                ToastUtil.show(R.string.msg_sync_data_failed);
                 view.loaded();
             }
         };
@@ -265,7 +303,11 @@ public class LoginPresenter implements Presenter {
 
         boolean isRequisitionDataSynced();
 
+        boolean isStockDataSynced();
+
         void setRequisitionDataSynced(boolean isBackDataSynced);
+
+        void setStockCardDataSynced(boolean isStockCardSynced);
 
         void clearErrorAlerts();
     }

@@ -189,6 +189,11 @@ public class StockMovementPresenter implements Presenter {
         return stockCard;
     }
 
+    public void archiveStockCard() {
+        stockCard.getProduct().setArchived(true);
+        stockRepository.updateProductOfStockCard(stockCard);
+    }
+
 
     public interface StockMovementView extends BaseView {
         void showErrorAlert(String msg);

@@ -18,10 +18,7 @@
 
 package org.openlmis.core.view.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
@@ -29,19 +26,20 @@ import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.List;
 
+import lombok.Getter;
+
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> implements FilterableAdapter {
 
-    LayoutInflater inflater;
-    Context context;
+    @Getter
     List<StockCardViewModel> data;
+
+    @Getter
     List<StockCardViewModel> currentList;
     String queryKeyWord;
 
-    public InventoryListAdapter(Context context, List<StockCardViewModel> data) {
-        inflater = LayoutInflater.from(context);
-        this.context = context;
+    public InventoryListAdapter(List<StockCardViewModel> data) {
         this.data = data;
         currentList = this.data;
     }
@@ -50,11 +48,6 @@ public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> e
     public int getItemCount() {
         return currentList.size();
     }
-
-    public List<StockCardViewModel> getData() {
-        return this.data;
-    }
-
 
     @Override
     public void filter(final String keyword) {

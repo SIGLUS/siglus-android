@@ -24,13 +24,13 @@ import com.google.gson.JsonObject;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
+import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.ProductsResponse;
 import org.openlmis.core.network.model.StockCardResponse;
+import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SubmitRequisitionResponse;
 import org.openlmis.core.network.model.SyncBackRequisitionsResponse;
-import org.openlmis.core.network.model.StockMovementEntry;
 
-import java.util.Date;
 import java.util.List;
 
 import retrofit.Callback;
@@ -45,6 +45,9 @@ public interface LMISRestApi {
     @POST("/rest-api/login")
     void authorizeUser(@Body User user, Callback<UserRepository.UserResponse> callback);
 
+    @POST("/rest-api/update-app-info")
+    void updateAppVersion(@Body AppInfoRequest appinfo, Callback<Void> callback);
+
     @GET("/rest-api/programs-with-products")
     ProductsResponse fetchProducts(@Query("facilityCode") String facilityCode);
 
@@ -58,5 +61,5 @@ public interface LMISRestApi {
     JsonObject pushStockMovementData(@Path("facilityId") String facilityId, @Body List<StockMovementEntry> entries);
 
     @GET("/rest-api/facilities/{facilityId}/stockCards")
-    StockCardResponse fetchStockMovementData(@Path("facilityId") String facilityId, @Query("startTime") Date start, @Query("endTime") Date end);
+    StockCardResponse fetchStockMovementData(@Path("facilityId") String facilityId, @Query("startTime") String startDate, @Query("endTime") String endDate);
 }

@@ -34,12 +34,17 @@ public class StockMovementHistoryActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(getIntent().getStringExtra(Constants.PARAM_STOCK_NAME));
+
+        if (getIntent().getBooleanExtra(Constants.PARAM_IS_FROM_ARCHIVE, false) && getSupportActionBar() != null) {
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_white);
+        }
     }
 
-    public static Intent getIntentToMe(Context context, long stockCardId, String stockName) {
+    public static Intent getIntentToMe(Context context, long stockCardId, String stockName, boolean isFromArchive) {
         Intent intent = new Intent(context, StockMovementHistoryActivity.class);
         intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCardId);
         intent.putExtra(Constants.PARAM_STOCK_NAME, stockName);
+        intent.putExtra(Constants.PARAM_IS_FROM_ARCHIVE, isFromArchive);
         return intent;
     }
 }

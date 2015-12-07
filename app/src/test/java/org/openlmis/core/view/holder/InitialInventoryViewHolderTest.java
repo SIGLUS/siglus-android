@@ -10,9 +10,11 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.RobolectricUtils;
+import org.openlmis.core.view.holder.InitialInventoryViewHolder.ViewHistoryListener;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
 import org.robolectric.RuntimeEnvironment;
@@ -22,31 +24,37 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.Lists.newArrayList;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(LMISTestRunner.class)
 public class InitialInventoryViewHolderTest {
 
     private InitialInventoryViewHolder viewHolder;
     private String queryKeyWord = null;
+    private Product product;
+    private ViewHistoryListener mockedListener;
 
     @Before
     public void setUp() {
         View itemView = LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_inventory, null, false);
         viewHolder = new InitialInventoryViewHolder(itemView);
+        product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").build();
+        mockedListener = mock(ViewHistoryListener.class);
     }
 
     @Test
     public void shouldInitialViewHolder() throws ParseException {
         ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
 
-        StockCardViewModel viewModel = new StockCardViewModelBuilder(new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").build())
+        StockCardViewModel viewModel = new StockCardViewModelBuilder(product)
                 .setExpiryDates(newArrayList("28/11/2015"))
                 .setQuantity("10")
                 .setChecked(true)
                 .setType("Embalagem")
                 .build();
 
-        viewHolder.populate(viewModel, queryKeyWord);
+        viewHolder.populate(viewModel, queryKeyWord, mockedListener);
 
         String expectedDate = DateUtil.convertDate("28/11/2015", DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
 
@@ -58,19 +66,20 @@ public class InitialInventoryViewHolderTest {
 
         assertThat(viewHolder.actionDivider.getVisibility()).isEqualTo(View.VISIBLE);
         assertThat(viewHolder.actionPanel.getVisibility()).isEqualTo(View.VISIBLE);
+        assertThat(viewHolder.tvHistoryAction.getVisibility()).isEqualTo(View.GONE);
     }
 
     @Test
     public void shouldShowEditPanelIfCheckboxIsChecked() {
 
-        StockCardViewModel viewModel = new StockCardViewModelBuilder(new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").build())
+        StockCardViewModel viewModel = new StockCardViewModelBuilder(product)
                 .setExpiryDates(newArrayList("28/11/2015"))
                 .setQuantity("10")
                 .setChecked(false)
                 .setType("Embalagem")
                 .build();
 
-        viewHolder.populate(viewModel, queryKeyWord);
+        viewHolder.populate(viewModel, queryKeyWord, mockedListener);
 
         assertThat(viewHolder.actionDivider.getVisibility()).isEqualTo(View.GONE);
         assertThat(viewHolder.actionPanel.getVisibility()).isEqualTo(View.GONE);
@@ -83,7 +92,7 @@ public class InitialInventoryViewHolderTest {
 
     @Test
     public void shouldShowErrorMessageWhenViewModelInValidate() {
-        StockCardViewModel viewModel = new StockCardViewModelBuilder(new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").build())
+        StockCardViewModel viewModel = new StockCardViewModelBuilder(product)
                 .setExpiryDates(newArrayList("28/11/2015"))
                 .setQuantity("abc")
                 .setChecked(true)
@@ -91,7 +100,7 @@ public class InitialInventoryViewHolderTest {
                 .setType("Embalagem")
                 .build();
 
-        viewHolder.populate(viewModel, queryKeyWord);
+        viewHolder.populate(viewModel, queryKeyWord, mockedListener);
 
         TextView errorTextView = RobolectricUtils.getErrorTextView(viewHolder.lyQuantity);
 
@@ -101,14 +110,14 @@ public class InitialInventoryViewHolderTest {
 
     @Test
     public void shouldShowDataPickerDialogWhenClickExpireDate() {
-        StockCardViewModel viewModel = new StockCardViewModelBuilder(new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").build())
+        StockCardViewModel viewModel = new StockCardViewModelBuilder(product)
                 .setExpiryDates(newArrayList("28/11/2015"))
                 .setQuantity("10")
                 .setChecked(false)
                 .setType("Embalagem")
                 .build();
 
-        viewHolder.populate(viewModel, queryKeyWord);
+        viewHolder.populate(viewModel, queryKeyWord, mockedListener);
 
         viewHolder.txExpireDate.performClick();
 
@@ -117,14 +126,14 @@ public class InitialInventoryViewHolderTest {
 
     @Test
     public void shouldClearQuantityAndExpiryDate() {
-        StockCardViewModel viewModel = new StockCardViewModelBuilder(new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").build())
+        StockCardViewModel viewModel = new StockCardViewModelBuilder(product)
                 .setExpiryDates(newArrayList("28/11/2015"))
                 .setQuantity("10")
                 .setChecked(true)
                 .setType("Embalagem")
                 .build();
 
-        viewHolder.populate(viewModel, queryKeyWord);
+        viewHolder.populate(viewModel, queryKeyWord, mockedListener);
 
         viewHolder.itemView.performClick();
 
@@ -134,18 +143,36 @@ public class InitialInventoryViewHolderTest {
 
     @Test
     public void shouldUpdateViewModelQuantityWhenInputFinished() {
-        StockCardViewModel viewModel = new StockCardViewModelBuilder(new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").build())
+        StockCardViewModel viewModel = new StockCardViewModelBuilder(product)
                 .setQuantity("")
                 .setChecked(false)
                 .setType("Embalagem")
                 .build();
 
-        viewHolder.populate(viewModel, queryKeyWord);
+        viewHolder.populate(viewModel, queryKeyWord, mockedListener);
         viewHolder.itemView.performClick();
         viewHolder.txQuantity.setText("120");
 
         assertThat(viewModel.getQuantity()).isEqualTo("120");
     }
 
+    @Test
+    public void shouldShowHistoryViewAndViewItWhenClicked() {
+        ViewHistoryListener mockedListener = mock(ViewHistoryListener.class);
+        product.setArchived(true);
+        StockCardViewModel viewModel = new StockCardViewModelBuilder(product)
+                .setQuantity("10")
+                .setChecked(false)
+                .setType("Embalagem")
+                .build();
+
+        viewHolder.populate(viewModel, queryKeyWord, mockedListener);
+
+        assertThat(viewHolder.tvHistoryAction.getVisibility()).isEqualTo(View.VISIBLE);
+
+        viewHolder.tvHistoryAction.performClick();
+
+        verify(mockedListener).viewHistory(viewModel.getStockCard());
+    }
 
 }

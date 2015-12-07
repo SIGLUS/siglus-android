@@ -38,12 +38,14 @@ public class MMIARnrFormTest  extends LMISRepositoryUnitTest {
         list.add(getRnrFormItem(2L, "product2", "08S32Z", Product.MEDICINE_TYPE_BABY));
         list.add(getRnrFormItem(3L, "product3", "08S39Z", Product.MEDICINE_TYPE_ADULT));
 
+        mmiaRnrForm.setLayoutParams(new ViewGroup.MarginLayoutParams(100,100));
+
         mmiaRnrForm.initView(list);
 
         ViewGroup leftViewGroup = (ViewGroup) mmiaRnrForm.findViewById(R.id.rnr_from_list_product_name);
 
         int indexHead = 0;
-        int index = indexHead + 1;
+        int index = indexHead;
         String text = ((TextView) leftViewGroup.getChildAt(index)).getText().toString();
 
         assertThat(text, is(list.get(2).getProduct().getPrimaryName()));

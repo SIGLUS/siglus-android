@@ -18,8 +18,8 @@
 
 package org.openlmis.core.view.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -38,12 +38,8 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.
 
     private View footView;
 
-    public PhysicalInventoryAdapter(Context context, List<StockCardViewModel> data) {
-        super(context, data);
-    }
-
-    public PhysicalInventoryAdapter(Context context, List<StockCardViewModel> data, View footView) {
-        this(context, data);
+    public PhysicalInventoryAdapter(List<StockCardViewModel> data, View footView) {
+        super(data);
         this.footView = footView;
 
         if (!(footView instanceof EditText)) {
@@ -54,7 +50,7 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
-            View view = inflater.inflate(R.layout.item_physical_inventory, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_physical_inventory, parent, false);
             return new PhysicalInventoryViewHolder(view);
         } else {
             return new VHFooter(footView);

@@ -137,6 +137,16 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     @Override
+    public boolean isStockDataSynced(){
+        return getPreferences().getBoolean(SharedPreferenceMgr.KEY_HAS_GET_STOCK, false);
+    }
+
+    @Override
+    public void setStockCardDataSynced(boolean isStockDataSynced){
+        saveBoolean(SharedPreferenceMgr.KEY_HAS_GET_STOCK, isStockDataSynced);
+    }
+
+    @Override
     public boolean isRequisitionDataSynced() {
         return getPreferences().getBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, true);
     }

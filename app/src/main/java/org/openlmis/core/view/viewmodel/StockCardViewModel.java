@@ -73,19 +73,13 @@ public class StockCardViewModel {
     protected Product product;
 
     public StockCardViewModel(StockCard stockCard) {
+        this(stockCard.getProduct());
 
         this.stockCard = stockCard;
         this.stockCardId = stockCard.getId();
         this.stockOnHand = stockCard.getStockOnHand();
-        this.checked = true;
-
 
         initExpiryDates(stockCard.getExpireDates());
-
-        product = stockCard.getProduct();
-        setProductAttributes(product);
-
-        formatProductDisplay(stockCard.getProduct());
     }
 
     public void initExpiryDates(String expireDates) {

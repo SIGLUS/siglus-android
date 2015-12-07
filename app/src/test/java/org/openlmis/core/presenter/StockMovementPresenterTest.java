@@ -76,6 +76,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
 
         stockMovementPresenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockMovementPresenter.class);
         stockMovementPresenter.attachView(view);
+        stockMovementPresenter.stockCard = StockCardBuilder.buildStockCard();
 
         RxAndroidPlugins.getInstance().reset();
         RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
@@ -144,8 +145,6 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
     public void shouldLoadStockMovementViewModelsObserver() throws Exception {
         when(stockRepositoryMock.listLastFive(anyInt())).thenReturn(new ArrayList<StockMovementItem>());
 
-        stockMovementPresenter.stockCard = StockCardBuilder.buildStockCard();
-
         TestSubscriber<List<StockMovementViewModel>> subscriber = new TestSubscriber<>();
         stockMovementPresenter.loadStockMovementViewModelsObserver().subscribe(subscriber);
 
@@ -164,6 +163,20 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         assertThat(stockMovementPresenter.stockMovementModelList.size()).isEqualTo(3);
         verify(view).refreshStockMovement();
         verify(view).loaded();
+    }
+
+    @Test
+    public void shouldArchiveStockCard() throws Exception {
+        //given
+        StockCard stockCard = stockMovementPresenter.stockCard;
+        stockCard.getProduct().setArchived(false);
+
+        //when
+        stockMovementPresenter.archiveStockCard();
+
+        //then
+        assertThat(stockCard.getProduct().isArchived()).isTrue();
+        verify(stockRepositoryMock).updateProductOfStockCard(stockCard);
     }
 
     public class MyTestModule extends AbstractModule {

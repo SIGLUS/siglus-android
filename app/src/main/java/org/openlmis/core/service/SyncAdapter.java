@@ -57,7 +57,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
         User user = UserInfoMgr.getInstance().getUser();
-        if(user == null){
+        if (user == null) {
             Log.d("SyncAdapter", "No user login, skip sync....");
             return;
         }
@@ -66,16 +66,20 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         boolean rnRSynced = syncManager.syncRnr();
 
         boolean stockCardSynced = true;
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_stock_card_279)){
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_stock_card_279)) {
             stockCardSynced = syncManager.syncStockCards();
         }
 
         if (rnRSynced && stockCardSynced) {
             recordLastSyncedTime();
         }
+
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_update_version)) {
+            syncManager.syncAppVersion();
+        }
     }
 
-    private void recordLastSyncedTime(){
+    private void recordLastSyncedTime() {
         sharedPreferenceMgr.getPreference().edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME, new Date().getTime()).apply();
     }
 

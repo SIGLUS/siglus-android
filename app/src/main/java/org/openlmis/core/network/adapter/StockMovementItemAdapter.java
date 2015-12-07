@@ -14,6 +14,7 @@ import org.openlmis.core.model.StockMovementItem;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.Map;
 
 public class StockMovementItemAdapter implements JsonDeserializer<StockMovementItem> {
 
@@ -29,7 +30,7 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
     public StockMovementItem deserialize(JsonElement json, Type typeOfT,
                                          JsonDeserializationContext context) throws JsonParseException {
 
-        StockMovementItem stockMovementItem = gson.fromJson(json, StockMovementItem.class);
+        StockMovementItem stockMovementItem = gson.fromJson(json, StockMovementItemResponse.class).convertToStockMovementItem();
 
         String reason = json.getAsJsonObject().get("reason").getAsString();
         try {
@@ -47,5 +48,17 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
         stockMovementItem.setUpdatedAt(movementDate);
 
         return stockMovementItem;
+    }
+
+    class StockMovementItemResponse extends StockMovementItem{
+        Map<String, String> extensions;
+        public StockMovementItem convertToStockMovementItem(){
+            StockMovementItem movementItem = this;
+            if (extensions!=null) {
+                this.setExpireDates(extensions.get("expirationdates"));
+                this.setSignature(extensions.get("signature"));
+            }
+            return movementItem;
+        }
     }
 }

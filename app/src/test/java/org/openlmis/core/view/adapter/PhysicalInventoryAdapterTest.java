@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.adapter;
 
+import android.widget.EditText;
+
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +45,7 @@ public class PhysicalInventoryAdapterTest {
 
     @Before
     public void setup() {
-        adapter = new PhysicalInventoryAdapter(RuntimeEnvironment.application, new ArrayList<StockCardViewModel>());
+        adapter = new PhysicalInventoryAdapter(new ArrayList<StockCardViewModel>(), new EditText(RuntimeEnvironment.application));
 
         product = new Product();
         product.setPrimaryName("Test Product");
@@ -59,12 +61,11 @@ public class PhysicalInventoryAdapterTest {
         List<StockCardViewModel> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             StockCardViewModel model = new StockCardViewModel(stockCard);
+            model.setChecked(true);
             list.add(model);
-
-            if (i == 5) {
-                continue;
+            if (i != 5) {
+                model.setQuantity(i + "");
             }
-            model.setQuantity(i + "");
         }
 
         adapter.refreshList(list);

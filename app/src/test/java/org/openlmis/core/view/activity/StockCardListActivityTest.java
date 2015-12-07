@@ -5,6 +5,7 @@ import android.content.Intent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.utils.Constants;
 import org.robolectric.Robolectric;
@@ -21,6 +22,7 @@ public class StockCardListActivityTest {
 
     @Before
     public void setUp() {
+        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
         stockCardListActivity = Robolectric.buildActivity(StockCardListActivity.class).create().get();
     }
 
@@ -37,6 +39,15 @@ public class StockCardListActivityTest {
 
         assertThat(nextIntent.getComponent().getClassName()).isEqualTo(InventoryActivity.class.getName());
         assertThat(nextIntent.getBooleanExtra(Constants.PARAM_IS_ADD_NEW_DRUG, false)).isTrue();
+    }
+
+    @Test
+    public void shouldNavigateToStockCardArchiveListWhenMenuClicked() {
+        shadowOf(stockCardListActivity).clickMenuItem(StockCardListActivity.MENU_ID_ARCHIVE_LIST);
+
+        Intent nextIntent = ShadowApplication.getInstance().getNextStartedActivity();
+
+        assertThat(nextIntent.getComponent().getClassName()).isEqualTo(ArchivedDrugsListActivity.class.getName());
     }
 
     @Test

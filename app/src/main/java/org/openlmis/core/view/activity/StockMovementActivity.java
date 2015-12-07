@@ -194,7 +194,9 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean isPrepared = super.onPrepareOptionsMenu(menu);
-        menu.findItem(R.id.action_archive).setVisible(isStockCardArchivable);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_archive_drugs_346)) {
+            menu.findItem(R.id.action_archive).setVisible(isStockCardArchivable);
+        }
         return isPrepared;
     }
 
@@ -210,7 +212,12 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_history:
-                startActivity(StockMovementHistoryActivity.getIntentToMe(this, stockId, stockName));
+                startActivity(StockMovementHistoryActivity.getIntentToMe(this, stockId, stockName, false));
+                return true;
+            case R.id.action_archive:
+                presenter.archiveStockCard();
+                ToastUtil.show(getString(R.string.msg_drug_archived));
+                onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

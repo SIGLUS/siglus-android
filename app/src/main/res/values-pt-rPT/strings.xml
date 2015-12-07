@@ -5,7 +5,7 @@
     <string name="title_login">Entrar</string>
     <string name="title_init_inventory">Inventário inicial</string>
     <string name="title_physical_inventory">Inventario</string>
-    <string name="title_stock_cards">Fichas de Stock</string>
+    <string name="title_stock_cards">Visão geral de stock</string>
     <string name="title_mmia_spread">MMIA</string>
     <string name="title_requisition">Elaborar Requisição/Balancete para Via Clássica</string>
 
@@ -17,6 +17,8 @@
     <string name="msg_invalid_user">Usuário ou Senha incorrecto.</string>
     <string name="msg_user_not_facility">Não existe unidade sanitária para este usuário. Por favor contacte seu administrador.</string>
     <string name="init_product_error">Erro nos dados iniciais. Tente de novo.</string>
+    <string name="msg_fetching_products">Descarregando lista de produtos…</string>
+    <string name="msg_sync_products_list_failed">Falha no descarregamento de productos do servidor</string>
 
 
     <!-- Init Inventory -->
@@ -27,15 +29,18 @@
     <string name="msg_inventory_check_failed">Quantidade não pode estar em branco</string>
     <string name="msg_invalid_date">Não pode escolher data no passado</string>
     <string name="btn_done">Feito</string>
+    <string name="msg_save_before_exit">Por favor, grave o inventário inicial antes de sair da aplicação</string>
 
     <!-- Home Page -->
-    <string name="label_stock_cards">Ficha de Stock</string>
+    <string name="label_stock_cards">Visão Geral da Ficha de Stock</string>
     <string name="label_mmia">Elaborar MMIA</string>
     <string name="label_sync">Sincronizar dados</string>
     <string name="action_add_new_drug">Adicionar novo producto</string>
     <string name="label_last_synced_mins_ago">Última sincronização há %s minutos</string>
     <string name="label_last_synced_hours_ago">Última sincronização há %s horas</string>
     <string name="label_last_synced_days_ago">Última sincronização há %s dias</string>
+    <string name="msg_back_twice_to_exit">Pressione o botão "voltar" duas vezes para sair</string>
+    <string name="action_sign_out">Sair</string>
 
     <!--MMIA-->
     <string name="label_mmia_title">MMIA - %1$s a %2$s</string>

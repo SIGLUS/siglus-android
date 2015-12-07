@@ -52,6 +52,11 @@
             android:windowSoftInputMode="stateHidden" />
 
         <activity
+            android:name=".view.activity.ArchivedDrugsListActivity"
+            android:label="@string/title_archived_drugs"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
             android:name=".view.activity.VIARequisitionActivity"
             android:label="@string/title_requisition"
             android:windowSoftInputMode="adjustPan|stateHidden" />

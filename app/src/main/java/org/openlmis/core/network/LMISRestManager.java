@@ -33,10 +33,12 @@ import org.openlmis.core.exceptions.UnauthorizedException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
 import org.openlmis.core.network.adapter.ProductsAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapterForFeatureToggle;
+import org.openlmis.core.network.adapter.StockCardAdapter;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -165,6 +167,7 @@ public class LMISRestManager {
         return new GsonConverter(new GsonBuilder()
                 .registerTypeAdapter(RnRForm.class, getTypeAdapter())
                 .registerTypeAdapter(Product.class, new ProductsAdapter())
+                .registerTypeAdapter(StockCard.class, new StockCardAdapter())
                 .create());
     }
 

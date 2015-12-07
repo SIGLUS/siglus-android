@@ -83,3 +83,31 @@ Then(/^I see "(.*?)" in signature field$/) do |text|
      		fail(msg="not found #{text} in signature field")
     end
 end
+
+Then(/^I make all movements for "(.*?)"$/) do |drugFNM|
+    steps %Q{
+      And I make a movement "#{drugFNM}" "Entries" "District( DDM)" "Entries" "1"
+      And I make a movement "#{drugFNM}" "Entries" "Province ( DPM)" "Entries" "1"
+      And I make a movement "#{drugFNM}" "Negative Adjustments" "Drugs in quarantine have expired, returned to Supplier" "Negative Adjustments" "1"
+      And I make a movement "#{drugFNM}" "Negative Adjustments" "Damaged on arrival" "Negative Adjustments" "1"
+      And I make a movement "#{drugFNM}" "Negative Adjustments" "Loans made from a health facility deposit" "Negative Adjustments" "1"
+      And I make a movement "#{drugFNM}" "Negative Adjustments" "Inventory correction in case of over stock on Stock card (Stock on hand is less than stock in stock card)" "Negative Adjustments" "1"
+      And I make a movement "#{drugFNM}" "Negative Adjustments" "Product defective, moved to quarantine" "Negative Adjustments" "1"
+      And I make a movement "#{drugFNM}" "Positive Adjustments" "Returns from Customers(HF and dependent wards)" "Positive Adjustments" "1"
+      And I make a movement "#{drugFNM}" "Positive Adjustments" "Returns of expired drugs (HF and dependent wards)" "Positive Adjustments" "1"
+      And I make a movement "#{drugFNM}" "Positive Adjustments" "Donations to Deposit" "Positive Adjustments" "1"
+      And I make a movement "#{drugFNM}" "Positive Adjustments" "Loans received at the health facility deposit" "Positive Adjustments" "1"
+      And I make a movement "#{drugFNM}" "Positive Adjustments" "Inventory correction in case of under stock on Stock card (Stock on hand is more than stock in stock card)" "Positive Adjustments" "1"
+      And I make a movement "#{drugFNM}" "Positive Adjustments" "Returns from Quarantine, in the case of quarantined product being fit for use" "Positive Adjustments" "1"
+      And I make a movement "#{drugFNM}" "Issues" "Public pharmacy" "issued" "1"
+      And I make a movement "#{drugFNM}" "Issues" "Maternity" "issued" "1"
+      And I make a movement "#{drugFNM}" "Issues" "General Ward" "issued" "1"
+      And I make a movement "#{drugFNM}" "Issues" "Accident & Emergency" "issued" "1"
+      And I make a movement "#{drugFNM}" "Issues" "Mobile unit" "issued" "1"
+      And I make a movement "#{drugFNM}" "Issues" "Laboratory" "issued" "1"
+      And I make a movement "#{drugFNM}" "Issues" "UATS" "issued" "1"
+      And I make a movement "#{drugFNM}" "Issues" "PNCTL" "issued" "1"
+      And I make a movement "#{drugFNM}" "Issues" "PAV" "issued" "1"
+      And I make a movement "#{drugFNM}" "Issues" "Dental ward" "issued" "1"
+    }
+end

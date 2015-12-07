@@ -35,6 +35,7 @@ import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 import java.util.ArrayList;
@@ -83,7 +84,12 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         if (requisitionFormItemViewModels.size() > 0) {
             return requisitionFormItemViewModels;
         }
-        return from(form.getRnrFormItemList()).transform(new Function<RnrFormItem, RequisitionFormItemViewModel>() {
+        return from(form.getRnrFormItemList()).filter(new Predicate<RnrFormItem>() {
+            @Override
+            public boolean apply(RnrFormItem rnrFormItem) {
+                return !rnrFormItem.getProduct().isArchived();
+            }
+        }).transform(new Function<RnrFormItem, RequisitionFormItemViewModel>() {
             @Override
             public RequisitionFormItemViewModel apply(RnrFormItem item) {
                 return new RequisitionFormItemViewModel(item);

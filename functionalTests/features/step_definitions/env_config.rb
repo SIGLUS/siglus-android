@@ -4,7 +4,7 @@ module EnvConfig
 
     def self.getConfig()
 
-        dev_env=true
+        dev_env=false
 
         if dev_env
             {
@@ -17,10 +17,10 @@ module EnvConfig
         else
             {
                 username:"test_user",
-                password:"testuser",
-                mmiaSignature:false,
-                stockMovementSignature:false,
-                viaSignature:false,
+                password:"testuser123",
+                mmiaSignature:true,
+                stockMovementSignature:true,
+                viaSignature:true,
             }
         end
     end

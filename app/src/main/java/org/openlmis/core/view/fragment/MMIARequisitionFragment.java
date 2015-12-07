@@ -25,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
@@ -41,11 +42,13 @@ import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.utils.ViewUtil;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARnrForm;
+import org.openlmis.core.view.widget.RnrFormHorizontalScrollView;
 import org.openlmis.core.view.widget.SignatureDialog;
 
 import java.util.ArrayList;
@@ -73,7 +76,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     private TextView etComment;
 
     @InjectView(R.id.scrollview)
-    private ScrollView scrollView;
+    protected ScrollView scrollView;
 
     @InjectView(R.id.btn_save)
     protected View btnSave;
@@ -83,6 +86,15 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
 
     @InjectView(R.id.action_panel)
     protected View bottomView;
+
+    @InjectView(R.id.mmia_rnr_items_header_freeze)
+    protected ViewGroup rnrItemsHeaderFreeze;
+
+    @InjectView(R.id.mmia_rnr_items_header_freeze_left)
+    protected ViewGroup rnrItemsHeaderFreezeLeft;
+
+    @InjectView(R.id.mmia_rnr_items_header_freeze_right)
+    protected ViewGroup rnrItemsHeaderFreezeRight;
 
     @Inject
     MMIARequisitionPresenter presenter;
@@ -97,6 +109,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     private static final String TAG_MISMATCH = "mismatch";
     private static final String TAG_SHOW_MESSAGE_NOTIFY_DIALOG = "showMessageNotifyDialog";
 
+    protected int actionBarHeight;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -120,7 +133,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         initUI();
 
         if (isSavedInstanceState) {
@@ -132,13 +144,24 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     }
 
     protected void initUI() {
-        if (!isHistoryForm) {
-            scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-            bottomView.setVisibility(View.VISIBLE);
-        } else {
+        if (isHistoryForm) {
             scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             bottomView.setVisibility(View.GONE);
+        } else {
+            scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+            bottomView.setVisibility(View.VISIBLE);
         }
+        disableFreezeHeaderScroll();
+        initActionBarHeight();
+    }
+
+    private void disableFreezeHeaderScroll() {
+        rnrItemsHeaderFreezeRight.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
     }
 
     @Override
@@ -147,6 +170,8 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         rnrFormList.initView(new ArrayList<>(form.getRnrFormItemListWrapper()));
         regimeListView.initView(form.getRegimenItemListWrapper(), tvRegimeTotal);
         mmiaInfoListView.initView(form.getBaseInfoItemListWrapper());
+
+        InflateFreezeHeaderView();
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.add_header_info_reduce_header_size_348)) {
             getActivity().setTitle(getString(R.string.label_mmia_title,
@@ -158,6 +183,21 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         highlightTotalDifference();
         etComment.setText(form.getComments());
         bindListeners();
+    }
+
+    private void InflateFreezeHeaderView() {
+        final View leftHeaderView = rnrFormList.getLeftHeaderView();
+        rnrItemsHeaderFreezeLeft.addView(leftHeaderView);
+
+        final ViewGroup rightHeaderView = rnrFormList.getRightHeaderView();
+        rnrItemsHeaderFreezeRight.addView(rightHeaderView);
+
+        rnrFormList.post(new Runnable() {
+            @Override
+            public void run() {
+                ViewUtil.syncViewHeight(leftHeaderView, rightHeaderView);
+            }
+        });
     }
 
     @Override
@@ -200,6 +240,59 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
                 return false;
             }
         });
+
+        bindFreezeHeaderListener();
+    }
+
+    private void bindFreezeHeaderListener() {
+        ViewTreeObserver verticalViewTreeObserver = scrollView.getViewTreeObserver();
+        verticalViewTreeObserver.addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                hideOrDisplayRnrItemsHeader();
+            }
+        });
+
+        rnrFormList.getRnrItemsHorizontalScrollView().setOnScrollChangedListener(new RnrFormHorizontalScrollView.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged(int l, int t, int oldl, int oldt) {
+                rnrItemsHeaderFreezeRight.scrollBy(l - oldl, 0);
+            }
+        });
+    }
+
+    private void initActionBarHeight() {
+        containerView.post(new Runnable() {
+            @Override
+            public void run() {
+                int[] initialTopLocationOfRnrForm = new int[2];
+                containerView.getLocationOnScreen(initialTopLocationOfRnrForm);
+                actionBarHeight = initialTopLocationOfRnrForm[1];
+            }
+        });
+    }
+
+
+    protected void hideOrDisplayRnrItemsHeader() {
+        if (isNeedHideFreezeHeader()) {
+            rnrItemsHeaderFreeze.setVisibility(View.INVISIBLE);
+        } else {
+            rnrItemsHeaderFreeze.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private boolean isNeedHideFreezeHeader() {
+        int[] rnrItemsViewLocation = new int[2];
+        rnrFormList.getLocationOnScreen(rnrItemsViewLocation);
+        final int rnrFormY = rnrItemsViewLocation[1];
+
+        int lastItemHeight = rnrFormList.getRightViewGroup().getChildAt(rnrFormList.getRightViewGroup().getChildCount() - 1).getHeight();
+
+        final int offsetY = -rnrFormY + rnrItemsHeaderFreeze.getHeight() + actionBarHeight;
+
+        final int hiddenThresholdY = rnrFormList.getHeight() - lastItemHeight;
+
+        return offsetY > hiddenThresholdY;
     }
 
     private void clearEditErrorFocus() {

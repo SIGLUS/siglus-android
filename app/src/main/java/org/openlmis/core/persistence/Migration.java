@@ -41,8 +41,6 @@ public abstract class Migration {
 
     public abstract void up();
 
-    public abstract void down();
-
     public void setSQLiteDatabase(SQLiteDatabase db) {
         this.db = db;
     }
