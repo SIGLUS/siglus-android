@@ -141,7 +141,10 @@ public class SyncManagerTest {
 
         doThrow(new RuntimeException("Sync Failed")).when(lmisRestApi).pushStockMovementData(anyString(), anyList());
 
-        syncManager.syncStockCards();
+        try {
+            syncManager.syncStockCards();
+        } catch (RuntimeException e) {
+        }
         stockRepository.refresh(stockCard);
         List<StockMovementItem> items = newArrayList(stockCard.getForeignStockMovementItems());
 
@@ -180,7 +183,7 @@ public class SyncManagerTest {
     public void shouldSetTypeAndCustomPropsAfterNewStockMovementEntry() throws LMISException, ParseException {
         StockCard stockCard = createTestStockCardData();
         StockMovementItem stockMovementItem = stockCard.getForeignStockMovementItems().iterator().next();
-        StockMovementEntry stockMovementEntry = new StockMovementEntry(stockMovementItem,null);
+        StockMovementEntry stockMovementEntry = new StockMovementEntry(stockMovementItem, null);
 
         assertEquals(stockMovementEntry.getType(), "ADJUSTMENT");
         assertEquals(stockMovementEntry.getCustomProps().get("expirationDates"), stockMovementItem.getStockCard().getExpireDates());
@@ -213,7 +216,7 @@ public class SyncManagerTest {
     public void shouldNotSyncAppVersion() throws Exception {
         when(sharedPreferenceMgr.hasSyncedVersion()).thenReturn(true);
         syncManager.syncAppVersion();
-        verify(lmisRestApi,never()).updateAppVersion(any(AppInfoRequest.class), any(Callback.class));
+        verify(lmisRestApi, never()).updateAppVersion(any(AppInfoRequest.class), any(Callback.class));
     }
 
     public class MyTestModule extends AbstractModule {
