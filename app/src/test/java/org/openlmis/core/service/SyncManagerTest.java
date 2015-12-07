@@ -58,6 +58,11 @@ import java.util.List;
 
 import retrofit.Callback;
 import roboguice.RoboGuice;
+import rx.Scheduler;
+import rx.android.plugins.RxAndroidPlugins;
+import rx.android.plugins.RxAndroidSchedulersHook;
+import rx.observers.TestSubscriber;
+import rx.schedulers.Schedulers;
 
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -101,6 +106,14 @@ public class SyncManagerTest {
         user.setFacilityCode("FC1");
         user.setFacilityId("123");
         UserInfoMgr.getInstance().setUser(user);
+
+        RxAndroidPlugins.getInstance().reset();
+        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
+            @Override
+            public Scheduler getMainThreadScheduler() {
+                return Schedulers.immediate();
+            }
+        });
     }
 
     @Test
@@ -180,6 +193,16 @@ public class SyncManagerTest {
         stockRepository.addStockMovementAndUpdateStockCard(stockCard, item);
         stockRepository.refresh(stockCard);
         return stockCard;
+    }
+
+    @Test
+    public void shouldTestObservable() {
+        TestSubscriber testSubscriber = new TestSubscriber();
+      syncManager.fetchStockCardsData(testSubscriber,true);
+
+        testSubscriber.awaitTerminalEvent();
+
+        //xxxx assert
     }
 
     @Test

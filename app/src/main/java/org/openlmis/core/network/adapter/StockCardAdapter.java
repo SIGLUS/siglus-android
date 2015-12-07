@@ -60,7 +60,8 @@ public class StockCardAdapter implements JsonDeserializer<StockCard> {
             e.reportToFabric();
         }
 
-        setupMovementStockOnHand(stockCard, wrapper);
+
+        setupMovementWithCard(stockCard, wrapper);
         setupStockCardExpireDates(stockCard, wrapper);
 
         return stockCard;
@@ -73,14 +74,10 @@ public class StockCardAdapter implements JsonDeserializer<StockCard> {
         }
     }
 
-    public void setupMovementStockOnHand(StockCard stockCard, List<StockMovementItem> wrapper) {
-        long stockOnHand = stockCard.getStockOnHand();
+    public void setupMovementWithCard(StockCard stockCard, List<StockMovementItem> wrapper) {
         for (int i = wrapper.size() - 1; i >= 0; i--) {
             StockMovementItem item = wrapper.get(i);
-
             item.setStockCard(stockCard);
-            item.setStockOnHand(stockOnHand);
-            stockOnHand = item.calculateStockMovementStockOnHand(stockOnHand);
         }
     }
 

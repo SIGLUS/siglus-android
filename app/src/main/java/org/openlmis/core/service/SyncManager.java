@@ -56,7 +56,6 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -363,14 +362,14 @@ public class SyncManager {
                     synchronized (STOCK_MONTH_SYNC_LOCK) {
                         if (isSyncMonth && !sharedPreferenceMgr.getPreference().getBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, false)) {
                             fetchLatestOneMonthMovements();
-                            sharedPreferenceMgr.getPreference().edit().putBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, true);
+                            sharedPreferenceMgr.getPreference().edit().putBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, true).apply();
                         }
                     }
 
                     synchronized (STOCK_YEAR_SYNC_LOCK) {
                         if (!isSyncMonth && !sharedPreferenceMgr.getPreference().getBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_YEAR_STOCKMOVEMENTS, false)) {
                             fetchLatestYearStockMovements();
-                            sharedPreferenceMgr.getPreference().edit().putBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_YEAR_STOCKMOVEMENTS, true);
+                            sharedPreferenceMgr.getPreference().edit().putBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_YEAR_STOCKMOVEMENTS, true).apply();
                         }
                     }
                 }catch (Throwable throwable) {
@@ -404,8 +403,6 @@ public class SyncManager {
         Date endDate = DateUtil.addDayOfMonth(now, 1);
         String endDateStr = DateUtil.formatDate(endDate, "yyyy-MM-dd");
         fetchAndSaveStockCards(startDateStr, endDateStr);
-
-        sharedPreferenceMgr.getPreference().edit().putString(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_YEAR_STOCKMOVEMENTS, startDateStr);
     }
 
     public void fetchAndSaveStockCards(String startDate, String endDate) throws Throwable {
@@ -415,10 +412,16 @@ public class SyncManager {
         StockCardResponse stockCardResponse = lmisRestApi.fetchStockMovementData(facilityId, startDate, endDate);
 
         for (StockCard stockCard : stockCardResponse.getStockCards()) {
+            StockMovementItem oldestItem = stockRepository.getOldestMovementItemById(stockCard.getId());
+            Long stockOnHand = stockCard.getStockOnHand();
+            if ( oldestItem != null && sharedPreferenceMgr.getPreference().getBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, false) ){
+                stockOnHand = oldestItem.calculateStockMovementStockOnHand(oldestItem.getStockOnHand());
+            }
+            stockCard.setUpStockOnHandForMovements(stockOnHand);
+
             if (stockCard.getId() <= 0) {
                 stockRepository.save(stockCard);
             }
-
 
             for (StockMovementItem item : stockCard.getStockMovementItemsWrapper()) {
                 item.setSynced(true);
