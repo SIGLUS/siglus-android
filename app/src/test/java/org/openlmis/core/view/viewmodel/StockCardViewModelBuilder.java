@@ -1,6 +1,7 @@
 package org.openlmis.core.view.viewmodel;
 
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.StockCard;
 
 import java.util.List;
 
@@ -10,6 +11,10 @@ public class StockCardViewModelBuilder {
 
     public StockCardViewModelBuilder(Product product) {
         viewModel = new StockCardViewModel(product);
+    }
+
+    public StockCardViewModelBuilder(StockCard archivedStockCard) {
+        viewModel = new StockCardViewModel(archivedStockCard);
     }
 
     public StockCardViewModelBuilder setSOH(Long soh){

@@ -134,7 +134,7 @@ public class StockCardPresenter implements Presenter {
 
     public void archiveBackStockCard(StockCard stockCard) {
         stockCard.getProduct().setArchived(false);
-        stockRepository.update(stockCard);
+        stockRepository.updateProductOfStockCard(stockCard);
     }
 
     public enum ArchiveStatus {

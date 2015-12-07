@@ -58,6 +58,7 @@ public class StockRepository {
     GenericDao<StockCard> genericDao;
     GenericDao<StockMovementItem> stockItemGenericDao;
     GenericDao<DraftInventory> draftInventoryGenericDao;
+    GenericDao<Product> productGenericDao;
 
 
     @Inject
@@ -68,6 +69,7 @@ public class StockRepository {
         genericDao = new GenericDao<>(StockCard.class, context);
         stockItemGenericDao = new GenericDao<>(StockMovementItem.class, context);
         draftInventoryGenericDao = new GenericDao<>(DraftInventory.class, context);
+        productGenericDao = new GenericDao<>(Product.class, context);
     }
 
     public void batchSave(final List<StockCard> stockCards) {
@@ -97,13 +99,6 @@ public class StockRepository {
     public void update(final StockCard stockCard) {
         try {
             genericDao.update(stockCard);
-            dbUtil.withDao(Product.class, new DbUtil.Operation<Product, Void>() {
-                @Override
-                public Void operate(Dao<Product, String> dao) throws SQLException {
-                    dao.update(stockCard.getProduct());
-                    return null;
-                }
-            });
         } catch (LMISException e) {
             e.reportToFabric();
         }
@@ -133,15 +128,37 @@ public class StockRepository {
         stockItemGenericDao.create(stockMovementItem);
     }
 
-    public void initStockCard(final StockCard stockCard, final boolean isStockCardSaved) throws LMISException {
+    public void updateProductOfStockCard(final StockCard stockCard) {
+        try {
+            productGenericDao.update(stockCard.getProduct());
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+    }
+
+    public void initStockCard(final StockCard stockCard) throws LMISException {
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-                    if (!isStockCardSaved) {
-                        save(stockCard);
-                    }
+                    save(stockCard);
                     addStockMovementAndUpdateStockCard(stockCard, initStockMovementItem(stockCard));
+                    return null;
+                }
+            });
+        } catch (SQLException e) {
+            throw new LMISException(e);
+        }
+    }
+
+    public void reInventoryArchivedStockCard(final StockCard stockCard) throws LMISException {
+        try {
+            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+                    update(stockCard);
+                    updateProductOfStockCard(stockCard);
+                    saveStockItem(initStockMovementItem(stockCard));
                     return null;
                 }
             });

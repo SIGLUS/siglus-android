@@ -40,6 +40,7 @@ import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -54,11 +55,12 @@ import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.observers.TestSubscriber;
 import rx.schedulers.Schedulers;
 
+import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -168,20 +170,37 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldInitStockCardAndCreateAInitInventoryMovementItem() throws LMISException {
-        StockCardViewModel model = new StockCardViewModel(product);
-        model.setChecked(true);
-        model.setQuantity("100");
-        StockCardViewModel model2 = new StockCardViewModel(product);
-        model2.setChecked(false);
-        model2.setQuantity("200");
+        StockCardViewModel model = new StockCardViewModelBuilder(product).setChecked(true)
+                .setQuantity("100").build();
+        StockCardViewModel model2 = new StockCardViewModelBuilder(product).setChecked(false)
+                .setQuantity("200").build();
 
-        List<StockCardViewModel> stockCardViewModelList = new ArrayList<>();
-        stockCardViewModelList.add(model);
-        stockCardViewModelList.add(model2);
+        inventoryPresenter.initStockCards(newArrayList(model, model2));
+
+        verify(stockRepositoryMock, times(1)).initStockCard(any(StockCard.class));
+    }
+
+    @Test
+    public void shouldReInventoryArchivedStockCard() throws LMISException {
+        StockCardViewModel uncheckedModel = new StockCardViewModelBuilder(product)
+                .setChecked(false)
+                .setQuantity("100")
+                .build();
+
+        Product archivedProduct = new ProductBuilder().setPrimaryName("Archived product").setCode("BBC")
+                .setIsArchived(true).build();
+        StockCard archivedStockCard = new StockCardBuilder().setStockOnHand(0).setProduct(archivedProduct).build();
+        StockCardViewModel archivedViewModel = new StockCardViewModelBuilder(archivedStockCard)
+                .setChecked(true)
+                .setQuantity("200")
+                .build();
+
+        List<StockCardViewModel> stockCardViewModelList = newArrayList(uncheckedModel, archivedViewModel);
 
         inventoryPresenter.initStockCards(stockCardViewModelList);
 
-        verify(stockRepositoryMock, times(1)).initStockCard(any(StockCard.class), eq(false));
+        assertFalse(archivedStockCard.getProduct().isArchived());
+        verify(stockRepositoryMock, times(1)).reInventoryArchivedStockCard(archivedStockCard);
     }
 
     @Test

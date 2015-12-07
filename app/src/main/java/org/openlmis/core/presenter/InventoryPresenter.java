@@ -164,23 +164,19 @@ public class InventoryPresenter implements Presenter {
 
     private StockCard initStockCard(StockCardViewModel model) {
         try {
-            boolean isStockCardSaved;
-            StockCard stockCard;
+            boolean isArchivedStockCard = model.getStockCard() != null;
 
-            if (model.getStockCard() == null) {
-                isStockCardSaved = false;
-                stockCard = new StockCard();
-                stockCard.setProduct(productRepository.getById(model.getProductId()));
-            } else {
-                isStockCardSaved = true;
-                stockCard = model.getStockCard();
-                stockCard.getProduct().setArchived(false);
-                productRepository.update(stockCard.getProduct());
-            }
+            StockCard stockCard = isArchivedStockCard ? model.getStockCard() : new StockCard();
             stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
             stockCard.setExpireDates(model.formatExpiryDateString());
 
-            stockRepository.initStockCard(stockCard, isStockCardSaved);
+            if (isArchivedStockCard) {
+                stockCard.getProduct().setArchived(false);
+                stockRepository.reInventoryArchivedStockCard(stockCard);
+            } else {
+                stockCard.setProduct(productRepository.getById(model.getProductId()));
+                stockRepository.initStockCard(stockCard);
+            }
             return stockCard;
         } catch (LMISException e) {
             e.reportToFabric();
