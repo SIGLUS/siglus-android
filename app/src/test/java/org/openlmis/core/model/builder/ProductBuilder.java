@@ -36,7 +36,7 @@ public class ProductBuilder {
     }
 
     public ProductBuilder setIsArchived(boolean isArchived) {
-        product.setIsArchived(isArchived);
+        product.setArchived(isArchived);
         return this;
     }
 

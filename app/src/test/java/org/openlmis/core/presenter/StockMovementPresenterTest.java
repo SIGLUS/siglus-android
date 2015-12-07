@@ -169,7 +169,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
     public void shouldArchiveStockCard() throws Exception {
         //given
         StockCard stockCard = stockMovementPresenter.stockCard;
-        stockCard.getProduct().setIsArchived(false);
+        stockCard.getProduct().setArchived(false);
 
         //when
         stockMovementPresenter.archiveStockCard();

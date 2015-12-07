@@ -159,7 +159,7 @@ public class InitialInventoryViewHolderTest {
     @Test
     public void shouldShowHistoryViewAndViewItWhenClicked() {
         ViewHistoryListener mockedListener = mock(ViewHistoryListener.class);
-        product.setIsArchived(true);
+        product.setArchived(true);
         StockCardViewModel viewModel = new StockCardViewModelBuilder(product)
                 .setQuantity("10")
                 .setChecked(false)

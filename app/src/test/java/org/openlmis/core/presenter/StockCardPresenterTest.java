@@ -123,7 +123,7 @@ public class StockCardPresenterTest {
 
     private StockCard stockCard(boolean isArchived) {
         Product product = new Product();
-        product.setIsArchived(isArchived);
+        product.setArchived(isArchived);
         StockCard stockCard = new StockCard();
         stockCard.setProduct(product);
         return stockCard;
