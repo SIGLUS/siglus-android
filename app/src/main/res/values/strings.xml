@@ -76,7 +76,7 @@
     <string name="msg_mmia_submit_tip">Your MMIA form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
     <string name="hint_mmia_total_not_equal">Total Therapeutic Regime does not equal Total Patients</string>
     <string name="msg_mmia_not_unique">Cannot submit MMIA twice in a period!</string>
-    <string name="msg_reason_for_total_not_match"><![CDATA[Add reason for regime & patient mismatch]]></string>
+    <string name="msg_reason_for_total_not_match"><![CDATA[Add reason for mismatch between regime & patient totals]]></string>
     <string name="msg_regime_total_and_patient_total_not_match">Totals do not match please check figures that you\'ve entered .If figures are correct please add a justification for differing totals in the observation box</string>
     <string name="btn_ok">OK</string>
 
@@ -138,7 +138,6 @@
     <string name="btn_add_expiry_date">+ Expiry Date</string>
     <string name="menu_item_stock_movement_history">Movement History</string>
     <string name="title_add_new_drug">Add new product</string>
-    <string name="label_stock_movement_signature_title">Enter your initials to sign the movement</string>
     <string name="hint_signature">Enter your initials</string>
 
     <!--MMIABaseInfo-->
