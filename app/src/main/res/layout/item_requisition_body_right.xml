@@ -1,73 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/ItemRequisition.Container.BodyRight"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:divider="@drawable/divider_vertical"
-    android:orientation="horizontal"
-    android:paddingEnd="1dp"
-    android:showDividers="middle|end">
-
+    android:layout_height="match_parent">
 
     <LinearLayout
+        style="@style/ItemRequisition.Container.Body"
         android:layout_width="1000dp"
         android:layout_height="match_parent"
-        android:divider="@drawable/divider_vertical"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:showDividers="middle">
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tx_initial_amount"
-            style="@style/sheet_header2"
+            style="@style/ItemRequisition.Text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tx_received"
-            style="@style/sheet_header2"
+            style="@style/ItemRequisition.Text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tx_issued"
-            style="@style/sheet_header2"
+            style="@style/ItemRequisition.Text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tx_theoretical"
-            style="@style/sheet_header2"
+            style="@style/ItemRequisition.Text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tx_total"
-            style="@style/sheet_header2"
+            style="@style/ItemRequisition.Text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tx_inventory"
-            style="@style/sheet_header2"
+            style="@style/ItemRequisition.Text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tx_different"
-            style="@style/sheet_header2"
+            style="@style/ItemRequisition.Text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tx_total_request"
-            style="@style/sheet_header2"
+            style="@style/ItemRequisition.Text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
@@ -75,32 +69,25 @@
 
 
     <LinearLayout
+        style="@style/ItemRequisition.Container.Body"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@drawable/divider_vertical"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:showDividers="middle">
+        android:orientation="horizontal">
 
         <EditText
             android:id="@+id/et_request_amount"
-            style="@style/sheet_header2"
+            style="@style/ItemRequisition.Text.Edit"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@null"
-            android:inputType="text"
-            android:maxLength="7" />
+            android:layout_weight="1" />
 
         <EditText
             android:id="@+id/et_approved_amount"
-            style="@style/sheet_header2"
+            style="@style/ItemRequisition.Text.Edit"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@null"
-            android:enabled="false"
-            android:maxLength="7" />
+            android:enabled="false" />
     </LinearLayout>
 
 </LinearLayout>

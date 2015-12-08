@@ -1,78 +1,113 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="mmia_spread_rnr_item">
-        <item name="android:layout_gravity">center</item>
-        <item name="android:gravity">center</item>
-        <item name="android:padding">4dp</item>
-        <item name="android:layout_width">70dp</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-
     <style name="DefaultBorderedEditText">
         <item name="text">Label</item>
         <item name="ems">4</item>
     </style>
 
-    <style name="sheet_header_base">
-        <item name="android:textColor">@color/color_text_primary</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:padding">8dp</item>
-        <item name="android:gravity">center</item>
+    <style name="Edit" />
+
+    <style name="Edit.Quantity">
+        <item name="android:ems">8</item>
+        <item name="android:inputType">text</item>
     </style>
 
-    <style name="sheet_header1" parent="sheet_header_base">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textStyle">bold</item>
+    <style name="Divider">
+        <item name="android:showDividers">middle</item>
     </style>
 
-
-    <style name="sheet_header2" parent="sheet_header_base">
-        <item name="android:textSize">14sp</item>
-        <item name="android:minWidth">60dp</item>
+    <style name="Divider.Vertical">
+        <item name="android:divider">@drawable/divider_vertical</item>
     </style>
+
+    <style name="Divider.Horizontal">
+        <item name="android:divider">@drawable/divider_horizontal</item>
+    </style>
+
 
     <style name="Card" />
+
     <style name="Card.Padded">
         <item name="android:layout_marginLeft">@dimen/margin_small</item>
         <item name="android:layout_marginRight">@dimen/margin_small</item>
         <item name="android:layout_marginTop">4dp</item>
         <item name="android:layout_marginBottom">4dp</item>
     </style>
+
     <style name="Card.Container">
         <item name="android:padding">@dimen/padding_normal</item>
         <item name="android:orientation">vertical</item>
     </style>
 
     <style name="ArchivedCard" />
-    <style name="ArchivedCard.ProductName" parent="Text.Black.Medium"/>
-    <style name="ArchivedCard.ProductUnit" parent="Text.Gray.Normal"/>
+
+    <style name="ArchivedCard.ProductName" parent="Text.Black.Medium" />
+
+    <style name="ArchivedCard.ProductUnit" parent="Text.Gray.Normal" />
+
     <style name="ArchivedCard.Label" parent="Text.Gray.Regular" />
+
     <style name="ArchivedCard.ViewHistory" parent="Text.Blue.Regular">
-       <item name="android:drawablePadding">@dimen/padding_small</item>
-       <item name="android:drawableStart">@drawable/ic_history_blue</item>
-       <item name="android:paddingBottom">@dimen/padding_small</item>
-       <item name="android:paddingTop">@dimen/padding_small</item>
+        <item name="android:drawablePadding">@dimen/padding_small</item>
+        <item name="android:drawableStart">@drawable/ic_history_blue</item>
+        <item name="android:paddingBottom">@dimen/padding_small</item>
+        <item name="android:paddingTop">@dimen/padding_small</item>
     </style>
+
     <style name="ArchivedCard.ArchiveBack" parent="Text.Blue.Regular">
         <item name="android:layout_marginStart">@dimen/margin_medium</item>
         <item name="android:paddingTop">@dimen/padding_normal</item>
     </style>
 
+    <style name="InventoryCard" />
+
+    <style name="InventoryCard.ProductContainer">
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_marginStart">@dimen/margin_normal</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="InventoryCard.ViewHistory" parent="Text.Blue.Regular">
+        <item name="android:drawablePadding">@dimen/padding_small</item>
+        <item name="android:drawableStart">@drawable/ic_history_blue</item>
+        <item name="android:paddingBottom">@dimen/padding_small</item>
+        <item name="android:paddingTop">@dimen/padding_small</item>
+    </style>
+
+    <style name="InventoryCard.Divider" parent="HorizontalLine">
+        <item name="android:layout_margin">@dimen/margin_normal</item>
+    </style>
+
+    <style name="InventoryCard.ActionPanel">
+        <item name="android:gravity">bottom</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:padding">@dimen/padding_normal</item>
+        <item name="android:weightSum">2</item>
+    </style>
+
+    <style name="InventoryCard.EditQuantity" parent="Edit.Quantity" />
+
+    <style name="InventoryCard.ExpiryDate" parent="Widget.AppCompat.EditText">
+        <item name="android:layout_marginStart">@dimen/margin_larger</item>
+        <item name="android:focusable">false</item>
+    </style>
+
     <style name="Inventory" />
+
     <style name="Inventory.TextTotal" parent="Text.Gray.Normal">
         <item name="android:paddingEnd">@dimen/padding_normal</item>
         <item name="android:paddingStart">0dp</item>
         <item name="android:gravity">end</item>
     </style>
 
-    <style name="Login"/>
+    <style name="Login" />
+
     <style name="Login.Container">
         <item name="android:gravity">center_horizontal</item>
         <item name="android:orientation">vertical</item>
         <item name="android:padding">@dimen/padding_larger</item>
     </style>
+
     <style name="Login.Panel">
         <item name="android:background">@color/color_white</item>
         <item name="android:gravity">center</item>
@@ -83,14 +118,17 @@
         <item name="android:paddingTop">@dimen/padding_large</item>
     </style>
 
-    <style name="Home"/>
+    <style name="Home" />
+
     <style name="Home.Container">
-       <item name="android:orientation">vertical</item>
-       <item name="android:padding">@dimen/padding_normal</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">@dimen/padding_normal</item>
     </style>
+
     <style name="Home.SyncText" parent="Text.Gray.Large">
         <item name="android:gravity">center_horizontal</item>
     </style>
+
     <style name="Home.Button" parent="Button.Blue.Large">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -98,23 +136,33 @@
         <item name="android:drawablePadding">@dimen/padding_small</item>
     </style>
 
-    <style name="StockMovement"/>
+    <style name="StockMovement" />
+
     <style name="StockMovement.Panel">
-       <item name="android:layout_marginLeft">@dimen/margin_normal</item>
-       <item name="android:layout_marginRight">@dimen/margin_normal</item>
-       <item name="android:layout_marginTop">@dimen/margin_normal</item>
+        <item name="android:layout_marginLeft">@dimen/margin_normal</item>
+        <item name="android:layout_marginRight">@dimen/margin_normal</item>
+        <item name="android:layout_marginTop">@dimen/margin_normal</item>
     </style>
-    <style name="StockMovement.Panel.Title">
+
+    <style name="StockMovement.TitlePanel" parent="Divider.Horizontal">
+        <item name="android:layout_marginLeft">@dimen/margin_normal</item>
+        <item name="android:layout_marginRight">@dimen/margin_normal</item>
+        <item name="android:layout_marginTop">@dimen/margin_normal</item>
         <item name="android:background">@drawable/border_bg</item>
-        <item name="android:divider">@drawable/divider_horizontal</item>
         <item name="android:orientation">vertical</item>
-        <item name="android:showDividers">middle</item>
     </style>
+
+    <style name="StockMovement.TitlePanel.Land">
+        <item name="android:layout_marginLeft">0dp</item>
+        <item name="android:layout_marginRight">0dp</item>
+    </style>
+
     <style name="StockMovement.ExpiryDates">
         <item name="android:gravity">center_vertical</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:padding">@dimen/padding_small</item>
     </style>
+
     <style name="StockMovement.List">
         <item name="android:background">@drawable/border_bg</item>
         <item name="android:divider">@drawable/divider_horizontal</item>
@@ -122,121 +170,487 @@
     </style>
 
     <style name="Dialog" />
+
     <style name="Dialog.Container">
         <item name="android:orientation">vertical</item>
         <item name="android:background">@color/color_white</item>
         <item name="android:padding">@dimen/padding_medium</item>
     </style>
+
     <style name="Dialog.Title" parent="Text.Black.Medium">
         <item name="android:gravity">center</item>
         <item name="android:textIsSelectable">true</item>
     </style>
+
     <style name="Dialog.ActionPanel">
         <item name="android:gravity">end</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:paddingBottom">@dimen/padding_small</item>
         <item name="android:paddingTop">@dimen/padding_small</item>
     </style>
-    <style name="Dialog.Btn">
+
+    <style name="Dialog.Btn.Negative" parent="Button.Transparent">
         <item name="android:paddingStart">@dimen/padding_small</item>
         <item name="android:paddingEnd">@dimen/padding_small</item>
         <item name="android:gravity">center</item>
         <item name="android:textAllCaps">true</item>
     </style>
-    <style name="Dialog.Btn.Negative" parent="Button.Transparent" />
-    <style name="Dialog.Btn.Positive" parent="Button.Blue" />
-    <style name="Dialog.EditText" parent="Text.White.Normal">
+
+    <style name="Dialog.Btn.Positive" parent="Button.Blue">
+        <item name="android:paddingStart">@dimen/padding_small</item>
+        <item name="android:paddingEnd">@dimen/padding_small</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="Dialog.EditText" parent="Text.Black.Normal">
         <item name="android:inputType">text</item>
     </style>
 
     <style name="MMIA" />
+
     <style name="MMIA.FormContainer">
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
         <item name="android:orientation">vertical</item>
     </style>
-    <style name="MMIA.RnrTable">
+
+    <style name="MMIA.RnrTable" parent="Divider.Vertical">
         <item name="android:layout_marginLeft">@dimen/margin_small</item>
         <item name="android:layout_marginRight">@dimen/margin_small</item>
-        <item name="android:divider">@drawable/divider_vertical</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:padding">@dimen/divider</item>
-        <item name="android:showDividers">middle</item>
     </style>
+
     <style name="MMIA.RnrTable.Body">
         <item name="android:background">@drawable/mmia_spread_list_bg</item>
     </style>
+
     <style name="MMIA.RnrTable.Header">
         <item name="android:background">@drawable/mmia_freeze_header_bg</item>
     </style>
-    <style name="MMIA.RegimeList">
+
+    <style name="MMIA.RegimeList" parent="Divider.Horizontal">
         <item name="android:background">@drawable/mmia_spread_list_bg</item>
-        <item name="android:divider">@drawable/divider_horizontal</item>
         <item name="android:padding">@dimen/divider</item>
-        <item name="android:showDividers">middle</item>
     </style>
-    <style name="MMIA.RegimeTotal">
+
+    <style name="MMIA.RegimeTotal" parent="Divider.Vertical">
         <item name="android:layout_gravity">end</item>
         <item name="android:background">@drawable/mmia_spread_regime_total_bg</item>
-        <item name="android:divider">@drawable/divider_vertical</item>
         <item name="android:orientation">horizontal</item>
-        <item name="android:showDividers">middle</item>
     </style>
+
     <style name="MMIA.RegimeTotalLabel">
         <item name="android:background">@color/color_divider</item>
         <item name="android:gravity">end|center_vertical</item>
         <item name="android:paddingEnd">@dimen/padding_small</item>
         <item name="android:paddingStart">@dimen/padding_small</item>
     </style>
+
     <style name="MMIA.RegimeTotalText">
         <item name="android:background">@color/color_page_gray</item>
         <item name="android:freezesText">true</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:padding">4dp</item>
     </style>
+
     <style name="MMIA.SpreadList">
         <item name="android:minHeight">35dp</item>
         <item name="android:padding">4dp</item>
         <item name="android:gravity">center_vertical</item>
     </style>
-    <style name="MMIA.SpreadList.Header" parent="Text.White.Regular">
+
+    <style name="MMIA.SpreadHeader" parent="Text.White.Regular">
+        <item name="android:padding">4dp</item>
         <item name="android:background">@color/color_black</item>
         <item name="android:gravity">center</item>
         <item name="android:minHeight">38dp</item>
     </style>
+
     <style name="MMIA.CommentLayout">
-       <item name="android:background">@color/color_white</item>
-       <item name="android:padding">@dimen/padding_small</item>
+        <item name="android:background">@color/color_white</item>
+        <item name="android:padding">@dimen/padding_small</item>
     </style>
+
     <style name="MMIA.MismatchText" parent="Text.Red.Regular">
         <item name="android:layout_marginBottom">@dimen/margin_small</item>
         <item name="android:layout_marginTop">@dimen/margin_small</item>
     </style>
 
     <style name="StockList" />
+
     <style name="StockList.TotalText" parent="Text.Gray.Normal">
         <item name="android:layout_gravity">end</item>
         <item name="android:paddingStart">0dp</item>
         <item name="android:paddingEnd">@dimen/padding_normal</item>
     </style>
+
     <style name="StockList.HorizontalDivider" parent="HorizontalLine">
         <item name="android:background">@color/color_primary_dark</item>
     </style>
 
-    <style name="ExpiryDate"/>
+    <style name="ExpiryDate" />
+
     <style name="ExpiryDate.Container">
         <item name="android:background">@drawable/expire_date_bg</item>
         <item name="android:gravity">center_vertical</item>
     </style>
+
     <style name="ExpiryDate.ExpiryText" parent="Text.Black.Regular">
         <item name="android:layout_marginStart">5dp</item>
         <item name="android:textColor">@color/color_black</item>
     </style>
+
     <style name="ExpiryDate.ClearIcon" parent="Text.Black.Regular">
         <item name="android:layout_marginStart">@dimen/margin_normal</item>
         <item name="android:padding">5dp</item>
         <item name="android:src">@drawable/ic_clear</item>
     </style>
 
+    <style name="ItemMMIA" />
+
+    <style name="ItemMMIA.Container" parent="Divider.Vertical">
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="ItemMMIA.Label" parent="MMIA.SpreadList">
+        <item name="android:background">@color/color_mmia_info_name</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="ItemMMIA.EditText" parent="MMIA.SpreadList">
+        <item name="android:background">@null</item>
+        <item name="android:maxLength">7</item>
+        <item name="android:inputType">number</item>
+        <item name="android:saveEnabled">false</item>
+        <item name="android:imeOptions">actionNext</item>
+    </style>
+
+    <style name="ItemMovement" />
+
+    <style name="ItemMovement.Text" parent="Text.Black.Normal">
+        <item name="android:textStyle">bold</item>
+        <item name="android:padding">@dimen/padding_small</item>
+        <item name="android:gravity">left</item>
+    </style>
+
+
+    <style name="ItemMovement.CellText" parent="Text.Black.Regular">
+        <item name="android:minWidth">60dp</item>
+        <item name="android:padding">@dimen/padding_small</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="ItemMovement.Container" parent="Divider.Vertical">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="ItemMovement.SheetText" parent="Text.Black.Regular">
+        <item name="android:minWidth">60dp</item>
+        <item name="android:padding">@dimen/padding_small</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="ItemMovement.SheetText.Edit">
+        <item name="android:imeOptions">actionDone</item>
+        <item name="android:inputType">text</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="ItemPhysical" />
+
+    <style name="ItemPhysical.InfoContainer">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:paddingLeft">@dimen/padding_normal</item>
+        <item name="android:paddingRight">@dimen/padding_normal</item>
+        <item name="android:paddingTop">@dimen/padding_normal</item>
+        <item name="android:baselineAligned">false</item>
+    </style>
+
+    <style name="ItemPhysical.EditQuantity" parent="Edit.Quantity" />
+
+    <style name="ItemPhysical.SOHText" parent="Text.Gray.Regular">
+        <item name="android:layout_marginTop">-7dp</item>
+        <item name="android:background">@drawable/inventory_pop</item>
+        <item name="android:gravity">end|center_vertical</item>
+        <item name="android:paddingEnd">120dp</item>
+    </style>
+
+    <style name="ItemPhysical.ExpiryDate">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:padding">@dimen/padding_small</item>
+    </style>
+
+    <style name="ItemRegime" />
+
+    <style name="ItemRegime.Container" parent="Divider.Vertical">
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="ItemRegime.Text" parent="MMIA.SpreadList" />
+
+    <style name="ItemRegime.EditText" parent="ItemMMIA.EditText" />
+
+    <style name="ItemRequisition" />
+
+    <style name="ItemRequisition.Container.Report" parent="Divider.Horizontal">
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="ItemRequisition.Container.Body" parent="Divider.Vertical">
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="ItemRequisition.Container.BodyLeft" parent="Divider.Vertical">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:showDividers">middle|end</item>
+        <item name="android:weightSum">4</item>
+    </style>
+
+    <style name="ItemRequisition.Container.BodyRight" parent="Divider.Vertical">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingEnd">1dp</item>
+        <item name="android:showDividers">middle|end</item>
+    </style>
+
+    <style name="ItemRequisition.Text" parent="Text.Black.Regular">
+        <item name="android:minWidth">60dp</item>
+        <item name="android:padding">@dimen/padding_small</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="ItemRequisition.Text.Edit">
+        <item name="android:background">@null</item>
+        <item name="android:inputType">text</item>
+        <item name="android:maxLength">7</item>
+    </style>
+
+    <style name="ItemRequisition.ReportHeader" parent="Text.Black.Small">
+        <item name="android:maxWidth">500dp</item>
+        <item name="android:minWidth">350dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="ItemRequisition.ReportLabel" parent="Text.Black.Small">
+        <item name="android:gravity">center</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="ItemRequisition.ReportEdit" parent="Text.Black.Small">
+        <item name="android:background">@null</item>
+        <item name="android:ems">4</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:inputType">text</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:paddingTop">2dp</item>
+    </style>
+
+    <style name="ItemRnr" />
+
+    <style name="ItemRnr.Container" parent="Divider.Vertical">
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="ItemRnr.AmountText" parent="Text.Gray.Regular">
+        <item name="android:gravity">center</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="ItemRnr.PrimaryName" parent="Text.Gray.Regular">
+        <item name="android:background">@color/color_green_light</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:padding">@dimen/padding_small</item>
+    </style>
+
+    <style name="ItemRnr.PeriodContainer">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="ItemRnr.PeriodContainer.Type1">
+        <item name="android:background">@color/color_text_secondary</item>
+        <item name="android:padding">@dimen/padding_normal</item>
+    </style>
+
+    <style name="ItemRnr.PeriodContainer.Type2">
+        <item name="android:padding">@dimen/padding_small</item>
+    </style>
+
+    <style name="ItemRnr.PeriodTextType1" parent="Text.White.Normal">
+        <item name="android:paddingEnd">@dimen/padding_small</item>
+        <item name="android:paddingStart">@dimen/padding_small</item>
+    </style>
+
+    <style name="ItemRnr.PeriodTextType2" parent="Text.Black.Regular">
+        <item name="android:paddingEnd">@dimen/padding_small</item>
+        <item name="android:paddingStart">@dimen/padding_small</item>
+    </style>
+
+    <style name="ItemRnr.MessageTextType1" parent="Text.Black.Small">
+        <item name="android:layout_marginStart">@dimen/margin_large</item>
+        <item name="android:padding">@dimen/padding_small</item>
+        <item name="android:layout_marginBottom">@dimen/margin_small</item>
+        <item name="android:gravity">start</item>
+    </style>
+
+    <style name="ItemRnr.MessageTextType2" parent="Text.Black.Small">
+        <item name="android:layout_marginStart">@dimen/margin_large</item>
+        <item name="android:padding">@dimen/padding_small</item>
+    </style>
+
+    <style name="ItemRnr.BtnView" parent="Text.Blue.Small">
+        <item name="android:layout_marginStart">@dimen/margin_large</item>
+        <item name="android:padding">@dimen/padding_small</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ItemRnr.Type2Container" parent="Card.Container">
+        <item name="android:background">@color/color_white</item>
+        <item name="android:divider">@drawable/divider_horizontal_light_gray</item>
+        <item name="android:showDividers">middle</item>
+    </style>
+
+    <style name="ItemRnr.TitleText.Type3" parent="Text.Gray.Normal">
+        <item name="android:paddingTop">@dimen/padding_small</item>
+        <item name="android:paddingStart">@dimen/padding_normal</item>
+    </style>
+
+    <style name="ItemStock" />
+
+    <style name="ItemStock.Container">
+        <item name="android:background">@color/color_item_bg</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingBottom">1dp</item>
+    </style>
+
+    <style name="ItemStock.ProductContainer">
+        <item name="android:background">@color/color_white</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">@dimen/padding_small</item>
+    </style>
+
+    <style name="ItemStock.TextSOH" parent="Text.Black.Normal">
+        <item name="android:gravity">center_vertical|end</item>
+        <item name="android:paddingLeft">@dimen/padding_small</item>
+        <item name="android:paddingRight">@dimen/padding_small</item>
+    </style>
+
+    <style name="FormAction" />
+
+    <style name="FormAction.Container">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingLeft">55dp</item>
+        <item name="android:paddingRight">55dp</item>
+        <item name="android:paddingBottom">@dimen/padding_small</item>
+        <item name="android:paddingTop">@dimen/padding_small</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="FormAction.SaveContainer">
+        <item name="android:layout_marginEnd">@dimen/margin_small</item>
+        <item name="android:background">@drawable/white_button</item>
+        <item name="android:clickable">true</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="FormAction.SaveBtn" parent="Text.Black.Regular">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:background">@null</item>
+        <item name="android:clickable">false</item>
+        <item name="android:drawableStart">@drawable/ic_save</item>
+        <item name="android:padding">2dp</item>
+    </style>
+
+    <style name="FormAction.CompleteBtn" parent="Text.White.Regular">
+        <item name="android:layout_marginEnd">@dimen/margin_small</item>
+        <item name="android:background">@drawable/blue_button</item>
+        <item name="android:padding">2dp</item>
+    </style>
+
+    <style name="FormAction.CancelBtn" parent="Text.Blue.Regular">
+        <item name="android:layout_marginEnd">@dimen/margin_small</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="FormAction.CompleteBtn.StockMovement" parent="Text.White.Regular">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:background">@drawable/blue_button</item>
+        <item name="android:layout_marginStart">@dimen/margin_small</item>
+        <item name="android:clickable">false</item>
+        <item name="android:padding">2dp</item>
+    </style>
+
+    <style name="LayoutRequisition" />
+
+    <style name="LayoutRequisition.BodyLeftContainer" parent="Divider.Horizontal">
+        <item name="android:background">@drawable/border_bg</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:showDividers">middle|end</item>
+    </style>
+
+    <style name="LayoutRequisition.HeaderRightContainer" parent="Divider.Vertical">
+        <item name="android:background">@drawable/border_bg_gray</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="LayoutRequisition.HeaderLeftContainer" parent="Divider.Vertical">
+        <item name="android:background">@drawable/bottom_border_bg</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:weightSum">4</item>
+    </style>
+
+    <style name="LayoutRequisition.TextHeader" parent="Text.Black.Normal.Bold">
+        <item name="android:padding">@dimen/padding_small</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="LayoutRequisition.CellText" parent="Text.Black.Regular">
+        <item name="android:minWidth">60dp</item>
+        <item name="android:padding">@dimen/padding_small</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="View" />
+
+    <style name="View.ExpiryDate" parent="Text.Blue.Medium">
+        <item name="android:focusable">false</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:padding">@dimen/abc_control_padding_material</item>
+    </style>
+
+    <style name="View.BoardedEdit" />
+
+    <style name="View.BoardedEdit.Container" parent="Divider.Vertical">
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="View.BoardedEdit.Text" parent="Text.Gray.Normal">
+        <item name="android:gravity">center</item>
+        <item name="android:maxWidth">100dp</item>
+        <item name="android:minWidth">60dp</item>
+    </style>
+
+    <style name="View.BoardedEdit.EditText">
+        <item name="android:background">@null</item>
+        <item name="android:ems">4</item>
+        <item name="android:inputType">text</item>
+        <item name="android:padding">4dp</item>
+    </style>
+
+    <style name="View.ToastText" parent="Text.Black.Normal">
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">60dp</item>
+        <item name="android:minWidth">200dp</item>
+        <item name="android:padding">@dimen/padding_small</item>
+    </style>
 
 </resources>

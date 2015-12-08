@@ -7,16 +7,11 @@
 
     <TextView
         android:id="@+id/message"
+        style="@style/View.ToastText"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:minHeight="60dp"
-        android:minWidth="200dp"
-        android:textColor="@color/color_black"
-        android:padding="6dp"
-        android:textSize="16sp" />
+        android:layout_weight="1" />
 
 </LinearLayout>
 

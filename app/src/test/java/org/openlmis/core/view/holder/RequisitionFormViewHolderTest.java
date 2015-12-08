@@ -35,7 +35,7 @@ public class RequisitionFormViewHolderTest {
         int bgReqColor = ((ColorDrawable)viewHolder.requestAmount.getBackground()).getColor();
         int bgAprColor = ((ColorDrawable)viewHolder.approvedAmount.getBackground()).getColor();
 
-        assertThat(bgReqColor, is(RuntimeEnvironment.application.getApplicationContext().getResources().getColor(R.color.white)));
+        assertThat(bgReqColor, is(RuntimeEnvironment.application.getApplicationContext().getResources().getColor(R.color.color_white)));
         assertThat(bgAprColor, is(RuntimeEnvironment.application.getApplicationContext().getResources().getColor(android.R.color.transparent)));
         assertThat(viewHolder.requestAmount.isEnabled(), is(true));
         assertThat(viewHolder.approvedAmount.isEnabled(), is(false));
@@ -50,7 +50,7 @@ public class RequisitionFormViewHolderTest {
         int bgAprColor = ((ColorDrawable) viewHolder.approvedAmount.getBackground()).getColor();
 
         assertThat(bgReqColor, is(RuntimeEnvironment.application.getApplicationContext().getResources().getColor(android.R.color.transparent)));
-        assertThat(bgAprColor, is(RuntimeEnvironment.application.getApplicationContext().getResources().getColor(R.color.white)));
+        assertThat(bgAprColor, is(RuntimeEnvironment.application.getApplicationContext().getResources().getColor(R.color.color_white)));
         assertThat(viewHolder.requestAmount.isEnabled(), is(false));
         assertThat(viewHolder.approvedAmount.isEnabled(), is(true));
     }

@@ -36,8 +36,20 @@
         <item name="android:textColor">@color/color_text_primary</item>
     </style>
 
+    <style name="Text.Black.Small">
+        <item name="android:textSize">@dimen/font_size_small</item>
+    </style>
+
     <style name="Text.Black.Regular">
         <item name="android:textSize">@dimen/font_size_regular</item>
+    </style>
+
+    <style name="Text.Black.Normal">
+        <item name="android:textSize">@dimen/font_size_normal</item>
+    </style>
+
+    <style name="Text.Black.Normal.Bold">
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="Text.Black.Large">
@@ -88,11 +100,19 @@
         <item name="android:textColor">@color/color_accent</item>
     </style>
 
+    <style name="Text.Blue.Small">
+        <item name="android:textSize">@dimen/font_size_small</item>
+    </style>
+
     <style name="Text.Blue.Regular">
         <item name="android:textSize">@dimen/font_size_regular</item>
     </style>
 
     <style name="Text.Blue.Normal">
+        <item name="android:textSize">@dimen/font_size_normal</item>
+    </style>
+
+    <style name="Text.Blue.Medium">
         <item name="android:textSize">@dimen/font_size_normal</item>
     </style>
 
@@ -103,6 +123,8 @@
     <style name="Text.Red.Regular">
         <item name="android:textSize">@dimen/font_size_regular</item>
     </style>
+
+    <!-- Basic style of Button -->
 
     <style name="Button" />
 
@@ -116,9 +138,16 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
+    <!-- Basic style of Spacing Line -->
+
     <style name="HorizontalLine">
         <item name="android:layout_height">1dp</item>
         <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@color/color_divider</item>
+    </style>
+    <style name="VerticalLine">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">1dp</item>
         <item name="android:background">@color/color_divider</item>
     </style>
 </resources>

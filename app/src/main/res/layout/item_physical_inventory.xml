@@ -1,46 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Card.Padded"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:padding="8dp">
+    android:layout_height="wrap_content">
 
     <LinearLayout
+        style="@style/Card.Container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
         <LinearLayout
+            style="@style/ItemPhysical.InfoContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
-            android:paddingTop="16dp"
-            android:orientation="horizontal"
-            android:paddingRight="16dp"
-            android:paddingBottom="0dp">
+            android:layout_height="wrap_content">
 
             <LinearLayout
-                android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/product_name"
+                    style="@style/Text.Black.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/label_dummy_product"
-                    android:textColor="@color/primary_dark_material_dark"
-                    android:textSize="20sp" />
+                    tools:text="@string/label_dummy_product" />
 
                 <TextView
                     android:id="@+id/product_unit"
+                    style="@style/Text.Gray.Normal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/label_dummy_unit"
-                    android:textColor="@color/material_blue_grey_800"
-                    android:textSize="16sp" />
+                    tools:text="@string/label_dummy_unit" />
             </LinearLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -51,37 +45,28 @@
 
                 <EditText
                     android:id="@+id/tx_quantity"
+                    style="@style/ItemPhysical.EditQuantity"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:ems="8"
-                    android:inputType="text" />
+                    android:layout_height="match_parent" />
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
         <TextView
             android:id="@+id/stock_on_hand_in_inventory"
+            style="@style/ItemPhysical.SOHText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/inventory_pop"
-            android:paddingEnd="120dp"
-            android:gravity="right|center_vertical"
-            android:text="@string/label_physical_inventory_stock_on_hand"
-            android:layout_marginTop="-7dp"
-            android:textSize="14sp" />
+            android:text="@string/label_physical_inventory_stock_on_hand" />
 
         <View
             android:id="@+id/action_divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/color_divider" />
+            style="@style/HorizontalLine" />
 
         <org.openlmis.core.view.widget.ExpireDateViewGroup
             android:id="@+id/vg_expire_date_container"
+            style="@style/ItemPhysical.ExpiryDate"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="8dp"/>
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 </android.support.v7.widget.CardView>

@@ -2,43 +2,29 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="10dp">
+    android:layout_marginTop="@dimen/margin_small">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/action_panel"
+        style="@style/FormAction.Container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/default_button_bar_height"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/default_action_bar_padding_left_and_right"
-        android:paddingRight="@dimen/default_action_bar_padding_left_and_right"
-        android:paddingBottom="@dimen/default_action_bar_padding_top_and_bottom"
-        android:paddingTop="@dimen/default_action_bar_padding_top_and_bottom"
-        android:gravity="center">
+        android:layout_height="@dimen/default_button_bar_height">
 
         <TextView
             android:id="@+id/btn_cancel"
+            style="@style/FormAction.CancelBtn"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="@dimen/default_button_height"
-            android:textSize="@dimen/default_button_font"
-            android:layout_marginRight="@dimen/default_action_button_margin"
-            android:text="@string/btn_cancel"
-            android:gravity="center"
-            android:textColor="@color/color_accent" />
+            android:text="@string/btn_cancel" />
 
         <Button
             android:id="@+id/btn_complete"
+            style="@style/FormAction.CompleteBtn.StockMovement"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="@dimen/default_button_height"
-            android:layout_gravity="center"
-            android:textSize="@dimen/default_button_font"
-            android:background="@drawable/blue_button"
-            android:layout_marginLeft="@dimen/default_action_button_margin"
-            android:clickable="false"
-            android:text="@string/btn_complete"
-            android:textColor="@color/color_white"
-            android:padding="2dp"/>
+            android:layout_weight="1"
+            android:text="@string/btn_complete" />
 
     </LinearLayout>
 </android.support.v7.widget.CardView>

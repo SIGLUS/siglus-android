@@ -113,7 +113,7 @@ public class MMIARegimeList extends LinearLayout {
             if (Regimen.RegimeType.BABY.equals(regimen.getType())) {
                 view.setBackgroundResource(R.color.color_regime_baby);
             } else {
-                view.setBackgroundResource(R.color.color_regime_adult);
+                view.setBackgroundResource(R.color.color_green_light);
             }
 
             etTotal.addTextChangedListener(new EditTextWatcher(item));

@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Card.Padded"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/card_view_padding"
-    android:padding="@dimen/card_view_padding">
+    android:layout_height="wrap_content">
 
     <LinearLayout
+        style="@style/ItemRnr.Type2Container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/color_white"
-        android:divider="@drawable/divider_horizontal_light_gray"
-        android:orientation="vertical"
-        android:showDividers="middle">
+        android:layout_height="wrap_content">
 
         <LinearLayout
+            style="@style/ItemRnr.PeriodContainer.Type2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="@dimen/list_item_padding">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/icon"
@@ -28,32 +23,24 @@
 
             <TextView
                 android:id="@+id/tx_period"
+                style="@style/ItemRnr.PeriodTextType2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingEnd="@dimen/list_item_padding"
-                android:paddingStart="@dimen/list_item_padding"
-                android:textColor="@color/color_black"
-                android:textSize="16sp" />
+                tools:text="Period text is here" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/tx_message"
+            style="@style/ItemRnr.MessageTextType2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/rnr_card_content_margin_left"
-            android:padding="@dimen/list_item_padding"
-            android:textColor="@color/color_black"
-            android:textSize="@dimen/rnr_card_content_text_size" />
+            tools:text="This is the message" />
 
         <TextView
             android:id="@+id/btn_view"
+            style="@style/ItemRnr.BtnView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/rnr_card_content_margin_left"
-            android:padding="@dimen/list_item_padding"
-            android:text="@string/btn_view_requisition"
-            android:textColor="@color/color_text_button_blue"
-            android:textSize="@dimen/rnr_card_content_text_size"
-            android:textStyle="bold" />
+            android:text="@string/btn_view_requisition" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

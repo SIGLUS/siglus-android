@@ -5,7 +5,7 @@
 
     <LinearLayout
         android:id="@+id/title_panel"
-        style="@style/StockMovement.Panel.Title"
+        style="@style/StockMovement.TitlePanel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -28,33 +28,31 @@
         </LinearLayout>
 
         <LinearLayout
+            style="@style/Divider.Vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@drawable/divider_vertical"
-            android:showDividers="middle">
+            android:layout_height="wrap_content">
 
             <TextView
-                style="@style/sheet_header2"
+                style="@style/ItemMovement.CellText"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:text="@string/label_cmm"
                 android:visibility="gone" />
 
             <TextView
-                style="@style/sheet_header2"
+                style="@style/ItemMovement.CellText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/label_validate_period" />
         </LinearLayout>
 
         <LinearLayout
+            style="@style/Divider.Vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@drawable/divider_vertical"
-            android:showDividers="middle">
+            android:layout_height="wrap_content">
 
             <EditText
-                style="@style/sheet_header2"
+                style="@style/ItemMovement.CellText"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:visibility="gone" />

@@ -1,38 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/ItemRnr.Container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:divider="@drawable/divider_vertical"
-    android:orientation="horizontal"
-    android:showDividers="middle">
-
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/tv_issued_unit"
-        style="@style/mmia_spread_rnr_item" />
+        style="@style/ItemRnr.AmountText"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="8" />
 
     <TextView
         android:id="@+id/tv_initial_amount"
-        style="@style/mmia_spread_rnr_item" />
+        style="@style/ItemRnr.AmountText"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="9" />
 
     <TextView
         android:id="@+id/tv_received"
-        style="@style/mmia_spread_rnr_item" />
+        style="@style/ItemRnr.AmountText"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="9" />
 
     <TextView
         android:id="@+id/tv_issued"
-        style="@style/mmia_spread_rnr_item" />
+        style="@style/ItemRnr.AmountText"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="9" />
 
     <TextView
         android:id="@+id/tv_adjustment"
-        style="@style/mmia_spread_rnr_item" />
+        style="@style/ItemRnr.AmountText"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="9" />
 
     <TextView
         android:id="@+id/tv_inventory"
-        style="@style/mmia_spread_rnr_item" />
+        style="@style/ItemRnr.AmountText"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="9" />
 
     <TextView
         android:id="@+id/tv_validate"
-        style="@style/mmia_spread_rnr_item" />
+        style="@style/ItemRnr.AmountText"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="9" />
 
 </LinearLayout>

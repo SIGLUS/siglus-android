@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Card.Padded"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/card_view_padding"
-    android:padding="@dimen/card_view_padding"
     android:background="@color/color_white">
 
     <LinearLayout
+        style="@style/Card.Container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/ly_period"
+            style="@style/ItemRnr.PeriodContainer.Type1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/color_draft_title"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="12dp">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/icon"
@@ -28,24 +25,17 @@
 
             <TextView
                 android:id="@+id/tx_period"
+                style="@style/ItemRnr.PeriodTextType1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingEnd="@dimen/list_item_padding"
-                android:paddingStart="@dimen/list_item_padding"
-                android:textColor="@color/color_white"
-                android:textSize="16sp" />
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/tx_message"
+            style="@style/ItemRnr.MessageTextType1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/rnr_card_content_margin_left"
-            android:gravity="left"
-            android:textColor="@color/color_black"
-            android:textSize="@dimen/rnr_card_content_text_size"
-            android:padding="@dimen/list_item_padding"
-            android:layout_marginBottom="@dimen/list_item_padding"/>
+            tools:text="This is the message" />
 
     </LinearLayout>
 </android.support.v7.widget.CardView>

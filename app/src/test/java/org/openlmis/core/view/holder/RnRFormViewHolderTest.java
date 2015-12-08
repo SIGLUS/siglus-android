@@ -71,7 +71,7 @@ public class RnRFormViewHolderTest {
 
         assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getPeriod()));
         assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_unsynced_requisition, viewModel.getName())));
-        assertThat(((ColorDrawable) viewHolder.lyPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_error_title)));
+        assertThat(((ColorDrawable) viewHolder.lyPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_red)));
     }
 
     @Test

@@ -1,82 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/stock_movement_list_header"
-    android:orientation="horizontal" android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:divider="@drawable/divider_vertical"
-    android:showDividers="middle"
-    android:gravity="center_vertical">
+    style="@style/ItemMovement.Container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/tx_date"
+        style="@style/ItemMovement.SheetText"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        style="@style/sheet_header2"
-        android:text="@string/label_movement_date"/>
+        android:text="@string/label_movement_date" />
 
     <TextView
         android:id="@+id/tx_reason"
+        style="@style/ItemMovement.SheetText"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        style="@style/sheet_header2"
-        android:text="@string/label_reason"/>
+        android:text="@string/label_reason" />
 
     <LinearLayout
+        style="@style/ItemMovement.Container"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:divider="@drawable/divider_vertical"
-        android:orientation="horizontal"
-        android:showDividers="middle"
-        android:gravity="center_vertical">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/et_document_no"
+            style="@style/ItemMovement.SheetText"
             android:layout_width="@dimen/stock_movement_item_common_width"
             android:layout_height="wrap_content"
-            style="@style/sheet_header2"
-            android:text="@string/label_document_no"/>
+            android:text="@string/label_document_no" />
 
         <TextView
             android:id="@+id/et_received"
+            style="@style/ItemMovement.SheetText"
             android:layout_width="@dimen/stock_movement_item_common_width"
             android:layout_height="wrap_content"
-            style="@style/sheet_header2"
-            android:text="@string/label_received_mmia"/>
+            android:text="@string/label_received_mmia" />
 
         <TextView
             android:id="@+id/et_negative_adjustment"
+            style="@style/ItemMovement.SheetText"
             android:layout_width="@dimen/stock_movement_item_common_width"
             android:layout_height="wrap_content"
-            style="@style/sheet_header2"
-            android:text="@string/label_negative_adjustment"/>
+            android:text="@string/label_negative_adjustment" />
 
         <TextView
             android:id="@+id/et_positive_adjustment"
+            style="@style/ItemMovement.SheetText"
             android:layout_width="@dimen/stock_movement_item_common_width"
             android:layout_height="wrap_content"
-            style="@style/sheet_header2"
-            android:text="@string/label_positive_adjustment"/>
+            android:text="@string/label_positive_adjustment" />
 
         <TextView
             android:id="@+id/et_issued"
+            style="@style/ItemMovement.SheetText"
             android:layout_width="@dimen/stock_movement_item_common_width"
             android:layout_height="wrap_content"
-            style="@style/sheet_header2"
-            android:text="@string/label_issued_mmia"/>
+            android:text="@string/label_issued_mmia" />
 
         <TextView
             android:id="@+id/tx_stock_on_hand"
+            style="@style/ItemMovement.SheetText"
             android:layout_width="@dimen/stock_movement_item_common_width"
             android:layout_height="wrap_content"
-            style="@style/sheet_header2"
-            android:text="@string/label_stock_existence"/>
+            android:text="@string/label_stock_existence" />
 
         <TextView
             android:id="@+id/tx_signature"
+            style="@style/ItemMovement.SheetText"
             android:layout_width="@dimen/stock_movement_item_common_width"
             android:layout_height="wrap_content"
-            style="@style/sheet_header2"
-            android:text="@string/label_signature"/>
+            android:text="@string/label_signature" />
 
     </LinearLayout>
 

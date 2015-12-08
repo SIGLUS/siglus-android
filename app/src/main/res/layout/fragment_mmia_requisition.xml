@@ -72,7 +72,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/MMIA.SpreadList.Header"
+                        style="@style/MMIA.SpreadHeader"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/label_mmia_speed_info_header" />

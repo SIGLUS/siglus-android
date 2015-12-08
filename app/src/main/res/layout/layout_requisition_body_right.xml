@@ -4,14 +4,15 @@
     android:layout_height="match_parent"
     android:layout_weight="3">
 
-    <LinearLayout android:id="@+id/requisition_body_right"
+    <LinearLayout
+        android:id="@+id/requisition_body_right"
+        style="@style/Divider.Horizontal"
         android:layout_width="1000dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:divider="@drawable/divider_horizontal"
-        android:showDividers="middle">
+        android:orientation="vertical">
 
-        <include android:id="@+id/requisition_body_header"
+        <include
+            android:id="@+id/requisition_body_header"
             layout="@layout/layout_requisition_header_right" />
 
     </LinearLayout>

@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Card.Padded"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:padding="8dp">
+    android:layout_height="wrap_content">
 
     <LinearLayout
+        style="@style/Card.Container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/abc_list_item_padding_horizontal_material">
+            android:orientation="horizontal">
 
             <CheckBox
                 android:id="@+id/checkbox"
@@ -22,39 +21,30 @@
                 android:layout_height="wrap_content" />
 
             <LinearLayout
+                style="@style/InventoryCard.ProductContainer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="20dp"
-                android:orientation="vertical">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/product_name"
+                    style="@style/Text.Black.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/label_dummy_product"
-                    android:textColor="@color/primary_dark_material_dark"
-                    android:textSize="20sp" />
+                    tools:text="@string/label_dummy_product" />
 
                 <TextView
                     android:id="@+id/product_unit"
+                    style="@style/Text.Gray.Normal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/label_dummy_unit"
-                    android:textColor="@color/material_blue_grey_800"
-                    android:textSize="16sp" />
+                    tools:text="@string/label_dummy_unit" />
 
                 <TextView
                     android:id="@+id/action_view_history"
+                    style="@style/InventoryCard.ViewHistory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:paddingTop="6dp"
-                    android:paddingBottom="6dp"
-                    android:textColor="@color/color_accent"
-                    android:textSize="14sp"
-                    android:drawableStart="@drawable/ic_history_blue"
-                    android:drawablePadding="6dp"
+                    android:layout_marginTop="@dimen/margin_small"
                     android:text="@string/label_view_movement_history" />
 
             </LinearLayout>
@@ -62,21 +52,15 @@
 
         <View
             android:id="@+id/action_divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_margin="10dp"
-            android:background="@color/material_blue_grey_800"
+            style="@style/InventoryCard.Divider"
             android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/action_panel"
+            style="@style/InventoryCard.ActionPanel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="bottom"
-            android:orientation="horizontal"
-            android:padding="@dimen/abc_list_item_padding_horizontal_material"
-            android:visibility="gone"
-            android:weightSum="2">
+            android:visibility="gone">
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/ly_quantity"
@@ -87,20 +71,17 @@
 
                 <EditText
                     android:id="@+id/tx_quantity"
+                    style="@style/InventoryCard.EditQuantity"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:ems="8"
-                    android:inputType="text" />
+                    android:layout_height="match_parent" />
             </android.support.design.widget.TextInputLayout>
 
             <TextView
                 android:id="@+id/tx_expire_date"
-                style="@style/Widget.AppCompat.EditText"
+                style="@style/InventoryCard.ExpiryDate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
                 android:layout_weight="1"
-                android:focusable="false"
                 android:hint="@string/label_expire_date" />
 
         </LinearLayout>
