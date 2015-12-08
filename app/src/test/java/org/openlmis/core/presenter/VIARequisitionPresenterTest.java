@@ -250,7 +250,7 @@ public class VIARequisitionPresenterTest {
 
         subscriber.onError(new Throwable("msg"));
         verify(VIARequisitionFragment).loaded();
-        verify(VIARequisitionFragment).showErrorMessage(LMISTestApp.getContext().getString(R.string.hint_save_failed));
+        verify(VIARequisitionFragment).showSaveErrorMessage();
     }
 
     @Test

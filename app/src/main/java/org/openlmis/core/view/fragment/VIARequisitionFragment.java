@@ -218,6 +218,16 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     @Override
+    public void showSaveErrorMessage() {
+        ToastUtil.show(getString(R.string.hint_save_mmia_failed));
+    }
+
+    @Override
+    public void showCompleteErrorMessage() {
+        ToastUtil.show(getString(R.string.hint_requisition_complete_failed));
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_save:
@@ -315,7 +325,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @Override
     public void showSignDialog(boolean isFormStatusDraft) {
         SignatureDialog signatureDialog = new SignatureDialog();
-        String signatureDialogTitle = isFormStatusDraft ? getResources().getString(R.string.msg_via_submit_signature) : getResources().getString(R.string.msg_via_approve_signature);
+        String signatureDialogTitle = isFormStatusDraft ? getResources().getString(R.string.msg_via_submit_signature) : getResources().getString(R.string.msg_approve_signature);
 
         signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));
         signatureDialog.setDelegate(signatureDialogDelegate);

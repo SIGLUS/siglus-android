@@ -19,6 +19,9 @@
     <string name="init_product_error">Erro nos dados iniciais. Tente de novo.</string>
     <string name="msg_fetching_products">Descarregando lista de produtos…</string>
     <string name="msg_sync_products_list_failed">Falha no descarregamento de productos do servidor</string>
+    <string name="msg_sync_data_failed">Falha ao descarregar dados históricos</string>
+    <string name="msg_save_products_failed">Falha ao guardar produtos na base de dados local</string>
+    <string name="msg_sync_requisition_data">Sincronizando dados históricos de requisição</string>
 
 
     <!-- Init Inventory -->
@@ -27,9 +30,18 @@
     <string name="label_dummy_product">Paracetemol</string>
     <string name="label_dummy_unit">500mg</string>
     <string name="msg_inventory_check_failed">Quantidade não pode estar em branco</string>
-    <string name="msg_invalid_date">Não pode escolher data no passado</string>
+    <string name="msg_invalid_date">Não pode selecionar data passada ou corrente</string>
     <string name="btn_done">Feito</string>
     <string name="msg_save_before_exit">Por favor, grave o inventário inicial antes de sair da aplicação</string>
+    <string name="msg_remove_expire_date">Tem certeza que quer remover esta data de expiração?</string>
+
+    <!-- Signature -->
+    <string name="dialog_request_signature">Insira as iniciais do seu nome para rubricar o movimento</string>
+    <string name="dialog_request_signature_cancel">Cancelar</string>
+    <string name="dialog_request_signature_sign">Validar</string>
+    <string name="label_physical_inventory_signature_title">Insira as iniciais do seu nome para rubricar todos os movimentos no inventário</string>
+    <string name="hint_signature_error_message">Por favor insira as iniciais do seu nome. (No mínimo 2 caracteres)</string>
+
 
     <!-- Home Page -->
     <string name="label_stock_cards">Visão Geral da Ficha de Stock</string>
@@ -98,8 +110,12 @@
     <string name="msg_low_stock_warning">O seu produto tem stock baixo</string>
     <string name="msg_stock_out_warning">O seu produto está em roptura de stock</string>
     <string name="msg_requisition_submit_tip">A sua Requisicao foi gravada com sucesso,e vai ser submetida \r\n automaticamente quando tiver coneccao a internet.</string>
-
     <string name="msg_requisition_not_unique">Não é possivel submeter duas vezes a requisição no mesmo período.</string>
+    <string name="msg_via_submit_signature">Insira as iniciais do seu nome e aprove as quantidades da requisição </string>
+    <string name="msg_requisition_signature_message_notify">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão da Requisição Balancete</string>
+    <string name="msg_approve_signature">Insira as iniciais do seu nome e aprove as quantidades da requisição</string>
+    <string name="btn_approve">Visto</string>
+    <string name="btn_continue">Continuar</string>
 
 
     <!-- Stock Movement -->
@@ -121,6 +137,11 @@
     <string name="btn_add_expiry_date">+ Data de espiração</string>
     <string name="menu_item_stock_movement_history">Historico de movimentos</string>
     <string name="title_add_new_drug">Adicionar novo producto</string>
+    <string name="hint_signature">Insira as iniciais do seu nome</string>
+    <string name="label_signature">Rúbrica</string>
+    <string name="btn_do_not_remove">Cancelar</string>
+    <string name="label_stock_movement_signature_title">Insira as iniciais do seu nome para rubricar o movimento</string>
+
 
 
     <!--MMIABaseInfo-->
@@ -144,13 +165,19 @@
 
     <!-- Stock Card List Page -->
     <string name="search_hint">Procurar…</string>
-
+    <string name="hint_save_mmia_failed">Falha na gravação de MMIA</string>
+    <string name="hint_save_requisition_failed">Falha na gravação de Requisição Balancete</string>
+    <string name="hint_mmia_complete_failed">Impossível concluir MMIA</string>
+    <string name="hint_requisition_complete_failed">Impossível concluir Requisição Balancete</string>
     <string-array name="sort_items_array">
         <item>Ordenar por alfabético: de A a Z</item>
         <item>Ordenar por alfabético: de Z a A</item>
         <item>Ordenar por quantidade: Alta para Baixa</item>
         <item>Ordenar por quantidade: Baixa para Alta</item>
     </string-array>
+
+    <!-- Physical Inventory Page -->
+    <string name="label_physical_inventory_stock_on_hand">Stock Existente: %1$s</string>
 
     <!-- Rnr form historical list -->
     <string name="label_via_name">Requisição/Balancete Via Clássica</string>

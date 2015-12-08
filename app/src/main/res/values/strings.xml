@@ -13,16 +13,16 @@
     <string name="hint_username">User Name</string>
     <string name="hint_password">Password</string>
     <string name="btn_login">LOG IN</string>
-    <string name="msg_empty_user">User Name and Password cannot left blank</string>
+    <string name="msg_empty_user">User name and password cannot be blank</string>
     <string name="msg_invalid_user">Username or Password is incorrect.</string>
     <string name="msg_user_not_facility">No facility for this user, please contact your administrator</string>
-    <string name="msg_save_products_failed">Save products to local db failed</string>
-    <string name="msg_sync_products_list_failed">Get products from server failed</string>
+    <string name="msg_save_products_failed">Save products to local Database failed</string>
+    <string name="msg_sync_products_list_failed">Download of products from the server failed</string>
     <string name="init_product_error">Initial Data Error,Please Retry</string>
-    <string name="msg_fetching_products">Pulling products…</string>
-    <string name="msg_sync_requisition_data">Syncing Requisition data…</string>
     <string name="msg_sync_stock_movements_data">Syncing StockMovement data…</string>
-    <string name="msg_sync_data_failed">Sync data failed</string>
+    <string name="msg_fetching_products">Downloading product list…</string>
+    <string name="msg_sync_requisition_data">Synchronizing historical requisition data</string>
+    <string name="msg_sync_data_failed">Download of historical data failed</string>
 
 
     <!-- Init Inventory -->
@@ -31,17 +31,11 @@
     <string name="label_dummy_product">Paracetamol</string>
     <string name="label_dummy_unit">500mg</string>
     <string name="msg_inventory_check_failed">Quantity cannot be left blank!</string>
-    <string name="msg_invalid_date">Cannot choose past date</string>
+    <string name="msg_invalid_date">Cannot select past or current date</string>
     <string name="btn_done">Done</string>
-    <string name="dialog_request_signature">Sign the movement with your details</string>
-    <string name="dialog_request_signature_cancel">Don\'t Sign</string>
-    <string name="dialog_request_signature_sign">Sign</string>
-    <string name="msg_remove_expire_date">Do you want to remove this expiry date?</string>
-    <string name="msg_save_before_exit">Please save initial inventory before exiting the app</string>
+    <string name="msg_remove_expire_date">Are you sure you want to remove this expiry date?</string>
+    <string name="msg_save_before_exit">Please save initial inventory before exiting the app.</string>
 
-    <!-- Signature -->
-    <string name="label_physical_inventory_signature_title">Enter your initials to sign all inventory movements</string>
-    <string name="hint_signature_error_message">Please enter at least two characters. Only letters and special characters are acceptable</string>
 
     <!-- Home Page -->
     <string name="label_stock_cards">Stock Card Overview</string>
@@ -54,7 +48,7 @@
     <string name="label_stock_card_last_synced_mins_ago">Stock cards last synced %s minutes ago</string>
     <string name="label_stock_card_last_synced_hours_ago">Stock cards last synced %s hours ago</string>
     <string name="label_stock_card_last_synced_days_ago">Stock cards last synced %s days ago</string>
-    <string name="msg_back_twice_to_exit">Press back button again to exit</string>
+    <string name="msg_back_twice_to_exit">Press back button again to exit.</string>
     <string name="action_sign_out">Sign Out</string>
 
     <!--MMIA-->
@@ -114,11 +108,10 @@
     <string name="msg_requisition_submit_tip">Your Requisition form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
     <string name="msg_requisition_not_unique">Cannot submit requisition twice in a period!</string>
     <string name="btn_approve">Approve</string>
-    <string name="msg_via_submit_signature">Enter your initials to approve requisition amounts</string>
+    <string name="msg_via_submit_signature">Enter your initials and then approve the requisition amounts</string>
     <string name="msg_mmia_submit_signature">Enter your initials to approve MMIA information</string>
-    <string name="msg_via_approve_signature">Please enter your initials to approve and submit the requisition balancete</string>
-    <string name="msg_mmia_approve_signature">Please enter your initials to approve and submit the MMIA</string>
-    <string name="msg_requisition_signature_message_notify">Please hand the device to the person responsible for approval and submission of the requisition balancete</string>
+    <string name="msg_approve_signature">Enter your initials and then approve the Requisition Balancete</string>
+    <string name="msg_requisition_signature_message_notify">Please hand the device to the person responsible for approval and submission of the Requisition Balancete</string>
     <string name="btn_continue">Continue</string>
 
     <string name="btn_del">Delete</string>
@@ -135,7 +128,7 @@
     <string name="label_stock_existence">Stock on Hand</string>
     <string name="label_signature">Signature</string>
     <string name="btn_cancel">CANCEL</string>
-    <string name="btn_do_not_remove">Don\'t remove</string>
+    <string name="btn_do_not_remove">Cancel</string>
     <string name="msg_validation_error">Invalid Input</string>
     <string name="msg_validation_empty_error">Missing required field</string>
     <string name="msg_invalid_stock_movement_date">Invalid date</string>
@@ -146,7 +139,7 @@
     <string name="menu_item_stock_movement_history">Movement History</string>
     <string name="title_add_new_drug">Add new product</string>
     <string name="label_stock_movement_signature_title">Enter your initials to sign the movement</string>
-    <string name="hint_signature">Initials</string>
+    <string name="hint_signature">Enter your initials</string>
 
 
     <!--MMIABaseInfo-->
@@ -171,8 +164,10 @@
     <!-- Stock Card List Page -->
     <string name="search_hint">Search…</string>
     <string name="action_navigate_archive">Archived drugs</string>
-    <string name="hint_save_failed">Save Failed</string>
-    <string name="hint_complete_failed">Complete Failed</string>
+    <string name="hint_save_mmia_failed">Unable to save MMIA form</string>
+    <string name="hint_save_requisition_failed">Unable to save Requisition Balencete</string>
+    <string name="hint_mmia_complete_failed">Unable to complete MMIA form</string>
+    <string name="hint_requisition_complete_failed">Unable to complete Requisition Balencete</string>
     <string-array name="sort_items_array">
         <item>Sort alphabetically: A to Z</item>
         <item>Sort alphabetically: Z to A</item>
@@ -203,6 +198,13 @@
 
     <string name="label_total">Total:%1$s</string>
     <string name="requisition_delete_failed">Delete failed</string>
+
+    <!-- Signature -->
+    <string name="dialog_request_signature">Enter your initials to sign the movement</string>
+    <string name="dialog_request_signature_cancel">Cancel</string>
+    <string name="dialog_request_signature_sign">Approve</string>
+    <string name="label_physical_inventory_signature_title">Enter your initials to sign all inventory movements</string>
+    <string name="hint_signature_error_message">Please enter your initials(Minimum 2 characters)</string>
 
     <!-- Archived Drugs -->
     <string name="menu_archive_drug">Archive stock card</string>

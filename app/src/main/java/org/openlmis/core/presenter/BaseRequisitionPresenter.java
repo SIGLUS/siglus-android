@@ -21,7 +21,6 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RnRForm;
@@ -158,7 +157,7 @@ public abstract class BaseRequisitionPresenter implements Presenter {
             @Override
             public void onError(Throwable e) {
                 view.loaded();
-                view.showErrorMessage(context.getString(R.string.hint_save_failed));
+                view.showSaveErrorMessage();
             }
 
             @Override
@@ -224,7 +223,7 @@ public abstract class BaseRequisitionPresenter implements Presenter {
             @Override
             public void onError(Throwable e) {
                 view.loaded();
-                view.showErrorMessage(context.getString(R.string.hint_complete_failed));
+                view.showCompleteErrorMessage();
             }
 
             @Override
@@ -310,5 +309,9 @@ public abstract class BaseRequisitionPresenter implements Presenter {
         void showMessageNotifyDialog();
 
         void saveSuccess();
+
+        void showSaveErrorMessage();
+
+        void showCompleteErrorMessage();
     }
 }
