@@ -33,6 +33,33 @@
         <item name="android:minWidth">60dp</item>
     </style>
 
+    <style name="Card" />
+    <style name="Card.Padded">
+        <item name="android:layout_marginLeft">@dimen/margin_small</item>
+        <item name="android:layout_marginRight">@dimen/margin_small</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+    </style>
+    <style name="Card.Container">
+        <item name="android:padding">@dimen/padding_normal</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="ArchivedCard" />
+    <style name="ArchivedCard.ProductName" parent="Text.Black.Medium"/>
+    <style name="ArchivedCard.ProductUnit" parent="Text.Gray.Normal"/>
+    <style name="ArchivedCard.Label" parent="Text.Gray.Regular" />
+    <style name="ArchivedCard.ViewHistory" parent="Text.Blue.Regular">
+       <item name="android:drawablePadding">@dimen/padding_small</item>
+       <item name="android:drawableStart">@drawable/ic_history_blue</item>
+       <item name="android:paddingBottom">@dimen/padding_small</item>
+       <item name="android:paddingTop">@dimen/padding_small</item>
+    </style>
+    <style name="ArchivedCard.ArchiveBack" parent="Text.Blue.Regular">
+        <item name="android:layout_marginStart">@dimen/margin_medium</item>
+        <item name="android:paddingTop">@dimen/padding_normal</item>
+    </style>
+
     <style name="Inventory" />
     <style name="Inventory.TextTotal" parent="Text.Gray.Normal">
         <item name="android:paddingEnd">@dimen/padding_normal</item>
@@ -194,6 +221,21 @@
     </style>
     <style name="StockList.HorizontalDivider" parent="HorizontalLine">
         <item name="android:background">@color/color_primary_dark</item>
+    </style>
+
+    <style name="ExpiryDate"/>
+    <style name="ExpiryDate.Container">
+        <item name="android:background">@drawable/expire_date_bg</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+    <style name="ExpiryDate.ExpiryText" parent="Text.Black.Regular">
+        <item name="android:layout_marginStart">5dp</item>
+        <item name="android:textColor">@color/color_black</item>
+    </style>
+    <style name="ExpiryDate.ClearIcon" parent="Text.Black.Regular">
+        <item name="android:layout_marginStart">@dimen/margin_normal</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:src">@drawable/ic_clear</item>
     </style>
 
 

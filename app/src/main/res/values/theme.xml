@@ -36,6 +36,10 @@
         <item name="android:textColor">@color/color_text_primary</item>
     </style>
 
+    <style name="Text.Black.Regular">
+        <item name="android:textSize">@dimen/font_size_regular</item>
+    </style>
+
     <style name="Text.Black.Large">
         <item name="android:textSize">@dimen/font_size_large</item>
     </style>
@@ -50,6 +54,10 @@
 
     <style name="Text.Gray">
         <item name="android:textColor">@color/color_text_secondary</item>
+    </style>
+
+    <style name="Text.Gray.Regular">
+        <item name="android:textSize">@dimen/font_size_regular</item>
     </style>
 
     <style name="Text.Gray.Normal">
@@ -78,6 +86,10 @@
 
     <style name="Text.Blue">
         <item name="android:textColor">@color/color_accent</item>
+    </style>
+
+    <style name="Text.Blue.Regular">
+        <item name="android:textSize">@dimen/font_size_regular</item>
     </style>
 
     <style name="Text.Blue.Normal">
