@@ -63,7 +63,7 @@
     <string name="label_regime_header_name">Therapeutic Regime</string>
     <string name="label_total_mmia">Total</string>
     <string name="label_mmia_info_header_name">TYPE</string>
-    <string name="label_mmia_speed_info_header">Quantity of patients on ART</string>
+    <string name="label_mmia_speed_info_header">Number of patients on ART</string>
     <string name="hint_mmia_comment">Observations</string>
     <string name="btn_complete">Complete</string>
     <string name="btn_submit">Submit for Approval</string>

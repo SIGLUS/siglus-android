@@ -51,7 +51,7 @@
     <string name="label_regime_header_name">REGIME TERAPÊUTICO</string>
     <string name="label_total_mmia">Total</string>
     <string name="label_mmia_info_header_name">TIPO</string>
-    <string name="label_mmia_speed_info_header">Quantificaçāo dos doentes em TARV</string>
+    <string name="label_mmia_speed_info_header">Número de pacientes em TARV</string>
     <string name="hint_mmia_comment">Observações</string>
     <string name="btn_complete">Completar</string>
     <string name="btn_submit">Submeter para aprovação</string>
