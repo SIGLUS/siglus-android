@@ -113,24 +113,43 @@ public class HomeActivityTest {
     }
 
     @Test
-    public void shouldShowLastSyncedTimeCorrectly() {
+    public void shouldShowRnrFormLastSyncedTimeCorrectly() {
         SharedPreferences sharedPreferences = RuntimeEnvironment.application.getSharedPreferences(SharedPreferenceMgr.MY_PREFERENCE, Context.MODE_PRIVATE);
-        sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME, new Date().getTime() - 20 * DateUtil.MILLISECONDS_MINUTE).apply();
+        sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, new Date().getTime() - 20 * DateUtil.MILLISECONDS_MINUTE).apply();
 
         homeActivity.onResume();
-        assertThat(homeActivity.txLastSynced.getText().toString(), equalTo(homeActivity.getString(R.string.label_last_synced_mins_ago, "20")));
+        assertThat(homeActivity.txLastSyncedRnrForm.getText().toString(), equalTo(homeActivity.getString(R.string.label_rnr_form_last_synced_mins_ago, "20")));
 
-        sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME, new Date().getTime() - 20 * DateUtil.MILLISECONDS_HOUR).apply();
-
-        homeActivity.onResume();
-        assertThat(homeActivity.txLastSynced.getText().toString(), equalTo(homeActivity.getString(R.string.label_last_synced_hours_ago, "20")));
-
-
-        sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME, new Date().getTime() - 20 * DateUtil.MILLISECONDS_DAY).apply();
+        sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, new Date().getTime() - 20 * DateUtil.MILLISECONDS_HOUR).apply();
 
         homeActivity.onResume();
-        assertThat(homeActivity.txLastSynced.getText().toString(), equalTo(homeActivity.getString(R.string.label_last_synced_days_ago, "20")));
+        assertThat(homeActivity.txLastSyncedRnrForm.getText().toString(), equalTo(homeActivity.getString(R.string.label_rnr_form_last_synced_hours_ago, "20")));
 
+
+        sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, new Date().getTime() - 20 * DateUtil.MILLISECONDS_DAY).apply();
+
+        homeActivity.onResume();
+        assertThat(homeActivity.txLastSyncedRnrForm.getText().toString(), equalTo(homeActivity.getString(R.string.label_rnr_form_last_synced_days_ago, "20")));
+    }
+
+    @Test
+    public void shouldShowStockCardLastSyncedTimeCorrectly() {
+        SharedPreferences sharedPreferences = RuntimeEnvironment.application.getSharedPreferences(SharedPreferenceMgr.MY_PREFERENCE, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, new Date().getTime() - 20 * DateUtil.MILLISECONDS_MINUTE).apply();
+
+        homeActivity.onResume();
+        assertThat(homeActivity.txLastSyncedStockCard.getText().toString(), equalTo(homeActivity.getString(R.string.label_stock_card_last_synced_mins_ago, "20")));
+
+        sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, new Date().getTime() - 20 * DateUtil.MILLISECONDS_HOUR).apply();
+
+        homeActivity.onResume();
+        assertThat(homeActivity.txLastSyncedStockCard.getText().toString(), equalTo(homeActivity.getString(R.string.label_stock_card_last_synced_hours_ago, "20")));
+
+
+        sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, new Date().getTime() - 20 * DateUtil.MILLISECONDS_DAY).apply();
+
+        homeActivity.onResume();
+        assertThat(homeActivity.txLastSyncedStockCard.getText().toString(), equalTo(homeActivity.getString(R.string.label_stock_card_last_synced_days_ago, "20")));
     }
 
     private void verifyNextPage(String className) {

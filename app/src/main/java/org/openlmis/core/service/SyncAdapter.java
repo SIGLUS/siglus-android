@@ -65,18 +65,26 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         boolean rnRSynced = syncManager.syncRnr();
 
-        boolean stockCardSynced = true;
+        boolean stockCardSynced = false;
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_stock_card_279)){
             stockCardSynced = syncManager.syncStockCards();
         }
 
-        if (rnRSynced && stockCardSynced) {
-            recordLastSyncedTime();
+        if (rnRSynced) {
+            recordRnrFormLastSyncedTime();
+        }
+
+        if (stockCardSynced) {
+            recordStockCardLastSyncedTime();
         }
     }
 
-    private void recordLastSyncedTime(){
-        sharedPreferenceMgr.getPreference().edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME, new Date().getTime()).apply();
+    private void recordRnrFormLastSyncedTime(){
+        sharedPreferenceMgr.getPreference().edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, new Date().getTime()).apply();
+    }
+
+    private void recordStockCardLastSyncedTime(){
+        sharedPreferenceMgr.getPreference().edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, new Date().getTime()).apply();
     }
 
 }

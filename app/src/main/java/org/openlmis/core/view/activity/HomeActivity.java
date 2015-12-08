@@ -65,8 +65,11 @@ public class HomeActivity extends BaseActivity {
     @InjectView(R.id.btn_sync_data)
     Button btnSyncData;
 
-    @InjectView(R.id.tx_last_synced)
-    TextView txLastSynced;
+    @InjectView(R.id.tx_last_synced_rnrform)
+    TextView txLastSyncedRnrForm;
+
+    @InjectView(R.id.tx_last_synced_stockcard)
+    TextView txLastSyncedStockCard;
 
     @InjectView(R.id.btn_mmia_list)
     Button btnMMIAList;
@@ -129,11 +132,12 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        showLastSyncedTime();
+        showRnrFormLastSyncedTime();
+        showStockCardLastSyncedTime();
     }
 
-    private void showLastSyncedTime() {
-        long lastSyncedTimestamp = getPreferences().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME, 0);
+    private void showRnrFormLastSyncedTime() {
+        long lastSyncedTimestamp = getPreferences().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, 0);
         if (lastSyncedTimestamp == 0) {
             return;
         }
@@ -143,11 +147,30 @@ public class HomeActivity extends BaseActivity {
         long diff = currentTimestamp - lastSyncedTimestamp;
 
         if (diff < DateUtil.MILLISECONDS_HOUR) {
-            txLastSynced.setText(getResources().getString(R.string.label_last_synced_mins_ago, (diff / DateUtil.MILLISECONDS_MINUTE)));
+            txLastSyncedRnrForm.setText(getResources().getString(R.string.label_rnr_form_last_synced_mins_ago, (diff / DateUtil.MILLISECONDS_MINUTE)));
         } else if (diff < DateUtil.MILLISECONDS_DAY) {
-            txLastSynced.setText(getResources().getString(R.string.label_last_synced_hours_ago, (diff / DateUtil.MILLISECONDS_HOUR)));
+            txLastSyncedRnrForm.setText(getResources().getString(R.string.label_rnr_form_last_synced_hours_ago, (diff / DateUtil.MILLISECONDS_HOUR)));
         } else {
-            txLastSynced.setText(getResources().getString(R.string.label_last_synced_days_ago, (diff / DateUtil.MILLISECONDS_DAY)));
+            txLastSyncedRnrForm.setText(getResources().getString(R.string.label_rnr_form_last_synced_days_ago, (diff / DateUtil.MILLISECONDS_DAY)));
+        }
+    }
+
+    private void showStockCardLastSyncedTime() {
+        long lastSyncedTimestamp = getPreferences().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, 0);
+        if (lastSyncedTimestamp == 0) {
+            return;
+        }
+
+        long currentTimestamp = new Date().getTime();
+
+        long diff = currentTimestamp - lastSyncedTimestamp;
+
+        if (diff < DateUtil.MILLISECONDS_HOUR) {
+            txLastSyncedStockCard.setText(getResources().getString(R.string.label_stock_card_last_synced_mins_ago, (diff / DateUtil.MILLISECONDS_MINUTE)));
+        } else if (diff < DateUtil.MILLISECONDS_DAY) {
+            txLastSyncedStockCard.setText(getResources().getString(R.string.label_stock_card_last_synced_hours_ago, (diff / DateUtil.MILLISECONDS_HOUR)));
+        } else {
+            txLastSyncedStockCard.setText(getResources().getString(R.string.label_stock_card_last_synced_days_ago, (diff / DateUtil.MILLISECONDS_DAY)));
         }
     }
 
