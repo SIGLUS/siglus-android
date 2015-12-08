@@ -36,9 +36,12 @@
     <string name="label_mmia">Elaborar MMIA</string>
     <string name="label_sync">Sincronizar dados</string>
     <string name="action_add_new_drug">Adicionar novo producto</string>
-    <string name="label_last_synced_mins_ago">Última sincronização há %s minutos</string>
-    <string name="label_last_synced_hours_ago">Última sincronização há %s horas</string>
-    <string name="label_last_synced_days_ago">Última sincronização há %s dias</string>
+    <string name="label_rnr_form_last_synced_mins_ago">Última sincronização da Requisição %s minutos atraz</string>
+    <string name="label_rnr_form_last_synced_hours_ago">Última sincronização da Requisição %s Horas atraz</string>
+    <string name="label_rnr_form_last_synced_days_ago">Última sincronização da Requisição %s dias atraz</string>
+    <string name="label_stock_card_last_synced_mins_ago">Última sincronização das Fichas de Stock %s minutos atraz</string>
+    <string name="label_stock_card_last_synced_hours_ago">Última sincronização das Fichas de Stock %s Horas atraz</string>
+    <string name="label_stock_card_last_synced_days_ago">Última sincronização das Fichas de Stock %s dias atraz</string>
     <string name="msg_back_twice_to_exit">Pressione o botão "voltar" duas vezes para sair</string>
     <string name="action_sign_out">Sair</string>
 

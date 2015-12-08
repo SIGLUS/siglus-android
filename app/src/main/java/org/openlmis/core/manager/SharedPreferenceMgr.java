@@ -30,7 +30,8 @@ public class SharedPreferenceMgr {
     public static final String MY_PREFERENCE = "LMISPreference";
     SharedPreferences sharedPreferences;
 
-    public static final String KEY_LAST_SYNCED_TIME = "lastSyncedDate";
+    public static final String KEY_LAST_SYNCED_TIME_RNR_FORM = "lastSyncedDate";
+    public static final String KEY_LAST_SYNCED_TIME_STOCKCARD = "lastSyncedDateStockCard";
     public static final String KEY_LAST_LOGIN_USER = "last_user";
     public static final String KEY_INIT_INVENTORY = "init_inventory";
     public static final String KEY_HAS_GET_PRODUCTS = "has_get_products";

@@ -51,9 +51,9 @@ import java.util.List;
 
 import roboguice.RoboGuice;
 
-import static junit.framework.Assert.assertNull;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -100,16 +100,6 @@ public class RnrFormAdapterTest {
 
         JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
         assertThat(rnrJson.getAsJsonObject().get("clientSubmittedTime").toString(), is("\"2015-10-14 01:01:11\""));
-    }
-
-    @Test
-    public void shouldSerializeRnrFormWithoutSubmittedTime() throws Exception {
-        UserInfoMgr.getInstance().setUser(new User("user", "password"));
-
-        rnRForm.setSubmittedTime(null);
-
-        JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
-        assertNull(rnrJson.getAsJsonObject().get("clientSubmittedTime"));
     }
 
     @Test
@@ -234,6 +224,17 @@ public class RnrFormAdapterTest {
         assertThat(baseInfoItem.getValue(), is("30"));
 
         assertThat(rnRForm.getSubmittedTime(), is(new Date(1445937080000L)));
+    }
+
+
+    @Test
+    public void shouldSerializeRnrFormWithoutSubmittedTime() throws Exception {
+        UserInfoMgr.getInstance().setUser(new User("user", "password"));
+
+        rnRForm.setSubmittedTime(null);
+
+        JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
+        assertNull(rnrJson.getAsJsonObject().get("clientSubmittedTime"));
     }
 
     public class MyTestModule extends AbstractModule {

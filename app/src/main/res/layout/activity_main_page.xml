@@ -62,11 +62,19 @@
             android:text="@string/label_sync" />
 
         <TextView
-            android:id="@+id/tx_last_synced"
+            android:id="@+id/tx_last_synced_rnrform"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="bottom|center_horizontal"
             android:textColor="@color/secondary_text"
-            android:textSize="28sp" />
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tx_last_synced_stockcard"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom|center_horizontal"
+            android:textColor="@color/secondary_text"
+            android:textSize="18sp" />
     </LinearLayout>
 </ScrollView>
