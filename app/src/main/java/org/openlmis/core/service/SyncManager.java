@@ -28,6 +28,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.NoFacilityForUserException;
@@ -240,6 +241,7 @@ public class SyncManager {
     }
 
     protected void fetchAndSaveRequisitionData() throws LMISException {
+
         SyncBackRequisitionsResponse syncBackRequisitionsResponse = lmisRestApi.fetchRequisitions(UserInfoMgr.getInstance().getUser().getFacilityCode());
         if (syncBackRequisitionsResponse == null) {
             throw new LMISException("Can't get SyncBackRequisitionsResponse, you can check json parse to POJO logic");
@@ -354,6 +356,9 @@ public class SyncManager {
     }
 
     public void fetchStockCardsData(Observer<Void> observer, final boolean isSyncMonth) {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)) {
+            return;
+        }
         rx.Observable.create(new rx.Observable.OnSubscribe<Void>() {
 
             @Override

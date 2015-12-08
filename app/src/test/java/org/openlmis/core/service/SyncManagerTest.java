@@ -196,16 +196,6 @@ public class SyncManagerTest {
     }
 
     @Test
-    public void shouldTestObservable() {
-        TestSubscriber testSubscriber = new TestSubscriber();
-      syncManager.fetchStockCardsData(testSubscriber,true);
-
-        testSubscriber.awaitTerminalEvent();
-
-        //xxxx assert
-    }
-
-    @Test
     public void shouldSetTypeAndCustomPropsAfterNewStockMovementEntry() throws LMISException, ParseException {
         StockCard stockCard = createTestStockCardData();
         StockMovementItem stockMovementItem = stockCard.getForeignStockMovementItems().iterator().next();
