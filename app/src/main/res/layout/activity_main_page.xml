@@ -1,80 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
+        style="@style/Home.Container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:layout_height="wrap_content">
 
         <Button
             android:id="@+id/btn_stock_card"
-            style="@style/home_page_button"
-            android:layout_marginTop="20dp"
+            style="@style/Home.Button"
             android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
-            android:text="@string/label_stock_cards"
             android:onClick="onClickStockCard"
-            android:layout_marginBottom="@dimen/homepage_group_margin"/>
+            android:text="@string/label_stock_cards" />
 
         <Button
             android:id="@+id/btn_inventory"
-            style="@style/home_page_button"
+            style="@style/Home.Button"
+            android:layout_marginTop="@dimen/margin_medium"
             android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
-            android:text="@string/label_inventory"
             android:onClick="onClickInventory"
-            android:layout_marginBottom="@dimen/homepage_group_margin"/>
+            android:text="@string/label_inventory" />
 
         <Button
             android:id="@+id/btn_mmia"
-            style="@style/home_page_button"
+            style="@style/Home.Button"
+            android:layout_marginTop="@dimen/margin_medium"
             android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
             android:onClick="onClickMMIA"
-            android:text="@string/label_mmia"/>
+            android:text="@string/label_mmia" />
 
-        <Button android:id="@+id/btn_mmia_list"
+        <Button
+            android:id="@+id/btn_mmia_list"
+            style="@style/Home.Button"
+            android:layout_marginTop="@dimen/margin_small"
             android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
-            style="@style/home_page_button"
-            android:text="@string/btn_mmia_list"
             android:onClick="onClickMMIAHistory"
-            android:layout_marginBottom="@dimen/homepage_group_margin"/>
+            android:text="@string/btn_mmia_list" />
 
         <Button
             android:id="@+id/btn_requisition"
-            style="@style/home_page_button"
+            style="@style/Home.Button"
+            android:layout_marginTop="@dimen/margin_medium"
             android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
             android:onClick="onClickRequisition"
             android:text="@string/title_requisition" />
 
-        <Button android:id="@+id/btn_via_list"
+        <Button
+            android:id="@+id/btn_via_list"
+            style="@style/Home.Button"
+            android:layout_marginTop="@dimen/margin_small"
             android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
-            style="@style/home_page_button"
-            android:text="@string/btn_requisition_list"
             android:onClick="onClickVIAHistory"
-            android:layout_marginBottom="@dimen/homepage_group_margin"/>
+            android:text="@string/btn_requisition_list" />
 
         <Button
             android:id="@+id/btn_sync_data"
-            style="@style/home_page_button"
+            style="@style/Home.Button"
+            android:layout_marginTop="@dimen/margin_medium"
             android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
             android:onClick="onClickSyncData"
             android:text="@string/label_sync" />
 
         <TextView
             android:id="@+id/tx_last_synced_rnrform"
+            style="@style/Home.SyncText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="bottom|center_horizontal"
-            android:textColor="@color/secondary_text"
-            android:textSize="18sp" />
+            android:layout_marginTop="@dimen/margin_medium"
+            tools:text="Last synced 34 minutes" />
 
         <TextView
             android:id="@+id/tx_last_synced_stockcard"
+            style="@style/Home.SyncText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="bottom|center_horizontal"
-            android:textColor="@color/secondary_text"
-            android:textSize="18sp" />
+            tools:text="Last synced 34 minutes" />
+
     </LinearLayout>
 </ScrollView>

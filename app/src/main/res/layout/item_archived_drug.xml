@@ -1,64 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Card.Padded"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    android:layout_marginTop="5dp"
-    android:layout_marginBottom="5dp">
+    android:layout_height="wrap_content">
 
     <LinearLayout
+        style="@style/Card.Container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/product_name"
+            style="@style/ArchivedCard.ProductName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/primary_dark_material_dark"
-            android:textSize="20sp"
             tools:text="@string/label_dummy_product" />
 
         <TextView
             android:id="@+id/product_unit"
+            style="@style/ArchivedCard.ProductUnit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/secondary_text"
-            android:textSize="16sp"
             tools:text="@string/label_dummy_unit" />
 
         <TextView
+            style="@style/ArchivedCard.Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp"
-            android:textColor="@color/secondary_text"
-            android:textSize="14sp"
+            android:layout_marginTop="@dimen/margin_small"
             android:text="@string/label_removed_drug_from_stock" />
 
         <TextView
             android:id="@+id/action_view_history"
+            style="@style/ArchivedCard.ViewHistory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:textColor="@color/color_accent"
-            android:textSize="14sp"
-            android:drawableStart="@drawable/ic_history_blue"
-            android:drawablePadding="6dp"
+            android:layout_marginTop="@dimen/margin_small"
             android:text="@string/label_view_movement_history" />
 
         <TextView
             android:id="@+id/action_archive_back"
+            style="@style/ArchivedCard.ArchiveBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:layout_marginStart="24dp"
-            android:textColor="@color/color_accent"
-            android:textSize="14sp"
             android:text="@string/label_add_drug_to_stock" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

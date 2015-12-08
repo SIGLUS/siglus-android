@@ -1,28 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/ItemRegime.Container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:divider="@drawable/divider_vertical"
-    android:orientation="horizontal"
-    android:showDividers="middle">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/tv_name"
-        style="@style/mmia_spread_list_item"
+        style="@style/ItemRegime.Text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:labelFor="@+id/et_total" />
 
-
     <EditText
         android:id="@+id/et_total"
-        style="@style/mmia_spread_list_item"
+        style="@style/ItemRegime.EditText"
         android:layout_width="@dimen/mmia_spread_item_common_width"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:maxLength="7"
-        android:numeric="integer"
-        android:saveEnabled="false"
-        android:imeOptions="actionNext"/>
+        android:layout_height="wrap_content" />
 </LinearLayout>

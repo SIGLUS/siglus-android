@@ -95,7 +95,7 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
     }
 
     private void showEnabledAmount(View view) {
-        view.setBackgroundColor(context.getResources().getColor(R.color.white));
+        view.setBackgroundColor(context.getResources().getColor(R.color.color_white));
         view.setEnabled(true);
     }
 

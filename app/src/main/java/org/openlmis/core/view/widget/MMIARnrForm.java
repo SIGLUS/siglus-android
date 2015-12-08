@@ -195,7 +195,7 @@ public class MMIARnrForm extends LinearLayout {
     private void setLeftViewColor(String medicineType, View view) {
         switch (medicineType) {
             case Product.MEDICINE_TYPE_ADULT:
-                view.setBackgroundResource(R.color.color_regime_adult);
+                view.setBackgroundResource(R.color.color_green_light);
                 break;
             case Product.MEDICINE_TYPE_BABY:
                 view.setBackgroundResource(R.color.color_regime_baby);

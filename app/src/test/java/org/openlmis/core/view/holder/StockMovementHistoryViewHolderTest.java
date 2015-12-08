@@ -81,7 +81,7 @@ public class StockMovementHistoryViewHolderTest {
     public void shouldSetFontColorBlackIfNotInventoryAdjustment() {
         viewHolder.populate(viewModel);
 
-        int blackColor = RuntimeEnvironment.application.getResources().getColor(R.color.black);
+        int blackColor = RuntimeEnvironment.application.getResources().getColor(R.color.color_black);
 
         assertEquals(blackColor, viewHolder.txMovementDate.getCurrentTextColor());
         assertEquals(blackColor, viewHolder.txReason.getCurrentTextColor());
@@ -97,7 +97,7 @@ public class StockMovementHistoryViewHolderTest {
         viewModel.setReason(new MovementReason(StockMovementItem.MovementType.PHYSICAL_INVENTORY, "INVENTORY", ""));
         viewHolder.populate(viewModel);
 
-        int redColor = RuntimeEnvironment.application.getResources().getColor(R.color.red);
+        int redColor = RuntimeEnvironment.application.getResources().getColor(R.color.color_red);
 
         assertEquals(redColor, viewHolder.txMovementDate.getCurrentTextColor());
         assertEquals(redColor, viewHolder.txReason.getCurrentTextColor());
@@ -113,7 +113,7 @@ public class StockMovementHistoryViewHolderTest {
         viewModel.setReason(new MovementReason(StockMovementItem.MovementType.NEGATIVE_ADJUST, MovementReasonManager.INVENTORY_NEGATIVE, ""));
         viewHolder.populate(viewModel);
 
-        int redColor = RuntimeEnvironment.application.getResources().getColor(R.color.red);
+        int redColor = RuntimeEnvironment.application.getResources().getColor(R.color.color_red);
 
         assertEquals(redColor, viewHolder.txMovementDate.getCurrentTextColor());
         assertEquals(redColor, viewHolder.txReason.getCurrentTextColor());
@@ -129,7 +129,7 @@ public class StockMovementHistoryViewHolderTest {
         viewModel.setReason(new MovementReason(StockMovementItem.MovementType.POSITIVE_ADJUST, MovementReasonManager.INVENTORY_POSITIVE, ""));
         viewHolder.populate(viewModel);
 
-        int redColor = RuntimeEnvironment.application.getResources().getColor(R.color.red);
+        int redColor = RuntimeEnvironment.application.getResources().getColor(R.color.color_red);
 
         assertEquals(redColor, viewHolder.txMovementDate.getCurrentTextColor());
         assertEquals(redColor, viewHolder.txReason.getCurrentTextColor());
@@ -147,7 +147,7 @@ public class StockMovementHistoryViewHolderTest {
         viewModel.setIssued(null);
         viewHolder.populate(viewModel);
 
-        int redColor = RuntimeEnvironment.application.getResources().getColor(R.color.red);
+        int redColor = RuntimeEnvironment.application.getResources().getColor(R.color.color_red);
 
         assertEquals(redColor, viewHolder.txMovementDate.getCurrentTextColor());
         assertEquals(redColor, viewHolder.txReason.getCurrentTextColor());

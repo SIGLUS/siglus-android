@@ -5,15 +5,9 @@
 
     <LinearLayout
         android:id="@+id/title_panel"
+        style="@style/StockMovement.TitlePanel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:background="@drawable/border_bg"
-        android:divider="@drawable/divider_horizontal"
-        android:orientation="vertical"
-        android:showDividers="middle">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,79 +20,51 @@
                 android:src="@drawable/stock_card_icon" />
 
             <TextView
+                style="@style/Text.Black.Large.Bold"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@string/title_stock_movement"
-                android:textColor="@color/primary_text"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:text="@string/title_stock_movement" />
         </LinearLayout>
 
         <LinearLayout
+            style="@style/Divider.Vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@drawable/divider_vertical"
-            android:showDividers="middle">
+            android:layout_height="wrap_content">
 
             <TextView
-                style="@style/sheet_header2"
+                style="@style/ItemMovement.CellText"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:text="@string/label_cmm"
                 android:visibility="gone" />
 
             <TextView
-                style="@style/sheet_header2"
+                style="@style/ItemMovement.CellText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/label_validate_period" />
         </LinearLayout>
 
         <LinearLayout
+            style="@style/Divider.Vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@drawable/divider_vertical"
-            android:showDividers="middle">
+            android:layout_height="wrap_content">
 
             <EditText
-                style="@style/sheet_header2"
+                style="@style/ItemMovement.CellText"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:visibility="gone" />
 
             <org.openlmis.core.view.widget.ExpireDateViewGroup
                 android:id="@+id/vg_expire_date_container"
+                style="@style/StockMovement.ExpiryDates"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="8dp">
-
-            </org.openlmis.core.view.widget.ExpireDateViewGroup>
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
     </LinearLayout>
-
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/action_panel"
-        android:layout_below="@+id/title_panel"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp">
-
-        <ListView
-            android:id="@+id/list_stock_movement"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@drawable/border_bg"
-            android:divider="@drawable/divider_horizontal"
-            android:paddingRight="-10dp" />
-
-    </HorizontalScrollView>
 
     <include
         android:id="@+id/action_panel"
@@ -106,4 +72,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" />
+
+    <HorizontalScrollView
+        style="@style/StockMovement.Panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/action_panel"
+        android:layout_below="@id/title_panel">
+
+        <ListView
+            android:id="@+id/list_stock_movement"
+            style="@style/StockMovement.List"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+    </HorizontalScrollView>
+
 </RelativeLayout>

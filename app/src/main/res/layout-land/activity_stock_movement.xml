@@ -2,72 +2,68 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp">
+    android:paddingLeft="@dimen/padding_small"
+    android:paddingRight="@dimen/padding_small">
 
-    <LinearLayout android:id="@+id/title_panel"
+    <LinearLayout
+        android:id="@+id/title_panel"
+        style="@style/StockMovement.TitlePanel.Land"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/border_bg"
-        android:divider="@drawable/divider_horizontal"
-        android:showDividers="middle"
-        android:layout_marginTop="10dp">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:src="@drawable/stock_card_icon"/>
+                android:src="@drawable/stock_card_icon" />
 
             <TextView
+                style="@style/Text.Black.Large.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="@string/title_stock_movement"
-                android:textSize="24sp"
-                android:textColor="@color/primary_text"
-                android:textStyle="bold"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:text="@string/title_stock_movement" />
         </LinearLayout>
 
         <LinearLayout
+            style="@style/Divider.Vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@drawable/divider_vertical"
-            android:showDividers="middle">
+            android:layout_height="wrap_content">
+
             <TextView
+                style="@style/ItemMovement.CellText"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:text="@string/label_cmm"
-                style="@style/sheet_header2"
-                android:visibility="gone"/>
+                android:visibility="gone" />
+
             <TextView
+                style="@style/ItemMovement.CellText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/label_validate_period"
-                style="@style/sheet_header2"/>
+                android:text="@string/label_validate_period" />
         </LinearLayout>
 
         <LinearLayout
+            style="@style/Divider.Vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@drawable/divider_vertical"
-            android:showDividers="middle">
+            android:layout_height="wrap_content">
+
             <EditText
+                style="@style/ItemMovement.CellText"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                style="@style/sheet_header2"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <org.openlmis.core.view.widget.ExpireDateViewGroup
                 android:id="@+id/vg_expire_date_container"
+                style="@style/StockMovement.ExpiryDates"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="@dimen/abc_list_item_padding_horizontal_material"/>
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 

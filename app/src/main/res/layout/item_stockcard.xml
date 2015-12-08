@@ -1,36 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/ItemStock.Container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/color_item_bg"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:paddingBottom="1dp">
-
+    android:baselineAligned="false">
 
     <LinearLayout
+        style="@style/ItemStock.ProductContainer"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:layout_weight="1"
-        android:background="@color/white"
-        android:orientation="vertical"
-        android:padding="8dp">
+        android:layout_weight="1">
 
         <TextView
             android:id="@+id/product_name"
+            style="@style/Text.Black.Normal.Bold"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/primary_text"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/product_unit"
+            style="@style/Text.Black.Normal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/primary_text"
-            android:textSize="16sp" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <RelativeLayout
@@ -45,20 +37,15 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:padding="5dp"
-            android:visibility="gone"
-            android:src="@drawable/ic_warning" />
+            android:src="@drawable/ic_warning"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_stock_on_hand"
+            style="@style/ItemStock.TextSOH"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toEndOf="@+id/iv_warning"
-            android:gravity="center_vertical|end"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:textColor="@color/primary_text"
-            android:textSize="18sp" />
-
+            android:layout_toEndOf="@+id/iv_warning" />
 
     </RelativeLayout>
 

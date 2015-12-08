@@ -173,10 +173,10 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @Override
     public void highLightApprovedAmount() {
         headerRequestAmount.setBackgroundResource(android.R.color.transparent);
-        headerRequestAmount.setTextColor(getResources().getColor(R.color.primary_text));
+        headerRequestAmount.setTextColor(getResources().getColor(R.color.color_text_primary));
 
         headerApproveAmount.setBackgroundResource(R.color.color_accent);
-        headerApproveAmount.setTextColor(getResources().getColor(R.color.white));
+        headerApproveAmount.setTextColor(getResources().getColor(R.color.color_white));
 
         requisitionFormAdapter.updateStatus(RnRForm.STATUS.SUBMITTED);
     }
@@ -184,10 +184,10 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @Override
     public void highLightRequestAmount() {
         headerRequestAmount.setBackgroundResource(R.color.color_accent);
-        headerRequestAmount.setTextColor(getResources().getColor(R.color.white));
+        headerRequestAmount.setTextColor(getResources().getColor(R.color.color_white));
 
         headerApproveAmount.setBackgroundResource(android.R.color.transparent);
-        headerApproveAmount.setTextColor(getResources().getColor(R.color.primary_text));
+        headerApproveAmount.setTextColor(getResources().getColor(R.color.color_text_primary));
 
         requisitionFormAdapter.updateStatus(RnRForm.STATUS.DRAFT);
     }

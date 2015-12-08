@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    style="@style/ItemRequisition.Container.Body"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:divider="@drawable/divider_vertical"
-    android:showDividers="middle"
-    android:gravity="center_vertical">
+    android:orientation="horizontal">
 
-    <include layout="@layout/item_requisition_body_left"
+    <include
+        layout="@layout/item_requisition_body_left"
         android:layout_width="200dp"
-        android:layout_height="wrap_content"/>
-    <include layout="@layout/item_requisition_body_right"
+        android:layout_height="wrap_content" />
+
+    <include
+        layout="@layout/item_requisition_body_right"
         android:layout_width="1200dp"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

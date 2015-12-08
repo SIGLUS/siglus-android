@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/expire_date_bg"
-    android:gravity="center_vertical"
-    android:paddingEnd="5dp"
-    android:paddingStart="5dp">
+    style="@style/ExpiryDate.Container">
 
     <TextView
         android:id="@+id/tx_expire_data"
+        style="@style/ExpiryDate.ExpiryText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black" />
+        tools:text="Dec 2015"/>
 
     <ImageView
         android:id="@+id/iv_clear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:padding="5dp"
-        android:src="@drawable/ic_clear" />
+        style="@style/ExpiryDate.ClearIcon" />
 </LinearLayout>

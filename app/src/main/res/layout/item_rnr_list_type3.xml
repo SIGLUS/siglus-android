@@ -5,8 +5,5 @@
         <TextView android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/card_view_padding"
-            android:paddingStart="20dp"
-            android:textSize="18sp"
-            android:textColor="@color/secondary_text"/>
+            style="@style/ItemRnr.TitleText.Type3"/>
 </LinearLayout>

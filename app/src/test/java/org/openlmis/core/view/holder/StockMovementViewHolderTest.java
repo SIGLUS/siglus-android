@@ -110,7 +110,7 @@ public class StockMovementViewHolderTest {
     public void shouldSetFontColorBlackIfNotInventoryAdjustment() {
         viewHolder.populate(viewModel, stockCard);
 
-        int blackColor = RuntimeEnvironment.application.getResources().getColor(R.color.black);
+        int blackColor = RuntimeEnvironment.application.getResources().getColor(R.color.color_black);
 
         assertEquals(blackColor, viewHolder.txMovementDate.getCurrentTextColor());
         assertEquals(blackColor, viewHolder.txReason.getCurrentTextColor());

@@ -3,30 +3,36 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="margin_normal">16dp</dimen>
     <dimen name="mmia_spread_item_common_width">65dp</dimen>
     <dimen name="divider">1dp</dimen>
     <dimen name="stock_movement_item_common_width">100dp</dimen>
-    <dimen name="list_item_padding">12dp</dimen>
-    <dimen name="card_view_margin">16dp</dimen>
-    <dimen name="card_view_padding">8dp</dimen>
-    <dimen name="rnr_card_content_margin_left">37dp</dimen>
-    <dimen name="rnr_card_content_text_size">12sp</dimen>
-
-    <dimen name="homepage_button_margin">8dp</dimen>
-    <dimen name="homepage_group_margin">24dp</dimen>
 
     <dimen name="default_button_height">36dp</dimen>
     <dimen name="default_button_bar_height">52dp</dimen>
-    <dimen name="default_button_font">14sp</dimen>
-    <dimen name="default_action_button_margin">8dp</dimen>
-    <dimen name="default_action_bar_padding_left_and_right">55dp</dimen>
-    <dimen name="default_action_bar_padding_top_and_bottom">8dp</dimen>
-
-    <dimen name="default_action_bar_margin_right">16dp</dimen>
-
-    <dimen name="signature_dialog_padding">20dp</dimen>
 
     <dimen name="search_button_width">80dp</dimen>
     <dimen name="search_button_right_margin">-20dp</dimen>
+    
+    <!--Font size-->
+    <dimen name="font_size_small">12sp</dimen>
+    <dimen name="font_size_regular">14sp</dimen>
+    <dimen name="font_size_normal">16sp</dimen>
+    <dimen name="font_size_medium">20sp</dimen>
+    <dimen name="font_size_large">24sp</dimen>
+    <dimen name="font_size_huge">34sp</dimen>
+
+    <!--Margins-->
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_normal">16dp</dimen>
+    <dimen name="margin_medium">24dp</dimen>
+    <dimen name="margin_large">32dp</dimen>
+    <dimen name="margin_larger">40dp</dimen>
+
+    <!--Paddings-->
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_normal">16dp</dimen>
+    <dimen name="padding_medium">24dp</dimen>
+    <dimen name="padding_large">32dp</dimen>
+    <dimen name="padding_larger">40dp</dimen>
+
 </resources>

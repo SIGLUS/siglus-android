@@ -141,7 +141,6 @@
     <string name="label_stock_movement_signature_title">Enter your initials to sign the movement</string>
     <string name="hint_signature">Enter your initials</string>
 
-
     <!--MMIABaseInfo-->
     <string name="label_new_patients">New</string>
     <string name="label_sustaining">Maintenance </string>

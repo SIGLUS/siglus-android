@@ -57,7 +57,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())), R.drawable.ic_description, R.color.color_draft_title, model.getForm());
                 break;
             case RnRFormViewModel.TYPE_UNSYNC:
-                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_unsynced_requisition, model.getName())), R.drawable.ic_error, R.color.color_error_title, model.getForm());
+                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_unsynced_requisition, model.getName())), R.drawable.ic_error, R.color.color_red, model.getForm());
                 break;
             case RnRFormViewModel.TYPE_HISTORICAL:
                 configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedDate())), R.drawable.ic_done, INT_UNSET, model.getForm());

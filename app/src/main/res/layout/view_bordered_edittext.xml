@@ -1,31 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/View.BoardedEdit.Container"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:divider="@drawable/divider_vertical"
-    android:gravity="center"
-    android:orientation="horizontal"
-    android:showDividers="middle">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/label"
+        style="@style/View.BoardedEdit.Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:labelFor="@+id/edit_text"
-        android:maxWidth="100dp"
-        android:minWidth="60dp"
-        android:text="@string/label_consultation"
-        android:textSize="16sp" />
+        android:text="@string/label_consultation" />
 
     <EditText
         android:id="@+id/edit_text"
+        style="@style/View.BoardedEdit.EditText"
         android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:ems="4"
-        android:inputType="text"
-        android:padding="4dp" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
