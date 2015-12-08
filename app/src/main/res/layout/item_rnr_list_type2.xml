@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/color_white"
         android:divider="@drawable/divider_horizontal_light_gray"
         android:orientation="vertical"
         android:showDividers="middle">
@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/list_item_padding"
                 android:paddingStart="@dimen/list_item_padding"
-                android:textColor="@color/black"
+                android:textColor="@color/color_black"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/rnr_card_content_margin_left"
             android:padding="@dimen/list_item_padding"
-            android:textColor="@color/black"
+            android:textColor="@color/color_black"
             android:textSize="@dimen/rnr_card_content_text_size" />
 
         <TextView

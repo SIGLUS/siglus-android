@@ -87,7 +87,7 @@ public class StockMovementAdapter extends BaseAdapter {
     }
 
     public void cleanHighLight(StockMovementViewHolder viewHolder) {
-        viewHolder.itemView.setBackgroundResource(R.color.white);
+        viewHolder.itemView.setBackgroundResource(R.color.color_white);
     }
 
     public void setMovementChangeListener(MovementChangedListener movementChangeListener) {

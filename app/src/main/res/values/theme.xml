@@ -26,6 +26,44 @@
     </style>
 
     <style name="MyActionBarTitleText" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/color_white</item>
     </style>
+
+    <!-- Basic style of TextView -->
+    <style name="Text" />
+
+    <style name="Text.Black">
+        <item name="android:textColor">@color/color_text_primary</item>
+    </style>
+
+    <style name="Text.Black.Large">
+        <item name="android:textSize">@dimen/font_size_large</item>
+    </style>
+
+    <style name="Text.Gray">
+        <item name="android:textColor">@color/color_text_secondary</item>
+    </style>
+
+    <style name="Text.Gray.Normal">
+        <item name="android:textSize">@dimen/font_size_normal</item>
+    </style>
+
+    <style name="Text.Gray.Large">
+        <item name="android:textSize">@dimen/font_size_large</item>
+    </style>
+    
+    <style name="Text.Divider">
+        <item name="android:textColor">@color/color_divider</item>
+    </style>
+
+    <style name="Text.White">
+        <item name="android:textColor">@color/color_white</item>
+    </style>
+
+    <style name="Button"/>
+    <style name="Button.Blue">
+        <item name="android:background">@drawable/blue_button</item>
+        <item name="android:textColor">@color/color_white</item>
+    </style>
+
 </resources>

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/card_view_margin"
-    android:background="@color/white"
+    android:background="@color/color_white"
     android:padding="@dimen/signature_dialog_padding">
 
     <LinearLayout
@@ -64,7 +64,7 @@
                 android:background="@drawable/blue_button"
                 android:gravity="center"
                 android:text="@string/btn_approve"
-                android:textColor="@color/white"
+                android:textColor="@color/color_white"
                 android:textAllCaps="true"
                 android:textSize="16sp"
                 android:textStyle="bold"

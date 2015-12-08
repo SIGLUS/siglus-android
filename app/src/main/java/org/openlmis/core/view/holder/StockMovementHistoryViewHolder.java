@@ -47,8 +47,8 @@ public class StockMovementHistoryViewHolder extends BaseViewHolder {
 
         disableLine();
         hideUnderline();
-        blackColor = context.getResources().getColor(R.color.black);
-        redColor = context.getResources().getColor(R.color.red);
+        blackColor = context.getResources().getColor(R.color.color_black);
+        redColor = context.getResources().getColor(R.color.color_red);
     }
 
     public void populate(final StockMovementViewModel model) {

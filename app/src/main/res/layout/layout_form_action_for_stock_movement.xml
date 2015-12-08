@@ -37,7 +37,7 @@
             android:layout_marginLeft="@dimen/default_action_button_margin"
             android:clickable="false"
             android:text="@string/btn_complete"
-            android:textColor="@color/white"
+            android:textColor="@color/color_white"
             android:padding="2dp"/>
 
     </LinearLayout>

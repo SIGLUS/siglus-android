@@ -71,8 +71,8 @@ public class StockMovementViewHolder extends BaseViewHolder {
         super(itemView);
         this.movementChangeListener = movementChangeListener;
 
-        blackColor = context.getResources().getColor(R.color.black);
-        redColor = context.getResources().getColor(R.color.red);
+        blackColor = context.getResources().getColor(R.color.color_black);
+        redColor = context.getResources().getColor(R.color.color_red);
 
         InputFilter[] filters = new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)};
         etReceived.setFilters(filters);
@@ -112,7 +112,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
         if (model.isDraft()) {
             setInitialDraftStyle(model);
         } else {
-            itemView.setBackgroundResource(R.color.white);
+            itemView.setBackgroundResource(R.color.color_white);
         }
 
         addClickListeners(model, getPreviousMovementDate(stockCard));

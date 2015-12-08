@@ -15,22 +15,6 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
-    <style name="home_page_button">
-        <item name="android:background">@drawable/blue_button</item>
-        <item name="android:padding">15dp</item>
-        <item name="android:layout_gravity">center_horizontal</item>
-
-        <item name="android:layout_marginBottom">@dimen/homepage_button_margin</item>
-        <item name="android:textSize">28sp</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:gravity">left</item>
-        <item name="android:drawablePadding">10dp</item>
-    </style>
-
-
     <style name="DefaultBorderedEditText">
         <item name="text">Label</item>
         <item name="ems">4</item>
@@ -54,4 +38,42 @@
         <item name="android:minWidth">60dp</item>
     </style>
 
+    <style name="Inventory" />
+    <style name="Inventory.TextTotal" parent="Text.Gray.Normal">
+        <item name="android:paddingEnd">@dimen/padding_normal</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:gravity">end</item>
+    </style>
+
+    <style name="Login"/>
+    <style name="Login.Container">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">@dimen/padding_larger</item>
+    </style>
+    <style name="Login.Panel">
+        <item name="android:background">@color/color_white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:paddingBottom">@dimen/padding_large</item>
+        <item name="android:paddingLeft">72dp</item>
+        <item name="android:paddingRight">72dp</item>
+        <item name="android:paddingTop">@dimen/padding_large</item>
+    </style>
+
+    <style name="Home"/>
+    <style name="Home.Container">
+       <item name="android:orientation">vertical</item>
+       <item name="android:padding">@dimen/padding_normal</item>
+    </style>
+    <style name="Home.SyncText" parent="Text.Gray.Large">
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+    <style name="Home.Button" parent="Button.Blue">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/padding_normal</item>
+        <item name="android:textSize">@dimen/font_size_large</item>
+        <item name="android:drawablePadding">@dimen/padding_small</item>
+    </style>
 </resources>

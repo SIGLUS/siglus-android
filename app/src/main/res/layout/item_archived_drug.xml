@@ -26,7 +26,7 @@
             android:id="@+id/product_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/secondary_text"
+            android:textColor="@color/color_text_secondary"
             android:textSize="16sp"
             tools:text="@string/label_dummy_unit" />
 
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
-            android:textColor="@color/secondary_text"
+            android:textColor="@color/color_text_secondary"
             android:textSize="14sp"
             android:text="@string/label_removed_drug_from_stock" />
 
