@@ -10,6 +10,7 @@ Feature: MMIA
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     And I make a movement "[08S42B]" "Issues" "PAV" "issued" "2"
+    Then I search stockcard by code "[08S42B]" and select this item
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     Then I navigate back

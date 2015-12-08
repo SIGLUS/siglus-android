@@ -42,9 +42,20 @@ And(/^I enter positive adjustment number "(.*?)"$/) do |number|
     hide_soft_keyboard
 end
 
-Then(/^I make a movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_card_code, first_reason, second_reason, movement_column, number|
+When(/^I search stockcard by code "(.*?)" and select this item$/) do |stock_card_code|
+    search_bar = query("android.support.v7.widget.SearchView id:'action_search'")
+    touch(search_bar)
+    clear_text_in(search_bar)
+    enter_text("android.support.v7.widget.SearchView id:'action_search'", stock_card_code)
+    
     steps %Q{
         Then I select stock card code called "#{stock_card_code}"
+    }
+end
+
+Then(/^I make a movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_card_code, first_reason, second_reason, movement_column, number|
+    steps %Q{
+        Then I search stockcard by code "#{stock_card_code}" and select this item
         Then I wait for "Stock Card" to appear
         Then I wait for 1 second
         And I select a reason "#{first_reason}" "#{second_reason}"
@@ -61,8 +72,7 @@ Then(/^I make a movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_ca
         And I enter #{movement_column} number "#{number}"
         And I press "Complete"
         And I sign stock movement with "superuser"
-        Then I wait for 1 second
-        Then I navigate back
+        Then I wait for 2 seconds
     }
 end
 
@@ -86,19 +96,19 @@ end
 
 Then(/^I make all movements for "(.*?)"$/) do |drugFNM|
     steps %Q{
-      And I make a movement "#{drugFNM}" "Entries" "District( DDM)" "Entries" "1"
-      And I make a movement "#{drugFNM}" "Entries" "Province ( DPM)" "Entries" "1"
-      And I make a movement "#{drugFNM}" "Negative Adjustments" "Drugs in quarantine have expired, returned to Supplier" "Negative Adjustments" "1"
-      And I make a movement "#{drugFNM}" "Negative Adjustments" "Damaged on arrival" "Negative Adjustments" "1"
-      And I make a movement "#{drugFNM}" "Negative Adjustments" "Loans made from a health facility deposit" "Negative Adjustments" "1"
-      And I make a movement "#{drugFNM}" "Negative Adjustments" "Inventory correction in case of over stock on Stock card (Stock on hand is less than stock in stock card)" "Negative Adjustments" "1"
-      And I make a movement "#{drugFNM}" "Negative Adjustments" "Product defective, moved to quarantine" "Negative Adjustments" "1"
-      And I make a movement "#{drugFNM}" "Positive Adjustments" "Returns from Customers(HF and dependent wards)" "Positive Adjustments" "1"
-      And I make a movement "#{drugFNM}" "Positive Adjustments" "Returns of expired drugs (HF and dependent wards)" "Positive Adjustments" "1"
-      And I make a movement "#{drugFNM}" "Positive Adjustments" "Donations to Deposit" "Positive Adjustments" "1"
-      And I make a movement "#{drugFNM}" "Positive Adjustments" "Loans received at the health facility deposit" "Positive Adjustments" "1"
-      And I make a movement "#{drugFNM}" "Positive Adjustments" "Inventory correction in case of under stock on Stock card (Stock on hand is more than stock in stock card)" "Positive Adjustments" "1"
-      And I make a movement "#{drugFNM}" "Positive Adjustments" "Returns from Quarantine, in the case of quarantined product being fit for use" "Positive Adjustments" "1"
+      And I make a movement "#{drugFNM}" "Entries" "District( DDM)" "received" "1"
+      And I make a movement "#{drugFNM}" "Entries" "Province ( DPM)" "received" "1"
+      And I make a movement "#{drugFNM}" "Negative Adjustments" "Drugs in quarantine have expired, returned to Supplier" "negative adjustment" "1"
+      And I make a movement "#{drugFNM}" "Negative Adjustments" "Damaged on arrival" "negative adjustment" "1"
+      And I make a movement "#{drugFNM}" "Negative Adjustments" "Loans made from a health facility deposit" "negative adjustment" "1"
+      And I make a movement "#{drugFNM}" "Negative Adjustments" "Inventory correction in case of over stock on Stock card (Stock on hand is less than stock in stock card)" "negative adjustment" "1"
+      And I make a movement "#{drugFNM}" "Negative Adjustments" "Product defective, moved to quarantine" "negative adjustment" "1"
+      And I make a movement "#{drugFNM}" "Positive Adjustments" "Returns from Customers(HF and dependent wards)" "positive adjustment" "1"
+      And I make a movement "#{drugFNM}" "Positive Adjustments" "Returns of expired drugs (HF and dependent wards)" "positive adjustment" "1"
+      And I make a movement "#{drugFNM}" "Positive Adjustments" "Donations to Deposit" "positive adjustment" "1"
+      And I make a movement "#{drugFNM}" "Positive Adjustments" "Loans received at the health facility deposit" "positive adjustment" "1"
+      And I make a movement "#{drugFNM}" "Positive Adjustments" "Inventory correction in case of under stock on Stock card (Stock on hand is more than stock in stock card)" "positive adjustment" "1"
+      And I make a movement "#{drugFNM}" "Positive Adjustments" "Returns from Quarantine, in the case of quarantined product being fit for use" "positive adjustment" "1"
       And I make a movement "#{drugFNM}" "Issues" "Public pharmacy" "issued" "1"
       And I make a movement "#{drugFNM}" "Issues" "Maternity" "issued" "1"
       And I make a movement "#{drugFNM}" "Issues" "General Ward" "issued" "1"

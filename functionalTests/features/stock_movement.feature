@@ -105,7 +105,7 @@ Feature: stock movement Page
 
   Scenario: Add all movements for one drug
     Given I am logged in
-    And I press "stock cards & overview"
+    And I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     Then I make all movements for "08S18Y"
