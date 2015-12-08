@@ -23,12 +23,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.presenter.RnRFormListPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.RnRFormListAdapter;
+import org.openlmis.core.view.fragment.WarningDialog;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 
 import java.util.ArrayList;
@@ -46,6 +49,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
 
     @InjectPresenter(RnRFormListPresenter.class)
     RnRFormListPresenter presenter;
+    private ArrayList<RnRFormViewModel> data;
 
     private String programCode;
     private RnRFormListAdapter adapter;
@@ -64,28 +68,58 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         listView.setLayoutManager(new LinearLayoutManager(this));
         listView.setHasFixedSize(true);
 
-        adapter = new RnRFormListAdapter(this, programCode, new ArrayList<RnRFormViewModel>());
+        data = new ArrayList<>();
+        adapter = new RnRFormListAdapter(this, programCode, data);
+        adapter.setFormDeleteListener(formDeleteListener);
         listView.setAdapter(adapter);
 
         loading();
-        presenter.loadRnRFormList().subscribe(subscriber);
+        presenter.loadRnRFormList().subscribe(getRnRFormSubscriber());
     }
 
-    protected Subscriber<List<RnRFormViewModel>> subscriber = new Subscriber<List<RnRFormViewModel>>() {
+    private RnRFormListAdapter.RnRFromDeleteListener formDeleteListener = new RnRFormListAdapter.RnRFromDeleteListener() {
         @Override
-        public void onCompleted() {
-            loaded();
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            loaded();
-            ToastUtil.show(e.getMessage());
-        }
-
-        @Override
-        public void onNext(List<RnRFormViewModel> rnRFormViewModels) {
-            adapter.refreshList(rnRFormViewModels);
+        public void delete(final RnRForm form) {
+            WarningDialog warningDialog = new WarningDialog();
+            warningDialog.setDelegate(new WarningDialog.DialogDelegate() {
+                @Override
+                public void onDelete() {
+                    deleteRnRForm(form);
+                }
+            });
+            warningDialog.show(getFragmentManager(), "WarningDialog");
         }
     };
+
+    private void deleteRnRForm(RnRForm form) {
+        try {
+            presenter.deleteRnRForm(form);
+            presenter.loadRnRFormList().subscribe(getRnRFormSubscriber());
+        } catch (LMISException e) {
+            ToastUtil.show(getString(R.string.requisition_delete_failed));
+            e.printStackTrace();
+        }
+    }
+
+    protected Subscriber<List<RnRFormViewModel>> getRnRFormSubscriber() {
+        return new Subscriber<List<RnRFormViewModel>>() {
+            @Override
+            public void onCompleted() {
+                loaded();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                loaded();
+                ToastUtil.show(e.getMessage());
+            }
+
+            @Override
+            public void onNext(List<RnRFormViewModel> rnRFormViewModels) {
+                data.clear();
+                data.addAll(rnRFormViewModels);
+                adapter.notifyDataSetChanged();
+            }
+        };
+    }
 }

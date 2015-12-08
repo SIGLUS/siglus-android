@@ -126,6 +126,10 @@ public class RnRFormListPresenter implements Presenter {
         }
     }
 
+    public void deleteRnRForm(RnRForm form) throws LMISException {
+        repository.removeRnrForm(form);
+    }
+
     public interface RnRFormListView extends BaseView {
 
     }

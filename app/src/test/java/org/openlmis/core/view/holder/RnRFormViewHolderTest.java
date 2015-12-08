@@ -12,11 +12,13 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.adapter.RnRFormListAdapter;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.mock;
 
 @RunWith(LMISTestRunner.class)
 public class RnRFormViewHolderTest {
@@ -32,14 +34,15 @@ public class RnRFormViewHolderTest {
     }
 
     private RnRFormViewHolder getViewHolderByType(int viewType) {
+        RnRFormListAdapter mockAdapter = mock(RnRFormListAdapter.class);
         switch (viewType) {
             case RnRFormViewModel.TYPE_GROUP:
-                return new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_list_type3, null, false));
+                return new RnRFormViewHolder(mockAdapter, LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_list_type3, null, false));
             case RnRFormViewModel.TYPE_DRAFT:
             case RnRFormViewModel.TYPE_UNSYNC:
-                return new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_list_type1, null, false));
+                return new RnRFormViewHolder(mockAdapter, LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_list_type1, null, false));
             case RnRFormViewModel.TYPE_HISTORICAL:
-                return new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_list_type2, null, false));
+                return new RnRFormViewHolder(mockAdapter, LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_list_type2, null, false));
         }
         return null;
     }

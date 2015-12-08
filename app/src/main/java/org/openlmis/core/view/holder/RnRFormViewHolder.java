@@ -7,10 +7,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.activity.MMIARequisitionActivity;
 import org.openlmis.core.view.activity.VIARequisitionActivity;
+import org.openlmis.core.view.adapter.RnRFormListAdapter;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 
 import roboguice.inject.InjectView;
@@ -18,6 +20,7 @@ import roboguice.inject.InjectView;
 public class RnRFormViewHolder extends BaseViewHolder {
 
     public static final int INT_UNSET = 0;
+    private final RnRFormListAdapter rnRFormListAdapter;
 
     @InjectView(R.id.title)
     TextView txTitle;
@@ -37,8 +40,12 @@ public class RnRFormViewHolder extends BaseViewHolder {
     @InjectView(R.id.ly_period)
     View lyPeriod;
 
-    public RnRFormViewHolder(View itemView) {
-        super(itemView);
+    @InjectView(R.id.iv_del)
+    View ivDelete;
+
+    public RnRFormViewHolder(RnRFormListAdapter rnRFormListAdapter, View inflate) {
+        super(inflate);
+        this.rnRFormListAdapter = rnRFormListAdapter;
     }
 
     public void populate(final RnRFormViewModel model, String programCode) {
@@ -47,25 +54,34 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 txTitle.setText(model.getTitle());
                 break;
             case RnRFormViewModel.TYPE_DRAFT:
-                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())), R.drawable.ic_description, R.color.color_draft_title);
+                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())), R.drawable.ic_description, R.color.color_draft_title, model.getForm());
                 break;
             case RnRFormViewModel.TYPE_UNSYNC:
-                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_unsynced_requisition, model.getName())), R.drawable.ic_error, R.color.color_error_title);
+                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_unsynced_requisition, model.getName())), R.drawable.ic_error, R.color.color_error_title, model.getForm());
                 break;
             case RnRFormViewModel.TYPE_HISTORICAL:
-                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedDate())), R.drawable.ic_done, INT_UNSET);
+                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedDate())), R.drawable.ic_done, INT_UNSET, model.getForm());
                 btnView.setText(context.getString(R.string.btn_view_requisition, model.getName()));
                 btnView.setOnClickListener(new BtnViewClickListener(model, programCode));
                 break;
         }
     }
 
-    private void configHolder(String period, Spanned text, int icDescription, int colorDraftTitle) {
+    private void configHolder(String period, Spanned text, int icDescription, int colorDraftTitle, final RnRForm form) {
         txPeriod.setText(period);
         txMessage.setText(text);
         icon.setImageResource(icDescription);
         if (lyPeriod != null && colorDraftTitle != INT_UNSET) {
             lyPeriod.setBackgroundResource(colorDraftTitle);
+        }
+
+        if (ivDelete != null && rnRFormListAdapter.getFormDeleteListener() != null) {
+            ivDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    rnRFormListAdapter.getFormDeleteListener().delete(form);
+                }
+            });
         }
     }
 

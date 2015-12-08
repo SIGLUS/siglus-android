@@ -24,16 +24,23 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import org.openlmis.core.R;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.view.holder.RnRFormViewHolder;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormViewHolder> {
 
     private LayoutInflater inflater;
     private List<RnRFormViewModel> data;
     private String programCode;
+    @Getter
+    @Setter
+    private RnRFromDeleteListener formDeleteListener;
 
     public RnRFormListAdapter(Context context, String programCode, List<RnRFormViewModel> data) {
         this.inflater = LayoutInflater.from(context);
@@ -56,12 +63,12 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormViewHolder> 
     public RnRFormViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case RnRFormViewModel.TYPE_GROUP:
-                return new RnRFormViewHolder(inflater.inflate(R.layout.item_rnr_list_type3, parent, false));
+                return new RnRFormViewHolder(this, inflater.inflate(R.layout.item_rnr_list_type3, parent, false));
             case RnRFormViewModel.TYPE_DRAFT:
             case RnRFormViewModel.TYPE_UNSYNC:
-                return new RnRFormViewHolder(inflater.inflate(R.layout.item_rnr_list_type1, parent, false));
+                return new RnRFormViewHolder(this, inflater.inflate(R.layout.item_rnr_list_type1, parent, false));
             case RnRFormViewModel.TYPE_HISTORICAL:
-                return new RnRFormViewHolder(inflater.inflate(R.layout.item_rnr_list_type2, parent, false));
+                return new RnRFormViewHolder(this, inflater.inflate(R.layout.item_rnr_list_type2, parent, false));
         }
         return null;
     }
@@ -77,4 +84,9 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormViewHolder> 
     public int getItemViewType(int position) {
         return data.get(position).getType();
     }
+
+    public interface RnRFromDeleteListener {
+        void delete(RnRForm form);
+    }
+
 }
