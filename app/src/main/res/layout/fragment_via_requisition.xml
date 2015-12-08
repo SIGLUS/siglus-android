@@ -1,26 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
     android:id="@+id/vg_container"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="5dp"
-    android:orientation="vertical">
+    android:padding="@dimen/padding_small">
 
     <org.openlmis.core.view.widget.BorderedEditText
         android:id="@+id/tx_consultation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_small"
         android:background="@drawable/border_bg"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
         app:ems="4"
         app:labelWidth="100dp"
         app:text="@string/label_consultation"
-        app:headerText="@string/label_requisition_header_consultation_header"
-        android:layout_alignParentTop="true"/>
+        app:headerText="@string/label_requisition_header_consultation_header" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -52,13 +49,13 @@
 
             <include android:id="@+id/requisition_header_left"
                 layout="@layout/layout_requisition_header_left"
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <ListView
                 android:id="@+id/product_name_list_view"
-                android:layout_width="200dp"
                 android:layout_height="match_parent"
+                android:layout_width="match_parent"
                 android:background="@color/color_white"
                 android:scrollbars="none"/>
         </LinearLayout>

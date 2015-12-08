@@ -51,4 +51,7 @@
     <dimen name="padding_large">32dp</dimen>
     <dimen name="padding_larger">40dp</dimen>
 
+    <!--Button-->
+    <dimen name="button_default_height">36dp</dimen>
+
 </resources>

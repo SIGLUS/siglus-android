@@ -9,11 +9,6 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="mmia_spread_list_item">
-        <item name="android:minHeight">35dp</item>
-        <item name="android:padding">4dp</item>
-        <item name="android:gravity">center_vertical</item>
-    </style>
 
     <style name="DefaultBorderedEditText">
         <item name="text">Label</item>
@@ -69,11 +64,137 @@
     <style name="Home.SyncText" parent="Text.Gray.Large">
         <item name="android:gravity">center_horizontal</item>
     </style>
-    <style name="Home.Button" parent="Button.Blue">
+    <style name="Home.Button" parent="Button.Blue.Large">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">@dimen/padding_normal</item>
-        <item name="android:textSize">@dimen/font_size_large</item>
         <item name="android:drawablePadding">@dimen/padding_small</item>
     </style>
+
+    <style name="StockMovement"/>
+    <style name="StockMovement.Panel">
+       <item name="android:layout_marginLeft">@dimen/margin_normal</item>
+       <item name="android:layout_marginRight">@dimen/margin_normal</item>
+       <item name="android:layout_marginTop">@dimen/margin_normal</item>
+    </style>
+    <style name="StockMovement.Panel.Title">
+        <item name="android:background">@drawable/border_bg</item>
+        <item name="android:divider">@drawable/divider_horizontal</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:showDividers">middle</item>
+    </style>
+    <style name="StockMovement.ExpiryDates">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:padding">@dimen/padding_small</item>
+    </style>
+    <style name="StockMovement.List">
+        <item name="android:background">@drawable/border_bg</item>
+        <item name="android:divider">@drawable/divider_horizontal</item>
+        <item name="android:paddingEnd">-10dp</item>
+    </style>
+
+    <style name="Dialog" />
+    <style name="Dialog.Container">
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">@color/color_white</item>
+        <item name="android:padding">@dimen/padding_medium</item>
+    </style>
+    <style name="Dialog.Title" parent="Text.Black.Medium">
+        <item name="android:gravity">center</item>
+        <item name="android:textIsSelectable">true</item>
+    </style>
+    <style name="Dialog.ActionPanel">
+        <item name="android:gravity">end</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingBottom">@dimen/padding_small</item>
+        <item name="android:paddingTop">@dimen/padding_small</item>
+    </style>
+    <style name="Dialog.Btn">
+        <item name="android:paddingStart">@dimen/padding_small</item>
+        <item name="android:paddingEnd">@dimen/padding_small</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+    <style name="Dialog.Btn.Negative" parent="Button.Transparent" />
+    <style name="Dialog.Btn.Positive" parent="Button.Blue" />
+    <style name="Dialog.EditText" parent="Text.White.Normal">
+        <item name="android:inputType">text</item>
+    </style>
+
+    <style name="MMIA" />
+    <style name="MMIA.FormContainer">
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+    <style name="MMIA.RnrTable">
+        <item name="android:layout_marginLeft">@dimen/margin_small</item>
+        <item name="android:layout_marginRight">@dimen/margin_small</item>
+        <item name="android:divider">@drawable/divider_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:padding">@dimen/divider</item>
+        <item name="android:showDividers">middle</item>
+    </style>
+    <style name="MMIA.RnrTable.Body">
+        <item name="android:background">@drawable/mmia_spread_list_bg</item>
+    </style>
+    <style name="MMIA.RnrTable.Header">
+        <item name="android:background">@drawable/mmia_freeze_header_bg</item>
+    </style>
+    <style name="MMIA.RegimeList">
+        <item name="android:background">@drawable/mmia_spread_list_bg</item>
+        <item name="android:divider">@drawable/divider_horizontal</item>
+        <item name="android:padding">@dimen/divider</item>
+        <item name="android:showDividers">middle</item>
+    </style>
+    <style name="MMIA.RegimeTotal">
+        <item name="android:layout_gravity">end</item>
+        <item name="android:background">@drawable/mmia_spread_regime_total_bg</item>
+        <item name="android:divider">@drawable/divider_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:showDividers">middle</item>
+    </style>
+    <style name="MMIA.RegimeTotalLabel">
+        <item name="android:background">@color/color_divider</item>
+        <item name="android:gravity">end|center_vertical</item>
+        <item name="android:paddingEnd">@dimen/padding_small</item>
+        <item name="android:paddingStart">@dimen/padding_small</item>
+    </style>
+    <style name="MMIA.RegimeTotalText">
+        <item name="android:background">@color/color_page_gray</item>
+        <item name="android:freezesText">true</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:padding">4dp</item>
+    </style>
+    <style name="MMIA.SpreadList">
+        <item name="android:minHeight">35dp</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+    <style name="MMIA.SpreadList.Header" parent="Text.White.Regular">
+        <item name="android:background">@color/color_black</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">38dp</item>
+    </style>
+    <style name="MMIA.CommentLayout">
+       <item name="android:background">@color/color_white</item>
+       <item name="android:padding">@dimen/padding_small</item>
+    </style>
+    <style name="MMIA.MismatchText" parent="Text.Red.Regular">
+        <item name="android:layout_marginBottom">@dimen/margin_small</item>
+        <item name="android:layout_marginTop">@dimen/margin_small</item>
+    </style>
+
+    <style name="StockList" />
+    <style name="StockList.TotalText" parent="Text.Gray.Normal">
+        <item name="android:layout_gravity">end</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">@dimen/padding_normal</item>
+    </style>
+    <style name="StockList.HorizontalDivider" parent="HorizontalLine">
+        <item name="android:background">@color/color_primary_dark</item>
+    </style>
+
+
 </resources>

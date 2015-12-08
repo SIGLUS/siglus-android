@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/tv_name"
-        style="@style/mmia_spread_list_item"
+        style="@style/MMIA.SpreadList"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="3"
@@ -18,7 +18,7 @@
 
     <EditText
         android:id="@+id/et_value"
-        style="@style/mmia_spread_list_item"
+        style="@style/MMIA.SpreadList"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2"

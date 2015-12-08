@@ -4,5 +4,5 @@
     <stroke
         android:width="@dimen/divider"
         android:color="@color/color_red" />
-    <solid android:color="@color/mmia_spread_bg" />
+    <solid android:color="@color/color_page_gray" />
 </shape>

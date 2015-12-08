@@ -40,6 +40,14 @@
         <item name="android:textSize">@dimen/font_size_large</item>
     </style>
 
+    <style name="Text.Black.Large.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Text.Black.Medium">
+        <item name="android:textSize">@dimen/font_size_medium</item>
+    </style>
+
     <style name="Text.Gray">
         <item name="android:textColor">@color/color_text_secondary</item>
     </style>
@@ -52,7 +60,7 @@
         <item name="android:textSize">@dimen/font_size_large</item>
     </style>
     
-    <style name="Text.Divider">
+    <style name="Text.LightGray">
         <item name="android:textColor">@color/color_divider</item>
     </style>
 
@@ -60,10 +68,45 @@
         <item name="android:textColor">@color/color_white</item>
     </style>
 
-    <style name="Button"/>
-    <style name="Button.Blue">
-        <item name="android:background">@drawable/blue_button</item>
-        <item name="android:textColor">@color/color_white</item>
+    <style name="Text.White.Regular">
+        <item name="android:textSize">@dimen/font_size_regular</item>
     </style>
 
+    <style name="Text.White.Normal">
+        <item name="android:textSize">@dimen/font_size_normal</item>
+    </style>
+
+    <style name="Text.Blue">
+        <item name="android:textColor">@color/color_accent</item>
+    </style>
+
+    <style name="Text.Blue.Normal">
+        <item name="android:textSize">@dimen/font_size_normal</item>
+    </style>
+
+    <style name="Text.Red">
+        <item name="android:textColor">@color/color_red</item>
+    </style>
+
+    <style name="Text.Red.Regular">
+        <item name="android:textSize">@dimen/font_size_regular</item>
+    </style>
+
+    <style name="Button" />
+
+    <style name="Button.Blue" parent="Text.White.Normal">
+        <item name="android:background">@drawable/blue_button</item>
+    </style>
+    <style name="Button.Blue.Large">
+        <item name="android:textSize">@dimen/font_size_large</item>
+    </style>
+    <style name="Button.Transparent" parent="Text.Blue.Normal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="HorizontalLine">
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@color/color_divider</item>
+    </style>
 </resources>

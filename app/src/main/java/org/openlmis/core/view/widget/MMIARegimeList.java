@@ -145,7 +145,7 @@ public class MMIARegimeList extends LinearLayout {
     }
 
     public void deHighLightTotal() {
-        totalView.setBackground(getResources().getDrawable(R.color.mmia_spread_bg));
+        totalView.setBackground(getResources().getDrawable(R.color.color_page_gray));
     }
 
     class EditTextWatcher implements android.text.TextWatcher {
