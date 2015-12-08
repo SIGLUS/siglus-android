@@ -175,7 +175,7 @@ public class SyncManager {
         }
     }
 
-    public void syncProductsWithProgram() throws Exception {
+    public void syncProductsWithProgram() throws LMISException {
         User user = UserInfoMgr.getInstance().getUser();
 
         if (StringUtils.isEmpty(user.getFacilityCode())) {
@@ -210,7 +210,8 @@ public class SyncManager {
                 try {
                     syncProductsWithProgram();
                     subscriber.onCompleted();
-                } catch (Exception e) {
+                } catch (LMISException e) {
+                    e.reportToFabric();
                     subscriber.onError(e);
                 }
             }
@@ -225,8 +226,8 @@ public class SyncManager {
                 try {
                     fetchAndSaveRequisitionData();
                 } catch (LMISException e) {
-                    subscriber.onError(new LMISException("Syncing back data failed"));
                     e.reportToFabric();
+                    subscriber.onError(new LMISException("Syncing back data failed"));
                 }
                 subscriber.onCompleted();
             }
@@ -266,6 +267,7 @@ public class SyncManager {
             }
         } catch (LMISException e) {
             e.reportToFabric();
+            return false;
         }
 
         Observable.from(forms).filter(new Func1<RnRForm, Boolean>() {
@@ -293,6 +295,7 @@ public class SyncManager {
             SubmitRequisitionResponse response = lmisRestApi.submitRequisition(rnRForm);
             return StringUtils.isEmpty(response.getError());
         } catch (Exception e) {
+            new LMISException(e).reportToFabric();
             Log.e(TAG, "===> SyncRnr : synced failed ->" + e.getMessage());
         }
         return false;
@@ -302,11 +305,11 @@ public class SyncManager {
         rnRForm.setSynced(true);
         try {
             rnrFormRepository.save(rnRForm);
-        } catch (Exception e) {
+        } catch (LMISException e) {
+            e.reportToFabric();
             Log.e(TAG, "===> SyncRnr : mark synced failed -> " + rnRForm.getId());
         }
     }
-
 
 
     public boolean syncStockCards() {
@@ -314,25 +317,20 @@ public class SyncManager {
         try {
             stockMovementItems = stockRepository.listUnSynced();
             Log.d(TAG, "===> SyncStockMovement :" + stockMovementItems.size() + " StockMovement ready to sync...");
-        } catch (LMISException e) {
-            e.reportToFabric();
-            return false;
-        }
 
-        if (stockMovementItems.isEmpty()) {
-            return false;
-        }
-
-        final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
-
-        List<StockMovementEntry> syncList = FluentIterable.from(stockMovementItems).transform(new Function<StockMovementItem, StockMovementEntry>() {
-            @Override
-            public StockMovementEntry apply(StockMovementItem stockMovementItem) {
-                return new StockMovementEntry(stockMovementItem, facilityId);
+            if (stockMovementItems.isEmpty()) {
+                return false;
             }
-        }).toList();
 
-        try {
+            final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
+
+            List<StockMovementEntry> syncList = FluentIterable.from(stockMovementItems).transform(new Function<StockMovementItem, StockMovementEntry>() {
+                @Override
+                public StockMovementEntry apply(StockMovementItem stockMovementItem) {
+                    return new StockMovementEntry(stockMovementItem, facilityId);
+                }
+            }).toList();
+
             lmisRestApi.pushStockMovementData(facilityId, syncList);
             Observable.from(stockMovementItems).forEach(new Action1<StockMovementItem>() {
                 @Override
@@ -343,11 +341,11 @@ public class SyncManager {
 
             stockRepository.batchUpdateStockMovements(stockMovementItems);
             return true;
-        } catch (Throwable e) {
+        } catch (LMISException e) {
+            e.reportToFabric();
             Log.e(TAG, "===> SyncStockMovement : synced failed ->" + e.getMessage());
+            return false;
         }
-
-        return false;
     }
 
     public void fetchStockCardsData(Observer<Void> observer) {
@@ -361,9 +359,9 @@ public class SyncManager {
                     }
                     saveStockCardLock = true;
                     fetchAndSaveStockCards();
-                } catch (Throwable throwable) {
-                    subscriber.onError(new LMISException("Syncing StockCard back failed"));
-                    new LMISException(throwable).reportToFabric();
+                } catch (LMISException e) {
+                    e.reportToFabric();
+                    subscriber.onError(e);
                 } finally {
                     saveStockCardLock = false;
                 }
@@ -372,7 +370,7 @@ public class SyncManager {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
     }
 
-    public void fetchAndSaveStockCards() throws Throwable {
+    public void fetchAndSaveStockCards() throws LMISException {
         //default start date is one month before and end date is one day after
         final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
 
