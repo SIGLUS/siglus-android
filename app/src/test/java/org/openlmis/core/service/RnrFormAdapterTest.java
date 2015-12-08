@@ -50,6 +50,7 @@ import roboguice.RoboGuice;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -205,6 +206,17 @@ public class RnrFormAdapterTest {
         assertThat(baseInfoItem.getValue(), is("30"));
 
         assertThat(rnRForm.getSubmittedTime(), is(new Date(1445937080000L)));
+    }
+
+
+    @Test
+    public void shouldSerializeRnrFormWithoutSubmittedTime() throws Exception {
+        UserInfoMgr.getInstance().setUser(new User("user", "password"));
+
+        rnRForm.setSubmittedTime(null);
+
+        JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
+        assertNull(rnrJson.getAsJsonObject().get("clientSubmittedTime"));
     }
 
     public class MyTestModule extends AbstractModule {

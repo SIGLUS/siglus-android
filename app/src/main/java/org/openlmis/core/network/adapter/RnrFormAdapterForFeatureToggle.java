@@ -64,8 +64,9 @@ public class RnrFormAdapterForFeatureToggle implements JsonSerializer<RnRForm> {
         if (rnRForm.getComments() != null) {
             root.addProperty("clientSubmittedNotes", rnRForm.getComments());
         }
-
-        root.addProperty("clientSubmittedTime", DateUtil.formatDate(rnRForm.getSubmittedTime(), "yyyy-MM-dd HH:mm:ss"));
+        if (rnRForm.getSubmittedTime() != null) {
+            root.addProperty("clientSubmittedTime", DateUtil.formatDate(rnRForm.getSubmittedTime(), "yyyy-MM-dd HH:mm:ss"));
+        }
         return root;
     }
 
