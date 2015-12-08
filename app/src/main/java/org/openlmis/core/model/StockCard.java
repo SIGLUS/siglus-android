@@ -40,7 +40,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @DatabaseTable(tableName = "stock_cards")
-public class StockCard extends BaseModel implements Comparable<StockCard>{
+public class StockCard extends BaseModel implements Comparable<StockCard> {
 
     public static final String DIVIDER = ",";
 
@@ -64,8 +64,8 @@ public class StockCard extends BaseModel implements Comparable<StockCard>{
     @SerializedName("stockOnHand")
     long stockOnHand;
 
-    public String getEarliestExpireDate(){
-        if (!StringUtils.isEmpty(expireDates)){
+    public String getEarliestExpireDate() {
+        if (!StringUtils.isEmpty(expireDates)) {
             List<String> stringList = Arrays.asList(expireDates.split(DIVIDER));
             Collections.sort(stringList);
             return stringList.get(0);
@@ -78,8 +78,8 @@ public class StockCard extends BaseModel implements Comparable<StockCard>{
         return product == null ? 0 : product.compareTo(another.getProduct());
     }
 
-    public void setUpStockOnHandForMovements(Long stockOnHand){
-        for ( int i = stockMovementItemsWrapper.size() - 1; i>= 0; i-- ){
+    public void setUpStockOnHandForMovements(Long stockOnHand) {
+        for (int i = stockMovementItemsWrapper.size() - 1; i >= 0; i--) {
             StockMovementItem item = stockMovementItemsWrapper.get(i);
             item.setStockOnHand(stockOnHand);
             stockOnHand = item.calculateStockMovementStockOnHand(stockOnHand);

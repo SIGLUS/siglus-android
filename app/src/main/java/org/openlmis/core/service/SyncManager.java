@@ -84,8 +84,8 @@ public class SyncManager {
     private static final String TAG = "SyncManager";
     public static final int DAYS_OF_MONTH = 30;
     public static final int MONTHS_OF_YEAR = 12;
-    private  final  Object STOCK_MONTH_SYNC_LOCK = new Object();
-    private  final  Object STOCK_YEAR_SYNC_LOCK = new Object();
+    private final Object STOCK_MONTH_SYNC_LOCK = new Object();
+    private final Object STOCK_YEAR_SYNC_LOCK = new Object();
 
     @Inject
     ProgramRepository programRepository;
@@ -372,7 +372,7 @@ public class SyncManager {
                             sharedPreferenceMgr.getPreference().edit().putBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_YEAR_STOCKMOVEMENTS, true).apply();
                         }
                     }
-                }catch (Throwable throwable) {
+                } catch (Throwable throwable) {
                     subscriber.onError(new LMISException("Syncing StockCard back failed"));
                     new LMISException(throwable).reportToFabric();
                 }
@@ -385,7 +385,7 @@ public class SyncManager {
         Date now = new Date();
 
         for (int month = 1; month <= MONTHS_OF_YEAR; month++) {
-            Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH * (month+1));
+            Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH * (month + 1));
             String startDateStr = DateUtil.formatDate(startDate, "yyyy-MM-dd");
 
             Date endDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH * month);
@@ -414,7 +414,7 @@ public class SyncManager {
         for (StockCard stockCard : stockCardResponse.getStockCards()) {
             StockMovementItem oldestItem = stockRepository.getOldestMovementItemById(stockCard.getId());
             Long stockOnHand = stockCard.getStockOnHand();
-            if ( oldestItem != null && sharedPreferenceMgr.getPreference().getBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, false) ){
+            if (oldestItem != null && sharedPreferenceMgr.getPreference().getBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, false)) {
                 stockOnHand = oldestItem.calculateStockMovementStockOnHand(oldestItem.getStockOnHand());
             }
             stockCard.setUpStockOnHandForMovements(stockOnHand);
