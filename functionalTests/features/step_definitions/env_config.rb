@@ -4,7 +4,7 @@ module EnvConfig
 
     def self.getConfig()
 
-        dev_env=false
+        dev_env=true
 
         if dev_env
             {

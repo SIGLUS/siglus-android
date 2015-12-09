@@ -73,6 +73,9 @@ Then(/^I make a movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_ca
         And I press "Complete"
         And I sign stock movement with "superuser"
         Then I wait for 2 seconds
+        Then I navigate back
+        Then I wait for 1 second
+        Then I navigate back
     }
 end
 
