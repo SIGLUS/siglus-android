@@ -43,7 +43,6 @@ Given(/^I am logged in$/) do
 end
 
 When(/^I select the item called "(.*?)"$/) do |name|
-  p "When I select the item called #{name}"
   q = query("android.widget.TextView {text CONTAINS '#{name}'}")
   while q.empty?
     scroll("RecyclerView", :down)
@@ -158,8 +157,11 @@ When(/^I search product by fnm "(.*?)" and select this item$/) do |fnm|
     touch(search_bar)
     enter_text("android.support.v7.widget.SearchView id:'action_search'", fnm)
 
-    steps %Q{
-        When I select the item called "#{fnm}"
-    }
+    q = query("android.widget.TextView {text CONTAINS '#{fnm}'}")
+    if q.empty?
+        steps %Q{
+            When I select the item called "#{fnm}"
+        }
+    end
     clear_text_in(search_bar)
 end
