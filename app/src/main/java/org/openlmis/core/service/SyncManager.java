@@ -408,7 +408,6 @@ public class SyncManager {
                 throw throwable;
             }
         }
-
     }
 
     public void fetchLatestOneMonthMovements() throws Throwable {
@@ -443,7 +442,7 @@ public class SyncManager {
             if (stockCard.getId() <= 0) {
                 stockRepository.saveStockCardAndBatchUpdateMovements(stockCard);
             } else {
-                stockRepository.batchUpdateStockMovements(stockCard.getStockMovementItemsWrapper());
+                stockRepository.batchCreateOrUpdateStockMovements(stockCard.getStockMovementItemsWrapper());
             }
         }
     }

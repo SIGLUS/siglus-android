@@ -112,6 +112,19 @@ public class StockRepository {
         }
     }
 
+    public void batchCreateOrUpdateStockMovements(final List<StockMovementItem> stockMovementItems) throws LMISException {
+        dbUtil.withDaoAsBatch(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, Void>() {
+            @Override
+            public Void operate(Dao<StockMovementItem, String> dao) throws SQLException {
+                for (StockMovementItem stockMovementItem : stockMovementItems) {
+                    stockMovementItem.setCreatedTime(new Date());
+                    dao.createOrUpdate(stockMovementItem);
+                }
+                return null;
+            }
+        });
+    }
+
     public void batchUpdateStockMovements(final List<StockMovementItem> stockMovementItems) throws LMISException {
         dbUtil.withDaoAsBatch(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, Void>() {
             @Override
@@ -131,7 +144,7 @@ public class StockRepository {
                 @Override
                 public Object call() throws Exception {
                     save(stockCard);
-                    batchUpdateStockMovements(stockCard.getStockMovementItemsWrapper());
+                    batchCreateOrUpdateStockMovements(stockCard.getStockMovementItemsWrapper());
                     return null;
                 }
             });
