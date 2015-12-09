@@ -134,6 +134,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">@dimen/padding_normal</item>
         <item name="android:drawablePadding">@dimen/padding_small</item>
+        <item name="android:gravity">left</item>
     </style>
 
     <style name="StockMovement" />
@@ -166,7 +167,7 @@
     <style name="StockMovement.List">
         <item name="android:background">@drawable/border_bg</item>
         <item name="android:divider">@drawable/divider_horizontal</item>
-        <item name="android:paddingEnd">-10dp</item>
+        <item name="android:paddingRight">-10dp</item>
     </style>
 
     <style name="Dialog" />
