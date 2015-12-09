@@ -5,12 +5,16 @@ import android.content.Context;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 
-public class SyncErrorsMap {
+public final class SyncErrorsMap {
 
     private static final String PROGRAM_CONFIG_ERROR = "Program configuration missing";
     private static final String INVALID_PRODUCT_CODES = "Invalid product codes";
     private static final String PREVIOUS_FORM_NOT_FILLED = "Please finish all R&R of previous period(s)";
     private static final String USER_UNAUTHORIZED = "User does not have permission";
+
+    private SyncErrorsMap() {
+
+    }
 
     public static String getDisplayErrorMessageBySyncErrorMessage(String errorMessage){
         if (errorMessage == null){

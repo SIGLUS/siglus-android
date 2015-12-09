@@ -1,5 +1,7 @@
 package org.openlmis.core.presenter;
 
+import com.google.inject.AbstractModule;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,16 +9,24 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.SyncError;
+import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
+import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import roboguice.RoboGuice;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.Lists.newArrayList;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -25,10 +35,19 @@ public class RnRFormListPresenterTest {
     RnRFormListPresenter presenter;
     private List<RnRForm> rnRForms;
     private ArrayList<RnRFormViewModel> viewModels;
+    SyncErrorsRepository syncErrorsRepository;
 
     @Before
     public void setUp() {
-        presenter = new RnRFormListPresenter();
+        syncErrorsRepository = mock(SyncErrorsRepository.class);
+        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(SyncErrorsRepository.class).toInstance(syncErrorsRepository);
+            }
+        });
+
+        presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnRFormListPresenter.class);
         rnRForms = getRnRForms();
         viewModels = new ArrayList<>();
     }
@@ -39,6 +58,8 @@ public class RnRFormListPresenterTest {
         presenter.repository = mock(RnrFormRepository.class);
         Collections.reverse(rnRForms);
         when(presenter.repository.list("MMIA")).thenReturn(rnRForms);
+        when(syncErrorsRepository.getBySyncTypeAndObjectId(any(SyncType.class), anyLong())).thenReturn(new ArrayList<SyncError>());
+
         List<RnRFormViewModel> resultViewModels = presenter.buildFormListViewModels();
         assertThat(resultViewModels.size()).isEqualTo(5);
     }
@@ -76,4 +97,5 @@ public class RnRFormListPresenterTest {
         rnRForm.setSynced(true);
         return rnRForm;
     }
+
 }

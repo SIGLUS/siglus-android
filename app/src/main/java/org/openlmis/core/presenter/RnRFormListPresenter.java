@@ -120,9 +120,9 @@ public class RnRFormListPresenter implements Presenter {
         }
     }
 
-    public String getRnrFormSyncError(long rnrId){
+    private String getRnrFormSyncError(long rnrId){
         List<SyncError> syncErrorList = syncErrorsRepository.getBySyncTypeAndObjectId(SyncType.RnRForm, rnrId);
-        if (syncErrorList.isEmpty())
+        if (null == syncErrorList || syncErrorList.isEmpty())
             return null;
         return syncErrorList.get(0).getErrorMessage();
     }

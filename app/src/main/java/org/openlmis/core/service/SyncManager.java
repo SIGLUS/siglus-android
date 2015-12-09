@@ -367,7 +367,7 @@ public class SyncManager {
         try {
             lmisRestApi.syncUpStockMovementData(facilityId, movementEntriesToSync);
             markStockDataSynced(stockMovementItems);
-            syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.StockCards,0l);
+            syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.StockCards,0L);
             return true;
 
         } catch (LMISException exception) {
@@ -377,7 +377,7 @@ public class SyncManager {
 
         } catch (UndeclaredThrowableException e) {
             new LMISException(e).reportToFabric();
-            syncErrorsRepository.save(new SyncError(e.getCause().getMessage(), SyncType.StockCards, 0l));
+            syncErrorsRepository.save(new SyncError(e.getCause().getMessage(), SyncType.StockCards, 0L));
             return false;
         }
     }
