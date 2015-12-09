@@ -19,17 +19,16 @@
 
 package org.openlmis.core.network;
 
-import com.google.gson.JsonObject;
-
+import org.json.JSONObject;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.model.AppInfoRequest;
-import org.openlmis.core.network.model.ProductsResponse;
-import org.openlmis.core.network.model.StockCardResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
-import org.openlmis.core.network.model.SubmitRequisitionResponse;
-import org.openlmis.core.network.model.SyncBackRequisitionsResponse;
+import org.openlmis.core.network.model.SyncBackProductsResponse;
+import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
+import org.openlmis.core.network.model.SyncDownStockCardResponse;
+import org.openlmis.core.network.model.SyncUpRequisitionResponse;
 
 import java.util.List;
 
@@ -49,17 +48,17 @@ public interface LMISRestApi {
     void updateAppVersion(@Body AppInfoRequest appinfo, Callback<Void> callback);
 
     @GET("/rest-api/programs-with-products")
-    ProductsResponse fetchProducts(@Query("facilityCode") String facilityCode);
+    SyncBackProductsResponse fetchProducts(@Query("facilityCode") String facilityCode);
 
     @GET("/rest-api/requisitions")
-    SyncBackRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode);
+    SyncDownRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode);
 
     @POST("/rest-api/requisitions")
-    SubmitRequisitionResponse submitRequisition(@Body RnRForm rnRForm);
+    SyncUpRequisitionResponse submitRequisition(@Body RnRForm rnRForm);
 
     @POST("/rest-api/facilities/{facilityId}/stockCards")
-    JsonObject pushStockMovementData(@Path("facilityId") String facilityId, @Body List<StockMovementEntry> entries);
+    JSONObject syncUpStockMovementData(@Path("facilityId") String facilityId, @Body List<StockMovementEntry> entries);
 
     @GET("/rest-api/facilities/{facilityId}/stockCards")
-    StockCardResponse fetchStockMovementData(@Path("facilityId") String facilityId, @Query("startTime") String startDate, @Query("endTime") String endDate);
+    SyncDownStockCardResponse fetchStockMovementData(@Path("facilityId") String facilityId, @Query("startTime") String startDate, @Query("endTime") String endDate);
 }

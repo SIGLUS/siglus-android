@@ -26,6 +26,6 @@ import lombok.Data;
 
 public
 @Data
-class ProductsResponse {
+class SyncBackProductsResponse {
     List<Program> programsWithProducts;
 }

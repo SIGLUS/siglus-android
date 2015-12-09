@@ -29,7 +29,6 @@ import com.squareup.okhttp.OkHttpClient;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.UnauthorizedException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
@@ -39,6 +38,7 @@ import org.openlmis.core.network.adapter.ProductsAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapterForFeatureToggle;
 import org.openlmis.core.network.adapter.StockCardAdapter;
+import org.openlmis.core.network.model.APIErrorResponse;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -60,7 +60,6 @@ import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.OkClient;
-import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
 
 public class LMISRestManager {
@@ -92,7 +91,7 @@ public class LMISRestManager {
 
         restAdapter = new RestAdapter.Builder()
                 .setEndpoint(END_POINT)
-                .setErrorHandler(new MyErrorHandler())
+                .setErrorHandler(new APIErrorHandler())
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setRequestInterceptor(requestInterceptor)
                 .setConverter(registerTypeAdapter())
@@ -185,14 +184,10 @@ public class LMISRestManager {
         User userInformation;
     }
 
-    class MyErrorHandler implements ErrorHandler {
+    class APIErrorHandler implements ErrorHandler {
         @Override
         public Throwable handleError(RetrofitError cause) {
-            Response r = cause.getResponse();
-            if (r != null && r.getStatus() == 401) {
-                return new UnauthorizedException(cause);
-            }
-            return cause;
+            return new Throwable(((APIErrorResponse) cause.getBodyAs(APIErrorResponse.class)).getError());
         }
     }
 

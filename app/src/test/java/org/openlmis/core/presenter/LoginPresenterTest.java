@@ -38,7 +38,7 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
-import org.openlmis.core.network.model.ProductsResponse;
+import org.openlmis.core.network.model.SyncBackProductsResponse;
 import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.service.SyncSubscriber;
 import org.openlmis.core.view.activity.LoginActivity;
@@ -46,7 +46,6 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
 
 import roboguice.RoboGuice;
-import rx.Observable;
 import rx.Observer;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -62,7 +61,7 @@ public class LoginPresenterTest {
     UserRepository userRepository;
     LoginActivity mockActivity;
     LoginPresenter presenter;
-    ProductsResponse mockProductsResponse;
+    SyncBackProductsResponse mockSyncBackProductsResponse;
     SyncManager syncManager;
 
     @Captor
@@ -82,7 +81,7 @@ public class LoginPresenterTest {
 
         userRepository = mock(UserRepository.class);
         mockActivity = mock(LoginActivity.class);
-        mockProductsResponse = mock(ProductsResponse.class);
+        mockSyncBackProductsResponse = mock(SyncBackProductsResponse.class);
         syncManager = mock(SyncManager.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());

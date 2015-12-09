@@ -23,7 +23,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SubmitRequisitionResponse {
-    String error;
+public class SyncUpRequisitionResponse {
     String requisitionId;
 }

@@ -27,6 +27,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SyncBackRequisitionsResponse {
+public class SyncDownRequisitionsResponse {
     List<RnRForm> requisitions;
 }

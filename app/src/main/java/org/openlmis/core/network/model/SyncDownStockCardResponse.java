@@ -7,7 +7,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class StockCardResponse {
+public class SyncDownStockCardResponse {
     List<StockCard> stockCards;
 }
 

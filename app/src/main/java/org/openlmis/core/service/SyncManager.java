@@ -38,23 +38,26 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.SyncError;
+import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.model.AppInfoRequest;
-import org.openlmis.core.network.model.ProductsResponse;
-import org.openlmis.core.network.model.StockCardResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
-import org.openlmis.core.network.model.SubmitRequisitionResponse;
-import org.openlmis.core.network.model.SyncBackRequisitionsResponse;
+import org.openlmis.core.network.model.SyncBackProductsResponse;
+import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
+import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Date;
 import java.util.List;
 
@@ -114,6 +117,7 @@ public class SyncManager {
     private boolean saveRequisitionLock = false;
     private boolean saveStockCardLock = false;
     private Observable<Void> productObservable;
+    private SyncErrorsRepository syncErrorsRepository = new SyncErrorsRepository(LMISApp.getContext());
 
     public SyncManager() {
         lmisRestApi = new LMISRestManager().getLmisRestApi();
@@ -187,7 +191,7 @@ public class SyncManager {
         if (StringUtils.isEmpty(user.getFacilityCode())) {
             throw new NoFacilityForUserException("No Facility for this User");
         }
-        ProductsResponse response = lmisRestApi.fetchProducts(user.getFacilityCode());
+        SyncBackProductsResponse response = lmisRestApi.fetchProducts(user.getFacilityCode());
 
         if (SaveProductLock || sharedPreferenceMgr.getPreference().getBoolean(SharedPreferenceMgr.KEY_HAS_GET_PRODUCTS, false)) {
             throw new LMISException("It's Syncing in Background or Loaded");
@@ -241,8 +245,13 @@ public class SyncManager {
     }
 
     protected void fetchAndSaveRequisitionData() throws LMISException {
+        SyncDownRequisitionsResponse syncDownRequisitionsResponse = lmisRestApi.fetchRequisitions(UserInfoMgr.getInstance().getUser().getFacilityCode());
 
-        SyncBackRequisitionsResponse syncBackRequisitionsResponse = lmisRestApi.fetchRequisitions(UserInfoMgr.getInstance().getUser().getFacilityCode());
+        if (syncDownRequisitionsResponse == null) {
+            throw new LMISException("Can't get SyncDownRequisitionsResponse, you can check json parse to POJO logic");
+        }
+
+        SyncDownRequisitionsResponse syncBackRequisitionsResponse = lmisRestApi.fetchRequisitions(UserInfoMgr.getInstance().getUser().getFacilityCode());
         if (syncBackRequisitionsResponse == null) {
             throw new LMISException("Can't get SyncBackRequisitionsResponse, you can check json parse to POJO logic");
         }
@@ -253,7 +262,7 @@ public class SyncManager {
         saveRequisitionLock = true;
 
         try {
-            List<RnRForm> rnRForms = syncBackRequisitionsResponse.getRequisitions();
+            List<RnRForm> rnRForms = syncDownRequisitionsResponse.getRequisitions();
             for (RnRForm form : rnRForms) {
                 rnrFormRepository.createFormAndItems(form);
             }
@@ -299,13 +308,14 @@ public class SyncManager {
 
     private boolean submitRequisition(RnRForm rnRForm) {
         try {
-            SubmitRequisitionResponse response = lmisRestApi.submitRequisition(rnRForm);
-            return StringUtils.isEmpty(response.getError());
-        } catch (Exception e) {
+            lmisRestApi.submitRequisition(rnRForm);
+            return true;
+        } catch (UndeclaredThrowableException e) {
             new LMISException(e).reportToFabric();
             Log.e(TAG, "===> SyncRnr : synced failed ->" + e.getMessage());
+            syncErrorsRepository.save(new SyncError(e.getCause().getMessage(), SyncType.RnRForm, rnRForm.getId()));
+            return false;
         }
-        return false;
     }
 
     private void markRnrFormSynced(RnRForm rnRForm) {
@@ -318,41 +328,66 @@ public class SyncManager {
         }
     }
 
-
-    public boolean syncStockCards() {
+    private List<StockMovementItem> fetchUnSyncedStockMovements() {
         List<StockMovementItem> stockMovementItems;
         try {
             stockMovementItems = stockRepository.listUnSynced();
             Log.d(TAG, "===> SyncStockMovement :" + stockMovementItems.size() + " StockMovement ready to sync...");
+            return stockMovementItems;
 
-            if (stockMovementItems.isEmpty()) {
-                return false;
-            }
-
-            final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
-
-            List<StockMovementEntry> syncList = FluentIterable.from(stockMovementItems).transform(new Function<StockMovementItem, StockMovementEntry>() {
-                @Override
-                public StockMovementEntry apply(StockMovementItem stockMovementItem) {
-                    return new StockMovementEntry(stockMovementItem, facilityId);
-                }
-            }).toList();
-
-            lmisRestApi.pushStockMovementData(facilityId, syncList);
-            Observable.from(stockMovementItems).forEach(new Action1<StockMovementItem>() {
-                @Override
-                public void call(StockMovementItem stockMovementItem) {
-                    stockMovementItem.setSynced(true);
-                }
-            });
-
-            stockRepository.batchUpdateStockMovements(stockMovementItems);
-            return true;
         } catch (LMISException e) {
             e.reportToFabric();
             Log.e(TAG, "===> SyncStockMovement : synced failed ->" + e.getMessage());
+            return null;
+        }
+    }
+
+    private List<StockMovementEntry> convertStockMovementItemsToStockMovementEntriesForSync(final String facilityId, List<StockMovementItem> stockMovementItems) {
+
+        return FluentIterable.from(stockMovementItems).transform(new Function<StockMovementItem, StockMovementEntry>() {
+            @Override
+            public StockMovementEntry apply(StockMovementItem stockMovementItem) {
+                return new StockMovementEntry(stockMovementItem, facilityId);
+            }
+        }).toList();
+    }
+
+    public boolean syncStockCards() {
+        List<StockMovementItem> stockMovementItems = fetchUnSyncedStockMovements();
+        if (null == stockMovementItems || stockMovementItems.isEmpty()) {
             return false;
         }
+
+        final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
+        List<StockMovementEntry> movementEntriesToSync = convertStockMovementItemsToStockMovementEntriesForSync(facilityId, stockMovementItems);
+
+        try {
+            lmisRestApi.syncUpStockMovementData(facilityId, movementEntriesToSync);
+            markStockDataSynced(stockMovementItems);
+            return true;
+
+        } catch (LMISException exception) {
+            new LMISException(exception).reportToFabric();
+            Log.e(TAG, "===> SyncStockMovement : synced failed ->" + exception.getMessage());
+            return false;
+
+        } catch (UndeclaredThrowableException e) {
+            new LMISException(e).reportToFabric();
+            syncErrorsRepository.save(new SyncError(e.getCause().getMessage(), SyncType.StockCards, 0l));
+            return false;
+        }
+    }
+
+    private void markStockDataSynced(List<StockMovementItem> stockMovementItems) throws LMISException {
+
+        Observable.from(stockMovementItems).forEach(new Action1<StockMovementItem>() {
+            @Override
+            public void call(StockMovementItem stockMovementItem) {
+                stockMovementItem.setSynced(true);
+            }
+        });
+
+        stockRepository.batchUpdateStockMovements(stockMovementItems);
     }
 
     public void fetchStockCardsData(Observer<Void> observer, final boolean isSyncMonth) {
@@ -424,9 +459,9 @@ public class SyncManager {
         //default start date is one month before and end date is one day after
         final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
 
-        StockCardResponse stockCardResponse = lmisRestApi.fetchStockMovementData(facilityId, startDate, endDate);
+        SyncDownStockCardResponse syncDownStockCardResponse = lmisRestApi.fetchStockMovementData(facilityId, startDate, endDate);
 
-        for (StockCard stockCard : stockCardResponse.getStockCards()) {
+        for (StockCard stockCard : syncDownStockCardResponse.getStockCards()) {
             StockMovementItem oldestItem = stockRepository.getOldestMovementItemById(stockCard.getId());
             Long stockOnHand = stockCard.getStockOnHand();
 

@@ -44,10 +44,10 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.AppInfoRequest;
-import org.openlmis.core.network.model.StockCardResponse;
+import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
+import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
-import org.openlmis.core.network.model.SubmitRequisitionResponse;
-import org.openlmis.core.network.model.SyncBackRequisitionsResponse;
+import org.openlmis.core.network.model.SyncUpRequisitionResponse;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -126,7 +126,7 @@ public class SyncManagerTest {
 
         when(rnrFormRepository.listUnSynced()).thenReturn(unSyncedList);
 
-        SubmitRequisitionResponse response = new SubmitRequisitionResponse();
+        SyncUpRequisitionResponse response = new SyncUpRequisitionResponse();
         response.setRequisitionId("1");
         when(lmisRestApi.submitRequisition(any(RnRForm.class))).thenReturn(response);
 
@@ -141,7 +141,7 @@ public class SyncManagerTest {
     public void shouldPushUnSyncedStockMovementData() throws LMISException, SQLException, ParseException {
         StockCard stockCard = createTestStockCardData();
 
-        doReturn(null).when(lmisRestApi).pushStockMovementData(anyString(), anyList());
+        doReturn(null).when(lmisRestApi).syncUpStockMovementData(anyString(), anyList());
         syncManager.syncStockCards();
         stockRepository.refresh(stockCard);
         List<StockMovementItem> items = newArrayList(stockCard.getForeignStockMovementItems());
@@ -155,7 +155,7 @@ public class SyncManagerTest {
     public void shouldNotMarkAsSyncedWhenStockMovementSyncFailed() throws LMISException, ParseException {
         StockCard stockCard = createTestStockCardData();
 
-        doThrow(new RuntimeException("Sync Failed")).when(lmisRestApi).pushStockMovementData(anyString(), anyList());
+        doThrow(new RuntimeException("Sync Failed")).when(lmisRestApi).syncUpStockMovementData(anyString(), anyList());
 
         try {
             syncManager.syncStockCards();
@@ -212,9 +212,9 @@ public class SyncManagerTest {
         data.add(new RnRForm());
         data.add(new RnRForm());
 
-        SyncBackRequisitionsResponse syncBackRequisitionsResponse = new SyncBackRequisitionsResponse();
-        syncBackRequisitionsResponse.setRequisitions(data);
-        when(lmisRestApi.fetchRequisitions(anyString())).thenReturn(syncBackRequisitionsResponse);
+        SyncDownRequisitionsResponse syncDownRequisitionsResponse = new SyncDownRequisitionsResponse();
+        syncDownRequisitionsResponse.setRequisitions(data);
+        when(lmisRestApi.fetchRequisitions(anyString())).thenReturn(syncDownRequisitionsResponse);
         syncManager.fetchAndSaveRequisitionData();
         verify(rnrFormRepository, times(2)).createFormAndItems(any(RnRForm.class));
     }
@@ -248,13 +248,13 @@ public class SyncManagerTest {
         String endDate = "2015-12-04";
 
 
-        StockCardResponse stockCardResponse = getStockCardResponse();
+        SyncDownStockCardResponse syncDownStockCardResponse = getStockCardResponse();
 
 
         StockRepository stockRepository = mock(StockRepository.class);
         syncManager.stockRepository = stockRepository;
 
-        when(lmisRestApi.fetchStockMovementData(facilityId, startDate, endDate)).thenReturn(stockCardResponse);
+        when(lmisRestApi.fetchStockMovementData(facilityId, startDate, endDate)).thenReturn(syncDownStockCardResponse);
 
         syncManager.fetchAndSaveStockCards(startDate, endDate);
 
@@ -263,7 +263,7 @@ public class SyncManagerTest {
     }
 
     @NonNull
-    public StockCardResponse getStockCardResponse() throws ParseException {
+    public SyncDownStockCardResponse getStockCardResponse() throws ParseException {
         StockCard stockCard1= StockCardBuilder.buildStockCard();
         StockCard stockCard2= StockCardBuilder.buildStockCard();
 
@@ -278,9 +278,9 @@ public class SyncManagerTest {
         ArrayList<StockMovementItem> stockMovementItems2 = newArrayList(stockMovementItem, stockMovementItem);
         stockCard2.setStockMovementItemsWrapper(stockMovementItems2);
 
-        StockCardResponse stockCardResponse = new StockCardResponse();
-        stockCardResponse.setStockCards(newArrayList(stockCard1, stockCard2));
-        return stockCardResponse;
+        SyncDownStockCardResponse syncDownStockCardResponse = new SyncDownStockCardResponse();
+        syncDownStockCardResponse.setStockCards(newArrayList(stockCard1, stockCard2));
+        return syncDownStockCardResponse;
     }
 
     @Test
