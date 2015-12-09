@@ -42,6 +42,7 @@ public class RnRFormViewModel {
     String title;
     String name;
     long id;
+    String syncErrorMessage;
     private RnRForm form;
 
     public RnRFormViewModel(String title) {
@@ -65,6 +66,10 @@ public class RnRFormViewModel {
         } else {
             this.type = TYPE_DRAFT;
         }
+    }
+
+    public void setSyncErrorMessage(String syncErrorMessage) {
+        this.syncErrorMessage = syncErrorMessage;
     }
 
     private void setName(RnRForm form) {

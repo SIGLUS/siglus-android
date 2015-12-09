@@ -26,6 +26,7 @@ import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.view.BaseView;
 
@@ -46,6 +47,9 @@ public abstract class BaseRequisitionPresenter implements Presenter {
 
     @Inject
     SyncManager syncManager;
+
+    @Inject
+    SyncErrorsRepository syncErrorsRepository;
 
     protected Subscription subscribe;
     private BaseRequisitionView view;

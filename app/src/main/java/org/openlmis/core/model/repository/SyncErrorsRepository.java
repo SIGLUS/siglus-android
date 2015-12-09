@@ -12,6 +12,7 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class SyncErrorsRepository {
 
@@ -43,17 +44,32 @@ public class SyncErrorsRepository {
         }
     }
 
+    public List<SyncError> getBySyncTypeAndObjectId(final SyncType syncType, final long syncObjectId) {
+        try {
+            return dbUtil.withDao(SyncError.class, new DbUtil.Operation<SyncError, List<SyncError>>() {
+
+                @Override
+                public List<SyncError> operate(Dao<SyncError, String> dao) throws SQLException {
+                    return dao.queryBuilder().where().eq("syncType", syncType).and().eq("syncObjectId", syncObjectId).query();
+                }
+            });
+        } catch (LMISException e) {
+            e.reportToFabric();
+            return null;
+        }
+    }
+
     public Integer deleteBySyncTypeAndObjectId(final SyncType syncType, final long syncObjectId) {
         try {
             return dbUtil.withDao(SyncError.class, new DbUtil.Operation<SyncError, Integer>() {
 
                 @Override
                 public Integer operate(Dao<SyncError, String> dao) throws SQLException {
-                    return dao.delete(dao.queryBuilder().where().eq("syncType", syncType).and().eq("syncObjectId", syncObjectId).query());
+                    return dao.delete(dao.queryBuilder().orderBy("id", false).where().eq("syncType", syncType).and().eq("syncObjectId", syncObjectId).query());
                 }
             });
         } catch (LMISException e) {
-            new LMISException(e).reportToFabric();
+            e.reportToFabric();
             return null;
         }
     }

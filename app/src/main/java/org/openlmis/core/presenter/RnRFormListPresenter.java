@@ -28,7 +28,10 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.SyncError;
+import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
@@ -50,6 +53,9 @@ public class RnRFormListPresenter implements Presenter {
 
     @Inject
     RnrFormRepository repository;
+
+    @Inject
+    SyncErrorsRepository syncErrorsRepository;
 
     @Setter
     String programCode;
@@ -103,8 +109,24 @@ public class RnRFormListPresenter implements Presenter {
 
         addPreviousPeriodViewModels(viewModels, rnRForms);
 
+        populateSyncErrorsOnViewModels(viewModels);
+
         return viewModels;
     }
+
+    private void populateSyncErrorsOnViewModels(final List<RnRFormViewModel> rnrViewModels) {
+        for (RnRFormViewModel rnrViewModel: rnrViewModels) {
+            rnrViewModel.setSyncErrorMessage(getRnrFormSyncError(rnrViewModel.getId()));
+        }
+    }
+
+    public String getRnrFormSyncError(long rnrId){
+        List<SyncError> syncErrorList = syncErrorsRepository.getBySyncTypeAndObjectId(SyncType.RnRForm, rnrId);
+        if (syncErrorList.isEmpty())
+            return null;
+        return syncErrorList.get(0).getErrorMessage();
+    }
+
 
     protected void addPreviousPeriodViewModels(List<RnRFormViewModel> viewModels, List<RnRForm> rnRForms) {
         viewModels.add(new RnRFormViewModel(LMISApp.getContext().getResources().getString(R.string.label_previous_period)));

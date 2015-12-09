@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class APIErrorResponse {
+public class DataErrorResponse {
     String error;
 }

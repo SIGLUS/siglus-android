@@ -10,6 +10,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
+import org.openlmis.core.network.SyncErrorsMap;
 import org.openlmis.core.view.activity.MMIARequisitionActivity;
 import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.view.adapter.RnRFormListAdapter;
@@ -57,7 +58,12 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())), R.drawable.ic_description, R.color.color_draft_title, model.getForm());
                 break;
             case RnRFormViewModel.TYPE_UNSYNC:
-                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_unsynced_requisition, model.getName())), R.drawable.ic_error, R.color.color_red, model.getForm());
+                String error = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage(model.getSyncErrorMessage());
+                if (model.getSyncErrorMessage() != null) {
+                    configHolder(model.getPeriod(), Html.fromHtml(error), R.drawable.ic_error, R.color.color_red, model.getForm());
+                } else {
+                    configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_unsynced_requisition, model.getName())), R.drawable.ic_error, R.color.color_red, model.getForm());
+                }
                 break;
             case RnRFormViewModel.TYPE_HISTORICAL:
                 configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedDate())), R.drawable.ic_done, INT_UNSET, model.getForm());

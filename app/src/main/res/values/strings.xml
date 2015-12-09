@@ -177,6 +177,13 @@
     <!-- Physical Inventory Page -->
     <string name="label_physical_inventory_stock_on_hand">Current stock on hand: %1$s</string>
 
+    <!-- Server Sync Errors -->
+    <string name="sync_server_error">Sync failed. We have encountered a technical problem on the server. Please contact your System Admin.</string>
+    <string name="default_sync_data_error">Sync failed. We have encountered a data error when syncing this requisition. Please contact your System Admin.</string>
+    <string name="rnr_previous_not_filled">Sync failed. There has been a requisition missing from a previous period. Please contact your System Admin.</string>
+    <string name="period_configuration_missing">Sync failed. Server configuration for this period is missing. Please contact your System Admin to initiate the period.</string>
+    <string name="product_code_invalid">Sync failed. You have tried to submit an invalid product in the form %1$s. Please contact your System Admin.</string>
+    <string name="unauthorized_operation">Sync failed. You do not have permission to sync this requisition to server. Please contact your System Admin.</string>
 
     <!-- Rnr form historical list -->
     <string name="label_via_name">Via Classica Requisition</string>

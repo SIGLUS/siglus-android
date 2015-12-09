@@ -29,6 +29,8 @@ import com.squareup.okhttp.OkHttpClient;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.SyncServerException;
+import org.openlmis.core.exceptions.UnauthorizedException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
@@ -38,7 +40,7 @@ import org.openlmis.core.network.adapter.ProductsAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapterForFeatureToggle;
 import org.openlmis.core.network.adapter.StockCardAdapter;
-import org.openlmis.core.network.model.APIErrorResponse;
+import org.openlmis.core.network.model.DataErrorResponse;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -60,6 +62,7 @@ import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.OkClient;
+import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
 
 public class LMISRestManager {
@@ -187,7 +190,18 @@ public class LMISRestManager {
     class APIErrorHandler implements ErrorHandler {
         @Override
         public Throwable handleError(RetrofitError cause) {
-            return new Throwable(((APIErrorResponse) cause.getBodyAs(APIErrorResponse.class)).getError());
+            Response r = cause.getResponse();
+            if (r != null && r.getStatus() == 401) {
+                return new UnauthorizedException(cause);
+            }
+
+            if (r != null && r.getStatus() == 400) {
+                return new SyncServerException(((DataErrorResponse) cause.getBodyAs(DataErrorResponse.class)).getError());
+            }
+            if (r != null && r.getStatus() == 500) {
+                return new SyncServerException(LMISApp.getContext().getString(R.string.sync_server_error));
+            }
+            return cause;
         }
     }
 
