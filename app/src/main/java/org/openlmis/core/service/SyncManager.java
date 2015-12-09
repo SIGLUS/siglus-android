@@ -117,7 +117,9 @@ public class SyncManager {
     private boolean saveRequisitionLock = false;
     private boolean saveStockCardLock = false;
     private Observable<Void> productObservable;
-    private SyncErrorsRepository syncErrorsRepository = new SyncErrorsRepository(LMISApp.getContext());
+
+    @Inject
+    private SyncErrorsRepository syncErrorsRepository;
 
     public SyncManager() {
         lmisRestApi = new LMISRestManager().getLmisRestApi();
@@ -309,6 +311,7 @@ public class SyncManager {
     private boolean submitRequisition(RnRForm rnRForm) {
         try {
             lmisRestApi.submitRequisition(rnRForm);
+            syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RnRForm, rnRForm.getId());
             return true;
         } catch (UndeclaredThrowableException e) {
             new LMISException(e).reportToFabric();
@@ -364,6 +367,7 @@ public class SyncManager {
         try {
             lmisRestApi.syncUpStockMovementData(facilityId, movementEntriesToSync);
             markStockDataSynced(stockMovementItems);
+            syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.StockCards,0l);
             return true;
 
         } catch (LMISException exception) {
