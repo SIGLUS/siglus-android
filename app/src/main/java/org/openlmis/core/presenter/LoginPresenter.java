@@ -265,7 +265,7 @@ public class LoginPresenter implements Presenter {
         if (!isSyncingRequisitionData) {
             isSyncingRequisitionData = true;
             view.loading(LMISApp.getInstance().getString(R.string.msg_sync_requisition_data));
-            syncManager.syncRequisitionData(getSyncRequisitionDataSubscriber());
+            syncManager.syncBackRnr(getSyncRequisitionDataSubscriber());
         }
     }
 

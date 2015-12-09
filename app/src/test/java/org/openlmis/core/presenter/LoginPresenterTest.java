@@ -266,7 +266,7 @@ public class LoginPresenterTest {
 
         verify(mockActivity).setHasGetProducts(true);
         verify(mockActivity).loading(RuntimeEnvironment.application.getString(R.string.msg_sync_requisition_data));
-        verify(syncManager).syncRequisitionData(any(rx.Observer.class));
+        verify(syncManager).syncBackRnr(any(rx.Observer.class));
     }
 
     @Test
@@ -328,7 +328,7 @@ public class LoginPresenterTest {
         presenter.onLoginSuccess(any(User.class));
 
         verify(mockActivity).loading(RuntimeEnvironment.application.getString(R.string.msg_sync_requisition_data));
-        verify(syncManager).syncRequisitionData(syncRequisitionDataSubscriber);
+        verify(syncManager).syncBackRnr(syncRequisitionDataSubscriber);
     }
 
     @Test
