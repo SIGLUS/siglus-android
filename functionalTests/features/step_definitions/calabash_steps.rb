@@ -92,6 +92,7 @@ Given(/^I have initialized inventory$/) do
         Then I wait for 3 seconds
         When I Select VIA Item
         When I Select MMIA Item
+        Then I wait for "Complete" to appear
         And I press "Complete"
         Then I wait for "Home Page" to appear
 	}
@@ -142,6 +143,7 @@ When(/^I initialize inventory$/) do
         end
 
         steps %Q{
+            Then I wait for "Complete" to appear
             And I press "Complete"
             Then I wait for "Home Page" to appear
         }
@@ -157,8 +159,8 @@ When(/^I search product by fnm "(.*?)" and select this item$/) do |fnm|
     touch(search_bar)
     enter_text("android.support.v7.widget.SearchView id:'action_search'", fnm)
 
-    q = query("android.widget.TextView {text CONTAINS '#{fnm}'}")
-    if q.empty?
+    q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
+    if !q.empty?
         steps %Q{
             When I select the item called "#{fnm}"
         }

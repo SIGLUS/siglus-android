@@ -44,7 +44,7 @@ Feature: MMIA
     And I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
-    And I make a movement "[08S42B]" "Issues" "PAV" "issued" "2"
+    And I make a movement "[08S42B]" "Entries" "District( DDM)" "received" "2"
     Then I wait for "Stock Overview" to appear
     Then I navigate back
     Then I wait for "Home Page" to appear

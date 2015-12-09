@@ -28,15 +28,39 @@ Feature: stock movement Page
     And I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
-    Then I select stock card code called "[08S42B]"
+    Then I select stock card code called "[01A05]"
     Then I wait for "Stock Card" to appear
     Then I wait for 1 second
     And I select a reason "Entries" "District( DDM)"
     Then I wait for 1 second
     And I enter received number "2"
+    Then I wait for "Complete" to appear
     And I press "Complete"
     And I sign stock movement with "superuser"
     Then I see "125"
+    Then I see "superuser" in signature field
+    Then I navigate back
+    Then I wait for 1 second
+    Then I navigate back
+    Then I wait for "Home Page" to appear
+
+
+  Scenario: Add A Issued Movement
+    Given I am logged in
+    And I press "Stock Card Overview"
+    Then I wait for "Stock Overview" to appear
+    Then I wait for 1 second
+    Then I select stock card code called "[01A05]"
+    Then I wait for "Stock Card" to appear
+    Then I wait for 1 second
+    And I select a reason "Issues" "PAV"
+    Then I wait for 1 second
+    Then I swipe right
+    And I enter issued number "2"
+    Then I wait for "Complete" to appear
+    And I press "Complete"
+    And I sign stock movement with "superuser"
+    Then I see "123"
     Then I see "superuser" in signature field
     Then I navigate back
     Then I wait for 1 second
@@ -54,6 +78,7 @@ Feature: stock movement Page
     And I select a reason "Negative Adjustments" "Damaged on arrival"
     Then I wait for 1 second
     And I enter negative adjustment number "2"
+    Then I wait for "Complete" to appear
     And I press "Complete"
     And I sign stock movement with "superuser"
     Then I see "121"
@@ -67,37 +92,17 @@ Feature: stock movement Page
     And I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
-    Then I select stock card code called "[01A05]"
+    Then I select stock card code called "[01A02]"
     Then I wait for "Stock Card" to appear
     Then I wait for 1 second
     And I select a reason "Positive Adjustments" "Donations to Deposit"
     Then I swipe right
     Then I wait for 1 second
     And I enter positive adjustment number "2"
+    Then I wait for "Complete" to appear
     And I press "Complete"
     And I sign stock movement with "superuser"
-    Then I see "125"
-    Then I navigate back
-    Then I wait for 1 second
-    Then I navigate back
-    Then I wait for "Home Page" to appear
-
-  Scenario: Add A Issued Movement
-    Given I am logged in
-    And I press "Stock Card Overview"
-    Then I wait for "Stock Overview" to appear
-    Then I wait for 1 second
-    Then I select stock card code called "[08S18Y]"
-    Then I wait for "Stock Card" to appear
-    Then I wait for 1 second
-    And I select a reason "Issues" "PAV"
-    Then I wait for 1 second
-    Then I swipe right
-    And I enter issued number "2"
-    And I press "Complete"
-    And I sign stock movement with "superuser"
-    Then I see "121"
-    Then I see "superuser" in signature field
+    Then I see "123"
     Then I navigate back
     Then I wait for 1 second
     Then I navigate back
