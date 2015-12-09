@@ -21,7 +21,7 @@ package org.openlmis.core.exceptions;
 
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
+import org.openlmis.core.LMISApp;
 
 public class LMISException extends Exception {
     private static String openLMISError = "OpenLMISError";
@@ -42,7 +42,7 @@ public class LMISException extends Exception {
         //this will save exception messages locally
         //it only uploads to fabric server when network is available
         //so this actually behaves analogously with our sync data logic
-        Crashlytics.logException(this);
+        LMISApp.getInstance().logErrorOnFabric(this);
         Log.e(openLMISError, this.getMessage(), this);
     }
 }

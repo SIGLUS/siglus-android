@@ -36,21 +36,25 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.SyncError;
+import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.AppInfoRequest;
+import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
-import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncUpRequisitionResponse;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -61,7 +65,6 @@ import roboguice.RoboGuice;
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
-import rx.observers.TestSubscriber;
 import rx.schedulers.Schedulers;
 
 import static junit.framework.Assert.assertEquals;
@@ -69,6 +72,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -88,10 +92,12 @@ public class SyncManagerTest {
     StockRepository stockRepository;
     private SharedPreferenceMgr sharedPreferenceMgr;
     private StockMovementItem stockMovementItem;
+    SyncErrorsRepository syncErrorsRepository;
 
     @Before
     public void setup() throws LMISException {
         rnrFormRepository = mock(RnrFormRepository.class);
+        syncErrorsRepository = mock(SyncErrorsRepository.class);
         lmisRestApi = mock(LMISRestApi.class);
         sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
 
@@ -133,12 +139,12 @@ public class SyncManagerTest {
         syncManager.syncRnr();
         verify(lmisRestApi, times(10)).submitRequisition(any(RnRForm.class));
         verify(rnrFormRepository, times(10)).save(any(RnRForm.class));
-
+        verify(syncErrorsRepository, times(10)).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
     }
 
 
     @Test
-    public void shouldPushUnSyncedStockMovementData() throws LMISException, SQLException, ParseException {
+    public void shouldSyncUnSyncedStockMovementData() throws LMISException, SQLException, ParseException {
         StockCard stockCard = createTestStockCardData();
 
         doReturn(null).when(lmisRestApi).syncUpStockMovementData(anyString(), anyList());
@@ -149,6 +155,17 @@ public class SyncManagerTest {
         assertThat(items.size(), is(2));
         assertThat(items.get(0).isSynced(), is(true));
         assertThat(items.get(1).isSynced(), is(true));
+        verify(syncErrorsRepository).deleteBySyncTypeAndObjectId(any(SyncType.class),anyLong());
+    }
+
+    @Test
+    public void shouldSaveSyncErrorWhenUnSyncedStockMovementDataFail() throws LMISException, SQLException, ParseException {
+        createTestStockCardData();
+        doThrow(new UndeclaredThrowableException(new Throwable())).when(lmisRestApi).syncUpStockMovementData(anyString(),anyList());
+
+        syncManager.syncStockCards();
+
+        verify(syncErrorsRepository).save(any(SyncError.class));
     }
 
     @Test
@@ -229,6 +246,20 @@ public class SyncManagerTest {
     }
 
     @Test
+    public void shouldSaveErrorMessageWhenSyncRnRFormFail() throws Exception {
+        List<RnRForm> unSyncedList = new ArrayList<>();
+        RnRForm form = new RnRForm();
+        unSyncedList.add(form);
+
+        when(rnrFormRepository.listUnSynced()).thenReturn(unSyncedList);
+
+        doThrow(new UndeclaredThrowableException(new Throwable(),"Sync Failed")).when(lmisRestApi).submitRequisition(any(RnRForm.class));
+        syncManager.syncRnr();
+
+        verify(syncErrorsRepository).save(any(SyncError.class));
+    }
+
+    @Test
     public void shouldNotSyncAppVersion() throws Exception {
         when(sharedPreferenceMgr.hasSyncedVersion()).thenReturn(true);
         syncManager.syncAppVersion();
@@ -300,6 +331,7 @@ public class SyncManagerTest {
         protected void configure() {
             binder.bind(RnrFormRepository.class).toInstance(rnrFormRepository);
             bind(SharedPreferenceMgr.class).toInstance(sharedPreferenceMgr);
+            bind(SyncErrorsRepository.class).toInstance(syncErrorsRepository);
         }
     }
 }

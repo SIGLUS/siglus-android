@@ -1,6 +1,8 @@
 package org.openlmis.core;
 
 
+import org.openlmis.core.exceptions.LMISException;
+
 public class LMISTestApp extends LMISApp {
 
     private boolean networkAvailable;
@@ -36,5 +38,10 @@ public class LMISTestApp extends LMISApp {
     @Override
     public boolean getFeatureToggleFor(int id) {
         return featureToggle;
+    }
+
+    @Override
+    public void logErrorOnFabric(LMISException exception) {
+        //do nothing
     }
 }

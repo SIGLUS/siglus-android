@@ -25,6 +25,7 @@ import android.content.res.Configuration;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.network.NetworkConnectionManager;
 
@@ -77,5 +78,9 @@ public class LMISApp extends Application {
 
     public boolean getFeatureToggleFor(int id) {
         return getResources().getBoolean(id);
+    }
+
+    public void logErrorOnFabric(LMISException exception) {
+        Crashlytics.logException(exception);
     }
 }
