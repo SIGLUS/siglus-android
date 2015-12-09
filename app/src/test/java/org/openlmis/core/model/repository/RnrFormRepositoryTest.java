@@ -27,12 +27,16 @@ import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.builder.StockCardBuilder;
+import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -44,6 +48,7 @@ import roboguice.RoboGuice;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -299,6 +304,93 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
+    public void shouldGenerateRnrFormItemWithCorrectAttributes() throws Exception {
+        int stockExistence = 100;
+        int issueQuantity = 10;
+        int receiveQuantity = 20;
+        int positiveQuantity = 30;
+        int negativeQuantity = 40;
+
+        ArrayList<StockMovementItem> stockMovementItems = new ArrayList<>();
+        StockMovementItemBuilder stockMovementItemBuilder = new StockMovementItemBuilder();
+
+        StockMovementItem inventoryItem = stockMovementItemBuilder
+                .withDocumentNo("1")
+                .withMovementReason("reason")
+                .withMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY)
+                .withStockOnHand(stockExistence)
+                .build();
+        StockMovementItem issueItem = stockMovementItemBuilder
+                .withDocumentNo("1")
+                .withMovementReason("reason")
+                .withMovementType(StockMovementItem.MovementType.ISSUE)
+                .withQuantity(issueQuantity)
+                .build();
+        StockMovementItem receiveItem = stockMovementItemBuilder
+                .withDocumentNo("1")
+                .withMovementReason("reason")
+                .withMovementType(StockMovementItem.MovementType.RECEIVE)
+                .withQuantity(receiveQuantity)
+                .build();
+        StockMovementItem positiveItem = stockMovementItemBuilder
+                .withDocumentNo("1")
+                .withMovementReason("reason")
+                .withMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST)
+                .withQuantity(positiveQuantity)
+                .build();
+        StockMovementItem negativeItem = stockMovementItemBuilder
+                .withDocumentNo("1")
+                .withMovementReason("reason")
+                .withMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST)
+                .withQuantity(negativeQuantity)
+                .build();
+
+        stockMovementItems.add(negativeItem);
+        stockMovementItems.add(positiveItem);
+        stockMovementItems.add(receiveItem);
+        stockMovementItems.add(issueItem);
+        stockMovementItems.add(inventoryItem);
+
+        ArrayList<StockCard> stockCards = new ArrayList<>();
+        Product product = new Product();
+        product.setCode("01A01");
+
+        StockCardBuilder stockCardBuilder = new StockCardBuilder();
+        StockCard stockCard = stockCardBuilder
+                .setCreateDate(new Date())
+                .setProduct(product)
+                .setExpireDates("10/10/2016, 11/10/2016, 12/10/2017")
+                .build();
+        stockCard.setCreatedAt(new Date());
+        stockCards.add(stockCard);
+
+        RnRForm form = new RnRForm();
+        form.setPeriodBegin(new Date());
+        form.setPeriodEnd(new Date());
+        form.setProgram(new Program("mmia", "mmia", null));
+
+        when(mockStockRepository.list(anyString())).thenReturn(stockCards);
+        when(mockStockRepository.queryStockItems(stockCard, form.getPeriodBegin(), form.getPeriodEnd())).thenReturn(stockMovementItems);
+
+        List<RnrFormItem> rnrFormItemList = rnrFormRepository.generateRnrFormItems(form);
+
+        RnrFormItem rnrFormItem = rnrFormItemList.get(0);
+        int expectAdjustment = positiveQuantity - negativeQuantity;
+        int expectInventoryQuantity = stockExistence + receiveQuantity + positiveQuantity - issueQuantity - negativeQuantity;
+        int expectOrderQuantity = 2 * issueQuantity - expectInventoryQuantity;
+        expectOrderQuantity = expectOrderQuantity >0 ? expectOrderQuantity : 0;
+
+        assertThat(rnrFormItem.getProduct(), is(product));
+        assertEquals(stockExistence, rnrFormItem.getInitialAmount());
+        assertEquals(issueQuantity, rnrFormItem.getIssued());
+        assertEquals(receiveQuantity, rnrFormItem.getReceived());
+        assertEquals(expectAdjustment, rnrFormItem.getAdjustment());
+        assertEquals(expectInventoryQuantity, rnrFormItem.getInventory());
+        assertEquals("10/10/2016", rnrFormItem.getValidate());
+        assertEquals(expectOrderQuantity, rnrFormItem.getCalculatedOrderQuantity());
+    }
+
+    @Test
     public void shouldReturnRnRForm() throws LMISException {
         Program program = new Program();
 
@@ -353,8 +445,8 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(form.getId(), is(1L));
         assertThat(form2.getId(), is(2L));
         RnRForm rnRForm = rnrFormRepository.queryRnRForm(2L);
-        assertThat(rnRForm.getBaseInfoItemListWrapper().get(0).getName(),is("Name1"));
-        assertThat(rnRForm.getComments(),is("Comments"));
+        assertThat(rnRForm.getBaseInfoItemListWrapper().get(0).getName(), is("Name1"));
+        assertThat(rnRForm.getComments(), is("Comments"));
     }
 
     @Test
@@ -374,8 +466,8 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         List<RnRFormSignature> signatures = rnrFormRepository.querySignaturesByRnrForm(form);
 
         assertThat(signatures.size(), is(2));
-        assertThat(signatures.get(0).getSignature(),is("Submitter Signature"));
-        assertThat(signatures.get(1).getSignature(),is("Approver Signature"));
+        assertThat(signatures.get(0).getSignature(), is("Submitter Signature"));
+        assertThat(signatures.get(1).getSignature(), is("Approver Signature"));
     }
 
     public class MyTestModule extends AbstractModule {

@@ -51,4 +51,9 @@ public class StockMovementItemBuilder {
         return this;
     }
 
+    public StockMovementItemBuilder withStockOnHand(int stockExistence) {
+        this.stockExistence = stockExistence;
+        return this;
+    }
+
 }
