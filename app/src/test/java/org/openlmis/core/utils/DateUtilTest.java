@@ -41,4 +41,31 @@ public class DateUtilTest {
         assertThat(now.get(Calendar.MONTH), is(11));
         assertThat(now.get(Calendar.YEAR), is(2015));
     }
+
+
+    @Test
+    public void shouldReturnNextDayWhenAddOneDayOfMonth() {
+        Calendar now = Calendar.getInstance();
+        now.set(2016, 00, 01);
+
+        Date nextDay = DateUtil.addDayOfMonth(now.getTime(), 1);
+        now.setTime(nextDay);
+
+        assertThat(now.get(Calendar.MONTH), is(0));
+        assertThat(now.get(Calendar.DAY_OF_MONTH), is(2));
+        assertThat(now.get(Calendar.YEAR), is(2016));
+    }
+
+    @Test
+    public void shouldReturnPreviousDayWhenMinusOneDayOfMonth() {
+        Calendar now = Calendar.getInstance();
+        now.set(2016, 0, 3);
+
+        Date nextDay = DateUtil.addDayOfMonth(now.getTime(), -1);
+        now.setTime(nextDay);
+
+        assertThat(now.get(Calendar.MONTH), is(0));
+        assertThat(now.get(Calendar.DAY_OF_MONTH), is(2));
+        assertThat(now.get(Calendar.YEAR), is(2016));
+    }
 }

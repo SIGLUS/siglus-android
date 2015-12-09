@@ -258,8 +258,7 @@ public class SyncManagerTest {
 
         syncManager.fetchAndSaveStockCards(startDate, endDate);
 
-        verify(stockRepository, times(2)).save(any(StockCard.class));
-        verify(stockRepository, times(5)).saveStockItem(stockMovementItem);
+        verify(stockRepository, times(2)).saveStockCardAndBatchUpdateMovements(any(StockCard.class));
         assertThat(stockMovementItem.isSynced(), is(true));
     }
 
@@ -286,8 +285,8 @@ public class SyncManagerTest {
 
     @Test
     public void shouldFetchLatestYearStockMovement() throws Throwable{
-
-        StockRepository stockRepository = mock(StockRepository.class);
+        when(sharedPreferenceMgr.getPreference()).thenReturn(LMISTestApp.getContext().getSharedPreferences("LMISPreference", Context.MODE_PRIVATE));
+        stockRepository = mock(StockRepository.class);
         syncManager.stockRepository = stockRepository;
         when(lmisRestApi.fetchStockMovementData(anyString(), anyString(), anyString())).thenReturn(getStockCardResponse());
 

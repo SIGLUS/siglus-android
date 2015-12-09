@@ -387,17 +387,28 @@ public class SyncManager {
     }
 
     public void fetchLatestYearStockMovements() throws Throwable {
-        Date now = new Date();
+        long syncEndTimeMillions = sharedPreferenceMgr.getPreference().getLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, new Date().getTime());
 
-        for (int month = 1; month <= MONTHS_OF_YEAR; month++) {
+        Date now = new Date(syncEndTimeMillions);
+
+        int startMonth = sharedPreferenceMgr.getPreference().getInt(SharedPreferenceMgr.KEY_STOCK_SYNC_CURRENT_INDEX, 1);
+
+        for (int month = startMonth; month <= MONTHS_OF_YEAR; month++) {
             Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH * (month + 1));
             String startDateStr = DateUtil.formatDate(startDate, "yyyy-MM-dd");
 
             Date endDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH * month);
             String endDateStr = DateUtil.formatDate(endDate, "yyyy-MM-dd");
 
-            fetchAndSaveStockCards(startDateStr, endDateStr);
+            try {
+                fetchAndSaveStockCards(startDateStr, endDateStr);
+            } catch (Throwable throwable) {
+                sharedPreferenceMgr.getPreference().edit().putLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, syncEndTimeMillions).apply();
+                sharedPreferenceMgr.getPreference().edit().putInt(SharedPreferenceMgr.KEY_STOCK_SYNC_CURRENT_INDEX, month).apply();
+                throw throwable;
+            }
         }
+
     }
 
     public void fetchLatestOneMonthMovements() throws Throwable {
@@ -419,18 +430,20 @@ public class SyncManager {
         for (StockCard stockCard : stockCardResponse.getStockCards()) {
             StockMovementItem oldestItem = stockRepository.getOldestMovementItemById(stockCard.getId());
             Long stockOnHand = stockCard.getStockOnHand();
+
             if (oldestItem != null && sharedPreferenceMgr.getPreference().getBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, false)) {
                 stockOnHand = oldestItem.calculateStockMovementStockOnHand(oldestItem.getStockOnHand());
             }
             stockCard.setUpStockOnHandForMovements(stockOnHand);
 
-            if (stockCard.getId() <= 0) {
-                stockRepository.save(stockCard);
-            }
-
             for (StockMovementItem item : stockCard.getStockMovementItemsWrapper()) {
                 item.setSynced(true);
-                stockRepository.saveStockItem(item);
+            }
+
+            if (stockCard.getId() <= 0) {
+                stockRepository.saveStockCardAndBatchUpdateMovements(stockCard);
+            } else {
+                stockRepository.batchUpdateStockMovements(stockCard.getStockMovementItemsWrapper());
             }
         }
     }

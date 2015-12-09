@@ -38,6 +38,8 @@ public class SharedPreferenceMgr {
     public static final String KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS = "has_get_month_stock_cards_synced";
     public static final String KEY_HAS_SYNCED_LATEST_YEAR_STOCKMOVEMENTS = "has_get_year_stock_cards_synced";
     public static final String KEY_IS_REQUISITION_DATA_SYNCED = "is_requisition_data_synced";
+    public static final String KEY_STOCK_SYNC_END_TIME = "sync_stock_end_time";
+    public static final String KEY_STOCK_SYNC_CURRENT_INDEX = "sync_stock_current_index";
 
     @Inject
     public SharedPreferenceMgr(Context context) {

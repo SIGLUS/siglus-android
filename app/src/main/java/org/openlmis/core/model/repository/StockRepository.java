@@ -125,6 +125,22 @@ public class StockRepository {
         });
     }
 
+    public void saveStockCardAndBatchUpdateMovements(final StockCard stockCard) throws LMISException {
+        try {
+            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+                    save(stockCard);
+                    batchUpdateStockMovements(stockCard.getStockMovementItemsWrapper());
+                    return null;
+                }
+            });
+        } catch (SQLException e) {
+            throw new LMISException(e);
+        }
+
+    }
+
     public void saveStockItem(final StockMovementItem stockMovementItem) throws LMISException {
         stockMovementItem.setCreatedTime(new Date());
         stockItemGenericDao.create(stockMovementItem);
