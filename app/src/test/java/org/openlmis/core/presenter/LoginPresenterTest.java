@@ -298,12 +298,12 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldGoToNextPageWhenSyncProductSucceedAndSyncRequisitionFailed() {
+    public void shouldLoginFailedWhenSyncProductSucceedAndSyncRequisitionFailed() {
         when(mockActivity.needInitInventory()).thenReturn(true);
         syncRequisitionDataSubscriber.onError(new Exception("error"));
 
         verify(mockActivity, times(1)).loaded();
-        verify(mockActivity, times(1)).goToInitInventory();
+        verify(mockActivity, times(0)).goToInitInventory();
         verify(mockActivity, times(0)).goToHomePage();
     }
 

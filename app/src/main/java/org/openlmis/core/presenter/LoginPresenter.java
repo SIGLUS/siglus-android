@@ -138,7 +138,7 @@ public class LoginPresenter implements Presenter {
         UserInfoMgr.getInstance().setUser(user);
         view.clearErrorAlerts();
 
-        syncServerData();
+        checkSyncServerData();
     }
 
     public void onLoginFailed() {
@@ -147,23 +147,24 @@ public class LoginPresenter implements Presenter {
         view.clearPassword();
     }
 
-    private void syncServerData() {
-        if (view.hasGetProducts()) {
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273) && !view.isStockDataSynced()){
-                syncStockCard();
-            }
-            checkRequisitionData();
-        } else {
-            checkProductsWithProgram();
-        }
-    }
+    private void checkSyncServerData() {
 
-    private void checkRequisitionData() {
-        if (view.isRequisitionDataSynced()) {
-            goToNextPage();
-        } else {
-            syncRequisitionData();
+        if (!view.hasGetProducts()) {
+            checkProductsWithProgram();
+            return;
         }
+
+        if (!view.isStockDataSynced()){
+            syncStockCard();
+            return;
+        }
+
+        if(!view.isRequisitionDataSynced()){
+            syncRequisitionData();
+            return;
+        }
+
+        goToNextPage();
     }
 
     private void checkProductsWithProgram() {
@@ -223,6 +224,7 @@ public class LoginPresenter implements Presenter {
     }
 
     private void syncStockCard(){
+
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)){
             syncRequisitionData();
             return;
@@ -283,7 +285,7 @@ public class LoginPresenter implements Presenter {
                 isSyncingRequisitionData = false;
                 view.setRequisitionDataSynced(false);
                 ToastUtil.show(R.string.msg_sync_data_failed);
-                goToNextPage();
+                view.loaded();
             }
         };
     }
