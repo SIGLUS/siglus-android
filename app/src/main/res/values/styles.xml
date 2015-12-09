@@ -125,7 +125,7 @@
         <item name="android:padding">@dimen/padding_normal</item>
     </style>
 
-    <style name="Home.SyncText" parent="Text.Gray.Large">
+    <style name="Home.SyncText" parent="Text.Gray.Medium">
         <item name="android:gravity">center_horizontal</item>
     </style>
 
