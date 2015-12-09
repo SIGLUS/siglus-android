@@ -293,7 +293,7 @@ public class RnrFormRepository {
         RnrFormItem rnrFormItem = new RnrFormItem();
         if (!stockMovementItems.isEmpty()) {
 
-            StockMovementItem firstItem = stockMovementItems.get(0);
+            StockMovementItem firstItem = stockMovementItems.get(stockMovementItems.size()-1);
             if (firstItem.getMovementType() == StockMovementItem.MovementType.ISSUE
                     || firstItem.getMovementType() == StockMovementItem.MovementType.NEGATIVE_ADJUST) {
                 rnrFormItem.setInitialAmount(firstItem.getStockOnHand() + firstItem.getMovementQuantity());
@@ -323,7 +323,7 @@ public class RnrFormRepository {
             rnrFormItem.setIssued(totalIssued);
             rnrFormItem.setAdjustment(totalAdjustment);
 
-            Long inventory = stockMovementItems.get(stockMovementItems.size() - 1).getStockOnHand();
+            Long inventory = stockMovementItems.get(0).getStockOnHand();
             rnrFormItem.setInventory(inventory);
             rnrFormItem.setValidate(stockCard.getEarliestExpireDate());
 
