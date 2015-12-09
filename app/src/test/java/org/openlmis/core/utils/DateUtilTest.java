@@ -2,6 +2,7 @@ package org.openlmis.core.utils;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -67,5 +68,18 @@ public class DateUtilTest {
         assertThat(now.get(Calendar.MONTH), is(0));
         assertThat(now.get(Calendar.DAY_OF_MONTH), is(2));
         assertThat(now.get(Calendar.YEAR), is(2016));
+    }
+
+    @Test
+    public void shouldSortByDate() throws Exception {
+        ArrayList<String> list = new ArrayList<>();
+        list.add("18/10/2017");
+        list.add("16/10/2016");
+        list.add("18/10/2016");
+        DateUtil.sortByDate(list);
+
+        assertThat(list.get(0), is("16/10/2016"));
+        assertThat(list.get(1), is("18/10/2016"));
+        assertThat(list.get(2), is("18/10/2017"));
     }
 }

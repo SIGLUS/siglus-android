@@ -18,10 +18,15 @@
 
 package org.openlmis.core.utils;
 
+import org.openlmis.core.exceptions.LMISException;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public final class DateUtil {
@@ -89,7 +94,7 @@ public final class DateUtil {
     }
 
     public static Date minusDayOfMonth(Date date, int difference) {
-        return addDayOfMonth(date, - difference);
+        return addDayOfMonth(date, -difference);
     }
 
     public static Date addMonth(Date date, int difference) {
@@ -162,5 +167,19 @@ public final class DateUtil {
         int currentMonth = now.get(Calendar.MONTH);
         now.set(Calendar.MONTH, currentMonth - months);
         return now.getTime();
+    }
+
+    public static void sortByDate(List<String> expiryDates) {
+        Collections.sort(expiryDates, new Comparator<String>() {
+            @Override
+            public int compare(String lhs, String rhs) {
+                try {
+                    return DateUtil.parseString(lhs, DateUtil.SIMPLE_DATE_FORMAT).compareTo(DateUtil.parseString(rhs, DateUtil.SIMPLE_DATE_FORMAT));
+                } catch (ParseException e) {
+                    new LMISException(e).reportToFabric();
+                }
+                return 0;
+            }
+        });
     }
 }

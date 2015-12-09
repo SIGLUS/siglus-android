@@ -77,6 +77,12 @@ public class StockCardTest {
         assertThat(item3.getStockOnHand()).isEqualTo(100);
     }
 
+    @Test
+    public void shouldGetEarliestExpireDate() throws Exception {
+        stockCard.setExpireDates("18/10/2015,18/10/2016,18/10/2017,18/10/2018");
+        assertThat(stockCard.getEarliestExpireDate()).isEqualTo("18/10/2015");
+    }
+
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {

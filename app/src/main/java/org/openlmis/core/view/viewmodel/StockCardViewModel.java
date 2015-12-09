@@ -34,8 +34,6 @@ import org.openlmis.core.utils.DateUtil;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import lombok.Data;
@@ -152,22 +150,8 @@ public class StockCardViewModel {
         if (expiryDates == null) {
             return StringUtils.EMPTY;
         }
-        sortByDate();
+        DateUtil.sortByDate(expiryDates);
         return StringUtils.join(expiryDates, StockCard.DIVIDER);
-    }
-
-    private void sortByDate() {
-        Collections.sort(expiryDates, new Comparator<String>() {
-            @Override
-            public int compare(String lhs, String rhs) {
-                try {
-                    return DateUtil.parseString(lhs, DateUtil.SIMPLE_DATE_FORMAT).compareTo(DateUtil.parseString(rhs, DateUtil.SIMPLE_DATE_FORMAT));
-                } catch (ParseException e) {
-                    new LMISException(e).reportToFabric();
-                }
-                return 0;
-            }
-        });
     }
 
     public String optFirstExpiryDate() {

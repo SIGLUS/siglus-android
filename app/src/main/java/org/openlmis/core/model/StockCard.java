@@ -29,9 +29,9 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.utils.DateUtil;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
@@ -66,9 +66,9 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
 
     public String getEarliestExpireDate() {
         if (!StringUtils.isEmpty(expireDates)) {
-            List<String> stringList = Arrays.asList(expireDates.split(DIVIDER));
-            Collections.sort(stringList);
-            return stringList.get(0);
+            List<String> expireDateList = Arrays.asList(expireDates.split(DIVIDER));
+            DateUtil.sortByDate(expireDateList);
+            return expireDateList.get(0);
         }
         return null;
     }
