@@ -42,6 +42,7 @@ public class LoginPresenter implements Presenter {
     boolean isLoadingProducts = false;
     boolean isSyncingStockMovement = false;
     boolean isSyncingRequisitionData = false;
+    boolean shouldShowSyncedSuccessMsg = false;
 
     @Inject
     UserRepository userRepository;
@@ -181,6 +182,9 @@ public class LoginPresenter implements Presenter {
         if (view.needInitInventory()) {
             view.goToInitInventory();
         } else {
+            if (shouldShowSyncedSuccessMsg) {
+                ToastUtil.showLongTimeAsOfficialWay(R.string.msg_initial_sync_success);
+            }
             view.goToHomePage();
         }
         fetchStockMovementSilent();
@@ -242,6 +246,7 @@ public class LoginPresenter implements Presenter {
         return new SyncSubscriber<Void>() {
             @Override
             public void onCompleted() {
+                shouldShowSyncedSuccessMsg = true;
                 isSyncingStockMovement = false;
                 view.setStockCardDataSynced(true);
                 view.loaded();
@@ -250,6 +255,7 @@ public class LoginPresenter implements Presenter {
 
             @Override
             public void onError(Throwable throwable) {
+                shouldShowSyncedSuccessMsg = false;
                 isSyncingStockMovement = false;
                 view.setStockCardDataSynced(false);
                 ToastUtil.show(R.string.msg_sync_stockmovement_failed);

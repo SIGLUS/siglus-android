@@ -416,16 +416,17 @@ public class SyncManager {
                             sharedPreferenceMgr.getPreference().edit().putBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_YEAR_STOCKMOVEMENTS, true).apply();
                         }
                     }
+
+                    subscriber.onCompleted();
                 } catch (Throwable throwable) {
                     subscriber.onError(new LMISException("Syncing StockCard back failed"));
                     new LMISException(throwable).reportToFabric();
                 }
-                subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
     }
 
-    public void fetchLatestYearStockMovements() throws Throwable {
+    private void fetchLatestYearStockMovements() throws Throwable {
         long syncEndTimeMillions = sharedPreferenceMgr.getPreference().getLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, new Date().getTime());
 
         Date now = new Date(syncEndTimeMillions);
@@ -449,7 +450,7 @@ public class SyncManager {
         }
     }
 
-    public void fetchLatestOneMonthMovements() throws Throwable {
+    private void fetchLatestOneMonthMovements() throws Throwable {
         Date now = new Date();
         Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH);
         String startDateStr = DateUtil.formatDate(startDate, "yyyy-MM-dd");
@@ -457,9 +458,14 @@ public class SyncManager {
         Date endDate = DateUtil.addDayOfMonth(now, 1);
         String endDateStr = DateUtil.formatDate(endDate, "yyyy-MM-dd");
         fetchAndSaveStockCards(startDateStr, endDateStr);
+
+        List<StockCard> syncedStockCard = stockRepository.list();
+        if (!(syncedStockCard == null || syncedStockCard.isEmpty())) {
+            sharedPreferenceMgr.getPreference().edit().putBoolean(SharedPreferenceMgr.KEY_INIT_INVENTORY, false).apply();
+        }
     }
 
-    public void fetchAndSaveStockCards(String startDate, String endDate) throws Throwable {
+    protected void fetchAndSaveStockCards(String startDate, String endDate) throws Throwable {
         //default start date is one month before and end date is one day after
         final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
 
