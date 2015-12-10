@@ -18,8 +18,10 @@
 
 package org.openlmis.core.view.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
@@ -92,6 +94,25 @@ public class HomeActivity extends BaseActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
+
+        setSyncedTime();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Constants.INTENT_FILTER_SET_SYNCED_TIME);
+        registerReceiver(syncedTimeReceiver, filter);
+    }
+
+    BroadcastReceiver syncedTimeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            setSyncedTime();
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(syncedTimeReceiver);
+        super.onDestroy();
     }
 
     public void onClickStockCard(View view) {
@@ -129,9 +150,8 @@ public class HomeActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+
+    protected void setSyncedTime() {
         showRnrFormLastSyncedTime();
         showStockCardLastSyncedTime();
     }

@@ -30,6 +30,7 @@ public final class Constants {
 
     // Request Params
     public static final int REQUEST_CODE_CHANGE = 100;
+    public static final String INTENT_FILTER_SET_SYNCED_TIME = "org.openlmis.core.set_synced_time";
 
     private Constants(){
 

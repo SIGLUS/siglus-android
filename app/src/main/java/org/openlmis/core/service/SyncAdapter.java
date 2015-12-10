@@ -22,6 +22,7 @@ import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SyncResult;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +34,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
+import org.openlmis.core.utils.Constants;
 
 import java.util.Date;
 
@@ -66,10 +68,18 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         boolean rnRSynced = syncManager.syncRnr();
 
         boolean stockCardSynced = false;
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_stock_card_279)){
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_stock_card_279)) {
             stockCardSynced = syncManager.syncStockCards();
         }
 
+        recordSyncedTime(rnRSynced, stockCardSynced);
+
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_update_version)) {
+            syncManager.syncAppVersion();
+        }
+    }
+
+    private void recordSyncedTime(boolean rnRSynced, boolean stockCardSynced) {
         if (rnRSynced) {
             recordRnrFormLastSyncedTime();
         }
@@ -78,16 +88,20 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             recordStockCardLastSyncedTime();
         }
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_update_version)) {
-            syncManager.syncAppVersion();
-        }
+        sendSyncedTimeBroadcast();
     }
 
-    private void recordRnrFormLastSyncedTime(){
+    private void sendSyncedTimeBroadcast() {
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT_FILTER_SET_SYNCED_TIME);
+        context.sendBroadcast(intent);
+    }
+
+    private void recordRnrFormLastSyncedTime() {
         sharedPreferenceMgr.getPreference().edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, new Date().getTime()).apply();
     }
 
-    private void recordStockCardLastSyncedTime(){
+    private void recordStockCardLastSyncedTime() {
         sharedPreferenceMgr.getPreference().edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, new Date().getTime()).apply();
     }
 

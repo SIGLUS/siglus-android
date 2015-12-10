@@ -117,18 +117,18 @@ public class HomeActivityTest {
         SharedPreferences sharedPreferences = RuntimeEnvironment.application.getSharedPreferences(SharedPreferenceMgr.MY_PREFERENCE, Context.MODE_PRIVATE);
         sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, new Date().getTime() - 20 * DateUtil.MILLISECONDS_MINUTE).apply();
 
-        homeActivity.onResume();
+        homeActivity.setSyncedTime();
         assertThat(homeActivity.txLastSyncedRnrForm.getText().toString(), equalTo(homeActivity.getString(R.string.label_rnr_form_last_synced_mins_ago, "20")));
 
         sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, new Date().getTime() - 20 * DateUtil.MILLISECONDS_HOUR).apply();
 
-        homeActivity.onResume();
+        homeActivity.setSyncedTime();
         assertThat(homeActivity.txLastSyncedRnrForm.getText().toString(), equalTo(homeActivity.getString(R.string.label_rnr_form_last_synced_hours_ago, "20")));
 
 
         sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, new Date().getTime() - 20 * DateUtil.MILLISECONDS_DAY).apply();
 
-        homeActivity.onResume();
+        homeActivity.setSyncedTime();
         assertThat(homeActivity.txLastSyncedRnrForm.getText().toString(), equalTo(homeActivity.getString(R.string.label_rnr_form_last_synced_days_ago, "20")));
     }
 
@@ -137,18 +137,18 @@ public class HomeActivityTest {
         SharedPreferences sharedPreferences = RuntimeEnvironment.application.getSharedPreferences(SharedPreferenceMgr.MY_PREFERENCE, Context.MODE_PRIVATE);
         sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, new Date().getTime() - 20 * DateUtil.MILLISECONDS_MINUTE).apply();
 
-        homeActivity.onResume();
+        homeActivity.setSyncedTime();
         assertThat(homeActivity.txLastSyncedStockCard.getText().toString(), equalTo(homeActivity.getString(R.string.label_stock_card_last_synced_mins_ago, "20")));
 
         sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, new Date().getTime() - 20 * DateUtil.MILLISECONDS_HOUR).apply();
 
-        homeActivity.onResume();
+        homeActivity.setSyncedTime();
         assertThat(homeActivity.txLastSyncedStockCard.getText().toString(), equalTo(homeActivity.getString(R.string.label_stock_card_last_synced_hours_ago, "20")));
 
 
         sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, new Date().getTime() - 20 * DateUtil.MILLISECONDS_DAY).apply();
 
-        homeActivity.onResume();
+        homeActivity.setSyncedTime();
         assertThat(homeActivity.txLastSyncedStockCard.getText().toString(), equalTo(homeActivity.getString(R.string.label_stock_card_last_synced_days_ago, "20")));
     }
 
