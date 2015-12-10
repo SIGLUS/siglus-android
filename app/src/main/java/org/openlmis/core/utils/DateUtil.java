@@ -120,12 +120,7 @@ public final class DateUtil {
         Collections.sort(expiryDates, new Comparator<String>() {
             @Override
             public int compare(String lhs, String rhs) {
-                try {
-                    return DateUtil.parseString(lhs, DateUtil.SIMPLE_DATE_FORMAT).compareTo(DateUtil.parseString(rhs, DateUtil.SIMPLE_DATE_FORMAT));
-                } catch (ParseException e) {
-                    new LMISException(e).reportToFabric();
-                }
-                return 0;
+                return DateUtil.parseString(lhs, DateUtil.SIMPLE_DATE_FORMAT).compareTo(DateUtil.parseString(rhs, DateUtil.SIMPLE_DATE_FORMAT));
             }
         });
     }
