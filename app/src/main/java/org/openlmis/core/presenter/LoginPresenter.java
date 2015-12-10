@@ -155,12 +155,12 @@ public class LoginPresenter implements Presenter {
             return;
         }
 
-        if (!view.isStockDataSynced()){
+        if (!view.isStockDataSynced()) {
             syncStockCard();
             return;
         }
 
-        if(!view.isRequisitionDataSynced()){
+        if (!view.isRequisitionDataSynced()) {
             syncRequisitionData();
             return;
         }
@@ -227,14 +227,14 @@ public class LoginPresenter implements Presenter {
         };
     }
 
-    private void syncStockCard(){
+    private void syncStockCard() {
 
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)){
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)) {
             syncRequisitionData();
             return;
         }
 
-        if (!isSyncingStockMovement){
+        if (!isSyncingStockMovement) {
             isSyncingStockMovement = true;
             view.loading(LMISApp.getInstance().getString(R.string.msg_sync_stock_movements_data));
             syncManager.fetchStockCardsData(getSyncStockCardDataSubscriber(), true);
@@ -265,7 +265,7 @@ public class LoginPresenter implements Presenter {
     }
 
     private void syncRequisitionData() {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_rnr_186)){
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_rnr_186)) {
             goToNextPage();
             return;
         }
