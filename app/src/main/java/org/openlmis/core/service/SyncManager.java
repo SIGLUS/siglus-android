@@ -115,8 +115,6 @@ public class SyncManager {
     private Integer syncInterval;
     private boolean SaveProductLock = false;
     private boolean saveRequisitionLock = false;
-    private boolean saveStockCardLock = false;
-    private Observable<Void> productObservable;
 
     @Inject
     private SyncErrorsRepository syncErrorsRepository;

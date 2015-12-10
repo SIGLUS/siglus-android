@@ -117,7 +117,7 @@ public class StockRepository {
             @Override
             public Void operate(Dao<StockMovementItem, String> dao) throws SQLException {
                 for (StockMovementItem stockMovementItem : stockMovementItems) {
-                    stockMovementItem.setCreatedTime(new Date());
+                    UpdateDateTimeIfEmpty(stockMovementItem);
                     dao.createOrUpdate(stockMovementItem);
                 }
                 return null;
@@ -130,12 +130,20 @@ public class StockRepository {
             @Override
             public Void operate(Dao<StockMovementItem, String> dao) throws SQLException {
                 for (StockMovementItem stockMovementItem : stockMovementItems) {
-                    stockMovementItem.setCreatedTime(new Date());
+                    UpdateDateTimeIfEmpty(stockMovementItem);
                     dao.update(stockMovementItem);
                 }
                 return null;
             }
         });
+    }
+
+    private void UpdateDateTimeIfEmpty(StockMovementItem stockMovementItem) {
+        if (stockMovementItem.getCreatedTime() == null) {
+            stockMovementItem.setCreatedTime(new Date());
+        }
+        stockMovementItem.setCreatedAt(new Date());
+        stockMovementItem.setUpdatedAt(new Date());
     }
 
     public void saveStockCardAndBatchUpdateMovements(final StockCard stockCard) throws LMISException {
@@ -254,7 +262,7 @@ public class StockRepository {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
             @Override
             public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                return Lists.reverse(dao.queryBuilder().limit(5L).orderBy("createdTime", false).orderBy("id", false).where().eq("stockCard_id", stockCardId).query());
+                return Lists.reverse(dao.queryBuilder().limit(5L).orderBy("movementDate", false).orderBy("createdTime", false).orderBy("id", false).where().eq("stockCard_id", stockCardId).query());
             }
         });
     }
@@ -264,7 +272,8 @@ public class StockRepository {
             @Override
             public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
                 return dao.queryBuilder()
-                        .orderBy("createdTime",false)
+                        .orderBy("movementDate", false)
+                        .orderBy("createdTime", false)
                         .where()
                         .eq("stockCard_id", stockCard.getId())
                         .and().ge("movementDate", startDate)
@@ -296,7 +305,7 @@ public class StockRepository {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
             @Override
             public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                return Lists.reverse(dao.queryBuilder().offset(startIndex).limit(maxRows).orderBy("createdTime", false).orderBy("id", false).where().eq("stockCard_id", stockCardId).query());
+                return Lists.reverse(dao.queryBuilder().offset(startIndex).limit(maxRows).orderBy("movementDate", false).orderBy("createdTime", false).orderBy("id", false).where().eq("stockCard_id", stockCardId).query());
             }
         });
     }
@@ -321,7 +330,7 @@ public class StockRepository {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>(){
             @Override
             public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException{
-                return dao.queryBuilder().orderBy("createdTime",false).orderBy("id", false).where().eq("id", id).queryForFirst();
+                return dao.queryBuilder().orderBy("movementDate", true).orderBy("createdTime", false).orderBy("id", false).where().eq("stockCard_id", id).queryForFirst();
             }
         });
     }

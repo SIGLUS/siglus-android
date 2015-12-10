@@ -31,8 +31,7 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
     public StockMovementItem deserialize(JsonElement json, Type typeOfT,
                                          JsonDeserializationContext context) throws JsonParseException {
 
-        StockMovementItem stockMovementItem;
-        stockMovementItem = gson.fromJson(json, StockMovementItemResponse.class).convertToStockMovementItem();
+        StockMovementItem stockMovementItem = gson.fromJson(json, StockMovementItemResponse.class).convertToStockMovementItem();
 
         String reason = json.getAsJsonObject().get("reason").getAsString();
         try {
@@ -45,9 +44,7 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
 
         Date createdDate = new Date(json.getAsJsonObject().get("createdDate").getAsLong());
 
-        stockMovementItem.setCreatedAt(createdDate);
-        stockMovementItem.setUpdatedAt(createdDate);
-
+        stockMovementItem.setCreatedTime(createdDate);
         return stockMovementItem;
     }
 

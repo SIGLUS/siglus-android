@@ -105,5 +105,4 @@ public class StockMovementItem extends BaseModel {
         return nextMovementStockOnHand;
     }
 
-
 }
