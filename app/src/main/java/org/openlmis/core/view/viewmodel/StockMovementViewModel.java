@@ -20,13 +20,11 @@ package org.openlmis.core.view.viewmodel;
 
 
 import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
 
-import java.text.ParseException;
 import java.util.HashMap;
 
 import lombok.Data;
@@ -106,11 +104,7 @@ public class StockMovementViewModel {
         stockMovementItem.setMovementQuantity(movementQuantity);
         stockMovementItem.setSignature(signature);
 
-        try {
-            stockMovementItem.setMovementDate(DateUtil.parseString(getMovementDate(), DateUtil.DEFAULT_DATE_FORMAT));
-        } catch (ParseException e) {
-            new LMISException(e).reportToFabric();
-        }
+        stockMovementItem.setMovementDate(DateUtil.parseString(getMovementDate(), DateUtil.DEFAULT_DATE_FORMAT));
 
         return stockMovementItem;
     }

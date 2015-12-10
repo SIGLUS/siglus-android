@@ -2,13 +2,20 @@ package org.openlmis.core.network.adapter;
 
 import com.google.gson.JsonParser;
 
+import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.JsonFileReader;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static junit.framework.Assert.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.core.Is.is;
 
 @RunWith(LMISTestRunner.class)
 public class StockMovementItemAdapterTest {
@@ -26,6 +33,8 @@ public class StockMovementItemAdapterTest {
         assertThat(stockMovementItem.getMovementQuantity()).isEqualTo(20);
         assertThat(stockMovementItem.getSignature()).isEqualTo("signature");
         assertThat(stockMovementItem.getReason()).isEqualTo("LOANS_DEPOSIT");
+        String movementDateString = new SimpleDateFormat(DateUtil.DB_DATE_FORMAT).format(stockMovementItem.getMovementDate());
+        assertEquals("2015-10-10", movementDateString);
         assertThat(stockMovementItem.getMovementType()).isEqualTo(StockMovementItem.MovementType.NEGATIVE_ADJUST);
     }
 }

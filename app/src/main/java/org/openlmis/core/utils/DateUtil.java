@@ -41,7 +41,6 @@ public final class DateUtil {
 
 
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
-    public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_DAY = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR);
     public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_YEAR = new SimpleDateFormat(DATE_FORMAT_ONLY_DAY_AND_MONTH);
     private static Locale locale = Locale.getDefault();
 
@@ -56,35 +55,10 @@ public final class DateUtil {
 
     public static Date truncateTimeStampInDate(Date date) {
         String formattedDateStr = DateUtil.formatDate(date, DateUtil.SIMPLE_DATE_FORMAT);
-        Date formattedDate = date;
-        try {
-            formattedDate = DateUtil.parseString(formattedDateStr, DateUtil.SIMPLE_DATE_FORMAT);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        Date formattedDate;
+        formattedDate = DateUtil.parseString(formattedDateStr, DateUtil.SIMPLE_DATE_FORMAT);
 
         return formattedDate;
-    }
-
-    public static Date getMonthStartDate(Date date) {
-        Calendar calendar = calendarDate(date);
-
-        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
-        Date startDate = calendar.getTime();
-        return startDate;
-    }
-
-    public static Date getMonthEndDate(Date date) {
-        Calendar calendar = calendarDate(date);
-
-        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-        Date endDate = calendar.getTime();
-        return endDate;
-    }
-
-    public static int maxMonthDate(Date date) {
-        Calendar calendar = calendarDate(date);
-        return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
 
     public static Date addDayOfMonth(Date date, int difference) {
@@ -97,24 +71,9 @@ public final class DateUtil {
         return addDayOfMonth(date, -difference);
     }
 
-    public static Date addMonth(Date date, int difference) {
-        Calendar calendar = calendarDate(date);
-        calendar.add(Calendar.MONTH, difference);
-        return calendar.getTime();
-    }
-
     public static Calendar calendarDate(Date date) {
         CALENDAR_NOW.setTime(date);
         return CALENDAR_NOW;
-    }
-
-    public static boolean equal(Date date1, Date date2) {
-        return DATE_FORMATTER.format(date1).equals(DATE_FORMATTER.format(date2));
-    }
-
-    public static int dayNumber(Date date) {
-        Calendar calender = calendarDate(date);
-        return calender.get(Calendar.DAY_OF_MONTH);
     }
 
     public static String formatDate(Date date) {
@@ -125,33 +84,21 @@ public final class DateUtil {
         return DATE_FORMAT_NOT_DISPLAY_YEAR.format(date);
     }
 
-    public static String formatDateWithYearAndMonth(Date date) {
-        return DATE_FORMAT_NOT_DISPLAY_DAY.format(date);
-    }
-
     public static String formatDate(Date date, String format) {
         return new SimpleDateFormat(format, locale).format(date);
     }
 
-    public static Date parseString(String string, String format) throws ParseException {
-        return new SimpleDateFormat(format, locale).parse(string);
+    public static Date parseString(String string, String format) {
+        try {
+            return new SimpleDateFormat(format, locale).parse(string);
+        } catch (ParseException e) {
+            new LMISException(e).reportToFabric();
+            return null;
+        }
     }
 
     public static Date today() {
         return Calendar.getInstance().getTime();
-    }
-
-    public static int numDaysToEndOfMonth() {
-        return maxMonthDate(new Date()) - dayNumber(new Date());
-    }
-
-    public static int monthNumber(Date date) {
-        Calendar calendar = calendarDate(date);
-        return calendar.get(Calendar.MONTH);
-    }
-
-    public static int monthNumber() {
-        return monthNumber(new Date());
     }
 
     public static String convertDate(String date, String currentFormat, String expectFormat) throws ParseException {

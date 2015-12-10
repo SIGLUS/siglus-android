@@ -10,6 +10,7 @@ import com.google.gson.JsonParseException;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.utils.DateUtil;
 
 import java.lang.reflect.Type;
 import java.text.DateFormat;
@@ -30,7 +31,8 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
     public StockMovementItem deserialize(JsonElement json, Type typeOfT,
                                          JsonDeserializationContext context) throws JsonParseException {
 
-        StockMovementItem stockMovementItem = gson.fromJson(json, StockMovementItemResponse.class).convertToStockMovementItem();
+        StockMovementItem stockMovementItem;
+        stockMovementItem = gson.fromJson(json, StockMovementItemResponse.class).convertToStockMovementItem();
 
         String reason = json.getAsJsonObject().get("reason").getAsString();
         try {
@@ -42,21 +44,25 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
         }
 
         Date createdDate = new Date(json.getAsJsonObject().get("createdDate").getAsLong());
-        Date movementDate = new Date(json.getAsJsonObject().get("movementDate").getAsLong());
 
         stockMovementItem.setCreatedAt(createdDate);
-        stockMovementItem.setUpdatedAt(movementDate);
+        stockMovementItem.setUpdatedAt(createdDate);
 
         return stockMovementItem;
     }
 
     class StockMovementItemResponse extends StockMovementItem{
         Map<String, String> extensions;
-        public StockMovementItem convertToStockMovementItem(){
+        String occurred;
+
+        public StockMovementItem convertToStockMovementItem() {
             StockMovementItem movementItem = this;
             if (extensions!=null) {
                 this.setExpireDates(extensions.get("expirationdates"));
                 this.setSignature(extensions.get("signature"));
+            }
+            if (occurred != null) {
+                this.setMovementDate(DateUtil.parseString(occurred, DateUtil.DB_DATE_FORMAT));
             }
             return movementItem;
         }
