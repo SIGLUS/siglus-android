@@ -21,9 +21,9 @@ import android.content.pm.PackageManager;
 
 import org.openlmis.core.LMISApp;
 
-public class AppInfoUtil {
+public final class AppInfoUtil {
 
-    public AppInfoUtil() {
+    private AppInfoUtil() {
     }
 
     public static String getPackageName() {
