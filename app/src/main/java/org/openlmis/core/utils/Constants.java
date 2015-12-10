@@ -18,6 +18,8 @@
 
 package org.openlmis.core.utils;
 
+import org.openlmis.core.LMISApp;
+
 public final class Constants {
     // Intent Params
     public static final String PARAM_STOCK_CARD_ID = "stockCardId";
@@ -30,7 +32,7 @@ public final class Constants {
 
     // Request Params
     public static final int REQUEST_CODE_CHANGE = 100;
-    public static final String INTENT_FILTER_SET_SYNCED_TIME = "org.openlmis.core.set_synced_time";
+    public static final String INTENT_FILTER_SET_SYNCED_TIME = LMISApp.getContext().getPackageName()+".set_synced_time";
 
     private Constants(){
 
