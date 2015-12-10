@@ -54,6 +54,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
@@ -150,6 +152,13 @@ public class HomeActivityTest {
 
         homeActivity.setSyncedTime();
         assertThat(homeActivity.txLastSyncedStockCard.getText().toString(), equalTo(homeActivity.getString(R.string.label_stock_card_last_synced_days_ago, "20")));
+    }
+
+    @Test
+    public void shouldRefreshSyncedTime() throws Exception {
+        HomeActivity activity = spy(homeActivity);
+        activity.onResume();
+        verify(activity).setSyncedTime();
     }
 
     private void verifyNextPage(String className) {
