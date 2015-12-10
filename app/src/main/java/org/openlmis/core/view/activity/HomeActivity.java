@@ -150,6 +150,11 @@ public class HomeActivity extends BaseActivity {
         startActivity(intent);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setSyncedTime();
+    }
 
     protected void setSyncedTime() {
         showRnrFormLastSyncedTime();
