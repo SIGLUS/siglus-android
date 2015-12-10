@@ -42,7 +42,7 @@ public class RnRFormViewModel {
     String title;
     String name;
     long id;
-    String syncErrorMessage;
+    String syncServerErrorMessage;
     private RnRForm form;
 
     public RnRFormViewModel(String title) {
@@ -68,8 +68,8 @@ public class RnRFormViewModel {
         }
     }
 
-    public void setSyncErrorMessage(String syncErrorMessage) {
-        this.syncErrorMessage = syncErrorMessage;
+    public void setSyncServerErrorMessage(String syncServerErrorMessage) {
+        this.syncServerErrorMessage = syncServerErrorMessage;
     }
 
     private void setName(RnRForm form) {

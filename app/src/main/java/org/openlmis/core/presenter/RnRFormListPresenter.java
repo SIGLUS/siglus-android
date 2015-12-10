@@ -116,7 +116,7 @@ public class RnRFormListPresenter implements Presenter {
 
     private void populateSyncErrorsOnViewModels(final List<RnRFormViewModel> rnrViewModels) {
         for (RnRFormViewModel rnrViewModel: rnrViewModels) {
-            rnrViewModel.setSyncErrorMessage(getRnrFormSyncError(rnrViewModel.getId()));
+            rnrViewModel.setSyncServerErrorMessage(getRnrFormSyncError(rnrViewModel.getId()));
         }
     }
 
