@@ -2,7 +2,7 @@
 Feature: MMIA
 
   Background: Navigate to Home Page
-    Given I am logged in
+    Given I try to log in with "mmia" "password1"
 
   Scenario: Initial a MMIA
     Given I have initialized inventory

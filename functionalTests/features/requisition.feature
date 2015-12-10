@@ -2,7 +2,7 @@
 Feature: Requisition
 
   Scenario: Save requisition draft and complete
-    Given I am logged in
+    Given I try to log in with "via" "password1"
     Given I have initialized inventory
     And I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
@@ -31,7 +31,7 @@ Feature: Requisition
     Then I wait for "Home Page" to appear
 
   Scenario: Pop up alert
-    Given I am logged in
+    Given I try to log in with "via" "password1"
     And I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second

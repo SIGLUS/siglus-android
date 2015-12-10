@@ -34,7 +34,7 @@ When /^I enter password "([^\"]+)"$/ do |password|
   hide_soft_keyboard
 end
 
-Given(/^I am logged in$/) do
+Given(/^I try to log in with "(.*?)" "(.*?)"$/) do |username, password|
   steps %Q{
 		When I enter username "#{username}"
         And I enter password "#{password}"

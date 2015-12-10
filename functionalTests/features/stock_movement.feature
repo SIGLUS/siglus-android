@@ -1,13 +1,14 @@
 @StockMovement
 Feature: stock movement Page
 
+  Background: Navigate to Home Page
+    Given I try to log in with "stock_card" "password1"
+
   Scenario: Navigate to Home Page
-    Given I am logged in
     Given I have initialized inventory
 
   Scenario: Bottom Btn Logic
-    Given I am logged in
-    And I press "Stock Card Overview"
+    When I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     Then I select stock card code called "[08S42B]"
@@ -24,8 +25,7 @@ Feature: stock movement Page
     Then I don't see "CANCEL"
 
   Scenario: Add A Receive Movement
-    Given I am logged in
-    And I press "Stock Card Overview"
+    When I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     Then I select stock card code called "[01A05]"
@@ -46,8 +46,7 @@ Feature: stock movement Page
 
 
   Scenario: Add A Issued Movement
-    Given I am logged in
-    And I press "Stock Card Overview"
+    When I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     Then I select stock card code called "[01A05]"
@@ -68,8 +67,7 @@ Feature: stock movement Page
     Then I wait for "Home Page" to appear
 
   Scenario: Add A Negative Adjustment
-    Given I am logged in
-    And I press "Stock Card Overview"
+    When I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     Then I select stock card code called "[01A02]"
@@ -88,8 +86,7 @@ Feature: stock movement Page
     Then I wait for "Home Page" to appear
 
   Scenario: Add A Positive Adjustment
-    Given I am logged in
-    And I press "Stock Card Overview"
+    When I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     Then I select stock card code called "[01A02]"
@@ -109,8 +106,7 @@ Feature: stock movement Page
     Then I wait for "Home Page" to appear
 
   Scenario: Add all movements for one drug
-    Given I am logged in
-    And I press "Stock Card Overview"
+    When I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     Then I make all movements for "08S18Y"

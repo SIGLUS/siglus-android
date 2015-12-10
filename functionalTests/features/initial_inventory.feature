@@ -1,7 +1,7 @@
 @INITIAL_INVENTORY
 Feature: Initial Inventory
   Scenario: User should be able to initial inventory
-    Given I am logged in
+    Given I try to log in with "initial_inventory" "password1"
     Then I wait for "Initial Inventory" to appear
     Then I wait for 1 second
     Given I initialize inventory
