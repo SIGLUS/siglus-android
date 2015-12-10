@@ -249,7 +249,7 @@ public class MMIARnrForm extends LinearLayout {
             rightViewGroup.addView(inflate);
 
             try {
-                if (!TextUtils.isEmpty(item.getValidate())) {
+                if (!(TextUtils.isEmpty(item.getValidate()) || isArchived)) {
                     tvValidate.setText(DateUtil.convertDate(item.getValidate(), "dd/MM/yyyy", "MMM yyyy"));
                 }
             } catch (ParseException e) {
