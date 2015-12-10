@@ -19,10 +19,8 @@
     <string name="init_product_error">Erro nos dados iniciais. Tente de novo.</string>
     <string name="msg_fetching_products">Descarregando lista de produtos…</string>
     <string name="msg_sync_products_list_failed">Falha no descarregamento de productos do servidor</string>
-    <string name="msg_sync_data_failed">Falha ao descarregar dados históricos</string>
     <string name="msg_save_products_failed">Falha ao guardar produtos na base de dados local</string>
     <string name="msg_sync_requisition_data">Sincronizando dados históricos de requisição</string>
-
 
     <!-- Init Inventory -->
     <string name="hint_quantity_in_stock">Stock Existente</string>

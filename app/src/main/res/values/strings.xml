@@ -22,7 +22,8 @@
     <string name="msg_sync_stock_movements_data">Syncing StockMovement data…</string>
     <string name="msg_fetching_products">Downloading product list…</string>
     <string name="msg_sync_requisition_data">Synchronizing historical requisition data</string>
-    <string name="msg_sync_data_failed">Download of historical data failed</string>
+    <string name="msg_sync_requisition_failed">Download of historical requisition data failed</string>
+    <string name="msg_sync_stockmovement_failed">Download of historical stock movement data failed</string>
 
 
     <!-- Init Inventory -->

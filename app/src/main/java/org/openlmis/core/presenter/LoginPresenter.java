@@ -250,7 +250,7 @@ public class LoginPresenter implements Presenter {
             public void onError(Throwable throwable) {
                 isSyncingStockMovement = false;
                 view.setStockCardDataSynced(false);
-                ToastUtil.show(R.string.msg_sync_data_failed);
+                ToastUtil.show(R.string.msg_sync_stockmovement_failed);
                 view.loaded();
             }
         };
@@ -282,7 +282,7 @@ public class LoginPresenter implements Presenter {
             public void onError(Throwable throwable) {
                 isSyncingRequisitionData = false;
                 view.setRequisitionDataSynced(false);
-                ToastUtil.show(R.string.msg_sync_data_failed);
+                ToastUtil.show(R.string.msg_sync_requisition_failed);
                 goToNextPage();
             }
         };
