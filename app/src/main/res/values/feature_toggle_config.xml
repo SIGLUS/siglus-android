@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <bool name="feature_sync_stock_card_279">true</bool>
-    <bool name="feature_sync_back_rnr_186">false</bool>
+    <bool name="feature_sync_back_rnr_186">true</bool>
     <bool name="feature_sync_back_stock_movement_273">false</bool>
-    <bool name="display_mmia_form_signature">false</bool>
-    <bool name="display_via_form_signature_10">false</bool>
-    <bool name="display_stock_movement_signature">false</bool>
+    <bool name="display_mmia_form_signature">true</bool>
+    <bool name="display_via_form_signature_10">true</bool>
+    <bool name="display_stock_movement_signature">true</bool>
     <bool name="feature_show_pop_up_even_no_data_changed_418">true</bool>
-    <bool name="show_stock_on_hand_in_inventory_345">false</bool>
-    <bool name="add_header_info_reduce_header_size_348">false</bool>
-    <bool name="sort_product_list_alphabetically_435">false</bool>
-    <bool name="search_view_enhancement">false</bool>
-    <bool name="feature_update_version">false</bool>
-    <bool name="feature_archive_drugs_346">false</bool>
+    <bool name="show_stock_on_hand_in_inventory_345">true</bool>
+    <bool name="add_header_info_reduce_header_size_348">true</bool>
+    <bool name="sort_product_list_alphabetically_435">true</bool>
+    <bool name="search_view_enhancement">true</bool>
+    <bool name="feature_update_version">true</bool>
+    <bool name="feature_archive_drugs_346">true</bool>
 </resources>
