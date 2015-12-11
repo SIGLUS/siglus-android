@@ -20,7 +20,12 @@
     <string name="msg_fetching_products">Descarregando lista de produtos…</string>
     <string name="msg_sync_products_list_failed">Falha no descarregamento de productos do servidor</string>
     <string name="msg_save_products_failed">Falha ao guardar produtos na base de dados local</string>
-    <string name="msg_sync_requisition_data">Sincronizando dados históricos de requisição</string>
+    <string name="msg_sync_requisition_data">Sincronizando dados de requisição</string>
+    <string name="msg_initial_sync_success">Sincronização inicial bem sucedida. Tablet está pronto para ser usado.</string>
+    <string name="msg_sync_requisition_failed">Descarregamento de dados da requisição falhou</string>
+    <string name="msg_sync_stockmovement_failed">Descarregamento de dados dos movimentos de stock falhou</string>
+    <string name="msg_sync_stock_movements_data">Sincronizando dados de movimentos de stock</string>
+
 
     <!-- Init Inventory -->
     <string name="hint_quantity_in_stock">Stock Existente</string>
@@ -29,17 +34,9 @@
     <string name="label_dummy_unit">500mg</string>
     <string name="msg_inventory_check_failed">Quantidade não pode estar em branco</string>
     <string name="msg_invalid_date">Não pode selecionar data passada ou corrente</string>
-    <string name="btn_done">Feito</string>
+    <string name="btn_done">Completo</string>
     <string name="msg_save_before_exit">Por favor, grave o inventário inicial antes de sair da aplicação</string>
     <string name="msg_remove_expire_date">Tem certeza que quer remover esta data de expiração?</string>
-
-    <!-- Signature -->
-    <string name="dialog_request_signature">Insira as iniciais do seu nome para rubricar o movimento</string>
-    <string name="dialog_request_signature_cancel">Cancelar</string>
-    <string name="dialog_request_signature_sign">Validar</string>
-    <string name="label_physical_inventory_signature_title">Insira as iniciais do seu nome para rubricar todos os movimentos no inventário</string>
-    <string name="hint_signature_error_message">Por favor insira as iniciais do seu nome. (No mínimo 2 caracteres)</string>
-
 
     <!-- Home Page -->
     <string name="label_stock_cards">Visão Geral da Ficha de Stock</string>
@@ -114,6 +111,8 @@
     <string name="msg_approve_signature">Insira as iniciais do seu nome e aprove as quantidades da requisição</string>
     <string name="btn_approve">Visto</string>
     <string name="btn_continue">Continuar</string>
+    <string name="msg_mmia_submit_signature">Insira as iniciais do seu nome para aprovar informação do MMIA</string>
+
 
 
     <!-- Stock Movement -->
@@ -177,12 +176,12 @@
     <string name="label_physical_inventory_stock_on_hand">Stock Existente: %1$s</string>
 
     <!-- Server Sync Errors -->
-    <string name="sync_server_error">Sync failed. We have encountered a technical problem on the server. Please contact your System Admin.</string>
-    <string name="default_sync_data_error">Sync failed. We have encountered a data error when syncing this requisition. Please contact your System Admin.</string>
-    <string name="rnr_previous_not_filled">Sync failed. There has been a requisition missing from a previous period. Please contact your System Admin.</string>
-    <string name="period_configuration_missing">Sync failed. Server configuration for this period is missing. Please contact your System Admin to initiate the period.</string>
-    <string name="product_code_invalid">Sync failed. You have tried to submit an invalid product in the form %1$s. Please contact your System Admin.</string>
-    <string name="unauthorized_operation">Sync failed. You do not have permission to sync this requisition to server. Please contact your System Admin.</string>
+    <string name="sync_server_error">Sincronização falhou devido a problemas técnicos no servidor. Entre em contacto com administrador do sistema.</string>
+    <string name="default_sync_data_error">Sincronização falhou devido a um erro nos dados durante a sincronização da requisição. Entre em contacto com administrador do sistema.</string>
+    <string name="rnr_previous_not_filled">Sincronização falhou devido à falta da requisição do período anterior. Entre em contacto com administrador do sistema.</string>
+    <string name="period_configuration_missing">Sincronização falhou devido à falta de configuração no servidor para este período. Entre em contacto com administrador do sistema.</string>
+    <string name="product_code_invalid">Sincronização falhou devido à tentativa de submeter um produto inválido no formulário %1$s. Entre em contacto com administrador do sistema.</string>
+    <string name="unauthorized_operation">Sincronização falhou. Não tem permissão para sincronizar esta requisicão para o servidor. Entre em contacto com administrador do sistema.</string>
 
 
     <!-- Rnr form historical list -->
@@ -203,5 +202,21 @@
     <string name="label_previous_period">Períodos anteriores</string>
 
     <string name="label_total">Total:%1$s</string>
+
+    <!-- Signature -->
+    <string name="dialog_request_signature">Insira as iniciais do seu nome para rubricar o movimento</string>
+    <string name="dialog_request_signature_cancel">Cancelar</string>
+    <string name="dialog_request_signature_sign">Validar</string>
+    <string name="label_physical_inventory_signature_title">Insira as iniciais do seu nome para rubricar todos os movimentos no inventário</string>
+    <string name="hint_signature_error_message">Por favor insira as iniciais do seu nome. (No mínimo 2 caracteres)</string>
+
+    <!-- Archived Drugs -->
+    <string name="menu_archive_drug">Produtos Arquivo</string>
+    <string name="title_archived_drugs">Produtos Arquivados</string>
+    <string name="msg_drug_archived">O produto foi arquivado</string>
+    <string name="label_removed_drug_from_stock">Este produto foi removido da sua lista de fichas de stock.</string>
+    <string name="label_view_movement_history">Ver histórico de movimentos</string>
+    <string name="label_add_drug_to_stock">Adicionar produto para a lista geral de stock</string>
+    <string name="label_empty_archived_drugs">Nenhum produto arquivado</string>
 
 </resources>

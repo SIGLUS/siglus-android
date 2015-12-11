@@ -19,11 +19,11 @@
     <string name="msg_save_products_failed">Save products to local Database failed</string>
     <string name="msg_sync_products_list_failed">Download of products from the server failed</string>
     <string name="init_product_error">Initial Data Error,Please Retry</string>
-    <string name="msg_sync_stock_movements_data">Syncing StockMovement data…</string>
+    <string name="msg_sync_stock_movements_data">Synchronizing stock movement data</string>
     <string name="msg_fetching_products">Downloading product list…</string>
-    <string name="msg_sync_requisition_data">Synchronizing historical requisition data</string>
-    <string name="msg_sync_requisition_failed">Download of historical requisition data failed</string>
-    <string name="msg_sync_stockmovement_failed">Download of historical stock movement data failed</string>
+    <string name="msg_sync_requisition_data">Synchronizing requisition data</string>
+    <string name="msg_sync_requisition_failed">Download of requisition data failed</string>
+    <string name="msg_sync_stockmovement_failed">Download of stock movement data failed</string>
     <string name="msg_initial_sync_success">Initial sync successful. Tablet is ready for use.</string>
 
 
@@ -179,12 +179,12 @@
     <string name="label_physical_inventory_stock_on_hand">Current stock on hand: %1$s</string>
 
     <!-- Server Sync Errors -->
-    <string name="sync_server_error">Sync failed. We have encountered a technical problem on the server. Please contact your System Admin.</string>
-    <string name="default_sync_data_error">Sync failed. We have encountered a data error when syncing this requisition. Please contact your System Admin.</string>
-    <string name="rnr_previous_not_filled">Sync failed. There has been a requisition missing from a previous period. Please contact your System Admin.</string>
-    <string name="period_configuration_missing">Sync failed. Server configuration for this period is missing. Please contact your System Admin to initiate the period.</string>
-    <string name="product_code_invalid">Sync failed. You have tried to submit an invalid product in the form %1$s. Please contact your System Admin.</string>
-    <string name="unauthorized_operation">Sync failed. You do not have permission to sync this requisition to server. Please contact your System Admin.</string>
+    <string name="sync_server_error">Sync failed due to technical problem on the server. Please contact system administrator.</string>
+    <string name="default_sync_data_error">Sync failed due to data error while syncing requisition. Please contact system administrator.</string>
+    <string name="rnr_previous_not_filled">Sync failed due to requisition missing from previous period. Please contact system administrator.</string>
+    <string name="period_configuration_missing">Sync failed due to missing server configuration for this period. Please contact system administrator.</string>
+    <string name="product_code_invalid">Sync failed due attempted submission of invalid product in form %1$s. Please contact system administrator.</string>
+    <string name="unauthorized_operation">Sync failed. You do not have permission to sync this requisition to the server. Please contact system administrator.</string>
 
     <!-- Rnr form historical list -->
     <string name="label_via_name">Via Classica Requisition</string>
@@ -214,12 +214,12 @@
     <string name="hint_signature_error_message">Please enter your initials(Minimum 2 characters)</string>
 
     <!-- Archived Drugs -->
-    <string name="menu_archive_drug">Archive stock card</string>
+    <string name="menu_archive_drug">Archive drugs</string>
     <string name="title_archived_drugs">Archived drugs</string>
     <string name="msg_drug_archived">Drug archived</string>
-    <string name="label_removed_drug_from_stock">You removed this drug from your stock overview</string>
+    <string name="label_removed_drug_from_stock">You removed this drug from your Stock Card view</string>
     <string name="label_view_movement_history">View movement history</string>
     <string name="label_add_drug_to_stock">Add drug to stock overview</string>
-    <string name="label_empty_archived_drugs">You\'ve not archived any drugs yet</string>
+    <string name="label_empty_archived_drugs">There are no archived drugs</string>
 
 </resources>
