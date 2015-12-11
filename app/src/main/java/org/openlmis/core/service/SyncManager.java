@@ -311,7 +311,7 @@ public class SyncManager {
             lmisRestApi.submitRequisition(rnRForm);
             syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RnRForm, rnRForm.getId());
             return true;
-        } catch (UndeclaredThrowableException e) {
+        } catch (Exception e) {
             new LMISException(e).reportToFabric();
             Log.e(TAG, "===> SyncRnr : synced failed ->" + e.getMessage());
             syncErrorsRepository.save(new SyncError(e.getCause().getMessage(), SyncType.RnRForm, rnRForm.getId()));
@@ -365,17 +365,16 @@ public class SyncManager {
         try {
             lmisRestApi.syncUpStockMovementData(facilityId, movementEntriesToSync);
             markStockDataSynced(stockMovementItems);
-            syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.StockCards,0L);
+            syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.StockCards, 0L);
             return true;
-
-        } catch (LMISException exception) {
-            new LMISException(exception).reportToFabric();
-            Log.e(TAG, "===> SyncStockMovement : synced failed ->" + exception.getMessage());
-            return false;
 
         } catch (UndeclaredThrowableException e) {
             new LMISException(e).reportToFabric();
             syncErrorsRepository.save(new SyncError(e.getCause().getMessage(), SyncType.StockCards, 0L));
+            return false;
+        } catch (Exception exception) {
+            new LMISException(exception).reportToFabric();
+            Log.e(TAG, "===> SyncStockMovement : synced failed ->" + exception.getMessage());
             return false;
         }
     }
