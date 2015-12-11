@@ -95,8 +95,6 @@ public class HomeActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
 
-        setSyncedTime();
-
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.INTENT_FILTER_SET_SYNCED_TIME);
         registerReceiver(syncedTimeReceiver, filter);
