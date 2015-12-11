@@ -117,7 +117,12 @@ public class InventoryPresenter implements Presenter {
             @Override
             public void call(Subscriber<? super List<StockCardViewModel>> subscriber) {
                 try {
-                    List<StockCardViewModel> stockCardViewModels = from(stockRepository.list()).transform(new Function<StockCard, StockCardViewModel>() {
+                    List<StockCardViewModel> stockCardViewModels = from(stockRepository.list()).filter(new Predicate<StockCard>() {
+                        @Override
+                        public boolean apply(StockCard stockCard) {
+                            return !stockCard.getProduct().isArchived();
+                        }
+                    }).transform(new Function<StockCard, StockCardViewModel>() {
                         @Override
                         public StockCardViewModel apply(StockCard stockCard) {
                             return new StockCardViewModel(stockCard);
