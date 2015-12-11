@@ -102,7 +102,7 @@ public class LoginPresenter implements Presenter {
             return;
         }
 
-        if (!view.isStockDataSynced()) {
+        if (!view.isStockDataSynced() && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)) {
             view.loaded();
             ToastUtil.show(R.string.msg_sync_stockmovement_failed);
             return;
