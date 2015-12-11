@@ -1,9 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
-
-def buildNumber = System.getenv('BUILD_NUMBER') as Integer ?: 1
-
 repositories {
     jcenter()
     maven { url 'https://maven.fabric.io/public' }
@@ -17,8 +14,8 @@ android {
         applicationId "org.openlmis.core"
         minSdkVersion 17
         targetSdkVersion 21
-        versionCode buildNumber
-        versionName "1.4.${buildNumber}"
+        versionCode androidVersionCode.toInteger()
+        versionName semanticVersion
     }
 
     signingConfigs {
