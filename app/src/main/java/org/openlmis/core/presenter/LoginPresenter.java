@@ -241,7 +241,11 @@ public class LoginPresenter implements Presenter {
     private void syncStockCard() {
 
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)) {
-            syncRequisitionData();
+            if (!view.isRequisitionDataSynced()) {
+                syncRequisitionData();
+            } else {
+                goToNextPage();
+            }
             return;
         }
 
