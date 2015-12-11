@@ -102,6 +102,17 @@ public class LoginPresenter implements Presenter {
             return;
         }
 
+        if (!view.isStockDataSynced()) {
+            view.loaded();
+            ToastUtil.show(R.string.msg_sync_stockmovement_failed);
+            return;
+        }
+        if (!view.isRequisitionDataSynced()) {
+            view.loaded();
+            ToastUtil.show(R.string.msg_sync_requisition_failed);
+            return;
+        }
+
         goToNextPage();
     }
 

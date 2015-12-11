@@ -182,11 +182,13 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldDoOfflineLoginWhenNoConnectionAndHasLocalCacheAndHasGetProducts() {
+    public void shouldDoOfflineLoginWhenNoConnectionAndHasLocalCacheAndSynedData() {
         appInject.setNetworkConnection(false);
         when(userRepository.getUserFromLocal(any(User.class))).thenReturn(new User("user", "password"));
         when(mockActivity.needInitInventory()).thenReturn(false);
         when(mockActivity.hasGetProducts()).thenReturn(true);
+        when(mockActivity.isStockDataSynced()).thenReturn(true);
+        when(mockActivity.isRequisitionDataSynced()).thenReturn(true);
 
         presenter.startLogin("user", "password");
 
