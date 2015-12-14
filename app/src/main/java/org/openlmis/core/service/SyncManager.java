@@ -251,11 +251,6 @@ public class SyncManager {
             throw new LMISException("Can't get SyncDownRequisitionsResponse, you can check json parse to POJO logic");
         }
 
-        SyncDownRequisitionsResponse syncBackRequisitionsResponse = lmisRestApi.fetchRequisitions(UserInfoMgr.getInstance().getUser().getFacilityCode());
-        if (syncBackRequisitionsResponse == null) {
-            throw new LMISException("Can't get SyncBackRequisitionsResponse, you can check json parse to POJO logic");
-        }
-
         if (saveRequisitionLock || sharedPreferenceMgr.getPreference().getBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, false)) {
             throw new LMISException("Sync Requisition Background or Loaded");
         }
