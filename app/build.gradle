@@ -103,6 +103,8 @@ task checkstyle(type: Checkstyle) {
     classpath = files()
 }
 
+task checkci(dependsOn: ['checkstyle','testDevDebug'])
+
 task findbugs(type: FindBugs) {
     ignoreFailures = true
     effort = "max"
