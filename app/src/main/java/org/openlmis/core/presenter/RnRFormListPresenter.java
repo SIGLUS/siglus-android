@@ -23,8 +23,6 @@ import android.support.annotation.NonNull;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RnRForm;
@@ -129,8 +127,6 @@ public class RnRFormListPresenter implements Presenter {
 
 
     protected void addPreviousPeriodViewModels(List<RnRFormViewModel> viewModels, List<RnRForm> rnRForms) {
-        viewModels.add(new RnRFormViewModel(LMISApp.getContext().getResources().getString(R.string.label_previous_period)));
-
         viewModels.addAll(FluentIterable.from(rnRForms).transform(new Function<RnRForm, RnRFormViewModel>() {
             @Override
             public RnRFormViewModel apply(RnRForm form) {
@@ -140,8 +136,6 @@ public class RnRFormListPresenter implements Presenter {
     }
 
     protected void addCurrentPeriodViewModel(List<RnRFormViewModel> viewModels, List<RnRForm> rnRForms) {
-        viewModels.add(new RnRFormViewModel(LMISApp.getContext().getResources().getString(R.string.label_current_period)));
-
         if (rnRForms.get(0).getStatus() != RnRForm.STATUS.AUTHORIZED) {
             viewModels.add(new RnRFormViewModel(rnRForms.get(0)));
             rnRForms.remove(0);

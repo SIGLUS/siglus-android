@@ -61,7 +61,7 @@ public class RnRFormListPresenterTest {
         when(syncErrorsRepository.getBySyncTypeAndObjectId(any(SyncType.class), anyLong())).thenReturn(new ArrayList<SyncError>());
 
         List<RnRFormViewModel> resultViewModels = presenter.buildFormListViewModels();
-        assertThat(resultViewModels.size()).isEqualTo(5);
+        assertThat(resultViewModels.size()).isEqualTo(3);
     }
 
     @Test
@@ -69,8 +69,7 @@ public class RnRFormListPresenterTest {
         presenter.addCurrentPeriodViewModel(viewModels, rnRForms);
 
         assertThat(rnRForms.size()).isEqualTo(2);
-        assertThat(viewModels.size()).isEqualTo(2);
-        assertThat(viewModels.get(0).getTitle()).isEqualTo("Current period");
+        assertThat(viewModels.size()).isEqualTo(1);
     }
 
     @Test
@@ -78,8 +77,7 @@ public class RnRFormListPresenterTest {
         rnRForms.remove(0);
         presenter.addPreviousPeriodViewModels(viewModels, rnRForms);
 
-        assertThat(viewModels.size()).isEqualTo(3);
-        assertThat(viewModels.get(0).getTitle()).isEqualTo("Previous periods");
+        assertThat(viewModels.size()).isEqualTo(2);
     }
 
     private List<RnRForm> getRnRForms() {
