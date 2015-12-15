@@ -212,11 +212,12 @@ public class HomeActivityTest {
     }
 
     @Test
-    public void shouldFinishMainActivityWhenSighOurClicked() {
+    public void shouldFinishMainActivityAndStartLoginActivityWhenSighOurClicked() {
         MenuItem signoutAction = new RoboMenuItem(R.id.action_sign_out);
 
         homeActivity.onOptionsItemSelected(signoutAction);
 
         assertTrue(homeActivity.isFinishing());
+        verifyNextPage(LoginActivity.class.getName());
     }
 }

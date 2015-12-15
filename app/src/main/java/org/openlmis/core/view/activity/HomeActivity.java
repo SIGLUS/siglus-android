@@ -224,6 +224,7 @@ public class HomeActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_sign_out) {
+            startActivity(LoginActivity.class);
             finish();
             return true;
         }

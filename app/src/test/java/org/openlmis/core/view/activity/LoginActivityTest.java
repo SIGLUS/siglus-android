@@ -106,6 +106,7 @@ public class LoginActivityTest {
 
         assertThat(intent).isNotNull();
         assertThat(intent.getComponent().getClassName()).isEqualTo(HomeActivity.class.getName());
+        assertThat(loginActivity.isFinishing());
     }
 
     @Test
@@ -116,6 +117,7 @@ public class LoginActivityTest {
 
         assertThat(intent).isNotNull();
         assertThat(intent.getComponent().getClassName()).isEqualTo(InventoryActivity.class.getName());
+        assertThat(loginActivity.isFinishing());
     }
 
     @Test
