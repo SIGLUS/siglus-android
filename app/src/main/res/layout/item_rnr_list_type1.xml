@@ -7,28 +7,16 @@
     android:background="@color/color_white">
 
     <LinearLayout
-        style="@style/Card.Container"
+        style="@style/Card.BannerContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/ly_period"
-            style="@style/ItemRnr.PeriodContainer.Type1"
+        <TextView
+            android:id="@+id/tx_period"
+            style="@style/ItemRnr.PeriodTextType1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/abc_ic_menu_copy_mtrl_am_alpha" />
-
-            <TextView
-                android:id="@+id/tx_period"
-                style="@style/ItemRnr.PeriodTextType1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            tools:text="21 Nov 2015 to 20 Dec 2015" />
 
         <TextView
             android:id="@+id/tx_message"

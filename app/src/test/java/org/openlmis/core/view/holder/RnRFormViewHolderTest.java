@@ -59,7 +59,7 @@ public class RnRFormViewHolderTest {
 
         assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getPeriod()));
         assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_incomplete_requisition, viewModel.getName())));
-        assertThat(((ColorDrawable) viewHolder.lyPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_draft_title)));
+        assertThat(((ColorDrawable) viewHolder.txPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_draft_title)));
     }
 
     @Test
@@ -74,7 +74,7 @@ public class RnRFormViewHolderTest {
 
         assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getPeriod()));
         assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_unsynced_requisition, viewModel.getName())));
-        assertThat(((ColorDrawable) viewHolder.lyPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_red)));
+        assertThat(((ColorDrawable) viewHolder.txPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_red)));
     }
 
     @Test

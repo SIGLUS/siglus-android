@@ -39,6 +39,11 @@
         <item name="android:orientation">vertical</item>
     </style>
 
+    <style name="Card.BannerContainer">
+        <item name="android:paddingBottom">@dimen/padding_small</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
     <style name="ArchivedCard" />
 
     <style name="ArchivedCard.ProductName" parent="Text.Black.Medium" />
@@ -498,34 +503,39 @@
     </style>
 
     <style name="ItemRnr.PeriodTextType1" parent="Text.White.Normal">
-        <item name="android:paddingEnd">@dimen/padding_small</item>
-        <item name="android:paddingStart">@dimen/padding_small</item>
+        <item name="android:background">@color/color_text_secondary</item>
+        <item name="android:drawablePadding">@dimen/padding_small</item>
+        <item name="android:drawableStart">@drawable/abc_ic_menu_copy_mtrl_am_alpha</item>
+        <item name="android:padding">@dimen/padding_normal</item>
     </style>
 
     <style name="ItemRnr.PeriodTextType2" parent="Text.Black.Regular">
-        <item name="android:paddingEnd">@dimen/padding_small</item>
-        <item name="android:paddingStart">@dimen/padding_small</item>
+        <item name="android:padding">@dimen/padding_small</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:drawableStart">@drawable/ic_done_mini</item>
+        <item name="android:drawablePadding">@dimen/padding_small</item>
     </style>
 
     <style name="ItemRnr.MessageTextType1" parent="Text.Black.Small">
         <item name="android:layout_marginStart">@dimen/margin_large</item>
-        <item name="android:padding">@dimen/padding_small</item>
+        <item name="android:padding">@dimen/padding_normal</item>
         <item name="android:layout_marginBottom">@dimen/margin_small</item>
         <item name="android:gravity">start</item>
     </style>
 
     <style name="ItemRnr.MessageTextType2" parent="Text.Black.Small">
-        <item name="android:layout_marginStart">@dimen/margin_large</item>
+        <item name="android:layout_marginStart">@dimen/margin_medium</item>
         <item name="android:padding">@dimen/padding_small</item>
     </style>
 
     <style name="ItemRnr.BtnView" parent="Text.Blue.Small">
-        <item name="android:layout_marginStart">@dimen/margin_large</item>
+        <item name="android:layout_marginStart">@dimen/margin_medium</item>
         <item name="android:padding">@dimen/padding_small</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="ItemRnr.Type2Container" parent="Card.Container">
+    <style name="ItemRnr.Type2Container">
+        <item name="android:orientation">vertical</item>
         <item name="android:background">@color/color_white</item>
         <item name="android:divider">@drawable/divider_horizontal_light_gray</item>
         <item name="android:showDividers">middle</item>

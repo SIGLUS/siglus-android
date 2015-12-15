@@ -10,24 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <LinearLayout
-            style="@style/ItemRnr.PeriodContainer.Type2"
+        <TextView
+            android:id="@+id/tx_period"
+            style="@style/ItemRnr.PeriodTextType2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_done" />
-
-            <TextView
-                android:id="@+id/tx_period"
-                style="@style/ItemRnr.PeriodTextType2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:text="Period text is here" />
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            tools:text="Period text is here" />
 
         <TextView
             android:id="@+id/tx_message"

@@ -3,7 +3,6 @@ package org.openlmis.core.view.holder;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
@@ -35,12 +34,6 @@ public class RnRFormViewHolder extends BaseViewHolder {
     @InjectView(R.id.btn_view)
     TextView btnView;
 
-    @InjectView(R.id.icon)
-    ImageView icon;
-
-    @InjectView(R.id.ly_period)
-    View lyPeriod;
-
     @InjectView(R.id.iv_del)
     View ivDelete;
 
@@ -58,12 +51,11 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())), R.drawable.ic_description, R.color.color_draft_title, model.getForm());
                 break;
             case RnRFormViewModel.TYPE_UNSYNC:
+                String error = context.getString(R.string.label_unsynced_requisition, model.getName());
                 if (model.getSyncServerErrorMessage() != null) {
-                    String error = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage(model.getSyncServerErrorMessage());
-                    configHolder(model.getPeriod(), Html.fromHtml(error), R.drawable.ic_error, R.color.color_red, model.getForm());
-                } else {
-                    configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_unsynced_requisition, model.getName())), R.drawable.ic_error, R.color.color_red, model.getForm());
+                    error = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage(model.getSyncServerErrorMessage());
                 }
+                configHolder(model.getPeriod(), Html.fromHtml(error), R.drawable.ic_error, R.color.color_red, model.getForm());
                 break;
             case RnRFormViewModel.TYPE_HISTORICAL:
                 configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedDate())), R.drawable.ic_done, INT_UNSET, model.getForm());
@@ -76,9 +68,9 @@ public class RnRFormViewHolder extends BaseViewHolder {
     private void configHolder(String period, Spanned text, int icDescription, int colorDraftTitle, final RnRForm form) {
         txPeriod.setText(period);
         txMessage.setText(text);
-        icon.setImageResource(icDescription);
-        if (lyPeriod != null && colorDraftTitle != INT_UNSET) {
-            lyPeriod.setBackgroundResource(colorDraftTitle);
+        txPeriod.setCompoundDrawablesWithIntrinsicBounds(icDescription, 0, 0, 0);
+        if (colorDraftTitle != INT_UNSET) {
+            txPeriod.setBackgroundResource(colorDraftTitle);
         }
 
         if (ivDelete != null && rnRFormListAdapter.getFormDeleteListener() != null) {
