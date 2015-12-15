@@ -38,6 +38,7 @@ import org.robolectric.RuntimeEnvironment;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import roboguice.RoboGuice;
@@ -46,6 +47,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.openlmis.core.model.StockMovementItem.MovementType.ISSUE;
 import static org.openlmis.core.model.StockMovementItem.MovementType.RECEIVE;
 import static org.openlmis.core.model.builder.StockCardBuilder.saveStockCardWithOneMovement;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
@@ -191,6 +193,151 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         Assert.assertThat(stockRepository.listDraftInventory().size(), is(2));
         stockRepository.clearDraftInventory();
         Assert.assertThat(stockRepository.listDraftInventory().size(), is(0));
+    }
+
+    @Test
+    public void shouldGetFirstPeriodDate() throws Exception {
+        StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
+
+        StockMovementItem firstItem = createMovementItem(RECEIVE, 100, stockCard);
+        Date firstMovementDate = DateUtil.parseString("10/09/2014", DateUtil.SIMPLE_DATE_FORMAT);
+        firstItem.setMovementDate(firstMovementDate);
+
+        StockMovementItem secondItem = createMovementItem(RECEIVE, 100, stockCard);
+        secondItem.setMovementDate(DateUtil.parseString("11/10/2015", DateUtil.SIMPLE_DATE_FORMAT));
+
+        StockMovementItem thirdItem = createMovementItem(RECEIVE, 100, stockCard);
+        thirdItem.setMovementDate(DateUtil.parseString("12/11/2015", DateUtil.SIMPLE_DATE_FORMAT));
+
+        stockRepository.addStockMovementAndUpdateStockCard(stockCard, firstItem);
+        stockRepository.addStockMovementAndUpdateStockCard(stockCard, secondItem);
+        stockRepository.addStockMovementAndUpdateStockCard(stockCard, thirdItem);
+        stockRepository.refresh(stockCard);
+
+        Date firstPeriodBegin = stockRepository.queryFirstPeriodBegin(stockCard);
+        Date expectPeriodBegin = DateUtil.generatePeriodBeginBy(firstMovementDate);
+        assertThat(firstPeriodBegin, is(expectPeriodBegin));
+    }
+
+    @Test
+    public void shouldGetLowStockAvgIsZeroWhenOnlyTwoValidPeriod() throws Exception {
+
+        StockCard stockCard = new StockCard();
+        stockCard.setStockOnHand(10);
+        stockRepository.save(stockCard);
+
+        Date today = DateUtil.today();
+        Date lastFirstMonthDate = DateUtil.generatePreviousMonthDateBy(today);
+        Date lastSecondMonthDate = DateUtil.generatePreviousMonthDateBy(lastFirstMonthDate);
+
+        StockMovementItem firstItem = createMovementItem(ISSUE, 100, stockCard);
+        firstItem.setMovementDate(lastFirstMonthDate);
+
+        StockMovementItem secondItem = createMovementItem(ISSUE, 100, stockCard);
+        secondItem.setMovementDate(lastSecondMonthDate);
+
+        stockRepository.addStockMovementAndUpdateStockCard(stockCard, firstItem);
+        stockRepository.addStockMovementAndUpdateStockCard(stockCard, secondItem);
+        stockRepository.refresh(stockCard);
+
+        int lowStockAvg = stockRepository.getLowStockAvg(stockCard);
+        assertEquals(2, stockRepository.listLastFive(stockCard.getId()).size());
+        assertEquals(0, lowStockAvg);
+    }
+
+    @Test
+    public void shouldGetLowStockAvgCorrectly() throws Exception {
+
+        StockCard stockCard = new StockCard();
+        stockCard.setStockOnHand(10);
+        stockRepository.save(stockCard);
+
+        Date today = DateUtil.today();
+        Date lastFirstMonthDate = DateUtil.generatePreviousMonthDateBy(today);
+        Date lastSecondMonthDate = DateUtil.generatePreviousMonthDateBy(lastFirstMonthDate);
+        Date lastThirdMonthDate = DateUtil.generatePreviousMonthDateBy(lastSecondMonthDate);
+
+        StockMovementItem firstItem = createMovementItem(ISSUE, 100, stockCard);
+        firstItem.setMovementDate(lastFirstMonthDate);
+
+        StockMovementItem secondItem = createMovementItem(ISSUE, 100, stockCard);
+        secondItem.setMovementDate(lastSecondMonthDate);
+
+        StockMovementItem thirdItem = createMovementItem(ISSUE, 100, stockCard);
+        thirdItem.setMovementDate(lastThirdMonthDate);
+
+        stockRepository.addStockMovementAndUpdateStockCard(stockCard, firstItem);
+        stockRepository.addStockMovementAndUpdateStockCard(stockCard, secondItem);
+        stockRepository.addStockMovementAndUpdateStockCard(stockCard, thirdItem);
+        stockRepository.refresh(stockCard);
+
+        int lowStockAvg = stockRepository.getLowStockAvg(stockCard);
+        assertEquals(3, stockRepository.listLastFive(stockCard.getId()).size());
+        assertEquals(5, lowStockAvg);
+    }
+
+    @Test
+    public void shouldGetLowStockAvgWhenLastMonthHaveNoStockItem() throws Exception {
+
+        StockCard stockCard = new StockCard();
+        stockCard.setStockOnHand(10);
+        stockRepository.save(stockCard);
+
+        Date today = DateUtil.today();
+        Date lastFirstMonthDate = DateUtil.generatePreviousMonthDateBy(today);
+        Date lastSecondMonthDate = DateUtil.generatePreviousMonthDateBy(lastFirstMonthDate);
+        Date lastThirdMonthDate = DateUtil.generatePreviousMonthDateBy(lastSecondMonthDate);
+        Date lastForthMonthDate = DateUtil.generatePreviousMonthDateBy(lastThirdMonthDate);
+
+        StockMovementItem firstItem = createMovementItem(ISSUE, 100, stockCard);
+        firstItem.setMovementDate(lastFirstMonthDate);
+
+        StockMovementItem secondItem = createMovementItem(ISSUE, 100, stockCard);
+        secondItem.setMovementDate(lastThirdMonthDate);
+
+        StockMovementItem thirdItem = createMovementItem(ISSUE, 100, stockCard);
+        thirdItem.setMovementDate(lastForthMonthDate);
+
+        stockRepository.addStockMovementAndUpdateStockCard(stockCard, firstItem);
+        stockRepository.addStockMovementAndUpdateStockCard(stockCard, secondItem);
+        stockRepository.addStockMovementAndUpdateStockCard(stockCard, thirdItem);
+        stockRepository.refresh(stockCard);
+
+        int lowStockAvg = stockRepository.getLowStockAvg(stockCard);
+        assertEquals(3, stockRepository.listLastFive(stockCard.getId()).size());
+        assertEquals(4, lowStockAvg);
+    }
+
+    @Test
+    public void shouldGetLowStockAvgWhenLastMonthSOHIsZero() throws Exception {
+
+        StockCard stockCard = new StockCard();
+        stockCard.setStockOnHand(10);
+        stockRepository.save(stockCard);
+
+        Date today = DateUtil.today();
+        Date lastFirstMonthDate = DateUtil.generatePreviousMonthDateBy(today);
+        Date lastSecondMonthDate = DateUtil.generatePreviousMonthDateBy(lastFirstMonthDate);
+        Date lastThirdMonthDate = DateUtil.generatePreviousMonthDateBy(lastSecondMonthDate);
+
+        StockMovementItem firstItem = createMovementItem(ISSUE, 100, stockCard);
+        firstItem.setMovementDate(lastFirstMonthDate);
+
+        StockMovementItem secondItem = createMovementItem(ISSUE, 100, stockCard);
+        secondItem.setMovementDate(lastSecondMonthDate);
+        secondItem.setStockOnHand(0);
+
+        StockMovementItem thirdItem = createMovementItem(ISSUE, 100, stockCard);
+        thirdItem.setMovementDate(lastThirdMonthDate);
+
+        stockRepository.addStockMovementAndUpdateStockCard(stockCard, firstItem);
+        stockRepository.addStockMovementAndUpdateStockCard(stockCard, secondItem);
+        stockRepository.addStockMovementAndUpdateStockCard(stockCard, thirdItem);
+        stockRepository.refresh(stockCard);
+
+        int lowStockAvg = stockRepository.getLowStockAvg(stockCard);
+        assertEquals(3, stockRepository.listLastFive(stockCard.getId()).size());
+        assertEquals(0, lowStockAvg);
     }
 
     private void saveDraftInventory() throws LMISException {

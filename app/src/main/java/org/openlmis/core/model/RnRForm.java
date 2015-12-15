@@ -25,11 +25,11 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import org.openlmis.core.utils.DateUtil;
+
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -45,7 +45,6 @@ public class RnRForm extends BaseModel {
         AUTHORIZED
     }
 
-    public static final int DAY_PERIOD_END = 20;
     @ForeignCollectionField()
     private ForeignCollection<RnrFormItem> rnrFormItemList;
 
@@ -109,8 +108,8 @@ public class RnRForm extends BaseModel {
     public static RnRForm init(Program program, Date generateDate) {
         RnRForm rnrForm = new RnRForm();
         rnrForm.program = program;
-        rnrForm.periodBegin = periodBeginBy(generateDate);
-        rnrForm.matchPeriodEndByBegin();
+        rnrForm.periodBegin = DateUtil.generatePeriodBeginBy(generateDate);
+        rnrForm.periodEnd = DateUtil.generatePeriodEndByBegin(rnrForm.getPeriodBegin());
         return rnrForm;
     }
 
@@ -140,16 +139,6 @@ public class RnRForm extends BaseModel {
         return regimenItemListWrapper;
     }
 
-    public void matchPeriodEndByBegin() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(getPeriodBegin());
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
-        Date periodEnd = new GregorianCalendar(year, month + 1, DAY_PERIOD_END).getTime();
-
-        setPeriodEnd(periodEnd);
-    }
-
     public static void fillFormId(RnRForm rnRForm) {
         for (RnrFormItem item : rnRForm.getRnrFormItemListWrapper()) {
             item.setForm(rnRForm);
@@ -159,21 +148,6 @@ public class RnRForm extends BaseModel {
         }
         for (BaseInfoItem item : rnRForm.getBaseInfoItemListWrapper()) {
             item.setRnRForm(rnRForm);
-        }
-    }
-
-    private static Date periodBeginBy(Date generateDate) {
-        Calendar calendar = GregorianCalendar.getInstance();
-        calendar.setTime(generateDate);
-
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        if (day <= DAY_PERIOD_END + 5) {
-            return new GregorianCalendar(year, month - 1, DAY_PERIOD_END + 1).getTime();
-        } else {
-            return new GregorianCalendar(year, month, DAY_PERIOD_END + 1).getTime();
         }
     }
 

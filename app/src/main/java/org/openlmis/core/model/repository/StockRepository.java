@@ -325,4 +325,91 @@ public class StockRepository {
             throw new LMISException(e);
         }
     }
+
+    public StockMovementItem getOldestMovementItemById(final Long id) throws LMISException {
+        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
+            @Override
+            public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException {
+                return dao.queryBuilder().orderBy("movementDate", true).orderBy("createdTime", false).orderBy("id", false).where().eq("stockCard_id", id).queryForFirst();
+            }
+        });
+    }
+
+    protected Date queryFirstPeriodBegin(final StockCard stockCard) throws LMISException {
+        Date firstMovementDate = dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
+            @Override
+            public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException {
+                return dao.queryBuilder()
+                        .orderBy("movementDate", true)
+                        .where()
+                        .eq("stockCard_id", stockCard.getId())
+                        .queryForFirst();
+            }
+        }).getMovementDate();
+        return DateUtil.generatePeriodBeginBy(firstMovementDate);
+    }
+
+    public int getLowStockAvg(StockCard stockCard) {
+
+        Date firstPeriodBegin;
+        try {
+            firstPeriodBegin = queryFirstPeriodBegin(stockCard);
+        } catch (LMISException e) {
+            e.reportToFabric();
+            return 0;
+        }
+
+        List<Long> list = new ArrayList<>();
+        Date periodBegin = DateUtil.generatePeriodBeginBy(DateUtil.today());
+        Date periodEnd = DateUtil.generatePeriodEndByBegin(periodBegin);
+
+        while (list.size() < 3) {
+            periodBegin = DateUtil.generatePreviousMonthDateBy(periodBegin);
+            periodEnd = DateUtil.generatePreviousMonthDateBy(periodEnd);
+
+            if (periodBegin.before(firstPeriodBegin)) {
+                break;
+            }
+
+            Long totalIssuesEachMonth = calculateTotalIssues(stockCard, periodBegin, periodEnd);
+            if (totalIssuesEachMonth != null) {
+                list.add(totalIssuesEachMonth);
+            }
+        }
+
+        if (list.size() == 3) {
+            long total = 0;
+            for (Long totalIssues : list) {
+                total += totalIssues;
+            }
+            return (int) Math.ceil((total / 3) * 0.05);
+        }
+
+        return 0;
+    }
+
+
+    private Long calculateTotalIssues(StockCard stockCard, Date startDate, Date endDate) {
+        long totalIssued = 0;
+        List<StockMovementItem> stockMovementItems;
+        try {
+            stockMovementItems = queryStockItems(stockCard, startDate, endDate);
+        } catch (LMISException e) {
+            e.reportToFabric();
+            return null;
+        }
+        if (!stockMovementItems.isEmpty()) {
+            for (StockMovementItem item : stockMovementItems) {
+                if (item.getStockOnHand() == 0) {
+                    return null;
+                }
+                if (StockMovementItem.MovementType.ISSUE == item.getMovementType()) {
+                    totalIssued += item.getMovementQuantity();
+                }
+            }
+        }
+        return totalIssued;
+    }
+
+
 }

@@ -66,49 +66,6 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(rnrFormItemListFromDB.get(2).getInventory(), is(3L));
     }
 
-    @Test
-    public void shouldGetLowStockAvgWhenHasThreeRecord() throws Exception {
-        RnRForm form = new RnRForm();
-        Program program = new Program();
-        program.setProgramCode("1");
-        Product product = new Product();
-        product.setProgram(program);
-        product.setId(1);
-
-        List<RnrFormItem> rnrFormItemList = new ArrayList<>();
-        RnrFormItem rnrFormItem = getRnrFormItem(form, product, 1);
-        rnrFormItem.setIssued(100);
-        rnrFormItemList.add(rnrFormItem);
-        rnrFormItemList.add(rnrFormItem);
-        rnrFormItemList.add(rnrFormItem);
-
-        rnrFormItemRepository.create(rnrFormItemList);
-
-        int lowStockAvg = rnrFormItemRepository.getLowStockAvg(product);
-        assertThat(lowStockAvg,is(5));
-    }
-
-    @Test
-    public void shouldGetLowStockAvgWhenLessThanThreeRecord() throws Exception {
-        RnRForm form = new RnRForm();
-        Program program = new Program();
-        program.setProgramCode("1");
-        Product product = new Product();
-        product.setProgram(program);
-        product.setId(1);
-
-        List<RnrFormItem> rnrFormItemList = new ArrayList<>();
-        RnrFormItem rnrFormItem = getRnrFormItem(form, product, 1);
-        rnrFormItem.setIssued(100);
-        rnrFormItemList.add(rnrFormItem);
-        rnrFormItemList.add(rnrFormItem);
-
-        rnrFormItemRepository.create(rnrFormItemList);
-
-        int lowStockAvg = rnrFormItemRepository.getLowStockAvg(product);
-        assertThat(lowStockAvg,is(0));
-    }
-
     @NonNull
     private RnrFormItem getRnrFormItem(RnRForm form, Product product, long inventory) {
         RnrFormItem rnrFormItem = new RnrFormItem();

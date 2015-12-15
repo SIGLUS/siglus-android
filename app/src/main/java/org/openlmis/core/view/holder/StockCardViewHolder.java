@@ -5,7 +5,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.model.repository.RnrFormItemRepository;
+import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
@@ -26,7 +26,7 @@ public class StockCardViewHolder extends BaseViewHolder {
     @InjectView(R.id.iv_warning)
     View iv_warning;
 
-    protected RnrFormItemRepository rnrFormItemRepository;
+    protected StockRepository stockRepository;
     private OnItemViewClickListener listener;
 
     protected static final int STOCK_ON_HAND_NORMAL = 1;
@@ -36,7 +36,7 @@ public class StockCardViewHolder extends BaseViewHolder {
     public StockCardViewHolder(View itemView, OnItemViewClickListener listener) {
         super(itemView);
         this.listener = listener;
-        this.rnrFormItemRepository = RoboGuice.getInjector(context).getInstance(RnrFormItemRepository.class);
+        this.stockRepository = RoboGuice.getInjector(context).getInstance(StockRepository.class);
     }
 
     public void populate(final StockCardViewModel stockCardViewModel, String queryKeyWord) {
@@ -95,7 +95,9 @@ public class StockCardViewHolder extends BaseViewHolder {
     }
 
     protected int getStockOnHandLevel(StockCardViewModel stockCardViewModel) {
-        int lowStockAvg = rnrFormItemRepository.getLowStockAvg(stockCardViewModel.getProduct());
+
+        int lowStockAvg = stockRepository.getLowStockAvg(stockCardViewModel.getStockCard());
+
         long stockOnHand = stockCardViewModel.getStockOnHand();
 
         if (stockOnHand > lowStockAvg) {

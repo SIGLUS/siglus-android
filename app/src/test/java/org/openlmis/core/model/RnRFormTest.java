@@ -1,6 +1,7 @@
 package org.openlmis.core.model;
 
 import org.junit.Test;
+import org.openlmis.core.utils.DateUtil;
 
 import java.util.Date;
 
@@ -30,7 +31,7 @@ public class RnRFormTest {
     private void testPeriodBeginEnd(Date givenBegin, Date expectedEnd) {
         RnRForm rnRForm = new RnRForm();
         rnRForm.setPeriodBegin(givenBegin);
-        rnRForm.matchPeriodEndByBegin();
+        rnRForm.setPeriodEnd(DateUtil.generatePeriodEndByBegin(rnRForm.getPeriodBegin()));
 
         assertThat(rnRForm.getPeriodBegin(), is(givenBegin));
         assertThat(rnRForm.getPeriodEnd(), is(expectedEnd));

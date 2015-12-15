@@ -26,6 +26,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -38,6 +39,8 @@ public final class DateUtil {
     public static final String DATE_FORMAT_ONLY_DAY_AND_MONTH = "dd MMM";
 
     public static final String DB_DATE_FORMAT = "yyyy-MM-dd";
+    public static final int DAY_PERIOD_END = 20;
+
 
 
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
@@ -124,4 +127,37 @@ public final class DateUtil {
             }
         });
     }
+
+    public static Date generatePeriodBeginBy(Date generateDate) {
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime(generateDate);
+
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        if (day <= DAY_PERIOD_END + 5) {
+            return new GregorianCalendar(year, month - 1, DAY_PERIOD_END + 1).getTime();
+        } else {
+            return new GregorianCalendar(year, month, DAY_PERIOD_END + 1).getTime();
+        }
+    }
+
+    public static Date generatePeriodEndByBegin(Date periodBegin) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(periodBegin);
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+        return new GregorianCalendar(year, month + 1, DAY_PERIOD_END).getTime();
+    }
+
+    public static Date generatePreviousMonthDateBy(Date periodDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(periodDate);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+        return new GregorianCalendar(year, month - 1, day).getTime();
+    }
+
 }
