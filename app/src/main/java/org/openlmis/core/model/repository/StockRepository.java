@@ -64,6 +64,8 @@ public class StockRepository {
     @Inject
     ProgramRepository programRepository;
 
+    private final int LOW_STOCK_CALCULATE_MONTH_QUANTITY = 3;
+
     @Inject
     public StockRepository(Context context) {
         genericDao = new GenericDao<>(StockCard.class, context);
@@ -359,33 +361,46 @@ public class StockRepository {
             return 0;
         }
 
-        List<Long> list = new ArrayList<>();
+        List<Long> issuePerMonths = new ArrayList<>();
         Date periodBegin = DateUtil.generatePeriodBeginBy(DateUtil.today());
         Date periodEnd = DateUtil.generatePeriodEndByBegin(periodBegin);
 
-        while (list.size() < 3) {
+        int periodQuantity = DateUtil.calculateDateMonthOffset(firstPeriodBegin, periodBegin);
+
+        if (periodQuantity < LOW_STOCK_CALCULATE_MONTH_QUANTITY) {
+            return 0;
+        }
+
+        for (int i = 0; i < periodQuantity; i++) {
             periodBegin = DateUtil.generatePreviousMonthDateBy(periodBegin);
             periodEnd = DateUtil.generatePreviousMonthDateBy(periodEnd);
 
-            if (periodBegin.before(firstPeriodBegin)) {
+            Long totalIssuesEachMonth = calculateTotalIssues(stockCard, periodBegin, periodEnd);
+
+            if (totalIssuesEachMonth == null) {
+                continue;
+            }
+
+            issuePerMonths.add(totalIssuesEachMonth);
+
+            if (issuePerMonths.size() == LOW_STOCK_CALCULATE_MONTH_QUANTITY) {
                 break;
             }
-
-            Long totalIssuesEachMonth = calculateTotalIssues(stockCard, periodBegin, periodEnd);
-            if (totalIssuesEachMonth != null) {
-                list.add(totalIssuesEachMonth);
-            }
         }
 
-        if (list.size() == 3) {
-            long total = 0;
-            for (Long totalIssues : list) {
-                total += totalIssues;
-            }
-            return (int) Math.ceil((total / 3) * 0.05);
+        if (issuePerMonths.size() < LOW_STOCK_CALCULATE_MONTH_QUANTITY) {
+            return 0;
         }
 
-        return 0;
+        return (int) Math.ceil((getTotalIssues(issuePerMonths) / LOW_STOCK_CALCULATE_MONTH_QUANTITY) * 0.05);
+    }
+
+    private long getTotalIssues(List<Long> issuePerMonths) {
+        long total = 0;
+        for (Long totalIssues : issuePerMonths) {
+            total += totalIssues;
+        }
+        return total;
     }
 
 
@@ -398,14 +413,17 @@ public class StockRepository {
             e.reportToFabric();
             return null;
         }
-        if (!stockMovementItems.isEmpty()) {
-            for (StockMovementItem item : stockMovementItems) {
-                if (item.getStockOnHand() == 0) {
-                    return null;
-                }
-                if (StockMovementItem.MovementType.ISSUE == item.getMovementType()) {
-                    totalIssued += item.getMovementQuantity();
-                }
+
+        if (stockMovementItems.isEmpty()) {
+            return 0L;
+        }
+
+        for (StockMovementItem item : stockMovementItems) {
+            if (item.getStockOnHand() == 0) {
+                return null;
+            }
+            if (StockMovementItem.MovementType.ISSUE == item.getMovementType()) {
+                totalIssued += item.getMovementQuantity();
             }
         }
         return totalIssued;

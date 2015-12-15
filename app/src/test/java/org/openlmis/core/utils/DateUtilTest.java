@@ -124,4 +124,22 @@ public class DateUtilTest {
         Date expectPeriodEnd = parseString("20/12/2015", SIMPLE_DATE_FORMAT);
         assertThat(DateUtil.generatePreviousMonthDateBy(periodEnd), is(expectPeriodEnd));
     }
+
+    @Test
+    public void shouldCountTwoPeriodMonthNubCorrectlyWhenInSameYear() throws Exception {
+        Date firstPeriod = parseString("20/02/2015", SIMPLE_DATE_FORMAT);
+        Date secondPeriod = parseString("20/10/2015", SIMPLE_DATE_FORMAT);
+
+        int periodMonthNub = DateUtil.calculateDateMonthOffset(firstPeriod, secondPeriod);
+        assertThat(periodMonthNub,is(8));
+    }
+
+    @Test
+    public void shouldCountTwoPeriodMonthNubCorrectly() throws Exception {
+        Date firstPeriod = parseString("20/12/2015", SIMPLE_DATE_FORMAT);
+        Date secondPeriod = parseString("20/01/2016", SIMPLE_DATE_FORMAT);
+
+        int periodMonthNub = DateUtil.calculateDateMonthOffset(firstPeriod, secondPeriod);
+        assertThat(periodMonthNub,is(1));
+    }
 }

@@ -83,7 +83,7 @@ public final class DateUtil {
         return DATE_FORMATTER.format(date);
     }
 
-    public static String formatDateWithoutYear(Date date){
+    public static String formatDateWithoutYear(Date date) {
         return DATE_FORMAT_NOT_DISPLAY_YEAR.format(date);
     }
 
@@ -112,7 +112,7 @@ public final class DateUtil {
         return new StringBuilder().append(dayOfMonth).append("/").append(monthOfYear + 1).append("/").append(year).toString();
     }
 
-    public static Date dateMinusMonth(Date current, int months){
+    public static Date dateMinusMonth(Date current, int months) {
         Calendar now = calendarDate(current);
         int currentMonth = now.get(Calendar.MONTH);
         now.set(Calendar.MONTH, currentMonth - months);
@@ -160,4 +160,15 @@ public final class DateUtil {
         return new GregorianCalendar(year, month - 1, day).getTime();
     }
 
+    public static int calculateDateMonthOffset(Date earlierDate, Date laterDate) {
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.setTime(laterDate);
+        int laterTotalMonth = calendar.get(Calendar.YEAR) * 12 + calendar.get(Calendar.MONTH);
+
+        calendar.setTime(earlierDate);
+        int earlierTotalMonth = calendar.get(Calendar.YEAR) * 12 + calendar.get(Calendar.MONTH);
+
+        return laterTotalMonth - earlierTotalMonth;
+    }
 }
