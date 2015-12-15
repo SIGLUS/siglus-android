@@ -25,7 +25,6 @@ import static org.mockito.Mockito.mock;
 @RunWith(LMISTestRunner.class)
 public class StockCardTest {
 
-    private StockCardAdapter stockCardAdapter;
     private ProductRepository mockProductRepository;
     private ProgramRepository mockProgramRepository;
     private StockCard stockCard;
@@ -41,11 +40,10 @@ public class StockCardTest {
         mockProgramRepository = mock(ProgramRepository.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
-        stockCardAdapter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockCardAdapter.class);
 
         stockCard = StockCardBuilder.buildStockCard();
 
-        wrapper = new ArrayList<StockMovementItem>();
+        wrapper = new ArrayList<>();
 
         StockMovementItemBuilder builder = new StockMovementItemBuilder();
 
@@ -58,23 +56,6 @@ public class StockCardTest {
         wrapper.add(item3);
 
         stockCard.setStockMovementItemsWrapper(wrapper);
-    }
-
-    @Test
-    public void shouldSetUpStockOnHandForMovements() throws Exception {
-
-        item1.setMovementQuantity(37);
-        item1.setMovementType(StockMovementItem.MovementType.ISSUE);
-        item2.setMovementQuantity(12);
-        item2.setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
-        item3.setMovementQuantity(17);
-        item3.setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
-
-        stockCard.setUpStockOnHandForMovements(100L);
-
-        assertThat(item1.getStockOnHand()).isEqualTo(71);
-        assertThat(item2.getStockOnHand()).isEqualTo(83);
-        assertThat(item3.getStockOnHand()).isEqualTo(100);
     }
 
     @Test

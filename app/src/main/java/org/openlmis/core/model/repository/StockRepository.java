@@ -325,13 +325,4 @@ public class StockRepository {
             throw new LMISException(e);
         }
     }
-
-    public StockMovementItem getOldestMovementItemById(final Long id) throws LMISException{
-        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>(){
-            @Override
-            public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException{
-                return dao.queryBuilder().orderBy("movementDate", true).orderBy("createdTime", false).orderBy("id", false).where().eq("stockCard_id", id).queryForFirst();
-            }
-        });
-    }
 }

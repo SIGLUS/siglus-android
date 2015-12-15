@@ -11,7 +11,8 @@
       "type": "ADJUSTMENT",
       "extensions": {
         "expirationdates": "10/10/2017, 12/12/2017",
-        "signature": "signature"
+        "signature": "signature",
+        "SOH":"1500"
       },
       "createdDate": 1449032173262,
       "movementDate": 1449032173262
@@ -23,7 +24,8 @@
       "type": "ADJUSTMENT",
       "extensions": {
         "expirationdates": "10/10/2017, 12/12/2017",
-        "signature": "signature"
+        "signature": "signature",
+        "SOH":"1500"
       },
       "createdDate": 1449032173262,
       "movementDate": 1449032173262
@@ -35,7 +37,8 @@
       "type": "ADJUSTMENT",
       "extensions": {
         "expirationdates": "10/10/2017, 12/12/2017",
-        "signature": "signature"
+        "signature": "signature",
+        "SOH":"1500"
       },
       "createdDate": 1449032173262,
       "movementDate": 1449032173262

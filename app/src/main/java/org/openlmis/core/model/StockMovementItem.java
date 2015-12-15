@@ -94,15 +94,4 @@ public class StockMovementItem extends BaseModel {
         return movementType.equals(MovementType.RECEIVE) || movementType.equals(MovementType.POSITIVE_ADJUST);
     }
 
-    public long calculateStockMovementStockOnHand(long stockOnHandOfStockCard) {
-        long nextMovementStockOnHand = stockOnHandOfStockCard;
-        if (isPositiveMovement()) {
-            nextMovementStockOnHand -= this.getMovementQuantity();
-        } else {
-            nextMovementStockOnHand += this.getMovementQuantity();
-        }
-
-        return nextMovementStockOnHand;
-    }
-
 }

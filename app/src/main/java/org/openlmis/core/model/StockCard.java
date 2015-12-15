@@ -77,12 +77,4 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
     public int compareTo(@NonNull StockCard another) {
         return product == null ? 0 : product.compareTo(another.getProduct());
     }
-
-    public void setUpStockOnHandForMovements(Long stockOnHand) {
-        for (int i = stockMovementItemsWrapper.size() - 1; i >= 0; i--) {
-            StockMovementItem item = stockMovementItemsWrapper.get(i);
-            item.setStockOnHand(stockOnHand);
-            stockOnHand = item.calculateStockMovementStockOnHand(stockOnHand);
-        }
-    }
 }

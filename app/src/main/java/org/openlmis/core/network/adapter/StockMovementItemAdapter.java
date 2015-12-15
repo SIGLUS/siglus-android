@@ -7,6 +7,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockMovementItem;
@@ -39,6 +40,7 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
             stockMovementItem.setMovementType(movementReason.getMovementType());
             stockMovementItem.setReason(movementReason.getCode());
         } catch (MovementReasonNotFoundException e) {
+            new LMISException(e).reportToFabric();
             e.printStackTrace();
         }
 
@@ -57,6 +59,12 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
             if (extensions!=null) {
                 this.setExpireDates(extensions.get("expirationdates"));
                 this.setSignature(extensions.get("signature"));
+                try {
+                    this.setStockOnHand(Long.parseLong(extensions.get("SOH")));
+                } catch (NumberFormatException e) {
+                    new LMISException(e).reportToFabric();
+                    e.printStackTrace();
+                }
             }
             if (occurred != null) {
                 this.setMovementDate(DateUtil.parseString(occurred, DateUtil.DB_DATE_FORMAT));

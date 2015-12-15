@@ -51,6 +51,6 @@ public class StockMovementEntry {
         this.setReferenceNumber(stockMovementItem.getDocumentNumber());
         this.getCustomProps().put("expirationDates", stockMovementItem.getStockCard().getExpireDates());
         this.getCustomProps().put("signature", stockMovementItem.getSignature());
-
+        this.getCustomProps().put("SOH", String.valueOf(stockMovementItem.getStockOnHand()));
     }
 }

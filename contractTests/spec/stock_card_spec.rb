@@ -20,7 +20,8 @@ describe "Sync stock card data" do
         referenceNumber: "referenceNumber1",
         customProps: {
           expirationDates: "10/10/2017, 12/12/2017",
-          signature: "signature"
+          signature: "signature",
+          SOH: 1000
         }
       },
       {
@@ -33,7 +34,8 @@ describe "Sync stock card data" do
         referenceNumber: "referenceNumber2",
         customProps: {
           expirationDates: "10/10/2017, 12/12/2017",
-          signature: "signature"
+          signature: "signature",
+          SOH: 500
         }
       },
       {
@@ -46,7 +48,8 @@ describe "Sync stock card data" do
         referenceNumber: "referenceNumber3",
         customProps: {
           expirationDates: "10/10/2017, 12/12/2017",
-          signature: "signature"
+          signature: "signature",
+          SOH: 480
         }
       },
       {
@@ -59,14 +62,15 @@ describe "Sync stock card data" do
         referenceNumber: "referenceNumber4",
         customProps: {
           expirationDates: "10/10/2019",
-          signature: "signature"
+          signature: "signature",
+          SOH: 10
         }
       }
       ]
 
     response = RestClient.post "http://#{WEB_DEV_URI}/rest-api/facilities/#{facility_id}/stockCards",
       stock_card_data.to_json, :content_type => :json, :accept => :json,
-      :authorization => http_basic_auth('superuser', 'password1')
+      :authorization => http_basic_auth('mystique', 'password1')
 
     body = JSON.parse(response.body)
     expect(response.code).to eq 200
@@ -85,7 +89,7 @@ describe "Sync stock card data" do
      response = RestClient.get "http://#{WEB_DEV_URI}/rest-api/facilities/#{facility_id}/stockCards?startTime=#{startTime}&endTime=#{endTime}",
       :content_type => :json,
       :accept => :json,
-      :authorization => http_basic_auth('superuser', 'password1')
+      :authorization => http_basic_auth('mystique', 'password1')
 
     body = JSON.parse(response.body)
     expect(response.code).to eq 200

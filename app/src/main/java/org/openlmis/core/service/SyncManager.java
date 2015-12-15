@@ -464,13 +464,6 @@ public class SyncManager {
         SyncDownStockCardResponse syncDownStockCardResponse = lmisRestApi.fetchStockMovementData(facilityId, startDate, endDate);
 
         for (StockCard stockCard : syncDownStockCardResponse.getStockCards()) {
-            StockMovementItem oldestItem = stockRepository.getOldestMovementItemById(stockCard.getId());
-            Long stockOnHand = stockCard.getStockOnHand();
-
-            if (oldestItem != null && sharedPreferenceMgr.getPreference().getBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, false)) {
-                stockOnHand = oldestItem.calculateStockMovementStockOnHand(oldestItem.getStockOnHand());
-            }
-            stockCard.setUpStockOnHandForMovements(stockOnHand);
 
             for (StockMovementItem item : stockCard.getStockMovementItemsWrapper()) {
                 item.setSynced(true);
