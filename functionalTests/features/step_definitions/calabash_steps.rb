@@ -24,7 +24,7 @@ end
 
 When /^I enter username "([^\"]+)"$/ do |username|
   element = "android.widget.EditText id:'tx_username'"
-  clear_text_in(element)
+  query(element, setText: '')
   enter_text(element, username)
   hide_soft_keyboard
 end
@@ -35,6 +35,7 @@ When /^I enter password "([^\"]+)"$/ do |password|
 end
 
 Given(/^I try to log in with "(.*?)" "(.*?)"$/) do |username, password|
+
   steps %Q{
 		When I enter username "#{username}"
         And I enter password "#{password}"
