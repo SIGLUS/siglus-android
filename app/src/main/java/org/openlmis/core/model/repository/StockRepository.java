@@ -37,6 +37,7 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
+import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.Lists;
@@ -326,15 +327,6 @@ public class StockRepository {
         } catch (SQLException e) {
             throw new LMISException(e);
         }
-    }
-
-    public StockMovementItem getOldestMovementItemById(final Long id) throws LMISException {
-        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
-            @Override
-            public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                return dao.queryBuilder().orderBy("movementDate", true).orderBy("createdTime", false).orderBy("id", false).where().eq("stockCard_id", id).queryForFirst();
-            }
-        });
     }
 
     protected Date queryFirstPeriodBegin(final StockCard stockCard) throws LMISException {
