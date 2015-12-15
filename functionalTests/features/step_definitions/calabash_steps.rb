@@ -167,3 +167,11 @@ When(/^I search product by fnm "(.*?)" and select this item$/) do |fnm|
     end
     clear_text_in(search_bar)
 end
+
+
+And (/^I sign out$/) do
+        tap_when_element_exists("* contentDescription:'More options'")
+    steps %Q{
+            Then I press "Sign Out"
+        }
+end

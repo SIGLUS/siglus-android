@@ -10,4 +10,8 @@ Feature: Initial Inventory
     And I press "Sort alphabetically: A to Z"
     And I press "Sort by quantity: High to Low"
     Then I see "20"
+    Then I navigate back
+    And I sign out
+    Then I wait for the "LoginActivity" screen to appear
+
 
