@@ -373,7 +373,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
                 presenter.removeRequisition();
             } catch (LMISException e) {
                 ToastUtil.show("Delete Failed");
-                e.printStackTrace();//todo: maybe log this to logcat, not just print
+                e.reportToFabric();
             }
         }
     }
