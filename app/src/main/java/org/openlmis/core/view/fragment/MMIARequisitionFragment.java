@@ -36,7 +36,6 @@ import com.google.inject.Inject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.presenter.Presenter;
@@ -115,11 +114,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            presenter.attachView(this);
-        } catch (ViewNotMatchException e) {
-            e.printStackTrace();
-        }
 
         formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
         isHistoryForm = formId != 0;
@@ -499,19 +493,4 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     public void negativeClick(String tag) {
     }
 
-
-    @Override
-    public void loading() {
-        ((BaseActivity) getActivity()).loading();
-    }
-
-    @Override
-    public void loading(String message) {
-        ((BaseActivity) getActivity()).loading(message);
-    }
-
-    @Override
-    public void loaded() {
-        ((BaseActivity) getActivity()).loaded();
-    }
 }

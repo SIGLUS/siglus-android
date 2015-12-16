@@ -79,7 +79,6 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        presenter.attachView(this);
         presenter.setStockCardId(stockCardID);
     }
 
@@ -193,18 +192,4 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
         return historyListView.getChildCount() < historyListView.getCount();
     }
 
-    @Override
-    public void loading() {
-        baseView.loading();
-    }
-
-    @Override
-    public void loading(String message) {
-        baseView.loading(message);
-    }
-
-    @Override
-    public void loaded() {
-        baseView.loaded();
-    }
 }

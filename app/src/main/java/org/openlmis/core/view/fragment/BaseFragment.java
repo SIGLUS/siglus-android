@@ -20,12 +20,17 @@ package org.openlmis.core.view.fragment;
 
 import android.os.Bundle;
 
+import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.presenter.DummyPresenter;
 import org.openlmis.core.presenter.Presenter;
+import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.BaseView;
+import org.openlmis.core.view.activity.BaseActivity;
 
 import roboguice.fragment.provided.RoboFragment;
 
 
-public abstract class BaseFragment extends RoboFragment {
+public abstract class BaseFragment extends RoboFragment implements BaseView {
 
     protected boolean isSavedInstanceState;
     protected Presenter presenter;
@@ -39,7 +44,25 @@ public abstract class BaseFragment extends RoboFragment {
         // retain this fragment
         setRetainInstance(true);
         isSavedInstanceState = false;
+
+        setPresenter();
+        attachPresenterView();
+    }
+
+    private void setPresenter() {
         presenter = initPresenter();
+        if (presenter == null) {
+            presenter = new DummyPresenter();
+        }
+    }
+
+    private void attachPresenterView() {
+        try {
+            presenter.attachView(this);
+        } catch (ViewNotMatchException e) {
+            e.reportToFabric();
+            ToastUtil.show(e.getMessage());
+        }
     }
 
     @Override
@@ -53,16 +76,33 @@ public abstract class BaseFragment extends RoboFragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null) {
-            presenter.onStart();
-        }
+        presenter.onStart();
     }
 
     @Override
     public void onDestroyView() {
-        if (presenter != null) {
-            presenter.onStop();
-        }
         super.onDestroyView();
+        presenter.onStop();
+    }
+
+    @Override
+    public void loading() {
+        if (getActivity() instanceof BaseActivity) {
+            ((BaseActivity) getActivity()).loading();
+        }
+    }
+
+    @Override
+    public void loading(String message) {
+        if (getActivity() instanceof BaseActivity) {
+            ((BaseActivity) getActivity()).loading(message);
+        }
+    }
+
+    @Override
+    public void loaded() {
+        if (getActivity() instanceof BaseActivity) {
+            ((BaseActivity) getActivity()).loaded();
+        }
     }
 }
