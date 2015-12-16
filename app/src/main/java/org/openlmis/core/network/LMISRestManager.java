@@ -38,6 +38,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
 import org.openlmis.core.network.adapter.ProductsAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
+import org.openlmis.core.network.adapter.RnrFormAdapterForFeatureToggle;
 import org.openlmis.core.network.adapter.StockCardAdapter;
 import org.openlmis.core.network.model.DataErrorResponse;
 
@@ -174,7 +175,11 @@ public class LMISRestManager {
 
     @NonNull
     private JsonSerializer getTypeAdapter() {
-        return new RnrFormAdapter();
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_rnr_186)) {
+            return new RnrFormAdapter();
+        } else {
+            return new RnrFormAdapterForFeatureToggle();
+        }
     }
 
     @Data

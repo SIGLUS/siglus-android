@@ -280,6 +280,11 @@ public class LoginPresenter implements Presenter {
     }
 
     private void syncRequisitionData() {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_rnr_186)) {
+            goToNextPage();
+            return;
+        }
+
         if (!isSyncingRequisitionData) {
             isSyncingRequisitionData = true;
             view.loading(LMISApp.getInstance().getString(R.string.msg_sync_requisition_data));
