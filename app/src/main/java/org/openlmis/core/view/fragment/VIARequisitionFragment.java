@@ -138,7 +138,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         initUI();
 
         if (isSavedInstanceState) {
-            refreshRequisitionForm(presenter.getRnRForm());
+            presenter.updateFormUI();
         }else {
             presenter.loadData(formId);
         }
