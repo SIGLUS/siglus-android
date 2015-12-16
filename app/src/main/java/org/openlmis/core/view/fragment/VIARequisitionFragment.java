@@ -291,7 +291,9 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         formLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                ((BaseActivity) getActivity()).hideImm();
+                if (getActivity() != null) {
+                    ((BaseActivity) getActivity()).hideImm();
+                }
                 return false;
             }
         });

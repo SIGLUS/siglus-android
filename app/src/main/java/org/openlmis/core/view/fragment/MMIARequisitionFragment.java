@@ -232,7 +232,9 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 clearEditErrorFocus();
-                ((BaseActivity) getActivity()).hideImm();
+                if (getActivity() != null) {
+                    ((BaseActivity) getActivity()).hideImm();
+                }
                 return false;
             }
         });
