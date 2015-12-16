@@ -275,8 +275,8 @@ public class StockRepository {
             @Override
             public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
                 return dao.queryBuilder()
-                        .orderBy("movementDate", false)
-                        .orderBy("createdTime", false)
+                        .orderBy("movementDate", true)
+                        .orderBy("createdTimer", true)
                         .where()
                         .eq("stockCard_id", stockCard.getId())
                         .and().ge("movementDate", startDate)
