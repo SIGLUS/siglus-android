@@ -84,7 +84,7 @@ describe "Sync stock card data" do
 
      facility_id = JSON.parse(login_response.body)['userInformation']['facilityId']
 
-     startTime = Date.today.strftime('%Y-%m-%d')
+     startTime = '2015-10-15'
      endTime = (Date.today + 1).strftime('%Y-%m-%d')
      response = RestClient.get "http://#{WEB_DEV_URI}/rest-api/facilities/#{facility_id}/stockCards?startTime=#{startTime}&endTime=#{endTime}",
       :content_type => :json,
@@ -94,6 +94,10 @@ describe "Sync stock card data" do
     body = JSON.parse(response.body)
     expect(response.code).to eq 200
     expect(body['stockCards'][0]['product']['code']).to eq '08S42'
+    expect(body['stockCards'][0]['stockMovementItems']).not_to be_nil
+    expect(body['stockCards'][0]['stockMovementItems'][0]['extensions']['soh']).not_to be_nil
+    expect(body['stockCards'][0]['stockMovementItems'][0]['extensions']['expirationdates']).not_to be_nil
+    expect(body['stockCards'][0]['stockMovementItems'][0]['extensions']['signature']).not_to be_nil
     expect(body['stockCards'].length).to be >= 2
   end
 end

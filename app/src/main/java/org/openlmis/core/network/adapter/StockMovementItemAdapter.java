@@ -60,7 +60,7 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
                 this.setExpireDates(extensions.get("expirationdates"));
                 this.setSignature(extensions.get("signature"));
                 try {
-                    this.setStockOnHand(Long.parseLong(extensions.get("SOH")));
+                    this.setStockOnHand(Long.parseLong(extensions.get("soh")));
                 } catch (NumberFormatException e) {
                     new LMISException(e).reportToFabric();
                     e.printStackTrace();
