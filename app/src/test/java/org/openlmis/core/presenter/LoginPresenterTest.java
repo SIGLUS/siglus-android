@@ -28,7 +28,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
@@ -174,11 +173,7 @@ public class LoginPresenterTest {
         verify(syncManager).syncProductsWithProgramAsync(getProductsCB.capture());
         getProductsCB.getValue().onCompleted();
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_rnr_186)){
-            verify(mockActivity).loaded();
-        }else {
-            verify(mockActivity, times(2)).loaded();
-        }
+        verify(mockActivity).loaded();
     }
 
     @Test
@@ -260,10 +255,6 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldSyncDataBackWhenProductSyncCompleted() {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_rnr_186)) {
-            return;
-        }
-
         syncProductSubscriber.onCompleted();
 
         verify(mockActivity).setHasGetProducts(true);
@@ -320,10 +311,6 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldSyncRequisitionDataIfProductSyncExistButRequisitionDataNonExist() {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_rnr_186)) {
-            return;
-        }
-
         when(mockActivity.hasGetProducts()).thenReturn(true);
         when(mockActivity.isRequisitionDataSynced()).thenReturn(false);
 
@@ -334,7 +321,7 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldSetRequisitionDataSharedPreference(){
+    public void shouldSetRequisitionDataSharedPreference() {
         syncRequisitionDataSubscriber.onCompleted();
 
         verify(mockActivity).setRequisitionDataSynced(true);
