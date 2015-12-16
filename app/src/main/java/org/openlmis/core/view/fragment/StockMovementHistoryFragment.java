@@ -34,6 +34,7 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockMovementHistoryPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
@@ -80,6 +81,11 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
 
         presenter.attachView(this);
         presenter.setStockCardId(stockCardID);
+    }
+
+    @Override
+    public Presenter initPresenter() {
+        return presenter;
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

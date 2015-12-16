@@ -35,6 +35,7 @@ import android.widget.TextView;
 import com.google.inject.Inject;
 
 import org.openlmis.core.R;
+import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.BaseView;
@@ -96,6 +97,11 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter.attachView(this);
+    }
+
+    @Override
+    public Presenter initPresenter() {
+        return presenter;
     }
 
     @Nullable

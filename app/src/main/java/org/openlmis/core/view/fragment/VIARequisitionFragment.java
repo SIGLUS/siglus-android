@@ -41,6 +41,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
@@ -119,6 +120,11 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
         formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
         isHistoryForm = formId != 0;
+    }
+
+    @Override
+    public Presenter initPresenter() {
+        return presenter;
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

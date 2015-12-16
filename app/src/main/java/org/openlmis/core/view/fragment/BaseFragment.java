@@ -20,12 +20,15 @@ package org.openlmis.core.view.fragment;
 
 import android.os.Bundle;
 
+import org.openlmis.core.presenter.Presenter;
+
 import roboguice.fragment.provided.RoboFragment;
 
 
-public class BaseFragment extends RoboFragment {
+public abstract class BaseFragment extends RoboFragment {
 
     protected boolean isSavedInstanceState;
+    protected Presenter presenter;
 
     /*
     * Life cycle of Fragment: onAttach -> onCreate -> onCreateView -> onViewCreated -> onActivityCreated -> onPause -> onStop
@@ -36,11 +39,30 @@ public class BaseFragment extends RoboFragment {
         // retain this fragment
         setRetainInstance(true);
         isSavedInstanceState = false;
+        presenter = initPresenter();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         isSavedInstanceState = true;
         super.onSaveInstanceState(outState);
+    }
+
+    public abstract Presenter initPresenter();
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (presenter != null) {
+            presenter.onStart();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (presenter != null) {
+            presenter.onStop();
+        }
+        super.onDestroyView();
     }
 }

@@ -19,6 +19,8 @@ package org.openlmis.core.view.fragment;
 
 import android.os.Bundle;
 
+import org.openlmis.core.presenter.Presenter;
+
 import java.util.HashMap;
 
 public class RetainedFragment extends BaseFragment {
@@ -31,6 +33,11 @@ public class RetainedFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         // retain this fragment
         setRetainInstance(true);
+    }
+
+    @Override
+    public Presenter initPresenter() {
+        return null;
     }
 
     public void putData(Object key, Object data) {
