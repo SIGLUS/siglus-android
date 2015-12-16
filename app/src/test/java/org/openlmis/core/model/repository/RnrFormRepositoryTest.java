@@ -317,39 +317,44 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         StockMovementItem inventoryItem = stockMovementItemBuilder
                 .withDocumentNo("1")
                 .withMovementReason("reason")
+                .withMovementDate("10/10/2015")
                 .withMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY)
                 .withStockOnHand(stockExistence)
                 .build();
         StockMovementItem issueItem = stockMovementItemBuilder
                 .withDocumentNo("1")
                 .withMovementReason("reason")
+                .withMovementDate("10/10/2015")
                 .withMovementType(StockMovementItem.MovementType.ISSUE)
                 .withQuantity(issueQuantity)
                 .build();
         StockMovementItem receiveItem = stockMovementItemBuilder
                 .withDocumentNo("1")
                 .withMovementReason("reason")
+                .withMovementDate("10/11/2015")
                 .withMovementType(StockMovementItem.MovementType.RECEIVE)
                 .withQuantity(receiveQuantity)
                 .build();
         StockMovementItem positiveItem = stockMovementItemBuilder
                 .withDocumentNo("1")
                 .withMovementReason("reason")
+                .withMovementDate("10/12/2015")
                 .withMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST)
                 .withQuantity(positiveQuantity)
                 .build();
         StockMovementItem negativeItem = stockMovementItemBuilder
                 .withDocumentNo("1")
                 .withMovementReason("reason")
+                .withMovementDate("10/12/2015")
                 .withMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST)
                 .withQuantity(negativeQuantity)
                 .build();
 
-        stockMovementItems.add(negativeItem);
-        stockMovementItems.add(positiveItem);
-        stockMovementItems.add(receiveItem);
-        stockMovementItems.add(issueItem);
         stockMovementItems.add(inventoryItem);
+        stockMovementItems.add(issueItem);
+        stockMovementItems.add(receiveItem);
+        stockMovementItems.add(positiveItem);
+        stockMovementItems.add(negativeItem);
 
         ArrayList<StockCard> stockCards = new ArrayList<>();
         Product product = new Product();
@@ -361,12 +366,12 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
                 .setProduct(product)
                 .setExpireDates("10/10/2016, 11/10/2016, 12/10/2017")
                 .build();
-        stockCard.setCreatedAt(new Date());
+        stockCard.setCreatedAt(DateUtil.parseString("10/10/2015", DateUtil.SIMPLE_DATE_FORMAT));
         stockCards.add(stockCard);
 
         RnRForm form = new RnRForm();
-        form.setPeriodBegin(new Date());
-        form.setPeriodEnd(new Date());
+        form.setPeriodBegin(DateUtil.parseString("9/21/2015", DateUtil.SIMPLE_DATE_FORMAT));
+        form.setPeriodEnd(DateUtil.parseString("10/20/2015", DateUtil.SIMPLE_DATE_FORMAT));
         form.setProgram(new Program("mmia", "mmia", null));
 
         when(mockStockRepository.list(anyString())).thenReturn(stockCards);
