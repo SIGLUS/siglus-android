@@ -1,41 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/ItemStock.Container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:baselineAligned="false">
 
-    <TextView
-        android:id="@+id/product_name"
-        style="@style/ItemStock.ProductName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="product name" />
+    <LinearLayout
+        style="@style/ItemStock.ProductContainer"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1">
 
-    <TextView
-        android:id="@+id/product_unit"
-        style="@style/Text.Black.Normal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@id/product_name"
-        android:layout_alignStart="@id/product_name"
-        android:layout_below="@id/product_name"
-        tools:text="product unit" />
+        <TextView
+            android:id="@+id/product_name"
+            style="@style/Text.Black.Normal.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-    <View
-        android:id="@+id/stockcard_line"
-        style="@style/HorizontalLine"
-        android:layout_below="@id/product_unit"
-        android:layout_marginTop="@dimen/margin_small" />
+        <TextView
+            android:id="@+id/product_unit"
+            style="@style/Text.Black.Normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/vg_stock_on_hand_bg"
         android:layout_width="120dp"
         android:layout_height="match_parent"
-        android:layout_alignBottom="@id/stockcard_line"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@id/product_name"
         android:background="@color/color_primary_50">
 
         <ImageView
@@ -52,9 +45,8 @@
             style="@style/ItemStock.TextSOH"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toEndOf="@id/iv_warning"
-            tools:text="100" />
+            android:layout_toEndOf="@+id/iv_warning" />
 
     </RelativeLayout>
 
-</RelativeLayout>
+</LinearLayout>
