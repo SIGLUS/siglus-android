@@ -50,13 +50,13 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
         return stockMovementItem;
     }
 
-    class StockMovementItemResponse extends StockMovementItem{
+    class StockMovementItemResponse extends StockMovementItem {
         Map<String, String> extensions;
         String occurred;
 
         public StockMovementItem convertToStockMovementItem() {
             StockMovementItem movementItem = this;
-            if (extensions!=null) {
+            if (extensions != null) {
                 this.setExpireDates(extensions.get("expirationdates"));
                 this.setSignature(extensions.get("signature"));
                 try {

@@ -134,16 +134,12 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initUI();
+        presenter.loadData(formId);
 
-        if (isSavedInstanceState) {
-            refreshRequisitionForm(presenter.getRnRForm());
-        } else {
-            scrollView.setVisibility(View.INVISIBLE);
-            presenter.loadData(formId);
-        }
     }
 
     protected void initUI() {
+        scrollView.setVisibility(View.INVISIBLE);
         if (isHistoryForm) {
             scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             bottomView.setVisibility(View.GONE);

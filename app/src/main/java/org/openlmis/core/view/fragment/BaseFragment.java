@@ -35,6 +35,7 @@ public class BaseFragment extends RoboFragment {
         super.onCreate(savedInstanceState);
         // retain this fragment
         setRetainInstance(true);
+        isSavedInstanceState = false;
     }
 
     @Override
