@@ -93,7 +93,8 @@ describe "Sync stock card data" do
 
     body = JSON.parse(response.body)
     expect(response.code).to eq 200
-    expect(body['stockCards'][0]['product']['code']).to eq '08S42'
+
+    expect(body['stockCards'].select{|stockCard| stockCard['product']['code']=="08S42"}).not_to be_nil
     expect(body['stockCards'][0]['stockMovementItems']).not_to be_nil
     expect(body['stockCards'][0]['stockMovementItems'][0]['extensions']['soh']).not_to be_nil
     expect(body['stockCards'][0]['stockMovementItems'][0]['extensions']['expirationdates']).not_to be_nil
