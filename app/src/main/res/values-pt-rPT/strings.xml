@@ -66,7 +66,8 @@
     <string name="label_received_mmia">Entradas</string>
     <string name="label_issued_mmia">Saídas</string>
     <string name="label_adjustment">Perdas e ajustes</string>
-    <string name="label_inventory">Fazer Inventário Mensal</string>
+    <string name="label_inventory">Inventário</string>
+    <string name="button_inventory">Fazer Inventário Mensal</string>
     <string name="label_validate">Validade</string>
     <string name="label_issued_unit">Unidade de Saída</string>
     <string name="hint_error_input">Entrada inválida</string>

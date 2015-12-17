@@ -67,7 +67,8 @@
     <string name="label_received_mmia">Entries</string>
     <string name="label_issued_mmia">Issues</string>
     <string name="label_adjustment">Adjustments</string>
-    <string name="label_inventory">Do Monthly Inventory</string>
+    <string name="button_inventory">Do Monthly Inventory</string>
+    <string name="label_inventory">Inventory</string>
     <string name="label_validate">Expiration</string>
     <string name="label_issued_unit">Unit of Issue</string>
     <string name="hint_error_input">Invalid Input</string>
