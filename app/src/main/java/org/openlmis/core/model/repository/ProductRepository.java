@@ -24,8 +24,6 @@ import android.content.Context;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.persistence.DbUtil;
@@ -49,9 +47,7 @@ public class ProductRepository {
 
     public List<Product> list() throws LMISException {
         List<Product> products = genericDao.queryForAll();
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.sort_product_list_alphabetically_435)) {
-            Collections.sort(products);
-        }
+        Collections.sort(products);
         return products;
     }
 
