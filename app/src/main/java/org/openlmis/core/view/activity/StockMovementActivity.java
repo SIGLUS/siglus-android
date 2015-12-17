@@ -32,7 +32,6 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.presenter.StockMovementPresenter;
@@ -191,9 +190,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean isPrepared = super.onPrepareOptionsMenu(menu);
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_archive_drugs_346)) {
-            menu.findItem(R.id.action_archive).setVisible(isStockCardArchivable);
-        }
+        menu.findItem(R.id.action_archive).setVisible(isStockCardArchivable);
         return isPrepared;
     }
 

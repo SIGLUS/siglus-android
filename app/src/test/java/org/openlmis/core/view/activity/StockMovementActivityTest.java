@@ -9,7 +9,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -104,7 +103,6 @@ public class StockMovementActivityTest {
 
     @Test
     public void shouldUpdateArchiveMenu() throws Exception {
-        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
         MenuItem archiveMenu = shadowOf(stockMovementActivity).getOptionsMenu().findItem(R.id.action_archive);
         assertThat(archiveMenu.isVisible()).isFalse();
 
