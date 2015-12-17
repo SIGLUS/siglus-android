@@ -48,7 +48,7 @@
 
         <activity
             android:name=".view.activity.MMIARequisitionActivity"
-            android:label="@string/title_mmia_spread"
+            android:label="@string/label_mmia_title"
             android:windowSoftInputMode="stateHidden" />
 
         <activity

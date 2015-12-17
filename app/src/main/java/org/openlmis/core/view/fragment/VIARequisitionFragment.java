@@ -36,7 +36,6 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRForm;
@@ -49,7 +48,6 @@ import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 import org.openlmis.core.view.adapter.RequisitionProductAdapter;
 import org.openlmis.core.view.holder.RequisitionFormViewHolder;
-import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 import org.openlmis.core.view.widget.SignatureDialog;
 
@@ -132,25 +130,21 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
         if (isSavedInstanceState) {
             presenter.updateFormUI();
-        }else {
+        } else {
             presenter.loadData(formId);
         }
     }
 
     @Override
     public void refreshRequisitionForm(RnRForm rnRForm) {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.add_header_info_reduce_header_size_348)) {
-            setTitleWithPeriodWithToggle(rnRForm);
-        } else {
-            setTitleWithPeriodWithoutToggle(rnRForm);
-        }
+        setTitleWithPeriod(rnRForm);
         requisitionProductAdapter.notifyDataSetChanged();
         requisitionFormAdapter.updateStatus(rnRForm.getStatus());
         setConsultationNumbers();
         setEditable();
     }
 
-    public void setTitleWithPeriodWithToggle(RnRForm rnRForm) {
+    public void setTitleWithPeriod(RnRForm rnRForm) {
         if (rnRForm != null) {
             getActivity().setTitle(getString(R.string.label_requisition_title,
                     DateUtil.formatDateWithoutYear(rnRForm.getPeriodBegin()),
@@ -159,15 +153,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             getActivity().setTitle(getString(R.string.title_requisition));
         }
     }
-
-    public void setTitleWithPeriodWithoutToggle(RnRForm rnRForm) {
-        if (isHistoryForm) {
-            getActivity().setTitle(new RnRFormViewModel(rnRForm).getPeriod());
-        } else {
-            getActivity().setTitle(getString(R.string.title_requisition));
-        }
-    }
-
 
     @Override
     public void highLightApprovedAmount() {

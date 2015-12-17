@@ -27,7 +27,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 
 public class BorderedEditText extends LinearLayout {
@@ -57,11 +56,7 @@ public class BorderedEditText extends LinearLayout {
     }
 
     private void inflateLayout() {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.add_header_info_reduce_header_size_348)) {
-            inflate(getContext(), R.layout.item_requisition_report_consultation_form, this);
-        } else {
-            inflate(getContext(), R.layout.view_bordered_edittext, this);
-        }
+        inflate(getContext(), R.layout.item_requisition_report_consultation_form, this);
     }
 
 
@@ -78,8 +73,6 @@ public class BorderedEditText extends LinearLayout {
         editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         editText.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.add_header_info_reduce_header_size_348)) {
-            ((TextView) findViewById(R.id.header)).setText(headerText);
-        }
+        ((TextView) findViewById(R.id.header)).setText(headerText);
     }
 }

@@ -32,7 +32,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -215,30 +214,13 @@ public class MMIARequisitionFragmentTest {
     }
 
     @Test
-    public void shouldSetTitleWithPeriodWhenToggleOn() throws Exception {
+    public void shouldSetTitleWithPeriod() throws Exception {
         form.setPeriodBegin(Date.valueOf("2015-04-21"));
         form.setPeriodEnd(Date.valueOf("2015-05-20"));
-
-        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
 
         mmiaRequisitionFragment.refreshRequisitionForm(form);
 
         assertThat(mmiaRequisitionFragment.getActivity().getTitle()).isEqualTo("MMIA - 21 Apr to 20 May");
-    }
-
-    @Test
-    public void shouldSetTitleDependsOnFormIsEditableWhenToggleOff() throws Exception {
-        form.setPeriodBegin(Date.valueOf("2015-04-21"));
-        form.setPeriodEnd(Date.valueOf("2015-05-20"));
-
-        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(false);
-
-        mmiaRequisitionFragment.refreshRequisitionForm(form);
-        assertThat(mmiaRequisitionFragment.getActivity().getTitle()).isEqualTo("MMIA");
-
-        mmiaRequisitionFragment = getMMIARequisitionFragmentWithFormId();
-        mmiaRequisitionFragment.refreshRequisitionForm(form);
-        assertThat(mmiaRequisitionFragment.getActivity().getTitle()).isEqualTo("21 Apr 2015  to  20 May 2015");
     }
 
     @Test

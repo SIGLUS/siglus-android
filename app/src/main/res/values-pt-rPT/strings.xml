@@ -6,7 +6,6 @@
     <string name="title_init_inventory">Inventário inicial</string>
     <string name="title_physical_inventory">Inventario</string>
     <string name="title_stock_cards">Visão geral de stock</string>
-    <string name="title_mmia_spread">MMIA</string>
     <string name="title_requisition">Elaborar Requisição/Balancete para Via Clássica</string>
 
     <!-- Login Page -->

@@ -29,7 +29,6 @@ import com.google.inject.Module;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -101,22 +100,10 @@ public class VIARequisitionFragmentTest {
     }
 
     @Test
-    public void shouldShowRequisitionPeriodOnTitleWhenToggleOn() {
-        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
-
+    public void shouldShowRequisitionPeriodOnTitle() {
         VIARequisitionFragment.refreshRequisitionForm(VIARequisitionFragment.presenter.getRnRForm());
 
         assertThat(VIARequisitionFragment.getActivity().getTitle()).isEqualTo("Requisition - 21 Apr to 20 May");
-    }
-
-    @Test
-    public void shouldShowOnlyPeriodWhenToggleOff() {
-        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(false);
-        VIARequisitionFragment = getVIARequisitionFragmentFromActivityWithIntent();
-
-        VIARequisitionFragment.refreshRequisitionForm(VIARequisitionFragment.presenter.getRnRForm());
-
-        assertThat(VIARequisitionFragment.getActivity().getTitle()).isEqualTo("21 Apr 2015  to  20 May 2015");
     }
 
     @Test

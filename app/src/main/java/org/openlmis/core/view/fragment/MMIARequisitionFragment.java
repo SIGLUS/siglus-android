@@ -33,7 +33,6 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRForm;
@@ -44,7 +43,6 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.ViewUtil;
 import org.openlmis.core.view.activity.BaseActivity;
-import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARnrForm;
@@ -169,13 +167,9 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
 
         InflateFreezeHeaderView();
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.add_header_info_reduce_header_size_348)) {
-            getActivity().setTitle(getString(R.string.label_mmia_title,
-                    DateUtil.formatDateWithoutYear(form.getPeriodBegin()),
-                    DateUtil.formatDateWithoutYear(form.getPeriodEnd())));
-        } else {
-            getActivity().setTitle(isHistoryForm ? new RnRFormViewModel(form).getPeriod() : getString(R.string.title_mmia_spread));
-        }
+        getActivity().setTitle(getString(R.string.label_mmia_title,
+                DateUtil.formatDateWithoutYear(form.getPeriodBegin()),
+                DateUtil.formatDateWithoutYear(form.getPeriodEnd())));
         highlightTotalDifference();
         etComment.setText(form.getComments());
         bindListeners();
