@@ -159,16 +159,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
         dataViewToModel(consultationNumbers);
 
-
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature_10)) {
-            view.showSignDialog(rnRForm.isDraft());
-        } else {
-            if (rnRForm.isDraft()) {
-                submitRequisition(rnRForm);
-            } else {
-                authoriseRequisition(rnRForm);
-            }
-        }
+        view.showSignDialog(rnRForm.isDraft());
     }
 
     private void dataViewToModel(String consultationNumbers) {

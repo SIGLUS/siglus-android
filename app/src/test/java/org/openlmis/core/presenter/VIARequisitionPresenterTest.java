@@ -166,9 +166,7 @@ public class VIARequisitionPresenterTest {
         waitObservableToExecute();
 
         //then
-        if (LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_via_form_signature_10)) {
-            verify(mockRnrFormRepository).setSignature(form, "userSignature", signatureType);
-        }
+        verify(mockRnrFormRepository).setSignature(form, "userSignature", signatureType);
         return form;
     }
 
