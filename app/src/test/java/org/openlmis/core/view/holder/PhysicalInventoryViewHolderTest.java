@@ -7,7 +7,6 @@ import android.widget.TextView;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
@@ -37,8 +36,6 @@ public class PhysicalInventoryViewHolderTest {
 
     @Test
     public void shouldShowBasicProductInfo() {
-        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
-
         ExpireDateViewGroup mockedExpireDateView = mock(ExpireDateViewGroup.class);
         viewHolder.expireDateViewGroup = mockedExpireDateView;
 
@@ -91,20 +88,4 @@ public class PhysicalInventoryViewHolderTest {
         assertThat(viewModel.getQuantity()).isEqualTo("60");
     }
 
-    @Test
-    public void shouldSetTvStockOnHandInInventoryNotVisible() {
-        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(false);
-
-        ExpireDateViewGroup mockedExpireDateView = mock(ExpireDateViewGroup.class);
-        viewHolder.expireDateViewGroup = mockedExpireDateView;
-
-        StockCardViewModel viewModel = new StockCardViewModelBuilder(product)
-                .setQuantity("10")
-                .setChecked(false)
-                .setType("Embalagem")
-                .build();
-        viewHolder.populate(viewModel, queryKeyWord);
-
-        assertThat(viewHolder.tvStockOnHandInInventory.getVisibility()).isEqualTo(View.GONE);
-    }
 }

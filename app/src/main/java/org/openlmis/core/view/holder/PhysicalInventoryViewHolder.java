@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.TextStyleUtil;
@@ -48,10 +47,6 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
 
         tvStockOnHandInInventory.setText(context.getString(R.string.label_physical_inventory_stock_on_hand,
                 Long.toString(stockCardViewModel.getStockOnHand())));
-
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.show_stock_on_hand_in_inventory_345)) {
-            tvStockOnHandInInventory.setVisibility(View.GONE);
-        }
 
         etQuantity.setText(stockCardViewModel.getQuantity());
         etQuantity.post(new Runnable() {
