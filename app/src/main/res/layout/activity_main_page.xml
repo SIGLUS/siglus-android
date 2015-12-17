@@ -22,7 +22,7 @@
             android:layout_marginTop="@dimen/margin_medium"
             android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
             android:onClick="onClickInventory"
-            android:text="@string/label_inventory" />
+            android:text="@string/button_inventory" />
 
         <Button
             android:id="@+id/btn_mmia"
