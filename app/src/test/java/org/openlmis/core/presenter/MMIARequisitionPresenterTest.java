@@ -134,7 +134,7 @@ public class MMIARequisitionPresenterTest {
     }
 
     @Test
-    public void shouldShowSignDialogIfTotalsMatchIfFeatureToggleIsOn() throws Exception {
+    public void shouldShowSignDialogIfTotalsMatch() throws Exception {
         ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
         ArrayList<RegimenItem> regimenItems = generateRegimenItems();
         ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
@@ -143,29 +143,7 @@ public class MMIARequisitionPresenterTest {
 
         presenter.processRequisition(regimenItems, baseInfoItems, "");
 
-        if (LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
-            verify(mockMMIAformView).showSignDialog(true);
-        }
-    }
-
-    @Test
-    public void shouldNotShowSignDialogIfTotalsMatchIfFeatureToggleIsOff() throws Exception {
-        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(false);
-        ArrayList<RegimenItem> regimenItems = generateRegimenItems();
-        ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
-
-        RnRForm rnRForm = new RnRForm();
-
-        when(mmiaRepository.initRnrForm()).thenReturn(rnRForm);
-        when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
-        when(mmiaRepository.isPeriodUnique(rnRForm)).thenReturn(true);
-
-        presenter.loadDataOnNextAction.call(rnRForm);
-
-        presenter.processRequisition(regimenItems, baseInfoItems, "");
-
-        verify(mockMMIAformView, never()).showSignDialog(true);
-        verify(mockMMIAformView).loading();
+        verify(mockMMIAformView).showSignDialog(true);
     }
 
     @Test
@@ -252,12 +230,10 @@ public class MMIARequisitionPresenterTest {
         presenter.processSign(signature, form);
         waitObservableToExecute();
 
-        if (LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
-            verify(mmiaRepository).setSignature(form, signature, RnRFormSignature.TYPE.SUBMITTER);
-            verify(mmiaRepository).submit(form);
-            verify(mockMMIAformView).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_complete));
-            verify(mockMMIAformView).showMessageNotifyDialog();
-        }
+        verify(mmiaRepository).setSignature(form, signature, RnRFormSignature.TYPE.SUBMITTER);
+        verify(mmiaRepository).submit(form);
+        verify(mockMMIAformView).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_complete));
+        verify(mockMMIAformView).showMessageNotifyDialog();
     }
 
     @Test
@@ -271,10 +247,8 @@ public class MMIARequisitionPresenterTest {
 
         waitObservableToExecute();
 
-        if (LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
-            verify(mmiaRepository).setSignature(form, signature, RnRFormSignature.TYPE.APPROVER);
-            verify(mmiaRepository).authorise(form);
-        }
+        verify(mmiaRepository).setSignature(form, signature, RnRFormSignature.TYPE.APPROVER);
+        verify(mmiaRepository).authorise(form);
     }
 
     @Test

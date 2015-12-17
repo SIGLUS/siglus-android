@@ -109,11 +109,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
             return;
         }
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.display_mmia_form_signature)) {
-            view.showSignDialog(rnRForm.isDraft());
-        } else {
-            authoriseRequisition(rnRForm);
-        }
+        view.showSignDialog(rnRForm.isDraft());
     }
 
     protected Observable<Void> getAuthoriseFormObservable() {
