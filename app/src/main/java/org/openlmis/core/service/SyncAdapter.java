@@ -74,9 +74,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         recordSyncedTime(rnRSynced, stockCardSynced);
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_update_version)) {
-            syncManager.syncAppVersion();
-        }
+        syncManager.syncAppVersion();
     }
 
     private void recordSyncedTime(boolean rnRSynced, boolean stockCardSynced) {
