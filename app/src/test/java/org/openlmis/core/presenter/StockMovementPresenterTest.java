@@ -24,9 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
@@ -99,7 +97,6 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldSaveStockMovement() throws LMISException {
-        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
         StockCard stockCard = new StockCard();
         when(stockRepositoryMock.queryStockCardById(123)).thenReturn(stockCard);
         stockMovementPresenter.setStockCard(123);
@@ -113,9 +110,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
 
         stockMovementPresenter.submitStockMovement(viewModel);
 
-        if (LMISTestApp.getInstance().getFeatureToggleFor(R.bool.display_stock_movement_signature)) {
-            verify(view).showSignDialog();
-        }
+        verify(view).showSignDialog();
     }
 
     @Test

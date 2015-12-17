@@ -32,7 +32,6 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockMovementHistoryPresenter;
@@ -105,10 +104,6 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
     }
 
     private void initUI() {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.display_stock_movement_signature)) {
-            containerView.findViewById(R.id.tx_signature).setVisibility(View.GONE);
-        }
-
         adapter = new StockMovementHistoryAdapter(presenter.getStockMovementModelList());
         historyListView.setAdapter(adapter);
 

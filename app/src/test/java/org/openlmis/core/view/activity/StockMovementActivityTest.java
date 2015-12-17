@@ -40,8 +40,6 @@ public class StockMovementActivityTest {
 
     @Before
     public void setUp() throws Exception {
-        ((LMISTestApp)RuntimeEnvironment.application).setFeatureToggle(true);
-
         mockedPresenter = mock(StockMovementPresenter.class);
 
         Product product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setStrength("10mg").setType("VIA").build();
@@ -106,6 +104,7 @@ public class StockMovementActivityTest {
 
     @Test
     public void shouldUpdateArchiveMenu() throws Exception {
+        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
         MenuItem archiveMenu = shadowOf(stockMovementActivity).getOptionsMenu().findItem(R.id.action_archive);
         assertThat(archiveMenu.isVisible()).isFalse();
 
