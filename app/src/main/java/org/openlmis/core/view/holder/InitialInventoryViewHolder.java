@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.StockCard;
@@ -78,13 +77,8 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
 
         checkBox.setChecked(viewModel.isChecked());
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.search_view_enhancement)) {
-            productName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyledName()));
-            productUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyleType()));
-        } else {
-            productName.setText(viewModel.getProductName());
-            productUnit.setText(viewModel.getType());
-        }
+        productName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyledName()));
+        productUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyleType()));
 
         populateEditPanel(viewModel.getQuantity(), viewModel.optFirstExpiryDate());
 

@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockCardPresenter;
@@ -58,15 +56,6 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements Stoc
     @Override
     public boolean onSearchStart(String query) {
         mAdapter.filter(query);
-        return false;
-    }
-
-    @Override
-    public boolean onSearchClosed() {
-        mAdapter.filter(StringUtils.EMPTY);
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.search_view_enhancement)) {
-            return true;
-        }
         return false;
     }
 

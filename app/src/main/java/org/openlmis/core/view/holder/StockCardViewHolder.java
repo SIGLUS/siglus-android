@@ -3,7 +3,6 @@ package org.openlmis.core.view.holder;
 import android.view.View;
 import android.widget.TextView;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.TextStyleUtil;
@@ -41,13 +40,8 @@ public class StockCardViewHolder extends BaseViewHolder {
 
     public void populate(final StockCardViewModel stockCardViewModel, String queryKeyWord) {
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.search_view_enhancement)) {
-            tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledName()));
-            tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledUnit()));
-        } else {
-            tvProductName.setText(stockCardViewModel.getStyledName());
-            tvProductUnit.setText(stockCardViewModel.getStyledUnit());
-        }
+        tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledName()));
+        tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledUnit()));
 
         initStockOnHand(stockCardViewModel);
         initStockOnHand(stockCardViewModel);

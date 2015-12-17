@@ -29,8 +29,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.StockCard;
@@ -197,15 +195,6 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
         return false;
     }
 
-    @Override
-    public boolean onSearchClosed() {
-        mAdapter.filter(StringUtils.EMPTY);
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.search_view_enhancement)) {
-            return true;
-        }
-        return false;
-    }
-
     public void goToMainPage() {
         saveBoolean(SharedPreferenceMgr.KEY_INIT_INVENTORY, false);
         startActivity(isAddNewDrug ? StockCardListActivity.getIntentToMe(this) : HomeActivity.getIntentToMe(this));
@@ -250,11 +239,9 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
 
     @Override
     public void onBackPressed() {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.search_view_enhancement)){
-            if (isSearchViewActivity()) {
-                searchView.onActionViewCollapsed();
-                return;
-            }
+        if (isSearchViewActivity()) {
+            searchView.onActionViewCollapsed();
+            return;
         }
 
         if (isInitialInventory()) {

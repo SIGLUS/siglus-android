@@ -57,7 +57,7 @@ public class StockCardListActivity extends SearchBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case MENU_ID_ADD_NEW_DRUG:
                 startActivity(InventoryActivity.getIntentToMe(this, true));
                 return true;
@@ -73,14 +73,6 @@ public class StockCardListActivity extends SearchBarActivity {
     public boolean onSearchStart(String query) {
         stockCardFragment.onSearch(query);
         return true;
-    }
-
-    @Override
-    public boolean onSearchClosed() {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.search_view_enhancement)){
-            return true;
-        }
-        return false;
     }
 
     public static Intent getIntentToMe(Context context) {
