@@ -330,7 +330,7 @@ public class LoginPresenterTest {
         presenter.onLoginSuccess(any(User.class));
 
         verify(mockActivity).loading(RuntimeEnvironment.application.getString(R.string.msg_sync_requisition_data));
-        verify(syncManager).syncBackRnr(syncRequisitionDataSubscriber);
+        verify(syncManager).syncBackRnr(any(SyncSubscriber.class));
     }
 
     @Test
