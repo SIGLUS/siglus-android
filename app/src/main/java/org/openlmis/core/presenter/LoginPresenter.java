@@ -27,13 +27,17 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.NoFacilityForUserException;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
 import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.service.SyncSubscriber;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
+
+import java.util.List;
 
 public class LoginPresenter implements Presenter {
 
@@ -49,6 +53,9 @@ public class LoginPresenter implements Presenter {
 
     @Inject
     SyncManager syncManager;
+
+    @Inject
+    RnrFormRepository rnrFormRepository;
 
     @Override
     public void onStart() {
@@ -304,6 +311,18 @@ public class LoginPresenter implements Presenter {
                 view.loaded();
             }
         };
+    }
+
+    public boolean hasLocalRequisitionData() {
+        try {
+            List<RnRForm> list = rnrFormRepository.list();
+            if (list != null && list.size() > 0) {
+                return true;
+            }
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+        return false;
     }
 
     public void resetLoginProcess() {

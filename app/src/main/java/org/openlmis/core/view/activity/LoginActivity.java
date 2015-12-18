@@ -32,7 +32,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -140,18 +139,18 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     @Override
-    public boolean isStockDataSynced(){
+    public boolean isStockDataSynced() {
         return getPreferences().getBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, isFromUpdate());
     }
 
     @Override
-    public void setStockCardDataSynced(boolean isStockDataSynced){
+    public void setStockCardDataSynced(boolean isStockDataSynced) {
         saveBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, isStockDataSynced);
     }
 
     @Override
     public boolean isRequisitionDataSynced() {
-        return getPreferences().getBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, isFromUpdate());
+        return getPreferences().getBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, presenter.hasLocalRequisitionData());
     }
 
     @Override
@@ -200,7 +199,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     @Override
-    public void loaded(){
+    public void loaded() {
         super.loaded();
         presenter.resetLoginProcess();
     }
