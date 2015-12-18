@@ -27,8 +27,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.NoFacilityForUserException;
 import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
@@ -38,8 +36,6 @@ import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.service.SyncSubscriber;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
-
-import java.util.List;
 
 public class LoginPresenter implements Presenter {
 
@@ -319,27 +315,11 @@ public class LoginPresenter implements Presenter {
     }
 
     public boolean hasLocalRequisitionData() {
-        try {
-            List<RnRForm> list = rnrFormRepository.list();
-            if (list != null && list.size() > 0) {
-                return true;
-            }
-        } catch (LMISException e) {
-            e.reportToFabric();
-        }
-        return false;
+        return rnrFormRepository.hasRequisitionData();
     }
 
     public boolean hasLocalStockData() {
-        try {
-            List<StockCard> list = stockRepository.list();
-            if (list != null && list.size() > 0) {
-                return true;
-            }
-        } catch (LMISException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return stockRepository.hasStockData();
     }
 
     public void resetLoginProcess() {

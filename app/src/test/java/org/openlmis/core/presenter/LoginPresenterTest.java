@@ -35,9 +35,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.NoFacilityForUserException;
 import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
-import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
 import org.openlmis.core.network.model.SyncBackProductsResponse;
@@ -46,8 +44,6 @@ import org.openlmis.core.service.SyncSubscriber;
 import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
-
-import java.util.ArrayList;
 
 import roboguice.RoboGuice;
 import rx.Observer;
@@ -330,18 +326,6 @@ public class LoginPresenterTest {
     public void shouldHasLocalRnrData() {
         boolean hasLocalRequisitionData = presenter.hasLocalRequisitionData();
         MatcherAssert.assertThat(hasLocalRequisitionData, is(false));
-    }
-
-    @Test
-    public void shouldHasNotLocalRnrData() throws LMISException {
-        RnrFormRepository rnrFormRepository = mock(RnrFormRepository.class);
-        presenter.rnrFormRepository = rnrFormRepository;
-        ArrayList<RnRForm> rnRForms = new ArrayList<>();
-        rnRForms.add(new RnRForm());
-
-        when(rnrFormRepository.list()).thenReturn(rnRForms);
-        boolean hasLocalRequisitionData = presenter.hasLocalRequisitionData();
-        MatcherAssert.assertThat(hasLocalRequisitionData, is(true));
     }
 
     @Test
