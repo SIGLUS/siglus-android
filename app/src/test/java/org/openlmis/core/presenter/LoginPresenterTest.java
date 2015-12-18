@@ -21,6 +21,7 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.AbstractModule;
 
+import org.hamcrest.MatcherAssert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +36,9 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.NoFacilityForUserException;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
 import org.openlmis.core.network.model.SyncBackProductsResponse;
@@ -45,10 +48,13 @@ import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
 
+import java.util.ArrayList;
+
 import roboguice.RoboGuice;
 import rx.Observer;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -174,9 +180,9 @@ public class LoginPresenterTest {
         verify(syncManager).syncProductsWithProgramAsync(getProductsCB.capture());
         getProductsCB.getValue().onCompleted();
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_rnr_186)){
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_rnr_186)) {
             verify(mockActivity).loaded();
-        }else {
+        } else {
             verify(mockActivity, times(2)).loaded();
         }
     }
@@ -334,7 +340,25 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldSetRequisitionDataSharedPreference(){
+    public void shouldHasLocalRnrData() {
+        boolean hasLocalRequisitionData = presenter.hasLocalRequisitionData();
+        MatcherAssert.assertThat(hasLocalRequisitionData, is(false));
+    }
+
+    @Test
+    public void shouldHasNotLocalRnrData() throws LMISException {
+        RnrFormRepository rnrFormRepository = mock(RnrFormRepository.class);
+        presenter.rnrFormRepository = rnrFormRepository;
+        ArrayList<RnRForm> rnRForms = new ArrayList<>();
+        rnRForms.add(new RnRForm());
+
+        when(rnrFormRepository.list()).thenReturn(rnRForms);
+        boolean hasLocalRequisitionData = presenter.hasLocalRequisitionData();
+        MatcherAssert.assertThat(hasLocalRequisitionData, is(true));
+    }
+
+    @Test
+    public void shouldSetRequisitionDataSharedPreference() {
         syncRequisitionDataSubscriber.onCompleted();
 
         verify(mockActivity).setRequisitionDataSynced(true);
