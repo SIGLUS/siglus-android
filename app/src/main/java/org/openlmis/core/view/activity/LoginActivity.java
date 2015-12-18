@@ -36,7 +36,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.LoginPresenter;
-import org.openlmis.core.utils.AppInfoUtil;
 import org.openlmis.core.utils.InjectPresenter;
 
 import roboguice.inject.ContentView;
@@ -140,7 +139,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
     @Override
     public boolean isStockDataSynced() {
-        return getPreferences().getBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, isFromUpdate());
+        return getPreferences().getBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, presenter.hasLocalStockData());
     }
 
     @Override
@@ -156,10 +155,6 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     @Override
     public void setRequisitionDataSynced(boolean isRequisitionDataSynced) {
         saveBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, isRequisitionDataSynced);
-    }
-
-    public boolean isFromUpdate() {
-        return AppInfoUtil.isInstallFromUpdate();
     }
 
     @Override
