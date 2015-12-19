@@ -87,24 +87,8 @@ public class MovementTypeDialog {
     }
 
     private void performOnSelect(int position) {
-        if (listener == null) {
-            return;
-        }
-
-        listener.onComplete(movementReasons.get(position));
-
-        switch (status) {
-            case STATUS_SELECT_RECEIVE:
-                listener.onReceive();
-                break;
-            case STATUS_SELECT_NEGATIVE:
-                listener.onNegativeAdjustment();
-                break;
-            case STATUS_SELECT_POSITIVE:
-                listener.onPositiveAdjustment();
-                break;
-            case STATUS_SELECT_ISSUE:
-                listener.onIssue();
+        if (listener != null) {
+            listener.onComplete(movementReasons.get(position));
         }
     }
 
@@ -147,14 +131,6 @@ public class MovementTypeDialog {
     }
 
     public  interface OnMovementSelectListener {
-        void onReceive();
-
-        void onIssue();
-
-        void onPositiveAdjustment();
-
-        void onNegativeAdjustment();
-
         void onComplete(MovementReasonManager.MovementReason reason);
     }
 

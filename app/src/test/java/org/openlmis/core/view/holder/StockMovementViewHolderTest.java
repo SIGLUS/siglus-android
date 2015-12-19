@@ -138,6 +138,7 @@ public class StockMovementViewHolderTest {
         String today = DateUtil.formatDate(new Date());
         viewHolder.populate(viewModel, stockCard);
         viewHolder.txMovementDate.setText("");
+        viewHolder.etIssued.setText("100");
 
         StockMovementViewHolder.MovementSelectListener listener = viewHolder.new MovementSelectListener(viewModel);
         listener.onComplete(reason);
@@ -147,6 +148,7 @@ public class StockMovementViewHolderTest {
         assertEquals(today, viewHolder.txMovementDate.getText().toString());
         assertEquals(today, viewModel.getMovementDate());
         assertTrue(viewHolder.etReceived.isEnabled());
+        assertEquals(viewHolder.etIssued.getText().toString(), "");
         verify(mockedListener).movementChange();
     }
 

@@ -45,7 +45,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import roboguice.inject.InjectView;
 
@@ -60,18 +62,16 @@ public class StockMovementViewHolder extends BaseViewHolder {
     @InjectView(R.id.et_issued)EditText etIssued;
     @InjectView(R.id.tx_stock_on_hand)TextView txStockExistence;
     @InjectView(R.id.tx_signature)TextView txSignature;
-    private final int blackColor;
-    private final int redColor;
-    private Drawable editTextBackground;
 
+    private Drawable editTextBackground;
     private StockMovementAdapter.MovementChangedListener movementChangeListener;
+    private Map<StockMovementItem.MovementType, EditText> movementViewMap;
 
     public StockMovementViewHolder(View itemView, StockMovementAdapter.MovementChangedListener movementChangeListener) {
         super(itemView);
         this.movementChangeListener = movementChangeListener;
 
-        blackColor = context.getResources().getColor(R.color.color_black);
-        redColor = context.getResources().getColor(R.color.color_red);
+        editTextBackground = new EditText(context).getBackground();
 
         InputFilter[] filters = new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)};
         etReceived.setFilters(filters);
@@ -79,17 +79,23 @@ public class StockMovementViewHolder extends BaseViewHolder {
         etPositiveAdjustment.setFilters(filters);
         etIssued.setFilters(filters);
 
-        editTextBackground = new EditText(context).getBackground();
+        initStockViewMap();
+    }
+
+    private void initStockViewMap() {
+        movementViewMap = new HashMap<>();
+        movementViewMap.put(StockMovementItem.MovementType.ISSUE, etIssued);
+        movementViewMap.put(StockMovementItem.MovementType.RECEIVE, etReceived);
+        movementViewMap.put(StockMovementItem.MovementType.NEGATIVE_ADJUST, etNegativeAdjustment);
+        movementViewMap.put(StockMovementItem.MovementType.POSITIVE_ADJUST, etPositiveAdjustment);
     }
 
     public void populate(final StockMovementViewModel model, StockCard stockCard) {
 
-        disableLine();
-        hideUnderline();
+        resetLine();
+        setRowFontColor(R.color.color_black);
 
         removeTextChangeListeners(model, stockCard.getStockOnHand());
-
-        setRowFontColor(blackColor);
 
         txMovementDate.setText(model.getMovementDate());
         etDocumentNo.setText(model.getDocumentNo());
@@ -99,7 +105,6 @@ public class StockMovementViewHolder extends BaseViewHolder {
         etIssued.setText(model.getIssued());
         txStockExistence.setText(model.getStockExistence());
         txSignature.setText(model.getSignature());
-
         if (model.getReason() != null) {
             txReason.setText(model.getReason().getDescription());
         } else {
@@ -131,35 +136,16 @@ public class StockMovementViewHolder extends BaseViewHolder {
     private void setEditableQuantityField(StockMovementViewModel model) {
         if (model.getReason() != null) {
             enableAndUnderlineEditText(etDocumentNo);
-            switch (model.getReason().getMovementType()) {
-                case ISSUE:
-                    enableAndUnderlineEditText(etIssued);
+            resetStockEditText(model.getReason().getMovementType());
+        }
+    }
 
-                    disableAndRemoveUnderlineEditText(etReceived);
-                    disableAndRemoveUnderlineEditText(etNegativeAdjustment);
-                    disableAndRemoveUnderlineEditText(etPositiveAdjustment);
-                    break;
-                case RECEIVE:
-                    enableAndUnderlineEditText(etReceived);
-
-                    disableAndRemoveUnderlineEditText(etIssued);
-                    disableAndRemoveUnderlineEditText(etNegativeAdjustment);
-                    disableAndRemoveUnderlineEditText(etPositiveAdjustment);
-                    break;
-                case NEGATIVE_ADJUST:
-                    enableAndUnderlineEditText(etNegativeAdjustment);
-
-                    disableAndRemoveUnderlineEditText(etReceived);
-                    disableAndRemoveUnderlineEditText(etIssued);
-                    disableAndRemoveUnderlineEditText(etPositiveAdjustment);
-                    break;
-                case POSITIVE_ADJUST:
-                    enableAndUnderlineEditText(etPositiveAdjustment);
-
-                    disableAndRemoveUnderlineEditText(etReceived);
-                    disableAndRemoveUnderlineEditText(etIssued);
-                    disableAndRemoveUnderlineEditText(etNegativeAdjustment);
-                    break;
+    private void resetStockEditText(StockMovementItem.MovementType type) {
+        for (Map.Entry<StockMovementItem.MovementType, EditText> movementView : movementViewMap.entrySet()) {
+            if (movementView.getKey().equals(type)) {
+                enableAndUnderlineEditText(movementView.getValue());
+            } else {
+                disableAndRemoveUnderlineEditText(movementView.getValue());
             }
         }
     }
@@ -178,6 +164,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
     }
 
     private void disableAndRemoveUnderlineEditText(EditText editText) {
+        editText.setText(StringUtils.EMPTY);
         editText.setEnabled(false);
         editText.setBackground(null);
     }
@@ -189,7 +176,6 @@ public class StockMovementViewHolder extends BaseViewHolder {
 
         EditTextWatcher watcher1 = new EditTextWatcher(etNegativeAdjustment, model, currentStockOnHand);
         etNegativeAdjustment.removeTextChangedListener(watcher1);
-
 
         EditTextWatcher watcher2 = new EditTextWatcher(etPositiveAdjustment, model, currentStockOnHand);
         etPositiveAdjustment.removeTextChangedListener(watcher2);
@@ -250,22 +236,22 @@ public class StockMovementViewHolder extends BaseViewHolder {
     }
 
     private void setInventoryItemsFontColorToRed(StockMovementViewModel model) {
-        if (model.getReason() != null && (model.getReceived() != null
-                || model.getReason().getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY
+        if (model.getReason() != null && (StringUtils.isNotEmpty(model.getReceived())
+                || model.getReason().isPhysicalInventory()
                 || model.getReason().isInventoryAdjustment())) {
-            setRowFontColor(redColor);
+            setRowFontColor(R.color.color_red);
         }
     }
 
-    private void setRowFontColor(int color) {
-        txMovementDate.setTextColor(color);
-        txReason.setTextColor(color);
-        etDocumentNo.setTextColor(color);
-        etReceived.setTextColor(color);
-        etPositiveAdjustment.setTextColor(color);
-        etNegativeAdjustment.setTextColor(color);
-        txStockExistence.setTextColor(color);
-        txSignature.setTextColor(color);
+    private void setRowFontColor(int colorResId) {
+        txMovementDate.setTextColor(context.getResources().getColor(colorResId));
+        txReason.setTextColor(context.getResources().getColor(colorResId));
+        etDocumentNo.setTextColor(context.getResources().getColor(colorResId));
+        etReceived.setTextColor(context.getResources().getColor(colorResId));
+        etPositiveAdjustment.setTextColor(context.getResources().getColor(colorResId));
+        etNegativeAdjustment.setTextColor(context.getResources().getColor(colorResId));
+        txStockExistence.setTextColor(context.getResources().getColor(colorResId));
+        txSignature.setTextColor(context.getResources().getColor(colorResId));
     }
 
     private void hideUnderline() {
@@ -372,44 +358,22 @@ public class StockMovementViewHolder extends BaseViewHolder {
         }
 
         @Override
-        public void onReceive() {
-            enableAndUnderlineEditText(etReceived);
-        }
-
-        @Override
-        public void onIssue() {
-            enableAndUnderlineEditText(etIssued);
-        }
-
-        @Override
-        public void onPositiveAdjustment() {
-            enableAndUnderlineEditText(etPositiveAdjustment);
-
-        }
-
-        @Override
-        public void onNegativeAdjustment() {
-            enableAndUnderlineEditText(etNegativeAdjustment);
-        }
-
-        @Override
         public void onComplete(MovementReasonManager.MovementReason reason) {
-            enableAndUnderlineEditText(etDocumentNo);
-
             txReason.setText(reason.getDescription());
             model.setReason(reason);
-            if (txMovementDate.getText() == "") {
-                setMovementDate();
-            }
+
+            setMovementDate();
+
             setEditableQuantityField(model);
             highLightAndShowBottomBtn();
         }
 
         private void setMovementDate() {
-            String movementDate = DateUtil.formatDate(new Date());
-
-            txMovementDate.setText(movementDate);
-            model.setMovementDate(movementDate);
+            if (StringUtils.EMPTY.equals(txMovementDate.getText().toString())) {
+                String movementDate = DateUtil.formatDate(new Date());
+                txMovementDate.setText(movementDate);
+                model.setMovementDate(movementDate);
+            }
         }
     }
 

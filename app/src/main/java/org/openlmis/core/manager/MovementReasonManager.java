@@ -188,6 +188,10 @@ public final class MovementReasonManager {
             return INVENTORY_NEGATIVE.equalsIgnoreCase(code) || INVENTORY_POSITIVE.equalsIgnoreCase(code);
         }
 
+        public boolean isPhysicalInventory() {
+            return StockMovementItem.MovementType.PHYSICAL_INVENTORY == movementType;
+        }
+
         protected boolean canBeDisplayOnMovementMenu(){
             return !(code.startsWith(DEFAULT_PREFIX) || code.equalsIgnoreCase(INVENTORY));
         }
