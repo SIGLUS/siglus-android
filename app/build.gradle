@@ -68,6 +68,11 @@ android {
             setRoot('src/test')
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
 }
 
 
@@ -103,7 +108,7 @@ task checkstyle(type: Checkstyle) {
     classpath = files()
 }
 
-task checkci(dependsOn: ['checkstyle','testDevDebug'])
+task checkci(dependsOn: ['checkstyle', 'testDevDebug'])
 
 task findbugs(type: FindBugs) {
     ignoreFailures = true
