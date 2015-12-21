@@ -12,9 +12,9 @@ public class Period {
     public Period(DateTime dateTime) {
         if (dateTime.dayOfMonth().get() >= BEGIN_DAY) {
             periodBegin = dateTime.withDayOfMonth(BEGIN_DAY);
-            periodEnd = dateTime.plusMonths(1).withDayOfMonth(END_DAY);
+            periodEnd = nextMonth(dateTime).withDayOfMonth(END_DAY);
         } else {
-            periodBegin = dateTime.minusMonths(1).withDayOfMonth(BEGIN_DAY);
+            periodBegin = lastMonth(dateTime).withDayOfMonth(BEGIN_DAY);
             periodEnd = dateTime.withDayOfMonth(END_DAY);
         }
     }
@@ -33,6 +33,18 @@ public class Period {
     }
 
     public Period previous() {
-        return new Period(getBegin().minusMonths(1), getEnd().minusMonths(1));
+        return new Period(lastMonth(periodBegin), lastMonth(periodEnd));
+    }
+
+    public Period next() {
+        return new Period(nextMonth(periodBegin), nextMonth(periodEnd));
+    }
+
+    private DateTime lastMonth(DateTime dateTime) {
+        return dateTime.minusMonths(1);
+    }
+
+    private DateTime nextMonth(DateTime dateTime) {
+        return dateTime.plusMonths(1);
     }
 }
