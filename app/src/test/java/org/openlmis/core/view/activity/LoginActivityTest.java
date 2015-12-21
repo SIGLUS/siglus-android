@@ -163,15 +163,6 @@ public class LoginActivityTest {
     }
 
     @Test
-    public void shouldSetHasGetProducts() {
-        loginActivity.saveBoolean(SharedPreferenceMgr.KEY_HAS_GET_PRODUCTS, false);
-
-        loginActivity.setHasGetProducts(true);
-
-        assertThat(loginActivity.getPreferences().getBoolean(SharedPreferenceMgr.KEY_HAS_GET_PRODUCTS, false)).isTrue();
-    }
-
-    @Test
     public void shouldClearErrorAlertsAfterMethodInvoked() {
         loginActivity.showInvalidAlert();
         loginActivity.clearErrorAlerts();

@@ -128,36 +128,6 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     @Override
-    public boolean hasGetProducts() {
-        return getPreferences().getBoolean(SharedPreferenceMgr.KEY_HAS_GET_PRODUCTS, false);
-    }
-
-    @Override
-    public void setHasGetProducts(boolean hasGetProducts) {
-        saveBoolean(SharedPreferenceMgr.KEY_HAS_GET_PRODUCTS, hasGetProducts);
-    }
-
-    @Override
-    public boolean isStockDataSynced() {
-        return getPreferences().getBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, presenter.hasLocalStockData());
-    }
-
-    @Override
-    public void setStockCardDataSynced(boolean isStockDataSynced) {
-        saveBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, isStockDataSynced);
-    }
-
-    @Override
-    public boolean isRequisitionDataSynced() {
-        return getPreferences().getBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, presenter.hasLocalRequisitionData());
-    }
-
-    @Override
-    public void setRequisitionDataSynced(boolean isRequisitionDataSynced) {
-        saveBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, isRequisitionDataSynced);
-    }
-
-    @Override
     public void showInvalidAlert() {
         clearErrorAlerts();
         lyUserName.setError(getResources().getString(R.string.msg_invalid_user));

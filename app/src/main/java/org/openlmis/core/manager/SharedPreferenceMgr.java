@@ -24,9 +24,16 @@ import android.content.SharedPreferences;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.StockRepository;
+
+import roboguice.RoboGuice;
+
 @Singleton
 public class SharedPreferenceMgr {
 
+    private static SharedPreferenceMgr self;
     public static final String MY_PREFERENCE = "LMISPreference";
     SharedPreferences sharedPreferences;
 
@@ -44,6 +51,11 @@ public class SharedPreferenceMgr {
     @Inject
     public SharedPreferenceMgr(Context context) {
         sharedPreferences = context.getSharedPreferences(MY_PREFERENCE, Context.MODE_PRIVATE);
+        self = this;
+    }
+
+    public static SharedPreferenceMgr getInstance() {
+        return self;
     }
 
     public SharedPreferences getPreference() {
@@ -56,5 +68,32 @@ public class SharedPreferenceMgr {
 
     public void setSyncedVersion(boolean hasUpdated) {
         sharedPreferences.edit().putBoolean(UserInfoMgr.getInstance().getVersion(), hasUpdated).apply();
+    }
+
+    public boolean hasGetProducts() {
+        return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_HAS_GET_PRODUCTS, false);
+    }
+
+    public void setHasGetProducts(boolean hasGetProducts) {
+        sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_HAS_GET_PRODUCTS, hasGetProducts).apply();
+    }
+
+    public boolean isLastMonthStockDataSynced() {
+        //TODO refactor below code
+        StockRepository stockRepository = RoboGuice.getInjector(LMISApp.getContext()).getInstance(StockRepository.class);
+        return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, stockRepository.hasStockData());
+    }
+
+    public void setLastMonthStockCardDataSynced(boolean isStockCardSynced) {
+        sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, isStockCardSynced).apply();
+    }
+
+    public boolean isRequisitionDataSynced() {
+        RnrFormRepository rnrFormRepository = RoboGuice.getInjector(LMISApp.getContext()).getInstance(RnrFormRepository.class);
+        return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, rnrFormRepository.hasRequisitionData());
+    }
+
+    public void setRequisitionDataSynced(boolean requisitionDataSynced) {
+        sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, requisitionDataSynced).apply();
     }
 }

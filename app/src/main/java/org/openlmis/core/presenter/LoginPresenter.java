@@ -26,10 +26,9 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.NoFacilityForUserException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
-import org.openlmis.core.model.repository.RnrFormRepository;
-import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
 import org.openlmis.core.service.SyncManager;
@@ -51,12 +50,6 @@ public class LoginPresenter implements Presenter {
 
     @Inject
     SyncManager syncManager;
-
-    @Inject
-    RnrFormRepository rnrFormRepository;
-
-    @Inject
-    StockRepository stockRepository;
 
     @Override
     public void onStart() {
@@ -104,18 +97,18 @@ public class LoginPresenter implements Presenter {
         user = localUser;
         UserInfoMgr.getInstance().setUser(user);
 
-        if (!view.hasGetProducts()) {
+        if (!hasGetProducts()) {
             view.loaded();
             ToastUtil.show(R.string.msg_sync_products_list_failed);
             return;
         }
 
-        if (!view.isStockDataSynced() && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)) {
+        if (!isLastMonthStockDataSynced() && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)) {
             view.loaded();
             ToastUtil.show(R.string.msg_sync_stockmovement_failed);
             return;
         }
-        if (!view.isRequisitionDataSynced()) {
+        if (!isRequisitionDataSynced()) {
             view.loaded();
             ToastUtil.show(R.string.msg_sync_requisition_failed);
             return;
@@ -169,17 +162,17 @@ public class LoginPresenter implements Presenter {
 
     private void checkSyncServerData() {
 
-        if (!view.hasGetProducts()) {
+        if (!hasGetProducts()) {
             checkProductsWithProgram();
             return;
         }
 
-        if (!view.isStockDataSynced()) {
+        if (!isLastMonthStockDataSynced()) {
             syncStockCard();
             return;
         }
 
-        if (!view.isRequisitionDataSynced()) {
+        if (!isRequisitionDataSynced()) {
             syncRequisitionData();
             return;
         }
@@ -225,7 +218,7 @@ public class LoginPresenter implements Presenter {
             @Override
             public void onCompleted() {
                 isLoadingProducts = false;
-                view.setHasGetProducts(true);
+                setHasGetProducts(true);
                 view.loaded();
                 syncStockCard();
             }
@@ -233,7 +226,7 @@ public class LoginPresenter implements Presenter {
             @Override
             public void onError(Throwable e) {
                 isLoadingProducts = false;
-                view.setHasGetProducts(false);
+                setHasGetProducts(false);
                 if (e instanceof NoFacilityForUserException) {
                     ToastUtil.show(R.string.msg_user_not_facility);
                 } else if (e instanceof LMISException) {
@@ -249,7 +242,7 @@ public class LoginPresenter implements Presenter {
     private void syncStockCard() {
 
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)) {
-            if (!view.isRequisitionDataSynced()) {
+            if (!isRequisitionDataSynced()) {
                 syncRequisitionData();
             } else {
                 goToNextPage();
@@ -271,7 +264,7 @@ public class LoginPresenter implements Presenter {
             public void onCompleted() {
                 shouldShowSyncedSuccessMsg = true;
                 isSyncingStockMovement = false;
-                view.setStockCardDataSynced(true);
+                setLastMonthStockCardDataSynced(true);
                 view.loaded();
                 syncRequisitionData();
             }
@@ -280,11 +273,35 @@ public class LoginPresenter implements Presenter {
             public void onError(Throwable throwable) {
                 shouldShowSyncedSuccessMsg = false;
                 isSyncingStockMovement = false;
-                view.setStockCardDataSynced(false);
+                setLastMonthStockCardDataSynced(false);
                 ToastUtil.show(R.string.msg_sync_stockmovement_failed);
                 view.loaded();
             }
         };
+    }
+
+    protected boolean hasGetProducts() {
+        return SharedPreferenceMgr.getInstance().hasGetProducts();
+    }
+
+    protected void setHasGetProducts(boolean hasGetProducts) {
+        SharedPreferenceMgr.getInstance().setHasGetProducts(hasGetProducts);
+    }
+
+    protected boolean isLastMonthStockDataSynced() {
+        return SharedPreferenceMgr.getInstance().isLastMonthStockDataSynced();
+    }
+
+    private void setLastMonthStockCardDataSynced(boolean isStockCardSynced) {
+        SharedPreferenceMgr.getInstance().setLastMonthStockCardDataSynced(isStockCardSynced);
+    }
+
+    protected boolean isRequisitionDataSynced() {
+        return SharedPreferenceMgr.getInstance().isRequisitionDataSynced();
+    }
+
+    protected void setRequisitionDataSynced(boolean isRequisitionDataSynced) {
+        SharedPreferenceMgr.getInstance().setRequisitionDataSynced(isRequisitionDataSynced);
     }
 
     private void syncRequisitionData() {
@@ -300,26 +317,18 @@ public class LoginPresenter implements Presenter {
             @Override
             public void onCompleted() {
                 isSyncingRequisitionData = false;
-                view.setRequisitionDataSynced(true);
+                setRequisitionDataSynced(true);
                 goToNextPage();
             }
 
             @Override
             public void onError(Throwable throwable) {
                 isSyncingRequisitionData = false;
-                view.setRequisitionDataSynced(false);
+                setRequisitionDataSynced(false);
                 ToastUtil.show(R.string.msg_sync_requisition_failed);
                 view.loaded();
             }
         };
-    }
-
-    public boolean hasLocalRequisitionData() {
-        return rnrFormRepository.hasRequisitionData();
-    }
-
-    public boolean hasLocalStockData() {
-        return stockRepository.hasStockData();
     }
 
     public void resetLoginProcess() {
@@ -343,18 +352,6 @@ public class LoginPresenter implements Presenter {
         void showUserNameEmpty();
 
         void showPasswordEmpty();
-
-        boolean hasGetProducts();
-
-        void setHasGetProducts(boolean hasGetProducts);
-
-        boolean isRequisitionDataSynced();
-
-        boolean isStockDataSynced();
-
-        void setRequisitionDataSynced(boolean isBackDataSynced);
-
-        void setStockCardDataSynced(boolean isStockCardSynced);
 
         void clearErrorAlerts();
     }
