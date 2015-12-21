@@ -101,7 +101,9 @@ Severity: EASY
         <module name="LineLength">
             <property name="severity" value="ignore" />
         </module>
-        <module name="MethodLength" />
+        <module name="MethodLength">
+            <property name="max" value="46" />
+        </module>
         <module name="ParameterNumber" />
 
 
