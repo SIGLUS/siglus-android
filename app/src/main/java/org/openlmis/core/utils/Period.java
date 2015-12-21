@@ -19,11 +19,20 @@ public class Period {
         }
     }
 
+    private Period(DateTime begin, DateTime end) {
+        this.periodBegin = begin;
+        this.periodEnd = end;
+    }
+
     public DateTime getBegin() {
         return periodBegin;
     }
 
     public DateTime getEnd() {
         return periodEnd;
+    }
+
+    public Period previous() {
+        return new Period(getBegin().minusMonths(1), getEnd().minusMonths(1));
     }
 }
