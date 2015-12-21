@@ -20,7 +20,8 @@ public class StockCardBuilder {
 
     public static StockCard saveStockCardWithOneMovement(StockRepository stockRepository) throws LMISException, ParseException {
         StockCard stockCard = new StockCard();
-        stockCard.setStockOnHand(100L);
+        stockCard.setStockOnHand(90L);
+        stockRepository.save(stockCard);
 
         StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setStockCard(stockCard);
@@ -31,8 +32,8 @@ public class StockCardBuilder {
         stockMovementItem.setReason("some reason");
         stockMovementItem.setMovementDate(DateUtil.parseString("2015-11-11", "yyyy-MM-dd"));
 
-        stockRepository.save(stockCard);
-        stockRepository.saveStockItem(stockMovementItem);
+        stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
+        stockRepository.addStockMovementAndUpdateStockCard(stockCard, stockMovementItem);
         stockRepository.refresh(stockCard);
 
         return stockCard;
