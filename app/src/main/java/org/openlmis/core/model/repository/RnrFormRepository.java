@@ -288,63 +288,65 @@ public class RnrFormRepository {
     }
 
     private RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {
-        List<StockMovementItem> stockMovementItems = stockRepository.queryStockItems(stockCard, startDate, endDate);
-
         RnrFormItem rnrFormItem = new RnrFormItem();
+
+        List<StockMovementItem> stockMovementItems = stockRepository.queryStockItems(stockCard, startDate, endDate);
         if (!stockMovementItems.isEmpty()) {
-
-            StockMovementItem firstItem = stockMovementItems.get(0);
-
-            if (firstItem.getMovementType() == StockMovementItem.MovementType.ISSUE
-                    || firstItem.getMovementType() == StockMovementItem.MovementType.NEGATIVE_ADJUST) {
-                rnrFormItem.setInitialAmount(firstItem.getStockOnHand() + firstItem.getMovementQuantity());
-            } else if (firstItem.getMovementType() == StockMovementItem.MovementType.RECEIVE
-                    || firstItem.getMovementType() == StockMovementItem.MovementType.POSITIVE_ADJUST) {
-                rnrFormItem.setInitialAmount(firstItem.getStockOnHand() - firstItem.getMovementQuantity());
-            } else {
-                rnrFormItem.setInitialAmount(firstItem.getStockOnHand());
-            }
-
-            long totalReceived = 0;
-            long totalIssued = 0;
-            long totalAdjustment = 0;
-
-            for (StockMovementItem item : stockMovementItems) {
-                if (StockMovementItem.MovementType.RECEIVE == item.getMovementType()) {
-                    totalReceived += item.getMovementQuantity();
-                } else if (StockMovementItem.MovementType.ISSUE == item.getMovementType()) {
-                    totalIssued += item.getMovementQuantity();
-                } else if (StockMovementItem.MovementType.NEGATIVE_ADJUST == item.getMovementType()) {
-                    totalAdjustment -= item.getMovementQuantity();
-                } else if (StockMovementItem.MovementType.POSITIVE_ADJUST == item.getMovementType()) {
-                    totalAdjustment += item.getMovementQuantity();
-                }
-            }
-            rnrFormItem.setProduct(stockCard.getProduct());
-            rnrFormItem.setReceived(totalReceived);
-            rnrFormItem.setIssued(totalIssued);
-            rnrFormItem.setAdjustment(totalAdjustment);
-
-            Long inventory = stockMovementItems.get(stockMovementItems.size() - 1).getStockOnHand();
-            rnrFormItem.setInventory(inventory);
-            rnrFormItem.setValidate(stockCard.getEarliestExpireDate());
-
-            Long totalRequest = totalIssued * 2 - inventory;
-            totalRequest = totalRequest > 0 ? totalRequest : 0;
-            rnrFormItem.setCalculatedOrderQuantity(totalRequest);
-
+            adjustInitialAmount(rnrFormItem, stockMovementItems.get(0));
+            assignTotalValues(rnrFormItem, stockMovementItems);
         } else {
-            rnrFormItem.setInitialAmount(stockCard.getStockOnHand());
-            rnrFormItem.setProduct(stockCard.getProduct());
             rnrFormItem.setReceived(0);
             rnrFormItem.setIssued(0);
             rnrFormItem.setAdjustment(0);
-            rnrFormItem.setInventory(stockCard.getStockOnHand());
-            rnrFormItem.setValidate(stockCard.getEarliestExpireDate());
             rnrFormItem.setCalculatedOrderQuantity(0L);
+
+            rnrFormItem.setInitialAmount(stockCard.getStockOnHand());
+            rnrFormItem.setInventory(stockCard.getStockOnHand());
         }
 
+        rnrFormItem.setProduct(stockCard.getProduct());
+        rnrFormItem.setValidate(stockCard.getEarliestExpireDate());
+
         return rnrFormItem;
+    }
+
+    private void assignTotalValues(RnrFormItem rnrFormItem, List<StockMovementItem> stockMovementItems) {
+        long totalReceived = 0;
+        long totalIssued = 0;
+        long totalAdjustment = 0;
+
+        for (StockMovementItem item : stockMovementItems) {
+            if (StockMovementItem.MovementType.RECEIVE == item.getMovementType()) {
+                totalReceived += item.getMovementQuantity();
+            } else if (StockMovementItem.MovementType.ISSUE == item.getMovementType()) {
+                totalIssued += item.getMovementQuantity();
+            } else if (StockMovementItem.MovementType.NEGATIVE_ADJUST == item.getMovementType()) {
+                totalAdjustment -= item.getMovementQuantity();
+            } else if (StockMovementItem.MovementType.POSITIVE_ADJUST == item.getMovementType()) {
+                totalAdjustment += item.getMovementQuantity();
+            }
+        }
+        rnrFormItem.setReceived(totalReceived);
+        rnrFormItem.setIssued(totalIssued);
+        rnrFormItem.setAdjustment(totalAdjustment);
+
+        Long inventory = stockMovementItems.get(stockMovementItems.size() - 1).getStockOnHand();
+        rnrFormItem.setInventory(inventory);
+
+        Long totalRequest = totalIssued * 2 - inventory;
+        rnrFormItem.setCalculatedOrderQuantity(totalRequest > 0 ? totalRequest : 0);
+    }
+
+    private void adjustInitialAmount(RnrFormItem rnrFormItem, StockMovementItem firstItem) {
+        if (firstItem.getMovementType() == StockMovementItem.MovementType.ISSUE
+                || firstItem.getMovementType() == StockMovementItem.MovementType.NEGATIVE_ADJUST) {
+            rnrFormItem.setInitialAmount(firstItem.getStockOnHand() + firstItem.getMovementQuantity());
+        } else if (firstItem.getMovementType() == StockMovementItem.MovementType.RECEIVE
+                || firstItem.getMovementType() == StockMovementItem.MovementType.POSITIVE_ADJUST) {
+            rnrFormItem.setInitialAmount(firstItem.getStockOnHand() - firstItem.getMovementQuantity());
+        } else {
+            rnrFormItem.setInitialAmount(firstItem.getStockOnHand());
+        }
     }
 
     protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
