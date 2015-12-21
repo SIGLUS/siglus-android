@@ -131,7 +131,7 @@ public final class DateUtil {
         int day = dateTime.getDayOfMonth();
 
         Period period = new Period(dateTime);
-        if (day <= DAY_PERIOD_END + 5) {
+        if (day >= DAY_PERIOD_END + 1 && day <= DAY_PERIOD_END + 5) {
             return period.previous();
         }
         return period;

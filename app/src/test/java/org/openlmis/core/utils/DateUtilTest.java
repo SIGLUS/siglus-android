@@ -1,6 +1,8 @@
 package org.openlmis.core.utils;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestRunner;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,7 +13,7 @@ import static org.junit.Assert.assertThat;
 import static org.openlmis.core.utils.DateUtil.SIMPLE_DATE_FORMAT;
 import static org.openlmis.core.utils.DateUtil.parseString;
 
-
+@RunWith(LMISTestRunner.class)
 public class DateUtilTest {
 
     @Test
