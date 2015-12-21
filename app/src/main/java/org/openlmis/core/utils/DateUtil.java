@@ -59,10 +59,7 @@ public final class DateUtil {
 
     public static Date truncateTimeStampInDate(Date date) {
         String formattedDateStr = formatDate(date, SIMPLE_DATE_FORMAT);
-        Date formattedDate;
-        formattedDate = parseString(formattedDateStr, SIMPLE_DATE_FORMAT);
-
-        return formattedDate;
+        return parseString(formattedDateStr, SIMPLE_DATE_FORMAT);
     }
 
     public static Date addDayOfMonth(Date date, int difference) {
