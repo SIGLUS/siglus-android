@@ -29,8 +29,6 @@ import android.util.Log;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
@@ -65,14 +63,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
         Log.d("SyncAdapter", "===> Syncing Data to server");
 
-        boolean rnRSynced = syncManager.syncRnr();
-
-        boolean stockCardSynced = false;
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_stock_card_279)) {
-            stockCardSynced = syncManager.syncStockCards();
-        }
-
-        recordSyncedTime(rnRSynced, stockCardSynced);
+        recordSyncedTime(syncManager.syncRnr(), syncManager.syncStockCards());
 
         syncManager.syncAppVersion();
     }

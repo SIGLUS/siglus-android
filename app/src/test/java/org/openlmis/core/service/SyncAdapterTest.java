@@ -5,7 +5,6 @@ import com.google.inject.AbstractModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
@@ -36,7 +35,6 @@ public class SyncAdapterTest {
         syncAdapter = new SyncAdapter(RuntimeEnvironment.application, true);
         syncAdapter.sharedPreferenceMgr = this.sharedPreferenceMgr;
         sharedPreferenceMgr.getPreference().edit().clear();
-        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
     }
 
     @Test
