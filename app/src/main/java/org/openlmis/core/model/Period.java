@@ -42,10 +42,6 @@ public class Period {
         return new Period(lastMonth(periodBegin), lastMonth(periodEnd));
     }
 
-    public Period next() {
-        return new Period(nextMonth(periodBegin), nextMonth(periodEnd));
-    }
-
     private DateTime lastMonth(DateTime dateTime) {
         return dateTime.minusMonths(1);
     }

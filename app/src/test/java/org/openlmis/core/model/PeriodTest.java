@@ -29,19 +29,6 @@ public class PeriodTest {
         assertThat(prevPeriod.getEnd(), is(DateTime.parse("2015-05-20")));
     }
 
-    @Test
-    public void shouldTellNextPeriod() throws Exception {
-        //given
-        Period period = new Period(DateTime.parse("2015-12-07"));
-
-        //when
-        Period nextPeriod = period.next();
-
-        //then
-        assertThat(nextPeriod.getBegin(), is(DateTime.parse("2015-12-21")));
-        assertThat(nextPeriod.getEnd(), is(DateTime.parse("2016-01-20")));
-    }
-
     private void testPeriodBeginEnd(String anyDayInPeriod, String begin, String end) {
         //given
         DateTime anyDay = DateTime.parse(anyDayInPeriod);
