@@ -210,11 +210,7 @@ public class SyncManager {
     }
 
     public void syncProductsWithProgramAsync(Observer<Void> observer) {
-        getProductsObservable().subscribe(observer);
-    }
-
-    public Observable<Void> getProductsObservable() {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
+        Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
@@ -225,12 +221,11 @@ public class SyncManager {
                     subscriber.onError(e);
                 }
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
     }
 
     public void syncBackRnr(Observer<Void> observer) {
-        rx.Observable.create(new rx.Observable.OnSubscribe<Void>() {
-
+        Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
