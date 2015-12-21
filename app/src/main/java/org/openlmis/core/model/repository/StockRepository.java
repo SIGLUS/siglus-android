@@ -353,8 +353,7 @@ public class StockRepository {
         if (stockMovementItem == null) {
             throw new LMISException(new NullPointerException());
         }
-        Date firstMovementDate = stockMovementItem.getMovementDate();
-        return DateUtil.getPeriodBeginBy(firstMovementDate);
+        return stockMovementItem.getMovementPeriod().getBegin().toDate();
     }
 
     public int getLowStockAvg(StockCard stockCard) {

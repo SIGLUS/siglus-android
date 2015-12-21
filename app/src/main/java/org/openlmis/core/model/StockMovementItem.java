@@ -25,6 +25,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.Period;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -94,4 +95,7 @@ public class StockMovementItem extends BaseModel {
         return movementType.equals(MovementType.RECEIVE) || movementType.equals(MovementType.POSITIVE_ADJUST);
     }
 
+    public Period getMovementPeriod() {
+        return Period.of(movementDate);
+    }
 }

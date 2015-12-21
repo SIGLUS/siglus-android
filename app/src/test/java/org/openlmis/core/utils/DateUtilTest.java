@@ -90,7 +90,7 @@ public class DateUtilTest {
         Date generatePeriodBegin = parseString("28/09/2015", SIMPLE_DATE_FORMAT);
 
         Date expectPeriodBegin = parseString("21/09/2015", SIMPLE_DATE_FORMAT);
-        assertThat(DateUtil.generateRnRFormPeriodBeginBy(generatePeriodBegin), is(expectPeriodBegin));
+        assertThat(DateUtil.generateRnRFormPeriodBy(generatePeriodBegin).getBegin().toDate(), is(expectPeriodBegin));
     }
 
     @Test
@@ -98,15 +98,7 @@ public class DateUtilTest {
         Date generatePeriodBegin = parseString("10/01/2016", SIMPLE_DATE_FORMAT);
 
         Date expectPeriodBegin = parseString("21/12/2015", SIMPLE_DATE_FORMAT);
-        assertThat(DateUtil.generateRnRFormPeriodBeginBy(generatePeriodBegin), is(expectPeriodBegin));
-    }
-
-    @Test
-    public void shouldGeneratePeriodEnd() throws Exception {
-        Date periodBegin = parseString("21/10/2015", SIMPLE_DATE_FORMAT);
-
-        Date expectPeriodEnd = parseString("20/11/2015", SIMPLE_DATE_FORMAT);
-        assertThat(DateUtil.generatePeriodEndByBegin(periodBegin), is(expectPeriodEnd));
+        assertThat(DateUtil.generateRnRFormPeriodBy(generatePeriodBegin).getBegin().toDate(), is(expectPeriodBegin));
     }
 
     @Test

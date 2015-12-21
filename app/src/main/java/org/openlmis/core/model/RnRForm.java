@@ -26,6 +26,7 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.Period;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -108,8 +109,9 @@ public class RnRForm extends BaseModel {
     public static RnRForm init(Program program, Date generateDate) {
         RnRForm rnrForm = new RnRForm();
         rnrForm.program = program;
-        rnrForm.periodBegin = DateUtil.generateRnRFormPeriodBeginBy(generateDate);
-        rnrForm.periodEnd = DateUtil.generatePeriodEndByBegin(rnrForm.getPeriodBegin());
+        Period period = DateUtil.generateRnRFormPeriodBy(generateDate);
+        rnrForm.periodBegin = period.getBegin().toDate();
+        rnrForm.periodEnd = period.getEnd().toDate();
         return rnrForm;
     }
 

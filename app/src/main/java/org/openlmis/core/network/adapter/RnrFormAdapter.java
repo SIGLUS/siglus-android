@@ -40,7 +40,7 @@ import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
-import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.Period;
 
 import java.lang.reflect.Type;
 import java.text.DateFormat;
@@ -91,7 +91,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
             e.reportToFabric();
             throw new JsonParseException("can not find Program by programCode");
         }
-        rnRForm.setPeriodEnd(DateUtil.generatePeriodEndByBegin(rnRForm.getPeriodBegin()));
+        rnRForm.setPeriodEnd(Period.of(rnRForm.getPeriodBegin()).getEnd().toDate());
         rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
         rnRForm.setSynced(true);
         return rnRForm;

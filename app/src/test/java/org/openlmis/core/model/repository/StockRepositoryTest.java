@@ -50,6 +50,8 @@ import static org.junit.Assert.assertEquals;
 import static org.openlmis.core.model.StockMovementItem.MovementType.ISSUE;
 import static org.openlmis.core.model.StockMovementItem.MovementType.RECEIVE;
 import static org.openlmis.core.model.builder.StockCardBuilder.saveStockCardWithOneMovement;
+import static org.openlmis.core.utils.DateUtil.SIMPLE_DATE_FORMAT;
+import static org.openlmis.core.utils.DateUtil.parseString;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
@@ -138,6 +140,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockCard.setStockOnHand(item.getStockOnHand());
         stockRepository.addStockMovementAndUpdateStockCard(stockCard, item);
         stockRepository.refresh(stockCard);
+
         //then
         assertThat(stockCard.getForeignStockMovementItems().size(), is(2));
         assertThat(stockRepository.listUnSynced(), notNullValue());
@@ -217,8 +220,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         createStockMovementItem(stockCard, DateUtil.parseString("12/11/2015", DateUtil.SIMPLE_DATE_FORMAT));
 
         Date firstPeriodBegin = stockRepository.queryFirstPeriodBegin(stockCard);
-        Date expectPeriodBegin = DateUtil.getPeriodBeginBy(firstMovementDate);
-        assertThat(firstPeriodBegin, is(expectPeriodBegin));
+        assertThat(firstPeriodBegin, is(parseString("21/08/2014", SIMPLE_DATE_FORMAT)));
     }
 
     @Test

@@ -126,27 +126,19 @@ public final class DateUtil {
         });
     }
 
-    public static Date generateRnRFormPeriodBeginBy(Date generateDate) {
+    public static Period generateRnRFormPeriodBy(Date generateDate) {
         DateTime dateTime = new DateTime(generateDate);
         int day = dateTime.getDayOfMonth();
 
         Period period = new Period(dateTime);
         if (day <= DAY_PERIOD_END + 5) {
-            return period.previous().getBegin().toDate();
+            return period.previous();
         }
-        return period.getBegin().toDate();
+        return period;
     }
 
-    public static Date getPeriodBeginBy(Date date) {
-        return Period.of(date).getBegin().toDate();
-    }
-
-    public static Date generatePeriodEndByBegin(Date periodBegin) {
-        return Period.of(periodBegin).getEnd().toDate();
-    }
-
-    public static Date generatePreviousMonthDateBy(Date periodDate) {
-        return new DateTime(periodDate).minusMonths(1).toDate();
+    public static Date generatePreviousMonthDateBy(Date date) {
+        return new DateTime(date).minusMonths(1).toDate();
     }
 
     public static int calculateDateMonthOffset(Date earlierDate, Date laterDate) {
