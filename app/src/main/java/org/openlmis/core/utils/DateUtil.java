@@ -20,6 +20,7 @@ package org.openlmis.core.utils;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Period;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

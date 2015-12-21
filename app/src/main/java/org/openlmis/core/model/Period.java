@@ -1,4 +1,4 @@
-package org.openlmis.core.utils;
+package org.openlmis.core.model;
 
 import org.joda.time.DateTime;
 

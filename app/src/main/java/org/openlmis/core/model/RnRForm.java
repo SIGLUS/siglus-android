@@ -26,7 +26,6 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.utils.Period;
 
 import java.util.ArrayList;
 import java.util.Collection;

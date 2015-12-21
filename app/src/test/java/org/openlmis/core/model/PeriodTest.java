@@ -1,7 +1,8 @@
-package org.openlmis.core.utils;
+package org.openlmis.core.model;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
+import org.openlmis.core.model.Period;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;

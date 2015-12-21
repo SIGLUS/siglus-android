@@ -40,7 +40,7 @@ import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
-import org.openlmis.core.utils.Period;
+import org.openlmis.core.model.Period;
 
 import java.lang.reflect.Type;
 import java.text.DateFormat;

@@ -37,7 +37,7 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.utils.Period;
+import org.openlmis.core.model.Period;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.Lists;
