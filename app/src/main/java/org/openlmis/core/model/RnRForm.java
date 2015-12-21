@@ -108,7 +108,7 @@ public class RnRForm extends BaseModel {
     public static RnRForm init(Program program, Date generateDate) {
         RnRForm rnrForm = new RnRForm();
         rnrForm.program = program;
-        rnrForm.periodBegin = DateUtil.generatePeriodBeginBy(generateDate);
+        rnrForm.periodBegin = DateUtil.generateRnRFormPeriodBeginBy(generateDate);
         rnrForm.periodEnd = DateUtil.generatePeriodEndByBegin(rnrForm.getPeriodBegin());
         return rnrForm;
     }
