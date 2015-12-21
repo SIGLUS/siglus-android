@@ -37,6 +37,7 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.Period;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.Lists;
@@ -367,20 +368,16 @@ public class StockRepository {
         }
 
         List<Long> issuePerMonths = new ArrayList<>();
-        Date periodBegin = DateUtil.getPeriodBeginBy(DateUtil.today());
-        Date periodEnd = DateUtil.generatePeriodEndByBegin(periodBegin);
-
-        int periodQuantity = DateUtil.calculateDateMonthOffset(firstPeriodBegin, periodBegin);
+        Period period = Period.of(DateUtil.today());
+        int periodQuantity = DateUtil.calculateDateMonthOffset(firstPeriodBegin, period.getBegin().toDate());
 
         if (periodQuantity < LOW_STOCK_CALCULATE_MONTH_QUANTITY) {
             return 0;
         }
 
         for (int i = 0; i < periodQuantity; i++) {
-            periodBegin = DateUtil.generatePreviousMonthDateBy(periodBegin);
-            periodEnd = DateUtil.generatePreviousMonthDateBy(periodEnd);
-
-            Long totalIssuesEachMonth = calculateTotalIssues(stockCard, periodBegin, periodEnd);
+            period = period.previous();
+            Long totalIssuesEachMonth = calculateTotalIssues(stockCard, period);
 
             if (totalIssuesEachMonth == null) {
                 continue;
@@ -408,12 +405,11 @@ public class StockRepository {
         return total;
     }
 
-
-    private Long calculateTotalIssues(StockCard stockCard, Date startDate, Date endDate) {
+    private Long calculateTotalIssues(StockCard stockCard, Period period) {
         long totalIssued = 0;
         List<StockMovementItem> stockMovementItems;
         try {
-            stockMovementItems = queryStockItems(stockCard, startDate, endDate);
+            stockMovementItems = queryStockItems(stockCard, period.getBegin().toDate(), period.getEnd().toDate());
         } catch (LMISException e) {
             e.reportToFabric();
             return null;

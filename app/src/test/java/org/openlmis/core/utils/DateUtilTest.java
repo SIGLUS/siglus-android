@@ -24,7 +24,7 @@ public class DateUtilTest {
     }
 
     @Test
-    public void shouldReturnLastMonthMinusMonth(){
+    public void shouldReturnLastMonthMinusMonth() {
         Calendar now = Calendar.getInstance();
         now.set(2014, 11, 01);
 
@@ -34,7 +34,7 @@ public class DateUtilTest {
     }
 
     @Test
-    public void shouldReturnLastYearAndLatestMonthWhenMinusMonth(){
+    public void shouldReturnLastYearAndLatestMonthWhenMinusMonth() {
         Calendar now = Calendar.getInstance();
         now.set(2016, 00, 01);
 
@@ -110,28 +110,12 @@ public class DateUtilTest {
     }
 
     @Test
-    public void shouldGeneratePreviousPeriodBegin() throws Exception {
-        Date periodBegin = parseString("21/01/2016", SIMPLE_DATE_FORMAT);
-
-        Date expectPeriodBegin = parseString("21/12/2015", SIMPLE_DATE_FORMAT);
-        assertThat(DateUtil.generatePreviousMonthDateBy(periodBegin), is(expectPeriodBegin));
-    }
-
-    @Test
-    public void shouldGeneratePreviousPeriodEnd() throws Exception {
-        Date periodEnd = parseString("20/01/2016", SIMPLE_DATE_FORMAT);
-
-        Date expectPeriodEnd = parseString("20/12/2015", SIMPLE_DATE_FORMAT);
-        assertThat(DateUtil.generatePreviousMonthDateBy(periodEnd), is(expectPeriodEnd));
-    }
-
-    @Test
     public void shouldCountTwoPeriodMonthNubCorrectlyWhenInSameYear() throws Exception {
         Date firstPeriod = parseString("20/02/2015", SIMPLE_DATE_FORMAT);
         Date secondPeriod = parseString("20/10/2015", SIMPLE_DATE_FORMAT);
 
         int periodMonthNub = DateUtil.calculateDateMonthOffset(firstPeriod, secondPeriod);
-        assertThat(periodMonthNub,is(8));
+        assertThat(periodMonthNub, is(8));
     }
 
     @Test
@@ -140,6 +124,6 @@ public class DateUtilTest {
         Date secondPeriod = parseString("20/01/2016", SIMPLE_DATE_FORMAT);
 
         int periodMonthNub = DateUtil.calculateDateMonthOffset(firstPeriod, secondPeriod);
-        assertThat(periodMonthNub,is(1));
+        assertThat(periodMonthNub, is(1));
     }
 }

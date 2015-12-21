@@ -20,6 +20,7 @@ package org.openlmis.core.utils;
 
 import android.support.annotation.NonNull;
 
+import org.joda.time.DateTime;
 import org.openlmis.core.exceptions.LMISException;
 
 import java.text.ParseException;
@@ -31,6 +32,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+
+import static org.joda.time.Months.monthsBetween;
 
 public final class DateUtil {
 
@@ -168,14 +171,7 @@ public final class DateUtil {
     }
 
     public static int calculateDateMonthOffset(Date earlierDate, Date laterDate) {
-        Calendar calendar = Calendar.getInstance();
-
-        calendar.setTime(laterDate);
-        int laterTotalMonth = calendar.get(Calendar.YEAR) * 12 + calendar.get(Calendar.MONTH);
-
-        calendar.setTime(earlierDate);
-        int earlierTotalMonth = calendar.get(Calendar.YEAR) * 12 + calendar.get(Calendar.MONTH);
-
-        return laterTotalMonth - earlierTotalMonth;
+        return monthsBetween(new DateTime(earlierDate), new DateTime(laterDate))
+                .getMonths();
     }
 }
