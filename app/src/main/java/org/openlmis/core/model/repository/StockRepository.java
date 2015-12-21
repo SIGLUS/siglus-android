@@ -353,7 +353,7 @@ public class StockRepository {
             throw new LMISException(new NullPointerException());
         }
         Date firstMovementDate = stockMovementItem.getMovementDate();
-        return DateUtil.generatePeriodBeginBy(firstMovementDate);
+        return DateUtil.getPeriodBeginBy(firstMovementDate);
     }
 
     public int getLowStockAvg(StockCard stockCard) {
@@ -367,7 +367,7 @@ public class StockRepository {
         }
 
         List<Long> issuePerMonths = new ArrayList<>();
-        Date periodBegin = DateUtil.generatePeriodBeginBy(DateUtil.today());
+        Date periodBegin = DateUtil.getPeriodBeginBy(DateUtil.today());
         Date periodEnd = DateUtil.generatePeriodEndByBegin(periodBegin);
 
         int periodQuantity = DateUtil.calculateDateMonthOffset(firstPeriodBegin, periodBegin);
