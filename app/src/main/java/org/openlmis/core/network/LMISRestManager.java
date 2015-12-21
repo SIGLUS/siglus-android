@@ -41,16 +41,20 @@ import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.network.adapter.StockCardAdapter;
 import org.openlmis.core.network.model.DataErrorResponse;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.KeyManagementException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManagerFactory;
@@ -63,6 +67,8 @@ import retrofit.RetrofitError;
 import retrofit.client.OkClient;
 import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
+
+import static javax.net.ssl.HttpsURLConnection.getDefaultHostnameVerifier;
 
 public class LMISRestManager {
 
@@ -104,41 +110,11 @@ public class LMISRestManager {
     }
 
     public OkHttpClient getSSLClient() {
-        OkHttpClient client = new OkHttpClient();
-
-        //set timeout to 1 minutes
-        client.setReadTimeout(1, TimeUnit.MINUTES);
-        client.setConnectTimeout(15, TimeUnit.SECONDS);
-        client.setWriteTimeout(30, TimeUnit.SECONDS);
+        OkHttpClient client = getOkHttpClient();
 
         // loading CAs from an InputStream
         try {
-            CertificateFactory cf = CertificateFactory.getInstance("X.509");
-            InputStream cert = LMISApp.getContext().getResources().openRawResource(R.raw.ssl_cert);
-            Certificate ca = null;
-            try {
-                ca = cf.generateCertificate(cert);
-                System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
-            } catch (Exception e) {
-                new LMISException(e).reportToFabric();
-            } finally {
-                cert.close();
-            }
-
-            // creating a KeyStore containing our trusted CAs
-            String keyStoreType = KeyStore.getDefaultType();
-            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
-            keyStore.load(null, null);
-            keyStore.setCertificateEntry("ca", ca);
-
-            // creating a TrustManager that trusts the CAs in our KeyStore
-            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
-            tmf.init(keyStore);
-
-            // creating an SSLSocketFactory that uses our TrustManager
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, tmf.getTrustManagers(), null);
+            SSLContext sslContext = getSslContext(getCertificate());
             client.setSslSocketFactory(sslContext.getSocketFactory());
             client.setHostnameVerifier(new HostnameVerifier() {
                 @Override
@@ -146,16 +122,56 @@ public class LMISRestManager {
                     if (hostname.equals(hostName)) {
                         return true;
                     }
-
-                    HostnameVerifier hv =
-                            HttpsURLConnection.getDefaultHostnameVerifier();
-                    return hv.verify(hostname, session);
+                    return getDefaultHostnameVerifier().verify(hostname, session);
                 }
             });
         } catch (Exception e) {
             new LMISException(e).reportToFabric();
         }
 
+        return client;
+    }
+
+    private SSLContext getSslContext(Certificate ca) throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, KeyManagementException {
+        // creating a KeyStore containing our trusted CAs
+        KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+        keyStore.load(null, null);
+        keyStore.setCertificateEntry("ca", ca);
+
+        // creating a TrustManager that trusts the CAs in our KeyStore
+        String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+        tmf.init(keyStore);
+
+        // creating an SSLSocketFactory that uses our TrustManager
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(null, tmf.getTrustManagers(), null);
+        return sslContext;
+    }
+
+    private Certificate getCertificate() throws CertificateException, IOException {
+        CertificateFactory cf = CertificateFactory.getInstance("X.509");
+        InputStream cert = LMISApp.getContext().getResources().openRawResource(R.raw.ssl_cert);
+        Certificate ca = null;
+        try {
+            ca = cf.generateCertificate(cert);
+            System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
+        } catch (Exception e) {
+            new LMISException(e).reportToFabric();
+        } finally {
+            cert.close();
+        }
+        return ca;
+    }
+
+    @NonNull
+    private OkHttpClient getOkHttpClient() {
+        OkHttpClient client = new OkHttpClient();
+
+        //set timeout to 1 minutes
+        client.setReadTimeout(1, TimeUnit.MINUTES);
+        client.setConnectTimeout(15, TimeUnit.SECONDS);
+        client.setWriteTimeout(30, TimeUnit.SECONDS);
         return client;
     }
 
