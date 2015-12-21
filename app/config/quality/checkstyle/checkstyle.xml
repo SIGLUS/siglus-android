@@ -23,7 +23,7 @@ Severity: EASY
     <!-- Checks for Size Violations.                    -->
     <!-- See http://checkstyle.sourceforge.net/config_sizes.html -->
     <module name="FileLength">
-        <property name="severity" value="ignore" />
+        <property name="max" value="500" />
     </module>
 
     <!-- Checks for whitespace                               -->
@@ -72,8 +72,8 @@ Severity: EASY
         <module name="ConstantName" />
         <module name="LocalFinalVariableName" />
         <module name="LocalVariableName" />
-        <module name="MemberName" >
-            <property name="severity" value="ignore"/>
+        <module name="MemberName">
+            <property name="severity" value="ignore" />
         </module>
         <module name="MethodName">
             <property name="severity" value="ignore" />

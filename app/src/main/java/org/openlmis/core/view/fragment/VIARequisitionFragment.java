@@ -369,7 +369,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     private class MyScrollListener implements AbsListView.OnScrollListener {
-
         ListView list1;
         ListView list2;
 
@@ -382,7 +381,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         public void onScrollStateChanged(AbsListView view, int scrollState) {
             if (scrollState == 0 || scrollState == 1) {
                 View subView1 = view.getChildAt(0);
-
                 if (subView1 != null) {
                     final int top1 = subView1.getTop();
                     View subview2 = list2.getChildAt(0);
@@ -398,8 +396,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             }
         }
 
-        public void onScroll(AbsListView view, int firstVisibleItem,
-                             int visibleItemCount, int totalItemCount) {
+        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
             View subView1 = view.getChildAt(0);
             if (subView1 != null) {
                 int top1 = subView1.getTop();
@@ -415,7 +412,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             }
         }
     }
-
 
     public void backToHomePage() {
         getActivity().finish();
@@ -443,12 +439,10 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     TextWatcher etConsultationNumbersTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
         }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-
         }
 
         @Override
@@ -503,5 +497,4 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @Override
     public void negativeClick(String tag) {
     }
-
 }
