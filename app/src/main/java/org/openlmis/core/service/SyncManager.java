@@ -193,7 +193,7 @@ public class SyncManager {
         }
         SyncBackProductsResponse response = lmisRestApi.fetchProducts(user.getFacilityCode());
 
-        if (SaveProductLock || sharedPreferenceMgr.getPreference().getBoolean(SharedPreferenceMgr.KEY_HAS_GET_PRODUCTS, false)) {
+        if (SaveProductLock || sharedPreferenceMgr.hasGetProducts()) {
             throw new LMISException("It's Syncing in Background or Loaded");
         }
 
@@ -203,7 +203,7 @@ public class SyncManager {
             for (Program programWithProducts : programsWithProducts) {
                 programRepository.saveProgramWithProduct(programWithProducts);
             }
-            sharedPreferenceMgr.getPreference().edit().putBoolean(SharedPreferenceMgr.KEY_HAS_GET_PRODUCTS, true);
+            sharedPreferenceMgr.setHasGetProducts(true);
         } finally {
             SaveProductLock = false;
         }
@@ -246,7 +246,7 @@ public class SyncManager {
             throw new LMISException("Can't get SyncDownRequisitionsResponse, you can check json parse to POJO logic");
         }
 
-        if (saveRequisitionLock || sharedPreferenceMgr.getPreference().getBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, false)) {
+        if (saveRequisitionLock || sharedPreferenceMgr.isRequisitionDataSynced()) {
             throw new LMISException("Sync Requisition Background or Loaded");
         }
         saveRequisitionLock = true;
@@ -256,7 +256,7 @@ public class SyncManager {
             for (RnRForm form : rnRForms) {
                 rnrFormRepository.createFormAndItems(form);
             }
-            sharedPreferenceMgr.getPreference().edit().putBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, true);
+            sharedPreferenceMgr.setRequisitionDataSynced(true);
         } finally {
             saveRequisitionLock = false;
         }
@@ -391,16 +391,16 @@ public class SyncManager {
             public void call(Subscriber<? super Void> subscriber) {
                 try {
                     synchronized (STOCK_MONTH_SYNC_LOCK) {
-                        if (isSyncMonth && !sharedPreferenceMgr.getPreference().getBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, false)) {
+                        if (isSyncMonth && !sharedPreferenceMgr.isLastMonthStockDataSynced()) {
                             fetchLatestOneMonthMovements();
-                            sharedPreferenceMgr.getPreference().edit().putBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, true).apply();
+                            sharedPreferenceMgr.setLastMonthStockCardDataSynced(true);
                         }
                     }
 
                     synchronized (STOCK_YEAR_SYNC_LOCK) {
-                        if (!isSyncMonth && !sharedPreferenceMgr.getPreference().getBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_YEAR_STOCKMOVEMENTS, false)) {
+                        if (!isSyncMonth && !sharedPreferenceMgr.isLastYearStockDataSynced()) {
                             fetchLatestYearStockMovements();
-                            sharedPreferenceMgr.getPreference().edit().putBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_YEAR_STOCKMOVEMENTS, true).apply();
+                            sharedPreferenceMgr.setLastYearStockCardDataSynced(true);
                         }
                     }
 
