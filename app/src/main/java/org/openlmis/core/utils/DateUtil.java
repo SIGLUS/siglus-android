@@ -54,7 +54,6 @@ public final class DateUtil {
     public static final Calendar CALENDAR_NOW = Calendar.getInstance();
 
     private DateUtil() {
-
     }
 
     public static Date truncateTimeStampInDate(Date date) {
@@ -70,11 +69,6 @@ public final class DateUtil {
 
     public static Date minusDayOfMonth(Date date, int difference) {
         return addDayOfMonth(date, -difference);
-    }
-
-    public static Calendar calendarDate(Date date) {
-        CALENDAR_NOW.setTime(date);
-        return CALENDAR_NOW;
     }
 
     public static String formatDate(Date date) {
@@ -111,10 +105,7 @@ public final class DateUtil {
     }
 
     public static Date dateMinusMonth(Date current, int months) {
-        Calendar now = calendarDate(current);
-        int currentMonth = now.get(Calendar.MONTH);
-        now.set(Calendar.MONTH, currentMonth - months);
-        return now.getTime();
+        return new DateTime(current).minusMonths(months).toDate();
     }
 
     public static void sortByDate(List<String> expiryDates) {
@@ -128,21 +119,28 @@ public final class DateUtil {
 
     public static Period generateRnRFormPeriodBy(Date generateDate) {
         DateTime dateTime = new DateTime(generateDate);
-        int day = dateTime.getDayOfMonth();
-
         Period period = new Period(dateTime);
-        if (day >= DAY_PERIOD_END + 1 && day <= DAY_PERIOD_END + 5) {
+        if (isInSubmitDates(dateTime.getDayOfMonth())) {
             return period.previous();
         }
         return period;
     }
 
     public static Date generatePreviousMonthDateBy(Date date) {
-        return new DateTime(date).minusMonths(1).toDate();
+        return dateMinusMonth(date, 1);
     }
 
     public static int calculateDateMonthOffset(Date earlierDate, Date laterDate) {
         return monthsBetween(new DateTime(earlierDate), new DateTime(laterDate))
                 .getMonths();
+    }
+
+    private static Calendar calendarDate(Date date) {
+        CALENDAR_NOW.setTime(date);
+        return CALENDAR_NOW;
+    }
+
+    private static boolean isInSubmitDates(int day) {
+        return day >= DAY_PERIOD_END + 1 && day <= DAY_PERIOD_END + 5;
     }
 }
