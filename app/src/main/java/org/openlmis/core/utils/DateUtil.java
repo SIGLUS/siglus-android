@@ -18,8 +18,6 @@
 
 package org.openlmis.core.utils;
 
-import android.support.annotation.NonNull;
-
 import org.joda.time.DateTime;
 import org.openlmis.core.exceptions.LMISException;
 
@@ -29,7 +27,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -130,23 +127,14 @@ public final class DateUtil {
     }
 
     public static Date generateRnRFormPeriodBeginBy(Date generateDate) {
-        return getPeriodBeginDate(generateDate, DAY_PERIOD_END + 5);
-    }
+        DateTime dateTime = new DateTime(generateDate);
+        int day = dateTime.getDayOfMonth();
 
-    @NonNull
-    private static Date getPeriodBeginDate(Date generateDate, int thresholdDate) {
-        Calendar calendar = GregorianCalendar.getInstance();
-        calendar.setTime(generateDate);
-
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        if (day <= thresholdDate) {
-            return new GregorianCalendar(year, month - 1, DAY_PERIOD_END + 1).getTime();
-        } else {
-            return new GregorianCalendar(year, month, DAY_PERIOD_END + 1).getTime();
+        Period period = new Period(dateTime);
+        if (day <= DAY_PERIOD_END + 5) {
+            return period.previous().getBegin().toDate();
         }
+        return period.getBegin().toDate();
     }
 
     public static Date getPeriodBeginBy(Date date) {
@@ -154,20 +142,11 @@ public final class DateUtil {
     }
 
     public static Date generatePeriodEndByBegin(Date periodBegin) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(periodBegin);
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
-        return new GregorianCalendar(year, month + 1, DAY_PERIOD_END).getTime();
+        return Period.of(periodBegin).getEnd().toDate();
     }
 
     public static Date generatePreviousMonthDateBy(Date periodDate) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(periodDate);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
-        return new GregorianCalendar(year, month - 1, day).getTime();
+        return new DateTime(periodDate).minusMonths(1).toDate();
     }
 
     public static int calculateDateMonthOffset(Date earlierDate, Date laterDate) {
