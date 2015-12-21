@@ -1,5 +1,6 @@
 require 'calabash-android/calabash_steps'
 require 'pry'
+require 'date'
 require File.dirname(__FILE__) + '/env_config'
 
 username = EnvConfig.getConfig()[:username]
@@ -7,6 +8,10 @@ password = EnvConfig.getConfig()[:password]
 
 index = 0
 pre_name = ""
+
+def should_skip_validation
+    DateTime.now().day >=21 && DateTime.now().day <=25
+end
 
 Given /^I cleared App data/ do
     clear_app_data
