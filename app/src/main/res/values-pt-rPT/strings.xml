@@ -1,32 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <resources>
     <string name="action_settings">Definições</string>
-
     <string name="title_home">Página principal</string>
     <string name="title_login">Entrar</string>
     <string name="title_init_inventory">Inventário inicial</string>
     <string name="title_physical_inventory">Inventario</string>
     <string name="title_stock_cards">Visão geral de stock</string>
     <string name="title_requisition">Elaborar Requisição/Balancete para Via Clássica</string>
-
-    <!-- Login Page -->
+    <!--Login Page-->
     <string name="hint_username">Usuário</string>
     <string name="hint_password">Senha</string>
     <string name="btn_login">Entrar</string>
     <string name="msg_empty_user">Usuário ou Senha não pode estar em branco.</string>
     <string name="msg_invalid_user">Usuário ou Senha incorrecto.</string>
     <string name="msg_user_not_facility">Não existe unidade sanitária para este usuário. Por favor contacte seu administrador.</string>
-    <string name="init_product_error">Erro nos dados iniciais. Tente de novo.</string>
-    <string name="msg_fetching_products">Descarregando lista de produtos…</string>
-    <string name="msg_sync_products_list_failed">Falha no descarregamento de productos do servidor</string>
     <string name="msg_save_products_failed">Falha ao guardar produtos na base de dados local</string>
+    <string name="msg_sync_products_list_failed">Falha no descarregamento de productos do servidor</string>
+    <string name="init_product_error">Erro nos dados iniciais. Tente de novo.</string>
+    <string name="msg_sync_stock_movements_data">Sincronizando dados de movimentos de stock</string>
+    <string name="msg_fetching_products">Descarregando lista de produtos…</string>
     <string name="msg_sync_requisition_data">Sincronizando dados de requisição</string>
-    <string name="msg_initial_sync_success">Sincronização inicial bem sucedida. Tablet está pronto para ser usado.</string>
     <string name="msg_sync_requisition_failed">Descarregamento de dados da requisição falhou</string>
     <string name="msg_sync_stockmovement_failed">Descarregamento de dados dos movimentos de stock falhou</string>
-    <string name="msg_sync_stock_movements_data">Sincronizando dados de movimentos de stock</string>
-
-
-    <!-- Init Inventory -->
+    <string name="msg_initial_sync_success">Sincronização inicial bem sucedida. Tablet está pronto para ser usado.</string>
+    <!--Init Inventory-->
     <string name="hint_quantity_in_stock">Stock Existente</string>
     <string name="label_expire_date">Prazos de Validade</string>
     <string name="label_dummy_product">Paracetemol</string>
@@ -34,10 +31,9 @@
     <string name="msg_inventory_check_failed">Quantidade não pode estar em branco</string>
     <string name="msg_invalid_date">Não pode selecionar data passada ou corrente</string>
     <string name="btn_done">Completo</string>
-    <string name="msg_save_before_exit">Por favor, grave o inventário inicial antes de sair da aplicação</string>
     <string name="msg_remove_expire_date">Tem certeza que quer remover esta data de expiração?</string>
-
-    <!-- Home Page -->
+    <string name="msg_save_before_exit">Por favor, grave o inventário inicial antes de sair da aplicação</string>
+    <!--Home Page-->
     <string name="label_stock_cards">Visão Geral da Ficha de Stock</string>
     <string name="label_mmia">Elaborar MMIA</string>
     <string name="label_sync">Sincronizar dados</string>
@@ -48,9 +44,8 @@
     <string name="label_stock_card_last_synced_mins_ago">Última sincronização das Fichas de Stock %s minutos atraz</string>
     <string name="label_stock_card_last_synced_hours_ago">Última sincronização das Fichas de Stock %s Horas atraz</string>
     <string name="label_stock_card_last_synced_days_ago">Última sincronização das Fichas de Stock %s dias atraz</string>
-    <string name="msg_back_twice_to_exit">Pressione o botão "voltar" duas vezes para sair</string>
+    <string name="msg_back_twice_to_exit">Pressione o botão \"voltar\" duas vezes para sair</string>
     <string name="action_sign_out">Sair</string>
-
     <!--MMIA-->
     <string name="label_mmia_title">MMIA - %1$s a %2$s</string>
     <string name="label_rnrfrom_left_header">Medicamento</string>
@@ -78,15 +73,15 @@
     <string name="hint_mmia_total_not_equal">O Total dos regimes terapêuticos não confere com o Total de pacientes em TARV na US.</string>
     <string name="msg_mmia_not_unique">Não é possivel submeter duas vezes o MMIA no mesmo período.</string>
     <string name="msg_reason_for_total_not_match">Adicionar razão para a diferença entre totais de regimes e pacientesAdicionar razão para a diferença entre totais de regimes e pacientes</string>
-    <string name="msg_regime_total_and_patient_total_not_match">Os totais não correspondem. Por favor, verifique os números digitados. Se os valores continuam diferentes, adicione uma justificação nas \"Observações\".</string>
-
-    <!-- Requisition Form -->
+    <string name="msg_regime_total_and_patient_total_not_match">Os totais não correspondem. Por favor, verifique os números digitados. Se os valores continuam diferentes, adicione uma justificação nas \\"Observações\\".</string>
+    <string name="btn_ok">OK</string>
+    <!--Requisition Form-->
     <string name="label_requisition_title">Requisicao - %1$s a %2$s</string>
     <string name="label_requisition_header_consultation_header">Normal Requisicao</string>
-    <string name="label_consultation">No. de Consultas Externas Realizadas</string>
     <string name="request_provincial_district_level">Requisicao do nível provincial ou distrital</string>
     <string name="title_stock_move_ment">Movimento de stock</string>
     <string name="title_inventory_info">Informação do Inventário</string>
+    <string name="label_consultation">No. de Consultas Externas Realizadas</string>
     <string name="label_kits_received">No. de Kits Recebido</string>
     <string name="label_kits_opened">No. de Kits Abertos</string>
     <string name="label_us">US</string>
@@ -106,16 +101,13 @@
     <string name="msg_stock_out_warning">O seu produto está em roptura de stock</string>
     <string name="msg_requisition_submit_tip">A sua Requisicao foi gravada com sucesso,e vai ser submetida \r\n automaticamente quando tiver coneccao a internet.</string>
     <string name="msg_requisition_not_unique">Não é possivel submeter duas vezes a requisição no mesmo período.</string>
-    <string name="msg_via_submit_signature">Insira as iniciais do seu nome e aprove as quantidades da requisição </string>
-    <string name="msg_requisition_signature_message_notify">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão da Requisição Balancete</string>
-    <string name="msg_approve_signature">Insira as iniciais do seu nome e aprove as quantidades da requisição</string>
     <string name="btn_approve">Visto</string>
-    <string name="btn_continue">Continuar</string>
+    <string name="msg_via_submit_signature">Insira as iniciais do seu nome e aprove as quantidades da requisição</string>
     <string name="msg_mmia_submit_signature">Insira as iniciais do seu nome para aprovar informação do MMIA</string>
-
-
-
-    <!-- Stock Movement -->
+    <string name="msg_approve_signature">Insira as iniciais do seu nome e aprove as quantidades da requisição</string>
+    <string name="msg_requisition_signature_message_notify">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão da Requisição Balancete</string>
+    <string name="btn_continue">Continuar</string>
+    <!--Stock Movement-->
     <string name="title_stock_movement">Ficha de Stock</string>
     <string name="label_default">-</string>
     <string name="label_movement_date">Data do Movimento</string>
@@ -124,7 +116,9 @@
     <string name="label_negative_adjustment">Ajustes Negativos</string>
     <string name="label_positive_adjustment">Ajustes Positivos</string>
     <string name="label_stock_existence">Stock Existente</string>
+    <string name="label_signature">Rúbrica</string>
     <string name="btn_cancel">CANCELAR</string>
+    <string name="btn_do_not_remove">Cancelar</string>
     <string name="msg_validation_error">Entrada inválida</string>
     <string name="msg_validation_empty_error">Falta um campo obrigatório</string>
     <string name="msg_invalid_stock_movement_date">Dados Inválidos</string>
@@ -135,11 +129,6 @@
     <string name="menu_item_stock_movement_history">Historico de movimentos</string>
     <string name="title_add_new_drug">Adicionar novo producto</string>
     <string name="hint_signature">Insira as iniciais do seu nome</string>
-    <string name="label_signature">Rúbrica</string>
-    <string name="btn_do_not_remove">Cancelar</string>
-
-
-
     <!--MMIABaseInfo-->
     <string name="label_new_patients">Novos</string>
     <string name="label_sustaining">Manutenção</string>
@@ -149,17 +138,14 @@
     <string name="label_ptv">PTV</string>
     <string name="label_ppe">PPE</string>
     <string name="hint_has_not_new_data">Estas no fim da lista</string>
-
-    <!-- Reason/Origin/Destination select dialog-->
+    <!--Reason/Origin/Destination select dialog-->
     <string-array name="movement_type_items_array">
         <item>Entradas</item>
         <item>Ajustes Negativos</item>
         <item>Ajustes Positivos</item>
         <item>Saídas</item>
     </string-array>
-
-
-    <!-- Stock Card List Page -->
+    <!--Stock Card List Page-->
     <string name="search_hint">Procurar…</string>
     <string name="action_navigate_archive">Produtos Arquivados</string>
     <string name="hint_save_mmia_failed">Falha na gravação de MMIA</string>
@@ -172,45 +158,37 @@
         <item>Ordenar por quantidade: Alta para Baixa</item>
         <item>Ordenar por quantidade: Baixa para Alta</item>
     </string-array>
-
-    <!-- Physical Inventory Page -->
+    <!--Physical Inventory Page-->
     <string name="label_physical_inventory_stock_on_hand">Stock Existente: %1$s</string>
-
-    <!-- Server Sync Errors -->
+    <!--Server Sync Errors-->
     <string name="sync_server_error">Sincronização falhou devido a problemas técnicos no servidor. Entre em contacto com administrador do sistema.</string>
     <string name="default_sync_data_error">Sincronização falhou devido a um erro nos dados durante a sincronização da requisição. Entre em contacto com administrador do sistema.</string>
     <string name="rnr_previous_not_filled">Sincronização falhou devido à falta da requisição do período anterior. Entre em contacto com administrador do sistema.</string>
     <string name="period_configuration_missing">Sincronização falhou devido à falta de configuração no servidor para este período. Entre em contacto com administrador do sistema.</string>
     <string name="product_code_invalid">Sincronização falhou devido à tentativa de submeter um produto inválido no formulário %1$s. Entre em contacto com administrador do sistema.</string>
     <string name="unauthorized_operation">Sincronização falhou. Não tem permissão para sincronizar esta requisicão para o servidor. Entre em contacto com administrador do sistema.</string>
-
-    <!-- Rnr form historical list -->
+    <!--Rnr form historical list-->
     <string name="label_via_name">Requisição/Balancete Via Clássica</string>
     <string name="label_mmia_name">MMIA</string>
-    <string name="label_incomplete_requisition">Este <![CDATA[<b>%1$s</b>]]> está incompleto. Para completá-lo, selecione \"Elaborar %1$s\" na página principal</string>
+    <string name="label_incomplete_requisition">Este <![CDATA[<b>%1$s</b>]]> está incompleto. Para completá-lo, selecione \\"Elaborar %1$s\\" na página principal</string>
     <string name="label_unsynced_requisition">Este <![CDATA[<b>%1$s</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
     <string name="label_submitted_message">%1$s enviado com sucesso no dia on the  %2$s</string>
     <string name="btn_view_requisition">Ver %s</string>
     <string name="label_period_date">%1$s  a  %2$s</string>
-
     <string name="btn_requisition_list">Ver Requisições/Balancetes históricas para Via Clássica</string>
     <string name="btn_mmia_list">Ver MMIAs históricos</string>
     <string name="title_requisition_list">Requisições/Balancetes Históricas para Via Clássica</string>
     <string name="title_mmia_list">MMIAs Históricos</string>
-
     <string name="label_current_period">Período atual</string>
     <string name="label_previous_period">Períodos anteriores</string>
-
     <string name="label_total">Total:%1$s</string>
-
-    <!-- Signature -->
+    <!--Signature-->
     <string name="dialog_request_signature">Insira as iniciais do seu nome para rubricar o movimento</string>
     <string name="dialog_request_signature_cancel">Cancelar</string>
     <string name="dialog_request_signature_sign">Validar</string>
     <string name="label_physical_inventory_signature_title">Insira as iniciais do seu nome para rubricar todos os movimentos no inventário</string>
     <string name="hint_signature_error_message">Por favor insira as iniciais do seu nome. (No mínimo 2 caracteres)</string>
-
-    <!-- Archived Drugs -->
+    <!--Archived Drugs-->
     <string name="menu_archive_drug">Produtos Arquivo</string>
     <string name="title_archived_drugs">Produtos Arquivados</string>
     <string name="msg_drug_archived">O produto foi arquivado</string>
@@ -218,5 +196,4 @@
     <string name="label_view_movement_history">Ver histórico de movimentos</string>
     <string name="label_add_drug_to_stock">Adicionar produto para a lista geral de stock</string>
     <string name="label_empty_archived_drugs">Nenhum produto arquivado</string>
-
 </resources>

@@ -44,7 +44,6 @@ public class StockCardViewHolder extends BaseViewHolder {
         tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledUnit()));
 
         initStockOnHand(stockCardViewModel);
-        initStockOnHand(stockCardViewModel);
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
