@@ -58,9 +58,9 @@ public final class DateUtil {
     }
 
     public static Date truncateTimeStampInDate(Date date) {
-        String formattedDateStr = DateUtil.formatDate(date, DateUtil.SIMPLE_DATE_FORMAT);
+        String formattedDateStr = formatDate(date, SIMPLE_DATE_FORMAT);
         Date formattedDate;
-        formattedDate = DateUtil.parseString(formattedDateStr, DateUtil.SIMPLE_DATE_FORMAT);
+        formattedDate = parseString(formattedDateStr, SIMPLE_DATE_FORMAT);
 
         return formattedDate;
     }
@@ -124,7 +124,7 @@ public final class DateUtil {
         Collections.sort(expiryDates, new Comparator<String>() {
             @Override
             public int compare(String lhs, String rhs) {
-                return DateUtil.parseString(lhs, DateUtil.SIMPLE_DATE_FORMAT).compareTo(DateUtil.parseString(rhs, DateUtil.SIMPLE_DATE_FORMAT));
+                return parseString(lhs, SIMPLE_DATE_FORMAT).compareTo(parseString(rhs, SIMPLE_DATE_FORMAT));
             }
         });
     }
