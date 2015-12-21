@@ -91,11 +91,11 @@ public class StockMovementViewHolder extends BaseViewHolder {
     }
 
     public void populate(final StockMovementViewModel model, StockCard stockCard) {
-
-        resetLine();
-        setRowFontColor(R.color.color_black);
-
         removeTextChangeListeners(model, stockCard.getStockOnHand());
+
+        disableLine();
+        hideUnderline();
+        setRowFontColor(R.color.color_black);
 
         txMovementDate.setText(model.getMovementDate());
         etDocumentNo.setText(model.getDocumentNo());
