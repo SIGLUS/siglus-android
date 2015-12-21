@@ -2,7 +2,6 @@ package org.openlmis.core.utils;
 
 import org.joda.time.DateTime;
 
-import java.util.Calendar;
 import java.util.Date;
 
 public class Period {
@@ -23,7 +22,7 @@ public class Period {
     }
 
     public static Period of(Date date) {
-        return new Period(javaDateToDateTime(date));
+        return new Period(new DateTime(date));
     }
 
     private Period(DateTime begin, DateTime end) {
@@ -55,14 +54,4 @@ public class Period {
         return dateTime.plusMonths(1);
     }
 
-    private static DateTime javaDateToDateTime(Date date) {
-        //this is really bad API from Java
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH) + 1;
-        int day = cal.get(Calendar.DAY_OF_MONTH);
-
-        return DateTime.parse(year + "-" + month + "-" + day);
-    }
 }

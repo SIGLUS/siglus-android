@@ -146,8 +146,8 @@ public final class DateUtil {
         }
     }
 
-    public static Date getPeriodBeginBy(Date generateDate) {
-        return Period.of(generateDate).getBegin().toDate();
+    public static Date getPeriodBeginBy(Date date) {
+        return Period.of(date).getBegin().toDate();
     }
 
     public static Date generatePeriodEndByBegin(Date periodBegin) {

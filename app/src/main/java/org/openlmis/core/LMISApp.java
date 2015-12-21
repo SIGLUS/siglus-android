@@ -25,6 +25,8 @@ import android.content.res.Configuration;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.network.NetworkConnectionManager;
@@ -41,6 +43,7 @@ public class LMISApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        JodaTimeAndroid.init(this);
 
         RoboGuice.getInjector(this).injectMembersWithoutViews(this);
         setupFabric();
