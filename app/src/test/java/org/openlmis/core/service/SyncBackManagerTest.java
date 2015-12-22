@@ -27,6 +27,7 @@ import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.SyncBackProductsResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
+import org.openlmis.core.service.SyncBackManager.SyncProgress;
 import org.robolectric.RuntimeEnvironment;
 
 import java.sql.SQLException;
@@ -51,6 +52,10 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.openlmis.core.service.SyncBackManager.SyncProgress.ProductSynced;
+import static org.openlmis.core.service.SyncBackManager.SyncProgress.RequisitionSynced;
+import static org.openlmis.core.service.SyncBackManager.SyncProgress.StockCardsLastMonthSynced;
+import static org.openlmis.core.service.SyncBackManager.SyncProgress.StockCardsLastYearSynced;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
@@ -62,6 +67,7 @@ public class SyncBackManagerTest {
     private StockMovementItem stockMovementItem;
     private StockRepository stockRepository;
     private ProgramRepository programRepository;
+    private SharedPreferences createdPreferences;
 
     @Before
     public void setUp() throws Exception {
@@ -90,14 +96,29 @@ public class SyncBackManagerTest {
     }
 
     @Test
+    public void shouldSyncBackServerData() throws Exception {
+        //given
+        mockProductResponse();
+        mockRequisitionResponse();
+        mockStockCardsResponse();
+
+        //when
+        SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
+        syncBackManager.syncBackServerData(subscriber);
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+
+        //then
+        assertThat(subscriber.syncProgresses.get(0), is(ProductSynced));
+        assertThat(subscriber.syncProgresses.get(1), is(StockCardsLastMonthSynced));
+        assertThat(subscriber.syncProgresses.get(2), is(RequisitionSynced));
+        assertThat(subscriber.syncProgresses.get(3), is(StockCardsLastYearSynced));
+    }
+
+    @Test
     public void shouldSyncProductsWithPrograms() throws Exception {
         //given
-        ArrayList<Program> programsWithProducts = new ArrayList<>();
-        Program program = new Program();
-        programsWithProducts.add(program);
-        SyncBackProductsResponse response = new SyncBackProductsResponse();
-        response.setProgramsWithProducts(programsWithProducts);
-        when(lmisRestApi.fetchProducts(any(String.class))).thenReturn(response);
+        mockProductResponse();
 
         //when
         TestSubscriber<Void> observer = new TestSubscriber<>();
@@ -106,11 +127,30 @@ public class SyncBackManagerTest {
         observer.assertNoErrors();
 
         //then
-        verify(programRepository).saveProgramWithProduct(program);
+        verify(programRepository).saveProgramWithProduct(any(Program.class));
+    }
+
+    private void mockProductResponse() {
+        ArrayList<Program> programsWithProducts = new ArrayList<>();
+        programsWithProducts.add(new Program());
+        SyncBackProductsResponse response = new SyncBackProductsResponse();
+        response.setProgramsWithProducts(programsWithProducts);
+        when(lmisRestApi.fetchProducts(any(String.class))).thenReturn(response);
     }
 
     @Test
     public void shouldSyncRequisitionDataSuccess() throws LMISException, SQLException {
+        mockRequisitionResponse();
+
+        TestSubscriber<Void> observer = new TestSubscriber<>();
+        syncBackManager.syncBackRequisition(observer);
+        observer.awaitTerminalEvent();
+        observer.assertNoErrors();
+
+        verify(rnrFormRepository, times(2)).createFormAndItems(any(RnRForm.class));
+    }
+
+    private void mockRequisitionResponse() {
         when(sharedPreferenceMgr.getPreference()).thenReturn(LMISTestApp.getContext().getSharedPreferences("LMISPreference", Context.MODE_PRIVATE));
         List<RnRForm> data = new ArrayList<>();
         data.add(new RnRForm());
@@ -119,13 +159,6 @@ public class SyncBackManagerTest {
         SyncDownRequisitionsResponse syncDownRequisitionsResponse = new SyncDownRequisitionsResponse();
         syncDownRequisitionsResponse.setRequisitions(data);
         when(lmisRestApi.fetchRequisitions(anyString())).thenReturn(syncDownRequisitionsResponse);
-
-        TestSubscriber<Void> observer = new TestSubscriber<>();
-        syncBackManager.syncBackRequisition(observer);
-        observer.awaitTerminalEvent();
-        observer.assertNoErrors();
-
-        verify(rnrFormRepository, times(2)).createFormAndItems(any(RnRForm.class));
     }
 
     @Test
@@ -145,14 +178,7 @@ public class SyncBackManagerTest {
 
     @Test
     public void shouldFetchCurrentMonthStockMovement() throws Throwable {
-        SharedPreferences createdPreferences = LMISTestApp.getContext().getSharedPreferences("LMISPreference", Context.MODE_PRIVATE);
-
-        when(sharedPreferenceMgr.getPreference()).thenReturn(createdPreferences);
-        stockRepository = mock(StockRepository.class);
-        syncBackManager.stockRepository = stockRepository;
-        when(lmisRestApi.fetchStockMovementData(anyString(), anyString(), anyString())).thenReturn(getStockCardResponse());
-
-        when(stockRepository.list()).thenReturn(newArrayList(new StockCardBuilder().build()));
+        mockStockCardsResponse();
 
         TestSubscriber<Void> testSubscriber = new TestSubscriber<>();
 
@@ -161,11 +187,26 @@ public class SyncBackManagerTest {
         testSubscriber.awaitTerminalEvent();
 
         testSubscriber.assertNoErrors();
+        verifyLastMonthStockCardsSynced(createdPreferences);
+    }
+
+    private void verifyLastMonthStockCardsSynced(SharedPreferences createdPreferences) throws LMISException {
         verify(lmisRestApi).fetchStockMovementData(anyString(), anyString(), anyString());
 
         assertFalse(createdPreferences.getBoolean(SharedPreferenceMgr.KEY_INIT_INVENTORY, true));
         verify(stockRepository, times(2)).saveStockCardAndBatchUpdateMovements(any(StockCard.class));
         assertThat(stockMovementItem.isSynced(), is(true));
+    }
+
+    private void mockStockCardsResponse() throws ParseException, LMISException {
+        createdPreferences = LMISTestApp.getContext().getSharedPreferences("LMISPreference", Context.MODE_PRIVATE);
+        when(sharedPreferenceMgr.getPreference()).thenReturn(createdPreferences);
+
+        stockRepository = mock(StockRepository.class);
+        syncBackManager.stockRepository = stockRepository;
+        when(lmisRestApi.fetchStockMovementData(anyString(), anyString(), anyString())).thenReturn(getStockCardResponse());
+
+        when(stockRepository.list()).thenReturn(newArrayList(new StockCardBuilder().build()));
     }
 
     public SyncDownStockCardResponse getStockCardResponse() throws ParseException {
@@ -186,6 +227,35 @@ public class SyncBackManagerTest {
         SyncDownStockCardResponse syncDownStockCardResponse = new SyncDownStockCardResponse();
         syncDownStockCardResponse.setStockCards(newArrayList(stockCard1, stockCard2));
         return syncDownStockCardResponse;
+    }
+
+    private class SyncServerDataSubscriber extends TestSubscriber<SyncProgress> {
+        public List<SyncProgress> syncProgresses = new ArrayList<>();
+
+        @Override
+        public void onNext(SyncProgress syncProgress) {
+            syncProgresses.add(syncProgress);
+            testSyncProgress(syncProgress);
+        }
+    }
+
+    private void testSyncProgress(SyncProgress progress) {
+        try {
+            if (progress == ProductSynced) {
+                verify(programRepository).saveProgramWithProduct(any(Program.class));
+            }
+            if (progress == StockCardsLastMonthSynced) {
+                verifyLastMonthStockCardsSynced(createdPreferences);
+            }
+            if (progress == RequisitionSynced) {
+                verify(rnrFormRepository, times(2)).createFormAndItems(any(RnRForm.class));
+            }
+            if (progress == StockCardsLastYearSynced) {
+                verify(lmisRestApi, times(13)).fetchStockMovementData(anyString(), anyString(), anyString());
+            }
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
     }
 
     public class MyTestModule extends AbstractModule {

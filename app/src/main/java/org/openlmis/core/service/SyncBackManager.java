@@ -78,6 +78,32 @@ public class SyncBackManager {
         lmisRestApi = new LMISRestManager().getLmisRestApi();
     }
 
+    public void syncBackServerData(Subscriber<SyncProgress> subscriber) {
+        Observable.create(new Observable.OnSubscribe<SyncProgress>() {
+            @Override
+            public void call(Subscriber<? super SyncProgress> subscriber) {
+                try {
+                    fetchAndSaveProductsWithProgram();
+                    subscriber.onNext(SyncProgress.ProductSynced);
+
+                    fetchLatestOneMonthMovements();
+                    subscriber.onNext(SyncProgress.StockCardsLastMonthSynced);
+
+                    fetchAndSaveRequisition();
+                    subscriber.onNext(SyncProgress.RequisitionSynced);
+
+                    fetchLatestYearStockMovements();
+                    subscriber.onNext(SyncProgress.StockCardsLastYearSynced);
+
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    e.reportToFabric();
+                    subscriber.onError(e);
+                }
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
+    }
+
     public void syncProductsWithProgram(Observer<Void> observer) {
         Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
@@ -164,7 +190,7 @@ public class SyncBackManager {
         }
     }
 
-    private void fetchAndSaveStockCards(String startDate, String endDate) throws Throwable {
+    private void fetchAndSaveStockCards(String startDate, String endDate) throws LMISException {
         //default start date is one month before and end date is one day after
         final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
 
@@ -207,7 +233,7 @@ public class SyncBackManager {
         }
     }
 
-    private void fetchLatestOneMonthMovements() throws Throwable {
+    private void fetchLatestOneMonthMovements() throws LMISException {
         Date now = new Date();
         Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH);
         String startDateStr = DateUtil.formatDate(startDate, "yyyy-MM-dd");
@@ -222,7 +248,7 @@ public class SyncBackManager {
         }
     }
 
-    private void fetchLatestYearStockMovements() throws Throwable {
+    private void fetchLatestYearStockMovements() throws LMISException {
         long syncEndTimeMillions = sharedPreferenceMgr.getPreference().getLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, new Date().getTime());
 
         Date now = new Date(syncEndTimeMillions);
@@ -244,5 +270,12 @@ public class SyncBackManager {
                 throw throwable;
             }
         }
+    }
+
+    public enum SyncProgress {
+        ProductSynced,
+        StockCardsLastMonthSynced,
+        RequisitionSynced,
+        StockCardsLastYearSynced
     }
 }
