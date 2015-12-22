@@ -19,6 +19,7 @@
 package org.openlmis.core.view.holder;
 
 import android.app.DatePickerDialog;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -50,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 
 import roboguice.inject.InjectView;
+
 
 public class StockMovementViewHolder extends BaseViewHolder {
 
@@ -116,7 +118,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
         if (model.isDraft()) {
             setInitialDraftStyle(model);
         } else {
-            itemView.setBackgroundResource(R.color.color_white);
+           itemView.setBackgroundColor(Color.TRANSPARENT);
         }
 
         addClickListeners(model, getPreviousMovementDate(stockCard));

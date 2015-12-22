@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.adapter;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,7 +88,7 @@ public class StockMovementAdapter extends BaseAdapter {
     }
 
     public void cleanHighLight(StockMovementViewHolder viewHolder) {
-        viewHolder.itemView.setBackgroundResource(R.color.color_white);
+        viewHolder.itemView.setBackgroundColor(Color.TRANSPARENT);
     }
 
     public void setMovementChangeListener(MovementChangedListener movementChangeListener) {
