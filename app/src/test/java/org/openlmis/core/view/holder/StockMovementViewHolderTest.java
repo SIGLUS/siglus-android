@@ -304,7 +304,7 @@ public class StockMovementViewHolderTest {
 
         viewHolder.populate(viewModel, stockCard);
 
-        assertThat(viewHolder.etPositiveAdjustment.getText().toString(),is("10"));
+        assertThat(viewHolder.etPositiveAdjustment.getText().toString(), is("10"));
     }
 
     @Test
@@ -318,6 +318,22 @@ public class StockMovementViewHolderTest {
         viewHolder.populate(viewModel, stockCard);
 
         assertEquals(viewHolder.txReason.getText().toString(), "");
+    }
+
+    @Test
+    public void shouldResetTextColorWhenReselectReason() {
+        viewHolder.populate(viewModel, stockCard);
+
+        StockMovementViewHolder.MovementSelectListener listener = viewHolder.new MovementSelectListener(viewModel);
+        MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.POSITIVE_ADJUST, "INVENTORY_POSITIVE", "Inventory description...");
+        listener.onComplete(receiveReason);
+
+        assertThat(viewHolder.txReason.getCurrentTextColor(), is(RuntimeEnvironment.application.getResources().getColor(R.color.color_red)));
+
+        MovementReasonManager.MovementReason issueReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.ISSUE, "PAV", "PAV Description");
+        listener.onComplete(issueReason);
+
+        assertThat(viewHolder.txReason.getCurrentTextColor(), is(RuntimeEnvironment.application.getResources().getColor(R.color.color_black)));
     }
 
 }

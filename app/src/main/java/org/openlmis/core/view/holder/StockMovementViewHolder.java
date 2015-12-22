@@ -97,7 +97,6 @@ public class StockMovementViewHolder extends BaseViewHolder {
 
         disableLine();
         hideUnderline();
-        setRowFontColor(R.color.color_black);
 
         txMovementDate.setText(model.getMovementDate());
         etDocumentNo.setText(model.getDocumentNo());
@@ -113,7 +112,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
             txReason.setText(StringUtils.EMPTY);
         }
 
-        setInventoryItemsFontColorToRed(model);
+        setItemViewTextColor(model);
 
         if (model.isDraft()) {
             setInitialDraftStyle(model);
@@ -237,11 +236,13 @@ public class StockMovementViewHolder extends BaseViewHolder {
         etDocumentNo.addTextChangedListener(watcher4);
     }
 
-    private void setInventoryItemsFontColorToRed(StockMovementViewModel model) {
+    private void setItemViewTextColor(StockMovementViewModel model) {
         if (model.getReason() != null && (StringUtils.isNotEmpty(model.getReceived())
                 || model.getReason().isPhysicalInventory()
                 || model.getReason().isInventoryAdjustment())) {
             setRowFontColor(R.color.color_red);
+        } else {
+            setRowFontColor(R.color.color_black);
         }
     }
 
@@ -370,6 +371,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
             clearQuantityAndDocumentNoField();
             setEditableQuantityField(model);
             highLightAndShowBottomBtn();
+            setItemViewTextColor(model);
         }
 
         private void setMovementDate() {
