@@ -160,6 +160,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
 
     private void enableAndUnderlineEditText(EditText editText) {
         editText.setEnabled(true);
+        editText.setText(StringUtils.EMPTY);
         editText.setBackground(editTextBackground);
     }
 

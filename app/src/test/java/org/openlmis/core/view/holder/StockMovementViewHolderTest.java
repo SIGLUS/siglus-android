@@ -31,10 +31,12 @@ import java.util.Date;
 
 import roboguice.RoboGuice;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -254,6 +256,32 @@ public class StockMovementViewHolderTest {
         viewHolder.populate(viewModel, stockCard);
 
         assertTrue(viewHolder.etNegativeAdjustment.isEnabled());
+    }
+
+
+    @Test
+    public void shouldClearDocumentNumberWhenReselectReason() {
+        viewHolder.populate(viewModel, stockCard);
+        viewHolder.etDocumentNo.setText("888");
+
+        StockMovementViewHolder.MovementSelectListener listener = viewHolder.new MovementSelectListener(viewModel);
+        MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.RECEIVE, "DON", "Donations");
+        listener.onComplete(receiveReason);
+
+        assertThat(viewHolder.etDocumentNo.getText().toString(), is(""));
+    }
+
+    @Test
+    public void shouldClearInputWhenReSelectSameReason() {
+        viewHolder.populate(viewModel, stockCard);
+        StockMovementViewHolder.MovementSelectListener listener = viewHolder.new MovementSelectListener(viewModel);
+        MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.RECEIVE, "DON", "Donations");
+        listener.onComplete(receiveReason);
+        viewHolder.etReceived.setText("10");
+
+        listener.onComplete(receiveReason);
+
+        assertThat(viewHolder.etReceived.getText().toString(), is(""));
     }
 
     @Test
