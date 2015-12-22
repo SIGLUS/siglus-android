@@ -266,7 +266,7 @@ public class LoginPresenterTest {
 
         assertThat(presenter.hasGetProducts()).isEqualTo(true);
         verify(mockActivity).loading(RuntimeEnvironment.application.getString(R.string.msg_sync_stock_movements_data));
-        verify(syncManager).fetchStockCardsData(any(rx.Observer.class), any(Boolean.class));
+        verify(syncBackManager).syncBackStockCards(any(rx.Observer.class), any(Boolean.class));
     }
 
     @Test

@@ -214,7 +214,7 @@ public class LoginPresenter implements Presenter {
     }
 
     private void fetchStockMovementSilent() {
-        syncManager.fetchStockCardsData(new SyncSubscriber<Void>() {
+        syncBackManager.syncBackStockCards(new SyncSubscriber<Void>() {
             @Override
             public void onCompleted() {
                 //do nothing
@@ -253,7 +253,7 @@ public class LoginPresenter implements Presenter {
         if (!isSyncingStockMovement) {
             isSyncingStockMovement = true;
             view.loading(LMISApp.getInstance().getString(R.string.msg_sync_stock_movements_data));
-            syncManager.fetchStockCardsData(getSyncStockCardDataSubscriber(), true);
+            syncBackManager.syncBackStockCards(getSyncStockCardDataSubscriber(), true);
         }
     }
 

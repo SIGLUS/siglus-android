@@ -19,8 +19,6 @@
 package org.openlmis.core.service;
 
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 import com.google.inject.AbstractModule;
@@ -41,7 +39,6 @@ import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.builder.StockCardBuilder;
-import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
@@ -49,7 +46,6 @@ import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.StockMovementEntry;
-import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.network.model.SyncUpRequisitionResponse;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
@@ -65,11 +61,9 @@ import roboguice.RoboGuice;
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
-import rx.observers.TestSubscriber;
 import rx.schedulers.Schedulers;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.any;
@@ -93,7 +87,7 @@ public class SyncManagerTest {
     LMISRestApi lmisRestApi;
     StockRepository stockRepository;
     private SharedPreferenceMgr sharedPreferenceMgr;
-    private StockMovementItem stockMovementItem;
+
     SyncErrorsRepository syncErrorsRepository;
 
     @Before
@@ -254,95 +248,6 @@ public class SyncManagerTest {
         when(sharedPreferenceMgr.hasSyncedVersion()).thenReturn(true);
         syncManager.syncAppVersion();
         verify(lmisRestApi, never()).updateAppVersion(any(AppInfoRequest.class), any(Callback.class));
-    }
-
-    @Test
-    public void shouldFetchStockMovement() throws Throwable {
-
-        String facilityId = "HF2";
-
-        User user = new User();
-        user.setFacilityId(facilityId);
-        UserInfoMgr.getInstance().setUser(user);
-
-        String startDate = "2015-11-04";
-        String endDate = "2015-12-04";
-
-
-        SyncDownStockCardResponse syncDownStockCardResponse = getStockCardResponse();
-
-
-        StockRepository stockRepository = mock(StockRepository.class);
-        syncManager.stockRepository = stockRepository;
-
-        when(lmisRestApi.fetchStockMovementData(facilityId, startDate, endDate)).thenReturn(syncDownStockCardResponse);
-
-        syncManager.fetchAndSaveStockCards(startDate, endDate);
-
-        verify(stockRepository, times(2)).saveStockCardAndBatchUpdateMovements(any(StockCard.class));
-        assertThat(stockMovementItem.isSynced(), is(true));
-    }
-
-    @NonNull
-    public SyncDownStockCardResponse getStockCardResponse() throws ParseException {
-        StockCard stockCard1 = StockCardBuilder.buildStockCard();
-        StockCard stockCard2 = StockCardBuilder.buildStockCard();
-
-        StockMovementItemBuilder builder = new StockMovementItemBuilder();
-
-        stockMovementItem = builder.build();
-        stockMovementItem.setSynced(false);
-
-        ArrayList<StockMovementItem> stockMovementItems1 = newArrayList(stockMovementItem, stockMovementItem, stockMovementItem);
-        stockCard1.setStockMovementItemsWrapper(stockMovementItems1);
-
-        ArrayList<StockMovementItem> stockMovementItems2 = newArrayList(stockMovementItem, stockMovementItem);
-        stockCard2.setStockMovementItemsWrapper(stockMovementItems2);
-
-        SyncDownStockCardResponse syncDownStockCardResponse = new SyncDownStockCardResponse();
-        syncDownStockCardResponse.setStockCards(newArrayList(stockCard1, stockCard2));
-        return syncDownStockCardResponse;
-    }
-
-    @Test
-    public void shouldFetchLatestYearStockMovement() throws Throwable {
-        when(sharedPreferenceMgr.getPreference()).thenReturn(LMISTestApp.getContext().getSharedPreferences("LMISPreference", Context.MODE_PRIVATE));
-        stockRepository = mock(StockRepository.class);
-        syncManager.stockRepository = stockRepository;
-        when(lmisRestApi.fetchStockMovementData(anyString(), anyString(), anyString())).thenReturn(getStockCardResponse());
-
-        TestSubscriber<Void> testSubscriber = new TestSubscriber<>();
-
-        syncManager.fetchStockCardsData(testSubscriber, false);
-
-        testSubscriber.awaitTerminalEvent();
-
-        testSubscriber.assertNoErrors();
-        verify(lmisRestApi, times(12)).fetchStockMovementData(anyString(), anyString(), anyString());
-    }
-
-    @Test
-    public void shouldFetchCurrentMonthStockMovement() throws Throwable {
-        SharedPreferences createdPreferences = LMISTestApp.getContext().getSharedPreferences("LMISPreference", Context.MODE_PRIVATE);
-
-        when(sharedPreferenceMgr.getPreference()).thenReturn(createdPreferences);
-        stockRepository = mock(StockRepository.class);
-        syncManager.stockRepository = stockRepository;
-        when(lmisRestApi.fetchStockMovementData(anyString(), anyString(), anyString())).thenReturn(getStockCardResponse());
-
-        when(stockRepository.list()).thenReturn(newArrayList(new StockCardBuilder().build()));
-
-        TestSubscriber<Void> testSubscriber = new TestSubscriber<>();
-
-        syncManager.fetchStockCardsData(testSubscriber, true);
-
-        testSubscriber.awaitTerminalEvent();
-
-        testSubscriber.assertNoErrors();
-        verify(lmisRestApi).fetchStockMovementData(anyString(), anyString(), anyString());
-
-        assertFalse(createdPreferences.getBoolean(SharedPreferenceMgr.KEY_INIT_INVENTORY, true));
-
     }
 
     public class MyTestModule extends AbstractModule {
