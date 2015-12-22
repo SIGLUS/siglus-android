@@ -188,7 +188,7 @@ public class LoginPresenter implements Presenter {
         if (!isLoadingProducts) {
             isLoadingProducts = true;
             view.loading(LMISApp.getInstance().getString(R.string.msg_fetching_products));
-            syncManager.syncProductsWithProgramAsync(getSyncProductSubscriber());
+            syncBackManager.syncProductsWithProgram(getSyncProductSubscriber());
         }
     }
 

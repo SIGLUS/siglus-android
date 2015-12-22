@@ -2,7 +2,6 @@ package org.openlmis.core.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
 
 import com.google.inject.AbstractModule;
 
@@ -14,15 +13,18 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
+import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.network.LMISRestApi;
+import org.openlmis.core.network.model.SyncBackProductsResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.robolectric.RuntimeEnvironment;
@@ -59,6 +61,7 @@ public class SyncBackManagerTest {
     private SyncBackManager syncBackManager;
     private StockMovementItem stockMovementItem;
     private StockRepository stockRepository;
+    private ProgramRepository programRepository;
 
     @Before
     public void setUp() throws Exception {
@@ -67,14 +70,16 @@ public class SyncBackManagerTest {
         sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
         lmisRestApi = mock(LMISRestApi.class);
         rnrFormRepository = mock(RnrFormRepository.class);
+        programRepository = mock(ProgramRepository.class);
         reset(rnrFormRepository);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         syncBackManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncBackManager.class);
 
         syncBackManager.lmisRestApi = lmisRestApi;
-
-        UserInfoMgr.getInstance().setUser(new User());
+        User user = new User();
+        user.setFacilityCode("HF XXX");
+        UserInfoMgr.getInstance().setUser(user);
         RxAndroidPlugins.getInstance().reset();
         RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
             @Override
@@ -82,6 +87,26 @@ public class SyncBackManagerTest {
                 return Schedulers.immediate();
             }
         });
+    }
+
+    @Test
+    public void shouldSyncProductsWithPrograms() throws Exception {
+        //given
+        ArrayList<Program> programsWithProducts = new ArrayList<>();
+        Program program = new Program();
+        programsWithProducts.add(program);
+        SyncBackProductsResponse response = new SyncBackProductsResponse();
+        response.setProgramsWithProducts(programsWithProducts);
+        when(lmisRestApi.fetchProducts(any(String.class))).thenReturn(response);
+
+        //when
+        TestSubscriber<Void> observer = new TestSubscriber<>();
+        syncBackManager.syncProductsWithProgram(observer);
+        observer.awaitTerminalEvent();
+        observer.assertNoErrors();
+
+        //then
+        verify(programRepository).saveProgramWithProduct(program);
     }
 
     @Test
@@ -143,7 +168,6 @@ public class SyncBackManagerTest {
         assertThat(stockMovementItem.isSynced(), is(true));
     }
 
-    @NonNull
     public SyncDownStockCardResponse getStockCardResponse() throws ParseException {
         StockCard stockCard1 = StockCardBuilder.buildStockCard();
         StockCard stockCard2 = StockCardBuilder.buildStockCard();
@@ -169,6 +193,7 @@ public class SyncBackManagerTest {
         protected void configure() {
             bind(RnrFormRepository.class).toInstance(rnrFormRepository);
             bind(SharedPreferenceMgr.class).toInstance(sharedPreferenceMgr);
+            bind(ProgramRepository.class).toInstance(programRepository);
         }
     }
 }

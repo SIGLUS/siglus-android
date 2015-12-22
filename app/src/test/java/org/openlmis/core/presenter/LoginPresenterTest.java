@@ -162,7 +162,7 @@ public class LoginPresenterTest {
         verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
         loginCB.getValue().success(new User("user", "password"));
 
-        verify(syncManager).syncProductsWithProgramAsync(getProductsCB.capture());
+        verify(syncBackManager).syncProductsWithProgram(getProductsCB.capture());
         getProductsCB.getValue().onCompleted();
     }
 
@@ -177,7 +177,7 @@ public class LoginPresenterTest {
 
         loginCB.getValue().success(new User("user", "password"));
 
-        verify(syncManager).syncProductsWithProgramAsync(getProductsCB.capture());
+        verify(syncBackManager).syncProductsWithProgram(getProductsCB.capture());
         getProductsCB.getValue().onCompleted();
 
         verify(mockActivity).loaded();
@@ -245,7 +245,7 @@ public class LoginPresenterTest {
         verify(userRepository, times(2)).authorizeUser(any(User.class), loginCB.capture());
         loginCB.getValue().success(new User("user", "password"));
 
-        verify(syncManager, times(1)).syncProductsWithProgramAsync(any(Observer.class));
+        verify(syncBackManager, times(1)).syncProductsWithProgram(any(Observer.class));
     }
 
     @Test

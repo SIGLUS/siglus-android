@@ -27,19 +27,15 @@ import android.util.Log;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.NoFacilityForUserException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.User;
-import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
@@ -47,7 +43,6 @@ import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.StockMovementEntry;
-import org.openlmis.core.network.model.SyncBackProductsResponse;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -60,12 +55,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import roboguice.inject.InjectResource;
 import rx.Observable;
-import rx.Observer;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 import static android.content.ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY;
 import static android.content.ContentResolver.SYNC_EXTRAS_EXPEDITED;
@@ -80,9 +71,6 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 public class SyncManager {
 
     private static final String TAG = "SyncManager";
-
-    @Inject
-    ProgramRepository programRepository;
 
     @Inject
     RnrFormRepository rnrFormRepository;
@@ -106,10 +94,7 @@ public class SyncManager {
     @InjectResource(R.integer.sync_interval)
     private Integer syncInterval;
 
-    private boolean SaveProductLock = false;
-
     protected LMISRestApi lmisRestApi;
-
 
     public SyncManager() {
         lmisRestApi = new LMISRestManager().getLmisRestApi();
@@ -175,45 +160,6 @@ public class SyncManager {
 
             ContentResolver.requestSync(findFirstLmisAccount(), syncContentAuthority, bundle);
         }
-    }
-
-    public void syncProductsWithProgram() throws LMISException {
-        User user = UserInfoMgr.getInstance().getUser();
-
-        if (StringUtils.isEmpty(user.getFacilityCode())) {
-            throw new NoFacilityForUserException("No Facility for this User");
-        }
-        SyncBackProductsResponse response = lmisRestApi.fetchProducts(user.getFacilityCode());
-
-        if (SaveProductLock || sharedPreferenceMgr.hasGetProducts()) {
-            throw new LMISException("It's Syncing in Background or Loaded");
-        }
-
-        SaveProductLock = true;
-        try {
-            List<Program> programsWithProducts = response.getProgramsWithProducts();
-            for (Program programWithProducts : programsWithProducts) {
-                programRepository.saveProgramWithProduct(programWithProducts);
-            }
-            sharedPreferenceMgr.setHasGetProducts(true);
-        } finally {
-            SaveProductLock = false;
-        }
-    }
-
-    public void syncProductsWithProgramAsync(Observer<Void> observer) {
-        Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    syncProductsWithProgram();
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    e.reportToFabric();
-                    subscriber.onError(e);
-                }
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
     }
 
     public boolean syncRnr() {

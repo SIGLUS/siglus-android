@@ -21,18 +21,24 @@ package org.openlmis.core.service;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.NoFacilityForUserException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.User;
+import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
+import org.openlmis.core.network.model.SyncBackProductsResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.utils.DateUtil;
@@ -51,7 +57,9 @@ public class SyncBackManager {
     public static final int DAYS_OF_MONTH = 30;
     public static final int MONTHS_OF_YEAR = 12;
 
+    private boolean SaveProductLock = false;
     private boolean saveRequisitionLock = false;
+
     private final Object STOCK_MONTH_SYNC_LOCK = new Object();
     private final Object STOCK_YEAR_SYNC_LOCK = new Object();
 
@@ -63,9 +71,26 @@ public class SyncBackManager {
     RnrFormRepository rnrFormRepository;
     @Inject
     StockRepository stockRepository;
+    @Inject
+    ProgramRepository programRepository;
 
     public SyncBackManager() {
         lmisRestApi = new LMISRestManager().getLmisRestApi();
+    }
+
+    public void syncProductsWithProgram(Observer<Void> observer) {
+        Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    fetchAndSaveProductsWithProgram();
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    e.reportToFabric();
+                    subscriber.onError(e);
+                }
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
     }
 
     public void syncBackStockCards(Observer<Void> observer, final boolean isSyncMonth) {
@@ -115,26 +140,27 @@ public class SyncBackManager {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
     }
 
-    private void fetchAndSaveRequisition() throws LMISException {
-        SyncDownRequisitionsResponse syncDownRequisitionsResponse = lmisRestApi.fetchRequisitions(UserInfoMgr.getInstance().getUser().getFacilityCode());
+    private void fetchAndSaveProductsWithProgram() throws LMISException {
+        User user = UserInfoMgr.getInstance().getUser();
 
-        if (syncDownRequisitionsResponse == null) {
-            throw new LMISException("Can't get SyncDownRequisitionsResponse, you can check json parse to POJO logic");
+        if (StringUtils.isEmpty(user.getFacilityCode())) {
+            throw new NoFacilityForUserException("No Facility for this User");
+        }
+        SyncBackProductsResponse response = lmisRestApi.fetchProducts(user.getFacilityCode());
+
+        if (SaveProductLock || sharedPreferenceMgr.hasGetProducts()) {
+            throw new LMISException("It's Syncing in Background or Loaded");
         }
 
-        if (saveRequisitionLock || sharedPreferenceMgr.isRequisitionDataSynced()) {
-            throw new LMISException("Sync Requisition Background or Loaded");
-        }
-        saveRequisitionLock = true;
-
+        SaveProductLock = true;
         try {
-            List<RnRForm> rnRForms = syncDownRequisitionsResponse.getRequisitions();
-            for (RnRForm form : rnRForms) {
-                rnrFormRepository.createFormAndItems(form);//todo: all or nothing with transaction
+            List<Program> programsWithProducts = response.getProgramsWithProducts();
+            for (Program programWithProducts : programsWithProducts) {
+                programRepository.saveProgramWithProduct(programWithProducts);
             }
-            sharedPreferenceMgr.setRequisitionDataSynced(true);
+            sharedPreferenceMgr.setHasGetProducts(true);
         } finally {
-            saveRequisitionLock = false;
+            SaveProductLock = false;
         }
     }
 
@@ -155,6 +181,29 @@ public class SyncBackManager {
             } else {
                 stockRepository.batchCreateOrUpdateStockMovements(stockCard.getStockMovementItemsWrapper());
             }
+        }
+    }
+
+    private void fetchAndSaveRequisition() throws LMISException {
+        SyncDownRequisitionsResponse syncDownRequisitionsResponse = lmisRestApi.fetchRequisitions(UserInfoMgr.getInstance().getUser().getFacilityCode());
+
+        if (syncDownRequisitionsResponse == null) {
+            throw new LMISException("Can't get SyncDownRequisitionsResponse, you can check json parse to POJO logic");
+        }
+
+        if (saveRequisitionLock || sharedPreferenceMgr.isRequisitionDataSynced()) {
+            throw new LMISException("Sync Requisition Background or Loaded");
+        }
+        saveRequisitionLock = true;
+
+        try {
+            List<RnRForm> rnRForms = syncDownRequisitionsResponse.getRequisitions();
+            for (RnRForm form : rnRForms) {
+                rnrFormRepository.createFormAndItems(form);//todo: all or nothing with transaction
+            }
+            sharedPreferenceMgr.setRequisitionDataSynced(true);
+        } finally {
+            saveRequisitionLock = false;
         }
     }
 
