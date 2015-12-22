@@ -30,6 +30,7 @@ import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
 import org.openlmis.core.service.SyncBackManager;
+import org.openlmis.core.service.SyncBackManager.SyncProgress;
 import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
@@ -162,12 +163,11 @@ public class LoginPresenter implements Presenter {
     }
 
     private void checkSyncServerData() {
-
         syncBackManager.syncBackServerData(getSyncSubscriber());
     }
 
-    protected Subscriber<SyncBackManager.SyncProgress> getSyncSubscriber() {
-        return new Subscriber<SyncBackManager.SyncProgress>() {
+    protected Subscriber<SyncProgress> getSyncSubscriber() {
+        return new Subscriber<SyncProgress>() {
             @Override
             public void onCompleted() {
                 if (!hasGoneToNextPage) {
@@ -182,34 +182,23 @@ public class LoginPresenter implements Presenter {
             }
 
             @Override
-            public void onNext(SyncBackManager.SyncProgress progress) {
+            public void onNext(SyncProgress progress) {
                 switch (progress) {
                     case SyncingProduct:
-                        view.loading(LMISApp.getInstance().getString(R.string.msg_fetching_products));
-                        break;
-                    case ProductSynced:
-                        view.loaded();
+                    case SyncingStockCardsLastMonth:
+                    case SyncingRequisition:
+                        view.loading(LMISApp.getInstance().getString(progress.getMessageCode()));
                         break;
 
-                    case SyncingStockCardsLastMonth:
-                        view.loading(LMISApp.getInstance().getString(R.string.msg_sync_stock_movements_data));
+                    case ProductSynced:
+                        view.loaded();
                         break;
                     case StockCardsLastMonthSynced:
                         shouldShowSyncedSuccessMsg = true;
                         view.loaded();
                         break;
-
-                    case SyncingRequisition:
-                        view.loading(LMISApp.getInstance().getString(R.string.msg_sync_requisition_data));
-                        break;
                     case RequisitionSynced:
                         goToNextPage();
-                        break;
-
-                    case SyncingStockCardsLastYear:
-                        break;
-                    case StockCardsLastYearSynced:
-                        //do nothing, it's silent
                         break;
                 }
             }

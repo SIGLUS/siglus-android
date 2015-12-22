@@ -270,16 +270,27 @@ public class SyncBackManager {
     }
 
     public enum SyncProgress {
-        SyncingProduct,
-        ProductSynced,
-
-        SyncingStockCardsLastMonth,
-        StockCardsLastMonthSynced,
-
-        SyncingRequisition,
-        RequisitionSynced,
-
+        SyncingProduct(R.string.msg_fetching_products),
+        SyncingStockCardsLastMonth(R.string.msg_sync_stock_movements_data),
+        SyncingRequisition(R.string.msg_sync_requisition_data),
         SyncingStockCardsLastYear,
+
+        ProductSynced,
+        StockCardsLastMonthSynced,
+        RequisitionSynced,
         StockCardsLastYearSynced;
+
+        private int messageCode;
+
+        SyncProgress(int messageCode) {
+            this.messageCode = messageCode;
+        }
+
+        SyncProgress() {
+        }
+
+        public int getMessageCode() {
+            return messageCode;
+        }
     }
 }
