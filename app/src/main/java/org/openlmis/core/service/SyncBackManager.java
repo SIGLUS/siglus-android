@@ -59,6 +59,7 @@ public class SyncBackManager {
 
     private boolean SaveProductLock = false;
     private boolean saveRequisitionLock = false;
+    private boolean isSyncing = false;
 
     private final Object STOCK_MONTH_SYNC_LOCK = new Object();
     private final Object STOCK_YEAR_SYNC_LOCK = new Object();
@@ -79,18 +80,25 @@ public class SyncBackManager {
     }
 
     public void syncBackServerData(Subscriber<SyncProgress> subscriber) {
+        if (isSyncing) {
+            return;
+        }
+
         Observable.create(new Observable.OnSubscribe<SyncProgress>() {
             @Override
             public void call(Subscriber<? super SyncProgress> subscriber) {
                 try {
+                    isSyncing = true;
                     syncProducts(subscriber);
                     syncBackLastMonthStockCards(subscriber);
                     syncBackRequisition(subscriber);
                     syncLastYearStockCardsSilently(subscriber);
 
+                    isSyncing = false;
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.reportToFabric();
+                    isSyncing = false;
                     subscriber.onError(e);
                 }
             }
