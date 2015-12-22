@@ -96,7 +96,7 @@ public class SignatureDialog extends BaseDialogFragment implements View.OnClickL
     }
 
     protected boolean checkSignature(String signature) {
-        return signature.length() >= 2 && signature.length() <= 100 && signature.matches("\\D+");
+        return signature.length() >= 2 && signature.length() <= 5 && signature.matches("\\D+");
     }
 
     @Override

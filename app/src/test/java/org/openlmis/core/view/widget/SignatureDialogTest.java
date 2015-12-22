@@ -37,20 +37,14 @@ public class SignatureDialogTest {
     }
 
     @Test
-    public void shouldReturnFalseWhenGivenSignatureMoreThanOneHundred() throws Exception {
-        String signaturesFalse = "";
-        for (int i = 0; i < 11; i++) {
-            signaturesFalse += "abcdefghio";
-        }
+    public void shouldReturnFalseWhenGivenSignatureMoreThanFive() throws Exception {
+        String signaturesFalse = "abcdef";
         assertFalse(signatureDialog.checkSignature(signaturesFalse));
     }
 
     @Test
-    public void shouldReturnTrueWhenGivenSignatureEqualOneHundred() throws Exception {
-        String signaturesFalse = "";
-        for (int i = 0; i < 10; i++) {
-            signaturesFalse += "abcdefghio";
-        }
+    public void shouldReturnTrueWhenGivenSignatureEqualFive() throws Exception {
+        String signaturesFalse = "abcde";
         assertTrue(signatureDialog.checkSignature(signaturesFalse));
     }
 }

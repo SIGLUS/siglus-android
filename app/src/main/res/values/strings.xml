@@ -212,7 +212,7 @@
     <string name="dialog_request_signature_cancel">Cancel</string>
     <string name="dialog_request_signature_sign">Approve</string>
     <string name="label_physical_inventory_signature_title">Enter your initials to sign all inventory movements</string>
-    <string name="hint_signature_error_message">Please enter your initials(Minimum 2 characters)</string>
+    <string name="hint_signature_error_message">Please enter your initials(Minimum 2 characters,Maximum 5 characters)</string>
 
     <!-- Archived Drugs -->
     <string name="menu_archive_drug">Archive drugs</string>
