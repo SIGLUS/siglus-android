@@ -84,18 +84,22 @@ public class SyncBackManager {
             public void call(Subscriber<? super SyncProgress> subscriber) {
                 try {
                     if (!sharedPreferenceMgr.hasGetProducts()) {
+                        subscriber.onNext(SyncProgress.SyncingProduct);
                         fetchAndSaveProductsWithProgram();
                         subscriber.onNext(SyncProgress.ProductSynced);
                     }
                     if (!sharedPreferenceMgr.isLastMonthStockDataSynced()) {
+                        subscriber.onNext(SyncProgress.SyncingStockCardsLastMonth);
                         fetchLatestOneMonthMovements();
                         subscriber.onNext(SyncProgress.StockCardsLastMonthSynced);
                     }
                     if (!sharedPreferenceMgr.isRequisitionDataSynced()) {
+                        subscriber.onNext(SyncProgress.SyncingRequisition);
                         fetchAndSaveRequisition();
                         subscriber.onNext(SyncProgress.RequisitionSynced);
                     }
                     if (!sharedPreferenceMgr.isLastYearStockDataSynced()) {
+                        subscriber.onNext(SyncProgress.SyncingStockCardsLastYear);
                         fetchLatestYearStockMovements();
                         subscriber.onNext(SyncProgress.StockCardsLastYearSynced);
                     }
@@ -278,9 +282,16 @@ public class SyncBackManager {
     }
 
     public enum SyncProgress {
+        SyncingProduct,
         ProductSynced,
+
+        SyncingStockCardsLastMonth,
         StockCardsLastMonthSynced,
+
+        SyncingRequisition,
         RequisitionSynced,
+
+        SyncingStockCardsLastYear,
         StockCardsLastYearSynced
     }
 }

@@ -56,6 +56,10 @@ import static org.openlmis.core.service.SyncBackManager.SyncProgress.ProductSync
 import static org.openlmis.core.service.SyncBackManager.SyncProgress.RequisitionSynced;
 import static org.openlmis.core.service.SyncBackManager.SyncProgress.StockCardsLastMonthSynced;
 import static org.openlmis.core.service.SyncBackManager.SyncProgress.StockCardsLastYearSynced;
+import static org.openlmis.core.service.SyncBackManager.SyncProgress.SyncingProduct;
+import static org.openlmis.core.service.SyncBackManager.SyncProgress.SyncingRequisition;
+import static org.openlmis.core.service.SyncBackManager.SyncProgress.SyncingStockCardsLastMonth;
+import static org.openlmis.core.service.SyncBackManager.SyncProgress.SyncingStockCardsLastYear;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
@@ -109,10 +113,14 @@ public class SyncBackManagerTest {
         subscriber.assertNoErrors();
 
         //then
-        assertThat(subscriber.syncProgresses.get(0), is(ProductSynced));
-        assertThat(subscriber.syncProgresses.get(1), is(StockCardsLastMonthSynced));
-        assertThat(subscriber.syncProgresses.get(2), is(RequisitionSynced));
-        assertThat(subscriber.syncProgresses.get(3), is(StockCardsLastYearSynced));
+        assertThat(subscriber.syncProgresses.get(0), is(SyncingProduct));
+        assertThat(subscriber.syncProgresses.get(1), is(ProductSynced));
+        assertThat(subscriber.syncProgresses.get(2), is(SyncingStockCardsLastMonth));
+        assertThat(subscriber.syncProgresses.get(3), is(StockCardsLastMonthSynced));
+        assertThat(subscriber.syncProgresses.get(4), is(SyncingRequisition));
+        assertThat(subscriber.syncProgresses.get(5), is(RequisitionSynced));
+        assertThat(subscriber.syncProgresses.get(6), is(SyncingStockCardsLastYear));
+        assertThat(subscriber.syncProgresses.get(7), is(StockCardsLastYearSynced));
     }
 
     @Test
