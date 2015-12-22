@@ -177,7 +177,7 @@ public class LoginPresenter implements Presenter {
             return;
         }
 
-        goToNextPage();
+        goToNextPageAndFetchStockMovementSilent();
     }
 
     private void checkProductsWithProgram() {
@@ -188,7 +188,15 @@ public class LoginPresenter implements Presenter {
         }
     }
 
-    protected void goToNextPage() {
+    protected void goToNextPageAndFetchStockMovementSilent() {
+        goToNextPage();
+        if (!isLastYearStockDataSynced()) {
+            fetchStockMovementSilent();
+            return;
+        }
+    }
+
+    private void goToNextPage() {
         view.loaded();
 
         if (view.needInitInventory()) {
@@ -199,8 +207,6 @@ public class LoginPresenter implements Presenter {
             }
             view.goToHomePage();
         }
-        fetchStockMovementSilent();
-
     }
 
     private void fetchStockMovementSilent() {
@@ -240,16 +246,6 @@ public class LoginPresenter implements Presenter {
     }
 
     private void syncStockCard() {
-
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)) {
-            if (!isRequisitionDataSynced()) {
-                syncRequisitionData();
-            } else {
-                goToNextPage();
-            }
-            return;
-        }
-
         if (!isSyncingStockMovement) {
             isSyncingStockMovement = true;
             view.loading(LMISApp.getInstance().getString(R.string.msg_sync_stock_movements_data));
@@ -280,30 +276,6 @@ public class LoginPresenter implements Presenter {
         };
     }
 
-    protected boolean hasGetProducts() {
-        return SharedPreferenceMgr.getInstance().hasGetProducts();
-    }
-
-    protected void setHasGetProducts(boolean hasGetProducts) {
-        SharedPreferenceMgr.getInstance().setHasGetProducts(hasGetProducts);
-    }
-
-    protected boolean isLastMonthStockDataSynced() {
-        return SharedPreferenceMgr.getInstance().isLastMonthStockDataSynced();
-    }
-
-    private void setLastMonthStockCardDataSynced(boolean isStockCardSynced) {
-        SharedPreferenceMgr.getInstance().setLastMonthStockCardDataSynced(isStockCardSynced);
-    }
-
-    protected boolean isRequisitionDataSynced() {
-        return SharedPreferenceMgr.getInstance().isRequisitionDataSynced();
-    }
-
-    protected void setRequisitionDataSynced(boolean isRequisitionDataSynced) {
-        SharedPreferenceMgr.getInstance().setRequisitionDataSynced(isRequisitionDataSynced);
-    }
-
     private void syncRequisitionData() {
         if (!isSyncingRequisitionData) {
             isSyncingRequisitionData = true;
@@ -318,7 +290,7 @@ public class LoginPresenter implements Presenter {
             public void onCompleted() {
                 isSyncingRequisitionData = false;
                 setRequisitionDataSynced(true);
-                goToNextPage();
+                goToNextPageAndFetchStockMovementSilent();
             }
 
             @Override
@@ -336,6 +308,37 @@ public class LoginPresenter implements Presenter {
         isLoadingProducts = false;
     }
 
+    protected boolean hasGetProducts() {
+        return SharedPreferenceMgr.getInstance().hasGetProducts();
+    }
+
+    protected void setHasGetProducts(boolean hasGetProducts) {
+        SharedPreferenceMgr.getInstance().setHasGetProducts(hasGetProducts);
+    }
+
+    protected boolean isLastMonthStockDataSynced() {
+        return SharedPreferenceMgr.getInstance().isLastMonthStockDataSynced();
+    }
+
+    private void setLastMonthStockCardDataSynced(boolean isStockCardSynced) {
+        SharedPreferenceMgr.getInstance().setLastMonthStockCardDataSynced(isStockCardSynced);
+    }
+
+    protected boolean isLastYearStockDataSynced() {
+        return SharedPreferenceMgr.getInstance().isLastYearStockDataSynced();
+    }
+
+    private void setLastYearStockCardDataSynced(boolean isStockCardSynced) {
+        SharedPreferenceMgr.getInstance().setLastYearStockCardDataSynced(isStockCardSynced);
+    }
+
+    protected boolean isRequisitionDataSynced() {
+        return SharedPreferenceMgr.getInstance().isRequisitionDataSynced();
+    }
+
+    protected void setRequisitionDataSynced(boolean isRequisitionDataSynced) {
+        SharedPreferenceMgr.getInstance().setRequisitionDataSynced(isRequisitionDataSynced);
+    }
 
     public interface LoginView extends BaseView {
 

@@ -259,12 +259,12 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldSyncDataBackWhenProductSyncCompleted() {
+    public void shouldSyncStockCardWhenProductSyncCompleted() {
         syncProductSubscriber.onCompleted();
 
         assertThat(presenter.hasGetProducts()).isEqualTo(true);
-        verify(mockActivity).loading(RuntimeEnvironment.application.getString(R.string.msg_sync_requisition_data));
-        verify(syncManager).syncBackRnr(any(rx.Observer.class));
+        verify(mockActivity).loading(RuntimeEnvironment.application.getString(R.string.msg_sync_stock_movements_data));
+        verify(syncManager).fetchStockCardsData(any(rx.Observer.class), any(Boolean.class));
     }
 
     @Test
@@ -317,6 +317,7 @@ public class LoginPresenterTest {
     @Test
     public void shouldSyncRequisitionDataIfProductSyncExistButRequisitionDataNonExist() {
         when(presenter.hasGetProducts()).thenReturn(true);
+        when(presenter.isLastMonthStockDataSynced()).thenReturn(true);
         when(rnrFormRepository.hasRequisitionData()).thenReturn(false);
 
         presenter.onLoginSuccess(any(User.class));
