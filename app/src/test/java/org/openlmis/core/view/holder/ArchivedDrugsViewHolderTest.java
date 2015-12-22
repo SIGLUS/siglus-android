@@ -6,7 +6,6 @@ import android.view.View;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
@@ -29,8 +28,6 @@ public class ArchivedDrugsViewHolderTest {
 
     @Before
     public void setUp() {
-        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
-
         View itemView = LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_archived_drug, null, false);
         viewHolder = new ArchivedDrugsViewHolder(itemView);
 

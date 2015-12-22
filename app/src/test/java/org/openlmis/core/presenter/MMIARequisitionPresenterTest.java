@@ -135,7 +135,6 @@ public class MMIARequisitionPresenterTest {
 
     @Test
     public void shouldShowSignDialogIfTotalsMatch() throws Exception {
-        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
         ArrayList<RegimenItem> regimenItems = generateRegimenItems();
         ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
 
@@ -222,7 +221,6 @@ public class MMIARequisitionPresenterTest {
 
     @Test
     public void shouldSubmitFormWhenTheStatusIsDraft() throws LMISException {
-        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
         RnRForm form = new RnRForm();
         form.setStatus(RnRForm.STATUS.DRAFT);
 
@@ -238,7 +236,6 @@ public class MMIARequisitionPresenterTest {
 
     @Test
     public void shouldAuthorizeFormWhenStatusIsSubmitted() throws LMISException {
-        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
         RnRForm form = new RnRForm();
         form.setStatus(RnRForm.STATUS.SUBMITTED);
 

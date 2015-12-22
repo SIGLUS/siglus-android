@@ -158,7 +158,6 @@ public class VIARequisitionPresenterTest {
     private RnRForm testSignatureStatus(RnRForm.STATUS formStatus, RnRFormSignature.TYPE signatureType)
             throws LMISException {
         //given
-        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);
         RnRForm form = getRnRFormWithStatus(formStatus);
 
         //when

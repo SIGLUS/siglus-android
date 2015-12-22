@@ -28,7 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.DraftInventory;
@@ -113,8 +112,6 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldLoadPhysicalStockCardList() throws LMISException {
-        ((LMISTestApp)RuntimeEnvironment.application).setFeatureToggle(true);
-
         StockCard stockCardVIA = StockCardBuilder.buildStockCard();
         stockCardVIA.setProduct(new ProductBuilder().setPrimaryName("VIA Product").build());
         StockCard stockCardMMIA = StockCardBuilder.buildStockCard();
@@ -137,8 +134,6 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldLoadMasterProductsList() throws LMISException {
-        ((LMISTestApp)RuntimeEnvironment.application).setFeatureToggle(true);
-
         StockCard stockCardVIA = StockCardBuilder.buildStockCard();
         Product productVIA = new ProductBuilder().setPrimaryName("VIA Product").setCode("VIA Code").build();
         stockCardVIA.setProduct(productVIA);
