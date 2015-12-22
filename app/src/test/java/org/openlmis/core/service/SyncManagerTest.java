@@ -49,7 +49,6 @@ import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.StockMovementEntry;
-import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.network.model.SyncUpRequisitionResponse;
 import org.openlmis.core.utils.DateUtil;
@@ -160,7 +159,7 @@ public class SyncManagerTest {
         assertThat(items.size(), is(2));
         assertThat(items.get(0).isSynced(), is(true));
         assertThat(items.get(1).isSynced(), is(true));
-        verify(syncErrorsRepository).deleteBySyncTypeAndObjectId(any(SyncType.class),anyLong());
+        verify(syncErrorsRepository).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
     }
 
     @Test
@@ -228,20 +227,6 @@ public class SyncManagerTest {
     }
 
     @Test
-    public void shouldSyncRequisitionDataSuccess() throws LMISException, SQLException {
-        when(sharedPreferenceMgr.getPreference()).thenReturn(LMISTestApp.getContext().getSharedPreferences("LMISPreference", Context.MODE_PRIVATE));
-        List<RnRForm> data = new ArrayList<>();
-        data.add(new RnRForm());
-        data.add(new RnRForm());
-
-        SyncDownRequisitionsResponse syncDownRequisitionsResponse = new SyncDownRequisitionsResponse();
-        syncDownRequisitionsResponse.setRequisitions(data);
-        when(lmisRestApi.fetchRequisitions(anyString())).thenReturn(syncDownRequisitionsResponse);
-        syncManager.fetchAndSaveRequisitionData();
-        verify(rnrFormRepository, times(2)).createFormAndItems(any(RnRForm.class));
-    }
-
-    @Test
     public void shouldSyncAppVersion() throws Exception {
         when(sharedPreferenceMgr.hasSyncedVersion()).thenReturn(false);
         User user = new User();
@@ -258,7 +243,7 @@ public class SyncManagerTest {
 
         when(rnrFormRepository.listUnSynced()).thenReturn(unSyncedList);
 
-        doThrow(new UndeclaredThrowableException(new Throwable(),"Sync Failed")).when(lmisRestApi).submitRequisition(any(RnRForm.class));
+        doThrow(new UndeclaredThrowableException(new Throwable(), "Sync Failed")).when(lmisRestApi).submitRequisition(any(RnRForm.class));
         syncManager.syncRnr();
 
         verify(syncErrorsRepository).save(any(SyncError.class));
@@ -272,7 +257,7 @@ public class SyncManagerTest {
     }
 
     @Test
-    public void shouldFetchStockMovement() throws Throwable{
+    public void shouldFetchStockMovement() throws Throwable {
 
         String facilityId = "HF2";
 
@@ -300,8 +285,8 @@ public class SyncManagerTest {
 
     @NonNull
     public SyncDownStockCardResponse getStockCardResponse() throws ParseException {
-        StockCard stockCard1= StockCardBuilder.buildStockCard();
-        StockCard stockCard2= StockCardBuilder.buildStockCard();
+        StockCard stockCard1 = StockCardBuilder.buildStockCard();
+        StockCard stockCard2 = StockCardBuilder.buildStockCard();
 
         StockMovementItemBuilder builder = new StockMovementItemBuilder();
 
@@ -320,7 +305,7 @@ public class SyncManagerTest {
     }
 
     @Test
-    public void shouldFetchLatestYearStockMovement() throws Throwable{
+    public void shouldFetchLatestYearStockMovement() throws Throwable {
         when(sharedPreferenceMgr.getPreference()).thenReturn(LMISTestApp.getContext().getSharedPreferences("LMISPreference", Context.MODE_PRIVATE));
         stockRepository = mock(StockRepository.class);
         syncManager.stockRepository = stockRepository;
@@ -337,7 +322,7 @@ public class SyncManagerTest {
     }
 
     @Test
-    public void shouldFetchCurrentMonthStockMovement() throws Throwable{
+    public void shouldFetchCurrentMonthStockMovement() throws Throwable {
         SharedPreferences createdPreferences = LMISTestApp.getContext().getSharedPreferences("LMISPreference", Context.MODE_PRIVATE);
 
         when(sharedPreferenceMgr.getPreference()).thenReturn(createdPreferences);

@@ -31,6 +31,7 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
+import org.openlmis.core.service.SyncBackManager;
 import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.service.SyncSubscriber;
 import org.openlmis.core.utils.ToastUtil;
@@ -50,6 +51,9 @@ public class LoginPresenter implements Presenter {
 
     @Inject
     SyncManager syncManager;
+
+    @Inject
+    SyncBackManager syncBackManager;
 
     @Override
     public void onStart() {
@@ -280,7 +284,7 @@ public class LoginPresenter implements Presenter {
         if (!isSyncingRequisitionData) {
             isSyncingRequisitionData = true;
             view.loading(LMISApp.getInstance().getString(R.string.msg_sync_requisition_data));
-            syncManager.syncBackRnr(getSyncRequisitionDataSubscriber());
+            syncBackManager.syncBackRnr(getSyncRequisitionDataSubscriber());
         }
     }
 

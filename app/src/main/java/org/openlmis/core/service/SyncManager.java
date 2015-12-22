@@ -50,7 +50,6 @@ import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncBackProductsResponse;
-import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
@@ -222,44 +221,6 @@ public class SyncManager {
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
-    }
-
-    public void syncBackRnr(Observer<Void> observer) {
-        Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    fetchAndSaveRequisitionData();
-                } catch (LMISException e) {
-                    e.reportToFabric();
-                    subscriber.onError(new LMISException("Syncing back data failed"));
-                }
-                subscriber.onCompleted();
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
-    }
-
-    protected void fetchAndSaveRequisitionData() throws LMISException {
-        SyncDownRequisitionsResponse syncDownRequisitionsResponse = lmisRestApi.fetchRequisitions(UserInfoMgr.getInstance().getUser().getFacilityCode());
-
-        if (syncDownRequisitionsResponse == null) {
-            throw new LMISException("Can't get SyncDownRequisitionsResponse, you can check json parse to POJO logic");
-        }
-
-        if (saveRequisitionLock || sharedPreferenceMgr.isRequisitionDataSynced()) {
-            throw new LMISException("Sync Requisition Background or Loaded");
-        }
-        saveRequisitionLock = true;
-
-        try {
-            List<RnRForm> rnRForms = syncDownRequisitionsResponse.getRequisitions();
-            for (RnRForm form : rnRForms) {
-                rnrFormRepository.createFormAndItems(form);
-            }
-            sharedPreferenceMgr.setRequisitionDataSynced(true);
-        } finally {
-            saveRequisitionLock = false;
-        }
     }
 
     public boolean syncRnr() {

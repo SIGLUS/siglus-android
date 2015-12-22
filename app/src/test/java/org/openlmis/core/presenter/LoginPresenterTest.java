@@ -39,6 +39,7 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
 import org.openlmis.core.network.model.SyncBackProductsResponse;
+import org.openlmis.core.service.SyncBackManager;
 import org.openlmis.core.service.SyncManager;
 import org.openlmis.core.service.SyncSubscriber;
 import org.openlmis.core.view.activity.LoginActivity;
@@ -74,18 +75,19 @@ public class LoginPresenterTest {
     private LMISTestApp appInject;
     private SyncSubscriber<Void> syncProductSubscriber;
     private SyncSubscriber<Void> syncRequisitionDataSubscriber;
+    private SyncBackManager syncBackManager;
 
     @Before
     public void setup() {
 
         appInject = (LMISTestApp) RuntimeEnvironment.application;
 
-
         userRepository = mock(UserRepository.class);
         rnrFormRepository = mock(RnrFormRepository.class);
         mockActivity = mock(LoginActivity.class);
         mockSyncBackProductsResponse = mock(SyncBackProductsResponse.class);
         syncManager = mock(SyncManager.class);
+        syncBackManager = mock(SyncBackManager.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         MockitoAnnotations.initMocks(this);
@@ -323,7 +325,7 @@ public class LoginPresenterTest {
         presenter.onLoginSuccess(any(User.class));
 
         verify(mockActivity).loading(RuntimeEnvironment.application.getString(R.string.msg_sync_requisition_data));
-        verify(syncManager).syncBackRnr(any(SyncSubscriber.class));
+        verify(syncBackManager).syncBackRnr(any(SyncSubscriber.class));
     }
 
     @Test
@@ -338,6 +340,7 @@ public class LoginPresenterTest {
         protected void configure() {
             bind(UserRepository.class).toInstance(userRepository);
             bind(SyncManager.class).toInstance(syncManager);
+            bind(SyncBackManager.class).toInstance(syncBackManager);
             bind(RnrFormRepository.class).toInstance(rnrFormRepository);
         }
     }
