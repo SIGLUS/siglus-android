@@ -325,7 +325,7 @@ public class LoginPresenterTest {
         presenter.onLoginSuccess(any(User.class));
 
         verify(mockActivity).loading(RuntimeEnvironment.application.getString(R.string.msg_sync_requisition_data));
-        verify(syncBackManager).syncBackRnr(any(SyncSubscriber.class));
+        verify(syncBackManager).syncBackRequisition(any(SyncSubscriber.class));
     }
 
     @Test

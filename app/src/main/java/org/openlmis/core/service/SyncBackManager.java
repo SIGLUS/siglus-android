@@ -54,17 +54,17 @@ public class SyncBackManager {
         lmisRestApi = new LMISRestManager().getLmisRestApi();
     }
 
-    public void syncBackRnr(Observer<Void> observer) {
+    public void syncBackRequisition(Observer<Void> observer) {
         Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
                     fetchAndSaveRequisitionData();
+                    subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.reportToFabric();
-                    subscriber.onError(new LMISException("Syncing back data failed"));
+                    subscriber.onError(new LMISException("Syncing back requisition failed"));
                 }
-                subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
     }
@@ -84,7 +84,7 @@ public class SyncBackManager {
         try {
             List<RnRForm> rnRForms = syncDownRequisitionsResponse.getRequisitions();
             for (RnRForm form : rnRForms) {
-                rnrFormRepository.createFormAndItems(form);
+                rnrFormRepository.createFormAndItems(form);//todo: all or nothing with transaction
             }
             sharedPreferenceMgr.setRequisitionDataSynced(true);
         } finally {
