@@ -97,6 +97,12 @@ Then(/^I see "(.*?)" in signature field$/) do |text|
     end
 end
 
+And(/^I enter "(.*?)" into documentNo$/) do |documentNo|
+    touch(query("android.widget.EditText id:'et_document_no'").last)
+    keyboard_enter_text(documentNo)
+    hide_soft_keyboard
+end
+
 Then(/^I make all movements for "(.*?)"$/) do |drugFNM|
     steps %Q{
       And I make a movement "#{drugFNM}" "Entries" "District( DDM)" "received" "5"

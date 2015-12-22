@@ -162,7 +162,6 @@ public class StockMovementViewHolder extends BaseViewHolder {
 
     private void enableAndUnderlineEditText(EditText editText) {
         editText.setEnabled(true);
-        editText.setText(StringUtils.EMPTY);
         editText.setBackground(editTextBackground);
     }
 
@@ -278,12 +277,13 @@ public class StockMovementViewHolder extends BaseViewHolder {
     public void resetLine() {
         txMovementDate.setText(StringUtils.EMPTY);
         txReason.setText(StringUtils.EMPTY);
+        txStockExistence.setText(StringUtils.EMPTY);
+
         etDocumentNo.setText(StringUtils.EMPTY);
         etReceived.setText(StringUtils.EMPTY);
         etNegativeAdjustment.setText(StringUtils.EMPTY);
         etPositiveAdjustment.setText(StringUtils.EMPTY);
         etIssued.setText(StringUtils.EMPTY);
-        txStockExistence.setText(StringUtils.EMPTY);
         disableLine();
         hideUnderline();
     }
@@ -367,6 +367,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
 
             setMovementDate();
 
+            clearQuantityAndDocumentNoField();
             setEditableQuantityField(model);
             highLightAndShowBottomBtn();
         }
@@ -379,6 +380,16 @@ public class StockMovementViewHolder extends BaseViewHolder {
             }
         }
     }
+
+
+    private void clearQuantityAndDocumentNoField() {
+        etDocumentNo.setText(StringUtils.EMPTY);
+        etReceived.setText(StringUtils.EMPTY);
+        etNegativeAdjustment.setText(StringUtils.EMPTY);
+        etPositiveAdjustment.setText(StringUtils.EMPTY);
+        etIssued.setText(StringUtils.EMPTY);
+    }
+
 
     class MovementDateListener implements DatePickerDialog.OnDateSetListener {
 

@@ -295,6 +295,19 @@ public class StockMovementViewHolderTest {
     }
 
     @Test
+    public void shouldNotClearInputWhenRotate() {
+        viewHolder.populate(viewModel, stockCard);
+        MovementReasonManager.MovementReason positiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.POSITIVE_ADJUST, "POSITIVE_1", "positive adjustment description");
+        viewModel.setDraft(true);
+        viewModel.setReason(positiveReason);
+        viewHolder.etPositiveAdjustment.setText("10");
+
+        viewHolder.populate(viewModel, stockCard);
+
+        assertThat(viewHolder.etPositiveAdjustment.getText().toString(),is("10"));
+    }
+
+    @Test
     public void shouldResetTxReasonValueWhenReuseViewModel() {
         viewHolder.populate(viewModel, stockCard);
 

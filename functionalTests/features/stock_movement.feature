@@ -111,5 +111,30 @@ Feature: stock movement Page
     Then I wait for 1 second
     Then I make all movements for "08S18Y"
     Then I wait for 1 second
+    Then I navigate back
+    Then I wait for "Home Page" to appear
+
+
+
+#  TODO swipe left does not work
+#  Scenario: ReSelect Adjust Reason
+#    When I press "Stock Card Overview"
+#    Then I wait for "Stock Overview" to appear
+#    Then I select stock card code called "08S36"
+#    Then I wait for "Stock Card" to appear
+#    And I select a reason "Positive Adjustments" "Donations to Deposit"
+#    Then I wait for 1 second
+#    And I enter "888" into documentNo
+#    Then I swipe right
+#    Then I wait for 1 second
+#    And I enter positive adjustment number "41"
+#    Then I wait for 2 seconds
+#    Then I swipe left
+#    Then I wait for 1 second
+#    And I select a reason "Positive Adjustments" "Donations to Deposit"
+#    Then I should not see "888"
+#    Then I swipe right
+#    Then I should not see "41"
+
 
 
