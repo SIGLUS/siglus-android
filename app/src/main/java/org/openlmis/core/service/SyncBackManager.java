@@ -83,17 +83,22 @@ public class SyncBackManager {
             @Override
             public void call(Subscriber<? super SyncProgress> subscriber) {
                 try {
-                    fetchAndSaveProductsWithProgram();
-                    subscriber.onNext(SyncProgress.ProductSynced);
-
-                    fetchLatestOneMonthMovements();
-                    subscriber.onNext(SyncProgress.StockCardsLastMonthSynced);
-
-                    fetchAndSaveRequisition();
-                    subscriber.onNext(SyncProgress.RequisitionSynced);
-
-                    fetchLatestYearStockMovements();
-                    subscriber.onNext(SyncProgress.StockCardsLastYearSynced);
+                    if (!sharedPreferenceMgr.hasGetProducts()) {
+                        fetchAndSaveProductsWithProgram();
+                        subscriber.onNext(SyncProgress.ProductSynced);
+                    }
+                    if (!sharedPreferenceMgr.isLastMonthStockDataSynced()) {
+                        fetchLatestOneMonthMovements();
+                        subscriber.onNext(SyncProgress.StockCardsLastMonthSynced);
+                    }
+                    if (!sharedPreferenceMgr.isRequisitionDataSynced()) {
+                        fetchAndSaveRequisition();
+                        subscriber.onNext(SyncProgress.RequisitionSynced);
+                    }
+                    if (!sharedPreferenceMgr.isLastYearStockDataSynced()) {
+                        fetchLatestYearStockMovements();
+                        subscriber.onNext(SyncProgress.StockCardsLastYearSynced);
+                    }
 
                     subscriber.onCompleted();
                 } catch (LMISException e) {
