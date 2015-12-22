@@ -83,26 +83,10 @@ public class SyncBackManager {
             @Override
             public void call(Subscriber<? super SyncProgress> subscriber) {
                 try {
-                    if (!sharedPreferenceMgr.hasGetProducts()) {
-                        subscriber.onNext(SyncProgress.SyncingProduct);
-                        fetchAndSaveProductsWithProgram();
-                        subscriber.onNext(SyncProgress.ProductSynced);
-                    }
-                    if (!sharedPreferenceMgr.isLastMonthStockDataSynced()) {
-                        subscriber.onNext(SyncProgress.SyncingStockCardsLastMonth);
-                        fetchLatestOneMonthMovements();
-                        subscriber.onNext(SyncProgress.StockCardsLastMonthSynced);
-                    }
-                    if (!sharedPreferenceMgr.isRequisitionDataSynced()) {
-                        subscriber.onNext(SyncProgress.SyncingRequisition);
-                        fetchAndSaveRequisition();
-                        subscriber.onNext(SyncProgress.RequisitionSynced);
-                    }
-                    if (!sharedPreferenceMgr.isLastYearStockDataSynced()) {
-                        subscriber.onNext(SyncProgress.SyncingStockCardsLastYear);
-                        fetchLatestYearStockMovements();
-                        subscriber.onNext(SyncProgress.StockCardsLastYearSynced);
-                    }
+                    syncProducts(subscriber);
+                    syncBackLastMonthStockCards(subscriber);
+                    syncBackRequisition(subscriber);
+                    syncLastYearStockCardsSilently(subscriber);
 
                     subscriber.onCompleted();
                 } catch (LMISException e) {
@@ -111,6 +95,62 @@ public class SyncBackManager {
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
+    }
+
+    private void syncLastYearStockCardsSilently(Subscriber<? super SyncProgress> subscriber) {
+        if (!sharedPreferenceMgr.isLastYearStockDataSynced()) {
+            try {
+                subscriber.onNext(SyncProgress.SyncingStockCardsLastYear);
+                fetchLatestYearStockMovements();
+                sharedPreferenceMgr.setLastYearStockCardDataSynced(true);
+                subscriber.onNext(SyncProgress.StockCardsLastYearSynced);
+            } catch (LMISException e) {
+                sharedPreferenceMgr.setLastYearStockCardDataSynced(false);
+                e.reportToFabric();
+            }
+        }
+    }
+
+    private void syncBackRequisition(Subscriber<? super SyncProgress> subscriber) throws LMISException {
+        if (!sharedPreferenceMgr.isRequisitionDataSynced()) {
+            try {
+                subscriber.onNext(SyncProgress.SyncingRequisition);
+                fetchAndSaveRequisition();
+                sharedPreferenceMgr.setRequisitionDataSynced(true);
+                subscriber.onNext(SyncProgress.RequisitionSynced);
+            } catch (LMISException e) {
+                sharedPreferenceMgr.setRequisitionDataSynced(false);
+                throw new LMISException(errorMessage(R.string.msg_sync_requisition_failed));
+            }
+        }
+    }
+
+    private void syncBackLastMonthStockCards(Subscriber<? super SyncProgress> subscriber) throws LMISException {
+        if (!sharedPreferenceMgr.isLastMonthStockDataSynced()) {
+            try {
+                subscriber.onNext(SyncProgress.SyncingStockCardsLastMonth);
+                fetchLatestOneMonthMovements();
+                sharedPreferenceMgr.setLastMonthStockCardDataSynced(true);
+                subscriber.onNext(SyncProgress.StockCardsLastMonthSynced);
+            } catch (LMISException e) {
+                sharedPreferenceMgr.setLastMonthStockCardDataSynced(false);
+                throw new LMISException(errorMessage(R.string.msg_sync_stockmovement_failed));
+            }
+        }
+    }
+
+    private void syncProducts(Subscriber<? super SyncProgress> subscriber) throws LMISException {
+        if (!sharedPreferenceMgr.hasGetProducts()) {
+            try {
+                subscriber.onNext(SyncProgress.SyncingProduct);
+                fetchAndSaveProductsWithProgram();
+                sharedPreferenceMgr.setHasGetProducts(true);
+                subscriber.onNext(SyncProgress.ProductSynced);
+            } catch (LMISException e) {
+                sharedPreferenceMgr.setHasGetProducts(false);
+                throw e;
+            }
+        }
     }
 
     public void syncProductsWithProgram(Observer<Void> observer) {
@@ -177,23 +217,24 @@ public class SyncBackManager {
 
     private void fetchAndSaveProductsWithProgram() throws LMISException {
         User user = UserInfoMgr.getInstance().getUser();
-
+        user.setFacilityCode("");
         if (StringUtils.isEmpty(user.getFacilityCode())) {
-            throw new NoFacilityForUserException("No Facility for this User");
+            throw new NoFacilityForUserException(errorMessage(R.string.msg_user_not_facility));
         }
-        SyncBackProductsResponse response = lmisRestApi.fetchProducts(user.getFacilityCode());
-
-        if (SaveProductLock || sharedPreferenceMgr.hasGetProducts()) {
-            throw new LMISException("It's Syncing in Background or Loaded");
-        }
-
-        SaveProductLock = true;
         try {
+            SyncBackProductsResponse response = lmisRestApi.fetchProducts(user.getFacilityCode());
+
+            if (SaveProductLock || sharedPreferenceMgr.hasGetProducts()) {
+                throw new LMISException("It's Syncing in Background or Loaded");
+            }
+
+            SaveProductLock = true;
             List<Program> programsWithProducts = response.getProgramsWithProducts();
             for (Program programWithProducts : programsWithProducts) {
                 programRepository.saveProgramWithProduct(programWithProducts);
             }
-            sharedPreferenceMgr.setHasGetProducts(true);
+        } catch (Exception e) {
+            throw new LMISException(errorMessage(R.string.msg_sync_products_list_failed));
         } finally {
             SaveProductLock = false;
         }
@@ -236,7 +277,6 @@ public class SyncBackManager {
             for (RnRForm form : rnRForms) {
                 rnrFormRepository.createFormAndItems(form);//todo: all or nothing with transaction
             }
-            sharedPreferenceMgr.setRequisitionDataSynced(true);
         } finally {
             saveRequisitionLock = false;
         }
@@ -281,6 +321,10 @@ public class SyncBackManager {
         }
     }
 
+    private String errorMessage(int code) {
+        return LMISApp.getContext().getResources().getString(code);
+    }
+
     public enum SyncProgress {
         SyncingProduct,
         ProductSynced,
@@ -292,6 +336,6 @@ public class SyncBackManager {
         RequisitionSynced,
 
         SyncingStockCardsLastYear,
-        StockCardsLastYearSynced
+        StockCardsLastYearSynced;
     }
 }
