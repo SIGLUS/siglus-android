@@ -24,8 +24,6 @@ import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.NoFacilityForUserException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
@@ -33,17 +31,15 @@ import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
 import org.openlmis.core.service.SyncBackManager;
 import org.openlmis.core.service.SyncManager;
-import org.openlmis.core.service.SyncSubscriber;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
+
+import rx.Subscriber;
 
 public class LoginPresenter implements Presenter {
 
     LoginView view;
 
-    boolean isLoadingProducts = false;
-    boolean isSyncingStockMovement = false;
-    boolean isSyncingRequisitionData = false;
     boolean shouldShowSyncedSuccessMsg = false;
 
     @Inject
@@ -54,6 +50,7 @@ public class LoginPresenter implements Presenter {
 
     @Inject
     SyncBackManager syncBackManager;
+    private boolean hasGoneToNextPage;
 
     @Override
     public void onStart() {
@@ -101,18 +98,18 @@ public class LoginPresenter implements Presenter {
         user = localUser;
         UserInfoMgr.getInstance().setUser(user);
 
-        if (!hasGetProducts()) {
+        if (!SharedPreferenceMgr.getInstance().hasGetProducts()) {
             view.loaded();
             ToastUtil.show(R.string.msg_sync_products_list_failed);
             return;
         }
 
-        if (!isLastMonthStockDataSynced() && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)) {
+        if (!SharedPreferenceMgr.getInstance().isLastMonthStockDataSynced() && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)) {
             view.loaded();
             ToastUtil.show(R.string.msg_sync_stockmovement_failed);
             return;
         }
-        if (!isRequisitionDataSynced()) {
+        if (!SharedPreferenceMgr.getInstance().isRequisitionDataSynced()) {
             view.loaded();
             ToastUtil.show(R.string.msg_sync_requisition_failed);
             return;
@@ -166,38 +163,57 @@ public class LoginPresenter implements Presenter {
 
     private void checkSyncServerData() {
 
-        if (!hasGetProducts()) {
-            checkProductsWithProgram();
-            return;
-        }
-
-        if (!isLastMonthStockDataSynced()) {
-            syncStockCard();
-            return;
-        }
-
-        if (!isRequisitionDataSynced()) {
-            syncRequisitionData();
-            return;
-        }
-
-        goToNextPageAndFetchStockMovementSilent();
+        syncBackManager.syncBackServerData(getSyncSubscriber());
     }
 
-    private void checkProductsWithProgram() {
-        if (!isLoadingProducts) {
-            isLoadingProducts = true;
-            view.loading(LMISApp.getInstance().getString(R.string.msg_fetching_products));
-            syncBackManager.syncProductsWithProgram(getSyncProductSubscriber());
-        }
-    }
+    protected Subscriber<SyncBackManager.SyncProgress> getSyncSubscriber() {
+        return new Subscriber<SyncBackManager.SyncProgress>() {
+            @Override
+            public void onCompleted() {
+                if (!hasGoneToNextPage) {
+                    goToNextPage();
+                }
+            }
 
-    protected void goToNextPageAndFetchStockMovementSilent() {
-        goToNextPage();
-        if (!isLastYearStockDataSynced()) {
-            fetchStockMovementSilent();
-            return;
-        }
+            @Override
+            public void onError(Throwable e) {
+                ToastUtil.show(e.getMessage());
+                view.loaded();
+            }
+
+            @Override
+            public void onNext(SyncBackManager.SyncProgress progress) {
+                switch (progress) {
+                    case SyncingProduct:
+                        view.loading(LMISApp.getInstance().getString(R.string.msg_fetching_products));
+                        break;
+                    case ProductSynced:
+                        view.loaded();
+                        break;
+
+                    case SyncingStockCardsLastMonth:
+                        view.loading(LMISApp.getInstance().getString(R.string.msg_sync_stock_movements_data));
+                        break;
+                    case StockCardsLastMonthSynced:
+                        shouldShowSyncedSuccessMsg = true;
+                        view.loaded();
+                        break;
+
+                    case SyncingRequisition:
+                        view.loading(LMISApp.getInstance().getString(R.string.msg_sync_requisition_data));
+                        break;
+                    case RequisitionSynced:
+                        goToNextPage();
+                        break;
+
+                    case SyncingStockCardsLastYear:
+                        break;
+                    case StockCardsLastYearSynced:
+                        //do nothing, it's silent
+                        break;
+                }
+            }
+        };
     }
 
     private void goToNextPage() {
@@ -211,137 +227,7 @@ public class LoginPresenter implements Presenter {
             }
             view.goToHomePage();
         }
-    }
-
-    private void fetchStockMovementSilent() {
-        syncBackManager.syncBackStockCards(new SyncSubscriber<Void>() {
-            @Override
-            public void onCompleted() {
-                //do nothing
-            }
-        }, false);
-    }
-
-
-    protected SyncSubscriber<Void> getSyncProductSubscriber() {
-        return new SyncSubscriber<Void>() {
-            @Override
-            public void onCompleted() {
-                isLoadingProducts = false;
-                setHasGetProducts(true);
-                view.loaded();
-                syncStockCard();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                isLoadingProducts = false;
-                setHasGetProducts(false);
-                if (e instanceof NoFacilityForUserException) {
-                    ToastUtil.show(R.string.msg_user_not_facility);
-                } else if (e instanceof LMISException) {
-                    ToastUtil.show(R.string.msg_save_products_failed);
-                } else {
-                    ToastUtil.show(R.string.msg_sync_products_list_failed);
-                }
-                view.loaded();
-            }
-        };
-    }
-
-    private void syncStockCard() {
-        if (!isSyncingStockMovement) {
-            isSyncingStockMovement = true;
-            view.loading(LMISApp.getInstance().getString(R.string.msg_sync_stock_movements_data));
-            syncBackManager.syncBackStockCards(getSyncStockCardDataSubscriber(), true);
-        }
-    }
-
-
-    protected SyncSubscriber<Void> getSyncStockCardDataSubscriber() {
-        return new SyncSubscriber<Void>() {
-            @Override
-            public void onCompleted() {
-                shouldShowSyncedSuccessMsg = true;
-                isSyncingStockMovement = false;
-                setLastMonthStockCardDataSynced(true);
-                view.loaded();
-                syncRequisitionData();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                shouldShowSyncedSuccessMsg = false;
-                isSyncingStockMovement = false;
-                setLastMonthStockCardDataSynced(false);
-                ToastUtil.show(R.string.msg_sync_stockmovement_failed);
-                view.loaded();
-            }
-        };
-    }
-
-    private void syncRequisitionData() {
-        if (!isSyncingRequisitionData) {
-            isSyncingRequisitionData = true;
-            view.loading(LMISApp.getInstance().getString(R.string.msg_sync_requisition_data));
-            syncBackManager.syncBackRequisition(getSyncRequisitionDataSubscriber());
-        }
-    }
-
-    protected SyncSubscriber<Void> getSyncRequisitionDataSubscriber() {
-        return new SyncSubscriber<Void>() {
-            @Override
-            public void onCompleted() {
-                isSyncingRequisitionData = false;
-                setRequisitionDataSynced(true);
-                goToNextPageAndFetchStockMovementSilent();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                isSyncingRequisitionData = false;
-                setRequisitionDataSynced(false);
-                ToastUtil.show(R.string.msg_sync_requisition_failed);
-                view.loaded();
-            }
-        };
-    }
-
-    public void resetLoginProcess() {
-        isSyncingRequisitionData = false;
-        isLoadingProducts = false;
-    }
-
-    protected boolean hasGetProducts() {
-        return SharedPreferenceMgr.getInstance().hasGetProducts();
-    }
-
-    protected void setHasGetProducts(boolean hasGetProducts) {
-        SharedPreferenceMgr.getInstance().setHasGetProducts(hasGetProducts);
-    }
-
-    protected boolean isLastMonthStockDataSynced() {
-        return SharedPreferenceMgr.getInstance().isLastMonthStockDataSynced();
-    }
-
-    private void setLastMonthStockCardDataSynced(boolean isStockCardSynced) {
-        SharedPreferenceMgr.getInstance().setLastMonthStockCardDataSynced(isStockCardSynced);
-    }
-
-    protected boolean isLastYearStockDataSynced() {
-        return SharedPreferenceMgr.getInstance().isLastYearStockDataSynced();
-    }
-
-    private void setLastYearStockCardDataSynced(boolean isStockCardSynced) {
-        SharedPreferenceMgr.getInstance().setLastYearStockCardDataSynced(isStockCardSynced);
-    }
-
-    protected boolean isRequisitionDataSynced() {
-        return SharedPreferenceMgr.getInstance().isRequisitionDataSynced();
-    }
-
-    protected void setRequisitionDataSynced(boolean isRequisitionDataSynced) {
-        SharedPreferenceMgr.getInstance().setRequisitionDataSynced(isRequisitionDataSynced);
+        hasGoneToNextPage = true;
     }
 
     public interface LoginView extends BaseView {

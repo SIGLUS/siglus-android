@@ -166,7 +166,6 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     @Override
     public void loaded() {
         super.loaded();
-        presenter.resetLoginProcess();
     }
 
     @Override

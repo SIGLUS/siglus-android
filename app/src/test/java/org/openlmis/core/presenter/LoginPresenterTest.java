@@ -18,7 +18,6 @@
 
 package org.openlmis.core.presenter;
 
-
 import com.google.inject.AbstractModule;
 
 import org.junit.After;
@@ -31,8 +30,7 @@ import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.NoFacilityForUserException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -40,14 +38,14 @@ import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
 import org.openlmis.core.network.model.SyncBackProductsResponse;
 import org.openlmis.core.service.SyncBackManager;
+import org.openlmis.core.service.SyncBackManager.SyncProgress;
 import org.openlmis.core.service.SyncManager;
-import org.openlmis.core.service.SyncSubscriber;
 import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
 
 import roboguice.RoboGuice;
-import rx.Observer;
+import rx.Subscriber;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -56,6 +54,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.openlmis.core.service.SyncBackManager.SyncProgress.RequisitionSynced;
 
 @RunWith(LMISTestRunner.class)
 public class LoginPresenterTest {
@@ -69,12 +68,9 @@ public class LoginPresenterTest {
 
     @Captor
     private ArgumentCaptor<NewCallback<User>> loginCB;
-    @Captor
-    private ArgumentCaptor<Observer<Void>> getProductsCB;
 
     private LMISTestApp appInject;
-    private SyncSubscriber<Void> syncProductSubscriber;
-    private SyncSubscriber<Void> syncRequisitionDataSubscriber;
+    private Subscriber<SyncProgress> syncSubscriber;
     private SyncBackManager syncBackManager;
 
     @Before
@@ -94,8 +90,7 @@ public class LoginPresenterTest {
 
         presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(LoginPresenter.class);
         presenter.attachView(mockActivity);
-        syncProductSubscriber = presenter.getSyncProductSubscriber();
-        syncRequisitionDataSubscriber = presenter.getSyncRequisitionDataSubscriber();
+        syncSubscriber = presenter.getSyncSubscriber();
         presenter = spy(presenter);
     }
 
@@ -103,7 +98,6 @@ public class LoginPresenterTest {
     public void teardown() {
         RoboGuice.Util.reset();
     }
-
 
     @Test
     public void shouldSaveUserToLocalDBWhenSuccess() throws InterruptedException {
@@ -123,8 +117,6 @@ public class LoginPresenterTest {
     public void shouldCreateSyncAccountWhenLoginSuccess() {
         appInject.setNetworkConnection(true);
 
-        when(presenter.hasGetProducts()).thenReturn(false);
-
         presenter.startLogin("user", "password");
         User user = new User("user", "password");
         verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
@@ -139,8 +131,6 @@ public class LoginPresenterTest {
     public void shouldSaveUserInfoWhenLoginSuccess() {
         appInject.setNetworkConnection(true);
 
-        when(presenter.hasGetProducts()).thenReturn(false);
-
         presenter.startLogin("user", "password");
         User user = new User("user", "password");
         verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
@@ -153,32 +143,28 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldGetProductsWhenLoginSuccessFromNet() {
+    public void shouldSyncServerDataWhenLoginSuccessFromNet() {
         appInject.setNetworkConnection(true);
-
-        when(presenter.hasGetProducts()).thenReturn(false);
 
         presenter.startLogin("user", "password");
         verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
         loginCB.getValue().success(new User("user", "password"));
 
-        verify(syncBackManager).syncProductsWithProgram(getProductsCB.capture());
-        getProductsCB.getValue().onCompleted();
+        verify(syncBackManager).syncBackServerData(any(Subscriber.class));
     }
 
     @Test
     public void shouldGoToInventoryPageIfGetProductsSuccess() throws InterruptedException {
         when(mockActivity.needInitInventory()).thenReturn(true);
         appInject.setNetworkConnection(true);
-        when(presenter.hasGetProducts()).thenReturn(false);
 
         presenter.startLogin("user", "password");
         verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
 
         loginCB.getValue().success(new User("user", "password"));
 
-        verify(syncBackManager).syncProductsWithProgram(getProductsCB.capture());
-        getProductsCB.getValue().onCompleted();
+        verify(syncBackManager).syncBackServerData(any(Subscriber.class));
+        syncSubscriber.onCompleted();
 
         verify(mockActivity).loaded();
     }
@@ -188,9 +174,10 @@ public class LoginPresenterTest {
         appInject.setNetworkConnection(false);
         when(userRepository.getUserFromLocal(any(User.class))).thenReturn(new User("user", "password"));
         when(mockActivity.needInitInventory()).thenReturn(false);
-        when(presenter.hasGetProducts()).thenReturn(true);
-        when(presenter.isLastMonthStockDataSynced()).thenReturn(true);
-        when(presenter.isRequisitionDataSynced()).thenReturn(true);
+
+        SharedPreferenceMgr.getInstance().setHasGetProducts(true);
+        SharedPreferenceMgr.getInstance().setLastMonthStockCardDataSynced(true);
+        SharedPreferenceMgr.getInstance().setRequisitionDataSynced(true);
 
         presenter.startLogin("user", "password");
 
@@ -201,13 +188,11 @@ public class LoginPresenterTest {
         verify(mockActivity).goToHomePage();
     }
 
-
     @Test
     public void shouldShowMessageWhenNoConnectionAndHasNotGetProducts() {
         appInject.setNetworkConnection(false);
         when(userRepository.getUserFromLocal(any(User.class))).thenReturn(new User("user", "password"));
         when(mockActivity.needInitInventory()).thenReturn(false);
-        when(presenter.hasGetProducts()).thenReturn(false);
 
         presenter.startLogin("user", "password");
 
@@ -232,12 +217,9 @@ public class LoginPresenterTest {
         verify(mockActivity).clearPassword();
     }
 
-
     @Test
-    public void shouldCallGetProductOnlyOnceWhenClickLoginButtonTwice() {
+    public void shouldCallSyncServerDataOnlyOnceWhenClickLoginButtonTwice() {
         appInject.setNetworkConnection(true);
-
-        when(presenter.hasGetProducts()).thenReturn(false);
 
         presenter.startLogin("user", "password");
         presenter.startLogin("user", "password");
@@ -245,7 +227,7 @@ public class LoginPresenterTest {
         verify(userRepository, times(2)).authorizeUser(any(User.class), loginCB.capture());
         loginCB.getValue().success(new User("user", "password"));
 
-        verify(syncBackManager, times(1)).syncProductsWithProgram(any(Observer.class));
+        verify(syncBackManager, times(1)).syncBackServerData(any(Subscriber.class));
     }
 
     @Test
@@ -261,37 +243,15 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldSyncStockCardWhenProductSyncCompleted() {
-        syncProductSubscriber.onCompleted();
-
-        assertThat(presenter.hasGetProducts()).isEqualTo(true);
+    public void shouldShowSyncingStockCardsMessage() {
+        syncSubscriber.onNext(SyncProgress.SyncingStockCardsLastMonth);
         verify(mockActivity).loading(RuntimeEnvironment.application.getString(R.string.msg_sync_stock_movements_data));
-        verify(syncBackManager).syncBackStockCards(any(rx.Observer.class), any(Boolean.class));
-    }
-
-    @Test
-    public void shouldShowErrorMessageWhenProductSyncFailed() {
-
-        syncProductSubscriber.onError(new LMISException("Products save failed"));
-
-        String message = RuntimeEnvironment.application.getString(R.string.msg_save_products_failed);
-        assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(message);
-        verify(mockActivity).loaded();
-
-
-        syncProductSubscriber.onError(new NoFacilityForUserException("No Facility"));
-        message = RuntimeEnvironment.application.getString(R.string.msg_user_not_facility);
-        assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(message);
-
-        syncProductSubscriber.onError(new Exception("Sync products failed"));
-        message = RuntimeEnvironment.application.getString(R.string.msg_sync_products_list_failed);
-        assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(message);
     }
 
     @Test
     public void shouldGoToInitInventoryWhenDataBackCompleted() {
         when(mockActivity.needInitInventory()).thenReturn(true);
-        syncRequisitionDataSubscriber.onCompleted();
+        syncSubscriber.onNext(RequisitionSynced);
 
         verify(mockActivity).loaded();
         verify(mockActivity).goToInitInventory();
@@ -300,7 +260,7 @@ public class LoginPresenterTest {
     @Test
     public void shouldLoginFailedWhenSyncProductSucceedAndSyncRequisitionFailed() {
         when(mockActivity.needInitInventory()).thenReturn(true);
-        syncRequisitionDataSubscriber.onError(new Exception("error"));
+        syncSubscriber.onError(new Exception("error"));
 
         verify(mockActivity, times(1)).loaded();
         verify(mockActivity, times(0)).goToInitInventory();
@@ -309,30 +269,11 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldNotGoToNextPageWhenSyncProductFailed() {
-        syncProductSubscriber.onError(new Exception("error"));
+        syncSubscriber.onError(new Exception("error"));
 
         verify(mockActivity, times(1)).loaded();
         verify(mockActivity, times(0)).goToInitInventory();
         verify(mockActivity, times(0)).goToHomePage();
-    }
-
-    @Test
-    public void shouldSyncRequisitionDataIfProductSyncExistButRequisitionDataNonExist() {
-        when(presenter.hasGetProducts()).thenReturn(true);
-        when(presenter.isLastMonthStockDataSynced()).thenReturn(true);
-        when(rnrFormRepository.hasRequisitionData()).thenReturn(false);
-
-        presenter.onLoginSuccess(any(User.class));
-
-        verify(mockActivity).loading(RuntimeEnvironment.application.getString(R.string.msg_sync_requisition_data));
-        verify(syncBackManager).syncBackRequisition(any(SyncSubscriber.class));
-    }
-
-    @Test
-    public void shouldSetRequisitionDataSharedPreference() {
-        syncRequisitionDataSubscriber.onCompleted();
-
-        assertThat(presenter.isRequisitionDataSynced()).isEqualTo(true);
     }
 
     public class MyTestModule extends AbstractModule {

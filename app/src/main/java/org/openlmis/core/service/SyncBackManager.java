@@ -225,7 +225,6 @@ public class SyncBackManager {
 
     private void fetchAndSaveProductsWithProgram() throws LMISException {
         User user = UserInfoMgr.getInstance().getUser();
-        user.setFacilityCode("");
         if (StringUtils.isEmpty(user.getFacilityCode())) {
             throw new NoFacilityForUserException(errorMessage(R.string.msg_user_not_facility));
         }
