@@ -30,7 +30,6 @@ import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.service.SyncBackManager.SyncProgress;
 import org.robolectric.RuntimeEnvironment;
 
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -123,39 +122,12 @@ public class SyncBackManagerTest {
         assertThat(subscriber.syncProgresses.get(7), is(StockCardsLastYearSynced));
     }
 
-    @Test
-    public void shouldSyncProductsWithPrograms() throws Exception {
-        //given
-        mockProductResponse();
-
-        //when
-        TestSubscriber<Void> observer = new TestSubscriber<>();
-        syncBackManager.syncProductsWithProgram(observer);
-        observer.awaitTerminalEvent();
-        observer.assertNoErrors();
-
-        //then
-        verify(programRepository).saveProgramWithProduct(any(Program.class));
-    }
-
     private void mockProductResponse() {
         ArrayList<Program> programsWithProducts = new ArrayList<>();
         programsWithProducts.add(new Program());
         SyncBackProductsResponse response = new SyncBackProductsResponse();
         response.setProgramsWithProducts(programsWithProducts);
         when(lmisRestApi.fetchProducts(any(String.class))).thenReturn(response);
-    }
-
-    @Test
-    public void shouldSyncRequisitionDataSuccess() throws LMISException, SQLException {
-        mockRequisitionResponse();
-
-        TestSubscriber<Void> observer = new TestSubscriber<>();
-        syncBackManager.syncBackRequisition(observer);
-        observer.awaitTerminalEvent();
-        observer.assertNoErrors();
-
-        verify(rnrFormRepository, times(2)).createFormAndItems(any(RnRForm.class));
     }
 
     private void mockRequisitionResponse() {
@@ -167,35 +139,6 @@ public class SyncBackManagerTest {
         SyncDownRequisitionsResponse syncDownRequisitionsResponse = new SyncDownRequisitionsResponse();
         syncDownRequisitionsResponse.setRequisitions(data);
         when(lmisRestApi.fetchRequisitions(anyString())).thenReturn(syncDownRequisitionsResponse);
-    }
-
-    @Test
-    public void shouldFetchLatestYearStockMovement() throws Throwable {
-        when(sharedPreferenceMgr.getPreference()).thenReturn(LMISTestApp.getContext().getSharedPreferences("LMISPreference", Context.MODE_PRIVATE));
-        stockRepository = mock(StockRepository.class);
-        syncBackManager.stockRepository = stockRepository;
-        when(lmisRestApi.fetchStockMovementData(anyString(), anyString(), anyString())).thenReturn(getStockCardResponse());
-
-        TestSubscriber<Void> testSubscriber = new TestSubscriber<>();
-        syncBackManager.syncBackStockCards(testSubscriber, false);
-        testSubscriber.awaitTerminalEvent();
-        testSubscriber.assertNoErrors();
-
-        verify(lmisRestApi, times(12)).fetchStockMovementData(anyString(), anyString(), anyString());
-    }
-
-    @Test
-    public void shouldFetchCurrentMonthStockMovement() throws Throwable {
-        mockStockCardsResponse();
-
-        TestSubscriber<Void> testSubscriber = new TestSubscriber<>();
-
-        syncBackManager.syncBackStockCards(testSubscriber, true);
-
-        testSubscriber.awaitTerminalEvent();
-
-        testSubscriber.assertNoErrors();
-        verifyLastMonthStockCardsSynced(createdPreferences);
     }
 
     private void verifyLastMonthStockCardsSynced(SharedPreferences createdPreferences) throws LMISException {

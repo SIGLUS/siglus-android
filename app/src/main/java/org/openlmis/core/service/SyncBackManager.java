@@ -47,7 +47,6 @@ import java.util.Date;
 import java.util.List;
 
 import rx.Observable;
-import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -159,68 +158,6 @@ public class SyncBackManager {
                 throw e;
             }
         }
-    }
-
-    public void syncProductsWithProgram(Observer<Void> observer) {
-        Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    fetchAndSaveProductsWithProgram();
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    e.reportToFabric();
-                    subscriber.onError(e);
-                }
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
-    }
-
-    public void syncBackStockCards(Observer<Void> observer, final boolean isSyncMonth) {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)) {
-            return;
-        }
-        Observable.create(new Observable.OnSubscribe<Void>() {
-
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    synchronized (STOCK_MONTH_SYNC_LOCK) {
-                        if (isSyncMonth && !sharedPreferenceMgr.isLastMonthStockDataSynced()) {
-                            fetchLatestOneMonthMovements();
-                            sharedPreferenceMgr.setLastMonthStockCardDataSynced(true);
-                        }
-                    }
-
-                    synchronized (STOCK_YEAR_SYNC_LOCK) {
-                        if (!isSyncMonth && !sharedPreferenceMgr.isLastYearStockDataSynced()) {
-                            fetchLatestYearStockMovements();
-                            sharedPreferenceMgr.setLastYearStockCardDataSynced(true);
-                        }
-                    }
-
-                    subscriber.onCompleted();
-                } catch (Throwable throwable) {
-                    subscriber.onError(new LMISException("Syncing StockCard back failed"));
-                    new LMISException(throwable).reportToFabric();
-                }
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
-    }
-
-    public void syncBackRequisition(Observer<Void> observer) {
-        Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    fetchAndSaveRequisition();
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    e.reportToFabric();
-                    subscriber.onError(new LMISException("Syncing back requisition failed"));
-                }
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
     }
 
     private void fetchAndSaveProductsWithProgram() throws LMISException {
