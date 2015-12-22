@@ -45,6 +45,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -66,6 +67,7 @@ public class SyncBackManagerTest {
         sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
         lmisRestApi = mock(LMISRestApi.class);
         rnrFormRepository = mock(RnrFormRepository.class);
+        reset(rnrFormRepository);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         syncBackManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncBackManager.class);
@@ -92,35 +94,13 @@ public class SyncBackManagerTest {
         SyncDownRequisitionsResponse syncDownRequisitionsResponse = new SyncDownRequisitionsResponse();
         syncDownRequisitionsResponse.setRequisitions(data);
         when(lmisRestApi.fetchRequisitions(anyString())).thenReturn(syncDownRequisitionsResponse);
-        syncBackManager.fetchAndSaveRequisitionData();
+
+        TestSubscriber<Void> observer = new TestSubscriber<>();
+        syncBackManager.syncBackRequisition(observer);
+        observer.awaitTerminalEvent();
+        observer.assertNoErrors();
+
         verify(rnrFormRepository, times(2)).createFormAndItems(any(RnRForm.class));
-    }
-
-    @Test
-    public void shouldFetchStockMovement() throws Throwable {
-
-        String facilityId = "HF2";
-
-        User user = new User();
-        user.setFacilityId(facilityId);
-        UserInfoMgr.getInstance().setUser(user);
-
-        String startDate = "2015-11-04";
-        String endDate = "2015-12-04";
-
-
-        SyncDownStockCardResponse syncDownStockCardResponse = getStockCardResponse();
-
-
-        StockRepository stockRepository = mock(StockRepository.class);
-        syncBackManager.stockRepository = stockRepository;
-
-        when(lmisRestApi.fetchStockMovementData(facilityId, startDate, endDate)).thenReturn(syncDownStockCardResponse);
-
-        syncBackManager.fetchAndSaveStockCards(startDate, endDate);
-
-        verify(stockRepository, times(2)).saveStockCardAndBatchUpdateMovements(any(StockCard.class));
-        assertThat(stockMovementItem.isSynced(), is(true));
     }
 
     @Test
@@ -131,12 +111,10 @@ public class SyncBackManagerTest {
         when(lmisRestApi.fetchStockMovementData(anyString(), anyString(), anyString())).thenReturn(getStockCardResponse());
 
         TestSubscriber<Void> testSubscriber = new TestSubscriber<>();
-
         syncBackManager.syncBackStockCards(testSubscriber, false);
-
         testSubscriber.awaitTerminalEvent();
-
         testSubscriber.assertNoErrors();
+
         verify(lmisRestApi, times(12)).fetchStockMovementData(anyString(), anyString(), anyString());
     }
 
@@ -161,7 +139,8 @@ public class SyncBackManagerTest {
         verify(lmisRestApi).fetchStockMovementData(anyString(), anyString(), anyString());
 
         assertFalse(createdPreferences.getBoolean(SharedPreferenceMgr.KEY_INIT_INVENTORY, true));
-
+        verify(stockRepository, times(2)).saveStockCardAndBatchUpdateMovements(any(StockCard.class));
+        assertThat(stockMovementItem.isSynced(), is(true));
     }
 
     @NonNull

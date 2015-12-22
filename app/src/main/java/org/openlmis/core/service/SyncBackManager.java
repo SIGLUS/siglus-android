@@ -100,7 +100,45 @@ public class SyncBackManager {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
     }
 
-    protected void fetchAndSaveStockCards(String startDate, String endDate) throws Throwable {
+    public void syncBackRequisition(Observer<Void> observer) {
+        Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    fetchAndSaveRequisition();
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    e.reportToFabric();
+                    subscriber.onError(new LMISException("Syncing back requisition failed"));
+                }
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
+    }
+
+    private void fetchAndSaveRequisition() throws LMISException {
+        SyncDownRequisitionsResponse syncDownRequisitionsResponse = lmisRestApi.fetchRequisitions(UserInfoMgr.getInstance().getUser().getFacilityCode());
+
+        if (syncDownRequisitionsResponse == null) {
+            throw new LMISException("Can't get SyncDownRequisitionsResponse, you can check json parse to POJO logic");
+        }
+
+        if (saveRequisitionLock || sharedPreferenceMgr.isRequisitionDataSynced()) {
+            throw new LMISException("Sync Requisition Background or Loaded");
+        }
+        saveRequisitionLock = true;
+
+        try {
+            List<RnRForm> rnRForms = syncDownRequisitionsResponse.getRequisitions();
+            for (RnRForm form : rnRForms) {
+                rnrFormRepository.createFormAndItems(form);//todo: all or nothing with transaction
+            }
+            sharedPreferenceMgr.setRequisitionDataSynced(true);
+        } finally {
+            saveRequisitionLock = false;
+        }
+    }
+
+    private void fetchAndSaveStockCards(String startDate, String endDate) throws Throwable {
         //default start date is one month before and end date is one day after
         final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
 
@@ -120,7 +158,7 @@ public class SyncBackManager {
         }
     }
 
-    public void fetchLatestOneMonthMovements() throws Throwable {
+    private void fetchLatestOneMonthMovements() throws Throwable {
         Date now = new Date();
         Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH);
         String startDateStr = DateUtil.formatDate(startDate, "yyyy-MM-dd");
@@ -135,7 +173,7 @@ public class SyncBackManager {
         }
     }
 
-    public void fetchLatestYearStockMovements() throws Throwable {
+    private void fetchLatestYearStockMovements() throws Throwable {
         long syncEndTimeMillions = sharedPreferenceMgr.getPreference().getLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, new Date().getTime());
 
         Date now = new Date(syncEndTimeMillions);
@@ -156,44 +194,6 @@ public class SyncBackManager {
                 sharedPreferenceMgr.getPreference().edit().putInt(SharedPreferenceMgr.KEY_STOCK_SYNC_CURRENT_INDEX, month).apply();
                 throw throwable;
             }
-        }
-    }
-
-    public void syncBackRequisition(Observer<Void> observer) {
-        Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    fetchAndSaveRequisitionData();
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    e.reportToFabric();
-                    subscriber.onError(new LMISException("Syncing back requisition failed"));
-                }
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
-    }
-
-    public void fetchAndSaveRequisitionData() throws LMISException {
-        SyncDownRequisitionsResponse syncDownRequisitionsResponse = lmisRestApi.fetchRequisitions(UserInfoMgr.getInstance().getUser().getFacilityCode());
-
-        if (syncDownRequisitionsResponse == null) {
-            throw new LMISException("Can't get SyncDownRequisitionsResponse, you can check json parse to POJO logic");
-        }
-
-        if (saveRequisitionLock || sharedPreferenceMgr.isRequisitionDataSynced()) {
-            throw new LMISException("Sync Requisition Background or Loaded");
-        }
-        saveRequisitionLock = true;
-
-        try {
-            List<RnRForm> rnRForms = syncDownRequisitionsResponse.getRequisitions();
-            for (RnRForm form : rnRForms) {
-                rnrFormRepository.createFormAndItems(form);//todo: all or nothing with transaction
-            }
-            sharedPreferenceMgr.setRequisitionDataSynced(true);
-        } finally {
-            saveRequisitionLock = false;
         }
     }
 }
