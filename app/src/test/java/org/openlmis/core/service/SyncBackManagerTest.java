@@ -99,6 +99,27 @@ public class SyncBackManagerTest {
     }
 
     @Test
+    public void shouldOnlySyncOnceWhenInvokedTwice() throws Exception {
+        //given
+        mockProductResponse();
+        mockRequisitionResponse();
+        mockStockCardsResponse();
+
+        //when
+        TestSubscriber<SyncProgress> subscriber1 = new TestSubscriber<>();
+        TestSubscriber<SyncProgress> subscriber2 = new TestSubscriber<>();
+        syncBackManager.syncBackServerData(subscriber1);
+        syncBackManager.syncBackServerData(subscriber2);
+
+        subscriber1.awaitTerminalEvent();
+        subscriber1.assertNoErrors();
+
+        //then
+        subscriber2.assertNoTerminalEvent();
+        verify(lmisRestApi, times(1)).fetchProducts(anyString());
+    }
+
+    @Test
     public void shouldSyncBackServerData() throws Exception {
         //given
         mockProductResponse();

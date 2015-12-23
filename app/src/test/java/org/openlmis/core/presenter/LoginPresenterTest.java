@@ -75,7 +75,6 @@ public class LoginPresenterTest {
 
     @Before
     public void setup() {
-
         appInject = (LMISTestApp) RuntimeEnvironment.application;
 
         userRepository = mock(UserRepository.class);
@@ -154,23 +153,20 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldGoToInventoryPageIfGetProductsSuccess() throws InterruptedException {
+    public void shouldGoToInventoryPageIfSyncServerDataSuccess() throws InterruptedException {
+        //given
         when(mockActivity.needInitInventory()).thenReturn(true);
-        appInject.setNetworkConnection(true);
 
-        presenter.startLogin("user", "password");
-        verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
-
-        loginCB.getValue().success(new User("user", "password"));
-
-        verify(syncBackManager).syncBackServerData(any(Subscriber.class));
+        //when
         syncSubscriber.onCompleted();
 
+        //then
         verify(mockActivity).loaded();
+        verify(mockActivity).goToInitInventory();
     }
 
     @Test
-    public void shouldDoOfflineLoginWhenNoConnectionAndHasLocalCacheAndSynedData() {
+    public void shouldDoOfflineLoginWhenNoConnectionAndHasSynedData() {
         appInject.setNetworkConnection(false);
         when(userRepository.getUserFromLocal(any(User.class))).thenReturn(new User("user", "password"));
         when(mockActivity.needInitInventory()).thenReturn(false);
@@ -218,19 +214,6 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldCallSyncServerDataOnlyOnceWhenClickLoginButtonTwice() {
-        appInject.setNetworkConnection(true);
-
-        presenter.startLogin("user", "password");
-        presenter.startLogin("user", "password");
-
-        verify(userRepository, times(2)).authorizeUser(any(User.class), loginCB.capture());
-        loginCB.getValue().success(new User("user", "password"));
-
-        verify(syncBackManager, times(1)).syncBackServerData(any(Subscriber.class));
-    }
-
-    @Test
     public void shouldShowUserNameEmptyErrorMessage() {
         presenter.startLogin("", "password1");
         verify(mockActivity).showUserNameEmpty();
@@ -249,7 +232,7 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldGoToInitInventoryWhenDataBackCompleted() {
+    public void shouldGoToInitInventoryWhenRequisitionDataSynced() {
         when(mockActivity.needInitInventory()).thenReturn(true);
         syncSubscriber.onNext(RequisitionSynced);
 
@@ -258,17 +241,8 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldLoginFailedWhenSyncProductSucceedAndSyncRequisitionFailed() {
+    public void shouldLoginFailedWhenSyncDataFailed() {
         when(mockActivity.needInitInventory()).thenReturn(true);
-        syncSubscriber.onError(new Exception("error"));
-
-        verify(mockActivity, times(1)).loaded();
-        verify(mockActivity, times(0)).goToInitInventory();
-        verify(mockActivity, times(0)).goToHomePage();
-    }
-
-    @Test
-    public void shouldNotGoToNextPageWhenSyncProductFailed() {
         syncSubscriber.onError(new Exception("error"));
 
         verify(mockActivity, times(1)).loaded();

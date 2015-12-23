@@ -197,6 +197,7 @@ public class LoginPresenter extends Presenter {
         if (view.needInitInventory()) {
             view.goToInitInventory();
         } else {
+            //TODO refactor code
             if (shouldShowSyncedSuccessMsg) {
                 ToastUtil.showLongTimeAsOfficialWay(R.string.msg_initial_sync_success);
             }
