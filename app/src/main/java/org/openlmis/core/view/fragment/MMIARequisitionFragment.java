@@ -35,9 +35,6 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.BaseInfoItem;
-import org.openlmis.core.model.Regimen;
-import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.presenter.Presenter;

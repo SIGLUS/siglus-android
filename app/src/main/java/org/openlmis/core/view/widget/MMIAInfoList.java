@@ -159,7 +159,7 @@ public class MMIAInfoList extends LinearLayout {
             if (null == item.getValue()){
                 return true;
             }
-            if ( item.getValue().isEmpty() ){
+            if (item.getValue().isEmpty()){
                 return true;
             }
         }
