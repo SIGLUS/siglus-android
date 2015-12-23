@@ -46,7 +46,9 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
         program.setProgramCode("TB");
         program.setProgramName("TB");
 
-        programRepository.saveProgramWithProduct(program);
+        ArrayList<Program> programs = new ArrayList<Program>();
+        programs.add(program);
+        programRepository.saveProgramWithProduct(programs);
 
         assertThat(programRepository.list().size(), is(1));
         assertThat(programRepository.list().get(0).getProducts().size(), is(1));
@@ -60,9 +62,12 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
         program.setProgramCode("TB");
         program.setProgramName("TB");
 
-        programRepository.saveProgramWithProduct(program);
+        ArrayList<Program> programs = new ArrayList<Program>();
+        programs.add(program);
+        programRepository.saveProgramWithProduct(programs);
 
         assertThat(programRepository.list().size(), is(1));
         assertThat(programRepository.list().get(0).getProducts().size(), is(1));
+        ;
     }
 }

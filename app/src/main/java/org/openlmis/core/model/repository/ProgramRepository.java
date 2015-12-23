@@ -23,16 +23,18 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.misc.TransactionManager;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
+import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class ProgramRepository {
 
@@ -43,9 +45,11 @@ public class ProgramRepository {
 
     @Inject
     DbUtil dbUtil;
+    private Context context;
 
     @Inject
     public ProgramRepository(Context context) {
+        this.context = context;
         genericDao = new GenericDao<>(Program.class, context);
     }
 
@@ -57,13 +61,25 @@ public class ProgramRepository {
         genericDao.create(program);
     }
 
-    public void saveProgramWithProduct(Program program) throws LMISException {
-        create(program);
-        for (Product product : program.getProducts()) {
-            product.setProgram(program);
+    public void saveProgramWithProduct(final List<Program> programs) throws LMISException {
+        try {
+            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+                    for (Program program : programs) {
+                        create(program);
+                        for (Product product : program.getProducts()) {
+                            product.setProgram(program);
+                            productRepository.create(product);
+                        }
+
+                    }
+                    return null;
+                }
+            });
+        } catch (SQLException e) {
+            throw new LMISException(e);
         }
-        productRepository.save(new ArrayList<>(program.getProducts()));
-        refresh(program);
     }
 
     public void refresh(Program programsWithProducts) {

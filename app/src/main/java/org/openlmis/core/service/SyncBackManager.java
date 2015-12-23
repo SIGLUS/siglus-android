@@ -28,7 +28,6 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.NoFacilityForUserException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
@@ -161,11 +160,7 @@ public class SyncBackManager {
         }
         try {
             SyncBackProductsResponse response = lmisRestApi.fetchProducts(user.getFacilityCode());
-
-            List<Program> programsWithProducts = response.getProgramsWithProducts();
-            for (Program programWithProducts : programsWithProducts) {
-                programRepository.saveProgramWithProduct(programWithProducts);
-            }
+            programRepository.saveProgramWithProduct(response.getProgramsWithProducts());
         } catch (Exception e) {
             throw new LMISException(errorMessage(R.string.msg_sync_products_list_failed));
         }

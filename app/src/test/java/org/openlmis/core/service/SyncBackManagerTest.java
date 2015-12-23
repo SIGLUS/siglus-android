@@ -125,7 +125,7 @@ public class SyncBackManagerTest {
     private void testSyncProgress(SyncProgress progress) {
         try {
             if (progress == ProductSynced) {
-                verify(programRepository).saveProgramWithProduct(any(Program.class));
+                verify(programRepository).saveProgramWithProduct(any(ArrayList.class));
             }
             if (progress == StockCardsLastMonthSynced) {
                 verifyLastMonthStockCardsSynced(createdPreferences);
