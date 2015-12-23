@@ -74,8 +74,6 @@ public class SyncBackManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        ((LMISTestApp) RuntimeEnvironment.application).setFeatureToggle(true);//todo: add config file to enable all features for testing and dev
-
         sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
         lmisRestApi = mock(LMISRestApi.class);
         rnrFormRepository = mock(RnrFormRepository.class);
@@ -199,7 +197,7 @@ public class SyncBackManagerTest {
                 verifyLastMonthStockCardsSynced(createdPreferences);
             }
             if (progress == RequisitionSynced) {
-                verify(rnrFormRepository, times(2)).createFormAndItems(any(ArrayList.class));
+                verify(rnrFormRepository, times(1)).createFormAndItems(any(ArrayList.class));
             }
             if (progress == StockCardsLastYearSynced) {
                 verify(lmisRestApi, times(13)).fetchStockMovementData(anyString(), anyString(), anyString());
