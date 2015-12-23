@@ -47,6 +47,7 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
         Date createdDate = new Date(json.getAsJsonObject().get("createdDate").getAsLong());
 
         stockMovementItem.setCreatedTime(createdDate);
+        stockMovementItem.setSynced(true);
         return stockMovementItem;
     }
 

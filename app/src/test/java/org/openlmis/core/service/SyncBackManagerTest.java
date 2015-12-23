@@ -176,7 +176,6 @@ public class SyncBackManagerTest {
 
         assertFalse(createdPreferences.getBoolean(SharedPreferenceMgr.KEY_INIT_INVENTORY, true));
         verify(stockRepository, times(2)).saveStockCardAndBatchUpdateMovements(any(StockCard.class));
-        assertThat(stockMovementItem.isSynced(), is(true));
     }
 
     private SyncDownStockCardResponse getStockCardResponse() throws ParseException {

@@ -29,7 +29,6 @@ import org.openlmis.core.exceptions.NoFacilityForUserException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -173,11 +172,6 @@ public class SyncBackManager {
         SyncDownStockCardResponse syncDownStockCardResponse = lmisRestApi.fetchStockMovementData(facilityId, startDate, endDate);
 
         for (StockCard stockCard : syncDownStockCardResponse.getStockCards()) {
-
-            for (StockMovementItem item : stockCard.getStockMovementItemsWrapper()) {
-                item.setSynced(true);
-            }
-
             if (stockCard.getId() <= 0) {
                 stockRepository.saveStockCardAndBatchUpdateMovements(stockCard);
             } else {
@@ -227,10 +221,10 @@ public class SyncBackManager {
 
             try {
                 fetchAndSaveStockCards(startDateStr, endDateStr);
-            } catch (Throwable throwable) {
+            } catch (LMISException e) {
                 sharedPreferenceMgr.getPreference().edit().putLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, syncEndTimeMillions).apply();
                 sharedPreferenceMgr.getPreference().edit().putInt(SharedPreferenceMgr.KEY_STOCK_SYNC_CURRENT_INDEX, month).apply();
-                throw throwable;
+                throw e;
             }
         }
     }
