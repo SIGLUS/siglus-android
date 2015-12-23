@@ -80,7 +80,7 @@ public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> e
     public int validateAll() {
         int position = -1;
         for (int i = 0; i < data.size(); i++) {
-            if (!data.get(i).validate()) {
+            if (!data.get(i).isValidate()) {
                 position = i;
                 break;
             }

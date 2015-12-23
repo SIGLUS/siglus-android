@@ -46,9 +46,4 @@ public class StockCardViewModelBuilder {
     public StockCardViewModel build() {
         return viewModel;
     }
-
-    public StockCardViewModelBuilder setValidate(boolean isValidate) {
-        viewModel.setValidate(isValidate);
-        return this;
-    }
 }

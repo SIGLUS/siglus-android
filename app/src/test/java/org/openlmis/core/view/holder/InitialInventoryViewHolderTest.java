@@ -96,7 +96,6 @@ public class InitialInventoryViewHolderTest {
                 .setExpiryDates(newArrayList("28/11/2015"))
                 .setQuantity("abc")
                 .setChecked(true)
-                .setValidate(false)
                 .setType("Embalagem")
                 .build();
 
