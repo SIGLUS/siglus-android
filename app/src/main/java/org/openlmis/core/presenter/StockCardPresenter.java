@@ -41,7 +41,7 @@ import rx.schedulers.Schedulers;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
-public class StockCardPresenter implements Presenter {
+public class StockCardPresenter extends Presenter {
 
 
     protected List<StockCardViewModel> stockCardViewModels;
@@ -52,23 +52,9 @@ public class StockCardPresenter implements Presenter {
     Observer<List<StockCard>> afterLoadHandler = getLoadStockCardsSubscriber();
 
     private StockCardListView view;
-    private Subscription subscription;
 
     public StockCardPresenter() {
         stockCardViewModels = new ArrayList<>();
-    }
-
-
-    @Override
-    public void onStart() {
-    }
-
-    @Override
-    public void onStop() {
-        if (subscription != null) {
-            subscription.unsubscribe();
-            subscription = null;
-        }
     }
 
     public List<StockCardViewModel> getStockCardViewModels() {
@@ -77,7 +63,8 @@ public class StockCardPresenter implements Presenter {
 
     public void loadStockCards(ArchiveStatus status) {
         view.loading();
-        subscription = getLoadStockCardsObserver(status).subscribe(afterLoadHandler);
+        Subscription subscription = getLoadStockCardsObserver(status).subscribe(afterLoadHandler);
+        subscriptions.add(subscription);
     }
 
     public void refreshStockCardViewModelsSOH() {

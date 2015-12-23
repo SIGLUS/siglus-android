@@ -45,7 +45,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class RnRFormListPresenter implements Presenter {
+public class RnRFormListPresenter extends Presenter {
 
     RnRFormListView view;
 
@@ -57,16 +57,6 @@ public class RnRFormListPresenter implements Presenter {
 
     @Setter
     String programCode;
-
-    @Override
-    public void onStart() {
-
-    }
-
-    @Override
-    public void onStop() {
-
-    }
 
     @Override
     public void attachView(BaseView v) throws ViewNotMatchException {

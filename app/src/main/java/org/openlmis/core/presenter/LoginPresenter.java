@@ -37,7 +37,7 @@ import org.openlmis.core.view.BaseView;
 
 import rx.Subscriber;
 
-public class LoginPresenter implements Presenter {
+public class LoginPresenter extends Presenter {
 
     LoginView view;
 
@@ -52,16 +52,6 @@ public class LoginPresenter implements Presenter {
     @Inject
     SyncBackManager syncBackManager;
     private boolean hasGoneToNextPage;
-
-    @Override
-    public void onStart() {
-
-    }
-
-    @Override
-    public void onStop() {
-
-    }
 
     @Override
     public void attachView(BaseView v) {

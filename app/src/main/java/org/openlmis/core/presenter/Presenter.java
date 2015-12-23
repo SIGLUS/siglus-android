@@ -22,12 +22,27 @@ package org.openlmis.core.presenter;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.view.BaseView;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public interface Presenter {
+import rx.Subscription;
 
-    void onStart();
 
-    void onStop();
+public abstract class Presenter {
 
-    void attachView(BaseView v) throws ViewNotMatchException;
+    List<Subscription> subscriptions = new ArrayList<>();
+
+    public void onStart() {
+    }
+
+    public void onStop() {
+        for (Subscription subscription : subscriptions) {
+            if (subscription != null) {
+                subscription.unsubscribe();
+            }
+        }
+    }
+
+    public abstract void attachView(BaseView v) throws ViewNotMatchException;
+
 }

@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -61,7 +62,8 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     @Override
     public void loadData(final long formId) {
         view.loading();
-        subscribe = getRnrFormObservable(formId).subscribe(loadDataOnNextAction, loadDataOnErrorAction);
+        Subscription subscription = getRnrFormObservable(formId).subscribe(loadDataOnNextAction, loadDataOnErrorAction);
+        subscriptions.add(subscription);
     }
 
     @Override

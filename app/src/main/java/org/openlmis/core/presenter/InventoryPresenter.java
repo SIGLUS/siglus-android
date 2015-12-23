@@ -39,13 +39,14 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
-public class InventoryPresenter implements Presenter {
+public class InventoryPresenter extends Presenter {
 
     @Inject
     ProductRepository productRepository;
@@ -54,16 +55,6 @@ public class InventoryPresenter implements Presenter {
     StockRepository stockRepository;
 
     InventoryView view;
-
-    @Override
-    public void onStart() {
-
-    }
-
-    @Override
-    public void onStop() {
-
-    }
 
     @Override
     public void attachView(BaseView v) {
@@ -216,7 +207,8 @@ public class InventoryPresenter implements Presenter {
 
     public void savePhysicalInventory(List<StockCardViewModel> list) {
         view.loading();
-        saveDraftInventoryObservable(list).subscribe(nextMainPageAction, errorAction);
+        Subscription subscription = saveDraftInventoryObservable(list).subscribe(nextMainPageAction, errorAction);
+        subscriptions.add(subscription);
     }
 
     private Observable<Object> saveDraftInventoryObservable(final List<StockCardViewModel> list) {
@@ -249,7 +241,8 @@ public class InventoryPresenter implements Presenter {
         for (StockCardViewModel viewModel : list) {
             viewModel.setSignature(sign);
         }
-        stockMovementObservable(list).subscribe(nextMainPageAction, errorAction);
+        Subscription subscription = stockMovementObservable(list).subscribe(nextMainPageAction, errorAction);
+        subscriptions.add(subscription);
     }
 
     protected Observable<Object> stockMovementObservable(final List<StockCardViewModel> list) {
@@ -293,7 +286,8 @@ public class InventoryPresenter implements Presenter {
     public void doInitialInventory(final List<StockCardViewModel> list) {
         if (view.validateInventory()) {
             view.loading();
-            initStockCardObservable(list).subscribe(nextMainPageAction);
+            Subscription subscription = initStockCardObservable(list).subscribe(nextMainPageAction);
+            subscriptions.add(subscription);
         }
     }
 

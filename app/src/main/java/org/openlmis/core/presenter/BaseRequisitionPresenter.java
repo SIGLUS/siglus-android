@@ -38,7 +38,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-public abstract class BaseRequisitionPresenter implements Presenter {
+public abstract class BaseRequisitionPresenter extends Presenter {
 
     RnrFormRepository rnrFormRepository;
 
@@ -51,7 +51,6 @@ public abstract class BaseRequisitionPresenter implements Presenter {
     @Inject
     SyncErrorsRepository syncErrorsRepository;
 
-    protected Subscription subscribe;
     private BaseRequisitionView view;
 
     @Getter
@@ -64,19 +63,6 @@ public abstract class BaseRequisitionPresenter implements Presenter {
     protected abstract RnrFormRepository initRnrFormRepository();
 
     @Override
-    public void onStart() {
-
-    }
-
-    @Override
-    public void onStop() {
-        if (subscribe != null) {
-            subscribe.unsubscribe();
-            subscribe = null;
-        }
-    }
-
-    @Override
     public void attachView(BaseView baseView) throws ViewNotMatchException {
         if (baseView instanceof BaseRequisitionView) {
             this.view = (BaseRequisitionView) baseView;
@@ -87,7 +73,8 @@ public abstract class BaseRequisitionPresenter implements Presenter {
 
     public void loadData(final long formId) {
         view.loading();
-        subscribe = getRnrFormObservable(formId).subscribe(loadDataOnNextAction, loadDataOnErrorAction);
+        Subscription subscription = getRnrFormObservable(formId).subscribe(loadDataOnNextAction, loadDataOnErrorAction);
+        subscriptions.add(subscription);
     }
 
     protected Action1<RnRForm> loadDataOnNextAction = new Action1<RnRForm>() {

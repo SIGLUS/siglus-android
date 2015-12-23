@@ -41,12 +41,13 @@ import lombok.Getter;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
-public class StockMovementPresenter implements Presenter {
+public class StockMovementPresenter extends Presenter {
 
     @Getter
     List<StockMovementViewModel> stockMovementModelList;
@@ -64,16 +65,6 @@ public class StockMovementPresenter implements Presenter {
 
     public StockMovementPresenter() {
         stockMovementModelList = new ArrayList<>();
-    }
-
-    @Override
-    public void onStart() {
-
-    }
-
-    @Override
-    public void onStop() {
-
     }
 
     @Override
@@ -96,7 +87,8 @@ public class StockMovementPresenter implements Presenter {
             return;
         }
 
-        loadStockMovementViewModelsObserver().subscribe(loadStockMovementViewModelSubscriber());
+        Subscription subscription = loadStockMovementViewModelsObserver().subscribe(loadStockMovementViewModelSubscriber());
+        subscriptions.add(subscription);
     }
 
     public Observer<List<StockMovementViewModel>> loadStockMovementViewModelSubscriber() {
