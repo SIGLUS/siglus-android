@@ -24,7 +24,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.google.inject.AbstractModule;
 
@@ -261,8 +260,7 @@ public class MMIARequisitionFragmentTest {
         when(regimeListView.hasEmptyField()).thenReturn(false);
         when(mmiaInfoListView.hasEmptyField()).thenReturn(false);
 
-        mmiaRequisitionFragment.etComment = mock(TextView.class);
-        when(mmiaRequisitionFragment.etComment.getText()).thenReturn("");
+        mmiaRequisitionFragment.etComment.setText("");
 
         mmiaRequisitionFragment.regimeListView = regimeListView;
         mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
@@ -279,8 +277,7 @@ public class MMIARequisitionFragmentTest {
         when(regimeListView.hasEmptyField()).thenReturn(false);
         when(mmiaInfoListView.hasEmptyField()).thenReturn(true);
 
-        mmiaRequisitionFragment.etComment = mock(TextView.class);
-        when(mmiaRequisitionFragment.etComment.getText()).thenReturn("");
+        mmiaRequisitionFragment.etComment.setText("ab");
 
         mmiaRequisitionFragment.regimeListView = regimeListView;
         mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
@@ -297,8 +294,7 @@ public class MMIARequisitionFragmentTest {
         when(regimeListView.hasEmptyField()).thenReturn(false);
         when(mmiaInfoListView.hasEmptyField()).thenReturn(false);
 
-        mmiaRequisitionFragment.etComment = mock(TextView.class);
-        when(mmiaRequisitionFragment.etComment.getText()).thenReturn("");
+        mmiaRequisitionFragment.etComment.setText("ab");
 
         mmiaRequisitionFragment.regimeListView = regimeListView;
         mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
@@ -315,8 +311,7 @@ public class MMIARequisitionFragmentTest {
         when(regimeListView.hasEmptyField()).thenReturn(false);
         when(mmiaInfoListView.hasEmptyField()).thenReturn(false);
 
-        mmiaRequisitionFragment.etComment = mock(TextView.class);
-        when(mmiaRequisitionFragment.etComment.getText()).thenReturn("abcde");
+        mmiaRequisitionFragment.etComment.setText("abcde");
 
         mmiaRequisitionFragment.regimeListView = regimeListView;
         mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;

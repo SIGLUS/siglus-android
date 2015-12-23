@@ -31,6 +31,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
@@ -156,10 +157,7 @@ public class MMIAInfoList extends LinearLayout {
 
     public boolean hasEmptyField() {
         for (BaseInfoItem item: dataList) {
-            if (null == item.getValue()){
-                return true;
-            }
-            if (item.getValue().isEmpty()){
+            if (StringUtils.isEmpty(item.getValue())){
                 return true;
             }
         }
