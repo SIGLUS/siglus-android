@@ -41,8 +41,6 @@ public class LoginPresenter extends Presenter {
 
     LoginView view;
 
-    boolean shouldShowSyncedSuccessMsg = false;
-
     @Inject
     UserRepository userRepository;
 
@@ -180,10 +178,10 @@ public class LoginPresenter extends Presenter {
                         view.loaded();
                         break;
                     case StockCardsLastMonthSynced:
-                        shouldShowSyncedSuccessMsg = true;
                         view.loaded();
                         break;
                     case RequisitionSynced:
+                        ToastUtil.showLongTimeAsOfficialWay(R.string.msg_initial_sync_success);
                         goToNextPage();
                         break;
                 }
@@ -197,10 +195,6 @@ public class LoginPresenter extends Presenter {
         if (view.needInitInventory()) {
             view.goToInitInventory();
         } else {
-            //TODO refactor code
-            if (shouldShowSyncedSuccessMsg) {
-                ToastUtil.showLongTimeAsOfficialWay(R.string.msg_initial_sync_success);
-            }
             view.goToHomePage();
         }
         hasGoneToNextPage = true;
