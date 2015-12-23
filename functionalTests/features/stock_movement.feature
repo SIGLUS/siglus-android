@@ -36,7 +36,7 @@ Feature: stock movement Page
     And I enter received number "2"
     Then I wait for "Complete" to appear
     And I press "Complete"
-    And I sign stock movement with "superuser"
+    And I sign with "superuser"
     Then I see "125"
     Then I see "super" in signature field
     Then I navigate back
@@ -58,7 +58,7 @@ Feature: stock movement Page
     And I enter issued number "2"
     Then I wait for "Complete" to appear
     And I press "Complete"
-    And I sign stock movement with "superuser"
+    And I sign with "superuser"
     Then I see "123"
     Then I see "super" in signature field
     Then I navigate back
@@ -78,7 +78,7 @@ Feature: stock movement Page
     And I enter negative adjustment number "2"
     Then I wait for "Complete" to appear
     And I press "Complete"
-    And I sign stock movement with "superuser"
+    And I sign with "superuser"
     Then I see "121"
     Then I navigate back
     Then I wait for 1 second
@@ -98,7 +98,7 @@ Feature: stock movement Page
     And I enter positive adjustment number "2"
     Then I wait for "Complete" to appear
     And I press "Complete"
-    And I sign stock movement with "superuser"
+    And I sign with "superuser"
     Then I see "123"
     Then I navigate back
     Then I wait for 1 second

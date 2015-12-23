@@ -40,12 +40,18 @@ When /^I enter password "([^\"]+)"$/ do |password|
 end
 
 Given(/^I try to log in with "(.*?)" "(.*?)"$/) do |username, password|
-
   steps %Q{
 		When I enter username "#{username}"
         And I enter password "#{password}"
         And I press "LOG IN"
 	}
+end
+
+And (/^I sign out$/) do
+    tap_when_element_exists("* contentDescription:'More options'")
+    steps %Q{
+        Then I press "Sign Out"
+    }
 end
 
 When(/^I select the item called "(.*?)"$/) do |name|
@@ -66,11 +72,16 @@ When(/^I select the item called "(.*?)"$/) do |name|
   if h.size > 1
      scroll("RecyclerView", :down)
   end
+  steps %Q{
+      And I enter quantity "123" on inventory page
+  }
+end
 
-  h = query("android.widget.EditText id:'tx_quantity' text:''").last
-  touch(h)
-  keyboard_enter_text(123)
-  hide_soft_keyboard
+And(/^I enter quantity "(\d+)" on inventory page$/) do |quantity|
+    h = query("android.widget.EditText id:'tx_quantity' text:''").first
+    touch(h)
+    keyboard_enter_text(quantity)
+    hide_soft_keyboard
 end
 
 When(/^I select the checkbox$/) do
@@ -161,9 +172,9 @@ When(/^I initialize inventory$/) do
 end
 
 When(/^I search product by fnm "(.*?)" and select this item$/) do |fnm|
-    search_bar = query("android.support.v7.widget.SearchView id:'action_search'")
-    touch(search_bar)
-    enter_text("android.support.v7.widget.SearchView id:'action_search'", fnm)
+    steps %Q{
+        When I search product by fnm "#{fnm}"
+    }
 
     q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
     if !q.empty?
@@ -171,15 +182,39 @@ When(/^I search product by fnm "(.*?)" and select this item$/) do |fnm|
             When I select the item called "#{fnm}"
         }
     end
+
+    steps %Q{
+        And I clean search bar
+    }
+end
+
+And(/^I clean search bar/) do
+    search_bar = query("android.support.v7.widget.SearchView id:'action_search'")
     clear_text_in(search_bar)
 end
 
+When(/^I search product by fnm "(.*?)"$/) do |fnm|
+    search_bar = query("android.support.v7.widget.SearchView id:'action_search'")
+    touch(search_bar)
+    enter_text("android.support.v7.widget.SearchView id:'action_search'", fnm)
+end
 
-And (/^I sign out$/) do
-        tap_when_element_exists("* contentDescription:'More options'")
+And(/^I do physical inventory with "(\d+)" by fnm "(.*?)"/) do |quantity,fnm|
     steps %Q{
-            Then I press "Sign Out"
-        }
+        When I search product by fnm "#{fnm}"
+        And I enter quantity "#{quantity}" on inventory page
+        And I clean search bar
+    }
+end
+
+And(/^I sign with "(.*?)"$/) do |text|
+    enter_text("android.widget.EditText id:'et_signature'", text)
+    hide_soft_keyboard
+
+    steps %Q{
+        Then I press "Approve"
+    }
+    hide_soft_keyboard
 end
 
 And(/^I sign requisition with "(.*?)" "(.*?)" and complete$/) do |submitSignature, completeSignature|
@@ -199,3 +234,4 @@ And(/^I sign requisition with "(.*?)" "(.*?)" and complete$/) do |submitSignatur
         Then I press "Approve"
     }
 end
+

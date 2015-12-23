@@ -71,22 +71,12 @@ Then(/^I make a movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_ca
         And I enter #{movement_column} number "#{number}"
         Then I wait for "Complete" to appear
         And I press "Complete"
-        And I sign stock movement with "superuser"
+        And I sign with "superuser"
         Then I wait for 2 seconds
         Then I navigate back
         Then I wait for 1 second
         Then I navigate back
     }
-end
-
-And(/^I sign stock movement with "(.*?)"$/) do |text|
-    enter_text("android.widget.EditText id:'et_signature'", text)
-    hide_soft_keyboard
-
-    steps %Q{
-        Then I press "Approve"
-    }
-    hide_soft_keyboard
 end
 
 Then(/^I see "(.*?)" in signature field$/) do |text|
