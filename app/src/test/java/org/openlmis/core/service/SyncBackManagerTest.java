@@ -41,7 +41,6 @@ import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.observers.TestSubscriber;
 import rx.schedulers.Schedulers;
 
-import static junit.framework.Assert.assertFalse;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -159,7 +158,7 @@ public class SyncBackManagerTest {
             }
             if (progress == StockCardsLastYearSynced) {
                 verify(lmisRestApi, times(13)).fetchStockMovementData(anyString(), anyString(), anyString());
-                verify(sharedPreferenceMgr).setLastYearStockCardDataSynced(true);
+                verify(sharedPreferenceMgr).setShouldSyncLastYearStockCardData(false);
             }
         } catch (LMISException e) {
             e.printStackTrace();

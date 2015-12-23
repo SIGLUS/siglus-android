@@ -97,14 +97,14 @@ public class SyncBackManager {
     }
 
     private void syncLastYearStockCardsSilently(Subscriber<? super SyncProgress> subscriber) {
-        if (!sharedPreferenceMgr.isLastYearStockDataSynced()) {
+        if (sharedPreferenceMgr.shouldSyncLastYearStockData()) {
             try {
                 subscriber.onNext(SyncProgress.SyncingStockCardsLastYear);
                 fetchLatestYearStockMovements();
-                sharedPreferenceMgr.setLastYearStockCardDataSynced(true);
+                sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
                 subscriber.onNext(SyncProgress.StockCardsLastYearSynced);
             } catch (LMISException e) {
-                sharedPreferenceMgr.setLastYearStockCardDataSynced(false);
+                sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
                 e.reportToFabric();
             }
         }
@@ -130,6 +130,7 @@ public class SyncBackManager {
                 subscriber.onNext(SyncProgress.SyncingStockCardsLastMonth);
                 fetchLatestOneMonthMovements();
                 sharedPreferenceMgr.setLastMonthStockCardDataSynced(true);
+                sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
                 subscriber.onNext(SyncProgress.StockCardsLastMonthSynced);
             } catch (LMISException e) {
                 sharedPreferenceMgr.setLastMonthStockCardDataSynced(false);
