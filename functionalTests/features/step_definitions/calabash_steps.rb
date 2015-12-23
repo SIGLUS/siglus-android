@@ -72,9 +72,6 @@ When(/^I select the item called "(.*?)"$/) do |name|
   if h.size > 1
      scroll("RecyclerView", :down)
   end
-  steps %Q{
-      And I enter quantity "123" on inventory page
-  }
 end
 
 And(/^I enter quantity "(\d+)" on inventory page$/) do |quantity|
@@ -117,21 +114,21 @@ end
 
 When(/^I Select MMIA Item$/) do
   steps %Q{
-    When I search product by fnm "08S42B" and select this item
-    When I search product by fnm "08S18Y" and select this item
-    When I search product by fnm "08S40Z" and select this item
-    When I search product by fnm "08S36" and select this item
-    When I search product by fnm "08S32Z" and select this item
+    When I search product by fnm "08S42B" and select this item with quantity "123"
+    When I search product by fnm "08S18Y" and select this item with quantity "123"
+    When I search product by fnm "08S40Z" and select this item with quantity "123"
+    When I search product by fnm "08S36" and select this item with quantity "123"
+    When I search product by fnm "08S32Z" and select this item with quantity "123"
 	}
 end
 
 When(/^I Select VIA Item$/) do
   steps %Q{
-    When I search product by fnm "01A01" and select this item
-    When I search product by fnm "01A02" and select this item
-    When I search product by fnm "01A03Z" and select this item
-    When I search product by fnm "01A04Z" and select this item
-    When I search product by fnm "01A05" and select this item
+    When I search product by fnm "01A01" and select this item with quantity "123"
+    When I search product by fnm "01A02" and select this item with quantity "123"
+    When I search product by fnm "01A03Z" and select this item with quantity "123"
+    When I search product by fnm "01A04Z" and select this item with quantity "123"
+    When I search product by fnm "01A05" and select this item with quantity "123"
 	}
 end
 
@@ -171,15 +168,16 @@ When(/^I initialize inventory$/) do
     end
 end
 
-When(/^I search product by fnm "(.*?)" and select this item$/) do |fnm|
+When(/^I search product by fnm "(.*?)" and select this item with quantity "(.*?)"/) do |fnm,quantity|
     steps %Q{
-        When I search product by fnm "#{fnm}"
+        When I search drug by fnm "#{fnm}"
     }
 
     q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
     if !q.empty?
         steps %Q{
             When I select the item called "#{fnm}"
+            Then I enter quantity "#{quantity}" on inventory page
         }
     end
 
@@ -193,7 +191,7 @@ And(/^I clean search bar/) do
     clear_text_in(search_bar)
 end
 
-When(/^I search product by fnm "(.*?)"$/) do |fnm|
+When(/^I search drug by fnm "(.*?)"$/) do |fnm|
     search_bar = query("android.support.v7.widget.SearchView id:'action_search'")
     touch(search_bar)
     enter_text("android.support.v7.widget.SearchView id:'action_search'", fnm)
@@ -201,7 +199,7 @@ end
 
 And(/^I do physical inventory with "(\d+)" by fnm "(.*?)"/) do |quantity,fnm|
     steps %Q{
-        When I search product by fnm "#{fnm}"
+        When I search drug by fnm "#{fnm}"
         And I enter quantity "#{quantity}" on inventory page
         And I clean search bar
     }
