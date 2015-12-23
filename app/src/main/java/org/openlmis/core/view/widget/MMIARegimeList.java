@@ -148,6 +148,15 @@ public class MMIARegimeList extends LinearLayout {
         totalView.setBackground(getResources().getDrawable(R.color.color_page_gray));
     }
 
+    public boolean hasEmptyField() {
+        for (RegimenItem item : dataList) {
+            if (null == item.getAmount()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     class EditTextWatcher implements android.text.TextWatcher {
 
         private final RegimenItem item;
