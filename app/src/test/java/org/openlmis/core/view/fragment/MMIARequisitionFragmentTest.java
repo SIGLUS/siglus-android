@@ -24,7 +24,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.google.inject.AbstractModule;
 
@@ -252,78 +251,6 @@ public class MMIARequisitionFragmentTest {
         verify(regimeListView).highLightTotal();
         verify(mmiaInfoListView).highLightTotal();
         assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.VISIBLE);
-    }
-
-    @Test
-    public void shouldHighlightWhenTotalNotMatchesAndNoCommentWithoutEmptyField() {
-        when(regimeListView.getTotal()).thenReturn(20L);
-        when(mmiaInfoListView.getTotal()).thenReturn(40L);
-        when(regimeListView.hasEmptyField()).thenReturn(false);
-        when(mmiaInfoListView.hasEmptyField()).thenReturn(false);
-
-        mmiaRequisitionFragment.etComment = mock(TextView.class);
-        when(mmiaRequisitionFragment.etComment.getText()).thenReturn("");
-
-        mmiaRequisitionFragment.regimeListView = regimeListView;
-        mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
-
-        mmiaRequisitionFragment.refreshRequisitionForm(form);
-
-        assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.VISIBLE);
-    }
-
-    @Test
-    public void shouldDeHighlightWhenTotalNotMatchesAndLessThanFiveWithEmptyField() {
-        when(regimeListView.getTotal()).thenReturn(20L);
-        when(mmiaInfoListView.getTotal()).thenReturn(40L);
-        when(regimeListView.hasEmptyField()).thenReturn(false);
-        when(mmiaInfoListView.hasEmptyField()).thenReturn(true);
-
-        mmiaRequisitionFragment.etComment = mock(TextView.class);
-        when(mmiaRequisitionFragment.etComment.getText()).thenReturn("");
-
-        mmiaRequisitionFragment.regimeListView = regimeListView;
-        mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
-
-        mmiaRequisitionFragment.refreshRequisitionForm(form);
-
-        assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
-    }
-
-    @Test
-    public void shouldDeHighlightWhenTotalMatchesAndCommentLengthLessThanFiveAndWithoutEmptyField() {
-        when(regimeListView.getTotal()).thenReturn(20L);
-        when(mmiaInfoListView.getTotal()).thenReturn(20L);
-        when(regimeListView.hasEmptyField()).thenReturn(false);
-        when(mmiaInfoListView.hasEmptyField()).thenReturn(false);
-
-        mmiaRequisitionFragment.etComment = mock(TextView.class);
-        when(mmiaRequisitionFragment.etComment.getText()).thenReturn("");
-
-        mmiaRequisitionFragment.regimeListView = regimeListView;
-        mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
-
-        mmiaRequisitionFragment.refreshRequisitionForm(form);
-
-        assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
-    }
-
-    @Test
-    public void shouldDeHighlightWhenTotalMatchesWithoutEmptyField() {
-        when(regimeListView.getTotal()).thenReturn(20L);
-        when(mmiaInfoListView.getTotal()).thenReturn(20L);
-        when(regimeListView.hasEmptyField()).thenReturn(false);
-        when(mmiaInfoListView.hasEmptyField()).thenReturn(false);
-
-        mmiaRequisitionFragment.etComment = mock(TextView.class);
-        when(mmiaRequisitionFragment.etComment.getText()).thenReturn("abcde");
-
-        mmiaRequisitionFragment.regimeListView = regimeListView;
-        mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
-
-        mmiaRequisitionFragment.refreshRequisitionForm(form);
-
-        assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
     }
 
     @Test

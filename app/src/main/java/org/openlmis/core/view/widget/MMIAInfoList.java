@@ -39,9 +39,9 @@ import java.util.ArrayList;
 
 public class MMIAInfoList extends LinearLayout {
     private Context context;
-    EditText totalPatientsView = null;
+    EditText totalView = null;
     private ArrayList<EditText> editTexts = new ArrayList<>();
-    private BaseInfoItem totalPatientsItem;
+    private BaseInfoItem totalItem;
     private LayoutInflater layoutInflater;
     private ArrayList<BaseInfoItem> dataList;
     private boolean hasDataChanged = false;
@@ -57,7 +57,7 @@ public class MMIAInfoList extends LinearLayout {
     }
 
     public EditText getPatientTotalView() {
-        return totalPatientsView;
+        return totalView;
     }
 
     private void init(Context context) {
@@ -105,11 +105,10 @@ public class MMIAInfoList extends LinearLayout {
             editTexts.add(etValue);
             etValue.setText(item.getValue());
 
-            if (isTotalPatient(item)) {
-                totalPatientsItem = item;
-
-                totalPatientsView = etValue;
-                totalPatientsView.setEnabled(false);
+            if (isTotalValue(item)) {
+                totalView = etValue;
+                totalItem = item;
+                totalView.setEnabled(false);
             } else {
                 etValue.addTextChangedListener(new EditTextWatcher(item));
             }
@@ -147,11 +146,11 @@ public class MMIAInfoList extends LinearLayout {
     }
 
     public void highLightTotal() {
-        totalPatientsView.setBackground(getResources().getDrawable(R.drawable.border_bg_red));
+        totalView.setBackground(getResources().getDrawable(R.drawable.border_bg_red));
     }
 
     public void deHighLightTotal() {
-        totalPatientsView.setBackground(getResources().getDrawable(R.color.color_page_gray));
+        totalView.setBackground(getResources().getDrawable(R.color.color_page_gray));
     }
 
     public boolean hasEmptyField() {
@@ -188,10 +187,11 @@ public class MMIAInfoList extends LinearLayout {
         public void afterTextChanged(Editable editable) {
             hasDataChanged = true;
             item.setValue(editable.toString());
-            if (totalPatientsView != null) {
+            if (totalView != null && !isTotalInfoView(item)) {
                 String total = String.valueOf(getTotal());
-                totalPatientsItem.setValue(total);
-                totalPatientsView.setText(total);
+                totalItem.setValue(total);
+                totalView.setText(total);
+
             }
         }
     }
@@ -212,10 +212,10 @@ public class MMIAInfoList extends LinearLayout {
     }
 
     private boolean isTotalInfoView(BaseInfoItem item) {
-        return getResources().getString(R.string.label_total_month_dispense).equals(item.getName()) || isTotalPatient(item);
+        return getResources().getString(R.string.label_total_month_dispense).equals(item.getName()) || isTotalValue(item);
     }
 
-    private boolean isTotalPatient(BaseInfoItem item) {
+    private boolean isTotalValue(BaseInfoItem item) {
         return getResources().getString(R.string.label_total_patients).equals(item.getName());
     }
 
