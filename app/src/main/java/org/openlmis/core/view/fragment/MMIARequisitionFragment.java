@@ -71,7 +71,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     protected TextView tvRegimeTotal;
 
     @InjectView(R.id.et_comment)
-    private TextView etComment;
+    protected TextView etComment;
 
     @InjectView(R.id.scrollview)
     protected ScrollView scrollView;
@@ -303,6 +303,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         @Override
         public void afterTextChanged(Editable s) {
             commentHasChanged = true;
+            highlightTotalDifference();
             try {
                 presenter.getRnrForm(formId).setComments(s.toString());
             } catch (LMISException e) {
@@ -327,7 +328,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     };
 
     private void highlightTotalDifference() {
-        if (isTotalEqual()) {
+        if (hasEmptyColumn() || isTotalEqual() || etComment.getText().toString().length() >= 5) {
             regimeListView.deHighLightTotal();
             mmiaInfoListView.deHighLightTotal();
             tvMismatch.setVisibility(View.INVISIBLE);
@@ -336,6 +337,10 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
             mmiaInfoListView.highLightTotal();
             tvMismatch.setVisibility(View.VISIBLE);
         }
+    }
+
+    private boolean hasEmptyColumn() {
+        return regimeListView.hasEmptyField() || mmiaInfoListView.hasEmptyField();
     }
 
     public void onBackPressed() {
