@@ -227,7 +227,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockRepository.refresh(stockCard);
 
         Date firstPeriodBegin = stockRepository.queryFirstPeriodBegin(stockCard);
-        Date expectPeriodBegin = DateUtil.getPeriodBeginBy(firstMovementDate);
+        Date expectPeriodBegin = DateUtil.generatePeriodBeginBy(firstMovementDate);
         assertThat(firstPeriodBegin, is(expectPeriodBegin));
     }
 

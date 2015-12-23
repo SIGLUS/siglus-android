@@ -18,8 +18,6 @@
 
 package org.openlmis.core.utils;
 
-import android.support.annotation.NonNull;
-
 import org.openlmis.core.exceptions.LMISException;
 
 import java.text.ParseException;
@@ -42,6 +40,7 @@ public final class DateUtil {
 
     public static final String DB_DATE_FORMAT = "yyyy-MM-dd";
     public static final int DAY_PERIOD_END = 20;
+
 
 
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
@@ -129,12 +128,7 @@ public final class DateUtil {
         });
     }
 
-    public static Date generateRnRFormPeriodBeginBy(Date generateDate) {
-        return getPeriodBeginDate(generateDate, DAY_PERIOD_END + 5);
-    }
-
-    @NonNull
-    private static Date getPeriodBeginDate(Date generateDate, int thresholdDate) {
+    public static Date generatePeriodBeginBy(Date generateDate) {
         Calendar calendar = GregorianCalendar.getInstance();
         calendar.setTime(generateDate);
 
@@ -142,15 +136,11 @@ public final class DateUtil {
         int year = calendar.get(Calendar.YEAR);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        if (day <= thresholdDate) {
+        if (day <= DAY_PERIOD_END + 5) {
             return new GregorianCalendar(year, month - 1, DAY_PERIOD_END + 1).getTime();
         } else {
             return new GregorianCalendar(year, month, DAY_PERIOD_END + 1).getTime();
         }
-    }
-
-    public static Date getPeriodBeginBy(Date generateDate) {
-        return getPeriodBeginDate(generateDate, DAY_PERIOD_END);
     }
 
     public static Date generatePeriodEndByBegin(Date periodBegin) {
