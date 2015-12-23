@@ -147,15 +147,19 @@ public class SyncBackManagerTest {
         try {
             if (progress == ProductSynced) {
                 verify(programRepository).saveProgramWithProduct(any(ArrayList.class));
+                verify(sharedPreferenceMgr).setHasGetProducts(true);
             }
             if (progress == StockCardsLastMonthSynced) {
                 verifyLastMonthStockCardsSynced(createdPreferences);
+                verify(sharedPreferenceMgr).setLastMonthStockCardDataSynced(true);
             }
             if (progress == RequisitionSynced) {
                 verify(rnrFormRepository, times(1)).createFormAndItems(any(ArrayList.class));
+                verify(sharedPreferenceMgr).setRequisitionDataSynced(true);
             }
             if (progress == StockCardsLastYearSynced) {
                 verify(lmisRestApi, times(13)).fetchStockMovementData(anyString(), anyString(), anyString());
+                verify(sharedPreferenceMgr).setLastYearStockCardDataSynced(true);
             }
         } catch (LMISException e) {
             e.printStackTrace();
