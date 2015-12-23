@@ -23,6 +23,7 @@ import android.support.annotation.NonNull;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.internal.matchers.NotNull;
@@ -248,6 +249,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
+    @Ignore
     public void shouldGetLowStockAvgCorrectly() throws Exception {
 
         StockCard stockCard = new StockCard();
