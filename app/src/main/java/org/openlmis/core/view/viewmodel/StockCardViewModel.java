@@ -64,7 +64,10 @@ public class StockCardViewModel {
 
     SpannableStringBuilder styledUnit;
 
+    boolean validate = true;
+
     private boolean checked = false;
+
     private String signature;
     private StockCard stockCard;
     protected Product product;
@@ -201,8 +204,9 @@ public class StockCardViewModel {
         return this.getExpiryDates().contains(expireDate);
     }
 
-    public boolean isValidate() {
-        return !checked || StringUtils.isNumeric(quantity);
+    public boolean validate() {
+        validate = !checked || StringUtils.isNumeric(quantity);
+        return validate;
     }
 
     public DraftInventory parseDraftInventory() {
