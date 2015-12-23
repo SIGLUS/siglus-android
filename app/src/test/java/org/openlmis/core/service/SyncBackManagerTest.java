@@ -63,13 +63,15 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
 public class SyncBackManagerTest {
-    private SharedPreferenceMgr sharedPreferenceMgr;
-    private LMISRestApi lmisRestApi;
-    private RnrFormRepository rnrFormRepository;
     private SyncBackManager syncBackManager;
+
+    private LMISRestApi lmisRestApi;
+    private SharedPreferenceMgr sharedPreferenceMgr;
     private StockMovementItem stockMovementItem;
-    private StockRepository stockRepository;
+
     private ProgramRepository programRepository;
+    private RnrFormRepository rnrFormRepository;
+    private StockRepository stockRepository;
     private SharedPreferences createdPreferences;
 
     @Before
@@ -120,6 +122,25 @@ public class SyncBackManagerTest {
         assertThat(subscriber.syncProgresses.get(7), is(StockCardsLastYearSynced));
     }
 
+    private void testSyncProgress(SyncProgress progress) {
+        try {
+            if (progress == ProductSynced) {
+                verify(programRepository).saveProgramWithProduct(any(Program.class));
+            }
+            if (progress == StockCardsLastMonthSynced) {
+                verifyLastMonthStockCardsSynced(createdPreferences);
+            }
+            if (progress == RequisitionSynced) {
+                verify(rnrFormRepository, times(1)).createFormAndItems(any(ArrayList.class));
+            }
+            if (progress == StockCardsLastYearSynced) {
+                verify(lmisRestApi, times(13)).fetchStockMovementData(anyString(), anyString(), anyString());
+            }
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void mockProductResponse() {
         ArrayList<Program> programsWithProducts = new ArrayList<>();
         programsWithProducts.add(new Program());
@@ -139,14 +160,6 @@ public class SyncBackManagerTest {
         when(lmisRestApi.fetchRequisitions(anyString())).thenReturn(syncDownRequisitionsResponse);
     }
 
-    private void verifyLastMonthStockCardsSynced(SharedPreferences createdPreferences) throws LMISException {
-        verify(lmisRestApi).fetchStockMovementData(anyString(), anyString(), anyString());
-
-        assertFalse(createdPreferences.getBoolean(SharedPreferenceMgr.KEY_INIT_INVENTORY, true));
-        verify(stockRepository, times(2)).saveStockCardAndBatchUpdateMovements(any(StockCard.class));
-        assertThat(stockMovementItem.isSynced(), is(true));
-    }
-
     private void mockStockCardsResponse() throws ParseException, LMISException {
         createdPreferences = LMISTestApp.getContext().getSharedPreferences("LMISPreference", Context.MODE_PRIVATE);
         when(sharedPreferenceMgr.getPreference()).thenReturn(createdPreferences);
@@ -158,7 +171,15 @@ public class SyncBackManagerTest {
         when(stockRepository.list()).thenReturn(newArrayList(new StockCardBuilder().build()));
     }
 
-    public SyncDownStockCardResponse getStockCardResponse() throws ParseException {
+    private void verifyLastMonthStockCardsSynced(SharedPreferences createdPreferences) throws LMISException {
+        verify(lmisRestApi).fetchStockMovementData(anyString(), anyString(), anyString());
+
+        assertFalse(createdPreferences.getBoolean(SharedPreferenceMgr.KEY_INIT_INVENTORY, true));
+        verify(stockRepository, times(2)).saveStockCardAndBatchUpdateMovements(any(StockCard.class));
+        assertThat(stockMovementItem.isSynced(), is(true));
+    }
+
+    private SyncDownStockCardResponse getStockCardResponse() throws ParseException {
         StockCard stockCard1 = StockCardBuilder.buildStockCard();
         StockCard stockCard2 = StockCardBuilder.buildStockCard();
 
@@ -179,6 +200,7 @@ public class SyncBackManagerTest {
     }
 
     private class SyncServerDataSubscriber extends TestSubscriber<SyncProgress> {
+
         public List<SyncProgress> syncProgresses = new ArrayList<>();
 
         @Override
@@ -186,25 +208,7 @@ public class SyncBackManagerTest {
             syncProgresses.add(syncProgress);
             testSyncProgress(syncProgress);
         }
-    }
 
-    private void testSyncProgress(SyncProgress progress) {
-        try {
-            if (progress == ProductSynced) {
-                verify(programRepository).saveProgramWithProduct(any(Program.class));
-            }
-            if (progress == StockCardsLastMonthSynced) {
-                verifyLastMonthStockCardsSynced(createdPreferences);
-            }
-            if (progress == RequisitionSynced) {
-                verify(rnrFormRepository, times(1)).createFormAndItems(any(ArrayList.class));
-            }
-            if (progress == StockCardsLastYearSynced) {
-                verify(lmisRestApi, times(13)).fetchStockMovementData(anyString(), anyString(), anyString());
-            }
-        } catch (LMISException e) {
-            e.printStackTrace();
-        }
     }
 
     public class MyTestModule extends AbstractModule {
@@ -216,4 +220,3 @@ public class SyncBackManagerTest {
         }
     }
 }
-
