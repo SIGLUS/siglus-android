@@ -30,7 +30,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.InventoryPresenter;
 import org.openlmis.core.utils.Constants;
