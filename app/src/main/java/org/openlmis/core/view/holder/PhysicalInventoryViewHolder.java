@@ -68,7 +68,7 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
 
         expireDateViewGroup.initExpireDateViewGroup(stockCardViewModel, false);
 
-        if (stockCardViewModel.isValidate()) {
+        if (stockCardViewModel.isValid()) {
             lyQuantity.setErrorEnabled(false);
         } else {
             lyQuantity.setError(context.getString(R.string.msg_inventory_check_failed));

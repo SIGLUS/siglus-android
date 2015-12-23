@@ -88,7 +88,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
 
         populateEditPanel(viewModel.getQuantity(), viewModel.optFirstExpiryDate());
 
-        if (viewModel.isValidate()) {
+        if (viewModel.isValid()) {
             lyQuantity.setErrorEnabled(false);
         } else {
             lyQuantity.setError(context.getResources().getString(R.string.msg_inventory_check_failed));

@@ -64,7 +64,7 @@ public class StockCardViewModel {
 
     SpannableStringBuilder styledUnit;
 
-    boolean validate = true;
+    boolean valid = true;
 
     private boolean checked = false;
 
@@ -205,8 +205,8 @@ public class StockCardViewModel {
     }
 
     public boolean validate() {
-        validate = !checked || StringUtils.isNumeric(quantity);
-        return validate;
+        valid = !checked || StringUtils.isNumeric(quantity);
+        return valid;
     }
 
     public DraftInventory parseDraftInventory() {

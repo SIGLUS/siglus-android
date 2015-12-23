@@ -66,6 +66,7 @@ public class PhysicalInventoryViewHolderTest {
         StockCardViewModel viewModel = new StockCardViewModelBuilder(product)
                 .setQuantity("invalid10")
                 .setChecked(true)
+                .setValid(false)
                 .setType("Embalagem")
                 .build();
         viewHolder.populate(viewModel, queryKeyWord);
