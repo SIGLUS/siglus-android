@@ -200,7 +200,7 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
     }
 
     public void goToMainPage() {
-        saveBoolean(SharedPreferenceMgr.KEY_INIT_INVENTORY, false);
+        preferencesMgr.setIsNeedsInventory(false);
         startActivity(isAddNewDrug ? StockCardListActivity.getIntentToMe(this) : HomeActivity.getIntentToMe(this));
         this.finish();
     }

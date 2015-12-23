@@ -150,7 +150,7 @@ public class SyncBackManagerTest {
                 verify(sharedPreferenceMgr).setHasGetProducts(true);
             }
             if (progress == StockCardsLastMonthSynced) {
-                verifyLastMonthStockCardsSynced(createdPreferences);
+                verifyLastMonthStockCardsSynced();
                 verify(sharedPreferenceMgr).setLastMonthStockCardDataSynced(true);
             }
             if (progress == RequisitionSynced) {
@@ -196,10 +196,10 @@ public class SyncBackManagerTest {
         when(stockRepository.list()).thenReturn(newArrayList(new StockCardBuilder().build()));
     }
 
-    private void verifyLastMonthStockCardsSynced(SharedPreferences createdPreferences) throws LMISException {
+    private void verifyLastMonthStockCardsSynced() throws LMISException {
         verify(lmisRestApi).fetchStockMovementData(anyString(), anyString(), anyString());
 
-        assertFalse(createdPreferences.getBoolean(SharedPreferenceMgr.KEY_INIT_INVENTORY, true));
+        verify(sharedPreferenceMgr).setIsNeedsInventory(false);
         verify(stockRepository, times(2)).saveStockCardAndBatchUpdateMovements(any(StockCard.class));
     }
 

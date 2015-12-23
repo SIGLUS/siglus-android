@@ -40,7 +40,7 @@ public class SharedPreferenceMgr {
     public static final String KEY_LAST_SYNCED_TIME_RNR_FORM = "lastSyncedDate";
     public static final String KEY_LAST_SYNCED_TIME_STOCKCARD = "lastSyncedDateStockCard";
     public static final String KEY_LAST_LOGIN_USER = "last_user";
-    public static final String KEY_INIT_INVENTORY = "init_inventory";
+    private static final String KEY_NEEDS_INVENTORY = "init_inventory";
     private static final String KEY_HAS_GET_PRODUCTS = "has_get_products";
     private static final String KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS = "has_get_month_stock_cards_synced";
     private static final String KEY_HAS_SYNCED_LATEST_YEAR_STOCKMOVEMENTS = "has_get_year_stock_cards_synced";
@@ -104,4 +104,13 @@ public class SharedPreferenceMgr {
     public void setRequisitionDataSynced(boolean requisitionDataSynced) {
         sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, requisitionDataSynced).apply();
     }
+
+    public boolean isNeedsInventory() {
+        return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_NEEDS_INVENTORY, true);
+    }
+
+    public void setIsNeedsInventory(boolean isNeedsInventory) {
+        sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_NEEDS_INVENTORY, isNeedsInventory).apply();
+    }
+
 }

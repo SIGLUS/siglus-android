@@ -124,7 +124,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
     @Override
     public boolean needInitInventory() {
-        return getPreferences().getBoolean(SharedPreferenceMgr.KEY_INIT_INVENTORY, true);
+        return preferencesMgr.isNeedsInventory();
     }
 
     @Override

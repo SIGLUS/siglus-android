@@ -201,7 +201,7 @@ public class SyncBackManager {
 
         List<StockCard> syncedStockCard = stockRepository.list();
         if (!(syncedStockCard == null || syncedStockCard.isEmpty())) {
-            sharedPreferenceMgr.getPreference().edit().putBoolean(SharedPreferenceMgr.KEY_INIT_INVENTORY, false).apply();
+            sharedPreferenceMgr.setIsNeedsInventory(false);
         }
     }
 
