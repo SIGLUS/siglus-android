@@ -153,17 +153,13 @@ public class LoginPresenter implements Presenter {
         UserInfoMgr.getInstance().setUser(user);
         view.clearErrorAlerts();
 
-        checkSyncServerData();
+        syncBackManager.syncBackServerData(getSyncSubscriber());
     }
 
     public void onLoginFailed() {
         view.loaded();
         view.showInvalidAlert();
         view.clearPassword();
-    }
-
-    private void checkSyncServerData() {
-        syncBackManager.syncBackServerData(getSyncSubscriber());
     }
 
     protected Subscriber<SyncProgress> getSyncSubscriber() {
