@@ -75,11 +75,11 @@ public class SyncBackManager {
             return;
         }
 
+        isSyncing = true;
         Observable.create(new Observable.OnSubscribe<SyncProgress>() {
             @Override
             public void call(Subscriber<? super SyncProgress> subscriber) {
                 try {
-                    isSyncing = true;
                     syncProducts(subscriber);
                     syncBackLastMonthStockCards(subscriber);
                     syncBackRequisition(subscriber);

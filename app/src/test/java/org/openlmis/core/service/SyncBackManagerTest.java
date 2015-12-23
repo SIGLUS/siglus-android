@@ -80,6 +80,7 @@ public class SyncBackManagerTest {
         rnrFormRepository = mock(RnrFormRepository.class);
         programRepository = mock(ProgramRepository.class);
         reset(rnrFormRepository);
+        reset(lmisRestApi);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         syncBackManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncBackManager.class);
@@ -95,27 +96,6 @@ public class SyncBackManagerTest {
                 return Schedulers.immediate();
             }
         });
-    }
-
-    @Test
-    public void shouldOnlySyncOnceWhenInvokedTwice() throws Exception {
-        //given
-        mockProductResponse();
-        mockRequisitionResponse();
-        mockStockCardsResponse();
-
-        //when
-        TestSubscriber<SyncProgress> subscriber1 = new TestSubscriber<>();
-        TestSubscriber<SyncProgress> subscriber2 = new TestSubscriber<>();
-        syncBackManager.syncBackServerData(subscriber1);
-        syncBackManager.syncBackServerData(subscriber2);
-
-        subscriber1.awaitTerminalEvent();
-        subscriber1.assertNoErrors();
-
-        //then
-        subscriber2.assertNoTerminalEvent();
-        verify(lmisRestApi, times(1)).fetchProducts(anyString());
     }
 
     @Test
@@ -140,6 +120,27 @@ public class SyncBackManagerTest {
         assertThat(subscriber.syncProgresses.get(5), is(RequisitionSynced));
         assertThat(subscriber.syncProgresses.get(6), is(SyncingStockCardsLastYear));
         assertThat(subscriber.syncProgresses.get(7), is(StockCardsLastYearSynced));
+    }
+
+    @Test
+    public void shouldOnlySyncOnceWhenInvokedTwice() throws Exception {
+        //given
+        mockProductResponse();
+        mockRequisitionResponse();
+        mockStockCardsResponse();
+
+        //when
+        TestSubscriber<SyncProgress> subscriber1 = new TestSubscriber<>();
+        TestSubscriber<SyncProgress> subscriber2 = new TestSubscriber<>();
+        syncBackManager.syncBackServerData(subscriber1);
+        syncBackManager.syncBackServerData(subscriber2);
+
+        subscriber1.awaitTerminalEvent();
+        subscriber1.assertNoErrors();
+
+        //then
+        subscriber2.assertNoTerminalEvent();
+        verify(lmisRestApi, times(1)).fetchProducts(anyString());
     }
 
     private void testSyncProgress(SyncProgress progress) {
