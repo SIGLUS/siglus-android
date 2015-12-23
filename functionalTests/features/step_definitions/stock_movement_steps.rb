@@ -80,15 +80,13 @@ Then(/^I make a movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_ca
 end
 
 And(/^I sign stock movement with "(.*?)"$/) do |text|
-    if EnvConfig.getConfig()[:stockMovementSignature]
-        enter_text("android.widget.EditText id:'et_signature'", text)
-        hide_soft_keyboard
+    enter_text("android.widget.EditText id:'et_signature'", text)
+    hide_soft_keyboard
 
-        steps %Q{
-            Then I press "Approve"
-        }
-        hide_soft_keyboard
-    end
+    steps %Q{
+        Then I press "Approve"
+    }
+    hide_soft_keyboard
 end
 
 Then(/^I see "(.*?)" in signature field$/) do |text|

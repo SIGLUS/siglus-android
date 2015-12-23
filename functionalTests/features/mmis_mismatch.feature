@@ -16,10 +16,6 @@ Feature: MMIA Page total mismatch
     And I enter "just because!" in "Observations"
     Then I wait for 1 second
     Then I press "Submit for Approval"
-    And I sign mmia with "superuser"
-    Then I press "Continue"
-    Then I wait for 1 second
-    Then I press "Complete"
-    And I sign mmia with "superuser"
+    And I sign requisition with "superuser" "testUser" and complete
     Then I should see text containing "Your MMIA form has been successfully saved,"
     Then I wait for "Home Page" to appear

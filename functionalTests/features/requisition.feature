@@ -27,7 +27,7 @@ Feature: Requisition
     Then I swipe right
     Then I should see "345" in the requisition form
     Then I press "Submit for Approval"
-    And I sign via with "superuser" "testUser" and complete
+    And I sign requisition with "superuser" "testUser" and complete
     Then I wait for "Home Page" to appear
 
   Scenario: Pop up alert

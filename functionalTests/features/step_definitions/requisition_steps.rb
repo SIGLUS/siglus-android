@@ -35,23 +35,3 @@ Then(/^I should see "(\d+)" in the requisition form/) do |number|
     end
 end
 
-And(/^I sign via with "(.*?)" "(.*?)" and complete$/) do |submitSignature, completeSignature|
-    if EnvConfig.getConfig()[:viaSignature]
-        enter_text("android.widget.EditText id:'et_signature'", submitSignature)
-        hide_soft_keyboard
-
-        steps %Q{
-            Then I press "Approve"
-            And I wait for 1 second
-            Then I press "Continue"
-            Then I press "Complete"
-        }
-
-        enter_text("android.widget.EditText id:'et_signature'", completeSignature)
-        hide_soft_keyboard
-        steps %Q{
-            Then I press "Approve"
-        }
-    end
-end
-
