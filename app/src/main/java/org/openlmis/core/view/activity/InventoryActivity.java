@@ -50,6 +50,7 @@ import java.util.List;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
+import rx.Subscription;
 
 @ContentView(R.layout.activity_inventory)
 public class InventoryActivity extends SearchBarActivity implements InventoryPresenter.InventoryView, SimpleDialogFragment.MsgDialogCallBack {
@@ -102,7 +103,8 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
         productListRecycleView.setAdapter(mAdapter);
 
         loading();
-        presenter.loadPhysicalStockCards().subscribe(stockCardSubscriber);
+        Subscription subscription = presenter.loadPhysicalStockCards().subscribe(stockCardSubscriber);
+        subscriptions.add(subscription);
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,7 +161,9 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
         productListRecycleView.setAdapter(mAdapter);
 
         loading();
-        presenter.loadMasterProductList().subscribe(loadMasterSubscriber);
+
+        Subscription subscription = presenter.loadMasterProductList().subscribe(loadMasterSubscriber);
+        subscriptions.add(subscription);
 
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override

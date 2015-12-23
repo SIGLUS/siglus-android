@@ -40,6 +40,7 @@ import java.util.List;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
+import rx.Subscription;
 
 @ContentView(R.layout.activity_rnr_list)
 public class RnRFormListActivity extends BaseActivity implements RnRFormListPresenter.RnRFormListView {
@@ -94,7 +95,8 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     private void deleteRnRForm(RnRForm form) {
         try {
             presenter.deleteRnRForm(form);
-            presenter.loadRnRFormList().subscribe(getRnRFormSubscriber());
+            Subscription subscription = presenter.loadRnRFormList().subscribe(getRnRFormSubscriber());
+            subscriptions.add(subscription);
         } catch (LMISException e) {
             ToastUtil.show(getString(R.string.requisition_delete_failed));
             e.printStackTrace();

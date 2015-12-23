@@ -49,9 +49,12 @@ import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 import roboguice.RoboGuice;
 import roboguice.activity.RoboActionBarActivity;
+import rx.Subscription;
 
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
@@ -62,6 +65,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
 
     protected RetainedFragment dataFragment;
     protected Presenter presenter;
+    protected List<Subscription> subscriptions = new ArrayList<>();
 
     protected Class<? extends Presenter> presenterClass;
     protected ProgressDialog loadingDialog;
@@ -155,7 +159,17 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
             presenter.onStop();
             dataFragment.putData(presenterClass.getSimpleName(), presenter);
         }
+
+        unSubscribeSubscriptions();
         super.onDestroy();
+    }
+
+    private void unSubscribeSubscriptions() {
+        for (Subscription subscription : subscriptions) {
+            if (subscription != null) {
+                subscription.unsubscribe();
+            }
+        }
     }
 
     private void initDataFragment() {
