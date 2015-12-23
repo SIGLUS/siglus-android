@@ -186,6 +186,7 @@ public class SyncBackManagerTest {
 
     private void mockStockCardsResponse() throws ParseException, LMISException {
         createdPreferences = LMISTestApp.getContext().getSharedPreferences("LMISPreference", Context.MODE_PRIVATE);
+        when(sharedPreferenceMgr.shouldSyncLastYearStockData()).thenReturn(true);
         when(sharedPreferenceMgr.getPreference()).thenReturn(createdPreferences);
 
         stockRepository = mock(StockRepository.class);
