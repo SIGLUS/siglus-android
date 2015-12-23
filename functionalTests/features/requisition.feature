@@ -1,4 +1,4 @@
-@Requisition
+@REQUISITION
 Feature: Requisition
 
   Scenario: Save requisition draft and complete
