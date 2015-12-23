@@ -415,16 +415,4 @@ public class RnrFormRepository {
             }
         });
     }
-
-    public boolean hasRequisitionData() {
-        try {
-            List<RnRForm> list = list();
-            if (list != null && list.size() > 0) {
-                return true;
-            }
-        } catch (LMISException e) {
-            e.reportToFabric();
-        }
-        return false;
-    }
 }

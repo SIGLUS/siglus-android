@@ -247,18 +247,6 @@ public class StockRepository {
         return stockCards;
     }
 
-    public boolean hasStockData() {
-        try {
-            List<StockCard> list = list();
-            if (list != null && list.size() > 0) {
-                return true;
-            }
-        } catch (LMISException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
     public List<StockCard> list(String programCode) throws LMISException {
         List<StockCard> stockCards = new ArrayList<>();
         final Program program = programRepository.queryByCode(programCode);
