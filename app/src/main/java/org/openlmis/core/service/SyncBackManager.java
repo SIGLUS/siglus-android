@@ -53,15 +53,10 @@ import rx.schedulers.Schedulers;
 
 @Singleton
 public class SyncBackManager {
-    public static final int DAYS_OF_MONTH = 30;
-    public static final int MONTHS_OF_YEAR = 12;
+    private static final int DAYS_OF_MONTH = 30;
+    private static final int MONTHS_OF_YEAR = 12;
 
-    private boolean SaveProductLock = false;
-    private boolean saveRequisitionLock = false;
     private boolean isSyncing = false;
-
-    private final Object STOCK_MONTH_SYNC_LOCK = new Object();
-    private final Object STOCK_YEAR_SYNC_LOCK = new Object();
 
     protected LMISRestApi lmisRestApi;
 
@@ -168,19 +163,12 @@ public class SyncBackManager {
         try {
             SyncBackProductsResponse response = lmisRestApi.fetchProducts(user.getFacilityCode());
 
-            if (SaveProductLock || sharedPreferenceMgr.hasGetProducts()) {
-                throw new LMISException("It's Syncing in Background or Loaded");
-            }
-
-            SaveProductLock = true;
             List<Program> programsWithProducts = response.getProgramsWithProducts();
             for (Program programWithProducts : programsWithProducts) {
                 programRepository.saveProgramWithProduct(programWithProducts);
             }
         } catch (Exception e) {
             throw new LMISException(errorMessage(R.string.msg_sync_products_list_failed));
-        } finally {
-            SaveProductLock = false;
         }
     }
 
@@ -211,18 +199,9 @@ public class SyncBackManager {
             throw new LMISException("Can't get SyncDownRequisitionsResponse, you can check json parse to POJO logic");
         }
 
-        if (saveRequisitionLock || sharedPreferenceMgr.isRequisitionDataSynced()) {
-            throw new LMISException("Sync Requisition Background or Loaded");
-        }
-        saveRequisitionLock = true;
-
-        try {
-            List<RnRForm> rnRForms = syncDownRequisitionsResponse.getRequisitions();
-            for (RnRForm form : rnRForms) {
-                rnrFormRepository.createFormAndItems(form);//todo: all or nothing with transaction
-            }
-        } finally {
-            saveRequisitionLock = false;
+        List<RnRForm> rnRForms = syncDownRequisitionsResponse.getRequisitions();
+        for (RnRForm form : rnRForms) {
+            rnrFormRepository.createFormAndItems(form);//todo: all or nothing with transaction
         }
     }
 
