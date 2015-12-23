@@ -64,12 +64,9 @@ public class StockCardViewModel {
 
     SpannableStringBuilder styledUnit;
 
-    boolean validate = true;
-    boolean checked;
-
-    private StockCard stockCard;
-
+    private boolean checked = false;
     private String signature;
+    private StockCard stockCard;
     protected Product product;
 
     public StockCardViewModel(StockCard stockCard) {
@@ -78,9 +75,19 @@ public class StockCardViewModel {
         this.stockCard = stockCard;
         this.stockCardId = stockCard.getId();
         this.stockOnHand = stockCard.getStockOnHand();
+        this.checked = true;
 
         initExpiryDates(stockCard.getExpireDates());
     }
+
+    public StockCardViewModel(Product product) {
+        this.product = product;
+        this.type = product.getType();
+
+        setProductAttributes(product);
+        formatProductDisplay(product);
+    }
+
 
     public void initExpiryDates(String expireDates) {
         if (!TextUtils.isEmpty(expireDates)) {
@@ -114,15 +121,6 @@ public class StockCardViewModel {
 
     public void clearExpiryDates() {
         this.expiryDates = new ArrayList<>();
-    }
-
-    public StockCardViewModel(Product product) {
-        this.product = product;
-        this.type = product.getType();
-        this.checked = false;
-
-        setProductAttributes(product);
-        formatProductDisplay(product);
     }
 
     private void setProductAttributes(Product product) {
@@ -203,9 +201,8 @@ public class StockCardViewModel {
         return this.getExpiryDates().contains(expireDate);
     }
 
-    public boolean validate() {
-        validate = !checked || StringUtils.isNumeric(quantity);
-        return validate;
+    public boolean isValidate() {
+        return !checked || StringUtils.isNumeric(quantity);
     }
 
     public DraftInventory parseDraftInventory() {

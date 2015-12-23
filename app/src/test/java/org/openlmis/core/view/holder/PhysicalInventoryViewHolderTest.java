@@ -64,7 +64,6 @@ public class PhysicalInventoryViewHolderTest {
                 .setQuantity("invalid10")
                 .setChecked(true)
                 .setType("Embalagem")
-                .setValidate(false)
                 .build();
         viewHolder.populate(viewModel, queryKeyWord);
 

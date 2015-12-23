@@ -7,6 +7,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.builder.ProductBuilder;
 
 import java.util.ArrayList;
 
@@ -19,10 +20,11 @@ import static org.junit.Assert.assertTrue;
 public class StockCardViewModelTest {
 
     private StockCardViewModel model;
+    private StockCard stockCard;
 
     @Before
     public void setup() {
-        StockCard stockCard = new StockCard();
+        stockCard = new StockCard();
         stockCard.setStockOnHand(10);
         Product product = new Product();
         product.setPrimaryName("Product");
@@ -59,5 +61,37 @@ public class StockCardViewModelTest {
 
         assertThat(draftInventory.getQuantity(), is(10L));
         assertThat(draftInventory.getExpireDates(), is("18/10/2015,18/10/2016,18/10/2017,18/10/2018"));
+    }
+
+    @Test
+    public void shouldCheckValidationInPhysicalInventoryPage() {
+        model = new StockCardViewModel(stockCard);
+
+        // Physical Inventory StockCardViewModel is initialized with a StockCard
+        assertFalse(model.isValidate());
+
+        // Physical Inventory should not be valid when it's empty
+        model.setQuantity("");
+        assertFalse(model.isValidate());
+
+        //Physical Inventory should be valid when it's numerical
+        model.setQuantity("100");
+        assertTrue(model.isValidate());
+    }
+
+    @Test
+    public void shouldCheckValidationInInitialInventoryPage() {
+        model = new StockCardViewModel(new ProductBuilder().setCode("08S32").setPrimaryName("Primary name").build());
+
+        // When it's not checked, it should be valid
+        assertTrue(model.isValidate());
+
+        //When it's checked, but has no numerical value, should be invalid
+        model.setChecked(true);
+        assertFalse(model.isValidate());
+
+        //When it's checked and filled with numerical value. It should be valid
+        model.setQuantity("123");
+        assertTrue(model.isValidate());
     }
 }
