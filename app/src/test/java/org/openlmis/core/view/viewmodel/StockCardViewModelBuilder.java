@@ -43,6 +43,11 @@ public class StockCardViewModelBuilder {
         return this;
     }
 
+    public StockCardViewModelBuilder setValid(boolean isValid) {
+        viewModel.setValid(isValid);
+        return this;
+    }
+
     public StockCardViewModel build() {
         return viewModel;
     }

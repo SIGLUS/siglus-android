@@ -67,16 +67,15 @@ public class StockCardViewModelTest {
     public void shouldCheckValidationInPhysicalInventoryPage() {
         model = new StockCardViewModel(stockCard);
 
-        // Physical Inventory StockCardViewModel is initialized with a StockCard
-        assertFalse(model.isValidate());
-
         // Physical Inventory should not be valid when it's empty
         model.setQuantity("");
-        assertFalse(model.isValidate());
+        model.validate();
+        assertFalse(model.isValid());
 
         //Physical Inventory should be valid when it's numerical
         model.setQuantity("100");
-        assertTrue(model.isValidate());
+        model.validate();
+        assertTrue(model.isValid());
     }
 
     @Test
@@ -84,14 +83,16 @@ public class StockCardViewModelTest {
         model = new StockCardViewModel(new ProductBuilder().setCode("08S32").setPrimaryName("Primary name").build());
 
         // When it's not checked, it should be valid
-        assertTrue(model.isValidate());
+        assertTrue(model.isValid());
 
         //When it's checked, but has no numerical value, should be invalid
         model.setChecked(true);
-        assertFalse(model.isValidate());
+        model.validate();
+        assertFalse(model.isValid());
 
         //When it's checked and filled with numerical value. It should be valid
         model.setQuantity("123");
-        assertTrue(model.isValidate());
+        model.validate();
+        assertTrue(model.isValid());
     }
 }
