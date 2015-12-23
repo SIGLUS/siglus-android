@@ -199,7 +199,7 @@ public class SyncBackManagerTest {
                 verifyLastMonthStockCardsSynced(createdPreferences);
             }
             if (progress == RequisitionSynced) {
-                verify(rnrFormRepository, times(2)).createFormAndItems(any(RnRForm.class));
+                verify(rnrFormRepository, times(2)).createFormAndItems(any(ArrayList.class));
             }
             if (progress == StockCardsLastYearSynced) {
                 verify(lmisRestApi, times(13)).fetchStockMovementData(anyString(), anyString(), anyString());

@@ -383,7 +383,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         int expectAdjustment = positiveQuantity - negativeQuantity;
         int expectInventoryQuantity = stockExistence + receiveQuantity + positiveQuantity - issueQuantity - negativeQuantity;
         int expectOrderQuantity = 2 * issueQuantity - expectInventoryQuantity;
-        expectOrderQuantity = expectOrderQuantity >0 ? expectOrderQuantity : 0;
+        expectOrderQuantity = expectOrderQuantity > 0 ? expectOrderQuantity : 0;
 
         assertThat(rnrFormItem.getProduct(), is(product));
         assertEquals(stockExistence, rnrFormItem.getInitialAmount());
@@ -434,8 +434,10 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     public void shouldCreateSuccess() throws Exception {
         Program program = new Program();
         RnRForm form = RnRForm.init(program, DateUtil.parseString("01/01/2015", DateUtil.SIMPLE_DATE_FORMAT));
+        ArrayList<RnRForm> rnRForms = new ArrayList<>();
+        rnRForms.add(form);
 
-        rnrFormRepository.createFormAndItems(form);
+        rnrFormRepository.createFormAndItems(rnRForms);
 
         RnRForm form2 = RnRForm.init(program, DateUtil.parseString("01/01/2015", DateUtil.SIMPLE_DATE_FORMAT));
         ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
@@ -446,7 +448,9 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         form2.setBaseInfoItemListWrapper(baseInfoItems);
         form2.setComments("Comments");
         RnRForm.fillFormId(form2);
-        rnrFormRepository.createFormAndItems(form2);
+        ArrayList<RnRForm> rnRForms2 = new ArrayList<>();
+        rnRForms2.add(form2);
+        rnrFormRepository.createFormAndItems(rnRForms2);
         assertThat(form.getId(), is(1L));
         assertThat(form2.getId(), is(2L));
         RnRForm rnRForm = rnrFormRepository.queryRnRForm(2L);

@@ -29,7 +29,6 @@ import org.openlmis.core.exceptions.NoFacilityForUserException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
-import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
@@ -199,10 +198,7 @@ public class SyncBackManager {
             throw new LMISException("Can't get SyncDownRequisitionsResponse, you can check json parse to POJO logic");
         }
 
-        List<RnRForm> rnRForms = syncDownRequisitionsResponse.getRequisitions();
-        for (RnRForm form : rnRForms) {
-            rnrFormRepository.createFormAndItems(form);//todo: all or nothing with transaction
-        }
+        rnrFormRepository.createFormAndItems(syncDownRequisitionsResponse.getRequisitions());
     }
 
     private void fetchLatestOneMonthMovements() throws LMISException {
