@@ -20,7 +20,11 @@ Feature: Physical Inventory
     And I do physical inventory with "100" by fnm "08S42B"
     And I do physical inventory with "200" by fnm "08S18Y"
     And I do physical inventory with "300" by fnm "08S40Z"
-    And I go back
+
+    Then I can see "300" physical quantity in position "1"
+    Then I can see "200" physical quantity in position "2"
+    Then I can see "100" physical quantity in position "3"
+
     And I press "Complete"
     And I sign with "sign"
 
@@ -38,7 +42,6 @@ Feature: Physical Inventory
     And I press "Do Monthly Inventory"
     And I wait for "inventory" to appear
     And I do physical inventory with "2015" by fnm "08S42B"
-    And I go back
     And I press "Save"
 
     And I wait for "Home Page" to appear

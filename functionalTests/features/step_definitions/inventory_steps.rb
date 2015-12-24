@@ -103,5 +103,16 @@ And(/^I do physical inventory with "(\d+)" by fnm "(.*?)"/) do |quantity,fnm|
         When I search drug by fnm "#{fnm}"
         And I enter quantity "#{quantity}" on inventory page
         And I clean search bar
+        And I go back
     }
 end
+
+
+Then(/^I can see "(\d+)" physical quantity in position "(\d+)"$/) do |number, index|
+    quantities = query("android.widget.EditText id:'tx_quantity'", :text)
+    unless quantities.at(index.to_i - 1) == number
+        fail "Text in quantity field in position "#{index}" is incorrect."
+    end
+end
+
+
