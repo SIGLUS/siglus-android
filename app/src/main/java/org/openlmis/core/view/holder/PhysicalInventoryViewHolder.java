@@ -37,24 +37,17 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
         etQuantity.setHint(R.string.hint_quantity_in_stock);
     }
 
-
     public void populate(StockCardViewModel stockCardViewModel, String queryKeyWord) {
-        final EditTextWatcher textWatcher = new EditTextWatcher(stockCardViewModel);
-        etQuantity.removeTextChangedListener(textWatcher);
-
         tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledName()));
         tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledUnit()));
 
         tvStockOnHandInInventory.setText(context.getString(R.string.label_physical_inventory_stock_on_hand,
                 Long.toString(stockCardViewModel.getStockOnHand())));
 
+        EditTextWatcher textWatcher = new EditTextWatcher(stockCardViewModel);
+        etQuantity.removeTextChangedListener(textWatcher);
         etQuantity.setText(stockCardViewModel.getQuantity());
-        etQuantity.post(new Runnable() {
-            @Override
-            public void run() {
-                etQuantity.addTextChangedListener(textWatcher);
-            }
-        });
+        etQuantity.addTextChangedListener(textWatcher);
 
         expireDateViewGroup.initExpireDateViewGroup(stockCardViewModel, false);
 
