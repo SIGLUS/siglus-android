@@ -6,9 +6,9 @@ Feature: Physical Inventory
     Then I wait up to 30 seconds for "Initial Inventory" to appear
     Then I wait for 3 seconds
 
-    When I search product by fnm "08S42B" and select this item
-    When I search product by fnm "08S18Y" and select this item
-    When I search product by fnm "08S40Z" and select this item
+    When I search product by fnm "08S42B" and select this item with quantity "10"
+    When I search product by fnm "08S18Y" and select this item with quantity "20"
+    When I search product by fnm "08S40Z" and select this item with quantity "30"
 
     Then I wait for "Complete" to appear
     And I press "Complete"
