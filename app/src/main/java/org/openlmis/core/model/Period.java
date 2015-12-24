@@ -1,6 +1,7 @@
 package org.openlmis.core.model;
 
 import org.joda.time.DateTime;
+import org.openlmis.core.utils.DateUtil;
 
 import java.util.Date;
 
@@ -13,11 +14,11 @@ public class Period {
 
     public Period(DateTime dateTime) {
         if (dateTime.dayOfMonth().get() >= BEGIN_DAY) {
-            periodBegin = dateTime.withDayOfMonth(BEGIN_DAY);
-            periodEnd = nextMonth(dateTime).withDayOfMonth(END_DAY);
+            periodBegin = DateUtil.formatePeriodDate(dateTime.withDayOfMonth(BEGIN_DAY));
+            periodEnd = DateUtil.formatePeriodDate(nextMonth(dateTime).withDayOfMonth(END_DAY));
         } else {
-            periodBegin = lastMonth(dateTime).withDayOfMonth(BEGIN_DAY);
-            periodEnd = dateTime.withDayOfMonth(END_DAY);
+            periodBegin = DateUtil.formatePeriodDate(lastMonth(dateTime).withDayOfMonth(BEGIN_DAY));
+            periodEnd = DateUtil.formatePeriodDate(dateTime.withDayOfMonth(END_DAY));
         }
     }
 

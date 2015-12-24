@@ -35,6 +35,13 @@ Feature: MMIA
     And I sign requisition with "superuser" "testUser" and complete
     Then I should see text containing "Your MMIA form has been successfully saved,"
     Then I wait for "Home Page" to appear
+    And I press "Create a MMIA"
+    Then I wait for "MMIA -" to appear
+    Then I scroll to "Submit for Approval"
+    And I enter regimen totals
+    And I enter patient totals
+    Then I press "Submit for Approval"
+    And I should see text containing "Cannot submit requisition twice in a period!"
 
   Scenario: after editing if I go back without saving I should see pop up, if I say yes then go back without saving, else staying at mmia page
     And I press "Stock Card Overview"

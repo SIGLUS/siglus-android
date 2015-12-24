@@ -19,6 +19,8 @@
 package org.openlmis.core.utils;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
 
@@ -140,6 +142,13 @@ public final class DateUtil {
         CALENDAR_NOW.setTime(date);
         return CALENDAR_NOW;
     }
+
+    public static DateTime formatePeriodDate(DateTime dateTime) {
+        DateTimeFormatter format = DateTimeFormat.forPattern(DB_DATE_FORMAT);
+        String formateDate = format.print(dateTime);
+        return format.parseDateTime(formateDate);
+    }
+
 
     private static boolean isInSubmitDates(int day) {
         return day >= DAY_PERIOD_END + 1 && day <= DAY_PERIOD_END + 5;
