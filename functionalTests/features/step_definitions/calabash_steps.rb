@@ -94,3 +94,10 @@ And(/^I sign requisition with "(.*?)" "(.*?)" and complete$/) do |submitSignatur
     }
 end
 
+Then(/^I should see total:"(\d+)" on stock list page/) do |expectTotal|
+    total = query("android.widget.TextView id:'tv_total'", :text).first
+    unless (total.eql?("Total:"+expectTotal))
+        fail(msg="Total drug quantity don't equals to expect quantity")
+    end
+end
+
