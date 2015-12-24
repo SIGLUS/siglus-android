@@ -36,7 +36,9 @@ android {
     }
 
     productFlavors {
-        dev {
+        local {
+            applicationId 'org.openlmis.core.local'
+        } dev {
             applicationId 'org.openlmis.core.dev'
         }
         qa {
