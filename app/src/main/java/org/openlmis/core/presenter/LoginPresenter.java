@@ -181,7 +181,9 @@ public class LoginPresenter extends Presenter {
                         view.loaded();
                         break;
                     case RequisitionSynced:
-                        ToastUtil.showLongTimeAsOfficialWay(R.string.msg_initial_sync_success);
+                        if (!view.needInitInventory()) {
+                            ToastUtil.showLongTimeAsOfficialWay(R.string.msg_initial_sync_success);
+                        }
                         goToNextPage();
                         break;
                 }
