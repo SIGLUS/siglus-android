@@ -13,10 +13,6 @@ def should_skip_validation
     DateTime.now().day >=21 && DateTime.now().day <=25
 end
 
-Given /^I cleared App data/ do
-    clear_app_data
-end
-
 Then /^I navigate back/ do
     tap_when_element_exists("* contentDescription:'Navigate up'")
 end
@@ -81,10 +77,15 @@ And(/^I enter quantity "(\d+)" on inventory page$/) do |quantity|
     hide_soft_keyboard
 end
 
-When(/^I select the checkbox$/) do
+When(/^I select the checkbox with quantity "(\d+)"$/) do |quantity|
     wait_for_element_exists("android.widget.CheckBox id:'checkbox' checked:'false'", :timeout => 10)
     checkbox = query("android.widget.CheckBox id:'checkbox' checked:'false'").first
     until checkbox.nil?
+
+      if index == quantity.to_i then
+        break
+      end
+
       touch(checkbox)
       h = query("android.widget.EditText id:'tx_quantity' text:''")
       while h.empty?
@@ -132,32 +133,10 @@ When(/^I Select VIA Item$/) do
 	}
 end
 
-When(/^I Select initial inventory in Screen$/) do
-    product_name = query("android.widget.TextView id:'product_name' ", "getText")
-    for name in product_name
-            if pre_name!=name
-                steps %Q{
-                    When I select the item called "#{name}"
-    	        }
-    	    end
-            pre_name=name
-    end
-end
-
 When(/^I initialize inventory$/) do
     if EnvConfig::STRESS_TEST
-        checkBox = query("android.widget.CheckBox id:'checkbox' checked:'false'").first
-
-        while !checkBox.nil?
-            steps %Q{
-                When I select the checkbox
-            }
-            scroll("RecyclerView", :down)
-            checkBox = query("android.widget.CheckBox id:'checkbox' checked:'false'").first
-        end
-
         steps %Q{
-            Then I wait for "Complete" to appear
+            And I initialize products with quantity "1254"
             And I press "Complete"
             Then I wait for "Home Page" to appear
         }
@@ -165,6 +144,54 @@ When(/^I initialize inventory$/) do
        steps %Q{
            Given I have initialized inventory
        }
+    end
+end
+
+Given(/^I have added new drugs/) do
+    if EnvConfig::STRESS_TEST
+        steps %Q{
+            And I initialize products with quantity "100"
+        }
+    else
+       steps %Q{
+            When I search product by fnm "08S01ZY" and select this item with quantity "2008"
+       }
+    end
+end
+
+Then(/^I check new drug quantity/) do
+    if EnvConfig::STRESS_TEST
+        steps %Q{
+            Then I should see total:"110" on stock list page
+        }
+    else
+       steps %Q{
+            Then I should see total:"11" on stock list page
+            When I search product by fnm "08S01ZY" and select this item with quantity "2008"
+       }
+    end
+end
+
+Then(/^I should see total:"(\d+)" on stock list page/) do |expectTotal|
+    total = query("android.widget.TextView id:'tv_total'", :text).first
+    unless (total.eql?("Total:"+expectTotal))
+        fail(msg="Total drug quantity don't equals to expect quantity")
+    end
+end
+
+And(/^I initialize products with quantity "(\d+)"/) do |quantity|
+    checkBox = query("android.widget.CheckBox id:'checkbox' checked:'false'").first
+
+    while !checkBox.nil?
+        if index == quantity.to_i then
+            break
+        end
+
+        steps %Q{
+            When I select the checkbox with quantity "#{quantity}"
+        }
+        scroll("RecyclerView", :down)
+        checkBox = query("android.widget.CheckBox id:'checkbox' checked:'false'").first
     end
 end
 
