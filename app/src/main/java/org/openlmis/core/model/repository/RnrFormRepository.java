@@ -50,8 +50,6 @@ import java.util.concurrent.Callable;
 
 public class RnrFormRepository {
 
-    private static final String TAG = "RnrFormRepository";
-
     @Inject
     DbUtil dbUtil;
 
