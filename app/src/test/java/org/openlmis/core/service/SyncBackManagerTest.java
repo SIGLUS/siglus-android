@@ -130,17 +130,20 @@ public class SyncBackManagerTest {
         mockStockCardsResponse();
 
         //when
-        TestSubscriber<SyncProgress> subscriber1 = new TestSubscriber<>();
-        TestSubscriber<SyncProgress> subscriber2 = new TestSubscriber<>();
-        syncBackManager.syncBackServerData(subscriber1);
-        syncBackManager.syncBackServerData(subscriber2);
+        CountOnNextSubscriber firstEnterSubscriber = new CountOnNextSubscriber();
+        CountOnNextSubscriber laterEnterSubscriber = new CountOnNextSubscriber();
+        syncBackManager.syncBackServerData(firstEnterSubscriber);
+        syncBackManager.syncBackServerData(laterEnterSubscriber);
 
-        subscriber1.awaitTerminalEvent();
-        subscriber1.assertNoErrors();
+        firstEnterSubscriber.awaitTerminalEvent();
+        firstEnterSubscriber.assertNoErrors();
+        laterEnterSubscriber.awaitTerminalEvent();
+        laterEnterSubscriber.assertNoErrors();
 
         //then
-        subscriber2.assertNoTerminalEvent();
         verify(lmisRestApi, times(1)).fetchProducts(anyString());
+        assertThat(firstEnterSubscriber.syncProgresses.size(),is(8));
+        assertThat(laterEnterSubscriber.syncProgresses.size(),is(0));
     }
 
     private void testSyncProgress(SyncProgress progress) {
@@ -224,16 +227,21 @@ public class SyncBackManagerTest {
         return syncDownStockCardResponse;
     }
 
-    private class SyncServerDataSubscriber extends TestSubscriber<SyncProgress> {
+    private class SyncServerDataSubscriber extends CountOnNextSubscriber {
+        @Override
+        public void onNext(SyncProgress syncProgress) {
+            super.onNext(syncProgress);
+            testSyncProgress(syncProgress);
+        }
+    }
 
+    private class CountOnNextSubscriber extends TestSubscriber<SyncProgress> {
         public List<SyncProgress> syncProgresses = new ArrayList<>();
 
         @Override
         public void onNext(SyncProgress syncProgress) {
             syncProgresses.add(syncProgress);
-            testSyncProgress(syncProgress);
         }
-
     }
 
     public class MyTestModule extends AbstractModule {

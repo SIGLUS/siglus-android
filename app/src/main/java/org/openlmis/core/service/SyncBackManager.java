@@ -72,6 +72,7 @@ public class SyncBackManager {
 
     public void syncBackServerData(Subscriber<SyncProgress> subscriber) {
         if (isSyncing) {
+            subscriber.onCompleted();
             return;
         }
 
