@@ -26,6 +26,7 @@ import com.j256.ormlite.android.AndroidConnectionSource;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 
 import java.sql.SQLException;
@@ -37,6 +38,10 @@ public class DbUtil {
 
     @Inject
     private Context context;
+
+    public static <T> Dao<T, String> initialiseDao(Class<T> domainClass) throws SQLException {
+        return initialiseDao(LmisSqliteOpenHelper.getInstance(LMISApp.getContext()), domainClass);
+    }
 
     public static <T> Dao<T, String> initialiseDao(SQLiteOpenHelper openHelper, Class<T> domainClass) throws SQLException {
         ConnectionSource connectionSource;
