@@ -49,6 +49,7 @@ import roboguice.RoboGuice;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -274,7 +275,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         stockCardList.add(stockCard2);
         stockCardList.add(stockCard3);
 
-        when(mockStockRepository.list(program.getProgramCode())).thenReturn(stockCardList);
+        when(mockStockRepository.list(anyLong())).thenReturn(stockCardList);
         assertThat(rnrFormRepository.generateRnrFormItems(form).size(), is(2));
     }
 
@@ -298,7 +299,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         stockCardList.add(stockCard);
 
-        when(mockStockRepository.list(program.getProgramCode())).thenReturn(stockCardList);
+        when(mockStockRepository.list(anyLong())).thenReturn(stockCardList);
 
         assertThat(rnrFormRepository.generateRnrFormItems(form).size(), is(1));
     }
@@ -374,7 +375,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         form.setPeriodEnd(DateUtil.parseString("10/20/2015", DateUtil.SIMPLE_DATE_FORMAT));
         form.setProgram(new Program("mmia", "mmia", null));
 
-        when(mockStockRepository.list(anyString())).thenReturn(stockCards);
+        when(mockStockRepository.list(anyLong())).thenReturn(stockCards);
         when(mockStockRepository.queryStockItems(stockCard, form.getPeriodBegin(), form.getPeriodEnd())).thenReturn(stockMovementItems);
 
         List<RnrFormItem> rnrFormItemList = rnrFormRepository.generateRnrFormItems(form);

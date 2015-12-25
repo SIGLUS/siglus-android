@@ -30,6 +30,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.StockCardBuilder;
@@ -64,11 +65,14 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     private Date lastSecondMonthDate;
     private Date lastThirdMonthDate;
     private Date lastForthMonthDate;
+    private ProgramRepository programRepository;
 
     @Before
     public void setup() throws LMISException {
 
         stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockRepository.class);
+        productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
+        programRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProgramRepository.class);
         saveTestProduct();
 
         Date today = DateUtil.today();
@@ -254,6 +258,40 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
+    public void shouldGetStockCardByProgramId() throws Exception {
+
+        Program program = new Program();
+        programRepository.create(program);
+
+        Product product = new Product();
+        product.setProgram(program);
+        productRepository.create(product);
+
+        StockCard stockCard = new StockCard();
+        stockCard.setProduct(product);
+        stockRepository.save(stockCard);
+
+        StockCard stockCard2 = new StockCard();
+        stockCard2.setProduct(product);
+        stockRepository.save(stockCard2);
+
+
+        Program program2 = new Program();
+        programRepository.create(program2);
+        Product product2 = new Product();
+        product2.setProgram(program2);
+        productRepository.create(product2);
+
+        StockCard stockCard3 = new StockCard();
+        stockCard3.setProduct(product2);
+        stockRepository.save(stockCard3);
+
+        List<StockCard> list = stockRepository.list(program.getId());
+
+        assertThat(list.size(), is(2));
+    }
+
+    @Test
     public void shouldGetLowStockAvgWhenLastMonthHaveNoStockItem() throws Exception {
 
         StockCard stockCard = new StockCard();
@@ -310,7 +348,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         product.setPrimaryName("Test Product");
         product.setStrength("200");
 
-        productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
         productRepository.create(product);
     }
 

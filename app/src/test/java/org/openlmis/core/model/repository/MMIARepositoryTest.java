@@ -106,7 +106,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
             stockMovementItems.add(stockMovementItem);
         }
 
-        when(mockStockRepository.list(anyString())).thenReturn(stockCards);
+        when(mockStockRepository.list(anyLong())).thenReturn(stockCards);
         when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(stockMovementItems);
 
         RnRForm form = MMIARepository.initRnrForm();

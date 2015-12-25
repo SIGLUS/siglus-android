@@ -270,7 +270,7 @@ public class RnrFormRepository {
     }
 
     protected List<RnrFormItem> generateRnrFormItems(final RnRForm form) throws LMISException {
-        List<StockCard> stockCards = FluentIterable.from(stockRepository.list(form.getProgram().getProgramCode())).filter(new Predicate<StockCard>() {
+        List<StockCard> stockCards = FluentIterable.from(stockRepository.list(form.getProgram().getId())).filter(new Predicate<StockCard>() {
             @Override
             public boolean apply(StockCard stockCard) {
                 return !form.getPeriodEnd().before(DateUtil.truncateTimeStampInDate(stockCard.getCreatedAt()));

@@ -29,15 +29,14 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftInventory;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.model.Period;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.Lists;
@@ -60,10 +59,6 @@ public class StockRepository {
     GenericDao<StockMovementItem> stockItemGenericDao;
     GenericDao<DraftInventory> draftInventoryGenericDao;
     GenericDao<Product> productGenericDao;
-
-
-    @Inject
-    ProgramRepository programRepository;
 
     private final int LOW_STOCK_CALCULATE_MONTH_QUANTITY = 3;
 
@@ -257,18 +252,13 @@ public class StockRepository {
         return false;
     }
 
-    public List<StockCard> list(String programCode) throws LMISException {
-        List<StockCard> stockCards = new ArrayList<>();
-        final Program program = programRepository.queryByCode(programCode);
-        if (program != null) {
-            stockCards = FluentIterable.from(genericDao.queryForAll()).filter(new Predicate<StockCard>() {
+    public List<StockCard> list(final long programId) throws LMISException {
+        return FluentIterable.from(genericDao.queryForAll()).filter(new Predicate<StockCard>() {
                 @Override
                 public boolean apply(StockCard stockCard) {
-                    return stockCard.getProduct().getProgram().getId() == program.getId();
+                    return stockCard.getProduct().getProgram().getId() == programId;
                 }
             }).toList();
-        }
-        return stockCards;
     }
 
     public List<StockMovementItem> listLastFive(final long stockCardId) throws LMISException {
