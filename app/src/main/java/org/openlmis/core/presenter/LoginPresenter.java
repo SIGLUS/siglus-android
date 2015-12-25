@@ -57,7 +57,7 @@ public class LoginPresenter extends Presenter {
     }
 
     public void startLogin(String userName, String password) {
-
+        hasGoneToNextPage = false;
         if (StringUtils.EMPTY.equals(userName.trim())) {
             view.showUserNameEmpty();
             return;
@@ -154,9 +154,7 @@ public class LoginPresenter extends Presenter {
         return new Subscriber<SyncProgress>() {
             @Override
             public void onCompleted() {
-                if (!hasGoneToNextPage) {
-                    goToNextPage();
-                }
+                tryGoToNextPage();
             }
 
             @Override
@@ -175,20 +173,28 @@ public class LoginPresenter extends Presenter {
                         break;
 
                     case ProductSynced:
-                        view.loaded();
-                        break;
                     case StockCardsLastMonthSynced:
                         view.loaded();
                         break;
+
                     case RequisitionSynced:
                         if (!view.needInitInventory()) {
                             ToastUtil.showLongTimeAsOfficialWay(R.string.msg_initial_sync_success);
                         }
                         goToNextPage();
                         break;
+                    case SyncingStockCardsLastYear:
+                        tryGoToNextPage();
+                        break;
                 }
             }
         };
+    }
+
+    private void tryGoToNextPage() {
+        if (!hasGoneToNextPage) {
+            goToNextPage();
+        }
     }
 
     private void goToNextPage() {
