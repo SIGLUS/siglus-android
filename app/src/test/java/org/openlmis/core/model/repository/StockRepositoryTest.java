@@ -66,6 +66,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     private Date lastThirdMonthDate;
     private Date lastForthMonthDate;
     private ProgramRepository programRepository;
+    private RnrFormRepository rnrFormRepository;
 
     @Before
     public void setup() throws LMISException {
@@ -73,6 +74,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockRepository.class);
         productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
         programRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProgramRepository.class);
+        rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormRepository.class);
         saveTestProduct();
 
         Date today = DateUtil.today();
@@ -289,6 +291,38 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         List<StockCard> list = stockRepository.list(program.getId());
 
         assertThat(list.size(), is(2));
+    }
+
+    @Test
+    public void shouldGetStockCardsBeforeTimeLine() throws Exception {
+        Date createDate = DateUtil.parseString("2015-07-19 11:33:44", DateUtil.DATE_TIME_FORMAT);
+        Date afterPeriod = DateUtil.parseString("2015-07-21 11:33:44", DateUtil.DATE_TIME_FORMAT);
+        Date periodEnd = DateUtil.parseString("20/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
+
+        Program program = new Program();
+        programRepository.create(program);
+
+        Product product = new Product();
+        product.setProgram(program);
+        productRepository.create(product);
+
+        StockCard stockCard = new StockCard();
+        stockCard.setProduct(product);
+        stockCard.setCreatedAt(createDate);
+        stockRepository.save(stockCard);
+
+        StockCard stockCard2 = new StockCard();
+        stockCard2.setProduct(product);
+        stockCard2.setCreatedAt(createDate);
+        stockRepository.save(stockCard2);
+
+        StockCard stockCard3 = new StockCard();
+        stockCard3.setProduct(product);
+        stockCard2.setCreatedAt(afterPeriod);
+        stockRepository.save(stockCard3);
+
+        List<StockCard> stockCardsBeforeTimeLine = rnrFormRepository.getStockCardsBeforeTimeLine(program.getId(), periodEnd);
+        assertThat(stockCardsBeforeTimeLine.size(), is(2));
     }
 
     @Test

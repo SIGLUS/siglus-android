@@ -270,12 +270,7 @@ public class RnrFormRepository {
     }
 
     protected List<RnrFormItem> generateRnrFormItems(final RnRForm form) throws LMISException {
-        List<StockCard> stockCards = FluentIterable.from(stockRepository.list(form.getProgram().getId())).filter(new Predicate<StockCard>() {
-            @Override
-            public boolean apply(StockCard stockCard) {
-                return !form.getPeriodEnd().before(DateUtil.truncateTimeStampInDate(stockCard.getCreatedAt()));
-            }
-        }).toList();
+        List<StockCard> stockCards = getStockCardsBeforeTimeLine(form.getProgram().getId(), form.getPeriodEnd());
 
         List<RnrFormItem> rnrFormItems = new ArrayList<>();
 
@@ -285,6 +280,15 @@ public class RnrFormRepository {
             rnrFormItems.add(rnrFormItem);
         }
         return rnrFormItems;
+    }
+
+    protected List<StockCard> getStockCardsBeforeTimeLine(long programId, final Date periodEnd) throws LMISException {
+        return FluentIterable.from(stockRepository.list(programId)).filter(new Predicate<StockCard>() {
+            @Override
+            public boolean apply(StockCard stockCard) {
+                return !periodEnd.before(DateUtil.truncateTimeStampInDate(stockCard.getCreatedAt()));
+            }
+        }).toList();
     }
 
     private RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {
