@@ -21,7 +21,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
-import android.view.View;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
@@ -42,7 +41,6 @@ import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.shadows.ShadowListView;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -55,7 +53,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class VIARequisitionFragmentTest {
@@ -187,13 +184,6 @@ public class VIARequisitionFragmentTest {
         assertThat(dialog).isNotNull();
     }
 
-    private View getFirstItemInForm() {
-        VIARequisitionFragment.refreshRequisitionForm(form);
-        ShadowListView shadowListView = shadowOf(VIARequisitionFragment.requisitionForm);
-        shadowListView.populateItems();
-
-        return VIARequisitionFragment.requisitionForm.getChildAt(0);
-    }
 }
 
 

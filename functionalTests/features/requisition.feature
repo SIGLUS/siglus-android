@@ -1,7 +1,7 @@
 @REQUISITION
 Feature: Requisition
 
-  Scenario: Save requisition draft and complete
+  Scenario: Save requisition draft
     Given I try to log in with "via" "password1"
     Given I have initialized inventory
     And I press "Stock Card Overview"
@@ -22,8 +22,8 @@ Feature: Requisition
     Then I press "Save"
     Then I wait for "Home Page" to appear
     When I press view with id "btn_requisition"
-    Then I wait for "Requisition -" to appear
-    Then I swipe right
+    And I wait for "Requisition -" to appear
+    And I rotate the page to "landscape"
     Then I swipe right
     Then I should see "345" in the requisition form
     Then I press "Submit for Approval"
