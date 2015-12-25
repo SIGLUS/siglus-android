@@ -28,8 +28,9 @@ end
 
 def run_ft
   start_jetty
-  system("./gradlew functionalTest")
+  ftResult=system("./gradlew functionalTest")
   stop_jetty
+  ftResult
 end
 
 update_mis_moz
