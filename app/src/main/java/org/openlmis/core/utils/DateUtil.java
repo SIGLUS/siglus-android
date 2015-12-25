@@ -143,7 +143,7 @@ public final class DateUtil {
         return CALENDAR_NOW;
     }
 
-    public static DateTime formatePeriodDate(DateTime dateTime) {
+    public static DateTime cutTimeStamp(DateTime dateTime) {
         DateTimeFormatter format = DateTimeFormat.forPattern(DB_DATE_FORMAT);
         String formateDate = format.print(dateTime);
         return format.parseDateTime(formateDate);

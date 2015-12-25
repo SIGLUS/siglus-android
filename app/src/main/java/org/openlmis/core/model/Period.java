@@ -14,11 +14,11 @@ public class Period {
 
     public Period(DateTime dateTime) {
         if (dateTime.dayOfMonth().get() >= BEGIN_DAY) {
-            periodBegin = DateUtil.formatePeriodDate(dateTime.withDayOfMonth(BEGIN_DAY));
-            periodEnd = DateUtil.formatePeriodDate(nextMonth(dateTime).withDayOfMonth(END_DAY));
+            periodBegin = DateUtil.cutTimeStamp(dateTime.withDayOfMonth(BEGIN_DAY));
+            periodEnd = DateUtil.cutTimeStamp(nextMonth(dateTime).withDayOfMonth(END_DAY));
         } else {
-            periodBegin = DateUtil.formatePeriodDate(lastMonth(dateTime).withDayOfMonth(BEGIN_DAY));
-            periodEnd = DateUtil.formatePeriodDate(dateTime.withDayOfMonth(END_DAY));
+            periodBegin = DateUtil.cutTimeStamp(lastMonth(dateTime).withDayOfMonth(BEGIN_DAY));
+            periodEnd = DateUtil.cutTimeStamp(dateTime.withDayOfMonth(END_DAY));
         }
     }
 
