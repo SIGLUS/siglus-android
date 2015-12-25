@@ -172,7 +172,7 @@ task bundleInstall(type: Exec) {
     args 'install'
 }
 
-task functionalTests(type: Exec, dependsOn: ['bundleInstall', 'assembleLocalDebug']) {
+task functionalTests(type: Exec, dependsOn: ['bundleInstall', 'assembleDevDebug']) {
     description 'Run Calabash Tests against specified apk (-PapkPath)'
     group JavaBasePlugin.VERIFICATION_GROUP
     workingDir "$projectDir/../functionalTests"
@@ -182,7 +182,7 @@ task functionalTests(type: Exec, dependsOn: ['bundleInstall', 'assembleLocalDebu
     if (project.hasProperty("apkPath")) {
         targetPath = "$apkPath"
     } else {
-        targetPath = "$projectDir/build/outputs/apk/app-local-debug.apk"
+        targetPath = "$projectDir/build/outputs/apk/app-dev-debug.apk"
     }
 
     executable 'calabash-android'
