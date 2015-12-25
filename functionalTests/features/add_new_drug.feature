@@ -18,7 +18,7 @@ Feature:add new drug
     And I press "Complete"
     Then I should see text containing "Quantity cannot be left blank!"
 
-  Scenario: If is STRESS TEST,add 100 new drugs,else add one new drug,and check stock on hand quantity
+  Scenario: If is STRESS TEST,add 300 new drugs,else add one new drug,and check stock on hand quantity
     Given I try to log in with "initial_inventory" "password1"
     And I wait for "Home Page" to appear
     And I press "Stock Card Overview"

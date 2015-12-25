@@ -105,7 +105,7 @@ Feature: stock movement Page
     Then I navigate back
     Then I wait for "Home Page" to appear
 
-  Scenario: Add all movements for one drug
+  Scenario: Add all movements for one drug when is STRESS TEST
     When I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
@@ -114,27 +114,42 @@ Feature: stock movement Page
     Then I navigate back
     Then I wait for "Home Page" to appear
 
+  Scenario: View stock movement page when rotate the device
+    When I press "Stock Card Overview"
+    Then I wait for "Stock Overview" to appear
+    Then I wait for 1 second
+    Then I select stock card code called "[01A01]"
+    And I wait for "Stock Card" to appear
+    And I rotate the page to "landscape"
+    And I wait for "Stock Card" to appear
+    And I select a reason "Positive Adjustments" "Donations to Deposit"
+    Then I swipe right
+    Then I wait for 1 second
+    And I enter positive adjustment number "2"
+    Then I wait for "Complete" to appear
+    And I press "Complete"
+    And I sign with "superuser"
+    Then I see the text "Donations to Deposit"
+    Then I see "125"
+    Then I see "super" in signature field
 
-
-#  TODO swipe left does not work
-#  Scenario: ReSelect Adjust Reason
-#    When I press "Stock Card Overview"
-#    Then I wait for "Stock Overview" to appear
-#    Then I select stock card code called "08S36"
-#    Then I wait for "Stock Card" to appear
-#    And I select a reason "Positive Adjustments" "Donations to Deposit"
-#    Then I wait for 1 second
-#    And I enter "888" into documentNo
-#    Then I swipe right
-#    Then I wait for 1 second
-#    And I enter positive adjustment number "41"
-#    Then I wait for 2 seconds
-#    Then I swipe left
-#    Then I wait for 1 second
-#    And I select a reason "Positive Adjustments" "Donations to Deposit"
-#    Then I should not see "888"
-#    Then I swipe right
-#    Then I should not see "41"
+  Scenario: ReSelect Adjust Reason
+    When I press "Stock Card Overview"
+    Then I wait for "Stock Overview" to appear
+    Then I select stock card code called "08S36"
+    Then I wait for "Stock Card" to appear
+    And I rotate the page to "landscape"
+    And I wait for "Stock Card" to appear
+    And I select a reason "Positive Adjustments" "Donations to Deposit"
+    Then I wait for 1 second
+    And I enter "888" into documentNo
+    Then I wait for 1 second
+    And I enter positive adjustment number "41"
+    Then I wait for 1 second
+    And I select a reason "Positive Adjustments" "Donations to Deposit"
+    And I wait for 1 second
+    Then I should not see "888"
+    Then I should not see "41"
 
 
 

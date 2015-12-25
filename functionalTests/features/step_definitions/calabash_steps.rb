@@ -101,6 +101,6 @@ Then(/^I should see total:"(\d+)" on stock list page/) do |expectTotal|
     end
 end
 
-And(/^I rotate the page to ([^\"]*)/) do |orientation|
+And(/^I rotate the page to "(.*?)"/) do |orientation|
     perform_action('set_activity_orientation', orientation)
 end
