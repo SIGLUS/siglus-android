@@ -6,10 +6,8 @@ p LMIS_MOZ_DIR
 
 def update_mis_moz
   if !Dir.exists?(LMIS_MOZ_DIR)
-    p "clone"
     setup_git_repo
   else
-    p "update"
     system("cd #{LMIS_MOZ_DIR} && git checkout . && git pull -f origin master")
   end
 end
@@ -23,6 +21,7 @@ def start_jetty
 end
 
 def stop_jetty
+  puts "kill jetty"
   system("cd #{LMIS_MOZ_DIR} && ./build/stopLocal.sh")
 end
 
@@ -34,4 +33,8 @@ def run_ft
 end
 
 update_mis_moz
-run_ft
+
+puts "Running ft"
+ftResult = run_ft
+exit 1 if !ftResult
+puts "Finished ft"
