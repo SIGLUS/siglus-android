@@ -19,6 +19,8 @@
 package org.openlmis.core.presenter;
 
 
+import android.util.Log;
+
 import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -134,7 +136,8 @@ public class LoginPresenter extends Presenter {
     }
 
     protected void onLoginSuccess(User user) {
-        syncUpManager.createSyncAccount(user);
+        Log.d("Login Presenter", "Log in successful, setting up sync account");
+        syncUpManager.createSyncAccount(user);//todo: can those two methods be one?
         syncUpManager.kickOff();
 
         saveUserToLocalDatabase(user);

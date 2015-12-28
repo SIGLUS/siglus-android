@@ -107,7 +107,7 @@ public class SyncUpManager {
             setSyncAutomatically(account, syncContentAuthority, true);
             addPeriodicSync(account, syncContentAuthority, periodicSyncParams(), syncInterval);
         }
-        Log.d(TAG, "sync service started");
+        Log.d(TAG, "sync service kicked off");
     }
 
     public void shutDown() {
@@ -119,38 +119,14 @@ public class SyncUpManager {
         Log.d(TAG, "sync service stopped");
     }
 
-    private Account findFirstLmisAccount() {
-        List<Account> accounts = newArrayList(accountManager.getAccounts());
-        List<Account> lmisAccounts = from(accounts).filter(new Predicate<Account>() {
-            @Override
-            public boolean apply(Account input) {
-                return syncAccountType.equals(input.type);
-            }
-        }).toList();
-
-        if (lmisAccounts.size() > 0) {
-            return lmisAccounts.get(0);
-        }
-
-        return null;
-    }
-
-    private Bundle periodicSyncParams() {
-        Bundle extras = new Bundle();
-        extras.putBoolean(SYNC_EXTRAS_DO_NOT_RETRY, false);
-        extras.putBoolean(SYNC_EXTRAS_EXPEDITED, false);
-        extras.putBoolean(SYNC_EXTRAS_DO_NOT_RETRY, false);
-        extras.putBoolean(SYNC_EXTRAS_MANUAL, false);
-        return extras;
-    }
-
     public void createSyncAccount(User user) {
         Account account = new Account(user.getUsername(), syncAccountType);
         accountManager.addAccountExplicitly(account, user.getPassword(), null);
+        Log.d(TAG, "sync account created");
     }
 
-
     public void requestSyncImmediately() {
+        Log.d(TAG, "immediate sync up requested");
         Account account = findFirstLmisAccount();
         if (account != null) {
             Bundle bundle = new Bundle();
@@ -196,14 +172,86 @@ public class SyncUpManager {
         });
     }
 
+    public boolean syncStockCards() {
+        List<StockMovementItem> stockMovementItems = fetchUnSyncedStockMovements();
+        if (null == stockMovementItems || stockMovementItems.isEmpty()) {
+            return false;
+        }
+
+        final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
+        List<StockMovementEntry> movementEntriesToSync = convertStockMovementItemsToStockMovementEntriesForSync(facilityId, stockMovementItems);
+
+        try {
+            lmisRestApi.syncUpStockMovementData(facilityId, movementEntriesToSync);
+            markStockDataSynced(stockMovementItems);
+            syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.StockCards, 0L);
+            Log.d(TAG, "===> SyncStockMovement : synced");
+            return true;
+
+        } catch (UndeclaredThrowableException e) {
+            new LMISException(e).reportToFabric();
+            syncErrorsRepository.save(new SyncError(e.getCause().getMessage(), SyncType.StockCards, 0L));
+            return false;
+        } catch (Exception exception) {
+            new LMISException(exception).reportToFabric();
+            Log.e(TAG, "===> SyncStockMovement : synced failed ->" + exception.getMessage());
+            return false;
+        }
+    }
+
+    public void syncAppVersion() {
+        if (!sharedPreferenceMgr.hasSyncedVersion()) {
+            AppInfoRequest request = new AppInfoRequest(UserInfoMgr.getInstance().getFacilityCode(), UserInfoMgr.getInstance().getUser().getUsername(), UserInfoMgr.getInstance().getVersion());
+            lmisRestApi.updateAppVersion(request, new Callback<Void>() {
+                @Override
+                public void success(Void o, Response response) {
+                    sharedPreferenceMgr.setSyncedVersion(true);
+                    Log.d(TAG, "===> SyncAppVersion : synced");
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    sharedPreferenceMgr.setSyncedVersion(false);
+                    Log.d(TAG, "===> SyncAppVersion : sync failed");
+                }
+            });
+        }
+    }
+
+    private Account findFirstLmisAccount() {
+        List<Account> accounts = newArrayList(accountManager.getAccounts());
+        List<Account> lmisAccounts = from(accounts).filter(new Predicate<Account>() {
+            @Override
+            public boolean apply(Account input) {
+                return syncAccountType.equals(input.type);
+            }
+        }).toList();
+
+        if (lmisAccounts.size() > 0) {
+            return lmisAccounts.get(0);
+        }
+
+        return null;
+    }
+
+    private Bundle periodicSyncParams() {
+        Bundle extras = new Bundle();
+        extras.putBoolean(SYNC_EXTRAS_DO_NOT_RETRY, false);
+        extras.putBoolean(SYNC_EXTRAS_EXPEDITED, false);
+        extras.putBoolean(SYNC_EXTRAS_DO_NOT_RETRY, false);
+        extras.putBoolean(SYNC_EXTRAS_MANUAL, false);
+        return extras;
+    }
+
     private boolean submitRequisition(RnRForm rnRForm) {
         try {
             lmisRestApi.submitRequisition(rnRForm);
             syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RnRForm, rnRForm.getId());
+            Log.d(TAG, "===> SyncRnr : synced ->");
             return true;
         } catch (Exception e) {
             new LMISException(e).reportToFabric();
-            Log.e(TAG, "===> SyncRnr : synced failed ->" + e.getMessage());
+            Log.e(TAG, "===> SyncRnr : sync failed ->" + e.getMessage());
             syncErrorsRepository.save(new SyncError(e.getCause().getMessage(), SyncType.RnRForm, rnRForm.getId()));
             return false;
         }
@@ -243,32 +291,6 @@ public class SyncUpManager {
         }).toList();
     }
 
-    public boolean syncStockCards() {
-        List<StockMovementItem> stockMovementItems = fetchUnSyncedStockMovements();
-        if (null == stockMovementItems || stockMovementItems.isEmpty()) {
-            return false;
-        }
-
-        final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
-        List<StockMovementEntry> movementEntriesToSync = convertStockMovementItemsToStockMovementEntriesForSync(facilityId, stockMovementItems);
-
-        try {
-            lmisRestApi.syncUpStockMovementData(facilityId, movementEntriesToSync);
-            markStockDataSynced(stockMovementItems);
-            syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.StockCards, 0L);
-            return true;
-
-        } catch (UndeclaredThrowableException e) {
-            new LMISException(e).reportToFabric();
-            syncErrorsRepository.save(new SyncError(e.getCause().getMessage(), SyncType.StockCards, 0L));
-            return false;
-        } catch (Exception exception) {
-            new LMISException(exception).reportToFabric();
-            Log.e(TAG, "===> SyncStockMovement : synced failed ->" + exception.getMessage());
-            return false;
-        }
-    }
-
     private void markStockDataSynced(List<StockMovementItem> stockMovementItems) throws LMISException {
 
         Observable.from(stockMovementItems).forEach(new Action1<StockMovementItem>() {
@@ -279,23 +301,5 @@ public class SyncUpManager {
         });
 
         stockRepository.batchUpdateStockMovements(stockMovementItems);
-    }
-
-    public void syncAppVersion() {
-        if (!sharedPreferenceMgr.hasSyncedVersion()) {
-            AppInfoRequest request = new AppInfoRequest(UserInfoMgr.getInstance().getFacilityCode(), UserInfoMgr.getInstance().getUser().getUsername(), UserInfoMgr.getInstance().getVersion());
-
-            lmisRestApi.updateAppVersion(request, new Callback<Void>() {
-                @Override
-                public void success(Void o, Response response) {
-                    sharedPreferenceMgr.setSyncedVersion(true);
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    sharedPreferenceMgr.setSyncedVersion(false);
-                }
-            });
-        }
     }
 }

@@ -18,6 +18,7 @@
 package org.openlmis.core.presenter;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.inject.Inject;
 
@@ -221,6 +222,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
             public void onNext(Void aVoid) {
                 view.loaded();
                 view.completeSuccess();
+                Log.d("BaseReqPresenter", "Signature signed, requesting immediate sync");
                 syncUpManager.requestSyncImmediately();
             }
         });
