@@ -114,18 +114,17 @@ Feature: stock movement Page
     Then I navigate back
     Then I wait for "Home Page" to appear
 
-  Scenario: View stock movement page when rotate the device
+  Scenario: View stock movement page when rotate the page
     When I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     Then I select stock card code called "[01A01]"
     And I wait for "Stock Card" to appear
-    And I rotate the page to "landscape"
-    And I wait for "Stock Card" to appear
     And I select a reason "Positive Adjustments" "Donations to Deposit"
     Then I swipe right
     Then I wait for 1 second
     And I enter positive adjustment number "2"
+    And I rotate the page to "landscape"
     Then I wait for "Complete" to appear
     And I press "Complete"
     And I sign with "superuser"
