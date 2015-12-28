@@ -277,6 +277,34 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
+    public void shouldGetFirstItemWhenMovementDateDiff() throws Exception {
+        DateTime dateTime = new DateTime();
+
+        StockCard stockCard = new StockCard();
+        stockRepository.save(stockCard);
+
+        ArrayList<StockMovementItem> stockMovementItems = new ArrayList<>();
+
+        StockMovementItem movementItem = new StockMovementItem();
+        movementItem.setMovementDate(dateTime.toDate());
+        movementItem.setStockCard(stockCard);
+        movementItem.setCreatedTime(dateTime.toDate());
+        stockMovementItems.add(movementItem);
+
+        StockMovementItem movementItem2 = new StockMovementItem();
+        movementItem2.setCreatedTime(dateTime.toDate());
+        movementItem2.setStockCard(stockCard);
+        DateTime earlierTime = dateTime.minusMonths(1);
+        movementItem2.setMovementDate(earlierTime.toDate());
+        stockMovementItems.add(movementItem2);
+
+        stockRepository.batchCreateOrUpdateStockMovements(stockMovementItems);
+        StockMovementItem stockMovementItem = stockRepository.queryFirstStockMovementItem(stockCard);
+
+        assertThat(stockMovementItem.getMovementDate().getMonth(), is(movementItem2.getMovementDate().getMonth()));
+    }
+
+    @Test
     public void shouldGetFirstItemWhenCreatedTimeDiff() throws Exception {
         DateTime dateTime = new DateTime();
 
@@ -301,7 +329,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockRepository.batchCreateOrUpdateStockMovements(stockMovementItems);
         StockMovementItem stockMovementItem = stockRepository.queryFirstStockMovementItem(stockCard);
 
-        assertThat(stockMovementItem.getCreatedTime().getSeconds(), is(earlierTime.toDate().getSeconds()));
+        assertThat(stockMovementItem.getCreatedTime().getTime() / 1000, is(earlierTime.toDate().getTime() / 1000));
     }
 
     private void initStockCard(Date createDate, Program program) throws LMISException {
