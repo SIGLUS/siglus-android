@@ -271,7 +271,7 @@ public class RnrFormRepository {
     //TODO add Test
     protected List<RnrFormItem> generateRnrFormItems(final RnRForm form) throws LMISException {
         Date periodEnd = DateUtil.setLastSecondForDate(form.getPeriodEnd());
-        List<StockCard> stockCards = getStockCardsBeforeTimeLine(form.getProgram().getId(), periodEnd);
+        List<StockCard> stockCards = stockRepository.listBeforeTimeline(form.getProgram().getId(), periodEnd);
 
         List<RnrFormItem> rnrFormItems = new ArrayList<>();
 
@@ -281,10 +281,6 @@ public class RnrFormRepository {
             rnrFormItems.add(rnrFormItem);
         }
         return rnrFormItems;
-    }
-
-    protected List<StockCard> getStockCardsBeforeTimeLine(long programId, Date periodEnd) throws LMISException {
-        return stockRepository.listBeforeTimeline(programId, periodEnd);
     }
 
     private RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {

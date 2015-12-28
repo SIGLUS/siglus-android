@@ -66,7 +66,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     private Date lastThirdMonthDate;
     private Date lastForthMonthDate;
     private ProgramRepository programRepository;
-    private RnrFormRepository rnrFormRepository;
 
     @Before
     public void setup() throws LMISException {
@@ -74,7 +73,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockRepository.class);
         productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
         programRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProgramRepository.class);
-        rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormRepository.class);
         saveTestProduct();
 
         Date today = DateUtil.today();
@@ -274,7 +272,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
         initStockCard(afterPeriod, program);
 
-        List<StockCard> stockCardsBeforeTimeLine = rnrFormRepository.getStockCardsBeforeTimeLine(program.getId(), periodEnd);
+        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listBeforeTimeline(program.getId(), periodEnd);
         assertThat(stockCardsBeforeTimeLine.size(), is(2));
     }
 
@@ -293,7 +291,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
         initStockCard(createDate, program2);
 
-        List<StockCard> stockCardsBeforeTimeLine = rnrFormRepository.getStockCardsBeforeTimeLine(program.getId(), periodEnd);
+        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listBeforeTimeline(program.getId(), periodEnd);
         assertThat(stockCardsBeforeTimeLine.size(), is(1));
     }
 
