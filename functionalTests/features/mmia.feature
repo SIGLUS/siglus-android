@@ -5,7 +5,7 @@ Feature: MMIA
     Given I try to log in with "mmia" "password1"
 
   Scenario: Initial a MMIA
-    Given I have initialized inventory
+    Given I have initialized inventory with MMIA user
     And I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second

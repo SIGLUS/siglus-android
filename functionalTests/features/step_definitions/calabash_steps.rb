@@ -23,22 +23,6 @@ Then /^I scroll down until I see the "([^\"]*)"/ do |text|
   end
 end
 
-And(/^I initialize products with quantity "(\d+)"/) do |quantity|
-    checkBox = query("android.widget.CheckBox id:'checkbox' checked:'false'").first
-
-    while !checkBox.nil?
-        if index == quantity.to_i then
-            break
-        end
-
-        steps %Q{
-            When I select the checkbox with quantity "#{quantity}"
-        }
-        scroll("RecyclerView", :down)
-        checkBox = query("android.widget.CheckBox id:'checkbox' checked:'false'").first
-    end
-end
-
 When(/^I search product by fnm "(.*?)" and select this item with quantity "(.*?)"/) do |fnm,quantity|
     steps %Q{
         When I search drug by fnm "#{fnm}"

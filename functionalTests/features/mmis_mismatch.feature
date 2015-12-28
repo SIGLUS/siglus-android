@@ -3,7 +3,7 @@ Feature: MMIA Page total mismatch
 
   Scenario: When I fill a field, if the regime total and patient total are different, I will see pop up if I press complete without filling comments.
     Given I try to log in with "mmia_mismatch" "password1"
-    Given I have initialized inventory
+    Given I have initialized inventory with MMIA user
     When I press "Create a MMIA"
     And I wait for "MMIA -" to appear
     And I scroll to "Submit for Approval"

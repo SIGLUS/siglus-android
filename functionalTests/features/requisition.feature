@@ -3,7 +3,7 @@ Feature: Requisition
 
   Scenario: Save requisition draft
     Given I try to log in with "via" "password1"
-    Given I have initialized inventory
+    Given I have initialized inventory with VIA user
     And I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
