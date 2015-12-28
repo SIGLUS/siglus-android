@@ -333,7 +333,6 @@ public class StockRepository {
         }
     }
 
-    //TODO add test
     protected StockMovementItem queryFirstStockMovementItem(final StockCard stockCard) throws LMISException {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
             @Override

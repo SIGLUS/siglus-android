@@ -19,6 +19,7 @@
 package org.openlmis.core.model.repository;
 
 
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -273,6 +274,34 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
         List<StockCard> stockCardsBeforeTimeLine = stockRepository.listByProgramId(program.getId());
         assertThat(stockCardsBeforeTimeLine.size(), is(1));
+    }
+
+    @Test
+    public void shouldGetFirstItemWhenCreatedTimeDiff() throws Exception {
+        DateTime dateTime = new DateTime();
+
+        StockCard stockCard = new StockCard();
+        stockRepository.save(stockCard);
+
+        ArrayList<StockMovementItem> stockMovementItems = new ArrayList<>();
+
+        StockMovementItem movementItem = new StockMovementItem();
+        movementItem.setMovementDate(dateTime.toDate());
+        movementItem.setStockCard(stockCard);
+        movementItem.setCreatedTime(dateTime.toDate());
+        stockMovementItems.add(movementItem);
+
+        StockMovementItem movementItem2 = new StockMovementItem();
+        movementItem2.setMovementDate(dateTime.toDate());
+        movementItem2.setStockCard(stockCard);
+        DateTime earlierTime = dateTime.minusMonths(1);
+        movementItem2.setCreatedTime(earlierTime.toDate());
+        stockMovementItems.add(movementItem2);
+
+        stockRepository.batchCreateOrUpdateStockMovements(stockMovementItems);
+        StockMovementItem stockMovementItem = stockRepository.queryFirstStockMovementItem(stockCard);
+
+        assertThat(stockMovementItem.getCreatedTime().getSeconds(), is(earlierTime.toDate().getSeconds()));
     }
 
     private void initStockCard(Date createDate, Program program) throws LMISException {
