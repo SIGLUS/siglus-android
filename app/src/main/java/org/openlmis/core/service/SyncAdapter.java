@@ -38,6 +38,9 @@ import java.util.Date;
 
 import roboguice.RoboGuice;
 
+import static org.openlmis.core.manager.SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM;
+import static org.openlmis.core.manager.SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD;
+
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Inject
@@ -62,22 +65,21 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             return;
         }
         Log.d("SyncAdapter", "===> Syncing Data to server");
+        triggerSync();
+    }
 
-        recordSyncedTime(syncUpManager.syncRnr(), syncUpManager.syncStockCards());
+    private void triggerSync() {
+        recordLastSyncedTime(syncUpManager.syncRnr(), KEY_LAST_SYNCED_TIME_RNR_FORM);
+        recordLastSyncedTime(syncUpManager.syncStockCards(), KEY_LAST_SYNCED_TIME_STOCKCARD);
 
+        sendSyncedTimeBroadcast();
         syncUpManager.syncAppVersion();
     }
 
-    private void recordSyncedTime(boolean rnRSynced, boolean stockCardSynced) {
-        if (rnRSynced) {
-            recordRnrFormLastSyncedTime();
+    private void recordLastSyncedTime(boolean isSyncSuccessful, String key) {
+        if (isSyncSuccessful) {
+            sharedPreferenceMgr.getPreference().edit().putLong(key, new Date().getTime()).apply();
         }
-
-        if (stockCardSynced) {
-            recordStockCardLastSyncedTime();
-        }
-
-        sendSyncedTimeBroadcast();
     }
 
     private void sendSyncedTimeBroadcast() {
@@ -85,13 +87,4 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         intent.setAction(Constants.INTENT_FILTER_SET_SYNCED_TIME);
         context.sendBroadcast(intent);
     }
-
-    private void recordRnrFormLastSyncedTime() {
-        sharedPreferenceMgr.getPreference().edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, new Date().getTime()).apply();
-    }
-
-    private void recordStockCardLastSyncedTime() {
-        sharedPreferenceMgr.getPreference().edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, new Date().getTime()).apply();
-    }
-
 }
