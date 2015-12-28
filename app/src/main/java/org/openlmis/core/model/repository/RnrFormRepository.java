@@ -267,24 +267,27 @@ public class RnrFormRepository {
         return null;
     }
 
-    //TODO bug is 如果是20号之后 sync back  则stockcard create time 会错乱 导致init的RnrFormItem 有问题 code
     //TODO add Test
+    //TODO  query 时间 23:59:59
     protected List<RnrFormItem> generateRnrFormItems(final RnRForm form) throws LMISException {
-        List<StockCard> stockCards = getStockCardsInPeriod(form);
+        List<StockCard> stockCards = stockRepository.listByProgramId(form.getProgram().getId());
+        List<StockCard> stockCardsTemp = new ArrayList<>(stockCards);
+
+        for (StockCard stockCard : stockCards) {
+            StockMovementItem stockMovementItem = stockRepository.queryFirstStockMovementItem(stockCard);
+            if (stockMovementItem.getMovementDate().after(form.getPeriodEnd())) {
+                stockCardsTemp.remove(stockCard);
+            }
+        }
 
         List<RnrFormItem> rnrFormItems = new ArrayList<>();
 
-        for (StockCard stockCard : stockCards) {
+        for (StockCard stockCard : stockCardsTemp) {
             RnrFormItem rnrFormItem = createRnrFormItemByPeriod(stockCard, form.getPeriodBegin(), form.getPeriodEnd());
             rnrFormItem.setForm(form);
             rnrFormItems.add(rnrFormItem);
         }
         return rnrFormItems;
-    }
-
-    protected List<StockCard> getStockCardsInPeriod(RnRForm form) throws LMISException {
-        Date periodEnd = DateUtil.setLastSecondForDate(form.getPeriodEnd());
-        return stockRepository.listBeforeTimeline(form.getProgram().getId(), periodEnd);
     }
 
     private RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {

@@ -251,7 +251,7 @@ public class StockRepository {
         return false;
     }
 
-    public List<StockCard> listBeforeTimeline(final long programId, final Date timeLine) throws LMISException {
+    public List<StockCard> listByProgramId(final long programId) throws LMISException {
         return dbUtil.withDao(StockCard.class, new DbUtil.Operation<StockCard, List<StockCard>>() {
             @Override
             public List<StockCard> operate(Dao<StockCard, String> dao) throws SQLException {
@@ -259,8 +259,7 @@ public class StockRepository {
                 QueryBuilder<Product, String> productQueryBuilder = DbUtil.initialiseDao(Product.class).queryBuilder();
                 productQueryBuilder.where().eq("program_id", programId);
 
-                return dao.queryBuilder().join(productQueryBuilder).where()
-                        .le("createdAt", timeLine)
+                return dao.queryBuilder().join(productQueryBuilder)
                         .query();
             }
         });
@@ -332,6 +331,21 @@ public class StockRepository {
         } catch (SQLException e) {
             throw new LMISException(e);
         }
+    }
+
+    //TODO add test
+    protected StockMovementItem queryFirstStockMovementItem(final StockCard stockCard) throws LMISException {
+        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
+            @Override
+            public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException {
+                return dao.queryBuilder()
+                        .orderBy("movementDate", true)
+                        .orderBy("createdTime", true)
+                        .where()
+                        .eq("stockCard_id", stockCard.getId())
+                        .queryForFirst();
+            }
+        });
     }
 
     protected Date queryFirstPeriodBegin(final StockCard stockCard) throws LMISException {

@@ -20,6 +20,7 @@ package org.openlmis.core.model.repository;
 
 import com.google.inject.AbstractModule;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -106,7 +107,12 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
             stockMovementItems.add(stockMovementItem);
         }
 
-        when(mockStockRepository.listBeforeTimeline(anyLong(), any(Date.class))).thenReturn(stockCards);
+        when(mockStockRepository.listByProgramId(anyLong())).thenReturn(stockCards);
+        StockMovementItem stockMovementItem = new StockMovementItem();
+        DateTime dateTime = new DateTime();
+        dateTime.millisOfDay();
+        stockMovementItem.setMovementDate(dateTime.toDate());
+        when(mockStockRepository.queryFirstStockMovementItem(any(StockCard.class))).thenReturn(stockMovementItem);
         when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(stockMovementItems);
 
         RnRForm form = MMIARepository.initRnrForm();

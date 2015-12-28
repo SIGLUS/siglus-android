@@ -258,28 +258,8 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldGetStockCardsBeforeTimeLine() throws Exception {
-        Date createDate = DateUtil.parseString("2015-07-20 11:33:44", DateUtil.DATE_TIME_FORMAT);
-        Date afterPeriod = DateUtil.parseString("2015-07-21 11:33:44", DateUtil.DATE_TIME_FORMAT);
-        Date periodEnd = DateUtil.parseString("20/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
-
-        Program program = new Program();
-        programRepository.create(program);
-
-        initStockCard(createDate, program);
-
-        initStockCard(createDate, program);
-
-        initStockCard(afterPeriod, program);
-
-        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listBeforeTimeline(program.getId(), periodEnd);
-        assertThat(stockCardsBeforeTimeLine.size(), is(2));
-    }
-
-    @Test
     public void shouldGetStockCardsWhenEqualProgramId() throws Exception {
         Date createDate = DateUtil.parseString("2015-07-19 11:33:44", DateUtil.DATE_TIME_FORMAT);
-        Date periodEnd = DateUtil.parseString("20/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
 
         Program program = new Program();
         programRepository.create(program);
@@ -291,7 +271,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
         initStockCard(createDate, program2);
 
-        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listBeforeTimeline(program.getId(), periodEnd);
+        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listByProgramId(program.getId());
         assertThat(stockCardsBeforeTimeLine.size(), is(1));
     }
 
