@@ -348,16 +348,7 @@ public class StockRepository {
     }
 
     protected Date queryFirstPeriodBegin(final StockCard stockCard) throws LMISException {
-        StockMovementItem stockMovementItem = dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
-            @Override
-            public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                return dao.queryBuilder()
-                        .orderBy("movementDate", true)
-                        .where()
-                        .eq("stockCard_id", stockCard.getId())
-                        .queryForFirst();
-            }
-        });
+        StockMovementItem stockMovementItem = queryFirstStockMovementItem(stockCard);
         if (stockMovementItem == null) {
             throw new LMISException(new NullPointerException());
         }
