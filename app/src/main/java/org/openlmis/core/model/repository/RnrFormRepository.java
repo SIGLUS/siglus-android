@@ -268,9 +268,10 @@ public class RnrFormRepository {
     }
 
     //TODO bug is 如果是20号之后 sync back  则stockcard create time 会错乱 导致init的RnrFormItem 有问题 code
-    //TODO format periodEnd is hh mm ss
+    //TODO add Test
     protected List<RnrFormItem> generateRnrFormItems(final RnRForm form) throws LMISException {
-        List<StockCard> stockCards = getStockCardsBeforeTimeLine(form.getProgram().getId(), form.getPeriodEnd());
+        Date periodEnd = DateUtil.setLastSecondForDate(form.getPeriodEnd());
+        List<StockCard> stockCards = getStockCardsBeforeTimeLine(form.getProgram().getId(), periodEnd);
 
         List<RnrFormItem> rnrFormItems = new ArrayList<>();
 

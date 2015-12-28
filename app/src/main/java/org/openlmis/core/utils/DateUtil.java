@@ -153,4 +153,10 @@ public final class DateUtil {
     private static boolean isInSubmitDates(int day) {
         return day >= DAY_PERIOD_END + 1 && day <= DAY_PERIOD_END + 5;
     }
+
+    public static Date setLastSecondForDate(Date periodEnd) {
+        String format = formatDate(periodEnd, DB_DATE_FORMAT);
+        String periodEndWithSecond = format + " 23:59:59";
+        return parseString(periodEndWithSecond, DATE_TIME_FORMAT);
+    }
 }
