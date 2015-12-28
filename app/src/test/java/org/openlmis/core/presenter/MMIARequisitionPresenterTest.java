@@ -36,7 +36,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
-import org.openlmis.core.service.SyncManager;
+import org.openlmis.core.service.SyncUpManager;
 import org.robolectric.RuntimeEnvironment;
 
 import java.sql.SQLException;
@@ -60,7 +60,7 @@ import static org.mockito.Mockito.when;
 @RunWith(LMISTestRunner.class)
 public class MMIARequisitionPresenterTest {
 
-    private SyncManager syncManager;
+    private SyncUpManager syncUpManager;
     private MMIARequisitionPresenter presenter;
     private MMIARepository mmiaRepository;
     private ProgramRepository programRepository;
@@ -72,7 +72,7 @@ public class MMIARequisitionPresenterTest {
         mmiaRepository = mock(MMIARepository.class);
         programRepository = mock(ProgramRepository.class);
         mockMMIAformView = mock(MMIARequisitionPresenter.MMIARequisitionView.class);
-        syncManager = mock(SyncManager.class);
+        syncUpManager = mock(SyncUpManager.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         MockitoAnnotations.initMocks(this);
 
@@ -302,7 +302,7 @@ public class MMIARequisitionPresenterTest {
             bind(MMIARepository.class).toInstance(mmiaRepository);
             bind(ProgramRepository.class).toInstance(programRepository);
             bind(MMIARequisitionPresenter.MMIARequisitionView.class).toInstance(mockMMIAformView);
-            bind(SyncManager.class).toInstance(syncManager);
+            bind(SyncUpManager.class).toInstance(syncUpManager);
         }
     }
 }

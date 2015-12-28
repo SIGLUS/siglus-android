@@ -41,7 +41,7 @@ import roboguice.RoboGuice;
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Inject
-    SyncManager syncManager;
+    SyncUpManager syncUpManager;
 
     @Inject
     SharedPreferenceMgr sharedPreferenceMgr;
@@ -63,9 +63,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
         Log.d("SyncAdapter", "===> Syncing Data to server");
 
-        recordSyncedTime(syncManager.syncRnr(), syncManager.syncStockCards());
+        recordSyncedTime(syncUpManager.syncRnr(), syncUpManager.syncStockCards());
 
-        syncManager.syncAppVersion();
+        syncUpManager.syncAppVersion();
     }
 
     private void recordSyncedTime(boolean rnRSynced, boolean stockCardSynced) {

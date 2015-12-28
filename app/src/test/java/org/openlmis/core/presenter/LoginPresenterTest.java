@@ -37,9 +37,9 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
 import org.openlmis.core.network.model.SyncBackProductsResponse;
-import org.openlmis.core.service.SyncBackManager;
-import org.openlmis.core.service.SyncBackManager.SyncProgress;
-import org.openlmis.core.service.SyncManager;
+import org.openlmis.core.service.SyncDownManager;
+import org.openlmis.core.service.SyncDownManager.SyncProgress;
+import org.openlmis.core.service.SyncUpManager;
 import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
@@ -54,7 +54,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.openlmis.core.service.SyncBackManager.SyncProgress.RequisitionSynced;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.RequisitionSynced;
 
 @RunWith(LMISTestRunner.class)
 public class LoginPresenterTest {
@@ -64,14 +64,14 @@ public class LoginPresenterTest {
     LoginActivity mockActivity;
     LoginPresenter presenter;
     SyncBackProductsResponse mockSyncBackProductsResponse;
-    SyncManager syncManager;
+    SyncUpManager syncUpManager;
 
     @Captor
     private ArgumentCaptor<NewCallback<User>> loginCB;
 
     private LMISTestApp appInject;
     private Subscriber<SyncProgress> syncSubscriber;
-    private SyncBackManager syncBackManager;
+    private SyncDownManager syncDownManager;
 
     @Before
     public void setup() {
@@ -81,8 +81,8 @@ public class LoginPresenterTest {
         rnrFormRepository = mock(RnrFormRepository.class);
         mockActivity = mock(LoginActivity.class);
         mockSyncBackProductsResponse = mock(SyncBackProductsResponse.class);
-        syncManager = mock(SyncManager.class);
-        syncBackManager = mock(SyncBackManager.class);
+        syncUpManager = mock(SyncUpManager.class);
+        syncDownManager = mock(SyncDownManager.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         MockitoAnnotations.initMocks(this);
@@ -122,8 +122,8 @@ public class LoginPresenterTest {
 
         loginCB.getValue().success(user);
 
-        verify(syncManager).createSyncAccount(user);
-        verify(syncManager).kickOff();
+        verify(syncUpManager).createSyncAccount(user);
+        verify(syncUpManager).kickOff();
     }
 
     @Test
@@ -149,7 +149,7 @@ public class LoginPresenterTest {
         verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
         loginCB.getValue().success(new User("user", "password"));
 
-        verify(syncBackManager).syncBackServerData(any(Subscriber.class));
+        verify(syncDownManager).syncBackServerData(any(Subscriber.class));
     }
 
     @Test
@@ -254,8 +254,8 @@ public class LoginPresenterTest {
         @Override
         protected void configure() {
             bind(UserRepository.class).toInstance(userRepository);
-            bind(SyncManager.class).toInstance(syncManager);
-            bind(SyncBackManager.class).toInstance(syncBackManager);
+            bind(SyncUpManager.class).toInstance(syncUpManager);
+            bind(SyncDownManager.class).toInstance(syncDownManager);
             bind(RnrFormRepository.class).toInstance(rnrFormRepository);
         }
     }

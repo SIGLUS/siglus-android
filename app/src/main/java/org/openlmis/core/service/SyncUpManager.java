@@ -68,9 +68,9 @@ import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @Singleton
-public class SyncManager {
+public class SyncUpManager {
 
-    private static final String TAG = "SyncManager";
+    private static final String TAG = "SyncUpManager";
 
     @Inject
     RnrFormRepository rnrFormRepository;
@@ -96,7 +96,7 @@ public class SyncManager {
 
     protected LMISRestApi lmisRestApi;
 
-    public SyncManager() {
+    public SyncUpManager() {
         lmisRestApi = new LMISRestManager().getLmisRestApi();
     }
 

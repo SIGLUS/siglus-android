@@ -49,7 +49,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 @Singleton
-public class SyncBackManager {
+public class SyncDownManager {
     private static final int DAYS_OF_MONTH = 30;
     private static final int MONTHS_OF_YEAR = 12;
 
@@ -66,7 +66,7 @@ public class SyncBackManager {
     @Inject
     ProgramRepository programRepository;
 
-    public SyncBackManager() {
+    public SyncDownManager() {
         lmisRestApi = new LMISRestManager().getLmisRestApi();
     }
 

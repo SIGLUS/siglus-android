@@ -27,7 +27,7 @@ import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.SyncBackProductsResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
-import org.openlmis.core.service.SyncBackManager.SyncProgress;
+import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.robolectric.RuntimeEnvironment;
 
 import java.text.ParseException;
@@ -50,19 +50,19 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.openlmis.core.service.SyncBackManager.SyncProgress.ProductSynced;
-import static org.openlmis.core.service.SyncBackManager.SyncProgress.RequisitionSynced;
-import static org.openlmis.core.service.SyncBackManager.SyncProgress.StockCardsLastMonthSynced;
-import static org.openlmis.core.service.SyncBackManager.SyncProgress.StockCardsLastYearSynced;
-import static org.openlmis.core.service.SyncBackManager.SyncProgress.SyncingProduct;
-import static org.openlmis.core.service.SyncBackManager.SyncProgress.SyncingRequisition;
-import static org.openlmis.core.service.SyncBackManager.SyncProgress.SyncingStockCardsLastMonth;
-import static org.openlmis.core.service.SyncBackManager.SyncProgress.SyncingStockCardsLastYear;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.ProductSynced;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.RequisitionSynced;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.StockCardsLastMonthSynced;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.StockCardsLastYearSynced;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingProduct;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingRequisition;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingStockCardsLastMonth;
+import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingStockCardsLastYear;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
-public class SyncBackManagerTest {
-    private SyncBackManager syncBackManager;
+public class SyncDownManagerTest {
+    private SyncDownManager syncDownManager;
 
     private LMISRestApi lmisRestApi;
     private SharedPreferenceMgr sharedPreferenceMgr;
@@ -83,9 +83,9 @@ public class SyncBackManagerTest {
         reset(lmisRestApi);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
-        syncBackManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncBackManager.class);
+        syncDownManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncDownManager.class);
 
-        syncBackManager.lmisRestApi = lmisRestApi;
+        syncDownManager.lmisRestApi = lmisRestApi;
         User user = new User();
         user.setFacilityCode("HF XXX");
         UserInfoMgr.getInstance().setUser(user);
@@ -107,7 +107,7 @@ public class SyncBackManagerTest {
 
         //when
         SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
-        syncBackManager.syncBackServerData(subscriber);
+        syncDownManager.syncBackServerData(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
 
@@ -132,8 +132,8 @@ public class SyncBackManagerTest {
         //when
         CountOnNextSubscriber firstEnterSubscriber = new CountOnNextSubscriber();
         CountOnNextSubscriber laterEnterSubscriber = new CountOnNextSubscriber();
-        syncBackManager.syncBackServerData(firstEnterSubscriber);
-        syncBackManager.syncBackServerData(laterEnterSubscriber);
+        syncDownManager.syncBackServerData(firstEnterSubscriber);
+        syncDownManager.syncBackServerData(laterEnterSubscriber);
 
         firstEnterSubscriber.awaitTerminalEvent();
         firstEnterSubscriber.assertNoErrors();
@@ -194,7 +194,7 @@ public class SyncBackManagerTest {
         when(sharedPreferenceMgr.getPreference()).thenReturn(createdPreferences);
 
         stockRepository = mock(StockRepository.class);
-        syncBackManager.stockRepository = stockRepository;
+        syncDownManager.stockRepository = stockRepository;
         when(lmisRestApi.fetchStockMovementData(anyString(), anyString(), anyString())).thenReturn(getStockCardResponse());
 
         when(stockRepository.list()).thenReturn(newArrayList(new StockCardBuilder().build()));

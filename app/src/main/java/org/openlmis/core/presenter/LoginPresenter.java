@@ -29,9 +29,9 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
-import org.openlmis.core.service.SyncBackManager;
-import org.openlmis.core.service.SyncBackManager.SyncProgress;
-import org.openlmis.core.service.SyncManager;
+import org.openlmis.core.service.SyncDownManager;
+import org.openlmis.core.service.SyncDownManager.SyncProgress;
+import org.openlmis.core.service.SyncUpManager;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 
@@ -45,10 +45,10 @@ public class LoginPresenter extends Presenter {
     UserRepository userRepository;
 
     @Inject
-    SyncManager syncManager;
+    SyncUpManager syncUpManager;
 
     @Inject
-    SyncBackManager syncBackManager;
+    SyncDownManager syncDownManager;
     private boolean hasGoneToNextPage;
 
     @Override
@@ -134,14 +134,14 @@ public class LoginPresenter extends Presenter {
     }
 
     protected void onLoginSuccess(User user) {
-        syncManager.createSyncAccount(user);
-        syncManager.kickOff();
+        syncUpManager.createSyncAccount(user);
+        syncUpManager.kickOff();
 
         saveUserToLocalDatabase(user);
         UserInfoMgr.getInstance().setUser(user);
         view.clearErrorAlerts();
 
-        syncBackManager.syncBackServerData(getSyncSubscriber());
+        syncDownManager.syncBackServerData(getSyncSubscriber());
     }
 
     public void onLoginFailed() {

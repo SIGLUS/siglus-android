@@ -24,12 +24,12 @@ import static org.mockito.Mockito.when;
 @RunWith(LMISTestRunner.class)
 public class SyncAdapterTest {
     private SyncAdapter syncAdapter;
-    private SyncManager mockSyncManager;
+    private SyncUpManager mockSyncUpManager;
     private SharedPreferenceMgr sharedPreferenceMgr;
 
     @Before
     public void setUp() throws Exception {
-        mockSyncManager = mock(SyncManager.class);
+        mockSyncUpManager = mock(SyncUpManager.class);
         sharedPreferenceMgr = new SharedPreferenceMgr(RuntimeEnvironment.application);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         syncAdapter = new SyncAdapter(RuntimeEnvironment.application, true);
@@ -40,8 +40,8 @@ public class SyncAdapterTest {
     @Test
     public void shouldRecordCorrespondingLastSyncTime() throws Exception {
         UserInfoMgr.getInstance().setUser(new User());
-        when(mockSyncManager.syncRnr()).thenReturn(true);
-        when(mockSyncManager.syncStockCards()).thenReturn(true);
+        when(mockSyncUpManager.syncRnr()).thenReturn(true);
+        when(mockSyncUpManager.syncStockCards()).thenReturn(true);
 
         syncAdapter.onPerformSync(null, null, null, null, null);
 
@@ -61,8 +61,8 @@ public class SyncAdapterTest {
     @Test
     public void shouldNotRecordLastSyncTime() throws Exception {
         UserInfoMgr.getInstance().setUser(new User());
-        when(mockSyncManager.syncRnr()).thenReturn(false);
-        when(mockSyncManager.syncStockCards()).thenReturn(false);
+        when(mockSyncUpManager.syncRnr()).thenReturn(false);
+        when(mockSyncUpManager.syncStockCards()).thenReturn(false);
 
         syncAdapter.onPerformSync(null, null, null, null, null);
 
@@ -77,8 +77,8 @@ public class SyncAdapterTest {
     @Test
     public void shouldOnlyRecordRnrFormLastSyncTime() throws Exception {
         UserInfoMgr.getInstance().setUser(new User());
-        when(mockSyncManager.syncRnr()).thenReturn(true);
-        when(mockSyncManager.syncStockCards()).thenReturn(false);
+        when(mockSyncUpManager.syncRnr()).thenReturn(true);
+        when(mockSyncUpManager.syncStockCards()).thenReturn(false);
 
         syncAdapter.onPerformSync(null, null, null, null, null);
 
@@ -96,8 +96,8 @@ public class SyncAdapterTest {
     @Test
     public void shouldOnlyRecordStockCardLastSyncTime() throws Exception {
         UserInfoMgr.getInstance().setUser(new User());
-        when(mockSyncManager.syncRnr()).thenReturn(false);
-        when(mockSyncManager.syncStockCards()).thenReturn(true);
+        when(mockSyncUpManager.syncRnr()).thenReturn(false);
+        when(mockSyncUpManager.syncStockCards()).thenReturn(true);
 
         syncAdapter.onPerformSync(null, null, null, null, null);
 
@@ -115,7 +115,7 @@ public class SyncAdapterTest {
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
-            bind(SyncManager.class).toInstance(mockSyncManager);
+            bind(SyncUpManager.class).toInstance(mockSyncUpManager);
         }
     }
 }

@@ -79,9 +79,9 @@ import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
-public class SyncManagerTest {
+public class SyncUpManagerTest {
 
-    SyncManager syncManager;
+    SyncUpManager syncUpManager;
     RnrFormRepository rnrFormRepository;
     LMISRestApi lmisRestApi;
     StockRepository stockRepository;
@@ -98,8 +98,8 @@ public class SyncManagerTest {
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
-        syncManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncManager.class);
-        syncManager.lmisRestApi = lmisRestApi;
+        syncUpManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncUpManager.class);
+        syncUpManager.lmisRestApi = lmisRestApi;
 
         stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockRepository.class);
 
@@ -131,7 +131,7 @@ public class SyncManagerTest {
         response.setRequisitionId("1");
         when(lmisRestApi.submitRequisition(any(RnRForm.class))).thenReturn(response);
 
-        syncManager.syncRnr();
+        syncUpManager.syncRnr();
         verify(lmisRestApi, times(10)).submitRequisition(any(RnRForm.class));
         verify(rnrFormRepository, times(10)).save(any(RnRForm.class));
         verify(syncErrorsRepository, times(10)).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
@@ -143,7 +143,7 @@ public class SyncManagerTest {
         StockCard stockCard = createTestStockCardData();
 
         doReturn(null).when(lmisRestApi).syncUpStockMovementData(anyString(), anyList());
-        syncManager.syncStockCards();
+        syncUpManager.syncStockCards();
         stockRepository.refresh(stockCard);
         List<StockMovementItem> items = newArrayList(stockCard.getForeignStockMovementItems());
 
@@ -158,7 +158,7 @@ public class SyncManagerTest {
         createTestStockCardData();
         doThrow(new UndeclaredThrowableException(new Throwable())).when(lmisRestApi).syncUpStockMovementData(anyString(), anyList());
 
-        syncManager.syncStockCards();
+        syncUpManager.syncStockCards();
 
         verify(syncErrorsRepository).save(any(SyncError.class));
     }
@@ -170,7 +170,7 @@ public class SyncManagerTest {
         doThrow(new RuntimeException("Sync Failed")).when(lmisRestApi).syncUpStockMovementData(anyString(), anyList());
 
         try {
-            syncManager.syncStockCards();
+            syncUpManager.syncStockCards();
         } catch (RuntimeException e) {
         }
         stockRepository.refresh(stockCard);
@@ -222,7 +222,7 @@ public class SyncManagerTest {
         when(sharedPreferenceMgr.hasSyncedVersion()).thenReturn(false);
         User user = new User();
         UserInfoMgr.getInstance().setUser(user);
-        syncManager.syncAppVersion();
+        syncUpManager.syncAppVersion();
         verify(lmisRestApi).updateAppVersion(any(AppInfoRequest.class), any(Callback.class));
     }
 
@@ -235,7 +235,7 @@ public class SyncManagerTest {
         when(rnrFormRepository.listUnSynced()).thenReturn(unSyncedList);
 
         doThrow(new UndeclaredThrowableException(new Throwable(), "Sync Failed")).when(lmisRestApi).submitRequisition(any(RnRForm.class));
-        syncManager.syncRnr();
+        syncUpManager.syncRnr();
 
         verify(syncErrorsRepository).save(any(SyncError.class));
     }
@@ -243,7 +243,7 @@ public class SyncManagerTest {
     @Test
     public void shouldNotSyncAppVersion() throws Exception {
         when(sharedPreferenceMgr.hasSyncedVersion()).thenReturn(true);
-        syncManager.syncAppVersion();
+        syncUpManager.syncAppVersion();
         verify(lmisRestApi, never()).updateAppVersion(any(AppInfoRequest.class), any(Callback.class));
     }
 

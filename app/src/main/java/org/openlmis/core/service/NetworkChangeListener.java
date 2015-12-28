@@ -30,7 +30,7 @@ import roboguice.RoboGuice;
 public class NetworkChangeListener extends BroadcastReceiver{
     @Override
     public void onReceive(Context context, Intent intent) {
-        SyncManager manager = RoboGuice.getInjector(context).getInstance(SyncManager.class);
+        SyncUpManager manager = RoboGuice.getInjector(context).getInstance(SyncUpManager.class);
         if (NetworkConnectionManager.isConnectionAvailable(context)){
             Log.d("NetworkChangeListener :", "network connected, start sync service...");
             manager.requestSyncImmediately();
