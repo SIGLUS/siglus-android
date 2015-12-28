@@ -38,8 +38,6 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
-import org.roboguice.shaded.goole.common.base.Predicate;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -269,6 +267,8 @@ public class RnrFormRepository {
         return null;
     }
 
+    //TODO bug is 如果是20号之后 sync back  则stockcard create time 会错乱 导致init的RnrFormItem 有问题 code
+    //TODO format periodEnd is hh mm ss
     protected List<RnrFormItem> generateRnrFormItems(final RnRForm form) throws LMISException {
         List<StockCard> stockCards = getStockCardsBeforeTimeLine(form.getProgram().getId(), form.getPeriodEnd());
 
@@ -282,13 +282,8 @@ public class RnrFormRepository {
         return rnrFormItems;
     }
 
-    protected List<StockCard> getStockCardsBeforeTimeLine(long programId, final Date periodEnd) throws LMISException {
-        return FluentIterable.from(stockRepository.list(programId)).filter(new Predicate<StockCard>() {
-            @Override
-            public boolean apply(StockCard stockCard) {
-                return !periodEnd.before(DateUtil.truncateTimeStampInDate(stockCard.getCreatedAt()));
-            }
-        }).toList();
+    protected List<StockCard> getStockCardsBeforeTimeLine(long programId, Date periodEnd) throws LMISException {
+        return stockRepository.listBeforeTimeline(programId, periodEnd);
     }
 
     private RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {

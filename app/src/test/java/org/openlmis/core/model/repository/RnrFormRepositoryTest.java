@@ -49,6 +49,7 @@ import roboguice.RoboGuice;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -251,35 +252,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldGetStockCardsExistedInPeriod() throws Exception {
-        Program program = new Program();
-        program.setId(123);
-        program.setProgramCode(MMIARepository.MMIA_PROGRAM_CODE);
-
-        Date generateDate1 = DateUtil.parseString("05/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
-        Date generateDate2 = DateUtil.parseString("20/06/2015", DateUtil.SIMPLE_DATE_FORMAT);
-        Date generateDate3 = DateUtil.parseString("21/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
-        RnRForm form = RnRForm.init(program, generateDate1);
-
-        List<StockCard> stockCardList = new ArrayList<>();
-        StockCard stockCard1 = new StockCard();
-        stockCard1.setCreatedAt(generateDate1);
-
-        StockCard stockCard2 = new StockCard();
-        stockCard2.setCreatedAt(generateDate2);
-
-        StockCard stockCard3 = new StockCard();
-        stockCard3.setCreatedAt(generateDate3);
-
-        stockCardList.add(stockCard1);
-        stockCardList.add(stockCard2);
-        stockCardList.add(stockCard3);
-
-        when(mockStockRepository.list(anyLong())).thenReturn(stockCardList);
-        assertThat(rnrFormRepository.generateRnrFormItems(form).size(), is(2));
-    }
-
-    @Test
     public void shouldGetStockCardsExistedInPeriodLastDay() throws Exception {
         Program program = new Program();
         program.setId(123);
@@ -299,7 +271,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         stockCardList.add(stockCard);
 
-        when(mockStockRepository.list(anyLong())).thenReturn(stockCardList);
+        when(mockStockRepository.listBeforeTimeline(anyLong(), any(Date.class))).thenReturn(stockCardList);
 
         assertThat(rnrFormRepository.generateRnrFormItems(form).size(), is(1));
     }
@@ -375,7 +347,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         form.setPeriodEnd(DateUtil.parseString("10/20/2015", DateUtil.SIMPLE_DATE_FORMAT));
         form.setProgram(new Program("mmia", "mmia", null));
 
-        when(mockStockRepository.list(anyLong())).thenReturn(stockCards);
+        when(mockStockRepository.listBeforeTimeline(anyLong(), any(Date.class))).thenReturn(stockCards);
         when(mockStockRepository.queryStockItems(stockCard, form.getPeriodBegin(), form.getPeriodEnd())).thenReturn(stockMovementItems);
 
         List<RnrFormItem> rnrFormItemList = rnrFormRepository.generateRnrFormItems(form);

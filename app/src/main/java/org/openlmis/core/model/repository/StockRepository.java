@@ -23,6 +23,7 @@ import android.content.Context;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.table.TableUtils;
 
 import org.openlmis.core.LMISApp;
@@ -37,8 +38,6 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
-import org.roboguice.shaded.goole.common.base.Predicate;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.Lists;
 
 import java.sql.SQLException;
@@ -252,13 +251,19 @@ public class StockRepository {
         return false;
     }
 
-    public List<StockCard> list(final long programId) throws LMISException {
-        return FluentIterable.from(genericDao.queryForAll()).filter(new Predicate<StockCard>() {
-                @Override
-                public boolean apply(StockCard stockCard) {
-                    return stockCard.getProduct().getProgram().getId() == programId;
-                }
-            }).toList();
+    public List<StockCard> listBeforeTimeline(final long programId, final Date timeLine) throws LMISException {
+        return dbUtil.withDao(StockCard.class, new DbUtil.Operation<StockCard, List<StockCard>>() {
+            @Override
+            public List<StockCard> operate(Dao<StockCard, String> dao) throws SQLException {
+
+                QueryBuilder<Product, String> productQueryBuilder = DbUtil.initialiseDao(Product.class).queryBuilder();
+                productQueryBuilder.where().eq("program_id", programId);
+
+                return dao.queryBuilder().join(productQueryBuilder).where()
+                        .le("createdAt", timeLine)
+                        .query();
+            }
+        });
     }
 
     public List<StockMovementItem> listLastFive(final long stockCardId) throws LMISException {

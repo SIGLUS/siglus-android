@@ -260,48 +260,44 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldGetStockCardByProgramId() throws Exception {
-
-        Program program = new Program();
-        programRepository.create(program);
-
-        Product product = new Product();
-        product.setProgram(program);
-        productRepository.create(product);
-
-        StockCard stockCard = new StockCard();
-        stockCard.setProduct(product);
-        stockRepository.save(stockCard);
-
-        StockCard stockCard2 = new StockCard();
-        stockCard2.setProduct(product);
-        stockRepository.save(stockCard2);
-
-
-        Program program2 = new Program();
-        programRepository.create(program2);
-        Product product2 = new Product();
-        product2.setProgram(program2);
-        productRepository.create(product2);
-
-        StockCard stockCard3 = new StockCard();
-        stockCard3.setProduct(product2);
-        stockRepository.save(stockCard3);
-
-        List<StockCard> list = stockRepository.list(program.getId());
-
-        assertThat(list.size(), is(2));
-    }
-
-    @Test
     public void shouldGetStockCardsBeforeTimeLine() throws Exception {
-        Date createDate = DateUtil.parseString("2015-07-19 11:33:44", DateUtil.DATE_TIME_FORMAT);
+        Date createDate = DateUtil.parseString("2015-07-20 11:33:44", DateUtil.DATE_TIME_FORMAT);
         Date afterPeriod = DateUtil.parseString("2015-07-21 11:33:44", DateUtil.DATE_TIME_FORMAT);
         Date periodEnd = DateUtil.parseString("20/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
 
         Program program = new Program();
         programRepository.create(program);
 
+        initStockCard(createDate, program);
+
+        initStockCard(createDate, program);
+
+        initStockCard(afterPeriod, program);
+
+        List<StockCard> stockCardsBeforeTimeLine = rnrFormRepository.getStockCardsBeforeTimeLine(program.getId(), periodEnd);
+        assertThat(stockCardsBeforeTimeLine.size(), is(2));
+    }
+
+    @Test
+    public void shouldGetStockCardsWhenEqualProgramId() throws Exception {
+        Date createDate = DateUtil.parseString("2015-07-19 11:33:44", DateUtil.DATE_TIME_FORMAT);
+        Date periodEnd = DateUtil.parseString("20/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
+
+        Program program = new Program();
+        programRepository.create(program);
+
+        Program program2 = new Program();
+        programRepository.create(program2);
+
+        initStockCard(createDate, program);
+
+        initStockCard(createDate, program2);
+
+        List<StockCard> stockCardsBeforeTimeLine = rnrFormRepository.getStockCardsBeforeTimeLine(program.getId(), periodEnd);
+        assertThat(stockCardsBeforeTimeLine.size(), is(1));
+    }
+
+    private void initStockCard(Date createDate, Program program) throws LMISException {
         Product product = new Product();
         product.setProgram(program);
         productRepository.create(product);
@@ -310,20 +306,8 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockCard.setProduct(product);
         stockCard.setCreatedAt(createDate);
         stockRepository.save(stockCard);
-
-        StockCard stockCard2 = new StockCard();
-        stockCard2.setProduct(product);
-        stockCard2.setCreatedAt(createDate);
-        stockRepository.save(stockCard2);
-
-        StockCard stockCard3 = new StockCard();
-        stockCard3.setProduct(product);
-        stockCard2.setCreatedAt(afterPeriod);
-        stockRepository.save(stockCard3);
-
-        List<StockCard> stockCardsBeforeTimeLine = rnrFormRepository.getStockCardsBeforeTimeLine(program.getId(), periodEnd);
-        assertThat(stockCardsBeforeTimeLine.size(), is(2));
     }
+
 
     @Test
     public void shouldGetLowStockAvgWhenLastMonthHaveNoStockItem() throws Exception {
@@ -392,7 +376,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockMovementItem.setMovementDate(DateUtil.today());
         stockMovementItem.setStockCard(stockCard);
 
-        if(stockMovementItem.isPositiveMovement()) {
+        if (stockMovementItem.isPositiveMovement()) {
             stockMovementItem.setStockOnHand(stockCard.getStockOnHand() + quantity);
         } else {
             stockMovementItem.setStockOnHand(stockCard.getStockOnHand() - quantity);
