@@ -253,6 +253,33 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
+    public void shouldGetStockCardsExistedInPeriodLastDay() throws Exception {
+        Program program = new Program();
+        program.setId(123);
+        program.setProgramCode(MMIARepository.MMIA_PROGRAM_CODE);
+
+        Date generateDate = DateUtil.parseString("20/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
+        Date movementDate = DateUtil.parseString("20/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
+
+        RnRForm form = RnRForm.init(program, generateDate);
+
+        form.setPeriodBegin(DateUtil.parseString("21/06/2015", DateUtil.SIMPLE_DATE_FORMAT));
+        form.setPeriodEnd(generateDate);
+
+        List<StockCard> stockCardList = new ArrayList<>();
+        StockCard stockCard = new StockCard();
+
+        stockCardList.add(stockCard);
+
+        when(mockStockRepository.listByProgramId(anyLong())).thenReturn(stockCardList);
+        StockMovementItem stockMovementItem = new StockMovementItem();
+        stockMovementItem.setMovementDate(movementDate);
+        when(mockStockRepository.queryFirstStockMovementItem(stockCard)).thenReturn(stockMovementItem);
+
+        assertThat(rnrFormRepository.getStockCardsInPeriod(form).size(), is(1));
+    }
+
+    @Test
     public void shouldGenerateRnrFormItemWithCorrectAttributes() throws Exception {
         int stockExistence = 100;
         int issueQuantity = 10;

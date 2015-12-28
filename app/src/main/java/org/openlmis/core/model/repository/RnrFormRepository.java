@@ -20,6 +20,7 @@ package org.openlmis.core.model.repository;
 
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
@@ -268,26 +269,30 @@ public class RnrFormRepository {
     }
 
     //TODO add Test
-    //TODO  query 时间 23:59:59
     protected List<RnrFormItem> generateRnrFormItems(final RnRForm form) throws LMISException {
-        List<StockCard> stockCards = stockRepository.listByProgramId(form.getProgram().getId());
-        List<StockCard> stockCardsTemp = new ArrayList<>(stockCards);
-
-        for (StockCard stockCard : stockCards) {
-            StockMovementItem stockMovementItem = stockRepository.queryFirstStockMovementItem(stockCard);
-            if (stockMovementItem.getMovementDate().after(form.getPeriodEnd())) {
-                stockCardsTemp.remove(stockCard);
-            }
-        }
+        List<StockCard> stockCards = getStockCardsInPeriod(form);
 
         List<RnrFormItem> rnrFormItems = new ArrayList<>();
 
-        for (StockCard stockCard : stockCardsTemp) {
+        for (StockCard stockCard : stockCards) {
             RnrFormItem rnrFormItem = createRnrFormItemByPeriod(stockCard, form.getPeriodBegin(), form.getPeriodEnd());
             rnrFormItem.setForm(form);
             rnrFormItems.add(rnrFormItem);
         }
         return rnrFormItems;
+    }
+
+    @NonNull
+    protected List<StockCard> getStockCardsInPeriod(RnRForm form) throws LMISException {
+        List<StockCard> stockCards = new ArrayList<>();
+
+        for (StockCard stockCard : stockRepository.listByProgramId(form.getProgram().getId())) {
+            StockMovementItem stockMovementItem = stockRepository.queryFirstStockMovementItem(stockCard);
+            if (!stockMovementItem.getMovementDate().after(form.getPeriodEnd())) {
+                stockCards.add(stockCard);
+            }
+        }
+        return stockCards;
     }
 
     private RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {
