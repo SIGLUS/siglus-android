@@ -145,8 +145,8 @@ public final class DateUtil {
 
     public static DateTime cutTimeStamp(DateTime dateTime) {
         DateTimeFormatter format = DateTimeFormat.forPattern(DB_DATE_FORMAT);
-        String formateDate = format.print(dateTime);
-        return format.parseDateTime(formateDate);
+        String formatDate = format.print(dateTime);
+        return format.parseDateTime(formatDate);
     }
 
 
@@ -154,9 +154,4 @@ public final class DateUtil {
         return day >= DAY_PERIOD_END + 1 && day <= DAY_PERIOD_END + 5;
     }
 
-    public static Date setLastSecondForDate(Date periodEnd) {
-        String format = formatDate(periodEnd, DB_DATE_FORMAT);
-        String periodEndWithSecond = format + " 23:59:59";
-        return parseString(periodEndWithSecond, DATE_TIME_FORMAT);
-    }
 }

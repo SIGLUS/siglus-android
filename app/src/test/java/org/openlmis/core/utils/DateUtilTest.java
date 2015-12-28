@@ -26,16 +26,6 @@ public class DateUtilTest {
     }
 
     @Test
-    public void shouldSetLastSecondForDate() throws Exception {
-        Date date = DateUtil.parseString("20/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
-        Date expectedDate = DateUtil.parseString("2015-07-20 23:59:59", DateUtil.DATE_TIME_FORMAT);
-
-        Date actualDate = DateUtil.setLastSecondForDate(date);
-
-        assertThat(actualDate, is(expectedDate));
-    }
-
-    @Test
     public void shouldReturnLastMonthMinusMonth() {
         Calendar now = Calendar.getInstance();
         now.set(2014, 11, 01);
