@@ -39,6 +39,7 @@ Feature: MMIA
     Then I wait for "MMIA -" to appear
     Then I scroll to "Submit for Approval"
     And I enter regimen totals
+    And I wait for 1 second
     And I enter patient totals
     Then I press "Submit for Approval"
     And I should see text containing "Cannot submit requisition twice in a period!"
