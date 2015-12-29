@@ -16,4 +16,30 @@ describe "Get programs with products information for a facility" do
     expect(body['programsWithProducts'][0]['products'][0]['code']).not_to be_nil
     expect(body['programsWithProducts'][0]['products'][0]['primaryName']).not_to be_nil
   end
+
+  it "should return all updated products after modified time" do
+    login_response = RestClient.post "http://#{WEB_DEV_URI}/rest-api/login",
+      { username: 'mystique', password: 'password1' }.to_json,
+      :content_type => :json,
+      :accept => :json
+
+    facility_id = JSON.parse(login_response.body)['userInformation']['facilityId']
+
+    #if no parameter for afterUpdatedTime, server will return all the products for programs associated with that facility;
+    #if afterUpdatedTime is specificed, server will only return products updated after "afterUpdatedTime"
+    response = RestClient.get "http://#{WEB_DEV_URI}/rest-api/latest-programs-with-products?facilityId=#{facility_id}",
+      :content_type => :json,
+      :accept => :json,
+      :authorization => http_basic_auth('mystique', 'password1')
+
+    body = JSON.parse(response.body)
+    expect(response.code).to eq 200
+
+    expect(body['latestProgramsWithProducts'].length).to eq 2
+    expect(body['latestProgramsWithProducts'][0]['programCode']).not_to be_nil
+    expect(body['latestProgramsWithProducts'][0]['programName']).not_to be_nil
+
+    expect(body['latestProgramsWithProducts'][0]['products'][0]['code']).not_to be_nil
+    expect(body['latestProgramsWithProducts'][0]['products'][0]['primaryName']).not_to be_nil
+  end
 end
