@@ -460,6 +460,20 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(signatures.get(1).getSignature(), is("Approver Signature"));
     }
 
+    @Test
+    public void shouldInitRnrFormItemWithoutMovement() throws Exception {
+        StockCard stockCard = new StockCard();
+        stockCard.setStockOnHand(100L);
+        when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
+
+        RnrFormItem rnrFormItemByPeriod = rnrFormRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
+
+        assertThat(rnrFormItemByPeriod.getReceived(), is(0L));
+        assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
+        assertThat(rnrFormItemByPeriod.getInventory(), is(100L));
+        assertThat(rnrFormItemByPeriod.getInitialAmount(), is(100L));
+    }
+
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {

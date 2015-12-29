@@ -292,7 +292,7 @@ public class RnrFormRepository {
         return stockCards;
     }
 
-    private RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {
+    protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {
         RnrFormItem rnrFormItem = new RnrFormItem();
 
         List<StockMovementItem> stockMovementItems = stockRepository.queryStockItems(stockCard, startDate, endDate);
