@@ -47,6 +47,7 @@ public class SharedPreferenceMgr {
     private static final String KEY_IS_REQUISITION_DATA_SYNCED = "is_requisition_data_synced";
     public static final String KEY_STOCK_SYNC_END_TIME = "sync_stock_end_time";
     public static final String KEY_STOCK_SYNC_CURRENT_INDEX = "sync_stock_current_index";
+    public static final String KEY_LAST_SYNC_PRODUCT_TIME = "last_sync_product_time";
 
     @Inject
     public SharedPreferenceMgr(Context context) {
@@ -112,4 +113,7 @@ public class SharedPreferenceMgr {
         sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_NEEDS_INVENTORY, isNeedsInventory).apply();
     }
 
+    public String getLastSyncProductTime() {
+        return sharedPreferences.getString(KEY_LAST_SYNC_PRODUCT_TIME, null);
+    }
 }

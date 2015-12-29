@@ -200,10 +200,14 @@ public class SyncDownManager {
 
     private SyncBackProductsResponse getSyncBackProductsResponse(User user) {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_latest_product_list)) {
-            return lmisRestApi.fetchLatestProducts(user.getFacilityId(), "");
+            return lmisRestApi.fetchLatestProducts(user.getFacilityId(), getAfterUpdatedTime());
         } else {
             return lmisRestApi.fetchProducts(user.getFacilityCode());
         }
+    }
+
+    private String getAfterUpdatedTime() {
+        return sharedPreferenceMgr.getLastSyncProductTime();
     }
 
     private void fetchAndSaveStockCards(String startDate, String endDate) throws LMISException {
