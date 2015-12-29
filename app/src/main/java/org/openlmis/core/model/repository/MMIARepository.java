@@ -70,9 +70,8 @@ public class MMIARepository extends RnrFormRepository {
 
     @Override
     protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
-        List<Regimen> regimens = regimenRepository.list();
         List<RegimenItem> regimenItems = new ArrayList<>();
-        for (Regimen regimen : regimens) {
+        for (Regimen regimen : regimenRepository.list()) {
             RegimenItem item = new RegimenItem();
             item.setForm(form);
             item.setRegimen(regimen);

@@ -267,7 +267,6 @@ public class RnrFormRepository {
         return null;
     }
 
-    //TODO add Test
     protected List<RnrFormItem> generateRnrFormItems(final RnRForm form) throws LMISException {
         List<StockCard> stockCards = getStockCardsBeforePeriodEnd(form);
 
