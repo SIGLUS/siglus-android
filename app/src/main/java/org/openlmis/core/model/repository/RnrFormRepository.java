@@ -298,13 +298,7 @@ public class RnrFormRepository {
 
         List<StockMovementItem> stockMovementItems = stockRepository.queryStockItems(stockCard, startDate, endDate);
         if (stockMovementItems.isEmpty()) {
-            rnrFormItem.setReceived(0);
-            rnrFormItem.setIssued(0);
-            rnrFormItem.setAdjustment(0);
-            rnrFormItem.setCalculatedOrderQuantity(0L);
-
-            rnrFormItem.setInitialAmount(stockCard.getStockOnHand());
-            rnrFormItem.setInventory(stockCard.getStockOnHand());
+            initRnrFormItemWithoutMovement(stockCard, rnrFormItem);
         } else {
             rnrFormItem.setInitialAmount(stockMovementItems.get(0).calculatePreviousSOH());
             assignTotalValues(rnrFormItem, stockMovementItems);
@@ -314,6 +308,16 @@ public class RnrFormRepository {
         rnrFormItem.setValidate(stockCard.getEarliestExpireDate());
 
         return rnrFormItem;
+    }
+
+    private void initRnrFormItemWithoutMovement(StockCard stockCard, RnrFormItem rnrFormItem) {
+        rnrFormItem.setReceived(0);
+        rnrFormItem.setIssued(0);
+        rnrFormItem.setAdjustment(0);
+        rnrFormItem.setCalculatedOrderQuantity(0L);
+
+        rnrFormItem.setInitialAmount(stockCard.getStockOnHand());
+        rnrFormItem.setInventory(stockCard.getStockOnHand());
     }
 
     private void assignTotalValues(RnrFormItem rnrFormItem, List<StockMovementItem> stockMovementItems) {
@@ -339,8 +343,12 @@ public class RnrFormRepository {
         Long inventory = stockMovementItems.get(stockMovementItems.size() - 1).getStockOnHand();
         rnrFormItem.setInventory(inventory);
 
+        rnrFormItem.setCalculatedOrderQuantity(calculatedOrderQuantity(totalIssued, inventory));
+    }
+
+    private long calculatedOrderQuantity(long totalIssued, Long inventory) {
         Long totalRequest = totalIssued * 2 - inventory;
-        rnrFormItem.setCalculatedOrderQuantity(totalRequest > 0 ? totalRequest : 0);
+        return totalRequest > 0 ? totalRequest : 0;
     }
 
     protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
