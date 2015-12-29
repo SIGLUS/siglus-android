@@ -20,7 +20,6 @@ package org.openlmis.core.model.repository;
 
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
@@ -270,7 +269,7 @@ public class RnrFormRepository {
 
     //TODO add Test
     protected List<RnrFormItem> generateRnrFormItems(final RnRForm form) throws LMISException {
-        List<StockCard> stockCards = getStockCardsInPeriod(form);
+        List<StockCard> stockCards = getStockCardsBeforePeriodEnd(form);
 
         List<RnrFormItem> rnrFormItems = new ArrayList<>();
 
@@ -282,8 +281,7 @@ public class RnrFormRepository {
         return rnrFormItems;
     }
 
-    @NonNull
-    protected List<StockCard> getStockCardsInPeriod(RnRForm form) throws LMISException {
+    protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm form) throws LMISException {
         List<StockCard> stockCards = new ArrayList<>();
 
         for (StockCard stockCard : stockRepository.listByProgramId(form.getProgram().getId())) {

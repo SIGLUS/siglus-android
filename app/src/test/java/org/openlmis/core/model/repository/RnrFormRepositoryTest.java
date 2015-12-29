@@ -276,7 +276,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         stockMovementItem.setMovementDate(movementDate);
         when(mockStockRepository.queryFirstStockMovementItem(stockCard)).thenReturn(stockMovementItem);
 
-        assertThat(rnrFormRepository.getStockCardsInPeriod(form).size(), is(1));
+        assertThat(rnrFormRepository.getStockCardsBeforePeriodEnd(form).size(), is(1));
     }
 
     @Test
