@@ -31,6 +31,8 @@ import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,26 +83,22 @@ public class MMIARepository extends RnrFormRepository {
     }
 
     @Override
-    protected List<BaseInfoItem> generateBaseInfoItems(RnRForm form) {
-        BaseInfoItem newPatients = new BaseInfoItem(ATTR_NEW_PATIENTS, BaseInfoItem.TYPE.INT, form);
-        BaseInfoItem sustaining = new BaseInfoItem(ATTR_SUSTAINING, BaseInfoItem.TYPE.INT, form);
-        BaseInfoItem alteration = new BaseInfoItem(ATTR_ALTERATION, BaseInfoItem.TYPE.INT, form);
-        BaseInfoItem totalMonthDispense = new BaseInfoItem(ATTR_TOTAL_MONTH_DISPENSE, BaseInfoItem.TYPE.INT, form);
-        BaseInfoItem totalPatients = new BaseInfoItem(ATTR_TOTAL_PATIENTS, BaseInfoItem.TYPE.INT, form);
-        BaseInfoItem ptv = new BaseInfoItem(ATTR_PTV, BaseInfoItem.TYPE.INT, form);
-        BaseInfoItem ppe = new BaseInfoItem(ATTR_PPE, BaseInfoItem.TYPE.INT, form);
+    protected List<BaseInfoItem> generateBaseInfoItems(final RnRForm form) {
+        ArrayList<String> attrs = new ArrayList<>();
+        attrs.add(ATTR_NEW_PATIENTS);
+        attrs.add(ATTR_SUSTAINING);
+        attrs.add(ATTR_ALTERATION);
+        attrs.add(ATTR_PTV);
+        attrs.add(ATTR_PPE);
+        attrs.add(ATTR_TOTAL_MONTH_DISPENSE);
+        attrs.add(ATTR_TOTAL_PATIENTS);
 
-        List<BaseInfoItem> baseInfoItemList = new ArrayList<>();
-
-        baseInfoItemList.add(newPatients);
-        baseInfoItemList.add(sustaining);
-        baseInfoItemList.add(alteration);
-        baseInfoItemList.add(ptv);
-        baseInfoItemList.add(ppe);
-        baseInfoItemList.add(totalMonthDispense);
-        baseInfoItemList.add(totalPatients);
-
-        return baseInfoItemList;
+        return FluentIterable.from(attrs).transform(new Function<String, BaseInfoItem>() {
+            @Override
+            public BaseInfoItem apply(String attr) {
+                return new BaseInfoItem(attr, BaseInfoItem.TYPE.INT, form);
+            }
+        }).toList();
     }
 
     public long getTotalPatients(RnRForm form) {
