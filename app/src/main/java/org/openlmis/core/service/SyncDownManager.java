@@ -98,6 +98,10 @@ public class SyncDownManager {
     }
 
     private void syncLastYearStockCardsSilently(Subscriber<? super SyncProgress> subscriber) {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)) {
+            return;
+        }
+
         if (sharedPreferenceMgr.shouldSyncLastYearStockData()) {
             try {
                 subscriber.onNext(SyncProgress.SyncingStockCardsLastYear);
@@ -126,6 +130,10 @@ public class SyncDownManager {
     }
 
     private void syncBackLastMonthStockCards(Subscriber<? super SyncProgress> subscriber) throws LMISException {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)) {
+            return;
+        }
+
         if (!sharedPreferenceMgr.isLastMonthStockDataSynced()) {
             try {
                 subscriber.onNext(SyncProgress.SyncingStockCardsLastMonth);
