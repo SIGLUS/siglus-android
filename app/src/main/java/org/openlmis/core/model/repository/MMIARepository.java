@@ -124,6 +124,7 @@ public class MMIARepository extends RnrFormRepository {
             for (RnrFormItem item : rnrFormItems) {
                 if (item.getProduct().getId() == product.getId()) {
                     rnrFormItem = item;
+                    break;
                 }
             }
             result.add(rnrFormItem);
