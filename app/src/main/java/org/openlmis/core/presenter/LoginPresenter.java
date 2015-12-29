@@ -138,7 +138,6 @@ public class LoginPresenter extends Presenter {
     protected void onLoginSuccess(User user) {
         Log.d("Login Presenter", "Log in successful, setting up sync account");
         syncUpManager.createSyncAccount(user);
-        syncUpManager.kickOff();
 
         saveUserToLocalDatabase(user);
         UserInfoMgr.getInstance().setUser(user);
@@ -157,6 +156,7 @@ public class LoginPresenter extends Presenter {
         return new Subscriber<SyncProgress>() {
             @Override
             public void onCompleted() {
+                syncUpManager.kickOff();
                 tryGoToNextPage();
             }
 

@@ -123,7 +123,6 @@ public class LoginPresenterTest {
         loginCB.getValue().success(user);
 
         verify(syncUpManager).createSyncAccount(user);
-        verify(syncUpManager).kickOff();
     }
 
     @Test
@@ -153,7 +152,7 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldGoToInventoryPageIfSyncServerDataSuccess() throws InterruptedException {
+    public void shouldGoToInventoryPageAndKickOffPeriodicSyncIfSyncServerDataSuccess() throws InterruptedException {
         //given
         when(mockActivity.needInitInventory()).thenReturn(true);
 
@@ -163,6 +162,7 @@ public class LoginPresenterTest {
         //then
         verify(mockActivity).loaded();
         verify(mockActivity).goToInitInventory();
+        verify(syncUpManager).kickOff();
     }
 
     @Test
