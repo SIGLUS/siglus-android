@@ -172,7 +172,7 @@ public class SyncDownManager {
     }
 
     private void syncProducts(Subscriber<? super SyncProgress> subscriber) throws LMISException {
-        if (!sharedPreferenceMgr.hasGetProducts()) {
+        if (!sharedPreferenceMgr.hasGetProducts() || LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_latest_product_list)) {
             try {
                 subscriber.onNext(SyncProgress.SyncingProduct);
                 fetchAndSaveProductsWithProgram();
