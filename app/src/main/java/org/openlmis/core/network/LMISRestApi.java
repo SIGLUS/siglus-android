@@ -50,6 +50,9 @@ public interface LMISRestApi {
     @GET("/rest-api/programs-with-products")
     SyncBackProductsResponse fetchProducts(@Query("facilityCode") String facilityCode);
 
+    @GET("/rest-api/latest-programs-with-products")
+    SyncBackProductsResponse fetchLatestProducts(@Query("facilityId") String facilityId, @Query("afterUpdatedTime") String afterUpdatedTime);
+
     @GET("/rest-api/requisitions")
     SyncDownRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode);
 

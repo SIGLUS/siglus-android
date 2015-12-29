@@ -137,7 +137,7 @@ public class LoginPresenter extends Presenter {
 
     protected void onLoginSuccess(User user) {
         Log.d("Login Presenter", "Log in successful, setting up sync account");
-        syncUpManager.createSyncAccount(user);//todo: can those two methods be one?
+        syncUpManager.createSyncAccount(user);
         syncUpManager.kickOff();
 
         saveUserToLocalDatabase(user);
