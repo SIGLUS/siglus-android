@@ -306,7 +306,7 @@ public class RnrFormRepository {
             rnrFormItem.setInitialAmount(stockCard.getStockOnHand());
             rnrFormItem.setInventory(stockCard.getStockOnHand());
         } else {
-            adjustInitialAmount(rnrFormItem, stockMovementItems.get(0));
+            rnrFormItem.setInitialAmount(stockMovementItems.get(0).calculatePreviousSOH());
             assignTotalValues(rnrFormItem, stockMovementItems);
         }
 
@@ -341,18 +341,6 @@ public class RnrFormRepository {
 
         Long totalRequest = totalIssued * 2 - inventory;
         rnrFormItem.setCalculatedOrderQuantity(totalRequest > 0 ? totalRequest : 0);
-    }
-
-    private void adjustInitialAmount(RnrFormItem rnrFormItem, StockMovementItem firstItem) {
-        if (firstItem.getMovementType() == StockMovementItem.MovementType.ISSUE
-                || firstItem.getMovementType() == StockMovementItem.MovementType.NEGATIVE_ADJUST) {
-            rnrFormItem.setInitialAmount(firstItem.getStockOnHand() + firstItem.getMovementQuantity());
-        } else if (firstItem.getMovementType() == StockMovementItem.MovementType.RECEIVE
-                || firstItem.getMovementType() == StockMovementItem.MovementType.POSITIVE_ADJUST) {
-            rnrFormItem.setInitialAmount(firstItem.getStockOnHand() - firstItem.getMovementQuantity());
-        } else {
-            rnrFormItem.setInitialAmount(firstItem.getStockOnHand());
-        }
     }
 
     protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {

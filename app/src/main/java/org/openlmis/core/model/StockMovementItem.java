@@ -94,7 +94,21 @@ public class StockMovementItem extends BaseModel {
         return movementType.equals(MovementType.RECEIVE) || movementType.equals(MovementType.POSITIVE_ADJUST);
     }
 
+    public boolean isNegativeMovement() {
+        return movementType.equals(MovementType.ISSUE) || movementType.equals(MovementType.NEGATIVE_ADJUST);
+    }
+
     public Period getMovementPeriod() {
         return Period.of(movementDate);
+    }
+
+    public long calculatePreviousSOH() {
+        if (isNegativeMovement()) {
+            return stockOnHand + movementQuantity;
+        } else if (isPositiveMovement()) {
+            return stockOnHand - movementQuantity;
+        } else {
+            return stockOnHand;
+        }
     }
 }
