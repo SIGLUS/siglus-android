@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
@@ -102,7 +103,8 @@ public class SyncDownManagerTest {
     @Test
     public void shouldSyncBackServerData() throws Exception {
         //given
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(false);
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_sync_back_latest_product_list, false);
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_sync_back_stock_movement_273, true);
         mockProductResponse();
         mockRequisitionResponse();
         mockStockCardsResponse();
@@ -127,7 +129,8 @@ public class SyncDownManagerTest {
     @Test
     public void shouldOnlySyncOnceWhenInvokedTwice() throws Exception {
         //given
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(false);
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_sync_back_latest_product_list, false);
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_sync_back_stock_movement_273, true);
         mockProductResponse();
         mockRequisitionResponse();
         mockStockCardsResponse();
@@ -152,7 +155,7 @@ public class SyncDownManagerTest {
     @Test
     public void shouldSyncDownLatestProductList() throws Exception {
         //given
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(true);
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_sync_back_latest_product_list, true);
         mockProductResponse();
 
         //when

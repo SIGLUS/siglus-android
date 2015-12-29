@@ -3,11 +3,13 @@ package org.openlmis.core;
 
 import org.openlmis.core.exceptions.LMISException;
 
+import java.util.HashMap;
+
 public class LMISTestApp extends LMISApp {
 
     private boolean networkAvailable;
     private long currentTimeMillis;
-    private boolean featureToggle;
+    private HashMap<Integer, Boolean> featureToggles = new HashMap<>();
 
     @Override
     protected void setupFabric() {
@@ -17,8 +19,8 @@ public class LMISTestApp extends LMISApp {
         this.networkAvailable = networkAvailable;
     }
 
-    public void setFeatureToggle(boolean featureToggle) {
-        this.featureToggle = featureToggle;
+    public void setFeatureToggle(int id, boolean featureToggle) {
+        featureToggles.put(id, featureToggle);
     }
 
     @Override
@@ -37,7 +39,7 @@ public class LMISTestApp extends LMISApp {
 
     @Override
     public boolean getFeatureToggleFor(int id) {
-        return this.featureToggle;
+        return featureToggles.get(id);
     }
 
     @Override

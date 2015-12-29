@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
@@ -40,6 +41,7 @@ public class SyncAdapterTest {
         syncAdapter.sharedPreferenceMgr = this.sharedPreferenceMgr;
         sharedPreferenceMgr.getPreference().edit().clear();
         UserInfoMgr.getInstance().setUser(new User());
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_sync_back_latest_product_list, true);
     }
 
     @Test
@@ -98,7 +100,6 @@ public class SyncAdapterTest {
     @Test
     public void shouldSyncDownLatestProductList() throws Exception {
         //when
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(true);
         syncAdapter.onPerformSync(null, null, null, null, null);
 
         //then
