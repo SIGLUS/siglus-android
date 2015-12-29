@@ -188,7 +188,7 @@ public class SyncUpManagerTest {
 
         Product product = new Product();
         product.setCode("PD1");
-        productRepository.create(product);
+        productRepository.createOrUpdate(product);
 
         stockCard.setProduct(product);
         stockRepository.update(stockCard);

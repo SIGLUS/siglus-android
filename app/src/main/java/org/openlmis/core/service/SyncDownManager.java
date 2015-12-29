@@ -192,9 +192,8 @@ public class SyncDownManager {
         }
         try {
             SyncBackProductsResponse response = getSyncBackProductsResponse(user);
-            programRepository.saveProgramWithProduct(response.getProgramsWithProducts());
+            programRepository.createOrUpdateProgramWithProduct(response.getProgramsWithProducts());
             sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());
-
         } catch (Exception e) {
             throw new LMISException(errorMessage(R.string.msg_sync_products_list_failed));
         }

@@ -160,14 +160,14 @@ public class SyncDownManagerTest {
 
         //then
         verify(lmisRestApi).fetchLatestProducts(anyString(), anyString());
-        verify(programRepository).saveProgramWithProduct(anyList());
+        verify(programRepository).createOrUpdateProgramWithProduct(anyList());
         verify(sharedPreferenceMgr).setLastSyncProductTime("today");
     }
 
     private void testSyncProgress(SyncProgress progress) {
         try {
             if (progress == ProductSynced) {
-                verify(programRepository).saveProgramWithProduct(any(ArrayList.class));
+                verify(programRepository).createOrUpdateProgramWithProduct(any(ArrayList.class));
                 verify(sharedPreferenceMgr).setHasGetProducts(true);
             }
             if (progress == StockCardsLastMonthSynced) {

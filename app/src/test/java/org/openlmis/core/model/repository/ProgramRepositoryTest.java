@@ -29,27 +29,53 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
         productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
 
         Product product = new Product();
+        product.setCode("test code");
         product.setPrimaryName("Test Product");
         product.setStrength("200");
 
-        productRepository.create(product);
+        productRepository.createOrUpdate(product);
 
         products.add(product);
     }
 
     @Test
     public void shouldSaveProgramWithProductsSuccessful() throws LMISException {
+        //given
         Program program = new Program();
-
-        program.setProducts(products);
         program.setProgramCode("TB");
         program.setProgramName("TB");
+        program.setProducts(products);
 
         ArrayList<Program> programs = new ArrayList<Program>();
         programs.add(program);
-        programRepository.saveProgramWithProduct(programs);
 
+        //when add new program and products
+        programRepository.createOrUpdateProgramWithProduct(programs);
+
+        //then
         assertThat(programRepository.list().size(), is(1));
-        assertThat(programRepository.list().get(0).getProducts().size(), is(1));
+        assertThat(productRepository.list().size(), is(1));
+
+        //when add product to existing program
+        Product newProduct = new Product();
+        newProduct.setCode("new product code");
+        newProduct.setPrimaryName("Test Product2");
+        products.add(newProduct);
+        programRepository.createOrUpdateProgramWithProduct(programs);
+
+        //then
+        assertThat(programRepository.list().size(), is(1));
+        assertThat(productRepository.list().size(), is(2));
+        assertThat(productRepository.list().get(1).getPrimaryName(), is("Test Product2"));
+
+        //when update existing product
+        newProduct.setPrimaryName("Test Product2 Updated");
+        programRepository.createOrUpdateProgramWithProduct(programs);
+
+        //then
+        assertThat(programRepository.list().size(), is(1));
+        assertThat(productRepository.list().size(), is(2));
+        assertThat(productRepository.list().get(1).getPrimaryName(), is("Test Product2 Updated"));
     }
+
 }

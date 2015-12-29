@@ -67,12 +67,14 @@ public class ProductRepository {
         }
     }
 
-    public void create(Product product) throws LMISException {
-        genericDao.create(product);
-    }
-
-    public void update(Product product) throws LMISException {
-        genericDao.update(product);
+    public void createOrUpdate(Product product) throws LMISException {
+        Product existingProduct = getByCode(product.getCode());
+        if (existingProduct != null) {
+            product.setId(existingProduct.getId());
+            genericDao.update(product);
+        } else {
+            genericDao.create(product);
+        }
     }
 
     public Product getById(long id) {

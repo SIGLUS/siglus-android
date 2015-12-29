@@ -57,22 +57,27 @@ public class ProgramRepository {
         return genericDao.queryForAll();
     }
 
-    public void create(Program program) throws LMISException {
-        genericDao.create(program);
+    public void createOrUpdate(Program program) throws LMISException {
+        Program existingProgram = queryByCode(program.getProgramCode());
+        if (existingProgram != null) {
+            program.setId(existingProgram.getId());
+            genericDao.update(program);
+        } else {
+            genericDao.create(program);
+        }
     }
 
-    public void saveProgramWithProduct(final List<Program> programs) throws LMISException {
+    public void createOrUpdateProgramWithProduct(final List<Program> programs) throws LMISException {
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
                     for (Program program : programs) {
-                        create(program);
+                        createOrUpdate(program);
                         for (Product product : program.getProducts()) {
                             product.setProgram(program);
-                            productRepository.create(product);
+                            productRepository.createOrUpdate(product);
                         }
-
                     }
                     return null;
                 }

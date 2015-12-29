@@ -260,21 +260,17 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldGetStockCardsWhenEqualProgramId() throws Exception {
-        Date createDate = DateUtil.parseString("2015-07-19 11:33:44", DateUtil.DATE_TIME_FORMAT);
+    public void shouldGetStockCardsByProgramId() throws Exception {
+        //when
+        long id1 = createNewStockCard("1");
+        long id2 = createNewStockCard("2");
 
-        Program program = new Program();
-        programRepository.create(program);
-
-        Program program2 = new Program();
-        programRepository.create(program2);
-
-        initStockCard(createDate, program);
-
-        initStockCard(createDate, program2);
-
-        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listByProgramId(program.getId());
+        //then
+        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listByProgramId(id1);
         assertThat(stockCardsBeforeTimeLine.size(), is(1));
+
+        List<StockCard> stockCardsBeforeTimeLine2 = stockRepository.listByProgramId(id2);
+        assertThat(stockCardsBeforeTimeLine2.size(), is(1));
     }
 
     @Test
@@ -331,16 +327,22 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         return movementItem;
     }
 
-    private void initStockCard(Date createDate, Program program) throws LMISException {
+    private long createNewStockCard(String code) throws LMISException {
+        Program program = new Program();
+        program.setProgramCode(code);
+        programRepository.createOrUpdate(program);
+
         Product product = new Product();
         product.setProgram(program);
-        productRepository.create(product);
+        product.setCode(code);
+        productRepository.createOrUpdate(product);
 
         stockCard.setProduct(product);
-        stockCard.setCreatedAt(createDate);
+        stockCard.setCreatedAt(new Date());
         stockRepository.save(stockCard);
-    }
 
+        return program.getId();
+    }
 
     @Test
     public void shouldGetLowStockAvgWhenLastMonthHaveNoStockItem() throws Exception {
@@ -394,8 +396,9 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         product = new Product();
         product.setPrimaryName("Test Product");
         product.setStrength("200");
+        product.setCode("test code");
 
-        productRepository.create(product);
+        productRepository.createOrUpdate(product);
     }
 
     private StockMovementItem createMovementItem(StockMovementItem.MovementType type, long quantity, StockCard stockCard) {
