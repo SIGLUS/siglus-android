@@ -82,14 +82,19 @@ public class InventoryPresenter extends Presenter {
                     }).transform(new Function<Product, StockCardViewModel>() {
                         @Override
                         public StockCardViewModel apply(Product product) {
-                            if (product.isArchived()) {
-                                try {
-                                    return new StockCardViewModel(stockRepository.queryStockCardByProductId(product.getId()));
-                                } catch (LMISException e) {
-                                    e.reportToFabric();
+                            try {
+                                StockCardViewModel viewModel;
+                                if (product.isArchived()) {
+                                    viewModel = new StockCardViewModel(stockRepository.queryStockCardByProductId(product.getId()));
+                                } else {
+                                    viewModel = new StockCardViewModel(product);
                                 }
+                                viewModel.setChecked(false);
+                                return viewModel;
+                            } catch (LMISException e) {
+                                e.reportToFabric();
                             }
-                            return new StockCardViewModel(product);
+                            return null;
                         }
                     }).toList();
 
