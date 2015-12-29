@@ -28,4 +28,5 @@ public
 @Data
 class SyncBackProductsResponse {
     List<Program> programsWithProducts;
+    String latestUpdatedTime;
 }

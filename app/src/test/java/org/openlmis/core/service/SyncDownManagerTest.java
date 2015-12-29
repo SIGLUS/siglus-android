@@ -161,6 +161,7 @@ public class SyncDownManagerTest {
         //then
         verify(lmisRestApi).fetchLatestProducts(anyString(), anyString());
         verify(programRepository).saveProgramWithProduct(anyList());
+        verify(sharedPreferenceMgr).setLastSyncProductTime("today");
     }
 
     private void testSyncProgress(SyncProgress progress) {
@@ -190,6 +191,7 @@ public class SyncDownManagerTest {
         ArrayList<Program> programsWithProducts = new ArrayList<>();
         programsWithProducts.add(new Program());
         SyncBackProductsResponse response = new SyncBackProductsResponse();
+        response.setLatestUpdatedTime("today");
         response.setProgramsWithProducts(programsWithProducts);
         when(lmisRestApi.fetchProducts(any(String.class))).thenReturn(response);
         when(lmisRestApi.fetchLatestProducts(any(String.class), any(String.class))).thenReturn(response);

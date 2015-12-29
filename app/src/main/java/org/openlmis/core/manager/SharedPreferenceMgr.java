@@ -116,4 +116,8 @@ public class SharedPreferenceMgr {
     public String getLastSyncProductTime() {
         return sharedPreferences.getString(KEY_LAST_SYNC_PRODUCT_TIME, null);
     }
+
+    public void setLastSyncProductTime(String lastSyncProductTime) {
+        sharedPreferences.edit().putString(KEY_LAST_SYNC_PRODUCT_TIME, lastSyncProductTime).apply();
+    }
 }
