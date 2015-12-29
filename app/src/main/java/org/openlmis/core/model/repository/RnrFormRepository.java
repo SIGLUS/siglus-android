@@ -297,10 +297,7 @@ public class RnrFormRepository {
         RnrFormItem rnrFormItem = new RnrFormItem();
 
         List<StockMovementItem> stockMovementItems = stockRepository.queryStockItems(stockCard, startDate, endDate);
-        if (!stockMovementItems.isEmpty()) {
-            adjustInitialAmount(rnrFormItem, stockMovementItems.get(0));
-            assignTotalValues(rnrFormItem, stockMovementItems);
-        } else {
+        if (stockMovementItems.isEmpty()) {
             rnrFormItem.setReceived(0);
             rnrFormItem.setIssued(0);
             rnrFormItem.setAdjustment(0);
@@ -308,6 +305,9 @@ public class RnrFormRepository {
 
             rnrFormItem.setInitialAmount(stockCard.getStockOnHand());
             rnrFormItem.setInventory(stockCard.getStockOnHand());
+        } else {
+            adjustInitialAmount(rnrFormItem, stockMovementItems.get(0));
+            assignTotalValues(rnrFormItem, stockMovementItems);
         }
 
         rnrFormItem.setProduct(stockCard.getProduct());
