@@ -1,13 +1,13 @@
 package org.openlmis.core;
 
 
-import org.apache.commons.lang.NotImplementedException;
 import org.openlmis.core.exceptions.LMISException;
 
 public class LMISTestApp extends LMISApp {
 
     private boolean networkAvailable;
     private long currentTimeMillis;
+    private boolean featureToggle;
 
     @Override
     protected void setupFabric() {
@@ -18,7 +18,7 @@ public class LMISTestApp extends LMISApp {
     }
 
     public void setFeatureToggle(boolean featureToggle) {
-        throw new NotImplementedException("No need to call this, all toggles are turned on for test");
+        this.featureToggle = featureToggle;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class LMISTestApp extends LMISApp {
 
     @Override
     public boolean getFeatureToggleFor(int id) {
-        return true;
+        return this.featureToggle;
     }
 
     @Override

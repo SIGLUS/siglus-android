@@ -97,6 +97,29 @@ public class SyncDownManager {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
     }
 
+    public void syncLatestProducts() {
+        try {
+            syncProducts(new Subscriber<SyncProgress>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(SyncProgress syncProgress) {
+
+                }
+            });
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+    }
+
     private void syncLastYearStockCardsSilently(Subscriber<? super SyncProgress> subscriber) {
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)) {
             return;
@@ -168,10 +191,18 @@ public class SyncDownManager {
             throw new NoFacilityForUserException(errorMessage(R.string.msg_user_not_facility));
         }
         try {
-            SyncBackProductsResponse response = lmisRestApi.fetchProducts(user.getFacilityCode());
+            SyncBackProductsResponse response = getSyncBackProductsResponse(user);
             programRepository.saveProgramWithProduct(response.getProgramsWithProducts());
         } catch (Exception e) {
             throw new LMISException(errorMessage(R.string.msg_sync_products_list_failed));
+        }
+    }
+
+    private SyncBackProductsResponse getSyncBackProductsResponse(User user) {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_latest_product_list)) {
+            return lmisRestApi.fetchLatestProducts(user.getFacilityId(), "");
+        } else {
+            return lmisRestApi.fetchProducts(user.getFacilityCode());
         }
     }
 

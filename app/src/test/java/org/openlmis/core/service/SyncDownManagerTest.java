@@ -44,6 +44,7 @@ import rx.schedulers.Schedulers;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -101,6 +102,7 @@ public class SyncDownManagerTest {
     @Test
     public void shouldSyncBackServerData() throws Exception {
         //given
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(false);
         mockProductResponse();
         mockRequisitionResponse();
         mockStockCardsResponse();
@@ -125,6 +127,7 @@ public class SyncDownManagerTest {
     @Test
     public void shouldOnlySyncOnceWhenInvokedTwice() throws Exception {
         //given
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(false);
         mockProductResponse();
         mockRequisitionResponse();
         mockStockCardsResponse();
@@ -142,8 +145,22 @@ public class SyncDownManagerTest {
 
         //then
         verify(lmisRestApi, times(1)).fetchProducts(anyString());
-        assertThat(firstEnterSubscriber.syncProgresses.size(),is(8));
-        assertThat(laterEnterSubscriber.syncProgresses.size(),is(0));
+        assertThat(firstEnterSubscriber.syncProgresses.size(), is(8));
+        assertThat(laterEnterSubscriber.syncProgresses.size(), is(0));
+    }
+
+    @Test
+    public void shouldSyncDownLatestProductList() throws Exception {
+        //given
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(true);
+        mockProductResponse();
+
+        //when
+        syncDownManager.syncLatestProducts();
+
+        //then
+        verify(lmisRestApi).fetchLatestProducts(anyString(), anyString());
+        verify(programRepository).saveProgramWithProduct(anyList());
     }
 
     private void testSyncProgress(SyncProgress progress) {
@@ -175,7 +192,9 @@ public class SyncDownManagerTest {
         SyncBackProductsResponse response = new SyncBackProductsResponse();
         response.setProgramsWithProducts(programsWithProducts);
         when(lmisRestApi.fetchProducts(any(String.class))).thenReturn(response);
+        when(lmisRestApi.fetchLatestProducts(any(String.class), any(String.class))).thenReturn(response);
     }
+
 
     private void mockRequisitionResponse() {
         when(sharedPreferenceMgr.getPreference()).thenReturn(LMISTestApp.getContext().getSharedPreferences("LMISPreference", Context.MODE_PRIVATE));
