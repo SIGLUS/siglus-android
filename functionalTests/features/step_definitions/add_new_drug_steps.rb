@@ -1,5 +1,6 @@
 require 'calabash-android/calabash_steps'
 require 'pry'
+LMIS_MOZ_DIR="#{Dir.pwd}/../lmis-moz"
 
 Given(/^I have added new drugs/) do
   if EnvConfig::STRESS_TEST
@@ -14,8 +15,11 @@ Given(/^I have added new drugs/) do
 end
 
 Given(/^Server updates drug data/) do
-  LMIS_MOZ_DIR="#{Dir.pwd}/../lmis-moz"
   system("cd #{LMIS_MOZ_DIR} && ./build/update_products.sh")
+end
+
+Then(/^I clean up Server drug data which I updated/) do
+  system("cd #{LMIS_MOZ_DIR} && ./build/rollback_updated_products.sh")
 end
 
 Then(/^I check new drug quantity/) do

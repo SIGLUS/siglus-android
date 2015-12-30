@@ -59,3 +59,5 @@ Feature:add new drug
     When I clean search bar
     And I search drug by fnm "25D03"
     Then I see "Updated Drug"
+
+    Then I clean up server drug data which I updated
