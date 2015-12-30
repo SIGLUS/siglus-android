@@ -4,7 +4,7 @@ Feature:add new drug
   Scenario: If is STRESS TEST,add all drugs with quantity 300, else try adding drug without SOH, then try adding drug with SOH
     Given I try to log in with "initial_inventory" "password1"
     Then I wait for "Initial Inventory" to appear
-    Given I have initialized inventory
+    Then I press "Complete"
     And I press "Stock Card Overview"
     And I wait for "Stock Overview" to appear
 
