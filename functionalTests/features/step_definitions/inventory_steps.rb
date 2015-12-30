@@ -122,7 +122,7 @@ When(/^I initialize inventory$/) do
     end
 end
 
-And(/^I do physical inventory with "(\d+)" by fnm "(.*?)"/) do |quantity,fnm|
+And(/^I do physical inventory with "(\d+)" by fnm "(.*?)"$/) do |quantity,fnm|
     steps %Q{
         When I search drug by fnm "#{fnm}"
         And I enter quantity "#{quantity}" on inventory page
@@ -130,7 +130,6 @@ And(/^I do physical inventory with "(\d+)" by fnm "(.*?)"/) do |quantity,fnm|
         And I go back
     }
 end
-
 
 Then(/^I can see "(\d+)" physical quantity in position "(\d+)"$/) do |number, index|
     quantities = query("android.widget.EditText id:'tx_quantity'", :text)

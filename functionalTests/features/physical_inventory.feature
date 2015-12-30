@@ -1,6 +1,9 @@
 @PHYSICAL_INVENTORY
 Feature: Physical Inventory
 
+  #Should check scroll up and down very quickly
+  #Should check click next button very quickly
+  #Should check load more than 300 products in this page
   Scenario: Do physical inventory, and check the stock on hand quantity.
     Given I try to log in with "physical_inventory" "password1"
     Then I wait up to 30 seconds for "Initial Inventory" to appear
@@ -16,6 +19,8 @@ Feature: Physical Inventory
 
     And I press "Do Monthly Inventory"
     And I wait for "inventory" to appear
+    And I press "Complete"
+    Then I should see text containing "Quantity cannot be left blank!"
 
     And I do physical inventory with "100" by fnm "08S42B"
     And I do physical inventory with "200" by fnm "08S18Y"
@@ -31,9 +36,10 @@ Feature: Physical Inventory
     Then I wait for "Home Page" to appear
     When I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
-    Then I should see text containing "100"
-    Then I should see text containing "200"
-    Then I should see text containing "300"
+
+    Then I should see SOH of "08S42B" is "100"
+    Then I should see SOH of "08S18Y" is "200"
+    Then I should see SOH of "08S40Z" is "300"
 
   Scenario: Save physical inventory, and check the stock on hand quantity that have been saved.
     Given I try to log in with "physical_inventory" "password1"
@@ -48,6 +54,8 @@ Feature: Physical Inventory
     And I press "Do Monthly Inventory"
     And I wait for "inventory" to appear
     Then I should see text containing "2015"
+
+
 
 
     
