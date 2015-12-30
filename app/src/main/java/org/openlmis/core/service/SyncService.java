@@ -41,6 +41,7 @@ import static android.content.ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY;
 import static android.content.ContentResolver.SYNC_EXTRAS_EXPEDITED;
 import static android.content.ContentResolver.SYNC_EXTRAS_MANUAL;
 import static android.content.ContentResolver.addPeriodicSync;
+import static android.content.ContentResolver.cancelSync;
 import static android.content.ContentResolver.requestSync;
 import static android.content.ContentResolver.setIsSyncable;
 import static android.content.ContentResolver.setSyncAutomatically;
@@ -100,15 +101,15 @@ public class SyncService extends Service {
             bundle.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);
             bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
 
-            requestSync(findFirstLmisAccount(), syncContentAuthority, bundle);//todo: can we just use the account variable here?
+            requestSync(account, syncContentAuthority, bundle);
         }
     }
 
     public void shutDown() {
         Account account = findFirstLmisAccount();
         if (account != null) {
-            ContentResolver.cancelSync(account, syncContentAuthority);
-            ContentResolver.setSyncAutomatically(account, syncContentAuthority, false);
+            cancelSync(account, syncContentAuthority);
+            setSyncAutomatically(account, syncContentAuthority, false);
         }
         Log.d(tag, "sync service stopped");
     }
