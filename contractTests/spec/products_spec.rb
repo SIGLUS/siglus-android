@@ -35,11 +35,30 @@ describe "Get programs with products information for a facility" do
     body = JSON.parse(response.body)
     expect(response.code).to eq 200
 
-    expect(body['latestProgramsWithProducts']['programWithProductsList'].length).to eq 2
-    expect(body['latestProgramsWithProducts']['latestUpdatedTime']).not_to be_nil
-    expect(body['latestProgramsWithProducts']['programWithProductsList'][0]['programName']).not_to be_nil
+    expect(body['programsWithProducts'].length).to eq 2
+    expect(body['latestUpdatedTime']).not_to be_nil
+    expect(body['programsWithProducts'][0]['programName']).not_to be_nil
 
-    expect(body['latestProgramsWithProducts']['programWithProductsList'][0]['products'][0]['code']).not_to be_nil
-    expect(body['latestProgramsWithProducts']['programWithProductsList'][0]['products'][0]['primaryName']).not_to be_nil
+    expect(body['programsWithProducts'][0]['products'][0]['code']).not_to be_nil
+    expect(body['programsWithProducts'][0]['products'][0]['primaryName']).not_to be_nil
+
+
+    #given the afterUpdatedTime got from last fetch, no product in response
+    afterUpdatedTime = body['latestUpdatedTime']
+    response = RestClient.get "http://#{WEB_DEV_URI}/rest-api/latest-programs-with-products?facilityId=#{facility_id}&afterUpdatedTime=#{afterUpdatedTime}",
+      :content_type => :json,
+      :accept => :json,
+      :authorization => http_basic_auth('mystique', 'password1')
+
+    body = JSON.parse(response.body)
+    expect(response.code).to eq 200
+
+    expect(body['programsWithProducts'].length).to eq 2
+    
+    expect(body['programsWithProducts'][0]['products'].length).to eq 0
+    expect(body['programsWithProducts'][1]['products'].length).to eq 0
+
+    expect(body['latestUpdatedTime']).not_to be_nil
+    expect(body['latestUpdatedTime']).not_to eq afterUpdatedTime
   end
 end
