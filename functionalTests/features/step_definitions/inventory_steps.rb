@@ -123,7 +123,7 @@ When(/^I initialize inventory$/) do
         steps %Q{
             Then I wait up to 30 seconds for "Initial Inventory" to appear
             Then I wait for "Initial inventory" to appear
-            And I initialize products with quantity "1254"
+            And I initialize "1254" products
             And I press "Complete"
             Then I wait for "Home Page" to appear
         }
@@ -150,7 +150,7 @@ Then(/^I can see "(\d+)" physical quantity in position "(\d+)"$/) do |number, in
     end
 end
 
-And(/^I initialize products with quantity "(\d+)"/) do |quantity|
+And(/^I initialize "(\d+)" products/) do |quantity|
     checkBox = query("android.widget.CheckBox id:'checkbox' checked:'false'").first
 
     while !checkBox.nil?

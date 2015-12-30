@@ -5,7 +5,7 @@ LMIS_MOZ_DIR="#{Dir.pwd}/../lmis-moz"
 Given(/^I have added new drugs/) do
   if EnvConfig::STRESS_TEST
     steps %Q{
-            And I initialize products with quantity "300"
+            And I initialize "300" products
         }
   else
     steps %Q{
@@ -25,7 +25,7 @@ end
 Then(/^I check new drug quantity/) do
   if EnvConfig::STRESS_TEST
     steps %Q{
-            Then I should see total:"1254" on stock list page
+            Then I should see total:"300" on stock list page
         }
   else
     steps %Q{
