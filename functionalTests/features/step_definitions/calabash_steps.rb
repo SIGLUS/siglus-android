@@ -39,6 +39,30 @@ When(/^I search product by fnm "(.*?)" and select this item with quantity "(.*?)
     }
 end
 
+Then(/^I shouldn't see product "(.*?)" in this page$/) do |productProperty|
+    steps %Q{
+       When I search drug by fnm "#{productProperty}"
+    }
+    list = query("android.widget.RecyclerView id:'products_list'")
+    if list.empty?
+        steps %Q{
+            And I clean search bar
+        }
+    end
+end
+
+Then(/^I should see product "(.*?)" in this page$/) do |productProperty|
+    steps %Q{
+       When I search drug by fnm "#{productProperty}"
+    }
+    list = query("android.widget.RecyclerView id:'products_list'")
+    if !list.empty?
+        steps %Q{
+            And I clean search bar
+        }
+    end
+end
+
 And(/^I clean search bar/) do
     search_bar = query("android.support.v7.widget.SearchView id:'action_search'")
     clear_text_in(search_bar)
