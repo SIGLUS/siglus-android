@@ -22,3 +22,40 @@ Feature:add new drug
     Then I press "Complete"
     Then I wait for "Stock Overview" to appear
     Then I check new drug quantity
+
+  Scenario: Sync incremental product list from server to app
+    Given I try to log in with "initial_inventory" "password1"
+    And I wait for "Home Page" to appear
+    And I press "Stock Card Overview"
+    And I wait for "Stock Overview" to appear
+    And I press the menu key
+    And I wait for "Add new product" to appear
+    And I press "Add new product"
+    And I wait for "Add new product" to appear
+
+    Then I shouldn't see product "99X99" in this page
+    When I search drug by fnm "25D03"
+    Then I see "Manual de"
+
+    Given Server updates drug data
+
+    When I navigate back
+    When I navigate back
+    And I wait for "Stock Overview" to appear
+    And I navigate back
+    And I wait for "Home Page" to appear
+
+    And I press "Sync Data"
+
+    And I press "Stock Card Overview"
+    And I wait for "Stock Overview" to appear
+    And I press the menu key
+    And I wait for "Add new product" to appear
+    And I press "Add new product"
+    And I wait for "Add new product" to appear
+
+    When I search drug by fnm "99X99"
+    Then I see "New Drug"
+    When I clean search bar
+    And I search drug by fnm "25D03"
+    Then I see "Updated Drug"
