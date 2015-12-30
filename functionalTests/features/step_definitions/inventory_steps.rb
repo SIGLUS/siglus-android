@@ -21,6 +21,18 @@ When(/^I select the item called "(.*?)"$/) do |name|
   end
 end
 
+When(/^I unselect the item called "(.*?)"$/) do |name|
+  q = query("android.widget.TextView {text CONTAINS '#{name}'}")
+  while q.empty?
+    scroll("RecyclerView", :down)
+    q = query("android.widget.TextView {text CONTAINS '#{name}'}")
+   end
+
+  touch(q)
+end
+
+
+
 And(/^I enter quantity "(\d+)" on inventory page$/) do |quantity|
     h = query("android.widget.EditText id:'tx_quantity' text:''").first
     touch(h)
