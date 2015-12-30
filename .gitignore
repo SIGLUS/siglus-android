@@ -55,4 +55,5 @@ proguard/
 
 # Test reports
 functionalTests/reports.html
+functionalTests/reports.json
 lmis-moz
