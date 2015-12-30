@@ -1,6 +1,8 @@
 @ARCHIVE_DRUG
 Feature: Archive drug
 
+  #Should test that one drug archived at 18th, and archived drug shouldn't appear at mmia/via/physical inventory at next period
+
   Scenario: Archive two drugs
     Given I try to log in with "initial_inventory" "password1"
     Then I wait for "Initial Inventory" to appear
