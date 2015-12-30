@@ -26,7 +26,7 @@ import lombok.Data;
 
 public
 @Data
-class SyncBackProductsResponse {
+class SyncDownProductsResponse {
     List<Program> programsWithProducts;
     String latestUpdatedTime;
 }

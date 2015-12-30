@@ -143,7 +143,7 @@ public class LoginPresenter extends Presenter {
         UserInfoMgr.getInstance().setUser(user);
         view.clearErrorAlerts();
 
-        syncDownManager.syncBackServerData(getSyncSubscriber());
+        syncDownManager.syncDownServerData(getSyncSubscriber());
     }
 
     public void onLoginFailed() {

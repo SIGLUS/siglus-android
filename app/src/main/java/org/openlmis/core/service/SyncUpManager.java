@@ -62,6 +62,7 @@ import static android.content.ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY;
 import static android.content.ContentResolver.SYNC_EXTRAS_EXPEDITED;
 import static android.content.ContentResolver.SYNC_EXTRAS_MANUAL;
 import static android.content.ContentResolver.addPeriodicSync;
+import static android.content.ContentResolver.requestSync;
 import static android.content.ContentResolver.setIsSyncable;
 import static android.content.ContentResolver.setSyncAutomatically;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
@@ -100,16 +101,6 @@ public class SyncUpManager {
         lmisRestApi = new LMISRestManager().getLmisRestApi();
     }
 
-    public void kickOff() {
-        Account account = findFirstLmisAccount();
-        if (account != null) {
-            setIsSyncable(account, syncContentAuthority, 1);
-            setSyncAutomatically(account, syncContentAuthority, true);
-            addPeriodicSync(account, syncContentAuthority, periodicSyncParams(), syncInterval);
-        }
-        Log.d(TAG, "sync service kicked off");
-    }
-
     public void shutDown() {
         Account account = findFirstLmisAccount();
         if (account != null) {
@@ -119,10 +110,14 @@ public class SyncUpManager {
         Log.d(TAG, "sync service stopped");
     }
 
-    public void createSyncAccount(User user) {
-        Account account = new Account(user.getUsername(), syncAccountType);
-        accountManager.addAccountExplicitly(account, user.getPassword(), null);
-        Log.d(TAG, "sync account created");
+    public void kickOff() {
+        Account account = findFirstLmisAccount();
+        if (account != null) {
+            setIsSyncable(account, syncContentAuthority, 1);
+            setSyncAutomatically(account, syncContentAuthority, true);
+            addPeriodicSync(account, syncContentAuthority, periodicSyncParams(), syncInterval);
+        }
+        Log.d(TAG, "sync service kicked off");
     }
 
     public void requestSyncImmediately() {
@@ -134,8 +129,14 @@ public class SyncUpManager {
             bundle.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);
             bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
 
-            ContentResolver.requestSync(findFirstLmisAccount(), syncContentAuthority, bundle);
+            requestSync(findFirstLmisAccount(), syncContentAuthority, bundle);//todo: can we just use the account variable here?
         }
+    }
+
+    public void createSyncAccount(User user) {
+        Account account = new Account(user.getUsername(), syncAccountType);
+        accountManager.addAccountExplicitly(account, user.getPassword(), null);
+        Log.d(TAG, "sync account created");
     }
 
     public boolean syncRnr() {

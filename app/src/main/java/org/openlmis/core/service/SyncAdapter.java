@@ -80,7 +80,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         sendSyncedTimeBroadcast();
         syncUpManager.syncAppVersion();
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_latest_product_list)) {
-            syncDownManager.syncLatestProducts();
+            syncDownManager.syncDownLatestProducts();
         }
     }
 

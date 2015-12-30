@@ -36,7 +36,7 @@ import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
-import org.openlmis.core.network.model.SyncBackProductsResponse;
+import org.openlmis.core.network.model.SyncDownProductsResponse;
 import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.openlmis.core.service.SyncUpManager;
@@ -63,7 +63,7 @@ public class LoginPresenterTest {
     RnrFormRepository rnrFormRepository;
     LoginActivity mockActivity;
     LoginPresenter presenter;
-    SyncBackProductsResponse mockSyncBackProductsResponse;
+    SyncDownProductsResponse mockSyncDownProductsResponse;
     SyncUpManager syncUpManager;
 
     @Captor
@@ -80,7 +80,7 @@ public class LoginPresenterTest {
         userRepository = mock(UserRepository.class);
         rnrFormRepository = mock(RnrFormRepository.class);
         mockActivity = mock(LoginActivity.class);
-        mockSyncBackProductsResponse = mock(SyncBackProductsResponse.class);
+        mockSyncDownProductsResponse = mock(SyncDownProductsResponse.class);
         syncUpManager = mock(SyncUpManager.class);
         syncDownManager = mock(SyncDownManager.class);
 
@@ -148,7 +148,7 @@ public class LoginPresenterTest {
         verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
         loginCB.getValue().success(new User("user", "password"));
 
-        verify(syncDownManager).syncBackServerData(any(Subscriber.class));
+        verify(syncDownManager).syncDownServerData(any(Subscriber.class));
     }
 
     @Test

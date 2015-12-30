@@ -35,7 +35,7 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
-import org.openlmis.core.network.model.SyncBackProductsResponse;
+import org.openlmis.core.network.model.SyncDownProductsResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.utils.DateUtil;
@@ -70,7 +70,7 @@ public class SyncDownManager {
         lmisRestApi = new LMISRestManager().getLmisRestApi();
     }
 
-    public void syncBackServerData(Subscriber<SyncProgress> subscriber) {
+    public void syncDownServerData(Subscriber<SyncProgress> subscriber) {
         if (isSyncing) {
             subscriber.onCompleted();
             return;
@@ -81,10 +81,10 @@ public class SyncDownManager {
             @Override
             public void call(Subscriber<? super SyncProgress> subscriber) {
                 try {
-                    syncProducts(subscriber);
-                    syncBackLastMonthStockCards(subscriber);
-                    syncBackRequisition(subscriber);
-                    syncLastYearStockCardsSilently(subscriber);
+                    syncDownProducts(subscriber);
+                    syncDownLastMonthStockCards(subscriber);
+                    syncDownRequisition(subscriber);
+                    syncDownLastYearStockCardsSilently(subscriber);
 
                     isSyncing = false;
                     subscriber.onCompleted();
@@ -97,9 +97,9 @@ public class SyncDownManager {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
     }
 
-    public void syncLatestProducts() {
+    public void syncDownLatestProducts() {
         try {
-            syncProducts(new Subscriber<SyncProgress>() {
+            syncDownProducts(new Subscriber<SyncProgress>() {
                 @Override
                 public void onCompleted() {
 
@@ -120,7 +120,7 @@ public class SyncDownManager {
         }
     }
 
-    private void syncLastYearStockCardsSilently(Subscriber<? super SyncProgress> subscriber) {
+    private void syncDownLastYearStockCardsSilently(Subscriber<? super SyncProgress> subscriber) {
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)) {
             return;
         }
@@ -138,7 +138,7 @@ public class SyncDownManager {
         }
     }
 
-    private void syncBackRequisition(Subscriber<? super SyncProgress> subscriber) throws LMISException {
+    private void syncDownRequisition(Subscriber<? super SyncProgress> subscriber) throws LMISException {
         if (!sharedPreferenceMgr.isRequisitionDataSynced()) {
             try {
                 subscriber.onNext(SyncProgress.SyncingRequisition);
@@ -152,7 +152,7 @@ public class SyncDownManager {
         }
     }
 
-    private void syncBackLastMonthStockCards(Subscriber<? super SyncProgress> subscriber) throws LMISException {
+    private void syncDownLastMonthStockCards(Subscriber<? super SyncProgress> subscriber) throws LMISException {
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)) {
             return;
         }
@@ -171,7 +171,7 @@ public class SyncDownManager {
         }
     }
 
-    private void syncProducts(Subscriber<? super SyncProgress> subscriber) throws LMISException {
+    private void syncDownProducts(Subscriber<? super SyncProgress> subscriber) throws LMISException {
         if (!sharedPreferenceMgr.hasGetProducts() || LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_latest_product_list)) {
             try {
                 subscriber.onNext(SyncProgress.SyncingProduct);
@@ -191,7 +191,7 @@ public class SyncDownManager {
             throw new NoFacilityForUserException(errorMessage(R.string.msg_user_not_facility));
         }
         try {
-            SyncBackProductsResponse response = getSyncBackProductsResponse(user);
+            SyncDownProductsResponse response = getSyncDownProductsResponse(user);
             programRepository.createOrUpdateProgramWithProduct(response.getProgramsWithProducts());
             sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());
         } catch (Exception e) {
@@ -199,16 +199,12 @@ public class SyncDownManager {
         }
     }
 
-    private SyncBackProductsResponse getSyncBackProductsResponse(User user) {
+    private SyncDownProductsResponse getSyncDownProductsResponse(User user) {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_latest_product_list)) {
-            return lmisRestApi.fetchLatestProducts(user.getFacilityId(), getAfterUpdatedTime());
+            return lmisRestApi.fetchLatestProducts(user.getFacilityId(), sharedPreferenceMgr.getLastSyncProductTime());
         } else {
             return lmisRestApi.fetchProducts(user.getFacilityCode());
         }
-    }
-
-    private String getAfterUpdatedTime() {
-        return sharedPreferenceMgr.getLastSyncProductTime();
     }
 
     private void fetchAndSaveStockCards(String startDate, String endDate) throws LMISException {

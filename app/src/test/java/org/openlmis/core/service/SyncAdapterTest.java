@@ -103,7 +103,7 @@ public class SyncAdapterTest {
         syncAdapter.onPerformSync(null, null, null, null, null);
 
         //then
-        verify(mockSyncDownManager).syncLatestProducts();
+        verify(mockSyncDownManager).syncDownLatestProducts();
     }
 
     @Test

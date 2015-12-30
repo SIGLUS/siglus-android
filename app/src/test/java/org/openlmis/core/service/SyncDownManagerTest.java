@@ -25,7 +25,7 @@ import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.network.LMISRestApi;
-import org.openlmis.core.network.model.SyncBackProductsResponse;
+import org.openlmis.core.network.model.SyncDownProductsResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
@@ -101,7 +101,7 @@ public class SyncDownManagerTest {
     }
 
     @Test
-    public void shouldSyncBackServerData() throws Exception {
+    public void shouldSyncDownServerData() throws Exception {
         //given
         ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_sync_back_latest_product_list, false);
         ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_sync_back_stock_movement_273, true);
@@ -111,7 +111,7 @@ public class SyncDownManagerTest {
 
         //when
         SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
-        syncDownManager.syncBackServerData(subscriber);
+        syncDownManager.syncDownServerData(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
 
@@ -138,8 +138,8 @@ public class SyncDownManagerTest {
         //when
         CountOnNextSubscriber firstEnterSubscriber = new CountOnNextSubscriber();
         CountOnNextSubscriber laterEnterSubscriber = new CountOnNextSubscriber();
-        syncDownManager.syncBackServerData(firstEnterSubscriber);
-        syncDownManager.syncBackServerData(laterEnterSubscriber);
+        syncDownManager.syncDownServerData(firstEnterSubscriber);
+        syncDownManager.syncDownServerData(laterEnterSubscriber);
 
         firstEnterSubscriber.awaitTerminalEvent();
         firstEnterSubscriber.assertNoErrors();
@@ -159,7 +159,7 @@ public class SyncDownManagerTest {
         mockProductResponse();
 
         //when
-        syncDownManager.syncLatestProducts();
+        syncDownManager.syncDownLatestProducts();
 
         //then
         verify(lmisRestApi).fetchLatestProducts(anyString(), anyString());
@@ -193,7 +193,7 @@ public class SyncDownManagerTest {
     private void mockProductResponse() {
         ArrayList<Program> programsWithProducts = new ArrayList<>();
         programsWithProducts.add(new Program());
-        SyncBackProductsResponse response = new SyncBackProductsResponse();
+        SyncDownProductsResponse response = new SyncDownProductsResponse();
         response.setLatestUpdatedTime("today");
         response.setProgramsWithProducts(programsWithProducts);
         when(lmisRestApi.fetchProducts(any(String.class))).thenReturn(response);

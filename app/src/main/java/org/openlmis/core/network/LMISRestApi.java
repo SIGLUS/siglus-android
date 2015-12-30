@@ -25,7 +25,7 @@ import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.StockMovementEntry;
-import org.openlmis.core.network.model.SyncBackProductsResponse;
+import org.openlmis.core.network.model.SyncDownProductsResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.network.model.SyncUpRequisitionResponse;
@@ -48,10 +48,10 @@ public interface LMISRestApi {
     void updateAppVersion(@Body AppInfoRequest appinfo, Callback<Void> callback);
 
     @GET("/rest-api/programs-with-products")
-    SyncBackProductsResponse fetchProducts(@Query("facilityCode") String facilityCode);
+    SyncDownProductsResponse fetchProducts(@Query("facilityCode") String facilityCode);
 
     @GET("/rest-api/latest-programs-with-products")
-    SyncBackProductsResponse fetchLatestProducts(@Query("facilityId") String facilityId, @Query("afterUpdatedTime") String afterUpdatedTime);
+    SyncDownProductsResponse fetchLatestProducts(@Query("facilityId") String facilityId, @Query("afterUpdatedTime") String afterUpdatedTime);
 
     @GET("/rest-api/requisitions")
     SyncDownRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode);
