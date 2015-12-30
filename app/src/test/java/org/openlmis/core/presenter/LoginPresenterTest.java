@@ -39,7 +39,7 @@ import org.openlmis.core.model.repository.UserRepository.NewCallback;
 import org.openlmis.core.network.model.SyncDownProductsResponse;
 import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
-import org.openlmis.core.service.SyncUpManager;
+import org.openlmis.core.service.SyncService;
 import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
@@ -64,7 +64,7 @@ public class LoginPresenterTest {
     LoginActivity mockActivity;
     LoginPresenter presenter;
     SyncDownProductsResponse mockSyncDownProductsResponse;
-    SyncUpManager syncUpManager;
+    SyncService syncService;
 
     @Captor
     private ArgumentCaptor<NewCallback<User>> loginCB;
@@ -81,7 +81,7 @@ public class LoginPresenterTest {
         rnrFormRepository = mock(RnrFormRepository.class);
         mockActivity = mock(LoginActivity.class);
         mockSyncDownProductsResponse = mock(SyncDownProductsResponse.class);
-        syncUpManager = mock(SyncUpManager.class);
+        syncService = mock(SyncService.class);
         syncDownManager = mock(SyncDownManager.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
@@ -122,7 +122,7 @@ public class LoginPresenterTest {
 
         loginCB.getValue().success(user);
 
-        verify(syncUpManager).createSyncAccount(user);
+        verify(syncService).createSyncAccount(user);
     }
 
     @Test
@@ -162,7 +162,7 @@ public class LoginPresenterTest {
         //then
         verify(mockActivity).loaded();
         verify(mockActivity).goToInitInventory();
-        verify(syncUpManager).kickOff();
+        verify(syncService).kickOff();
     }
 
     @Test
@@ -254,7 +254,7 @@ public class LoginPresenterTest {
         @Override
         protected void configure() {
             bind(UserRepository.class).toInstance(userRepository);
-            bind(SyncUpManager.class).toInstance(syncUpManager);
+            bind(SyncService.class).toInstance(syncService);
             bind(SyncDownManager.class).toInstance(syncDownManager);
             bind(RnrFormRepository.class).toInstance(rnrFormRepository);
         }

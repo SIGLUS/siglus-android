@@ -18,16 +18,11 @@
 
 package org.openlmis.core.service;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.content.ContentResolver;
-import android.os.Bundle;
 import android.util.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
@@ -35,7 +30,6 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
-import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
@@ -53,20 +47,11 @@ import java.util.List;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import roboguice.inject.InjectResource;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-import static android.content.ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY;
-import static android.content.ContentResolver.SYNC_EXTRAS_EXPEDITED;
-import static android.content.ContentResolver.SYNC_EXTRAS_MANUAL;
-import static android.content.ContentResolver.addPeriodicSync;
-import static android.content.ContentResolver.requestSync;
-import static android.content.ContentResolver.setIsSyncable;
-import static android.content.ContentResolver.setSyncAutomatically;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @Singleton
 public class SyncUpManager {
@@ -82,61 +67,13 @@ public class SyncUpManager {
     @Inject
     StockRepository stockRepository;
 
-
-    @Inject
-    private AccountManager accountManager;
     @Inject
     private SyncErrorsRepository syncErrorsRepository;
-
-    @InjectResource(R.string.sync_content_authority)
-    private String syncContentAuthority;
-    @InjectResource(R.string.sync_account_type)
-    private String syncAccountType;
-    @InjectResource(R.integer.sync_interval)
-    private Integer syncInterval;
 
     protected LMISRestApi lmisRestApi;
 
     public SyncUpManager() {
         lmisRestApi = new LMISRestManager().getLmisRestApi();
-    }
-
-    public void shutDown() {
-        Account account = findFirstLmisAccount();
-        if (account != null) {
-            ContentResolver.cancelSync(account, syncContentAuthority);
-            ContentResolver.setSyncAutomatically(account, syncContentAuthority, false);
-        }
-        Log.d(TAG, "sync service stopped");
-    }
-
-    public void kickOff() {
-        Account account = findFirstLmisAccount();
-        if (account != null) {
-            setIsSyncable(account, syncContentAuthority, 1);
-            setSyncAutomatically(account, syncContentAuthority, true);
-            addPeriodicSync(account, syncContentAuthority, periodicSyncParams(), syncInterval);
-        }
-        Log.d(TAG, "sync service kicked off");
-    }
-
-    public void requestSyncImmediately() {
-        Log.d(TAG, "immediate sync up requested");
-        Account account = findFirstLmisAccount();
-        if (account != null) {
-            Bundle bundle = new Bundle();
-            bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-            bundle.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);
-            bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-
-            requestSync(findFirstLmisAccount(), syncContentAuthority, bundle);//todo: can we just use the account variable here?
-        }
-    }
-
-    public void createSyncAccount(User user) {
-        Account account = new Account(user.getUsername(), syncAccountType);
-        accountManager.addAccountExplicitly(account, user.getPassword(), null);
-        Log.d(TAG, "sync account created");
     }
 
     public boolean syncRnr() {
@@ -217,31 +154,6 @@ public class SyncUpManager {
                 }
             });
         }
-    }
-
-    private Account findFirstLmisAccount() {
-        List<Account> accounts = newArrayList(accountManager.getAccounts());
-        List<Account> lmisAccounts = from(accounts).filter(new Predicate<Account>() {
-            @Override
-            public boolean apply(Account input) {
-                return syncAccountType.equals(input.type);
-            }
-        }).toList();
-
-        if (lmisAccounts.size() > 0) {
-            return lmisAccounts.get(0);
-        }
-
-        return null;
-    }
-
-    private Bundle periodicSyncParams() {
-        Bundle extras = new Bundle();
-        extras.putBoolean(SYNC_EXTRAS_DO_NOT_RETRY, false);
-        extras.putBoolean(SYNC_EXTRAS_EXPEDITED, false);
-        extras.putBoolean(SYNC_EXTRAS_DO_NOT_RETRY, false);
-        extras.putBoolean(SYNC_EXTRAS_MANUAL, false);
-        return extras;
     }
 
     private boolean submitRequisition(RnRForm rnRForm) {

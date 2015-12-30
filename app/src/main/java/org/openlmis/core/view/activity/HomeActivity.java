@@ -38,7 +38,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
-import org.openlmis.core.service.SyncUpManager;
+import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
@@ -84,7 +84,7 @@ public class HomeActivity extends BaseActivity {
     int BACK_TWICE_INTERVAL;
 
     @Inject
-    SyncUpManager syncUpManager;
+    SyncService syncService;
 
     private boolean exitPressedOnce = false;
 
@@ -134,9 +134,8 @@ public class HomeActivity extends BaseActivity {
 
     public void onClickSyncData(View view) {
         Log.d("HomeActivity", "requesting immediate sync");
-        syncUpManager.requestSyncImmediately();
+        syncService.requestSyncImmediately();
     }
-
 
     public void onClickMMIAHistory(View view) {
         Intent intent = new Intent(this, RnRFormListActivity.class);

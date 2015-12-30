@@ -33,7 +33,7 @@ import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
 import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
-import org.openlmis.core.service.SyncUpManager;
+import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 
@@ -47,7 +47,7 @@ public class LoginPresenter extends Presenter {
     UserRepository userRepository;
 
     @Inject
-    SyncUpManager syncUpManager;
+    SyncService syncService;
 
     @Inject
     SyncDownManager syncDownManager;
@@ -137,7 +137,7 @@ public class LoginPresenter extends Presenter {
 
     protected void onLoginSuccess(User user) {
         Log.d("Login Presenter", "Log in successful, setting up sync account");
-        syncUpManager.createSyncAccount(user);
+        syncService.createSyncAccount(user);
 
         saveUserToLocalDatabase(user);
         UserInfoMgr.getInstance().setUser(user);
@@ -156,7 +156,7 @@ public class LoginPresenter extends Presenter {
         return new Subscriber<SyncProgress>() {
             @Override
             public void onCompleted() {
-                syncUpManager.kickOff();
+                syncService.kickOff();
                 tryGoToNextPage();
             }
 

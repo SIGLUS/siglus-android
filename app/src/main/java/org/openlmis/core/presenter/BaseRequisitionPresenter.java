@@ -28,7 +28,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
-import org.openlmis.core.service.SyncUpManager;
+import org.openlmis.core.service.SyncService;
 import org.openlmis.core.view.BaseView;
 
 import lombok.Getter;
@@ -47,7 +47,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
     Context context;
 
     @Inject
-    SyncUpManager syncUpManager;
+    SyncService syncService;
 
     @Inject
     SyncErrorsRepository syncErrorsRepository;
@@ -223,7 +223,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
                 view.loaded();
                 view.completeSuccess();
                 Log.d("BaseReqPresenter", "Signature signed, requesting immediate sync");
-                syncUpManager.requestSyncImmediately();
+                syncService.requestSyncImmediately();
             }
         });
     }

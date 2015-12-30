@@ -44,7 +44,7 @@ public class NetworkChangeListenerTest {
     NetworkChangeListener listener;
     Intent intent;
 
-    SyncUpManager syncUpManager;
+    SyncService syncService;
 
 
     @Before
@@ -52,11 +52,11 @@ public class NetworkChangeListenerTest {
         listener = new NetworkChangeListener();
         intent = mock(Intent.class);
 
-        syncUpManager = mock(SyncUpManager.class);
+        syncService = mock(SyncService.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
             @Override
             public void configure(Binder binder) {
-                binder.bind(SyncUpManager.class).toInstance(syncUpManager);
+                binder.bind(SyncService.class).toInstance(syncService);
             }
         });
     }
@@ -65,16 +65,15 @@ public class NetworkChangeListenerTest {
     public void shouldKickOffSyncServiceWhenConnectionAvailable() {
         shadowOf(getConnectivityManager().getActiveNetworkInfo()).setConnectionStatus(true);
         listener.onReceive(RuntimeEnvironment.application, intent);
-        verify(syncUpManager).kickOff();
+        verify(syncService).kickOff();
     }
 
     @Test
-    public void shouldShutdownSyncServiceWhenConnectionNotAvailable(){
+    public void shouldShutdownSyncServiceWhenConnectionNotAvailable() {
         shadowOf(getConnectivityManager().getActiveNetworkInfo()).setConnectionStatus(false);
         listener.onReceive(RuntimeEnvironment.application, intent);
-        verify(syncUpManager).shutDown();
+        verify(syncService).shutDown();
     }
-
 
     private ConnectivityManager getConnectivityManager() {
         return (ConnectivityManager) RuntimeEnvironment.application.getSystemService(Context.CONNECTIVITY_SERVICE);

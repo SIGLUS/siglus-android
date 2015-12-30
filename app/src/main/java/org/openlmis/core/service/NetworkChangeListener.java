@@ -27,17 +27,18 @@ import org.openlmis.core.network.NetworkConnectionManager;
 
 import roboguice.RoboGuice;
 
-public class NetworkChangeListener extends BroadcastReceiver{
+public class NetworkChangeListener extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        SyncUpManager manager = RoboGuice.getInjector(context).getInstance(SyncUpManager.class);
-        if (NetworkConnectionManager.isConnectionAvailable(context)){
+        SyncService syncService = RoboGuice.getInjector(context).getInstance(SyncService.class);
+        if (NetworkConnectionManager.isConnectionAvailable(context)) {
             Log.d("NetworkChangeListener :", "network connected, start sync service...");
-            manager.requestSyncImmediately();
-            manager.kickOff();
+            syncService.requestSyncImmediately();
+            syncService.kickOff();
+
         } else {
             Log.d("NetworkChangeListener :", "network disconnect, stop sync service...");
-            manager.shutDown();
+            syncService.shutDown();
         }
     }
 }
