@@ -133,6 +133,28 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
     }
 
     @Test
+    public void shouldLoadPhysicalStockCardListWithoutDeactivatedProducts() throws LMISException {
+        StockCard stockCardVIA = StockCardBuilder.buildStockCard();
+        stockCardVIA.setProduct(new ProductBuilder().setPrimaryName("VIA Product").setIsArchived(false).setIsActive(true).build());
+        StockCard stockCardMMIA = StockCardBuilder.buildStockCard();
+        stockCardMMIA.setProduct(new ProductBuilder().setPrimaryName("MMIA Product").setIsArchived(false).setIsActive(false).build());
+        List<StockCard> stockCards = Arrays.asList(stockCardMMIA, stockCardVIA);
+        when(stockRepositoryMock.list()).thenReturn(stockCards);
+
+        TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
+        Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadPhysicalInventory();
+        observable.subscribe(subscriber);
+
+        subscriber.awaitTerminalEvent();
+
+        subscriber.assertNoErrors();
+
+        List<StockCardViewModel> receivedStockCardViewModels = subscriber.getOnNextEvents().get(0);
+        assertEquals(1, receivedStockCardViewModels.size());
+        assertEquals("VIA Product", receivedStockCardViewModels.get(0).getProductName());
+    }
+
+    @Test
     public void shouldLoadMasterProductsList() throws LMISException {
         StockCard stockCardVIA = StockCardBuilder.buildStockCard();
         Product productVIA = new ProductBuilder().setPrimaryName("VIA Product").setCode("VIA Code").build();

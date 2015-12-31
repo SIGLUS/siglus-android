@@ -63,7 +63,7 @@ public class ProductBuilder {
         return this;
     }
 
-    public ProductBuilder setActive(boolean active) {
+    public ProductBuilder setIsActive(boolean active) {
         product.setActive(active);
         return this;
     }

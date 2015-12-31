@@ -37,7 +37,6 @@ import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
-import org.roboguice.shaded.goole.common.collect.ImmutableList;
 import org.roboguice.shaded.goole.common.collect.Sets;
 
 import java.util.ArrayList;
@@ -158,7 +157,7 @@ public class InventoryPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    private ImmutableList<StockCardViewModel> convertStockCardsToStockCardViewModels(List<StockCard> validStockCardsForPhysicalInventory) {
+    private List<StockCardViewModel> convertStockCardsToStockCardViewModels(List<StockCard> validStockCardsForPhysicalInventory) {
         return FluentIterable.from(validStockCardsForPhysicalInventory).transform(new Function<StockCard, StockCardViewModel>() {
             @Override
             public StockCardViewModel apply(StockCard stockCard) {
@@ -171,7 +170,7 @@ public class InventoryPresenter extends Presenter {
         return from(stockRepository.list()).filter(new Predicate<StockCard>() {
             @Override
             public boolean apply(StockCard stockCard) {
-                return !stockCard.getProduct().isActive() && !stockCard.getProduct().isArchived();
+                return stockCard.getProduct().isActive() && !stockCard.getProduct().isArchived();
             }
         }).toList();
     }

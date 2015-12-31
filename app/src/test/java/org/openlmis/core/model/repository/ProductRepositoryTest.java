@@ -45,9 +45,9 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldGetActiveProducts() throws Exception {
-        Product product1 = ProductBuilder.create().setCode("P1").setActive(true).build();
-        Product product2 = ProductBuilder.create().setCode("P2").setActive(false).build();
-        Product product3 = ProductBuilder.create().setCode("P3").setActive(true).build();
+        Product product1 = ProductBuilder.create().setCode("P1").setIsActive(true).build();
+        Product product2 = ProductBuilder.create().setCode("P2").setIsActive(false).build();
+        Product product3 = ProductBuilder.create().setCode("P3").setIsActive(true).build();
 
         productRepository.createOrUpdate(product1);
         productRepository.createOrUpdate(product2);
