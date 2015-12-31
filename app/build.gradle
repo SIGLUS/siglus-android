@@ -186,5 +186,5 @@ task functionalTests(type: Exec, dependsOn: ['bundleInstall', 'assembleLocalDebu
     }
 
     executable 'calabash-android'
-    args "run", "$targetPath", "--tags ~@pending --format json --out reports.json"
+    args "run", "$targetPath", "--tags ~@pending --format html --out reports.html"
 }
