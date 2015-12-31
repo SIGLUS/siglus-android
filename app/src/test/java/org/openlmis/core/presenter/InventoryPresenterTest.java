@@ -120,7 +120,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         when(stockRepositoryMock.list()).thenReturn(stockCards);
 
         TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
-        Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadPhysicalStockCards();
+        Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadPhysicalInventory();
         observable.subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
@@ -130,6 +130,28 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
         List<StockCardViewModel> receivedStockCardViewModels = subscriber.getOnNextEvents().get(0);
         assertEquals(receivedStockCardViewModels.size(), 2);
+    }
+
+    @Test
+    public void shouldLoadPhysicalStockCardListWithoutDeactivatedProducts() throws LMISException {
+        StockCard stockCardVIA = StockCardBuilder.buildStockCard();
+        stockCardVIA.setProduct(new ProductBuilder().setPrimaryName("VIA Product").setIsArchived(false).setIsActive(true).build());
+        StockCard stockCardMMIA = StockCardBuilder.buildStockCard();
+        stockCardMMIA.setProduct(new ProductBuilder().setPrimaryName("MMIA Product").setIsArchived(false).setIsActive(false).build());
+        List<StockCard> stockCards = Arrays.asList(stockCardMMIA, stockCardVIA);
+        when(stockRepositoryMock.list()).thenReturn(stockCards);
+
+        TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
+        Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadPhysicalInventory();
+        observable.subscribe(subscriber);
+
+        subscriber.awaitTerminalEvent();
+
+        subscriber.assertNoErrors();
+
+        List<StockCardViewModel> receivedStockCardViewModels = subscriber.getOnNextEvents().get(0);
+        assertEquals(1, receivedStockCardViewModels.size());
+        assertEquals("VIA Product", receivedStockCardViewModels.get(0).getProductName());
     }
 
     @Test
@@ -149,18 +171,38 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         unknownBStockCard.setProduct(productUnknownB);
 
         when(stockRepositoryMock.list()).thenReturn(Arrays.asList(stockCardVIA, stockCardMMIA));
-        when(productRepositoryMock.list()).thenReturn(Arrays.asList(productMMIA, productVIA, productUnknownB, productUnknownA));
+        when(productRepositoryMock.listActiveProducts()).thenReturn(Arrays.asList(productMMIA, productVIA, productUnknownB, productUnknownA));
         when(stockRepositoryMock.queryStockCardByProductId(10L)).thenReturn(stockCardMMIA);
 
         TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
-        Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadMasterProductList();
+        Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadInventory();
         observable.subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
 
         subscriber.assertNoErrors();
         List<StockCardViewModel> receivedStockCardViewModels = subscriber.getOnNextEvents().get(0);
-        assertEquals(receivedStockCardViewModels.size(), 3);
+        assertEquals(3, receivedStockCardViewModels.size());
+    }
+
+    @Test
+    public void shouldOnlyActivatedProductsInInventoryList() throws LMISException {
+        Product activeProduct1 = ProductBuilder.create().setPrimaryName("active product").setCode("P2").build();
+        Product activeProduct2 = ProductBuilder.create().setPrimaryName("active product").setCode("P3").build();
+
+        when(stockRepositoryMock.list()).thenReturn(new ArrayList<StockCard>());
+        when(productRepositoryMock.listActiveProducts()).thenReturn(Arrays.asList(activeProduct1, activeProduct2));
+
+        TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
+        Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadInventory();
+        observable.subscribe(subscriber);
+
+        subscriber.awaitTerminalEvent();
+
+        subscriber.assertNoErrors();
+        List<StockCardViewModel> receivedStockCardViewModels = subscriber.getOnNextEvents().get(0);
+
+        assertEquals(2, receivedStockCardViewModels.size());
     }
 
     @Test

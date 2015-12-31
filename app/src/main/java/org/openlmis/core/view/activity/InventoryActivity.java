@@ -102,7 +102,7 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
         productListRecycleView.setAdapter(mAdapter);
 
         loading();
-        Subscription subscription = presenter.loadPhysicalStockCards().subscribe(stockCardSubscriber);
+        Subscription subscription = presenter.loadPhysicalInventory().subscribe(stockCardSubscriber);
         subscriptions.add(subscription);
 
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -161,7 +161,7 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
 
         loading();
 
-        Subscription subscription = presenter.loadMasterProductList().subscribe(loadMasterSubscriber);
+        Subscription subscription = presenter.loadInventory().subscribe(loadMasterSubscriber);
         subscriptions.add(subscription);
 
         btnDone.setOnClickListener(new View.OnClickListener() {

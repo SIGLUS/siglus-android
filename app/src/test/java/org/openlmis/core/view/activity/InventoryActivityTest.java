@@ -69,7 +69,7 @@ public class InventoryActivityTest {
     @Before
     public void setUp() throws LMISException{
         mockedPresenter = mock(InventoryPresenter.class);
-        when(mockedPresenter.loadMasterProductList()).thenReturn(Observable.<List<StockCardViewModel>>empty());
+        when(mockedPresenter.loadInventory()).thenReturn(Observable.<List<StockCardViewModel>>empty());
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
@@ -140,7 +140,7 @@ public class InventoryActivityTest {
         assertThat(inventoryActivity.btnSave.getVisibility()).isEqualTo(View.GONE);
         assertTrue(inventoryActivity.loadingDialog.isShowing());
 
-        verify(mockedPresenter).loadMasterProductList();
+        verify(mockedPresenter).loadInventory();
     }
 
     @Test
