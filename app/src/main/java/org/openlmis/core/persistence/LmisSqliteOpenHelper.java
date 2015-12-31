@@ -25,7 +25,6 @@ import android.util.Log;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 
-import org.openlmis.core.persistence.migrations.AddActiveColumnToProductTable;
 import org.openlmis.core.persistence.migrations.AddCreatedTimeToStockMovement;
 import org.openlmis.core.persistence.migrations.AddFacilityIdToUser;
 import org.openlmis.core.persistence.migrations.AddIsArchivedToProduct;
@@ -60,7 +59,6 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new AddIsArchivedToProduct());
             add(new AddCreatedTimeToStockMovement());
             add(new AddSyncErrorsMessageTable());
-            add(new AddActiveColumnToProductTable());
         }
     };
     private static int instanceCount = 0;

@@ -8,11 +8,6 @@ public class ProductBuilder {
 
     public ProductBuilder() {
         product = new Product();
-        product.setActive(true);
-    }
-
-    public static ProductBuilder create(){
-        return new ProductBuilder();
     }
 
     public ProductBuilder setPrimaryName(String primaryName) {
@@ -60,11 +55,6 @@ public class ProductBuilder {
 
     public ProductBuilder setProductId(long productId) {
         product.setId(productId);
-        return this;
-    }
-
-    public ProductBuilder setIsActive(boolean active) {
-        product.setActive(active);
         return this;
     }
 }

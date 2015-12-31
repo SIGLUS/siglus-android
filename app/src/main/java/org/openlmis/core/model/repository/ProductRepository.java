@@ -51,16 +51,6 @@ public class ProductRepository {
         return products;
     }
 
-    public List<Product> listActiveProducts() throws LMISException {
-
-        return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
-            @Override
-            public List<Product> operate(Dao<Product, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("isActive", true).query();
-            }
-        });
-    }
-
     public void save(final List<Product> products) {
         try {
             dbUtil.withDaoAsBatch(Product.class, new DbUtil.Operation<Product, Void>() {
