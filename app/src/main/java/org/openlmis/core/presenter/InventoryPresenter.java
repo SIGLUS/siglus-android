@@ -37,13 +37,9 @@ import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
-import org.roboguice.shaded.goole.common.collect.Sets;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -75,7 +71,7 @@ public class InventoryPresenter extends Presenter {
             @Override
             public void call(final Subscriber<? super List<StockCardViewModel>> subscriber) {
                 try {
-                    ArrayList<Product> inventoryProducts = getActiveProductsArchivedOrWithoutStockCards();
+                    List<Product> inventoryProducts = getValidProductsForInventory();
 
                     List<StockCardViewModel> availableStockCardsForAddNewDrug = from(inventoryProducts)
                             .transform(new Function<Product, StockCardViewModel>() {
@@ -95,13 +91,16 @@ public class InventoryPresenter extends Presenter {
     }
 
     @NonNull
-    private ArrayList<Product> getActiveProductsArchivedOrWithoutStockCards() throws LMISException {
+    private List<Product> getValidProductsForInventory() throws LMISException {
         List<Product> activeProducts = productRepository.listActiveProducts();
-        List<Product> productsWithStockCards = getProductsThatHaveStockCards();
-        List<Product> archivedProducts = getArchivedProducts(activeProducts);
+        final List<Product> productsWithStockCards = getProductsThatHaveStockCards();
 
-        Set<Product> productsWithoutStockCards = Sets.difference(new HashSet<>(activeProducts), new HashSet<>(productsWithStockCards));
-        return new ArrayList<>(Sets.union(productsWithoutStockCards, new HashSet<>(archivedProducts)));
+        return FluentIterable.from(activeProducts).filter(new Predicate<Product>() {
+            @Override
+            public boolean apply(@Nullable Product product) {
+                return product.isArchived() || !productsWithStockCards.contains(product);
+            }
+        }).toList();
     }
 
     @Nullable
@@ -119,15 +118,6 @@ public class InventoryPresenter extends Presenter {
             e.reportToFabric();
         }
         return null;
-    }
-
-    private List<Product> getArchivedProducts(final List<Product> products) throws LMISException {
-        return from(products).filter(new Predicate<Product>() {
-            @Override
-            public boolean apply(Product product) {
-                return product.isArchived();
-            }
-        }).toList();
     }
 
     private List<Product> getProductsThatHaveStockCards() throws LMISException {
