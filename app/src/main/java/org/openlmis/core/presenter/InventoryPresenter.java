@@ -19,6 +19,8 @@
 
 package org.openlmis.core.presenter;
 
+import android.support.annotation.Nullable;
+
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
@@ -33,9 +35,13 @@ import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
+import org.roboguice.shaded.goole.common.collect.Sets;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -67,38 +73,21 @@ public class InventoryPresenter extends Presenter {
             @Override
             public void call(final Subscriber<? super List<StockCardViewModel>> subscriber) {
                 try {
-                    final List<Product> existProductList = from(stockRepository.list()).transform(new Function<StockCard, Product>() {
-                        @Override
-                        public Product apply(StockCard stockCard) {
-                            return stockCard.getProduct();
-                        }
-                    }).toList();
+                    List<Product> activeProducts = productRepository.listActiveProducts();
+                    List<Product> productsWithStockCards = getProductsThatHaveStockCards();
+                    List<Product> archivedProducts = getArchivedProducts(activeProducts);
 
-                    List<StockCardViewModel> list = from(productRepository.list()).filter(new Predicate<Product>() {
-                        @Override
-                        public boolean apply(Product product) {
-                            return product.isArchived() || !existProductList.contains(product);
-                        }
-                    }).transform(new Function<Product, StockCardViewModel>() {
-                        @Override
-                        public StockCardViewModel apply(Product product) {
-                            try {
-                                StockCardViewModel viewModel;
-                                if (product.isArchived()) {
-                                    viewModel = new StockCardViewModel(stockRepository.queryStockCardByProductId(product.getId()));
-                                } else {
-                                    viewModel = new StockCardViewModel(product);
+                    Set<Product> productsWithoutStockCards = Sets.difference(new HashSet(activeProducts), new HashSet(productsWithStockCards));
+                    ArrayList productsArchivedOrNotHavingStockCards = new ArrayList(Sets.union(productsWithoutStockCards, new HashSet(archivedProducts)));
+
+                    List<StockCardViewModel> availableStockCardsForAddNewDrug = from(productsArchivedOrNotHavingStockCards)
+                            .transform(new Function<Product, StockCardViewModel>() {
+                                @Override
+                                public StockCardViewModel apply(Product product) {
+                                    return convertProductToStockCardViewModel(product);
                                 }
-                                viewModel.setChecked(false);
-                                return viewModel;
-                            } catch (LMISException e) {
-                                e.reportToFabric();
-                            }
-                            return null;
-                        }
-                    }).toList();
-
-                    subscriber.onNext(list);
+                            }).toList();
+                    subscriber.onNext(availableStockCardsForAddNewDrug);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.reportToFabric();
@@ -106,6 +95,41 @@ public class InventoryPresenter extends Presenter {
                 }
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+    }
+
+    @Nullable
+    private StockCardViewModel convertProductToStockCardViewModel(Product product) {
+        try {
+            StockCardViewModel viewModel;
+            if (product.isArchived()) {
+                viewModel = new StockCardViewModel(stockRepository.queryStockCardByProductId(product.getId()));
+            } else {
+                viewModel = new StockCardViewModel(product);
+            }
+            viewModel.setChecked(false);
+            return viewModel;
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+        return null;
+    }
+
+    private List<Product> getArchivedProducts(final List<Product> products) throws LMISException {
+        return from(products).filter(new Predicate<Product>() {
+            @Override
+            public boolean apply(Product product) {
+                return product.isArchived();
+            }
+        }).toList();
+    }
+
+    private List<Product> getProductsThatHaveStockCards() throws LMISException {
+        return from(stockRepository.list()).transform(new Function<StockCard, Product>() {
+            @Override
+            public Product apply(StockCard stockCard) {
+                return stockCard.getProduct();
+            }
+        }).toList();
     }
 
     public Observable<List<StockCardViewModel>> loadPhysicalStockCards() {

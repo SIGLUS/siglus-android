@@ -83,15 +83,6 @@ public class GenericDao<Model> {
         });
     }
 
-    public long countOf() throws LMISException {
-        return dbUtil.withDao(context, type, new DbUtil.Operation<Model, Long>() {
-            @Override
-            public Long operate(Dao<Model, String> dao) throws SQLException {
-                return dao.countOf();
-            }
-        });
-    }
-
     public Model getById(final String id) throws LMISException {
         return dbUtil.withDao(context, type, new DbUtil.Operation<Model, Model>() {
             @Override
