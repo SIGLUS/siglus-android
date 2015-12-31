@@ -143,8 +143,7 @@ public class SyncDownManagerTest {
 
         firstEnterSubscriber.awaitTerminalEvent();
         firstEnterSubscriber.assertNoErrors();
-        laterEnterSubscriber.awaitTerminalEvent();
-        laterEnterSubscriber.assertNoErrors();
+        laterEnterSubscriber.assertNoTerminalEvent();
 
         //then
         verify(lmisRestApi, times(1)).fetchProducts(anyString());

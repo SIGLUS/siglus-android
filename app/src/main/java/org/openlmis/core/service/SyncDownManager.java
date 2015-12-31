@@ -72,7 +72,6 @@ public class SyncDownManager {
 
     public void syncDownServerData(Subscriber<SyncProgress> subscriber) {
         if (isSyncing) {
-            subscriber.onCompleted();
             return;
         }
 
