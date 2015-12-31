@@ -120,7 +120,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         when(stockRepositoryMock.list()).thenReturn(stockCards);
 
         TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
-        Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadPhysicalStockCards();
+        Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadPhysicalInventory();
         observable.subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
@@ -153,7 +153,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         when(stockRepositoryMock.queryStockCardByProductId(10L)).thenReturn(stockCardMMIA);
 
         TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
-        Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadMasterProductList();
+        Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadInventory();
         observable.subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
@@ -172,7 +172,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         when(productRepositoryMock.listActiveProducts()).thenReturn(Arrays.asList(activeProduct1, activeProduct2));
 
         TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
-        Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadMasterProductList();
+        Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadInventory();
         observable.subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();

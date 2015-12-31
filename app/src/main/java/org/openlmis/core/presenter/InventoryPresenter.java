@@ -19,6 +19,7 @@
 
 package org.openlmis.core.presenter;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.inject.Inject;
@@ -35,6 +36,8 @@ import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
+import org.roboguice.shaded.goole.common.collect.ImmutableList;
 import org.roboguice.shaded.goole.common.collect.Sets;
 
 import java.util.ArrayList;
@@ -67,20 +70,15 @@ public class InventoryPresenter extends Presenter {
         view = (InventoryView) v;
     }
 
-    public Observable<List<StockCardViewModel>> loadMasterProductList() {
+    public Observable<List<StockCardViewModel>> loadInventory() {
 
         return Observable.create(new Observable.OnSubscribe<List<StockCardViewModel>>() {
             @Override
             public void call(final Subscriber<? super List<StockCardViewModel>> subscriber) {
                 try {
-                    List<Product> activeProducts = productRepository.listActiveProducts();
-                    List<Product> productsWithStockCards = getProductsThatHaveStockCards();
-                    List<Product> archivedProducts = getArchivedProducts(activeProducts);
+                    ArrayList<Product> inventoryProducts = getActiveProductsArchivedOrWithoutStockCards();
 
-                    Set<Product> productsWithoutStockCards = Sets.difference(new HashSet(activeProducts), new HashSet(productsWithStockCards));
-                    ArrayList productsArchivedOrNotHavingStockCards = new ArrayList(Sets.union(productsWithoutStockCards, new HashSet(archivedProducts)));
-
-                    List<StockCardViewModel> availableStockCardsForAddNewDrug = from(productsArchivedOrNotHavingStockCards)
+                    List<StockCardViewModel> availableStockCardsForAddNewDrug = from(inventoryProducts)
                             .transform(new Function<Product, StockCardViewModel>() {
                                 @Override
                                 public StockCardViewModel apply(Product product) {
@@ -95,6 +93,16 @@ public class InventoryPresenter extends Presenter {
                 }
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+    }
+
+    @NonNull
+    private ArrayList<Product> getActiveProductsArchivedOrWithoutStockCards() throws LMISException {
+        List<Product> activeProducts = productRepository.listActiveProducts();
+        List<Product> productsWithStockCards = getProductsThatHaveStockCards();
+        List<Product> archivedProducts = getArchivedProducts(activeProducts);
+
+        Set<Product> productsWithoutStockCards = Sets.difference(new HashSet<>(activeProducts), new HashSet<>(productsWithStockCards));
+        return new ArrayList<>(Sets.union(productsWithoutStockCards, new HashSet<>(archivedProducts)));
     }
 
     @Nullable
@@ -132,22 +140,13 @@ public class InventoryPresenter extends Presenter {
         }).toList();
     }
 
-    public Observable<List<StockCardViewModel>> loadPhysicalStockCards() {
+    public Observable<List<StockCardViewModel>> loadPhysicalInventory() {
         return Observable.create(new Observable.OnSubscribe<List<StockCardViewModel>>() {
             @Override
             public void call(Subscriber<? super List<StockCardViewModel>> subscriber) {
                 try {
-                    List<StockCardViewModel> stockCardViewModels = from(stockRepository.list()).filter(new Predicate<StockCard>() {
-                        @Override
-                        public boolean apply(StockCard stockCard) {
-                            return !stockCard.getProduct().isArchived();
-                        }
-                    }).transform(new Function<StockCard, StockCardViewModel>() {
-                        @Override
-                        public StockCardViewModel apply(StockCard stockCard) {
-                            return new StockCardViewModel(stockCard);
-                        }
-                    }).toList();
+                    List<StockCard> validStockCardsForPhysicalInventory = getValidStockCardsForPhysicalInventory();
+                    List<StockCardViewModel> stockCardViewModels = convertStockCardsToStockCardViewModels(validStockCardsForPhysicalInventory);
 
                     restoreDraftInventory(stockCardViewModels);
                     subscriber.onNext(stockCardViewModels);
@@ -157,6 +156,24 @@ public class InventoryPresenter extends Presenter {
                 }
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+    }
+
+    private ImmutableList<StockCardViewModel> convertStockCardsToStockCardViewModels(List<StockCard> validStockCardsForPhysicalInventory) {
+        return FluentIterable.from(validStockCardsForPhysicalInventory).transform(new Function<StockCard, StockCardViewModel>() {
+            @Override
+            public StockCardViewModel apply(StockCard stockCard) {
+                return new StockCardViewModel(stockCard);
+            }
+        }).toList();
+    }
+
+    private List<StockCard> getValidStockCardsForPhysicalInventory() throws LMISException {
+        return from(stockRepository.list()).filter(new Predicate<StockCard>() {
+            @Override
+            public boolean apply(StockCard stockCard) {
+                return !stockCard.getProduct().isActive() && !stockCard.getProduct().isArchived();
+            }
+        }).toList();
     }
 
     protected void restoreDraftInventory(List<StockCardViewModel> stockCardViewModels) throws LMISException {
