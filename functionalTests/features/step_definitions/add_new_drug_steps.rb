@@ -14,14 +14,6 @@ Given(/^I have added new drugs/) do
   end
 end
 
-Given(/^Server updates drug data/) do
-  system("cd #{LMIS_MOZ_DIR} && ./build/update_products.sh")
-end
-
-Then(/^I clean up server drug data which I updated/) do
-  system("cd #{LMIS_MOZ_DIR} && ./build/rollback_updated_products.sh")
-end
-
 Then(/^I check new drug quantity/) do
   if EnvConfig::STRESS_TEST
     steps %Q{

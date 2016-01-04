@@ -1,6 +1,3 @@
-require 'calabash-android/calabash_steps'
-require 'pry'
-
 Then(/^I should see SOH of "(.*?)" is "(.*?)"$/) do |productcode,soh|
     steps %Q{
         When I search drug by fnm "#{productcode}"
@@ -18,4 +15,9 @@ Then(/^I should see SOH of "(.*?)" is "(.*?)"$/) do |productcode,soh|
     end
 end
 
-
+Then(/^I should see total:"(\d+)" on stock list page/) do |expectTotal|
+    total = query("android.widget.TextView id:'tv_total'", :text).first
+    unless (total.eql?("Total:"+expectTotal))
+        fail(msg="Total drug quantity don't equals to expect quantity")
+    end
+end

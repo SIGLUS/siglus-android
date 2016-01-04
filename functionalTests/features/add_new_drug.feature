@@ -15,8 +15,12 @@ Feature:add new drug
     Then I shouldn't see product "99X99" in this page
     When I search drug by fnm "25D03"
     Then I see "Manual de"
+    When I clean search bar
+    And I search drug by fnm "12D03"
+    Then I should see product "12D03" in this page
 
     Given Server updates drug data
+    And server deactivates products 12D03 and 07L01
 
     When I navigate back
     When I navigate back
@@ -38,9 +42,9 @@ Feature:add new drug
     When I clean search bar
     And I search drug by fnm "25D03"
     Then I see "Updated Drug"
-
-    Then I clean up server drug data which I updated
-
+    When I clean search bar
+    And I search drug by fnm "12D03"
+    Then I shouldn't see product "12D03" in this page
 
   Scenario: If is STRESS TEST,add all drugs with quantity 300, else try adding drug without SOH, then try adding drug with SOH
     Given I try to log in with "initial_inventory" "password1"

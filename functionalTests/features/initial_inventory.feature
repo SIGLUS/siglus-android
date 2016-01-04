@@ -1,6 +1,6 @@
 @INITIAL_INVENTORY
 Feature: Initial Inventory
-  Scenario: User should be able to initial inventory
+  Scenario: User should be able to initialize inventory
     Given I try to log in with "initial_inventory" "password1"
     Given I initialize inventory
     And I press "Stock Card Overview"
@@ -11,5 +11,3 @@ Feature: Initial Inventory
     Then I navigate back
     And I sign out
     Then I wait for the "LoginActivity" screen to appear
-
-
