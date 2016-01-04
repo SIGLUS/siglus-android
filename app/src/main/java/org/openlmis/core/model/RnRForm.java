@@ -26,10 +26,13 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import org.openlmis.core.utils.DateUtil;
+import org.roboguice.shaded.goole.common.base.Predicate;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -150,6 +153,16 @@ public class RnRForm extends BaseModel {
         for (BaseInfoItem item : rnRForm.getBaseInfoItemListWrapper()) {
             item.setRnRForm(rnRForm);
         }
+    }
+
+    public List<RnrFormItem> getDeactivatedProductItems() {
+
+        return FluentIterable.from(getRnrFormItemListWrapper()).filter(new Predicate<RnrFormItem>() {
+            @Override
+            public boolean apply(RnrFormItem rnrFormItem) {
+                return !rnrFormItem.getProduct().isActive();
+            }
+        }).toList();
     }
 
     private <T> ArrayList<T> wrapOrEmpty(ForeignCollection<T> origin, ArrayList<T> target) {

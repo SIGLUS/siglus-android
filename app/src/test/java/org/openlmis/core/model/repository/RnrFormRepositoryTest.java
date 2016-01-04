@@ -51,10 +51,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
 public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
@@ -62,12 +66,15 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     RnrFormRepository rnrFormRepository;
     private StockRepository mockStockRepository;
 
+    private RnrFormItemRepository mockRnrFormItemRepository;
+
     private ProgramRepository mockProgramRepository;
 
     @Before
     public void setup() throws LMISException {
         mockProgramRepository = mock(ProgramRepository.class);
         mockStockRepository = mock(StockRepository.class);
+        mockRnrFormItemRepository = mock(RnrFormItemRepository.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
         rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormRepository.class);
@@ -474,11 +481,25 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(rnrFormItemByPeriod.getInitialAmount(), is(100L));
     }
 
+    @Test
+    public void shouldDeleteDeactivatedItemsFromRnrForms() throws Exception {
+        RnRForm rnRForm1 = mock(RnRForm.class);
+        RnRForm rnRForm2 = mock(RnRForm.class);
+        List<RnRForm> rnrForms = newArrayList(rnRForm1, rnRForm2);
+
+        when(rnRForm1.getDeactivatedProductItems()).thenReturn(new ArrayList<RnrFormItem>());
+        when(rnRForm2.getDeactivatedProductItems()).thenReturn(new ArrayList<RnrFormItem>());
+
+        rnrFormRepository.deleteDeactivatedProductItemsFromForms(rnrForms);
+        verify(mockRnrFormItemRepository, times(2)).delete(anyList());
+    }
+
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
             bind(ProgramRepository.class).toInstance(mockProgramRepository);
             bind(StockRepository.class).toInstance(mockStockRepository);
+            bind(RnrFormItemRepository.class).toInstance(mockRnrFormItemRepository);
         }
     }
 }

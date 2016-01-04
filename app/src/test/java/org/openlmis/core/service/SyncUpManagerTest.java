@@ -247,6 +247,27 @@ public class SyncUpManagerTest {
         verify(lmisRestApi, never()).updateAppVersion(any(AppInfoRequest.class), any(Callback.class));
     }
 
+    @Test
+    public void shouldRemoveInvalidItemsFromForms() throws LMISException {
+        List<RnRForm> unSyncedList = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            RnRForm form = new RnRForm();
+            unSyncedList.add(form);
+        }
+
+        when(rnrFormRepository.listUnSynced()).thenReturn(unSyncedList);
+
+        SyncUpRequisitionResponse response = new SyncUpRequisitionResponse();
+        response.setRequisitionId("1");
+        when(lmisRestApi.submitRequisition(any(RnRForm.class))).thenReturn(response);
+
+        syncUpManager.syncRnr();
+        verify(rnrFormRepository, times(1)).deleteDeactivatedProductItemsFromForms(unSyncedList);
+        verify(lmisRestApi, times(2)).submitRequisition(any(RnRForm.class));
+        verify(rnrFormRepository, times(2)).save(any(RnRForm.class));
+        verify(syncErrorsRepository, times(2)).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
+    }
+
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {

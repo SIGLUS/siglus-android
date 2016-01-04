@@ -262,6 +262,11 @@ public class RnrFormRepository {
         });
     }
 
+    public void deleteDeactivatedProductItemsFromForms(List<RnRForm> rnRForms) throws LMISException {
+        for (RnRForm rnRForm: rnRForms) {
+            deleteRnrFormItems(rnRForm.getDeactivatedProductItems());
+        }
+    }
 
     protected List<BaseInfoItem> generateBaseInfoItems(RnRForm form) {
         return null;

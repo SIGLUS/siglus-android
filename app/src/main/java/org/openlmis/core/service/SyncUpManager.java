@@ -30,6 +30,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
+import org.openlmis.core.model.repository.RnrFormItemRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
@@ -62,6 +63,9 @@ public class SyncUpManager {
     RnrFormRepository rnrFormRepository;
 
     @Inject
+    RnrFormItemRepository rnrFormItemRepository;
+
+    @Inject
     SharedPreferenceMgr sharedPreferenceMgr;
 
     @Inject
@@ -77,9 +81,13 @@ public class SyncUpManager {
     }
 
     public boolean syncRnr() {
-        List<RnRForm> forms = null;
+        List<RnRForm> forms;
         try {
             forms = rnrFormRepository.listUnSynced();
+
+            Log.d(TAG, "===> Preparing RnrForm for Syncing: Delete Deactivated Products...");
+            rnrFormRepository.deleteDeactivatedProductItemsFromForms(forms);
+
             Log.d(TAG, "===> SyncRnR :" + forms.size() + " RnrForm ready to sync...");
 
             if (forms.size() == 0) {

@@ -74,14 +74,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private void triggerSync() {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_latest_product_list)) {
+            syncDownManager.syncDownLatestProducts();
+        }
         recordLastSyncedTime(syncUpManager.syncRnr(), KEY_LAST_SYNCED_TIME_RNR_FORM);
         recordLastSyncedTime(syncUpManager.syncStockCards(), KEY_LAST_SYNCED_TIME_STOCKCARD);
 
         sendSyncedTimeBroadcast();
         syncUpManager.syncAppVersion();
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_latest_product_list)) {
-            syncDownManager.syncDownLatestProducts();
-        }
     }
 
     private void recordLastSyncedTime(boolean isSyncSuccessful, String key) {
