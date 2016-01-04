@@ -4,6 +4,8 @@ AfterConfiguration do |config|
   FeatureNameMemory.feature_name = nil
 end
 
+$first_run = true
+
 Before do |scenario|
   @scenario_is_outline = (scenario.class == Cucumber::Ast::OutlineTable::ExampleRow)
   if @scenario_is_outline
@@ -19,11 +21,17 @@ Before do |scenario|
       log "First scenario in feature - reinstalling apps"
     end
 
-    uninstall_apps
-    install_app(ENV["TEST_APP_PATH"])
-    install_app(ENV["APP_PATH"])
+    if $first_run
+      $first_run = false
+      uninstall_apps
+      install_app(ENV["TEST_APP_PATH"])
+      install_app(ENV["APP_PATH"])
+    end
+
+    clear_app_data
+
     FeatureNameMemory.feature_name = feature_name
-  FeatureNameMemory.invocation = 1
+    FeatureNameMemory.invocation = 1
   else
     FeatureNameMemory.invocation += 1
   end
