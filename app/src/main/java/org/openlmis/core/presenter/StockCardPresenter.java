@@ -88,7 +88,10 @@ public class StockCardPresenter extends Presenter {
                     subscriber.onNext(from(stockRepository.list()).filter(new Predicate<StockCard>() {
                         @Override
                         public boolean apply(StockCard stockCard) {
-                            return stockCard.getProduct().isArchived() == status.isArchived() && stockCard.getProduct().isActive();
+                            if (status.isArchived()) {
+                                return showInArchiveView(stockCard);
+                            }
+                            return showInOverview(stockCard);
                         }
                     }).toList());
                     subscriber.onCompleted();
@@ -97,6 +100,14 @@ public class StockCardPresenter extends Presenter {
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private boolean showInOverview(StockCard stockCard) {
+        return stockCard.getStockOnHand() > 0 || (stockCard.getProduct().isActive() && !stockCard.getProduct().isArchived());
+    }
+
+    private boolean showInArchiveView(StockCard stockCard) {
+        return stockCard.getStockOnHand() == 0 && (stockCard.getProduct().isArchived() || !stockCard.getProduct().isActive());
     }
 
     private Observer<List<StockCard>> getLoadStockCardsSubscriber() {

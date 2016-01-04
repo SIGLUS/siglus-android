@@ -28,6 +28,7 @@ import rx.schedulers.Schedulers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.isA;
@@ -113,8 +114,8 @@ public class StockCardPresenterTest {
     }
 
     @Test
-    public void shouldLoadStockCardsWithActiveProducts() throws Exception {
-        when(stockRepository.list()).thenReturn(newArrayList(stockCard(false, true), stockCard(false, false), stockCard(true, true)));
+    public void shouldLoadStockCardsWithActiveProductsWithNoSOH() throws Exception {
+        when(stockRepository.list()).thenReturn(newArrayList(stockCard(false, true, 0), stockCard(false, false, 0), stockCard(true, true, 0)));
         TestSubscriber<List<StockCard>> afterLoadHandler = new TestSubscriber<>();
         presenter.afterLoadHandler = afterLoadHandler;
 
@@ -125,9 +126,21 @@ public class StockCardPresenterTest {
         assertTrue(afterLoadHandler.getOnNextEvents().get(0).get(0).getProduct().isActive());
     }
 
+    @Test
+    public void shouldLoadStockCardsWithDeactivatedProductWithSOH() throws Exception {
+        when(stockRepository.list()).thenReturn(newArrayList(stockCard(false, true, 10), stockCard(false, false, 10)));
+        TestSubscriber<List<StockCard>> afterLoadHandler = new TestSubscriber<>();
+        presenter.afterLoadHandler = afterLoadHandler;
+
+        presenter.loadStockCards(StockCardPresenter.ArchiveStatus.Active);
+        afterLoadHandler.awaitTerminalEvent();
+
+        assertEquals(2, afterLoadHandler.getOnNextEvents().get(0).size());
+    }
+
     private void testLoadStockCard(StockCardPresenter.ArchiveStatus status) throws LMISException {
         //given
-        when(stockRepository.list()).thenReturn(newArrayList(stockCard(true, true), stockCard(false, true)));
+        when(stockRepository.list()).thenReturn(newArrayList(stockCard(true, true, 0), stockCard(false, true, 0)));
         TestSubscriber<List<StockCard>> afterLoadHandler = new TestSubscriber<>();
         presenter.afterLoadHandler = afterLoadHandler;
 
@@ -139,10 +152,11 @@ public class StockCardPresenterTest {
         assertThat(afterLoadHandler.getOnNextEvents().get(0).get(0).getProduct().isArchived()).isEqualTo(status.isArchived());
     }
 
-    private StockCard stockCard(boolean isProductArchived, boolean isProductActive) {
+    private StockCard stockCard(boolean isProductArchived, boolean isProductActive, int soh) {
         Product product = ProductBuilder.create().setIsActive(isProductActive).setIsArchived(isProductArchived).build();
         StockCard stockCard = new StockCard();
         stockCard.setProduct(product);
+        stockCard.setStockOnHand(soh);
         return stockCard;
     }
 }
