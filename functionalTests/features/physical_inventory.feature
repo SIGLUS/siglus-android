@@ -4,6 +4,7 @@ Feature: Physical Inventory
   #Should check scroll up and down very quickly
   #Should check click next button very quickly
   #Should check load more than 300 products in this page
+  #Should check physical Inventory thant can't rotate or the data will lost
   Scenario: Do physical inventory, and check the stock on hand quantity.
     Given I try to log in with "physical_inventory" "password1"
     Then I wait up to 30 seconds for "Initial Inventory" to appear
