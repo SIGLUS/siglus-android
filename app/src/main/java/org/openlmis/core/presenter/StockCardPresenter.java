@@ -88,7 +88,7 @@ public class StockCardPresenter extends Presenter {
                     subscriber.onNext(from(stockRepository.list()).filter(new Predicate<StockCard>() {
                         @Override
                         public boolean apply(StockCard stockCard) {
-                            return stockCard.getProduct().isArchived() == status.isArchived();
+                            return stockCard.getProduct().isArchived() == status.isArchived() && stockCard.getProduct().isActive();
                         }
                     }).toList());
                     subscriber.onCompleted();
