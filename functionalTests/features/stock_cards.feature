@@ -2,9 +2,10 @@
 Feature: Stock Card Overview page
 
   Background:
-    Given I try to log in with "mystique" "password1"
-    And I wait for "Home Page" to appear
-    When I press "Stock Card Overview"
+    Given I try to log in with "initial_inventory" "password1"
+    Then I wait for "Initial Inventory" to appear
+    Then I press "Complete"
+    And I press "Stock Card Overview"
     And I wait for "Stock Overview" to appear
 
   Scenario: User should be able to add products to inventory and see product updates from servers

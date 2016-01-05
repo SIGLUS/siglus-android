@@ -1,6 +1,5 @@
 require 'calabash-android/calabash_steps'
 require 'pry'
-LMIS_MOZ_DIR="#{Dir.pwd}/../lmis-moz"
 
 Given(/^I have added new drugs/) do
   if EnvConfig::STRESS_TEST

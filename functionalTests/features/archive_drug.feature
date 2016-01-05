@@ -2,6 +2,8 @@
 Feature: Archive drug
 
   #Should test that one drug archived at 18th, and archived drug shouldn't appear at mmia/via/physical inventory at next period
+  #Should add check steps in mmia and via form and make sure all data in the form is 0 or disappear
+
 
   Scenario: Archive two drugs
     Given I try to log in with "initial_inventory" "password1"
@@ -56,8 +58,7 @@ Feature: Archive drug
     Then I shouldn't see product "01A01" in this page
     Then I shouldn't see product "08S32Z" in this page
 
-    #should add check steps in mmia and via form and make sure all data in the form is 0 or disappear
-
+    And I navigate back
     And I navigate back
     And I wait for "Home Page" to appear
     And I press "Stock Card Overview"
