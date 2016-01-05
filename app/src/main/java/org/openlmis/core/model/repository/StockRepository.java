@@ -251,13 +251,13 @@ public class StockRepository {
         return false;
     }
 
-    public List<StockCard> listByProgramId(final long programId) throws LMISException {
+    public List<StockCard> listActiveStockCardsByProgramId(final long programId) throws LMISException {
         return dbUtil.withDao(StockCard.class, new DbUtil.Operation<StockCard, List<StockCard>>() {
             @Override
             public List<StockCard> operate(Dao<StockCard, String> dao) throws SQLException {
 
                 QueryBuilder<Product, String> productQueryBuilder = DbUtil.initialiseDao(Product.class).queryBuilder();
-                productQueryBuilder.where().eq("program_id", programId);
+                productQueryBuilder.where().eq("program_id", programId).and().eq("isActive", true);
 
                 return dao.queryBuilder().join(productQueryBuilder)
                         .query();

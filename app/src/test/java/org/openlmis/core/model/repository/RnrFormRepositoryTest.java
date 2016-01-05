@@ -57,7 +57,6 @@ import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
@@ -280,7 +279,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         stockCardList.add(stockCard);
 
-        when(mockStockRepository.listByProgramId(anyLong())).thenReturn(stockCardList);
+        when(mockStockRepository.listActiveStockCardsByProgramId(anyLong())).thenReturn(stockCardList);
         StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setMovementDate(movementDate);
         when(mockStockRepository.queryFirstStockMovementItem(stockCard)).thenReturn(stockMovementItem);
@@ -359,7 +358,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         form.setPeriodEnd(DateUtil.parseString("10/20/2015", DateUtil.SIMPLE_DATE_FORMAT));
         form.setProgram(new Program("mmia", "mmia", null));
 
-        when(mockStockRepository.listByProgramId(anyLong())).thenReturn(stockCards);
+        when(mockStockRepository.listActiveStockCardsByProgramId(anyLong())).thenReturn(stockCards);
         DateTime dateTime = new DateTime();
         dateTime.millisOfDay();
         StockMovementItem stockMovementItem = new StockMovementItem();

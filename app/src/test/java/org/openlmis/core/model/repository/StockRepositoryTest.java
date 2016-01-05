@@ -264,12 +264,13 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         //when
         long id1 = createNewStockCard("1");
         long id2 = createNewStockCard("2");
+        createStockCardWithDeactivatedProduct();
 
         //then
-        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listByProgramId(id1);
+        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listActiveStockCardsByProgramId(id1);
         assertThat(stockCardsBeforeTimeLine.size(), is(1));
 
-        List<StockCard> stockCardsBeforeTimeLine2 = stockRepository.listByProgramId(id2);
+        List<StockCard> stockCardsBeforeTimeLine2 = stockRepository.listActiveStockCardsByProgramId(id2);
         assertThat(stockCardsBeforeTimeLine2.size(), is(1));
     }
 
@@ -335,6 +336,25 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         Product product = new Product();
         product.setProgram(program);
         product.setCode(code);
+        product.setActive(true);
+        productRepository.createOrUpdate(product);
+
+        stockCard.setProduct(product);
+        stockCard.setCreatedAt(new Date());
+        stockRepository.save(stockCard);
+
+        return program.getId();
+    }
+
+    private long createStockCardWithDeactivatedProduct() throws LMISException {
+        Program program = new Program();
+        program.setProgramCode("MMIA");
+        programRepository.createOrUpdate(program);
+
+        Product product = new Product();
+        product.setProgram(program);
+        product.setCode("some code");
+        product.setActive(false);
         productRepository.createOrUpdate(product);
 
         stockCard.setProduct(product);
