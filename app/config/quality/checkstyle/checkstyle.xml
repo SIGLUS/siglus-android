@@ -109,7 +109,9 @@ Severity: EASY
 
         <!-- Checks for whitespace                               -->
         <!-- See http://checkstyle.sourceforge.net/config_whitespace.html -->
-        <module name="EmptyForIteratorPad" />
+        <module name="EmptyForIteratorPad">
+            <property name="severity" value="ignore" />
+        </module>
         <module name="GenericWhitespace">
             <property name="severity" value="ignore" />
         </module>

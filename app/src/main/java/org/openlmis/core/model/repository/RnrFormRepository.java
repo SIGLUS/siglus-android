@@ -295,7 +295,7 @@ public class RnrFormRepository {
     protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm form) throws LMISException {
         List<StockCard> stockCards = stockRepository.listActiveStockCardsByProgramId(form.getProgram().getId());
 
-        for (Iterator iterator = stockCards.iterator(); iterator.hasNext();) {
+        for (Iterator iterator = stockCards.iterator(); iterator.hasNext(); ) {
             StockCard stockCard = (StockCard) iterator.next();
             StockMovementItem stockMovementItem = stockRepository.queryFirstStockMovementItem(stockCard);
             if (stockMovementItem != null && stockMovementItem.getMovementDate().after(form.getPeriodEnd())) {
