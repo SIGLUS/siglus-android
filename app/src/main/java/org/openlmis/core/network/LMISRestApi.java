@@ -46,7 +46,7 @@ public interface LMISRestApi {
     void authorizeUser(@Body User user, Callback<UserRepository.UserResponse> callback);
 
     @POST("/rest-api/update-app-info")
-    void updateAppVersion(@Body AppInfoRequest appinfo, Callback<Void> callback);
+    void updateAppVersion(@Body AppInfoRequest appInfo, Callback<Void> callback);
 
     @GET("/rest-api/programs-with-products")
     SyncDownProductsResponse fetchProducts(@Query("facilityCode") String facilityCode) throws NetWorkException;
