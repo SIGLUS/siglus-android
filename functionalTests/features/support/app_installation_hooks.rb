@@ -10,6 +10,8 @@ Before do |scenario|
     scenario = scenario.scenario_outline
   end
 
+  first_time = true
+
   feature_name = scenario.feature.title
   if FeatureNameMemory.feature_name != feature_name \
       or ENV["RESET_BETWEEN_SCENARIOS"] == "1"
@@ -19,11 +21,15 @@ Before do |scenario|
       log "First scenario in feature - reinstalling apps"
     end
 
-    uninstall_apps
-    install_app(ENV["TEST_APP_PATH"])
-    install_app(ENV["APP_PATH"])
+    if first_time
+      uninstall_apps
+      install_app(ENV["TEST_APP_PATH"])
+      install_app(ENV["APP_PATH"])
+      first_time = false
+    end
+
     FeatureNameMemory.feature_name = feature_name
-  FeatureNameMemory.invocation = 1
+    FeatureNameMemory.invocation = 1
   else
     FeatureNameMemory.invocation += 1
   end
