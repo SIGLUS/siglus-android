@@ -42,6 +42,7 @@ import org.openlmis.core.utils.DateUtil;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -292,14 +293,16 @@ public class RnrFormRepository {
     }
 
     protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm form) throws LMISException {
-        List<StockCard> stockCards = new ArrayList<>();
+        List<StockCard> stockCards = stockRepository.listActiveStockCardsByProgramId(form.getProgram().getId());
 
-        for (StockCard stockCard : stockRepository.listActiveStockCardsByProgramId(form.getProgram().getId())) {
+        for (Iterator iterator = stockCards.iterator(); iterator.hasNext(); ) {
+            StockCard stockCard = (StockCard) iterator.next();
             StockMovementItem stockMovementItem = stockRepository.queryFirstStockMovementItem(stockCard);
-            if (!stockMovementItem.getMovementDate().after(form.getPeriodEnd())) {
-                stockCards.add(stockCard);
+            if (stockMovementItem != null && stockMovementItem.getMovementDate().after(form.getPeriodEnd())) {
+                iterator.remove();
             }
         }
+
         return stockCards;
     }
 
