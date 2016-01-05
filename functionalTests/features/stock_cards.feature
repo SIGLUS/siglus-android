@@ -1,15 +1,14 @@
-@ADD_NEW_DRUG
+@STOCK_CARD
 Feature: Stock Card Overview page
 
   Background:
     Given I try to log in with "mystique" "password1"
     And I wait for "Home Page" to appear
     When I press "Stock Card Overview"
-
+    And I wait for "Stock Overview" to appear
 
   Scenario: User should be able to add products to inventory and see product updates from servers
 
-    And I wait for "Stock Overview" to appear
     And I press the menu key
     And I wait for "Add new product" to appear
     And I press "Add new product"

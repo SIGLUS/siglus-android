@@ -4,5 +4,8 @@ task bundleInstall(type:Exec) {
 
 task contractTests(type:Exec, dependsOn:'bundleInstall') {
     description 'Run contract tests to confirm web API works as expected'
+    if (project.hasProperty("local")) {
+      environment 'LOCAL', 'true'
+    }
     commandLine 'rspec', 'spec/'
 }

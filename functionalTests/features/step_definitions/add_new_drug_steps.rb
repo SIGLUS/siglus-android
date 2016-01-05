@@ -21,7 +21,6 @@ Then(/^I check new drug quantity/) do
         }
   else
     steps %Q{
-            Then I should see total:"1" on stock list page
             When I search product by fnm "08S01ZY" and select this item with quantity "2008"
        }
   end
