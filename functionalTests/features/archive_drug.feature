@@ -59,6 +59,7 @@ Feature: Archive drug
     Then I shouldn't see product "08S32Z" in this page
 
     And I navigate back
+    And I wait for 1 second
     And I navigate back
     And I wait for "Home Page" to appear
     And I press "Stock Card Overview"
