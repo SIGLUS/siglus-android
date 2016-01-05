@@ -32,6 +32,7 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
         product.setCode("test code");
         product.setPrimaryName("Test Product");
         product.setStrength("200");
+        product.setActive(true);
 
         productRepository.createOrUpdate(product);
 
@@ -54,19 +55,20 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
 
         //then
         assertThat(programRepository.list().size(), is(1));
-        assertThat(productRepository.list().size(), is(1));
+        assertThat(productRepository.listActiveProducts().size(), is(1));
 
         //when add product to existing program
         Product newProduct = new Product();
         newProduct.setCode("new product code");
         newProduct.setPrimaryName("Test Product2");
+        newProduct.setActive(true);
         products.add(newProduct);
         programRepository.createOrUpdateProgramWithProduct(programs);
 
         //then
         assertThat(programRepository.list().size(), is(1));
-        assertThat(productRepository.list().size(), is(2));
-        assertThat(productRepository.list().get(1).getPrimaryName(), is("Test Product2"));
+        assertThat(productRepository.listActiveProducts().size(), is(2));
+        assertThat(productRepository.listActiveProducts().get(1).getPrimaryName(), is("Test Product2"));
 
         //when update existing product
         newProduct.setPrimaryName("Test Product2 Updated");
@@ -74,8 +76,8 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
 
         //then
         assertThat(programRepository.list().size(), is(1));
-        assertThat(productRepository.list().size(), is(2));
-        assertThat(productRepository.list().get(1).getPrimaryName(), is("Test Product2 Updated"));
+        assertThat(productRepository.listActiveProducts().size(), is(2));
+        assertThat(productRepository.listActiveProducts().get(1).getPrimaryName(), is("Test Product2 Updated"));
     }
 
 }

@@ -125,7 +125,7 @@ public class SyncUpManagerTest {
             unSyncedList.add(form);
         }
 
-        when(rnrFormRepository.listUnSynced()).thenReturn(unSyncedList);
+        when(rnrFormRepository.deleteDeactivatedProductItemsFromUnsyncedForms()).thenReturn(unSyncedList);
 
         SyncUpRequisitionResponse response = new SyncUpRequisitionResponse();
         response.setRequisitionId("1");
@@ -232,7 +232,7 @@ public class SyncUpManagerTest {
         RnRForm form = new RnRForm();
         unSyncedList.add(form);
 
-        when(rnrFormRepository.listUnSynced()).thenReturn(unSyncedList);
+        when(rnrFormRepository.deleteDeactivatedProductItemsFromUnsyncedForms()).thenReturn(unSyncedList);
 
         doThrow(new UndeclaredThrowableException(new Throwable(), "Sync Failed")).when(lmisRestApi).submitRequisition(any(RnRForm.class));
         syncUpManager.syncRnr();
@@ -255,14 +255,14 @@ public class SyncUpManagerTest {
             unSyncedList.add(form);
         }
 
-        when(rnrFormRepository.listUnSynced()).thenReturn(unSyncedList);
+        when(rnrFormRepository.deleteDeactivatedProductItemsFromUnsyncedForms()).thenReturn(unSyncedList);
 
         SyncUpRequisitionResponse response = new SyncUpRequisitionResponse();
         response.setRequisitionId("1");
         when(lmisRestApi.submitRequisition(any(RnRForm.class))).thenReturn(response);
 
         syncUpManager.syncRnr();
-        verify(rnrFormRepository, times(1)).deleteDeactivatedProductItemsFromForms(unSyncedList);
+        verify(rnrFormRepository, times(1)).deleteDeactivatedProductItemsFromUnsyncedForms();
         verify(lmisRestApi, times(2)).submitRequisition(any(RnRForm.class));
         verify(rnrFormRepository, times(2)).save(any(RnRForm.class));
         verify(syncErrorsRepository, times(2)).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());

@@ -83,10 +83,8 @@ public class SyncUpManager {
     public boolean syncRnr() {
         List<RnRForm> forms;
         try {
-            forms = rnrFormRepository.listUnSynced();
-
             Log.d(TAG, "===> Preparing RnrForm for Syncing: Delete Deactivated Products...");
-            rnrFormRepository.deleteDeactivatedProductItemsFromForms(forms);
+            forms = rnrFormRepository.deleteDeactivatedProductItemsFromUnsyncedForms();
 
             Log.d(TAG, "===> SyncRnR :" + forms.size() + " RnrForm ready to sync...");
 

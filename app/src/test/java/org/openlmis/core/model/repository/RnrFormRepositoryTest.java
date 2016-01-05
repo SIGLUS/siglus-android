@@ -36,6 +36,8 @@ import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.builder.ProductBuilder;
+import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.utils.DateUtil;
@@ -97,7 +99,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
             rnrFormRepository.create(form);
         }
 
-        List<RnRForm> list = rnrFormRepository.listUnSynced();
+        List<RnRForm> list = rnrFormRepository.deleteDeactivatedProductItemsFromUnsyncedForms();
         assertThat(list.size(), is(5));
     }
 
@@ -483,15 +485,22 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldDeleteDeactivatedItemsFromRnrForms() throws Exception {
-        RnRForm rnRForm1 = mock(RnRForm.class);
-        RnRForm rnRForm2 = mock(RnRForm.class);
-        List<RnRForm> rnrForms = newArrayList(rnRForm1, rnRForm2);
+        Program program = new Program();
+        RnRForm form = new RnRForm();
+        form.setProgram(program);
+        form.setComments("Submitted Form");
+        form.setStatus(RnRForm.STATUS.AUTHORIZED);
+        form.setSynced(false);
 
-        when(rnRForm1.getDeactivatedProductItems()).thenReturn(new ArrayList<RnrFormItem>());
-        when(rnRForm2.getDeactivatedProductItems()).thenReturn(new ArrayList<RnrFormItem>());
+        RnrFormItem deactivatedProductItem = new RnrFormItemBuilder().setProduct(new ProductBuilder().setCode("P1").setIsActive(false).build()).build();
 
-        rnrFormRepository.deleteDeactivatedProductItemsFromForms(rnrForms);
-        verify(mockRnrFormItemRepository, times(2)).delete(anyList());
+        form.setRnrFormItemListWrapper(newArrayList(deactivatedProductItem));
+
+        rnrFormRepository.create(form);
+
+        rnrFormRepository.deleteDeactivatedProductItemsFromUnsyncedForms();
+
+        verify(mockRnrFormItemRepository).delete(anyList());
     }
 
     public class MyTestModule extends AbstractModule {

@@ -45,20 +45,15 @@ public class ProductRepository {
         genericDao = new GenericDao<>(Product.class, context);
     }
 
-    public List<Product> list() throws LMISException {
-        List<Product> products = genericDao.queryForAll();
-        Collections.sort(products);
-        return products;
-    }
-
     public List<Product> listActiveProducts() throws LMISException {
 
-        return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
+        List<Product> activeProducts = dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
             @Override
             public List<Product> operate(Dao<Product, String> dao) throws SQLException {
                 return dao.queryBuilder().where().eq("isActive", true).query();
             }
         });
+        return activeProducts;
     }
 
     public void save(final List<Product> products) {

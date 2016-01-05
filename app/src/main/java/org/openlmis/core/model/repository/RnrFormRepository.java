@@ -198,13 +198,10 @@ public class RnrFormRepository {
         });
     }
 
-    public List<RnRForm> listUnSynced() throws LMISException {
-        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
-            @Override
-            public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("synced", false).and().eq("status", RnRForm.STATUS.AUTHORIZED).query();
-            }
-        });
+    public List<RnRForm> deleteDeactivatedProductItemsFromUnsyncedForms() throws LMISException {
+        List<RnRForm> unsyncedRnr = listUnsynced();
+        deleteDeactivatedProductItemsFromForms(unsyncedRnr);
+        return unsyncedRnr;
     }
 
     public List<RnRForm> listMMIA() throws LMISException {
@@ -262,7 +259,16 @@ public class RnrFormRepository {
         });
     }
 
-    public void deleteDeactivatedProductItemsFromForms(List<RnRForm> rnRForms) throws LMISException {
+    private List<RnRForm> listUnsynced() throws LMISException {
+        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
+            @Override
+            public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("synced", false).and().eq("status", RnRForm.STATUS.AUTHORIZED).query();
+            }
+        });
+    }
+
+    private void deleteDeactivatedProductItemsFromForms(List<RnRForm> rnRForms) throws LMISException {
         for (RnRForm rnRForm: rnRForms) {
             deleteRnrFormItems(rnRForm.getDeactivatedProductItems());
         }
