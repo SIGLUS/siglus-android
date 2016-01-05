@@ -33,6 +33,10 @@ public class ArchivedDrugsViewHolder extends BaseViewHolder {
         tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledName()));
         tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledUnit()));
 
+        if (!stockCardViewModel.getProduct().isActive()) {
+            tvArchiveBack.setVisibility(View.GONE);
+        }
+
         setActionListeners(stockCardViewModel, listener);
     }
 

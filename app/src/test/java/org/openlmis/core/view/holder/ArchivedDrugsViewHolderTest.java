@@ -31,7 +31,7 @@ public class ArchivedDrugsViewHolderTest {
         View itemView = LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_archived_drug, null, false);
         viewHolder = new ArchivedDrugsViewHolder(itemView);
 
-        Product product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setStrength("10mg").setType("VIA").build();
+        Product product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setIsActive(true).setStrength("10mg").setType("VIA").build();
         viewModel = new StockCardViewModelBuilder(product)
                 .setQuantity("10")
                 .setChecked(false)
@@ -48,6 +48,7 @@ public class ArchivedDrugsViewHolderTest {
     public void shouldShowProductNameAndStyledUnit() {
         assertThat(viewHolder.tvProductName.getText().toString()).isEqualTo("Lamivudina 150mg [08S40]");
         assertThat(viewHolder.tvProductUnit.getText().toString()).isEqualTo("10mg VIA");
+        assertThat(viewHolder.tvArchiveBack.getVisibility()).isEqualTo(View.VISIBLE);
     }
 
     @Test
@@ -62,5 +63,24 @@ public class ArchivedDrugsViewHolderTest {
         viewHolder.tvArchiveBack.performClick();
 
         verify(mockedListener).archiveStockCardBack(viewModel.getStockCard());
+    }
+
+    @Test
+    public void shouldNotShowMoveBackToStockCardButtonIfProductIsInactive() {
+        View itemView = LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_archived_drug, null, false);
+        viewHolder = new ArchivedDrugsViewHolder(itemView);
+
+        Product deactivatedProduct = new ProductBuilder().setPrimaryName("Lamivudina 300mg").setCode("08S41").setIsActive(false).setStrength("10mg").setType("VIA").build();
+        viewModel = new StockCardViewModelBuilder(deactivatedProduct)
+                .setQuantity("10")
+                .setChecked(false)
+                .setType("Embalagem")
+                .setSOH(123L)
+                .build();
+
+        mockedListener = mock(ArchivedDrugsViewHolder.ArchiveStockCardListener.class);
+
+        viewHolder.populate(viewModel, queryKeyWord, mockedListener);
+        assertThat(viewHolder.tvArchiveBack.getVisibility()).isEqualTo(View.GONE);
     }
 }
