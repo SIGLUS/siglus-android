@@ -53,6 +53,7 @@ public class ProductRepository {
                 return dao.queryBuilder().where().eq("isActive", true).query();
             }
         });
+        Collections.sort(activeProducts);
         return activeProducts;
     }
 
