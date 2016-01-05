@@ -302,7 +302,6 @@ public class RnrFormRepository {
                 iterator.remove();
             }
         }
-
         return stockCards;
     }
 
