@@ -82,7 +82,6 @@ Feature: Archive drug
     Then I see the text "[01A01]"
 
     When I navigate back
-    And I navigate back
     Then I wait for "Home Page" to appear
     And I press "Do Monthly Inventory"
     Then I wait for "Inventory" to appear

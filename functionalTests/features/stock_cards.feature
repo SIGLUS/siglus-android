@@ -1,14 +1,13 @@
 @STOCK_CARD
 Feature: Stock Card Overview page
 
-  Background:
+  Scenario: User should be able to add products to inventory and see product updates from servers
+
     Given I try to log in with "initial_inventory" "password1"
     Then I wait for "Initial Inventory" to appear
     Then I press "Complete"
     And I press "Stock Card Overview"
     And I wait for "Stock Overview" to appear
-
-  Scenario: User should be able to add products to inventory and see product updates from servers
 
     And I press the menu key
     And I wait for "Add new product" to appear
@@ -50,6 +49,12 @@ Feature: Stock Card Overview page
     Then I shouldn't see product "12D03" in this page
 
   Scenario: If is STRESS TEST,add all drugs with quantity 300, else try adding drug without SOH, then try adding drug with SOH
+
+    Given I try to log in with "initial_inventory" "password1"
+    Then I wait for "Initial Inventory" to appear
+    Then I press "Complete"
+    And I press "Stock Card Overview"
+    And I wait for "Stock Overview" to appear
 
     And I press the menu key
     And I wait for "Add new product" to appear
