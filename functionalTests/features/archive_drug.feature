@@ -58,21 +58,7 @@ Feature: Archive drug
 
     #should add check steps in mmia and via form and make sure all data in the form is 0 or disappear
 
-  Scenario: View stock history page via Archived drugs page
-    Given I try to log in with "initial_inventory" "password1"
-    And I wait for "Home Page" to appear
-    And I press "Stock Card Overview"
-    And I wait for "Stock Overview" to appear
-    And I press the menu key
-    And I press "Archived drugs"
-    And I wait for "Archived drugs" to appear
-    And I press "View movement history"
-    And I wait for the "StockMovementHistoryActivity" screen to appear
-    Then I see the text "Inventory"
-    Then I see the text "PAV"
-
-  Scenario: Unarchive one drug from archive products list
-    Given I try to log in with "initial_inventory" "password1"
+    And I navigate back
     And I wait for "Home Page" to appear
     And I press "Stock Card Overview"
     And I wait for "Stock Overview" to appear
@@ -80,13 +66,20 @@ Feature: Archive drug
     And I press "Archived drugs"
     And I wait for "Archived drugs" to appear
     Then I see the text "[01A01]"
+
+    When I press "View movement history"
+    And I wait for the "StockMovementHistoryActivity" screen to appear
+    Then I see the text "Inventory"
+    Then I see the text "PAV"
+
+    When I navigate back
     And I press "Add drug to stock overview"
-    Then I see the text "There are no archived drugs"
     And I navigate back
     And I wait for "Stock Overview" to appear
     Then I should see total:"9" on stock list page
     Then I see the text "[01A01]"
 
+    When I navigate back
     And I navigate back
     Then I wait for "Home Page" to appear
     And I press "Do Monthly Inventory"
