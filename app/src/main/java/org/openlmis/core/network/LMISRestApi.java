@@ -49,19 +49,19 @@ public interface LMISRestApi {
     void updateAppVersion(@Body AppInfoRequest appinfo, Callback<Void> callback);
 
     @GET("/rest-api/programs-with-products")
-    SyncDownProductsResponse fetchProducts(@Query("facilityCode") String facilityCode);
+    SyncDownProductsResponse fetchProducts(@Query("facilityCode") String facilityCode) throws NetWorkException;
 
     @GET("/rest-api/latest-programs-with-products")
-    SyncDownProductsResponse fetchLatestProducts(@Query("facilityId") String facilityId, @Query("afterUpdatedTime") String afterUpdatedTime);
+    SyncDownProductsResponse fetchLatestProducts(@Query("facilityId") String facilityId, @Query("afterUpdatedTime") String afterUpdatedTime) throws NetWorkException;
 
     @GET("/rest-api/requisitions")
-    SyncDownRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode);
+    SyncDownRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode) throws NetWorkException;
 
     @POST("/rest-api/requisitions")
-    SyncUpRequisitionResponse submitRequisition(@Body RnRForm rnRForm);
+    SyncUpRequisitionResponse submitRequisition(@Body RnRForm rnRForm) throws NetWorkException;
 
     @POST("/rest-api/facilities/{facilityId}/stockCards")
-    JSONObject syncUpStockMovementData(@Path("facilityId") String facilityId, @Body List<StockMovementEntry> entries);
+    JSONObject syncUpStockMovementData(@Path("facilityId") String facilityId, @Body List<StockMovementEntry> entries) throws NetWorkException;
 
     @GET("/rest-api/facilities/{facilityId}/stockCards")
     SyncDownStockCardResponse fetchStockMovementData(@Path("facilityId") String facilityId, @Query("startTime") String startDate, @Query("endTime") String endDate) throws NetWorkException;

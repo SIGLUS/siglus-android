@@ -12,6 +12,7 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
@@ -189,7 +190,7 @@ public class SyncDownManagerTest {
         }
     }
 
-    private void mockProductResponse() {
+    private void mockProductResponse() throws NetWorkException {
         ArrayList<Program> programsWithProducts = new ArrayList<>();
         programsWithProducts.add(new Program());
         SyncDownProductsResponse response = new SyncDownProductsResponse();
@@ -200,7 +201,7 @@ public class SyncDownManagerTest {
     }
 
 
-    private void mockRequisitionResponse() {
+    private void mockRequisitionResponse() throws NetWorkException {
         when(sharedPreferenceMgr.getPreference()).thenReturn(LMISTestApp.getContext().getSharedPreferences("LMISPreference", Context.MODE_PRIVATE));
         List<RnRForm> data = new ArrayList<>();
         data.add(new RnRForm());
