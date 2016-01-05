@@ -20,6 +20,7 @@
 package org.openlmis.core.network;
 
 import org.json.JSONObject;
+import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
@@ -63,5 +64,5 @@ public interface LMISRestApi {
     JSONObject syncUpStockMovementData(@Path("facilityId") String facilityId, @Body List<StockMovementEntry> entries);
 
     @GET("/rest-api/facilities/{facilityId}/stockCards")
-    SyncDownStockCardResponse fetchStockMovementData(@Path("facilityId") String facilityId, @Query("startTime") String startDate, @Query("endTime") String endDate);
+    SyncDownStockCardResponse fetchStockMovementData(@Path("facilityId") String facilityId, @Query("startTime") String startDate, @Query("endTime") String endDate) throws NetWorkException;
 }

@@ -29,6 +29,7 @@ import com.squareup.okhttp.OkHttpClient;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.exceptions.SyncServerException;
 import org.openlmis.core.exceptions.UnauthorizedException;
 import org.openlmis.core.manager.UserInfoMgr;
@@ -43,6 +44,7 @@ import org.openlmis.core.network.model.DataErrorResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.ConnectException;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
@@ -211,6 +213,9 @@ public class LMISRestManager {
             }
             if (r != null && r.getStatus() == 500) {
                 return new SyncServerException(LMISApp.getContext().getString(R.string.sync_server_error));
+            }
+            if (r == null && cause.getCause() instanceof ConnectException) {
+                return new NetWorkException();
             }
             return cause;
         }
