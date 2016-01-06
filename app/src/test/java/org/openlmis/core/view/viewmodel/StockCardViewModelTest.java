@@ -95,4 +95,10 @@ public class StockCardViewModelTest {
         model.validate();
         assertTrue(model.isValid());
     }
+
+    @Test
+    public void shouldNotThrowExceptionIfTypeIsNull() {
+        //should not throw exception
+        new StockCardViewModel(new ProductBuilder().setCode("08S32").setPrimaryName("Primary name").setType(null).build()).getStyleType();
+    }
 }

@@ -106,7 +106,11 @@ public class StockCardViewModel {
     }
 
     public SpannableStringBuilder getStyleType() {
-        return new SpannableStringBuilder(type);
+        if (type != null) {
+            return new SpannableStringBuilder(type);
+        } else {
+            return new SpannableStringBuilder("Other"); //arbitrary default type in case server product form is null caused by human error
+        }
     }
 
     public SpannableStringBuilder getStyledUnit() {
