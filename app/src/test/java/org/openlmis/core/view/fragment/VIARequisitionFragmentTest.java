@@ -184,6 +184,19 @@ public class VIARequisitionFragmentTest {
         assertThat(dialog).isNotNull();
     }
 
+    @Test
+    public void shouldShowErrorWhenConsultationNumbersIsEmpty() throws Exception {
+        VIARequisitionFragment.etConsultationNumbers.setText("");
+        VIARequisitionFragment.validateConsultationNumber();
+        assertThat(VIARequisitionFragment.etConsultationNumbers.getError().toString()).isEqualTo(VIARequisitionFragment.getString(R.string.hint_error_input));
+    }
+
+    @Test
+    public void shouldShowErrorWhenKitEditTextIsEmpty() throws Exception {
+        VIARequisitionFragment.etKitReceivedHF.setText("");
+        VIARequisitionFragment.validateKitData();
+        assertThat(VIARequisitionFragment.etKitReceivedHF.getError().toString()).isEqualTo(VIARequisitionFragment.getString(R.string.hint_error_input));
+    }
 }
 
 

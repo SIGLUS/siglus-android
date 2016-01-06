@@ -1,8 +1,13 @@
 package org.openlmis.core.utils;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 
 public final class ViewUtil {
     private ViewUtil() {
@@ -26,5 +31,14 @@ public final class ViewUtil {
                 rightView.setLayoutParams(layoutParams);
             }
         }
+    }
+
+    public static boolean checkEditTextEmpty(EditText editText) {
+        if (TextUtils.isEmpty(editText.getText().toString())) {
+            editText.setError(LMISApp.getContext().getString(R.string.hint_error_input));
+            editText.requestFocus();
+            return false;
+        }
+        return true;
     }
 }

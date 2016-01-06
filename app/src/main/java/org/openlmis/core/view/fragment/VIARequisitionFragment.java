@@ -21,7 +21,6 @@ package org.openlmis.core.view.fragment;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -44,6 +43,7 @@ import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.utils.ViewUtil;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 import org.openlmis.core.view.adapter.RequisitionProductAdapter;
@@ -313,24 +313,15 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     @Override
     public boolean validateConsultationNumber() {
-        return checkEditTextEmpty(etConsultationNumbers);
+        return ViewUtil.checkEditTextEmpty(etConsultationNumbers);
     }
 
     @Override
     public boolean validateKitData() {
-        return checkEditTextEmpty(etKitReceivedHF)
-                && checkEditTextEmpty(etKitReceivedCHW)
-                && checkEditTextEmpty(etKitOpenedHF)
-                && checkEditTextEmpty(etKitOpenedCHW);
-    }
-
-    private boolean checkEditTextEmpty(EditText editText) {
-        if (TextUtils.isEmpty(editText.getText().toString())) {
-            editText.setError(getString(R.string.hint_error_input));
-            editText.requestFocus();
-            return false;
-        }
-        return true;
+        return ViewUtil.checkEditTextEmpty(etKitReceivedHF)
+                && ViewUtil.checkEditTextEmpty(etKitReceivedCHW)
+                && ViewUtil.checkEditTextEmpty(etKitOpenedHF)
+                && ViewUtil.checkEditTextEmpty(etKitOpenedCHW);
     }
 
     protected void onProcessButtonClick() {
