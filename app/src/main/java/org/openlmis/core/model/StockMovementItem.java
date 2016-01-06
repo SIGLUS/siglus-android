@@ -71,7 +71,7 @@ public class StockMovementItem extends BaseModel {
     StockCard stockCard;
 
     @DatabaseField
-    long stockOnHand = -1;
+    long stockOnHand;
 
     @Expose
     @DatabaseField
