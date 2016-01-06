@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:padding="@dimen/padding_small">
 
-    <org.openlmis.core.view.widget.BorderedEditText
+    <org.openlmis.core.view.widget.ViaReportConsultationFormView
         android:id="@+id/tx_consultation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

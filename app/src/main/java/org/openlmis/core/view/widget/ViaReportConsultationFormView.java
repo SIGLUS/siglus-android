@@ -29,7 +29,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 
-public class BorderedEditText extends LinearLayout {
+public class ViaReportConsultationFormView extends LinearLayout {
 
     String labelText;
     String headerText;
@@ -39,16 +39,16 @@ public class BorderedEditText extends LinearLayout {
     TextView tvLabel;
     EditText editText;
 
-    public BorderedEditText(Context context, AttributeSet attrs) {
+    public ViaReportConsultationFormView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.BorderedEditText, 0,
+        TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.ViaReportConsultationFormView, 0,
                 R.style.DefaultBorderedEditText);
 
-        labelText = attributes.getString(R.styleable.BorderedEditText_text);
-        headerText = attributes.getString(R.styleable.BorderedEditText_headerText);
-        ems = attributes.getInteger(R.styleable.BorderedEditText_ems, 4);
-        width = attributes.getDimension(R.styleable.BorderedEditText_labelWidth, 70);
+        labelText = attributes.getString(R.styleable.ViaReportConsultationFormView_text);
+        headerText = attributes.getString(R.styleable.ViaReportConsultationFormView_headerText);
+        ems = attributes.getInteger(R.styleable.ViaReportConsultationFormView_ems, 4);
+        width = attributes.getDimension(R.styleable.ViaReportConsultationFormView_labelWidth, 70);
 
         attributes.recycle();
 
