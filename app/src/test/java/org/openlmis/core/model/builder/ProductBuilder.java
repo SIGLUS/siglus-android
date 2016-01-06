@@ -67,4 +67,9 @@ public class ProductBuilder {
         product.setActive(active);
         return this;
     }
+
+    public ProductBuilder setQuantityInKit(int quantityInKit) {
+        product.setQuantityInKit(quantityInKit);
+        return this;
+    }
 }
