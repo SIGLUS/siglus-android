@@ -108,7 +108,24 @@ public class VIARequisitionPresenterTest {
     }
 
     @Test
-    public void shouldReturnTrueWhenRequestAmountIsNotNull() throws Exception {
+    public void shouldValidateFormReturnFalseWhenConsultationNumbersInvalid() throws Exception {
+        when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(false);
+        boolean result = presenter.validateForm();
+        assertFalse(result);
+    }
+
+    @Test
+    public void shouldValidateFormReturnFalseWhenKitDataInvalid() throws Exception {
+        when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
+        when(VIARequisitionFragment.validateKitData()).thenReturn(false);
+        boolean result = presenter.validateForm();
+        assertFalse(result);
+    }
+
+    @Test
+    public void shouldReturnTrueWhenValidateFormSuccess() throws Exception {
+        when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
+        when(VIARequisitionFragment.validateKitData()).thenReturn(true);
 
         List<RequisitionFormItemViewModel> list = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
@@ -119,6 +136,7 @@ public class VIARequisitionPresenterTest {
 
         presenter.requisitionFormItemViewModels = list;
         assertTrue(presenter.validateRnrFormItems());
+        assertTrue(presenter.validateForm());
     }
 
     @Test
