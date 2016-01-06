@@ -102,7 +102,8 @@ public class VIARequisitionPresenterTest {
         }
 
         presenter.requisitionFormItemViewModels = list;
-        assertFalse(presenter.validateFormInput());
+
+        assertFalse(presenter.validateRnrFormItems());
         verify(VIARequisitionFragment).showListInputError(anyInt());
     }
 
@@ -117,7 +118,7 @@ public class VIARequisitionPresenterTest {
         }
 
         presenter.requisitionFormItemViewModels = list;
-        assertTrue(presenter.validateFormInput());
+        assertTrue(presenter.validateRnrFormItems());
     }
 
     @Test
@@ -278,7 +279,10 @@ public class VIARequisitionPresenterTest {
     @Test
     public void shouldShowErrorMSGWhenThereWasARequisitionInTheSamePeriod() throws Exception {
         when(mockRnrFormRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(false);
-        presenter.processRequisition(anyString());
+        when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
+        when(VIARequisitionFragment.validateKitData()).thenReturn(true);
+
+        presenter.processRequisition("123");
         verify(VIARequisitionFragment).showErrorMessage(LMISTestApp.getContext().getResources().getString(R.string.msg_requisition_not_unique));
     }
 

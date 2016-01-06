@@ -22,14 +22,18 @@
             android:layout_weight="1"
             android:text="@string/label_via_kit_hf" />
 
-        <EditText style="@style/ItemRequisition.Kit.Edit" />
+        <EditText
+            android:id="@+id/et_via_kit_received_hf"
+            style="@style/ItemRequisition.Kit.Edit" />
 
         <TextView
             style="@style/ItemRequisition.Kit.Text"
             android:layout_weight="1"
             android:text="@string/label_via_kit_chw" />
 
-        <EditText style="@style/ItemRequisition.Kit.Edit" />
+        <EditText
+            android:id="@+id/et_via_kit_received_chw"
+            style="@style/ItemRequisition.Kit.Edit" />
 
     </LinearLayout>
 
@@ -49,14 +53,18 @@
             android:layout_weight="1"
             android:text="@string/label_via_kit_hf" />
 
-        <EditText style="@style/ItemRequisition.Kit.Edit" />
+        <EditText
+            android:id="@+id/et_via_kit_opened_hf"
+            style="@style/ItemRequisition.Kit.Edit" />
 
         <TextView
             style="@style/ItemRequisition.Kit.Text"
             android:layout_weight="1"
             android:text="@string/label_via_kit_chw" />
 
-        <EditText style="@style/ItemRequisition.Kit.Edit" />
+        <EditText
+            android:id="@+id/et_via_kit_opened_chw"
+            style="@style/ItemRequisition.Kit.Edit" />
 
     </LinearLayout>
 

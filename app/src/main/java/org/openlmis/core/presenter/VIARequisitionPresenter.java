@@ -135,7 +135,11 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         view.refreshRequisitionForm(rnRForm);
     }
 
-    protected boolean validateFormInput() {
+    protected boolean validateForm() {
+        return view.validateConsultationNumber() && view.validateKitData() && validateRnrFormItems();
+    }
+
+    protected boolean validateRnrFormItems() {
         for (int i = 0; i < requisitionFormItemViewModels.size(); i++) {
             RequisitionFormItemViewModel itemViewModel = requisitionFormItemViewModels.get(i);
             if (TextUtils.isEmpty(itemViewModel.getRequestAmount())
@@ -148,7 +152,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     public void processRequisition(String consultationNumbers) {
-        if (!validateFormInput()) {
+        if (!validateForm()) {
             return;
         }
 
@@ -218,5 +222,9 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         void highLightApprovedAmount();
 
         void setProcessButtonName(String name);
+
+        boolean validateConsultationNumber();
+
+        boolean validateKitData();
     }
 }

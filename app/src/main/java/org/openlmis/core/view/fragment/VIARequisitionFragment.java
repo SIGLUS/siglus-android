@@ -75,6 +75,18 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @InjectView(R.id.edit_text)
     EditText etConsultationNumbers;
 
+    @InjectView(R.id.et_via_kit_received_hf)
+    EditText etKitReceivedHF;
+
+    @InjectView(R.id.et_via_kit_received_chw)
+    EditText etKitReceivedCHW;
+
+    @InjectView(R.id.et_via_kit_opened_hf)
+    EditText etKitOpenedHF;
+
+    @InjectView(R.id.et_via_kit_opened_chw)
+    EditText etKitOpenedCHW;
+
     @InjectView(R.id.requisition_header_right)
     View bodyHeaderView;
 
@@ -299,12 +311,30 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         btnComplete.setText(name);
     }
 
+    @Override
+    public boolean validateConsultationNumber() {
+        return checkEditTextEmpty(etConsultationNumbers);
+    }
+
+    @Override
+    public boolean validateKitData() {
+        return checkEditTextEmpty(etKitReceivedHF)
+                && checkEditTextEmpty(etKitReceivedCHW)
+                && checkEditTextEmpty(etKitOpenedHF)
+                && checkEditTextEmpty(etKitOpenedCHW);
+    }
+
+    private boolean checkEditTextEmpty(EditText editText) {
+        if (TextUtils.isEmpty(editText.getText().toString())) {
+            editText.setError(getString(R.string.hint_error_input));
+            editText.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
     protected void onProcessButtonClick() {
         String consultationNumbers = etConsultationNumbers.getText().toString();
-        if (TextUtils.isEmpty(consultationNumbers)) {
-            etConsultationNumbers.setError(getString(R.string.hint_error_input));
-            return;
-        }
         presenter.processRequisition(consultationNumbers);
     }
 
