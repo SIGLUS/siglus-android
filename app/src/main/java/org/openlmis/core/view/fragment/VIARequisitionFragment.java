@@ -42,6 +42,7 @@ import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.ListViewUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.ViewUtil;
@@ -235,7 +236,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         requisitionForm.post(new Runnable() {
             @Override
             public void run() {
-                View childAt = getViewByPosition(position, requisitionForm);
+                View childAt = ListViewUtil.getViewByPosition(position, requisitionForm);
                 EditText requestAmount = (EditText) childAt.findViewById(R.id.et_request_amount);
                 EditText approvedAmount = (EditText) childAt.findViewById(R.id.et_approved_amount);
                 if (requestAmount.isEnabled()) {
@@ -361,18 +362,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     public void completeSuccess() {
         ToastUtil.showForLongTime(R.string.msg_requisition_submit_tip);
         backToHomePage();
-    }
-
-    public View getViewByPosition(int pos, ListView listView) {
-        final int firstListItemPosition = listView.getFirstVisiblePosition();
-        final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
-
-        if (pos < firstListItemPosition || pos > lastListItemPosition) {
-            return listView.getAdapter().getView(pos, null, listView);
-        } else {
-            final int childIndex = pos - firstListItemPosition;
-            return listView.getChildAt(childIndex);
-        }
     }
 
     private void onSaveBtnClick() {
