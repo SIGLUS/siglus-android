@@ -87,6 +87,19 @@ Feature: Archive drug
     Then I wait for "Inventory" to appear
     Then I should see product "01A01" in this page
 
+    # Server updates drugs including 01A01
+    Given Server updates drug data
+    When I navigate back
+    And I navigate back
+    And I wait for "Home Page" to appear
+
+    And I press "Sync Data"
+
+    And I press "Stock Card Overview"
+    And I wait for "Stock Overview" to appear
+
+    # Archived drugs should stay as archived after server update
+    Then I shouldn't see product "01A01" in this page
 
   Scenario: Unarchive one drug from Add new product
     Given I try to log in with "initial_inventory" "password1"

@@ -34,7 +34,7 @@ public class StockCardAdapter implements JsonDeserializer<StockCard> {
         RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
         gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
                 .registerTypeAdapter(StockMovementItem.class, new StockMovementItemAdapter())
-                .registerTypeAdapter(Product.class, new ProductsAdapter())
+                .registerTypeAdapter(Product.class, new ProductAdapter())
                 .create();
     }
 

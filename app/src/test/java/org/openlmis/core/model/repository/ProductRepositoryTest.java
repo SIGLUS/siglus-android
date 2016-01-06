@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.robolectric.RuntimeEnvironment;
@@ -56,5 +57,15 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
         List<Product> activeProducts = productRepository.listActiveProducts();
 
         assertEquals(2, activeProducts.size());
+    }
+
+    @Test
+    public void shouldUpdateWithExistingArchivedStatusForProduct() throws LMISException {
+        Product existingProduct = ProductBuilder.create().setCode("P1").setIsActive(true).setIsArchived(true).build();
+        productRepository.createOrUpdate(existingProduct);
+
+        Product updatedProduct = ProductBuilder.create().setCode("P1").setIsActive(true).setIsArchived(false).build();
+        productRepository.createOrUpdate(updatedProduct);
+        assertTrue(productRepository.getByCode("P1").isArchived());
     }
 }

@@ -37,7 +37,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
-import org.openlmis.core.network.adapter.ProductsAdapter;
+import org.openlmis.core.network.adapter.ProductAdapter;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.network.adapter.StockCardAdapter;
 import org.openlmis.core.network.model.DataErrorResponse;
@@ -185,7 +185,7 @@ public class LMISRestManager {
     private GsonConverter registerTypeAdapter() {
         return new GsonConverter(new GsonBuilder()
                 .registerTypeAdapter(RnRForm.class, getTypeAdapter())
-                .registerTypeAdapter(Product.class, new ProductsAdapter())
+                .registerTypeAdapter(Product.class, new ProductAdapter())
                 .registerTypeAdapter(StockCard.class, new StockCardAdapter())
                 .create());
     }

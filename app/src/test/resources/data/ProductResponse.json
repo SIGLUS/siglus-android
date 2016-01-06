@@ -1,0 +1,20 @@
+{
+"id": 188,
+"code": "01A01",
+"primaryName": "Digoxina 0,25mg Comp",
+"strength": "0,25mg",
+"form": {
+  "id": 18,
+  "code": "Comprimidos",
+  "displayOrder": 1
+  },
+"dispensingUnit": "1",
+"dosesPerDispensingUnit": 1,
+"packSize": 1,
+"active": true,
+"fullSupply": true,
+"tracer": false,
+"packRoundingThreshold": 0,
+"roundToZero": false,
+"isKit": false
+}

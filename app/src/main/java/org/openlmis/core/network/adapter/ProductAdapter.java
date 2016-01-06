@@ -28,7 +28,7 @@ import org.openlmis.core.model.Product;
 
 import java.util.Date;
 
-public class ProductsAdapter implements JsonDeserializer<Product> {
+public class ProductAdapter implements JsonDeserializer<Product> {
 
     @Override
     public Product deserialize(JsonElement json, java.lang.reflect.Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

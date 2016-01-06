@@ -77,6 +77,7 @@ public class ProductRepository {
         Product existingProduct = getByCode(product.getCode());
         if (existingProduct != null) {
             product.setId(existingProduct.getId());
+            product.setArchived(existingProduct.isArchived());
             genericDao.update(product);
         } else {
             genericDao.create(product);
