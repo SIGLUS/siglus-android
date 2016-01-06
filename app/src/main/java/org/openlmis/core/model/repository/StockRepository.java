@@ -356,7 +356,10 @@ public class StockRepository {
     }
 
     public int getLowStockAvg(StockCard stockCard) {
+        return (int) Math.ceil(calculateAverageMonthlyConsumption(stockCard) * 0.05);
+    }
 
+    public long calculateAverageMonthlyConsumption(StockCard stockCard) {
         Date firstPeriodBegin;
         try {
             firstPeriodBegin = queryFirstPeriodBegin(stockCard);
@@ -391,9 +394,9 @@ public class StockRepository {
         if (issuePerMonths.size() < LOW_STOCK_CALCULATE_MONTH_QUANTITY) {
             return 0;
         }
-
-        return (int) Math.ceil((getTotalIssues(issuePerMonths) / LOW_STOCK_CALCULATE_MONTH_QUANTITY) * 0.05);
+        return getTotalIssues(issuePerMonths) / LOW_STOCK_CALCULATE_MONTH_QUANTITY;
     }
+
 
     private long getTotalIssues(List<Long> issuePerMonths) {
         long total = 0;

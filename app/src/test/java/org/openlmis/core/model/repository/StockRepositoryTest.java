@@ -320,6 +320,41 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(stockMovementItem.getId(), is(createdEarlierMovementItem.getId()));
     }
 
+    @Test
+    public void shouldGetLowStockAvgWhenLastMonthHaveNoStockItem() throws Exception {
+        stockCard.setStockOnHand(400);
+        stockRepository.save(stockCard);
+
+        createStockMovementItem(stockCard, lastFirstMonthDate);
+        createStockMovementItem(stockCard, lastThirdMonthDate);
+        createStockMovementItem(stockCard, lastForthMonthDate);
+
+        int lowStockAvg = stockRepository.getLowStockAvg(stockCard);
+        assertEquals(3, stockRepository.listLastFive(stockCard.getId()).size());
+        assertEquals(4, lowStockAvg);
+    }
+
+    @Test
+    public void shouldGetAverageMonthlyConsumptionCorrectly() throws LMISException {
+        //given
+        stockCard.setStockOnHand(100);
+        stockRepository.save(stockCard);
+        createStockMovementItem(stockCard, lastForthMonthDate);
+        StockMovementItem item = createMovementItem(RECEIVE, 400, stockCard);
+        item.setMovementDate(lastForthMonthDate);
+        stockCard.setStockOnHand(item.getStockOnHand());
+
+        createStockMovementItem(stockCard, lastThirdMonthDate);
+        createStockMovementItem(stockCard, lastSecondMonthDate);
+        createStockMovementItem(stockCard, lastFirstMonthDate);
+
+        //when
+        long consumption = stockRepository.calculateAverageMonthlyConsumption(stockCard);
+
+        //then
+        assertEquals(100,consumption);
+    }
+
     private StockMovementItem getStockMovementItem(DateTime createdTime, DateTime movementDate) {
         StockMovementItem movementItem = new StockMovementItem();
         movementItem.setStockCard(stockCard);
@@ -362,20 +397,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockRepository.save(stockCard);
 
         return program.getId();
-    }
-
-    @Test
-    public void shouldGetLowStockAvgWhenLastMonthHaveNoStockItem() throws Exception {
-        stockCard.setStockOnHand(400);
-        stockRepository.save(stockCard);
-
-        createStockMovementItem(stockCard, lastFirstMonthDate);
-        createStockMovementItem(stockCard, lastThirdMonthDate);
-        createStockMovementItem(stockCard, lastForthMonthDate);
-
-        int lowStockAvg = stockRepository.getLowStockAvg(stockCard);
-        assertEquals(3, stockRepository.listLastFive(stockCard.getId()).size());
-        assertEquals(4, lowStockAvg);
     }
 
     @Test
