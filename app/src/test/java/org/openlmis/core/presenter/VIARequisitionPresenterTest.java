@@ -298,7 +298,7 @@ public class VIARequisitionPresenterTest {
 
         presenter.rnRForm = rnRForm;
         when(mockRnrFormRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(true);
-        presenter.processRequisition(anyString());
+        presenter.processRequisition("123");
         verify(VIARequisitionFragment, never()).showErrorMessage(anyString());
     }
 
