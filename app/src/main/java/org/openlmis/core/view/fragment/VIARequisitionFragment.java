@@ -50,6 +50,7 @@ import org.openlmis.core.view.adapter.RequisitionProductAdapter;
 import org.openlmis.core.view.holder.RequisitionFormViewHolder;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 import org.openlmis.core.view.widget.SignatureDialog;
+import org.openlmis.core.view.widget.ViaKitView;
 
 import roboguice.inject.InjectView;
 
@@ -66,6 +67,9 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @InjectView(R.id.btn_save)
     View btnSave;
 
+    @InjectView(R.id.vg_kit)
+    ViaKitView kitView;
+
     @InjectView(R.id.action_panel)
     View actionPanel;
 
@@ -74,18 +78,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     @InjectView(R.id.edit_text)
     EditText etConsultationNumbers;
-
-    @InjectView(R.id.et_via_kit_received_hf)
-    EditText etKitReceivedHF;
-
-    @InjectView(R.id.et_via_kit_received_chw)
-    EditText etKitReceivedCHW;
-
-    @InjectView(R.id.et_via_kit_opened_hf)
-    EditText etKitOpenedHF;
-
-    @InjectView(R.id.et_via_kit_opened_chw)
-    EditText etKitOpenedCHW;
 
     @InjectView(R.id.requisition_header_right)
     View bodyHeaderView;
@@ -318,10 +310,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     @Override
     public boolean validateKitData() {
-        return ViewUtil.checkEditTextEmpty(etKitReceivedHF)
-                && ViewUtil.checkEditTextEmpty(etKitReceivedCHW)
-                && ViewUtil.checkEditTextEmpty(etKitOpenedHF)
-                && ViewUtil.checkEditTextEmpty(etKitOpenedCHW);
+        return kitView.validate();
     }
 
     protected void onProcessButtonClick() {

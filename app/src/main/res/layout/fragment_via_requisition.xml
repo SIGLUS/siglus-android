@@ -10,9 +10,9 @@
         android:id="@+id/via_top_vg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_marginBottom="@dimen/margin_small"
         android:layout_marginTop="@dimen/margin_small"
-        android:layout_alignParentTop="true"
         android:orientation="horizontal">
 
         <org.openlmis.core.view.widget.ViaReportConsultationNumberView
@@ -26,13 +26,12 @@
             app:labelWidth="100dp"
             app:text="@string/label_consultation" />
 
-        <include
-            layout="@layout/via_kit_view"
-            android:layout_marginStart="5dp"
+        <org.openlmis.core.view.widget.ViaKitView
+            android:id="@+id/vg_kit"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
             android:layout_weight="1" />
-
     </LinearLayout>
 
     <FrameLayout
