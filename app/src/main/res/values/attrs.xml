@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="ViaReportConsultationFormView">
+    <declare-styleable name="ViaReportConsultationNumberView">
         <attr name="ems" format="integer" />
         <attr name="text" format="string" />
         <attr name="headerText" format="string" />

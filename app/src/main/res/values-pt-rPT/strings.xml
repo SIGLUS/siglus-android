@@ -75,7 +75,11 @@
     <string name="msg_reason_for_total_not_match">Adicionar razão para a diferença entre totais de regimes e pacientesAdicionar razão para a diferença entre totais de regimes e pacientes</string>
     <string name="msg_regime_total_and_patient_total_not_match">Os totais não correspondem. Por favor, verifique os números digitados. Se os valores continuam diferentes, adicione uma justificação nas \\"Observações\\".</string>
     <string name="btn_ok">OK</string>
-    <!--Requisition Form-->
+    <!--VIA Form-->
+    <string name="label_via_kit_received">No. de Kits Recebido</string>
+    <string name="label_via_kit_opened">No. de Kits Abertos</string>
+    <string name="label_via_kit_hf">US</string>
+    <string name="label_via_kit_chw">APE</string>
     <string name="label_requisition_title">Requisicao - %1$s a %2$s</string>
     <string name="label_requisition_header_consultation_header">Normal Requisicao</string>
     <string name="request_provincial_district_level">Requisicao do nível provincial ou distrital</string>
