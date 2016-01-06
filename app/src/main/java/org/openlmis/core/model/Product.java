@@ -59,6 +59,11 @@ public class Product extends BaseModel implements Comparable<Product> {
     @DatabaseField
     boolean isActive;
 
+    @DatabaseField
+    boolean isKit;
+
+    int quantityInKit;
+
     String medicine_type;
 
     @Override
