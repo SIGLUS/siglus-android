@@ -26,7 +26,6 @@ import org.openlmis.core.R;
 public class NetWorkException extends LMISException {
 
     public NetWorkException() {
-        //TODO string pt translate
         super(LMISApp.getContext().getString(R.string.hint_network_error));
     }
 
