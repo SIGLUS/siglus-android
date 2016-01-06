@@ -28,6 +28,7 @@ import com.google.inject.Module;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -65,6 +66,7 @@ public class VIARequisitionFragmentTest {
 
     @Before
     public void setup() throws Exception {
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_show_kit_on_via_rnr_372, true);
         presenter = mock(VIARequisitionPresenter.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
             @Override
@@ -189,13 +191,6 @@ public class VIARequisitionFragmentTest {
         VIARequisitionFragment.etConsultationNumbers.setText("");
         VIARequisitionFragment.validateConsultationNumber();
         assertThat(VIARequisitionFragment.etConsultationNumbers.getError().toString()).isEqualTo(VIARequisitionFragment.getString(R.string.hint_error_input));
-    }
-
-    @Test
-    public void shouldShowErrorWhenKitEditTextIsEmpty() throws Exception {
-        VIARequisitionFragment.etKitReceivedHF.setText("");
-        VIARequisitionFragment.validateKitData();
-        assertThat(VIARequisitionFragment.etKitReceivedHF.getError().toString()).isEqualTo(VIARequisitionFragment.getString(R.string.hint_error_input));
     }
 }
 
