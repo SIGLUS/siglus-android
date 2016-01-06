@@ -2,7 +2,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/ItemRequisition.Container.Report"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <TextView
@@ -11,12 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:labelFor="@+id/edit_text"
+        android:minHeight="35dp"
         android:text="@string/label_requisition_header_consultation_header" />
 
     <LinearLayout
         style="@style/ItemRequisition.Container.Body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="35dp"
         android:orientation="horizontal">
 
         <TextView
