@@ -31,6 +31,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.repository.KitProductsRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
@@ -66,6 +67,8 @@ public class SyncDownManager {
     StockRepository stockRepository;
     @Inject
     ProgramRepository programRepository;
+    @Inject
+    KitProductsRepository kitProductsRepository;
 
     public SyncDownManager() {
         lmisRestApi = new LMISRestManager().getLmisRestApi();
@@ -193,6 +196,7 @@ public class SyncDownManager {
         try {
             SyncDownProductsResponse response = getSyncDownProductsResponse(user);
             programRepository.createOrUpdateProgramWithProduct(response.getProgramsWithProducts());
+            kitProductsRepository.createOrUpdateKitWithProducts(response.getKits());
             sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());
         } catch (Exception e) {
             throw new LMISException(errorMessage(R.string.msg_sync_products_list_failed));
