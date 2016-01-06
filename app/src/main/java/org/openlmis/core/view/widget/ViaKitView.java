@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.ViewUtil;
 
@@ -41,9 +42,17 @@ public class ViaKitView extends LinearLayout {
         LayoutInflater.from(context).inflate(R.layout.via_kit_view, this);
         RoboGuice.injectMembers(getContext(), this);
         RoboGuice.getInjector(getContext()).injectViewMembers(this);
+
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_show_kit_on_via_rnr_372)) {
+            setVisibility(INVISIBLE);
+        }
     }
 
     public boolean validate() {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_show_kit_on_via_rnr_372)) {
+            return true;
+        }
+
         return ViewUtil.checkEditTextEmpty(etKitReceivedHF)
                 && ViewUtil.checkEditTextEmpty(etKitReceivedCHW)
                 && ViewUtil.checkEditTextEmpty(etKitOpenedHF)
