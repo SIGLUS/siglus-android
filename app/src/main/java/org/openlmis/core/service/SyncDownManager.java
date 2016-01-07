@@ -89,7 +89,6 @@ public class SyncDownManager {
                     isSyncing = false;
                     subscriber.onCompleted();
                 } catch (LMISException e) {
-                    e.reportToFabric();
                     isSyncing = false;
                     subscriber.onError(e);
                 }
@@ -147,6 +146,7 @@ public class SyncDownManager {
                 subscriber.onNext(SyncProgress.RequisitionSynced);
             } catch (LMISException e) {
                 sharedPreferenceMgr.setRequisitionDataSynced(false);
+                e.reportToFabric();
                 throw new LMISException(errorMessage(R.string.msg_sync_requisition_failed));
             }
         }
@@ -166,6 +166,7 @@ public class SyncDownManager {
                 subscriber.onNext(SyncProgress.StockCardsLastMonthSynced);
             } catch (LMISException e) {
                 sharedPreferenceMgr.setLastMonthStockCardDataSynced(false);
+                e.reportToFabric();
                 throw new LMISException(errorMessage(R.string.msg_sync_stockmovement_failed));
             }
         }
@@ -180,7 +181,8 @@ public class SyncDownManager {
                 subscriber.onNext(SyncProgress.ProductSynced);
             } catch (LMISException e) {
                 sharedPreferenceMgr.setHasGetProducts(false);
-                throw e;
+                e.reportToFabric();
+                throw new LMISException(errorMessage(R.string.msg_sync_products_list_failed));
             }
         }
     }
@@ -190,13 +192,9 @@ public class SyncDownManager {
         if (StringUtils.isEmpty(user.getFacilityCode())) {
             throw new NoFacilityForUserException(errorMessage(R.string.msg_user_not_facility));
         }
-        try {
-            SyncDownProductsResponse response = getSyncDownProductsResponse(user);
-            programRepository.createOrUpdateProgramWithProduct(response.getProgramsWithProducts());
-            sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());
-        } catch (Exception e) {
-            throw new LMISException(errorMessage(R.string.msg_sync_products_list_failed));
-        }
+        SyncDownProductsResponse response = getSyncDownProductsResponse(user);
+        programRepository.createOrUpdateProgramWithProduct(response.getProgramsWithProducts());
+        sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());
     }
 
     private SyncDownProductsResponse getSyncDownProductsResponse(User user) throws NetWorkException {
