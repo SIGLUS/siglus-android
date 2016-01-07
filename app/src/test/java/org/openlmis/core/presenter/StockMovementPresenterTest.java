@@ -174,6 +174,19 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         verify(stockRepositoryMock).updateProductOfStockCard(stockCard);
     }
 
+    @Test
+    public void shouldGetCmm() {
+        //given
+        StockCard stockCard = stockMovementPresenter.stockCard;
+        when(stockRepositoryMock.getCmm(stockCard)).thenReturn(10);
+
+        //when
+        String stockCardCmm = stockMovementPresenter.getStockCardCmm();
+
+        //then
+        assertThat(stockCardCmm).isEqualTo("10");
+    }
+
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {

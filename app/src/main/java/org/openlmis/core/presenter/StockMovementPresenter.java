@@ -181,6 +181,10 @@ public class StockMovementPresenter extends Presenter {
         stockRepository.updateProductOfStockCard(stockCard);
     }
 
+    public String getStockCardCmm() {
+       return String.valueOf(stockRepository.getCmm(stockCard));
+    }
+
 
     public interface StockMovementView extends BaseView {
         void showErrorAlert(String msg);

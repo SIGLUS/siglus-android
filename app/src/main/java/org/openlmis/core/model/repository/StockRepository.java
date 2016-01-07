@@ -359,7 +359,11 @@ public class StockRepository {
         return (int) Math.ceil(calculateAverageMonthlyConsumption(stockCard) * 0.05);
     }
 
-    public long calculateAverageMonthlyConsumption(StockCard stockCard) {
+    public int getCmm(StockCard stockCard){
+        return (int) Math.ceil(calculateAverageMonthlyConsumption(stockCard));
+    }
+
+    private float calculateAverageMonthlyConsumption(StockCard stockCard) {
         Date firstPeriodBegin;
         try {
             firstPeriodBegin = queryFirstPeriodBegin(stockCard);
@@ -378,7 +382,7 @@ public class StockRepository {
 
         for (int i = 0; i < periodQuantity; i++) {
             period = period.previous();
-            Long totalIssuesEachMonth = calculateTotalIssues(stockCard, period);
+            Long totalIssuesEachMonth = calculateTotalIssuesPerMonth(stockCard, period);
 
             if (totalIssuesEachMonth == null) {
                 continue;
@@ -394,7 +398,7 @@ public class StockRepository {
         if (issuePerMonths.size() < LOW_STOCK_CALCULATE_MONTH_QUANTITY) {
             return 0;
         }
-        return getTotalIssues(issuePerMonths) / LOW_STOCK_CALCULATE_MONTH_QUANTITY;
+        return getTotalIssues(issuePerMonths) * 1f / LOW_STOCK_CALCULATE_MONTH_QUANTITY;
     }
 
 
@@ -406,7 +410,7 @@ public class StockRepository {
         return total;
     }
 
-    private Long calculateTotalIssues(StockCard stockCard, Period period) {
+    private Long calculateTotalIssuesPerMonth(StockCard stockCard, Period period) {
         long totalIssued = 0;
         List<StockMovementItem> stockMovementItems;
         try {

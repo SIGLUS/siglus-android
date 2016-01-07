@@ -49,6 +49,7 @@ public class StockMovementActivityTest {
                 .build();
 
         when(mockedPresenter.getStockCard()).thenReturn(stockCard);
+
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
             protected void configure() {

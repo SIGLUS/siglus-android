@@ -32,6 +32,7 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.presenter.StockMovementPresenter;
@@ -59,6 +60,12 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
     @InjectView(R.id.btn_cancel)
     TextView tvCancel;
+
+    @InjectView(R.id.tv_cmm)
+    TextView tvCmm;
+
+    @InjectView(R.id.tv_cmm_label)
+    TextView tvCmmLabel;
 
     @InjectView(R.id.vg_expire_date_container)
     ExpireDateViewGroup expireDateViewGroup;
@@ -103,13 +110,11 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
         stockMovementAdapter = new StockMovementAdapter(presenter.getStockMovementModelList(), presenter.getStockCard());
         stockMovementAdapter.setMovementChangeListener(new StockMovementAdapter.MovementChangedListener() {
-
             @Override
             public void movementChange() {
                 showBottomBtn();
             }
         });
-
 
         View headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
         stockMovementList.addHeaderView(headerView);
@@ -133,7 +138,12 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
                 deactivatedStockDraft();
             }
         });
-
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_show_cmm_on_stock_movement_page_227)) {
+            tvCmm.setText(presenter.getStockCardCmm());
+        } else {
+            tvCmm.setVisibility(View.GONE);
+            tvCmmLabel.setVisibility(View.GONE);
+        }
         loading();
         presenter.loadStockMovementViewModels();
     }

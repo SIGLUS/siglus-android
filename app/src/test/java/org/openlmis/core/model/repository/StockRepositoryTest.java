@@ -337,19 +337,20 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldGetAverageMonthlyConsumptionCorrectly() throws LMISException {
         //given
-        stockCard.setStockOnHand(100);
+        stockCard.setStockOnHand(200);
         stockRepository.save(stockCard);
         createStockMovementItem(stockCard, lastForthMonthDate);
+        createStockMovementItem(stockCard, lastThirdMonthDate);
+
         StockMovementItem item = createMovementItem(RECEIVE, 400, stockCard);
-        item.setMovementDate(lastForthMonthDate);
+        item.setMovementDate(lastSecondMonthDate);
         stockCard.setStockOnHand(item.getStockOnHand());
 
-        createStockMovementItem(stockCard, lastThirdMonthDate);
         createStockMovementItem(stockCard, lastSecondMonthDate);
         createStockMovementItem(stockCard, lastFirstMonthDate);
 
         //when
-        long consumption = stockRepository.calculateAverageMonthlyConsumption(stockCard);
+        long consumption = stockRepository.getCmm(stockCard);
 
         //then
         assertEquals(100,consumption);
