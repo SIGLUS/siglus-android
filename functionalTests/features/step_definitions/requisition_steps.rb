@@ -9,7 +9,7 @@ Then(/^I should see "(\d+)" products$/) do |numberOfItems|
 end
 
 Then(/^I enter consultationsNub "(\d+)"/) do |consultationsNub|
-  enter_text("BorderedEditText id:'tx_consultation'", consultationsNub)
+  enter_text("android.widget.EditText id:'edit_text'", consultationsNub)
           hide_soft_keyboard
 end
 
