@@ -43,7 +43,7 @@ import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListViewUtil;
-import org.openlmis.core.utils.SimpleTextWatcher;
+import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.ViewUtil;
 import org.openlmis.core.view.activity.BaseActivity;
@@ -436,7 +436,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         return false;
     }
 
-    TextWatcher etConsultationNumbersTextWatcher = new SimpleTextWatcher() {
+    TextWatcher etConsultationNumbersTextWatcher = new SingleTextWatcher() {
         @Override
         public void afterTextChanged(Editable s) {
             String input = etConsultationNumbers.getText().toString();
