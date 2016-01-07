@@ -167,7 +167,6 @@ public class SyncDownManagerTest {
         //then
         verify(lmisRestApi).fetchLatestProducts(anyString(), anyString());
         verify(programRepository).createOrUpdateProgramWithProduct(anyList());
-        verify(kitProductsRepository).createOrUpdateKitWithProducts(anyList());
         verify(sharedPreferenceMgr).setLastSyncProductTime("today");
     }
 
