@@ -54,11 +54,65 @@ describe "Get programs with products information for a facility" do
     expect(response.code).to eq 200
 
     expect(body['programsWithProducts'].length).to eq 2
-    
+
     expect(body['programsWithProducts'][0]['products'].length).to eq 0
     expect(body['programsWithProducts'][1]['products'].length).to eq 0
 
     expect(body['latestUpdatedTime']).not_to be_nil
     expect(body['latestUpdatedTime']).not_to eq afterUpdatedTime
+  end
+
+  it "should save kits and get latest products with kits" do
+
+    # request_body =
+    # {
+    #   code: 'KIT-1',
+    #   primaryName: 'US KIT',
+    #   kitProductList: [
+    #   {
+    #     productCode: '17A01',
+    #     quantity: 100
+    #   },
+    #   {
+    #     productCode: '21A01',
+    #     quantity: 200
+    #   },
+    #   {
+    #     productCode: '17F01',
+    #     quantity: 300
+    #   }
+    # ]
+    # }
+
+    # response = RestClient.post "http://#{WEB_DEV_URI}/rest-api/kits",
+    #   request_body.to_json,
+    #   :content_type => :json,
+    #   :accept => :json,
+    #   :authorization => http_basic_auth('mystique', 'password1'),
+
+    # body = JSON.parse(response.body)
+    # expect(response.code).to eq 200
+
+    response = RestClient.get "http://#{WEB_DEV_URI}/rest-api/latest-products",
+      :content_type => :json,
+      :accept => :json,
+      :authorization => http_basic_auth('mystique', 'password1')
+
+    body = JSON.parse(response.body)
+    expect(response.code).to eq 200
+
+    expect(body['latestUpdatedTime']).not_to be_nil
+    latest_products = body['latestProducts']
+
+    expect(latest_products.length).to eq 1266
+
+    kit1 = latest_products.detect { |p| p['product']['code'] == 'SCOD10'}
+    expect(kit1['product']['kitProductList'].length).to eq 44
+    expect(kit1['product']['kitProductList'][0]['productCode']).to eq '02A03'
+
+    product1 = latest_products.detect { |p| p['product']['code'] == '08S42'}
+    expect(product1['product']['kitProductList']).to be_nil
+    expect(product1['supportedPrograms'].length).to eq 1
+    expect(product1['supportedPrograms'][0]).to eq 'MMIA'
   end
 end
