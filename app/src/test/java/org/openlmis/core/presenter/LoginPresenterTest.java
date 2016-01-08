@@ -30,9 +30,12 @@ import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
@@ -43,6 +46,9 @@ import org.openlmis.core.service.SyncService;
 import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import roboguice.RoboGuice;
 import rx.Subscriber;
@@ -55,6 +61,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.RequisitionSynced;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
 public class LoginPresenterTest {
@@ -72,12 +79,14 @@ public class LoginPresenterTest {
     private LMISTestApp appInject;
     private Subscriber<SyncProgress> syncSubscriber;
     private SyncDownManager syncDownManager;
+    private ProgramRepository programRepository;
 
     @Before
     public void setup() {
         appInject = (LMISTestApp) RuntimeEnvironment.application;
 
         userRepository = mock(UserRepository.class);
+        programRepository = mock(ProgramRepository.class);
         rnrFormRepository = mock(RnrFormRepository.class);
         mockActivity = mock(LoginActivity.class);
         mockSyncDownProductsResponse = mock(SyncDownProductsResponse.class);
@@ -110,6 +119,28 @@ public class LoginPresenterTest {
         loginCB.getValue().success(new User("user", "password"));
 
         verify(userRepository).save(any(User.class));
+    }
+
+    @Test
+    public void shouldSaveUserSupportedProgramsToLocalDBWhenSuccess() throws InterruptedException, LMISException {
+        appInject.setNetworkConnection(true);
+
+        presenter.startLogin("user", "password");
+
+        verify(mockActivity).loading();
+
+        verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
+
+        User user = new User("user", "password");
+        Program newProgram = new Program();
+        Program newProgram2 = new Program();
+        List<Program> supportedPrograms = newArrayList(newProgram, newProgram2);
+
+        user.setSupportedPrograms(supportedPrograms);
+        loginCB.getValue().success(user);
+
+        verify(userRepository).save(any(User.class));
+        verify(programRepository, times(2)).createOrUpdate(any(Program.class));
     }
 
     @Test
@@ -257,6 +288,7 @@ public class LoginPresenterTest {
             bind(SyncService.class).toInstance(syncService);
             bind(SyncDownManager.class).toInstance(syncDownManager);
             bind(RnrFormRepository.class).toInstance(rnrFormRepository);
+            bind(ProgramRepository.class).toInstance(programRepository);
         }
     }
 }

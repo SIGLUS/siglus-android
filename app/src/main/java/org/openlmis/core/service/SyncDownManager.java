@@ -29,13 +29,18 @@ import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.exceptions.NoFacilityForUserException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
+import org.openlmis.core.network.model.ProductAndSupportedPrograms;
+import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownProductsResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
@@ -66,6 +71,8 @@ public class SyncDownManager {
     StockRepository stockRepository;
     @Inject
     ProgramRepository programRepository;
+    @Inject
+    ProductRepository productRepository;
 
     public SyncDownManager() {
         lmisRestApi = new LMISRestManager().getLmisRestApi();
@@ -176,7 +183,11 @@ public class SyncDownManager {
         if (!sharedPreferenceMgr.hasGetProducts() || LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_latest_product_list)) {
             try {
                 subscriber.onNext(SyncProgress.SyncingProduct);
-                fetchAndSaveProductsWithProgram();
+                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_kit)) {
+                    fetchAndSaveProductsWithProgramsAndKits();
+                } else {
+                    fetchAndSaveProductsWithProgram();
+                }
                 sharedPreferenceMgr.setHasGetProducts(true);
                 subscriber.onNext(SyncProgress.ProductSynced);
             } catch (LMISException e) {
@@ -195,6 +206,26 @@ public class SyncDownManager {
         SyncDownProductsResponse response = getSyncDownProductsResponse(user);
         programRepository.createOrUpdateProgramWithProduct(response.getProgramsWithProducts());
         sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());
+    }
+
+    private void fetchAndSaveProductsWithProgramsAndKits() throws LMISException {
+        try {
+            SyncDownLatestProductsResponse response = getSyncDownLatestProductResponse();
+            for (ProductAndSupportedPrograms productAndSupportedPrograms: response.getProductsAndSupportedPrograms() ) {
+                Product product = productAndSupportedPrograms.getProduct();
+                //product can only have one program now
+                Program program = programRepository.queryByCode(productAndSupportedPrograms.getSupportedPrograms().get(0));
+                product.setProgram(program);
+                productRepository.createOrUpdate(product);
+            }
+            sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());
+        } catch (Exception e) {
+            throw new LMISException(errorMessage(R.string.msg_sync_products_list_failed));
+        }
+    }
+
+    private SyncDownLatestProductsResponse getSyncDownLatestProductResponse() throws NetWorkException {
+        return lmisRestApi.fetchLatestProducts(sharedPreferenceMgr.getLastSyncProductTime());
     }
 
     private SyncDownProductsResponse getSyncDownProductsResponse(User user) throws NetWorkException {

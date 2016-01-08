@@ -26,9 +26,12 @@ import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.model.repository.UserRepository.NewCallback;
 import org.openlmis.core.service.SyncDownManager;
@@ -52,6 +55,9 @@ public class LoginPresenter extends Presenter {
     @Inject
     SyncDownManager syncDownManager;
     private boolean hasGoneToNextPage;
+
+    @Inject
+    private ProgramRepository programRepository;
 
     @Override
     public void attachView(BaseView v) {
@@ -131,15 +137,25 @@ public class LoginPresenter extends Presenter {
         });
     }
 
-    private void saveUserToLocalDatabase(User user) {
+    private void saveUserDataToLocalDatabase(User user) throws LMISException {
         userRepository.save(user);
+
+        if (user.getSupportedPrograms() != null) {
+            for (Program program: user.getSupportedPrograms()) {
+                programRepository.createOrUpdate(program);
+            }
+        }
     }
 
     protected void onLoginSuccess(User user) {
         Log.d("Login Presenter", "Log in successful, setting up sync account");
         syncService.createSyncAccount(user);
 
-        saveUserToLocalDatabase(user);
+        try {
+            saveUserDataToLocalDatabase(user);
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
         UserInfoMgr.getInstance().setUser(user);
         view.clearErrorAlerts();
 

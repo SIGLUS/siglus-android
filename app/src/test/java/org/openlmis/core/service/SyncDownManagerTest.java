@@ -15,6 +15,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
@@ -23,10 +24,13 @@ import org.openlmis.core.model.User;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.repository.KitProductsRepository;
+import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.network.LMISRestApi;
+import org.openlmis.core.network.model.ProductAndSupportedPrograms;
+import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownProductsResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
@@ -78,6 +82,9 @@ public class SyncDownManagerTest {
     private KitProductsRepository kitProductsRepository;
     private SharedPreferences createdPreferences;
 
+    private ProductRepository productRepository;
+    private Product productWithKit;
+
     @Before
     public void setUp() throws Exception {
         sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
@@ -85,6 +92,8 @@ public class SyncDownManagerTest {
         rnrFormRepository = mock(RnrFormRepository.class);
         programRepository = mock(ProgramRepository.class);
         kitProductsRepository = mock(KitProductsRepository.class);
+        productRepository = mock(ProductRepository.class);
+
         reset(rnrFormRepository);
         reset(lmisRestApi);
 
@@ -170,10 +179,38 @@ public class SyncDownManagerTest {
         verify(sharedPreferenceMgr).setLastSyncProductTime("today");
     }
 
+    @Test
+    public void shouldSyncDownNewLatestProductList() throws Exception {
+
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_sync_back_latest_product_list, true);
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_sync_back_stock_movement_273, true);
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_kit, true);
+        mockSyncDownLatestProductResponse();
+        mockRequisitionResponse();
+        mockStockCardsResponse();
+
+        Program program = new Program();
+        when(programRepository.queryByCode("PR")).thenReturn(program);
+        productWithKit.setProgram(program);
+
+        SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
+        syncDownManager.syncDownServerData(subscriber);
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+
+        verify(lmisRestApi).fetchLatestProducts(anyString());
+        verify(productRepository).createOrUpdate(productWithKit);
+        verify(sharedPreferenceMgr).setLastSyncProductTime("today");
+    }
+
     private void testSyncProgress(SyncProgress progress) {
         try {
             if (progress == ProductSynced) {
-                verify(programRepository).createOrUpdateProgramWithProduct(any(ArrayList.class));
+                if ((LMISTestApp.getInstance()).getFeatureToggleFor(R.bool.feature_kit)) {
+                    verify(productRepository).createOrUpdate(any(Product.class));
+                } else {
+                    verify(programRepository).createOrUpdateProgramWithProduct(any(ArrayList.class));
+                }
                 verify(sharedPreferenceMgr).setHasGetProducts(true);
             }
             if (progress == StockCardsLastMonthSynced) {
@@ -203,6 +240,20 @@ public class SyncDownManagerTest {
         when(lmisRestApi.fetchLatestProducts(any(String.class), any(String.class))).thenReturn(response);
     }
 
+
+    private void mockSyncDownLatestProductResponse() throws NetWorkException {
+        List<ProductAndSupportedPrograms> productsAndSupportedPrograms = new ArrayList<>();
+        ProductAndSupportedPrograms productAndSupportedPrograms = new ProductAndSupportedPrograms();
+        productWithKit = new Product();
+        productAndSupportedPrograms.setProduct(productWithKit);
+        productAndSupportedPrograms.setSupportedPrograms(newArrayList("PR"));
+        productsAndSupportedPrograms.add(productAndSupportedPrograms);
+
+        SyncDownLatestProductsResponse response = new SyncDownLatestProductsResponse();
+        response.setLatestUpdatedTime ("today");
+        response.setProductsAndSupportedPrograms(productsAndSupportedPrograms);
+        when(lmisRestApi.fetchLatestProducts(any(String.class))).thenReturn(response);
+    }
 
     private void mockRequisitionResponse() throws NetWorkException {
         when(sharedPreferenceMgr.getPreference()).thenReturn(LMISTestApp.getContext().getSharedPreferences("LMISPreference", Context.MODE_PRIVATE));
@@ -278,6 +329,7 @@ public class SyncDownManagerTest {
             bind(SharedPreferenceMgr.class).toInstance(sharedPreferenceMgr);
             bind(ProgramRepository.class).toInstance(programRepository);
             bind(KitProductsRepository.class).toInstance(kitProductsRepository);
+            bind(ProductRepository.class).toInstance(productRepository);
         }
     }
 }
