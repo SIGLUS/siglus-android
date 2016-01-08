@@ -158,9 +158,9 @@
         <item name="android:orientation">vertical</item>
     </style>
 
-    <style name="StockMovement.TitlePanel.Land">
-        <item name="android:layout_marginLeft">0dp</item>
-        <item name="android:layout_marginRight">0dp</item>
+    <style name="StockMovement.Space_Land">
+        <item name="android:layout_marginLeft">@dimen/margin_small</item>
+        <item name="android:layout_marginRight">@dimen/margin_small</item>
     </style>
 
     <style name="StockMovement.ExpiryDates">

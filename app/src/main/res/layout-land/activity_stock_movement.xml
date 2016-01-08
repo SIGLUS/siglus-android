@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="@dimen/padding_small"
-    android:paddingRight="@dimen/padding_small">
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/stock_movement_banner"
+        layout="@layout/view_stock_movement_banner" />
 
     <LinearLayout
         android:id="@+id/title_panel"
-        style="@style/StockMovement.TitlePanel.Land"
+        android:layout_below="@+id/stock_movement_banner"
+        style="@style/StockMovement.Space_Land"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -74,6 +77,7 @@
         android:id="@+id/list_stock_movement"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        style="@style/StockMovement.Space_Land"
         android:layout_above="@+id/action_panel"
         android:layout_below="@+id/title_panel"
         android:layout_marginTop="10dp"

@@ -149,6 +149,7 @@
     <string name="menu_item_stock_movement_history">Movement History</string>
     <string name="title_add_new_drug">Add new product</string>
     <string name="hint_signature">Enter your initials</string>
+    <string name="hint_product_deactivated">This product has been deactivated and is not available to reorder</string>
 
     <!--MMIABaseInfo-->
     <string name="label_new_patients">New</string>
