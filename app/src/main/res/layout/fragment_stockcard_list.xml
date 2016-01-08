@@ -28,6 +28,8 @@
 
     <View style="@style/StockList.HorizontalDivider" />
 
+    <include layout="@layout/view_products_update_banner" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/products_list"
         android:layout_width="match_parent"
