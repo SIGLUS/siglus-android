@@ -64,34 +64,34 @@ describe "Get programs with products information for a facility" do
 
   it "should save kits and get latest products with kits" do
 
-    # request_body =
-    # {
-    #   code: 'KIT-1',
-    #   primaryName: 'US KIT',
-    #   kitProductList: [
-    #   {
-    #     productCode: '17A01',
-    #     quantity: 100
-    #   },
-    #   {
-    #     productCode: '21A01',
-    #     quantity: 200
-    #   },
-    #   {
-    #     productCode: '17F01',
-    #     quantity: 300
-    #   }
-    # ]
-    # }
+     request_body =
+     {
+       code: 'KIT-1',
+       primaryName: 'US KIT',
+       kitProductList: [
+       {
+         productCode: '17A01',
+         quantity: 100
+       },
+       {
+         productCode: '21A01',
+         quantity: 200
+       },
+       {
+         productCode: '17F01',
+         quantity: 300
+       }
+     ]
+     }
 
-    # response = RestClient.post "http://#{WEB_DEV_URI}/rest-api/kits",
-    #   request_body.to_json,
-    #   :content_type => :json,
-    #   :accept => :json,
-    #   :authorization => http_basic_auth('mystique', 'password1'),
+     response = RestClient.post "http://#{WEB_DEV_URI}/rest-api/products",
+       request_body.to_json,
+       :content_type => :json,
+       :accept => :json,
+       :authorization => http_basic_auth('mystique', 'password1')
 
-    # body = JSON.parse(response.body)
-    # expect(response.code).to eq 200
+     body = JSON.parse(response.body)
+     expect(response.code).to eq 200
 
     response = RestClient.get "http://#{WEB_DEV_URI}/rest-api/latest-products",
       :content_type => :json,
@@ -104,7 +104,7 @@ describe "Get programs with products information for a facility" do
     expect(body['latestUpdatedTime']).not_to be_nil
     latest_products = body['latestProducts']
 
-    expect(latest_products.length).to eq 1266
+    expect(latest_products.length).to eq 1267
 
     kit1 = latest_products.detect { |p| p['product']['code'] == 'SCOD10'}
     expect(kit1['product']['kitProductList'].length).to eq 44
