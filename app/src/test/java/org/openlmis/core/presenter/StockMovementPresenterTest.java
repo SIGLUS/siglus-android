@@ -118,6 +118,9 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         //given
         StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(1);
+        Product product = new Product();
+        product.setActive(true);
+        stockCard.setProduct(product);
 
         StockMovementItem item = new StockMovementItem();
         item.setStockOnHand(0L);
