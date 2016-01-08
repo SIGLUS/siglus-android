@@ -57,6 +57,9 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @InjectView(R.id.list_stock_movement)
     ListView stockMovementList;
 
+    @InjectView(R.id.stock_movement_banner)
+    View banner;
+
     @InjectView(R.id.btn_complete)
     View btnComplete;
 
@@ -87,12 +90,15 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     private StockMovementAdapter stockMovementAdapter;
     private boolean isStockCardArchivable;
 
+    private boolean isActivated;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         stockId = getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
         stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
+        isActivated = getIntent().getBooleanExtra(Constants.PARAM_IS_ACTIVATED,true);
         try {
             presenter.setStockCard(stockId);
         } catch (LMISException e) {
@@ -146,6 +152,13 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             tvCmm.setVisibility(View.GONE);
             tvCmmLabel.setVisibility(View.GONE);
         }
+
+        if(isActivated){
+            banner.setVisibility(View.GONE);
+        }else {
+            banner.setVisibility(View.VISIBLE);
+        }
+
         loading();
         presenter.loadStockMovementViewModels();
     }
@@ -244,10 +257,11 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         }
     }
 
-    public static Intent getIntentToMe(Context context, long stockCardId, String formattedProductName) {
+    public static Intent getIntentToMe(Context context, long stockCardId, String formattedProductName, boolean isActive) {
         Intent intent = new Intent(context, StockMovementActivity.class);
         intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCardId);
         intent.putExtra(Constants.PARAM_STOCK_NAME, formattedProductName);
+        intent.putExtra(Constants.PARAM_IS_ACTIVATED, isActive);
         return intent;
     }
 }
