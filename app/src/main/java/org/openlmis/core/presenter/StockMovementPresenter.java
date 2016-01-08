@@ -26,6 +26,7 @@ import com.google.inject.Inject;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
@@ -137,6 +138,11 @@ public class StockMovementPresenter extends Presenter {
 
 
     private void saveStockMovement(StockMovementItem stockMovementItem) throws LMISException {
+
+        if(stockCard.getStockOnHand()==0 && !stockCard.getProduct().isActive()){
+            SharedPreferenceMgr.getInstance().setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
+        }
+
         stockRepository.addStockMovementAndUpdateStockCard(stockCard, stockMovementItem);
     }
 
