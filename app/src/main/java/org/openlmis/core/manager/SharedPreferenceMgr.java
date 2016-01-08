@@ -48,6 +48,7 @@ public class SharedPreferenceMgr {
     public static final String KEY_STOCK_SYNC_END_TIME = "sync_stock_end_time";
     public static final String KEY_STOCK_SYNC_CURRENT_INDEX = "sync_stock_current_index";
     public static final String KEY_LAST_SYNC_PRODUCT_TIME = "last_sync_product_time";
+    public static final String KEY_SHOW_PRODUCT_UPDATE_BANNER = "show_product_update_banner";
 
     @Inject
     public SharedPreferenceMgr(Context context) {
@@ -119,5 +120,13 @@ public class SharedPreferenceMgr {
 
     public void setLastSyncProductTime(String lastSyncProductTime) {
         sharedPreferences.edit().putString(KEY_LAST_SYNC_PRODUCT_TIME, lastSyncProductTime).apply();
+    }
+
+    public boolean isNeedShowUpdateBanner() {
+        return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_SHOW_PRODUCT_UPDATE_BANNER, false);
+    }
+
+    public void setIsNeedShowUpdateBanner(boolean isNeedShowUpdateBanner) {
+        sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_SHOW_PRODUCT_UPDATE_BANNER, isNeedShowUpdateBanner).apply();
     }
 }

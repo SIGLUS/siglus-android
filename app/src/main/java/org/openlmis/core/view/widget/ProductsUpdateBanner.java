@@ -8,11 +8,12 @@ import android.widget.LinearLayout;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
-public class ProductsUpdateBanner extends LinearLayout implements View.OnClickListener{
+public class ProductsUpdateBanner extends LinearLayout implements View.OnClickListener {
 
     @InjectView(R.id.iv_product_update_banner_clear)
     View ivClear;
@@ -32,6 +33,12 @@ public class ProductsUpdateBanner extends LinearLayout implements View.OnClickLi
         RoboGuice.injectMembers(getContext(), this);
         RoboGuice.getInjector(getContext()).injectViewMembers(this);
 
+        if (SharedPreferenceMgr.getInstance().isNeedShowUpdateBanner()) {
+            setVisibility(VISIBLE);
+        } else {
+            setVisibility(GONE);
+        }
+
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_show_products_update_banner_529)) {
             setVisibility(GONE);
         }
@@ -46,5 +53,6 @@ public class ProductsUpdateBanner extends LinearLayout implements View.OnClickLi
     @Override
     public void onClick(View v) {
         setVisibility(GONE);
+        SharedPreferenceMgr.getInstance().setIsNeedShowUpdateBanner(false);
     }
 }
