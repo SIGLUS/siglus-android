@@ -52,11 +52,11 @@ public class ProductsUpdateBanner extends LinearLayout implements View.OnClickLi
     }
 
     private void setBannerText() {
-        Set<String> showUpdateBannerText = SharedPreferenceMgr.getInstance().getShowUpdateBannerText();
-        if (showUpdateBannerText.size() == 1) {
-            tvProductUpdate.setText(getContext().getString(R.string.hint_update_banner_tips, showUpdateBannerText.toArray()[0]));
+        Set<String> showUpdateBannerTexts = SharedPreferenceMgr.getInstance().getShowUpdateBannerTexts();
+        if (showUpdateBannerTexts.size() == 1) {
+            tvProductUpdate.setText(getContext().getString(R.string.hint_update_banner_tips, showUpdateBannerTexts.toArray()[0]));
         } else {
-            tvProductUpdate.setText(getContext().getString(R.string.hint_update_banner_tips, showUpdateBannerText.size() + " Products"));
+            tvProductUpdate.setText(getContext().getString(R.string.hint_update_banner_tips, showUpdateBannerTexts.size() + " Products"));
         }
     }
 

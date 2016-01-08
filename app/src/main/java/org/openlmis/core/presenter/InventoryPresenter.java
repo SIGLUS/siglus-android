@@ -290,11 +290,7 @@ public class InventoryPresenter extends Presenter {
                         StockCard stockCard = model.getStockCard();
                         stockCard.setExpireDates(model.formatExpiryDateString());
                         stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
-
-                        if(stockCard.getStockOnHand()==0 && !stockCard.getProduct().isActive()){
-                            SharedPreferenceMgr.getInstance().setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
-                        }
-
+                        checkDeActive(stockCard);
                         stockRepository.addStockMovementAndUpdateStockCard(stockCard, calculateAdjustment(model, stockCard));
                     }
                     stockRepository.clearDraftInventory();
@@ -306,6 +302,12 @@ public class InventoryPresenter extends Presenter {
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private void checkDeActive(StockCard stockCard) {
+        if(stockCard.getStockOnHand()==0 && !stockCard.getProduct().isActive()){
+            SharedPreferenceMgr.getInstance().setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
+        }
     }
 
     protected Action1<Object> nextMainPageAction = new Action1<Object>() {

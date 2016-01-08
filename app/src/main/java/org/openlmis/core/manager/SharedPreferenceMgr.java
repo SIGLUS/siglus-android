@@ -127,23 +127,25 @@ public class SharedPreferenceMgr {
     }
 
     public boolean isNeedShowProductsUpdateBanner() {
-        return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_SHOW_PRODUCT_UPDATE_BANNER, false);
+        return sharedPreferences.getBoolean(KEY_SHOW_PRODUCT_UPDATE_BANNER, false);
     }
 
-    public void setIsNeedShowProductsUpdateBanner(boolean isNeedShowUpdateBanner, String test) {
-        sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_SHOW_PRODUCT_UPDATE_BANNER, isNeedShowUpdateBanner).apply();
+    public void setIsNeedShowProductsUpdateBanner(boolean isNeedShowUpdateBanner, String primaryName) {
+        sharedPreferences.edit().putBoolean(KEY_SHOW_PRODUCT_UPDATE_BANNER, isNeedShowUpdateBanner).apply();
         if (isNeedShowUpdateBanner) {
-            setShowUpdateBannerText(test);
+            addShowUpdateBannerText(primaryName);
+        } else {
+            sharedPreferences.edit().remove(KEY_PRODUCT_UPDATE_BANNER_TEXT).apply();
         }
     }
 
-    public Set<String> getShowUpdateBannerText() {
-        return sharedPreferences.getStringSet(SharedPreferenceMgr.KEY_PRODUCT_UPDATE_BANNER_TEXT, new HashSet<String>());
+    public Set<String> getShowUpdateBannerTexts() {
+        return sharedPreferences.getStringSet(KEY_PRODUCT_UPDATE_BANNER_TEXT, new HashSet<String>());
     }
 
-    public void setShowUpdateBannerText(String productName) {
-        Set<String> stringSet = sharedPreferences.getStringSet(SharedPreferenceMgr.KEY_PRODUCT_UPDATE_BANNER_TEXT, new HashSet<String>());
+    public void addShowUpdateBannerText(String productName) {
+        Set<String> stringSet = sharedPreferences.getStringSet(KEY_PRODUCT_UPDATE_BANNER_TEXT, new HashSet<String>());
         stringSet.add(productName);
-        sharedPreferences.edit().putStringSet(SharedPreferenceMgr.KEY_PRODUCT_UPDATE_BANNER_TEXT, stringSet).apply();
+        sharedPreferences.edit().putStringSet(KEY_PRODUCT_UPDATE_BANNER_TEXT, stringSet).apply();
     }
 }
