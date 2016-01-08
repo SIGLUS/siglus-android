@@ -52,7 +52,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_stock_movement)
-public class StockMovementActivity extends BaseActivity implements StockMovementPresenter.StockMovementView {
+public class StockMovementActivity extends BaseActivity implements StockMovementPresenter.StockMovementView, View.OnClickListener {
 
     @InjectView(R.id.list_stock_movement)
     ListView stockMovementList;
@@ -130,24 +130,9 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         stockMovementList.addHeaderView(headerView);
         stockMovementList.setAdapter(stockMovementAdapter);
 
-        btnComplete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.submitStockMovement(stockMovementAdapter.getEditableStockMovement());
-            }
-        });
+        btnComplete.setOnClickListener(this);
 
-        tvCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                StockMovementViewHolder viewHolder = (StockMovementViewHolder) stockMovementList.getChildAt(stockMovementList.getChildCount() - 1).getTag();
-
-                stockMovementAdapter.cancelStockMovement(viewHolder);
-
-                deactivatedStockDraft();
-            }
-        });
+        tvCancel.setOnClickListener(this);
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_show_cmm_on_stock_movement_page_227)) {
             tvCmm.setText(presenter.getStockCardCmm());
         } else {
@@ -271,5 +256,19 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         intent.putExtra(Constants.PARAM_STOCK_NAME, formattedProductName);
         intent.putExtra(Constants.PARAM_IS_ACTIVATED, isActive);
         return intent;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_complete:
+                presenter.submitStockMovement(stockMovementAdapter.getEditableStockMovement());
+                break;
+            case R.id.btn_cancel:
+                StockMovementViewHolder viewHolder = (StockMovementViewHolder) stockMovementList.getChildAt(stockMovementList.getChildCount() - 1).getTag();
+                stockMovementAdapter.cancelStockMovement(viewHolder);
+                deactivatedStockDraft();
+                break;
+        }
     }
 }
