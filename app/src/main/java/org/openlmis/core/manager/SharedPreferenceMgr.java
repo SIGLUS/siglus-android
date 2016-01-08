@@ -28,6 +28,9 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import roboguice.RoboGuice;
 
 @Singleton
@@ -49,6 +52,7 @@ public class SharedPreferenceMgr {
     public static final String KEY_STOCK_SYNC_CURRENT_INDEX = "sync_stock_current_index";
     public static final String KEY_LAST_SYNC_PRODUCT_TIME = "last_sync_product_time";
     public static final String KEY_SHOW_PRODUCT_UPDATE_BANNER = "show_product_update_banner";
+    public static final String KEY_PRODUCT_UPDATE_BANNER_TEXT = "product_update_banner_text";
 
     @Inject
     public SharedPreferenceMgr(Context context) {
@@ -122,11 +126,24 @@ public class SharedPreferenceMgr {
         sharedPreferences.edit().putString(KEY_LAST_SYNC_PRODUCT_TIME, lastSyncProductTime).apply();
     }
 
-    public boolean isNeedShowUpdateBanner() {
+    public boolean isNeedShowProductsUpdateBanner() {
         return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_SHOW_PRODUCT_UPDATE_BANNER, false);
     }
 
-    public void setIsNeedShowUpdateBanner(boolean isNeedShowUpdateBanner) {
+    public void setIsNeedShowProductsUpdateBanner(boolean isNeedShowUpdateBanner, String test) {
         sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_SHOW_PRODUCT_UPDATE_BANNER, isNeedShowUpdateBanner).apply();
+        if (isNeedShowUpdateBanner) {
+            setShowUpdateBannerText(test);
+        }
+    }
+
+    public Set<String> getShowUpdateBannerText() {
+        return sharedPreferences.getStringSet(SharedPreferenceMgr.KEY_PRODUCT_UPDATE_BANNER_TEXT, new HashSet<String>());
+    }
+
+    public void setShowUpdateBannerText(String productName) {
+        Set<String> stringSet = sharedPreferences.getStringSet(SharedPreferenceMgr.KEY_PRODUCT_UPDATE_BANNER_TEXT, new HashSet<String>());
+        stringSet.add(productName);
+        sharedPreferences.edit().putStringSet(SharedPreferenceMgr.KEY_PRODUCT_UPDATE_BANNER_TEXT, stringSet).apply();
     }
 }
