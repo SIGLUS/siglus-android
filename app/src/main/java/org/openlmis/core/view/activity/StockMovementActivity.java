@@ -98,7 +98,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
         stockId = getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
         stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
-        isActivated = getIntent().getBooleanExtra(Constants.PARAM_IS_ACTIVATED,true);
+        isActivated = getIntent().getBooleanExtra(Constants.PARAM_IS_ACTIVATED, true);
         try {
             presenter.setStockCard(stockId);
         } catch (LMISException e) {
@@ -111,6 +111,8 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
     private void initUI() {
         setTitle(stockName);
+
+        showBanner();
 
         expireDateViewGroup.initExpireDateViewGroup(new StockCardViewModel(presenter.getStockCard()), true);
 
@@ -153,14 +155,20 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             tvCmmLabel.setVisibility(View.GONE);
         }
 
-        if(isActivated){
+        loading();
+        presenter.loadStockMovementViewModels();
+    }
+
+    private void showBanner() {
+        if (isActivated) {
             banner.setVisibility(View.GONE);
-        }else {
+        } else {
             banner.setVisibility(View.VISIBLE);
         }
 
-        loading();
-        presenter.loadStockMovementViewModels();
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_show_products_update_banner_529)) {
+            banner.setVisibility(View.GONE);
+        }
     }
 
     @Override
