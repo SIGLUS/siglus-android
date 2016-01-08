@@ -39,7 +39,7 @@ public class ViaKitView extends LinearLayout {
 
     private void init(Context context) {
         setOrientation(LinearLayout.VERTICAL);
-        LayoutInflater.from(context).inflate(R.layout.via_kit_view, this);
+        LayoutInflater.from(context).inflate(R.layout.view_via_kit, this);
         RoboGuice.injectMembers(getContext(), this);
         RoboGuice.getInjector(getContext()).injectViewMembers(this);
 
