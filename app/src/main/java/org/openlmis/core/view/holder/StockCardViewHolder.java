@@ -63,7 +63,7 @@ public class StockCardViewHolder extends BaseViewHolder {
 
         switch (stockOnHandLevel) {
             case STOCK_ON_HAND_LOW_STOCK:
-                stockOnHandBg.setBackgroundResource(R.color.color_low_stock);
+                stockOnHandBg.setBackgroundResource(R.color.color_warning);
                 warningMsg = context.getString(R.string.msg_low_stock_warning);
                 iv_warning.setVisibility(View.VISIBLE);
                 break;
