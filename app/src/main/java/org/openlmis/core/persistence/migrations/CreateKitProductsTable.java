@@ -6,12 +6,12 @@ public class CreateKitProductsTable extends Migration {
 
     @Override
     public void up() {
-        execSQL("CREATE TABLE `kit_products` " +
-                "(`kitCode` VARCHAR REFERENCES products(code), "+
-                "`productCode` VARCHAR REFERENCES products(code), " +
-                "`quantity` BIGINT, " +
-                "`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "`createdAt` VARCHAR NOT NULL, " +
-                "`updatedAt` VARCHAR NOT NULL)");
+        execSQL("CREATE TABLE `kit_products` "
+                + "(`kitCode` VARCHAR REFERENCES products(code), "
+                + "`productCode` VARCHAR REFERENCES products(code), "
+                + "`quantity` BIGINT, "
+                + "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "`createdAt` VARCHAR NOT NULL, "
+                + "`updatedAt` VARCHAR NOT NULL)");
     }
 }

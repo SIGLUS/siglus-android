@@ -211,7 +211,7 @@ public class SyncDownManager {
     private void fetchAndSaveProductsWithProgramsAndKits() throws LMISException {
         try {
             SyncDownLatestProductsResponse response = getSyncDownLatestProductResponse();
-            for (ProductAndSupportedPrograms productAndSupportedPrograms: response.getLatestProducts() ) {
+            for (ProductAndSupportedPrograms productAndSupportedPrograms : response.getLatestProducts()) {
                 Product product = assignProgramToProduct(productAndSupportedPrograms);
                 productRepository.createOrUpdate(product);
             }
