@@ -183,6 +183,7 @@
         <item>Sort by quantity: High to Low</item>
         <item>Sort by quantity: Low to High</item>
     </string-array>
+    <string name="hint_update_banner_tips">%1$s has been deactivated and removed to the <![CDATA[<b>archived drug</b>]]> list</string>
 
     <!-- Physical Inventory Page -->
     <string name="label_physical_inventory_stock_on_hand">Current stock on hand: %1$s</string>
