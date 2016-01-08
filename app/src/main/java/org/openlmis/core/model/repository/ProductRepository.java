@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
@@ -37,12 +38,15 @@ public class ProductRepository {
 
     GenericDao<Product> genericDao;
 
+    GenericDao<KitProduct> kitProductGenericDao;
+
     @Inject
     DbUtil dbUtil;
 
     @Inject
     public ProductRepository(Context context) {
         genericDao = new GenericDao<>(Product.class, context);
+        kitProductGenericDao = new GenericDao<>(KitProduct.class, context);
     }
 
     public List<Product> listActiveProducts() throws LMISException {
@@ -82,6 +86,29 @@ public class ProductRepository {
         } else {
             genericDao.create(product);
         }
+
+        createKitProductsIfNotExist(product);
+    }
+
+    private void createKitProductsIfNotExist(Product product) throws LMISException {
+        if (!product.getKitProducts().isEmpty()) {
+            for (KitProduct kitProduct: product.getKitProducts()) {
+                KitProduct kitProductInDB = queryKitProductByCode(kitProduct.getKitCode(), kitProduct.getProductCode());
+                if (kitProductInDB == null) {
+                    kitProductGenericDao.create(kitProduct);
+                }
+            }
+        }
+    }
+
+
+    protected KitProduct queryKitProductByCode(final String kitCode, final String productCode) throws LMISException {
+         return dbUtil.withDao(KitProduct.class, new DbUtil.Operation<KitProduct, KitProduct>() {
+            @Override
+            public KitProduct operate(Dao<KitProduct, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("kitCode", kitCode).and().eq("productCode", productCode).queryForFirst();
+            }
+        });
     }
 
     public Product getById(long id) {

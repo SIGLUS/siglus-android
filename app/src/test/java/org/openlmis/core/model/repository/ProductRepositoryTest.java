@@ -24,15 +24,19 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.builder.KitProductBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.robolectric.RuntimeEnvironment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.RoboGuice;
 
 import static org.junit.Assert.*;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
 public class ProductRepositoryTest extends LMISRepositoryUnitTest {
@@ -67,5 +71,16 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
         Product updatedProduct = ProductBuilder.create().setCode("P1").setIsActive(true).setIsArchived(false).build();
         productRepository.createOrUpdate(updatedProduct);
         assertTrue(productRepository.getByCode("P1").isArchived());
+    }
+
+    @Test
+    public void shouldCreateKitProductsIfTheyDontExist() throws LMISException {
+        ProductBuilder.create().setCode("P1").setIsActive(true).setIsArchived(true).build();
+        Product kit = ProductBuilder.create().setCode("KIT").setIsActive(true).setIsArchived(true).build();
+        KitProduct kitProduct1 = new KitProductBuilder().setProductCode("P1").setKitCode("KIT").setQuantity(100).build();
+        kit.setKitProducts(newArrayList(kitProduct1));
+        productRepository.createOrUpdate(kit);
+
+        assertNotNull(productRepository.queryKitProductByCode("KIT", "P1"));
     }
 }

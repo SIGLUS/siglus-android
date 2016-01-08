@@ -25,6 +25,9 @@ import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -62,9 +65,9 @@ public class Product extends BaseModel implements Comparable<Product> {
     @DatabaseField
     boolean isKit;
 
-    int quantityInKit;
-
     String medicine_type;
+
+    List<KitProduct> kitProducts = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

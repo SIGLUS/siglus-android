@@ -23,7 +23,6 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
-import org.openlmis.core.model.repository.KitProductsRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -79,7 +78,6 @@ public class SyncDownManagerTest {
     private ProgramRepository programRepository;
     private RnrFormRepository rnrFormRepository;
     private StockRepository stockRepository;
-    private KitProductsRepository kitProductsRepository;
     private SharedPreferences createdPreferences;
 
     private ProductRepository productRepository;
@@ -91,7 +89,6 @@ public class SyncDownManagerTest {
         lmisRestApi = mock(LMISRestApi.class);
         rnrFormRepository = mock(RnrFormRepository.class);
         programRepository = mock(ProgramRepository.class);
-        kitProductsRepository = mock(KitProductsRepository.class);
         productRepository = mock(ProductRepository.class);
 
         reset(rnrFormRepository);
@@ -328,7 +325,6 @@ public class SyncDownManagerTest {
             bind(RnrFormRepository.class).toInstance(rnrFormRepository);
             bind(SharedPreferenceMgr.class).toInstance(sharedPreferenceMgr);
             bind(ProgramRepository.class).toInstance(programRepository);
-            bind(KitProductsRepository.class).toInstance(kitProductsRepository);
             bind(ProductRepository.class).toInstance(productRepository);
         }
     }

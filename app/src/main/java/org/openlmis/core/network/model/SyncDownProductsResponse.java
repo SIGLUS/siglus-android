@@ -18,17 +18,14 @@
 
 package org.openlmis.core.network.model;
 
-import org.openlmis.core.model.Kit;
 import org.openlmis.core.model.Program;
 
 import java.util.List;
 
 import lombok.Data;
 
-public
 @Data
-class SyncDownProductsResponse {
+public class SyncDownProductsResponse {
     List<Program> programsWithProducts;
     String latestUpdatedTime;
-    List<Kit> kits;
 }
