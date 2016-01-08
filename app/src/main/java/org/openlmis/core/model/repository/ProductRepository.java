@@ -93,17 +93,21 @@ public class ProductRepository {
     private void createKitProductsIfNotExist(Product product) throws LMISException {
         if (product.getKitProductList() != null && !product.getKitProductList().isEmpty()) {
             for (KitProduct kitProduct: product.getKitProductList()) {
-                Product existingProduct = getByCode(kitProduct.getProductCode());
-                if (existingProduct == null) {
-                    Product newProduct = new Product();
-                    newProduct.setCode(kitProduct.getProductCode());
-                    createOrUpdate(newProduct);
-                }
+                createProductForKitIfNotExist(kitProduct);
                 KitProduct kitProductInDB = queryKitProductByCode(kitProduct.getKitCode(), kitProduct.getProductCode());
                 if (kitProductInDB == null) {
                     kitProductGenericDao.create(kitProduct);
                 }
             }
+        }
+    }
+
+    private void createProductForKitIfNotExist(KitProduct kitProduct) throws LMISException {
+        Product existingProduct = getByCode(kitProduct.getProductCode());
+        if (existingProduct == null) {
+            Product newProduct = new Product();
+            newProduct.setCode(kitProduct.getProductCode());
+            createOrUpdate(newProduct);
         }
     }
 

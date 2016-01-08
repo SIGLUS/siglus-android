@@ -212,18 +212,23 @@ public class SyncDownManager {
         try {
             SyncDownLatestProductsResponse response = getSyncDownLatestProductResponse();
             for (ProductAndSupportedPrograms productAndSupportedPrograms: response.getLatestProducts() ) {
-                Product product = productAndSupportedPrograms.getProduct();
-                //product can only have one program now
-                if (productAndSupportedPrograms.getSupportedPrograms() != null && !productAndSupportedPrograms.getSupportedPrograms().isEmpty()) {
-                    Program program = programRepository.queryByCode(productAndSupportedPrograms.getSupportedPrograms().get(0));
-                    product.setProgram(program);
-                }
+                Product product = assignProgramToProduct(productAndSupportedPrograms);
                 productRepository.createOrUpdate(product);
             }
             sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());
         } catch (Exception e) {
             throw new LMISException(errorMessage(R.string.msg_sync_products_list_failed));
         }
+    }
+
+    private Product assignProgramToProduct(ProductAndSupportedPrograms productAndSupportedPrograms) throws LMISException {
+        Product product = productAndSupportedPrograms.getProduct();
+        //product can only have one program now
+        if (productAndSupportedPrograms.getSupportedPrograms() != null && !productAndSupportedPrograms.getSupportedPrograms().isEmpty()) {
+            Program program = programRepository.queryByCode(productAndSupportedPrograms.getSupportedPrograms().get(0));
+            product.setProgram(program);
+        }
+        return product;
     }
 
     private SyncDownLatestProductsResponse getSyncDownLatestProductResponse() throws NetWorkException {

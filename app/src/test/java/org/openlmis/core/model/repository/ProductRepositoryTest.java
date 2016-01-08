@@ -82,4 +82,15 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
 
         assertNotNull(productRepository.queryKitProductByCode("KIT", "P1"));
     }
+
+    @Test
+    public void shouldCreateProductIfNotExistYetButExistInKit() throws LMISException {
+        Product kit = ProductBuilder.create().setCode("KIT").setIsActive(true).setIsArchived(true).build();
+        KitProduct kitProduct1 = new KitProductBuilder().setProductCode("P1").setKitCode("KIT").setQuantity(100).build();
+        kit.setKitProductList(newArrayList(kitProduct1));
+        productRepository.createOrUpdate(kit);
+
+        assertNotNull(productRepository.getByCode("P1"));
+        assertNotNull(productRepository.queryKitProductByCode("KIT", "P1"));
+    }
 }
