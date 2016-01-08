@@ -19,6 +19,8 @@
 package org.openlmis.core.view.activity;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -240,5 +242,12 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
                 }
             });
         }
+    }
+
+    public static Intent getIntentToMe(Context context, long stockCardId, String formattedProductName) {
+        Intent intent = new Intent(context, StockMovementActivity.class);
+        intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCardId);
+        intent.putExtra(Constants.PARAM_STOCK_NAME, formattedProductName);
+        return intent;
     }
 }

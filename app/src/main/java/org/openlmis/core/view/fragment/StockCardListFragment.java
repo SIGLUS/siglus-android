@@ -99,10 +99,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     private StockCardViewHolder.OnItemViewClickListener onItemViewClickListener = new StockCardViewHolder.OnItemViewClickListener() {
         @Override
         public void onItemViewClick(StockCardViewModel stockCardViewModel) {
-            Intent intent = new Intent(getActivity(), StockMovementActivity.class);
-            intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCardViewModel.getStockCardId());
-            intent.putExtra(Constants.PARAM_STOCK_NAME, stockCardViewModel.getProduct().getFormattedProductName());
-            startActivityForResult(intent, Constants.REQUEST_CODE_CHANGE);
+            startActivityForResult(StockMovementActivity.getIntentToMe(getActivity(), stockCardViewModel.getStockCardId(), stockCardViewModel.getProduct().getFormattedProductName()), Constants.REQUEST_CODE_CHANGE);
         }
     };
 
