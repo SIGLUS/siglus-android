@@ -50,6 +50,7 @@ import rx.schedulers.Schedulers;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -81,7 +82,8 @@ public class SyncDownManagerTest {
     private SharedPreferences createdPreferences;
 
     private ProductRepository productRepository;
-    private Product productWithKit;
+    private Product productWithKits;
+    private Product newProductWithoutPrograms;
 
     @Before
     public void setUp() throws Exception {
@@ -188,7 +190,7 @@ public class SyncDownManagerTest {
 
         Program program = new Program();
         when(programRepository.queryByCode("PR")).thenReturn(program);
-        productWithKit.setProgram(program);
+        productWithKits.setProgram(program);
 
         SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
         syncDownManager.syncDownServerData(subscriber);
@@ -196,16 +198,15 @@ public class SyncDownManagerTest {
         subscriber.assertNoErrors();
 
         verify(lmisRestApi).fetchLatestProducts(anyString());
-        verify(productRepository).createOrUpdate(productWithKit);
+        verify(productRepository).createOrUpdate(productWithKits);
+        verify(productRepository).createOrUpdate(newProductWithoutPrograms);
         verify(sharedPreferenceMgr).setLastSyncProductTime("today");
     }
 
     private void testSyncProgress(SyncProgress progress) {
         try {
             if (progress == ProductSynced) {
-                if ((LMISTestApp.getInstance()).getFeatureToggleFor(R.bool.feature_kit)) {
-                    verify(productRepository).createOrUpdate(any(Product.class));
-                } else {
+                if (!(LMISTestApp.getInstance()).getFeatureToggleFor(R.bool.feature_kit)) {
                     verify(programRepository).createOrUpdateProgramWithProduct(any(ArrayList.class));
                 }
                 verify(sharedPreferenceMgr).setHasGetProducts(true);
@@ -241,14 +242,23 @@ public class SyncDownManagerTest {
     private void mockSyncDownLatestProductResponse() throws NetWorkException {
         List<ProductAndSupportedPrograms> productsAndSupportedPrograms = new ArrayList<>();
         ProductAndSupportedPrograms productAndSupportedPrograms = new ProductAndSupportedPrograms();
-        productWithKit = new Product();
-        productAndSupportedPrograms.setProduct(productWithKit);
+        productWithKits = new Product();
+        productWithKits.setCode("ABC");
+        productAndSupportedPrograms.setProduct(productWithKits);
         productAndSupportedPrograms.setSupportedPrograms(newArrayList("PR"));
         productsAndSupportedPrograms.add(productAndSupportedPrograms);
 
+        ProductAndSupportedPrograms productWithoutSupportedPrograms = new ProductAndSupportedPrograms();
+        newProductWithoutPrograms = new Product();
+        newProductWithoutPrograms.setCode("ABCD");
+        productWithoutSupportedPrograms.setProduct(newProductWithoutPrograms);
+        productWithoutSupportedPrograms.setSupportedPrograms(null);
+
+        productsAndSupportedPrograms.add(productWithoutSupportedPrograms);
+
         SyncDownLatestProductsResponse response = new SyncDownLatestProductsResponse();
-        response.setLatestUpdatedTime ("today");
-        response.setProductsAndSupportedPrograms(productsAndSupportedPrograms);
+        response.setLatestUpdatedTime("today");
+        response.setLatestProducts(productsAndSupportedPrograms);
         when(lmisRestApi.fetchLatestProducts(any(String.class))).thenReturn(response);
     }
 

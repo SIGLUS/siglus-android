@@ -6,8 +6,9 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class SyncDownLatestProductsResponse {
-    List<ProductAndSupportedPrograms> productsAndSupportedPrograms;
+    List<ProductAndSupportedPrograms> latestProducts;
     String latestUpdatedTime;
 }

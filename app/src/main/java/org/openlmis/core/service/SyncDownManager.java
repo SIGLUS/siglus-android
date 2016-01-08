@@ -211,11 +211,13 @@ public class SyncDownManager {
     private void fetchAndSaveProductsWithProgramsAndKits() throws LMISException {
         try {
             SyncDownLatestProductsResponse response = getSyncDownLatestProductResponse();
-            for (ProductAndSupportedPrograms productAndSupportedPrograms: response.getProductsAndSupportedPrograms() ) {
+            for (ProductAndSupportedPrograms productAndSupportedPrograms: response.getLatestProducts() ) {
                 Product product = productAndSupportedPrograms.getProduct();
                 //product can only have one program now
-                Program program = programRepository.queryByCode(productAndSupportedPrograms.getSupportedPrograms().get(0));
-                product.setProgram(program);
+                if (productAndSupportedPrograms.getSupportedPrograms() != null && !productAndSupportedPrograms.getSupportedPrograms().isEmpty()) {
+                    Program program = programRepository.queryByCode(productAndSupportedPrograms.getSupportedPrograms().get(0));
+                    product.setProgram(program);
+                }
                 productRepository.createOrUpdate(product);
             }
             sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());

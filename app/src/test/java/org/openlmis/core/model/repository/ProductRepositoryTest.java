@@ -30,7 +30,6 @@ import org.openlmis.core.model.builder.KitProductBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.robolectric.RuntimeEnvironment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.RoboGuice;
@@ -78,7 +77,7 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
         ProductBuilder.create().setCode("P1").setIsActive(true).setIsArchived(true).build();
         Product kit = ProductBuilder.create().setCode("KIT").setIsActive(true).setIsArchived(true).build();
         KitProduct kitProduct1 = new KitProductBuilder().setProductCode("P1").setKitCode("KIT").setQuantity(100).build();
-        kit.setKitProducts(newArrayList(kitProduct1));
+        kit.setKitProductList(newArrayList(kitProduct1));
         productRepository.createOrUpdate(kit);
 
         assertNotNull(productRepository.queryKitProductByCode("KIT", "P1"));

@@ -67,7 +67,7 @@ public class Product extends BaseModel implements Comparable<Product> {
 
     String medicine_type;
 
-    List<KitProduct> kitProducts = new ArrayList<>();
+    List<KitProduct> kitProductList = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

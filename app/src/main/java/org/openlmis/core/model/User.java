@@ -56,7 +56,7 @@ public class User extends BaseModel{
     @DatabaseField
     String facilityId;
 
-    List<Program> supportedPrograms;
+    List<String> facilitySupportedPrograms;
 
     public User(String username, String password){
         this.username = username;

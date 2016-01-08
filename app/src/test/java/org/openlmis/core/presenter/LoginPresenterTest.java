@@ -132,11 +132,10 @@ public class LoginPresenterTest {
         verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
 
         User user = new User("user", "password");
-        Program newProgram = new Program();
-        Program newProgram2 = new Program();
-        List<Program> supportedPrograms = newArrayList(newProgram, newProgram2);
 
-        user.setSupportedPrograms(supportedPrograms);
+        List<String> supportedPrograms = newArrayList("PR", "PR@");
+
+        user.setFacilitySupportedPrograms(supportedPrograms);
         loginCB.getValue().success(user);
 
         verify(userRepository).save(any(User.class));
