@@ -147,7 +147,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         requisitionProductAdapter.notifyDataSetChanged();
         requisitionFormAdapter.updateStatus(rnRForm.getStatus());
         setConsultationNumbers();
-        setKitValues();
         setEditable();
     }
 
@@ -199,16 +198,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             @Override
             public void run() {
                 etConsultationNumbers.addTextChangedListener(etConsultationNumbersTextWatcher);
-            }
-        });
-    }
-
-    private void setKitValues() {
-        kitView.setValue(presenter.getViaKitsViewModel());
-        kitView.post(new Runnable() {
-            @Override
-            public void run() {
-                kitView.addTextChangeListeners(presenter.getViaKitsViewModel());
             }
         });
     }

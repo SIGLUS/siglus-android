@@ -36,7 +36,6 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
-import org.openlmis.core.model.RnrKitItem;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.robolectric.RuntimeEnvironment;
@@ -57,7 +56,6 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.Lists.newArrayList;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -320,37 +318,6 @@ public class VIARequisitionPresenterTest {
         when(mockRnrFormRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(true);
         presenter.processRequisition("123");
         verify(VIARequisitionFragment, never()).showErrorMessage(anyString());
-    }
-
-    @Test
-    public void shouldInitViaKitsViewModel() throws Exception {
-        RnRForm rnRForm = mock(RnRForm.class);
-        when(rnRForm.getRnrFormItemListWrapper()).thenReturn(new ArrayList<RnrFormItem>());
-        List<RnrKitItem> rnrKits = new ArrayList<>();
-        RnrKitItem kit1 = new RnrKitItem();
-        kit1.setKitCode(RnrKitItem.US_KIT);
-        kit1.setKitsOpened(10);
-        kit1.setKitsReceived(11);
-        kit1.setForm(rnRForm);
-        rnrKits.add(kit1);
-
-        RnrKitItem kit2 = new RnrKitItem();
-        kit2.setKitCode(RnrKitItem.APE_KIT);
-        kit2.setKitsOpened(15);
-        kit2.setKitsReceived(18);
-        kit2.setForm(rnRForm);
-        rnrKits.add(kit2);
-
-        when(rnRForm.getRnrKitItems()).thenReturn(rnrKits);
-        when(mockRnrFormRepository.queryRnRForm(1L)).thenReturn(rnRForm);
-
-        presenter.getRnrFormObservable(1L).subscribe();
-        Thread.sleep(1000);
-
-        assertEquals("10", presenter.getViaKitsViewModel().getKitsOpenedHF());
-        assertEquals("11", presenter.getViaKitsViewModel().getKitsReceivedHF());
-        assertEquals("15", presenter.getViaKitsViewModel().getKitsOpenedCHW());
-        assertEquals("18", presenter.getViaKitsViewModel().getKitsReceivedCHW());
     }
 
     private void updateFormUIWithStatus(RnRForm.STATUS status) {
