@@ -8,11 +8,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.presenter.StockCardPresenter;
+import org.openlmis.core.view.adapter.KitStockCardListAdapter;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.util.FragmentTestUtil;
 
 import roboguice.RoboGuice;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -43,5 +45,10 @@ public class KitStockCardListFragmentTest {
     @Test
     public void shouldCreateStockCardsForKitsIfNotExist() throws Exception {
         verify(mockStockCardPresenter).loadKits();
+    }
+
+    @Test
+    public void shouldUseKitStockCardListAdapter() throws Exception {
+        assertThat(fragment.mAdapter).isInstanceOf(KitStockCardListAdapter.class);
     }
 }

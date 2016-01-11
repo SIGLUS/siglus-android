@@ -65,7 +65,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
 
     StockCardListAdapter mAdapter;
 
-    private List<StockCardViewModel> stockCardViewModels;
+    protected List<StockCardViewModel> stockCardViewModels;
     private int currentPosition;
 
     @Override
@@ -119,7 +119,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     @Override
     public void refresh() {
         stockCardViewModels = presenter.getStockCardViewModels();
-        mAdapter = new StockCardListAdapter(stockCardViewModels, onItemViewClickListener);
+        createAdapter();
         stockCardRecycleView.setAdapter(mAdapter);
         tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
         onItemSelected(sortSpinner, null, currentPosition, 0L);
@@ -138,6 +138,10 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
         mAdapter.filter(query);
     }
 
+    protected void createAdapter() {
+        mAdapter = new StockCardListAdapter(stockCardViewModels, onItemViewClickListener);
+    }
+
     protected void loadStockCards() {
         presenter.loadStockCards(Active);
     }
@@ -146,7 +150,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
         sortSpinner = (Spinner) view.findViewById(R.id.sort_spinner);
         stockCardRecycleView = (RecyclerView) view.findViewById(R.id.products_list);
         stockCardViewModels = presenter.getStockCardViewModels();
-        mAdapter = new StockCardListAdapter(stockCardViewModels, onItemViewClickListener);
+        createAdapter();
 
         initProductList();
         initSortSpinner();
@@ -161,7 +165,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
         loadStockCards();
     }
 
-    private StockCardViewHolder.OnItemViewClickListener onItemViewClickListener = new StockCardViewHolder.OnItemViewClickListener() {
+    protected StockCardViewHolder.OnItemViewClickListener onItemViewClickListener = new StockCardViewHolder.OnItemViewClickListener() {
         @Override
         public void onItemViewClick(StockCardViewModel stockCardViewModel) {
             Intent intent = StockMovementActivity.getIntentToMe(getActivity(),
