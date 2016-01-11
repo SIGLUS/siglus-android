@@ -7,35 +7,34 @@
         android:id="@+id/stock_movement_banner"
         layout="@layout/view_stock_movement_banner" />
 
-
-    <LinearLayout
-        android:id="@+id/title_panel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/StockMovement.Space_Land"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/stock_card_icon" />
-
-        <TextView
-            style="@style/Text.Black.Large.Bold"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/title_stock_movement" />
-    </LinearLayout>
-
-
     <LinearLayout
         android:id="@+id/stock_info_panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title_panel"
         style="@style/StockMovement.TitlePanel_Horizontal"
         android:orientation="vertical">
+
+
+        <LinearLayout
+            android:id="@+id/title_panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/StockMovement.Space_Land"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/stock_card_icon" />
+
+            <TextView
+                style="@style/Text.Black.Large.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/title_stock_movement" />
+        </LinearLayout>
+
         <LinearLayout
             style="@style/Divider.Vertical"
             android:layout_width="match_parent"
