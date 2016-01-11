@@ -77,6 +77,23 @@ public class ProductRepository {
         }
     }
 
+    public void batchCreateOrUpdateProducts(final List<Product> productList) throws LMISException {
+        dbUtil.withDaoAsBatch(Product.class, new DbUtil.Operation<Product, Void>() {
+            @Override
+            public Void operate(Dao<Product, String> dao) throws SQLException {
+                for (Product product : productList) {
+                    try {
+                        createOrUpdate(product);
+                    } catch (LMISException e) {
+                        e.reportToFabric();
+                    }
+                }
+                return null;
+            }
+        });
+    }
+
+    //DON'T USE - THIS WILL BE PRIVATE WHEN KIT FEATURE TOGGLE IS ON
     public void createOrUpdate(Product product) throws LMISException {
         Product existingProduct = getByCode(product.getCode());
         if (existingProduct != null) {

@@ -50,7 +50,6 @@ import rx.schedulers.Schedulers;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -198,8 +197,7 @@ public class SyncDownManagerTest {
         subscriber.assertNoErrors();
 
         verify(lmisRestApi).fetchLatestProducts(anyString());
-        verify(productRepository).createOrUpdate(productWithKits);
-        verify(productRepository).createOrUpdate(newProductWithoutPrograms);
+        verify(productRepository).batchCreateOrUpdateProducts(anyList());
         verify(sharedPreferenceMgr).setLastSyncProductTime("today");
     }
 

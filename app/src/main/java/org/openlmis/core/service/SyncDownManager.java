@@ -46,6 +46,7 @@ import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.utils.DateUtil;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -211,10 +212,11 @@ public class SyncDownManager {
     private void fetchAndSaveProductsWithProgramsAndKits() throws LMISException {
         try {
             SyncDownLatestProductsResponse response = getSyncDownLatestProductResponse();
+            List<Product> productList = new ArrayList<>();
             for (ProductAndSupportedPrograms productAndSupportedPrograms : response.getLatestProducts()) {
-                Product product = assignProgramToProduct(productAndSupportedPrograms);
-                productRepository.createOrUpdate(product);
+                productList.add(assignProgramToProduct(productAndSupportedPrograms));
             }
+            productRepository.batchCreateOrUpdateProducts(productList);
             sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());
         } catch (Exception e) {
             throw new LMISException(errorMessage(R.string.msg_sync_products_list_failed));
