@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.User;
 import org.robolectric.RuntimeEnvironment;
 
@@ -50,7 +51,7 @@ public class UserRepositoryTest extends LMISRepositoryUnitTest {
         user.setFacilityCode("FC1");
         user.setFacilityName("Facility 1");
 
-        userRepository.save(user);
+        userRepository.createOrUpdate(user);
         User userSaved = userRepository.getUserFromLocal(new User("user", "123"));
 
         assertThat(userSaved, notNullValue());
@@ -58,4 +59,23 @@ public class UserRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(userSaved.getFacilityId(), is("abc"));
         assertThat(userSaved.getFacilityName(), is("Facility 1"));
     }
+
+    @Test
+    public void shouldUpdateUserWithFacilityIdAndCodeWhenUserAlreadyExist() throws LMISException {
+        User user = new User("user", "123");
+        user.setFacilityId("abc");
+        user.setFacilityCode("FC1");
+        user.setFacilityName("Facility 1");
+        userRepository.createOrUpdate(user);
+
+        User newUserWithSameUserName = new User();
+        newUserWithSameUserName.setUsername("user");
+        newUserWithSameUserName.setPassword("456");
+
+        userRepository.createOrUpdate(newUserWithSameUserName);
+
+        assertThat(userRepository.getUserByUsername("user").size(), is(1));
+        assertThat(userRepository.getUserByUsername("user").get(0).getPassword(), is("456"));
+    }
+
 }

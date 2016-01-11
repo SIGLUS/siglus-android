@@ -47,7 +47,6 @@ import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.RoboGuice;
@@ -118,7 +117,7 @@ public class LoginPresenterTest {
         verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
         loginCB.getValue().success(new User("user", "password"));
 
-        verify(userRepository).save(any(User.class));
+        verify(userRepository).createOrUpdate(any(User.class));
     }
 
     @Test
@@ -138,7 +137,7 @@ public class LoginPresenterTest {
         user.setFacilitySupportedPrograms(supportedPrograms);
         loginCB.getValue().success(user);
 
-        verify(userRepository).save(any(User.class));
+        verify(userRepository).createOrUpdate(any(User.class));
         verify(programRepository, times(2)).createOrUpdate(any(Program.class));
     }
 
@@ -165,7 +164,7 @@ public class LoginPresenterTest {
 
         loginCB.getValue().success(user);
 
-        verify(userRepository).save(user);
+        verify(userRepository).createOrUpdate(user);
         assertThat(UserInfoMgr.getInstance().getUser()).isEqualTo(user);
         verify(mockActivity).clearErrorAlerts();
     }

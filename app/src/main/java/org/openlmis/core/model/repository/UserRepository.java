@@ -93,12 +93,27 @@ public class UserRepository extends LMISRestManager {
         }
     }
 
-    public void save(final User user) {
+    public void createOrUpdate(final User user) {
         try {
-            genericDao.createOrUpdate(user);
+            List<User> userByUsername = getUserByUsername(user.getUsername());
+            if (userByUsername.isEmpty()) {
+                genericDao.create(user);
+            } else {
+                user.setId(userByUsername.get(userByUsername.size() - 1).getId());
+                genericDao.update(user);
+            }
         } catch (LMISException e) {
             e.reportToFabric();
         }
+    }
+
+    public List<User> getUserByUsername(final String userName) throws LMISException {
+        return dbUtil.withDao(User.class, new DbUtil.Operation<User, List<User>>() {
+            @Override
+            public List<User> operate(Dao<User, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("username", userName).query();
+            }
+        });
     }
 
     public interface NewCallback<T> {

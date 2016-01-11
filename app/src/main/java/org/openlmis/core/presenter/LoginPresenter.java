@@ -138,7 +138,7 @@ public class LoginPresenter extends Presenter {
     }
 
     private void saveUserDataToLocalDatabase(User user) throws LMISException {
-        userRepository.save(user);
+        userRepository.createOrUpdate(user);
 
         if (user.getFacilitySupportedPrograms() != null) {
             for (String programCode: user.getFacilitySupportedPrograms()) {
