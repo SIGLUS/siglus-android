@@ -144,6 +144,10 @@ public class StockCardPresenter extends Presenter {
         stockRepository.updateProductOfStockCard(stockCard);
     }
 
+    public void createKitStockCards() {
+
+    }
+
     public enum ArchiveStatus {
         Archived(true),
         Active(false);
