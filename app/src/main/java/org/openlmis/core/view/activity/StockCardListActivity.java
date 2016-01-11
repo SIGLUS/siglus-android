@@ -47,8 +47,7 @@ public class StockCardListActivity extends SearchBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        menu.add(Menu.NONE, MENU_ID_ADD_NEW_DRUG, 100, getString(R.string.action_add_new_drug)).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        menu.add(Menu.NONE, MENU_ID_ARCHIVE_LIST, 200, getString(R.string.action_navigate_archive)).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        addMenus(menu);
         return true;
     }
 
@@ -83,8 +82,13 @@ public class StockCardListActivity extends SearchBarActivity {
         stockCardFragment.onActivityResult(requestCode, resultCode, data);
     }
 
-
     protected StockCardListFragment createFragment() {
         return new StockCardListFragment();
+    }
+
+
+    protected void addMenus(Menu menu) {
+        menu.add(Menu.NONE, MENU_ID_ADD_NEW_DRUG, 100, getString(R.string.action_add_new_drug)).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        menu.add(Menu.NONE, MENU_ID_ARCHIVE_LIST, 200, getString(R.string.action_navigate_archive)).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
     }
 }
