@@ -119,7 +119,7 @@ public class StockCardPresenter extends Presenter {
     }
 
     private boolean showInOverview(StockCard stockCard) {
-        return stockCard.getStockOnHand() > 0 || (stockCard.getProduct().isActive() && !stockCard.getProduct().isArchived());
+        return !stockCard.getProduct().isKit() && (stockCard.getStockOnHand() > 0 || (stockCard.getProduct().isActive() && !stockCard.getProduct().isArchived()));
     }
 
     private boolean showInArchiveView(StockCard stockCard) {
