@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.fragment;
 
+import android.content.Intent;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,9 +27,11 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockCardPresenter;
+import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.activity.StockCardListActivity;
 import org.openlmis.core.view.adapter.StockCardListAdapter;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
-import org.robolectric.util.FragmentTestUtil;
+import org.robolectric.Robolectric;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +50,7 @@ public class StockCardListFragmentTest {
 
     @Before
     public void setUp() {
-        fragment = new StockCardListFragment();
-        FragmentTestUtil.startFragment(fragment);
-
-        fragment.presenter = mock(StockCardPresenter.class);
-        fragment.mAdapter = mock(StockCardListAdapter.class);
+        fragment = buildFragment(false);
 
         stockCardViewModels = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -62,6 +62,20 @@ public class StockCardListFragmentTest {
             stockCard.setProduct(product);
             stockCardViewModels.add(new StockCardViewModel(stockCard));
         }
+    }
+
+    private StockCardListFragment buildFragment(boolean isKitStockList) {
+        Intent intent = new Intent();
+        intent.putExtra(Constants.PARAM_IS_KIT_STOCK_CARD, isKitStockList);
+        StockCardListActivity stockCardListActivity = Robolectric.buildActivity(StockCardListActivity.class).withIntent(intent).create().get();
+
+        fragment = new StockCardListFragment();
+
+        stockCardListActivity.getFragmentManager().beginTransaction().add(fragment, null).commit();
+
+        fragment.presenter = mock(StockCardPresenter.class);
+        fragment.mAdapter = mock(StockCardListAdapter.class);
+        return fragment;
     }
 
     @Test
@@ -103,5 +117,12 @@ public class StockCardListFragmentTest {
         assertThat(sortedList.get(0).getStockOnHand(), is(1L));
         assertThat(sortedList.get(1).getStockOnHand(), is(2L));
         assertThat(sortedList.get(2).getStockOnHand(), is(3L));
+    }
+
+    @Test
+    public void shouldShowKitOverviewTitle() throws Exception {
+        fragment = buildFragment(true);
+
+        assertThat(fragment.getActivity().getTitle().toString(), is("Kit Overview"));
     }
 }

@@ -67,10 +67,17 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
 
     private List<StockCardViewModel> stockCardViewModels;
     private int currentPosition;
+    private boolean isKitStockList;
 
     @Override
     public Presenter initPresenter() {
         return presenter;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        isKitStockList = getActivity().getIntent().getBooleanExtra(Constants.PARAM_IS_KIT_STOCK_CARD, false);
     }
 
     @Nullable
@@ -91,6 +98,8 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
         stockCardRecycleView = (RecyclerView) view.findViewById(R.id.products_list);
         stockCardViewModels = presenter.getStockCardViewModels();
         mAdapter = new StockCardListAdapter(stockCardViewModels, onItemViewClickListener);
+
+        getActivity().setTitle(isKitStockList ? R.string.title_kit_stock_cards : R.string.title_stock_cards);
 
         initProductList();
         initSortSpinner();

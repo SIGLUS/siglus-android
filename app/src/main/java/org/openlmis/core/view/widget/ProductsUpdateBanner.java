@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.inject.Inject;
+
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -24,6 +26,9 @@ public class ProductsUpdateBanner extends LinearLayout implements View.OnClickLi
     @InjectView(R.id.tv_product_update)
     TextView tvProductUpdate;
 
+    @Inject
+    SharedPreferenceMgr preferenceMgr;
+
     public ProductsUpdateBanner(Context context) {
         super(context);
         init(context);
@@ -39,7 +44,7 @@ public class ProductsUpdateBanner extends LinearLayout implements View.OnClickLi
         RoboGuice.injectMembers(getContext(), this);
         RoboGuice.getInjector(getContext()).injectViewMembers(this);
 
-        if (SharedPreferenceMgr.getInstance().isNeedShowProductsUpdateBanner()) {
+        if (preferenceMgr.isNeedShowProductsUpdateBanner()) {
             setVisibility(VISIBLE);
             setBannerText();
         } else {

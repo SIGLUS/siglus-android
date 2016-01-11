@@ -7,6 +7,7 @@
     <string name="title_init_inventory">Initial Inventory</string>
     <string name="title_physical_inventory">Inventory</string>
     <string name="title_stock_cards">Stock Overview</string>
+    <string name="title_kit_stock_cards">Kit Overview</string>
     <string name="title_requisition">Create a Via Classica Requisition</string>
 
     <string name="hint_network_error">NetWork error please check you network connection</string>
