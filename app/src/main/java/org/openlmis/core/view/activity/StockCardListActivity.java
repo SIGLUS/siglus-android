@@ -23,15 +23,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 
 import org.openlmis.core.R;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.view.fragment.KitStockCardListFragment;
 import org.openlmis.core.view.fragment.StockCardListFragment;
 
 import roboguice.inject.ContentView;
-import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_stockcard_list)
 public class StockCardListActivity extends SearchBarActivity {
@@ -40,28 +37,18 @@ public class StockCardListActivity extends SearchBarActivity {
     protected static final int MENU_ID_ARCHIVE_LIST = 200;
     protected StockCardListFragment stockCardFragment;
 
-    @InjectView(R.id.stock_card_container)
-    FrameLayout container;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getIntent().getBooleanExtra(Constants.PARAM_IS_KIT_STOCK_CARD, false)) {
-            setTitle(R.string.title_kit_stock_cards);
-            stockCardFragment = new KitStockCardListFragment();
-        } else {
-            stockCardFragment = new StockCardListFragment();
-        }
-
+        stockCardFragment = createFragment();
         getFragmentManager().beginTransaction().replace(R.id.stock_card_container, stockCardFragment).commit();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-            menu.add(Menu.NONE, MENU_ID_ADD_NEW_DRUG, 100, getString(R.string.action_add_new_drug)).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-            menu.add(Menu.NONE, MENU_ID_ARCHIVE_LIST, 200, getString(R.string.action_navigate_archive)).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        menu.add(Menu.NONE, MENU_ID_ADD_NEW_DRUG, 100, getString(R.string.action_add_new_drug)).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        menu.add(Menu.NONE, MENU_ID_ARCHIVE_LIST, 200, getString(R.string.action_navigate_archive)).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         return true;
     }
 
@@ -91,9 +78,13 @@ public class StockCardListActivity extends SearchBarActivity {
         return intent;
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         stockCardFragment.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    protected StockCardListFragment createFragment() {
+        return new StockCardListFragment();
     }
 }

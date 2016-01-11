@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.view.fragment.KitStockCardListFragment;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowApplication;
@@ -22,13 +21,7 @@ public class StockCardListActivityTest {
 
     @Before
     public void setUp() {
-        stockCardListActivity = buildActivity(false);
-    }
-
-    private StockCardListActivity buildActivity(boolean isKit) {
-        Intent intent = new Intent();
-        intent.putExtra(Constants.PARAM_IS_KIT_STOCK_CARD, isKit);
-        return Robolectric.buildActivity(StockCardListActivity.class).withIntent(intent).create().get();
+        stockCardListActivity = Robolectric.buildActivity(StockCardListActivity.class).create().get();
     }
 
     @Test
@@ -61,20 +54,5 @@ public class StockCardListActivityTest {
 
         assertThat(intent.getComponent().getClassName()).isEqualTo(StockCardListActivity.class.getName());
         assertThat(intent.getFlags()).isEqualTo(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-    }
-
-    @Test
-    public void shouldLoadKitStockOverviewFragment() throws Exception {
-        //given
-        StockCardListActivity stockCardListActivity = buildActivity(true);
-
-        //then
-        assertThat(stockCardListActivity.stockCardFragment).isInstanceOf(KitStockCardListFragment.class);
-    }
-
-    @Test
-    public void shouldShowKitOverviewTitle() throws Exception {
-        StockCardListActivity stockCardListActivity = buildActivity(true);
-        assertThat(stockCardListActivity.getTitle().toString()).isEqualTo("Kit Overview");
     }
 }

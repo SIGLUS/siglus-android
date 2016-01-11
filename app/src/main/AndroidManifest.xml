@@ -33,8 +33,8 @@
 
         <activity
             android:name=".view.activity.InventoryActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_init_inventory" />
+            android:label="@string/title_init_inventory"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".view.activity.HomeActivity"
@@ -45,6 +45,10 @@
         <activity
             android:name=".view.activity.StockCardListActivity"
             android:label="@string/title_stock_cards" />
+
+        <activity
+            android:name=".view.activity.KitStockCardListActivity"
+            android:label="@string/title_kit_stock_cards" />
 
         <activity
             android:name=".view.activity.MMIARequisitionActivity"
