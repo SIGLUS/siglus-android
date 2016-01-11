@@ -127,9 +127,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     public void onClickKitStockCard(View view) {
-        Intent intent = new Intent(this, StockCardListActivity.class);
-        intent.putExtra(Constants.PARAM_IS_KIT_STOCK_CARD, true);
-        startActivity(intent);
+        startActivity(KitStockCardListActivity.class);
     }
 
     public void onClickInventory(View view) {

@@ -48,7 +48,6 @@ import org.robolectric.shadows.ShadowToast;
 import java.util.Date;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -78,7 +77,14 @@ public class HomeActivityTest {
 
         Intent nextStartedIntent = shadowOf(homeActivity).getNextStartedActivity();
         assertEquals(StockCardListActivity.class.getName(), nextStartedIntent.getComponent().getClassName());
-        assertFalse(nextStartedIntent.getBooleanExtra(Constants.PARAM_IS_KIT_STOCK_CARD, false));
+    }
+
+    @Test
+    public void shouldGoToKitsStockCardsPage() throws Exception {
+        homeActivity.btnKitStockCard.performClick();
+
+        Intent nextStartedIntent = shadowOf(homeActivity).getNextStartedActivity();
+        assertEquals(KitStockCardListActivity.class.getName(), nextStartedIntent.getComponent().getClassName());
     }
 
     @Test
@@ -223,15 +229,5 @@ public class HomeActivityTest {
 
         assertTrue(homeActivity.isFinishing());
         verifyNextPage(LoginActivity.class.getName());
-    }
-
-    @Test
-    public void shouldOpenKitsStockOverviewPage() throws Exception {
-        homeActivity.btnKitStockCard.performClick();
-
-        Intent nextStartedIntent = shadowOf(homeActivity).getNextStartedActivity();
-
-        assertEquals(StockCardListActivity.class.getName(), nextStartedIntent.getComponent().getClassName());
-        assertTrue(nextStartedIntent.getBooleanExtra(Constants.PARAM_IS_KIT_STOCK_CARD, false));
     }
 }
