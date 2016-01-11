@@ -31,6 +31,7 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -109,7 +110,7 @@ public class ProductRepository {
 
     private void createKitProductsIfNotExist(Product product) throws LMISException {
         if (product.getKitProductList() != null && !product.getKitProductList().isEmpty()) {
-            for (KitProduct kitProduct: product.getKitProductList()) {
+            for (KitProduct kitProduct : product.getKitProductList()) {
                 createProductForKitIfNotExist(kitProduct);
                 KitProduct kitProductInDB = queryKitProductByCode(kitProduct.getKitCode(), kitProduct.getProductCode());
                 if (kitProductInDB == null) {
@@ -128,9 +129,8 @@ public class ProductRepository {
         }
     }
 
-
     protected KitProduct queryKitProductByCode(final String kitCode, final String productCode) throws LMISException {
-         return dbUtil.withDao(KitProduct.class, new DbUtil.Operation<KitProduct, KitProduct>() {
+        return dbUtil.withDao(KitProduct.class, new DbUtil.Operation<KitProduct, KitProduct>() {
             @Override
             public KitProduct operate(Dao<KitProduct, String> dao) throws SQLException {
                 return dao.queryBuilder().where().eq("kitCode", kitCode).and().eq("productCode", productCode).queryForFirst();
@@ -163,5 +163,21 @@ public class ProductRepository {
                 return dao.queryBuilder().where().eq("program_id", programId).query();
             }
         });
+    }
+
+    public List<Product> listKits() {
+        List<Product> activeProducts = new ArrayList<>();
+        try {
+            activeProducts = dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
+                @Override
+                public List<Product> operate(Dao<Product, String> dao) throws SQLException {
+                    return dao.queryBuilder().where().eq("isKit", true).query();
+                }
+            });
+            Collections.sort(activeProducts);
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+        return activeProducts;
     }
 }

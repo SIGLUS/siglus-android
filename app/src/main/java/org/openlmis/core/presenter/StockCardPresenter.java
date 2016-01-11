@@ -21,13 +21,16 @@ package org.openlmis.core.presenter;
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +51,8 @@ public class StockCardPresenter extends Presenter {
 
     @Inject
     StockRepository stockRepository;
+    @Inject
+    ProductRepository productRepository;
 
     Observer<List<StockCard>> afterLoadHandler = getLoadStockCardsSubscriber();
 
@@ -144,8 +149,31 @@ public class StockCardPresenter extends Presenter {
         stockRepository.updateProductOfStockCard(stockCard);
     }
 
-    public void createKitStockCards() {
-
+    public Observable<List<StockCard>> createKitStockCards() {
+        return Observable.create(new Observable.OnSubscribe<List<StockCard>>() {
+            @Override
+            public void call(Subscriber<? super List<StockCard>> subscriber) {
+                final List<Product> kits = productRepository.listKits();
+                subscriber.onNext(FluentIterable.from(kits).transform(new Function<Product, StockCard>() {
+                    @Override
+                    public StockCard apply(Product product) {
+                        StockCard stockCard = null;
+                        try {
+                            stockCard = stockRepository.queryStockCardByProductId(product.getId());
+                            if (stockCard == null) {
+                                stockCard = new StockCard();
+                                stockCard.setProduct(product);
+                                stockRepository.initStockCard(stockCard);
+                            }
+                        } catch (LMISException e) {
+                            e.reportToFabric();
+                        }
+                        return stockCard;
+                    }
+                }).toList());
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     public enum ArchiveStatus {

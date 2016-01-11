@@ -12,6 +12,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
+import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.robolectric.RuntimeEnvironment;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.RoboGuice;
+import rx.Observable;
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
@@ -28,11 +30,8 @@ import rx.schedulers.Schedulers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.after;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -46,18 +45,21 @@ public class StockCardPresenterTest {
 
     private StockCardPresenter presenter;
     private StockRepository stockRepository;
+    private ProductRepository productRepository;
     private StockCardPresenter.StockCardListView stockCardListView;
     private ArrayList<StockCard> stockCardList;
 
     @Before
     public void setUp() throws Exception {
         stockRepository = mock(StockRepository.class);
+        productRepository = mock(ProductRepository.class);
         stockCardListView = mock(StockCardPresenter.StockCardListView.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
             protected void configure() {
                 bind(StockRepository.class).toInstance(stockRepository);
+                bind(ProductRepository.class).toInstance(productRepository);
             }
         });
 
@@ -136,6 +138,31 @@ public class StockCardPresenterTest {
         afterLoadHandler.awaitTerminalEvent();
 
         assertEquals(2, afterLoadHandler.getOnNextEvents().get(0).size());
+    }
+
+    @Test
+    public void shouldCreateStockCardsForKitsIfNotExist() throws Exception {
+        //given
+        Product kit = new Product();
+        kit.setKit(true);
+        kit.setPrimaryName("kit a");
+        kit.setId(123);
+
+        ArrayList<Product> kits = new ArrayList<>();
+        kits.add(kit);
+        when(productRepository.listKits()).thenReturn(kits);
+        when(stockRepository.queryStockCardByProductId(123)).thenReturn(null);
+
+        //when
+        TestSubscriber<List<StockCard>> subscriber = new TestSubscriber();
+        Observable<List<StockCard>> kitStockCardsObservable = presenter.createKitStockCards();
+        kitStockCardsObservable.subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        //then
+        verify(stockRepository).initStockCard(any(StockCard.class));
+        StockCard createdKitStockCard = subscriber.getOnNextEvents().get(0).get(0);
+        assertThat(createdKitStockCard.getProduct().getPrimaryName()).isEqualTo("kit a");
     }
 
     private void testLoadStockCard(StockCardPresenter.ArchiveStatus status) throws LMISException {

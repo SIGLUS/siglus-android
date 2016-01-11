@@ -6,6 +6,6 @@ public class KitStockCardListFragment extends StockCardListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter.createKitStockCards();
+        presenter.createKitStockCards().subscribe();
     }
 }
