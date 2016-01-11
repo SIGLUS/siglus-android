@@ -96,6 +96,8 @@ public class RnRForm extends BaseModel {
     @DatabaseField
     private Date submittedTime;
 
+    private List<RnrKitItem> rnrKitItems;
+
     public boolean isDraft() {
         return getStatus() == STATUS.DRAFT;
     }

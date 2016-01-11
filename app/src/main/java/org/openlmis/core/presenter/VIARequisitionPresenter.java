@@ -34,6 +34,7 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
+import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
@@ -60,6 +61,9 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
     @Getter
     protected List<RequisitionFormItemViewModel> requisitionFormItemViewModels;
+
+    @Getter
+    private ViaKitsViewModel viaKitsViewModel;
 
     public VIARequisitionPresenter() {
         requisitionFormItemViewModels = new ArrayList<>();
@@ -186,6 +190,8 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             }
         }).toList();
         rnRForm.setRnrFormItemListWrapper(new ArrayList<>(rnrFormItems));
+
+        rnRForm.setRnrKitItems(viaKitsViewModel.toRnrKitItemList());
         if (!TextUtils.isEmpty(consultationNumbers)) {
             rnRForm.getBaseInfoItemListWrapper().get(0).setValue(Long.valueOf(consultationNumbers).toString());
         }
