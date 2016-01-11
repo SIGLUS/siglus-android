@@ -39,12 +39,19 @@ public class StockCardViewHolder extends BaseViewHolder {
     }
 
     public void populate(final StockCardViewModel stockCardViewModel, String queryKeyWord) {
+        setListener(stockCardViewModel);
+        initView(stockCardViewModel, queryKeyWord);
+    }
 
+    protected void initView(StockCardViewModel stockCardViewModel, String queryKeyWord) {
+        tvStockOnHand.setText(stockCardViewModel.getStockOnHand() + "");
         tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledName()));
         tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledUnit()));
 
-        initStockOnHand(stockCardViewModel);
+        initStockOnHandWarning(stockCardViewModel);
+    }
 
+    private void setListener(final StockCardViewModel stockCardViewModel) {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,8 +62,7 @@ public class StockCardViewHolder extends BaseViewHolder {
         });
     }
 
-    private void initStockOnHand(final StockCardViewModel stockCard) {
-        tvStockOnHand.setText(stockCard.getStockOnHand() + "");
+    private void initStockOnHandWarning(final StockCardViewModel stockCard) {
 
         int stockOnHandLevel = getStockOnHandLevel(stockCard);
         String warningMsg = null;
