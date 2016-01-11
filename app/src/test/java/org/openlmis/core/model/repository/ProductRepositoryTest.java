@@ -24,8 +24,10 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.KitProductBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.repository.ProductRepository.IsKit;
@@ -38,6 +40,13 @@ import roboguice.RoboGuice;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
@@ -45,9 +54,17 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
 
     private ProductRepository productRepository;
 
+    private SharedPreferenceMgr sharedPreferenceMgr;
+
+    private StockRepository stockRepository;
+
     @Before
     public void setUp() throws Exception {
+        sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
+        stockRepository = mock(StockRepository.class);
         productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
+        productRepository.sharedPreferenceMgr = sharedPreferenceMgr;
+        productRepository.stockRepository = stockRepository;
     }
 
     @Test
@@ -107,5 +124,27 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
 
         assertNotNull(productRepository.getByCode("P1"));
         assertNotNull(productRepository.queryKitProductByCode("KIT", "P1"));
+    }
+
+    @Test
+    public void shouldUpdateNotifyBannerListWhenSOHIsZeroAndProductIsDeactiveAndSOHIsZero() throws Exception {
+        //given
+        Product existingProduct = ProductBuilder.create().setCode("code").setIsActive(true).setIsArchived(true).build();
+        productRepository.createOrUpdate(existingProduct);
+
+        Product product = new Product();
+        product.setPrimaryName("name");
+        product.setActive(false);
+        product.setCode("code");
+
+        StockCard stockCard = new StockCard();
+        stockCard.setStockOnHand(0);
+        when(stockRepository.queryStockCardByProductId(anyLong())).thenReturn(stockCard);
+
+        //when
+        productRepository.createOrUpdate(product);
+
+        //then
+        verify(sharedPreferenceMgr).setIsNeedShowProductsUpdateBanner(true, "name");
     }
 }

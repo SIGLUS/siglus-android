@@ -25,8 +25,10 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
@@ -42,6 +44,12 @@ public class ProductRepository {
 
     @Inject
     DbUtil dbUtil;
+
+    @Inject
+    StockRepository stockRepository;
+
+    @Inject
+    SharedPreferenceMgr sharedPreferenceMgr;
 
     @Inject
     public ProductRepository(Context context) {
@@ -96,6 +104,7 @@ public class ProductRepository {
     public void createOrUpdate(Product product) throws LMISException {
         Product existingProduct = getByCode(product.getCode());
         if (existingProduct != null) {
+            updateDeactivateProductNotifyList(product, existingProduct.getId());
             product.setId(existingProduct.getId());
             product.setArchived(existingProduct.isArchived());
             genericDao.update(product);
@@ -104,6 +113,19 @@ public class ProductRepository {
         }
 
         createKitProductsIfNotExist(product);
+    }
+
+    private void updateDeactivateProductNotifyList(Product product, long existingProductId) throws LMISException {
+        if (product.isActive()) {
+            return;
+        }
+        StockCard stockCard = stockRepository.queryStockCardByProductId(existingProductId);
+        if (stockCard == null) {
+            return;
+        }
+        if (stockCard.getStockOnHand() == 0) {
+            sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, product.getPrimaryName());
+        }
     }
 
     private void createKitProductsIfNotExist(Product product) throws LMISException {
