@@ -33,7 +33,7 @@ import java.util.List;
 
 public class StockCardListAdapter extends InventoryListAdapter<StockCardViewHolder> {
 
-    private StockCardViewHolder.OnItemViewClickListener listener;
+    protected StockCardViewHolder.OnItemViewClickListener listener;
 
     public StockCardListAdapter(List<StockCardViewModel> stockCardViewModel, StockCardViewHolder.OnItemViewClickListener listener) {
         super(stockCardViewModel);
@@ -45,7 +45,7 @@ public class StockCardListAdapter extends InventoryListAdapter<StockCardViewHold
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_stockcard, parent, false);
 
-        return new StockCardViewHolder(view, listener);
+        return createViewHolder(view);
     }
 
     @Override
@@ -53,7 +53,6 @@ public class StockCardListAdapter extends InventoryListAdapter<StockCardViewHold
         final StockCardViewModel stockCardViewModel = currentList.get(position);
         holder.populate(stockCardViewModel, queryKeyWord);
     }
-
 
     public void sortBySOH(final boolean asc) {
 
@@ -93,4 +92,7 @@ public class StockCardListAdapter extends InventoryListAdapter<StockCardViewHold
         this.notifyDataSetChanged();
     }
 
+    protected StockCardViewHolder createViewHolder(View view) {
+        return new StockCardViewHolder(view, listener);
+    }
 }
