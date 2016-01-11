@@ -171,7 +171,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         unknownBStockCard.setProduct(productUnknownB);
 
         when(stockRepositoryMock.list()).thenReturn(Arrays.asList(stockCardVIA, stockCardMMIA));
-        when(productRepositoryMock.listActiveProducts()).thenReturn(Arrays.asList(productMMIA, productVIA, productUnknownB, productUnknownA));
+        when(productRepositoryMock.listActiveProducts(ProductRepository.IsKit.No)).thenReturn(Arrays.asList(productMMIA, productVIA, productUnknownB, productUnknownA));
         when(stockRepositoryMock.queryStockCardByProductId(10L)).thenReturn(stockCardMMIA);
 
         TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
@@ -191,7 +191,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         Product activeProduct2 = ProductBuilder.create().setPrimaryName("active product").setCode("P3").build();
 
         when(stockRepositoryMock.list()).thenReturn(new ArrayList<StockCard>());
-        when(productRepositoryMock.listActiveProducts()).thenReturn(Arrays.asList(activeProduct1, activeProduct2));
+        when(productRepositoryMock.listActiveProducts(ProductRepository.IsKit.No)).thenReturn(Arrays.asList(activeProduct1, activeProduct2));
 
         TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
         Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadInventory();
@@ -321,7 +321,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
     private ArrayList<StockCardViewModel> getStockCardViewModels() {
         ArrayList<StockCardViewModel> stockCardViewModels = new ArrayList<>();
-        stockCardViewModels.add(buildStockCardWithOutDraft(9,"11",null));
+        stockCardViewModels.add(buildStockCardWithOutDraft(9, "11", null));
         StockCardViewModel stockCardViewModelWithOutDraft = buildStockCardWithOutDraft(3, "15", "11/02/2015");
         stockCardViewModels.add(stockCardViewModelWithOutDraft);
         return stockCardViewModels;
@@ -350,8 +350,8 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         ArrayList<StockCardViewModel> stockCardViewModels = getStockCardViewModels();
         String signature = "signature";
         inventoryPresenter.doPhysicalInventory(stockCardViewModels, signature);
-        assertThat(stockCardViewModels.get(0).getSignature(),is(signature));
-        assertThat(stockCardViewModels.get(1).getSignature(),is(signature));
+        assertThat(stockCardViewModels.get(0).getSignature(), is(signature));
+        assertThat(stockCardViewModels.get(1).getSignature(), is(signature));
     }
 
     public class MyTestModule extends AbstractModule {

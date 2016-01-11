@@ -11,7 +11,7 @@ public class ProductBuilder {
         product.setActive(true);
     }
 
-    public static ProductBuilder create(){
+    public static ProductBuilder create() {
         return new ProductBuilder();
     }
 
@@ -65,6 +65,11 @@ public class ProductBuilder {
 
     public ProductBuilder setIsActive(boolean active) {
         product.setActive(active);
+        return this;
+    }
+
+    public ProductBuilder setIsKit(boolean isKit) {
+        product.setKit(isKit);
         return this;
     }
 }

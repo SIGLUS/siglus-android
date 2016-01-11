@@ -32,6 +32,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.model.repository.ProductRepository.IsKit;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
@@ -93,7 +94,7 @@ public class InventoryPresenter extends Presenter {
 
     @NonNull
     private List<Product> getValidProductsForInventory() throws LMISException {
-        List<Product> activeProducts = productRepository.listActiveProducts();
+        List<Product> activeProducts = productRepository.listActiveProducts(IsKit.No);
         final List<Product> productsWithStockCards = getProductsThatHaveStockCards();
 
         return FluentIterable.from(activeProducts).filter(new Predicate<Product>() {
@@ -305,7 +306,7 @@ public class InventoryPresenter extends Presenter {
     }
 
     private void checkDeActive(StockCard stockCard) {
-        if(stockCard.getStockOnHand()==0 && !stockCard.getProduct().isActive()){
+        if (stockCard.getStockOnHand() == 0 && !stockCard.getProduct().isActive()) {
             SharedPreferenceMgr.getInstance().setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
         }
     }

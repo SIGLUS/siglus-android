@@ -8,6 +8,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.repository.ProductRepository.IsKit;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
 
         //then
         assertThat(programRepository.list().size(), is(1));
-        assertThat(productRepository.listActiveProducts().size(), is(1));
+        assertThat(productRepository.listActiveProducts(IsKit.No).size(), is(1));
 
         //when add product to existing program
         Product newProduct = new Product();
@@ -67,8 +68,8 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
 
         //then
         assertThat(programRepository.list().size(), is(1));
-        assertThat(productRepository.listActiveProducts().size(), is(2));
-        assertThat(productRepository.listActiveProducts().get(1).getPrimaryName(), is("Test Product2"));
+        assertThat(productRepository.listActiveProducts(IsKit.No).size(), is(2));
+        assertThat(productRepository.listActiveProducts(IsKit.No).get(1).getPrimaryName(), is("Test Product2"));
 
         //when update existing product
         newProduct.setPrimaryName("Test Product2 Updated");
@@ -76,8 +77,8 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
 
         //then
         assertThat(programRepository.list().size(), is(1));
-        assertThat(productRepository.listActiveProducts().size(), is(2));
-        assertThat(productRepository.listActiveProducts().get(1).getPrimaryName(), is("Test Product2 Updated"));
+        assertThat(productRepository.listActiveProducts(IsKit.No).size(), is(2));
+        assertThat(productRepository.listActiveProducts(IsKit.No).get(1).getPrimaryName(), is("Test Product2 Updated"));
     }
 
 }

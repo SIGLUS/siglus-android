@@ -50,12 +50,11 @@ public class ProductRepository {
         kitProductGenericDao = new GenericDao<>(KitProduct.class, context);
     }
 
-    public List<Product> listActiveProducts() throws LMISException {
-
+    public List<Product> listActiveProducts(final IsKit isKit) throws LMISException {
         List<Product> activeProducts = dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
             @Override
             public List<Product> operate(Dao<Product, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("isActive", true).query();
+                return dao.queryBuilder().where().eq("isActive", true).and().eq("isKit", isKit.isKit()).query();
             }
         });
         Collections.sort(activeProducts);
@@ -179,5 +178,20 @@ public class ProductRepository {
             e.reportToFabric();
         }
         return activeProducts;
+    }
+
+    public enum IsKit {
+        Yes(true),
+        No(false);
+
+        public boolean isKit() {
+            return isKit;
+        }
+
+        private boolean isKit;
+
+        IsKit(boolean isKit) {
+            this.isKit = isKit;
+        }
     }
 }

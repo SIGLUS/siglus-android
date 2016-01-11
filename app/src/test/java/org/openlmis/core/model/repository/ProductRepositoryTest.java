@@ -28,13 +28,16 @@ import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.KitProductBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
+import org.openlmis.core.model.repository.ProductRepository.IsKit;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.List;
 
 import roboguice.RoboGuice;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
@@ -57,9 +60,21 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
         productRepository.createOrUpdate(product2);
         productRepository.createOrUpdate(product3);
 
-        List<Product> activeProducts = productRepository.listActiveProducts();
+        List<Product> activeProducts = productRepository.listActiveProducts(IsKit.No);
 
         assertEquals(2, activeProducts.size());
+    }
+
+    @Test
+    public void shouldGetKits() throws Exception {
+        Product kitProduct = ProductBuilder.create().setCode("kitCode1").setIsActive(true).setIsKit(true).build();
+
+        productRepository.createOrUpdate(kitProduct);
+
+        List<Product> kits = productRepository.listActiveProducts(IsKit.Yes);
+
+        assertEquals(1, kits.size());
+        assertEquals("kitCode1", kits.get(0).getCode());
     }
 
     @Test
