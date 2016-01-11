@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <bool name="feature_show_pop_up_even_no_data_changed_418">true</bool>
-    <bool name="feature_sync_back_stock_movement_273">false</bool>
+    <bool name="feature_sync_back_stock_movement_273">true</bool>
     <bool name="feature_sync_back_latest_product_list">false</bool>
     <bool name="feature_show_kit_on_via_rnr_372">false</bool>
     <bool name="feature_kit">false</bool>
