@@ -13,6 +13,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.model.repository.ProductRepository.IsKit;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.robolectric.RuntimeEnvironment;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.RoboGuice;
-import rx.Observable;
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
@@ -150,13 +150,13 @@ public class StockCardPresenterTest {
 
         ArrayList<Product> kits = new ArrayList<>();
         kits.add(kit);
-        when(productRepository.listKits()).thenReturn(kits);
+        when(productRepository.listActiveProducts(IsKit.Yes)).thenReturn(kits);
         when(stockRepository.queryStockCardByProductId(123)).thenReturn(null);
 
         //when
         TestSubscriber<List<StockCard>> subscriber = new TestSubscriber();
-        Observable<List<StockCard>> kitStockCardsObservable = presenter.createKitStockCards();
-        kitStockCardsObservable.subscribe(subscriber);
+        presenter.afterLoadHandler = subscriber;
+        presenter.loadKits();
         subscriber.awaitTerminalEvent();
 
         //then

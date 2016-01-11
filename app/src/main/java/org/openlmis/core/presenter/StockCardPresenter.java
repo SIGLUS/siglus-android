@@ -68,7 +68,13 @@ public class StockCardPresenter extends Presenter {
 
     public void loadStockCards(ArchiveStatus status) {
         view.loading();
-        Subscription subscription = getLoadStockCardsObserver(status).subscribe(afterLoadHandler);
+        Subscription subscription = getLoadStockCardsObservable(status).subscribe(afterLoadHandler);
+        subscriptions.add(subscription);
+    }
+
+    public void loadKits() {
+        view.loading();
+        Subscription subscription = createOrGetKitStockCardsObservable().subscribe(afterLoadHandler);
         subscriptions.add(subscription);
     }
 
@@ -85,7 +91,12 @@ public class StockCardPresenter extends Presenter {
         view = (StockCardListView) v;
     }
 
-    private Observable<List<StockCard>> getLoadStockCardsObserver(final ArchiveStatus status) {
+    public void archiveBackStockCard(StockCard stockCard) {
+        stockCard.getProduct().setArchived(false);
+        stockRepository.updateProductOfStockCard(stockCard);
+    }
+
+    private Observable<List<StockCard>> getLoadStockCardsObservable(final ArchiveStatus status) {
         return Observable.create(new Observable.OnSubscribe<List<StockCard>>() {
             @Override
             public void call(Subscriber<? super List<StockCard>> subscriber) {
@@ -144,12 +155,7 @@ public class StockCardPresenter extends Presenter {
         };
     }
 
-    public void archiveBackStockCard(StockCard stockCard) {
-        stockCard.getProduct().setArchived(false);
-        stockRepository.updateProductOfStockCard(stockCard);
-    }
-
-    public Observable<List<StockCard>> createKitStockCards() {
+    private Observable<List<StockCard>> createOrGetKitStockCardsObservable() {
         return Observable.create(new Observable.OnSubscribe<List<StockCard>>() {
             @Override
             public void call(Subscriber<? super List<StockCard>> subscriber) {

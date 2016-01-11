@@ -91,46 +91,6 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
         initView(view);
     }
 
-    private void initView(View view) {
-        sortSpinner = (Spinner) view.findViewById(R.id.sort_spinner);
-        stockCardRecycleView = (RecyclerView) view.findViewById(R.id.products_list);
-        stockCardViewModels = presenter.getStockCardViewModels();
-        mAdapter = new StockCardListAdapter(stockCardViewModels, onItemViewClickListener);
-
-        initProductList();
-        initSortSpinner();
-    }
-
-    private StockCardViewHolder.OnItemViewClickListener onItemViewClickListener = new StockCardViewHolder.OnItemViewClickListener() {
-        @Override
-        public void onItemViewClick(StockCardViewModel stockCardViewModel) {
-            Intent intent = StockMovementActivity.getIntentToMe(getActivity(),
-                    stockCardViewModel.getStockCardId(),
-                    stockCardViewModel.getProduct().getFormattedProductName(),
-                    stockCardViewModel.getProduct().isActive());
-
-            startActivityForResult(intent, Constants.REQUEST_CODE_CHANGE);
-        }
-    };
-
-
-    private void initProductList() {
-        stockCardRecycleView.setHasFixedSize(true);
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        stockCardRecycleView.setLayoutManager(mLayoutManager);
-        stockCardRecycleView.setAdapter(mAdapter);
-
-        presenter.loadStockCards(Active);
-    }
-
-    private void initSortSpinner() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.sort_items_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sortSpinner.setAdapter(adapter);
-        sortSpinner.setOnItemSelectedListener(this);
-    }
-
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         currentPosition = position;
@@ -169,12 +129,55 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_CODE_CHANGE) {
             presenter.refreshStockCardViewModelsSOH();
-            presenter.loadStockCards(Active);
+            loadStockCards();
             mAdapter.notifyDataSetChanged();
         }
     }
 
     public void onSearch(String query) {
         mAdapter.filter(query);
+    }
+
+    protected void loadStockCards() {
+        presenter.loadStockCards(Active);
+    }
+
+    private void initView(View view) {
+        sortSpinner = (Spinner) view.findViewById(R.id.sort_spinner);
+        stockCardRecycleView = (RecyclerView) view.findViewById(R.id.products_list);
+        stockCardViewModels = presenter.getStockCardViewModels();
+        mAdapter = new StockCardListAdapter(stockCardViewModels, onItemViewClickListener);
+
+        initProductList();
+        initSortSpinner();
+    }
+
+    private void initProductList() {
+        stockCardRecycleView.setHasFixedSize(true);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        stockCardRecycleView.setLayoutManager(mLayoutManager);
+        stockCardRecycleView.setAdapter(mAdapter);
+
+        loadStockCards();
+    }
+
+    private StockCardViewHolder.OnItemViewClickListener onItemViewClickListener = new StockCardViewHolder.OnItemViewClickListener() {
+        @Override
+        public void onItemViewClick(StockCardViewModel stockCardViewModel) {
+            Intent intent = StockMovementActivity.getIntentToMe(getActivity(),
+                    stockCardViewModel.getStockCardId(),
+                    stockCardViewModel.getProduct().getFormattedProductName(),
+                    stockCardViewModel.getProduct().isActive());
+
+            startActivityForResult(intent, Constants.REQUEST_CODE_CHANGE);
+        }
+    };
+
+    private void initSortSpinner() {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.sort_items_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sortSpinner.setAdapter(adapter);
+        sortSpinner.setOnItemSelectedListener(this);
     }
 }

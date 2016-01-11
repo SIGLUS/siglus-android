@@ -42,6 +42,6 @@ public class KitStockCardListFragmentTest {
 
     @Test
     public void shouldCreateStockCardsForKitsIfNotExist() throws Exception {
-        verify(mockStockCardPresenter).createKitStockCards();
+        verify(mockStockCardPresenter).loadKits();
     }
 }

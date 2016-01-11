@@ -31,7 +31,6 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -162,22 +161,6 @@ public class ProductRepository {
                 return dao.queryBuilder().where().eq("program_id", programId).query();
             }
         });
-    }
-
-    public List<Product> listKits() {
-        List<Product> activeProducts = new ArrayList<>();
-        try {
-            activeProducts = dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
-                @Override
-                public List<Product> operate(Dao<Product, String> dao) throws SQLException {
-                    return dao.queryBuilder().where().eq("isKit", true).query();
-                }
-            });
-            Collections.sort(activeProducts);
-        } catch (LMISException e) {
-            e.reportToFabric();
-        }
-        return activeProducts;
     }
 
     public enum IsKit {
