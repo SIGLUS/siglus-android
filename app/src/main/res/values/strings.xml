@@ -44,6 +44,7 @@
 
     <!-- Home Page -->
     <string name="label_stock_cards">Stock Card Overview</string>
+    <string name="label_kits_stock_cards">KITS</string>
     <string name="label_mmia">Create a MMIA</string>
     <string name="label_sync">Sync Data</string>
     <string name="action_add_new_drug">Add new product</string>

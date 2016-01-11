@@ -34,6 +34,7 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.repository.MMIARepository;
@@ -80,6 +81,9 @@ public class HomeActivity extends BaseActivity {
     @InjectView(R.id.btn_via_list)
     Button btnVIAList;
 
+    @InjectView(R.id.btn_kit_stock_card)
+    Button btnKitStockCard;
+
     @InjectResource(R.integer.back_twice_interval)
     int BACK_TWICE_INTERVAL;
 
@@ -99,6 +103,10 @@ public class HomeActivity extends BaseActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.INTENT_FILTER_SET_SYNCED_TIME);
         registerReceiver(syncedTimeReceiver, filter);
+
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_kit)) {
+            btnKitStockCard.setVisibility(View.GONE);
+        }
     }
 
     BroadcastReceiver syncedTimeReceiver = new BroadcastReceiver() {
@@ -122,6 +130,10 @@ public class HomeActivity extends BaseActivity {
         Intent intent = new Intent(HomeActivity.this, InventoryActivity.class);
         intent.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
         startActivity(intent);
+    }
+
+    public void onClickKitStockCard(View view) {
+
     }
 
     public void onClickMMIA(View view) {
