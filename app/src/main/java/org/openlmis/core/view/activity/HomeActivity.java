@@ -126,15 +126,15 @@ public class HomeActivity extends BaseActivity {
         startActivity(StockCardListActivity.class);
     }
 
-    public void onClickInventory(View view) {
-        Intent intent = new Intent(HomeActivity.this, InventoryActivity.class);
-        intent.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
-        startActivity(intent);
-    }
-
     public void onClickKitStockCard(View view) {
         Intent intent = new Intent(this, StockCardListActivity.class);
         intent.putExtra(Constants.PARAM_IS_KIT_STOCK_CARD, true);
+        startActivity(intent);
+    }
+
+    public void onClickInventory(View view) {
+        Intent intent = new Intent(HomeActivity.this, InventoryActivity.class);
+        intent.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
         startActivity(intent);
     }
 

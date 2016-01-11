@@ -23,12 +23,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 
 import org.openlmis.core.R;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.fragment.KitStockCardListFragment;
 import org.openlmis.core.view.fragment.StockCardListFragment;
 
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_stockcard_list)
 public class StockCardListActivity extends SearchBarActivity {
@@ -37,10 +40,20 @@ public class StockCardListActivity extends SearchBarActivity {
     protected static final int MENU_ID_ARCHIVE_LIST = 200;
     protected StockCardListFragment stockCardFragment;
 
+    @InjectView(R.id.stock_card_container)
+    FrameLayout container;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        stockCardFragment = (StockCardListFragment) getFragmentManager().findFragmentById(R.id.stock_card_list);
+
+        if (getIntent().getBooleanExtra(Constants.PARAM_IS_KIT_STOCK_CARD, false)) {
+            stockCardFragment = new KitStockCardListFragment();
+        } else {
+            stockCardFragment = new StockCardListFragment();
+        }
+
+        getFragmentManager().beginTransaction().replace(R.id.stock_card_container, stockCardFragment).commit();
     }
 
     @Override

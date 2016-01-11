@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.fragment.KitStockCardListFragment;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowApplication;
@@ -21,7 +22,11 @@ public class StockCardListActivityTest {
 
     @Before
     public void setUp() {
-        stockCardListActivity = Robolectric.buildActivity(StockCardListActivity.class).create().get();
+        stockCardListActivity = buildActivity(new Intent());
+    }
+
+    private StockCardListActivity buildActivity(Intent intent) {
+        return Robolectric.buildActivity(StockCardListActivity.class).withIntent(intent).create().get();
     }
 
     @Test
@@ -54,5 +59,16 @@ public class StockCardListActivityTest {
 
         assertThat(intent.getComponent().getClassName()).isEqualTo(StockCardListActivity.class.getName());
         assertThat(intent.getFlags()).isEqualTo(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    }
+
+    @Test
+    public void shouldLoadKitStockOverviewFragment() throws Exception {
+        //given
+        Intent intent = new Intent();
+        intent.putExtra(Constants.PARAM_IS_KIT_STOCK_CARD, true);
+        StockCardListActivity stockCardListActivity = buildActivity(intent);
+
+        //then
+        assertThat(stockCardListActivity.stockCardFragment).isInstanceOf(KitStockCardListFragment.class);
     }
 }

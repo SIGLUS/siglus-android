@@ -359,7 +359,7 @@ public class StockRepository {
         return (int) Math.ceil(calculateAverageMonthlyConsumption(stockCard) * 0.05);
     }
 
-    public int getCmm(StockCard stockCard){
+    public int getCmm(StockCard stockCard) {
         return (int) Math.ceil(calculateAverageMonthlyConsumption(stockCard));
     }
 
