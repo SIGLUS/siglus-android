@@ -123,7 +123,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     public void onClickStockCard(View view) {
-        startActivity(StockCardListActivity.class, false);
+        startActivity(StockCardListActivity.class);
     }
 
     public void onClickInventory(View view) {
@@ -133,7 +133,9 @@ public class HomeActivity extends BaseActivity {
     }
 
     public void onClickKitStockCard(View view) {
-
+        Intent intent = new Intent(this, StockCardListActivity.class);
+        intent.putExtra(Constants.PARAM_IS_KIT_STOCK_CARD, true);
+        startActivity(intent);
     }
 
     public void onClickMMIA(View view) {

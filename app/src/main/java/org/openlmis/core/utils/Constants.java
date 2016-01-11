@@ -30,6 +30,7 @@ public final class Constants {
     public static final String PARAM_PROGRAM_CODE = "programCode";
     public static final String PARAM_FORM_ID = "formId";
     public static final String PARAM_IS_FROM_ARCHIVE = "isFromArchive";
+    public static final String PARAM_IS_KIT_STOCK_CARD = "isKitStockCard";
 
     // Request Params
     public static final int REQUEST_CODE_CHANGE = 100;
