@@ -72,6 +72,14 @@ public class SharedPreferenceMgrTest {
         assertThat(lastMonthStockDataSynced, is(true));
     }
 
+    @Test
+    public void shouldNotSaveProductNameToProductUpdateBannerListWhenTheNameExisting(){
+        sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true,"product");
+        assertThat(sharedPreferenceMgr.getShowUpdateBannerTexts().size(),is(1));
+        assertThat(sharedPreferenceMgr.getShowUpdateBannerTexts().toArray()[0].toString(),is("product"));
+    }
+
+
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
