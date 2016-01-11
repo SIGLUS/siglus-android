@@ -48,6 +48,7 @@ public class StockCardListActivity extends SearchBarActivity {
         super.onCreate(savedInstanceState);
 
         if (getIntent().getBooleanExtra(Constants.PARAM_IS_KIT_STOCK_CARD, false)) {
+            setTitle(R.string.title_kit_stock_cards);
             stockCardFragment = new KitStockCardListFragment();
         } else {
             stockCardFragment = new StockCardListFragment();

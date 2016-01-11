@@ -22,10 +22,12 @@ public class StockCardListActivityTest {
 
     @Before
     public void setUp() {
-        stockCardListActivity = buildActivity(new Intent());
+        stockCardListActivity = buildActivity(false);
     }
 
-    private StockCardListActivity buildActivity(Intent intent) {
+    private StockCardListActivity buildActivity(boolean isKit) {
+        Intent intent = new Intent();
+        intent.putExtra(Constants.PARAM_IS_KIT_STOCK_CARD, isKit);
         return Robolectric.buildActivity(StockCardListActivity.class).withIntent(intent).create().get();
     }
 
@@ -64,11 +66,15 @@ public class StockCardListActivityTest {
     @Test
     public void shouldLoadKitStockOverviewFragment() throws Exception {
         //given
-        Intent intent = new Intent();
-        intent.putExtra(Constants.PARAM_IS_KIT_STOCK_CARD, true);
-        StockCardListActivity stockCardListActivity = buildActivity(intent);
+        StockCardListActivity stockCardListActivity = buildActivity(true);
 
         //then
         assertThat(stockCardListActivity.stockCardFragment).isInstanceOf(KitStockCardListFragment.class);
+    }
+
+    @Test
+    public void shouldShowKitOverviewTitle() throws Exception {
+        StockCardListActivity stockCardListActivity = buildActivity(true);
+        assertThat(stockCardListActivity.getTitle().toString()).isEqualTo("Kit Overview");
     }
 }
