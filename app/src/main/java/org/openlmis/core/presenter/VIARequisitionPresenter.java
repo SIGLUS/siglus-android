@@ -185,15 +185,15 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
     public void saveVIAForm(String consultationNumbers) {
         view.loading();
-        ImmutableList<RnrFormItem> rnrFormItems = from(requisitionFormItemViewModels).transform(new Function<RequisitionFormItemViewModel, RnrFormItem>() {
+        List<RnrFormItem> rnrFormItems = from(requisitionFormItemViewModels).transform(new Function<RequisitionFormItemViewModel, RnrFormItem>() {
             @Override
             public RnrFormItem apply(RequisitionFormItemViewModel requisitionFormItemViewModel) {
                 return requisitionFormItemViewModel.toRnrFormItem();
             }
         }).toList();
+        rnrFormItems.addAll(viaKitsViewModel.convertToRnrItems());
         rnRForm.setRnrFormItemListWrapper(new ArrayList<>(rnrFormItems));
 
-//        rnRForm.setRnrKitItems(viaKitsViewModel.toRnrFormItemList());
         if (!TextUtils.isEmpty(consultationNumbers)) {
             rnRForm.getBaseInfoItemListWrapper().get(0).setValue(Long.valueOf(consultationNumbers).toString());
         }

@@ -2,6 +2,7 @@ package org.openlmis.core.view.viewmodel;
 
 import org.openlmis.core.model.RnrFormItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -17,12 +18,16 @@ public class ViaKitsViewModel {
 
     private String kitsOpenedCHW;
 
+    private List<RnrFormItem> kitItems = new ArrayList<>();
+
     public static final String US_KIT = "SCOD10";
 
     public static final String APE_KIT = "SCOD12";
 
     public void convertRnrKitItemsToViaKit(List<RnrFormItem> rnrKitItems) {
-        for (RnrFormItem rnrKitItem: rnrKitItems) {
+        kitItems = rnrKitItems;
+
+        for (RnrFormItem rnrKitItem : rnrKitItems) {
             if (US_KIT.equals(rnrKitItem.getProduct().getCode())) {
                 kitsOpenedHF = String.valueOf(rnrKitItem.getIssued());
                 kitsReceivedHF = String.valueOf(rnrKitItem.getReceived());
@@ -33,28 +38,17 @@ public class ViaKitsViewModel {
         }
     }
 
-//    public List<RnrFormItem> toRnrFormItemList() {
-//
-//        RnrFormItem kitHFItem= new RnrFormItem();
-//
-//        kitHFItem.setKitCode(RnrKitItem.US_KIT);
-//
-//        if (!TextUtils.isEmpty(kitsReceivedHF)) {
-//            kitHFItem.setKitsReceived(Integer.parseInt(kitsReceivedHF));
-//        }
-//        if (!TextUtils.isEmpty(kitsOpenedHF)) {
-//            kitHFItem.setKitsOpened(Integer.parseInt(kitsOpenedHF));
-//        }
-//
-//        RnrKitItem kitCHWItem= new RnrKitItem();
-//        kitCHWItem.setKitCode(RnrKitItem.APE_KIT);
-//
-//        if (!TextUtils.isEmpty(kitsReceivedCHW)) {
-//            kitCHWItem.setKitsReceived(Integer.parseInt(kitsReceivedCHW));
-//        }
-//        if (!TextUtils.isEmpty(kitsOpenedCHW)) {
-//            kitCHWItem.setKitsOpened(Integer.parseInt(kitsOpenedCHW));
-//        }
-//        return newArrayList(kitHFItem, kitCHWItem);
-//    }
+    public List<RnrFormItem> convertToRnrItems() {
+        for (RnrFormItem rnrFormItem : kitItems) {
+            if (US_KIT.equals(rnrFormItem.getProduct().getCode())) {
+                rnrFormItem.setIssued(Long.parseLong(kitsOpenedHF));
+                rnrFormItem.setReceived(Long.parseLong(kitsReceivedHF));
+            } else if (APE_KIT.equals(rnrFormItem.getProduct().getCode())) {
+                rnrFormItem.setIssued(Long.parseLong(kitsOpenedCHW));
+                rnrFormItem.setReceived(Long.parseLong(kitsReceivedCHW));
+            }
+        }
+
+        return kitItems;
+    }
 }
