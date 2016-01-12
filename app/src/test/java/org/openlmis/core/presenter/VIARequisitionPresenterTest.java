@@ -21,6 +21,8 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.AbstractModule;
 
+import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -311,18 +313,28 @@ public class VIARequisitionPresenterTest {
 
     @Test
     public void shouldNotShowErrorMSGWhenThereWasNoARequisitionInTheSamePeriod() throws Exception {
-        BaseInfoItem baseInfoItem = new BaseInfoItem();
-        baseInfoItem.setValue("123");
-        ArrayList<BaseInfoItem> items = newArrayList(baseInfoItem);
-
-        RnRForm rnRForm = mock(RnRForm.class);
+        RnRForm rnRForm = new RnRForm();
+        rnRForm.setBaseInfoItemListWrapper(newArrayList(new BaseInfoItem()));
         presenter.rnRForm = rnRForm;
-        when(rnRForm.getBaseInfoItemListWrapper()).thenReturn(items);
 
-        presenter.rnRForm = rnRForm;
+        List<RequisitionFormItemViewModel> list = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            list.add(new RequisitionFormItemViewModel(createRnrFormItem(i)));
+            list.get(i).setRequestAmount(String.valueOf(i));
+        }
+
+        ViaKitsViewModel viaKitsViewModel = buildDefaultViaKit();
+        presenter.setViaKitsViewModel(viaKitsViewModel);
+        presenter.requisitionFormItemViewModels = list;
+
         when(mockRnrFormRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(true);
+        when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
+        when(VIARequisitionFragment.validateKitData()).thenReturn(true);
+
         presenter.processRequisition("123");
+
         verify(VIARequisitionFragment, never()).showErrorMessage(anyString());
+        Assert.assertEquals(5, presenter.rnRForm.getRnrFormItemListWrapper().size());
     }
 
     @Test
