@@ -34,7 +34,6 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.Presenter;
@@ -140,7 +139,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
             loadStockCards();
             mAdapter.notifyDataSetChanged();
 
-            if (!sharedPreferenceMgr.isNeedShowProductsUpdateBanner() || !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_show_products_update_banner_529)) {
+            if (!sharedPreferenceMgr.isNeedShowProductsUpdateBanner()) {
                 return;
             }
             if (productsUpdateBanner.getVisibility() == View.GONE) {

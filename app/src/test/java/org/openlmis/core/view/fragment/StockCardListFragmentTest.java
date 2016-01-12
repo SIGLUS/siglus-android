@@ -25,9 +25,7 @@ import android.view.View;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
@@ -62,8 +60,6 @@ public class StockCardListFragmentTest {
         productUpdateBanner = mock(ProductsUpdateBanner.class);
         sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
         fragment.sharedPreferenceMgr = sharedPreferenceMgr;
-
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_show_products_update_banner_529, true);
 
         stockCardViewModels = new ArrayList<>();
         for (int i = 0; i < 10; i++) {

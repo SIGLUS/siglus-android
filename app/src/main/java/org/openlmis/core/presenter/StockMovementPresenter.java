@@ -60,9 +60,11 @@ public class StockMovementPresenter extends Presenter {
 
     StockMovementView view;
 
-
     @Inject
     Context context;
+
+    @Inject
+    SharedPreferenceMgr sharedPreferenceMgr;
 
     public StockMovementPresenter() {
         stockMovementModelList = new ArrayList<>();
@@ -138,9 +140,9 @@ public class StockMovementPresenter extends Presenter {
 
 
     private void saveStockMovement(StockMovementItem stockMovementItem) throws LMISException {
-
-        if (stockCard.getStockOnHand() == 0 && !stockCard.getProduct().isActive()) {
-            SharedPreferenceMgr.getInstance().setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
+        
+        if(stockCard.getStockOnHand()==0 && !stockCard.getProduct().isActive()){
+            sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
         }
 
         stockRepository.addStockMovementAndUpdateStockCard(stockCard, stockMovementItem);

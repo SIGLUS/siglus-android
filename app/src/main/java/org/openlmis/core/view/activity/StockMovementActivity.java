@@ -150,10 +150,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         } else {
             banner.setVisibility(View.VISIBLE);
         }
-
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_show_products_update_banner_529)) {
-            banner.setVisibility(View.GONE);
-        }
     }
 
     @Override
