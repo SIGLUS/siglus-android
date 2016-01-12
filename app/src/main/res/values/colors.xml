@@ -41,6 +41,6 @@
     <color name="color_warning">#FFDE80</color>
     <color name="color_draft_title">#9E9E9E</color>
     <color name="color_warning_banner">#FCF8E2</color>
-    <color name="color_warning_text"> #8B6E37</color>
+    <color name="color_warning_text">#8B6E37</color>
 
 </resources>
