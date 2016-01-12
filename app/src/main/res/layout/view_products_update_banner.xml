@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/color_warning"
+    android:background="@color/color_warning_banner"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:padding="@dimen/padding_small">
@@ -10,6 +10,7 @@
     <TextView
         android:id="@+id/tv_product_update"
         android:layout_width="wrap_content"
+        android:textColor="@color/color_warning_text"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
