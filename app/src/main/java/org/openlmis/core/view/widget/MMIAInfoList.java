@@ -37,14 +37,15 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MMIAInfoList extends LinearLayout {
     private Context context;
     EditText totalPatientsView = null;
-    private ArrayList<EditText> editTexts = new ArrayList<>();
+    private List<EditText> editTexts = new ArrayList<>();
     private BaseInfoItem totalPatientsItem;
     private LayoutInflater layoutInflater;
-    private ArrayList<BaseInfoItem> dataList;
+    private List<BaseInfoItem> dataList;
     private boolean hasDataChanged = false;
 
     public MMIAInfoList(Context context) {
@@ -67,7 +68,7 @@ public class MMIAInfoList extends LinearLayout {
         layoutInflater = LayoutInflater.from(context);
     }
 
-    public void initView(ArrayList<BaseInfoItem> list) {
+    public void initView(List<BaseInfoItem> list) {
         this.dataList = list;
         addHeaderView();
 
@@ -143,7 +144,7 @@ public class MMIAInfoList extends LinearLayout {
         return hasDataChanged;
     }
 
-    public ArrayList<BaseInfoItem> getDataList() {
+    public List<BaseInfoItem> getDataList() {
         return dataList;
     }
 

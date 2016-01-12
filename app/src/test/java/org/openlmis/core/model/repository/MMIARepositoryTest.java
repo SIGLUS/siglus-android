@@ -126,14 +126,14 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldSaveSuccess() throws Exception {
         RnRForm initForm = mmiaRepository.initRnrForm();
-        ArrayList<RegimenItem> regimenItemListWrapper = initForm.getRegimenItemListWrapper();
+        List<RegimenItem> regimenItemListWrapper = initForm.getRegimenItemListWrapper();
 
         for (int i = 0; i < regimenItemListWrapper.size(); i++) {
             RegimenItem item = regimenItemListWrapper.get(i);
             item.setAmount((long) i);
         }
 
-        ArrayList<BaseInfoItem> baseInfoItemListWrapper = initForm.getBaseInfoItemListWrapper();
+        List<BaseInfoItem> baseInfoItemListWrapper = initForm.getBaseInfoItemListWrapper();
         for (int i = 0; i < baseInfoItemListWrapper.size(); i++) {
             BaseInfoItem item = baseInfoItemListWrapper.get(i);
             item.setValue(String.valueOf(i));

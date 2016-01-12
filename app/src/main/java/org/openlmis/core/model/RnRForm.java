@@ -53,21 +53,21 @@ public class RnRForm extends BaseModel {
 
     @Expose
     @SerializedName("products")
-    private ArrayList<RnrFormItem> rnrFormItemListWrapper;
+    private List<RnrFormItem> rnrFormItemListWrapper;
 
     @ForeignCollectionField()
     private ForeignCollection<RegimenItem> regimenItemList;
 
     @Expose
     @SerializedName("regimens")
-    private ArrayList<RegimenItem> regimenItemListWrapper;
+    private List<RegimenItem> regimenItemListWrapper;
 
     @ForeignCollectionField()
     private ForeignCollection<BaseInfoItem> baseInfoItemList;
 
     @Expose
     @SerializedName("patientQuantifications")
-    private ArrayList<BaseInfoItem> baseInfoItemListWrapper;
+    private List<BaseInfoItem> baseInfoItemListWrapper;
 
     @Expose
     @SerializedName("clientSubmittedNotes")
@@ -128,17 +128,17 @@ public class RnRForm extends BaseModel {
         return totalRegimenNumber;
     }
 
-    public ArrayList<RnrFormItem> getRnrFormItemListWrapper() {
+    public List<RnrFormItem> getRnrFormItemListWrapper() {
         rnrFormItemListWrapper = wrapOrEmpty(rnrFormItemList, rnrFormItemListWrapper);
         return rnrFormItemListWrapper;
     }
 
-    public ArrayList<BaseInfoItem> getBaseInfoItemListWrapper() {
+    public List<BaseInfoItem> getBaseInfoItemListWrapper() {
         baseInfoItemListWrapper = wrapOrEmpty(baseInfoItemList, baseInfoItemListWrapper);
         return baseInfoItemListWrapper;
     }
 
-    public ArrayList<RegimenItem> getRegimenItemListWrapper() {
+    public List<RegimenItem> getRegimenItemListWrapper() {
         regimenItemListWrapper = wrapOrEmpty(regimenItemList, regimenItemListWrapper);
         return regimenItemListWrapper;
     }
@@ -183,7 +183,7 @@ public class RnRForm extends BaseModel {
         }).toList();
     }
 
-    private <T> ArrayList<T> wrapOrEmpty(ForeignCollection<T> origin, ArrayList<T> target) {
+    private <T> List<T> wrapOrEmpty(ForeignCollection<T> origin, List<T> target) {
         if (target == null) {
             return (origin == null ? new ArrayList<T>() : new ArrayList<>(origin));
         }

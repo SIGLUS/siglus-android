@@ -29,7 +29,7 @@ import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.view.BaseView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import roboguice.RoboGuice;
 import rx.Observable;
@@ -96,7 +96,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         }
     }
 
-    public void processRequisition(ArrayList<RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) {
+    public void processRequisition(List<RegimenItem> regimenItemList, List<BaseInfoItem> baseInfoItemList, String comments) {
         rnRForm.setRegimenItemListWrapper(regimenItemList);
         rnRForm.setBaseInfoItemListWrapper(baseInfoItemList);
         rnRForm.setComments(comments);
@@ -134,7 +134,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         return RnRForm.calculateTotalRegimenAmount(form.getRegimenItemListWrapper()) == mmiaRepository.getTotalPatients(form);
     }
 
-    public void saveMMIAForm(ArrayList<RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) {
+    public void saveMMIAForm(List<RegimenItem> regimenItemList, List<BaseInfoItem> baseInfoItemList, String comments) {
         rnRForm.setRegimenItemListWrapper(regimenItemList);
         rnRForm.setBaseInfoItemListWrapper(baseInfoItemList);
         rnRForm.setComments(comments);

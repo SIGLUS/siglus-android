@@ -377,7 +377,7 @@ public class RnrFormRepository {
         }
     }
 
-    private void deleteBaseInfoItems(final ArrayList<BaseInfoItem> baseInfoItemListWrapper) throws LMISException {
+    private void deleteBaseInfoItems(final List<BaseInfoItem> baseInfoItemListWrapper) throws LMISException {
         dbUtil.withDaoAsBatch(BaseInfoItem.class, new DbUtil.Operation<BaseInfoItem, Void>() {
             @Override
             public Void operate(Dao<BaseInfoItem, String> dao) throws SQLException {
@@ -389,7 +389,7 @@ public class RnrFormRepository {
         });
     }
 
-    private void deleteRegimenItems(final ArrayList<RegimenItem> regimenItemListWrapper) throws LMISException {
+    private void deleteRegimenItems(final List<RegimenItem> regimenItemListWrapper) throws LMISException {
         dbUtil.withDao(RegimenItem.class, new DbUtil.Operation<RegimenItem, Void>() {
             @Override
             public Void operate(Dao<RegimenItem, String> dao) throws SQLException {

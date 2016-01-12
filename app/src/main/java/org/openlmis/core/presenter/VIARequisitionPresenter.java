@@ -200,11 +200,20 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         saveRequisition();
     }
 
+    private ImmutableList<RnrFormItem> convertRnrItemViewModelsToRnrItems() {
+        return from(requisitionFormItemViewModels).transform(new Function<RequisitionFormItemViewModel, RnrFormItem>() {
+            @Override
+            public RnrFormItem apply(RequisitionFormItemViewModel requisitionFormItemViewModel) {
+                return requisitionFormItemViewModel.toRnrFormItem();
+            }
+        }).toList();
+    }
+
     public String getConsultationNumbers() {
         if (rnRForm == null) {
             return null;
         }
-        ArrayList<BaseInfoItem> baseInfoItemListWrapper = rnRForm.getBaseInfoItemListWrapper();
+        List<BaseInfoItem> baseInfoItemListWrapper = rnRForm.getBaseInfoItemListWrapper();
         if (baseInfoItemListWrapper == null || baseInfoItemListWrapper.get(0) == null) {
             return null;
         }
@@ -215,7 +224,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         if (rnRForm == null) {
             return;
         }
-        ArrayList<BaseInfoItem> baseInfoItemListWrapper = rnRForm.getBaseInfoItemListWrapper();
+        List<BaseInfoItem> baseInfoItemListWrapper = rnRForm.getBaseInfoItemListWrapper();
         if (baseInfoItemListWrapper != null) {
             baseInfoItemListWrapper.get(0).setValue(consultationNumbers);
         }

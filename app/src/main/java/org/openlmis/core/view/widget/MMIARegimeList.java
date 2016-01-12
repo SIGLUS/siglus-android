@@ -37,12 +37,13 @@ import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MMIARegimeList extends LinearLayout {
     private Context context;
     private TextView totalView;
-    private ArrayList<RegimenItem> dataList;
-    private ArrayList<EditText> editTexts = new ArrayList<>();
+    private List<RegimenItem> dataList;
+    private List<EditText> editTexts = new ArrayList<>();
     private LayoutInflater layoutInflater;
     private boolean hasDataChanged = false;
 
@@ -62,7 +63,7 @@ public class MMIARegimeList extends LinearLayout {
         layoutInflater = LayoutInflater.from(context);
     }
 
-    public void initView(ArrayList<RegimenItem> regimenItems, TextView totalView) {
+    public void initView(List<RegimenItem> regimenItems, TextView totalView) {
         this.dataList = regimenItems;
         this.totalView = totalView;
         addHeaderView();
@@ -77,7 +78,7 @@ public class MMIARegimeList extends LinearLayout {
         totalView.setText(String.valueOf(getTotal()));
     }
 
-    public ArrayList<RegimenItem> getDataList() {
+    public List<RegimenItem> getDataList() {
         return dataList;
     }
 
