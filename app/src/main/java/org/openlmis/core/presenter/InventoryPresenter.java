@@ -26,7 +26,6 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
@@ -291,7 +290,6 @@ public class InventoryPresenter extends Presenter {
                         StockCard stockCard = model.getStockCard();
                         stockCard.setExpireDates(model.formatExpiryDateString());
                         stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
-                        checkDeActive(stockCard);
                         stockRepository.addStockMovementAndUpdateStockCard(stockCard, calculateAdjustment(model, stockCard));
                     }
                     stockRepository.clearDraftInventory();
@@ -303,12 +301,6 @@ public class InventoryPresenter extends Presenter {
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-    }
-
-    private void checkDeActive(StockCard stockCard) {
-        if (stockCard.getStockOnHand() == 0 && !stockCard.getProduct().isActive()) {
-            SharedPreferenceMgr.getInstance().setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
-        }
     }
 
     protected Action1<Object> nextMainPageAction = new Action1<Object>() {
