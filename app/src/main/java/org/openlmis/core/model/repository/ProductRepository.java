@@ -104,7 +104,7 @@ public class ProductRepository {
     public void createOrUpdate(Product product) throws LMISException {
         Product existingProduct = getByCode(product.getCode());
         if (existingProduct != null) {
-            updateDeactivateProductNotifyList(product, existingProduct.getId());
+            updateDeactivateProductNotifyList(product, existingProduct);
             product.setId(existingProduct.getId());
             product.setArchived(existingProduct.isArchived());
             genericDao.update(product);
@@ -115,16 +115,19 @@ public class ProductRepository {
         createKitProductsIfNotExist(product);
     }
 
-    private void updateDeactivateProductNotifyList(Product product, long existingProductId) throws LMISException {
-        if (product.isActive()) {
+    private void updateDeactivateProductNotifyList(Product product, Product existingProduct) throws LMISException {
+        if (product.isActive() && !existingProduct.isActive()) {
+            sharedPreferenceMgr.removeShowUpdateBannerTextWhenReactiveProduct(existingProduct.getPrimaryName());
             return;
         }
-        StockCard stockCard = stockRepository.queryStockCardByProductId(existingProductId);
-        if (stockCard == null) {
-            return;
-        }
-        if (stockCard.getStockOnHand() == 0) {
-            sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, product.getPrimaryName());
+        if (!product.isActive()){
+            StockCard stockCard = stockRepository.queryStockCardByProductId(existingProduct.getId());
+            if (stockCard == null) {
+                return;
+            }
+            if (stockCard.getStockOnHand() == 0) {
+                sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, product.getPrimaryName());
+            }
         }
     }
 
