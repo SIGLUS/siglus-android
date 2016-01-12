@@ -24,11 +24,11 @@ public class ViaKitsViewModel {
     public void convertRnrKitItemsToViaKit(List<RnrFormItem> rnrKitItems) {
         for (RnrFormItem rnrKitItem: rnrKitItems) {
             if (US_KIT.equals(rnrKitItem.getProduct().getCode())) {
-                kitsOpenedHF = "" + rnrKitItem.getIssued();
-                kitsReceivedHF = "" + rnrKitItem.getReceived();
+                kitsOpenedHF = String.valueOf(rnrKitItem.getIssued());
+                kitsReceivedHF = String.valueOf(rnrKitItem.getReceived());
             } else if (APE_KIT.equals(rnrKitItem.getProduct().getCode())) {
-                kitsOpenedCHW = "" + rnrKitItem.getIssued();
-                kitsReceivedCHW = "" + rnrKitItem.getReceived();
+                kitsOpenedCHW = String.valueOf(rnrKitItem.getIssued());
+                kitsReceivedCHW = String.valueOf(rnrKitItem.getReceived());
             }
         }
     }

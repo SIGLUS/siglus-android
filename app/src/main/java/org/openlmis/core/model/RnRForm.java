@@ -166,7 +166,7 @@ public class RnRForm extends BaseModel {
     }
 
     public List<RnrFormItem> getRnrKitItems() {
-        return FluentIterable.from(rnrFormItemListWrapper).filter(new Predicate<RnrFormItem>() {
+        return FluentIterable.from(getRnrFormItemListWrapper()).filter(new Predicate<RnrFormItem>() {
             @Override
             public boolean apply(RnrFormItem rnrFormItem) {
                 return rnrFormItem.getProduct().isKit();
@@ -175,7 +175,7 @@ public class RnRForm extends BaseModel {
     }
 
     public List<RnrFormItem> getRnrNonKitItems() {
-        return FluentIterable.from(rnrFormItemListWrapper).filter(new Predicate<RnrFormItem>() {
+        return FluentIterable.from(getRnrFormItemListWrapper()).filter(new Predicate<RnrFormItem>() {
             @Override
             public boolean apply(RnrFormItem rnrFormItem) {
                 return !rnrFormItem.getProduct().isKit();
