@@ -20,11 +20,15 @@ package org.openlmis.core.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.view.View;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockCardPresenter;
@@ -50,11 +54,17 @@ public class StockCardListFragmentTest {
     private StockCardListFragment fragment;
     private List<StockCardViewModel> stockCardViewModels;
     private ProductsUpdateBanner productUpdateBanner;
+    private SharedPreferenceMgr sharedPreferenceMgr;
 
     @Before
     public void setUp() {
         fragment = buildFragment();
         productUpdateBanner = mock(ProductsUpdateBanner.class);
+        sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
+        fragment.sharedPreferenceMgr = sharedPreferenceMgr;
+
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_show_products_update_banner_529, true);
+
         stockCardViewModels = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             StockCard stockCard = new StockCard();
@@ -123,8 +133,23 @@ public class StockCardListFragmentTest {
     @Test
     public void shouldRefreshBannerText() {
         fragment.productsUpdateBanner = productUpdateBanner;
+        when(sharedPreferenceMgr.isNeedShowProductsUpdateBanner()).thenReturn(true);
+        when(productUpdateBanner.getVisibility()).thenReturn(View.VISIBLE);
+
         fragment.onActivityResult(Constants.REQUEST_CODE_CHANGE, Activity.RESULT_OK, new Intent());
 
+        verify(productUpdateBanner).refreshBannerText();
+    }
+
+    @Test
+    public void shouldRefreshAndShowBannerWhenNeedShowBanner(){
+        fragment.productsUpdateBanner = productUpdateBanner;
+        when(sharedPreferenceMgr.isNeedShowProductsUpdateBanner()).thenReturn(true);
+        when(productUpdateBanner.getVisibility()).thenReturn(View.GONE);
+
+        fragment.onActivityResult(Constants.REQUEST_CODE_CHANGE, Activity.RESULT_OK, new Intent());
+
+        verify(productUpdateBanner).setVisibility(View.VISIBLE);
         verify(productUpdateBanner).refreshBannerText();
     }
 

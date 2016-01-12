@@ -34,7 +34,9 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.utils.Constants;
@@ -67,8 +69,10 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     @Inject
     StockCardPresenter presenter;
 
-    StockCardListAdapter mAdapter;
+    @Inject
+    SharedPreferenceMgr sharedPreferenceMgr;
 
+    StockCardListAdapter mAdapter;
     protected List<StockCardViewModel> stockCardViewModels;
     private int currentPosition;
 
@@ -135,6 +139,13 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
             presenter.refreshStockCardViewModelsSOH();
             loadStockCards();
             mAdapter.notifyDataSetChanged();
+
+            if (!sharedPreferenceMgr.isNeedShowProductsUpdateBanner() || !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_show_products_update_banner_529)) {
+                return;
+            }
+            if (productsUpdateBanner.getVisibility() == View.GONE) {
+                productsUpdateBanner.setVisibility(View.VISIBLE);
+            }
             productsUpdateBanner.refreshBannerText();
         }
     }
