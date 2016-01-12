@@ -1,6 +1,7 @@
 package org.openlmis.core.view.widget;
 
 import android.content.Context;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,9 +55,9 @@ public class ProductsUpdateBanner extends LinearLayout implements View.OnClickLi
     public void refreshBannerText() {
         Set<String> showUpdateBannerTexts = preferenceMgr.getShowUpdateBannerTexts();
         if (showUpdateBannerTexts.size() == 1) {
-            tvProductUpdate.setText(getContext().getString(R.string.hint_update_banner_tips, showUpdateBannerTexts.toArray()[0]));
+            tvProductUpdate.setText(Html.fromHtml(getContext().getString(R.string.hint_update_banner_tips, showUpdateBannerTexts.toArray()[0])));
         } else {
-            tvProductUpdate.setText(getContext().getString(R.string.hint_update_banner_tips, showUpdateBannerTexts.size() + " Products"));
+            tvProductUpdate.setText(Html.fromHtml(getContext().getString(R.string.hint_update_banner_tips, showUpdateBannerTexts.size() + " Products")));
         }
     }
 
