@@ -29,6 +29,46 @@
         <item name="android:textColor">@color/color_white</item>
     </style>
 
+    <style name="AppTheme.AMBER">
+        <item name="android:actionBarStyle">@style/MyActionBar.AMBER</item>
+        <item name="actionBarStyle">@style/MyActionBar.AMBER</item>
+    </style>
+
+    <style name="MyActionBar.AMBER">
+        <item name="android:background">@color/color_amber</item>
+        <item name="background">@color/color_amber</item>
+    </style>
+
+    <style name="AppTheme.PURPLE">
+        <item name="android:actionBarStyle">@style/MyActionBar.PURPLE</item>
+        <item name="actionBarStyle">@style/MyActionBar.PURPLE</item>
+    </style>
+
+    <style name="MyActionBar.PURPLE">
+        <item name="android:background">@color/color_purple</item>
+        <item name="background">@color/color_purple</item>
+    </style>
+
+    <style name="AppTheme.TEAL">
+        <item name="android:actionBarStyle">@style/MyActionBar.TEAL</item>
+        <item name="actionBarStyle">@style/MyActionBar.TEAL</item>
+    </style>
+
+    <style name="MyActionBar.TEAL">
+        <item name="android:background">@color/color_teal</item>
+        <item name="background">@color/color_teal</item>
+    </style>
+
+    <style name="AppTheme.BLUE">
+        <item name="android:actionBarStyle">@style/MyActionBar.BLUE</item>
+        <item name="actionBarStyle">@style/MyActionBar.BLUE</item>
+    </style>
+
+    <style name="MyActionBar.BLUE">
+        <item name="android:background">@color/color_blue</item>
+        <item name="background">@color/color_blue</item>
+    </style>
+
     <!-- Basic style of TextView -->
     <style name="Text" />
 

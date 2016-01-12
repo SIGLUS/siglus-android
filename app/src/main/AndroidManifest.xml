@@ -34,6 +34,7 @@
         <activity
             android:name=".view.activity.InventoryActivity"
             android:label="@string/title_init_inventory"
+            android:theme="@style/AppTheme.BLUE"
             android:screenOrientation="portrait" />
 
         <activity
@@ -48,11 +49,13 @@
 
         <activity
             android:name=".view.activity.KitStockCardListActivity"
+            android:theme="@style/AppTheme.TEAL"
             android:label="@string/title_kit_stock_cards" />
 
         <activity
             android:name=".view.activity.MMIARequisitionActivity"
             android:label="@string/label_mmia_title"
+            android:theme="@style/AppTheme.AMBER"
             android:windowSoftInputMode="stateHidden" />
 
         <activity
@@ -63,6 +66,7 @@
         <activity
             android:name=".view.activity.VIARequisitionActivity"
             android:label="@string/title_requisition"
+            android:theme="@style/AppTheme.PURPLE"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <activity

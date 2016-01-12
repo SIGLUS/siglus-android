@@ -57,14 +57,15 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         programCode = getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE);
+        setProgramStyles();
+
+        super.onCreate(savedInstanceState);
         presenter.setProgramCode(programCode);
         initUI();
     }
 
     private void initUI() {
-        setTitle(MMIARepository.MMIA_PROGRAM_CODE.equals(programCode) ? R.string.title_mmia_list : R.string.title_requisition_list);
 
         listView.setLayoutManager(new LinearLayoutManager(this));
         listView.setHasFixedSize(true);
@@ -76,6 +77,16 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
 
         loading();
         presenter.loadRnRFormList().subscribe(getRnRFormSubscriber());
+    }
+
+    private void setProgramStyles() {
+        if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
+            setTitle(R.string.title_mmia_list);
+            setTheme(R.style.AppTheme_AMBER);
+        } else {
+            setTitle(R.string.title_requisition_list);
+            setTheme(R.style.AppTheme_PURPLE);
+        }
     }
 
     private RnRFormListAdapter.RnRFromDeleteListener formDeleteListener = new RnRFormListAdapter.RnRFromDeleteListener() {
