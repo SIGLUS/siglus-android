@@ -24,6 +24,50 @@ Feature: stock movement Page
     Then I don't see "Complete"
     Then I don't see "CANCEL"
 
+  Scenario: deactivated product show notify banner
+    When I press "Stock Card Overview"
+    Then I wait for "Stock Overview" to appear
+    Then I wait for 1 second
+    Then I select stock card code called "[01A04Z]"
+    Then I wait for "Stock Card" to appear
+    Then I wait for 1 second
+    Then I should not see "This product has been deactivated and is not available to reorder"
+    And I select a reason "Negative Adjustments" "Damaged on arrival"
+    Then I wait for 1 second
+    Then I swipe right
+    And I enter negative adjustment number "123"
+    Then I wait for "Complete" to appear
+    And I press "Complete"
+    And I sign with "superuser"
+    Then I see "123"
+    Then I see "super" in signature field
+    Then I navigate back
+    Then I navigate back
+    Then I wait for "Home Page" to appear
+    Given Server updates drug data
+    And I press "Sync Data"
+    When I press "Stock Card Overview"
+    Then I wait for "Stock Overview" to appear
+    Then I wait for 1 second
+    Then I should see "has been deactivated and removed"
+    Then I select stock card code called "[01A03Z]"
+    Then I wait for "Stock Card" to appear
+    Then I wait for 1 second
+    Then I should see "This product has been deactivated and is not available to reorder"
+    And I select a reason "Issues" "PAV"
+    Then I wait for 1 second
+    Then I swipe right
+    And I enter issued number "123"
+    Then I wait for "Complete" to appear
+    And I press "Complete"
+    And I sign with "superuser"
+    Then I see "123"
+    Then I see "super" in signature field
+    Then I navigate back
+    Then I should see "has been deactivated and removed"
+    And I clear banner message
+    Then I should not see "This product has been deactivated and is not available to reorder"
+
   Scenario: Add A Receive Movement
     When I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
@@ -39,47 +83,6 @@ Feature: stock movement Page
     And I sign with "superuser"
     Then I see "125"
     Then I see "super" in signature field
-    Then I navigate back
-    Then I wait for 1 second
-    Then I navigate back
-    Then I wait for "Home Page" to appear
-
-
-  Scenario: Add A Issued Movement
-    When I press "Stock Card Overview"
-    Then I wait for "Stock Overview" to appear
-    Then I wait for 1 second
-    Then I select stock card code called "[01A05]"
-    Then I wait for "Stock Card" to appear
-    Then I wait for 1 second
-    And I select a reason "Issues" "PAV"
-    Then I wait for 1 second
-    Then I swipe right
-    And I enter issued number "2"
-    Then I wait for "Complete" to appear
-    And I press "Complete"
-    And I sign with "superuser"
-    Then I see "123"
-    Then I see "super" in signature field
-    Then I navigate back
-    Then I wait for 1 second
-    Then I navigate back
-    Then I wait for "Home Page" to appear
-
-  Scenario: Add A Negative Adjustment
-    When I press "Stock Card Overview"
-    Then I wait for "Stock Overview" to appear
-    Then I wait for 1 second
-    Then I select stock card code called "[01A02]"
-    Then I wait for "Stock Card" to appear
-    Then I wait for 1 second
-    And I select a reason "Negative Adjustments" "Damaged on arrival"
-    Then I wait for 1 second
-    And I enter negative adjustment number "2"
-    Then I wait for "Complete" to appear
-    And I press "Complete"
-    And I sign with "superuser"
-    Then I see "121"
     Then I navigate back
     Then I wait for 1 second
     Then I navigate back

@@ -15,6 +15,10 @@ And(/^I select a reason "(.*?)" "(.*?)"$/) do |first_reason, second_reason|
     	}
 end
 
+And(/^I clear banner message$/) do
+    touch(query("android.widget.ImageView id:'iv_product_update_banner_clear'"))
+end
+
 And(/^I enter received number "(.*?)"$/) do |number|
     touch(query("android.widget.EditText id:'et_received'").last);
     keyboard_enter_text(number)
