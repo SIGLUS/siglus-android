@@ -42,6 +42,7 @@ import org.openlmis.core.view.activity.StockMovementActivity;
 import org.openlmis.core.view.adapter.StockCardListAdapter;
 import org.openlmis.core.view.holder.StockCardViewHolder;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.widget.ProductsUpdateBanner;
 
 import java.util.List;
 
@@ -59,6 +60,9 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
 
     @InjectView(R.id.products_list)
     RecyclerView stockCardRecycleView;
+
+    @InjectView(R.id.product_update_banner)
+    ProductsUpdateBanner productsUpdateBanner;
 
     @Inject
     StockCardPresenter presenter;
@@ -131,6 +135,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
             presenter.refreshStockCardViewModelsSOH();
             loadStockCards();
             mAdapter.notifyDataSetChanged();
+            productsUpdateBanner.refreshBannerText();
         }
     }
 

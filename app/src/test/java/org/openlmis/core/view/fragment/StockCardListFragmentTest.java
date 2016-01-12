@@ -18,6 +18,9 @@
 
 package org.openlmis.core.view.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,9 +28,11 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockCardPresenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.activity.StockCardListActivity;
 import org.openlmis.core.view.adapter.StockCardListAdapter;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.widget.ProductsUpdateBanner;
 import org.robolectric.Robolectric;
 
 import java.util.ArrayList;
@@ -44,11 +49,12 @@ public class StockCardListFragmentTest {
 
     private StockCardListFragment fragment;
     private List<StockCardViewModel> stockCardViewModels;
+    private ProductsUpdateBanner productUpdateBanner;
 
     @Before
     public void setUp() {
         fragment = buildFragment();
-
+        productUpdateBanner = mock(ProductsUpdateBanner.class);
         stockCardViewModels = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             StockCard stockCard = new StockCard();
@@ -113,4 +119,13 @@ public class StockCardListFragmentTest {
         assertThat(sortedList.get(1).getStockOnHand(), is(2L));
         assertThat(sortedList.get(2).getStockOnHand(), is(3L));
     }
+
+    @Test
+    public void shouldRefreshBannerText() {
+        fragment.productsUpdateBanner = productUpdateBanner;
+        fragment.onActivityResult(Constants.REQUEST_CODE_CHANGE, Activity.RESULT_OK, new Intent());
+
+        verify(productUpdateBanner).refreshBannerText();
+    }
+
 }

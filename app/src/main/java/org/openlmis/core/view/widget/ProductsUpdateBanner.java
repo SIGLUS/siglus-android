@@ -46,7 +46,7 @@ public class ProductsUpdateBanner extends LinearLayout implements View.OnClickLi
 
         if (preferenceMgr.isNeedShowProductsUpdateBanner()) {
             setVisibility(VISIBLE);
-            setBannerText();
+            refreshBannerText();
         } else {
             setVisibility(GONE);
         }
@@ -56,8 +56,8 @@ public class ProductsUpdateBanner extends LinearLayout implements View.OnClickLi
         }
     }
 
-    private void setBannerText() {
-        Set<String> showUpdateBannerTexts = SharedPreferenceMgr.getInstance().getShowUpdateBannerTexts();
+    public void refreshBannerText() {
+        Set<String> showUpdateBannerTexts = preferenceMgr.getShowUpdateBannerTexts();
         if (showUpdateBannerTexts.size() == 1) {
             tvProductUpdate.setText(getContext().getString(R.string.hint_update_banner_tips, showUpdateBannerTexts.toArray()[0]));
         } else {
@@ -74,6 +74,6 @@ public class ProductsUpdateBanner extends LinearLayout implements View.OnClickLi
     @Override
     public void onClick(View v) {
         setVisibility(GONE);
-        SharedPreferenceMgr.getInstance().setIsNeedShowProductsUpdateBanner(false, null);
+        preferenceMgr.setIsNeedShowProductsUpdateBanner(false, null);
     }
 }
