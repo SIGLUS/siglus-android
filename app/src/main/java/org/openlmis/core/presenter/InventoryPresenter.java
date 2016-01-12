@@ -162,7 +162,7 @@ public class InventoryPresenter extends Presenter {
         return from(stockRepository.list()).filter(new Predicate<StockCard>() {
             @Override
             public boolean apply(StockCard stockCard) {
-                return stockCard.getProduct().isActive() && !stockCard.getProduct().isArchived();
+                return !stockCard.getProduct().isKit() && stockCard.getProduct().isActive() && !stockCard.getProduct().isArchived();
             }
         }).toList();
     }
