@@ -40,6 +40,7 @@ import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
+import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
 import org.roboguice.shaded.goole.common.collect.Lists;
 import org.robolectric.RuntimeEnvironment;
 
@@ -352,6 +353,40 @@ public class VIARequisitionPresenterTest {
         assertEquals("100", presenter.getViaKitsViewModel().getKitsReceivedHF());
         assertEquals("110", presenter.getViaKitsViewModel().getKitsOpenedCHW());
         assertEquals("300", presenter.getViaKitsViewModel().getKitsReceivedCHW());
+    }
+
+    @Test
+    public void shouldIncludeKitItemsWhenSaving() throws Exception {
+        RnRForm rnRForm = new RnRForm();
+        rnRForm.setBaseInfoItemListWrapper(newArrayList(new BaseInfoItem()));
+        presenter.rnRForm = rnRForm;
+
+        List<RequisitionFormItemViewModel> list = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            list.add(new RequisitionFormItemViewModel(createRnrFormItem(i)));
+            list.get(i).setRequestAmount("");
+        }
+
+        ViaKitsViewModel viaKitsViewModel = buildDefaultViaKit();
+        presenter.setViaKitsViewModel(viaKitsViewModel);
+        presenter.requisitionFormItemViewModels = list;
+
+        presenter.saveVIAForm("100");
+        assertEquals(5, presenter.getRnRForm().getRnrFormItemListWrapper().size());
+    }
+
+    private ViaKitsViewModel buildDefaultViaKit() {
+        ViaKitsViewModel viaKitsViewModel = new ViaKitsViewModel();
+        viaKitsViewModel.setKitsOpenedCHW("10");
+        viaKitsViewModel.setKitsReceivedCHW("20");
+        viaKitsViewModel.setKitsOpenedHF("30");
+        viaKitsViewModel.setKitsReceivedHF("40");
+
+        Product usKit = new ProductBuilder().setCode(ViaKitsViewModel.US_KIT).build();
+        Product apeKit = new ProductBuilder().setCode(ViaKitsViewModel.APE_KIT).build();
+        viaKitsViewModel.setKitItems(Lists.newArrayList(new RnrFormItemBuilder().setProduct(usKit).build(),
+                new RnrFormItemBuilder().setProduct(apeKit).build()));
+        return viaKitsViewModel;
     }
 
     private void updateFormUIWithStatus(RnRForm.STATUS status) {

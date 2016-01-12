@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Subscriber;
@@ -63,6 +64,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     protected List<RequisitionFormItemViewModel> requisitionFormItemViewModels;
 
     @Getter
+    @Setter
     private ViaKitsViewModel viaKitsViewModel;
 
     public VIARequisitionPresenter() {
@@ -173,26 +175,20 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     private void dataViewToModel(String consultationNumbers) {
-        ImmutableList<RnrFormItem> rnrFormItems = from(requisitionFormItemViewModels).transform(new Function<RequisitionFormItemViewModel, RnrFormItem>() {
-            @Override
-            public RnrFormItem apply(RequisitionFormItemViewModel requisitionFormItemViewModel) {
-                return requisitionFormItemViewModel.toRnrFormItem();
-            }
-        }).toList();
+        ImmutableList<RnrFormItem> rnrFormItems = convertRnrItemViewModelsToRnrItems();
         rnRForm.setRnrFormItemListWrapper(new ArrayList<>(rnrFormItems));
         rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
     }
 
     public void saveVIAForm(String consultationNumbers) {
         view.loading();
-        List<RnrFormItem> rnrFormItems = from(requisitionFormItemViewModels).transform(new Function<RequisitionFormItemViewModel, RnrFormItem>() {
-            @Override
-            public RnrFormItem apply(RequisitionFormItemViewModel requisitionFormItemViewModel) {
-                return requisitionFormItemViewModel.toRnrFormItem();
-            }
-        }).toList();
+
+        List<RnrFormItem> rnrFormItems = new ArrayList<>();
+        rnrFormItems.addAll(convertRnrItemViewModelsToRnrItems());
+
         rnrFormItems.addAll(viaKitsViewModel.convertToRnrItems());
-        rnRForm.setRnrFormItemListWrapper(new ArrayList<>(rnrFormItems));
+
+        rnRForm.setRnrFormItemListWrapper(rnrFormItems);
 
         if (!TextUtils.isEmpty(consultationNumbers)) {
             rnRForm.getBaseInfoItemListWrapper().get(0).setValue(Long.valueOf(consultationNumbers).toString());
