@@ -214,7 +214,7 @@ public class SyncDownManager {
             SyncDownLatestProductsResponse response = getSyncDownLatestProductResponse();
             List<Product> productList = new ArrayList<>();
             for (ProductAndSupportedPrograms productAndSupportedPrograms : response.getLatestProducts()) {
-                productList.add(assignProgramToProduct(productAndSupportedPrograms));
+                productList.add(assignProgramFromResponseToProduct(productAndSupportedPrograms));
             }
             productRepository.batchCreateOrUpdateProducts(productList);
             sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());
@@ -223,7 +223,7 @@ public class SyncDownManager {
         }
     }
 
-    private Product assignProgramToProduct(ProductAndSupportedPrograms productAndSupportedPrograms) throws LMISException {
+    private Product assignProgramFromResponseToProduct(ProductAndSupportedPrograms productAndSupportedPrograms) throws LMISException {
         Product product = productAndSupportedPrograms.getProduct();
         //product can only have one program now
         if (productAndSupportedPrograms.getSupportedPrograms() != null && !productAndSupportedPrograms.getSupportedPrograms().isEmpty()) {

@@ -107,7 +107,7 @@ public class UserRepository extends LMISRestManager {
         }
     }
 
-    public List<User> getUserByUsername(final String userName) throws LMISException {
+    protected List<User> getUserByUsername(final String userName) throws LMISException {
         return dbUtil.withDao(User.class, new DbUtil.Operation<User, List<User>>() {
             @Override
             public List<User> operate(Dao<User, String> dao) throws SQLException {
