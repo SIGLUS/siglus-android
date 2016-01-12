@@ -130,7 +130,6 @@ public class SharedPreferenceMgr {
         return sharedPreferences.getBoolean(KEY_SHOW_PRODUCT_UPDATE_BANNER, false);
     }
 
-    //TODO 下载新的数据 本地soh 正好为0 应该setIsNeedShowProductsUpdateBanner
     public void setIsNeedShowProductsUpdateBanner(boolean isNeedShowUpdateBanner, String primaryName) {
         sharedPreferences.edit().putBoolean(KEY_SHOW_PRODUCT_UPDATE_BANNER, isNeedShowUpdateBanner).apply();
         if (isNeedShowUpdateBanner) {
