@@ -51,6 +51,11 @@ public class RnrFormItemBuilder {
         return this;
     }
 
+    public RnrFormItemBuilder setIssued(long issued) {
+        rnrFormItem.setIssued(issued);
+        return this;
+    }
+
     public RnrFormItemBuilder setCalculatedOrderQuantity(long calculatedOrderQuantity) {
         rnrFormItem.setCalculatedOrderQuantity(calculatedOrderQuantity);
         return this;

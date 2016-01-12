@@ -30,7 +30,6 @@ import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
-import org.openlmis.core.model.RnrKitItem;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.BaseView;
@@ -68,6 +67,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
     public VIARequisitionPresenter() {
         requisitionFormItemViewModels = new ArrayList<>();
+        viaKitsViewModel = new ViaKitsViewModel();
     }
 
     @Override
@@ -89,7 +89,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         if (requisitionFormItemViewModels.size() > 0) {
             return requisitionFormItemViewModels;
         }
-        return from(form.getRnrFormItemListWrapper()).filter(new Predicate<RnrFormItem>() {
+        return from(form.getRnrNonKitItems()).filter(new Predicate<RnrFormItem>() {
             @Override
             public boolean apply(RnrFormItem rnrFormItem) {
                 return !rnrFormItem.getProduct().isArchived();
@@ -111,7 +111,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                     RnRForm rnrForm = getRnrForm(formId);
                     requisitionFormItemViewModels.clear();
                     requisitionFormItemViewModels.addAll(getViewModelsFromRnrForm(rnrForm));
-                    convertToViaKit(rnrForm.getRnrKitItems());
+                    viaKitsViewModel.convertRnrKitItemsToViaKit(rnrForm.getRnrKitItems());
                     subscriber.onNext(rnrForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
@@ -120,20 +120,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                 }
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-    }
-
-    private void convertToViaKit(List<RnrKitItem> rnrKitItems) {
-        viaKitsViewModel = new ViaKitsViewModel();
-
-        for (RnrKitItem rnrKitItem: rnrKitItems) {
-            if (RnrKitItem.US_KIT.equals(rnrKitItem.getKitCode())) {
-                viaKitsViewModel.setKitsOpenedHF("" + rnrKitItem.getKitsOpened());
-                viaKitsViewModel.setKitsReceivedHF("" + rnrKitItem.getKitsReceived());
-            } else if (RnrKitItem.APE_KIT.equals(rnrKitItem.getKitCode())) {
-                viaKitsViewModel.setKitsOpenedCHW("" + rnrKitItem.getKitsOpened());
-                viaKitsViewModel.setKitsReceivedCHW("" + rnrKitItem.getKitsReceived());
-            }
-        }
     }
 
     @Override
@@ -207,7 +193,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }).toList();
         rnRForm.setRnrFormItemListWrapper(new ArrayList<>(rnrFormItems));
 
-        rnRForm.setRnrKitItems(viaKitsViewModel.toRnrKitItemList());
+//        rnRForm.setRnrKitItems(viaKitsViewModel.toRnrFormItemList());
         if (!TextUtils.isEmpty(consultationNumbers)) {
             rnRForm.getBaseInfoItemListWrapper().get(0).setValue(Long.valueOf(consultationNumbers).toString());
         }

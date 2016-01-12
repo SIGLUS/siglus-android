@@ -36,9 +36,11 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
-import org.openlmis.core.model.RnrKitItem;
+import org.openlmis.core.model.builder.ProductBuilder;
+import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
+import org.roboguice.shaded.goole.common.collect.Lists;
 import org.robolectric.RuntimeEnvironment;
 
 import java.sql.SQLException;
@@ -325,32 +327,31 @@ public class VIARequisitionPresenterTest {
     @Test
     public void shouldInitViaKitsViewModel() throws Exception {
         RnRForm rnRForm = mock(RnRForm.class);
-        when(rnRForm.getRnrFormItemListWrapper()).thenReturn(new ArrayList<RnrFormItem>());
-        List<RnrKitItem> rnrKits = new ArrayList<>();
-        RnrKitItem kit1 = new RnrKitItem();
-        kit1.setKitCode(RnrKitItem.US_KIT);
-        kit1.setKitsOpened(10);
-        kit1.setKitsReceived(11);
-        kit1.setForm(rnRForm);
-        rnrKits.add(kit1);
-
-        RnrKitItem kit2 = new RnrKitItem();
-        kit2.setKitCode(RnrKitItem.APE_KIT);
-        kit2.setKitsOpened(15);
-        kit2.setKitsReceived(18);
-        kit2.setForm(rnRForm);
-        rnrKits.add(kit2);
-
-        when(rnRForm.getRnrKitItems()).thenReturn(rnrKits);
         when(mockRnrFormRepository.queryRnRForm(1L)).thenReturn(rnRForm);
+        when(rnRForm.getRnrNonKitItems()).thenReturn(new ArrayList<RnrFormItem>());
 
-        presenter.getRnrFormObservable(1L).subscribe();
-        Thread.sleep(1000);
+        RnrFormItem rnrKitItem1 = new RnrFormItemBuilder()
+                .setProduct(new ProductBuilder().setCode("SCOD10").build())
+                .setReceived(100)
+                .setIssued(50)
+                .build();
+        RnrFormItem rnrKitItem2 = new RnrFormItemBuilder()
+                .setProduct(new ProductBuilder().setCode("SCOD12").build())
+                .setReceived(300)
+                .setIssued(110)
+                .build();
+        List<RnrFormItem> rnrFormItems = Lists.newArrayList(rnrKitItem1, rnrKitItem2);
+        when(rnRForm.getRnrKitItems()).thenReturn(rnrFormItems);
 
-        assertEquals("10", presenter.getViaKitsViewModel().getKitsOpenedHF());
-        assertEquals("11", presenter.getViaKitsViewModel().getKitsReceivedHF());
-        assertEquals("15", presenter.getViaKitsViewModel().getKitsOpenedCHW());
-        assertEquals("18", presenter.getViaKitsViewModel().getKitsReceivedCHW());
+        TestSubscriber<RnRForm> testSubscriber = new TestSubscriber<>();
+        presenter.getRnrFormObservable(1L).subscribe(testSubscriber);
+        testSubscriber.awaitTerminalEvent();
+        testSubscriber.assertNoErrors();
+
+        assertEquals("50", presenter.getViaKitsViewModel().getKitsOpenedHF());
+        assertEquals("100", presenter.getViaKitsViewModel().getKitsReceivedHF());
+        assertEquals("110", presenter.getViaKitsViewModel().getKitsOpenedCHW());
+        assertEquals("300", presenter.getViaKitsViewModel().getKitsReceivedCHW());
     }
 
     private void updateFormUIWithStatus(RnRForm.STATUS status) {

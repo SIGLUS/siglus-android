@@ -96,9 +96,6 @@ public class RnRForm extends BaseModel {
     @DatabaseField
     private Date submittedTime;
 
-    @Expose
-    private List<RnrKitItem> rnrKitItems;
-
     public boolean isDraft() {
         return getStatus() == STATUS.DRAFT;
     }
@@ -164,6 +161,24 @@ public class RnRForm extends BaseModel {
             @Override
             public boolean apply(RnrFormItem rnrFormItem) {
                 return !rnrFormItem.getProduct().isActive();
+            }
+        }).toList();
+    }
+
+    public List<RnrFormItem> getRnrKitItems() {
+        return FluentIterable.from(rnrFormItemListWrapper).filter(new Predicate<RnrFormItem>() {
+            @Override
+            public boolean apply(RnrFormItem rnrFormItem) {
+                return rnrFormItem.getProduct().isKit();
+            }
+        }).toList();
+    }
+
+    public List<RnrFormItem> getRnrNonKitItems() {
+        return FluentIterable.from(rnrFormItemListWrapper).filter(new Predicate<RnrFormItem>() {
+            @Override
+            public boolean apply(RnrFormItem rnrFormItem) {
+                return !rnrFormItem.getProduct().isKit();
             }
         }).toList();
     }

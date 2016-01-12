@@ -1,14 +1,10 @@
 package org.openlmis.core.view.viewmodel;
 
-import android.text.TextUtils;
-
-import org.openlmis.core.model.RnrKitItem;
+import org.openlmis.core.model.RnrFormItem;
 
 import java.util.List;
 
 import lombok.Data;
-
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @Data
 public class ViaKitsViewModel {
@@ -21,27 +17,44 @@ public class ViaKitsViewModel {
 
     private String kitsOpenedCHW;
 
-    public List<RnrKitItem> toRnrKitItemList() {
+    public static final String US_KIT = "SCOD10";
 
-        RnrKitItem kitHFItem= new RnrKitItem();
-        kitHFItem.setKitCode(RnrKitItem.US_KIT);
+    public static final String APE_KIT = "SCOD12";
 
-        if (!TextUtils.isEmpty(kitsReceivedHF)) {
-            kitHFItem.setKitsReceived(Integer.parseInt(kitsReceivedHF));
+    public void convertRnrKitItemsToViaKit(List<RnrFormItem> rnrKitItems) {
+        for (RnrFormItem rnrKitItem: rnrKitItems) {
+            if (US_KIT.equals(rnrKitItem.getProduct().getCode())) {
+                kitsOpenedHF = "" + rnrKitItem.getIssued();
+                kitsReceivedHF = "" + rnrKitItem.getReceived();
+            } else if (APE_KIT.equals(rnrKitItem.getProduct().getCode())) {
+                kitsOpenedCHW = "" + rnrKitItem.getIssued();
+                kitsReceivedCHW = "" + rnrKitItem.getReceived();
+            }
         }
-        if (!TextUtils.isEmpty(kitsOpenedHF)) {
-            kitHFItem.setKitsOpened(Integer.parseInt(kitsOpenedHF));
-        }
-
-        RnrKitItem kitCHWItem= new RnrKitItem();
-        kitCHWItem.setKitCode(RnrKitItem.APE_KIT);
-
-        if (!TextUtils.isEmpty(kitsReceivedCHW)) {
-            kitCHWItem.setKitsReceived(Integer.parseInt(kitsReceivedCHW));
-        }
-        if (!TextUtils.isEmpty(kitsOpenedCHW)) {
-            kitCHWItem.setKitsOpened(Integer.parseInt(kitsOpenedCHW));
-        }
-        return newArrayList(kitHFItem, kitCHWItem);
     }
+
+//    public List<RnrFormItem> toRnrFormItemList() {
+//
+//        RnrFormItem kitHFItem= new RnrFormItem();
+//
+//        kitHFItem.setKitCode(RnrKitItem.US_KIT);
+//
+//        if (!TextUtils.isEmpty(kitsReceivedHF)) {
+//            kitHFItem.setKitsReceived(Integer.parseInt(kitsReceivedHF));
+//        }
+//        if (!TextUtils.isEmpty(kitsOpenedHF)) {
+//            kitHFItem.setKitsOpened(Integer.parseInt(kitsOpenedHF));
+//        }
+//
+//        RnrKitItem kitCHWItem= new RnrKitItem();
+//        kitCHWItem.setKitCode(RnrKitItem.APE_KIT);
+//
+//        if (!TextUtils.isEmpty(kitsReceivedCHW)) {
+//            kitCHWItem.setKitsReceived(Integer.parseInt(kitsReceivedCHW));
+//        }
+//        if (!TextUtils.isEmpty(kitsOpenedCHW)) {
+//            kitCHWItem.setKitsOpened(Integer.parseInt(kitsOpenedCHW));
+//        }
+//        return newArrayList(kitHFItem, kitCHWItem);
+//    }
 }

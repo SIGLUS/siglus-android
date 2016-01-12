@@ -7,6 +7,8 @@ import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public class RnRFormTest {
@@ -24,5 +26,25 @@ public class RnRFormTest {
         List<RnrFormItem> rnrFormDeactivatedItemList = rnRForm.getDeactivatedProductItems();
         assertEquals(1, rnrFormDeactivatedItemList.size());
         assertEquals(false, rnrFormDeactivatedItemList.get(0).getProduct().isActive());
+    }
+
+    @Test
+    public void shouldGetNonKitFormItemAndKitFormItem() throws Exception {
+        RnRForm rnRForm = new RnRForm();
+        Product kitProduct = new ProductBuilder().setIsActive(true).setIsKit(true).build();
+        Product product = new ProductBuilder().setIsActive(true).setIsKit(false).build();
+        RnrFormItem kitRnrProduct = new RnrFormItemBuilder().setProduct(kitProduct).build();
+        RnrFormItem rnrProduct = new RnrFormItemBuilder().setProduct(product).build();
+
+        rnRForm.setRnrFormItemListWrapper(newArrayList(kitRnrProduct, rnrProduct));
+
+        List<RnrFormItem> rnrNonKitItems = rnRForm.getRnrNonKitItems();
+        assertEquals(1, rnrNonKitItems.size());
+        assertFalse(rnrNonKitItems.get(0).getProduct().isKit());
+
+        List<RnrFormItem> rnrKitItems = rnRForm.getRnrKitItems();
+        assertEquals(1, rnrKitItems.size());
+        assertTrue(rnrKitItems.get(0).getProduct().isKit());
+
     }
 }
