@@ -73,29 +73,40 @@ public class SharedPreferenceMgrTest {
     }
 
     @Test
-    public void shouldNotSaveProductNameToProductUpdateBannerListWhenTheNameExisting(){
-        sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true,"product");
+    public void shouldNotSaveProductNameToProductUpdateBannerListWhenTheNameExisting() {
+        sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, "product");
         assertThat(sharedPreferenceMgr.getShowUpdateBannerTexts().size(), is(1));
-        assertThat(sharedPreferenceMgr.getShowUpdateBannerTexts().toArray()[0].toString(),is("product"));
+        assertThat(sharedPreferenceMgr.getShowUpdateBannerTexts().toArray()[0].toString(), is("product"));
     }
 
     @Test
-    public void shouldRemoveUpdateBannerList(){
-        sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true,"product");
+    public void shouldRemoveUpdateBannerList() {
+        sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, "product");
 
         sharedPreferenceMgr.removeShowUpdateBannerTextWhenReactiveProduct("product");
-        assertThat(sharedPreferenceMgr.getShowUpdateBannerTexts().size(),is(0));
+        assertThat(sharedPreferenceMgr.getShowUpdateBannerTexts().size(), is(0));
     }
 
     @Test
-    public void shouldNotRemoveUpdateBannerListWhenTheProductHasBeenRemoved(){
+    public void shouldNotRemoveUpdateBannerListWhenTheProductHasBeenRemoved() {
         //given
         sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, "product");
         //when
         sharedPreferenceMgr.removeShowUpdateBannerTextWhenReactiveProduct("not existing product");
         //then
         assertThat(sharedPreferenceMgr.getShowUpdateBannerTexts().size(), is(1));
-        assertThat(sharedPreferenceMgr.getShowUpdateBannerTexts().toArray()[0].toString(),is("product"));
+        assertThat(sharedPreferenceMgr.getShowUpdateBannerTexts().toArray()[0].toString(), is("product"));
+    }
+
+    @Test
+    public void shouldSetBannerVisibilityGoneWhenNotifyListIsEmpty() {
+        //given
+        sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, "product");
+        //when
+        sharedPreferenceMgr.removeShowUpdateBannerTextWhenReactiveProduct("product");
+        //then
+        assertThat(sharedPreferenceMgr.getShowUpdateBannerTexts().size(), is(0));
+        assertThat(sharedPreferenceMgr.isNeedShowProductsUpdateBanner(), is(false));
     }
 
 

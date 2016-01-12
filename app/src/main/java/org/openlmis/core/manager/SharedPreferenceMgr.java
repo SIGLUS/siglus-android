@@ -139,9 +139,12 @@ public class SharedPreferenceMgr {
         }
     }
 
-    public void removeShowUpdateBannerTextWhenReactiveProduct(String primaryName){
+    public void removeShowUpdateBannerTextWhenReactiveProduct(String primaryName) {
         Set<String> stringSet = sharedPreferences.getStringSet(KEY_PRODUCT_UPDATE_BANNER_TEXT, new HashSet<String>());
         stringSet.remove(primaryName);
+        if (stringSet.size() == 0) {
+            sharedPreferences.edit().putBoolean(KEY_SHOW_PRODUCT_UPDATE_BANNER, false).apply();
+        }
     }
 
     public Set<String> getShowUpdateBannerTexts() {
