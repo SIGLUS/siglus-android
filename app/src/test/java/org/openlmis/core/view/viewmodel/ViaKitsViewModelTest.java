@@ -60,12 +60,12 @@ public class ViaKitsViewModelTest {
         assertEquals(2, rnrFormItems.size());
         assertEquals(10, rnrFormItems.get(1).getIssued());
         assertEquals(20, rnrFormItems.get(1).getReceived());
+        assertEquals(10, rnrFormItems.get(1).getInventory());
         assertEquals(ViaKitsViewModel.APE_KIT, rnrFormItems.get(1).getProduct().getCode());
 
         assertEquals(30, rnrFormItems.get(0).getIssued());
         assertEquals(40, rnrFormItems.get(0).getReceived());
+        assertEquals(10, rnrFormItems.get(0).getInventory());
         assertEquals(ViaKitsViewModel.US_KIT, rnrFormItems.get(0).getProduct().getCode());
-
-
     }
 }
