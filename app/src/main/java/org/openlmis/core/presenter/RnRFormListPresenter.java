@@ -112,9 +112,8 @@ public class RnRFormListPresenter extends Presenter {
         List<SyncError> syncErrorList = syncErrorsRepository.getBySyncTypeAndObjectId(SyncType.RnRForm, rnrId);
         if (null == syncErrorList || syncErrorList.isEmpty())
             return null;
-        return syncErrorList.get(0).getErrorMessage();//todo: this is wrong, should get the last error message, not the first
+        return syncErrorList.get(syncErrorList.size() - 1).getErrorMessage();
     }
-
 
     protected void addPreviousPeriodViewModels(List<RnRFormViewModel> viewModels, List<RnRForm> rnRForms) {
         viewModels.addAll(FluentIterable.from(rnRForms).transform(new Function<RnRForm, RnRFormViewModel>() {

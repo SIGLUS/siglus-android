@@ -18,6 +18,7 @@ import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class RnRFormListPresenterTest {
         });
 
         presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnRFormListPresenter.class);
-        rnRForms = getRnRForms();
+        rnRForms = createRnRForms();
         viewModels = new ArrayList<>();
     }
 
@@ -58,10 +59,12 @@ public class RnRFormListPresenterTest {
         presenter.repository = mock(RnrFormRepository.class);
         Collections.reverse(rnRForms);
         when(presenter.repository.list("MMIA")).thenReturn(rnRForms);
-        when(syncErrorsRepository.getBySyncTypeAndObjectId(any(SyncType.class), anyLong())).thenReturn(new ArrayList<SyncError>());
+        when(syncErrorsRepository.getBySyncTypeAndObjectId(any(SyncType.class), anyLong()))
+                .thenReturn(Arrays.asList(new SyncError("Error1", SyncType.RnRForm, 1), new SyncError("Error2", SyncType.RnRForm, 1)));
 
         List<RnRFormViewModel> resultViewModels = presenter.buildFormListViewModels();
         assertThat(resultViewModels.size()).isEqualTo(3);
+        assertThat(resultViewModels.get(0).getSyncServerErrorMessage()).isEqualTo("Error2");
     }
 
     @Test
@@ -80,11 +83,11 @@ public class RnRFormListPresenterTest {
         assertThat(viewModels.size()).isEqualTo(2);
     }
 
-    private List<RnRForm> getRnRForms() {
-        return newArrayList(getRnRForm(RnRForm.STATUS.DRAFT), getRnRForm(RnRForm.STATUS.AUTHORIZED), getRnRForm(RnRForm.STATUS.AUTHORIZED));
+    private List<RnRForm> createRnRForms() {
+        return newArrayList(createRnRForm(RnRForm.STATUS.DRAFT), createRnRForm(RnRForm.STATUS.AUTHORIZED), createRnRForm(RnRForm.STATUS.AUTHORIZED));
     }
 
-    private RnRForm getRnRForm(RnRForm.STATUS statu) {
+    private RnRForm createRnRForm(RnRForm.STATUS statu) {
         Program program = new Program();
         program.setProgramCode("MMIA");
         program.setProgramName("MMIA");
