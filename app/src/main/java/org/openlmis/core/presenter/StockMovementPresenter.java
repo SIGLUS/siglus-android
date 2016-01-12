@@ -139,7 +139,7 @@ public class StockMovementPresenter extends Presenter {
 
     private void saveStockMovement(StockMovementItem stockMovementItem) throws LMISException {
 
-        if(stockCard.getStockOnHand()==0 && !stockCard.getProduct().isActive()){
+        if (stockCard.getStockOnHand() == 0 && !stockCard.getProduct().isActive()) {
             SharedPreferenceMgr.getInstance().setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
         }
 
@@ -175,7 +175,8 @@ public class StockMovementPresenter extends Presenter {
     }
 
     private void updateArchiveMenu() {
-        view.updateArchiveMenus(stockCard.getStockOnHand() == 0);
+        boolean isArchivable = !stockCard.getProduct().isKit() && stockCard.getStockOnHand() == 0;
+        view.updateArchiveMenus(isArchivable);
     }
 
     public StockCard getStockCard() {
@@ -188,7 +189,7 @@ public class StockMovementPresenter extends Presenter {
     }
 
     public String getStockCardCmm() {
-       return String.valueOf(stockRepository.getCmm(stockCard));
+        return String.valueOf(stockRepository.getCmm(stockCard));
     }
 
 

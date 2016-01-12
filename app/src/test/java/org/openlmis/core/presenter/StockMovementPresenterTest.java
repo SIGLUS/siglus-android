@@ -98,6 +98,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldSaveStockMovement() throws LMISException {
         StockCard stockCard = new StockCard();
+        stockCard.setProduct(new Product());
         when(stockRepositoryMock.queryStockCardById(123)).thenReturn(stockCard);
         stockMovementPresenter.setStockCard(123);
 
@@ -137,6 +138,30 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         assertThat(stockMovementPresenter.getStockCard().getStockOnHand()).isEqualTo(item.getStockOnHand());
         verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(stockCard, item);
         verify(view).updateArchiveMenus(true);
+    }
+
+    @Test
+    public void shouldNotEnableArchiveMenuForKitsEvenIfSOHIsZero() throws Exception {
+        //given
+        StockCard stockCard = new StockCard();
+        stockCard.setStockOnHand(0);
+        Product product = new Product();
+        product.setActive(true);
+        product.setKit(true);
+        stockCard.setProduct(product);
+
+        StockMovementItem item = new StockMovementItem();
+        item.setStockOnHand(0L);
+
+        StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
+        when(viewModel.convertViewToModel()).thenReturn(item);
+
+        //when
+        stockMovementPresenter.stockCard = stockCard;
+        stockMovementPresenter.saveAndRefresh(viewModel);
+
+        //then
+        verify(view).updateArchiveMenus(false);
     }
 
     @Test
