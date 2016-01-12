@@ -25,7 +25,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.exceptions.NoFacilityForUserException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
@@ -233,11 +232,11 @@ public class SyncDownManager {
         return product;
     }
 
-    private SyncDownLatestProductsResponse getSyncDownLatestProductResponse() throws NetWorkException {
+    private SyncDownLatestProductsResponse getSyncDownLatestProductResponse() throws LMISException {
         return lmisRestApi.fetchLatestProducts(sharedPreferenceMgr.getLastSyncProductTime());
     }
 
-    private SyncDownProductsResponse getSyncDownProductsResponse(User user) throws NetWorkException {
+    private SyncDownProductsResponse getSyncDownProductsResponse(User user) throws LMISException {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_latest_product_list)) {
             return lmisRestApi.fetchLatestProducts(user.getFacilityId(), sharedPreferenceMgr.getLastSyncProductTime());
         } else {

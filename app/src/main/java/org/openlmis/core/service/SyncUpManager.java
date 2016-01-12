@@ -42,7 +42,6 @@ import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-import java.lang.reflect.UndeclaredThrowableException;
 import java.util.List;
 
 import retrofit.Callback;
@@ -131,13 +130,9 @@ public class SyncUpManager {
             syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.StockCards, 0L);
             Log.d(TAG, "===> SyncStockMovement : synced");
             return true;
-
-        } catch (UndeclaredThrowableException e) {
-            new LMISException(e).reportToFabric();
-            syncErrorsRepository.save(new SyncError(e.getCause().getMessage(), SyncType.StockCards, 0L));
-            return false;
-        } catch (Exception exception) {
-            new LMISException(exception).reportToFabric();
+        } catch (LMISException exception) {
+            exception.reportToFabric();
+            syncErrorsRepository.save(new SyncError(exception.getMessage(), SyncType.StockCards, 0L));
             Log.e(TAG, "===> SyncStockMovement : synced failed ->" + exception.getMessage());
             return false;
         }
@@ -168,10 +163,10 @@ public class SyncUpManager {
             syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RnRForm, rnRForm.getId());
             Log.d(TAG, "===> SyncRnr : synced ->");
             return true;
-        } catch (Exception e) {
-            new LMISException(e).reportToFabric();
+        } catch (LMISException e) {
+            e.reportToFabric();
             Log.e(TAG, "===> SyncRnr : sync failed ->" + e.getMessage());
-            syncErrorsRepository.save(new SyncError(e.getCause().getMessage(), SyncType.RnRForm, rnRForm.getId()));
+            syncErrorsRepository.save(new SyncError(e.getMessage(), SyncType.RnRForm, rnRForm.getId()));
             return false;
         }
     }

@@ -20,7 +20,7 @@
 package org.openlmis.core.network;
 
 import org.json.JSONObject;
-import org.openlmis.core.exceptions.NetWorkException;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
@@ -50,23 +50,23 @@ public interface LMISRestApi {
     void updateAppVersion(@Body AppInfoRequest appInfo, Callback<Void> callback);
 
     @GET("/rest-api/programs-with-products")
-    SyncDownProductsResponse fetchProducts(@Query("facilityCode") String facilityCode) throws NetWorkException;
+    SyncDownProductsResponse fetchProducts(@Query("facilityCode") String facilityCode) throws LMISException;
 
     @GET("/rest-api/latest-programs-with-products")
-    SyncDownProductsResponse fetchLatestProducts(@Query("facilityId") String facilityId, @Query("afterUpdatedTime") String afterUpdatedTime) throws NetWorkException;
+    SyncDownProductsResponse fetchLatestProducts(@Query("facilityId") String facilityId, @Query("afterUpdatedTime") String afterUpdatedTime) throws LMISException;
 
     @GET("/rest-api/requisitions")
-    SyncDownRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode) throws NetWorkException;
+    SyncDownRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode) throws LMISException;
 
     @POST("/rest-api/requisitions")
-    SyncUpRequisitionResponse submitRequisition(@Body RnRForm rnRForm) throws NetWorkException;
+    SyncUpRequisitionResponse submitRequisition(@Body RnRForm rnRForm) throws LMISException;
 
     @POST("/rest-api/facilities/{facilityId}/stockCards")
-    JSONObject syncUpStockMovementData(@Path("facilityId") String facilityId, @Body List<StockMovementEntry> entries) throws NetWorkException;
+    JSONObject syncUpStockMovementData(@Path("facilityId") String facilityId, @Body List<StockMovementEntry> entries) throws LMISException;
 
     @GET("/rest-api/facilities/{facilityId}/stockCards")
-    SyncDownStockCardResponse fetchStockMovementData(@Path("facilityId") String facilityId, @Query("startTime") String startDate, @Query("endTime") String endDate) throws NetWorkException;
+    SyncDownStockCardResponse fetchStockMovementData(@Path("facilityId") String facilityId, @Query("startTime") String startDate, @Query("endTime") String endDate) throws LMISException;
 
     @GET("/rest-api/latest-products")
-    SyncDownLatestProductsResponse fetchLatestProducts(@Query("afterUpdatedTime") String afterUpdatedTime) throws NetWorkException;
+    SyncDownLatestProductsResponse fetchLatestProducts(@Query("afterUpdatedTime") String afterUpdatedTime) throws LMISException;
 }

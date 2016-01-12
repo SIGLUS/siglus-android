@@ -12,7 +12,6 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
@@ -226,7 +225,7 @@ public class SyncDownManagerTest {
         }
     }
 
-    private void mockProductResponse() throws NetWorkException {
+    private void mockProductResponse() throws LMISException {
         ArrayList<Program> programsWithProducts = new ArrayList<>();
         programsWithProducts.add(new Program());
         SyncDownProductsResponse response = new SyncDownProductsResponse();
@@ -236,8 +235,7 @@ public class SyncDownManagerTest {
         when(lmisRestApi.fetchLatestProducts(any(String.class), any(String.class))).thenReturn(response);
     }
 
-
-    private void mockSyncDownLatestProductResponse() throws NetWorkException {
+    private void mockSyncDownLatestProductResponse() throws LMISException {
         List<ProductAndSupportedPrograms> productsAndSupportedPrograms = new ArrayList<>();
         ProductAndSupportedPrograms productAndSupportedPrograms = new ProductAndSupportedPrograms();
         productWithKits = new Product();
@@ -260,7 +258,7 @@ public class SyncDownManagerTest {
         when(lmisRestApi.fetchLatestProducts(any(String.class))).thenReturn(response);
     }
 
-    private void mockRequisitionResponse() throws NetWorkException {
+    private void mockRequisitionResponse() throws LMISException {
         when(sharedPreferenceMgr.getPreference()).thenReturn(LMISTestApp.getContext().getSharedPreferences("LMISPreference", Context.MODE_PRIVATE));
         List<RnRForm> data = new ArrayList<>();
         data.add(new RnRForm());

@@ -207,7 +207,6 @@ public class LMISRestManager {
             if (r != null && r.getStatus() == 401) {
                 return new UnauthorizedException(cause);
             }
-
             if (r != null && r.getStatus() == 400) {
                 return new SyncServerException(((DataErrorResponse) cause.getBodyAs(DataErrorResponse.class)).getError());
             }
@@ -217,7 +216,7 @@ public class LMISRestManager {
             if (r == null && cause.getCause() instanceof ConnectException) {
                 return new NetWorkException();
             }
-            return cause;
+            return new LMISException(cause);
         }
     }
 

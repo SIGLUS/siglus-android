@@ -49,7 +49,6 @@ import org.openlmis.core.network.model.SyncUpRequisitionResponse;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
-import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -156,7 +155,7 @@ public class SyncUpManagerTest {
     @Test
     public void shouldSaveSyncErrorWhenUnSyncedStockMovementDataFail() throws LMISException, SQLException, ParseException {
         createTestStockCardData();
-        doThrow(new UndeclaredThrowableException(new Throwable())).when(lmisRestApi).syncUpStockMovementData(anyString(), anyList());
+        doThrow(new LMISException("mocked exception")).when(lmisRestApi).syncUpStockMovementData(anyString(), anyList());
 
         syncUpManager.syncStockCards();
 
@@ -234,7 +233,7 @@ public class SyncUpManagerTest {
 
         when(rnrFormRepository.deleteDeactivatedProductItemsFromUnsyncedForms()).thenReturn(unSyncedList);
 
-        doThrow(new UndeclaredThrowableException(new Throwable(), "Sync Failed")).when(lmisRestApi).submitRequisition(any(RnRForm.class));
+        doThrow(new LMISException("mocked exception")).when(lmisRestApi).submitRequisition(any(RnRForm.class));
         syncUpManager.syncRnr();
 
         verify(syncErrorsRepository).save(any(SyncError.class));

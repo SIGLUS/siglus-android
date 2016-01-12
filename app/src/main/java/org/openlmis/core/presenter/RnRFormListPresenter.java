@@ -103,16 +103,16 @@ public class RnRFormListPresenter extends Presenter {
     }
 
     private void populateSyncErrorsOnViewModels(final List<RnRFormViewModel> rnrViewModels) {
-        for (RnRFormViewModel rnrViewModel: rnrViewModels) {
+        for (RnRFormViewModel rnrViewModel : rnrViewModels) {
             rnrViewModel.setSyncServerErrorMessage(getRnrFormSyncError(rnrViewModel.getId()));
         }
     }
 
-    private String getRnrFormSyncError(long rnrId){
+    private String getRnrFormSyncError(long rnrId) {
         List<SyncError> syncErrorList = syncErrorsRepository.getBySyncTypeAndObjectId(SyncType.RnRForm, rnrId);
         if (null == syncErrorList || syncErrorList.isEmpty())
             return null;
-        return syncErrorList.get(0).getErrorMessage();
+        return syncErrorList.get(0).getErrorMessage();//todo: this is wrong, should get the last error message, not the first
     }
 
 
