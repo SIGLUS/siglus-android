@@ -138,7 +138,6 @@ public class StockMovementPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-
     private void saveStockMovement(StockMovementItem stockMovementItem) throws LMISException {
         
         if(stockCard.getStockOnHand()==0 && !stockCard.getProduct().isActive()){

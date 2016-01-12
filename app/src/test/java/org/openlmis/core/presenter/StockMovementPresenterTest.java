@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -65,9 +66,12 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
     StockRepository stockRepositoryMock;
     StockMovementPresenter.StockMovementView view;
 
+    SharedPreferenceMgr sharedPreferenceMgr;
+
     @Before
     public void setup() throws Exception {
         stockRepositoryMock = mock(StockRepository.class);
+        sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
 
         view = mock(StockMovementPresenter.StockMovementView.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
@@ -75,6 +79,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         stockMovementPresenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockMovementPresenter.class);
         stockMovementPresenter.attachView(view);
         stockMovementPresenter.stockCard = StockCardBuilder.buildStockCard();
+        stockMovementPresenter.sharedPreferenceMgr = sharedPreferenceMgr;
 
         RxAndroidPlugins.getInstance().reset();
         RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
@@ -213,6 +218,30 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
 
         //then
         assertThat(stockCardCmm).isEqualTo("10");
+    }
+
+
+    @Test
+    public void shouldUpdateNotifyDeactivatedProductList() throws LMISException {
+        //given
+        StockCard stockCard = stockMovementPresenter.stockCard;
+        stockCard.setStockOnHand(0);
+        stockCard.getProduct().setActive(false);
+        stockCard.getProduct().setPrimaryName("name");
+        StockMovementItem item = new StockMovementItem();
+
+
+        StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
+        when(viewModel.convertViewToModel()).thenReturn(item);
+        when(stockRepositoryMock.queryStockCardById(123)).thenReturn(stockCard);
+        stockMovementPresenter.setStockCard(123);
+
+        //when
+        stockMovementPresenter.saveAndRefresh(viewModel);
+
+        //then
+        verify(sharedPreferenceMgr).setIsNeedShowProductsUpdateBanner(true,"name");
+        verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(stockCard,item);
     }
 
     public class MyTestModule extends AbstractModule {
