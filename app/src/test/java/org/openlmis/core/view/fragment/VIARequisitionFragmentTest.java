@@ -40,6 +40,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
+import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 
@@ -86,6 +87,7 @@ public class VIARequisitionFragmentTest {
         formItemList = new ArrayList<>();
         formItemList.add(RequisitionBuilder.buildFakeRequisitionViewModel());
         when(presenter.getRequisitionFormItemViewModels()).thenReturn(formItemList);
+        when(presenter.getViaKitsViewModel()).thenReturn(new ViaKitsViewModel());
         when(presenter.getRnRForm()).thenReturn(form);
 
         VIARequisitionFragment = getVIARequisitionFragmentFromActivityWithIntent();
