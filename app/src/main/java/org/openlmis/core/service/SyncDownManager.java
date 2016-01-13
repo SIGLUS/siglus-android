@@ -206,15 +206,17 @@ public class SyncDownManager {
         SyncDownProductsResponse response = getSyncDownProductsResponse(user);
 
         List<Program> programsWithProducts = response.getProgramsWithProducts();
-
-        for (Program program : programsWithProducts) {
-            for (Product product : program.getProducts()) {
-                Product existingProduct = productRepository.getByCode(product.getCode());
-                updateDeactivateProductNotifyList(product, existingProduct);
-            }
-        }
+        updateDeactivateProductNotifyListByPrograms(programsWithProducts);
         programRepository.createOrUpdateProgramWithProduct(programsWithProducts);
         sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());
+    }
+
+    private void updateDeactivateProductNotifyListByPrograms(List<Program> programsWithProducts) throws LMISException {
+        for (Program program : programsWithProducts) {
+            for (Product product : program.getProducts()) {
+                updateDeactivateProductNotifyList(product);
+            }
+        }
     }
 
     private void fetchAndSaveProductsWithProgramsAndKits() throws LMISException {
@@ -223,13 +225,9 @@ public class SyncDownManager {
             List<Product> productList = new ArrayList<>();
             for (ProductAndSupportedPrograms productAndSupportedPrograms : response.getLatestProducts()) {
                 Product product = assignProgramFromResponseToProduct(productAndSupportedPrograms);
+                updateDeactivateProductNotifyList(product);
                 productList.add(product);
-
-                Product existingProduct = productRepository.getByCode(product.getCode());
-                updateDeactivateProductNotifyList(product, existingProduct);
             }
-
-
             productRepository.batchCreateOrUpdateProducts(productList);
             sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());
         } catch (Exception e) {
@@ -237,7 +235,9 @@ public class SyncDownManager {
         }
     }
 
-    private void updateDeactivateProductNotifyList(Product product, Product existingProduct) throws LMISException {
+    private void updateDeactivateProductNotifyList(Product product) throws LMISException {
+        Product existingProduct = productRepository.getByCode(product.getCode());
+
         if (product.isActive() == existingProduct.isActive()) {
             return;
         }
