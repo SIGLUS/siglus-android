@@ -113,6 +113,6 @@ public class DbUtil {
     }
 
     public interface Operation<DomainType, ReturnType> {
-        ReturnType operate(Dao<DomainType, String> dao) throws SQLException;
+        ReturnType operate(Dao<DomainType, String> dao) throws SQLException, LMISException;
     }
 }

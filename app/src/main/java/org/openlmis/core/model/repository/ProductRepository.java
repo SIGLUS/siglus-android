@@ -89,13 +89,9 @@ public class ProductRepository {
     public void batchCreateOrUpdateProducts(final List<Product> productList) throws LMISException {
         dbUtil.withDaoAsBatch(Product.class, new DbUtil.Operation<Product, Void>() {
             @Override
-            public Void operate(Dao<Product, String> dao) throws SQLException {
+            public Void operate(Dao<Product, String> dao) throws LMISException {
                 for (Product product : productList) {
-                    try {
-                        createOrUpdate(product);
-                    } catch (LMISException e) {
-                        e.reportToFabric();
-                    }
+                    createOrUpdate(product);
                 }
                 return null;
             }
@@ -125,7 +121,7 @@ public class ProductRepository {
             sharedPreferenceMgr.removeShowUpdateBannerTextWhenReactiveProduct(existingProduct.getPrimaryName());
             return;
         }
-        
+
         StockCard stockCard = stockRepository.queryStockCardByProductId(existingProduct.getId());
         if (stockCard == null) {
             return;
