@@ -66,6 +66,7 @@ Feature: stock movement Page
     Then I wait for "Stock Card" to appear
     Then I wait for 1 second
     Then I should see "This product has been deactivated and is not available to reorder"
+    Then I wait for 1 second
     And I select a reason "Issues" "PAV"
     Then I wait for 1 second
     Then I swipe right
@@ -81,7 +82,6 @@ Feature: stock movement Page
     #clear warning banner
     And I clear banner message
     Then I should not see "has been deactivated and removed"
-
 
 
   Scenario: Add A Receive Movement
