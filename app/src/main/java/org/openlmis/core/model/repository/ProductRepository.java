@@ -116,19 +116,22 @@ public class ProductRepository {
     }
 
     private void updateDeactivateProductNotifyList(Product product, Product existingProduct) throws LMISException {
-        if (product.isActive() && !existingProduct.isActive()) {
+        if (product.isActive() == existingProduct.isActive()) {
+            return;
+        }
+        if (product.isActive()) {
             sharedPreferenceMgr.removeShowUpdateBannerTextWhenReactiveProduct(existingProduct.getPrimaryName());
             return;
         }
-        if (!product.isActive()){
-            StockCard stockCard = stockRepository.queryStockCardByProductId(existingProduct.getId());
-            if (stockCard == null) {
-                return;
-            }
-            if (stockCard.getStockOnHand() == 0) {
-                sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, product.getPrimaryName());
-            }
+        
+        StockCard stockCard = stockRepository.queryStockCardByProductId(existingProduct.getId());
+        if (stockCard == null) {
+            return;
         }
+        if (stockCard.getStockOnHand() == 0) {
+            sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, product.getPrimaryName());
+        }
+
     }
 
     private void createKitProductsIfNotExist(Product product) throws LMISException {
