@@ -28,6 +28,7 @@ import com.j256.ormlite.table.TableUtils;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.StockMovementIsNullException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Period;
@@ -338,7 +339,7 @@ public class StockRepository {
     protected Date queryFirstPeriodBegin(final StockCard stockCard) throws LMISException {
         StockMovementItem stockMovementItem = queryFirstStockMovementItem(stockCard);
         if (stockMovementItem == null) {
-            throw new LMISException(new NullPointerException());
+            throw new StockMovementIsNullException(stockCard);
         }
         return stockMovementItem.getMovementPeriod().getBegin().toDate();
     }
