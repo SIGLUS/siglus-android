@@ -103,7 +103,9 @@ public class LMISApp extends Application {
     }
 
     public void trackScreen(String screenName) {
-        mTracker.setScreenName(screenName);
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        if (getFeatureToggleFor(R.bool.feature_google_analytics_540)) {
+            mTracker.setScreenName(screenName);
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        }
     }
 }
