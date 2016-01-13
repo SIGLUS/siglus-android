@@ -24,12 +24,15 @@ import android.content.res.Configuration;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.network.NetworkConnectionManager;
+import org.openlmis.core.service.AnalyticsTrackers;
 
 import io.fabric.sdk.android.Fabric;
 import roboguice.RoboGuice;
@@ -40,6 +43,8 @@ public class LMISApp extends Application {
 
     public static long lastOperateTime = 0L;
 
+    private Tracker mTracker;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -47,8 +52,14 @@ public class LMISApp extends Application {
 
         RoboGuice.getInjector(this).injectMembersWithoutViews(this);
         setupFabric();
+        setupGoogleAnalytics();
 
         instance = this;
+    }
+
+    protected void setupGoogleAnalytics() {
+        AnalyticsTrackers.initialize(this);
+        mTracker = AnalyticsTrackers.getInstance().getDefault();
     }
 
     public static LMISApp getInstance() {
@@ -85,5 +96,10 @@ public class LMISApp extends Application {
 
     public void logErrorOnFabric(LMISException exception) {
         Crashlytics.logException(exception);
+    }
+
+    public void trackScreen(String screenName) {
+        mTracker.setScreenName(screenName);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 }

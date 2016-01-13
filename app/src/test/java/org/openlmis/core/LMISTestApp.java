@@ -46,4 +46,12 @@ public class LMISTestApp extends LMISApp {
     public void logErrorOnFabric(LMISException exception) {
         //do nothing
     }
+
+    @Override
+    public void trackScreen(String screenName) {
+    }
+
+    @Override
+    protected void setupGoogleAnalytics() {
+    }
 }
