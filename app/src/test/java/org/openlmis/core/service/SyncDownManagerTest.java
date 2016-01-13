@@ -249,6 +249,14 @@ public class SyncDownManagerTest {
         verify(sharedPreferenceMgr).removeShowUpdateBannerTextWhenReactiveProduct("name");
     }
 
+    @Test
+    public void shouldNotUpdateBannerWhenExistingProductIsNull() throws Exception {
+        Product product = new Product();
+        when(productRepository.getByCode(anyString())).thenReturn(null);
+        syncDownManager.updateDeactivateProductNotifyList(product);
+        verify(stockRepository, times(0)).queryStockCardByProductId(anyLong());
+    }
+
     private void testSyncProgress(SyncProgress progress) {
         try {
             if (progress == ProductSynced) {
