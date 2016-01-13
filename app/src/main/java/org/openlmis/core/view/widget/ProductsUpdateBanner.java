@@ -53,6 +53,14 @@ public class ProductsUpdateBanner extends LinearLayout implements View.OnClickLi
     }
 
     public void refreshBannerText() {
+        if (!preferenceMgr.isNeedShowProductsUpdateBanner()) {
+            return;
+        }
+
+        if (getVisibility() == View.GONE) {
+            setVisibility(View.VISIBLE);
+        }
+
         Set<String> showUpdateBannerTexts = preferenceMgr.getShowUpdateBannerTexts();
         if (showUpdateBannerTexts.size() == 1) {
             tvProductUpdate.setText(Html.fromHtml(getContext().getString(R.string.hint_update_banner_tips, showUpdateBannerTexts.toArray()[0])));

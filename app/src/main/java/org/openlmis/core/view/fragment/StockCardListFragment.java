@@ -139,12 +139,6 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
             loadStockCards();
             mAdapter.notifyDataSetChanged();
 
-            if (!sharedPreferenceMgr.isNeedShowProductsUpdateBanner()) {
-                return;
-            }
-            if (productsUpdateBanner.getVisibility() == View.GONE) {
-                productsUpdateBanner.setVisibility(View.VISIBLE);
-            }
             productsUpdateBanner.refreshBannerText();
         }
     }
