@@ -175,7 +175,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         for (StockMovementItem entry : items) {
             entry.setSynced(true);
         }
-        stockRepository.batchUpdateStockMovements(items);
+        stockRepository.batchCreateOrUpdateStockMovements(items);
 
         //then
         stockCard = stockRepository.list().get(0);

@@ -214,6 +214,6 @@ public class SyncUpManager {
             }
         });
 
-        stockRepository.batchUpdateStockMovements(stockMovementItems);
+        stockRepository.batchCreateOrUpdateStockMovements(stockMovementItems);
     }
 }
