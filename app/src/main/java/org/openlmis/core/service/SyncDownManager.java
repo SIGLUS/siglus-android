@@ -204,7 +204,16 @@ public class SyncDownManager {
             throw new NoFacilityForUserException(errorMessage(R.string.msg_user_not_facility));
         }
         SyncDownProductsResponse response = getSyncDownProductsResponse(user);
-        programRepository.createOrUpdateProgramWithProduct(response.getProgramsWithProducts());
+
+        List<Program> programsWithProducts = response.getProgramsWithProducts();
+
+        for (Program program : programsWithProducts) {
+            for (Product product : program.getProducts()) {
+                Product existingProduct = productRepository.getByCode(product.getCode());
+                updateDeactivateProductNotifyList(product, existingProduct);
+            }
+        }
+        programRepository.createOrUpdateProgramWithProduct(programsWithProducts);
         sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());
     }
 
@@ -213,12 +222,36 @@ public class SyncDownManager {
             SyncDownLatestProductsResponse response = getSyncDownLatestProductResponse();
             List<Product> productList = new ArrayList<>();
             for (ProductAndSupportedPrograms productAndSupportedPrograms : response.getLatestProducts()) {
-                productList.add(assignProgramFromResponseToProduct(productAndSupportedPrograms));
+                Product product = assignProgramFromResponseToProduct(productAndSupportedPrograms);
+                productList.add(product);
+
+                Product existingProduct = productRepository.getByCode(product.getCode());
+                updateDeactivateProductNotifyList(product, existingProduct);
             }
+
+
             productRepository.batchCreateOrUpdateProducts(productList);
             sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());
         } catch (Exception e) {
             throw new LMISException(errorMessage(R.string.msg_sync_products_list_failed));
+        }
+    }
+
+    private void updateDeactivateProductNotifyList(Product product, Product existingProduct) throws LMISException {
+        if (product.isActive() == existingProduct.isActive()) {
+            return;
+        }
+        if (product.isActive()) {
+            SharedPreferenceMgr.getInstance().removeShowUpdateBannerTextWhenReactiveProduct(existingProduct.getPrimaryName());
+            return;
+        }
+
+        StockCard stockCard = stockRepository.queryStockCardByProductId(existingProduct.getId());
+        if (stockCard == null) {
+            return;
+        }
+        if (stockCard.getStockOnHand() == 0) {
+            SharedPreferenceMgr.getInstance().setIsNeedShowProductsUpdateBanner(true, product.getPrimaryName());
         }
     }
 

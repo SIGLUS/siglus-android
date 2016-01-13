@@ -60,8 +60,6 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
         sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
         stockRepository = mock(StockRepository.class);
         productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
-        productRepository.sharedPreferenceMgr = sharedPreferenceMgr;
-        productRepository.stockRepository = stockRepository;
     }
 
     @Test
