@@ -230,7 +230,7 @@ public class SyncDownManager {
             }
             productRepository.batchCreateOrUpdateProducts(productList);
             sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());
-        } catch (Exception e) {
+        } catch (LMISException e) {
             throw new LMISException(errorMessage(R.string.msg_sync_products_list_failed));
         }
     }
