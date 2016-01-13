@@ -20,6 +20,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
@@ -50,6 +51,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -90,6 +92,7 @@ public class SyncDownManagerTest {
         rnrFormRepository = mock(RnrFormRepository.class);
         programRepository = mock(ProgramRepository.class);
         productRepository = mock(ProductRepository.class);
+        stockRepository = mock(StockRepository.class);
 
         reset(rnrFormRepository);
         reset(lmisRestApi);
@@ -201,6 +204,50 @@ public class SyncDownManagerTest {
         verify(sharedPreferenceMgr).setLastSyncProductTime("today");
     }
 
+    @Test
+    public void shouldUpdateNotifyBannerListWhenSOHIsZeroAndProductIsDeActive() throws Exception {
+        //given
+        Product product = new Product();
+        product.setPrimaryName("name");
+        product.setActive(false);
+        product.setCode("code");
+
+        Product existingProduct = ProductBuilder.create().setCode("code").setIsActive(true).setIsArchived(true).build();
+        when(productRepository.getByCode(product.getCode())).thenReturn(existingProduct);
+
+        StockCard stockCard = new StockCard();
+        stockCard.setStockOnHand(0);
+        when(stockRepository.queryStockCardByProductId(anyLong())).thenReturn(stockCard);
+
+        //when
+        syncDownManager.updateDeactivateProductNotifyList(product);
+
+        //then
+        verify(sharedPreferenceMgr).setIsNeedShowProductsUpdateBanner(true, "name");
+    }
+
+    @Test
+    public void shouldRemoveNotifyBannerListWhenReactiveProduct() throws Exception {
+        //given
+        Product product = new Product();
+        product.setPrimaryName("new name");
+        product.setActive(true);
+        product.setCode("code");
+
+        Product existingProduct = ProductBuilder.create().setCode("code").setIsActive(false).setPrimaryName("name").build();
+        when(productRepository.getByCode(product.getCode())).thenReturn(existingProduct);
+
+        StockCard stockCard = new StockCard();
+        stockCard.setStockOnHand(0);
+        when(stockRepository.queryStockCardByProductId(anyLong())).thenReturn(stockCard);
+
+        //when
+        syncDownManager.updateDeactivateProductNotifyList(product);
+
+        //then
+        verify(sharedPreferenceMgr).removeShowUpdateBannerTextWhenReactiveProduct("name");
+    }
+
     private void testSyncProgress(SyncProgress progress) {
         try {
             if (progress == ProductSynced) {
@@ -277,8 +324,6 @@ public class SyncDownManagerTest {
         when(sharedPreferenceMgr.shouldSyncLastYearStockData()).thenReturn(true);
         when(sharedPreferenceMgr.getPreference()).thenReturn(createdPreferences);
 
-        stockRepository = mock(StockRepository.class);
-        syncDownManager.stockRepository = stockRepository;
         when(lmisRestApi.fetchStockMovementData(anyString(), anyString(), anyString())).thenReturn(getStockCardResponse());
 
         when(stockRepository.list()).thenReturn(newArrayList(new StockCardBuilder().build()));
@@ -335,6 +380,7 @@ public class SyncDownManagerTest {
             bind(SharedPreferenceMgr.class).toInstance(sharedPreferenceMgr);
             bind(ProgramRepository.class).toInstance(programRepository);
             bind(ProductRepository.class).toInstance(productRepository);
+            bind(StockRepository.class).toInstance(stockRepository);
         }
     }
 }

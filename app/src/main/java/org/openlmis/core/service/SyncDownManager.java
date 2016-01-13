@@ -235,14 +235,14 @@ public class SyncDownManager {
         }
     }
 
-    private void updateDeactivateProductNotifyList(Product product) throws LMISException {
+    protected void updateDeactivateProductNotifyList(Product product) throws LMISException {
         Product existingProduct = productRepository.getByCode(product.getCode());
 
         if (product.isActive() == existingProduct.isActive()) {
             return;
         }
         if (product.isActive()) {
-            SharedPreferenceMgr.getInstance().removeShowUpdateBannerTextWhenReactiveProduct(existingProduct.getPrimaryName());
+            sharedPreferenceMgr.removeShowUpdateBannerTextWhenReactiveProduct(existingProduct.getPrimaryName());
             return;
         }
 
@@ -251,7 +251,7 @@ public class SyncDownManager {
             return;
         }
         if (stockCard.getStockOnHand() == 0) {
-            SharedPreferenceMgr.getInstance().setIsNeedShowProductsUpdateBanner(true, product.getPrimaryName());
+            sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, product.getPrimaryName());
         }
     }
 
