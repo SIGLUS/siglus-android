@@ -238,6 +238,10 @@ public class SyncDownManager {
     protected void updateDeactivateProductNotifyList(Product product) throws LMISException {
         Product existingProduct = productRepository.getByCode(product.getCode());
 
+        if (existingProduct == null) {
+            return;
+        }
+
         if (product.isActive() == existingProduct.isActive()) {
             return;
         }
