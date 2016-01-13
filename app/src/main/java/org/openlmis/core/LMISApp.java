@@ -24,6 +24,7 @@ import android.content.res.Configuration;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
@@ -60,6 +61,9 @@ public class LMISApp extends Application {
     protected void setupGoogleAnalytics() {
         AnalyticsTrackers.initialize(this);
         mTracker = AnalyticsTrackers.getInstance().getDefault();
+        if (!BuildConfig.FLAVOR.equals("prd")) {
+            GoogleAnalytics.getInstance(this).setDryRun(true);
+        }
     }
 
     public static LMISApp getInstance() {

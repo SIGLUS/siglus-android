@@ -3,6 +3,7 @@ package org.openlmis.core.service;
 import android.content.Context;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Logger;
 import com.google.android.gms.analytics.Tracker;
 
 import org.openlmis.core.BuildConfig;
@@ -38,6 +39,7 @@ public final class AnalyticsTrackers {
         mTracker = GoogleAnalytics.getInstance(mContext).newTracker(R.xml.app_tracker);
         mTracker.setAppVersion(BuildConfig.VERSION_NAME);
         mTracker.setAppId(BuildConfig.APPLICATION_ID);
+        GoogleAnalytics.getInstance(mContext).getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
     }
 
     public synchronized Tracker getDefault() {
