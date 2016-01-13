@@ -36,7 +36,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-import static org.openlmis.core.model.Product.*;
+import static org.openlmis.core.model.Product.IsKit;
 
 public class ProductRepository {
 

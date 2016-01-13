@@ -48,7 +48,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-import static org.openlmis.core.model.Product.*;
+import static org.openlmis.core.model.Product.IsKit;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class InventoryPresenter extends Presenter {

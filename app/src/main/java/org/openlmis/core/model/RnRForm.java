@@ -37,7 +37,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-import static org.openlmis.core.model.Product.*;
+import static org.openlmis.core.model.Product.IsKit;
 
 @Getter
 @Setter

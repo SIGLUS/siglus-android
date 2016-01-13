@@ -64,7 +64,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.openlmis.core.model.Product.*;
+import static org.openlmis.core.model.Product.IsKit;
 
 @RunWith(LMISTestRunner.class)
 public class InventoryPresenterTest extends LMISRepositoryUnitTest {
