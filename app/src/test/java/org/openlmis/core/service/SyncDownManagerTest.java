@@ -111,6 +111,7 @@ public class SyncDownManagerTest {
                 return Schedulers.immediate();
             }
         });
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_sync_back_latest_product_list, true);
     }
 
     @Test
