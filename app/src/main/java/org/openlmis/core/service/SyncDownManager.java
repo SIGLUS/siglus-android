@@ -236,6 +236,10 @@ public class SyncDownManager {
     }
 
     protected void updateDeactivateProductNotifyList(Product product) throws LMISException {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_latest_product_list)) {
+            return;
+        }
+
         Product existingProduct = productRepository.getByCode(product.getCode());
 
         if (existingProduct == null) {
