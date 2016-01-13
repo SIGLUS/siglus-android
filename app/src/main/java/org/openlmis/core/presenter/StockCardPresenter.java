@@ -22,9 +22,9 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.ProductRepository;
-import org.openlmis.core.model.repository.ProductRepository.IsKit;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;

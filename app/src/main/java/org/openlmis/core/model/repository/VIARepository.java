@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 
@@ -64,7 +65,7 @@ public class VIARepository extends RnrFormRepository {
     private List<RnrFormItem> generateKitRnrItems(RnRForm form) throws LMISException {
         List<RnrFormItem> rnrFormItems = new ArrayList<>();
 
-        for(Product product : productRepository.listActiveProducts(ProductRepository.IsKit.Yes)) {
+        for(Product product : productRepository.listActiveProducts(IsKit.Yes)) {
             RnrFormItem rnrFormItem = new RnrFormItem();
             rnrFormItem.setProduct(product);
             rnrFormItem.setForm(form);

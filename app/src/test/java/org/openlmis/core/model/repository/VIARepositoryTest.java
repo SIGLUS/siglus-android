@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
@@ -57,7 +58,7 @@ public class VIARepositoryTest {
         when(mockStockRepository.listActiveStockCardsByProgramId(viaProgram.getId())).thenReturn(newArrayList(stockCard));
         Product product1 = new ProductBuilder().setIsKit(true).build();
         Product product2 = new ProductBuilder().setIsKit(true).build();
-        when(productRepository.listActiveProducts(ProductRepository.IsKit.Yes)).thenReturn(newArrayList(product1, product2));
+        when(productRepository.listActiveProducts(IsKit.Yes)).thenReturn(newArrayList(product1, product2));
 
         List<RnrFormItem> rnrFormItemList = viaRepository.generateRnrFormItems(form);
         assertThat(rnrFormItemList.size(), is(3));

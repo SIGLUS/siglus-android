@@ -70,6 +70,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.openlmis.core.model.Product.*;
 
 @RunWith(LMISTestRunner.class)
 public class VIARequisitionPresenterTest {
@@ -341,7 +342,7 @@ public class VIARequisitionPresenterTest {
     public void shouldInitViaKitsViewModel() throws Exception {
         RnRForm rnRForm = mock(RnRForm.class);
         when(mockRnrFormRepository.queryRnRForm(1L)).thenReturn(rnRForm);
-        when(rnRForm.getRnrNonKitItems()).thenReturn(new ArrayList<RnrFormItem>());
+        when(rnRForm.getRnrItems(IsKit.No)).thenReturn(new ArrayList<RnrFormItem>());
 
         RnrFormItem rnrKitItem1 = new RnrFormItemBuilder()
                 .setProduct(new ProductBuilder().setCode("SCOD10").build())
@@ -354,7 +355,7 @@ public class VIARequisitionPresenterTest {
                 .setIssued(110)
                 .build();
         List<RnrFormItem> rnrFormItems = Lists.newArrayList(rnrKitItem1, rnrKitItem2);
-        when(rnRForm.getRnrKitItems()).thenReturn(rnrFormItems);
+        when(rnRForm.getRnrItems(IsKit.Yes)).thenReturn(rnrFormItems);
 
         TestSubscriber<RnRForm> testSubscriber = new TestSubscriber<>();
         presenter.getRnrFormObservable(1L).subscribe(testSubscriber);

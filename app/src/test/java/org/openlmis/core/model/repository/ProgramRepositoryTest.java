@@ -7,8 +7,8 @@ import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.Program;
-import org.openlmis.core.model.repository.ProductRepository.IsKit;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;

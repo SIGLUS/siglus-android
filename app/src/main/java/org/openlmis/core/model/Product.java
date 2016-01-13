@@ -96,4 +96,19 @@ public class Product extends BaseModel implements Comparable<Product> {
     public int compareTo(@NonNull Product another) {
         return primaryName == null ? 0 : primaryName.compareTo(another.getPrimaryName());
     }
+
+    public enum IsKit {
+        Yes(true),
+        No(false);
+
+        public boolean isKit() {
+            return isKit;
+        }
+
+        private boolean isKit;
+
+        IsKit(boolean isKit) {
+            this.isKit = isKit;
+        }
+    }
 }

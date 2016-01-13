@@ -50,6 +50,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static org.openlmis.core.model.Product.IsKit;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 
@@ -91,7 +92,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         if (requisitionFormItemViewModels.size() > 0) {
             return requisitionFormItemViewModels;
         }
-        return from(form.getRnrNonKitItems()).filter(new Predicate<RnrFormItem>() {
+        return from(form.getRnrItems(IsKit.No)).filter(new Predicate<RnrFormItem>() {
             @Override
             public boolean apply(RnrFormItem rnrFormItem) {
                 return !rnrFormItem.getProduct().isArchived();
@@ -113,7 +114,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                     RnRForm rnrForm = getRnrForm(formId);
                     requisitionFormItemViewModels.clear();
                     requisitionFormItemViewModels.addAll(getViewModelsFromRnrForm(rnrForm));
-                    viaKitsViewModel.convertRnrKitItemsToViaKit(rnrForm.getRnrKitItems());
+                    viaKitsViewModel.convertRnrKitItemsToViaKit(rnrForm.getRnrItems(IsKit.Yes));
                     subscriber.onNext(rnrForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {

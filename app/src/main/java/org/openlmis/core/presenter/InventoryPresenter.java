@@ -31,7 +31,6 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProductRepository;
-import org.openlmis.core.model.repository.ProductRepository.IsKit;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
@@ -49,6 +48,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
+import static org.openlmis.core.model.Product.*;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class InventoryPresenter extends Presenter {

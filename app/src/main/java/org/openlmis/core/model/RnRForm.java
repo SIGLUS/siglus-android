@@ -37,6 +37,8 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
+import static org.openlmis.core.model.Product.*;
+
 @Getter
 @Setter
 @DatabaseTable(tableName = "rnr_forms")
@@ -165,20 +167,11 @@ public class RnRForm extends BaseModel {
         }).toList();
     }
 
-    public List<RnrFormItem> getRnrKitItems() {
+    public List<RnrFormItem> getRnrItems(final IsKit isKit) {
         return FluentIterable.from(getRnrFormItemListWrapper()).filter(new Predicate<RnrFormItem>() {
             @Override
             public boolean apply(RnrFormItem rnrFormItem) {
-                return rnrFormItem.getProduct().isKit();
-            }
-        }).toList();
-    }
-
-    public List<RnrFormItem> getRnrNonKitItems() {
-        return FluentIterable.from(getRnrFormItemListWrapper()).filter(new Predicate<RnrFormItem>() {
-            @Override
-            public boolean apply(RnrFormItem rnrFormItem) {
-                return !rnrFormItem.getProduct().isKit();
+                return isKit.isKit() == rnrFormItem.getProduct().isKit();
             }
         }).toList();
     }

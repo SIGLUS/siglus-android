@@ -64,6 +64,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.openlmis.core.model.Product.*;
 
 @RunWith(LMISTestRunner.class)
 public class InventoryPresenterTest extends LMISRepositoryUnitTest {
@@ -175,7 +176,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         unknownBStockCard.setProduct(productUnknownB);
 
         when(stockRepositoryMock.list()).thenReturn(Arrays.asList(stockCardVIA, stockCardMMIA));
-        when(productRepositoryMock.listActiveProducts(ProductRepository.IsKit.No)).thenReturn(Arrays.asList(productMMIA, productVIA, productUnknownB, productUnknownA));
+        when(productRepositoryMock.listActiveProducts(IsKit.No)).thenReturn(Arrays.asList(productMMIA, productVIA, productUnknownB, productUnknownA));
         when(stockRepositoryMock.queryStockCardByProductId(10L)).thenReturn(stockCardMMIA);
 
         TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
@@ -195,7 +196,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         Product activeProduct2 = ProductBuilder.create().setPrimaryName("active product").setCode("P3").build();
 
         when(stockRepositoryMock.list()).thenReturn(new ArrayList<StockCard>());
-        when(productRepositoryMock.listActiveProducts(ProductRepository.IsKit.No)).thenReturn(Arrays.asList(activeProduct1, activeProduct2));
+        when(productRepositoryMock.listActiveProducts(IsKit.No)).thenReturn(Arrays.asList(activeProduct1, activeProduct2));
 
         TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
         Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadInventory();

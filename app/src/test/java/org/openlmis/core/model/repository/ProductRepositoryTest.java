@@ -27,10 +27,10 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.KitProductBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
-import org.openlmis.core.model.repository.ProductRepository.IsKit;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.List;

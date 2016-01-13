@@ -36,6 +36,8 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
+import static org.openlmis.core.model.Product.*;
+
 public class ProductRepository {
 
     GenericDao<Product> genericDao;
@@ -189,20 +191,5 @@ public class ProductRepository {
                 return dao.queryBuilder().where().eq("program_id", programId).query();
             }
         });
-    }
-
-    public enum IsKit {
-        Yes(true),
-        No(false);
-
-        public boolean isKit() {
-            return isKit;
-        }
-
-        private boolean isKit;
-
-        IsKit(boolean isKit) {
-            this.isKit = isKit;
-        }
     }
 }

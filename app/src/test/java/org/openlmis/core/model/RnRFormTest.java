@@ -1,6 +1,7 @@
 package org.openlmis.core.model;
 
 import org.junit.Test;
+import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.RnrFormItemBuilder;
 
@@ -38,11 +39,11 @@ public class RnRFormTest {
 
         rnRForm.setRnrFormItemListWrapper(newArrayList(kitRnrProduct, rnrProduct));
 
-        List<RnrFormItem> rnrNonKitItems = rnRForm.getRnrNonKitItems();
+        List<RnrFormItem> rnrNonKitItems = rnRForm.getRnrItems(IsKit.No);
         assertEquals(1, rnrNonKitItems.size());
         assertFalse(rnrNonKitItems.get(0).getProduct().isKit());
 
-        List<RnrFormItem> rnrKitItems = rnRForm.getRnrKitItems();
+        List<RnrFormItem> rnrKitItems = rnRForm.getRnrItems(IsKit.Yes);
         assertEquals(1, rnrKitItems.size());
         assertTrue(rnrKitItems.get(0).getProduct().isKit());
 
