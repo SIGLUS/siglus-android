@@ -44,12 +44,24 @@ Feature: stock movement Page
     Then I navigate back
     Then I navigate back
     Then I wait for "Home Page" to appear
-    Given Server updates drug data
+
+    #deactivate product
+    Given server deactivates products has stock movement
     And I press "Sync Data"
     When I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
-    Then I wait for 1 second
     Then I should see "has been deactivated and removed"
+
+    # reactive product
+    When server reactive products
+    Then I navigate back
+    Then I wait for "Home Page" to appear
+    And I press "Sync Data"
+    When I press "Stock Card Overview"
+    Then I wait for "Stock Overview" to appear
+    Then I should not see "has been deactivated and removed"
+
+    #issued stock movement
     Then I select stock card code called "[01A03Z]"
     Then I wait for "Stock Card" to appear
     Then I wait for 1 second
@@ -65,8 +77,12 @@ Feature: stock movement Page
     Then I see "super" in signature field
     Then I navigate back
     Then I should see "has been deactivated and removed"
+
+    #clear warning banner
     And I clear banner message
-    Then I should not see "This product has been deactivated and is not available to reorder"
+    Then I should not see "has been deactivated and removed"
+
+
 
   Scenario: Add A Receive Movement
     When I press "Stock Card Overview"
