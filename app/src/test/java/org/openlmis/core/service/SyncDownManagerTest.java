@@ -185,6 +185,7 @@ public class SyncDownManagerTest {
         mockSyncDownLatestProductResponse();
         mockRequisitionResponse();
         mockStockCardsResponse();
+        when(productRepository.getByCode(anyString())).thenReturn(new Product());
 
         Program program = new Program();
         when(programRepository.queryByCode("PR")).thenReturn(program);
@@ -227,7 +228,9 @@ public class SyncDownManagerTest {
 
     private void mockProductResponse() throws LMISException {
         ArrayList<Program> programsWithProducts = new ArrayList<>();
-        programsWithProducts.add(new Program());
+        Program program = new Program();
+        program.setProducts(new ArrayList<Product>());
+        programsWithProducts.add(program);
         SyncDownProductsResponse response = new SyncDownProductsResponse();
         response.setLatestUpdatedTime("today");
         response.setProgramsWithProducts(programsWithProducts);
