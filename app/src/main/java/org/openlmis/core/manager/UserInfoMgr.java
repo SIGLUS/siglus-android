@@ -57,4 +57,8 @@ public final class UserInfoMgr {
     public String getFacilityCode() {
         return user.getFacilityCode();
     }
+
+    public String getFacilityName() {
+        return user.getFacilityName();
+    }
 }

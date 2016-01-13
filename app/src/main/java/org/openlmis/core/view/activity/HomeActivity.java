@@ -37,6 +37,7 @@ import com.google.inject.Inject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.service.SyncService;
@@ -62,12 +63,6 @@ public class HomeActivity extends BaseActivity {
 
     @InjectView(R.id.btn_mmia)
     Button btnMMIA;
-
-    @InjectView(R.id.btn_requisition)
-    Button btnRequisition;
-
-    @InjectView(R.id.btn_sync_data)
-    Button btnSyncData;
 
     @InjectView(R.id.tx_last_synced_rnrform)
     TextView txLastSyncedRnrForm;
@@ -104,6 +99,8 @@ public class HomeActivity extends BaseActivity {
             btnVIAList.setText(LMISApp.getInstance().getText(R.string.btn_requisition_list_old));
             btnMMIAList.setText(LMISApp.getInstance().getText(R.string.btn_mmia_list_old));
         }
+
+        setTitle(UserInfoMgr.getInstance().getFacilityName());
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.INTENT_FILTER_SET_SYNCED_TIME);
@@ -149,7 +146,7 @@ public class HomeActivity extends BaseActivity {
         startActivity(VIARequisitionActivity.class, false);
     }
 
-    public void onClickSyncData(View view) {
+    public void onClickSyncData() {
         Log.d("HomeActivity", "requesting immediate sync");
         syncService.requestSyncImmediately();
     }
@@ -245,6 +242,8 @@ public class HomeActivity extends BaseActivity {
             startActivity(LoginActivity.class);
             finish();
             return true;
+        } else if (item.getItemId() == R.id.action_sync_data) {
+            onClickSyncData();
         }
         return super.onOptionsItemSelected(item);
     }
