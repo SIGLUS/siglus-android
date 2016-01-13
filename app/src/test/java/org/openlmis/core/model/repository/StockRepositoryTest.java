@@ -145,7 +145,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         StockMovementItem item = createMovementItem(RECEIVE, 100, stockCard);
         item.setSynced(true);
         stockCard.setStockOnHand(item.getStockOnHand());
-        stockRepository.addStockMovementAndUpdateStockCard(stockCard, item);
+        stockRepository.addStockMovementAndUpdateStockCard(item);
         stockRepository.refresh(stockCard);
 
         //then
@@ -162,7 +162,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         //when
         StockMovementItem item = createMovementItem(RECEIVE, 100, stockCard);
         stockCard.setStockOnHand(item.getStockOnHand());
-        stockRepository.addStockMovementAndUpdateStockCard(stockCard, item);
+        stockRepository.addStockMovementAndUpdateStockCard(item);
         stockRepository.refresh(stockCard);
 
         //then
@@ -353,7 +353,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         long consumption = stockRepository.getCmm(stockCard);
 
         //then
-        assertEquals(100,consumption);
+        assertEquals(100, consumption);
     }
 
     private StockMovementItem getStockMovementItem(DateTime createdTime, DateTime movementDate) {
@@ -418,7 +418,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         StockMovementItem item = createMovementItem(ISSUE, 100, stockCard);
         item.setMovementDate(lastThirdMonthDate);
         stockCard.setStockOnHand(item.getStockOnHand());
-        stockRepository.addStockMovementAndUpdateStockCard(stockCard, item);
+        stockRepository.addStockMovementAndUpdateStockCard(item);
         stockRepository.refresh(stockCard);
     }
 

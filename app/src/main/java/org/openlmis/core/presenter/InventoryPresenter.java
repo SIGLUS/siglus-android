@@ -290,7 +290,7 @@ public class InventoryPresenter extends Presenter {
                         StockCard stockCard = model.getStockCard();
                         stockCard.setExpireDates(model.formatExpiryDateString());
                         stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
-                        stockRepository.addStockMovementAndUpdateStockCard(stockCard, calculateAdjustment(model, stockCard));
+                        stockRepository.addStockMovementAndUpdateStockCard(calculateAdjustment(model, stockCard));
                     }
                     stockRepository.clearDraftInventory();
                     subscriber.onNext(null);

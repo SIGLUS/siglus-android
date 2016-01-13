@@ -139,12 +139,12 @@ public class StockMovementPresenter extends Presenter {
     }
 
     private void saveStockMovement(StockMovementItem stockMovementItem) throws LMISException {
-        
-        if(stockCard.getStockOnHand()==0 && !stockCard.getProduct().isActive()){
+
+        if (stockCard.getStockOnHand() == 0 && !stockCard.getProduct().isActive()) {
             sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
         }
 
-        stockRepository.addStockMovementAndUpdateStockCard(stockCard, stockMovementItem);
+        stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
     }
 
     public void submitStockMovement(StockMovementViewModel viewModel) {

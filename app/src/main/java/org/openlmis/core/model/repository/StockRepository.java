@@ -178,7 +178,7 @@ public class StockRepository {
                 @Override
                 public Object call() throws Exception {
                     save(stockCard);
-                    addStockMovementAndUpdateStockCard(stockCard, initStockMovementItem(stockCard));
+                    addStockMovementAndUpdateStockCard(initStockMovementItem(stockCard));
                     return null;
                 }
             });
@@ -215,7 +215,8 @@ public class StockRepository {
         return initInventory;
     }
 
-    public void addStockMovementAndUpdateStockCard(StockCard stockcard, StockMovementItem stockMovementItem) throws LMISException {
+    public void addStockMovementAndUpdateStockCard(StockMovementItem stockMovementItem) throws LMISException {
+        StockCard stockcard = stockMovementItem.getStockCard();
         if (stockcard == null) {
             return;
         }

@@ -33,7 +33,7 @@ public class StockCardBuilder {
         stockMovementItem.setMovementDate(DateUtil.parseString("2015-11-11", "yyyy-MM-dd"));
 
         stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
-        stockRepository.addStockMovementAndUpdateStockCard(stockCard, stockMovementItem);
+        stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
         stockRepository.refresh(stockCard);
 
         return stockCard;
@@ -71,7 +71,7 @@ public class StockCardBuilder {
         return this;
     }
 
-    public StockCardBuilder setCreateDate(Date date){
+    public StockCardBuilder setCreateDate(Date date) {
         stockCard.setCreatedAt(date);
         return this;
     }

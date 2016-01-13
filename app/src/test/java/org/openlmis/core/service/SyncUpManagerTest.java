@@ -201,7 +201,7 @@ public class SyncUpManagerTest {
         item.setStockCard(stockCard);
         item.setSynced(false);
 
-        stockRepository.addStockMovementAndUpdateStockCard(stockCard, item);
+        stockRepository.addStockMovementAndUpdateStockCard(item);
         stockRepository.refresh(stockCard);
         return stockCard;
     }

@@ -141,7 +141,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
 
         //then
         assertThat(stockMovementPresenter.getStockCard().getStockOnHand()).isEqualTo(item.getStockOnHand());
-        verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(stockCard, item);
+        verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(item);
         verify(view).updateArchiveMenus(true);
     }
 
@@ -240,8 +240,8 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         stockMovementPresenter.saveAndRefresh(viewModel);
 
         //then
-        verify(sharedPreferenceMgr).setIsNeedShowProductsUpdateBanner(true,"name");
-        verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(stockCard,item);
+        verify(sharedPreferenceMgr).setIsNeedShowProductsUpdateBanner(true, "name");
+        verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(item);
     }
 
     public class MyTestModule extends AbstractModule {
