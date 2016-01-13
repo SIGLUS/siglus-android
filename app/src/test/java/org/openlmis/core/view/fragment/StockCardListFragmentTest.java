@@ -141,12 +141,8 @@ public class StockCardListFragmentTest {
     @Test
     public void shouldRefreshAndShowBannerWhenNeedShowBanner(){
         fragment.productsUpdateBanner = productUpdateBanner;
-        when(sharedPreferenceMgr.isNeedShowProductsUpdateBanner()).thenReturn(true);
-        when(productUpdateBanner.getVisibility()).thenReturn(View.GONE);
-
         fragment.onActivityResult(Constants.REQUEST_CODE_CHANGE, Activity.RESULT_OK, new Intent());
 
-        verify(productUpdateBanner).setVisibility(View.VISIBLE);
         verify(productUpdateBanner).refreshBannerText();
     }
 

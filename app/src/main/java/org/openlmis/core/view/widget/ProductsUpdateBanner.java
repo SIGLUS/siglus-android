@@ -13,8 +13,6 @@ import com.google.inject.Inject;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 
-import java.util.Set;
-
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
@@ -57,15 +55,12 @@ public class ProductsUpdateBanner extends LinearLayout implements View.OnClickLi
             return;
         }
 
-        if (getVisibility() == View.GONE) {
-            setVisibility(View.VISIBLE);
-        }
+        setVisibility(View.VISIBLE);
 
-        Set<String> showUpdateBannerTexts = preferenceMgr.getShowUpdateBannerTexts();
-        if (showUpdateBannerTexts.size() == 1) {
-            tvProductUpdate.setText(Html.fromHtml(getContext().getString(R.string.hint_update_banner_tips, showUpdateBannerTexts.toArray()[0])));
+        if (preferenceMgr.getShowUpdateBannerTexts().size() == 1) {
+            tvProductUpdate.setText(Html.fromHtml(getContext().getString(R.string.hint_update_banner_tips, preferenceMgr.getShowUpdateBannerTexts().toArray()[0])));
         } else {
-            tvProductUpdate.setText(Html.fromHtml(getContext().getString(R.string.hint_update_banner_tips, showUpdateBannerTexts.size() + " Products")));
+            tvProductUpdate.setText(Html.fromHtml(getContext().getString(R.string.hint_update_banner_tips, preferenceMgr.getShowUpdateBannerTexts().size() + " Products")));
         }
     }
 
