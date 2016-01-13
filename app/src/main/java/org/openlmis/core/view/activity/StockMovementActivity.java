@@ -246,11 +246,11 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         }
     }
 
-    public static Intent getIntentToMe(Context context, long stockCardId, String formattedProductName, boolean isActive) {
+    public static Intent getIntentToMe(Context context, StockCardViewModel stockCardViewModel) {
         Intent intent = new Intent(context, StockMovementActivity.class);
-        intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCardId);
-        intent.putExtra(Constants.PARAM_STOCK_NAME, formattedProductName);
-        intent.putExtra(Constants.PARAM_IS_ACTIVATED, isActive);
+        intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCardViewModel.getStockCardId());
+        intent.putExtra(Constants.PARAM_STOCK_NAME, stockCardViewModel.getProduct().getFormattedProductName());
+        intent.putExtra(Constants.PARAM_IS_ACTIVATED, stockCardViewModel.getProduct().isActive());
         return intent;
     }
 

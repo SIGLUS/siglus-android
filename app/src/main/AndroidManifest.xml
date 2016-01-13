@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.openlmis.core">
+    package="org.openlmis.core" >
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -14,8 +14,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
-
+        android:theme="@style/AppTheme" >
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="bb9773077d8b9b49cf4a0d181c8e6bcf19213304" />
@@ -24,59 +23,48 @@
             android:name=".view.activity.LoginActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".view.activity.InventoryActivity"
             android:label="@string/title_init_inventory"
             android:theme="@style/AppTheme.BLUE"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".view.activity.HomeActivity"
-            android:label="@string/title_home">
-
+            android:label="@string/title_home" >
         </activity>
-
         <activity
             android:name=".view.activity.StockCardListActivity"
             android:label="@string/title_stock_cards" />
-
         <activity
             android:name=".view.activity.KitStockCardListActivity"
             android:theme="@style/AppTheme.TEAL"
             android:label="@string/title_kit_stock_cards" />
-
         <activity
             android:name=".view.activity.MMIARequisitionActivity"
             android:label="@string/label_mmia_title"
             android:theme="@style/AppTheme.AMBER"
             android:windowSoftInputMode="stateHidden" />
-
         <activity
             android:name=".view.activity.ArchivedDrugsListActivity"
             android:label="@string/title_archived_drugs"
             android:windowSoftInputMode="stateHidden" />
-
         <activity
             android:name=".view.activity.VIARequisitionActivity"
             android:label="@string/title_requisition"
             android:theme="@style/AppTheme.PURPLE"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
         <activity
             android:name=".view.activity.StockMovementActivity"
             android:label="@string/title_stock_movement"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
         <activity android:name=".view.activity.StockMovementHistoryActivity" />
-
-
         <activity
             android:name=".view.activity.RnRFormListActivity"
             android:label="@string/title_stock_movement"
@@ -84,7 +72,7 @@
 
         <service
             android:name=".service.SyncService"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
@@ -93,8 +81,7 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
         </service>
-
-        <service android:name=".service.AuthenticatorService">
+        <service android:name=".service.AuthenticatorService" >
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
@@ -109,15 +96,17 @@
             android:authorities="@string/sync_content_authority"
             android:syncable="true" />
 
-
         <receiver
             android:name=".service.NetworkChangeListener"
-            android:label="NetworkConnection">
+            android:label="NetworkConnection" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
 
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>
