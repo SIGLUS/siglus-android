@@ -81,12 +81,13 @@ public class StockCardListFragmentTest {
         stockCardListActivity.getFragmentManager().beginTransaction().add(fragment, null).commit();
 
         fragment.presenter = mock(StockCardPresenter.class);
-        fragment.mAdapter = mock(StockCardListAdapter.class);
         return fragment;
     }
 
     @Test
     public void shouldSortListWhenSelectSortSpinner() {
+        fragment.mAdapter = mock(StockCardListAdapter.class);
+
         when(fragment.presenter.getStockCardViewModels()).thenReturn(stockCardViewModels);
         fragment.sortSpinner.setSelection(0);
         verify(fragment.mAdapter).sortByName(true);
