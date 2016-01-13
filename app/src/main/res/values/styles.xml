@@ -142,6 +142,11 @@
         <item name="android:gravity">left</item>
     </style>
 
+    <style name="Homepage.Button" parent="Button.Blue.Large">
+        <item name="android:padding">@dimen/padding_normal</item>
+        <item name="android:gravity">left</item>
+    </style>
+
     <style name="StockMovement" />
 
     <style name="StockMovement.Panel">

@@ -47,12 +47,10 @@ import org.openlmis.core.utils.ToastUtil;
 
 import java.util.Date;
 
-import roboguice.inject.ContentView;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 
-@ContentView(R.layout.activity_main_page)
 public class HomeActivity extends BaseActivity {
 
     @InjectView(R.id.btn_stock_card)
@@ -91,6 +89,13 @@ public class HomeActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
+            setContentView(R.layout.activity_home_page);
+            setTitle(UserInfoMgr.getInstance().getFacilityName());
+        }else {
+            setContentView(R.layout.activity_main_page);
+        }
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
@@ -99,8 +104,6 @@ public class HomeActivity extends BaseActivity {
             btnVIAList.setText(LMISApp.getInstance().getText(R.string.btn_requisition_list_old));
             btnMMIAList.setText(LMISApp.getInstance().getText(R.string.btn_mmia_list_old));
         }
-
-        setTitle(UserInfoMgr.getInstance().getFacilityName());
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.INTENT_FILTER_SET_SYNCED_TIME);
@@ -232,7 +235,11 @@ public class HomeActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_home, menu);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)){
+            inflater.inflate(R.menu.menu_home_page, menu);
+        }else {
+            inflater.inflate(R.menu.menu_home, menu);
+        }
         return true;
     }
 
