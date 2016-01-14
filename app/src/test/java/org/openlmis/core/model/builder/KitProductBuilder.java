@@ -10,6 +10,9 @@ public class KitProductBuilder {
         kitProduct = new KitProduct();
     }
 
+    public static KitProductBuilder create() {
+        return new KitProductBuilder();
+    }
 
     public KitProductBuilder setKitCode(String kitCode) {
         kitProduct.setKitCode(kitCode);

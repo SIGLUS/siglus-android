@@ -33,6 +33,7 @@ import org.openlmis.core.model.builder.KitProductBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.robolectric.RuntimeEnvironment;
 
+import java.util.Arrays;
 import java.util.List;
 
 import roboguice.RoboGuice;
@@ -84,6 +85,26 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
 
         assertEquals(1, kits.size());
         assertEquals("kitCode1", kits.get(0).getCode());
+    }
+
+    @Test
+    public void shouldGetProductsByKitCode() throws Exception {
+        Product kit = ProductBuilder.create().setCode("KIT_Code").setIsKit(true).build();
+
+        KitProduct kitProduct1 = KitProductBuilder.create().setKitCode("KIT_Code").setProductCode("P3_Code").build();
+        KitProduct kitProduct2 = KitProductBuilder.create().setKitCode("KIT_Code").setProductCode("P1_Code").build();
+        KitProduct kitProduct3 = KitProductBuilder.create().setKitCode("KIT_Code").setProductCode("P2_Code").build();
+
+        List<KitProduct> kitProducts = Arrays.asList(kitProduct1, kitProduct2, kitProduct3);
+        kit.setKitProductList(kitProducts);
+
+        productRepository.batchCreateOrUpdateProducts(Arrays.asList(kit));
+
+        List<KitProduct> result = productRepository.queryKitProductByKitCode(kit.getCode());
+        assertEquals(result.size(), 3);
+        assertEquals(result.get(0).getProductCode(), kitProduct2.getProductCode());
+        assertEquals(result.get(1).getProductCode(), kitProduct3.getProductCode());
+        assertEquals(result.get(2).getProductCode(), kitProduct1.getProductCode());
     }
 
     @Test
