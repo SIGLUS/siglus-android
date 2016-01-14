@@ -14,7 +14,7 @@
       to learn more about configuring this file.
     -->
     <screenName name="org.openlmis.core.view.activity.HomeActivity">Home Screen</screenName>
-    <screenName name="org.openlmis.core.view.activity.InventoryActivity">Initial Inventory Screen</screenName>
+    <screenName name="org.openlmis.core.view.activity.InventoryActivity">Inventory Screen</screenName>
     <screenName name="org.openlmis.core.view.activity.KitStockCardListActivity">Kit StockCard Overview Screen</screenName>
     <screenName name="org.openlmis.core.view.activity.LoginActivity">Login Screen</screenName>
     <screenName name="org.openlmis.core.view.activity.MMIARequisitionActivity">MMIA Requisition Screen</screenName>
