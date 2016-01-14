@@ -29,6 +29,16 @@
         <item name="android:textColor">@color/color_white</item>
     </style>
 
+    <style name="AppTheme.WHITE">
+        <item name="android:actionBarStyle">@style/MyActionBar.WHITE</item>
+        <item name="actionBarStyle">@style/MyActionBar.WHITE</item>
+    </style>
+
+    <style name="MyActionBar.WHITE">
+        <item name="android:background">@color/color_black</item>
+        <item name="background">@color/color_gray</item>
+    </style>
+
     <!-- Basic style of TextView -->
     <style name="Text" />
 

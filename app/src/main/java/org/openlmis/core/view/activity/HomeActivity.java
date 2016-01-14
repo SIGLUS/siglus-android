@@ -149,6 +149,11 @@ public class HomeActivity extends BaseActivity {
         startActivity(VIARequisitionActivity.class, false);
     }
 
+    public void onClickSyncData(View view) {
+        Log.d("HomeActivity", "requesting immediate sync");
+        syncService.requestSyncImmediately();
+    }
+
     public void onClickSyncData() {
         Log.d("HomeActivity", "requesting immediate sync");
         syncService.requestSyncImmediately();
@@ -249,7 +254,7 @@ public class HomeActivity extends BaseActivity {
             startActivity(LoginActivity.class);
             finish();
             return true;
-        } else if (item.getItemId() == R.id.action_sync_data) {
+        }else if (item.getItemId() == R.id.action_sync_data) {
             onClickSyncData();
         }
         return super.onOptionsItemSelected(item);

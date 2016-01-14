@@ -14,7 +14,12 @@
 
     <color name="color_white">#FFFFFF</color>
     <color name="color_black">#000</color>
+    <color name="color_blue">#2196F3</color>
+    <color name="color_purple">#9C27B0</color>
+    <color name="color_amber">#FFC107</color>
+    <color name="color_teal">#009688</color>
     <color name="color_red">#F44336</color>
+    <color name="color_gray">#616161</color>
     <color name="color_green_light">#C2FFC1</color>
 
     <color name="color_mmia_speed_list_header">#EFEFEF</color>
