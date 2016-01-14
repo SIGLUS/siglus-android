@@ -68,4 +68,21 @@ public class ViaKitsViewModelTest {
         assertEquals(10, rnrFormItems.get(0).getInventory());
         assertEquals(ViaKitsViewModel.US_KIT, rnrFormItems.get(0).getProduct().getCode());
     }
+
+    @Test
+    public void shouldNotPopulateAnyValueIfAmountIsBelowZero() {
+        ViaKitsViewModel viaKitsViewModel = new ViaKitsViewModel();
+
+        Product usKit = new ProductBuilder().setCode(ViaKitsViewModel.US_KIT).build();
+        Product apeKit = new ProductBuilder().setCode(ViaKitsViewModel.APE_KIT).build();
+        List<RnrFormItem> rnrFormItems = newArrayList(new RnrFormItemBuilder().setIssued(-1).setProduct(usKit).build(),
+                new RnrFormItemBuilder().setIssued(-1).setProduct(apeKit).build());
+
+        viaKitsViewModel.convertRnrKitItemsToViaKit(rnrFormItems);
+
+        assertThat(viaKitsViewModel.getKitsOpenedCHW(), is(""));
+        assertThat(viaKitsViewModel.getKitsOpenedHF(), is(""));
+        assertThat(viaKitsViewModel.getKitsReceivedCHW(), is(""));
+        assertThat(viaKitsViewModel.getKitsReceivedHF(), is(""));
+    }
 }

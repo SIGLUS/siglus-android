@@ -10,13 +10,13 @@ import lombok.Data;
 @Data
 public class ViaKitsViewModel {
 
-    private String kitsReceivedHF;
+    private String kitsReceivedHF = "";
 
-    private String kitsReceivedCHW;
+    private String kitsReceivedCHW = "";
 
-    private String kitsOpenedHF;
+    private String kitsOpenedHF = "";
 
-    private String kitsOpenedCHW;
+    private String kitsOpenedCHW = "";
 
     private List<RnrFormItem> kitItems = new ArrayList<>();
 
@@ -28,6 +28,9 @@ public class ViaKitsViewModel {
         kitItems = rnrKitItems;
 
         for (RnrFormItem rnrKitItem : rnrKitItems) {
+
+            if (rnrKitItem.getIssued() < 0) continue;
+
             if (US_KIT.equals(rnrKitItem.getProduct().getCode())) {
                 kitsOpenedHF = String.valueOf(rnrKitItem.getIssued());
                 kitsReceivedHF = String.valueOf(rnrKitItem.getReceived());
