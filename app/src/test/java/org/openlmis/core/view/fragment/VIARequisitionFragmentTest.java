@@ -67,7 +67,7 @@ public class VIARequisitionFragmentTest {
 
     @Before
     public void setup() throws Exception {
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_show_kit_on_via_rnr_372, true);
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_kit, true);
         presenter = mock(VIARequisitionPresenter.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
             @Override
@@ -97,7 +97,7 @@ public class VIARequisitionFragmentTest {
         Intent intent = new Intent();
         intent.putExtra(Constants.PARAM_FORM_ID, 1L);
         VIARequisitionActivity viaRequisitionActivity = Robolectric.buildActivity(VIARequisitionActivity.class).withIntent(intent).create().start().visible().get();
-        return (VIARequisitionFragment)viaRequisitionActivity.getFragmentManager().findFragmentById(R.id.fragment_requisition);
+        return (VIARequisitionFragment) viaRequisitionActivity.getFragmentManager().findFragmentById(R.id.fragment_requisition);
     }
 
     @Test

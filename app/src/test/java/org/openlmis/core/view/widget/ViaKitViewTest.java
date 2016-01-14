@@ -20,7 +20,7 @@ public class ViaKitViewTest {
 
     @Before
     public void setUp() throws Exception {
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_show_kit_on_via_rnr_372, true);
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_kit, true);
         viaKitView = new ViaKitView(LMISTestApp.getContext());
     }
 
@@ -47,7 +47,7 @@ public class ViaKitViewTest {
 
     @Test
     public void shouldReturnTrueWhenToggleIsOFF() throws Exception {
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_show_kit_on_via_rnr_372, false);
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_kit, false);
         viaKitView = new ViaKitView(LMISTestApp.getContext());
 
         viaKitView.etKitReceivedHF.setText("");

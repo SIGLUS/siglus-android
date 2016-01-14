@@ -50,13 +50,13 @@ public class ViaKitView extends LinearLayout {
         RoboGuice.injectMembers(getContext(), this);
         RoboGuice.getInjector(getContext()).injectViewMembers(this);
 
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_show_kit_on_via_rnr_372)) {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_kit)) {
             setVisibility(INVISIBLE);
         }
     }
 
     public boolean validate() {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_show_kit_on_via_rnr_372)) {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_kit)) {
             return true;
         }
 
