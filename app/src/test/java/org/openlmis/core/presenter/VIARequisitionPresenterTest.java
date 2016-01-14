@@ -313,8 +313,34 @@ public class VIARequisitionPresenterTest {
     }
 
     @Test
-    public void shouldNotShowErrorMSGWhenThereWasNoARequisitionInTheSamePeriod() throws Exception {
+    public void shouldNotShowErrorMSGWhenThereWasNoARequisitionInTheSamePeriodAndKitIsOff() throws Exception {
         ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_kit, false);
+
+        RnRForm rnRForm = new RnRForm();
+        rnRForm.setBaseInfoItemListWrapper(newArrayList(new BaseInfoItem()));
+        presenter.rnRForm = rnRForm;
+        when(VIARequisitionFragment.validateKitData()).thenReturn(true);
+
+        List<RequisitionFormItemViewModel> list = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            list.add(new RequisitionFormItemViewModel(createRnrFormItem(i)));
+            list.get(i).setRequestAmount(String.valueOf(i));
+        }
+
+        presenter.requisitionFormItemViewModels = list;
+
+        when(mockRnrFormRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(true);
+        when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
+
+        presenter.processRequisition("123");
+
+        verify(VIARequisitionFragment, never()).showErrorMessage(anyString());
+        Assert.assertEquals(3, presenter.rnRForm.getRnrFormItemListWrapper().size());
+    }
+
+    @Test
+    public void shouldNotShowErrorMSGWhenThereWasNoARequisitionInTheSamePeriod() throws Exception {
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_kit, true);
 
         RnRForm rnRForm = new RnRForm();
         rnRForm.setBaseInfoItemListWrapper(newArrayList(new BaseInfoItem()));
