@@ -73,7 +73,7 @@ public class VIARepository extends RnrFormRepository {
             RnrFormItem rnrFormItem = new RnrFormItem();
             rnrFormItem.setProduct(product);
             rnrFormItem.setForm(form);
-            rnrFormItem.setIssued(-1); //placeholder, this should be auto-populated with stock card values when open kit story done
+            rnrFormItem.setIssued(Long.MIN_VALUE); //placeholder, this should be auto-populated with stock card values when open kit story done
             rnrFormItems.add(rnrFormItem);
         }
         return rnrFormItems;

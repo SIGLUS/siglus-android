@@ -85,4 +85,17 @@ public class ViaKitsViewModelTest {
         assertThat(viaKitsViewModel.getKitsReceivedCHW(), is(""));
         assertThat(viaKitsViewModel.getKitsReceivedHF(), is(""));
     }
+
+    @Test
+    public void shouldNotThrowExceptionIfKitValuesAreEmpty() {
+        Product usKit = new ProductBuilder().setCode(ViaKitsViewModel.US_KIT).build();
+        Product apeKit = new ProductBuilder().setCode(ViaKitsViewModel.APE_KIT).build();
+        List<RnrFormItem> rnrFormItems = newArrayList(new RnrFormItemBuilder().setIssued(-1).setProduct(usKit).build(),
+                new RnrFormItemBuilder().setIssued(-1).setProduct(apeKit).build());
+
+        ViaKitsViewModel viaKitsViewModel = new ViaKitsViewModel();
+        viaKitsViewModel.setKitItems(rnrFormItems);
+
+        viaKitsViewModel.convertToRnrItems();
+    }
 }

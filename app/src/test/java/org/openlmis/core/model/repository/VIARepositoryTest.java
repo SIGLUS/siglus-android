@@ -67,7 +67,7 @@ public class VIARepositoryTest {
         List<RnrFormItem> rnrFormItemList = viaRepository.generateRnrFormItems(form);
         assertThat(rnrFormItemList.size(), is(3));
         assertThat(rnrFormItemList.get(2).getReceived(), is(0L));
-        assertThat(rnrFormItemList.get(2).getIssued(), is(-1L));
+        assertThat(rnrFormItemList.get(2).getIssued(), is(Long.MIN_VALUE));
     }
 
 

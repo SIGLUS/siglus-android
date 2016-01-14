@@ -43,14 +43,27 @@ public class ViaKitsViewModel {
 
     public List<RnrFormItem> convertToRnrItems() {
         for (RnrFormItem rnrFormItem : kitItems) {
+
             if (US_KIT.equals(rnrFormItem.getProduct().getCode())) {
-                rnrFormItem.setIssued(Long.parseLong(kitsOpenedHF));
-                rnrFormItem.setReceived(Long.parseLong(kitsReceivedHF));
-                rnrFormItem.setInventory(rnrFormItem.getReceived() - rnrFormItem.getIssued());
+                if (!kitsOpenedHF.isEmpty()) {
+                    rnrFormItem.setIssued(Long.parseLong(kitsOpenedHF));
+                }
+                if (!kitsReceivedHF.isEmpty()) {
+                    rnrFormItem.setReceived(Long.parseLong(kitsReceivedHF));
+                }
+                if (!kitsOpenedHF.isEmpty() && !kitsReceivedHF.isEmpty()) {
+                    rnrFormItem.setInventory(rnrFormItem.getReceived() - rnrFormItem.getIssued());
+                }
             } else if (APE_KIT.equals(rnrFormItem.getProduct().getCode())) {
-                rnrFormItem.setIssued(Long.parseLong(kitsOpenedCHW));
-                rnrFormItem.setReceived(Long.parseLong(kitsReceivedCHW));
-                rnrFormItem.setInventory(rnrFormItem.getReceived() - rnrFormItem.getIssued());
+                if (!kitsOpenedCHW.isEmpty()) {
+                    rnrFormItem.setIssued(Long.parseLong(kitsOpenedCHW));
+                }
+                if (!kitsReceivedCHW.isEmpty()) {
+                    rnrFormItem.setReceived(Long.parseLong(kitsReceivedCHW));
+                }
+                if (!kitsOpenedCHW.isEmpty() && !kitsReceivedCHW.isEmpty()) {
+                    rnrFormItem.setInventory(rnrFormItem.getReceived() - rnrFormItem.getIssued());
+                }
             }
         }
 
