@@ -179,8 +179,8 @@
     <string name="label_submitted_message">%1$s enviado com sucesso no dia on the  %2$s</string>
     <string name="btn_view_requisition">Ver %s</string>
     <string name="label_period_date">%1$s  a  %2$s</string>
-    <string name="btn_requisition_list">Ver Requisições/Balancetes históricas para Via Clássica</string>
-    <string name="btn_mmia_list">Ver MMIAs históricos</string>
+    <string name="btn_requisition_list"> Requisições/Balancetes</string>
+    <string name="btn_mmia_list"> MMIA</string>
     <string name="title_requisition_list">Requisições/Balancetes Históricas para Via Clássica</string>
     <string name="title_mmia_list">MMIAs Históricos</string>
     <string name="label_current_period">Período atual</string>
