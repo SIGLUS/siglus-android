@@ -31,7 +31,6 @@ import lombok.Data;
 @Data
 public class RnRFormViewModel {
 
-    public static final int TYPE_GROUP = 0;
     public static final int TYPE_DRAFT = 1;
     public static final int TYPE_UNSYNC = 2;
     public static final int TYPE_HISTORICAL = 3;
@@ -44,11 +43,6 @@ public class RnRFormViewModel {
     long id;
     String syncServerErrorMessage;
     private RnRForm form;
-
-    public RnRFormViewModel(String title) {
-        this.type = TYPE_GROUP;
-        this.title = title;
-    }
 
     public RnRFormViewModel(RnRForm form) {
         this.form = form;

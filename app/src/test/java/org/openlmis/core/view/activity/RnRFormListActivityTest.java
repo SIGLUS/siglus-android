@@ -11,6 +11,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
+import org.openlmis.core.model.Program;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.presenter.RnRFormListPresenter;
@@ -19,6 +21,8 @@ import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
+
+import java.util.Date;
 
 import roboguice.RoboGuice;
 import rx.Observable;
@@ -85,7 +89,14 @@ public class RnRFormListActivityTest {
 
     @Test
     public void shouldLoadDataWhenCalledSubscriberOnNext() throws Exception {
-        rnRFormListActivity.getRnRFormSubscriber().onNext(newArrayList(new RnRFormViewModel("hello"), new RnRFormViewModel("world")));
+        RnRForm form = new RnRForm();
+        Program program = new Program();
+        program.setProgramCode("MMIA");
+        form.setProgram(program);
+        form.setPeriodBegin(new Date());
+        form.setPeriodEnd(new Date());
+
+        rnRFormListActivity.getRnRFormSubscriber().onNext(newArrayList(new RnRFormViewModel(form), new RnRFormViewModel(form)));
 
         assertThat(rnRFormListActivity.listView.getAdapter().getItemCount()).isEqualTo(2);
     }

@@ -183,8 +183,6 @@
     <string name="btn_mmia_list"> MMIA</string>
     <string name="title_requisition_list">Requisições/Balancetes Históricas para Via Clássica</string>
     <string name="title_mmia_list">MMIAs Históricos</string>
-    <string name="label_current_period">Período atual</string>
-    <string name="label_previous_period">Períodos anteriores</string>
     <string name="label_total">Total:%1$s</string>
     <!--Signature-->
     <string name="dialog_request_signature">Insira as iniciais do seu nome para rubricar o movimento</string>

@@ -36,8 +36,6 @@ public class RnRFormViewHolderTest {
     private RnRFormViewHolder getViewHolderByType(int viewType) {
         RnRFormListAdapter mockAdapter = mock(RnRFormListAdapter.class);
         switch (viewType) {
-            case RnRFormViewModel.TYPE_GROUP:
-                return new RnRFormViewHolder(mockAdapter, LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_list_type3, null, false));
             case RnRFormViewModel.TYPE_DRAFT:
             case RnRFormViewModel.TYPE_UNSYNC:
                 return new RnRFormViewHolder(mockAdapter, LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_list_type1, null, false));

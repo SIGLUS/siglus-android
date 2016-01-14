@@ -22,9 +22,6 @@ public class RnRFormViewHolder extends BaseViewHolder {
     public static final int INT_UNSET = 0;
     private final RnRFormListAdapter rnRFormListAdapter;
 
-    @InjectView(R.id.title)
-    TextView txTitle;
-
     @InjectView(R.id.tx_period)
     TextView txPeriod;
 
@@ -44,9 +41,6 @@ public class RnRFormViewHolder extends BaseViewHolder {
 
     public void populate(final RnRFormViewModel model, String programCode) {
         switch (model.getType()) {
-            case RnRFormViewModel.TYPE_GROUP:
-                txTitle.setText(model.getTitle());
-                break;
             case RnRFormViewModel.TYPE_DRAFT:
                 configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())), R.drawable.ic_description, R.color.color_draft_title, model.getForm());
                 break;
