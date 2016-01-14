@@ -26,7 +26,9 @@ Feature: Requisition
     And I rotate the page to "landscape"
     Then I swipe right
     Then I should see "345" in the requisition form
-    Then I press "Submit for Approval"
+
+    When I enter kit values
+    And I press "Submit for Approval"
     And I sign requisition with "superuser" "testUser" and complete
     Then I wait for "Home Page" to appear
 
