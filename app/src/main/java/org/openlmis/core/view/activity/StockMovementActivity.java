@@ -91,6 +91,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     private boolean isStockCardArchivable;
 
     private boolean isActivated;
+    private boolean isKitStockCard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +100,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         stockId = getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
         stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
         isActivated = getIntent().getBooleanExtra(Constants.PARAM_IS_ACTIVATED, true);
+        isKitStockCard = getIntent().getBooleanExtra(Constants.PARAM_IS_KIT_STOCK_CARD, false);
         try {
             presenter.setStockCard(stockId);
         } catch (LMISException e) {
@@ -205,6 +207,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean isPrepared = super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.action_archive).setVisible(isStockCardArchivable);
+        menu.findItem(R.id.action_unpack).setVisible(isKitStockCard);
         return isPrepared;
     }
 
@@ -251,6 +254,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCardViewModel.getStockCardId());
         intent.putExtra(Constants.PARAM_STOCK_NAME, stockCardViewModel.getProduct().getFormattedProductName());
         intent.putExtra(Constants.PARAM_IS_ACTIVATED, stockCardViewModel.getProduct().isActive());
+        intent.putExtra(Constants.PARAM_IS_KIT_STOCK_CARD, stockCardViewModel.getProduct().isKit());
         return intent;
     }
 

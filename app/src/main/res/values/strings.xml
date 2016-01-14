@@ -149,6 +149,7 @@
     <string name="label_validate_period">Expiry Date</string>
     <string name="btn_add_expiry_date">+ Expiry Date</string>
     <string name="menu_item_stock_movement_history">Movement History</string>
+    <string name="menu_item_kit_unpack">Unpack Kit</string>
     <string name="title_add_new_drug">Add new product</string>
     <string name="hint_signature">Enter your initials</string>
     <string name="hint_product_deactivated">This product has been deactivated and is not available to reorder</string>

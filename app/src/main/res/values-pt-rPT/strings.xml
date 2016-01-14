@@ -131,6 +131,7 @@
     <string name="label_validate_period">Prazos de Validade</string>
     <string name="btn_add_expiry_date">+ Data de espiração</string>
     <string name="menu_item_stock_movement_history">Historico de movimentos</string>
+    <string name="menu_item_kit_unpack">Unpack Kit</string>
     <string name="title_add_new_drug">Adicionar novo producto</string>
     <string name="hint_signature">Insira as iniciais do seu nome</string>
     <!--MMIABaseInfo-->
