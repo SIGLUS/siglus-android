@@ -105,8 +105,6 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
     protected void onStart() {
         super.onStart();
         presenter.onStart();
-
-        LMISApp.getInstance().trackScreen(getTitle().toString());
     }
 
     @Override

@@ -48,10 +48,6 @@ public class LMISTestApp extends LMISApp {
     }
 
     @Override
-    public void trackScreen(String screenName) {
-    }
-
-    @Override
     protected void setupGoogleAnalytics() {
     }
 }

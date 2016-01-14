@@ -36,10 +36,10 @@ public final class AnalyticsTrackers {
      */
     private AnalyticsTrackers(Context context) {
         Context mContext = context.getApplicationContext();
+        GoogleAnalytics.getInstance(mContext).getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
         mTracker = GoogleAnalytics.getInstance(mContext).newTracker(R.xml.app_tracker);
         mTracker.setAppVersion(BuildConfig.VERSION_NAME);
         mTracker.setAppId(BuildConfig.APPLICATION_ID);
-        GoogleAnalytics.getInstance(mContext).getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
     }
 
     public synchronized Tracker getDefault() {

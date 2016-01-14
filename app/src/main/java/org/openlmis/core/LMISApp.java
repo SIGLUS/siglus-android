@@ -25,8 +25,6 @@ import android.content.res.Configuration;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -44,8 +42,6 @@ public class LMISApp extends Application {
 
     public static long lastOperateTime = 0L;
 
-    private Tracker mTracker;
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -60,7 +56,6 @@ public class LMISApp extends Application {
 
     protected void setupGoogleAnalytics() {
         AnalyticsTrackers.initialize(this);
-        mTracker = AnalyticsTrackers.getInstance().getDefault();
         if (!BuildConfig.FLAVOR.equals("prd")) {
             GoogleAnalytics.getInstance(this).setDryRun(true);
         }
@@ -100,12 +95,5 @@ public class LMISApp extends Application {
 
     public void logErrorOnFabric(LMISException exception) {
         Crashlytics.logException(exception);
-    }
-
-    public void trackScreen(String screenName) {
-        if (getFeatureToggleFor(R.bool.feature_google_analytics_540)) {
-            mTracker.setScreenName(screenName);
-            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-        }
     }
 }
