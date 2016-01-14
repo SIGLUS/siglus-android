@@ -22,6 +22,8 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Product;
@@ -58,7 +60,9 @@ public class VIARepository extends RnrFormRepository {
     @Override
     protected List<RnrFormItem> generateRnrFormItems(final RnRForm form) throws LMISException {
         List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form);
-        rnrFormItems.addAll(generateKitRnrItems(form));
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_kit)) {
+            rnrFormItems.addAll(generateKitRnrItems(form));
+        }
         return rnrFormItems;
     }
 

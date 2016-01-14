@@ -314,9 +314,12 @@ public class VIARequisitionPresenterTest {
 
     @Test
     public void shouldNotShowErrorMSGWhenThereWasNoARequisitionInTheSamePeriod() throws Exception {
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_kit, true);
+
         RnRForm rnRForm = new RnRForm();
         rnRForm.setBaseInfoItemListWrapper(newArrayList(new BaseInfoItem()));
         presenter.rnRForm = rnRForm;
+
 
         List<RequisitionFormItemViewModel> list = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
@@ -340,6 +343,8 @@ public class VIARequisitionPresenterTest {
 
     @Test
     public void shouldInitViaKitsViewModel() throws Exception {
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_kit, true);
+
         RnRForm rnRForm = mock(RnRForm.class);
         when(mockRnrFormRepository.queryRnRForm(1L)).thenReturn(rnRForm);
         when(rnRForm.getRnrItems(IsKit.No)).thenReturn(new ArrayList<RnrFormItem>());
@@ -370,6 +375,8 @@ public class VIARequisitionPresenterTest {
 
     @Test
     public void shouldIncludeKitItemsWhenSaving() throws Exception {
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_kit, true);
+
         RnRForm rnRForm = new RnRForm();
         rnRForm.setBaseInfoItemListWrapper(newArrayList(new BaseInfoItem()));
         presenter.rnRForm = rnRForm;
