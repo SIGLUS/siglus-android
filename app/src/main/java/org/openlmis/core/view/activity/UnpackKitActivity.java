@@ -20,7 +20,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_kit_unpack)
-public class UnpackKitActivity extends BaseActivity {
+public class UnpackKitActivity extends BaseActivity implements UnpackKitPresenter.UnpackKitView {
 
     @InjectView(R.id.products_list)
     protected RecyclerView productListRecycleView;

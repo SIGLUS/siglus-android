@@ -28,6 +28,9 @@ public class UnpackKitPresenter extends Presenter {
         view = (UnpackKitView) v;
     }
 
+    public UnpackKitPresenter() {
+    }
+
     public Observable<List<Product>> loadKitProducts(final String kitCode) {
         return Observable.create(new Observable.OnSubscribe<List<Product>>() {
             @Override
@@ -49,7 +52,6 @@ public class UnpackKitPresenter extends Presenter {
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
-
 
     public interface UnpackKitView extends BaseView {
     }
