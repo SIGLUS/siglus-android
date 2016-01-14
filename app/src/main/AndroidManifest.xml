@@ -35,6 +35,10 @@
             android:label="@string/title_init_inventory"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".view.activity.UnpackKitActivity"
+            android:label="@string/title_unpack_kit"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".view.activity.HomeActivity"
             android:label="@string/title_home" >
         </activity>
