@@ -3,6 +3,7 @@
     <item
         android:id="@+id/action_unpack"
         android:title="@string/menu_item_kit_unpack"
+        android:visible="false"
         app:showAsAction="ifRoom|withText" />
     <item
         android:id="@+id/action_history"

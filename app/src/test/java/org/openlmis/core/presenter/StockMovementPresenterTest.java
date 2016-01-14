@@ -18,6 +18,8 @@
 
 package org.openlmis.core.presenter;
 
+import android.support.annotation.NonNull;
+
 import com.google.inject.AbstractModule;
 
 import org.junit.Before;
@@ -122,11 +124,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldSaveAndRefresh() throws Exception {
         //given
-        StockCard stockCard = new StockCard();
-        stockCard.setStockOnHand(1);
-        Product product = new Product();
-        product.setActive(true);
-        stockCard.setProduct(product);
+        StockCard stockCard = createStockCard(1, false);
 
         StockMovementItem item = new StockMovementItem();
         item.setStockOnHand(0L);
@@ -148,13 +146,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldNotEnableArchiveMenuForKitsEvenIfSOHIsZero() throws Exception {
         //given
-        StockCard stockCard = new StockCard();
-        stockCard.setStockOnHand(0);
-        Product product = new Product();
-        product.setActive(true);
-        product.setKit(true);
-        stockCard.setProduct(product);
-
+        StockCard stockCard = createStockCard(0, true);
         StockMovementItem item = new StockMovementItem();
         item.setStockOnHand(0L);
 
@@ -167,6 +159,47 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
 
         //then
         verify(view).updateArchiveMenus(false);
+    }
+
+    @Test
+    public void shouldNotEnableUnpackMenuForKitsIfMovementItemSOHIsZero() throws Exception {
+        //given
+        StockCard stockCard = createStockCard(100, true);
+        StockMovementItem item = new StockMovementItem();
+        item.setStockOnHand(0L);
+
+        StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
+        when(viewModel.convertViewToModel()).thenReturn(item);
+
+        //when
+        stockMovementPresenter.stockCard = stockCard;
+        stockMovementPresenter.saveAndRefresh(viewModel);
+
+        //then
+        verify(view).updateUnpackKitMenu(false);
+    }
+
+    @Test
+    public void shouldEnableUnpackMenuWhenStockCardSOHIsNotZero() throws Exception {
+        //given
+        StockCard stockCard = createStockCard(100, true);
+        when(stockRepositoryMock.queryStockCardById(200L)).thenReturn(stockCard);
+
+        stockMovementPresenter.setStockCard(200L);
+
+        verify(view).updateUnpackKitMenu(true);
+    }
+
+    @NonNull
+    private StockCard createStockCard(int stockOnHand, boolean isKit) {
+        StockCard stockCard = new StockCard();
+        stockCard.setId(200L);
+        stockCard.setStockOnHand(stockOnHand);
+        Product product = new Product();
+        product.setActive(true);
+        product.setKit(isKit);
+        stockCard.setProduct(product);
+        return stockCard;
     }
 
     @Test

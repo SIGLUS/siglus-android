@@ -5,11 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.widget.Button;
 
 import org.openlmis.core.R;
-import org.openlmis.core.model.Product;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.adapter.UnpackKitAdapter;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
@@ -38,9 +36,9 @@ public class UnpackKitActivity extends BaseActivity {
         productListRecycleView.setAdapter(mAdapter);
     }
 
-    public static Intent getIntentToMe(Context context, Product kit) {
+    public static Intent getIntentToMe(Context context, String code) {
         Intent intent = new Intent(context, UnpackKitActivity.class);
-        intent.putExtra(Constants.PARAM_KIT_CODE, kit.getCode());
+        intent.putExtra(Constants.PARAM_KIT_CODE, code);
         return intent;
     }
 }

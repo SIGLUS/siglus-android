@@ -81,7 +81,7 @@ public class StockMovementPresenter extends Presenter {
 
     public void setStockCard(long stockCardId) throws LMISException {
         this.stockCard = stockRepository.queryStockCardById(stockCardId);
-        updateArchiveMenu();
+        updateMenus();
     }
 
     public void loadStockMovementViewModels() {
@@ -167,7 +167,7 @@ public class StockMovementPresenter extends Presenter {
             viewModel.setDraft(false);
             stockMovementModelList.add(new StockMovementViewModel());
 
-            updateArchiveMenu();
+            updateMenus();
             view.refreshStockMovement();
             view.deactivatedStockDraft();
         } catch (LMISException e) {
@@ -175,9 +175,12 @@ public class StockMovementPresenter extends Presenter {
         }
     }
 
-    private void updateArchiveMenu() {
+    private void updateMenus() {
         boolean isArchivable = !stockCard.getProduct().isKit() && stockCard.getStockOnHand() == 0;
         view.updateArchiveMenus(isArchivable);
+
+        boolean isUnpackable = stockCard.getProduct().isKit() && stockCard.getStockOnHand() != 0;
+        view.updateUnpackKitMenu(isUnpackable);
     }
 
     public StockCard getStockCard() {
@@ -204,5 +207,7 @@ public class StockMovementPresenter extends Presenter {
         void showSignDialog();
 
         void updateArchiveMenus(boolean isArchivable);
+
+        void updateUnpackKitMenu(boolean isUnpackable);
     }
 }

@@ -7,6 +7,7 @@ import com.google.inject.AbstractModule;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
@@ -100,6 +101,30 @@ public class StockMovementActivityTest {
         assertThat(startedIntent.getComponent().getClassName()).isEqualTo(StockMovementHistoryActivity.class.getName());
         assertThat(startedIntent.getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0)).isEqualTo(100L);
         assertThat(startedIntent.getStringExtra(Constants.PARAM_STOCK_NAME)).isEqualTo("Stock Name");
+    }
+
+    @Test
+    public void shouldGoToUnpackKitActivity() throws Exception{
+        shadowOf(stockMovementActivity).clickMenuItem(R.id.action_unpack);
+        Intent startedIntent = ShadowApplication.getInstance().getNextStartedActivity();
+
+        assertThat(startedIntent).isNotNull();
+        assertThat(startedIntent.getComponent().getClassName()).isEqualTo(UnpackKitActivity.class.getName());
+        assertThat(startedIntent.getStringExtra(Constants.PARAM_KIT_CODE)).isEqualTo("08S40");
+    }
+
+    @Test
+    public void shouldShowUnpackMenu() throws Exception{
+        stockMovementActivity.updateUnpackKitMenu(true);
+
+        assertThat(shadowOf(stockMovementActivity).getOptionsMenu().findItem(R.id.action_unpack).isVisible()).isTrue();
+    }
+
+    @Test
+    public void shouldHideUnpackKitMenu() throws Exception{
+        stockMovementActivity.updateUnpackKitMenu(false);
+
+        assertThat(shadowOf(stockMovementActivity).getOptionsMenu  ().findItem(R.id.action_unpack).isVisible()).isFalse();
     }
 
     @Test

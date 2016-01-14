@@ -89,9 +89,9 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
     private StockMovementAdapter stockMovementAdapter;
     private boolean isStockCardArchivable;
+    private boolean isStockCardUnpackable;
 
     private boolean isActivated;
-    private boolean isKitStockCard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +100,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         stockId = getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
         stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
         isActivated = getIntent().getBooleanExtra(Constants.PARAM_IS_ACTIVATED, true);
-        isKitStockCard = getIntent().getBooleanExtra(Constants.PARAM_IS_KIT_STOCK_CARD, false);
+
         try {
             presenter.setStockCard(stockId);
         } catch (LMISException e) {
@@ -168,6 +168,12 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         invalidateOptionsMenu();
     }
 
+    @Override
+    public void updateUnpackKitMenu(boolean unpackable) {
+        isStockCardUnpackable = unpackable;
+        invalidateOptionsMenu();
+    }
+
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
         @Override
         public void onCancel() {
@@ -207,7 +213,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean isPrepared = super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.action_archive).setVisible(isStockCardArchivable);
-        menu.findItem(R.id.action_unpack).setVisible(isKitStockCard);
+        menu.findItem(R.id.action_unpack).setVisible(isStockCardUnpackable);
         return isPrepared;
     }
 
@@ -223,7 +229,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_unpack:
-                startActivity(UnpackKitActivity.getIntentToMe(this, presenter.getStockCard().getProduct()));
+                startActivity(UnpackKitActivity.getIntentToMe(this, presenter.getStockCard().getProduct().getCode()));
                 return true;
             case R.id.action_history:
                 startActivity(StockMovementHistoryActivity.getIntentToMe(this, stockId, stockName, false));
@@ -257,7 +263,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCardViewModel.getStockCardId());
         intent.putExtra(Constants.PARAM_STOCK_NAME, stockCardViewModel.getProduct().getFormattedProductName());
         intent.putExtra(Constants.PARAM_IS_ACTIVATED, stockCardViewModel.getProduct().isActive());
-        intent.putExtra(Constants.PARAM_IS_KIT_STOCK_CARD, stockCardViewModel.getProduct().isKit());
         return intent;
     }
 
