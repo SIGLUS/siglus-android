@@ -230,4 +230,22 @@ public class HomeActivityTest {
         assertTrue(homeActivity.isFinishing());
         verifyNextPage(LoginActivity.class.getName());
     }
+
+    @Test
+    public void shouldShowOldTextOfMMIAListAndVIALIstButtons() throws Exception {
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_combine_rnr_form_button_498, false);
+        HomeActivity activity = Robolectric.buildActivity(HomeActivity.class).create().get();
+
+        assertThat(activity.btnMMIAList.getText().toString(), is(activity.getString(R.string.btn_mmia_list_old)));
+        assertThat(activity.btnVIAList.getText().toString(), is(activity.getString(R.string.btn_requisition_list_old)));
+    }
+
+    @Test
+    public void shouldShowNewTextOfMMIAListAndVIALIstButtons() throws Exception {
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_combine_rnr_form_button_498, true);
+        HomeActivity activity = Robolectric.buildActivity(HomeActivity.class).create().get();
+
+        assertThat(activity.btnMMIAList.getText().toString(), is(activity.getString(R.string.btn_mmia_list)));
+        assertThat(activity.btnVIAList.getText().toString(), is(activity.getString(R.string.btn_requisition_list)));
+    }
 }
