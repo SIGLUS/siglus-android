@@ -1,5 +1,6 @@
 package org.openlmis.core.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -27,6 +28,12 @@ public class KitStockCardListFragment extends StockCardListFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        productsUpdateBanner.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         productsUpdateBanner.setVisibility(View.GONE);
     }
 }
