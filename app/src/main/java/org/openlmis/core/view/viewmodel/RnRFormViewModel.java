@@ -21,19 +21,24 @@ package org.openlmis.core.view.viewmodel;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.utils.DateUtil;
+
+import java.util.Date;
 
 import lombok.Data;
 
 @Data
 public class RnRFormViewModel {
 
-    public static final int TYPE_DRAFT = 1;
-    public static final int TYPE_UNSYNC = 2;
-    public static final int TYPE_HISTORICAL = 3;
+    public static final int TYPE_UNCOMPLETE_INVENTORY = 1;
+    public static final int TYPE_COMPLETED_INVENTORY = 1;
+    public static final int TYPE_DRAFT = 2;
+    public static final int TYPE_UNSYNC = 3;
+    public static final int TYPE_HISTORICAL = 4;
 
     int type;
     String syncedDate;
@@ -47,11 +52,21 @@ public class RnRFormViewModel {
     public RnRFormViewModel(RnRForm form) {
         this.form = form;
         this.syncedDate = DateUtil.formatDate(form.getUpdatedAt());
-        this.period = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDate(form.getPeriodBegin()), DateUtil.formatDate(form.getPeriodEnd()));
+        this.period = generatePeriod(form.getPeriodBegin(), form.getPeriodEnd());
         this.id = form.getId();
 
-        setName(form);
+        setName(form.getProgram().getProgramCode());
         setType(form);
+    }
+
+    public RnRFormViewModel(Period period, String programCode, int type) {
+        this.period = generatePeriod(period.getBegin().toDate(), period.getEnd().toDate());
+        this.type = type;
+        setName(programCode);
+    }
+
+    private String generatePeriod(Date begin, Date end) {
+        return LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDate(begin), DateUtil.formatDate(end));
     }
 
     public void setType(RnRForm form) {
@@ -66,8 +81,8 @@ public class RnRFormViewModel {
         this.syncServerErrorMessage = syncServerErrorMessage;
     }
 
-    private void setName(RnRForm form) {
-        switch (form.getProgram().getProgramCode()) {
+    private void setName(String programCode) {
+        switch (programCode) {
             case MMIARepository.MMIA_PROGRAM_CODE:
                 this.name = LMISApp.getContext().getString(R.string.label_mmia_name);
                 break;

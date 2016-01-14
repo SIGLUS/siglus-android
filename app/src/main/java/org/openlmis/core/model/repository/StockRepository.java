@@ -424,4 +424,7 @@ public class StockRepository {
     }
 
 
+    public List<StockMovementItem> listCurrentPeriodPhsicalInventoryMovement() {
+        return null;
+    }
 }

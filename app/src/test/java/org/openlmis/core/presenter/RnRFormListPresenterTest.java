@@ -2,17 +2,24 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.AbstractModule;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
+import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.RuntimeEnvironment;
@@ -37,14 +44,20 @@ public class RnRFormListPresenterTest {
     private List<RnRForm> rnRForms;
     private ArrayList<RnRFormViewModel> viewModels;
     SyncErrorsRepository syncErrorsRepository;
+    private RnrFormRepository rnrFormRepository;
+    private StockRepository stockRepository;
 
     @Before
     public void setUp() {
+        rnrFormRepository = mock(RnrFormRepository.class);
+        stockRepository = mock(StockRepository.class);
         syncErrorsRepository = mock(SyncErrorsRepository.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
             protected void configure() {
                 bind(SyncErrorsRepository.class).toInstance(syncErrorsRepository);
+                bind(RnrFormRepository.class).toInstance(rnrFormRepository);
+                bind(StockRepository.class).toInstance(stockRepository);
             }
         });
 
@@ -56,9 +69,8 @@ public class RnRFormListPresenterTest {
     @Test
     public void shouldBuildFormListViewModels() throws LMISException {
         presenter.setProgramCode("MMIA");
-        presenter.repository = mock(RnrFormRepository.class);
         Collections.reverse(rnRForms);
-        when(presenter.repository.list("MMIA")).thenReturn(rnRForms);
+        when(rnrFormRepository.list("MMIA")).thenReturn(rnRForms);
         when(syncErrorsRepository.getBySyncTypeAndObjectId(any(SyncType.class), anyLong()))
                 .thenReturn(Arrays.asList(new SyncError("Error1", SyncType.RnRForm, 1), new SyncError("Error2", SyncType.RnRForm, 1)));
 
@@ -81,6 +93,56 @@ public class RnRFormListPresenterTest {
         presenter.addPreviousPeriodViewModels(viewModels, rnRForms);
 
         assertThat(viewModels.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void shouldReturnOneRnrFormViewModleWhenThereIsNoRnrFormAndToggleOn() throws Exception {
+        when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
+        presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_combine_rnr_form_button_498, true);
+
+        List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
+
+        Period period = new Period(new DateTime());
+        String periodString = LMISTestApp.getContext().getString(R.string.label_period_date, DateUtil.formatDate(period.getBegin().toDate()), DateUtil.formatDate(period.getEnd().toDate()));
+
+        assertThat(rnRFormViewModels.size()).isEqualTo(1);
+        assertThat(rnRFormViewModels.get(0).getPeriod()).isEqualTo(periodString);
+        assertThat(rnRFormViewModels.get(0).getName()).isEqualTo(LMISTestApp.getContext().getString(R.string.label_via_name));
+    }
+
+    @Test
+    public void shouldReturnUnCompleteInventoryTypeRnrFormViewModel() throws Exception {
+        when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
+        when(stockRepository.listCurrentPeriodPhsicalInventoryMovement()).thenReturn(new ArrayList<StockMovementItem>());
+        presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_combine_rnr_form_button_498, true);
+
+        List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
+        assertThat(rnRFormViewModels.size()).isEqualTo(1);
+        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
+    }
+
+    @Test
+    public void shouldReturnCreateFormTypeRnrFormViewModel() throws Exception {
+        when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
+        when(stockRepository.listCurrentPeriodPhsicalInventoryMovement()).thenReturn(newArrayList(new StockMovementItem()));
+        presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_combine_rnr_form_button_498, true);
+
+        List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
+        assertThat(rnRFormViewModels.size()).isEqualTo(1);
+        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_COMPLETED_INVENTORY);
+    }
+
+    @Test
+    public void shouldReturnEmptyRnrFormViewModleWhenThereIsNoRnrFormAndToggleOff() throws Exception {
+        when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_combine_rnr_form_button_498, false);
+
+        List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
+
+        assertThat(rnRFormViewModels.size()).isEqualTo(0);
     }
 
     private List<RnRForm> createRnRForms() {

@@ -23,13 +23,19 @@ import android.support.annotation.NonNull;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
@@ -37,6 +43,7 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import lombok.Setter;
@@ -54,6 +61,9 @@ public class RnRFormListPresenter extends Presenter {
 
     @Inject
     SyncErrorsRepository syncErrorsRepository;
+
+    @Inject
+    StockRepository stockRepository;
 
     @Setter
     String programCode;
@@ -87,7 +97,22 @@ public class RnRFormListPresenter extends Presenter {
 
         List<RnRForm> rnRForms = repository.list(programCode);
 
-        if (rnRForms == null || rnRForms.isEmpty()) {
+        if (rnRForms == null) {
+            return viewModels;
+        }
+
+        if (rnRForms.isEmpty()) {
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_combine_rnr_form_button_498)) {
+                Period period = DateUtil.generateRnRFormPeriodBy(new Date());
+                List<StockMovementItem> stockMovementItems = stockRepository.listCurrentPeriodPhsicalInventoryMovement();
+
+                if (stockMovementItems == null || stockMovementItems.isEmpty()) {
+                    viewModels.add(new RnRFormViewModel(period, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY));
+                } else {
+                    viewModels.add(new RnRFormViewModel(period, programCode, RnRFormViewModel.TYPE_COMPLETED_INVENTORY));
+                }
+
+            }
             return viewModels;
         }
 
