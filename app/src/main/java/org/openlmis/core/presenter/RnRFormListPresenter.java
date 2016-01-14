@@ -27,13 +27,12 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.repository.RnrFormRepository;
-import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.BaseView;
@@ -62,11 +61,11 @@ public class RnRFormListPresenter extends Presenter {
     @Inject
     SyncErrorsRepository syncErrorsRepository;
 
-    @Inject
-    StockRepository stockRepository;
-
     @Setter
     String programCode;
+
+    @Inject
+    SharedPreferenceMgr sharedPreferenceMgr;
 
     @Override
     public void attachView(BaseView v) throws ViewNotMatchException {
@@ -104,9 +103,10 @@ public class RnRFormListPresenter extends Presenter {
         if (rnRForms.isEmpty()) {
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_combine_rnr_form_button_498)) {
                 Period period = DateUtil.generateRnRFormPeriodBy(new Date());
-                List<StockMovementItem> stockMovementItems = stockRepository.listCurrentPeriodPhsicalInventoryMovement();
+                Date periodBegin = period.getBegin().toDate();
+                Date latestPhysicalInventoryTime = DateUtil.parseString(sharedPreferenceMgr.getLatestPhysicInventoryTime(), DateUtil.DATE_TIME_FORMAT);
 
-                if (stockMovementItems == null || stockMovementItems.isEmpty()) {
+                if (latestPhysicalInventoryTime.before(periodBegin)) {
                     viewModels.add(new RnRFormViewModel(period, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY));
                 } else {
                     viewModels.add(new RnRFormViewModel(period, programCode, RnRFormViewModel.TYPE_COMPLETED_INVENTORY));

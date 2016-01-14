@@ -35,10 +35,10 @@ import lombok.Data;
 public class RnRFormViewModel {
 
     public static final int TYPE_UNCOMPLETE_INVENTORY = 1;
-    public static final int TYPE_COMPLETED_INVENTORY = 1;
-    public static final int TYPE_DRAFT = 2;
-    public static final int TYPE_UNSYNC = 3;
-    public static final int TYPE_HISTORICAL = 4;
+    public static final int TYPE_COMPLETED_INVENTORY = 2;
+    public static final int TYPE_DRAFT = 3;
+    public static final int TYPE_UNSYNC = 4;
+    public static final int TYPE_HISTORICAL = 5;
 
     int type;
     String syncedDate;

@@ -53,6 +53,7 @@ public class SharedPreferenceMgr {
     public static final String KEY_LAST_SYNC_PRODUCT_TIME = "last_sync_product_time";
     public static final String KEY_SHOW_PRODUCT_UPDATE_BANNER = "show_product_update_banner";
     public static final String KEY_PRODUCT_UPDATE_BANNER_TEXT = "product_update_banner_text";
+    public static final String LATEST_PHYSICAL_INVENTORY_TIME= "latest_physical_inventory_time";
 
     @Inject
     public SharedPreferenceMgr(Context context) {
@@ -155,5 +156,13 @@ public class SharedPreferenceMgr {
         Set<String> stringSet = sharedPreferences.getStringSet(KEY_PRODUCT_UPDATE_BANNER_TEXT, new HashSet<String>());
         stringSet.add(productName);
         sharedPreferences.edit().putStringSet(KEY_PRODUCT_UPDATE_BANNER_TEXT, stringSet).apply();
+    }
+
+    public String getLatestPhysicInventoryTime() {
+        return sharedPreferences.getString(LATEST_PHYSICAL_INVENTORY_TIME, "");
+    }
+
+    public void setLatestPhysicInventoryTime(String latestPhysicInventoryTime) {
+        sharedPreferences.edit().putString(LATEST_PHYSICAL_INVENTORY_TIME, latestPhysicInventoryTime).apply();
     }
 }
