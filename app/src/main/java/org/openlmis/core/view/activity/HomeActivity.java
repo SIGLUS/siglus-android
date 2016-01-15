@@ -93,7 +93,7 @@ public class HomeActivity extends BaseActivity {
             setContentView(R.layout.activity_home_page);
             setTitle(UserInfoMgr.getInstance().getFacilityName());
         }else {
-            setContentView(R.layout.activity_main_page);
+            setContentView(R.layout.activity_home_page_old);
         }
 
         if (getSupportActionBar() != null) {
@@ -241,9 +241,9 @@ public class HomeActivity extends BaseActivity {
         super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)){
-            inflater.inflate(R.menu.menu_home_page, menu);
-        }else {
             inflater.inflate(R.menu.menu_home, menu);
+        }else {
+            inflater.inflate(R.menu.menu_home_old, menu);
         }
         return true;
     }
