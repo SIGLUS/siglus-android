@@ -100,23 +100,15 @@ public class RnRFormListPresenter extends Presenter {
             return viewModels;
         }
 
+        Collections.reverse(rnRForms);
+
         if (rnRForms.isEmpty()) {
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-                Period period = DateUtil.generateRnRFormPeriodBy(new Date());
-                Date periodBegin = period.getBegin().toDate();
-                Date latestPhysicalInventoryTime = DateUtil.parseString(sharedPreferenceMgr.getLatestPhysicInventoryTime(), DateUtil.DATE_TIME_FORMAT);
-
-                if (latestPhysicalInventoryTime.before(periodBegin)) {
-                    viewModels.add(new RnRFormViewModel(period, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY));
-                } else {
-                    viewModels.add(new RnRFormViewModel(period, programCode, RnRFormViewModel.TYPE_COMPLETED_INVENTORY));
-                }
-
+                viewModels.add(generateRnrFormVIewModelWithoutRnrForm());
             }
             return viewModels;
         }
 
-        Collections.reverse(rnRForms);
 
         addCurrentPeriodViewModel(viewModels, rnRForms);
 
@@ -125,6 +117,18 @@ public class RnRFormListPresenter extends Presenter {
         populateSyncErrorsOnViewModels(viewModels);
 
         return viewModels;
+    }
+
+    private RnRFormViewModel generateRnrFormVIewModelWithoutRnrForm() {
+        Period period = DateUtil.generateRnRFormPeriodBy(new Date());
+        Date periodBegin = period.getBegin().toDate();
+        Date latestPhysicalInventoryTime = DateUtil.parseString(sharedPreferenceMgr.getLatestPhysicInventoryTime(), DateUtil.DATE_TIME_FORMAT);
+
+        if (latestPhysicalInventoryTime.before(periodBegin)) {
+            return new RnRFormViewModel(period, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
+        } else {
+            return new RnRFormViewModel(period, programCode, RnRFormViewModel.TYPE_COMPLETED_INVENTORY);
+        }
     }
 
     private void populateSyncErrorsOnViewModels(final List<RnRFormViewModel> rnrViewModels) {
