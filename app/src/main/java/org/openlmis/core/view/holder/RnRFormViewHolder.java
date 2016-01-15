@@ -42,25 +42,13 @@ public class RnRFormViewHolder extends BaseViewHolder {
     public void populate(final RnRFormViewModel model, String programCode) {
         switch (model.getType()) {
             case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY:
-                txPeriod.setText(model.getPeriod());
-                txMessage.setText(Html.fromHtml(context.getString(R.string.label_uncompleted_physical_inventory_message, model.getName())));
-                btnView.setText(context.getString(R.string.btn_view_uncompleted_physical_inventory, model.getName()));
-                txPeriod.setBackgroundResource(R.color.color_draft_title);
-                txPeriod.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_description, 0, 0, 0);
+                configHolder(model, R.string.label_uncompleted_physical_inventory_message, R.string.btn_view_uncompleted_physical_inventory);
                 break;
             case RnRFormViewModel.TYPE_COMPLETED_INVENTORY:
-                txPeriod.setText(model.getPeriod());
-                txMessage.setText(Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, model.getName())));
-                btnView.setText(context.getString(R.string.btn_view_completed_physical_inventory, model.getName()));
-                txPeriod.setBackgroundResource(R.color.color_draft_title);
-                txPeriod.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_description, 0, 0, 0);
+                configHolder(model, R.string.label_completed_physical_inventory_message, R.string.btn_view_completed_physical_inventory);
                 break;
             case RnRFormViewModel.TYPE_UN_AUTHORIZED:
-                txPeriod.setText(model.getPeriod());
-                txMessage.setText(Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())));
-                btnView.setText(context.getString(R.string.btn_view_incomplete_requisition, model.getName()));
-                txPeriod.setBackgroundResource(R.color.color_draft_title);
-                txPeriod.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_description, 0, 0, 0);
+                configHolder(model, R.string.label_incomplete_requisition, R.string.btn_view_incomplete_requisition);
                 break;
             case RnRFormViewModel.TYPE_UNSYNC:
                 String error = context.getString(R.string.label_unsynced_requisition, model.getName());
@@ -75,6 +63,14 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 btnView.setOnClickListener(new BtnViewClickListener(model, programCode));
                 break;
         }
+    }
+
+    private void configHolder(RnRFormViewModel model, int messageText, int btnText) {
+        txPeriod.setText(model.getPeriod());
+        txMessage.setText(Html.fromHtml(context.getString(messageText, model.getName())));
+        btnView.setText(context.getString(btnText, model.getName()));
+        txPeriod.setBackgroundResource(R.color.color_draft_title);
+        txPeriod.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_description, 0, 0, 0);
     }
 
     private void configHolder(String period, Spanned text, int icDescription, int colorDraftTitle, final RnRForm form) {
