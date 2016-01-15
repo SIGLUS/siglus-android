@@ -2,9 +2,11 @@ package org.openlmis.core.manager;
 
 import com.google.inject.AbstractModule;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
@@ -12,6 +14,8 @@ import org.robolectric.RuntimeEnvironment;
 
 import roboguice.RoboGuice;
 
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -109,6 +113,27 @@ public class SharedPreferenceMgrTest {
         assertThat(sharedPreferenceMgr.isNeedShowProductsUpdateBanner(), is(false));
     }
 
+    @Test
+    public void shouldReturnTrueIfLastSyncUpDateIsToday() throws Exception {
+        ((LMISTestApp)RuntimeEnvironment.application).setCurrentTimeMillis(System.currentTimeMillis());
+        sharedPreferenceMgr.setLastMovementSyncUpDateToToday();
+
+        boolean hasSyncedUpLatestMovementToday = sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay();
+
+        assertTrue(hasSyncedUpLatestMovementToday);
+    }
+
+    @Test
+    public void shouldReturnFalseIfLastSyncUpDateIsMoreThanOneDayBefore() throws Exception {
+        DateTime twoDaysAgo = new DateTime().minusDays(2);
+        ((LMISTestApp)RuntimeEnvironment.application).setCurrentTimeMillis(twoDaysAgo.getMillis());
+        sharedPreferenceMgr.setLastMovementSyncUpDateToToday();
+
+        ((LMISTestApp)RuntimeEnvironment.application).setCurrentTimeMillis(System.currentTimeMillis());
+        boolean hasSyncedUpLatestMovementToday = sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay();
+
+        assertFalse(hasSyncedUpLatestMovementToday);
+    }
 
     public class MyTestModule extends AbstractModule {
         @Override

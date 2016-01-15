@@ -24,6 +24,7 @@ import android.content.SharedPreferences;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
@@ -53,7 +54,8 @@ public class SharedPreferenceMgr {
     public static final String KEY_LAST_SYNC_PRODUCT_TIME = "last_sync_product_time";
     public static final String KEY_SHOW_PRODUCT_UPDATE_BANNER = "show_product_update_banner";
     public static final String KEY_PRODUCT_UPDATE_BANNER_TEXT = "product_update_banner_text";
-    public static final String LATEST_PHYSICAL_INVENTORY_TIME= "latest_physical_inventory_time";
+    public static final String LATEST_PHYSICAL_INVENTORY_TIME = "latest_physical_inventory_time";
+    public static final String LAST_MOVEMENT_SYNC_UP_DATE = "last_movement_sync_up_date";
 
     @Inject
     public SharedPreferenceMgr(Context context) {
@@ -164,5 +166,15 @@ public class SharedPreferenceMgr {
 
     public void setLatestPhysicInventoryTime(String latestPhysicInventoryTime) {
         sharedPreferences.edit().putString(LATEST_PHYSICAL_INVENTORY_TIME, latestPhysicInventoryTime).apply();
+    }
+
+    public boolean hasSyncedUpLatestMovementLastDay() {
+        DateTime lastSyncTriggerDate = new DateTime(sharedPreferences.getLong(LAST_MOVEMENT_SYNC_UP_DATE, 0));
+        DateTime currentDate = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        return currentDate.minusDays(1).isBefore(lastSyncTriggerDate);
+    }
+
+    public void setLastMovementSyncUpDateToToday() {
+        sharedPreferences.edit().putLong(LAST_MOVEMENT_SYNC_UP_DATE, LMISApp.getInstance().getCurrentTimeMillis()).apply();
     }
 }
