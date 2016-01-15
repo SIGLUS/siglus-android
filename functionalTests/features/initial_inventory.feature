@@ -13,7 +13,7 @@ Feature: Log in and initialize Inventory
     And I Select MMIA Item
     And I wait for "Complete" to appear
     And I press "Complete"
-    Then I wait for "Home Page" to appear
+    Then I wait for "STOCK CARD OVERVIEW" to appear
 
     When I press "Stock Card Overview"
     And I wait for "Stock Overview" to appear

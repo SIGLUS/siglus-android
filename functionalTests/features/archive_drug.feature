@@ -52,7 +52,7 @@ Feature: Archive drug
     Then I don't see the text "[08S32Z]"
 
     And I navigate back
-    Then I wait for "Home Page" to appear
+    Then I wait for "STOCK CARD OVERVIEW" to appear
     And I press "Do Monthly Inventory"
     Then I wait for "Inventory" to appear
     Then I shouldn't see product "01A01" in this page
@@ -61,7 +61,7 @@ Feature: Archive drug
     And I navigate back
     And I wait for 1 second
     And I navigate back
-    And I wait for "Home Page" to appear
+    And I wait for "STOCK CARD OVERVIEW" to appear
     And I press "Stock Card Overview"
     And I wait for "Stock Overview" to appear
     And I press the menu key
@@ -82,7 +82,7 @@ Feature: Archive drug
     Then I see the text "[01A01]"
 
     When I navigate back
-    Then I wait for "Home Page" to appear
+    Then I wait for "STOCK CARD OVERVIEW" to appear
     And I press "Do Monthly Inventory"
     Then I wait for "Inventory" to appear
     Then I should see product "01A01" in this page
@@ -91,8 +91,10 @@ Feature: Archive drug
     Given Server updates drug data
     When I navigate back
     And I navigate back
-    And I wait for "Home Page" to appear
+    And I wait for "STOCK CARD OVERVIEW" to appear
 
+    And I press the menu key
+    Then I see "Sync Data"
     And I press "Sync Data"
 
     And I press "Stock Card Overview"
@@ -103,7 +105,7 @@ Feature: Archive drug
 
   Scenario: Unarchive one drug from Add new product
     Given I try to log in with "initial_inventory" "password1"
-    And I wait for "Home Page" to appear
+    And I wait for "STOCK CARD OVERVIEW" to appear
     And I press "Stock Card Overview"
     And I wait for "Stock Overview" to appear
 
@@ -118,7 +120,7 @@ Feature: Archive drug
     Then I see the text "[08S32Z]"
 
     And I navigate back
-    Then I wait for "Home Page" to appear
+    Then I wait for "STOCK CARD OVERVIEW" to appear
     And I press "Do Monthly Inventory"
     Then I wait for "Inventory" to appear
     Then I should see product "08S32Z" in this page

@@ -43,10 +43,12 @@ Feature: stock movement Page
     Then I see "super" in signature field
     Then I navigate back
     Then I navigate back
-    Then I wait for "Home Page" to appear
+    Then I wait for "STOCK CARD OVERVIEW" to appear
 
     #deactivate product
     Given server deactivates products has stock movement
+    And I press the menu key
+    Then I see "Sync Data"
     And I press "Sync Data"
     When I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
@@ -55,7 +57,9 @@ Feature: stock movement Page
     # reactive product
     When server reactive products
     Then I navigate back
-    Then I wait for "Home Page" to appear
+    Then I wait for "STOCK CARD OVERVIEW" to appear
+    And I press the menu key
+    Then I see "Sync Data"
     And I press "Sync Data"
     When I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
@@ -102,7 +106,7 @@ Feature: stock movement Page
     Then I navigate back
     Then I wait for 1 second
     Then I navigate back
-    Then I wait for "Home Page" to appear
+    Then I wait for "STOCK CARD OVERVIEW" to appear
 
   Scenario: Add A Positive Adjustment
     When I press "Stock Card Overview"
@@ -122,7 +126,7 @@ Feature: stock movement Page
     Then I navigate back
     Then I wait for 1 second
     Then I navigate back
-    Then I wait for "Home Page" to appear
+    Then I wait for "STOCK CARD OVERVIEW" to appear
 
   Scenario: Add all movements for one drug when is STRESS TEST
     When I press "Stock Card Overview"
@@ -131,7 +135,7 @@ Feature: stock movement Page
     Then I make all movements for "08S18Y"
     Then I wait for 1 second
     Then I navigate back
-    Then I wait for "Home Page" to appear
+    Then I wait for "STOCK CARD OVERVIEW" to appear
 
   Scenario: View stock movement page when rotate the page
     When I press "Stock Card Overview"

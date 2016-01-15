@@ -16,7 +16,7 @@ Feature: Physical Inventory
 
     Then I wait for "Complete" to appear
     And I press "Complete"
-    Then I wait for "Home Page" to appear
+    Then I wait for "STOCK CARD OVERVIEW" to appear
 
     And I press "Do Monthly Inventory"
     And I wait for "inventory" to appear
@@ -34,7 +34,7 @@ Feature: Physical Inventory
     And I press "Complete"
     And I sign with "sign"
 
-    Then I wait for "Home Page" to appear
+    Then I wait for "STOCK CARD OVERVIEW" to appear
     When I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
 
@@ -44,14 +44,14 @@ Feature: Physical Inventory
 
   Scenario: Save physical inventory, and check the stock on hand quantity that have been saved.
     Given I try to log in with "physical_inventory" "password1"
-    Then I wait for "Home Page" to appear
+    Then I wait for "STOCK CARD OVERVIEW" to appear
 
     And I press "Do Monthly Inventory"
     And I wait for "inventory" to appear
     And I do physical inventory with "2015" by fnm "08S42B"
     And I press "Save"
 
-    And I wait for "Home Page" to appear
+    And I wait for "STOCK CARD OVERVIEW" to appear
     And I press "Do Monthly Inventory"
     And I wait for "inventory" to appear
     Then I should see text containing "2015"

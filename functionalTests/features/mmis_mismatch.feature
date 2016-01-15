@@ -19,4 +19,4 @@ Feature: MMIA Page total mismatch
     Then I press "Submit for Approval"
     And I sign requisition with "superuser" "testUser" and complete
     Then I should see text containing "Your MMIA form has been successfully saved,"
-    Then I wait for "Home Page" to appear
+    Then I wait for "STOCK CARD OVERVIEW" to appear

@@ -72,7 +72,7 @@ Given(/^I have initialized inventory$/) do
         When I Select MMIA Item
         Then I wait for "Complete" to appear
         And I press "Complete"
-        Then I wait for "Home Page" to appear
+        Then I wait for "STOCK CARD OVERVIEW" to appear
 	}
 end
 
@@ -83,7 +83,7 @@ Given(/^I have initialized inventory with MMIA user$/) do
         When I Select MMIA Item
         Then I wait for "Complete" to appear
         And I press "Complete"
-        Then I wait for "Home Page" to appear
+        Then I wait for "STOCK CARD OVERVIEW" to appear
 	}
 end
 
@@ -94,7 +94,7 @@ Given(/^I have initialized inventory with VIA user$/) do
         When I Select VIA Item
         Then I wait for "Complete" to appear
         And I press "Complete"
-        Then I wait for "Home Page" to appear
+        Then I wait for "STOCK CARD OVERVIEW" to appear
 	}
 end
 
@@ -125,7 +125,7 @@ When(/^I initialize inventory$/) do
             Then I wait for "Initial inventory" to appear
             And I initialize "1254" products
             And I press "Complete"
-            Then I wait for "Home Page" to appear
+            Then I wait for "STOCK CARD OVERVIEW" to appear
         }
     else
        steps %Q{

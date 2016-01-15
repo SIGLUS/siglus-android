@@ -34,7 +34,7 @@ Feature: MMIA
     Then I press "Submit for Approval"
     And I sign requisition with "superuser" "testUser" and complete
     Then I should see text containing "Your MMIA form has been successfully saved,"
-    Then I wait for "Home Page" to appear
+    Then I wait for "STOCK CARD OVERVIEW" to appear
     And I press "Create a MMIA"
     Then I wait for "MMIA -" to appear
     Then I scroll to "Submit for Approval"
@@ -51,7 +51,7 @@ Feature: MMIA
     And I make a movement "[08S42B]" "Entries" "District( DDM)" "received" "2"
     Then I wait for "Stock Overview" to appear
     Then I navigate back
-    Then I wait for "Home Page" to appear
+    Then I wait for "STOCK CARD OVERVIEW" to appear
     And I press "Create a MMIA"
     Then I wait for "MMIA -" to appear
     Then I wait for 1 second
@@ -68,7 +68,7 @@ Feature: MMIA
     Then I navigate back
     Then I should see text containing "Are you sure you want to quit without saving your work?"
     Then I press "Yes"
-    Then I wait for "Home Page" to appear
+    Then I wait for "STOCK CARD OVERVIEW" to appear
     Then I wait for 1 second
     And I press "Create a MMIA"
     Then I wait for "MMIA -" to appear

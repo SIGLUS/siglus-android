@@ -28,8 +28,10 @@ Feature: Stock Card Overview page
     And I navigate back
     And I wait for "Stock Overview" to appear
     And I navigate back
-    And I wait for "Home Page" to appear
+    And I wait for "STOCK CARD OVERVIEW" to appear
 
+    And I press the menu key
+    Then I see "Sync Data"
     And I press "Sync Data"
 
     And I press "Stock Card Overview"
@@ -51,7 +53,7 @@ Feature: Stock Card Overview page
   Scenario: If is STRESS TEST,add all drugs with quantity 300, else try adding drug without SOH, then try adding drug with SOH
 
     Given I try to log in with "initial_inventory" "password1"
-    And I wait for "Home Page" to appear
+    And I wait for "STOCK CARD OVERVIEW" to appear
     And I press "Stock Card Overview"
     And I wait for "Stock Overview" to appear
 
