@@ -4,8 +4,5 @@
     <bool name="feature_sync_back_latest_product_list">true</bool>
     <bool name="feature_kit">true</bool>
     <bool name="feature_show_cmm_on_stock_movement_page_227">true</bool>
-    <bool name="feature_google_analytics_540">true</bool>
-    <bool name="feature_show_products_update_banner_529">true</bool>
     <bool name="feature_home_page_update">true</bool>
-    <bool name="feature_combine_rnr_form_button_498">false</bool>
 </resources>

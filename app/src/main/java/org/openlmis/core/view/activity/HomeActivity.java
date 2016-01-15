@@ -100,7 +100,7 @@ public class HomeActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
 
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_combine_rnr_form_button_498)){
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)){
             btnVIAList.setText(LMISApp.getInstance().getText(R.string.btn_requisition_list_old));
             btnMMIAList.setText(LMISApp.getInstance().getText(R.string.btn_mmia_list_old));
         }

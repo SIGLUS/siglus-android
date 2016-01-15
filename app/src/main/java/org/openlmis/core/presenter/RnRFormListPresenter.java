@@ -101,7 +101,7 @@ public class RnRFormListPresenter extends Presenter {
         }
 
         if (rnRForms.isEmpty()) {
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_combine_rnr_form_button_498)) {
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
                 Period period = DateUtil.generateRnRFormPeriodBy(new Date());
                 Date periodBegin = period.getBegin().toDate();
                 Date latestPhysicalInventoryTime = DateUtil.parseString(sharedPreferenceMgr.getLatestPhysicInventoryTime(), DateUtil.DATE_TIME_FORMAT);
