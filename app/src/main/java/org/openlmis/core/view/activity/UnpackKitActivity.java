@@ -5,13 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Button;
 
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.UnpackKitPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
-import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.UnpackKitAdapter;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 
@@ -20,7 +20,6 @@ import java.util.List;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
-import rx.Subscriber;
 
 @ContentView(R.layout.activity_kit_unpack)
 public class UnpackKitActivity extends BaseActivity implements UnpackKitPresenter.UnpackKitView {
@@ -49,6 +48,13 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         kitCode = getIntent().getStringExtra(Constants.PARAM_KIT_CODE);
 
         presenter.loadKitProducts(kitCode);
+
+        completeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                validateAll();
+            }
+        });
     }
 
     public static Intent getIntentToMe(Context context, String code) {
@@ -61,4 +67,14 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
     public void refreshList(List<StockCardViewModel> stockCardViewModels) {
         mAdapter.refreshList(stockCardViewModels);
     }
+
+    public boolean validateAll() {
+        int position = mAdapter.validateAll();
+        if (position >= 0) {
+            productListRecycleView.scrollToPosition(position);
+            return false;
+        }
+        return true;
+    }
+
 }

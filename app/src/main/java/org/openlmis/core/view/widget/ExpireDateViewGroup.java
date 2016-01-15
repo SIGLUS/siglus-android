@@ -194,9 +194,10 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
     private void updateExpireDateToDB() {
         model.setHasDataChanged(true);
         model.setExpiryDates(expireDates);
-        final StockCard stockCard = model.getStockCard();
-        stockCard.setExpireDates(model.formatExpiryDateString());
+
         if (isUpdateDBImmediately) {
+            final StockCard stockCard = model.getStockCard();
+            stockCard.setExpireDates(model.formatExpiryDateString());
             stockRepository.update(stockCard);
         }
     }

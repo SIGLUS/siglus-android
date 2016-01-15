@@ -25,6 +25,7 @@ import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.observers.TestSubscriber;
 import rx.schedulers.Schedulers;
 
+import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -97,5 +98,7 @@ public class UnpackKitPresenterTest {
         assertThat(resultProducts.size()).isEqualTo(2);
         assertThat(resultProducts.get(0).getProduct().getCode()).isEqualTo(product1.getCode());
         assertThat(resultProducts.get(1).getProduct().getCode()).isEqualTo(product2.getCode());
+        assertTrue(resultProducts.get(0).isChecked());
+        assertTrue(resultProducts.get(1).isChecked());
     }
 }
