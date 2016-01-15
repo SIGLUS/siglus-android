@@ -267,6 +267,22 @@ public class SyncUpManagerTest {
         verify(syncErrorsRepository, times(2)).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
     }
 
+    @Test
+    public void shouldSyncUpUnSyncedStockCardListWhenHasNotSyncedUpLatestMovementLastDay() throws Exception {
+        when(sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()).thenReturn(false);
+        syncUpManager.syncUpUnSyncedStockCardCodes();
+        verify(lmisRestApi).syncUpUnSyncedStockCards("123", new ArrayList<String>());
+        verify(sharedPreferenceMgr).setLastMovementSyncUpDateToToday();
+    }
+
+    @Test
+    public void shouldNotSyncUpWhenHasSyncedUpLastDay() throws LMISException {
+        when(sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()).thenReturn(true);
+        syncUpManager.syncUpUnSyncedStockCardCodes();
+        verify(lmisRestApi, never()).syncUpUnSyncedStockCards("123", new ArrayList<String>());
+        verify(sharedPreferenceMgr, never()).setLastMovementSyncUpDateToToday();
+    }
+
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {

@@ -69,4 +69,7 @@ public interface LMISRestApi {
 
     @GET("/rest-api/latest-products")
     SyncDownLatestProductsResponse fetchLatestProducts(@Query("afterUpdatedTime") String afterUpdatedTime) throws LMISException;
+
+    @POST("/rest-api/facilities/{facilityId}/unSyncedStockCards")
+    void syncUpUnSyncedStockCards(@Path("facilityId") String facilityId, @Body List<String> unSyncedStockCardCodes) throws LMISException;
 }

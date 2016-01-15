@@ -116,15 +116,15 @@ public class SyncUpManager {
     }
 
     public boolean syncStockCards() {
-        List<StockMovementItem> stockMovementItems = fetchUnSyncedStockMovements();
-        if (null == stockMovementItems || stockMovementItems.isEmpty()) {
-            return false;
-        }
-
-        final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
-        List<StockMovementEntry> movementEntriesToSync = convertStockMovementItemsToStockMovementEntriesForSync(facilityId, stockMovementItems);
-
         try {
+            List<StockMovementItem> stockMovementItems = stockRepository.listUnSynced();
+            if (stockMovementItems.isEmpty()) {
+                return false;
+            }
+
+            final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
+            List<StockMovementEntry> movementEntriesToSync = convertStockMovementItemsToStockMovementEntriesForSync(facilityId, stockMovementItems);
+
             lmisRestApi.syncUpStockMovementData(facilityId, movementEntriesToSync);
             markStockDataSynced(stockMovementItems);
             syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.StockCards, 0L);
@@ -135,6 +135,26 @@ public class SyncUpManager {
             syncErrorsRepository.save(new SyncError(exception.getMessage(), SyncType.StockCards, 0L));
             Log.e(TAG, "===> SyncStockMovement : synced failed ->" + exception.getMessage());
             return false;
+        }
+    }
+
+    public void syncUpUnSyncedStockCardCodes() {
+        if (sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()) {
+            return;
+        }
+        try {
+            List<String> unSyncedStockCardCodes = FluentIterable.from(stockRepository.listUnSynced()).transform(new Function<StockMovementItem, String>() {
+                @Override
+                public String apply(StockMovementItem stockMovementItem) {
+                    return stockMovementItem.getStockCard().getProduct().getCode();
+                }
+            }).toList();
+
+            final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
+            lmisRestApi.syncUpUnSyncedStockCards(facilityId, unSyncedStockCardCodes);
+            sharedPreferenceMgr.setLastMovementSyncUpDateToToday();
+        } catch (LMISException e) {
+            e.reportToFabric();
         }
     }
 
@@ -178,20 +198,6 @@ public class SyncUpManager {
         } catch (LMISException e) {
             e.reportToFabric();
             Log.e(TAG, "===> SyncRnr : mark synced failed -> " + rnRForm.getId());
-        }
-    }
-
-    private List<StockMovementItem> fetchUnSyncedStockMovements() {
-        List<StockMovementItem> stockMovementItems;
-        try {
-            stockMovementItems = stockRepository.listUnSynced();
-            Log.d(TAG, "===> SyncStockMovement :" + stockMovementItems.size() + " StockMovement ready to sync...");
-            return stockMovementItems;
-
-        } catch (LMISException e) {
-            e.reportToFabric();
-            Log.e(TAG, "===> SyncStockMovement : synced failed ->" + e.getMessage());
-            return null;
         }
     }
 

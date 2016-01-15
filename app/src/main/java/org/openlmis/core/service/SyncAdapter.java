@@ -79,6 +79,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
         recordLastSyncedTime(syncUpManager.syncRnr(), KEY_LAST_SYNCED_TIME_RNR_FORM);
         recordLastSyncedTime(syncUpManager.syncStockCards(), KEY_LAST_SYNCED_TIME_STOCKCARD);
+        syncUpManager.syncUpUnSyncedStockCardCodes();
 
         sendSyncedTimeBroadcast();
         syncUpManager.syncAppVersion();
