@@ -128,8 +128,8 @@ public class RnRFormListPresenter extends Presenter {
 
     private boolean hasNoRnrFormInCurrentPeriod(List<RnRForm> rnRForms, Period currentPeriod) {
         RnRForm lastRnrForm = rnRForms.get(rnRForms.size() - 1);
-        Date CurrentPeriodBegin = currentPeriod.getBegin().toDate();
-        return lastRnrForm.getStatus().equals(RnRForm.STATUS.AUTHORIZED) && lastRnrForm.getPeriodBegin().before(CurrentPeriodBegin);
+        Date currentPeriodBegin = currentPeriod.getBegin().toDate();
+        return lastRnrForm.getStatus().equals(RnRForm.STATUS.AUTHORIZED) && lastRnrForm.getPeriodBegin().before(currentPeriodBegin);
     }
 
     private RnRFormViewModel generateRnrFormVIewModelWithoutRnrForm(Period currentPeriod) {
