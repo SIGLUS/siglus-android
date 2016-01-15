@@ -9,7 +9,7 @@
 
     <style name="Edit.Quantity">
         <item name="android:ems">8</item>
-        <item name="android:inputType">text</item>
+        <item name="android:inputType">number</item>
     </style>
 
     <style name="Divider">
@@ -166,7 +166,8 @@
     <style name="StockMovement.TitlePanel_Horizontal" parent="StockMovement.TitlePanel">
         <item name="android:layout_marginLeft">@dimen/margin_small</item>
         <item name="android:layout_marginRight">@dimen/margin_small</item>
-    </style>>
+    </style>
+    >
 
     <style name="StockMovement.Space_Land">
         <item name="android:layout_marginLeft">@dimen/margin_small</item>
