@@ -159,7 +159,7 @@ public class SharedPreferenceMgr {
     }
 
     public String getLatestPhysicInventoryTime() {
-        return sharedPreferences.getString(LATEST_PHYSICAL_INVENTORY_TIME, "");
+        return sharedPreferences.getString(LATEST_PHYSICAL_INVENTORY_TIME, "2014-01-01 00:00:00");
     }
 
     public void setLatestPhysicInventoryTime(String latestPhysicInventoryTime) {
