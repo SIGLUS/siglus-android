@@ -256,6 +256,7 @@ public class HomeActivity extends BaseActivity {
             return true;
         }else if (item.getItemId() == R.id.action_sync_data) {
             onClickSyncData();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
