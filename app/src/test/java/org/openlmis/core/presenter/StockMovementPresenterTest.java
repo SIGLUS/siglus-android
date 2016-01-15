@@ -29,6 +29,7 @@ import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -42,6 +43,7 @@ import org.robolectric.RuntimeEnvironment;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import roboguice.RoboGuice;
@@ -180,6 +182,25 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
     }
 
     @Test
+    public void shouldNotEnableUnpackMenuForKitsIfKitsProductSizeIsZero() throws Exception {
+        //given
+        StockCard stockCard = createStockCard(100, true);
+        StockMovementItem item = new StockMovementItem();
+        item.setStockOnHand(1L);
+        stockCard.getProduct().setKitProductList(new ArrayList<KitProduct>());
+
+        StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
+        when(viewModel.convertViewToModel()).thenReturn(item);
+
+        //when
+        stockMovementPresenter.stockCard = stockCard;
+        stockMovementPresenter.saveAndRefresh(viewModel);
+
+        //then
+        verify(view).updateUnpackKitMenu(false);
+    }
+
+    @Test
     public void shouldEnableUnpackMenuWhenStockCardSOHIsNotZero() throws Exception {
         //given
         StockCard stockCard = createStockCard(100, true);
@@ -198,6 +219,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         Product product = new Product();
         product.setActive(true);
         product.setKit(isKit);
+        product.setKitProductList(Arrays.asList(new KitProduct()));
         stockCard.setProduct(product);
         return stockCard;
     }

@@ -179,7 +179,7 @@ public class StockMovementPresenter extends Presenter {
         boolean isArchivable = !stockCard.getProduct().isKit() && stockCard.getStockOnHand() == 0;
         view.updateArchiveMenus(isArchivable);
 
-        boolean isUnpackable = stockCard.getProduct().isKit() && stockCard.getStockOnHand() != 0;
+        boolean isUnpackable = stockCard.getProduct().isKit() && stockCard.getProduct().getKitProductList().size() > 0 && stockCard.getStockOnHand() != 0;
         view.updateUnpackKitMenu(isUnpackable);
     }
 
