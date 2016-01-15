@@ -48,7 +48,7 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
 
         kitCode = getIntent().getStringExtra(Constants.PARAM_KIT_CODE);
 
-        presenter.loadKitProducts(kitCode).subscribe(onLoadKitProductSubscriber);
+        presenter.loadKitProducts(kitCode);
     }
 
     public static Intent getIntentToMe(Context context, String code) {
@@ -57,21 +57,8 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         return intent;
     }
 
-    protected Subscriber<List<StockCardViewModel>> onLoadKitProductSubscriber = new Subscriber<List<StockCardViewModel>>() {
-        @Override
-        public void onCompleted() {
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            ToastUtil.show(e.getMessage());
-            loaded();
-        }
-
-        @Override
-        public void onNext(List<StockCardViewModel> stockCardViewModels) {
-            mAdapter.refreshList(stockCardViewModels);
-            loaded();
-        }
-    };
+    @Override
+    public void refreshList(List<StockCardViewModel> stockCardViewModels) {
+        mAdapter.refreshList(stockCardViewModels);
+    }
 }

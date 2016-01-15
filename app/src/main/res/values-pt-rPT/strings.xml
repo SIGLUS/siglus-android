@@ -166,6 +166,9 @@
     </string-array>
     <!--Physical Inventory Page-->
     <string name="label_physical_inventory_stock_on_hand">Stock Existente: %1$s</string>
+    <!-- Unpack Kit -->
+    <string name="hint_quantity_in_unpack_kit">Quantity received</string>
+    <string name="label_unpack_kit_quantity_expected">Quantity expected  %1$s</string>
     <!--Server Sync Errors-->
     <string name="sync_server_error">Sincronização falhou devido a problemas técnicos no servidor. Entre em contacto com administrador do sistema.</string>
     <string name="default_sync_data_error">Sincronização falhou devido a um erro nos dados durante a sincronização da requisição. Entre em contacto com administrador do sistema.</string>

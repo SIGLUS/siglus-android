@@ -2,6 +2,7 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.AbstractModule;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import roboguice.RoboGuice;
-import rx.Observable;
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
@@ -60,6 +60,11 @@ public class UnpackKitPresenterTest {
         });
     }
 
+    @After
+    public void tearDown() throws Exception {
+        RoboGuice.Util.reset();
+    }
+
     @Test
     public void shouldLoadKitProductList() throws Exception {
         //given
@@ -76,14 +81,13 @@ public class UnpackKitPresenterTest {
         when(repository.getByCode(product1.getCode())).thenReturn(product1);
         when(repository.getByCode(product2.getCode())).thenReturn(product2);
 
-        // when
-
         TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
-        Observable<List<StockCardViewModel>> observable = presenter.loadKitProducts("KIT_Code");
-        observable.subscribe(subscriber);
+        presenter.kitProductsSubscriber = subscriber;
+
+        // when
+        presenter.loadKitProducts("KIT_Code");
 
         subscriber.awaitTerminalEvent();
-
         //then
 
         verify(repository).queryKitProductByKitCode(kit.getCode());
