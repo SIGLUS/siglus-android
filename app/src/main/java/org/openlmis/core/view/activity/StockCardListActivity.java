@@ -24,7 +24,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.StockCardListFragment;

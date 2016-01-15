@@ -424,7 +424,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
                 break;
             default:
                 break;
-
         }
     }
 
@@ -497,5 +496,4 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     @Override
     public void negativeClick(String tag) {
     }
-
 }

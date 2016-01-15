@@ -88,7 +88,7 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-
+            setTheme(R.style.AppTheme_Gray);
         }
 
         super.onCreate(savedInstanceState);
