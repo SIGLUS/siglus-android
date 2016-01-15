@@ -1,12 +1,12 @@
 package org.openlmis.core.view.holder;
 
 import android.support.design.widget.TextInputLayout;
-import android.text.Editable;
 import android.text.InputFilter;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
@@ -15,7 +15,7 @@ import org.openlmis.core.view.widget.InputFilterMinMax;
 
 import roboguice.inject.InjectView;
 
-public class UnpackKitViewHolder extends BaseViewHolder {
+public class UnpackKitViewHolder extends PhysicalInventoryViewHolder {
 
     @InjectView(R.id.product_name)
     TextView tvProductName;
@@ -36,39 +36,10 @@ public class UnpackKitViewHolder extends BaseViewHolder {
     }
 
     public void populate(StockCardViewModel stockCardViewModel) {
-        tvProductName.setText(stockCardViewModel.getStyledName());
-        tvProductUnit.setText(stockCardViewModel.getStyledUnit());
         etQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(0, (int) stockCardViewModel.getStockOnHand())});
-
         tvStockOnHandInInventory.setText(context.getString(R.string.label_unpack_kit_quantity_expected,
                 Long.toString(stockCardViewModel.getStockOnHand())));
 
-        EditTextWatcher textWatcher = new EditTextWatcher(stockCardViewModel);
-        etQuantity.removeTextChangedListener(textWatcher);
-        etQuantity.setText(stockCardViewModel.getQuantity());
-        etQuantity.addTextChangedListener(textWatcher);
-
-        expireDateViewGroup.initExpireDateViewGroup(stockCardViewModel, false);
-
-        if (stockCardViewModel.isValid()) {
-            lyQuantity.setErrorEnabled(false);
-        } else {
-            lyQuantity.setError(context.getString(R.string.msg_inventory_check_failed));
-        }
-    }
-
-    class EditTextWatcher extends SingleTextWatcher {
-
-        private final StockCardViewModel viewModel;
-
-        public EditTextWatcher(StockCardViewModel viewModel) {
-            this.viewModel = viewModel;
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            viewModel.setHasDataChanged(true);
-            viewModel.setQuantity(editable.toString());
-        }
+        populate(stockCardViewModel, StringUtils.EMPTY);
     }
 }
