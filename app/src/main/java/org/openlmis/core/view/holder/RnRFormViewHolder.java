@@ -65,6 +65,26 @@ public class RnRFormViewHolder extends BaseViewHolder {
         }
     }
 
+    public void populateOld(final RnRFormViewModel model, String programCode) {
+        switch (model.getType()) {
+            case RnRFormViewModel.TYPE_UN_AUTHORIZED:
+                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_incomplete_requisition_old, model.getName())), R.drawable.ic_description, R.color.color_draft_title, model.getForm());
+                break;
+            case RnRFormViewModel.TYPE_UNSYNC:
+                String error = context.getString(R.string.label_unsynced_requisition, model.getName());
+                if (model.getSyncServerErrorMessage() != null) {
+                    error = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage(model.getSyncServerErrorMessage());
+                }
+                configHolder(model.getPeriod(), Html.fromHtml(error), R.drawable.ic_error, R.color.color_red, model.getForm());
+                break;
+            case RnRFormViewModel.TYPE_HISTORICAL:
+                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedDate())), R.drawable.ic_done, INT_UNSET, model.getForm());
+                btnView.setText(context.getString(R.string.btn_view_requisition, model.getName()));
+                btnView.setOnClickListener(new BtnViewClickListener(model, programCode));
+                break;
+        }
+    }
+
     private void configHolder(RnRFormViewModel model, int messageText, int btnText) {
         txPeriod.setText(model.getPeriod());
         txMessage.setText(Html.fromHtml(context.getString(messageText, model.getName())));

@@ -23,6 +23,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.view.holder.RnRFormViewHolder;
@@ -64,9 +65,12 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormViewHolder> 
         switch (viewType) {
             case RnRFormViewModel.TYPE_UNSYNC:
                 return new RnRFormViewHolder(this, inflater.inflate(R.layout.item_rnr_list_type1, parent, false));
+            case RnRFormViewModel.TYPE_UN_AUTHORIZED:
+                if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
+                    return new RnRFormViewHolder(this, inflater.inflate(R.layout.item_rnr_list_type1, parent, false));
+                }
             case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY:
             case RnRFormViewModel.TYPE_COMPLETED_INVENTORY:
-            case RnRFormViewModel.TYPE_UN_AUTHORIZED:
             case RnRFormViewModel.TYPE_HISTORICAL:
                 return new RnRFormViewHolder(this, inflater.inflate(R.layout.item_rnr_list_type2, parent, false));
         }
@@ -77,7 +81,11 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormViewHolder> 
     public void onBindViewHolder(RnRFormViewHolder holder, int position) {
         final RnRFormViewModel model = data.get(position);
 
-        holder.populate(model, programCode);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
+            holder.populate(model, programCode);
+        } else {
+            holder.populateOld(model, programCode);
+        }
     }
 
     @Override

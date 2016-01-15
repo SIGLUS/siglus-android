@@ -207,10 +207,6 @@
     <!-- Rnr form historical list -->
     <string name="label_via_name">Via Classica Requisition</string>
     <string name="label_mmia_name">MMIA</string>
-    <string name="label_unsynced_requisition">This <![CDATA[<b>%1$s</b>]]> did not sync due to lack of internet connection.<![CDATA[<br/>]]>  The form will be submitted as soon as an internet connection is available.</string>
-    <string name="label_submitted_message">%1$s successfully <![CDATA[<b>submitted</b>]]> on the  %2$s</string>
-    <string name="btn_view_requisition">View %s</string>
-    <string name="label_period_date">%1$s  to  %2$s</string>
 
     <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b>No %1$s has been created.</b>]]> Completed your inventory before creating a requisition</string>
     <string name="btn_view_uncompleted_physical_inventory">Completed Inventory</string>
@@ -218,6 +214,12 @@
     <string name="btn_view_completed_physical_inventory">Create %1$s</string>
     <string name="label_incomplete_requisition"><![CDATA[<b>%1$s</b>]]> is incomplete.</string>
     <string name="btn_view_incomplete_requisition">Continue Working on %1$s</string>
+    <string name="label_unsynced_requisition">This <![CDATA[<b>%1$s</b>]]> did not sync due to lack of internet connection.<![CDATA[<br/>]]>  The form will be submitted as soon as an internet connection is available.</string>
+    <string name="label_submitted_message">%1$s successfully <![CDATA[<b>submitted</b>]]> on the  %2$s</string>
+    <string name="btn_view_requisition">View %s</string>
+    <string name="label_period_date">%1$s  to  %2$s</string>
+
+    <string name="label_incomplete_requisition_old">This <![CDATA[<b>%1$s</b>]]> is incomplete. To complete it, select \"Create a %1$s\" on the home page</string>
 
     <string name="btn_requisition_list">Via Classica Requisitions</string>
     <string name="btn_mmia_list">MMIA</string>

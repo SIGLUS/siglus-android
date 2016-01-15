@@ -27,16 +27,17 @@ public class RnRFormViewHolderTest {
 
     private Program program;
     private RnRFormViewHolder viewHolder;
+    private RnRFormListAdapter mockAdapter;
 
     @Before
     public void setup() {
+        mockAdapter = mock(RnRFormListAdapter.class);
         program = new Program();
         program.setProgramCode("MMIA");
         program.setProgramName("MMIA");
     }
 
     private RnRFormViewHolder getViewHolderByType(int viewType) {
-        RnRFormListAdapter mockAdapter = mock(RnRFormListAdapter.class);
         switch (viewType) {
             case RnRFormViewModel.TYPE_UNSYNC:
                 return new RnRFormViewHolder(mockAdapter, LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_list_type1, null, false));
@@ -63,6 +64,21 @@ public class RnRFormViewHolderTest {
         assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_incomplete_requisition, viewModel.getName())));
         assertThat(((ColorDrawable) viewHolder.txPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_draft_title)));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_incomplete_requisition, viewModel.getName())));
+    }
+
+    @Test
+    public void shouldShowDraftStyleWhenToggleOff() {
+        RnRForm form = RnRForm.init(program, DateUtil.today());
+        form.setStatus(RnRForm.STATUS.DRAFT);
+        RnRFormViewModel viewModel = new RnRFormViewModel(form);
+
+        viewHolder = new RnRFormViewHolder(mockAdapter, LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_list_type1, null, false));
+
+        viewHolder.populateOld(viewModel, "MMIA");
+
+        assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getPeriod()));
+        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_incomplete_requisition_old, viewModel.getName())));
+        assertThat(((ColorDrawable) viewHolder.txPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_draft_title)));
     }
 
     @Test
