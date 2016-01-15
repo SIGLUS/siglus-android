@@ -51,7 +51,12 @@ public class RnRFormViewModel {
 
     public RnRFormViewModel(RnRForm form) {
         this.form = form;
-        this.syncedDate = DateUtil.formatDate(form.getUpdatedAt());
+        Date submittedTime = form.getSubmittedTime();
+        if (submittedTime != null) {
+            this.syncedDate = DateUtil.formatDate(submittedTime);
+        }else {
+            this.syncedDate = StringUtils.EMPTY;
+        }
         this.period = generatePeriod(form.getPeriodBegin(), form.getPeriodEnd());
         this.id = form.getId();
 
