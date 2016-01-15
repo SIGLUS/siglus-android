@@ -91,6 +91,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
         btnView.setText(context.getString(btnText, model.getName()));
         txPeriod.setBackgroundResource(R.color.color_draft_title);
         txPeriod.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_description, 0, 0, 0);
+        ivDelete.setVisibility(View.GONE);
     }
 
     private void configHolder(String period, Spanned text, int icDescription, int colorDraftTitle, final RnRForm form) {

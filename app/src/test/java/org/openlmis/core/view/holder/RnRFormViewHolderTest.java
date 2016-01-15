@@ -3,6 +3,7 @@ package org.openlmis.core.view.holder;
 import android.graphics.drawable.ColorDrawable;
 import android.text.Html;
 import android.view.LayoutInflater;
+import android.view.View;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -64,6 +65,7 @@ public class RnRFormViewHolderTest {
         assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_incomplete_requisition, viewModel.getName())));
         assertThat(((ColorDrawable) viewHolder.txPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_draft_title)));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_incomplete_requisition, viewModel.getName())));
+        assertThat(viewHolder.ivDelete.getVisibility(), is(View.GONE));
     }
 
     @Test
@@ -107,6 +109,7 @@ public class RnRFormViewHolderTest {
         assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_uncompleted_physical_inventory_message, viewModel.getName())));
         assertThat(((ColorDrawable) viewHolder.txPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_draft_title)));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_uncompleted_physical_inventory, viewModel.getName())));
+        assertThat(viewHolder.ivDelete.getVisibility(), is(View.GONE));
     }
 
     @Test
@@ -120,6 +123,7 @@ public class RnRFormViewHolderTest {
         assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_completed_physical_inventory_message, viewModel.getName())));
         assertThat(((ColorDrawable) viewHolder.txPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_draft_title)));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_completed_physical_inventory, viewModel.getName())));
+        assertThat(viewHolder.ivDelete.getVisibility(), is(View.GONE));
     }
 
     @Test
@@ -135,6 +139,7 @@ public class RnRFormViewHolderTest {
         assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getPeriod()));
         assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_submitted_message, viewModel.getName(), viewModel.getSyncedDate())));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_requisition, viewModel.getName())));
+        assertThat(viewHolder.ivDelete.getVisibility(), is(View.VISIBLE));
     }
 
     @SuppressWarnings("ConstantConditions")
