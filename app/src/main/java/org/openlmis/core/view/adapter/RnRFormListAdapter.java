@@ -62,9 +62,11 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormViewHolder> 
     @Override
     public RnRFormViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case RnRFormViewModel.TYPE_DRAFT:
             case RnRFormViewModel.TYPE_UNSYNC:
                 return new RnRFormViewHolder(this, inflater.inflate(R.layout.item_rnr_list_type1, parent, false));
+            case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY:
+            case RnRFormViewModel.TYPE_COMPLETED_INVENTORY:
+            case RnRFormViewModel.TYPE_UN_AUTHORIZED:
             case RnRFormViewModel.TYPE_HISTORICAL:
                 return new RnRFormViewHolder(this, inflater.inflate(R.layout.item_rnr_list_type2, parent, false));
         }

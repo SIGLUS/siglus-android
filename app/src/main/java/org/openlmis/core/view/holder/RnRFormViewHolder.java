@@ -41,8 +41,26 @@ public class RnRFormViewHolder extends BaseViewHolder {
 
     public void populate(final RnRFormViewModel model, String programCode) {
         switch (model.getType()) {
-            case RnRFormViewModel.TYPE_DRAFT:
-                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())), R.drawable.ic_description, R.color.color_draft_title, model.getForm());
+            case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY:
+                txPeriod.setText(model.getPeriod());
+                txMessage.setText(Html.fromHtml(context.getString(R.string.label_uncompleted_physical_inventory_message, model.getName())));
+                btnView.setText(context.getString(R.string.btn_view_uncompleted_physical_inventory, model.getName()));
+                txPeriod.setBackgroundResource(R.color.color_draft_title);
+                txPeriod.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_description, 0, 0, 0);
+                break;
+            case RnRFormViewModel.TYPE_COMPLETED_INVENTORY:
+                txPeriod.setText(model.getPeriod());
+                txMessage.setText(Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, model.getName())));
+                btnView.setText(context.getString(R.string.btn_view_completed_physical_inventory, model.getName()));
+                txPeriod.setBackgroundResource(R.color.color_draft_title);
+                txPeriod.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_description, 0, 0, 0);
+                break;
+            case RnRFormViewModel.TYPE_UN_AUTHORIZED:
+                txPeriod.setText(model.getPeriod());
+                txMessage.setText(Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())));
+                btnView.setText(context.getString(R.string.btn_view_incomplete_requisition, model.getName()));
+                txPeriod.setBackgroundResource(R.color.color_draft_title);
+                txPeriod.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_description, 0, 0, 0);
                 break;
             case RnRFormViewModel.TYPE_UNSYNC:
                 String error = context.getString(R.string.label_unsynced_requisition, model.getName());

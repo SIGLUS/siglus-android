@@ -36,7 +36,7 @@ public class RnRFormViewModel {
 
     public static final int TYPE_UNCOMPLETE_INVENTORY = 1;
     public static final int TYPE_COMPLETED_INVENTORY = 2;
-    public static final int TYPE_DRAFT = 3;
+    public static final int TYPE_UN_AUTHORIZED = 3;
     public static final int TYPE_UNSYNC = 4;
     public static final int TYPE_HISTORICAL = 5;
 
@@ -78,7 +78,7 @@ public class RnRFormViewModel {
         if (form.getStatus() == RnRForm.STATUS.AUTHORIZED) {
             this.type = form.isSynced() ? TYPE_HISTORICAL : TYPE_UNSYNC;
         } else {
-            this.type = TYPE_DRAFT;
+            this.type = TYPE_UN_AUTHORIZED;
         }
     }
 
