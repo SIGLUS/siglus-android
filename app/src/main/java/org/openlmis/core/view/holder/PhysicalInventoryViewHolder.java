@@ -14,25 +14,25 @@ import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.openlmis.core.view.widget.ExpireDateViewGroup;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 
-import roboguice.inject.InjectView;
-
 public class PhysicalInventoryViewHolder extends BaseViewHolder {
 
-    @InjectView(R.id.product_name)
     TextView tvProductName;
-    @InjectView(R.id.stock_on_hand_in_inventory)
     TextView tvStockOnHandInInventory;
-    @InjectView(R.id.product_unit)
     TextView tvProductUnit;
-    @InjectView(R.id.tx_quantity)
     EditText etQuantity;
-    @InjectView(R.id.ly_quantity)
     TextInputLayout lyQuantity;
-    @InjectView(R.id.vg_expire_date_container)
     ExpireDateViewGroup expireDateViewGroup;
 
     public PhysicalInventoryViewHolder(View itemView) {
         super(itemView);
+        etQuantity = (EditText) itemView.findViewById(R.id.tx_quantity);
+        tvProductName = (TextView) itemView.findViewById(R.id.product_name);
+        tvStockOnHandInInventory = (TextView) itemView.findViewById(R.id.stock_on_hand_in_inventory);
+        tvProductUnit = (TextView) itemView.findViewById(R.id.product_unit);
+        etQuantity = (EditText) itemView.findViewById(R.id.tx_quantity);
+        lyQuantity = (TextInputLayout) itemView.findViewById(R.id.ly_quantity);
+        expireDateViewGroup = (ExpireDateViewGroup) itemView.findViewById(R.id.vg_expire_date_container);
+
         etQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
         etQuantity.setHint(R.string.hint_quantity_in_stock);
     }
