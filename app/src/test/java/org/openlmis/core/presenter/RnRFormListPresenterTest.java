@@ -140,6 +140,33 @@ public class RnRFormListPresenterTest {
         assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_COMPLETED_INVENTORY);
     }
 
+
+    @Test
+    public void shouldReturnCreateFormTypeRnrFormViewModelWithoutRnrformInCurrentPeriod() throws Exception {
+        ArrayList<RnRForm> rnRForms = new ArrayList<>();
+
+        RnRForm rnRForm = new RnRForm();
+        Program program = new Program();
+        program.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
+        rnRForm.setProgram(program);
+        rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
+        rnRForm.setPeriodBegin(DateUtil.minusDayOfMonth(new Period(new DateTime()).getBegin().toDate(), 30));
+        rnRForm.setPeriodEnd(DateUtil.minusDayOfMonth(new Period(new DateTime()).getEnd().toDate(), 30));
+
+        rnRForms.add(rnRForm);
+
+        when(rnrFormRepository.list(VIARepository.VIA_PROGRAM_CODE)).thenReturn(rnRForms);
+        when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(DateUtil.minusDayOfMonth(new Date(), 30), DateUtil.DATE_TIME_FORMAT));
+        presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_home_page_update, true);
+
+        List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
+
+        assertThat(rnRFormViewModels.size()).isEqualTo(2);
+        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
+        assertThat(rnRFormViewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_UNSYNC);
+    }
+
     @Test
     public void shouldReturnEmptyRnrFormViewModleWhenThereIsNoRnrFormAndToggleOff() throws Exception {
         when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
@@ -149,6 +176,8 @@ public class RnRFormListPresenterTest {
 
         assertThat(rnRFormViewModels.size()).isEqualTo(0);
     }
+
+
 
     private List<RnRForm> createRnRForms() {
         return newArrayList(createRnRForm(RnRForm.STATUS.DRAFT), createRnRForm(RnRForm.STATUS.AUTHORIZED), createRnRForm(RnRForm.STATUS.AUTHORIZED));

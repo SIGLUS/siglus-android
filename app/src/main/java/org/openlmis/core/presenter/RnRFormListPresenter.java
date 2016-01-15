@@ -100,15 +100,22 @@ public class RnRFormListPresenter extends Presenter {
             return viewModels;
         }
 
-        Collections.reverse(rnRForms);
+        Period currentPeriod = DateUtil.generateRnRFormPeriodBy(new Date());
 
         if (rnRForms.isEmpty()) {
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-                viewModels.add(generateRnrFormVIewModelWithoutRnrForm());
+                viewModels.add(generateRnrFormVIewModelWithoutRnrForm(currentPeriod));
             }
             return viewModels;
         }
 
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)){
+            if (hasNoRnrFormInCurrentPeriod(rnRForms, currentPeriod)){
+                viewModels.add(generateRnrFormVIewModelWithoutRnrForm(currentPeriod));
+            }
+        }
+
+        Collections.reverse(rnRForms);
 
         addCurrentPeriodViewModel(viewModels, rnRForms);
 
@@ -119,15 +126,20 @@ public class RnRFormListPresenter extends Presenter {
         return viewModels;
     }
 
-    private RnRFormViewModel generateRnrFormVIewModelWithoutRnrForm() {
-        Period period = DateUtil.generateRnRFormPeriodBy(new Date());
-        Date periodBegin = period.getBegin().toDate();
+    private boolean hasNoRnrFormInCurrentPeriod(List<RnRForm> rnRForms, Period currentPeriod) {
+        RnRForm lastRnrForm = rnRForms.get(rnRForms.size() - 1);
+        Date CurrentPeriodBegin = currentPeriod.getBegin().toDate();
+        return lastRnrForm.getStatus().equals(RnRForm.STATUS.AUTHORIZED) && lastRnrForm.getPeriodBegin().before(CurrentPeriodBegin);
+    }
+
+    private RnRFormViewModel generateRnrFormVIewModelWithoutRnrForm(Period currentPeriod) {
+        Date periodBegin = currentPeriod.getBegin().toDate();
         Date latestPhysicalInventoryTime = DateUtil.parseString(sharedPreferenceMgr.getLatestPhysicInventoryTime(), DateUtil.DATE_TIME_FORMAT);
 
         if (latestPhysicalInventoryTime.before(periodBegin)) {
-            return new RnRFormViewModel(period, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
+            return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
         } else {
-            return new RnRFormViewModel(period, programCode, RnRFormViewModel.TYPE_COMPLETED_INVENTORY);
+            return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_COMPLETED_INVENTORY);
         }
     }
 
