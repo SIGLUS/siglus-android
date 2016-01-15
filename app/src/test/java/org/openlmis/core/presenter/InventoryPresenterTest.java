@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
@@ -60,6 +61,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -76,11 +78,13 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
     InventoryPresenter.InventoryView view;
     private Product product;
     private StockCard stockCard;
+    private SharedPreferenceMgr sharedPreferenceMgr;
 
     @Before
     public void setup() throws Exception {
         stockRepositoryMock = mock(StockRepository.class);
         productRepositoryMock = mock(ProductRepository.class);
+        sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
 
         view = mock(InventoryPresenter.InventoryView.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
@@ -359,11 +363,26 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         assertThat(stockCardViewModels.get(1).getSignature(), is(signature));
     }
 
+    @Test
+    public void shouldUpdateLatestDoPhysicalInventoryTime() throws Exception {
+        ArrayList<StockCardViewModel> stockCardViewModels = getStockCardViewModels();
+
+        TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
+        Observable observable = inventoryPresenter.stockMovementObservable(stockCardViewModels);
+        observable.subscribe(subscriber);
+
+        subscriber.awaitTerminalEvent();
+
+        subscriber.assertNoErrors();
+        verify(sharedPreferenceMgr).setLatestPhysicInventoryTime(anyString());
+    }
+
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
             bind(StockRepository.class).toInstance(stockRepositoryMock);
             bind(ProductRepository.class).toInstance(productRepositoryMock);
+            bind(SharedPreferenceMgr.class).toInstance(sharedPreferenceMgr);
         }
     }
 }

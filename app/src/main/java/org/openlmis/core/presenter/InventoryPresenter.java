@@ -26,12 +26,14 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
@@ -58,6 +60,9 @@ public class InventoryPresenter extends Presenter {
 
     @Inject
     StockRepository stockRepository;
+
+    @Inject
+    SharedPreferenceMgr sharedPreferenceMgr;
 
     InventoryView view;
 
@@ -293,6 +298,8 @@ public class InventoryPresenter extends Presenter {
                         stockRepository.addStockMovementAndUpdateStockCard(calculateAdjustment(model, stockCard));
                     }
                     stockRepository.clearDraftInventory();
+                    sharedPreferenceMgr.setLatestPhysicInventoryTime(DateUtil.formatDate(new Date(), DateUtil.DATE_TIME_FORMAT));
+
                     subscriber.onNext(null);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
