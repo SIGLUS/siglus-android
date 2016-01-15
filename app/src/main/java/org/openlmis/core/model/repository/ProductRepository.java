@@ -138,7 +138,7 @@ public class ProductRepository {
         return dbUtil.withDao(KitProduct.class, new DbUtil.Operation<KitProduct, List<KitProduct>>() {
             @Override
             public List<KitProduct> operate(Dao<KitProduct, String> dao) throws SQLException {
-                return dao.queryBuilder().orderBy("productCode", true).where().eq("kitCode", kitCode).query();
+                return dao.queryBuilder().where().eq("kitCode", kitCode).query();
             }
         });
     }
