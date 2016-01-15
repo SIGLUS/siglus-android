@@ -566,7 +566,6 @@
     <style name="ItemRnr.Type2Container">
         <item name="android:orientation">vertical</item>
         <item name="android:background">@color/color_white</item>
-        <item name="android:divider">@drawable/divider_horizontal_light_gray</item>
         <item name="android:showDividers">middle</item>
     </style>
 

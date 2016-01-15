@@ -24,12 +24,22 @@
             android:layout_height="wrap_content"
             tools:text="This is the message" />
 
-        <TextView
+        <Button
             android:id="@+id/btn_view"
+            style="@style/ItemRnr.BtnView"
+            android:background="@null"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/default_button_height"
+            android:text="@string/btn_view_requisition"
+            android:layout_marginBottom="@dimen/margin_small"/>
+
+        <TextView
+            android:id="@+id/btn_view_old"
             style="@style/ItemRnr.BtnView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/btn_view_requisition" />
+
     </LinearLayout>
 
     <ImageView

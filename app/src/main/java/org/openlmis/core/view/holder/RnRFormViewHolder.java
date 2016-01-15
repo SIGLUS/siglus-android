@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
@@ -32,8 +33,11 @@ public class RnRFormViewHolder extends BaseViewHolder {
     @InjectView(R.id.tx_message)
     TextView txMessage;
 
+    @InjectView(R.id.btn_view_old)
+    TextView btnViewOld;
+
     @InjectView(R.id.btn_view)
-    TextView btnView;
+    Button btnView;
 
     @InjectView(R.id.iv_del)
     View ivDelete;
@@ -44,6 +48,10 @@ public class RnRFormViewHolder extends BaseViewHolder {
     }
 
     public void populate(final RnRFormViewModel model, String programCode) {
+        if(btnViewOld != null) {
+            btnViewOld.setVisibility(View.GONE);
+        }
+
         switch (model.getType()) {
             case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY:
                 configHolder(model, R.string.label_uncompleted_physical_inventory_message, R.string.btn_view_uncompleted_physical_inventory);
@@ -52,6 +60,8 @@ public class RnRFormViewHolder extends BaseViewHolder {
             case RnRFormViewModel.TYPE_COMPLETED_INVENTORY:
                 configHolder(model, R.string.label_completed_physical_inventory_message, R.string.btn_view_completed_physical_inventory);
                 btnView.setOnClickListener(new BtnViewClickListener(model, programCode));
+                btnView.setBackground(context.getResources().getDrawable(R.drawable.blue_button));
+                btnView.setTextColor(context.getResources().getColor(R.color.color_white));
                 break;
             case RnRFormViewModel.TYPE_UN_AUTHORIZED:
                 configHolder(model, R.string.label_incomplete_requisition, R.string.btn_view_incomplete_requisition);
@@ -85,9 +95,10 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 configHolder(model.getPeriod(), Html.fromHtml(error), R.drawable.ic_error, R.color.color_red, model.getForm());
                 break;
             case RnRFormViewModel.TYPE_HISTORICAL:
+                btnView.setVisibility(View.GONE);
                 configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedDate())), R.drawable.ic_done, INT_UNSET, model.getForm());
-                btnView.setText(context.getString(R.string.btn_view_requisition, model.getName()));
-                btnView.setOnClickListener(new BtnViewClickListener(model, programCode));
+                btnViewOld.setText(context.getString(R.string.btn_view_requisition, model.getName()));
+                btnViewOld.setOnClickListener(new BtnViewClickListener(model, programCode));
                 break;
         }
     }
