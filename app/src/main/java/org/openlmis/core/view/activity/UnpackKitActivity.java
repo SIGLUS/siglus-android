@@ -11,13 +11,16 @@ import org.openlmis.core.R;
 import org.openlmis.core.presenter.UnpackKitPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.UnpackKitAdapter;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
+import rx.Subscriber;
 
 @ContentView(R.layout.activity_kit_unpack)
 public class UnpackKitActivity extends BaseActivity implements UnpackKitPresenter.UnpackKitView {
@@ -32,6 +35,7 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
     private UnpackKitPresenter presenter;
 
     private String kitCode;
+    private UnpackKitAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +43,12 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
 
         productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
         ArrayList<StockCardViewModel> list = new ArrayList<>();
-        UnpackKitAdapter mAdapter = new UnpackKitAdapter(list);
+        mAdapter = new UnpackKitAdapter(list);
         productListRecycleView.setAdapter(mAdapter);
 
         kitCode = getIntent().getStringExtra(Constants.PARAM_KIT_CODE);
 
-        presenter.loadKitProducts(kitCode);
+        presenter.loadKitProducts(kitCode).subscribe(onLoadKitProductSubscriber);
     }
 
     public static Intent getIntentToMe(Context context, String code) {
@@ -52,4 +56,22 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         intent.putExtra(Constants.PARAM_KIT_CODE, code);
         return intent;
     }
+
+    protected Subscriber<List<StockCardViewModel>> onLoadKitProductSubscriber = new Subscriber<List<StockCardViewModel>>() {
+        @Override
+        public void onCompleted() {
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            ToastUtil.show(e.getMessage());
+            loaded();
+        }
+
+        @Override
+        public void onNext(List<StockCardViewModel> stockCardViewModels) {
+            mAdapter.refreshList(stockCardViewModels);
+            loaded();
+        }
+    };
 }

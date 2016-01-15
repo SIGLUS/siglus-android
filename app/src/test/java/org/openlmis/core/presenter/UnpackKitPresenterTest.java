@@ -11,6 +11,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.KitProductBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.Arrays;
@@ -63,8 +64,8 @@ public class UnpackKitPresenterTest {
     public void shouldLoadKitProductList() throws Exception {
         //given
         Product kit = ProductBuilder.create().setCode("KIT_Code").setIsKit(true).build();
-        Product product1 = ProductBuilder.create().setProductId(1L).setCode("P1_Code").setIsKit(false).build();
-        Product product2 = ProductBuilder.create().setProductId(2L).setCode("P2_Code").setIsKit(false).build();
+        Product product1 = ProductBuilder.create().setPrimaryName("p1").setProductId(1L).setCode("P1_Code").setIsKit(false).build();
+        Product product2 = ProductBuilder.create().setPrimaryName("p2").setProductId(2L).setCode("P2_Code").setIsKit(false).build();
         KitProduct kitProduct1 = KitProductBuilder.create().setKitCode("KIT_Code").setProductCode("P1_Code").build();
         KitProduct kitProduct2 = KitProductBuilder.create().setKitCode("KIT_Code").setProductCode("P2_Code").build();
 
@@ -77,8 +78,8 @@ public class UnpackKitPresenterTest {
 
         // when
 
-        TestSubscriber<List<Product>> subscriber = new TestSubscriber<>();
-        Observable<List<Product>> observable = presenter.loadKitProducts("KIT_Code");
+        TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
+        Observable<List<StockCardViewModel>> observable = presenter.loadKitProducts("KIT_Code");
         observable.subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
@@ -88,9 +89,9 @@ public class UnpackKitPresenterTest {
         verify(repository).queryKitProductByKitCode(kit.getCode());
         subscriber.assertNoErrors();
 
-        List<Product> resultProducts = subscriber.getOnNextEvents().get(0);
+        List<StockCardViewModel> resultProducts = subscriber.getOnNextEvents().get(0);
         assertThat(resultProducts.size()).isEqualTo(2);
-        assertThat(resultProducts.get(0).getCode()).isEqualTo(product1.getCode());
-        assertThat(resultProducts.get(1).getCode()).isEqualTo(product2.getCode());
+        assertThat(resultProducts.get(0).getProduct().getCode()).isEqualTo(product1.getCode());
+        assertThat(resultProducts.get(1).getProduct().getCode()).isEqualTo(product2.getCode());
     }
 }

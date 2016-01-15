@@ -8,6 +8,7 @@ import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.view.BaseView;
+import org.openlmis.core.view.viewmodel.StockCardViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,20 +32,23 @@ public class UnpackKitPresenter extends Presenter {
     public UnpackKitPresenter() {
     }
 
-    public Observable<List<Product>> loadKitProducts(final String kitCode) {
-        return Observable.create(new Observable.OnSubscribe<List<Product>>() {
+    public Observable<List<StockCardViewModel>> loadKitProducts(final String kitCode) {
+        return Observable.create(new Observable.OnSubscribe<List<StockCardViewModel>>() {
             @Override
-            public void call(Subscriber<? super List<Product>> subscriber) {
+            public void call(Subscriber<? super List<StockCardViewModel>> subscriber) {
                 try {
                     List<KitProduct> kitProducts = productRepository.queryKitProductByKitCode(kitCode);
 
-                    List<Product> products = new ArrayList<>();
+                    List<StockCardViewModel> stockCardViewModels = new ArrayList<>();
+
                     for (KitProduct kitProduct : kitProducts) {
                         Product product = productRepository.getByCode(kitProduct.getProductCode());
-                        products.add(product);
+                        StockCardViewModel stockCardViewModel = new StockCardViewModel(product);
+                        stockCardViewModel.setStockOnHand(kitProduct.getQuantity());
+                        stockCardViewModels.add(stockCardViewModel);
                     }
 
-                    subscriber.onNext(products);
+                    subscriber.onNext(stockCardViewModels);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     subscriber.onError(e);
