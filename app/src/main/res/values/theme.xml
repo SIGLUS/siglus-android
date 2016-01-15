@@ -1,19 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="android:actionBarStyle">@style/MyActionBar</item>
-        <!-- Support library compatibility -->
-
-        <item name="actionBarStyle">@style/MyActionBar</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
     <!-- ActionBar styles -->
     <style name="MyActionBar"
         parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
@@ -29,12 +15,66 @@
         <item name="android:textColor">@color/color_white</item>
     </style>
 
-    <style name="AppTheme.WHITE">
-        <item name="android:actionBarStyle">@style/MyActionBar.WHITE</item>
-        <item name="actionBarStyle">@style/MyActionBar.WHITE</item>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <!-- Support library compatibility -->
+
+        <item name="actionBarStyle">@style/MyActionBar</item>
     </style>
 
-    <style name="MyActionBar.WHITE">
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AMBER">
+        <item name="android:actionBarStyle">@style/MyActionBar.AMBER</item>
+        <item name="actionBarStyle">@style/MyActionBar.AMBER</item>
+    </style>
+
+    <style name="MyActionBar.AMBER">
+        <item name="android:background">@color/color_amber</item>
+        <item name="background">@color/color_amber</item>
+    </style>
+
+    <style name="AppTheme.PURPLE">
+        <item name="android:actionBarStyle">@style/MyActionBar.PURPLE</item>
+        <item name="actionBarStyle">@style/MyActionBar.PURPLE</item>
+    </style>
+
+    <style name="MyActionBar.PURPLE">
+        <item name="android:background">@color/color_purple</item>
+        <item name="background">@color/color_purple</item>
+    </style>
+
+    <style name="AppTheme.TEAL">
+        <item name="android:actionBarStyle">@style/MyActionBar.TEAL</item>
+        <item name="actionBarStyle">@style/MyActionBar.TEAL</item>
+    </style>
+
+    <style name="MyActionBar.TEAL">
+        <item name="android:background">@color/color_teal</item>
+        <item name="background">@color/color_teal</item>
+    </style>
+
+    <style name="AppTheme.BLUE">
+        <item name="android:actionBarStyle">@style/MyActionBar.BLUE</item>
+        <item name="actionBarStyle">@style/MyActionBar.BLUE</item>
+    </style>
+
+    <style name="MyActionBar.BLUE">
+        <item name="android:background">@color/color_blue</item>
+        <item name="background">@color/color_blue</item>
+    </style>
+
+    <style name="AppTheme.Gray">
+        <item name="android:actionBarStyle">@style/MyActionBar.Gray</item>
+        <item name="actionBarStyle">@style/MyActionBar.Gray</item>
+    </style>
+
+    <style name="MyActionBar.Gray">
         <item name="android:background">@color/color_black</item>
         <item name="background">@color/color_gray</item>
     </style>

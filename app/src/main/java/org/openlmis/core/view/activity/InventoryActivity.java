@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.InventoryPresenter;
@@ -79,13 +80,16 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         isPhysicalInventory = getIntent().getBooleanExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, false);
         isAddNewDrug = getIntent().getBooleanExtra(Constants.PARAM_IS_ADD_NEW_DRUG, false);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
+            if (isPhysicalInventory) {
+                setTheme(R.style.AppTheme_BLUE);
+            }
+        }
+        super.onCreate(savedInstanceState);
 
         productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
-
         if (isPhysicalInventory) {
             initPhysicalInventoryUI();
         } else {

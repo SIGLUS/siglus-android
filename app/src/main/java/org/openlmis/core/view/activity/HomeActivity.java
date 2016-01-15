@@ -87,6 +87,10 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
+
+        }
+
         super.onCreate(savedInstanceState);
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
