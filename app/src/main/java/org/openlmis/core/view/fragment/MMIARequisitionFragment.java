@@ -17,6 +17,7 @@
  */
 package org.openlmis.core.view.fragment;
 
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.text.Editable;
@@ -360,6 +361,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
             dialogFragment.show(getActivity().getFragmentManager(), "back_confirm_dialog");
             dialogFragment.setCallBackListener(this);
         } else {
+            getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         }
     }
@@ -383,6 +385,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     }
 
     private void backHomePage() {
+        getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
 
@@ -486,6 +489,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     public void positiveClick(String tag) {
         if (tag.equals(TAG_BACK_PRESSED)) {
             removeTempForm();
+            getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         }
     }

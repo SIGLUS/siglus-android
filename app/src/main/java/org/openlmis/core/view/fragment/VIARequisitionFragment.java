@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -421,6 +422,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     public void backToHomePage() {
+        getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
 
@@ -470,6 +472,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             dialogFragment.show(getActivity().getFragmentManager(), "back_confirm_dialog");
             dialogFragment.setCallBackListener(this);
         } else {
+            getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         }
     }
@@ -489,6 +492,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     public void positiveClick(String tag) {
         if (tag.equals(TAG_BACK_PRESSED)) {
             removeTempForm();
+            getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         }
     }

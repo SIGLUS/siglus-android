@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -61,6 +63,13 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         programCode = getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE);
         presenter.setProgramCode(programCode);
         initUI();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_CODE_CHANGE) {
+            initUI();
+        }
     }
 
     private void initUI() {
