@@ -26,7 +26,9 @@ import com.google.inject.AbstractModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
@@ -114,6 +116,7 @@ public class SyncUpManagerTest {
                 return Schedulers.immediate();
             }
         });
+        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_syncup_unsync_stockcards, true);
     }
 
     @Test
