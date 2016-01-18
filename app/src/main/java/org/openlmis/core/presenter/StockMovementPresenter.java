@@ -27,8 +27,10 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
@@ -65,6 +67,9 @@ public class StockMovementPresenter extends Presenter {
 
     @Inject
     SharedPreferenceMgr sharedPreferenceMgr;
+
+    @Inject
+    private ProductRepository productRepository;
 
     public StockMovementPresenter() {
         stockMovementModelList = new ArrayList<>();
@@ -179,8 +184,14 @@ public class StockMovementPresenter extends Presenter {
         boolean isArchivable = !stockCard.getProduct().isKit() && stockCard.getStockOnHand() == 0;
         view.updateArchiveMenus(isArchivable);
 
-        boolean isUnpackable = stockCard.getProduct().isKit() && stockCard.getProduct().getKitProductList().size() > 0 && stockCard.getStockOnHand() != 0;
-        view.updateUnpackKitMenu(isUnpackable);
+        try {
+            String code = stockCard.getProduct().getCode();
+            List<KitProduct> kitProducts = productRepository.queryKitProductByKitCode(code);
+            boolean isUnpackable = stockCard.getProduct().isKit() && kitProducts.size() > 0 && stockCard.getStockOnHand() != 0;
+            view.updateUnpackKitMenu(isUnpackable);
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
     }
 
     public StockCard getStockCard() {

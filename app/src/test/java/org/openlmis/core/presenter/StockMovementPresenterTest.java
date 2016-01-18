@@ -35,6 +35,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
+import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
@@ -68,6 +69,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
     private StockMovementPresenter stockMovementPresenter;
 
     StockRepository stockRepositoryMock;
+    ProductRepository productRepository;
     StockMovementPresenter.StockMovementView view;
 
     SharedPreferenceMgr sharedPreferenceMgr;
@@ -75,6 +77,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
     @Before
     public void setup() throws Exception {
         stockRepositoryMock = mock(StockRepository.class);
+        productRepository = mock(ProductRepository.class);
         sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
 
         view = mock(StockMovementPresenter.StockMovementView.class);
@@ -184,6 +187,8 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldNotEnableUnpackMenuForKitsIfKitsProductSizeIsZero() throws Exception {
         //given
+        Product kit = ProductBuilder.buildAdultProduct();
+
         StockCard stockCard = createStockCard(100, true);
         StockMovementItem item = new StockMovementItem();
         item.setStockOnHand(1L);
@@ -191,6 +196,8 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
 
         StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
         when(viewModel.convertViewToModel()).thenReturn(item);
+
+        when(productRepository.queryKitProductByKitCode(kit.getCode())).thenReturn(new ArrayList<KitProduct>());
 
         //when
         stockMovementPresenter.stockCard = stockCard;
@@ -201,14 +208,37 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldEnableUnpackMenuWhenStockCardSOHIsNotZero() throws Exception {
+    public void shouldEnableUnpackMenuWhenStockCardSOHIsNotZeroAndKitHasProducts() throws Exception {
         //given
         StockCard stockCard = createStockCard(100, true);
+        Product kit = ProductBuilder.buildAdultProduct();
+        kit.setKit(true);
+        stockCard.setProduct(kit);
         when(stockRepositoryMock.queryStockCardById(200L)).thenReturn(stockCard);
+        when(productRepository.queryKitProductByKitCode(kit.getCode())).thenReturn(Arrays.asList(new KitProduct()));
 
+        //when
         stockMovementPresenter.setStockCard(200L);
 
+        //then
         verify(view).updateUnpackKitMenu(true);
+    }
+
+    @Test
+    public void shouldDisableUnpackMenuWhenStockCardSOHIsNotZeroAndKitHasNoProduct() throws Exception {
+        //given
+        StockCard stockCard = createStockCard(100, true);
+        Product kit = ProductBuilder.buildAdultProduct();
+        kit.setKit(true);
+        stockCard.setProduct(kit);
+        when(stockRepositoryMock.queryStockCardById(200L)).thenReturn(stockCard);
+        when(productRepository.queryKitProductByKitCode(kit.getCode())).thenReturn(new ArrayList<KitProduct>());
+
+        //when
+        stockMovementPresenter.setStockCard(200L);
+
+        //then
+        verify(view).updateUnpackKitMenu(false);
     }
 
     @NonNull
@@ -303,6 +333,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         @Override
         protected void configure() {
             bind(StockRepository.class).toInstance(stockRepositoryMock);
+            bind(ProductRepository.class).toInstance(productRepository);
         }
     }
 }
