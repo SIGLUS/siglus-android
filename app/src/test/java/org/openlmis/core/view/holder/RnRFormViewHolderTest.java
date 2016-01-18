@@ -39,16 +39,11 @@ public class RnRFormViewHolderTest {
     }
 
     private RnRFormViewHolder getViewHolderByType(int viewType) {
-        switch (viewType) {
-            case RnRFormViewModel.TYPE_UNSYNC:
-                return new RnRFormViewHolder(mockAdapter, LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_list_type1, null, false));
-            case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY:
-            case RnRFormViewModel.TYPE_COMPLETED_INVENTORY:
-            case RnRFormViewModel.TYPE_UN_AUTHORIZED:
-            case RnRFormViewModel.TYPE_HISTORICAL:
-                return new RnRFormViewHolder(mockAdapter, LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_list_type2, null, false));
+        if (viewType == RnRFormViewModel.TYPE_UNSYNC) {
+            return new RnRFormViewHolder(mockAdapter, LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_list_type1, null, false));
+        } else {
+            return new RnRFormViewHolder(mockAdapter, LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_list_type2, null, false));
         }
-        return null;
     }
 
     @Test
