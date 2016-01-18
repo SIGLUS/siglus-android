@@ -189,3 +189,19 @@ Then(/^I can see stock on hand "(\d+)" in position "(\d+)"$/) do |number, index|
 end
 
 
+Then(/^I do physical inventory for mmia items$/) do
+    steps %Q{
+        And I do physical inventory with "121" by fnm "08S42B"
+        And I do physical inventory with "123" by fnm "08S18Y"
+        And I do physical inventory with "123" by fnm "08S40Z"
+        And I do physical inventory with "123" by fnm "08S36"
+        And I do physical inventory with "123" by fnm "08S32Z"
+        Then I scroll "recyclerView" down to "Complete"
+        And I wait for 1 second
+        And I press "Complete"
+        And I sign with "sign"
+    }
+end
+
+
+

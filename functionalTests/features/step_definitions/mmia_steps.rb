@@ -68,15 +68,15 @@ And(/^I should see empty patient total$/) do
 	end
 end
 
-Then(/^I scroll to "(.*?)"$/) do |text|
-    until element_exists("* marked:'#{text}'") do
-        scroll("ScrollView", :down)
-    end
-end
-
 When(/^I enter "(.*)" in "Observations"$/) do |text|
     enter_text("android.widget.EditText id:'et_comment'", text)
     hide_soft_keyboard
+end
+
+Then(/^I scroll "(.*?)" down to "(.*?)"$/) do |view, text|
+    until element_exists("* marked:'#{text}'") do
+        scroll(view, :down)
+    end
 end
 
 
