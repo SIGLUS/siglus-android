@@ -11,8 +11,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.utils.DateUtil;
 
-import java.util.Date;
-
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
@@ -67,8 +65,8 @@ public class SyncTimeView extends LinearLayout {
 
     private long getSyncTimeInterval(long rnrLastSyncTime, long stockLastSyncTime) {
         long syncTimeInterval;
-        long rnrSyncInterval = calculateTimeInterval(rnrLastSyncTime);
-        long stockSyncInterval = calculateTimeInterval(stockLastSyncTime);
+        long rnrSyncInterval = DateUtil.calculateTimeInterval(rnrLastSyncTime);
+        long stockSyncInterval = DateUtil.calculateTimeInterval(stockLastSyncTime);
         if (rnrLastSyncTime == 0) {
             syncTimeInterval = stockSyncInterval;
         }else if(stockLastSyncTime == 0){
@@ -79,7 +77,4 @@ public class SyncTimeView extends LinearLayout {
         return syncTimeInterval;
     }
 
-    private long calculateTimeInterval(long lastSyncedTimestamp) {
-        return new Date().getTime() - lastSyncedTimestamp;
-    }
 }

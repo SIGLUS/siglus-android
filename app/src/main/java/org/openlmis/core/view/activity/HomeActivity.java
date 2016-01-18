@@ -47,8 +47,6 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.widget.SyncDateBottomSheet;
 import org.openlmis.core.view.widget.SyncTimeView;
 
-import java.util.Date;
-
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
@@ -209,17 +207,13 @@ public class HomeActivity extends BaseActivity {
         syncTimeView.showLastSyncTime();
     }
 
-    private long calculateTimeInterval(long lastSyncedTimestamp) {
-        return new Date().getTime() - lastSyncedTimestamp;
-    }
-
     private void showRnrFormLastSyncedTime() {
         long rnrSyncedTimestamp = getPreferences().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, 0);
         if (rnrSyncedTimestamp == 0) {
             return;
         }
 
-        long diff = calculateTimeInterval(rnrSyncedTimestamp);
+        long diff = DateUtil.calculateTimeInterval(rnrSyncedTimestamp);
 
         if (diff < DateUtil.MILLISECONDS_HOUR) {
             txLastSyncedRnrForm.setText(getResources().getString(R.string.label_rnr_form_last_synced_mins_ago, (diff / DateUtil.MILLISECONDS_MINUTE)));
@@ -236,7 +230,7 @@ public class HomeActivity extends BaseActivity {
             return;
         }
 
-        long diff = calculateTimeInterval(stockSyncedTimestamp);
+        long diff = DateUtil.calculateTimeInterval(stockSyncedTimestamp);
 
         if (diff < DateUtil.MILLISECONDS_HOUR) {
             txLastSyncedStockCard.setText(getResources().getString(R.string.label_stock_card_last_synced_mins_ago, (diff / DateUtil.MILLISECONDS_MINUTE)));
