@@ -203,5 +203,19 @@ Then(/^I do physical inventory for mmia items$/) do
     }
 end
 
+Then(/^I do physical inventory for via items$/) do
+    steps %Q{
+        And I do physical inventory with "113" by fnm "01A01"
+        And I do physical inventory with "123" by fnm "01A02"
+        And I do physical inventory with "123" by fnm "01A03Z"
+        And I do physical inventory with "123" by fnm "01A04Z"
+        And I do physical inventory with "123" by fnm "01A05"
+        Then I scroll "recyclerView" down to "Complete"
+        And I wait for 1 second
+        And I press "Complete"
+        And I sign with "sign"
+    }
+end
+
 
 

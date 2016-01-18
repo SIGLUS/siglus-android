@@ -44,3 +44,9 @@ Then(/^I should see "(\d+)" in the requisition form/) do |number|
     end
 end
 
+And(/^I should see empty consultations number$/) do
+    if element_exists("android.widget.EditText id:'edit_text' text:'2015'")
+		fail(msg="consultations number not empty")
+	end
+end
+
