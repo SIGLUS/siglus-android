@@ -44,6 +44,7 @@ import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.widget.SyncDateBottomSheet;
 
 import java.util.Date;
 
@@ -73,6 +74,9 @@ public class HomeActivity extends BaseActivity {
 
     @InjectView(R.id.btn_kit_stock_card)
     Button btnKitStockCard;
+
+    @InjectView(R.id.tx_sync_time)
+    TextView txSyncTime;
 
     @InjectResource(R.integer.back_twice_interval)
     int BACK_TWICE_INTERVAL;
@@ -171,6 +175,15 @@ public class HomeActivity extends BaseActivity {
         Intent intent = new Intent(this, RnRFormListActivity.class);
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE);
         startActivity(intent);
+    }
+
+    public void onClickLastSyncTime(View view){
+        SyncDateBottomSheet syncDateBottomSheet = new SyncDateBottomSheet();
+        Bundle bundle = new Bundle();
+        bundle.putString(SyncDateBottomSheet.RNR_SYNC_TIME,"2015-12-12");
+        bundle.putString(SyncDateBottomSheet.STOCK_SYNC_TIME, "2016-1-1");
+        syncDateBottomSheet.setArguments(bundle);
+        syncDateBottomSheet.show(getFragmentManager());
     }
 
     @Override
