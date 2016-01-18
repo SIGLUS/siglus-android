@@ -46,9 +46,6 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.List;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -165,21 +162,14 @@ public class SyncUpManager {
     }
 
     public void syncAppVersion() {
-        if (!sharedPreferenceMgr.hasSyncedVersion()) {
-            AppInfoRequest request = new AppInfoRequest(UserInfoMgr.getInstance().getFacilityCode(), UserInfoMgr.getInstance().getUser().getUsername(), UserInfoMgr.getInstance().getVersion());
-            lmisRestApi.updateAppVersion(request, new Callback<Void>() {
-                @Override
-                public void success(Void o, Response response) {
-                    sharedPreferenceMgr.setSyncedVersion(true);
-                    Log.d(TAG, "===> SyncAppVersion : synced");
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    sharedPreferenceMgr.setSyncedVersion(false);
-                    Log.d(TAG, "===> SyncAppVersion : sync failed");
-                }
-            });
+        try {
+            if (!sharedPreferenceMgr.hasSyncedVersion()) {
+                AppInfoRequest request = new AppInfoRequest(UserInfoMgr.getInstance().getFacilityCode(), UserInfoMgr.getInstance().getUser().getUsername(), UserInfoMgr.getInstance().getVersion());
+                lmisRestApi.updateAppVersion(request);
+                sharedPreferenceMgr.setSyncedVersion(true);
+            }
+        } catch (LMISException e) {
+            e.printStackTrace();
         }
     }
 
