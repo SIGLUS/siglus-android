@@ -6,7 +6,7 @@ Feature: low stock
     And I wait for 2 seconds
 
     Given I try to log in with "low_stock" "password1"
-    And I wait for "Home Page" to appear
+    And I wait for "Stock Card Overview" to appear
     When I press "Stock Card Overview"
     And I wait for "Stock Overview" to appear
     And I wait for 1 second
