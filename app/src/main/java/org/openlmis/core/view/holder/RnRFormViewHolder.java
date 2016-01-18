@@ -148,22 +148,21 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 ((Activity)context).startActivityForResult(intent, Constants.REQUEST_CODE_CHANGE);
                 return;
             }
-            if (model.getType() == RnRFormViewModel.TYPE_COMPLETED_INVENTORY) {
+
+            if (model.getType() == RnRFormViewModel.TYPE_HISTORICAL) {
                 if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
-                    ((Activity)context).startActivityForResult(MMIARequisitionActivity.getIntentToMe(context, 0), Constants.REQUEST_CODE_CHANGE);
-
+                    ((Activity)context).startActivityForResult(MMIARequisitionActivity.getIntentToMe(context, model.getId()), Constants.REQUEST_CODE_CHANGE);
                 } else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)) {
-                    ((Activity)context).startActivityForResult(VIARequisitionActivity.getIntentToMe(context, 0), Constants.REQUEST_CODE_CHANGE);
-
+                    ((Activity)context).startActivityForResult(VIARequisitionActivity.getIntentToMe(context, model.getId()), Constants.REQUEST_CODE_CHANGE);
                 }
                 return;
             }
 
             if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
-                ((Activity)context).startActivityForResult(MMIARequisitionActivity.getIntentToMe(context, model.getId()), Constants.REQUEST_CODE_CHANGE);
-            } else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)) {
-                ((Activity)context).startActivityForResult(VIARequisitionActivity.getIntentToMe(context, model.getId()), Constants.REQUEST_CODE_CHANGE);
+                ((Activity)context).startActivityForResult(MMIARequisitionActivity.getIntentToMe(context, 0), Constants.REQUEST_CODE_CHANGE);
 
+            } else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)) {
+                ((Activity)context).startActivityForResult(VIARequisitionActivity.getIntentToMe(context, 0), Constants.REQUEST_CODE_CHANGE);
             }
 
         }
