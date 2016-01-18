@@ -131,3 +131,39 @@ Then(/^I make all movements for "(.*?)"$/) do |drugFNM|
         }
     end
 end
+
+Then(/^I should see CMM "(.*?)"$/) do |arg1|
+ cmm = query("android.widget.TextView id:'tv_cmm'" , :text)
+ unless cmm.at(0).to_i == arg1.to_i
+     fail "Calculation of CMM is not correct"
+ end
+end
+
+Then(/^I should see lowStock "(\d+)" and warning on product "(.*?)"$/) do |low_stock,product_code|
+    current_soh = query("android.widget.TextView id:'tv_stock_on_hand'" , :text).first.to_i
+    condition = (current_soh == low_stock.to_i)
+    warning_icon = query("android.widget.ImageView id:'iv_warning'")
+
+    unless condition
+        fail "Calculation of low_stock is not correct"
+    end
+
+    unless !(warning_icon.empty?)
+        fail "Low stock warning not appear"
+    end
+end
+
+Then(/^I shouldn't see lowStock "(\d+)" and warning on product "(.*?)"$/) do |low_stock,product_code|
+    current_soh = query("android.widget.TextView id:'tv_stock_on_hand'" , :text).first.to_i
+    condition = (current_soh == low_stock.to_i)
+    warning_icon = query("android.widget.ImageView id:'iv_warning'")
+
+    unless condition
+        fail "Calculation of low_stock is not correct"
+    end
+
+    unless (warning_icon.empty?)
+        fail "Low stock warning should not appear"
+    end
+
+end

@@ -2,6 +2,10 @@ Given(/^Server updates drug data/) do
   system("cd #{LMIS_MOZ_DIR} && ./data/functional_tests/update_products.sh")
 end
 
+Given(/^Server updates stock_movements data/) do
+  system("cd /Open-lmis/newcode/lmis-moz-mobile/scripts/lmis-moz && ./data/functional_tests/update_stock_movements.sh")
+end
+
 Then(/^I clean up server drug data which I updated/) do
   system("cd #{LMIS_MOZ_DIR} && ./data/functional_tests/rollback_updated_products.sh")
 end
