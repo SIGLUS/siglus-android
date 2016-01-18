@@ -62,7 +62,6 @@ public class HomeActivity extends BaseActivity {
     @InjectView(R.id.btn_mmia)
     Button btnMMIA;
 
-    @InjectView(R.id.view_sync_time)
     SyncTimeView syncTimeView;
 
     TextView txLastSyncedRnrForm;
@@ -93,6 +92,7 @@ public class HomeActivity extends BaseActivity {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
             setContentView(R.layout.activity_home_page);
             setTitle(UserInfoMgr.getInstance().getFacilityName());
+            syncTimeView = (SyncTimeView) findViewById(R.id.view_sync_time);
         } else {
             setContentView(R.layout.activity_home_page_old);
             txLastSyncedStockCard = (TextView) findViewById(R.id.tx_last_synced_stockcard);
@@ -199,12 +199,12 @@ public class HomeActivity extends BaseActivity {
     }
 
     protected void setSyncedTime() {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
+            syncTimeView.showLastSyncTime();
+        } else {
             showRnrFormLastSyncedTime();
             showStockCardLastSyncedTime();
         }
-
-        syncTimeView.showLastSyncTime();
     }
 
     private void showRnrFormLastSyncedTime() {
@@ -212,16 +212,20 @@ public class HomeActivity extends BaseActivity {
         if (rnrSyncedTimestamp == 0) {
             return;
         }
+        txLastSyncedRnrForm.setText(getRnrLastSyncText(rnrSyncedTimestamp));
+    }
 
+    private String getRnrLastSyncText(long rnrSyncedTimestamp) {
         long diff = DateUtil.calculateTimeInterval(rnrSyncedTimestamp);
-
+        String syncTimeText;
         if (diff < DateUtil.MILLISECONDS_HOUR) {
-            txLastSyncedRnrForm.setText(getResources().getString(R.string.label_rnr_form_last_synced_mins_ago, (diff / DateUtil.MILLISECONDS_MINUTE)));
+            syncTimeText = getResources().getString(R.string.label_rnr_form_last_synced_mins_ago, (diff / DateUtil.MILLISECONDS_MINUTE));
         } else if (diff < DateUtil.MILLISECONDS_DAY) {
-            txLastSyncedRnrForm.setText(getResources().getString(R.string.label_rnr_form_last_synced_hours_ago, (diff / DateUtil.MILLISECONDS_HOUR)));
+            syncTimeText = getResources().getString(R.string.label_rnr_form_last_synced_hours_ago, (diff / DateUtil.MILLISECONDS_HOUR));
         } else {
-            txLastSyncedRnrForm.setText(getResources().getString(R.string.label_rnr_form_last_synced_days_ago, (diff / DateUtil.MILLISECONDS_DAY)));
+            syncTimeText = getResources().getString(R.string.label_rnr_form_last_synced_days_ago, (diff / DateUtil.MILLISECONDS_DAY));
         }
+        return syncTimeText;
     }
 
     private void showStockCardLastSyncedTime() {

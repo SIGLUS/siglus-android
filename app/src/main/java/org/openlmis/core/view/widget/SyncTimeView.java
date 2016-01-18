@@ -38,12 +38,6 @@ public class SyncTimeView extends LinearLayout {
         RoboGuice.getInjector(getContext()).injectViewMembers(this);
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        txSyncTime.setText("");
-    }
-
     public void showLastSyncTime() {
         long rnrLastSyncTime = SharedPreferenceMgr.getInstance().getPreference().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, 0);
         long stockLastSyncTime = SharedPreferenceMgr.getInstance().getPreference().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, 0);
@@ -52,13 +46,18 @@ public class SyncTimeView extends LinearLayout {
         }
 
         long syncTimeInterval = getSyncTimeInterval(rnrLastSyncTime, stockLastSyncTime);
-        txSyncTime.setText(syncTimeInterval + " " + "since last sync");
 
-        if (syncTimeInterval < DateUtil.MILLISECONDS_DAY) {
+        if (syncTimeInterval < DateUtil.MILLISECONDS_HOUR){
+            txSyncTime.setText(getResources().getString(R.string.label_last_synced_mins_ago, syncTimeInterval / DateUtil.MILLISECONDS_MINUTE));
+            ivSyncTimeIcon.setImageResource(R.drawable.ic_done);
+        }else if (syncTimeInterval < DateUtil.MILLISECONDS_DAY){
+            txSyncTime.setText(getResources().getString(R.string.label_last_synced_hours_ago, syncTimeInterval / DateUtil.MILLISECONDS_HOUR));
             ivSyncTimeIcon.setImageResource(R.drawable.ic_done);
         } else if (syncTimeInterval < DateUtil.MILLISECONDS_DAY * 3) {
+            txSyncTime.setText(getResources().getString(R.string.label_last_synced_days_ago, syncTimeInterval / DateUtil.MILLISECONDS_DAY));
             ivSyncTimeIcon.setImageResource(R.drawable.ic_clear);
         } else {
+            txSyncTime.setText(getResources().getString(R.string.label_last_synced_days_ago, syncTimeInterval / DateUtil.MILLISECONDS_DAY));
             ivSyncTimeIcon.setImageResource(R.drawable.ic_save);
         }
     }
