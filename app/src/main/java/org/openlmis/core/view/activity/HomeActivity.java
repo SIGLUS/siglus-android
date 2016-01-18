@@ -30,6 +30,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.inject.Inject;
@@ -75,6 +76,9 @@ public class HomeActivity extends BaseActivity {
     @InjectView(R.id.btn_kit_stock_card)
     Button btnKitStockCard;
 
+    @InjectView(R.id.iv_sync_time_icon)
+    ImageView ivSyncTimeIcon;
+
     @InjectView(R.id.tx_sync_time)
     TextView txSyncTime;
 
@@ -93,7 +97,7 @@ public class HomeActivity extends BaseActivity {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
             setContentView(R.layout.activity_home_page);
             setTitle(UserInfoMgr.getInstance().getFacilityName());
-        }else {
+        } else {
             setContentView(R.layout.activity_home_page_old);
         }
 
@@ -101,7 +105,7 @@ public class HomeActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
 
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)){
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
             btnVIAList.setText(LMISApp.getInstance().getText(R.string.btn_requisition_list_old));
             btnMMIAList.setText(LMISApp.getInstance().getText(R.string.btn_mmia_list_old));
         }
@@ -177,13 +181,17 @@ public class HomeActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    public void onClickLastSyncTime(View view){
+    public void onClickLastSyncTime(View view) {
         SyncDateBottomSheet syncDateBottomSheet = new SyncDateBottomSheet();
-        Bundle bundle = new Bundle();
-        bundle.putString(SyncDateBottomSheet.RNR_SYNC_TIME,"2015-12-12");
-        bundle.putString(SyncDateBottomSheet.STOCK_SYNC_TIME, "2016-1-1");
-        syncDateBottomSheet.setArguments(bundle);
+        syncDateBottomSheet.setArguments(createSyncDateBundle());
         syncDateBottomSheet.show(getFragmentManager());
+    }
+
+    private Bundle createSyncDateBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putString(SyncDateBottomSheet.RNR_SYNC_TIME, "2015-12-12");
+        bundle.putString(SyncDateBottomSheet.STOCK_SYNC_TIME, "2016-1-1");
+        return bundle;
     }
 
     @Override
@@ -195,17 +203,54 @@ public class HomeActivity extends BaseActivity {
     protected void setSyncedTime() {
         showRnrFormLastSyncedTime();
         showStockCardLastSyncedTime();
+
+        showLastSyncTime();
     }
 
-    private void showRnrFormLastSyncedTime() {
-        long lastSyncedTimestamp = getPreferences().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, 0);
-        if (lastSyncedTimestamp == 0) {
+    private void showLastSyncTime() {
+        long rnrLastSyncTime = getPreferences().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, 0);
+        long stockLastSyncTime = getPreferences().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, 0);
+        if (rnrLastSyncTime == 0 && stockLastSyncTime == 0){
             return;
         }
 
-        long currentTimestamp = new Date().getTime();
+        long syncTimeInterval = getSyncTimeInterval(rnrLastSyncTime, stockLastSyncTime);
+        txSyncTime.setText(syncTimeInterval + " " + "since last sync");
 
-        long diff = currentTimestamp - lastSyncedTimestamp;
+        if (syncTimeInterval < DateUtil.MILLISECONDS_DAY) {
+            ivSyncTimeIcon.setImageResource(R.drawable.ic_done);
+        } else if (syncTimeInterval < DateUtil.MILLISECONDS_DAY * 3) {
+            ivSyncTimeIcon.setImageResource(R.drawable.ic_clear);
+        } else {
+            ivSyncTimeIcon.setImageResource(R.drawable.ic_save);
+        }
+    }
+
+    private long getSyncTimeInterval(long rnrLastSyncTime, long stockLastSyncTime) {
+        long syncTimeInterval;
+        long rnrSyncInterval = calculateTimeInterval(rnrLastSyncTime);
+        long stockSyncInterval = calculateTimeInterval(stockLastSyncTime);
+        if (rnrLastSyncTime == 0) {
+            syncTimeInterval = stockSyncInterval;
+        }else if(stockLastSyncTime == 0){
+            syncTimeInterval = rnrSyncInterval;
+        }else{
+            syncTimeInterval = rnrSyncInterval < stockSyncInterval ? rnrSyncInterval : stockSyncInterval;
+        }
+        return syncTimeInterval;
+    }
+
+    private long calculateTimeInterval(long lastSyncedTimestamp) {
+        return new Date().getTime() - lastSyncedTimestamp;
+    }
+
+    private void showRnrFormLastSyncedTime() {
+        long rnrSyncedTimestamp = getPreferences().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, 0);
+        if (rnrSyncedTimestamp == 0) {
+            return;
+        }
+
+        long diff = calculateTimeInterval(rnrSyncedTimestamp);
 
         if (diff < DateUtil.MILLISECONDS_HOUR) {
             txLastSyncedRnrForm.setText(getResources().getString(R.string.label_rnr_form_last_synced_mins_ago, (diff / DateUtil.MILLISECONDS_MINUTE)));
@@ -217,14 +262,12 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void showStockCardLastSyncedTime() {
-        long lastSyncedTimestamp = getPreferences().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, 0);
-        if (lastSyncedTimestamp == 0) {
+        long stockSyncedTimestamp = getPreferences().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, 0);
+        if (stockSyncedTimestamp == 0) {
             return;
         }
 
-        long currentTimestamp = new Date().getTime();
-
-        long diff = currentTimestamp - lastSyncedTimestamp;
+        long diff = calculateTimeInterval(stockSyncedTimestamp);
 
         if (diff < DateUtil.MILLISECONDS_HOUR) {
             txLastSyncedStockCard.setText(getResources().getString(R.string.label_stock_card_last_synced_mins_ago, (diff / DateUtil.MILLISECONDS_MINUTE)));
@@ -255,9 +298,9 @@ public class HomeActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)){
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
             inflater.inflate(R.menu.menu_home, menu);
-        }else {
+        } else {
             inflater.inflate(R.menu.menu_home_old, menu);
         }
         return true;
@@ -269,7 +312,7 @@ public class HomeActivity extends BaseActivity {
             startActivity(LoginActivity.class);
             finish();
             return true;
-        }else if (item.getItemId() == R.id.action_sync_data) {
+        } else if (item.getItemId() == R.id.action_sync_data) {
             onClickSyncData();
             return true;
         }
