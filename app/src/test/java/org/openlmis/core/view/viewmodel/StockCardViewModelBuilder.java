@@ -48,6 +48,11 @@ public class StockCardViewModelBuilder {
         return this;
     }
 
+    public StockCardViewModelBuilder setKitExpectQuantity(long kitExpectQuantity) {
+        viewModel.setKitExpectQuantity(kitExpectQuantity);
+        return this;
+    }
+
     public StockCardViewModel build() {
         return viewModel;
     }
