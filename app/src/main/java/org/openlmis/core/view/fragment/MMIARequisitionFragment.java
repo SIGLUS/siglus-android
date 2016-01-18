@@ -384,7 +384,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         return hasDataChanged;
     }
 
-    private void backHomePage() {
+    private void backRequisitionHistoryPage() {
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
@@ -436,12 +436,12 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     @Override
     public void completeSuccess() {
         ToastUtil.showForLongTime(R.string.msg_mmia_submit_tip);
-        backHomePage();
+        backRequisitionHistoryPage();
     }
 
     @Override
     public void saveSuccess() {
-        backHomePage();
+        backRequisitionHistoryPage();
     }
 
     @Override
@@ -488,8 +488,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     public void positiveClick(String tag) {
         if (tag.equals(TAG_BACK_PRESSED)) {
             removeTempForm();
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            backRequisitionHistoryPage();
         }
     }
 

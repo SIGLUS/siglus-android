@@ -88,13 +88,6 @@ public class HomeActivityTest {
     }
 
     @Test
-    public void shouldGoToMMIAFormPage() {
-        homeActivity.btnMMIA.performClick();
-
-        verifyNextPage(MMIARequisitionActivity.class.getName());
-    }
-
-    @Test
     public void shouldGoToInventoryPage() {
         homeActivity.btnInventory.performClick();
 
