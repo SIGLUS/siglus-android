@@ -3,7 +3,7 @@ Given(/^Server updates drug data/) do
 end
 
 Given(/^Server updates stock_movements data/) do
-  system("cd /Open-lmis/newcode/lmis-moz-mobile/scripts/lmis-moz && ./data/functional_tests/update_stock_movements.sh")
+  system("cd #{LMIS_MOZ_DIR} && ./data/functional_tests/update_stock_movements.sh")
 end
 
 Then(/^I clean up server drug data which I updated/) do
