@@ -56,7 +56,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit.Callback;
 import roboguice.RoboGuice;
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
@@ -225,7 +224,7 @@ public class SyncUpManagerTest {
         User user = new User();
         UserInfoMgr.getInstance().setUser(user);
         syncUpManager.syncAppVersion();
-        verify(lmisRestApi).updateAppVersion(any(AppInfoRequest.class), any(Callback.class));
+        verify(lmisRestApi).updateAppVersion(any(AppInfoRequest.class));
     }
 
     @Test
@@ -246,7 +245,7 @@ public class SyncUpManagerTest {
     public void shouldNotSyncAppVersion() throws Exception {
         when(sharedPreferenceMgr.hasSyncedVersion()).thenReturn(true);
         syncUpManager.syncAppVersion();
-        verify(lmisRestApi, never()).updateAppVersion(any(AppInfoRequest.class), any(Callback.class));
+        verify(lmisRestApi, never()).updateAppVersion(any(AppInfoRequest.class));
     }
 
     @Test
