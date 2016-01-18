@@ -61,7 +61,7 @@ Feature: Requisition
     And I press the menu key
     Then I see "Sync Data"
     And I press "Sync Data"
-    And I wait for 1 second
+    And I wait for 2 seconds
     And I press "Via Classica Requisitions"
     Then I wait for "Historic Requisitions" to appear
     Then I should see text containing "View Via Classica Requisition"
