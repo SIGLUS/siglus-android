@@ -30,8 +30,11 @@ import roboguice.inject.ContentView;
 @ContentView(R.layout.activity_stock_movement_history)
 public class StockMovementHistoryActivity extends BaseActivity {
 
+    private boolean isKit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        isKit = getIntent().getBooleanExtra(Constants.PARAM_IS_KIT, false);
         super.onCreate(savedInstanceState);
         setTitle(getIntent().getStringExtra(Constants.PARAM_STOCK_NAME));
 
@@ -40,11 +43,18 @@ public class StockMovementHistoryActivity extends BaseActivity {
         }
     }
 
-    public static Intent getIntentToMe(Context context, long stockCardId, String stockName, boolean isFromArchive) {
+    @Override
+    protected int getThemeRes() {
+        return isKit ? R.style.AppTheme_TEAL : super.getThemeRes();
+    }
+
+    public static Intent getIntentToMe(Context context, long stockCardId, String stockName,
+                                       boolean isFromArchive, boolean isKit) {
         Intent intent = new Intent(context, StockMovementHistoryActivity.class);
         intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCardId);
         intent.putExtra(Constants.PARAM_STOCK_NAME, stockName);
         intent.putExtra(Constants.PARAM_IS_FROM_ARCHIVE, isFromArchive);
+        intent.putExtra(Constants.PARAM_IS_KIT, isKit);
         return intent;
     }
 }

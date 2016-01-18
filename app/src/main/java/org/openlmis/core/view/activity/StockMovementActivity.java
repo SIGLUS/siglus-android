@@ -90,16 +90,17 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     private StockMovementAdapter stockMovementAdapter;
     private boolean isStockCardArchivable;
     private boolean isStockCardUnpackable;
-
     private boolean isActivated;
+    private boolean isKit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         stockId = getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
         stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
         isActivated = getIntent().getBooleanExtra(Constants.PARAM_IS_ACTIVATED, true);
+        isKit = getIntent().getBooleanExtra(Constants.PARAM_IS_KIT, false);
+
+        super.onCreate(savedInstanceState);
 
         try {
             presenter.setStockCard(stockId);
@@ -109,6 +110,11 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         }
 
         initUI();
+    }
+
+    @Override
+    protected int getThemeRes() {
+        return isKit ? R.style.AppTheme_TEAL : super.getThemeRes();
     }
 
     private void initUI() {
@@ -232,7 +238,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
                 startActivity(UnpackKitActivity.getIntentToMe(this, presenter.getStockCard().getProduct().getCode()));
                 return true;
             case R.id.action_history:
-                startActivity(StockMovementHistoryActivity.getIntentToMe(this, stockId, stockName, false));
+                startActivity(StockMovementHistoryActivity.getIntentToMe(this, stockId, stockName, false, isKit));
                 return true;
             case R.id.action_archive:
                 presenter.archiveStockCard();
@@ -258,11 +264,12 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         }
     }
 
-    public static Intent getIntentToMe(Context context, StockCardViewModel stockCardViewModel) {
+    public static Intent getIntentToMe(Context context, StockCardViewModel stockCardViewModel, boolean isKit) {
         Intent intent = new Intent(context, StockMovementActivity.class);
         intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCardViewModel.getStockCardId());
         intent.putExtra(Constants.PARAM_STOCK_NAME, stockCardViewModel.getProduct().getFormattedProductName());
         intent.putExtra(Constants.PARAM_IS_ACTIVATED, stockCardViewModel.getProduct().isActive());
+        intent.putExtra(Constants.PARAM_IS_KIT, isKit);
         return intent;
     }
 

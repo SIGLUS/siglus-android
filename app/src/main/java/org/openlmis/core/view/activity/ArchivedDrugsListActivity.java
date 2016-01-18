@@ -71,7 +71,8 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements Stoc
             startActivity(StockMovementHistoryActivity.getIntentToMe(ArchivedDrugsListActivity.this,
                     stockCard.getId(),
                     stockCard.getProduct().getFormattedProductName(),
-                    true));
+                    true,
+                    false));
         }
 
         @Override

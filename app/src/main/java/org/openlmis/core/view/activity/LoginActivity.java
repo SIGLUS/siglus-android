@@ -72,6 +72,11 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         initUI();
     }
 
+    @Override
+    protected int getThemeRes() {
+        return R.style.AppTheme_NoActionBar;
+    }
+
     private void initUI() {
         ivVisibilityPwd.setOnClickListener(this);
         btnLogin.setOnClickListener(this);

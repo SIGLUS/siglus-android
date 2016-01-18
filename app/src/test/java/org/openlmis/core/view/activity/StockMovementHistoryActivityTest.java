@@ -33,11 +33,12 @@ public class StockMovementHistoryActivityTest {
 
     @Test
     public void shouldGetIntentToMeWithStockIdAndStockName() {
-        Intent intent = StockMovementHistoryActivity.getIntentToMe(RuntimeEnvironment.application, 100L, "StockName", false);
+        Intent intent = StockMovementHistoryActivity.getIntentToMe(RuntimeEnvironment.application, 100L, "StockName", false, true);
         
         assertThat(intent).isNotNull();
         assertThat(intent.getComponent().getClassName()).isEqualTo(StockMovementHistoryActivity.class.getName());
         assertThat(intent.getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0)).isEqualTo(100L);
         assertThat(intent.getStringExtra(Constants.PARAM_STOCK_NAME)).isEqualTo("StockName");
+        assertThat(intent.getBooleanExtra(Constants.PARAM_IS_KIT, false)).isEqualTo(true);
     }
 }
