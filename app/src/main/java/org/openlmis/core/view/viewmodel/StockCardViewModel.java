@@ -59,6 +59,7 @@ public class StockCardViewModel {
     long stockCardId;
 
     long stockOnHand;
+    long kitExpectQuantity;
 
     SpannableStringBuilder styledName;
 

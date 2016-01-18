@@ -52,7 +52,7 @@ public class UnpackKitPresenter extends Presenter {
                     for (KitProduct kitProduct : kitProducts) {
                         Product product = productRepository.getByCode(kitProduct.getProductCode());
                         StockCardViewModel stockCardViewModel = new StockCardViewModel(product);
-                        stockCardViewModel.setStockOnHand(kitProduct.getQuantity());
+                        stockCardViewModel.setKitExpectQuantity(kitProduct.getQuantity());
                         stockCardViewModel.setChecked(true);
                         stockCardViewModels.add(stockCardViewModel);
                     }

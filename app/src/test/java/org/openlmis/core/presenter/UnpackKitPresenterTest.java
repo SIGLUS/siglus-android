@@ -72,8 +72,8 @@ public class UnpackKitPresenterTest {
         Product kit = ProductBuilder.create().setCode("KIT_Code").setIsKit(true).build();
         Product product1 = ProductBuilder.create().setPrimaryName("p1").setProductId(1L).setCode("P1_Code").setIsKit(false).build();
         Product product2 = ProductBuilder.create().setPrimaryName("p2").setProductId(2L).setCode("P2_Code").setIsKit(false).build();
-        KitProduct kitProduct1 = KitProductBuilder.create().setKitCode("KIT_Code").setProductCode("P1_Code").build();
-        KitProduct kitProduct2 = KitProductBuilder.create().setKitCode("KIT_Code").setProductCode("P2_Code").build();
+        KitProduct kitProduct1 = KitProductBuilder.create().setKitCode("KIT_Code").setProductCode("P1_Code").setQuantity(100).build();
+        KitProduct kitProduct2 = KitProductBuilder.create().setKitCode("KIT_Code").setProductCode("P2_Code").setQuantity(200).build();
 
         List<KitProduct> kitProducts = Arrays.asList(kitProduct1, kitProduct2);
         kit.setKitProductList(kitProducts);
@@ -96,9 +96,15 @@ public class UnpackKitPresenterTest {
 
         List<StockCardViewModel> resultProducts = subscriber.getOnNextEvents().get(0);
         assertThat(resultProducts.size()).isEqualTo(2);
-        assertThat(resultProducts.get(0).getProduct().getCode()).isEqualTo(product1.getCode());
-        assertThat(resultProducts.get(1).getProduct().getCode()).isEqualTo(product2.getCode());
-        assertTrue(resultProducts.get(0).isChecked());
-        assertTrue(resultProducts.get(1).isChecked());
+
+        StockCardViewModel viewModel1 = resultProducts.get(0);
+        StockCardViewModel viewModel2 = resultProducts.get(1);
+
+        assertThat(viewModel1.getProduct().getCode()).isEqualTo(product1.getCode());
+        assertThat(viewModel2.getProduct().getCode()).isEqualTo(product2.getCode());
+        assertThat(viewModel1.getKitExpectQuantity()).isEqualTo(100);
+        assertThat(viewModel2.getKitExpectQuantity()).isEqualTo(200);
+        assertTrue(viewModel1.isChecked());
+        assertTrue(viewModel2.isChecked());
     }
 }

@@ -16,10 +16,10 @@ public class UnpackKitViewHolder extends PhysicalInventoryViewHolder {
     }
 
     public void populate(StockCardViewModel stockCardViewModel) {
-        etQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(0, (int) stockCardViewModel.getStockOnHand())});
-        tvStockOnHandInInventory.setText(context.getString(R.string.label_unpack_kit_quantity_expected,
-                Long.toString(stockCardViewModel.getStockOnHand())));
-
         populate(stockCardViewModel, StringUtils.EMPTY);
+        etQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(0, (int) stockCardViewModel.getKitExpectQuantity())});
+        tvStockOnHandInInventory.setText(context.getString(R.string.label_unpack_kit_quantity_expected,
+                Long.toString(stockCardViewModel.getKitExpectQuantity())));
+
     }
 }
