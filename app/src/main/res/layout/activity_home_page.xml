@@ -47,16 +47,6 @@
                 android:orientation="vertical">
 
                 <Button
-                    android:id="@+id/btn_requisition"
-                    style="@style/Homepage.Button"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:background="@color/color_purple"
-                    android:onClick="onClickRequisition"
-                    android:text="@string/title_requisition" />
-
-                <Button
                     android:id="@+id/btn_via_list"
                     style="@style/Homepage.Button"
                     android:layout_width="match_parent"
@@ -66,17 +56,6 @@
                     android:background="@color/color_purple"
                     android:onClick="onClickVIAHistory"
                     android:text="@string/btn_requisition_list" />
-
-                <Button
-                    android:id="@+id/btn_mmia"
-                    style="@style/Homepage.Button"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/color_amber"
-                    android:onClick="onClickMMIA"
-                    android:text="@string/label_mmia" />
 
                 <Button
                     android:id="@+id/btn_mmia_list"

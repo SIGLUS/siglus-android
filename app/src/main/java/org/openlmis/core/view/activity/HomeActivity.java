@@ -59,9 +59,6 @@ public class HomeActivity extends BaseActivity {
     @InjectView(R.id.btn_inventory)
     Button btnInventory;
 
-    @InjectView(R.id.btn_mmia)
-    Button btnMMIA;
-
     @InjectView(R.id.tx_last_synced_rnrform)
     TextView txLastSyncedRnrForm;
 
