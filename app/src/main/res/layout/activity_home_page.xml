@@ -31,9 +31,9 @@
                 android:id="@+id/btn_inventory"
                 style="@style/Homepage.Button"
                 android:layout_width="0dp"
-                android:layout_weight="2"
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
+                android:layout_weight="2"
                 android:background="@color/color_blue"
                 android:onClick="onClickInventory"
                 android:text="@string/button_inventory" />
@@ -83,43 +83,10 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal" >
-
-            <ImageView
-                android:id="@+id/iv_sync_time_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_clear"/>
-
-            <TextView
-                android:id="@+id/tx_sync_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_medium"
-                android:clickable="true"
-                android:onClick="onClickLastSyncTime"
-                android:text="this is the last sync time"/>
-        </LinearLayout>
-
-
-        <TextView
-            android:id="@+id/tx_last_synced_rnrform"
-            style="@style/Home.SyncText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_medium"
-            tools:text="Last synced 34 minutes" />
-
-        <TextView
-            android:id="@+id/tx_last_synced_stockcard"
-            style="@style/Home.SyncText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Last synced 34 minutes" />
+        <org.openlmis.core.view.widget.SyncTimeView
+            android:id="@+id/view_sync_time"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 </ScrollView>

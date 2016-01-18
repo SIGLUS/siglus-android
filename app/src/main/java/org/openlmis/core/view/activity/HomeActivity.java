@@ -30,7 +30,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.inject.Inject;
@@ -46,6 +45,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.widget.SyncDateBottomSheet;
+import org.openlmis.core.view.widget.SyncTimeView;
 
 import java.util.Date;
 
@@ -61,10 +61,14 @@ public class HomeActivity extends BaseActivity {
     @InjectView(R.id.btn_inventory)
     Button btnInventory;
 
-    @InjectView(R.id.tx_last_synced_rnrform)
+    @InjectView(R.id.btn_mmia)
+    Button btnMMIA;
+
+    @InjectView(R.id.view_sync_time)
+    SyncTimeView syncTimeView;
+
     TextView txLastSyncedRnrForm;
 
-    @InjectView(R.id.tx_last_synced_stockcard)
     TextView txLastSyncedStockCard;
 
     @InjectView(R.id.btn_mmia_list)
@@ -75,12 +79,6 @@ public class HomeActivity extends BaseActivity {
 
     @InjectView(R.id.btn_kit_stock_card)
     Button btnKitStockCard;
-
-    @InjectView(R.id.iv_sync_time_icon)
-    ImageView ivSyncTimeIcon;
-
-    @InjectView(R.id.tx_sync_time)
-    TextView txSyncTime;
 
     @InjectResource(R.integer.back_twice_interval)
     int BACK_TWICE_INTERVAL;
@@ -99,6 +97,8 @@ public class HomeActivity extends BaseActivity {
             setTitle(UserInfoMgr.getInstance().getFacilityName());
         } else {
             setContentView(R.layout.activity_home_page_old);
+            txLastSyncedStockCard = (TextView) findViewById(R.id.tx_last_synced_stockcard);
+            txLastSyncedRnrForm = (TextView) findViewById(R.id.tx_last_synced_rnrform);
         }
 
         if (getSupportActionBar() != null) {
@@ -201,43 +201,12 @@ public class HomeActivity extends BaseActivity {
     }
 
     protected void setSyncedTime() {
-        showRnrFormLastSyncedTime();
-        showStockCardLastSyncedTime();
-
-        showLastSyncTime();
-    }
-
-    private void showLastSyncTime() {
-        long rnrLastSyncTime = getPreferences().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, 0);
-        long stockLastSyncTime = getPreferences().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, 0);
-        if (rnrLastSyncTime == 0 && stockLastSyncTime == 0){
-            return;
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
+            showRnrFormLastSyncedTime();
+            showStockCardLastSyncedTime();
         }
 
-        long syncTimeInterval = getSyncTimeInterval(rnrLastSyncTime, stockLastSyncTime);
-        txSyncTime.setText(syncTimeInterval + " " + "since last sync");
-
-        if (syncTimeInterval < DateUtil.MILLISECONDS_DAY) {
-            ivSyncTimeIcon.setImageResource(R.drawable.ic_done);
-        } else if (syncTimeInterval < DateUtil.MILLISECONDS_DAY * 3) {
-            ivSyncTimeIcon.setImageResource(R.drawable.ic_clear);
-        } else {
-            ivSyncTimeIcon.setImageResource(R.drawable.ic_save);
-        }
-    }
-
-    private long getSyncTimeInterval(long rnrLastSyncTime, long stockLastSyncTime) {
-        long syncTimeInterval;
-        long rnrSyncInterval = calculateTimeInterval(rnrLastSyncTime);
-        long stockSyncInterval = calculateTimeInterval(stockLastSyncTime);
-        if (rnrLastSyncTime == 0) {
-            syncTimeInterval = stockSyncInterval;
-        }else if(stockLastSyncTime == 0){
-            syncTimeInterval = rnrSyncInterval;
-        }else{
-            syncTimeInterval = rnrSyncInterval < stockSyncInterval ? rnrSyncInterval : stockSyncInterval;
-        }
-        return syncTimeInterval;
+        syncTimeView.showLastSyncTime();
     }
 
     private long calculateTimeInterval(long lastSyncedTimestamp) {
