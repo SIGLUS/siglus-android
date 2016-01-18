@@ -63,19 +63,22 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         programCode = getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE);
         if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
             setTitle(R.string.title_mmia_list);
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-                setTheme(R.style.AppTheme_AMBER);
-            }
         } else {
             setTitle(R.string.title_requisition_list);
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-                setTheme(R.style.AppTheme_PURPLE);
-            }
         }
 
         super.onCreate(savedInstanceState);
         presenter.setProgramCode(programCode);
         initUI();
+    }
+
+    @Override
+    protected int getThemeRes() {
+        if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
+            return R.style.AppTheme_AMBER;
+        } else {
+            return R.style.AppTheme_PURPLE;
+        }
     }
 
     @Override

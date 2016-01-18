@@ -82,11 +82,7 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
     protected void onCreate(Bundle savedInstanceState) {
         isPhysicalInventory = getIntent().getBooleanExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, false);
         isAddNewDrug = getIntent().getBooleanExtra(Constants.PARAM_IS_ADD_NEW_DRUG, false);
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-            if (isPhysicalInventory) {
-                setTheme(R.style.AppTheme_BLUE);
-            }
-        }
+
         super.onCreate(savedInstanceState);
 
         productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
@@ -95,6 +91,11 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
         } else {
             initInitialInventoryUI();
         }
+    }
+
+    @Override
+    protected int getThemeRes() {
+        return isPhysicalInventory ? R.style.AppTheme_BLUE : super.getThemeRes();
     }
 
     private void initPhysicalInventoryUI() {

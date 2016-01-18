@@ -20,9 +20,7 @@ package org.openlmis.core.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.VIARequisitionFragment;
@@ -32,13 +30,9 @@ import roboguice.inject.ContentView;
 
 @ContentView(R.layout.activity_requisition)
 public class VIARequisitionActivity extends BaseActivity {
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-            setTheme(R.style.AppTheme_PURPLE);
-        }
-        super.onCreate(savedInstanceState);
+    protected int getThemeRes() {
+        return R.style.AppTheme_PURPLE;
     }
 
     @Override

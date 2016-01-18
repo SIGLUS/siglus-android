@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.StyleRes;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -134,6 +135,9 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
+            setTheme(getThemeRes());
+        }
         super.onCreate(savedInstanceState);
         initDataFragment();
         injectPresenter();
@@ -151,6 +155,10 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
         }
 
         APP_TIMEOUT = Long.parseLong(getResources().getString(R.string.app_time_out));
+    }
+
+    protected @StyleRes int getThemeRes() {
+        return R.style.AppTheme;
     }
 
     @Override

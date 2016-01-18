@@ -87,10 +87,6 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-            setTheme(R.style.AppTheme_Gray);
-        }
-
         super.onCreate(savedInstanceState);
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
@@ -116,6 +112,11 @@ public class HomeActivity extends BaseActivity {
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_kit)) {
             btnKitStockCard.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    protected int getThemeRes() {
+        return R.style.AppTheme_Gray;
     }
 
     BroadcastReceiver syncedTimeReceiver = new BroadcastReceiver() {
