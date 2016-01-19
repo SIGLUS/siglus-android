@@ -174,7 +174,7 @@ public class SharedPreferenceMgr {
         return currentDate.minusDays(1).isBefore(lastSyncTriggerDate);
     }
 
-    private long getLastMovementHandShakeDate() {
+    public long getLastMovementHandShakeDate() {
         return sharedPreferences.getLong(LAST_MOVEMENT_HANDSHAKE_DATE, 0);
     }
 

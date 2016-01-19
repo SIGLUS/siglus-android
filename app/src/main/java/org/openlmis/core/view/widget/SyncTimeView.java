@@ -41,16 +41,18 @@ public class SyncTimeView extends LinearLayout {
     public void showLastSyncTime() {
         long rnrLastSyncTime = SharedPreferenceMgr.getInstance().getPreference().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, 0);
         long stockLastSyncTime = SharedPreferenceMgr.getInstance().getPreference().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, 0);
-        if (rnrLastSyncTime == 0 && stockLastSyncTime == 0){
+        long handShakeTime = SharedPreferenceMgr.getInstance().getLastMovementHandShakeDate();
+
+        if (rnrLastSyncTime == 0 && stockLastSyncTime == 0 && handShakeTime == 0) {
             return;
         }
 
-        long syncTimeInterval = getSyncTimeInterval(rnrLastSyncTime, stockLastSyncTime);
+        long syncTimeInterval = getSyncTimeInterval(rnrLastSyncTime, stockLastSyncTime, handShakeTime);
 
-        if (syncTimeInterval < DateUtil.MILLISECONDS_HOUR){
+        if (syncTimeInterval < DateUtil.MILLISECONDS_HOUR) {
             txSyncTime.setText(getResources().getString(R.string.label_last_synced_mins_ago, syncTimeInterval / DateUtil.MILLISECONDS_MINUTE));
             ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_green);
-        }else if (syncTimeInterval < DateUtil.MILLISECONDS_DAY){
+        } else if (syncTimeInterval < DateUtil.MILLISECONDS_DAY) {
             txSyncTime.setText(getResources().getString(R.string.label_last_synced_hours_ago, syncTimeInterval / DateUtil.MILLISECONDS_HOUR));
             ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_green);
         } else if (syncTimeInterval < DateUtil.MILLISECONDS_DAY * 3) {
@@ -62,18 +64,16 @@ public class SyncTimeView extends LinearLayout {
         }
     }
 
-    private long getSyncTimeInterval(long rnrLastSyncTime, long stockLastSyncTime) {
-        long syncTimeInterval;
-        long rnrSyncInterval = DateUtil.calculateTimeIntervalFromNow(rnrLastSyncTime);
-        long stockSyncInterval = DateUtil.calculateTimeIntervalFromNow(stockLastSyncTime);
-        if (rnrLastSyncTime == 0) {
-            syncTimeInterval = stockSyncInterval;
-        }else if(stockLastSyncTime == 0){
-            syncTimeInterval = rnrSyncInterval;
-        }else{
-            syncTimeInterval = rnrSyncInterval < stockSyncInterval ? rnrSyncInterval : stockSyncInterval;
+    private long getSyncTimeInterval(long rnrLastSyncTime, long stockLastSyncTime, long handShakeTime) {
+        long latestSyncTime = 0;
+        if (rnrLastSyncTime > stockLastSyncTime && rnrLastSyncTime > handShakeTime) {
+            latestSyncTime = rnrLastSyncTime;
+        }else if (stockLastSyncTime > rnrLastSyncTime && stockLastSyncTime > handShakeTime) {
+            latestSyncTime = stockLastSyncTime;
+        }else if (handShakeTime > stockLastSyncTime && handShakeTime > rnrLastSyncTime) {
+            latestSyncTime = handShakeTime;
         }
-        return syncTimeInterval;
+        return DateUtil.calculateTimeIntervalFromNow(latestSyncTime);
     }
 
 }
