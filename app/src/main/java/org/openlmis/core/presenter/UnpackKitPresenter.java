@@ -141,17 +141,17 @@ public class UnpackKitPresenter extends Presenter {
     }
 
     private void saveStockMovementItemForKit() throws LMISException {
-        int KIT_UNPACK_QUANTITY = 1;
+        int kitUnpackQuantity = 1;
 
         Product kit = productRepository.getByCode(kitCode);
         StockCard kitStockCard = stockRepository.queryStockCardByProductId(kit.getId());
 
-        kitStockCard.setStockOnHand(kitStockCard.getStockOnHand() - KIT_UNPACK_QUANTITY);
+        kitStockCard.setStockOnHand(kitStockCard.getStockOnHand() - kitUnpackQuantity);
 
         StockMovementItem movementItem = new StockMovementItem(kitStockCard);
         movementItem.setReason(MovementReasonManager.UNPACK_KIT);
         movementItem.setMovementType(StockMovementItem.MovementType.ISSUE);
-        movementItem.setMovementQuantity(KIT_UNPACK_QUANTITY);
+        movementItem.setMovementQuantity(kitUnpackQuantity);
 
         stockRepository.addStockMovementAndUpdateStockCard(movementItem);
     }
