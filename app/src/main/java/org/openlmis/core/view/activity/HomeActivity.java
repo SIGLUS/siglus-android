@@ -34,7 +34,6 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 
-import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -43,7 +42,6 @@ import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.widget.SyncDateBottomSheet;
 import org.openlmis.core.view.widget.SyncTimeView;
@@ -177,21 +175,7 @@ public class HomeActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    public void onClickLastSyncTime(View view) {
-        SyncDateBottomSheet syncDateBottomSheet = new SyncDateBottomSheet();
-        long rnrSyncedTimestamp = SharedPreferenceMgr.getInstance().getRnrLastSyncTime();
-        long stockSyncedTimestamp = SharedPreferenceMgr.getInstance().getStockLastSyncTime();
 
-        syncDateBottomSheet.setArguments(createBundleWithLastSyncTime(rnrSyncedTimestamp, stockSyncedTimestamp));
-        syncDateBottomSheet.show(getFragmentManager());
-    }
-
-    private Bundle createBundleWithLastSyncTime(long rnrSyncedTimestamp, long stockSyncedTimestamp) {
-        Bundle bundle = new Bundle();
-        bundle.putString(SyncDateBottomSheet.RNR_SYNC_TIME, formatRnrLastSyncTime(rnrSyncedTimestamp));
-        bundle.putString(SyncDateBottomSheet.STOCK_SYNC_TIME, formatStockCardLastSyncTime(stockSyncedTimestamp));
-        return bundle;
-    }
 
     @Override
     protected void onResume() {
@@ -200,50 +184,22 @@ public class HomeActivity extends BaseActivity {
     }
 
     protected void setSyncedTime() {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-            syncTimeView.showLastSyncTime();
-        } else {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
             showRnrFormLastSyncedTime();
             showStockCardLastSyncedTime();
+        } else {
+            syncTimeView.showLastSyncTime();
         }
     }
 
     private void showRnrFormLastSyncedTime() {
         long rnrSyncedTimestamp = SharedPreferenceMgr.getInstance().getRnrLastSyncTime();
-        txLastSyncedRnrForm.setText(formatRnrLastSyncTime(rnrSyncedTimestamp));
-    }
-
-    private String formatRnrLastSyncTime(long rnrSyncedTimestamp) {
-        if (rnrSyncedTimestamp == 0) {
-            return StringUtils.EMPTY;
-        }
-        long diff = DateUtil.calculateTimeIntervalFromNow(rnrSyncedTimestamp);
-        if (diff < DateUtil.MILLISECONDS_HOUR) {
-            return getResources().getString(R.string.label_rnr_form_last_synced_mins_ago, (diff / DateUtil.MILLISECONDS_MINUTE));
-        } else if (diff < DateUtil.MILLISECONDS_DAY) {
-            return getResources().getString(R.string.label_rnr_form_last_synced_hours_ago, (diff / DateUtil.MILLISECONDS_HOUR));
-        } else {
-            return getResources().getString(R.string.label_rnr_form_last_synced_days_ago, (diff / DateUtil.MILLISECONDS_DAY));
-        }
+        txLastSyncedRnrForm.setText(SyncDateBottomSheet.formatRnrLastSyncTime(rnrSyncedTimestamp));
     }
 
     private void showStockCardLastSyncedTime() {
         long stockSyncedTimestamp = SharedPreferenceMgr.getInstance().getStockLastSyncTime();
-        txLastSyncedStockCard.setText(formatStockCardLastSyncTime(stockSyncedTimestamp));
-    }
-
-    private String formatStockCardLastSyncTime(long stockSyncedTimestamp) {
-        if (stockSyncedTimestamp == 0) {
-            return StringUtils.EMPTY;
-        }
-        long diff = DateUtil.calculateTimeIntervalFromNow(stockSyncedTimestamp);
-        if (diff < DateUtil.MILLISECONDS_HOUR) {
-            return getResources().getString(R.string.label_stock_card_last_synced_mins_ago, (diff / DateUtil.MILLISECONDS_MINUTE));
-        } else if (diff < DateUtil.MILLISECONDS_DAY) {
-            return getResources().getString(R.string.label_stock_card_last_synced_hours_ago, (diff / DateUtil.MILLISECONDS_HOUR));
-        } else {
-            return getResources().getString(R.string.label_stock_card_last_synced_days_ago, (diff / DateUtil.MILLISECONDS_DAY));
-        }
+        txLastSyncedStockCard.setText(SyncDateBottomSheet.formatStockCardLastSyncTime(stockSyncedTimestamp));
     }
 
     @Override

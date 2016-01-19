@@ -16,7 +16,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:onClick="onClickLastSyncTime"
-        android:text="this is the last sync time"
         android:textSize="22sp" />
 </LinearLayout>

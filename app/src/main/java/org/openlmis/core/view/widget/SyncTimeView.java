@@ -3,6 +3,7 @@ package org.openlmis.core.view.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -10,17 +11,21 @@ import android.widget.TextView;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.activity.BaseActivity;
 
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
-public class SyncTimeView extends LinearLayout {
+public class SyncTimeView extends LinearLayout implements View.OnClickListener{
 
     @InjectView(R.id.tx_sync_time)
     TextView txSyncTime;
 
     @InjectView(R.id.iv_sync_time_icon)
     ImageView ivSyncTimeIcon;
+    protected Context context;
+    protected long rnrLastSyncTime;
+    protected long stockLastSyncTime;
 
     public SyncTimeView(Context context) {
         super(context);
@@ -33,15 +38,21 @@ public class SyncTimeView extends LinearLayout {
     }
 
     private void init(Context context) {
+        this.context = context;
         LayoutInflater.from(context).inflate(R.layout.view_sync_time, this);
         RoboGuice.injectMembers(getContext(), this);
         RoboGuice.getInjector(getContext()).injectViewMembers(this);
     }
 
-    public void showLastSyncTime() {
-        long rnrLastSyncTime = SharedPreferenceMgr.getInstance().getRnrLastSyncTime();
-        long stockLastSyncTime = SharedPreferenceMgr.getInstance().getStockLastSyncTime();
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        setOnClickListener(this);
+        rnrLastSyncTime = SharedPreferenceMgr.getInstance().getRnrLastSyncTime();
+        stockLastSyncTime = SharedPreferenceMgr.getInstance().getStockLastSyncTime();
+    }
 
+    public void showLastSyncTime() {
         if (rnrLastSyncTime == 0 && stockLastSyncTime == 0) {
             return;
         }
@@ -73,4 +84,10 @@ public class SyncTimeView extends LinearLayout {
         return DateUtil.calculateTimeIntervalFromNow(latestSyncTime);
     }
 
+    @Override
+    public void onClick(View v) {
+        SyncDateBottomSheet syncDateBottomSheet = new SyncDateBottomSheet();
+        syncDateBottomSheet.setArguments(SyncDateBottomSheet.getArgumentsToMe(rnrLastSyncTime, stockLastSyncTime));
+        syncDateBottomSheet.show(((BaseActivity)context).getFragmentManager());
+    }
 }
