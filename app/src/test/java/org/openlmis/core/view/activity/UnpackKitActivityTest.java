@@ -9,14 +9,21 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.model.Product;
+import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.presenter.UnpackKitPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+
+import java.util.Arrays;
 
 import roboguice.RoboGuice;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LMISTestRunner.class)
@@ -24,9 +31,14 @@ public class UnpackKitActivityTest {
 
     private UnpackKitPresenter mockedPresenter;
     private UnpackKitActivity stockMovementActivity;
+    private Product product;
+    private StockCardViewModel viewModel;
 
     @Before
     public void setUp() throws Exception {
+
+        product = new ProductBuilder().setIsKit(false).setCode("productCode1").setPrimaryName("name1").build();
+        viewModel = new StockCardViewModelBuilder(product).setChecked(true).setKitExpectQuantity(300).setQuantity("200").build();
 
         mockedPresenter = mock(UnpackKitPresenter.class);
 
@@ -45,6 +57,25 @@ public class UnpackKitActivityTest {
     @Test
     public void shouldLoadKitProductsWithKitCode() throws Exception {
         verify(mockedPresenter).loadKitProducts("SD0001");
+    }
+
+    @Test
+    public void shouldSaveUnpackMovementsWhenQuantityIsValid() throws Exception {
+        stockMovementActivity.refreshList(Arrays.asList(viewModel));
+
+        stockMovementActivity.completeBtn.performClick();
+
+        verify(mockedPresenter).saveUnpackProducts();
+    }
+
+    @Test
+    public void shouldNotSaveUnpackMovementsWhenQuantityIsNotValid() throws Exception {
+        viewModel.setQuantity("");
+        stockMovementActivity.refreshList(Arrays.asList(viewModel));
+
+        stockMovementActivity.completeBtn.performClick();
+
+        verify(mockedPresenter, never()).saveUnpackProducts();
     }
 
     @After

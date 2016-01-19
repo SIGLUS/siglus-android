@@ -86,6 +86,10 @@ public class UnpackKitPresenter extends Presenter {
         };
     }
 
+    public void saveUnpackProducts() {
+
+    }
+
     public interface UnpackKitView extends BaseView {
         void refreshList(List<StockCardViewModel> stockCardViewModels);
     }

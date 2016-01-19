@@ -61,7 +61,9 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         completeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validateAll();
+                if(validateAll()) {
+                    presenter.saveUnpackProducts();
+                }
             }
         });
     }
