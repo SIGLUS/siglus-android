@@ -72,7 +72,7 @@ Feature: MMIA
     And I press the menu key
     Then I see "Sync Data"
     And I press "Sync Data"
-    And I wait for 4 seconds
+    And I wait for "Requisition last synced 0 minutes ago" to appear
     And I press "MMIA"
     Then I wait for "Historic MMIAs" to appear
-    Then I should see text containing "View MMI
+    Then I should see text containing "View MMIA"
