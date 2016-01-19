@@ -37,6 +37,11 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
     private UnpackKitAdapter mAdapter;
 
     @Override
+    protected int getThemeRes() {
+        return R.style.AppTheme_TEAL;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
