@@ -35,8 +35,6 @@ public class SyncTimeViewTest {
         sharedPreferenceMgr.setRnrLastSyncTime();
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusMinutes(2).getMillis());
         sharedPreferenceMgr.setStockLastSyncTime();
-        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusMinutes(3).getMillis());
-        sharedPreferenceMgr.setLastMovementHandShakeDateToToday();
 
         syncTimeView.showLastSyncTime();
         assertThat(syncTimeView.txSyncTime.getText().toString(), is("1 minutes since last sync"));
@@ -45,12 +43,10 @@ public class SyncTimeViewTest {
 
     @Test
     public void shouldDisplayGreenIconAndTimeUnitIsHour() throws Exception {
-        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusHours(3).getMillis());
-        sharedPreferenceMgr.setRnrLastSyncTime();
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusHours(2).getMillis());
-        sharedPreferenceMgr.setStockLastSyncTime();
+        sharedPreferenceMgr.setRnrLastSyncTime();
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusHours(1).getMillis());
-        sharedPreferenceMgr.setLastMovementHandShakeDateToToday();
+        sharedPreferenceMgr.setStockLastSyncTime();
 
         syncTimeView.showLastSyncTime();
         assertThat(syncTimeView.txSyncTime.getText().toString(), is("1 hours since last sync"));
@@ -63,8 +59,6 @@ public class SyncTimeViewTest {
         sharedPreferenceMgr.setRnrLastSyncTime();
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusDays(2).getMillis());
         sharedPreferenceMgr.setStockLastSyncTime();
-        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusDays(2).getMillis());
-        sharedPreferenceMgr.setLastMovementHandShakeDateToToday();
 
         syncTimeView.showLastSyncTime();
         assertThat(syncTimeView.txSyncTime.getText().toString(), is("1 days since last sync"));
@@ -77,8 +71,6 @@ public class SyncTimeViewTest {
         sharedPreferenceMgr.setRnrLastSyncTime();
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusDays(3).getMillis());
         sharedPreferenceMgr.setStockLastSyncTime();
-        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusDays(5).getMillis());
-        sharedPreferenceMgr.setLastMovementHandShakeDateToToday();
 
         syncTimeView.showLastSyncTime();
         assertThat(syncTimeView.txSyncTime.getText().toString(), is("3 days since last sync"));

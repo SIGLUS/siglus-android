@@ -185,13 +185,9 @@ public class SharedPreferenceMgr {
     }
 
     public boolean hasSyncedUpLatestMovementLastDay() {
-        DateTime lastSyncTriggerDate = new DateTime(getLastMovementHandShakeDate());
+        DateTime lastSyncTriggerDate = new DateTime(sharedPreferences.getLong(LAST_MOVEMENT_HANDSHAKE_DATE, 0));
         DateTime currentDate = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
         return currentDate.minusDays(1).isBefore(lastSyncTriggerDate);
-    }
-
-    public long getLastMovementHandShakeDate() {
-        return sharedPreferences.getLong(LAST_MOVEMENT_HANDSHAKE_DATE, 0);
     }
 
     public void setLastMovementHandShakeDateToToday() {

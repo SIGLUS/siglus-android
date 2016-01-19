@@ -278,6 +278,14 @@ public class SyncUpManagerTest {
     }
 
     @Test
+    public void shouldRefreshLastSyncStockCardDateWhenHasNoUnSyncedStockCard() throws Exception {
+        when(sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()).thenReturn(false);
+        syncUpManager.syncUpUnSyncedStockCardCodes();
+        verify(lmisRestApi).syncUpUnSyncedStockCards("123", new ArrayList<String>());
+        verify(sharedPreferenceMgr).setStockLastSyncTime();
+    }
+
+    @Test
     public void shouldNotSyncUpWhenHasSyncedUpLastDay() throws LMISException {
         when(sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()).thenReturn(true);
         syncUpManager.syncUpUnSyncedStockCardCodes();

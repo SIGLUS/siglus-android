@@ -156,6 +156,10 @@ public class SyncUpManager {
             final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
             lmisRestApi.syncUpUnSyncedStockCards(facilityId, unSyncedStockCardCodes);
             sharedPreferenceMgr.setLastMovementHandShakeDateToToday();
+            boolean isAllStockCardSyncSuccessful = unSyncedStockCardCodes.isEmpty();
+            if (isAllStockCardSyncSuccessful) {
+                sharedPreferenceMgr.setStockLastSyncTime();
+            }
         } catch (LMISException e) {
             e.reportToFabric();
         }
