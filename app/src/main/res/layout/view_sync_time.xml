@@ -7,8 +7,9 @@
 
     <ImageView
         android:id="@+id/iv_sync_time_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginRight="@dimen/margin_small" />
 
     <TextView
         android:id="@+id/tx_sync_time"
@@ -16,6 +17,6 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:onClick="onClickLastSyncTime"
-        android:textSize="22sp"
-        android:text="this is the last sync time" />
+        android:text="this is the last sync time"
+        android:textSize="22sp" />
 </LinearLayout>

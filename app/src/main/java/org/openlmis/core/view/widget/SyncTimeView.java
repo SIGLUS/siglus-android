@@ -49,16 +49,16 @@ public class SyncTimeView extends LinearLayout {
 
         if (syncTimeInterval < DateUtil.MILLISECONDS_HOUR){
             txSyncTime.setText(getResources().getString(R.string.label_last_synced_mins_ago, syncTimeInterval / DateUtil.MILLISECONDS_MINUTE));
-            ivSyncTimeIcon.setImageResource(R.drawable.ic_done);
+            ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_green);
         }else if (syncTimeInterval < DateUtil.MILLISECONDS_DAY){
             txSyncTime.setText(getResources().getString(R.string.label_last_synced_hours_ago, syncTimeInterval / DateUtil.MILLISECONDS_HOUR));
-            ivSyncTimeIcon.setImageResource(R.drawable.ic_done);
+            ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_green);
         } else if (syncTimeInterval < DateUtil.MILLISECONDS_DAY * 3) {
             txSyncTime.setText(getResources().getString(R.string.label_last_synced_days_ago, syncTimeInterval / DateUtil.MILLISECONDS_DAY));
-            ivSyncTimeIcon.setImageResource(R.drawable.ic_clear);
+            ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_yellow);
         } else {
             txSyncTime.setText(getResources().getString(R.string.label_last_synced_days_ago, syncTimeInterval / DateUtil.MILLISECONDS_DAY));
-            ivSyncTimeIcon.setImageResource(R.drawable.ic_save);
+            ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_red);
         }
     }
 
