@@ -169,7 +169,7 @@ public class SyncUpManager {
                 sharedPreferenceMgr.setSyncedVersion(true);
             }
         } catch (LMISException e) {
-            e.printStackTrace();
+            e.reportToFabric();
         }
     }
 
