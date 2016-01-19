@@ -231,4 +231,13 @@ public class StockCardViewModel {
         return draftInventory;
     }
 
+    public void addExpiryDates(String expireDates) {
+        if (TextUtils.isEmpty(expireDates)) {
+            return;
+        }
+
+        for(String date : newArrayList(expireDates.split(StockCard.DIVIDER))) {
+            addExpiryDate(date);
+        }
+    }
 }

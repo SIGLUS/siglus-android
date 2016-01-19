@@ -7,7 +7,6 @@ import com.google.inject.AbstractModule;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
@@ -84,12 +83,6 @@ public class StockMovementActivityTest {
         verify(mockedPresenter).archiveStockCard();
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo("Drug archived");
         assertThat(stockMovementActivity.isFinishing()).isTrue();
-    }
-
-    @Test
-    public void shouldLoadingStockMovementModelsWhenActivityStarts() {
-        assertThat(stockMovementActivity.loadingDialog.isShowing()).isTrue();
-        verify(mockedPresenter).loadStockMovementViewModels();
     }
 
     @Test

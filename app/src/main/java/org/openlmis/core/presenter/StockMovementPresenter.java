@@ -90,11 +90,7 @@ public class StockMovementPresenter extends Presenter {
     }
 
     public void loadStockMovementViewModels() {
-        if (!stockMovementModelList.isEmpty()) {
-            view.loaded();
-            return;
-        }
-
+        view.loading();
         Subscription subscription = loadStockMovementViewModelsObserver().subscribe(loadStockMovementViewModelSubscriber());
         subscriptions.add(subscription);
     }

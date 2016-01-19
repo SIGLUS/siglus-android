@@ -20,6 +20,7 @@ import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
 import org.robolectric.RuntimeEnvironment;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -55,8 +56,12 @@ public class UnpackKitPresenterTest {
         productRepository = mock(ProductRepository.class);
         stockRepository = mock(StockRepository.class);
 
+        List<String> expireDates = new ArrayList<>();
+        expireDates.add("15/2/2026");
+        expireDates.add("30/5/2026");
+
         product = new ProductBuilder().setIsKit(false).setCode("productCode1").setPrimaryName("name1").setProductId(200L).build();
-        viewModel = new StockCardViewModelBuilder(product).setChecked(true).setKitExpectQuantity(300).setQuantity("200").build();
+        viewModel = new StockCardViewModelBuilder(product).setChecked(true).setKitExpectQuantity(300).setQuantity("200").setExpiryDates(expireDates).build();
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
@@ -127,15 +132,28 @@ public class UnpackKitPresenterTest {
 
     @Test
     public void shouldSaveStockCardWhenStockCardNotExists() throws Exception {
+        Product kit = new ProductBuilder().setIsKit(true).setProductId(888L)
+                .setCode("SD1112").setPrimaryName("primary name").build();
+        StockCard kitStockCard = new StockCardBuilder().setStockCardId(112)
+                .setStockOnHand(1000)
+                .setCreateDate(new Date())
+                .setProduct(kit)
+                .build();
+
         when(stockRepository.queryStockCardByProductId(200L)).thenReturn(null);
+        when(productRepository.getByCode("SD1112")).thenReturn(kit);
+        when(stockRepository.queryStockCardByProductId(888L)).thenReturn(kitStockCard);
+
 
         TestSubscriber<Void> testSubscriber = new TestSubscriber();
         presenter.unpackProductsSubscriber = testSubscriber;
         presenter.stockCardViewModels = Arrays.asList(viewModel);
+        presenter.kitCode = "SD1112";
 
         presenter.saveUnpackProducts();
         testSubscriber.awaitTerminalEvent();
 
+        testSubscriber.assertNoErrors();
         verify(stockRepository).initStockCard(any(StockCard.class));
     }
 
@@ -145,6 +163,7 @@ public class UnpackKitPresenterTest {
                 .setStockOnHand(100)
                 .setCreateDate(new Date())
                 .setProduct(product)
+                .setExpireDates("20/1/2026,15/2/2026")
                 .build();
 
         Product kit = new ProductBuilder().setIsKit(true).setProductId(888L)
@@ -170,10 +189,12 @@ public class UnpackKitPresenterTest {
         presenter.saveUnpackProducts();
         testSubscriber.awaitTerminalEvent();
 
+        testSubscriber.assertNoErrors();
         verify(stockRepository, never()).initStockCard(any(StockCard.class));
         verify(stockRepository, times(2)).addStockMovementAndUpdateStockCard(any(StockMovementItem.class));
 
         assertThat(productStockCard.getStockOnHand()).isEqualTo(300);
+        assertThat(productStockCard.getExpireDates()).isEqualTo("20/1/2026,15/2/2026,30/5/2026");
     }
 
     @Test

@@ -148,7 +148,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             tvCmmLabel.setVisibility(View.GONE);
         }
 
-        loading();
         presenter.loadStockMovementViewModels();
     }
 
@@ -235,7 +234,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_unpack:
-                startActivity(UnpackKitActivity.getIntentToMe(this, presenter.getStockCard().getProduct().getCode()));
+                startActivityForResult(UnpackKitActivity.getIntentToMe(this, presenter.getStockCard().getProduct().getCode()), Constants.REQUEST_UNPACK_KIT);
                 return true;
             case R.id.action_history:
                 startActivity(StockMovementHistoryActivity.getIntentToMe(this, stockId, stockName, false, isKit));
@@ -247,6 +246,13 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_UNPACK_KIT) {
+            presenter.loadStockMovementViewModels();
         }
     }
 

@@ -179,6 +179,8 @@ public class UnpackKitPresenter extends Presenter {
     private void saveStockMovementItemForProduct(StockCardViewModel stockCardViewModel, StockCard stockCard) throws LMISException {
         long movementQuantity = Long.parseLong(stockCardViewModel.getQuantity());
         stockCard.setStockOnHand(stockCard.getStockOnHand() + movementQuantity);
+        stockCardViewModel.addExpiryDates(stockCard.getExpireDates());
+        stockCard.setExpireDates(stockCardViewModel.formatExpiryDateString());
 
         StockMovementItem movementItem = new StockMovementItem(stockCard);
         movementItem.setReason(MovementReasonManager.DDM);

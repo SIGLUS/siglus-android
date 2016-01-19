@@ -1,5 +1,6 @@
 package org.openlmis.core.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -86,6 +87,7 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
 
     @Override
     public void saveSuccess() {
+        setResult(Activity.RESULT_OK);
         finish();
     }
 
