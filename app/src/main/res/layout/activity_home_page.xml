@@ -85,6 +85,7 @@
 
         <org.openlmis.core.view.widget.SyncTimeView
             android:id="@+id/view_sync_time"
+            android:layout_marginTop="@dimen/margin_normal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" />
 
