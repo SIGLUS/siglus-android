@@ -34,6 +34,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
@@ -260,11 +261,16 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldGetStockCardsByProgramId() throws Exception {
+    public void shouldGetStockCardsByProgramIdWithoutKitAndDeacitivated() throws Exception {
         //when
-        long id1 = createNewStockCard("1");
-        long id2 = createNewStockCard("2");
-        createStockCardWithDeactivatedProduct();
+        long id1 = createNewStockCard("code1", ProductBuilder.create().setCode("p1").setIsActive(true).setIsKit(false).build());
+        long id2 = createNewStockCard("code2", ProductBuilder.create().setCode("p2").setIsActive(true).setIsKit(false).build());
+        createNewStockCard("code1", ProductBuilder.create().setCode("p3").setIsActive(false).setIsKit(false).build());
+        createNewStockCard("code2", ProductBuilder.create().setCode("p4").setIsActive(true).setIsKit(true).build());
+
+        Product product = ProductBuilder.buildAdultProduct();
+        product.setKit(true);
+        productRepository.createOrUpdate(product);
 
         //then
         List<StockCard> stockCardsBeforeTimeLine = stockRepository.listActiveStockCardsByProgramId(id1);
@@ -364,15 +370,12 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         return movementItem;
     }
 
-    private long createNewStockCard(String code) throws LMISException {
+    private long createNewStockCard(String code, Product product) throws LMISException {
         Program program = new Program();
         program.setProgramCode(code);
         programRepository.createOrUpdate(program);
 
-        Product product = new Product();
         product.setProgram(program);
-        product.setCode(code);
-        product.setActive(true);
         productRepository.createOrUpdate(product);
 
         stockCard.setProduct(product);

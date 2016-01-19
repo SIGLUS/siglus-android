@@ -242,7 +242,7 @@ public class StockRepository {
             public List<StockCard> operate(Dao<StockCard, String> dao) throws SQLException {
 
                 QueryBuilder<Product, String> productQueryBuilder = DbUtil.initialiseDao(Product.class).queryBuilder();
-                productQueryBuilder.where().eq("program_id", programId).and().eq("isActive", true);
+                productQueryBuilder.where().eq("program_id", programId).and().eq("isActive", true).and().eq("isKit",false);
 
                 return dao.queryBuilder().join(productQueryBuilder)
                         .query();
