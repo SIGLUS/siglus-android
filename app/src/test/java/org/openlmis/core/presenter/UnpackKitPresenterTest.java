@@ -9,13 +9,19 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.KitProductBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
+import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import roboguice.RoboGuice;
@@ -27,7 +33,9 @@ import rx.schedulers.Schedulers;
 
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,17 +43,25 @@ import static org.mockito.Mockito.when;
 public class UnpackKitPresenterTest {
     private UnpackKitPresenter presenter;
     private UnpackKitPresenter.UnpackKitView view;
-    private ProductRepository repository;
+    private ProductRepository productRepository;
+    private StockRepository stockRepository;
+    private Product product;
+    private StockCardViewModel viewModel;
 
     @Before
     public void setup() throws Exception {
         view = mock(UnpackKitPresenter.UnpackKitView.class);
-        repository = mock(ProductRepository.class);
+        productRepository = mock(ProductRepository.class);
+        stockRepository = mock(StockRepository.class);
+
+        product = new ProductBuilder().setIsKit(false).setCode("productCode1").setPrimaryName("name1").setProductId(200L).build();
+        viewModel = new StockCardViewModelBuilder(product).setChecked(true).setKitExpectQuantity(300).setQuantity("200").build();
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
             protected void configure() {
-                bind(ProductRepository.class).toInstance(repository);
+                bind(ProductRepository.class).toInstance(productRepository);
+                bind(StockRepository.class).toInstance(stockRepository);
             }
         });
 
@@ -78,9 +94,9 @@ public class UnpackKitPresenterTest {
         List<KitProduct> kitProducts = Arrays.asList(kitProduct1, kitProduct2);
         kit.setKitProductList(kitProducts);
 
-        when(repository.queryKitProductByKitCode(kit.getCode())).thenReturn(kitProducts);
-        when(repository.getByCode(product1.getCode())).thenReturn(product1);
-        when(repository.getByCode(product2.getCode())).thenReturn(product2);
+        when(productRepository.queryKitProductByKitCode(kit.getCode())).thenReturn(kitProducts);
+        when(productRepository.getByCode(product1.getCode())).thenReturn(product1);
+        when(productRepository.getByCode(product2.getCode())).thenReturn(product2);
 
         TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
         presenter.kitProductsSubscriber = subscriber;
@@ -91,7 +107,7 @@ public class UnpackKitPresenterTest {
         subscriber.awaitTerminalEvent();
         //then
 
-        verify(repository).queryKitProductByKitCode(kit.getCode());
+        verify(productRepository).queryKitProductByKitCode(kit.getCode());
         subscriber.assertNoErrors();
 
         List<StockCardViewModel> resultProducts = subscriber.getOnNextEvents().get(0);
@@ -106,5 +122,50 @@ public class UnpackKitPresenterTest {
         assertThat(viewModel2.getKitExpectQuantity()).isEqualTo(200);
         assertTrue(viewModel1.isChecked());
         assertTrue(viewModel2.isChecked());
+    }
+
+    @Test
+    public void shouldSaveStockCardWhenStockCardNotExists() throws Exception {
+        when(stockRepository.queryStockCardByProductId(200L)).thenReturn(null);
+
+        TestSubscriber<Void> testSubscriber = new TestSubscriber();
+        presenter.unpackProductsSubscriber = testSubscriber;
+        presenter.stockCardViewModels = Arrays.asList(viewModel);
+
+        presenter.saveUnpackProducts();
+        testSubscriber.awaitTerminalEvent();
+
+        verify(stockRepository).initStockCard(any(StockCard.class));
+    }
+
+    @Test
+    public void shouldOnlySaveStockMovementItemWhenStockCardExists() throws Exception {
+        StockCard stockCard = new StockCardBuilder().setStockCardId(111)
+                .setStockOnHand(100)
+                .setCreateDate(new Date())
+                .setProduct(product)
+                .build();
+
+        when(stockRepository.queryStockCardByProductId(200L)).thenReturn(stockCard);
+
+        TestSubscriber<Void> testSubscriber = new TestSubscriber();
+        presenter.unpackProductsSubscriber = testSubscriber;
+        presenter.stockCardViewModels = Arrays.asList(viewModel);
+
+        presenter.saveUnpackProducts();
+        testSubscriber.awaitTerminalEvent();
+
+        verify(stockRepository, never()).initStockCard(any(StockCard.class));
+        verify(stockRepository).addStockMovementAndUpdateStockCard(any(StockMovementItem.class));
+
+        assertThat(stockCard.getStockOnHand()).isEqualTo(300);
+    }
+
+    @Test
+    public void shouldCallSaveSuccessWhenUnpackProductsSucceed() throws Exception {
+        presenter.unpackProductsSubscriber.onNext(null);
+
+        verify(view).loaded();
+        verify(view).saveSuccess();
     }
 }

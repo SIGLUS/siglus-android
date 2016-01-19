@@ -84,6 +84,11 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         setTotal(stockCardViewModels.size());
     }
 
+    @Override
+    public void saveSuccess() {
+        finish();
+    }
+
     public boolean validateAll() {
         int position = mAdapter.validateAll();
         if (position >= 0) {
