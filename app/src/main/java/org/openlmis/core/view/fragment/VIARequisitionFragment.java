@@ -363,20 +363,22 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     @Override
     public void saveSuccess() {
-        backToHomePage();
+        finish();
+
     }
 
     @Override
     public void completeSuccess() {
         ToastUtil.showForLongTime(R.string.msg_requisition_submit_tip);
-        backToHomePage();
+        finish();
+
     }
 
     private void onSaveBtnClick() {
         presenter.saveVIAForm(etConsultationNumbers.getText().toString());
     }
 
-    public void backToHomePage() {
+    private void finish() {
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
@@ -427,8 +429,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             dialogFragment.show(getActivity().getFragmentManager(), "back_confirm_dialog");
             dialogFragment.setCallBackListener(this);
         } else {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            finish();
         }
     }
 
@@ -447,8 +448,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     public void positiveClick(String tag) {
         if (tag.equals(TAG_BACK_PRESSED)) {
             removeTempForm();
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            finish();
         }
     }
 

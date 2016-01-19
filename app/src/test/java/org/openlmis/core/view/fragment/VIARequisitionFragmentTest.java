@@ -132,12 +132,6 @@ public class VIARequisitionFragmentTest {
     }
 
     @Test
-    public void shouldGoToHomePageWhenMethodCalled() {
-        VIARequisitionFragment.backToHomePage();
-        assertThat(VIARequisitionFragment.getActivity().isFinishing()).isTrue();
-    }
-
-    @Test
     public void shouldNotRemoveRnrFormWhenGoBack() throws LMISException {
         VIARequisitionFragment.onBackPressed();
         verify(presenter, never()).removeRequisition();

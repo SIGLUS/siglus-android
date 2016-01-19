@@ -361,8 +361,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
             dialogFragment.show(getActivity().getFragmentManager(), "back_confirm_dialog");
             dialogFragment.setCallBackListener(this);
         } else {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            finish();
         }
     }
 
@@ -384,7 +383,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         return hasDataChanged;
     }
 
-    private void backRequisitionHistoryPage() {
+    private void finish() {
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
@@ -436,12 +435,12 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     @Override
     public void completeSuccess() {
         ToastUtil.showForLongTime(R.string.msg_mmia_submit_tip);
-        backRequisitionHistoryPage();
+        finish();
     }
 
     @Override
     public void saveSuccess() {
-        backRequisitionHistoryPage();
+        finish();
     }
 
     @Override
@@ -488,7 +487,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     public void positiveClick(String tag) {
         if (tag.equals(TAG_BACK_PRESSED)) {
             removeTempForm();
-            backRequisitionHistoryPage();
+            finish();
         }
     }
 
