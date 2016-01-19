@@ -47,9 +47,10 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener{
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        txSyncTime.setOnClickListener(this);
         rnrLastSyncTime = SharedPreferenceMgr.getInstance().getRnrLastSyncTime();
         stockLastSyncTime = SharedPreferenceMgr.getInstance().getStockLastSyncTime();
+        txSyncTime.setOnClickListener(this);
+
     }
 
     public void showLastSyncTime() {
