@@ -85,6 +85,7 @@ public class SyncDateBottomSheet extends BaseDialogFragment {
         return bundle;
     }
 
+    //This method will move static and change to private after remove home page update feature toggle
     public static String formatStockCardLastSyncTime(long stockSyncedTimestamp) {
         if (stockSyncedTimestamp == 0) {
             return StringUtils.EMPTY;
@@ -99,6 +100,7 @@ public class SyncDateBottomSheet extends BaseDialogFragment {
         }
     }
 
+    //This method will move static and change to private after remove home page update feature toggle
     public static String formatRnrLastSyncTime(long rnrSyncedTimestamp) {
         if (rnrSyncedTimestamp == 0) {
             return StringUtils.EMPTY;
