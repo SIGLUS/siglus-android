@@ -36,8 +36,6 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
 import org.openlmis.core.utils.Constants;
 
-import java.util.Date;
-
 import roboguice.RoboGuice;
 
 import static org.openlmis.core.manager.SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM;
@@ -87,7 +85,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private void recordLastSyncedTime(boolean isSyncSuccessful, String key) {
         if (isSyncSuccessful) {
-            sharedPreferenceMgr.getPreference().edit().putLong(key, new Date().getTime()).apply();
+            sharedPreferenceMgr.getPreference().edit().putLong(key, LMISApp.getInstance().getCurrentTimeMillis()).apply();
         }
     }
 
