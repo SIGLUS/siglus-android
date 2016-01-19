@@ -55,7 +55,7 @@ public class SharedPreferenceMgr {
     public static final String KEY_SHOW_PRODUCT_UPDATE_BANNER = "show_product_update_banner";
     public static final String KEY_PRODUCT_UPDATE_BANNER_TEXT = "product_update_banner_text";
     public static final String LATEST_PHYSICAL_INVENTORY_TIME = "latest_physical_inventory_time";
-    public static final String LAST_MOVEMENT_SYNC_UP_DATE = "last_movement_sync_up_date";
+    public static final String LAST_MOVEMENT_HANDSHAKE_DATE = "last_movement_handshake_date";
 
     @Inject
     public SharedPreferenceMgr(Context context) {
@@ -169,12 +169,16 @@ public class SharedPreferenceMgr {
     }
 
     public boolean hasSyncedUpLatestMovementLastDay() {
-        DateTime lastSyncTriggerDate = new DateTime(sharedPreferences.getLong(LAST_MOVEMENT_SYNC_UP_DATE, 0));
+        DateTime lastSyncTriggerDate = new DateTime(getLastMovementHandShakeDate());
         DateTime currentDate = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
         return currentDate.minusDays(1).isBefore(lastSyncTriggerDate);
     }
 
-    public void setLastMovementSyncUpDateToToday() {
-        sharedPreferences.edit().putLong(LAST_MOVEMENT_SYNC_UP_DATE, LMISApp.getInstance().getCurrentTimeMillis()).apply();
+    private long getLastMovementHandShakeDate() {
+        return sharedPreferences.getLong(LAST_MOVEMENT_HANDSHAKE_DATE, 0);
+    }
+
+    public void setLastMovementHandShakeDateToToday() {
+        sharedPreferences.edit().putLong(LAST_MOVEMENT_HANDSHAKE_DATE, LMISApp.getInstance().getCurrentTimeMillis()).apply();
     }
 }

@@ -116,7 +116,7 @@ public class SharedPreferenceMgrTest {
     @Test
     public void shouldReturnTrueIfLastSyncUpDateIsToday() throws Exception {
         ((LMISTestApp)RuntimeEnvironment.application).setCurrentTimeMillis(System.currentTimeMillis());
-        sharedPreferenceMgr.setLastMovementSyncUpDateToToday();
+        sharedPreferenceMgr.setLastMovementHandShakeDateToToday();
 
         boolean hasSyncedUpLatestMovementToday = sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay();
 
@@ -127,7 +127,7 @@ public class SharedPreferenceMgrTest {
     public void shouldReturnFalseIfLastSyncUpDateIsMoreThanOneDayBefore() throws Exception {
         DateTime twoDaysAgo = new DateTime().minusDays(2);
         ((LMISTestApp)RuntimeEnvironment.application).setCurrentTimeMillis(twoDaysAgo.getMillis());
-        sharedPreferenceMgr.setLastMovementSyncUpDateToToday();
+        sharedPreferenceMgr.setLastMovementHandShakeDateToToday();
 
         ((LMISTestApp)RuntimeEnvironment.application).setCurrentTimeMillis(System.currentTimeMillis());
         boolean hasSyncedUpLatestMovementToday = sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay();

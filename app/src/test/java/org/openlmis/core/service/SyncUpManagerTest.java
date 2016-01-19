@@ -274,7 +274,7 @@ public class SyncUpManagerTest {
         when(sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()).thenReturn(false);
         syncUpManager.syncUpUnSyncedStockCardCodes();
         verify(lmisRestApi).syncUpUnSyncedStockCards("123", new ArrayList<String>());
-        verify(sharedPreferenceMgr).setLastMovementSyncUpDateToToday();
+        verify(sharedPreferenceMgr).setLastMovementHandShakeDateToToday();
     }
 
     @Test
@@ -282,7 +282,7 @@ public class SyncUpManagerTest {
         when(sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()).thenReturn(true);
         syncUpManager.syncUpUnSyncedStockCardCodes();
         verify(lmisRestApi, never()).syncUpUnSyncedStockCards("123", new ArrayList<String>());
-        verify(sharedPreferenceMgr, never()).setLastMovementSyncUpDateToToday();
+        verify(sharedPreferenceMgr, never()).setLastMovementHandShakeDateToToday();
     }
 
     public class MyTestModule extends AbstractModule {
