@@ -45,11 +45,14 @@ android {
         qa {
             applicationId 'org.openlmis.core.qa'
         }
-        prd {
-            applicationId 'org.openlmis.core'
+        prodsim {
+            applicationId 'org.openlmis.core.prodsim'
         }
         staging {
             applicationId 'org.openlmis.core.staging'
+        }
+        prd {
+            applicationId 'org.openlmis.core'
         }
     }
 
