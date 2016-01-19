@@ -60,9 +60,6 @@ public class HomeActivity extends BaseActivity {
     @InjectView(R.id.btn_inventory)
     Button btnInventory;
 
-    @InjectView(R.id.btn_mmia)
-    Button btnMMIA;
-
     SyncTimeView syncTimeView;
 
     TextView txLastSyncedRnrForm;
@@ -220,7 +217,7 @@ public class HomeActivity extends BaseActivity {
         if (rnrSyncedTimestamp == 0) {
             return StringUtils.EMPTY;
         }
-        long diff = DateUtil.calculateTimeInterval(rnrSyncedTimestamp);
+        long diff = DateUtil.calculateTimeIntervalFromNow(rnrSyncedTimestamp);
         if (diff < DateUtil.MILLISECONDS_HOUR) {
             return getResources().getString(R.string.label_rnr_form_last_synced_mins_ago, (diff / DateUtil.MILLISECONDS_MINUTE));
         } else if (diff < DateUtil.MILLISECONDS_DAY) {
@@ -232,14 +229,14 @@ public class HomeActivity extends BaseActivity {
 
     private void showStockCardLastSyncedTime() {
         long stockSyncedTimestamp = getPreferences().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, 0);
-        formatStockCardLastSyncTime(stockSyncedTimestamp);
+        txLastSyncedStockCard.setText(formatStockCardLastSyncTime(stockSyncedTimestamp));
     }
 
     private String formatStockCardLastSyncTime(long stockSyncedTimestamp) {
         if (stockSyncedTimestamp == 0) {
             return StringUtils.EMPTY;
         }
-        long diff = DateUtil.calculateTimeInterval(stockSyncedTimestamp);
+        long diff = DateUtil.calculateTimeIntervalFromNow(stockSyncedTimestamp);
         if (diff < DateUtil.MILLISECONDS_HOUR) {
             return getResources().getString(R.string.label_stock_card_last_synced_mins_ago, (diff / DateUtil.MILLISECONDS_MINUTE));
         } else if (diff < DateUtil.MILLISECONDS_DAY) {

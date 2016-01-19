@@ -154,7 +154,7 @@ public final class DateUtil {
         return day >= DAY_PERIOD_END + 1 && day <= DAY_PERIOD_END + 5;
     }
 
-    public static long calculateTimeInterval(long lastSyncedTimestamp) {
+    public static long calculateTimeIntervalFromNow(long lastSyncedTimestamp) {
         return new Date().getTime() - lastSyncedTimestamp;
     }
 }

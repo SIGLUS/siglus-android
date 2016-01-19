@@ -64,8 +64,8 @@ public class SyncTimeView extends LinearLayout {
 
     private long getSyncTimeInterval(long rnrLastSyncTime, long stockLastSyncTime) {
         long syncTimeInterval;
-        long rnrSyncInterval = DateUtil.calculateTimeInterval(rnrLastSyncTime);
-        long stockSyncInterval = DateUtil.calculateTimeInterval(stockLastSyncTime);
+        long rnrSyncInterval = DateUtil.calculateTimeIntervalFromNow(rnrLastSyncTime);
+        long stockSyncInterval = DateUtil.calculateTimeIntervalFromNow(stockLastSyncTime);
         if (rnrLastSyncTime == 0) {
             syncTimeInterval = stockSyncInterval;
         }else if(stockLastSyncTime == 0){
