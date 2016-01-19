@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.UnpackKitPresenter;
@@ -29,6 +30,9 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
 
     @InjectView(R.id.btn_complete)
     protected Button completeBtn;
+
+    @InjectView(R.id.tv_total)
+    protected TextView tvTotal;
 
     @InjectPresenter(UnpackKitPresenter.class)
     private UnpackKitPresenter presenter;
@@ -62,6 +66,10 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         });
     }
 
+    private void setTotal(int total) {
+        tvTotal.setText(getString(R.string.label_total, total));
+    }
+
     public static Intent getIntentToMe(Context context, String code) {
         Intent intent = new Intent(context, UnpackKitActivity.class);
         intent.putExtra(Constants.PARAM_KIT_CODE, code);
@@ -71,6 +79,7 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
     @Override
     public void refreshList(List<StockCardViewModel> stockCardViewModels) {
         mAdapter.refreshList(stockCardViewModels);
+        setTotal(stockCardViewModels.size());
     }
 
     public boolean validateAll() {
