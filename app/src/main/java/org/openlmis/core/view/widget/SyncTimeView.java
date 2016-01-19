@@ -39,8 +39,8 @@ public class SyncTimeView extends LinearLayout {
     }
 
     public void showLastSyncTime() {
-        long rnrLastSyncTime = SharedPreferenceMgr.getInstance().getPreference().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, 0);
-        long stockLastSyncTime = SharedPreferenceMgr.getInstance().getPreference().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, 0);
+        long rnrLastSyncTime = SharedPreferenceMgr.getInstance().getRnrLastSyncTime();
+        long stockLastSyncTime = SharedPreferenceMgr.getInstance().getStockLastSyncTime();
         long handShakeTime = SharedPreferenceMgr.getInstance().getLastMovementHandShakeDate();
 
         if (rnrLastSyncTime == 0 && stockLastSyncTime == 0 && handShakeTime == 0) {

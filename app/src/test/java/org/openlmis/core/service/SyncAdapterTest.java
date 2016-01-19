@@ -41,7 +41,8 @@ public class SyncAdapterTest {
         syncAdapter.sharedPreferenceMgr = this.sharedPreferenceMgr;
         sharedPreferenceMgr.getPreference().edit().clear();
         UserInfoMgr.getInstance().setUser(new User());
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_sync_back_latest_product_list, true);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_back_latest_product_list, true);
+        LMISTestApp.getInstance().setCurrentTimeMillis(new Date().getTime());
     }
 
     @Test
@@ -51,8 +52,8 @@ public class SyncAdapterTest {
 
         syncAdapter.onPerformSync(null, null, null, null, null);
 
-        long lastRnrFormSyncedTimestamp = sharedPreferenceMgr.getPreference().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, 0);
-        long lastStockCardSyncedTimestamp = sharedPreferenceMgr.getPreference().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, 0);
+        long lastRnrFormSyncedTimestamp = sharedPreferenceMgr.getRnrLastSyncTime();
+        long lastStockCardSyncedTimestamp = sharedPreferenceMgr.getStockLastSyncTime();
 
         Date rnrFormDate = new Date(lastRnrFormSyncedTimestamp);
         Date stockCardDate = new Date(lastStockCardSyncedTimestamp);
@@ -71,8 +72,8 @@ public class SyncAdapterTest {
 
         syncAdapter.onPerformSync(null, null, null, null, null);
 
-        long lastRnrFormSyncedTimestamp = sharedPreferenceMgr.getPreference().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, 0);
-        long lastStockCardSyncedTimestamp = sharedPreferenceMgr.getPreference().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, 0);
+        long lastRnrFormSyncedTimestamp = sharedPreferenceMgr.getRnrLastSyncTime();
+        long lastStockCardSyncedTimestamp = sharedPreferenceMgr.getStockLastSyncTime();
 
         assertEquals(0, lastRnrFormSyncedTimestamp);
         assertEquals(0, lastStockCardSyncedTimestamp);
@@ -86,8 +87,8 @@ public class SyncAdapterTest {
 
         syncAdapter.onPerformSync(null, null, null, null, null);
 
-        long lastRnrFormSyncedTimestamp = sharedPreferenceMgr.getPreference().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, 0);
-        long lastStockCardSyncedTimestamp = sharedPreferenceMgr.getPreference().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, 0);
+        long lastRnrFormSyncedTimestamp = sharedPreferenceMgr.getRnrLastSyncTime();
+        long lastStockCardSyncedTimestamp = sharedPreferenceMgr.getStockLastSyncTime();
 
         Date rnrFormDate = new Date(lastRnrFormSyncedTimestamp);
 
@@ -113,8 +114,8 @@ public class SyncAdapterTest {
 
         syncAdapter.onPerformSync(null, null, null, null, null);
 
-        long lastRnrFormSyncedTimestamp = sharedPreferenceMgr.getPreference().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, 0);
-        long lastStockCardSyncedTimestamp = sharedPreferenceMgr.getPreference().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, 0);
+        long lastRnrFormSyncedTimestamp = sharedPreferenceMgr.getRnrLastSyncTime();
+        long lastStockCardSyncedTimestamp = sharedPreferenceMgr.getStockLastSyncTime();
 
         Date stockCardTime = new Date(lastStockCardSyncedTimestamp);
 

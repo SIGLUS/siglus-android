@@ -18,9 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
@@ -47,6 +45,8 @@ import org.robolectric.shadows.ShadowToast;
 
 import java.util.Date;
 
+import roboguice.RoboGuice;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
@@ -64,11 +64,13 @@ public class HomeActivityTest {
 
     private HomeActivity homeActivity;
     private LMISTestApp testApp;
+    protected SharedPreferenceMgr sharedPreferenceMgr;
 
     @Before
     public void setUp() {
         testApp = (LMISTestApp) RuntimeEnvironment.application;
         homeActivity = Robolectric.buildActivity(HomeActivity.class).create().get();
+        sharedPreferenceMgr = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SharedPreferenceMgr.class);
     }
 
     @Test
@@ -119,19 +121,21 @@ public class HomeActivityTest {
 
     @Test
     public void shouldShowRnrFormLastSyncedTimeCorrectly() {
-        SharedPreferences sharedPreferences = RuntimeEnvironment.application.getSharedPreferences(SharedPreferenceMgr.MY_PREFERENCE, Context.MODE_PRIVATE);
-        sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, new Date().getTime() - 20 * DateUtil.MILLISECONDS_MINUTE).apply();
+        LMISTestApp.getInstance().setCurrentTimeMillis(new Date().getTime() - 20 * DateUtil.MILLISECONDS_MINUTE);
+        sharedPreferenceMgr.setRnrLastSyncTime();
 
         homeActivity.setSyncedTime();
         assertThat(homeActivity.txLastSyncedRnrForm.getText().toString(), equalTo(homeActivity.getString(R.string.label_rnr_form_last_synced_mins_ago, "20")));
 
-        sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, new Date().getTime() - 20 * DateUtil.MILLISECONDS_HOUR).apply();
+        LMISTestApp.getInstance().setCurrentTimeMillis(new Date().getTime() - 20 * DateUtil.MILLISECONDS_HOUR);
+        sharedPreferenceMgr.setRnrLastSyncTime();
 
         homeActivity.setSyncedTime();
         assertThat(homeActivity.txLastSyncedRnrForm.getText().toString(), equalTo(homeActivity.getString(R.string.label_rnr_form_last_synced_hours_ago, "20")));
 
+        LMISTestApp.getInstance().setCurrentTimeMillis(new Date().getTime() - 20 * DateUtil.MILLISECONDS_DAY);
+        sharedPreferenceMgr.setRnrLastSyncTime();
 
-        sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, new Date().getTime() - 20 * DateUtil.MILLISECONDS_DAY).apply();
 
         homeActivity.setSyncedTime();
         assertThat(homeActivity.txLastSyncedRnrForm.getText().toString(), equalTo(homeActivity.getString(R.string.label_rnr_form_last_synced_days_ago, "20")));
@@ -139,19 +143,21 @@ public class HomeActivityTest {
 
     @Test
     public void shouldShowStockCardLastSyncedTimeCorrectly() {
-        SharedPreferences sharedPreferences = RuntimeEnvironment.application.getSharedPreferences(SharedPreferenceMgr.MY_PREFERENCE, Context.MODE_PRIVATE);
-        sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, new Date().getTime() - 20 * DateUtil.MILLISECONDS_MINUTE).apply();
+
+        LMISTestApp.getInstance().setCurrentTimeMillis(new Date().getTime() - 20 * DateUtil.MILLISECONDS_MINUTE);
+        sharedPreferenceMgr.setStockLastSyncTime();
 
         homeActivity.setSyncedTime();
         assertThat(homeActivity.txLastSyncedStockCard.getText().toString(), equalTo(homeActivity.getString(R.string.label_stock_card_last_synced_mins_ago, "20")));
 
-        sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, new Date().getTime() - 20 * DateUtil.MILLISECONDS_HOUR).apply();
+        LMISTestApp.getInstance().setCurrentTimeMillis(new Date().getTime() - 20 * DateUtil.MILLISECONDS_HOUR);
+        sharedPreferenceMgr.setStockLastSyncTime();
 
         homeActivity.setSyncedTime();
         assertThat(homeActivity.txLastSyncedStockCard.getText().toString(), equalTo(homeActivity.getString(R.string.label_stock_card_last_synced_hours_ago, "20")));
 
-
-        sharedPreferences.edit().putLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, new Date().getTime() - 20 * DateUtil.MILLISECONDS_DAY).apply();
+        LMISTestApp.getInstance().setCurrentTimeMillis(new Date().getTime() - 20 * DateUtil.MILLISECONDS_DAY);
+        sharedPreferenceMgr.setStockLastSyncTime();
 
         homeActivity.setSyncedTime();
         assertThat(homeActivity.txLastSyncedStockCard.getText().toString(), equalTo(homeActivity.getString(R.string.label_stock_card_last_synced_days_ago, "20")));

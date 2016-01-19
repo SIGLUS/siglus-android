@@ -38,9 +38,6 @@ import org.openlmis.core.utils.Constants;
 
 import roboguice.RoboGuice;
 
-import static org.openlmis.core.manager.SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM;
-import static org.openlmis.core.manager.SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD;
-
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Inject
@@ -75,18 +72,20 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_latest_product_list)) {
             syncDownManager.syncDownLatestProducts();
         }
-        recordLastSyncedTime(syncUpManager.syncRnr(), KEY_LAST_SYNCED_TIME_RNR_FORM);
-        recordLastSyncedTime(syncUpManager.syncStockCards(), KEY_LAST_SYNCED_TIME_STOCKCARD);
-        syncUpManager.syncUpUnSyncedStockCardCodes();
 
+        boolean isSyncRnrSuccessful = syncUpManager.syncRnr();
+        if (isSyncRnrSuccessful) {
+            sharedPreferenceMgr.setRnrLastSyncTime();
+        }
+
+        boolean isSyncStockSuccessful = syncUpManager.syncStockCards();
+        if (isSyncStockSuccessful) {
+            sharedPreferenceMgr.setStockLastSyncTime();
+        }
+
+        syncUpManager.syncUpUnSyncedStockCardCodes();
         sendSyncedTimeBroadcast();
         syncUpManager.syncAppVersion();
-    }
-
-    private void recordLastSyncedTime(boolean isSyncSuccessful, String key) {
-        if (isSyncSuccessful) {
-            sharedPreferenceMgr.getPreference().edit().putLong(key, LMISApp.getInstance().getCurrentTimeMillis()).apply();
-        }
     }
 
     private void sendSyncedTimeBroadcast() {

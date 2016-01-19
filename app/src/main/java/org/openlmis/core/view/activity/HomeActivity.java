@@ -179,8 +179,8 @@ public class HomeActivity extends BaseActivity {
 
     public void onClickLastSyncTime(View view) {
         SyncDateBottomSheet syncDateBottomSheet = new SyncDateBottomSheet();
-        long rnrSyncedTimestamp = getPreferences().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, 0);
-        long stockSyncedTimestamp = getPreferences().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, 0);
+        long rnrSyncedTimestamp = SharedPreferenceMgr.getInstance().getRnrLastSyncTime();
+        long stockSyncedTimestamp = SharedPreferenceMgr.getInstance().getStockLastSyncTime();
 
         syncDateBottomSheet.setArguments(createBundleWithLastSyncTime(rnrSyncedTimestamp, stockSyncedTimestamp));
         syncDateBottomSheet.show(getFragmentManager());
@@ -209,7 +209,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void showRnrFormLastSyncedTime() {
-        long rnrSyncedTimestamp = getPreferences().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_RNR_FORM, 0);
+        long rnrSyncedTimestamp = SharedPreferenceMgr.getInstance().getRnrLastSyncTime();
         txLastSyncedRnrForm.setText(formatRnrLastSyncTime(rnrSyncedTimestamp));
     }
 
@@ -228,7 +228,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void showStockCardLastSyncedTime() {
-        long stockSyncedTimestamp = getPreferences().getLong(SharedPreferenceMgr.KEY_LAST_SYNCED_TIME_STOCKCARD, 0);
+        long stockSyncedTimestamp = SharedPreferenceMgr.getInstance().getStockLastSyncTime();
         txLastSyncedStockCard.setText(formatStockCardLastSyncTime(stockSyncedTimestamp));
     }
 
