@@ -72,7 +72,7 @@ Feature: MMIA
     And I press the menu key
     Then I see "Sync Data"
     And I press "Sync Data"
-    And I wait for 2 seconds
+    And I wait for 4 seconds
     And I press "MMIA"
     Then I wait for "Historic MMIAs" to appear
-    Then I should see text containing "View MMIA"
+    Then I should see text containing "View MMI
