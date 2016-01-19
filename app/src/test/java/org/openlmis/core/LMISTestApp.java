@@ -10,9 +10,20 @@ public class LMISTestApp extends LMISApp {
     private boolean networkAvailable;
     private long currentTimeMillis;
     private HashMap<Integer, Boolean> featureToggles = new HashMap<>();
+    private static LMISTestApp instance;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        instance = this;
+    }
 
     @Override
     protected void setupFabric() {
+    }
+
+    public static LMISTestApp getInstance() {
+        return instance;
     }
 
     public void setNetworkConnection(boolean networkAvailable) {

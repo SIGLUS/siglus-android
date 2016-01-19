@@ -168,6 +168,22 @@ public class SharedPreferenceMgr {
         sharedPreferences.edit().putString(LATEST_PHYSICAL_INVENTORY_TIME, latestPhysicInventoryTime).apply();
     }
 
+    public long getRnrLastSyncTime() {
+        return sharedPreferences.getLong(KEY_LAST_SYNCED_TIME_RNR_FORM, 0);
+    }
+
+    public void setRnrLastSyncTime() {
+        sharedPreferences.edit().putLong(KEY_LAST_SYNCED_TIME_RNR_FORM, LMISApp.getInstance().getCurrentTimeMillis()).apply();
+    }
+
+    public long getStockLastSyncTime() {
+        return sharedPreferences.getLong(KEY_LAST_SYNCED_TIME_STOCKCARD, 0);
+    }
+
+    public void setStockLastSyncTime() {
+        sharedPreferences.edit().putLong(KEY_LAST_SYNCED_TIME_STOCKCARD, LMISApp.getInstance().getCurrentTimeMillis()).apply();
+    }
+
     public boolean hasSyncedUpLatestMovementLastDay() {
         DateTime lastSyncTriggerDate = new DateTime(getLastMovementHandShakeDate());
         DateTime currentDate = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
