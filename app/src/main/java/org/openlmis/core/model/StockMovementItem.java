@@ -26,11 +26,15 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import org.openlmis.core.utils.DateUtil;
 
+import java.util.Date;
+
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @DatabaseTable(tableName = "stock_items")
 public class StockMovementItem extends BaseModel {
 
@@ -110,5 +114,11 @@ public class StockMovementItem extends BaseModel {
         } else {
             return stockOnHand;
         }
+    }
+
+    public StockMovementItem(StockCard stockCard) {
+        this.stockCard = stockCard;
+        this.stockOnHand = stockCard.getStockOnHand();
+        this.movementDate = new Date();
     }
 }

@@ -192,14 +192,10 @@ public class StockRepository {
     }
 
     protected StockMovementItem initStockMovementItem(StockCard stockCard) {
-        StockMovementItem initInventory = new StockMovementItem();
+        StockMovementItem initInventory = new StockMovementItem(stockCard);
         initInventory.setReason(MovementReasonManager.INVENTORY);
         initInventory.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
-        initInventory.setMovementDate(new Date());
         initInventory.setMovementQuantity(stockCard.getStockOnHand());
-        initInventory.setStockOnHand(stockCard.getStockOnHand());
-        initInventory.setStockCard(stockCard);
-        initInventory.setCreatedTime(new Date());
         return initInventory;
     }
 

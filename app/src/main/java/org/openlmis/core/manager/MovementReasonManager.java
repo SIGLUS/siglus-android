@@ -60,6 +60,8 @@ public final class MovementReasonManager {
     public static final String DEFAULT_RECEIVE = "DEFAULT_RECEIVE";
     public static final String DEFAULT_NEGATIVE_ADJUSTMENT = "DEFAULT_NEGATIVE_ADJUSTMENT";
     public static final String DEFAULT_POSITIVE_ADJUSTMENT = "DEFAULT_POSITIVE_ADJUSTMENT";
+    public static final String UNPACK_KIT = "UNPACK_KIT";
+    public static final String DDM = "DISTRICT_DDM";
 
     Context context;
     public static final String RES_DIVIDER = "[|]";

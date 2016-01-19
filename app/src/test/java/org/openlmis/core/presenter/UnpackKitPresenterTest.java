@@ -36,6 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -139,26 +140,40 @@ public class UnpackKitPresenterTest {
     }
 
     @Test
-    public void shouldOnlySaveStockMovementItemWhenStockCardExists() throws Exception {
-        StockCard stockCard = new StockCardBuilder().setStockCardId(111)
+    public void shouldOnlySaveStockMovementItemsWhenStockCardExists() throws Exception {
+        StockCard productStockCard = new StockCardBuilder().setStockCardId(111)
                 .setStockOnHand(100)
                 .setCreateDate(new Date())
                 .setProduct(product)
                 .build();
 
-        when(stockRepository.queryStockCardByProductId(200L)).thenReturn(stockCard);
+        Product kit = new ProductBuilder().setIsKit(true).setProductId(888L)
+                .setCode("SD1112").setPrimaryName("primary name").build();
+
+        StockCard kitStockCard = new StockCardBuilder().setStockCardId(112)
+                .setStockOnHand(1000)
+                .setCreateDate(new Date())
+                .setProduct(kit)
+                .build();
+
 
         TestSubscriber<Void> testSubscriber = new TestSubscriber();
         presenter.unpackProductsSubscriber = testSubscriber;
         presenter.stockCardViewModels = Arrays.asList(viewModel);
+        presenter.kitCode = "SD1112";
+
+        when(stockRepository.queryStockCardByProductId(200L)).thenReturn(productStockCard);
+
+        when(productRepository.getByCode("SD1112")).thenReturn(kit);
+        when(stockRepository.queryStockCardByProductId(888L)).thenReturn(kitStockCard);
 
         presenter.saveUnpackProducts();
         testSubscriber.awaitTerminalEvent();
 
         verify(stockRepository, never()).initStockCard(any(StockCard.class));
-        verify(stockRepository).addStockMovementAndUpdateStockCard(any(StockMovementItem.class));
+        verify(stockRepository, times(2)).addStockMovementAndUpdateStockCard(any(StockMovementItem.class));
 
-        assertThat(stockCard.getStockOnHand()).isEqualTo(300);
+        assertThat(productStockCard.getStockOnHand()).isEqualTo(300);
     }
 
     @Test

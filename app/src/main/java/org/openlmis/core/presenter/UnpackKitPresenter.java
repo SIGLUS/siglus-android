@@ -42,6 +42,8 @@ public class UnpackKitPresenter extends Presenter {
     @Inject
     private StockRepository stockRepository;
 
+    protected String kitCode;
+
     protected List<StockCardViewModel> stockCardViewModels;
 
     @Override
@@ -54,6 +56,7 @@ public class UnpackKitPresenter extends Presenter {
     }
 
     public void loadKitProducts(String kitCode) {
+        this.kitCode = kitCode;
         Subscription subscription = getKitProductsObservable(kitCode).subscribe(kitProductsSubscriber);
         subscriptions.add(subscription);
     }
@@ -122,8 +125,9 @@ public class UnpackKitPresenter extends Presenter {
                                 if (stockCard == null) {
                                     stockCard = saveStockCard(stockCardViewModel);
                                 }
-                                saveStockMovementItem(stockCardViewModel, stockCard);
+                                saveStockMovementItemForProduct(stockCardViewModel, stockCard);
                             }
+                            saveStockMovementItemForKit();
                             return null;
                         }
                     });
@@ -136,6 +140,21 @@ public class UnpackKitPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
+    private void saveStockMovementItemForKit() throws LMISException {
+        int KIT_UNPACK_QUANTITY = 1;
+
+        Product kit = productRepository.getByCode(kitCode);
+        StockCard kitStockCard = stockRepository.queryStockCardByProductId(kit.getId());
+
+        kitStockCard.setStockOnHand(kitStockCard.getStockOnHand() - KIT_UNPACK_QUANTITY);
+
+        StockMovementItem movementItem = new StockMovementItem(kitStockCard);
+        movementItem.setReason(MovementReasonManager.UNPACK_KIT);
+        movementItem.setMovementType(StockMovementItem.MovementType.ISSUE);
+        movementItem.setMovementQuantity(KIT_UNPACK_QUANTITY);
+
+        stockRepository.addStockMovementAndUpdateStockCard(movementItem);
+    }
 
     private Subscriber<Void> getUnpackProductSubscriber() {
         return new Subscriber<Void>() {
@@ -157,16 +176,14 @@ public class UnpackKitPresenter extends Presenter {
         };
     }
 
-    private void saveStockMovementItem(StockCardViewModel stockCardViewModel, StockCard stockCard) throws LMISException {
+    private void saveStockMovementItemForProduct(StockCardViewModel stockCardViewModel, StockCard stockCard) throws LMISException {
         long movementQuantity = Long.parseLong(stockCardViewModel.getQuantity());
         stockCard.setStockOnHand(stockCard.getStockOnHand() + movementQuantity);
 
-        StockMovementItem movementItem = new StockMovementItem();
-        movementItem.setReason(MovementReasonManager.DEFAULT_RECEIVE);
+        StockMovementItem movementItem = new StockMovementItem(stockCard);
+        movementItem.setReason(MovementReasonManager.DDM);
         movementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
         movementItem.setMovementQuantity(movementQuantity);
-        movementItem.setStockOnHand(stockCard.getStockOnHand());
-        movementItem.setStockCard(stockCard);
 
         stockRepository.addStockMovementAndUpdateStockCard(movementItem);
     }
