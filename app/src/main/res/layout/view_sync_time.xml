@@ -15,6 +15,5 @@
         android:id="@+id/tx_sync_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
         android:textSize="22sp" />
 </LinearLayout>
