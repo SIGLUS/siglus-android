@@ -25,6 +25,7 @@ import roboguice.inject.InjectView;
 public class RnRFormViewHolder extends BaseViewHolder {
 
     public static final int INT_UNSET = 0;
+    public static final int DEFAULT_FORM_ID_OF_NOT_AUTHORIZED = 0;
     private final RnRFormListAdapter rnRFormListAdapter;
 
     @InjectView(R.id.tx_period)
@@ -159,10 +160,10 @@ public class RnRFormViewHolder extends BaseViewHolder {
             }
 
             if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
-                ((Activity)context).startActivityForResult(MMIARequisitionActivity.getIntentToMe(context, 0), Constants.REQUEST_CODE_CHANGE);
+                ((Activity)context).startActivityForResult(MMIARequisitionActivity.getIntentToMe(context, DEFAULT_FORM_ID_OF_NOT_AUTHORIZED), Constants.REQUEST_CODE_CHANGE);
 
             } else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)) {
-                ((Activity)context).startActivityForResult(VIARequisitionActivity.getIntentToMe(context, 0), Constants.REQUEST_CODE_CHANGE);
+                ((Activity)context).startActivityForResult(VIARequisitionActivity.getIntentToMe(context, DEFAULT_FORM_ID_OF_NOT_AUTHORIZED), Constants.REQUEST_CODE_CHANGE);
             }
 
         }
