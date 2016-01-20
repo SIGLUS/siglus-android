@@ -314,7 +314,7 @@ public class InventoryPresenter extends Presenter {
         @Override
         public void call(Object o) {
             view.loaded();
-            view.goToMainPage();
+            view.goToParentPage();
         }
     };
 
@@ -346,7 +346,7 @@ public class InventoryPresenter extends Presenter {
     }
 
     public interface InventoryView extends BaseView {
-        void goToMainPage();
+        void goToParentPage();
 
         boolean validateInventory();
 

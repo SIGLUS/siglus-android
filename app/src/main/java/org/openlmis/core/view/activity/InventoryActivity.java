@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.InventoryPresenter;
@@ -123,6 +125,20 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
         });
     }
 
+    @Override
+    public void goToParentPage(){
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)){
+            goToMainPage();
+        }else {
+            if ( isPhysicalInventory ) {
+                setResult(Activity.RESULT_OK);
+                finish();
+            }else {
+                goToMainPage();
+            }
+        }
+    }
+
     protected InitialInventoryViewHolder.ViewHistoryListener viewHistoryListener = new InitialInventoryViewHolder.ViewHistoryListener() {
         @Override
         public void viewHistory(StockCard stockCard) {
@@ -203,7 +219,7 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
         return false;
     }
 
-    public void goToMainPage() {
+    private void goToMainPage() {
         preferencesMgr.setIsNeedsInventory(false);
         startActivity(isAddNewDrug ? StockCardListActivity.getIntentToMe(this) : HomeActivity.getIntentToMe(this));
         this.finish();

@@ -95,7 +95,7 @@ public class InventoryActivityTest {
 
     @Test
     public void shouldGoToHomePageAfterInitInventoryOrDoPhysicalInventory(){
-        inventoryActivity.goToMainPage();
+        inventoryActivity.goToParentPage();
 
         Intent startIntent = shadowOf(inventoryActivity).getNextStartedActivity();
         assertEquals(startIntent.getComponent().getClassName(), HomeActivity.class.getName());
@@ -108,7 +108,7 @@ public class InventoryActivityTest {
 
         inventoryActivity = Robolectric.buildActivity(InventoryActivity.class).withIntent(intentToStockCard).create().get();
 
-        inventoryActivity.goToMainPage();
+        inventoryActivity.goToParentPage();
 
         Intent startIntent = shadowOf(inventoryActivity).getNextStartedActivity();
         assertEquals(startIntent.getComponent().getClassName(), StockCardListActivity.class.getName());

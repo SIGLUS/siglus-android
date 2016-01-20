@@ -254,7 +254,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         inventoryPresenter.nextMainPageAction.call(null);
 
         verify(view).loaded();
-        verify(view).goToMainPage();
+        verify(view).goToParentPage();
     }
 
     @Test
