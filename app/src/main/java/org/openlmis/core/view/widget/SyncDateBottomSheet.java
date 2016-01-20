@@ -10,11 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.model.SyncType;
+import org.openlmis.core.presenter.SyncErrorsPresenter;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
 
@@ -24,8 +29,18 @@ public class SyncDateBottomSheet extends BaseDialogFragment {
 
     @InjectView(R.id.tx_last_synced_rnrform)
     private TextView txRnrFormSyncTime;
+
     @InjectView(R.id.tx_last_synced_stockcard)
     private TextView txStockCardSyncTime;
+
+    @InjectView(R.id.iv_rnr_error)
+    ImageView ivRnRError;
+
+    @InjectView(R.id.iv_stockcard_error)
+    ImageView ivStockcardError;
+
+    @Inject
+    private SyncErrorsPresenter presenter;
 
     public static final String RNR_SYNC_TIME = "rnrFormSyncTime";
     public static final String STOCK_SYNC_TIME = "stockCardSyncTime";
@@ -66,9 +81,18 @@ public class SyncDateBottomSheet extends BaseDialogFragment {
 
     private void initUI() {
         Bundle arguments = getArguments();
-        if (arguments != null) {
-            txRnrFormSyncTime.setText(arguments.getString(RNR_SYNC_TIME));
-            txStockCardSyncTime.setText(arguments.getString(STOCK_SYNC_TIME));
+        if (arguments == null) {
+            return;
+        }
+        txRnrFormSyncTime.setText(arguments.getString(RNR_SYNC_TIME));
+        txStockCardSyncTime.setText(arguments.getString(STOCK_SYNC_TIME));
+
+        if (presenter.hasSyncError(SyncType.RnRForm)) {
+            ivRnRError.setVisibility(View.VISIBLE);
+        }
+
+        if (presenter.hasSyncError(SyncType.StockCards)) {
+            ivStockcardError.setVisibility(View.VISIBLE);
         }
     }
 

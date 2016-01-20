@@ -21,7 +21,7 @@ public class SyncErrorsPresenter extends Presenter {
         this.view = (SyncDateBottomSheet) v;
     }
 
-    public boolean hasRnrSyncError(SyncType syncType) {
+    public boolean hasSyncError(SyncType syncType) {
         try {
             return repository.hasSyncErrorOf(syncType);
         } catch (LMISException e) {
