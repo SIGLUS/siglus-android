@@ -2,7 +2,6 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.AbstractModule;
 
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,6 +47,7 @@ public class RnRFormListPresenterTest {
     private RnrFormRepository rnrFormRepository;
     private StockRepository stockRepository;
     private SharedPreferenceMgr sharedPreferenceMgr;
+    private Period period;
 
     @Before
     public void setUp() {
@@ -66,6 +66,7 @@ public class RnRFormListPresenterTest {
         });
 
         presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnRFormListPresenter.class);
+        period = DateUtil.generateRnRFormPeriodBy(new Date());
         rnRForms = createRnRForms();
         viewModels = new ArrayList<>();
     }
@@ -101,14 +102,14 @@ public class RnRFormListPresenterTest {
 
     @Test
     public void shouldReturnOneRnrFormViewModleWhenThereIsNoRnrFormAndToggleOn() throws Exception {
-        when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(new Date(), DateUtil.DATE_TIME_FORMAT));
+
+        when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(period.getBegin().toDate(), DateUtil.DATE_TIME_FORMAT));
         when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
         presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_home_page_update, true);
 
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
-        Period period = new Period(new DateTime());
         String periodString = LMISTestApp.getContext().getString(R.string.label_period_date, DateUtil.formatDate(period.getBegin().toDate()), DateUtil.formatDate(period.getEnd().toDate()));
 
         assertThat(rnRFormViewModels.size()).isEqualTo(1);
@@ -119,7 +120,7 @@ public class RnRFormListPresenterTest {
     @Test
     public void shouldReturnUnCompleteInventoryTypeRnrFormViewModel() throws Exception {
         when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
-        when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(DateUtil.minusDayOfMonth(new Date(), 31), DateUtil.DATE_TIME_FORMAT));
+        when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(DateUtil.generateRnRFormPeriodBy(new Date()).previous().getBegin().toDate(), DateUtil.DATE_TIME_FORMAT));
         presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_home_page_update, true);
 
@@ -150,13 +151,13 @@ public class RnRFormListPresenterTest {
         program.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
         rnRForm.setProgram(program);
         rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
-        rnRForm.setPeriodBegin(DateUtil.minusDayOfMonth(new Period(new DateTime()).getBegin().toDate(), 30));
-        rnRForm.setPeriodEnd(DateUtil.minusDayOfMonth(new Period(new DateTime()).getEnd().toDate(), 30));
+        rnRForm.setPeriodBegin(period.previous().getBegin().toDate());
+        rnRForm.setPeriodEnd(period.previous().getEnd().toDate());
 
         rnRForms.add(rnRForm);
 
         when(rnrFormRepository.list(VIARepository.VIA_PROGRAM_CODE)).thenReturn(rnRForms);
-        when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(DateUtil.minusDayOfMonth(new Date(), 31), DateUtil.DATE_TIME_FORMAT));
+        when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(period.previous().getBegin().toDate(), DateUtil.DATE_TIME_FORMAT));
         presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_home_page_update, true);
 
