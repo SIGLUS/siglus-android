@@ -65,6 +65,20 @@ describe "Sync stock card data" do
           signature: "signature",
           SOH: 10
         }
+      },
+      {
+        facilityId: facility_id,
+        productCode: "SCOD10",
+        quantity: 1,
+        type: "ADJUSTMENT",
+        reasonName: "UNPACK_KIT",
+        occurred: "2015-10-30",
+        referenceNumber: "referenceNumber4",
+        customProps: {
+          expirationDates: "10/10/2019",
+          signature: "signature",
+          SOH: 11
+        }
       }
       ]
 
