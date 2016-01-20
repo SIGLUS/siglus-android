@@ -15,7 +15,6 @@ android {
         minSdkVersion 17
         targetSdkVersion 21
         if (project.hasProperty("prodsim")) {
-            // this commit is only for triggering jenkins to deploy prodsim to f-droid
             versionCode new Date().getTime().toInteger()
             versionName "$prodsim"
         } else {
