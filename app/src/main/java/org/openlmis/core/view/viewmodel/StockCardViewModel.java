@@ -154,14 +154,6 @@ public class StockCardViewModel {
                 length, unit.length(), Spannable.SPAN_POINT_MARK);
     }
 
-    public String formatExpiryDateString() {
-        if (expiryDates == null) {
-            return StringUtils.EMPTY;
-        }
-        DateUtil.sortByDate(expiryDates);
-        return StringUtils.join(expiryDates, StockCard.DIVIDER);
-    }
-
     private void sortByDate() {
         Collections.sort(expiryDates, new Comparator<String>() {
             @Override
@@ -192,7 +184,6 @@ public class StockCardViewModel {
         if (expiryDates == null) {
             expiryDates = new ArrayList<>();
         }
-
         if (!append) {
             expiryDates.clear();
         }
@@ -216,7 +207,7 @@ public class StockCardViewModel {
 
     public DraftInventory parseDraftInventory() {
         DraftInventory draftInventory = new DraftInventory();
-        draftInventory.setExpireDates(formatExpiryDateString());
+        draftInventory.setExpireDates(DateUtil.formatExpiryDateString(expiryDates));
 
         Long quantity;
         try {
@@ -229,15 +220,5 @@ public class StockCardViewModel {
 
         draftInventory.setStockCard(stockCard);
         return draftInventory;
-    }
-
-    public void addExpiryDates(String expireDates) {
-        if (TextUtils.isEmpty(expireDates)) {
-            return;
-        }
-
-        for(String date : newArrayList(expireDates.split(StockCard.DIVIDER))) {
-            addExpiryDate(date);
-        }
     }
 }

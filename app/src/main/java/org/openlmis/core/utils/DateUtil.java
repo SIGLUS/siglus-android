@@ -18,14 +18,17 @@
 
 package org.openlmis.core.utils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.StockCard;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -156,5 +159,35 @@ public final class DateUtil {
 
     public static long calculateTimeIntervalFromNow(long lastSyncedTimestamp) {
         return new Date().getTime() - lastSyncedTimestamp;
+    }
+
+    public static String formatExpiryDateString(List<String> expiryDates) {
+        if (expiryDates == null) {
+            return StringUtils.EMPTY;
+        }
+        sortByDate(expiryDates);
+        return StringUtils.join(expiryDates, StockCard.DIVIDER);
+    }
+
+    public static String uniqueExpiryDates(List<String> expiryDates, String existingDates) {
+        return formatExpiryDateString(addExpiryDates(expiryDates, existingDates));
+    }
+
+    public static List<String> addExpiryDates(List<String> expiryDates, String date) {
+        if (StringUtils.isEmpty(date)) {
+            return expiryDates;
+        }
+
+        if (expiryDates == null || expiryDates.isEmpty()) {
+            expiryDates = new ArrayList<>();
+        }
+
+        String[] existingExpiryDates = date.split(StockCard.DIVIDER);
+        for (String expiryDate: existingExpiryDates) {
+            if (!expiryDates.contains(expiryDate)) {
+                expiryDates.add(expiryDate);
+            }
+        }
+        return expiryDates;
     }
 }

@@ -48,13 +48,6 @@ public class StockCardViewModelTest {
     }
 
     @Test
-    public void shouldFormatExpiryDateAndSort() throws Exception {
-        model.formatExpiryDateString();
-        assertThat(model.getExpiryDates().get(0), is("18/10/2015"));
-    }
-
-
-    @Test
     public void shouldParseDraftInventory() throws Exception {
         model.setQuantity("10");
         DraftInventory draftInventory = model.parseDraftInventory();

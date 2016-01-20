@@ -16,6 +16,7 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
@@ -179,8 +180,7 @@ public class UnpackKitPresenter extends Presenter {
     private void saveStockMovementItemForProduct(StockCardViewModel stockCardViewModel, StockCard stockCard) throws LMISException {
         long movementQuantity = Long.parseLong(stockCardViewModel.getQuantity());
         stockCard.setStockOnHand(stockCard.getStockOnHand() + movementQuantity);
-        stockCardViewModel.addExpiryDates(stockCard.getExpireDates());
-        stockCard.setExpireDates(stockCardViewModel.formatExpiryDateString());
+        stockCard.setExpireDates(DateUtil.uniqueExpiryDates(stockCardViewModel.getExpiryDates(), stockCard.getExpireDates()));
 
         StockMovementItem movementItem = new StockMovementItem(stockCard);
         movementItem.setReason(MovementReasonManager.DDM);
@@ -194,7 +194,7 @@ public class UnpackKitPresenter extends Presenter {
     private StockCard saveStockCard(StockCardViewModel stockCardViewModel) throws LMISException {
         StockCard stockCard = new StockCard();
         stockCard.setProduct(stockCardViewModel.getProduct());
-        stockCard.setExpireDates(stockCardViewModel.formatExpiryDateString());
+        stockCard.setExpireDates(DateUtil.formatExpiryDateString(stockCardViewModel.getExpiryDates()));
         stockRepository.initStockCard(stockCard);
         return stockCard;
     }

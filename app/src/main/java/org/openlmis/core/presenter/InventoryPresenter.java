@@ -205,7 +205,7 @@ public class InventoryPresenter extends Presenter {
 
             StockCard stockCard = isArchivedStockCard ? model.getStockCard() : new StockCard();
             stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
-            stockCard.setExpireDates(model.formatExpiryDateString());
+            stockCard.setExpireDates(DateUtil.formatExpiryDateString(model.getExpiryDates()));
 
             if (isArchivedStockCard) {
                 stockCard.getProduct().setArchived(false);
@@ -293,7 +293,7 @@ public class InventoryPresenter extends Presenter {
                 try {
                     for (StockCardViewModel model : list) {
                         StockCard stockCard = model.getStockCard();
-                        stockCard.setExpireDates(model.formatExpiryDateString());
+                        stockCard.setExpireDates(DateUtil.formatExpiryDateString(model.getExpiryDates()));
                         stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
                         stockRepository.addStockMovementAndUpdateStockCard(calculateAdjustment(model, stockCard));
                     }
