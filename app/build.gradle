@@ -15,6 +15,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 21
         if (project.hasProperty("prodsim")) {
+//            trigger build
             versionCode new Date().getTime().toInteger()
             versionName "$prodsim"
         } else {
