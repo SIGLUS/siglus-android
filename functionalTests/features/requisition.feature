@@ -61,7 +61,12 @@ Feature: Requisition
     And I press the menu key
     Then I see "Sync Data"
     And I press "Sync Data"
-    And I wait for "minutes since last sync" to appear
+
+    And I wait for "0 minutes since last sync" to appear
+    And I press "0 minutes since last sync"
+    Then I see "Requisition last synced 0 minutes ago"
+    Then I go back
+
     And I press "Via Classica Requisitions"
     Then I wait for "Historic Requisitions" to appear
     Then I should see text containing "View Via Classica Requisition"
