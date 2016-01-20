@@ -73,4 +73,14 @@ public class SyncErrorsRepository {
             return null;
         }
     }
+
+    public boolean hasSyncErrorOf(final SyncType syncType) throws LMISException {
+        SyncError syncError = dbUtil.withDao(SyncError.class, new DbUtil.Operation<SyncError, SyncError>() {
+            @Override
+            public SyncError operate(Dao<SyncError, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("syncType", syncType).queryForFirst();
+            }
+        });
+        return syncError != null;
+    }
 }

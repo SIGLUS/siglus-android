@@ -10,11 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.model.SyncType;
+import org.openlmis.core.presenter.SyncErrorsPresenter;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
 
@@ -24,8 +29,18 @@ public class SyncDateBottomSheet extends BaseDialogFragment {
 
     @InjectView(R.id.tx_last_synced_rnrform)
     private TextView txRnrFormSyncTime;
+
     @InjectView(R.id.tx_last_synced_stockcard)
     private TextView txStockCardSyncTime;
+
+    @InjectView(R.id.iv_rnr_error)
+    ImageView ivRnRError;
+
+    @InjectView(R.id.iv_stockcard_error)
+    ImageView ivStockcardError;
+
+    @Inject
+    private SyncErrorsPresenter presenter;
 
     public static final String RNR_SYNC_TIME = "rnrFormSyncTime";
     public static final String STOCK_SYNC_TIME = "stockCardSyncTime";
@@ -66,9 +81,18 @@ public class SyncDateBottomSheet extends BaseDialogFragment {
 
     private void initUI() {
         Bundle arguments = getArguments();
-        if (arguments != null) {
-            txRnrFormSyncTime.setText(arguments.getString(RNR_SYNC_TIME));
-            txStockCardSyncTime.setText(arguments.getString(STOCK_SYNC_TIME));
+        if (arguments == null) {
+            return;
+        }
+        txRnrFormSyncTime.setText(arguments.getString(RNR_SYNC_TIME));
+        txStockCardSyncTime.setText(arguments.getString(STOCK_SYNC_TIME));
+
+        if (presenter.hasSyncError(SyncType.RnRForm)) {
+            ivRnRError.setVisibility(View.VISIBLE);
+        }
+
+        if (presenter.hasSyncError(SyncType.StockCards)) {
+            ivStockcardError.setVisibility(View.VISIBLE);
         }
     }
 
@@ -86,32 +110,32 @@ public class SyncDateBottomSheet extends BaseDialogFragment {
     }
 
     //This method will move static and change to private after remove home page update feature toggle
-    public static String formatStockCardLastSyncTime(long stockSyncedTimestamp) {
+    private static String formatLastSyncTime(long stockSyncedTimestamp, int syncTimeStringRId) {
         if (stockSyncedTimestamp == 0) {
             return StringUtils.EMPTY;
         }
         long diff = DateUtil.calculateTimeIntervalFromNow(stockSyncedTimestamp);
+        String syncTimeIntervalWithUnit;
         if (diff < DateUtil.MILLISECONDS_HOUR) {
-            return LMISApp.getContext().getResources().getString(R.string.label_stock_card_last_synced_mins_ago, (diff / DateUtil.MILLISECONDS_MINUTE));
+            int quantity = (int) (diff / DateUtil.MILLISECONDS_MINUTE);
+            syncTimeIntervalWithUnit = LMISApp.getContext().getResources().getQuantityString(R.plurals.minuteUnit, quantity, quantity);
         } else if (diff < DateUtil.MILLISECONDS_DAY) {
-            return LMISApp.getContext().getResources().getString(R.string.label_stock_card_last_synced_hours_ago, (diff / DateUtil.MILLISECONDS_HOUR));
+            int quantity = (int) (diff / DateUtil.MILLISECONDS_HOUR);
+            syncTimeIntervalWithUnit = LMISApp.getContext().getResources().getQuantityString(R.plurals.hourUnit, quantity, quantity);
         } else {
-            return LMISApp.getContext().getResources().getString(R.string.label_stock_card_last_synced_days_ago, (diff / DateUtil.MILLISECONDS_DAY));
+            int quantity = (int) (diff / DateUtil.MILLISECONDS_DAY);
+            syncTimeIntervalWithUnit = LMISApp.getContext().getResources().getQuantityString(R.plurals.dayUnit, quantity, quantity);
         }
+        return LMISApp.getContext().getResources().getString(syncTimeStringRId, syncTimeIntervalWithUnit);
     }
 
     //This method will move static and change to private after remove home page update feature toggle
     public static String formatRnrLastSyncTime(long rnrSyncedTimestamp) {
-        if (rnrSyncedTimestamp == 0) {
-            return StringUtils.EMPTY;
-        }
-        long diff = DateUtil.calculateTimeIntervalFromNow(rnrSyncedTimestamp);
-        if (diff < DateUtil.MILLISECONDS_HOUR) {
-            return LMISApp.getContext().getResources().getString(R.string.label_rnr_form_last_synced_mins_ago, (diff / DateUtil.MILLISECONDS_MINUTE));
-        } else if (diff < DateUtil.MILLISECONDS_DAY) {
-            return LMISApp.getContext().getResources().getString(R.string.label_rnr_form_last_synced_hours_ago, (diff / DateUtil.MILLISECONDS_HOUR));
-        } else {
-            return LMISApp.getContext().getResources().getString(R.string.label_rnr_form_last_synced_days_ago, (diff / DateUtil.MILLISECONDS_DAY));
-        }
+        return formatLastSyncTime(rnrSyncedTimestamp, R.string.label_rnr_form_last_synced_time_ago);
+    }
+
+    //This method will move static and change to private after remove home page update feature toggle
+    public static String formatStockCardLastSyncTime(long rnrSyncedTimestamp) {
+        return formatLastSyncTime(rnrSyncedTimestamp, R.string.label_stock_card_last_synced_time_ago);
     }
 }

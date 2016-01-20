@@ -11,9 +11,12 @@
         android:gravity="center">
 
         <ImageView
+            android:id="@+id/iv_rnr_error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_error" />
+            android:src="@drawable/ic_error_black"
+            android:layout_marginRight="@dimen/margin_small"
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/tx_last_synced_rnrform"
@@ -23,14 +26,18 @@
     </LinearLayout>
 
     <LinearLayout
+        android:layout_marginTop="@dimen/margin_small"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center">
 
         <ImageView
+            android:id="@+id/iv_stockcard_error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_error" />
+            android:src="@drawable/ic_error_black"
+            android:layout_marginRight="@dimen/margin_small"
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/tx_last_synced_stockcard"

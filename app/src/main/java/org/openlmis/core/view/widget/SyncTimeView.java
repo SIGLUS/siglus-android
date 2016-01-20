@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.utils.DateUtil;
@@ -16,7 +17,7 @@ import org.openlmis.core.view.activity.BaseActivity;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
-public class SyncTimeView extends LinearLayout implements View.OnClickListener{
+public class SyncTimeView extends LinearLayout implements View.OnClickListener {
 
     @InjectView(R.id.tx_sync_time)
     TextView txSyncTime;
@@ -47,32 +48,39 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener{
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        rnrLastSyncTime = SharedPreferenceMgr.getInstance().getRnrLastSyncTime();
-        stockLastSyncTime = SharedPreferenceMgr.getInstance().getStockLastSyncTime();
         txSyncTime.setOnClickListener(this);
-
     }
 
     public void showLastSyncTime() {
+        rnrLastSyncTime = SharedPreferenceMgr.getInstance().getRnrLastSyncTime();
+        stockLastSyncTime = SharedPreferenceMgr.getInstance().getStockLastSyncTime();
+
         if (rnrLastSyncTime == 0 && stockLastSyncTime == 0) {
             return;
         }
 
         long syncTimeInterval = getSyncTimeInterval(rnrLastSyncTime, stockLastSyncTime);
 
+        String syncTimeIntervalWithUnit;
         if (syncTimeInterval < DateUtil.MILLISECONDS_HOUR) {
-            txSyncTime.setText(getResources().getString(R.string.label_last_synced_mins_ago, syncTimeInterval / DateUtil.MILLISECONDS_MINUTE));
+            int quantity = (int) (syncTimeInterval / DateUtil.MILLISECONDS_MINUTE);
+            syncTimeIntervalWithUnit = getResources().getQuantityString(R.plurals.minuteUnit, quantity, quantity);
             ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_green);
         } else if (syncTimeInterval < DateUtil.MILLISECONDS_DAY) {
-            txSyncTime.setText(getResources().getString(R.string.label_last_synced_hours_ago, syncTimeInterval / DateUtil.MILLISECONDS_HOUR));
+            int quantity = (int) (syncTimeInterval / DateUtil.MILLISECONDS_HOUR);
+            syncTimeIntervalWithUnit = getResources().getQuantityString(R.plurals.hourUnit, quantity, quantity);
             ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_green);
         } else if (syncTimeInterval < DateUtil.MILLISECONDS_DAY * 3) {
-            txSyncTime.setText(getResources().getString(R.string.label_last_synced_days_ago, syncTimeInterval / DateUtil.MILLISECONDS_DAY));
+            int quantity = (int) (syncTimeInterval / DateUtil.MILLISECONDS_DAY);
+            syncTimeIntervalWithUnit = getResources().getQuantityString(R.plurals.dayUnit, quantity, quantity);
             ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_yellow);
         } else {
-            txSyncTime.setText(getResources().getString(R.string.label_last_synced_days_ago, syncTimeInterval / DateUtil.MILLISECONDS_DAY));
+            int quantity = (int) (syncTimeInterval / DateUtil.MILLISECONDS_DAY);
+            syncTimeIntervalWithUnit = getResources().getQuantityString(R.plurals.dayUnit, quantity, quantity);
             ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_red);
         }
+
+        txSyncTime.setText(LMISApp.getContext().getResources().getString(R.string.label_last_synced_ago, syncTimeIntervalWithUnit));
     }
 
     private long getSyncTimeInterval(long rnrLastSyncTime, long stockLastSyncTime) {
@@ -89,6 +97,6 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener{
     public void onClick(View v) {
         SyncDateBottomSheet syncDateBottomSheet = new SyncDateBottomSheet();
         syncDateBottomSheet.setArguments(SyncDateBottomSheet.getArgumentsToMe(rnrLastSyncTime, stockLastSyncTime));
-        syncDateBottomSheet.show(((BaseActivity)context).getFragmentManager());
+        syncDateBottomSheet.show(((BaseActivity) context).getFragmentManager());
     }
 }
