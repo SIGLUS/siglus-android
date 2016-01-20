@@ -14,15 +14,14 @@ Feature: MMIA
     Then I wait for 1 second
     Then I navigate back
     And I press "MMIA"
-    Then I wait for "Historic MMIAs" to appear
+    Then I wait for "MMIA" to appear
     Then I should see text containing "No MMIA has been created."
 
     Then I press "Complete Inventory"
     And I wait for "inventory" to appear
     Then I do physical inventory for mmia items
 
-    And I press "MMIA"
-    Then I wait for "Historic MMIAs" to appear
+    Then I wait for "MMIA" to appear
     Then I should see text containing "Create MMIA"
 
     Then I press "Create MMIA"
@@ -65,7 +64,7 @@ Feature: MMIA
     And I sign requisition with "superuser" "testUser" and complete
 
     Then I should see text containing "Your MMIA form has been successfully saved,"
-    Then I wait for "Historic MMIAs" to appear
+    Then I wait for "MMIA" to appear
 
     Then I navigate back
     Then I wait for "Stock Card Overview" to appear
@@ -79,5 +78,5 @@ Feature: MMIA
     Then I go back
 
     And I press "MMIA"
-    Then I wait for "Historic MMIAs" to appear
+    Then I wait for "MMIA" to appear
     Then I should see text containing "View MMIA"

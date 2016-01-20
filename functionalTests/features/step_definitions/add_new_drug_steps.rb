@@ -31,6 +31,7 @@ Then(/^I select new drug "(.*?)" with SOH "(.*?)" quantity/) do |drugproperty, s
       }
   q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
   if !q.empty?
+    touch(q)
     steps %Q{
               When I select the item called "#{drugproperty}"
               Then I enter quantity "#{soh}" on inventory page
