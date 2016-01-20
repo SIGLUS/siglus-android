@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRForm;
@@ -60,12 +61,19 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         programCode = getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE);
-        if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
-            setTitle(R.string.title_mmia_list);
-        } else {
-            setTitle(R.string.title_requisition_list);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)){
+            if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
+                setTitle(R.string.mmia_list);
+            } else {
+                setTitle(R.string.requisition_list);
+            }
+        }else {
+            if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
+                setTitle(R.string.title_mmia_list);
+            } else {
+                setTitle(R.string.title_requisition_list);
+            }
         }
-
         super.onCreate(savedInstanceState);
         presenter.setProgramCode(programCode);
         initUI();

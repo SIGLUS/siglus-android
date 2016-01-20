@@ -46,7 +46,7 @@
             android:layout_marginTop="@dimen/margin_small"
             android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
             android:onClick="onClickMMIAHistory"
-            android:text="@string/btn_mmia_list" />
+            android:text="@string/mmia_list" />
 
         <Button
             android:id="@+id/btn_requisition"
@@ -62,7 +62,7 @@
             android:layout_marginTop="@dimen/margin_small"
             android:drawableStart="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
             android:onClick="onClickVIAHistory"
-            android:text="@string/btn_requisition_list" />
+            android:text="@string/requisition_list" />
 
         <Button
             android:id="@+id/btn_sync_data"

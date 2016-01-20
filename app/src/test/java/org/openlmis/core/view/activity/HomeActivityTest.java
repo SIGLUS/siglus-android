@@ -197,7 +197,7 @@ public class HomeActivityTest {
         ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_home_page_update, true);
         HomeActivity activity = Robolectric.buildActivity(HomeActivity.class).create().get();
 
-        assertThat(activity.btnMMIAList.getText().toString(), is(activity.getString(R.string.btn_mmia_list)));
-        assertThat(activity.btnVIAList.getText().toString(), is(activity.getString(R.string.btn_requisition_list)));
+        assertThat(activity.btnMMIAList.getText().toString(), is(activity.getString(R.string.mmia_list)));
+        assertThat(activity.btnVIAList.getText().toString(), is(activity.getString(R.string.requisition_list)));
     }
 }

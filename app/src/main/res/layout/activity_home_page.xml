@@ -55,7 +55,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@color/color_purple"
                     android:onClick="onClickVIAHistory"
-                    android:text="@string/btn_requisition_list" />
+                    android:text="@string/requisition_list" />
 
                 <Button
                     android:id="@+id/btn_mmia_list"
@@ -66,7 +66,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@color/color_amber"
                     android:onClick="onClickMMIAHistory"
-                    android:text="@string/btn_mmia_list" />
+                    android:text="@string/mmia_list" />
 
                 <Button
                     android:id="@+id/btn_kit_stock_card"

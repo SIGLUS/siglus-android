@@ -230,11 +230,11 @@
 
     <string name="label_incomplete_requisition_old">This <![CDATA[<b>%1$s</b>]]> is incomplete. To complete it, select \"Create a %1$s\" on the home page</string>
 
-    <string name="btn_requisition_list">Via Classica Requisitions</string>
-    <string name="btn_mmia_list">MMIA</string>
     <string name="btn_requisition_list_old">See Via Classica Requisitions History</string>
     <string name="btn_mmia_list_old">See previous MMIAs History</string>
 
+    <string name="mmia_list">MMIA</string>
+    <string name="requisition_list">Via Classica Requisitions</string>
     <string name="title_requisition_list">Historic Requisitions / Balances for VIA Classica</string>
     <string name="title_mmia_list">Historic MMIAs</string>
     <string name="label_total">Total:%1$s</string>
