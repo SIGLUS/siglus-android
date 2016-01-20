@@ -104,7 +104,7 @@ public class RnRFormListPresenterTest {
         when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(new Date(), DateUtil.DATE_TIME_FORMAT));
         when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
         presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_home_page_update, true);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_home_page_update, true);
 
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -119,9 +119,9 @@ public class RnRFormListPresenterTest {
     @Test
     public void shouldReturnUnCompleteInventoryTypeRnrFormViewModel() throws Exception {
         when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
-        when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(DateUtil.minusDayOfMonth(new Date(), 30), DateUtil.DATE_TIME_FORMAT));
+        when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(DateUtil.minusDayOfMonth(new Date(), 31), DateUtil.DATE_TIME_FORMAT));
         presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_home_page_update, true);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_home_page_update, true);
 
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
         assertThat(rnRFormViewModels.size()).isEqualTo(1);
@@ -133,7 +133,7 @@ public class RnRFormListPresenterTest {
         when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(new Date(), DateUtil.DATE_TIME_FORMAT));
         when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
         presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_home_page_update, true);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_home_page_update, true);
 
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
         assertThat(rnRFormViewModels.size()).isEqualTo(1);
@@ -156,9 +156,9 @@ public class RnRFormListPresenterTest {
         rnRForms.add(rnRForm);
 
         when(rnrFormRepository.list(VIARepository.VIA_PROGRAM_CODE)).thenReturn(rnRForms);
-        when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(DateUtil.minusDayOfMonth(new Date(), 30), DateUtil.DATE_TIME_FORMAT));
+        when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(DateUtil.minusDayOfMonth(new Date(), 31), DateUtil.DATE_TIME_FORMAT));
         presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_home_page_update, true);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_home_page_update, true);
 
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -170,7 +170,7 @@ public class RnRFormListPresenterTest {
     @Test
     public void shouldReturnEmptyRnrFormViewModleWhenThereIsNoRnrFormAndToggleOff() throws Exception {
         when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_home_page_update, false);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_home_page_update, false);
 
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 

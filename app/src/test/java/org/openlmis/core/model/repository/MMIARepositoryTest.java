@@ -96,14 +96,16 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         ArrayList<StockMovementItem> stockMovementItems = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             StockMovementItem stockMovementItem = new StockMovementItem();
-            stockMovementItem.setStockOnHand(100);
             stockMovementItem.setMovementQuantity(i);
             stockMovementItem.setStockCard(stockCard);
             if (i % 2 == 0) {
                 stockMovementItem.setMovementType(StockMovementItem.MovementType.ISSUE);
+                stockMovementItem.setStockOnHand(stockCard.getStockOnHand() - i);
             } else {
                 stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
+                stockMovementItem.setStockOnHand(stockCard.getStockOnHand() + i);
             }
+            stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
             stockMovementItems.add(stockMovementItem);
         }
 
@@ -111,7 +113,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         StockMovementItem stockMovementItem = new StockMovementItem();
         DateTime dateTime = new DateTime();
         dateTime.millisOfDay();
-        stockMovementItem.setMovementDate(dateTime.toDate());
+        stockMovementItem.setMovementDate(DateUtil.generateRnRFormPeriodBy(new Date()).getBegin().toDate());
         when(mockStockRepository.queryFirstStockMovementItem(any(StockCard.class))).thenReturn(stockMovementItem);
         when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(stockMovementItems);
 
