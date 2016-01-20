@@ -14,6 +14,7 @@
         <item>ISSUE|PNCTL|PNCTL</item>
         <item>ISSUE|PAV|PAV</item>
         <item>ISSUE|DENTAL_WARD|Estomalogia</item>
+        <item>ISSUE|UNPACK_KIT|Unpack kit</item>
 
         <item>NEGATIVE_ADJUST|EXPIRED_RETURN_TO_SUPPLIER|Devolução de Expirados Quarentena (ou Depósito fornecedor)</item>
         <item>NEGATIVE_ADJUST|DAMAGED|Danificados no Depósito</item>
