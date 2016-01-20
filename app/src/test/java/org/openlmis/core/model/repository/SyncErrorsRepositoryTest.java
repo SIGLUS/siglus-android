@@ -12,7 +12,9 @@ import org.robolectric.RuntimeEnvironment;
 import roboguice.RoboGuice;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(LMISTestRunner.class)
 public class SyncErrorsRepositoryTest extends LMISRepositoryUnitTest {
@@ -36,17 +38,32 @@ public class SyncErrorsRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldDeleteSyncError() throws Exception {
-        SyncError syncError1 = new SyncError("errorMessage1", SyncType.RnRForm,1l);
-        SyncError syncError2 = new SyncError("errorMessage2", SyncType.RnRForm,1l);
-        SyncError syncError3 = new SyncError("errorMessage3", SyncType.RnRForm,2l);
-        syncErrorsRepository.save(syncError1);
-        syncErrorsRepository.save(syncError2);
-        syncErrorsRepository.save(syncError3);
+        saveRnRFormError();
 
         Integer deletedSize = syncErrorsRepository.deleteBySyncTypeAndObjectId(SyncType.RnRForm, 1l);
 
         assertThat(deletedSize, is(2));
     }
 
+    @Test
+    public void shouldGetRnrHasSyncErrorIsFalse() throws Exception {
+        boolean hasRnrSyncError = syncErrorsRepository.hasSyncErrorOf(SyncType.RnRForm);
+        assertFalse(hasRnrSyncError);
+    }
 
+    @Test
+    public void shouldGetRnrHasSyncErrorIsTrueWhenHaveSyncFailed() throws Exception {
+        saveRnRFormError();
+        boolean hasRnrSyncError = syncErrorsRepository.hasSyncErrorOf(SyncType.RnRForm);
+        assertTrue(hasRnrSyncError);
+    }
+
+    private void saveRnRFormError() {
+        SyncError syncError1 = new SyncError("errorMessage1", SyncType.RnRForm,1l);
+        SyncError syncError2 = new SyncError("errorMessage2", SyncType.RnRForm,1l);
+        SyncError syncError3 = new SyncError("errorMessage3", SyncType.RnRForm,2l);
+        syncErrorsRepository.save(syncError1);
+        syncErrorsRepository.save(syncError2);
+        syncErrorsRepository.save(syncError3);
+    }
 }
