@@ -29,6 +29,7 @@ When(/^I search product by fnm "(.*?)" and select this item with quantity "(.*?)
     }
     q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
     if !q.empty?
+        touch(q)
         steps %Q{
             When I select the item called "#{fnm}"
             Then I enter quantity "#{quantity}" on inventory page
