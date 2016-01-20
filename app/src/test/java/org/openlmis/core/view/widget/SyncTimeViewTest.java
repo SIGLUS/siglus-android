@@ -36,9 +36,8 @@ public class SyncTimeViewTest {
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusMinutes(2).getMillis());
         sharedPreferenceMgr.setStockLastSyncTime();
 
-        syncTimeView.onFinishInflate();
         syncTimeView.showLastSyncTime();
-        assertThat(syncTimeView.txSyncTime.getText().toString(), is("1 minutes since last sync"));
+        assertThat(syncTimeView.txSyncTime.getText().toString(), is("1 minute since last sync"));
         assertThat(shadowOf(syncTimeView.ivSyncTimeIcon.getDrawable()).getCreatedFromResId(), is(R.drawable.icon_circle_green));
     }
 
@@ -49,9 +48,8 @@ public class SyncTimeViewTest {
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusHours(1).getMillis());
         sharedPreferenceMgr.setStockLastSyncTime();
 
-        syncTimeView.onFinishInflate();
         syncTimeView.showLastSyncTime();
-        assertThat(syncTimeView.txSyncTime.getText().toString(), is("1 hours since last sync"));
+        assertThat(syncTimeView.txSyncTime.getText().toString(), is("1 hour since last sync"));
         assertThat(shadowOf(syncTimeView.ivSyncTimeIcon.getDrawable()).getCreatedFromResId(), is(R.drawable.icon_circle_green));
     }
 
@@ -62,9 +60,8 @@ public class SyncTimeViewTest {
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusDays(2).getMillis());
         sharedPreferenceMgr.setStockLastSyncTime();
 
-        syncTimeView.onFinishInflate();
         syncTimeView.showLastSyncTime();
-        assertThat(syncTimeView.txSyncTime.getText().toString(), is("1 days since last sync"));
+        assertThat(syncTimeView.txSyncTime.getText().toString(), is("1 day since last sync"));
         assertThat(shadowOf(syncTimeView.ivSyncTimeIcon.getDrawable()).getCreatedFromResId(), is(R.drawable.icon_circle_yellow));
     }
 
@@ -75,7 +72,6 @@ public class SyncTimeViewTest {
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().minusDays(3).getMillis());
         sharedPreferenceMgr.setStockLastSyncTime();
 
-        syncTimeView.onFinishInflate();
         syncTimeView.showLastSyncTime();
         assertThat(syncTimeView.txSyncTime.getText().toString(), is("3 days since last sync"));
         assertThat(shadowOf(syncTimeView.ivSyncTimeIcon.getDrawable()).getCreatedFromResId(), is(R.drawable.icon_circle_red));

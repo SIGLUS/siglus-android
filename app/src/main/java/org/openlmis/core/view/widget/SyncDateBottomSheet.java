@@ -115,13 +115,18 @@ public class SyncDateBottomSheet extends BaseDialogFragment {
             return StringUtils.EMPTY;
         }
         long diff = DateUtil.calculateTimeIntervalFromNow(stockSyncedTimestamp);
+        String quantityString;
         if (diff < DateUtil.MILLISECONDS_HOUR) {
-            return LMISApp.getContext().getResources().getString(R.string.label_stock_card_last_synced_mins_ago, (diff / DateUtil.MILLISECONDS_MINUTE));
+            int quantity = (int) (diff / DateUtil.MILLISECONDS_MINUTE);
+            quantityString = LMISApp.getContext().getResources().getQuantityString(R.plurals.minuteUnit, quantity, quantity);
         } else if (diff < DateUtil.MILLISECONDS_DAY) {
-            return LMISApp.getContext().getResources().getString(R.string.label_stock_card_last_synced_hours_ago, (diff / DateUtil.MILLISECONDS_HOUR));
+            int quantity = (int) (diff / DateUtil.MILLISECONDS_HOUR);
+            quantityString = LMISApp.getContext().getResources().getQuantityString(R.plurals.hourUnit, quantity, quantity);
         } else {
-            return LMISApp.getContext().getResources().getString(R.string.label_stock_card_last_synced_days_ago, (diff / DateUtil.MILLISECONDS_DAY));
+            int quantity = (int) (diff / DateUtil.MILLISECONDS_DAY);
+            quantityString = LMISApp.getContext().getResources().getQuantityString(R.plurals.dayUnit, quantity, quantity);
         }
+        return LMISApp.getContext().getResources().getString(R.string.label_stock_card_last_synced_time_ago, quantityString);
     }
 
     //This method will move static and change to private after remove home page update feature toggle
@@ -130,12 +135,18 @@ public class SyncDateBottomSheet extends BaseDialogFragment {
             return StringUtils.EMPTY;
         }
         long diff = DateUtil.calculateTimeIntervalFromNow(rnrSyncedTimestamp);
+
+        String quantityString;
         if (diff < DateUtil.MILLISECONDS_HOUR) {
-            return LMISApp.getContext().getResources().getString(R.string.label_rnr_form_last_synced_mins_ago, (diff / DateUtil.MILLISECONDS_MINUTE));
+            int quantity = (int) (diff / DateUtil.MILLISECONDS_MINUTE);
+            quantityString = LMISApp.getContext().getResources().getQuantityString(R.plurals.minuteUnit, quantity, quantity);
         } else if (diff < DateUtil.MILLISECONDS_DAY) {
-            return LMISApp.getContext().getResources().getString(R.string.label_rnr_form_last_synced_hours_ago, (diff / DateUtil.MILLISECONDS_HOUR));
+            int quantity = (int) (diff / DateUtil.MILLISECONDS_HOUR);
+            quantityString = LMISApp.getContext().getResources().getQuantityString(R.plurals.hourUnit, quantity, quantity);
         } else {
-            return LMISApp.getContext().getResources().getString(R.string.label_rnr_form_last_synced_days_ago, (diff / DateUtil.MILLISECONDS_DAY));
+            int quantity = (int) (diff / DateUtil.MILLISECONDS_DAY);
+            quantityString = LMISApp.getContext().getResources().getQuantityString(R.plurals.dayUnit, quantity, quantity);
         }
+        return LMISApp.getContext().getResources().getString(R.string.label_rnr_form_last_synced_time_ago, quantityString);
     }
 }

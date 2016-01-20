@@ -47,13 +47,13 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener{
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        rnrLastSyncTime = SharedPreferenceMgr.getInstance().getRnrLastSyncTime();
-        stockLastSyncTime = SharedPreferenceMgr.getInstance().getStockLastSyncTime();
         txSyncTime.setOnClickListener(this);
-
     }
 
     public void showLastSyncTime() {
+        rnrLastSyncTime = SharedPreferenceMgr.getInstance().getRnrLastSyncTime();
+        stockLastSyncTime = SharedPreferenceMgr.getInstance().getStockLastSyncTime();
+
         if (rnrLastSyncTime == 0 && stockLastSyncTime == 0) {
             return;
         }
@@ -61,16 +61,20 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener{
         long syncTimeInterval = getSyncTimeInterval(rnrLastSyncTime, stockLastSyncTime);
 
         if (syncTimeInterval < DateUtil.MILLISECONDS_HOUR) {
-            txSyncTime.setText(getResources().getString(R.string.label_last_synced_mins_ago, syncTimeInterval / DateUtil.MILLISECONDS_MINUTE));
+            int quantity = (int) (syncTimeInterval / DateUtil.MILLISECONDS_MINUTE);
+            txSyncTime.setText(getResources().getQuantityString(R.plurals.minuteUnit, quantity, quantity) + " " + getResources().getString(R.string.label_last_synced_ago));
             ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_green);
         } else if (syncTimeInterval < DateUtil.MILLISECONDS_DAY) {
-            txSyncTime.setText(getResources().getString(R.string.label_last_synced_hours_ago, syncTimeInterval / DateUtil.MILLISECONDS_HOUR));
+            int quantity = (int)(syncTimeInterval / DateUtil.MILLISECONDS_HOUR);
+            txSyncTime.setText(getResources().getQuantityString(R.plurals.hourUnit, quantity, quantity) +" "+ getResources().getString(R.string.label_last_synced_ago));
             ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_green);
         } else if (syncTimeInterval < DateUtil.MILLISECONDS_DAY * 3) {
-            txSyncTime.setText(getResources().getString(R.string.label_last_synced_days_ago, syncTimeInterval / DateUtil.MILLISECONDS_DAY));
+            int quantity = (int)(syncTimeInterval / DateUtil.MILLISECONDS_DAY);
+            txSyncTime.setText(getResources().getQuantityString(R.plurals.dayUnit, quantity, quantity) +" "+ getResources().getString(R.string.label_last_synced_ago));
             ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_yellow);
         } else {
-            txSyncTime.setText(getResources().getString(R.string.label_last_synced_days_ago, syncTimeInterval / DateUtil.MILLISECONDS_DAY));
+            int quantity = (int)(syncTimeInterval / DateUtil.MILLISECONDS_DAY);
+            txSyncTime.setText(getResources().getQuantityString(R.plurals.dayUnit, quantity, quantity) +" "+ getResources().getString(R.string.label_last_synced_ago));
             ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_red);
         }
     }

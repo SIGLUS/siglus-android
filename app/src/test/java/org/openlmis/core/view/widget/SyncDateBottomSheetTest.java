@@ -7,9 +7,7 @@ import com.google.inject.AbstractModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.presenter.SyncErrorsPresenter;
 import org.openlmis.core.utils.DateUtil;
@@ -50,25 +48,32 @@ public class SyncDateBottomSheetTest {
     @Test
     public void shouldShowRnrFormLastSyncedTimeCorrectly() {
         String formatRnrLastSyncTimeWithMinute = fragment.formatRnrLastSyncTime(new Date().getTime() - 20 * DateUtil.MILLISECONDS_MINUTE);
-        assertThat(formatRnrLastSyncTimeWithMinute, equalTo(LMISTestApp.getContext().getString(R.string.label_rnr_form_last_synced_mins_ago, "20")));
+        assertThat(formatRnrLastSyncTimeWithMinute, equalTo("Requisition last synced 20 minutes ago"));
 
         String formatRnrLastSyncTimeWithHour = fragment.formatRnrLastSyncTime(new Date().getTime() - 20 * DateUtil.MILLISECONDS_HOUR);
-        assertThat(formatRnrLastSyncTimeWithHour, equalTo(LMISTestApp.getContext().getString(R.string.label_rnr_form_last_synced_hours_ago, "20")));
+        assertThat(formatRnrLastSyncTimeWithHour, equalTo("Requisition last synced 20 hours ago"));
 
-        String formatRnrLastSyncTimeWithDay = fragment.formatRnrLastSyncTime(new Date().getTime() - 20 * DateUtil.MILLISECONDS_DAY);
-        assertThat(formatRnrLastSyncTimeWithDay, equalTo(LMISTestApp.getContext().getString(R.string.label_rnr_form_last_synced_days_ago, "20")));
+        String formatRnrLastSyncTimeWithDay = fragment.formatRnrLastSyncTime(new Date().getTime() - 1 * DateUtil.MILLISECONDS_DAY);
+        assertThat(formatRnrLastSyncTimeWithDay, equalTo("Requisition last synced 1 day ago"));
+
+        String formatRnrLastSyncTimeWithDays = fragment.formatRnrLastSyncTime(new Date().getTime() - 20 * DateUtil.MILLISECONDS_DAY);
+        assertThat(formatRnrLastSyncTimeWithDays, equalTo("Requisition last synced 20 days ago"));
     }
 
     @Test
     public void shouldShowStockCardLastSyncedTimeCorrectly() {
-        String formatStockCardLastSyncTimeWithMinute = fragment.formatStockCardLastSyncTime(new Date().getTime() - 20 * DateUtil.MILLISECONDS_MINUTE);
-        assertThat(formatStockCardLastSyncTimeWithMinute, equalTo(LMISTestApp.getContext().getString(R.string.label_stock_card_last_synced_mins_ago, "20")));
+        String formatStockCardLastSyncTimeWithMinute = fragment.formatStockCardLastSyncTime(new Date().getTime() - 1 * DateUtil.MILLISECONDS_MINUTE);
+        assertThat(formatStockCardLastSyncTimeWithMinute, equalTo("Stock cards last synced 1 minute ago"));
+
+        String formatStockCardLastSyncTimeWithMinutes = fragment.formatStockCardLastSyncTime(new Date().getTime() - 20 * DateUtil.MILLISECONDS_MINUTE);
+        assertThat(formatStockCardLastSyncTimeWithMinutes, equalTo("Stock cards last synced 20 minutes ago"));
 
         String formatStockCardLastSyncTimeWithHour = fragment.formatStockCardLastSyncTime(new Date().getTime() - 20 * DateUtil.MILLISECONDS_HOUR);
-        assertThat(formatStockCardLastSyncTimeWithHour, equalTo(LMISTestApp.getContext().getString(R.string.label_stock_card_last_synced_hours_ago, "20")));
+        assertThat(formatStockCardLastSyncTimeWithHour, equalTo("Stock cards last synced 20 hours ago"));
 
         String formatStockCardLastSyncTimeWithDay = fragment.formatStockCardLastSyncTime(new Date().getTime() - 20 * DateUtil.MILLISECONDS_DAY);
-        assertThat(formatStockCardLastSyncTimeWithDay, equalTo(LMISTestApp.getContext().getString(R.string.label_stock_card_last_synced_days_ago, "20")));
+        assertThat(formatStockCardLastSyncTimeWithDay, equalTo("Stock cards last synced 20 days ago"));
+
     }
 
     @Test
