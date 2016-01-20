@@ -62,7 +62,7 @@
         <item quantity="one">%s day</item>
         <item quantity="other">%s days</item>
     </plurals>
-    <string name="label_last_synced_ago">since last sync</string>
+    <string name="label_last_synced_ago">%s since last sync</string>
     <string name="label_rnr_form_last_synced_time_ago">Requisition last synced %s ago</string>
     <string name="label_stock_card_last_synced_time_ago">Stock cards last synced %s ago</string>
     <string name="msg_back_twice_to_exit">Press back button again to exit.</string>

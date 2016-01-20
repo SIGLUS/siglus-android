@@ -110,43 +110,32 @@ public class SyncDateBottomSheet extends BaseDialogFragment {
     }
 
     //This method will move static and change to private after remove home page update feature toggle
-    public static String formatStockCardLastSyncTime(long stockSyncedTimestamp) {
+    private static String formatLastSyncTime(long stockSyncedTimestamp, int syncTimeStringRId) {
         if (stockSyncedTimestamp == 0) {
             return StringUtils.EMPTY;
         }
         long diff = DateUtil.calculateTimeIntervalFromNow(stockSyncedTimestamp);
-        String quantityString;
+        String syncTimeIntervalWithUnit;
         if (diff < DateUtil.MILLISECONDS_HOUR) {
             int quantity = (int) (diff / DateUtil.MILLISECONDS_MINUTE);
-            quantityString = LMISApp.getContext().getResources().getQuantityString(R.plurals.minuteUnit, quantity, quantity);
+            syncTimeIntervalWithUnit = LMISApp.getContext().getResources().getQuantityString(R.plurals.minuteUnit, quantity, quantity);
         } else if (diff < DateUtil.MILLISECONDS_DAY) {
             int quantity = (int) (diff / DateUtil.MILLISECONDS_HOUR);
-            quantityString = LMISApp.getContext().getResources().getQuantityString(R.plurals.hourUnit, quantity, quantity);
+            syncTimeIntervalWithUnit = LMISApp.getContext().getResources().getQuantityString(R.plurals.hourUnit, quantity, quantity);
         } else {
             int quantity = (int) (diff / DateUtil.MILLISECONDS_DAY);
-            quantityString = LMISApp.getContext().getResources().getQuantityString(R.plurals.dayUnit, quantity, quantity);
+            syncTimeIntervalWithUnit = LMISApp.getContext().getResources().getQuantityString(R.plurals.dayUnit, quantity, quantity);
         }
-        return LMISApp.getContext().getResources().getString(R.string.label_stock_card_last_synced_time_ago, quantityString);
+        return LMISApp.getContext().getResources().getString(syncTimeStringRId, syncTimeIntervalWithUnit);
     }
 
     //This method will move static and change to private after remove home page update feature toggle
     public static String formatRnrLastSyncTime(long rnrSyncedTimestamp) {
-        if (rnrSyncedTimestamp == 0) {
-            return StringUtils.EMPTY;
-        }
-        long diff = DateUtil.calculateTimeIntervalFromNow(rnrSyncedTimestamp);
+        return formatLastSyncTime(rnrSyncedTimestamp, R.string.label_rnr_form_last_synced_time_ago);
+    }
 
-        String quantityString;
-        if (diff < DateUtil.MILLISECONDS_HOUR) {
-            int quantity = (int) (diff / DateUtil.MILLISECONDS_MINUTE);
-            quantityString = LMISApp.getContext().getResources().getQuantityString(R.plurals.minuteUnit, quantity, quantity);
-        } else if (diff < DateUtil.MILLISECONDS_DAY) {
-            int quantity = (int) (diff / DateUtil.MILLISECONDS_HOUR);
-            quantityString = LMISApp.getContext().getResources().getQuantityString(R.plurals.hourUnit, quantity, quantity);
-        } else {
-            int quantity = (int) (diff / DateUtil.MILLISECONDS_DAY);
-            quantityString = LMISApp.getContext().getResources().getQuantityString(R.plurals.dayUnit, quantity, quantity);
-        }
-        return LMISApp.getContext().getResources().getString(R.string.label_rnr_form_last_synced_time_ago, quantityString);
+    //This method will move static and change to private after remove home page update feature toggle
+    public static String formatStockCardLastSyncTime(long rnrSyncedTimestamp) {
+        return formatLastSyncTime(rnrSyncedTimestamp, R.string.label_stock_card_last_synced_time_ago);
     }
 }
