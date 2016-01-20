@@ -86,6 +86,23 @@ public class StockRepository {
         }
     }
 
+    public void batchSaveStockCardsWithMovementItems(final List<StockCard> stockCards) {
+        try {
+            dbUtil.withDaoAsBatch(StockCard.class, new DbUtil.Operation<StockCard, Object>() {
+                @Override
+                public Object operate(Dao<StockCard, String> dao) throws SQLException, LMISException {
+                    for (StockCard stockCard : stockCards) {
+                        dao.createOrUpdate(stockCard);
+                        batchCreateOrUpdateStockMovements(stockCard.getStockMovementItemsWrapper());
+                    }
+                    return null;
+                }
+            });
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+    }
+
     public void save(final StockCard stockCard) {
         try {
             genericDao.create(stockCard);
@@ -166,7 +183,7 @@ public class StockRepository {
                 @Override
                 public Object call() throws Exception {
                     save(stockCard);
-                    addStockMovementAndUpdateStockCard(initStockMovementItem(stockCard));
+                    addStockMovementAndUpdateStockCard(stockCard.generateInitialStockMovementItem());
                     return null;
                 }
             });
@@ -182,7 +199,7 @@ public class StockRepository {
                 public Object call() throws Exception {
                     update(stockCard);
                     updateProductOfStockCard(stockCard);
-                    saveStockItem(initStockMovementItem(stockCard));
+                    saveStockItem(stockCard.generateInitialStockMovementItem());
                     return null;
                 }
             });
@@ -242,7 +259,7 @@ public class StockRepository {
             public List<StockCard> operate(Dao<StockCard, String> dao) throws SQLException {
 
                 QueryBuilder<Product, String> productQueryBuilder = DbUtil.initialiseDao(Product.class).queryBuilder();
-                productQueryBuilder.where().eq("program_id", programId).and().eq("isActive", true).and().eq("isKit",false);
+                productQueryBuilder.where().eq("program_id", programId).and().eq("isActive", true).and().eq("isKit", false);
 
                 return dao.queryBuilder().join(productQueryBuilder)
                         .query();

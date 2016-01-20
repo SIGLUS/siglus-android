@@ -3,9 +3,7 @@ package org.openlmis.core.presenter;
 import android.support.annotation.NonNull;
 
 import com.google.inject.Inject;
-import com.j256.ormlite.misc.TransactionManager;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -15,15 +13,15 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -107,41 +105,45 @@ public class UnpackKitPresenter extends Presenter {
     }
 
     public void saveUnpackProducts() {
+        view.loading();
         Subscription subscription = saveUnpackProductsObservable().subscribe(unpackProductsSubscriber);
         subscriptions.add(subscription);
     }
 
     private Observable saveUnpackProductsObservable() {
-        view.loading();
-
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
-            public void call(Subscriber<? super Void> subscriber) {
+            public void call(final Subscriber<? super Void> subscriber) {
                 try {
-                    TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(), new Callable<Void>() {
+
+                    List<StockCard> stockCards = new ArrayList<>();
+
+                    stockCards.addAll(FluentIterable.from(stockCardViewModels).transform(new Function<StockCardViewModel, StockCard>() {
                         @Override
-                        public Void call() throws Exception {
-                            for(StockCardViewModel stockCardViewModel : stockCardViewModels) {
-                                StockCard stockCard = stockRepository.queryStockCardByProductId(stockCardViewModel.getProductId());
-                                if (stockCard == null) {
-                                    stockCard = saveStockCard(stockCardViewModel);
-                                }
-                                saveStockMovementItemForProduct(stockCardViewModel, stockCard);
+                        public StockCard apply(StockCardViewModel stockCardViewModel) {
+                            try {
+                                return createStockCardForProduct(stockCardViewModel);
+                            } catch (LMISException e) {
+                                subscriber.onError(e);
                             }
-                            saveStockMovementItemForKit();
                             return null;
                         }
-                    });
+                    }).toList());
+
+                    stockCards.add(getStockCardForKit());
+                    stockRepository.batchSaveStockCardsWithMovementItems(stockCards);
+
                     subscriber.onNext(null);
                     subscriber.onCompleted();
-                } catch (Exception e) {
-                    subscriber.onError(e);
+                } catch (LMISException exception) {
+                    subscriber.onError(exception);
                 }
+
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    private void saveStockMovementItemForKit() throws LMISException {
+    protected StockCard getStockCardForKit() throws LMISException {
         int kitUnpackQuantity = 1;
 
         Product kit = productRepository.getByCode(kitCode);
@@ -149,12 +151,17 @@ public class UnpackKitPresenter extends Presenter {
 
         kitStockCard.setStockOnHand(kitStockCard.getStockOnHand() - kitUnpackQuantity);
 
-        StockMovementItem movementItem = new StockMovementItem(kitStockCard);
-        movementItem.setReason(MovementReasonManager.UNPACK_KIT);
-        movementItem.setMovementType(StockMovementItem.MovementType.ISSUE);
-        movementItem.setMovementQuantity(kitUnpackQuantity);
+        StockMovementItem kitMovementItem = new StockMovementItem(kitStockCard);
+        kitMovementItem.setReason(MovementReasonManager.UNPACK_KIT);
+        kitMovementItem.setMovementType(StockMovementItem.MovementType.ISSUE);
+        kitMovementItem.setMovementQuantity(kitUnpackQuantity);
 
-        stockRepository.addStockMovementAndUpdateStockCard(movementItem);
+        List<StockMovementItem> stockMovementItems = new ArrayList<>();
+        stockMovementItems.add(kitMovementItem);
+
+        kitStockCard.setStockMovementItemsWrapper(stockMovementItems);
+
+        return kitStockCard;
     }
 
     private Subscriber<Void> getUnpackProductSubscriber() {
@@ -177,26 +184,36 @@ public class UnpackKitPresenter extends Presenter {
         };
     }
 
-    private void saveStockMovementItemForProduct(StockCardViewModel stockCardViewModel, StockCard stockCard) throws LMISException {
+    @NonNull
+    protected StockCard createStockCardForProduct(StockCardViewModel stockCardViewModel) throws LMISException {
+        List<StockMovementItem> stockMovementItems = new ArrayList<>();
+
+        StockCard stockCard = stockRepository.queryStockCardByProductId(stockCardViewModel.getProductId());
+        if (stockCard == null) {
+            stockCard = new StockCard();
+            stockCard.setProduct(stockCardViewModel.getProduct());
+
+            stockMovementItems.add(stockCard.generateInitialStockMovementItem());
+        }
+
         long movementQuantity = Long.parseLong(stockCardViewModel.getQuantity());
+
         stockCard.setStockOnHand(stockCard.getStockOnHand() + movementQuantity);
         stockCard.setExpireDates(DateUtil.uniqueExpiryDates(stockCardViewModel.getExpiryDates(), stockCard.getExpireDates()));
 
-        StockMovementItem movementItem = new StockMovementItem(stockCard);
-        movementItem.setReason(MovementReasonManager.DDM);
-        movementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
-        movementItem.setMovementQuantity(movementQuantity);
+        stockMovementItems.add(createUnpackMovementItem(stockCard, movementQuantity));
+        stockCard.setStockMovementItemsWrapper(stockMovementItems);
 
-        stockRepository.addStockMovementAndUpdateStockCard(movementItem);
+        return stockCard;
     }
 
     @NonNull
-    private StockCard saveStockCard(StockCardViewModel stockCardViewModel) throws LMISException {
-        StockCard stockCard = new StockCard();
-        stockCard.setProduct(stockCardViewModel.getProduct());
-        stockCard.setExpireDates(DateUtil.formatExpiryDateString(stockCardViewModel.getExpiryDates()));
-        stockRepository.initStockCard(stockCard);
-        return stockCard;
+    private StockMovementItem createUnpackMovementItem(StockCard stockCard, long movementQuantity) {
+        StockMovementItem unpackMovementItem = new StockMovementItem(stockCard);
+        unpackMovementItem.setReason(MovementReasonManager.DDM);
+        unpackMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
+        unpackMovementItem.setMovementQuantity(movementQuantity);
+        return unpackMovementItem;
     }
 
     public interface UnpackKitView extends BaseView {

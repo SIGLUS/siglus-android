@@ -34,10 +34,8 @@ import rx.schedulers.Schedulers;
 
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -131,33 +129,6 @@ public class UnpackKitPresenterTest {
     }
 
     @Test
-    public void shouldSaveStockCardWhenStockCardNotExists() throws Exception {
-        Product kit = new ProductBuilder().setIsKit(true).setProductId(888L)
-                .setCode("SD1112").setPrimaryName("primary name").build();
-        StockCard kitStockCard = new StockCardBuilder().setStockCardId(112)
-                .setStockOnHand(1000)
-                .setCreateDate(new Date())
-                .setProduct(kit)
-                .build();
-
-        when(stockRepository.queryStockCardByProductId(200L)).thenReturn(null);
-        when(productRepository.getByCode("SD1112")).thenReturn(kit);
-        when(stockRepository.queryStockCardByProductId(888L)).thenReturn(kitStockCard);
-
-
-        TestSubscriber<Void> testSubscriber = new TestSubscriber();
-        presenter.unpackProductsSubscriber = testSubscriber;
-        presenter.stockCardViewModels = Arrays.asList(viewModel);
-        presenter.kitCode = "SD1112";
-
-        presenter.saveUnpackProducts();
-        testSubscriber.awaitTerminalEvent();
-
-        testSubscriber.assertNoErrors();
-        verify(stockRepository).initStockCard(any(StockCard.class));
-    }
-
-    @Test
     public void shouldOnlySaveStockMovementItemsWhenStockCardExists() throws Exception {
         StockCard productStockCard = new StockCardBuilder().setStockCardId(111)
                 .setStockOnHand(100)
@@ -190,11 +161,68 @@ public class UnpackKitPresenterTest {
         testSubscriber.awaitTerminalEvent();
 
         testSubscriber.assertNoErrors();
-        verify(stockRepository, never()).initStockCard(any(StockCard.class));
-        verify(stockRepository, times(2)).addStockMovementAndUpdateStockCard(any(StockMovementItem.class));
+        verify(stockRepository).batchSaveStockCardsWithMovementItems(anyList());
 
         assertThat(productStockCard.getStockOnHand()).isEqualTo(300);
         assertThat(productStockCard.getExpireDates()).isEqualTo("20/1/2026,15/2/2026,30/5/2026");
+    }
+
+    @Test
+    public void shouldCreateStockCardWithMovementItemsWhenStockCardNotExists() throws Exception {
+        when(stockRepository.queryStockCardByProductId(200L)).thenReturn(null);
+        viewModel.setQuantity("10");
+
+        StockCard stockCard = presenter.createStockCardForProduct(viewModel);
+        List<StockMovementItem> movementItems = stockCard.getStockMovementItemsWrapper();
+
+        assertThat(stockCard.getStockOnHand()).isEqualTo(10);
+        assertThat(movementItems.size()).isEqualTo(2);
+        assertThat(movementItems.get(0).getStockOnHand()).isEqualTo(0);
+        assertThat(movementItems.get(1).getStockOnHand()).isEqualTo(10);
+    }
+
+    @Test
+    public void shouldGetStockCardWithMovementItemsWhenStockCardExists() throws Exception {
+        StockCard productStockCard = new StockCardBuilder().setStockCardId(111)
+                .setStockOnHand(100)
+                .setCreateDate(new Date())
+                .setProduct(product)
+                .setExpireDates("20/1/2026,15/2/2026")
+                .build();
+        viewModel.setQuantity("10");
+
+        when(stockRepository.queryStockCardByProductId(200L)).thenReturn(productStockCard);
+
+        StockCard stockCard = presenter.createStockCardForProduct(viewModel);
+        List<StockMovementItem> movementItems = stockCard.getStockMovementItemsWrapper();
+
+        assertThat(stockCard.getStockOnHand()).isEqualTo(110);
+        assertThat(movementItems.size()).isEqualTo(1);
+        assertThat(movementItems.get(0).getStockOnHand()).isEqualTo(110);
+        assertThat(stockCard.getExpireDates()).isEqualTo("20/1/2026,15/2/2026,30/5/2026");
+    }
+
+    @Test
+    public void shouldGetKitStockCardWithUnpackMovementItem() throws Exception {
+        Product kit = new ProductBuilder().setIsKit(true).setProductId(888L)
+                .setCode("SD1112").setPrimaryName("primary name").build();
+
+        StockCard kitStockCard = new StockCardBuilder().setStockCardId(112)
+                .setStockOnHand(1000)
+                .setCreateDate(new Date())
+                .setProduct(kit)
+                .build();
+
+        presenter.kitCode = "SD1112";
+        when(productRepository.getByCode("SD1112")).thenReturn(kit);
+        when(stockRepository.queryStockCardByProductId(888L)).thenReturn(kitStockCard);
+
+        StockCard stockCardWithMovementItems = presenter.getStockCardForKit();
+
+        assertThat(stockCardWithMovementItems.getStockOnHand()).isEqualTo(999);
+        assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().size()).isEqualTo(1);
+        assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getMovementQuantity()).isEqualTo(1);
+        assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getStockOnHand()).isEqualTo(999);
     }
 
     @Test
