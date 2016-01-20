@@ -14,8 +14,13 @@ android {
         applicationId "org.openlmis.core"
         minSdkVersion 17
         targetSdkVersion 21
-        versionCode androidVersionCode.toInteger()
-        versionName semanticVersion
+        if (project.hasProperty("prodsim")) {
+            versionCode new Date().getTime().toInteger()
+            versionName "$prodsim"
+        } else {
+            versionCode androidVersionCode.toInteger()
+            versionName semanticVersion
+        }
     }
 
     signingConfigs {
