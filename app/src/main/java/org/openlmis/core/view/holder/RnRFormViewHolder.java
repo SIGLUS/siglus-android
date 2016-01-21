@@ -76,7 +76,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 configHolder(model.getPeriod(), Html.fromHtml(error), R.drawable.ic_error, R.color.color_red, model.getForm());
                 break;
             case RnRFormViewModel.TYPE_HISTORICAL:
-                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedDate())), R.drawable.ic_done, INT_UNSET, model.getForm());
+                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedDate())), R.drawable.ic_done_green, INT_UNSET, model.getForm());
                 btnView.setText(context.getString(R.string.btn_view_requisition, model.getName()));
                 btnView.setOnClickListener(new BtnViewClickListener(model, programCode));
                 break;
