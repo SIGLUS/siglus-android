@@ -1,6 +1,6 @@
 LMIS_MOZ_DIR="#{Dir.pwd}/../lmis-moz"
 
-After do |scenario|
+After('~@regression', '@upgrade_setup') do
   reset_server_data
 end
 

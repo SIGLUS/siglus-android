@@ -4,7 +4,7 @@ AfterConfiguration do |config|
   FeatureNameMemory.feature_name = nil
 end
 
-Before do |scenario|
+Before('~@regression') do |scenario|
   @scenario_is_outline = (scenario.class == Cucumber::Ast::OutlineTable::ExampleRow)
   if @scenario_is_outline
     scenario = scenario.scenario_outline
