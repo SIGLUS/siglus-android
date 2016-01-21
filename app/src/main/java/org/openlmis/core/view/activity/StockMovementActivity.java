@@ -110,6 +110,10 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         }
 
         initUI();
+
+        if (savedInstanceState == null) {
+            presenter.loadStockMovementViewModels();
+        }
     }
 
     @Override
@@ -148,7 +152,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             tvCmmLabel.setVisibility(View.GONE);
         }
 
-        presenter.loadStockMovementViewModels();
     }
 
     private void showBanner() {
