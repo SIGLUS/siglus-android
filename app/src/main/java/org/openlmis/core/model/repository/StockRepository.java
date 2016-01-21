@@ -29,7 +29,6 @@ import com.j256.ormlite.table.TableUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.StockMovementIsNullException;
-import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
@@ -68,22 +67,6 @@ public class StockRepository {
         stockItemGenericDao = new GenericDao<>(StockMovementItem.class, context);
         draftInventoryGenericDao = new GenericDao<>(DraftInventory.class, context);
         productGenericDao = new GenericDao<>(Product.class, context);
-    }
-
-    public void batchSave(final List<StockCard> stockCards) {
-        try {
-            dbUtil.withDaoAsBatch(StockCard.class, new DbUtil.Operation<StockCard, Object>() {
-                @Override
-                public Object operate(Dao<StockCard, String> dao) throws SQLException {
-                    for (StockCard stockCard : stockCards) {
-                        dao.createOrUpdate(stockCard);
-                    }
-                    return null;
-                }
-            });
-        } catch (LMISException e) {
-            e.reportToFabric();
-        }
     }
 
     public void batchSaveStockCardsWithMovementItems(final List<StockCard> stockCards) {
@@ -206,14 +189,6 @@ public class StockRepository {
         } catch (SQLException e) {
             throw new LMISException(e);
         }
-    }
-
-    protected StockMovementItem initStockMovementItem(StockCard stockCard) {
-        StockMovementItem initInventory = new StockMovementItem(stockCard);
-        initInventory.setReason(MovementReasonManager.INVENTORY);
-        initInventory.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
-        initInventory.setMovementQuantity(stockCard.getStockOnHand());
-        return initInventory;
     }
 
     public void addStockMovementAndUpdateStockCard(StockMovementItem stockMovementItem) throws LMISException {

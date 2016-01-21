@@ -2,15 +2,16 @@ package org.openlmis.core.model;
 
 import com.google.inject.AbstractModule;
 
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
-import org.openlmis.core.network.adapter.StockCardAdapter;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.List;
 import roboguice.RoboGuice;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.mock;
 
 
@@ -62,6 +64,19 @@ public class StockCardTest {
     public void shouldGetEarliestExpireDate() throws Exception {
         stockCard.setExpireDates("18/10/2015,18/10/2016,18/10/2017,18/10/2018");
         assertThat(stockCard.getEarliestExpireDate()).isEqualTo("18/10/2015");
+    }
+
+    @Test
+    public void shouldInitStockMovementFromStockCard() throws Exception {
+        StockCard stockCard = StockCardBuilder.buildStockCard();
+        stockCard.setStockOnHand(200);
+        StockMovementItem stockMovementItem = stockCard.generateInitialStockMovementItem();
+
+        MatcherAssert.assertThat(stockMovementItem.getMovementQuantity(), is(200L));
+        MatcherAssert.assertThat(stockMovementItem.getStockOnHand(), is(200L));
+        MatcherAssert.assertThat(stockMovementItem.getReason(), is(MovementReasonManager.INVENTORY));
+        MatcherAssert.assertThat(stockMovementItem.getMovementType(), is(StockMovementItem.MovementType.PHYSICAL_INVENTORY));
+        MatcherAssert.assertThat(stockMovementItem.getStockCard(), is(stockCard));
     }
 
     public class MyTestModule extends AbstractModule {

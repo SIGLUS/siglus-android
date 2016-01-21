@@ -28,19 +28,18 @@ import org.mockito.internal.matchers.NotNull;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
-import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -98,22 +97,23 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(stockRepository.list().get(0).getProduct(), is(NotNull.NOT_NULL));
     }
 
-
     @Test
-    public void shouldBatchSaveSuccessful() throws LMISException {
+    public void shouldBatchSaveStockcardAndMovementSuccessful() throws LMISException {
         ArrayList<StockCard> stockCards = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             StockCard stockCard = new StockCard();
             stockCard.setStockOnHand(i);
             stockCard.setProduct(product);
+            stockCard.setStockMovementItemsWrapper(Arrays.asList(stockCard.generateInitialStockMovementItem()));
 
             stockCards.add(stockCard);
         }
 
-        stockRepository.batchSave(stockCards);
+        stockRepository.batchSaveStockCardsWithMovementItems(stockCards);
 
         assertThat(stockRepository.list().size(), is(10));
         assertThat(stockRepository.list().get(0).getProduct(), is(NotNull.NOT_NULL));
+        assertThat(stockRepository.list().get(0).getForeignStockMovementItems().size(), is(1));
     }
 
     @Test
@@ -184,19 +184,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(items.size(), is(2));
         assertThat(items.get(0).isSynced(), is(true));
         assertThat(items.get(1).isSynced(), is(true));
-    }
-
-    @Test
-    public void shouldInitStockMovementFromStockCard() throws Exception {
-        StockCard stockCard = StockCardBuilder.buildStockCard();
-        stockCard.setStockOnHand(200);
-        StockMovementItem stockMovementItem = stockRepository.initStockMovementItem(stockCard);
-
-        assertThat(stockMovementItem.getMovementQuantity(), is(200L));
-        assertThat(stockMovementItem.getStockOnHand(), is(200L));
-        assertThat(stockMovementItem.getReason(), is(MovementReasonManager.INVENTORY));
-        assertThat(stockMovementItem.getMovementType(), is(StockMovementItem.MovementType.PHYSICAL_INVENTORY));
-        assertThat(stockMovementItem.getStockCard(), is(stockCard));
     }
 
     @Test
