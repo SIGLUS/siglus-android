@@ -17,6 +17,10 @@
             android:layout_height="wrap_content"
             tools:text="Period text is here" />
 
+        <View
+            android:id="@+id/action_divider"
+            style="@style/HorizontalLine" />
+
         <TextView
             android:id="@+id/tx_message"
             style="@style/ItemRnr.MessageTextType2"
