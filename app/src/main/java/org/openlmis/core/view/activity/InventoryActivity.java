@@ -126,14 +126,14 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
     }
 
     @Override
-    public void goToParentPage(){
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)){
+    public void goToParentPage() {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
             goToMainPage();
-        }else {
-            if ( isPhysicalInventory ) {
+        } else {
+            if (isPhysicalInventory) {
                 setResult(Activity.RESULT_OK);
                 finish();
-            }else {
+            } else {
                 goToMainPage();
             }
         }
