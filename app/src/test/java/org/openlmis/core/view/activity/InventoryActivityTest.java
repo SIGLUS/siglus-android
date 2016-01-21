@@ -28,6 +28,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -41,11 +42,11 @@ import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
 
-
 import java.util.List;
 
 import roboguice.RoboGuice;
 import rx.Observable;
+import rx.Subscriber;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -99,6 +100,29 @@ public class InventoryActivityTest {
 
         Intent startIntent = shadowOf(inventoryActivity).getNextStartedActivity();
         assertEquals(startIntent.getComponent().getClassName(), HomeActivity.class.getName());
+    }
+
+    @Test
+    public void shouldGoBackToParentPageWhenInventoryPageFinished(){
+        // from physical Inventory Page, go back to homePage
+
+        Intent intentFromParentActivity = new Intent();
+        intentFromParentActivity.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
+
+        Observable<List<StockCardViewModel>> value = Observable.create(new Observable.OnSubscribe<List<StockCardViewModel>>() {
+            @Override
+            public void call(Subscriber<? super List<StockCardViewModel>> subscriber) {
+
+            }
+        });
+        when(mockedPresenter.loadPhysicalInventory()).thenReturn(value);
+
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_home_page_update, true);
+
+        inventoryActivity = Robolectric.buildActivity(InventoryActivity.class).withIntent(intentFromParentActivity).create().get();
+        inventoryActivity.goToParentPage();
+
+        assertTrue(inventoryActivity.isFinishing());
     }
 
     @Test
