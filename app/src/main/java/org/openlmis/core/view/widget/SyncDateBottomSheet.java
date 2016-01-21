@@ -18,7 +18,6 @@ import com.google.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.model.SyncType;
 import org.openlmis.core.presenter.SyncErrorsPresenter;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
@@ -84,18 +83,17 @@ public class SyncDateBottomSheet extends BaseDialogFragment {
         if (arguments == null) {
             return;
         }
-        txRnrFormSyncTime.setText(arguments.getString(RNR_SYNC_TIME));
-        txStockCardSyncTime.setText(arguments.getString(STOCK_SYNC_TIME));
+        txRnrFormSyncTime.setText(formatRnrLastSyncTime(arguments.getLong(RNR_SYNC_TIME)));
+        txStockCardSyncTime.setText(formatStockCardLastSyncTime(arguments.getLong(STOCK_SYNC_TIME)));
 
-        if (presenter.hasSyncError(SyncType.RnRForm)) {
+        if (presenter.hasRnrSyncError()) {
             ivRnRError.setVisibility(View.VISIBLE);
         }
 
-        if (presenter.hasSyncError(SyncType.StockCards)) {
+        if (presenter.hasStockCardSyncError()) {
             ivStockcardError.setVisibility(View.VISIBLE);
         }
     }
-
 
     public void show(FragmentManager fragmentManager) {
         super.show(fragmentManager, "sync_date_bottom_sheet");
@@ -104,17 +102,14 @@ public class SyncDateBottomSheet extends BaseDialogFragment {
 
     public static Bundle getArgumentsToMe(long rnrLastSyncTime, long stockLastSyncTime) {
         Bundle bundle = new Bundle();
-        bundle.putString(SyncDateBottomSheet.RNR_SYNC_TIME, formatRnrLastSyncTime(rnrLastSyncTime));
-        bundle.putString(SyncDateBottomSheet.STOCK_SYNC_TIME, formatStockCardLastSyncTime(stockLastSyncTime));
+        bundle.putLong(SyncDateBottomSheet.RNR_SYNC_TIME, rnrLastSyncTime);
+        bundle.putLong(SyncDateBottomSheet.STOCK_SYNC_TIME, stockLastSyncTime);
         return bundle;
     }
 
     //This method will move static and change to private after remove home page update feature toggle
-    private static String formatLastSyncTime(long stockSyncedTimestamp, int syncTimeStringRId) {
-        if (stockSyncedTimestamp == 0) {
-            return StringUtils.EMPTY;
-        }
-        long diff = DateUtil.calculateTimeIntervalFromNow(stockSyncedTimestamp);
+    private static String formatLastSyncTime(long syncedTimestamp, int syncTimeStringRId) {
+        long diff = DateUtil.calculateTimeIntervalFromNow(syncedTimestamp);
         String syncTimeIntervalWithUnit;
         if (diff < DateUtil.MILLISECONDS_HOUR) {
             int quantity = (int) (diff / DateUtil.MILLISECONDS_MINUTE);
@@ -129,13 +124,19 @@ public class SyncDateBottomSheet extends BaseDialogFragment {
         return LMISApp.getContext().getResources().getString(syncTimeStringRId, syncTimeIntervalWithUnit);
     }
 
-    //This method will move static and change to private after remove home page update feature toggle
-    public static String formatRnrLastSyncTime(long rnrSyncedTimestamp) {
-        return formatLastSyncTime(rnrSyncedTimestamp, R.string.label_rnr_form_last_synced_time_ago);
+    //This method will change to private after remove home page update feature toggle
+    public String formatRnrLastSyncTime(long lastRnrSyncedTimestamp) {
+        if (lastRnrSyncedTimestamp == 0) {
+            return presenter.hasRnrSyncError() ? LMISApp.getContext().getString(R.string.initial_rnr_sync_failed) : StringUtils.EMPTY;
+        }
+        return formatLastSyncTime(lastRnrSyncedTimestamp, R.string.label_rnr_form_last_synced_time_ago);
     }
 
-    //This method will move static and change to private after remove home page update feature toggle
-    public static String formatStockCardLastSyncTime(long rnrSyncedTimestamp) {
-        return formatLastSyncTime(rnrSyncedTimestamp, R.string.label_stock_card_last_synced_time_ago);
+    //This method will change to private after remove home page update feature toggle
+    public String formatStockCardLastSyncTime(long lastStockCardSyncedTimestamp) {
+        if (lastStockCardSyncedTimestamp == 0) {
+            return presenter.hasStockCardSyncError() ? LMISApp.getContext().getString(R.string.initial_stock_movement_sync_failed) : StringUtils.EMPTY;
+        }
+        return formatLastSyncTime(lastStockCardSyncedTimestamp, R.string.label_stock_card_last_synced_time_ago);
     }
 }

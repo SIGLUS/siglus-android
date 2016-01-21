@@ -8,9 +8,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.inject.Inject;
+
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.presenter.SyncErrorsPresenter;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.activity.BaseActivity;
 
@@ -24,6 +27,10 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
 
     @InjectView(R.id.iv_sync_time_icon)
     ImageView ivSyncTimeIcon;
+
+    @Inject
+    SyncErrorsPresenter syncErrorsPresenter;
+
     protected Context context;
     protected long rnrLastSyncTime;
     protected long stockLastSyncTime;
@@ -55,7 +62,10 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
         rnrLastSyncTime = SharedPreferenceMgr.getInstance().getRnrLastSyncTime();
         stockLastSyncTime = SharedPreferenceMgr.getInstance().getStockLastSyncTime();
 
-        if (rnrLastSyncTime == 0 && stockLastSyncTime == 0) {
+        if (isNeverSyncSuccessful()) {
+            if (hasSyncFailed()) {
+                txSyncTime.setText(LMISApp.getContext().getString(R.string.initial_sync_failed));
+            }
             return;
         }
 
@@ -81,6 +91,14 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
         }
 
         txSyncTime.setText(LMISApp.getContext().getResources().getString(R.string.label_last_synced_ago, syncTimeIntervalWithUnit));
+    }
+
+    private boolean isNeverSyncSuccessful() {
+        return rnrLastSyncTime == 0 && stockLastSyncTime == 0;
+    }
+
+    private boolean hasSyncFailed() {
+        return syncErrorsPresenter.hasRnrSyncError() || syncErrorsPresenter.hasStockCardSyncError();
     }
 
     private long getSyncTimeInterval(long rnrLastSyncTime, long stockLastSyncTime) {

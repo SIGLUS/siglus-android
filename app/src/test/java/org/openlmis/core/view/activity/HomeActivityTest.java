@@ -52,8 +52,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
@@ -114,13 +112,6 @@ public class HomeActivityTest {
 
         assertThat(startedIntent.getComponent().getClassName(), equalTo(RnRFormListActivity.class.getName()));
         assertThat(startedIntent.getStringExtra(Constants.PARAM_PROGRAM_CODE), is(VIARepository.VIA_PROGRAM_CODE));
-    }
-
-    @Test
-    public void shouldRefreshSyncedTime() throws Exception {
-        HomeActivity activity = spy(homeActivity);
-        activity.onResume();
-        verify(activity).setSyncedTime();
     }
 
     private void verifyNextPage(String className) {

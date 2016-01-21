@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.model.SyncType;
 import org.openlmis.core.presenter.SyncErrorsPresenter;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
@@ -73,13 +72,33 @@ public class SyncDateBottomSheetTest {
 
         String formatStockCardLastSyncTimeWithDay = fragment.formatStockCardLastSyncTime(new Date().getTime() - 20 * DateUtil.MILLISECONDS_DAY);
         assertThat(formatStockCardLastSyncTimeWithDay, equalTo("Stock cards last synced 20 days ago"));
+    }
 
+    @Test
+    public void shouldShowErrorMsgWhenFirstSyncFailed() throws Exception {
+        when(presenter.hasRnrSyncError()).thenReturn(true);
+        when(presenter.hasStockCardSyncError()).thenReturn(true);
+
+        String formatRnrLastSyncTime = fragment.formatRnrLastSyncTime(0);
+        assertThat(formatRnrLastSyncTime, equalTo("Initial requisition sync failed"));
+
+        String formatStockCardLastSyncTimeWithMinute = fragment.formatStockCardLastSyncTime(0);
+        assertThat(formatStockCardLastSyncTimeWithMinute, equalTo("Initial stock card sync failed"));
+    }
+
+    @Test
+    public void shouldShowEmptyMsgWhenHasNotSynced() throws Exception {
+        String formatRnrLastSyncTime = fragment.formatRnrLastSyncTime(0);
+        assertThat(formatRnrLastSyncTime, equalTo(""));
+
+        String formatStockCardLastSyncTimeWithMinute = fragment.formatStockCardLastSyncTime(0);
+        assertThat(formatStockCardLastSyncTimeWithMinute, equalTo(""));
     }
 
     @Test
     public void shouldShowErrorIconWhenHasSyncError() throws Exception {
-        when(presenter.hasSyncError(SyncType.RnRForm)).thenReturn(true);
-        when(presenter.hasSyncError(SyncType.StockCards)).thenReturn(true);
+        when(presenter.hasRnrSyncError()).thenReturn(true);
+        when(presenter.hasStockCardSyncError()).thenReturn(true);
         fragment.onViewCreated(null, null);
 
         assertThat(fragment.ivRnRError.getVisibility(), is(View.VISIBLE));

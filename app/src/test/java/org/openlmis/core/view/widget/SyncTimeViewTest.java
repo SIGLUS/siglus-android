@@ -1,5 +1,8 @@
 package org.openlmis.core.view.widget;
 
+import com.google.inject.Binder;
+import com.google.inject.Module;
+
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,12 +11,16 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.presenter.SyncErrorsPresenter;
 import org.robolectric.RuntimeEnvironment;
 
 import roboguice.RoboGuice;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
@@ -21,10 +28,19 @@ public class SyncTimeViewTest {
 
     protected SyncTimeView syncTimeView;
     protected SharedPreferenceMgr sharedPreferenceMgr;
+    private SyncErrorsPresenter mockPresenter;
 
     @Before
     public void setUp() throws Exception {
+        mockPresenter = mock(SyncErrorsPresenter.class);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_home_page_update, true);
+
+        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
+            @Override
+            public void configure(Binder binder) {
+                binder.bind(SyncErrorsPresenter.class).toInstance(mockPresenter);
+            }
+        });
         syncTimeView = new SyncTimeView(LMISTestApp.getContext());
         sharedPreferenceMgr = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SharedPreferenceMgr.class);
     }
@@ -75,5 +91,24 @@ public class SyncTimeViewTest {
         syncTimeView.showLastSyncTime();
         assertThat(syncTimeView.txSyncTime.getText().toString(), is("3 days since last sync"));
         assertThat(shadowOf(syncTimeView.ivSyncTimeIcon.getDrawable()).getCreatedFromResId(), is(R.drawable.icon_circle_red));
+    }
+
+    @Test
+    public void shouldShowErrorMsgWhenNeverSyncSuccessful() throws Exception {
+        LMISTestApp.getInstance().setCurrentTimeMillis(0);
+        sharedPreferenceMgr.setRnrLastSyncTime();
+        LMISTestApp.getInstance().setCurrentTimeMillis(0);
+        sharedPreferenceMgr.setStockLastSyncTime();
+
+        when(mockPresenter.hasStockCardSyncError()).thenReturn(true);
+
+        syncTimeView.showLastSyncTime();
+        assertThat(syncTimeView.txSyncTime.getText().toString(), is("Initial sync failed"));
+        assertNull(syncTimeView.ivSyncTimeIcon.getDrawable());
+
+        when(mockPresenter.hasRnrSyncError()).thenReturn(true);
+        syncTimeView.showLastSyncTime();
+        assertThat(syncTimeView.txSyncTime.getText().toString(), is("Initial sync failed"));
+        assertNull(syncTimeView.ivSyncTimeIcon.getDrawable());
     }
 }

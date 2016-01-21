@@ -80,6 +80,7 @@ public class HomeActivity extends BaseActivity {
     SyncService syncService;
 
     private boolean exitPressedOnce = false;
+    protected SyncDateBottomSheet syncDateBottomSheetForOldHomeActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +91,7 @@ public class HomeActivity extends BaseActivity {
             setTitle(UserInfoMgr.getInstance().getFacilityName());
             syncTimeView = (SyncTimeView) findViewById(R.id.view_sync_time);
         } else {
+            syncDateBottomSheetForOldHomeActivity = new SyncDateBottomSheet();
             setContentView(R.layout.activity_home_page_old);
             txLastSyncedStockCard = (TextView) findViewById(R.id.tx_last_synced_stockcard);
             txLastSyncedRnrForm = (TextView) findViewById(R.id.tx_last_synced_rnrform);
@@ -194,12 +196,12 @@ public class HomeActivity extends BaseActivity {
 
     private void showRnrFormLastSyncedTime() {
         long rnrSyncedTimestamp = SharedPreferenceMgr.getInstance().getRnrLastSyncTime();
-        txLastSyncedRnrForm.setText(SyncDateBottomSheet.formatRnrLastSyncTime(rnrSyncedTimestamp));
+        txLastSyncedRnrForm.setText(syncDateBottomSheetForOldHomeActivity.formatRnrLastSyncTime(rnrSyncedTimestamp));
     }
 
     private void showStockCardLastSyncedTime() {
         long stockSyncedTimestamp = SharedPreferenceMgr.getInstance().getStockLastSyncTime();
-        txLastSyncedStockCard.setText(SyncDateBottomSheet.formatStockCardLastSyncTime(stockSyncedTimestamp));
+        txLastSyncedStockCard.setText(syncDateBottomSheetForOldHomeActivity.formatStockCardLastSyncTime(stockSyncedTimestamp));
     }
 
     @Override

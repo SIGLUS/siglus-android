@@ -67,6 +67,9 @@
     <string name="label_stock_card_last_synced_time_ago">Stock cards last synced %s ago</string>
     <string name="msg_back_twice_to_exit">Press back button again to exit.</string>
     <string name="action_sign_out">Sign Out</string>
+    <string name="initial_rnr_sync_failed">Initial requisition sync failed</string>
+    <string name="initial_stock_movement_sync_failed">Initial stock card sync failed</string>
+    <string name="initial_sync_failed">Initial sync failed</string>
 
     <!--MMIA-->
     <string name="label_mmia_title">MMIA - %1$s to %2$s</string>
@@ -255,5 +258,4 @@
     <string name="label_view_movement_history">View movement history</string>
     <string name="label_add_drug_to_stock">Add drug to stock overview</string>
     <string name="label_empty_archived_drugs">There are no archived drugs</string>
-
 </resources>

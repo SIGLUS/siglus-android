@@ -21,7 +21,15 @@ public class SyncErrorsPresenter extends Presenter {
         this.view = (SyncDateBottomSheet) v;
     }
 
-    public boolean hasSyncError(SyncType syncType) {
+    public boolean hasRnrSyncError() {
+        return hasSyncError(SyncType.RnRForm);
+    }
+
+    public boolean hasStockCardSyncError() {
+        return hasSyncError(SyncType.StockCards);
+    }
+
+    private boolean hasSyncError(SyncType syncType) {
         try {
             return repository.hasSyncErrorOf(syncType);
         } catch (LMISException e) {
