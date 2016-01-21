@@ -20,7 +20,6 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.AbstractModule;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -99,11 +98,6 @@ public class LoginPresenterTest {
         presenter.attachView(mockActivity);
         syncSubscriber = presenter.getSyncSubscriber();
         presenter = spy(presenter);
-    }
-
-    @After
-    public void teardown() {
-        RoboGuice.Util.reset();
     }
 
     @Test

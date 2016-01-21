@@ -21,7 +21,6 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.AbstractModule;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,11 +42,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import roboguice.RoboGuice;
-import rx.Scheduler;
-import rx.android.plugins.RxAndroidPlugins;
-import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.observers.TestSubscriber;
-import rx.schedulers.Schedulers;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -85,19 +80,6 @@ public class MMIARequisitionPresenterTest {
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
 
         presenter.loadDataOnNextAction.call(rnRForm);
-
-        RxAndroidPlugins.getInstance().reset();
-        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
-            @Override
-            public Scheduler getMainThreadScheduler() {
-                return Schedulers.immediate();
-            }
-        });
-    }
-
-    @After
-    public void tearDown() {
-        RoboGuice.Util.reset();
     }
 
     @Test

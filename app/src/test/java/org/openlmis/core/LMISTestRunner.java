@@ -32,6 +32,12 @@ import org.robolectric.manifest.AndroidManifest;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
+import roboguice.RoboGuice;
+import rx.Scheduler;
+import rx.android.plugins.RxAndroidPlugins;
+import rx.android.plugins.RxAndroidSchedulersHook;
+import rx.schedulers.Schedulers;
+
 public class LMISTestRunner extends RobolectricTestRunner {
 
     /**
@@ -83,9 +89,22 @@ public class LMISTestRunner extends RobolectricTestRunner {
         }
 
         @Override
+        public void beforeTest(Method method) {
+            super.beforeTest(method);
+            RxAndroidPlugins.getInstance().reset();
+            RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
+                @Override
+                public Scheduler getMainThreadScheduler() {
+                    return Schedulers.immediate();
+                }
+            });
+        }
+
+        @Override
         public void afterTest(Method method) {
             super.afterTest(method);
             LmisSqliteOpenHelper.getInstance(RuntimeEnvironment.application).close();
+            RoboGuice.Util.reset();
         }
     }
 }

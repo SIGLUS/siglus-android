@@ -48,11 +48,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import roboguice.RoboGuice;
-import rx.Scheduler;
-import rx.android.plugins.RxAndroidPlugins;
-import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.observers.TestSubscriber;
-import rx.schedulers.Schedulers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.Lists.newArrayList;
@@ -87,14 +83,6 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         stockMovementPresenter.attachView(view);
         stockMovementPresenter.stockCard = StockCardBuilder.buildStockCard();
         stockMovementPresenter.sharedPreferenceMgr = sharedPreferenceMgr;
-
-        RxAndroidPlugins.getInstance().reset();
-        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
-            @Override
-            public Scheduler getMainThreadScheduler() {
-                return Schedulers.immediate();
-            }
-        });
     }
 
     @Test
