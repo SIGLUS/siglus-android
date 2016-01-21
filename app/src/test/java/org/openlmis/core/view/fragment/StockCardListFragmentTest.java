@@ -138,7 +138,7 @@ public class StockCardListFragmentTest {
         when(sharedPreferenceMgr.isNeedShowProductsUpdateBanner()).thenReturn(true);
         when(productUpdateBanner.getVisibility()).thenReturn(View.VISIBLE);
 
-        fragment.onActivityResult(Constants.REQUEST_CODE_CHANGE, Activity.RESULT_OK, new Intent());
+        fragment.onActivityResult(Constants.REQUEST_FROM_STOCK_LIST_PAGE, Activity.RESULT_OK, new Intent());
 
         verify(productUpdateBanner).refreshBannerText();
     }
@@ -146,7 +146,7 @@ public class StockCardListFragmentTest {
     @Test
     public void shouldRefreshAndShowBannerWhenNeedShowBanner(){
         fragment.productsUpdateBanner = productUpdateBanner;
-        fragment.onActivityResult(Constants.REQUEST_CODE_CHANGE, Activity.RESULT_OK, new Intent());
+        fragment.onActivityResult(Constants.REQUEST_FROM_STOCK_LIST_PAGE, Activity.RESULT_OK, new Intent());
 
         verify(productUpdateBanner).refreshBannerText();
     }

@@ -146,24 +146,24 @@ public class RnRFormViewHolder extends BaseViewHolder {
             if (model.getType() == RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY) {
                 Intent intent = new Intent(context, InventoryActivity.class);
                 intent.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
-                ((Activity)context).startActivityForResult(intent, Constants.REQUEST_CODE_CHANGE);
+                ((Activity)context).startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
                 return;
             }
 
             if (model.getType() == RnRFormViewModel.TYPE_HISTORICAL) {
                 if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
-                    ((Activity)context).startActivityForResult(MMIARequisitionActivity.getIntentToMe(context, model.getId()), Constants.REQUEST_CODE_CHANGE);
+                    ((Activity)context).startActivityForResult(MMIARequisitionActivity.getIntentToMe(context, model.getId()), Constants.REQUEST_FROM_RNR_LIST_PAGE);
                 } else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)) {
-                    ((Activity)context).startActivityForResult(VIARequisitionActivity.getIntentToMe(context, model.getId()), Constants.REQUEST_CODE_CHANGE);
+                    ((Activity)context).startActivityForResult(VIARequisitionActivity.getIntentToMe(context, model.getId()), Constants.REQUEST_FROM_RNR_LIST_PAGE);
                 }
                 return;
             }
 
             if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
-                ((Activity)context).startActivityForResult(MMIARequisitionActivity.getIntentToMe(context, DEFAULT_FORM_ID_OF_NOT_AUTHORIZED), Constants.REQUEST_CODE_CHANGE);
+                ((Activity)context).startActivityForResult(MMIARequisitionActivity.getIntentToMe(context, DEFAULT_FORM_ID_OF_NOT_AUTHORIZED), Constants.REQUEST_FROM_RNR_LIST_PAGE);
 
             } else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)) {
-                ((Activity)context).startActivityForResult(VIARequisitionActivity.getIntentToMe(context, DEFAULT_FORM_ID_OF_NOT_AUTHORIZED), Constants.REQUEST_CODE_CHANGE);
+                ((Activity)context).startActivityForResult(VIARequisitionActivity.getIntentToMe(context, DEFAULT_FORM_ID_OF_NOT_AUTHORIZED), Constants.REQUEST_FROM_RNR_LIST_PAGE);
             }
 
         }

@@ -90,7 +90,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_CODE_CHANGE) {
+        if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_FROM_RNR_LIST_PAGE) {
             initUI();
         }
     }

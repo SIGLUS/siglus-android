@@ -58,7 +58,7 @@ public class StockCardListActivity extends SearchBarActivity {
                 startActivity(InventoryActivity.getIntentToMe(this, true));
                 return true;
             case MENU_ID_ARCHIVE_LIST:
-                startActivityForResult(ArchivedDrugsListActivity.getIntentToMe(this), Constants.REQUEST_CODE_CHANGE);
+                startActivityForResult(ArchivedDrugsListActivity.getIntentToMe(this), Constants.REQUEST_FROM_STOCK_LIST_PAGE);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

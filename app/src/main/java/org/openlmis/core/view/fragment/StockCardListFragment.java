@@ -134,7 +134,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_CODE_CHANGE) {
+        if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_FROM_STOCK_LIST_PAGE) {
             presenter.refreshStockCardViewModelsSOH();
             loadStockCards();
             mAdapter.notifyDataSetChanged();
@@ -178,7 +178,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
         @Override
         public void onItemViewClick(StockCardViewModel stockCardViewModel) {
             Intent intent = getStockMovementIntent(stockCardViewModel);
-            startActivityForResult(intent, Constants.REQUEST_CODE_CHANGE);
+            startActivityForResult(intent, Constants.REQUEST_FROM_STOCK_LIST_PAGE);
         }
     };
 
