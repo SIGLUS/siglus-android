@@ -52,7 +52,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     @InjectView(R.id.action_view_history)
     TextView tvHistoryAction;
     @InjectView(R.id.touchArea_checkbox)
-    LinearLayout touchArea_checkbox;
+    LinearLayout taCheckbox;
 
     public InitialInventoryViewHolder(View itemView) {
         super(itemView);
@@ -64,7 +64,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         txQuantity.setHint(R.string.hint_quantity_in_stock);
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)){
-            touchArea_checkbox.setOnClickListener(new View.OnClickListener() {
+            taCheckbox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     triggerCheckbox();
