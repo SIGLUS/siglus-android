@@ -40,15 +40,15 @@
     <string name="label_sync">Sincronizar dados</string>
     <string name="action_add_new_drug">Adicionar novo producto</string>
 
-    <plurals name="minuteUnit">
+    <plurals name="minute_unit">
         <item quantity="one">%s minuto</item>
         <item quantity="other">%s minutos</item>
     </plurals>
-    <plurals name="hourUnit">
+    <plurals name="hour_unit">
         <item quantity="one">%s Hora</item>
         <item quantity="other">%s Horas</item>
     </plurals>
-    <plurals name="dayUnit">
+    <plurals name="day_unit">
         <item quantity="one">%s dia</item>
         <item quantity="other">%s dias</item>
     </plurals>

@@ -118,13 +118,13 @@ public class SyncDateBottomSheet extends BaseDialogFragment {
         String syncTimeIntervalWithUnit;
         if (diff < DateUtil.MILLISECONDS_HOUR) {
             int quantity = (int) (diff / DateUtil.MILLISECONDS_MINUTE);
-            syncTimeIntervalWithUnit = LMISApp.getContext().getResources().getQuantityString(R.plurals.minuteUnit, quantity, quantity);
+            syncTimeIntervalWithUnit = LMISApp.getContext().getResources().getQuantityString(R.plurals.minute_unit, quantity, quantity);
         } else if (diff < DateUtil.MILLISECONDS_DAY) {
             int quantity = (int) (diff / DateUtil.MILLISECONDS_HOUR);
-            syncTimeIntervalWithUnit = LMISApp.getContext().getResources().getQuantityString(R.plurals.hourUnit, quantity, quantity);
+            syncTimeIntervalWithUnit = LMISApp.getContext().getResources().getQuantityString(R.plurals.hour_unit, quantity, quantity);
         } else {
             int quantity = (int) (diff / DateUtil.MILLISECONDS_DAY);
-            syncTimeIntervalWithUnit = LMISApp.getContext().getResources().getQuantityString(R.plurals.dayUnit, quantity, quantity);
+            syncTimeIntervalWithUnit = LMISApp.getContext().getResources().getQuantityString(R.plurals.day_unit, quantity, quantity);
         }
         return LMISApp.getContext().getResources().getString(syncTimeStringRId, syncTimeIntervalWithUnit);
     }

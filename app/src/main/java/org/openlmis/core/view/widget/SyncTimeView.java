@@ -64,19 +64,19 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
         String syncTimeIntervalWithUnit;
         if (syncTimeInterval < DateUtil.MILLISECONDS_HOUR) {
             int quantity = (int) (syncTimeInterval / DateUtil.MILLISECONDS_MINUTE);
-            syncTimeIntervalWithUnit = getResources().getQuantityString(R.plurals.minuteUnit, quantity, quantity);
+            syncTimeIntervalWithUnit = getResources().getQuantityString(R.plurals.minute_unit, quantity, quantity);
             ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_green);
         } else if (syncTimeInterval < DateUtil.MILLISECONDS_DAY) {
             int quantity = (int) (syncTimeInterval / DateUtil.MILLISECONDS_HOUR);
-            syncTimeIntervalWithUnit = getResources().getQuantityString(R.plurals.hourUnit, quantity, quantity);
+            syncTimeIntervalWithUnit = getResources().getQuantityString(R.plurals.hour_unit, quantity, quantity);
             ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_green);
         } else if (syncTimeInterval < DateUtil.MILLISECONDS_DAY * 3) {
             int quantity = (int) (syncTimeInterval / DateUtil.MILLISECONDS_DAY);
-            syncTimeIntervalWithUnit = getResources().getQuantityString(R.plurals.dayUnit, quantity, quantity);
+            syncTimeIntervalWithUnit = getResources().getQuantityString(R.plurals.day_unit, quantity, quantity);
             ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_yellow);
         } else {
             int quantity = (int) (syncTimeInterval / DateUtil.MILLISECONDS_DAY);
-            syncTimeIntervalWithUnit = getResources().getQuantityString(R.plurals.dayUnit, quantity, quantity);
+            syncTimeIntervalWithUnit = getResources().getQuantityString(R.plurals.day_unit, quantity, quantity);
             ivSyncTimeIcon.setImageResource(R.drawable.icon_circle_red);
         }
 

@@ -50,15 +50,15 @@
     <string name="label_mmia">Create a MMIA</string>
     <string name="label_sync">Sync Data</string>
     <string name="action_add_new_drug">Add new product</string>
-    <plurals name="minuteUnit">
+    <plurals name="minute_unit">
         <item quantity="one">%s minute</item>
         <item quantity="other">%s minutes</item>
     </plurals>
-    <plurals name="hourUnit">
+    <plurals name="hour_unit">
         <item quantity="one">%s hour</item>
         <item quantity="other">%s hours</item>
     </plurals>
-    <plurals name="dayUnit">
+    <plurals name="day_unit">
         <item quantity="one">%s day</item>
         <item quantity="other">%s days</item>
     </plurals>
