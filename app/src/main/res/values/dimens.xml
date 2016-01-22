@@ -29,6 +29,7 @@
     <dimen name="margin_larger">40dp</dimen>
 
     <!--Paddings-->
+    <dimen name="padding_tiny">4dp</dimen>
     <dimen name="padding_small">8dp</dimen>
     <dimen name="padding_normal">16dp</dimen>
     <dimen name="padding_medium">24dp</dimen>
