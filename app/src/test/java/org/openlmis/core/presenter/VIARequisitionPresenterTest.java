@@ -113,7 +113,6 @@ public class VIARequisitionPresenterTest {
     @Test
     public void shouldValidateFormReturnFalseWhenKitDataInvalid() throws Exception {
         when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
-        when(VIARequisitionFragment.validateKitData()).thenReturn(false);
         boolean result = presenter.validateForm();
         assertFalse(result);
     }
@@ -121,7 +120,6 @@ public class VIARequisitionPresenterTest {
     @Test
     public void shouldReturnTrueWhenValidateFormSuccess() throws Exception {
         when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
-        when(VIARequisitionFragment.validateKitData()).thenReturn(true);
 
         List<RequisitionFormItemViewModel> list = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
@@ -294,7 +292,6 @@ public class VIARequisitionPresenterTest {
     public void shouldShowErrorMSGWhenThereWasARequisitionInTheSamePeriod() throws Exception {
         when(mockRnrFormRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(false);
         when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
-        when(VIARequisitionFragment.validateKitData()).thenReturn(true);
 
         presenter.processRequisition("123");
         verify(VIARequisitionFragment).showErrorMessage(LMISTestApp.getContext().getResources().getString(R.string.msg_requisition_not_unique));
@@ -302,12 +299,11 @@ public class VIARequisitionPresenterTest {
 
     @Test
     public void shouldNotShowErrorMSGWhenThereWasNoARequisitionInTheSamePeriodAndKitIsOff() throws Exception {
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_kit, false);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_kit, false);
 
         RnRForm rnRForm = new RnRForm();
         rnRForm.setBaseInfoItemListWrapper(newArrayList(new BaseInfoItem()));
         presenter.rnRForm = rnRForm;
-        when(VIARequisitionFragment.validateKitData()).thenReturn(true);
 
         List<RequisitionFormItemViewModel> list = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
@@ -347,7 +343,6 @@ public class VIARequisitionPresenterTest {
 
         when(mockRnrFormRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(true);
         when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
-        when(VIARequisitionFragment.validateKitData()).thenReturn(true);
 
         presenter.processRequisition("123");
 
