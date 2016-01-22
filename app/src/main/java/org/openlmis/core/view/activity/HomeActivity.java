@@ -79,8 +79,10 @@ public class HomeActivity extends BaseActivity {
     @Inject
     SyncService syncService;
 
-    private boolean exitPressedOnce = false;
+    @Inject
     protected SyncDateBottomSheet syncDateBottomSheetForOldHomeActivity;
+
+    private boolean exitPressedOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +93,6 @@ public class HomeActivity extends BaseActivity {
             setTitle(UserInfoMgr.getInstance().getFacilityName());
             syncTimeView = (SyncTimeView) findViewById(R.id.view_sync_time);
         } else {
-            syncDateBottomSheetForOldHomeActivity = new SyncDateBottomSheet();
             setContentView(R.layout.activity_home_page_old);
             txLastSyncedStockCard = (TextView) findViewById(R.id.tx_last_synced_stockcard);
             txLastSyncedRnrForm = (TextView) findViewById(R.id.tx_last_synced_rnrform);
@@ -176,7 +177,6 @@ public class HomeActivity extends BaseActivity {
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE);
         startActivity(intent);
     }
-
 
 
     @Override
