@@ -48,5 +48,6 @@ class << FeatureNameMemory
 end
 
 def reset_regression_server_data
-
+  puts "reset server data..."
+  system("cd #{LMIS_MOZ_DIR} && ./build/setup-data.sh")
 end
