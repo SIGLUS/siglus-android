@@ -81,7 +81,7 @@ public class InitialInventoryViewHolderTest {
         assertThat(viewHolder.actionDivider.getVisibility()).isEqualTo(View.GONE);
         assertThat(viewHolder.actionPanel.getVisibility()).isEqualTo(View.GONE);
 
-        viewHolder.itemView.performClick();
+        viewHolder.taCheckbox.performClick();
 
         assertThat(viewHolder.actionDivider.getVisibility()).isEqualTo(View.VISIBLE);
         assertThat(viewHolder.actionPanel.getVisibility()).isEqualTo(View.VISIBLE);
@@ -132,7 +132,7 @@ public class InitialInventoryViewHolderTest {
 
         viewHolder.populate(viewModel, queryKeyWord, mockedListener);
 
-        viewHolder.itemView.performClick();
+        viewHolder.taCheckbox.performClick();
 
         assertThat(viewModel.getExpiryDates()).isEmpty();
         assertThat(viewModel.getQuantity()).isEmpty();

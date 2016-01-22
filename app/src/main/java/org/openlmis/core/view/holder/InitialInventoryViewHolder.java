@@ -62,22 +62,12 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     private void initView() {
         txQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
         txQuantity.setHint(R.string.hint_quantity_in_stock);
-
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)){
-            taCheckbox.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    triggerCheckbox();
-                }
-            });
-        }else {
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    triggerCheckbox();
-                }
-            });
-        }
+        taCheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                triggerCheckbox();
+            }
+        });
     }
 
     private void triggerCheckbox() {
