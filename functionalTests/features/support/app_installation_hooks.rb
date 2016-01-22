@@ -4,7 +4,11 @@ AfterConfiguration do |config|
   FeatureNameMemory.feature_name = nil
 end
 
-Before('~@regression') do |scenario|
+Before('@regression') do |scenario|
+  reset_regression_server_data
+end
+
+Before('~@upgrade') do |scenario|
   @scenario_is_outline = (scenario.class == Cucumber::Ast::OutlineTable::ExampleRow)
   if @scenario_is_outline
     scenario = scenario.scenario_outline
@@ -41,4 +45,8 @@ FeatureNameMemory = Class.new
 class << FeatureNameMemory
   @feature_name = nil
   attr_accessor :feature_name, :invocation
+end
+
+def reset_regression_server_data
+
 end

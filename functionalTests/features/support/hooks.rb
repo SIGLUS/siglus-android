@@ -1,7 +1,7 @@
 LMIS_MOZ_DIR="#{Dir.pwd}/../lmis-moz"
 
-After('~@regression', '@upgrade_setup') do
-  reset_server_data
+After('~@regression', '~@upgrade_setup') do
+  reset_local_server_data
 end
 
 Before('@clear_app_data') do
@@ -14,7 +14,7 @@ Before('@reinstall_app') do
   install_app(ENV["APP_PATH"])
 end
 
-def reset_server_data
+def reset_local_server_data
   puts "reset server data..."
   system("cd #{LMIS_MOZ_DIR} && ./build/setup-data.sh")
 end

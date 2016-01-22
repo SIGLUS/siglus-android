@@ -221,10 +221,10 @@ task upgradeTests(type: Exec, dependsOn: ['bundleInstall', 'upgradeSetup', 'asse
     }
 
     executable 'calabash-android'
-    args "run", "$targetPath", "--tags @regression --format html --out reports.html"
+    args "run", "$targetPath", "--tags @upgrade --format html --out reports.html"
 }
 
-task regressionTests(type: Exec, dependsOn: ['bundleInstall', 'assembleProdsimDebug']) {
+task regressionTests(type: Exec, dependsOn: ['bundleInstall', 'assembleRegressionDebug']) {
     description 'Run Calabash Tests against specified apk (-PapkPath)'
     group JavaBasePlugin.VERIFICATION_GROUP
     workingDir "$projectDir/../functionalTests"
@@ -234,7 +234,7 @@ task regressionTests(type: Exec, dependsOn: ['bundleInstall', 'assembleProdsimDe
     if (project.hasProperty("apkPath")) {
         targetPath = "$apkPath"
     } else {
-        targetPath = "$projectDir/build/outputs/apk/app-prodsim-debug.apk"
+        targetPath = "$projectDir/build/outputs/apk/app-regression-debug.apk"
     }
 
     executable 'calabash-android'
