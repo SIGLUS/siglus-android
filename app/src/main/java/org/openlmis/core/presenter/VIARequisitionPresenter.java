@@ -28,9 +28,13 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.KitProduct;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
@@ -58,6 +62,12 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
     @Inject
     Context context;
+
+    @Inject
+    StockRepository stockRepository;
+
+    @Inject
+    ProductRepository productRepository;
 
     VIARequisitionView view;
 
@@ -100,7 +110,15 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }).transform(new Function<RnrFormItem, RequisitionFormItemViewModel>() {
             @Override
             public RequisitionFormItemViewModel apply(RnrFormItem item) {
-                return new RequisitionFormItemViewModel(item);
+                RequisitionFormItemViewModel requisitionFormItemViewModel = new RequisitionFormItemViewModel(item);
+
+                try {
+                    setAdjustKitProductAmount(requisitionFormItemViewModel);
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                }
+
+                return requisitionFormItemViewModel;
             }
         }).toList();
     }
@@ -126,6 +144,25 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
+
+    private void setAdjustKitProductAmount(RequisitionFormItemViewModel model) throws LMISException {
+        Product product = model.getItem().getProduct();
+
+        List<KitProduct> kitProducts = productRepository.queryKitProductByProductCode(product.getCode());
+
+        if (kitProducts == null) {
+            return;
+        }
+
+        long adjustmentAmount = 0;
+        for (KitProduct kitProduct : kitProducts) {
+            Product kit = productRepository.getByCode(kitProduct.getKitCode());
+            long stockOnHand = stockRepository.queryStockCardByProductId(kit.getId()).getStockOnHand();
+            adjustmentAmount += stockOnHand * kitProduct.getQuantity();
+        }
+        model.setAdjustKitProductAmount(adjustmentAmount);
+    }
+
 
     @Override
     public void updateUIAfterSubmit() {

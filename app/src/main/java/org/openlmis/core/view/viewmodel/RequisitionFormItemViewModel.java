@@ -39,6 +39,7 @@ public class RequisitionFormItemViewModel {
     private String totalRequest;
     private String requestAmount;
     private String approvedAmount;
+    private long adjustKitProductAmount;
     private RnrFormItem item;
 
     public RequisitionFormItemViewModel() {
