@@ -40,9 +40,9 @@ public class RnRFormViewHolderTest {
 
     private RnRFormViewHolder getViewHolderByType(int viewType) {
         if (viewType == RnRFormViewModel.TYPE_UNSYNC) {
-            return new RnRFormViewHolder(mockAdapter, LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_list_type1, null, false));
+            return new RnRFormViewHolder(mockAdapter, LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card_unsync, null, false));
         } else {
-            return new RnRFormViewHolder(mockAdapter, LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_list_type2, null, false));
+            return new RnRFormViewHolder(mockAdapter, LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card, null, false));
         }
     }
 
@@ -69,7 +69,7 @@ public class RnRFormViewHolderTest {
         form.setStatus(RnRForm.STATUS.DRAFT);
         RnRFormViewModel viewModel = new RnRFormViewModel(form);
 
-        viewHolder = new RnRFormViewHolder(mockAdapter, LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_list_type1, null, false));
+        viewHolder = new RnRFormViewHolder(mockAdapter, LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card_unsync, null, false));
 
         viewHolder.populateOld(viewModel, "MMIA");
 
