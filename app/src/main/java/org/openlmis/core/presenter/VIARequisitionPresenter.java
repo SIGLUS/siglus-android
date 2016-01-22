@@ -34,7 +34,6 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
-import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
@@ -62,9 +61,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
     @Inject
     Context context;
-
-    @Inject
-    StockRepository stockRepository;
 
     @Inject
     ProductRepository productRepository;
@@ -111,16 +107,38 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             @Override
             public RequisitionFormItemViewModel apply(RnrFormItem item) {
                 RequisitionFormItemViewModel requisitionFormItemViewModel = new RequisitionFormItemViewModel(item);
-
-                try {
-                    setAdjustKitProductAmount(requisitionFormItemViewModel);
-                } catch (LMISException e) {
-                    e.printStackTrace();
-                }
-
+                setAdjustKitProductAmount(requisitionFormItemViewModel);
                 return requisitionFormItemViewModel;
             }
         }).toList();
+    }
+
+    private void setAdjustKitProductAmount(RequisitionFormItemViewModel requisitionFormItemViewModel) {
+        Product product = requisitionFormItemViewModel.getItem().getProduct();
+        requisitionFormItemViewModel.setAdjustKitProductAmount(calculateAdjustKitProductAmount(product));
+    }
+
+    private long calculateAdjustKitProductAmount(Product product) {
+        long adjustKitProductAmount = 0;
+        try {
+            List<KitProduct> kitProducts = productRepository.queryKitProductByProductCode(product.getCode());
+            for (KitProduct kitProduct : kitProducts) {
+                adjustKitProductAmount += kitProduct.getQuantity() * getKitSOH(kitProduct.getKitCode());
+            }
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+        return adjustKitProductAmount;
+    }
+
+    private long getKitSOH(String kitCode) {
+        List<RnrFormItem> rnrItems = rnRForm.getRnrItems(IsKit.Yes);
+        for (RnrFormItem item : rnrItems) {
+            if (item.getProduct().getCode().equals(kitCode)) {
+                return item.getInventory();
+            }
+        }
+        return 0;
     }
 
     @Override
@@ -144,25 +162,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
-
-    private void setAdjustKitProductAmount(RequisitionFormItemViewModel model) throws LMISException {
-        Product product = model.getItem().getProduct();
-
-        List<KitProduct> kitProducts = productRepository.queryKitProductByProductCode(product.getCode());
-
-        if (kitProducts == null) {
-            return;
-        }
-
-        long adjustmentAmount = 0;
-        for (KitProduct kitProduct : kitProducts) {
-            Product kit = productRepository.getByCode(kitProduct.getKitCode());
-            long stockOnHand = stockRepository.queryStockCardByProductId(kit.getId()).getStockOnHand();
-            adjustmentAmount += stockOnHand * kitProduct.getQuantity();
-        }
-        model.setAdjustKitProductAmount(adjustmentAmount);
-    }
-
 
     @Override
     public void updateUIAfterSubmit() {
