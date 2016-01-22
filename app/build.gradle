@@ -57,7 +57,7 @@ android {
             applicationId 'org.openlmis.core.staging'
         }
         regression {
-            aplicationId 'org.openlmis.core.regression'
+            applicationId 'org.openlmis.core.regression'
         }
         prd {
             applicationId 'org.openlmis.core'
