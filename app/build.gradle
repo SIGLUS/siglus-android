@@ -241,5 +241,5 @@ task regressionTests(type: Exec, dependsOn: ['bundleInstall', 'assembleRegressio
     }
 
     executable 'calabash-android'
-    args "run", "$targetPath", "--tags @regression --format html --out reports.html"
+    args "run", "$targetPath", "--tags @regression --format html --out regression_test_reports.html"
 }
