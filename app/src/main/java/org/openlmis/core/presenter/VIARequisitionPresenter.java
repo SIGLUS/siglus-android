@@ -147,6 +147,9 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     private long getKitSOH(Product kit) throws LMISException {
+        if (stockRepository.queryStockCardByProductId(kit.getId()) == null) {
+            return 0;
+        }
         return stockRepository.queryStockCardByProductId(kit.getId()).getStockOnHand();
     }
 
@@ -164,8 +167,8 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                     }
                     subscriber.onNext(rnrForm);
                     subscriber.onCompleted();
-                } catch (LMISException e) {
-                    e.reportToFabric();
+                } catch (Exception e) {
+//                    e.reportToFabric();
                     subscriber.onError(e);
                 }
             }

@@ -457,6 +457,42 @@ public class VIARequisitionPresenterTest {
         assertThat(viewModelsFromRnrForm.get(0).getAdjustmentViewModels().get(0).getKitName(), is("KitName"));
     }
 
+    @Test
+    public void shouldNotThrowExceptionWhenKitIsNotFound() throws LMISException {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_kit, true);
+        RnRForm rnRForm = new RnRForm();
+        presenter.rnRForm = rnRForm;
+
+        List<RnrFormItem> rnrFormItemListWrapper = new ArrayList<>();
+        RnrFormItem rnrFormItem = createRnrFormItem(1);
+        rnrFormItem.setInitialAmount(1000);
+        rnrFormItemListWrapper.add(rnrFormItem);
+
+        rnRForm.setRnrFormItemListWrapper(rnrFormItemListWrapper);
+
+        ArrayList<KitProduct> kitProducts = new ArrayList<>();
+        KitProduct kitProduct = new KitProduct();
+        kitProduct.setQuantity(2);
+        kitProduct.setKitCode("kit");
+        kitProducts.add(kitProduct);
+        when(mockProductRepository.queryKitProductByProductCode("code")).thenReturn(kitProducts);
+
+        Product product = new Product();
+        product.setPrimaryName("KitName");
+        when(mockProductRepository.getByCode("kit")).thenReturn(product);
+
+        when(mockStockRepository.queryStockCardByProductId(product.getId())).thenReturn(null);
+
+        List<RequisitionFormItemViewModel> viewModelsFromRnrForm = presenter.getViewModelsFromRnrForm(rnRForm);
+
+        assertThat(viewModelsFromRnrForm.size(), is(1));
+        assertThat(viewModelsFromRnrForm.get(0).getAdjustedTheoretical(), is("999"));
+        assertThat(viewModelsFromRnrForm.get(0).getAdjustmentViewModels().size(), is(1));
+        assertThat(viewModelsFromRnrForm.get(0).getAdjustmentViewModels().get(0).getQuantity(), is(2));
+        assertThat(viewModelsFromRnrForm.get(0).getAdjustmentViewModels().get(0).getKitName(), is("KitName"));
+
+    }
+
     private ViaKitsViewModel buildDefaultViaKit() {
         ViaKitsViewModel viaKitsViewModel = new ViaKitsViewModel();
         viaKitsViewModel.setKitsOpenedCHW("10");
