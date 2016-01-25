@@ -1,4 +1,4 @@
-@STOCK_CARD
+@STOCK_CARD @dev
 Feature: Stock Card Overview page
 
   Scenario: User should be able to add products to inventory and see product updates from servers

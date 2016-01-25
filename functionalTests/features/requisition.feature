@@ -1,4 +1,4 @@
-@REQUISITION
+@REQUISITION @dev
 Feature: Requisition
 
   Scenario: Save requisition draft

@@ -1,4 +1,4 @@
-@LOW_STOCK_CMM
+@LOW_STOCK_CMM @dev
 Feature: low stock
 
   Scenario: Calculate low stock and cmm without stock out in 3 months

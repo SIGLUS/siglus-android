@@ -1,4 +1,4 @@
-@INITIAL_INVENTORY
+@INITIAL_INVENTORY @dev
 Feature: Log in and initialize Inventory
 
   Scenario: User should be able to log in, initialize inventory and navigate to stock overview page

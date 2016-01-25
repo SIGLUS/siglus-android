@@ -1,4 +1,4 @@
-@PHYSICAL_INVENTORY
+@PHYSICAL_INVENTORY @dev
 Feature: Physical Inventory
 
   #Should check scroll up and down very quickly
@@ -59,6 +59,6 @@ Feature: Physical Inventory
 
 
 
-    
+
 
 

@@ -1,4 +1,4 @@
-@MMIA
+@MMIA @dev
 Feature: MMIA
 
   Background: Navigate to Home Page

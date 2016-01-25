@@ -1,4 +1,4 @@
-@STOCK_MOVEMENT
+@STOCK_MOVEMENT @dev
 Feature: stock movement Page
 
   Background: Navigate to Home Page

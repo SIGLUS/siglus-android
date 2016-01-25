@@ -1,4 +1,4 @@
-@MMIA_MISMATCH
+@MMIA_MISMATCH @dev
 Feature: MMIA Page total mismatch
 
   Scenario: When I fill a field, if the regime total and patient total are different, I will see pop up if I press complete without filling comments.

@@ -198,7 +198,7 @@ task functionalTests(type: Exec, dependsOn: ['bundleInstall', 'assembleLocalDebu
     }
 
     executable 'calabash-android'
-    args "run", "$targetPath", "--tags ~@upgrade_setup ~@regression ~@pending --format html --out reports.html"
+    args "run", "$targetPath", "--tags @dev --format html --out reports.html"
 }
 
 task upgradeSetup(type: Exec, dependsOn: ['bundleInstall']) {

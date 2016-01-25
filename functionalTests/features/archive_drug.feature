@@ -1,4 +1,4 @@
-@ARCHIVE_DRUG
+@ARCHIVE_DRUG @dev
 Feature: Archive drug
 
   #Should test that one drug archived at 18th, and archived drug shouldn't appear at mmia/via/physical inventory at next period
