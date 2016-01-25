@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.text.Html;
 import android.text.Spanned;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
@@ -42,6 +44,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
 
     @InjectView(R.id.iv_del)
     View ivDelete;
+    private RnRForm form;
 
     public RnRFormViewHolder(RnRFormListAdapter rnRFormListAdapter, View inflate) {
         super(inflate);
@@ -49,10 +52,10 @@ public class RnRFormViewHolder extends BaseViewHolder {
     }
 
     public void populate(final RnRFormViewModel model, String programCode) {
-        if(btnViewOld != null) {
+        if (btnViewOld != null) {
             btnViewOld.setVisibility(View.GONE);
         }
-
+        form = model.getForm();
         switch (model.getType()) {
             case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY:
                 configHolder(model, R.string.label_uncompleted_physical_inventory_message, R.string.btn_view_uncompleted_physical_inventory);
@@ -73,10 +76,10 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 if (model.getSyncServerErrorMessage() != null) {
                     error = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage(model.getSyncServerErrorMessage());
                 }
-                configHolder(model.getPeriod(), Html.fromHtml(error), R.drawable.ic_error, R.color.color_red, model.getForm());
+                configHolder(model.getPeriod(), Html.fromHtml(error), R.drawable.ic_error, R.color.color_red, form);
                 break;
             case RnRFormViewModel.TYPE_HISTORICAL:
-                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedDate())), R.drawable.ic_done_green, INT_UNSET, model.getForm());
+                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedDate())), R.drawable.ic_done_green, INT_UNSET, form);
                 btnView.setText(context.getString(R.string.btn_view_requisition, model.getName()));
                 btnView.setOnClickListener(new BtnViewClickListener(model, programCode));
                 break;
@@ -125,7 +128,17 @@ public class RnRFormViewHolder extends BaseViewHolder {
             ivDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    rnRFormListAdapter.getFormDeleteListener().delete(form);
+                    PopupMenu popup = new PopupMenu(v.getContext(), v);
+                    popup.inflate(R.menu.menu_rnr_list_item);
+                    popup.show();
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            rnRFormListAdapter.getFormDeleteListener().delete(form);
+                            return false;
+                        }
+                    });
+//                    rnRFormListAdapter.getFormDeleteListener().delete(form);
                 }
             });
         }
@@ -146,24 +159,24 @@ public class RnRFormViewHolder extends BaseViewHolder {
             if (model.getType() == RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY) {
                 Intent intent = new Intent(context, InventoryActivity.class);
                 intent.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
-                ((Activity)context).startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
+                ((Activity) context).startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
                 return;
             }
 
             if (model.getType() == RnRFormViewModel.TYPE_HISTORICAL) {
                 if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
-                    ((Activity)context).startActivityForResult(MMIARequisitionActivity.getIntentToMe(context, model.getId()), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+                    ((Activity) context).startActivityForResult(MMIARequisitionActivity.getIntentToMe(context, model.getId()), Constants.REQUEST_FROM_RNR_LIST_PAGE);
                 } else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)) {
-                    ((Activity)context).startActivityForResult(VIARequisitionActivity.getIntentToMe(context, model.getId()), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+                    ((Activity) context).startActivityForResult(VIARequisitionActivity.getIntentToMe(context, model.getId()), Constants.REQUEST_FROM_RNR_LIST_PAGE);
                 }
                 return;
             }
 
             if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
-                ((Activity)context).startActivityForResult(MMIARequisitionActivity.getIntentToMe(context, DEFAULT_FORM_ID_OF_NOT_AUTHORIZED), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+                ((Activity) context).startActivityForResult(MMIARequisitionActivity.getIntentToMe(context, DEFAULT_FORM_ID_OF_NOT_AUTHORIZED), Constants.REQUEST_FROM_RNR_LIST_PAGE);
 
             } else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)) {
-                ((Activity)context).startActivityForResult(VIARequisitionActivity.getIntentToMe(context, DEFAULT_FORM_ID_OF_NOT_AUTHORIZED), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+                ((Activity) context).startActivityForResult(VIARequisitionActivity.getIntentToMe(context, DEFAULT_FORM_ID_OF_NOT_AUTHORIZED), Constants.REQUEST_FROM_RNR_LIST_PAGE);
             }
 
         }
