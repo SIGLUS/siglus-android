@@ -416,7 +416,9 @@ public class VIARequisitionPresenterTest {
         presenter.rnRForm = rnRForm;
 
         ArrayList<RnrFormItem> rnrFormItemListWrapper = new ArrayList<>();
-        rnrFormItemListWrapper.add(createRnrFormItem(1));
+        RnrFormItem rnrFormItem = createRnrFormItem(1);
+        rnrFormItem.setInitialAmount(1000);
+        rnrFormItemListWrapper.add(rnrFormItem);
 
         RnrFormItem kitRnrFormItem = createRnrFormItem(1);
         kitRnrFormItem.getProduct().setKit(true);
@@ -437,6 +439,7 @@ public class VIARequisitionPresenterTest {
 
         assertThat(viewModelsFromRnrForm.size(), is(1));
         assertThat(viewModelsFromRnrForm.get(0).getAdjustKitProductAmount(), is(200L));
+        assertThat(viewModelsFromRnrForm.get(0).getTheoretical(), is("799"));
     }
 
     private ViaKitsViewModel buildDefaultViaKit() {

@@ -79,4 +79,14 @@ public class RequisitionFormItemViewModel {
         }
         return item;
     }
+
+    public void adjustTheoreticalByKitProductAmount() {
+        long theoreticalLong = Long.valueOf(this.theoretical);
+        if (adjustKitProductAmount <= theoreticalLong) {
+            theoreticalLong = theoreticalLong - adjustKitProductAmount;
+        } else {
+            theoreticalLong = 0;
+        }
+        this.theoretical = String.valueOf(theoreticalLong);
+    }
 }
