@@ -115,7 +115,7 @@ public class StockRepository {
             @Override
             public Void operate(Dao<StockMovementItem, String> dao) throws SQLException {
                 for (StockMovementItem stockMovementItem : stockMovementItems) {
-                    UpdateDateTimeIfEmpty(stockMovementItem);
+                    updateDateTimeIfEmpty(stockMovementItem);
                     dao.createOrUpdate(stockMovementItem);
                 }
                 return null;
@@ -123,7 +123,7 @@ public class StockRepository {
         });
     }
 
-    private void UpdateDateTimeIfEmpty(StockMovementItem stockMovementItem) {
+    private void updateDateTimeIfEmpty(StockMovementItem stockMovementItem) {
         if (stockMovementItem.getCreatedTime() == null) {
             stockMovementItem.setCreatedTime(new Date());
         }
