@@ -28,7 +28,6 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Product.IsKit;
-import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.KitProductBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.robolectric.RuntimeEnvironment;
@@ -38,8 +37,10 @@ import java.util.List;
 
 import roboguice.RoboGuice;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
@@ -139,4 +140,16 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
         assertNotNull(productRepository.queryKitProductByCode("KIT", "P1"));
     }
 
+    @Test
+    public void shouldGetKitProductByProductCode() throws Exception {
+        ProductBuilder.create().setCode("P1").setIsActive(true).setIsArchived(true).build();
+        Product kit = ProductBuilder.create().setCode("KIT").setIsActive(true).setIsArchived(true).build();
+        KitProduct kitProduct1 = new KitProductBuilder().setProductCode("P1").setKitCode("KIT").setQuantity(100).build();
+        kit.setKitProductList(newArrayList(kitProduct1));
+        productRepository.createOrUpdate(kit);
+
+        List<KitProduct> kitProducts = productRepository.queryKitProductByProductCode("P1");
+
+        assertThat(kitProducts.size(), is(1));
+    }
 }

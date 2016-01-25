@@ -33,6 +33,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
@@ -40,6 +41,7 @@ import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.RnrFormItemBuilder;
+import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
@@ -55,9 +57,11 @@ import rx.Observer;
 import rx.observers.TestSubscriber;
 
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.Lists.newArrayList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
@@ -74,10 +78,12 @@ public class VIARequisitionPresenterTest {
     private VIARequisitionPresenter presenter;
     private org.openlmis.core.view.fragment.VIARequisitionFragment VIARequisitionFragment;
     private VIARepository mockRnrFormRepository;
+    private ProductRepository mockProductRepository;
 
     @Before
     public void setup() throws ViewNotMatchException {
         mockRnrFormRepository = mock(VIARepository.class);
+        mockProductRepository = mock(ProductRepository.class);
 
         VIARequisitionFragment = mock(org.openlmis.core.view.fragment.VIARequisitionFragment.class);
 
@@ -266,13 +272,13 @@ public class VIARequisitionPresenterTest {
     @Test
     public void shouldNotGetConsultantNumberWhenRnRFormIsNullOrInfoItemsIsNull() {
         presenter.rnRForm = null;
-        assertThat(presenter.getConsultationNumbers()).isNull();
+        assertNull(presenter.getConsultationNumbers());
 
         RnRForm rnRForm = mock(RnRForm.class);
         when(rnRForm.getBaseInfoItemListWrapper()).thenReturn(null);
         presenter.rnRForm = rnRForm;
 
-        assertThat(presenter.getConsultationNumbers()).isNull();
+        assertNull(presenter.getConsultationNumbers());
     }
 
     @Test
@@ -285,7 +291,7 @@ public class VIARequisitionPresenterTest {
         presenter.rnRForm = rnRForm;
         when(rnRForm.getBaseInfoItemListWrapper()).thenReturn(items);
 
-        assertThat(presenter.getConsultationNumbers()).isEqualTo("123");
+        assertThat(presenter.getConsultationNumbers(), is("123"));
     }
 
     @Test
@@ -324,7 +330,7 @@ public class VIARequisitionPresenterTest {
 
     @Test
     public void shouldNotShowErrorMSGWhenThereWasNoARequisitionInTheSamePeriod() throws Exception {
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_kit, true);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_kit, true);
 
         RnRForm rnRForm = new RnRForm();
         rnRForm.setBaseInfoItemListWrapper(newArrayList(new BaseInfoItem()));
@@ -352,7 +358,7 @@ public class VIARequisitionPresenterTest {
 
     @Test
     public void shouldInitViaKitsViewModel() throws Exception {
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_kit, true);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_kit, true);
 
         RnRForm rnRForm = mock(RnRForm.class);
         when(mockRnrFormRepository.queryRnRForm(1L)).thenReturn(rnRForm);
@@ -384,7 +390,7 @@ public class VIARequisitionPresenterTest {
 
     @Test
     public void shouldIncludeKitItemsWhenSaving() throws Exception {
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_kit, true);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_kit, true);
 
         RnRForm rnRForm = new RnRForm();
         rnRForm.setBaseInfoItemListWrapper(newArrayList(new BaseInfoItem()));
@@ -402,6 +408,35 @@ public class VIARequisitionPresenterTest {
 
         presenter.saveVIAForm("100");
         assertEquals(5, presenter.getRnRForm().getRnrFormItemListWrapper().size());
+    }
+
+    @Test
+    public void shouldSetAdjustKitProductAmount() throws Exception {
+        RnRForm rnRForm = new RnRForm();
+        presenter.rnRForm = rnRForm;
+
+        ArrayList<RnrFormItem> rnrFormItemListWrapper = new ArrayList<>();
+        rnrFormItemListWrapper.add(createRnrFormItem(1));
+
+        RnrFormItem kitRnrFormItem = createRnrFormItem(1);
+        kitRnrFormItem.getProduct().setKit(true);
+        kitRnrFormItem.setInventory(100);
+        kitRnrFormItem.getProduct().setCode("kit");
+
+        rnrFormItemListWrapper.add(kitRnrFormItem);
+        rnRForm.setRnrFormItemListWrapper(rnrFormItemListWrapper);
+
+        ArrayList<KitProduct> kitProducts = new ArrayList<>();
+        KitProduct kitProduct = new KitProduct();
+        kitProduct.setQuantity(2);
+        kitProduct.setKitCode("kit");
+        kitProducts.add(kitProduct);
+        when(mockProductRepository.queryKitProductByProductCode("code")).thenReturn(kitProducts);
+
+        List<RequisitionFormItemViewModel> viewModelsFromRnrForm = presenter.getViewModelsFromRnrForm(rnRForm);
+
+        assertThat(viewModelsFromRnrForm.size(), is(1));
+        assertThat(viewModelsFromRnrForm.get(0).getAdjustKitProductAmount(), is(200L));
     }
 
     private ViaKitsViewModel buildDefaultViaKit() {
@@ -432,6 +467,7 @@ public class VIARequisitionPresenterTest {
         Product product = new Product();
         product.setProgram(program);
         product.setId(1);
+        product.setCode("code");
         RnrFormItem rnrFormItem = new RnrFormItem();
         rnrFormItem.setInventory(1000);
         rnrFormItem.setIssued(i);
@@ -443,6 +479,7 @@ public class VIARequisitionPresenterTest {
         @Override
         protected void configure() {
             bind(VIARepository.class).toInstance(mockRnrFormRepository);
+            bind(ProductRepository.class).toInstance(mockProductRepository);
         }
     }
 }
