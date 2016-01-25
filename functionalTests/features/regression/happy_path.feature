@@ -102,7 +102,7 @@ Feature: Log in and initialize Inventory
     And I select a reason "Issues" "PAV"
     And I wait for 1 second
     And I swipe right
-    And I enter issued number "123"
+    And I enter issued number "125"
     And I wait for "Complete" to appear
     And I press "Complete"
     And I sign with "superuser"
@@ -113,7 +113,7 @@ Feature: Log in and initialize Inventory
     And I press "Archive drugs"
     And I navigate back
     And I wait for "Stock Overview" to appear
-    Then I should see total:"9" on stock list page
+    Then I should see total:"10" on stock list page
     And I don't see the text "[01A01]"
 
     # Archive MMIA drug
@@ -132,7 +132,7 @@ Feature: Log in and initialize Inventory
     Then I see "Archive drugs"
     When I press "Archive drugs"
     And I wait for "Stock Overview" to appear
-    Then I should see total:"8" on stock list page
+    Then I should see total:"9" on stock list page
     And I don't see the text "[08S32Z]"
 
     # Archived drugs don't appear in monthly inventory
@@ -166,7 +166,7 @@ Feature: Log in and initialize Inventory
     And I press "Add drug to stock overview"
     And I navigate back
     And I wait for "Stock Overview" to appear
-    Then I should see total:"9" on stock list page
+    Then I should see total:"10" on stock list page
     Then I see the text "[01A01]"
 
     # Unarchived drug shows up in monthly inventory
@@ -175,6 +175,23 @@ Feature: Log in and initialize Inventory
     And I press "Do Monthly Inventory"
     Then I wait for "Inventory" to appear
     Then I should see product "01A01" in this page
+
+    # Physical inventory cannot include blank quantities
+    When I press "Complete"
+    Then I should see text containing "Quantity cannot be left blank!"
+
+    # Do physical inventory and SOH should be adjusted
+    When I do physical inventory with "100" by fnm "08S42B"
+    And I do physical inventory with "200" by fnm "08S18Y"
+    And I do physical inventory with "300" by fnm "08S40Z"
+    And I press "Complete"
+    And I sign with "sign"
+    Then I wait for "STOCK CARD OVERVIEW" to appear
+    When I press "Stock Card Overview"
+    Then I wait for "Stock Overview" to appear
+    Then I should see SOH of "08S42B" is "100"
+    Then I should see SOH of "08S18Y" is "200"
+    Then I should see SOH of "08S40Z" is "300"
 
     # Sign out
     When I navigate back
