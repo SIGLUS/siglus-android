@@ -1,3 +1,5 @@
+Feature: Save physical inventory
+
   Scenario: Save physical inventory, and check the stock on hand quantity that have been saved.
     Given I try to log in with "superuser" "password1"
     And I wait up to 30 seconds for "Initial Inventory" to appear

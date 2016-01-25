@@ -182,16 +182,25 @@ Feature: Log in and initialize Inventory
 
     # Do physical inventory and SOH should be adjusted
     When I do physical inventory with "100" by fnm "08S42B"
-    And I do physical inventory with "200" by fnm "08S18Y"
-    And I do physical inventory with "300" by fnm "08S40Z"
+    And I do physical inventory with "100" by fnm "08S18Y"
+    And I do physical inventory with "100" by fnm "08S40Z"
+    And I do physical inventory with "100" by fnm "01A01"
+    And I do physical inventory with "100" by fnm "01A03Z"
+    And I do physical inventory with "100" by fnm "01A02"
+    And I do physical inventory with "100" by fnm "01A04Z"
+    And I do physical inventory with "100" by fnm "01A05"
+    And I do physical inventory with "100" by fnm "08S36"
+    And I do physical inventory with "100" by fnm "08S01ZY"
+
+    And I scroll down until I see the "Complete"
     And I press "Complete"
     And I sign with "sign"
     Then I wait for "STOCK CARD OVERVIEW" to appear
     When I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I should see SOH of "08S42B" is "100"
-    Then I should see SOH of "08S18Y" is "200"
-    Then I should see SOH of "08S40Z" is "300"
+    Then I should see SOH of "08S18Y" is "100"
+    Then I should see SOH of "08S40Z" is "100"
 
     # Sign out
     When I navigate back

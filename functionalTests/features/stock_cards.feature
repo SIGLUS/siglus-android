@@ -15,9 +15,6 @@ Feature: Stock Card Overview page
     And I wait for "Add new product" to appear
     Then I shouldn't see product "99X99" in this page
 
-    When I search drug by fnm "25D03"
-    Then I see "Manual de"
-    When I clean search bar
     And I search drug by fnm "12D03"
     Then I should see product "12D03" in this page
 
