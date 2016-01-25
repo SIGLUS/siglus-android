@@ -170,6 +170,7 @@
     <style name="StockMovement.TitlePanel_Horizontal" parent="StockMovement.TitlePanel">
         <item name="android:layout_marginLeft">@dimen/margin_small</item>
         <item name="android:layout_marginRight">@dimen/margin_small</item>
+        <item name="android:orientation">vertical</item>
     </style>
     >
 
