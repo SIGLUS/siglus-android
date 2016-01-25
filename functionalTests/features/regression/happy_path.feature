@@ -111,6 +111,7 @@ Feature: Log in and initialize Inventory
     And I press the menu key
     Then I see "Archive drugs"
     And I press "Archive drugs"
+    And I navigate back
     And I wait for "Stock Overview" to appear
     Then I should see total:"9" on stock list page
     And I don't see the text "[01A01]"
