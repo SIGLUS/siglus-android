@@ -26,7 +26,7 @@ import android.widget.EditText;
 
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.PhysicalInventoryViewHolder;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.
 
     private View footView;
 
-    public PhysicalInventoryAdapter(List<StockCardViewModel> data, View footView) {
+    public PhysicalInventoryAdapter(List<InventoryViewModel> data, View footView) {
         super(data);
         this.footView = footView;
 
@@ -63,7 +63,7 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.
             return;
         }
         PhysicalInventoryViewHolder holder = (PhysicalInventoryViewHolder) viewHolder;
-        final StockCardViewModel viewModel = currentList.get(position);
+        final InventoryViewModel viewModel = currentList.get(position);
 
         holder.populate(viewModel, queryKeyWord);
     }
@@ -90,8 +90,8 @@ public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.
     }
 
     public boolean isHasDataChanged() {
-        List<StockCardViewModel> data = getData();
-        for (StockCardViewModel model : data) {
+        List<InventoryViewModel> data = getData();
+        for (InventoryViewModel model : data) {
             if (model.isHasDataChanged()) {
                 return true;
             }

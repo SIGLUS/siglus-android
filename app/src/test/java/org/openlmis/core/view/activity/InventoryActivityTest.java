@@ -37,7 +37,7 @@ import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.presenter.InventoryPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
@@ -65,12 +65,12 @@ public class InventoryActivityTest {
     private InventoryActivity inventoryActivity;
     private InventoryPresenter mockedPresenter;
 
-    private List<StockCardViewModel> data;
+    private List<InventoryViewModel> data;
 
     @Before
     public void setUp() throws LMISException{
         mockedPresenter = mock(InventoryPresenter.class);
-        when(mockedPresenter.loadInventory()).thenReturn(Observable.<List<StockCardViewModel>>empty());
+        when(mockedPresenter.loadInventory()).thenReturn(Observable.<List<InventoryViewModel>>empty());
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
@@ -83,7 +83,7 @@ public class InventoryActivityTest {
 
         InventoryListAdapter mockedAdapter = mock(InventoryListAdapter.class);
         Product product = new ProductBuilder().setCode("Product code").setPrimaryName("Primary name").setStrength("10mg").build();
-        data = newArrayList(new StockCardViewModel(product), new StockCardViewModel(product));
+        data = newArrayList(new InventoryViewModel(product), new InventoryViewModel(product));
         when(mockedAdapter.getData()).thenReturn(data);
 
         inventoryActivity.mAdapter = mockedAdapter;
@@ -109,9 +109,9 @@ public class InventoryActivityTest {
         Intent intentFromParentActivity = new Intent();
         intentFromParentActivity.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
 
-        Observable<List<StockCardViewModel>> value = Observable.create(new Observable.OnSubscribe<List<StockCardViewModel>>() {
+        Observable<List<InventoryViewModel>> value = Observable.create(new Observable.OnSubscribe<List<InventoryViewModel>>() {
             @Override
-            public void call(Subscriber<? super List<StockCardViewModel>> subscriber) {
+            public void call(Subscriber<? super List<InventoryViewModel>> subscriber) {
 
             }
         });

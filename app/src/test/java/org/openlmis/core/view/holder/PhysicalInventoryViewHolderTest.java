@@ -12,7 +12,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.utils.RobolectricUtils;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
 import org.openlmis.core.view.widget.ExpireDateViewGroup;
 import org.robolectric.RuntimeEnvironment;
@@ -39,7 +39,7 @@ public class PhysicalInventoryViewHolderTest {
         ExpireDateViewGroup mockedExpireDateView = mock(ExpireDateViewGroup.class);
         viewHolder.expireDateViewGroup = mockedExpireDateView;
 
-        StockCardViewModel viewModel = new StockCardViewModelBuilder(product)
+        InventoryViewModel viewModel = new StockCardViewModelBuilder(product)
                 .setQuantity("10")
                 .setChecked(false)
                 .setType("Embalagem")
@@ -60,7 +60,7 @@ public class PhysicalInventoryViewHolderTest {
 
     @Test
     public void shouldShowErrorWhenStockCardViewModelIsInvalid() {
-        StockCardViewModel viewModel = new StockCardViewModelBuilder(product)
+        InventoryViewModel viewModel = new StockCardViewModelBuilder(product)
                 .setQuantity("invalid10")
                 .setChecked(true)
                 .setValid(false)
@@ -77,7 +77,7 @@ public class PhysicalInventoryViewHolderTest {
 
     @Test
     public void shouldUpdateViewModelQuantityWhenQuantityFilled() {
-        StockCardViewModel viewModel = new StockCardViewModelBuilder(product)
+        InventoryViewModel viewModel = new StockCardViewModelBuilder(product)
                 .setChecked(false)
                 .setType("Embalagem")
                 .build();

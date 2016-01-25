@@ -43,7 +43,7 @@ import lombok.Data;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @Data
-public class StockCardViewModel {
+public class InventoryViewModel {
 
     long productId;
     String productName;
@@ -73,7 +73,7 @@ public class StockCardViewModel {
     private StockCard stockCard;
     protected Product product;
 
-    public StockCardViewModel(StockCard stockCard) {
+    public InventoryViewModel(StockCard stockCard) {
         this(stockCard.getProduct());
 
         this.stockCard = stockCard;
@@ -84,7 +84,7 @@ public class StockCardViewModel {
         initExpiryDates(stockCard.getExpireDates());
     }
 
-    public StockCardViewModel(Product product) {
+    public InventoryViewModel(Product product) {
         this.product = product;
         this.type = product.getType();
 

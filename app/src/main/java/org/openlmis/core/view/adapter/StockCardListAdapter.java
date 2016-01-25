@@ -25,7 +25,7 @@ import android.view.ViewGroup;
 
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.StockCardViewHolder;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -35,8 +35,8 @@ public class StockCardListAdapter extends InventoryListAdapter<StockCardViewHold
 
     protected StockCardViewHolder.OnItemViewClickListener listener;
 
-    public StockCardListAdapter(List<StockCardViewModel> stockCardViewModel, StockCardViewHolder.OnItemViewClickListener listener) {
-        super(stockCardViewModel);
+    public StockCardListAdapter(List<InventoryViewModel> inventoryViewModel, StockCardViewHolder.OnItemViewClickListener listener) {
+        super(inventoryViewModel);
         this.listener = listener;
     }
 
@@ -50,15 +50,15 @@ public class StockCardListAdapter extends InventoryListAdapter<StockCardViewHold
 
     @Override
     public void onBindViewHolder(StockCardViewHolder holder, final int position) {
-        final StockCardViewModel stockCardViewModel = currentList.get(position);
-        holder.populate(stockCardViewModel, queryKeyWord);
+        final InventoryViewModel inventoryViewModel = currentList.get(position);
+        holder.populate(inventoryViewModel, queryKeyWord);
     }
 
     public void sortBySOH(final boolean asc) {
 
-        Comparator<StockCardViewModel> stockCardComparator = new Comparator<StockCardViewModel>() {
+        Comparator<InventoryViewModel> stockCardComparator = new Comparator<InventoryViewModel>() {
             @Override
-            public int compare(StockCardViewModel lhs, StockCardViewModel rhs) {
+            public int compare(InventoryViewModel lhs, InventoryViewModel rhs) {
                 if (asc) {
                     return (int) (lhs.getStockOnHand() - rhs.getStockOnHand());
                 } else {
@@ -75,9 +75,9 @@ public class StockCardListAdapter extends InventoryListAdapter<StockCardViewHold
 
     public void sortByName(final boolean asc) {
 
-        Comparator<StockCardViewModel> stockCardComparator = new Comparator<StockCardViewModel>() {
+        Comparator<InventoryViewModel> stockCardComparator = new Comparator<InventoryViewModel>() {
             @Override
-            public int compare(StockCardViewModel lhs, StockCardViewModel rhs) {
+            public int compare(InventoryViewModel lhs, InventoryViewModel rhs) {
                 if (asc) {
                     return lhs.getProduct().getPrimaryName().compareTo(rhs.getProduct().getPrimaryName());
                 } else {

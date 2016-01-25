@@ -20,7 +20,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 
 import java.text.ParseException;
@@ -78,7 +78,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         }
     }
 
-    public void populate(final StockCardViewModel viewModel, String queryKeyWord, ViewHistoryListener listener) {
+    public void populate(final InventoryViewModel viewModel, String queryKeyWord, ViewHistoryListener listener) {
         setItemViewListener(viewModel);
 
         checkBox.setChecked(viewModel.isChecked());
@@ -97,7 +97,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         initHistoryView(viewModel, listener);
     }
 
-    protected void setItemViewListener(final StockCardViewModel viewModel) {
+    protected void setItemViewListener(final InventoryViewModel viewModel) {
         txExpireDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,7 +127,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         txQuantity.addTextChangedListener(textWatcher);
     }
 
-    private void initHistoryView(final StockCardViewModel viewModel, final ViewHistoryListener listener) {
+    private void initHistoryView(final InventoryViewModel viewModel, final ViewHistoryListener listener) {
         tvHistoryAction.setVisibility(viewModel.getProduct().isArchived() ? View.VISIBLE : View.GONE);
         tvHistoryAction.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,9 +151,9 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
 
     class EditTextWatcher extends SingleTextWatcher {
 
-        private final StockCardViewModel viewModel;
+        private final InventoryViewModel viewModel;
 
-        public EditTextWatcher(StockCardViewModel viewModel) {
+        public EditTextWatcher(InventoryViewModel viewModel) {
             this.viewModel = viewModel;
         }
 
@@ -163,7 +163,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         }
     }
 
-    public void showDatePicker(final StockCardViewModel viewModel) {
+    public void showDatePicker(final InventoryViewModel viewModel) {
         final Calendar today = GregorianCalendar.getInstance();
 
         DatePickerDialog dialog = new DatePickerDialog(context, DatePickerDialog.BUTTON_NEUTRAL, new DatePickerDialog.OnDateSetListener() {

@@ -21,7 +21,7 @@ package org.openlmis.core.view.adapter;
 import android.support.v7.widget.RecyclerView;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.List;
@@ -33,13 +33,13 @@ import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> implements FilterableAdapter {
 
     @Getter
-    List<StockCardViewModel> data;
+    List<InventoryViewModel> data;
 
     @Getter
-    List<StockCardViewModel> currentList;
+    List<InventoryViewModel> currentList;
     String queryKeyWord;
 
-    public InventoryListAdapter(List<StockCardViewModel> data) {
+    public InventoryListAdapter(List<InventoryViewModel> data) {
         this.data = data;
         currentList = this.data;
     }
@@ -58,17 +58,17 @@ public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> e
             return;
         }
 
-        this.currentList = from(data).filter(new Predicate<StockCardViewModel>() {
+        this.currentList = from(data).filter(new Predicate<InventoryViewModel>() {
             @Override
-            public boolean apply(StockCardViewModel stockCardViewModel) {
-                return stockCardViewModel.getProduct().getProductFullName().toLowerCase().contains(keyword.toLowerCase());
+            public boolean apply(InventoryViewModel inventoryViewModel) {
+                return inventoryViewModel.getProduct().getProductFullName().toLowerCase().contains(keyword.toLowerCase());
             }
         }).toList();
 
         this.notifyDataSetChanged();
     }
 
-    public void refreshList(List<StockCardViewModel> data) {
+    public void refreshList(List<InventoryViewModel> data) {
         this.data = data;
         this.currentList.clear();
         this.currentList.addAll(data);

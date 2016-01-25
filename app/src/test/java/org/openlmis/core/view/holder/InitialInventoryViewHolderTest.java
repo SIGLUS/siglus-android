@@ -14,7 +14,7 @@ import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.holder.InitialInventoryViewHolder.ViewHistoryListener;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowAlertDialog;
@@ -44,7 +44,7 @@ public class InitialInventoryViewHolderTest {
 
     @Test
     public void shouldInitialViewHolder() throws ParseException {
-        StockCardViewModel viewModel = new StockCardViewModelBuilder(product)
+        InventoryViewModel viewModel = new StockCardViewModelBuilder(product)
                 .setExpiryDates(newArrayList("28/11/2015"))
                 .setQuantity("10")
                 .setChecked(true)
@@ -69,7 +69,7 @@ public class InitialInventoryViewHolderTest {
     @Test
     public void shouldShowEditPanelIfCheckboxIsChecked() {
 
-        StockCardViewModel viewModel = new StockCardViewModelBuilder(product)
+        InventoryViewModel viewModel = new StockCardViewModelBuilder(product)
                 .setExpiryDates(newArrayList("28/11/2015"))
                 .setQuantity("10")
                 .setChecked(false)
@@ -89,7 +89,7 @@ public class InitialInventoryViewHolderTest {
 
     @Test
     public void shouldShowErrorMessageWhenViewModelInValidate() {
-        StockCardViewModel viewModel = new StockCardViewModelBuilder(product)
+        InventoryViewModel viewModel = new StockCardViewModelBuilder(product)
                 .setExpiryDates(newArrayList("28/11/2015"))
                 .setQuantity("abc")
                 .setChecked(true)
@@ -107,7 +107,7 @@ public class InitialInventoryViewHolderTest {
 
     @Test
     public void shouldShowDataPickerDialogWhenClickExpireDate() {
-        StockCardViewModel viewModel = new StockCardViewModelBuilder(product)
+        InventoryViewModel viewModel = new StockCardViewModelBuilder(product)
                 .setExpiryDates(newArrayList("28/11/2015"))
                 .setQuantity("10")
                 .setChecked(false)
@@ -123,7 +123,7 @@ public class InitialInventoryViewHolderTest {
 
     @Test
     public void shouldClearQuantityAndExpiryDate() {
-        StockCardViewModel viewModel = new StockCardViewModelBuilder(product)
+        InventoryViewModel viewModel = new StockCardViewModelBuilder(product)
                 .setExpiryDates(newArrayList("28/11/2015"))
                 .setQuantity("10")
                 .setChecked(true)
@@ -140,7 +140,7 @@ public class InitialInventoryViewHolderTest {
 
     @Test
     public void shouldUpdateViewModelQuantityWhenInputFinished() {
-        StockCardViewModel viewModel = new StockCardViewModelBuilder(product)
+        InventoryViewModel viewModel = new StockCardViewModelBuilder(product)
                 .setQuantity("")
                 .setChecked(false)
                 .setType("Embalagem")
@@ -157,7 +157,7 @@ public class InitialInventoryViewHolderTest {
     public void shouldShowHistoryViewAndViewItWhenClicked() {
         ViewHistoryListener mockedListener = mock(ViewHistoryListener.class);
         product.setArchived(true);
-        StockCardViewModel viewModel = new StockCardViewModelBuilder(product)
+        InventoryViewModel viewModel = new StockCardViewModelBuilder(product)
                 .setQuantity("10")
                 .setChecked(false)
                 .setType("Embalagem")

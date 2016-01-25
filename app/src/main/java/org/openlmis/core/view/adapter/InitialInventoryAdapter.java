@@ -23,7 +23,7 @@ import android.view.ViewGroup;
 
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.InitialInventoryViewHolder;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.List;
 
@@ -31,14 +31,14 @@ public class InitialInventoryAdapter extends InventoryListAdapter<InitialInvento
 
     private InitialInventoryViewHolder.ViewHistoryListener listener;
 
-    public InitialInventoryAdapter(List<StockCardViewModel> data, InitialInventoryViewHolder.ViewHistoryListener listener) {
+    public InitialInventoryAdapter(List<InventoryViewModel> data, InitialInventoryViewHolder.ViewHistoryListener listener) {
         super(data);
         this.listener = listener;
     }
 
     @Override
     public void onBindViewHolder(final InitialInventoryViewHolder holder, final int position) {
-        final StockCardViewModel viewModel = currentList.get(position);
+        final InventoryViewModel viewModel = currentList.get(position);
         holder.populate(viewModel, queryKeyWord, listener);
     }
 

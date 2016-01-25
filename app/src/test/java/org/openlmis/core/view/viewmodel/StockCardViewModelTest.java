@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(LMISTestRunner.class)
 public class StockCardViewModelTest {
 
-    private StockCardViewModel model;
+    private InventoryViewModel model;
     private StockCard stockCard;
 
     @Before
@@ -30,7 +30,7 @@ public class StockCardViewModelTest {
         product.setPrimaryName("Product");
         stockCard.setProduct(product);
         stockCard.setExpireDates("");
-        model = new StockCardViewModel(stockCard);
+        model = new InventoryViewModel(stockCard);
         ArrayList<String> list = new ArrayList<>();
         list.add("18/10/2016");
         list.add("18/10/2017");
@@ -58,7 +58,7 @@ public class StockCardViewModelTest {
 
     @Test
     public void shouldCheckValidationInPhysicalInventoryPage() {
-        model = new StockCardViewModel(stockCard);
+        model = new InventoryViewModel(stockCard);
 
         // Physical Inventory should not be valid when it's empty
         model.setQuantity("");
@@ -73,7 +73,7 @@ public class StockCardViewModelTest {
 
     @Test
     public void shouldCheckValidationInInitialInventoryPage() {
-        model = new StockCardViewModel(new ProductBuilder().setCode("08S32").setPrimaryName("Primary name").build());
+        model = new InventoryViewModel(new ProductBuilder().setCode("08S32").setPrimaryName("Primary name").build());
 
         // When it's not checked, it should be valid
         assertTrue(model.isValid());
@@ -92,6 +92,6 @@ public class StockCardViewModelTest {
     @Test
     public void shouldNotThrowExceptionIfTypeIsNull() {
         //should not throw exception
-        new StockCardViewModel(new ProductBuilder().setCode("08S32").setPrimaryName("Primary name").setType(null).build()).getStyleType();
+        new InventoryViewModel(new ProductBuilder().setCode("08S32").setPrimaryName("Primary name").setType(null).build()).getStyleType();
     }
 }

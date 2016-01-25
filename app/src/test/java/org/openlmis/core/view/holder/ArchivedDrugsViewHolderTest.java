@@ -10,7 +10,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.ProductBuilder;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
 import org.robolectric.RuntimeEnvironment;
 
@@ -23,7 +23,7 @@ public class ArchivedDrugsViewHolderTest {
 
     private ArchivedDrugsViewHolder viewHolder;
     private String queryKeyWord = null;
-    private StockCardViewModel viewModel;
+    private InventoryViewModel viewModel;
     private ArchivedDrugsViewHolder.ArchiveStockCardListener mockedListener;
 
     @Before

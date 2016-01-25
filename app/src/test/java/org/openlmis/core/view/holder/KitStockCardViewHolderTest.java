@@ -11,7 +11,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.view.holder.StockCardViewHolder.OnItemViewClickListener;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,7 +41,7 @@ public class KitStockCardViewHolderTest {
         product.setPrimaryName("product");
         stockCard.setProduct(product);
 
-        viewHolder.populate(new StockCardViewModel(stockCard), "");
+        viewHolder.populate(new InventoryViewModel(stockCard), "");
 
         assertThat(viewHolder.tvProductName.getText().toString()).isEqualTo("product");
         assertThat(viewHolder.tvProductUnit.getVisibility()).isEqualTo(View.INVISIBLE);

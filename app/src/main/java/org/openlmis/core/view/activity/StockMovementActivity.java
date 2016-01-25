@@ -43,7 +43,7 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.StockMovementAdapter;
 import org.openlmis.core.view.holder.StockMovementViewHolder;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.openlmis.core.view.widget.ExpireDateViewGroup;
 import org.openlmis.core.view.widget.SignatureDialog;
@@ -126,7 +126,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
         showBanner();
 
-        expireDateViewGroup.initExpireDateViewGroup(new StockCardViewModel(presenter.getStockCard()), true);
+        expireDateViewGroup.initExpireDateViewGroup(new InventoryViewModel(presenter.getStockCard()), true);
 
         buttonView.setVisibility(View.GONE);
 
@@ -273,11 +273,11 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         }
     }
 
-    public static Intent getIntentToMe(Context context, StockCardViewModel stockCardViewModel, boolean isKit) {
+    public static Intent getIntentToMe(Context context, InventoryViewModel inventoryViewModel, boolean isKit) {
         Intent intent = new Intent(context, StockMovementActivity.class);
-        intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCardViewModel.getStockCardId());
-        intent.putExtra(Constants.PARAM_STOCK_NAME, stockCardViewModel.getProduct().getFormattedProductName());
-        intent.putExtra(Constants.PARAM_IS_ACTIVATED, stockCardViewModel.getProduct().isActive());
+        intent.putExtra(Constants.PARAM_STOCK_CARD_ID, inventoryViewModel.getStockCardId());
+        intent.putExtra(Constants.PARAM_STOCK_NAME, inventoryViewModel.getProduct().getFormattedProductName());
+        intent.putExtra(Constants.PARAM_IS_ACTIVATED, inventoryViewModel.getProduct().isActive());
         intent.putExtra(Constants.PARAM_IS_KIT, isKit);
         return intent;
     }

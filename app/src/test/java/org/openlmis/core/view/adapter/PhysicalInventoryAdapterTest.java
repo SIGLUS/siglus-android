@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class PhysicalInventoryAdapterTest {
 
     @Before
     public void setup() {
-        adapter = new PhysicalInventoryAdapter(new ArrayList<StockCardViewModel>(), new EditText(RuntimeEnvironment.application));
+        adapter = new PhysicalInventoryAdapter(new ArrayList<InventoryViewModel>(), new EditText(RuntimeEnvironment.application));
 
         product = new Product();
         product.setPrimaryName("Test Product");
@@ -58,9 +58,9 @@ public class PhysicalInventoryAdapterTest {
 
     @Test
     public void shouldReturnFirstInvalidItemPosition() {
-        List<StockCardViewModel> list = new ArrayList<>();
+        List<InventoryViewModel> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            StockCardViewModel model = new StockCardViewModel(stockCard);
+            InventoryViewModel model = new InventoryViewModel(stockCard);
             model.setChecked(true);
             list.add(model);
             if (i != 5) {
@@ -74,9 +74,9 @@ public class PhysicalInventoryAdapterTest {
 
     @Test
     public void shouldFilterTheListByProductName() {
-        List<StockCardViewModel> list = new ArrayList<>();
+        List<InventoryViewModel> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            StockCardViewModel model = new StockCardViewModel(stockCard);
+            InventoryViewModel model = new InventoryViewModel(stockCard);
             list.add(model);
             final Product product = new Product();
             product.setPrimaryName("Product" + i);

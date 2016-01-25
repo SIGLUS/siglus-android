@@ -7,14 +7,14 @@ import java.util.List;
 
 public class StockCardViewModelBuilder {
 
-    private StockCardViewModel viewModel;
+    private InventoryViewModel viewModel;
 
     public StockCardViewModelBuilder(Product product) {
-        viewModel = new StockCardViewModel(product);
+        viewModel = new InventoryViewModel(product);
     }
 
     public StockCardViewModelBuilder(StockCard archivedStockCard) {
-        viewModel = new StockCardViewModel(archivedStockCard);
+        viewModel = new InventoryViewModel(archivedStockCard);
     }
 
     public StockCardViewModelBuilder setSOH(Long soh){
@@ -53,7 +53,7 @@ public class StockCardViewModelBuilder {
         return this;
     }
 
-    public StockCardViewModel build() {
+    public InventoryViewModel build() {
         return viewModel;
     }
 }

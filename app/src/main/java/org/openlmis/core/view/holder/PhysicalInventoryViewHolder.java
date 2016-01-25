@@ -10,7 +10,7 @@ import android.widget.TextView;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.TextStyleUtil;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ExpireDateViewGroup;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 
@@ -37,21 +37,21 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
         etQuantity.setHint(R.string.hint_quantity_in_stock);
     }
 
-    public void populate(StockCardViewModel stockCardViewModel, String queryKeyWord) {
-        tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledName()));
-        tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledUnit()));
+    public void populate(InventoryViewModel inventoryViewModel, String queryKeyWord) {
+        tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledName()));
+        tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledUnit()));
 
         tvStockOnHandInInventory.setText(context.getString(R.string.label_physical_inventory_stock_on_hand,
-                Long.toString(stockCardViewModel.getStockOnHand())));
+                Long.toString(inventoryViewModel.getStockOnHand())));
 
-        EditTextWatcher textWatcher = new EditTextWatcher(stockCardViewModel);
+        EditTextWatcher textWatcher = new EditTextWatcher(inventoryViewModel);
         etQuantity.removeTextChangedListener(textWatcher);
-        etQuantity.setText(stockCardViewModel.getQuantity());
+        etQuantity.setText(inventoryViewModel.getQuantity());
         etQuantity.addTextChangedListener(textWatcher);
 
-        expireDateViewGroup.initExpireDateViewGroup(stockCardViewModel, false);
+        expireDateViewGroup.initExpireDateViewGroup(inventoryViewModel, false);
 
-        if (stockCardViewModel.isValid()) {
+        if (inventoryViewModel.isValid()) {
             lyQuantity.setErrorEnabled(false);
         } else {
             lyQuantity.setError(context.getString(R.string.msg_inventory_check_failed));
@@ -60,9 +60,9 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
 
     class EditTextWatcher extends SingleTextWatcher {
 
-        private final StockCardViewModel viewModel;
+        private final InventoryViewModel viewModel;
 
-        public EditTextWatcher(StockCardViewModel viewModel) {
+        public EditTextWatcher(InventoryViewModel viewModel) {
             this.viewModel = viewModel;
         }
 

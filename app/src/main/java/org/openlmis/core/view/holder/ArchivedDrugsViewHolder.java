@@ -6,7 +6,7 @@ import android.widget.TextView;
 import org.openlmis.core.R;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.TextStyleUtil;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import roboguice.inject.InjectView;
 
@@ -28,24 +28,24 @@ public class ArchivedDrugsViewHolder extends BaseViewHolder {
         super(itemView);
     }
 
-    public void populate(final StockCardViewModel stockCardViewModel, String queryKeyWord, final ArchiveStockCardListener listener) {
+    public void populate(final InventoryViewModel inventoryViewModel, String queryKeyWord, final ArchiveStockCardListener listener) {
 
-        tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledName()));
-        tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledUnit()));
+        tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledName()));
+        tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledUnit()));
 
-        if (!stockCardViewModel.getProduct().isActive()) {
+        if (!inventoryViewModel.getProduct().isActive()) {
             tvArchiveBack.setVisibility(View.GONE);
         }
 
-        setActionListeners(stockCardViewModel, listener);
+        setActionListeners(inventoryViewModel, listener);
     }
 
-    private void setActionListeners(final StockCardViewModel stockCardViewModel, final ArchiveStockCardListener listener) {
+    private void setActionListeners(final InventoryViewModel inventoryViewModel, final ArchiveStockCardListener listener) {
         tvViewHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.viewMovementHistory(stockCardViewModel.getStockCard());
+                    listener.viewMovementHistory(inventoryViewModel.getStockCard());
                 }
             }
         });
@@ -54,7 +54,7 @@ public class ArchivedDrugsViewHolder extends BaseViewHolder {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.archiveStockCardBack(stockCardViewModel.getStockCard());
+                    listener.archiveStockCardBack(inventoryViewModel.getStockCard());
                 }
             }
         });

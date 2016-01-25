@@ -15,7 +15,7 @@ import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
 import org.robolectric.RuntimeEnvironment;
 
@@ -41,7 +41,7 @@ public class UnpackKitPresenterTest {
     private ProductRepository productRepository;
     private StockRepository stockRepository;
     private Product product;
-    private StockCardViewModel viewModel;
+    private InventoryViewModel viewModel;
 
     @Before
     public void setup() throws Exception {
@@ -84,7 +84,7 @@ public class UnpackKitPresenterTest {
         when(productRepository.getByCode(product1.getCode())).thenReturn(product1);
         when(productRepository.getByCode(product2.getCode())).thenReturn(product2);
 
-        TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
+        TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
         presenter.kitProductsSubscriber = subscriber;
 
         // when
@@ -96,11 +96,11 @@ public class UnpackKitPresenterTest {
         verify(productRepository).queryKitProductByKitCode(kit.getCode());
         subscriber.assertNoErrors();
 
-        List<StockCardViewModel> resultProducts = subscriber.getOnNextEvents().get(0);
+        List<InventoryViewModel> resultProducts = subscriber.getOnNextEvents().get(0);
         assertThat(resultProducts.size()).isEqualTo(2);
 
-        StockCardViewModel viewModel1 = resultProducts.get(0);
-        StockCardViewModel viewModel2 = resultProducts.get(1);
+        InventoryViewModel viewModel1 = resultProducts.get(0);
+        InventoryViewModel viewModel2 = resultProducts.get(1);
 
         assertThat(viewModel1.getProduct().getCode()).isEqualTo(product1.getCode());
         assertThat(viewModel2.getProduct().getCode()).isEqualTo(product2.getCode());
@@ -131,7 +131,7 @@ public class UnpackKitPresenterTest {
 
         TestSubscriber<Void> testSubscriber = new TestSubscriber();
         presenter.unpackProductsSubscriber = testSubscriber;
-        presenter.stockCardViewModels = Arrays.asList(viewModel);
+        presenter.inventoryViewModels = Arrays.asList(viewModel);
         presenter.kitCode = "SD1112";
 
         when(stockRepository.queryStockCardByProductId(200L)).thenReturn(productStockCard);

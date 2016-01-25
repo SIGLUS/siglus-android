@@ -6,13 +6,13 @@ import android.view.ViewGroup;
 
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.UnpackKitViewHolder;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.List;
 
 public class UnpackKitAdapter extends InventoryListAdapter<UnpackKitViewHolder> implements FilterableAdapter {
 
-    public UnpackKitAdapter(List<StockCardViewModel> data) {
+    public UnpackKitAdapter(List<InventoryViewModel> data) {
         super(data);
     }
 
@@ -24,7 +24,7 @@ public class UnpackKitAdapter extends InventoryListAdapter<UnpackKitViewHolder> 
 
     @Override
     public void onBindViewHolder(UnpackKitViewHolder viewHolder, int position) {
-        final StockCardViewModel viewModel = currentList.get(position);
+        final InventoryViewModel viewModel = currentList.get(position);
         viewHolder.populate(viewModel);
     }
 }

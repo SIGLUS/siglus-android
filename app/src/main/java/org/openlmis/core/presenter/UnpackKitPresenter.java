@@ -16,7 +16,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -32,7 +32,7 @@ import rx.schedulers.Schedulers;
 public class UnpackKitPresenter extends Presenter {
     UnpackKitView view;
 
-    protected Subscriber<List<StockCardViewModel>> kitProductsSubscriber = getKitProductSubscriber();
+    protected Subscriber<List<InventoryViewModel>> kitProductsSubscriber = getKitProductSubscriber();
     protected Subscriber<Void> unpackProductsSubscriber = getUnpackProductSubscriber();
 
     @Inject
@@ -43,12 +43,12 @@ public class UnpackKitPresenter extends Presenter {
 
     protected String kitCode;
 
-    protected List<StockCardViewModel> stockCardViewModels;
+    protected List<InventoryViewModel> inventoryViewModels;
 
     @Override
     public void attachView(BaseView v) throws ViewNotMatchException {
         view = (UnpackKitView) v;
-        stockCardViewModels = new ArrayList<>();
+        inventoryViewModels = new ArrayList<>();
     }
 
     public UnpackKitPresenter() {
@@ -60,22 +60,22 @@ public class UnpackKitPresenter extends Presenter {
         subscriptions.add(subscription);
     }
 
-    public Observable<List<StockCardViewModel>> getKitProductsObservable(final String kitCode) {
-        return Observable.create(new Observable.OnSubscribe<List<StockCardViewModel>>() {
+    public Observable<List<InventoryViewModel>> getKitProductsObservable(final String kitCode) {
+        return Observable.create(new Observable.OnSubscribe<List<InventoryViewModel>>() {
             @Override
-            public void call(Subscriber<? super List<StockCardViewModel>> subscriber) {
+            public void call(Subscriber<? super List<InventoryViewModel>> subscriber) {
                 try {
-                    stockCardViewModels.clear();
+                    inventoryViewModels.clear();
                     List<KitProduct> kitProducts = productRepository.queryKitProductByKitCode(kitCode);
                     for (KitProduct kitProduct : kitProducts) {
                         Product product = productRepository.getByCode(kitProduct.getProductCode());
-                        StockCardViewModel stockCardViewModel = new StockCardViewModel(product);
-                        stockCardViewModel.setKitExpectQuantity(kitProduct.getQuantity());
-                        stockCardViewModel.setChecked(true);
-                        stockCardViewModels.add(stockCardViewModel);
+                        InventoryViewModel inventoryViewModel = new InventoryViewModel(product);
+                        inventoryViewModel.setKitExpectQuantity(kitProduct.getQuantity());
+                        inventoryViewModel.setChecked(true);
+                        inventoryViewModels.add(inventoryViewModel);
                     }
 
-                    subscriber.onNext(stockCardViewModels);
+                    subscriber.onNext(inventoryViewModels);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     subscriber.onError(e);
@@ -84,8 +84,8 @@ public class UnpackKitPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    private Subscriber<List<StockCardViewModel>> getKitProductSubscriber() {
-        return new Subscriber<List<StockCardViewModel>>() {
+    private Subscriber<List<InventoryViewModel>> getKitProductSubscriber() {
+        return new Subscriber<List<InventoryViewModel>>() {
             @Override
             public void onCompleted() {
             }
@@ -97,8 +97,8 @@ public class UnpackKitPresenter extends Presenter {
             }
 
             @Override
-            public void onNext(List<StockCardViewModel> stockCardViewModels) {
-                view.refreshList(stockCardViewModels);
+            public void onNext(List<InventoryViewModel> inventoryViewModels) {
+                view.refreshList(inventoryViewModels);
                 view.loaded();
             }
         };
@@ -118,11 +118,11 @@ public class UnpackKitPresenter extends Presenter {
 
                     List<StockCard> stockCards = new ArrayList<>();
 
-                    stockCards.addAll(FluentIterable.from(stockCardViewModels).transform(new Function<StockCardViewModel, StockCard>() {
+                    stockCards.addAll(FluentIterable.from(inventoryViewModels).transform(new Function<InventoryViewModel, StockCard>() {
                         @Override
-                        public StockCard apply(StockCardViewModel stockCardViewModel) {
+                        public StockCard apply(InventoryViewModel inventoryViewModel) {
                             try {
-                                return createStockCardForProduct(stockCardViewModel);
+                                return createStockCardForProduct(inventoryViewModel);
                             } catch (LMISException e) {
                                 subscriber.onError(e);
                             }
@@ -185,21 +185,21 @@ public class UnpackKitPresenter extends Presenter {
     }
 
     @NonNull
-    protected StockCard createStockCardForProduct(StockCardViewModel stockCardViewModel) throws LMISException {
+    protected StockCard createStockCardForProduct(InventoryViewModel inventoryViewModel) throws LMISException {
         List<StockMovementItem> stockMovementItems = new ArrayList<>();
 
-        StockCard stockCard = stockRepository.queryStockCardByProductId(stockCardViewModel.getProductId());
+        StockCard stockCard = stockRepository.queryStockCardByProductId(inventoryViewModel.getProductId());
         if (stockCard == null) {
             stockCard = new StockCard();
-            stockCard.setProduct(stockCardViewModel.getProduct());
+            stockCard.setProduct(inventoryViewModel.getProduct());
 
             stockMovementItems.add(stockCard.generateInitialStockMovementItem());
         }
 
-        long movementQuantity = Long.parseLong(stockCardViewModel.getQuantity());
+        long movementQuantity = Long.parseLong(inventoryViewModel.getQuantity());
 
         stockCard.setStockOnHand(stockCard.getStockOnHand() + movementQuantity);
-        stockCard.setExpireDates(DateUtil.uniqueExpiryDates(stockCardViewModel.getExpiryDates(), stockCard.getExpireDates()));
+        stockCard.setExpireDates(DateUtil.uniqueExpiryDates(inventoryViewModel.getExpiryDates(), stockCard.getExpireDates()));
 
         stockMovementItems.add(createUnpackMovementItem(stockCard, movementQuantity));
         stockCard.setStockMovementItemsWrapper(stockMovementItems);
@@ -217,7 +217,7 @@ public class UnpackKitPresenter extends Presenter {
     }
 
     public interface UnpackKitView extends BaseView {
-        void refreshList(List<StockCardViewModel> stockCardViewModels);
+        void refreshList(List<InventoryViewModel> inventoryViewModels);
 
         void saveSuccess();
     }

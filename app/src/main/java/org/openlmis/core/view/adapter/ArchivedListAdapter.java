@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.ArchivedDrugsViewHolder;
 import org.openlmis.core.view.holder.ArchivedDrugsViewHolder.ArchiveStockCardListener;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class ArchivedListAdapter extends InventoryListAdapter<ArchivedDrugsViewH
 
     private ArchiveStockCardListener stockCardListener;
 
-    public ArchivedListAdapter(List<StockCardViewModel> data, ArchiveStockCardListener stockCardListener) {
+    public ArchivedListAdapter(List<InventoryViewModel> data, ArchiveStockCardListener stockCardListener) {
         super(data);
         this.stockCardListener = stockCardListener;
     }
