@@ -39,9 +39,11 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
@@ -79,11 +81,13 @@ public class VIARequisitionPresenterTest {
     private org.openlmis.core.view.fragment.VIARequisitionFragment VIARequisitionFragment;
     private VIARepository mockRnrFormRepository;
     private ProductRepository mockProductRepository;
+    private StockRepository mockStockRepository;
 
     @Before
     public void setup() throws ViewNotMatchException {
         mockRnrFormRepository = mock(VIARepository.class);
         mockProductRepository = mock(ProductRepository.class);
+        mockStockRepository = mock(StockRepository.class);
 
         VIARequisitionFragment = mock(org.openlmis.core.view.fragment.VIARequisitionFragment.class);
 
@@ -426,12 +430,6 @@ public class VIARequisitionPresenterTest {
         rnrFormItem.setInitialAmount(1000);
         rnrFormItemListWrapper.add(rnrFormItem);
 
-        RnrFormItem kitRnrFormItem = createRnrFormItem(1);
-        kitRnrFormItem.getProduct().setKit(true);
-        kitRnrFormItem.setInventory(100);
-        kitRnrFormItem.getProduct().setCode("kit");
-
-        rnrFormItemListWrapper.add(kitRnrFormItem);
         rnRForm.setRnrFormItemListWrapper(rnrFormItemListWrapper);
 
         ArrayList<KitProduct> kitProducts = new ArrayList<>();
@@ -440,6 +438,13 @@ public class VIARequisitionPresenterTest {
         kitProduct.setKitCode("kit");
         kitProducts.add(kitProduct);
         when(mockProductRepository.queryKitProductByProductCode("code")).thenReturn(kitProducts);
+
+        Product product = new Product();
+        when(mockProductRepository.getByCode("kit")).thenReturn(product);
+
+        StockCard stockCard = new StockCard();
+        stockCard.setStockOnHand(100L);
+        when(mockStockRepository.queryStockCardByProductId(product.getId())).thenReturn(stockCard);
 
         List<RequisitionFormItemViewModel> viewModelsFromRnrForm = presenter.getViewModelsFromRnrForm(rnRForm);
 
@@ -489,6 +494,7 @@ public class VIARequisitionPresenterTest {
         protected void configure() {
             bind(VIARepository.class).toInstance(mockRnrFormRepository);
             bind(ProductRepository.class).toInstance(mockProductRepository);
+            bind(StockRepository.class).toInstance(mockStockRepository);
         }
     }
 }

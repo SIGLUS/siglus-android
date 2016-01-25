@@ -34,6 +34,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
@@ -64,6 +65,9 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
     @Inject
     ProductRepository productRepository;
+
+    @Inject
+    StockRepository stockRepository;
 
     VIARequisitionView view;
 
@@ -130,19 +134,14 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                 adjustKitProductAmount += kitProduct.getQuantity() * getKitSOH(kitProduct.getKitCode());
             }
         } catch (LMISException e) {
-            e.printStackTrace();
+            e.reportToFabric();
         }
         return adjustKitProductAmount;
     }
 
-    private long getKitSOH(String kitCode) {
-        List<RnrFormItem> rnrItems = rnRForm.getRnrItems(IsKit.Yes);
-        for (RnrFormItem item : rnrItems) {
-            if (item.getProduct().getCode().equals(kitCode)) {
-                return item.getInventory();
-            }
-        }
-        return 0;
+    private long getKitSOH(String kitCode) throws LMISException {
+        Product kit = productRepository.getByCode(kitCode);
+        return stockRepository.queryStockCardByProductId(kit.getId()).getStockOnHand();
     }
 
     @Override
