@@ -9,10 +9,10 @@
 
     <LinearLayout
         android:id="@+id/stock_info_panel"
+        android:layout_below="@+id/stock_movement_banner"
         style="@style/StockMovement.TitlePanel_Horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
 
         <LinearLayout
             android:id="@+id/title_panel"
