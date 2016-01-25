@@ -202,6 +202,12 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     private void setKitValues() {
         kitView.setValue(presenter.getViaKitsViewModel());
+        kitView.post(new Runnable() {
+            @Override
+            public void run() {
+                kitView.addTextChangeListeners(presenter.getViaKitsViewModel());
+            }
+        });
     }
 
     @Override
@@ -310,6 +316,11 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @Override
     public boolean validateConsultationNumber() {
         return ViewUtil.checkEditTextEmpty(etConsultationNumbers);
+    }
+
+    @Override
+    public boolean validateKitData() {
+        return kitView.validate();
     }
 
     protected void onProcessButtonClick() {

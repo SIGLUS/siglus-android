@@ -184,7 +184,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     protected boolean validateForm() {
-        return view.validateConsultationNumber() && validateRnrFormItems();
+        return view.validateConsultationNumber() && view.validateKitData() && validateRnrFormItems();
     }
 
     protected boolean validateRnrFormItems() {
@@ -276,5 +276,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         void setProcessButtonName(String name);
 
         boolean validateConsultationNumber();
+
+        boolean validateKitData();
     }
 }
