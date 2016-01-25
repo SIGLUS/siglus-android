@@ -417,6 +417,7 @@ public class VIARequisitionPresenterTest {
 
     @Test
     public void shouldSetAdjustKitProductAmount() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_kit, true);
         RnRForm rnRForm = new RnRForm();
         presenter.rnRForm = rnRForm;
 

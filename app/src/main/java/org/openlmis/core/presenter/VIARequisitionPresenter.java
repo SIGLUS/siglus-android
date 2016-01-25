@@ -114,6 +114,9 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     private void setAdjustKitProductAmount(RequisitionFormItemViewModel requisitionFormItemViewModel) {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_kit)) {
+            return;
+        }
         Product product = requisitionFormItemViewModel.getItem().getProduct();
         requisitionFormItemViewModel.setAdjustKitProductAmount(calculateAdjustKitProductAmount(product));
         requisitionFormItemViewModel.adjustTheoreticalByKitProductAmount();
