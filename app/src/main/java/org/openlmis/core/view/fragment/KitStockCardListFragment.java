@@ -7,7 +7,7 @@ import android.view.View;
 import org.openlmis.core.R;
 import org.openlmis.core.view.activity.StockMovementActivity;
 import org.openlmis.core.view.adapter.KitStockCardListAdapter;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ProductsUpdateBanner;
 
 import roboguice.inject.InjectView;
@@ -18,8 +18,8 @@ public class KitStockCardListFragment extends StockCardListFragment {
         presenter.loadKits();
     }
 
-    protected Intent getStockMovementIntent(StockCardViewModel stockCardViewModel) {
-        return StockMovementActivity.getIntentToMe(getActivity(), stockCardViewModel, true);
+    protected Intent getStockMovementIntent(InventoryViewModel inventoryViewModel) {
+        return StockMovementActivity.getIntentToMe(getActivity(), inventoryViewModel, true);
     }
 
     @InjectView(R.id.product_update_banner)
@@ -27,7 +27,7 @@ public class KitStockCardListFragment extends StockCardListFragment {
 
     @Override
     protected void createAdapter() {
-        mAdapter = new KitStockCardListAdapter(stockCardViewModels, onItemViewClickListener);
+        mAdapter = new KitStockCardListAdapter(inventoryViewModels, onItemViewClickListener);
     }
 
     @Override

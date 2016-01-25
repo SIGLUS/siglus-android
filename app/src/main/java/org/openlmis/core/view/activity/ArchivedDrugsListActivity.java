@@ -11,7 +11,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.ArchivedListAdapter;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +47,7 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements Stoc
     private void initUI() {
         archivedList.setLayoutManager(new LinearLayoutManager(this));
 
-        mAdapter = new ArchivedListAdapter(new ArrayList<StockCardViewModel>(), archiveStockCardListener);
+        mAdapter = new ArchivedListAdapter(new ArrayList<InventoryViewModel>(), archiveStockCardListener);
         archivedList.setAdapter(mAdapter);
 
         presenter.loadStockCards(Archived);
@@ -61,8 +61,8 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements Stoc
 
     @Override
     public void refresh() {
-        List<StockCardViewModel> stockCardViewModels = presenter.getStockCardViewModels();
-        mAdapter.refreshList(stockCardViewModels);
+        List<InventoryViewModel> inventoryViewModels = presenter.getInventoryViewModels();
+        mAdapter.refreshList(inventoryViewModels);
     }
 
     protected ArchiveStockCardListener archiveStockCardListener = new ArchiveStockCardListener() {

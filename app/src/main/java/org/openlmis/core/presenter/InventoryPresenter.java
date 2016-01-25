@@ -35,7 +35,7 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.BaseView;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -71,18 +71,18 @@ public class InventoryPresenter extends Presenter {
         view = (InventoryView) v;
     }
 
-    public Observable<List<StockCardViewModel>> loadInventory() {
+    public Observable<List<InventoryViewModel>> loadInventory() {
 
-        return Observable.create(new Observable.OnSubscribe<List<StockCardViewModel>>() {
+        return Observable.create(new Observable.OnSubscribe<List<InventoryViewModel>>() {
             @Override
-            public void call(final Subscriber<? super List<StockCardViewModel>> subscriber) {
+            public void call(final Subscriber<? super List<InventoryViewModel>> subscriber) {
                 try {
                     List<Product> inventoryProducts = getValidProductsForInventory();
 
-                    List<StockCardViewModel> availableStockCardsForAddNewDrug = from(inventoryProducts)
-                            .transform(new Function<Product, StockCardViewModel>() {
+                    List<InventoryViewModel> availableStockCardsForAddNewDrug = from(inventoryProducts)
+                            .transform(new Function<Product, InventoryViewModel>() {
                                 @Override
-                                public StockCardViewModel apply(Product product) {
+                                public InventoryViewModel apply(Product product) {
                                     return convertProductToStockCardViewModel(product);
                                 }
                             }).toList();
@@ -110,13 +110,13 @@ public class InventoryPresenter extends Presenter {
     }
 
     @Nullable
-    private StockCardViewModel convertProductToStockCardViewModel(Product product) {
+    private InventoryViewModel convertProductToStockCardViewModel(Product product) {
         try {
-            StockCardViewModel viewModel;
+            InventoryViewModel viewModel;
             if (product.isArchived()) {
-                viewModel = new StockCardViewModel(stockRepository.queryStockCardByProductId(product.getId()));
+                viewModel = new InventoryViewModel(stockRepository.queryStockCardByProductId(product.getId()));
             } else {
-                viewModel = new StockCardViewModel(product);
+                viewModel = new InventoryViewModel(product);
             }
             viewModel.setChecked(false);
             return viewModel;
@@ -135,16 +135,16 @@ public class InventoryPresenter extends Presenter {
         }).toList();
     }
 
-    public Observable<List<StockCardViewModel>> loadPhysicalInventory() {
-        return Observable.create(new Observable.OnSubscribe<List<StockCardViewModel>>() {
+    public Observable<List<InventoryViewModel>> loadPhysicalInventory() {
+        return Observable.create(new Observable.OnSubscribe<List<InventoryViewModel>>() {
             @Override
-            public void call(Subscriber<? super List<StockCardViewModel>> subscriber) {
+            public void call(Subscriber<? super List<InventoryViewModel>> subscriber) {
                 try {
                     List<StockCard> validStockCardsForPhysicalInventory = getValidStockCardsForPhysicalInventory();
-                    List<StockCardViewModel> stockCardViewModels = convertStockCardsToStockCardViewModels(validStockCardsForPhysicalInventory);
+                    List<InventoryViewModel> inventoryViewModels = convertStockCardsToStockCardViewModels(validStockCardsForPhysicalInventory);
 
-                    restoreDraftInventory(stockCardViewModels);
-                    subscriber.onNext(stockCardViewModels);
+                    restoreDraftInventory(inventoryViewModels);
+                    subscriber.onNext(inventoryViewModels);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     subscriber.onError(e);
@@ -153,11 +153,11 @@ public class InventoryPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    private List<StockCardViewModel> convertStockCardsToStockCardViewModels(List<StockCard> validStockCardsForPhysicalInventory) {
-        return FluentIterable.from(validStockCardsForPhysicalInventory).transform(new Function<StockCard, StockCardViewModel>() {
+    private List<InventoryViewModel> convertStockCardsToStockCardViewModels(List<StockCard> validStockCardsForPhysicalInventory) {
+        return FluentIterable.from(validStockCardsForPhysicalInventory).transform(new Function<StockCard, InventoryViewModel>() {
             @Override
-            public StockCardViewModel apply(StockCard stockCard) {
-                return new StockCardViewModel(stockCard);
+            public InventoryViewModel apply(StockCard stockCard) {
+                return new InventoryViewModel(stockCard);
             }
         }).toList();
     }
@@ -171,10 +171,10 @@ public class InventoryPresenter extends Presenter {
         }).toList();
     }
 
-    protected void restoreDraftInventory(List<StockCardViewModel> stockCardViewModels) throws LMISException {
+    protected void restoreDraftInventory(List<InventoryViewModel> inventoryViewModels) throws LMISException {
         List<DraftInventory> draftList = stockRepository.listDraftInventory();
 
-        for (StockCardViewModel model : stockCardViewModels) {
+        for (InventoryViewModel model : inventoryViewModels) {
             for (DraftInventory draftInventory : draftList) {
                 if (model.getStockCardId() == draftInventory.getStockCard().getId()) {
                     model.initExpiryDates(draftInventory.getExpireDates());
@@ -184,22 +184,22 @@ public class InventoryPresenter extends Presenter {
         }
     }
 
-    public void initStockCards(List<StockCardViewModel> list) {
+    public void initStockCards(List<InventoryViewModel> list) {
 
-        from(list).filter(new Predicate<StockCardViewModel>() {
+        from(list).filter(new Predicate<InventoryViewModel>() {
             @Override
-            public boolean apply(StockCardViewModel stockCardViewModel) {
-                return stockCardViewModel.isChecked();
+            public boolean apply(InventoryViewModel inventoryViewModel) {
+                return inventoryViewModel.isChecked();
             }
-        }).transform(new Function<StockCardViewModel, StockCard>() {
+        }).transform(new Function<InventoryViewModel, StockCard>() {
             @Override
-            public StockCard apply(StockCardViewModel stockCardViewModel) {
-                return initStockCard(stockCardViewModel);
+            public StockCard apply(InventoryViewModel inventoryViewModel) {
+                return initStockCard(inventoryViewModel);
             }
         }).toList();
     }
 
-    private StockCard initStockCard(StockCardViewModel model) {
+    private StockCard initStockCard(InventoryViewModel model) {
         try {
             boolean isArchivedStockCard = model.getStockCard() != null;
 
@@ -222,7 +222,7 @@ public class InventoryPresenter extends Presenter {
     }
 
 
-    protected StockMovementItem calculateAdjustment(StockCardViewModel model, StockCard stockCard) {
+    protected StockMovementItem calculateAdjustment(InventoryViewModel model, StockCard stockCard) {
         long inventory = Long.parseLong(model.getQuantity());
         long stockOnHand = model.getStockOnHand();
 
@@ -246,18 +246,18 @@ public class InventoryPresenter extends Presenter {
         return item;
     }
 
-    public void savePhysicalInventory(List<StockCardViewModel> list) {
+    public void savePhysicalInventory(List<InventoryViewModel> list) {
         view.loading();
         Subscription subscription = saveDraftInventoryObservable(list).subscribe(nextMainPageAction, errorAction);
         subscriptions.add(subscription);
     }
 
-    private Observable<Object> saveDraftInventoryObservable(final List<StockCardViewModel> list) {
+    private Observable<Object> saveDraftInventoryObservable(final List<InventoryViewModel> list) {
         return Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
                 try {
-                    for (StockCardViewModel model : list) {
+                    for (InventoryViewModel model : list) {
                         stockRepository.saveDraftInventory(model.parseDraftInventory());
                     }
                     subscriber.onNext(null);
@@ -276,22 +276,22 @@ public class InventoryPresenter extends Presenter {
         }
     }
 
-    public void doPhysicalInventory(List<StockCardViewModel> list, final String sign) {
+    public void doPhysicalInventory(List<InventoryViewModel> list, final String sign) {
         view.loading();
 
-        for (StockCardViewModel viewModel : list) {
+        for (InventoryViewModel viewModel : list) {
             viewModel.setSignature(sign);
         }
         Subscription subscription = stockMovementObservable(list).subscribe(nextMainPageAction, errorAction);
         subscriptions.add(subscription);
     }
 
-    protected Observable<Object> stockMovementObservable(final List<StockCardViewModel> list) {
+    protected Observable<Object> stockMovementObservable(final List<InventoryViewModel> list) {
         return Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
                 try {
-                    for (StockCardViewModel model : list) {
+                    for (InventoryViewModel model : list) {
                         StockCard stockCard = model.getStockCard();
                         stockCard.setExpireDates(DateUtil.formatExpiryDateString(model.getExpiryDates()));
                         stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
@@ -326,7 +326,7 @@ public class InventoryPresenter extends Presenter {
         }
     };
 
-    public void doInitialInventory(final List<StockCardViewModel> list) {
+    public void doInitialInventory(final List<InventoryViewModel> list) {
         if (view.validateInventory()) {
             view.loading();
             Subscription subscription = initStockCardObservable(list).subscribe(nextMainPageAction);
@@ -334,7 +334,7 @@ public class InventoryPresenter extends Presenter {
         }
     }
 
-    protected Observable<Object> initStockCardObservable(final List<StockCardViewModel> list) {
+    protected Observable<Object> initStockCardObservable(final List<InventoryViewModel> list) {
         return Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {

@@ -15,7 +15,7 @@ import org.openlmis.core.presenter.UnpackKitPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.UnpackKitAdapter;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +51,7 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         super.onCreate(savedInstanceState);
 
         productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        ArrayList<StockCardViewModel> list = new ArrayList<>();
+        ArrayList<InventoryViewModel> list = new ArrayList<>();
         mAdapter = new UnpackKitAdapter(list);
         productListRecycleView.setAdapter(mAdapter);
 
@@ -80,9 +80,9 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
     }
 
     @Override
-    public void refreshList(List<StockCardViewModel> stockCardViewModels) {
-        mAdapter.refreshList(stockCardViewModels);
-        setTotal(stockCardViewModels.size());
+    public void refreshList(List<InventoryViewModel> inventoryViewModels) {
+        mAdapter.refreshList(inventoryViewModels);
+        setTotal(inventoryViewModels.size());
     }
 
     @Override

@@ -9,7 +9,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -17,7 +17,7 @@ import static junit.framework.Assert.assertEquals;
 public class ExpireDateViewGroupTest extends LMISRepositoryUnitTest {
 
     private ExpireDateViewGroup expireDateViewGroup;
-    protected StockCardViewModel model;
+    protected InventoryViewModel model;
 
     @Before
     public void setUp() {
@@ -33,7 +33,7 @@ public class ExpireDateViewGroupTest extends LMISRepositoryUnitTest {
         stockCard.setStockOnHand(1L);
         stockCard.setExpireDates("10/10/2016, 11/10/2016, 12/10/2017");
 
-        model = new StockCardViewModel(stockCard);
+        model = new InventoryViewModel(stockCard);
     }
 
     @Test

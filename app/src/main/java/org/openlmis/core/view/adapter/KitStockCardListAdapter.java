@@ -4,14 +4,14 @@ import android.view.View;
 
 import org.openlmis.core.view.holder.KitStockCardViewHolder;
 import org.openlmis.core.view.holder.StockCardViewHolder;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.List;
 
 public class KitStockCardListAdapter extends StockCardListAdapter {
 
-    public KitStockCardListAdapter(List<StockCardViewModel> stockCardViewModel, StockCardViewHolder.OnItemViewClickListener listener) {
-        super(stockCardViewModel, listener);
+    public KitStockCardListAdapter(List<InventoryViewModel> inventoryViewModel, StockCardViewHolder.OnItemViewClickListener listener) {
+        super(inventoryViewModel, listener);
     }
 
     @Override

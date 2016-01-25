@@ -5,7 +5,7 @@ import android.view.View;
 
 import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.R;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 
 public class UnpackKitViewHolder extends PhysicalInventoryViewHolder {
@@ -15,13 +15,13 @@ public class UnpackKitViewHolder extends PhysicalInventoryViewHolder {
         etQuantity.setHint(R.string.hint_quantity_in_unpack_kit);
     }
 
-    public void populate(StockCardViewModel stockCardViewModel) {
-        etQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(0, (int) stockCardViewModel.getKitExpectQuantity())});
+    public void populate(InventoryViewModel inventoryViewModel) {
+        etQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(0, (int) inventoryViewModel.getKitExpectQuantity())});
 
-        populate(stockCardViewModel, StringUtils.EMPTY);
+        populate(inventoryViewModel, StringUtils.EMPTY);
 
         tvStockOnHandInInventory.setText(context.getString(R.string.label_unpack_kit_quantity_expected,
-                Long.toString(stockCardViewModel.getKitExpectQuantity())));
+                Long.toString(inventoryViewModel.getKitExpectQuantity())));
 
     }
 }

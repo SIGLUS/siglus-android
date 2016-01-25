@@ -42,7 +42,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.activity.StockMovementActivity;
 import org.openlmis.core.view.adapter.StockCardListAdapter;
 import org.openlmis.core.view.holder.StockCardViewHolder;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ProductsUpdateBanner;
 
 import java.util.List;
@@ -72,7 +72,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     SharedPreferenceMgr sharedPreferenceMgr;
 
     StockCardListAdapter mAdapter;
-    protected List<StockCardViewModel> stockCardViewModels;
+    protected List<InventoryViewModel> inventoryViewModels;
     private int currentPosition;
 
     @Override
@@ -125,7 +125,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
 
     @Override
     public void refresh() {
-        stockCardViewModels = presenter.getStockCardViewModels();
+        inventoryViewModels = presenter.getInventoryViewModels();
         createAdapter();
         stockCardRecycleView.setAdapter(mAdapter);
         tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
@@ -148,7 +148,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     }
 
     protected void createAdapter() {
-        mAdapter = new StockCardListAdapter(stockCardViewModels, onItemViewClickListener);
+        mAdapter = new StockCardListAdapter(inventoryViewModels, onItemViewClickListener);
     }
 
     protected void loadStockCards() {
@@ -158,7 +158,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     private void initView(View view) {
         sortSpinner = (Spinner) view.findViewById(R.id.sort_spinner);
         stockCardRecycleView = (RecyclerView) view.findViewById(R.id.products_list);
-        stockCardViewModels = presenter.getStockCardViewModels();
+        inventoryViewModels = presenter.getInventoryViewModels();
         createAdapter();
 
         initProductList();
@@ -176,14 +176,14 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
 
     protected StockCardViewHolder.OnItemViewClickListener onItemViewClickListener = new StockCardViewHolder.OnItemViewClickListener() {
         @Override
-        public void onItemViewClick(StockCardViewModel stockCardViewModel) {
-            Intent intent = getStockMovementIntent(stockCardViewModel);
+        public void onItemViewClick(InventoryViewModel inventoryViewModel) {
+            Intent intent = getStockMovementIntent(inventoryViewModel);
             startActivityForResult(intent, Constants.REQUEST_FROM_STOCK_LIST_PAGE);
         }
     };
 
-    protected Intent getStockMovementIntent(StockCardViewModel stockCardViewModel) {
-        return StockMovementActivity.getIntentToMe(getActivity(), stockCardViewModel, false);
+    protected Intent getStockMovementIntent(InventoryViewModel inventoryViewModel) {
+        return StockMovementActivity.getIntentToMe(getActivity(), inventoryViewModel, false);
     }
 
     private void initSortSpinner() {

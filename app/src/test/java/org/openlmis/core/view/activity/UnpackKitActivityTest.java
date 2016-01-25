@@ -13,7 +13,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.presenter.UnpackKitPresenter;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
@@ -32,7 +32,7 @@ public class UnpackKitActivityTest {
     private UnpackKitPresenter mockedPresenter;
     private UnpackKitActivity stockMovementActivity;
     private Product product;
-    private StockCardViewModel viewModel;
+    private InventoryViewModel viewModel;
 
     @Before
     public void setUp() throws Exception {

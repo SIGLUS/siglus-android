@@ -7,7 +7,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
@@ -38,31 +38,31 @@ public class StockCardViewHolder extends BaseViewHolder {
         this.stockRepository = RoboGuice.getInjector(context).getInstance(StockRepository.class);
     }
 
-    public void populate(final StockCardViewModel stockCardViewModel, String queryKeyWord) {
-        setListener(stockCardViewModel);
-        initView(stockCardViewModel, queryKeyWord);
+    public void populate(final InventoryViewModel inventoryViewModel, String queryKeyWord) {
+        setListener(inventoryViewModel);
+        initView(inventoryViewModel, queryKeyWord);
     }
 
-    protected void initView(StockCardViewModel stockCardViewModel, String queryKeyWord) {
-        tvStockOnHand.setText(stockCardViewModel.getStockOnHand() + "");
-        tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledName()));
-        tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, stockCardViewModel.getStyledUnit()));
+    protected void initView(InventoryViewModel inventoryViewModel, String queryKeyWord) {
+        tvStockOnHand.setText(inventoryViewModel.getStockOnHand() + "");
+        tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledName()));
+        tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledUnit()));
 
-        initStockOnHandWarning(stockCardViewModel);
+        initStockOnHandWarning(inventoryViewModel);
     }
 
-    private void setListener(final StockCardViewModel stockCardViewModel) {
+    private void setListener(final InventoryViewModel inventoryViewModel) {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.onItemViewClick(stockCardViewModel);
+                    listener.onItemViewClick(inventoryViewModel);
                 }
             }
         });
     }
 
-    private void initStockOnHandWarning(final StockCardViewModel stockCard) {
+    private void initStockOnHandWarning(final InventoryViewModel stockCard) {
 
         int stockOnHandLevel = getStockOnHandLevel(stockCard);
         String warningMsg = null;
@@ -93,11 +93,11 @@ public class StockCardViewHolder extends BaseViewHolder {
 
     }
 
-    protected int getStockOnHandLevel(StockCardViewModel stockCardViewModel) {
+    protected int getStockOnHandLevel(InventoryViewModel inventoryViewModel) {
 
-        int lowStockAvg = stockRepository.getLowStockAvg(stockCardViewModel.getStockCard());
+        int lowStockAvg = stockRepository.getLowStockAvg(inventoryViewModel.getStockCard());
 
-        long stockOnHand = stockCardViewModel.getStockOnHand();
+        long stockOnHand = inventoryViewModel.getStockOnHand();
 
         if (stockOnHand > lowStockAvg) {
             return STOCK_ON_HAND_NORMAL;
@@ -109,6 +109,6 @@ public class StockCardViewHolder extends BaseViewHolder {
     }
 
     public interface OnItemViewClickListener {
-        void onItemViewClick(StockCardViewModel stockCardViewModel);
+        void onItemViewClick(InventoryViewModel inventoryViewModel);
     }
 }

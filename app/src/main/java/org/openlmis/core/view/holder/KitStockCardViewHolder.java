@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.utils.TextStyleUtil;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import roboguice.inject.InjectView;
 
@@ -24,9 +24,9 @@ public class KitStockCardViewHolder extends StockCardViewHolder {
     }
 
     @Override
-    protected void initView(StockCardViewModel stockCardViewModel, String queryKeyWord) {
-        tvStockOnHand.setText(String.valueOf(stockCardViewModel.getStockOnHand()));
-        tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, new SpannableStringBuilder(stockCardViewModel.getProduct().getPrimaryName())));
+    protected void initView(InventoryViewModel inventoryViewModel, String queryKeyWord) {
+        tvStockOnHand.setText(String.valueOf(inventoryViewModel.getStockOnHand()));
+        tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, new SpannableStringBuilder(inventoryViewModel.getProduct().getPrimaryName())));
         tvProductUnit.setVisibility(View.INVISIBLE);
     }
 }

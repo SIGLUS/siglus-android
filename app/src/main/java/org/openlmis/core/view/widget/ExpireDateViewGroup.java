@@ -39,7 +39,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
     @Setter
     private boolean isUpdateDBImmediately;
 
-    private StockCardViewModel model;
+    private InventoryViewModel model;
 
     private static final String FRAGMENT_TAG = "MsgDialogFragment";
 
@@ -79,7 +79,7 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
         initView();
     }
 
-    public void initExpireDateViewGroup(StockCardViewModel model, boolean isUpdateDBImmediately) {
+    public void initExpireDateViewGroup(InventoryViewModel model, boolean isUpdateDBImmediately) {
         this.model = model;
         this.isUpdateDBImmediately = isUpdateDBImmediately;
 
@@ -157,7 +157,7 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
         return expireDateView;
     }
 
-    private List<String> getStockCardExpireDates(StockCardViewModel model) {
+    private List<String> getStockCardExpireDates(InventoryViewModel model) {
         if (model == null) {
             return new ArrayList<>();
         } else {

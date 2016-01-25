@@ -28,7 +28,7 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
@@ -47,7 +47,7 @@ import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 public class StockCardPresenter extends Presenter {
 
 
-    protected List<StockCardViewModel> stockCardViewModels;
+    protected List<InventoryViewModel> inventoryViewModels;
 
     @Inject
     StockRepository stockRepository;
@@ -59,11 +59,11 @@ public class StockCardPresenter extends Presenter {
     private StockCardListView view;
 
     public StockCardPresenter() {
-        stockCardViewModels = new ArrayList<>();
+        inventoryViewModels = new ArrayList<>();
     }
 
-    public List<StockCardViewModel> getStockCardViewModels() {
-        return stockCardViewModels;
+    public List<InventoryViewModel> getInventoryViewModels() {
+        return inventoryViewModels;
     }
 
     public void loadStockCards(ArchiveStatus status) {
@@ -79,10 +79,10 @@ public class StockCardPresenter extends Presenter {
     }
 
     public void refreshStockCardViewModelsSOH() {
-        for (StockCardViewModel stockCardViewModel : stockCardViewModels) {
-            final StockCard stockCard = stockCardViewModel.getStockCard();
+        for (InventoryViewModel inventoryViewModel : inventoryViewModels) {
+            final StockCard stockCard = inventoryViewModel.getStockCard();
             stockRepository.refresh(stockCard);
-            stockCardViewModel.setStockOnHand(stockCard.getStockOnHand());
+            inventoryViewModel.setStockOnHand(stockCard.getStockOnHand());
         }
     }
 
@@ -142,14 +142,14 @@ public class StockCardPresenter extends Presenter {
 
             @Override
             public void onNext(List<StockCard> stockCards) {
-                List<StockCardViewModel> stockCardViewModelList = from(stockCards).transform(new Function<StockCard, StockCardViewModel>() {
+                List<InventoryViewModel> inventoryViewModelList = from(stockCards).transform(new Function<StockCard, InventoryViewModel>() {
                     @Override
-                    public StockCardViewModel apply(StockCard stockCard) {
-                        return new StockCardViewModel(stockCard);
+                    public InventoryViewModel apply(StockCard stockCard) {
+                        return new InventoryViewModel(stockCard);
                     }
                 }).toList();
-                stockCardViewModels.clear();
-                stockCardViewModels.addAll(stockCardViewModelList);
+                inventoryViewModels.clear();
+                inventoryViewModels.addAll(inventoryViewModelList);
                 view.refresh();
             }
         };

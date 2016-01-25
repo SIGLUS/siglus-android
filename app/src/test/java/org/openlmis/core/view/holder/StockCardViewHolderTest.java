@@ -14,7 +14,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,7 +52,7 @@ public class StockCardViewHolderTest {
 
         stockCard.setStockOnHand(100);
 
-        int stockOnHandLevel = viewHolder.getStockOnHandLevel(new StockCardViewModel(stockCard));
+        int stockOnHandLevel = viewHolder.getStockOnHandLevel(new InventoryViewModel(stockCard));
 
         assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_NORMAL);
 
@@ -64,7 +64,7 @@ public class StockCardViewHolderTest {
 
         stockCard.setStockOnHand(2);
 
-        int stockOnHandLevel = viewHolder.getStockOnHandLevel(new StockCardViewModel(stockCard));
+        int stockOnHandLevel = viewHolder.getStockOnHandLevel(new InventoryViewModel(stockCard));
 
         assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_LOW_STOCK);
     }
@@ -75,7 +75,7 @@ public class StockCardViewHolderTest {
 
         stockCard.setStockOnHand(0);
 
-        int stockOnHandLevel = viewHolder.getStockOnHandLevel(new StockCardViewModel(stockCard));
+        int stockOnHandLevel = viewHolder.getStockOnHandLevel(new InventoryViewModel(stockCard));
 
         assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_STOCK_OUT);
     }

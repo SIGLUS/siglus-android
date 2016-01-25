@@ -14,7 +14,7 @@ import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -64,8 +64,8 @@ public class StockCardPresenterTest {
         StockCard stockCard1 = StockCardBuilder.buildStockCard();
         StockCard stockCard2 = StockCardBuilder.buildStockCard();
         stockCardList = newArrayList(stockCard1, stockCard2, stockCard1);
-        StockCardViewModel viewModel1 = new StockCardViewModel(stockCard1);
-        presenter.stockCardViewModels = newArrayList(viewModel1, viewModel1);
+        InventoryViewModel viewModel1 = new InventoryViewModel(stockCard1);
+        presenter.inventoryViewModels = newArrayList(viewModel1, viewModel1);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class StockCardPresenterTest {
 
         presenter.afterLoadHandler.onNext(cardList);
 
-        assertThat(presenter.stockCardViewModels.size()).isEqualTo(3);
+        assertThat(presenter.inventoryViewModels.size()).isEqualTo(3);
         verify(stockCardListView).refresh();
 
         presenter.afterLoadHandler.onCompleted();

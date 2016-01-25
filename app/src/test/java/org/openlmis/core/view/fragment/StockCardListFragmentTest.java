@@ -35,7 +35,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.activity.StockCardListActivity;
 import org.openlmis.core.view.activity.StockMovementActivity;
 import org.openlmis.core.view.adapter.StockCardListAdapter;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ProductsUpdateBanner;
 import org.robolectric.Robolectric;
 import org.robolectric.shadows.ShadowApplication;
@@ -55,7 +55,7 @@ import static org.mockito.Mockito.when;
 public class StockCardListFragmentTest {
 
     private StockCardListFragment fragment;
-    private List<StockCardViewModel> stockCardViewModels;
+    private List<InventoryViewModel> inventoryViewModels;
     private ProductsUpdateBanner productUpdateBanner;
     private SharedPreferenceMgr sharedPreferenceMgr;
 
@@ -66,7 +66,7 @@ public class StockCardListFragmentTest {
         sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
         fragment.sharedPreferenceMgr = sharedPreferenceMgr;
 
-        stockCardViewModels = new ArrayList<>();
+        inventoryViewModels = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             StockCard stockCard = new StockCard();
             stockCard.setStockOnHand(10 - i);
@@ -74,7 +74,7 @@ public class StockCardListFragmentTest {
             product.setPrimaryName((char) ('A' + i) + " Product");
 
             stockCard.setProduct(product);
-            stockCardViewModels.add(new StockCardViewModel(stockCard));
+            inventoryViewModels.add(new InventoryViewModel(stockCard));
         }
     }
 
@@ -93,7 +93,7 @@ public class StockCardListFragmentTest {
     public void shouldSortListWhenSelectSortSpinner() {
         fragment.mAdapter = mock(StockCardListAdapter.class);
 
-        when(fragment.presenter.getStockCardViewModels()).thenReturn(stockCardViewModels);
+        when(fragment.presenter.getInventoryViewModels()).thenReturn(inventoryViewModels);
         fragment.sortSpinner.setSelection(0);
         verify(fragment.mAdapter).sortByName(true);
 
@@ -109,12 +109,12 @@ public class StockCardListFragmentTest {
 
     @Test
     public void shouldSortListByProductName() {
-        when(fragment.presenter.getStockCardViewModels()).thenReturn(stockCardViewModels);
-        List<StockCardViewModel> stockCardViewModels = fragment.presenter.getStockCardViewModels();
-        StockCardListAdapter adapter = new StockCardListAdapter(stockCardViewModels, null);
+        when(fragment.presenter.getInventoryViewModels()).thenReturn(this.inventoryViewModels);
+        List<InventoryViewModel> inventoryViewModels = fragment.presenter.getInventoryViewModels();
+        StockCardListAdapter adapter = new StockCardListAdapter(inventoryViewModels, null);
         adapter.sortByName(true);
 
-        List<StockCardViewModel> sortedList = adapter.getCurrentList();
+        List<InventoryViewModel> sortedList = adapter.getCurrentList();
         assertThat(sortedList.get(0).getProduct().getPrimaryName(), is("A Product"));
         assertThat(sortedList.get(1).getProduct().getPrimaryName(), is("B Product"));
         assertThat(sortedList.get(2).getProduct().getPrimaryName(), is("C Product"));
@@ -122,11 +122,11 @@ public class StockCardListFragmentTest {
 
     @Test
     public void shouldSortListBySOH() {
-        when(fragment.presenter.getStockCardViewModels()).thenReturn(stockCardViewModels);
-        StockCardListAdapter adapter = new StockCardListAdapter(stockCardViewModels, null);
+        when(fragment.presenter.getInventoryViewModels()).thenReturn(inventoryViewModels);
+        StockCardListAdapter adapter = new StockCardListAdapter(inventoryViewModels, null);
         adapter.sortBySOH(true);
 
-        List<StockCardViewModel> sortedList = adapter.getCurrentList();
+        List<InventoryViewModel> sortedList = adapter.getCurrentList();
         assertThat(sortedList.get(0).getStockOnHand(), is(1L));
         assertThat(sortedList.get(1).getStockOnHand(), is(2L));
         assertThat(sortedList.get(2).getStockOnHand(), is(3L));
@@ -162,7 +162,7 @@ public class StockCardListFragmentTest {
                 .setStockOnHand(100)
                 .setProduct(product).build();
 
-        fragment.onItemViewClickListener.onItemViewClick(new StockCardViewModel(stockCard));
+        fragment.onItemViewClickListener.onItemViewClick(new InventoryViewModel(stockCard));
 
         Intent intent = ShadowApplication.getInstance().getNextStartedActivity();
 

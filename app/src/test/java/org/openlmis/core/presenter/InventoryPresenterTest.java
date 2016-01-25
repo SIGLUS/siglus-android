@@ -39,7 +39,7 @@ import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.view.viewmodel.StockCardViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
 import org.robolectric.RuntimeEnvironment;
 
@@ -124,8 +124,8 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         List<StockCard> stockCards = Arrays.asList(stockCardMMIA, stockCardVIA);
         when(stockRepositoryMock.list()).thenReturn(stockCards);
 
-        TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
-        Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadPhysicalInventory();
+        TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
+        Observable<List<InventoryViewModel>> observable = inventoryPresenter.loadPhysicalInventory();
         observable.subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
@@ -133,8 +133,8 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         verify(stockRepositoryMock).list();
         subscriber.assertNoErrors();
 
-        List<StockCardViewModel> receivedStockCardViewModels = subscriber.getOnNextEvents().get(0);
-        assertEquals(receivedStockCardViewModels.size(), 2);
+        List<InventoryViewModel> receivedInventoryViewModels = subscriber.getOnNextEvents().get(0);
+        assertEquals(receivedInventoryViewModels.size(), 2);
     }
 
     @Test
@@ -151,16 +151,16 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         List<StockCard> stockCards = Arrays.asList(stockCardMMIA, stockCardVIA, kitStockCard);
         when(stockRepositoryMock.list()).thenReturn(stockCards);
 
-        TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
-        Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadPhysicalInventory();
+        TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
+        Observable<List<InventoryViewModel>> observable = inventoryPresenter.loadPhysicalInventory();
         observable.subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
 
-        List<StockCardViewModel> receivedStockCardViewModels = subscriber.getOnNextEvents().get(0);
-        assertEquals(1, receivedStockCardViewModels.size());
-        assertEquals("VIA Product", receivedStockCardViewModels.get(0).getProductName());
+        List<InventoryViewModel> receivedInventoryViewModels = subscriber.getOnNextEvents().get(0);
+        assertEquals(1, receivedInventoryViewModels.size());
+        assertEquals("VIA Product", receivedInventoryViewModels.get(0).getProductName());
     }
 
     @Test
@@ -183,15 +183,15 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         when(productRepositoryMock.listActiveProducts(IsKit.No)).thenReturn(Arrays.asList(productMMIA, productVIA, productUnknownB, productUnknownA));
         when(stockRepositoryMock.queryStockCardByProductId(10L)).thenReturn(stockCardMMIA);
 
-        TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
-        Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadInventory();
+        TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
+        Observable<List<InventoryViewModel>> observable = inventoryPresenter.loadInventory();
         observable.subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
 
         subscriber.assertNoErrors();
-        List<StockCardViewModel> receivedStockCardViewModels = subscriber.getOnNextEvents().get(0);
-        assertEquals(3, receivedStockCardViewModels.size());
+        List<InventoryViewModel> receivedInventoryViewModels = subscriber.getOnNextEvents().get(0);
+        assertEquals(3, receivedInventoryViewModels.size());
     }
 
     @Test
@@ -202,23 +202,23 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         when(stockRepositoryMock.list()).thenReturn(new ArrayList<StockCard>());
         when(productRepositoryMock.listActiveProducts(IsKit.No)).thenReturn(Arrays.asList(activeProduct1, activeProduct2));
 
-        TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
-        Observable<List<StockCardViewModel>> observable = inventoryPresenter.loadInventory();
+        TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
+        Observable<List<InventoryViewModel>> observable = inventoryPresenter.loadInventory();
         observable.subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
 
         subscriber.assertNoErrors();
-        List<StockCardViewModel> receivedStockCardViewModels = subscriber.getOnNextEvents().get(0);
+        List<InventoryViewModel> receivedInventoryViewModels = subscriber.getOnNextEvents().get(0);
 
-        assertEquals(2, receivedStockCardViewModels.size());
+        assertEquals(2, receivedInventoryViewModels.size());
     }
 
     @Test
     public void shouldInitStockCardAndCreateAInitInventoryMovementItem() throws LMISException {
-        StockCardViewModel model = new StockCardViewModelBuilder(product).setChecked(true)
+        InventoryViewModel model = new StockCardViewModelBuilder(product).setChecked(true)
                 .setQuantity("100").build();
-        StockCardViewModel model2 = new StockCardViewModelBuilder(product).setChecked(false)
+        InventoryViewModel model2 = new StockCardViewModelBuilder(product).setChecked(false)
                 .setQuantity("200").build();
 
         inventoryPresenter.initStockCards(newArrayList(model, model2));
@@ -228,7 +228,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldReInventoryArchivedStockCard() throws LMISException {
-        StockCardViewModel uncheckedModel = new StockCardViewModelBuilder(product)
+        InventoryViewModel uncheckedModel = new StockCardViewModelBuilder(product)
                 .setChecked(false)
                 .setQuantity("100")
                 .build();
@@ -236,14 +236,14 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         Product archivedProduct = new ProductBuilder().setPrimaryName("Archived product").setCode("BBC")
                 .setIsArchived(true).build();
         StockCard archivedStockCard = new StockCardBuilder().setStockOnHand(0).setProduct(archivedProduct).build();
-        StockCardViewModel archivedViewModel = new StockCardViewModelBuilder(archivedStockCard)
+        InventoryViewModel archivedViewModel = new StockCardViewModelBuilder(archivedStockCard)
                 .setChecked(true)
                 .setQuantity("200")
                 .build();
 
-        List<StockCardViewModel> stockCardViewModelList = newArrayList(uncheckedModel, archivedViewModel);
+        List<InventoryViewModel> inventoryViewModelList = newArrayList(uncheckedModel, archivedViewModel);
 
-        inventoryPresenter.initStockCards(stockCardViewModelList);
+        inventoryPresenter.initStockCards(inventoryViewModelList);
 
         assertFalse(archivedStockCard.getProduct().isArchived());
         verify(stockRepositoryMock, times(1)).reInventoryArchivedStockCard(archivedStockCard);
@@ -269,7 +269,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldMakePositiveAdjustment() throws LMISException {
 
-        StockCardViewModel model = new StockCardViewModel(stockCard);
+        InventoryViewModel model = new InventoryViewModel(stockCard);
         model.setQuantity("120");
 
         StockMovementItem item = inventoryPresenter.calculateAdjustment(model, stockCard);
@@ -282,7 +282,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldMakeNegativeAdjustment() throws LMISException {
-        StockCardViewModel model = new StockCardViewModel(stockCard);
+        InventoryViewModel model = new InventoryViewModel(stockCard);
         model.setQuantity("80");
 
         StockMovementItem item = inventoryPresenter.calculateAdjustment(model, stockCard);
@@ -296,7 +296,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldCalculateStockAdjustment() throws LMISException {
-        StockCardViewModel model = new StockCardViewModel(stockCard);
+        InventoryViewModel model = new InventoryViewModel(stockCard);
         model.setQuantity("100");
 
         StockMovementItem item = inventoryPresenter.calculateAdjustment(model, stockCard);
@@ -310,7 +310,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldRestoreDraftInventory() throws Exception {
 
-        ArrayList<StockCardViewModel> stockCardViewModels = getStockCardViewModels();
+        ArrayList<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
 
         ArrayList<DraftInventory> draftInventories = new ArrayList<>();
         DraftInventory draftInventory = new DraftInventory();
@@ -321,30 +321,30 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         draftInventories.add(draftInventory);
         when(stockRepositoryMock.listDraftInventory()).thenReturn(draftInventories);
 
-        inventoryPresenter.restoreDraftInventory(stockCardViewModels);
-        assertThat(stockCardViewModels.get(0).getQuantity(), is("20"));
-        assertThat(stockCardViewModels.get(0).getExpiryDates().get(0), is("11/10/2015"));
-        assertThat(stockCardViewModels.get(1).getQuantity(), is("15"));
-        assertThat(stockCardViewModels.get(1).getExpiryDates().get(0), is("11/02/2015"));
+        inventoryPresenter.restoreDraftInventory(inventoryViewModels);
+        assertThat(inventoryViewModels.get(0).getQuantity(), is("20"));
+        assertThat(inventoryViewModels.get(0).getExpiryDates().get(0), is("11/10/2015"));
+        assertThat(inventoryViewModels.get(1).getQuantity(), is("15"));
+        assertThat(inventoryViewModels.get(1).getExpiryDates().get(0), is("11/02/2015"));
     }
 
-    private ArrayList<StockCardViewModel> getStockCardViewModels() {
-        ArrayList<StockCardViewModel> stockCardViewModels = new ArrayList<>();
-        stockCardViewModels.add(buildStockCardWithOutDraft(9, "11", null));
-        StockCardViewModel stockCardViewModelWithOutDraft = buildStockCardWithOutDraft(3, "15", "11/02/2015");
-        stockCardViewModels.add(stockCardViewModelWithOutDraft);
-        return stockCardViewModels;
+    private ArrayList<InventoryViewModel> getStockCardViewModels() {
+        ArrayList<InventoryViewModel> inventoryViewModels = new ArrayList<>();
+        inventoryViewModels.add(buildStockCardWithOutDraft(9, "11", null));
+        InventoryViewModel inventoryViewModelWithOutDraft = buildStockCardWithOutDraft(3, "15", "11/02/2015");
+        inventoryViewModels.add(inventoryViewModelWithOutDraft);
+        return inventoryViewModels;
     }
 
     @NonNull
-    private StockCardViewModel buildStockCardWithOutDraft(int stockCardId, String quantity, String expireDate) {
-        StockCardViewModel stockCardViewModelWithOutDraft = new StockCardViewModel(stockCard);
-        stockCardViewModelWithOutDraft.setStockCardId(stockCardId);
-        stockCardViewModelWithOutDraft.setQuantity(quantity);
+    private InventoryViewModel buildStockCardWithOutDraft(int stockCardId, String quantity, String expireDate) {
+        InventoryViewModel inventoryViewModelWithOutDraft = new InventoryViewModel(stockCard);
+        inventoryViewModelWithOutDraft.setStockCardId(stockCardId);
+        inventoryViewModelWithOutDraft.setQuantity(quantity);
         ArrayList<String> expireDates = new ArrayList<>();
         expireDates.add(expireDate);
-        stockCardViewModelWithOutDraft.setExpiryDates(expireDates);
-        return stockCardViewModelWithOutDraft;
+        inventoryViewModelWithOutDraft.setExpiryDates(expireDates);
+        return inventoryViewModelWithOutDraft;
     }
 
     @Test
@@ -356,19 +356,19 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldSetSignatureToViewModel() throws Exception {
-        ArrayList<StockCardViewModel> stockCardViewModels = getStockCardViewModels();
+        ArrayList<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
         String signature = "signature";
-        inventoryPresenter.doPhysicalInventory(stockCardViewModels, signature);
-        assertThat(stockCardViewModels.get(0).getSignature(), is(signature));
-        assertThat(stockCardViewModels.get(1).getSignature(), is(signature));
+        inventoryPresenter.doPhysicalInventory(inventoryViewModels, signature);
+        assertThat(inventoryViewModels.get(0).getSignature(), is(signature));
+        assertThat(inventoryViewModels.get(1).getSignature(), is(signature));
     }
 
     @Test
     public void shouldUpdateLatestDoPhysicalInventoryTime() throws Exception {
-        ArrayList<StockCardViewModel> stockCardViewModels = getStockCardViewModels();
+        ArrayList<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
 
-        TestSubscriber<List<StockCardViewModel>> subscriber = new TestSubscriber<>();
-        Observable observable = inventoryPresenter.stockMovementObservable(stockCardViewModels);
+        TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
+        Observable observable = inventoryPresenter.stockMovementObservable(inventoryViewModels);
         observable.subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
