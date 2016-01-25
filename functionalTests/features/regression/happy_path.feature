@@ -94,6 +94,87 @@ Feature: Log in and initialize Inventory
     And I see "125"
     And I see "super" in signature field
 
+    # Archive VIA drug
+    When I navigate back
+    And I wait for 1 second
+    And I select stock card code called "[01A01]"
+    And I wait for "Stock Card" to appear
+    And I select a reason "Issues" "PAV"
+    And I wait for 1 second
+    And I swipe right
+    And I enter issued number "123"
+    And I wait for "Complete" to appear
+    And I press "Complete"
+    And I sign with "superuser"
+    Then I see "0"
+    And I see "super" in signature field
+    And I press the menu key
+    Then I see "Archive drugs"
+    And I press "Archive drugs"
+    And I wait for "Stock Overview" to appear
+    Then I should see total:"9" on stock list page
+    And I don't see the text "[01A01]"
+
+    # Archive MMIA drug
+    When I select stock card code called "[08S32Z]"
+    And I wait for "Stock Card" to appear
+    And I select a reason "Negative Adjustments" "Damaged on arrival"
+    And I wait for 1 second
+    And I swipe right
+    And I enter negative adjustment number "123"
+    And I wait for "Complete" to appear
+    And I press "Complete"
+    And I sign with "superuser"
+    Then I see "0"
+    Then I see "super" in signature field
+    When I press the menu key
+    Then I see "Archive drugs"
+    When I press "Archive drugs"
+    And I wait for "Stock Overview" to appear
+    Then I should see total:"8" on stock list page
+    And I don't see the text "[08S32Z]"
+
+    # Archived drugs don't appear in monthly inventory
+    When I navigate back
+    And I wait for "STOCK CARD OVERVIEW" to appear
+    And I press "Do Monthly Inventory"
+    And I wait for "Inventory" to appear
+    Then I shouldn't see product "01A01" in this page
+    And I shouldn't see product "08S32Z" in this page
+
+    # Archived drugs screen
+    When I navigate back
+    And I wait for 1 second
+    And I navigate back
+    And I wait for "STOCK CARD OVERVIEW" to appear
+    And I press "Stock Card Overview"
+    And I wait for "Stock Overview" to appear
+    And I press the menu key
+    And I press "Archived drugs"
+    And I wait for "Archived drugs" to appear
+    Then I see the text "[01A01]"
+
+    # Stock movement history screen
+    When I press "View movement history"
+    And I wait for the "StockMovementHistoryActivity" screen to appear
+    Then I see the text "Inventory"
+    Then I see the text "PAV"
+
+    # Unarchive a drug
+    When I navigate back
+    And I press "Add drug to stock overview"
+    And I navigate back
+    And I wait for "Stock Overview" to appear
+    Then I should see total:"9" on stock list page
+    Then I see the text "[01A01]"
+
+    # Unarchived drug shows up in monthly inventory
+    When I navigate back
+    Then I wait for "STOCK CARD OVERVIEW" to appear
+    And I press "Do Monthly Inventory"
+    Then I wait for "Inventory" to appear
+    Then I should see product "01A01" in this page
+
     # Sign out
     When I navigate back
     And I navigate back
