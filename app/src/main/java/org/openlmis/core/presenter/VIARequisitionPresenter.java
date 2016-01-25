@@ -124,7 +124,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }
         Product product = requisitionFormItemViewModel.getItem().getProduct();
         requisitionFormItemViewModel.setAdjustmentViewModels(generateAdjustInfo(product));
-        requisitionFormItemViewModel.adjustTheoreticalByKitProductAmount();
     }
 
     private List generateAdjustInfo(Product product) {

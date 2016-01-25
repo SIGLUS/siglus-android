@@ -1,11 +1,14 @@
 package org.openlmis.core.view.holder;
 
+import android.app.AlertDialog;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.utils.SingleTextWatcher;
@@ -28,7 +31,7 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
     @InjectView(R.id.tx_issued)
     TextView issued;
     @InjectView(R.id.tx_theoretical)
-    TextView theoretical;
+    TextView adjustedTheoretical;
     @InjectView(R.id.tx_total)
     TextView total;
     @InjectView(R.id.tx_inventory)
@@ -41,6 +44,8 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
     EditText requestAmount;
     @InjectView(R.id.et_approved_amount)
     EditText approvedAmount;
+    @InjectView(R.id.iv_adjustment_theoratical)
+    ImageView adjustTheoreticalIcon;
 
     @Getter
     boolean hasDataChanged;
@@ -59,13 +64,36 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
         initAmount.setText(entry.getInitAmount());
         received.setText(entry.getReceived());
         issued.setText(entry.getIssued());
-        theoretical.setText(entry.getTheoretical());
+        adjustedTheoretical.setText(entry.getAdjustedTheoretical());
         total.setText(entry.getTotal());
         inventory.setText(entry.getInventory());
         different.setText(entry.getDifferent());
         totalRequest.setText(entry.getTotalRequest());
 
+        populateAdjustmentTheoreticalIcon(entry);
         populateRequestApprovedAmount(entry, status);
+    }
+
+    private void populateAdjustmentTheoreticalIcon(final RequisitionFormItemViewModel itemViewModel) {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_kit)) {
+            adjustTheoreticalIcon.setVisibility(View.GONE);
+            return;
+        }
+
+        if (itemViewModel.getAdjustmentViewModels() == null || itemViewModel.getAdjustmentViewModels().size() == 0) {
+            adjustTheoreticalIcon.setVisibility(View.GONE);
+        } else {
+            adjustTheoreticalIcon.setVisibility(View.VISIBLE);
+            adjustTheoreticalIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new AlertDialog.Builder(context)
+                            .setMessage(itemViewModel.getFormattedKitAdjustmentMessage())
+                            .setPositiveButton(R.string.btn_ok, null)
+                            .show();
+                }
+            });
+        }
     }
 
     private void populateRequestApprovedAmount(RequisitionFormItemViewModel entry, RnRForm.STATUS status) {

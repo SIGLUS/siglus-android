@@ -20,6 +20,8 @@ package org.openlmis.core.view.viewmodel;
 
 import android.text.TextUtils;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.model.RnrFormItem;
 
 import java.util.List;
@@ -41,6 +43,7 @@ public class RequisitionFormItemViewModel {
     private String totalRequest;
     private String requestAmount;
     private String approvedAmount;
+    private String adjustedTheoretical;
     private List<RnRFormItemAdjustmentViewModel> adjustmentViewModels;
     private RnrFormItem item;
 
@@ -64,12 +67,18 @@ public class RequisitionFormItemViewModel {
         this.received = String.valueOf(received);
         this.issued = String.valueOf(issued);
         this.theoretical = String.valueOf(theoretical);
+        this.adjustedTheoretical = String.valueOf(theoretical);
         this.total = "-";
         this.inventory = String.valueOf(inventory);
         this.different = String.valueOf(different);
         this.totalRequest = String.valueOf(item.getCalculatedOrderQuantity());
         this.requestAmount = (null == item.getRequestAmount()) ? this.totalRequest : String.valueOf(item.getRequestAmount());
         this.approvedAmount = (null == item.getApprovedAmount()) ? this.totalRequest : String.valueOf(item.getApprovedAmount());
+    }
+
+    public void setAdjustmentViewModels(List<RnRFormItemAdjustmentViewModel> viewModels) {
+        this.adjustmentViewModels = viewModels;
+        adjustTheoreticalByKitProductAmount();
     }
 
     public RnrFormItem toRnrFormItem() {
@@ -82,22 +91,34 @@ public class RequisitionFormItemViewModel {
         return item;
     }
 
-    public void adjustTheoreticalByKitProductAmount() {
-        long adjustAmount = calculateAjustAmount();
+    private void adjustTheoreticalByKitProductAmount() {
+        long adjustAmount = calculateAdjustAmount();
         long theoreticalLong = Long.valueOf(this.theoretical);
         if (adjustAmount <= theoreticalLong) {
             theoreticalLong = theoreticalLong - adjustAmount;
         } else {
             theoreticalLong = 0;
         }
-        this.theoretical = String.valueOf(theoreticalLong);
+        this.adjustedTheoretical = String.valueOf(theoreticalLong);
     }
 
-    private long calculateAjustAmount() {
+    private long calculateAdjustAmount() {
         long adjustAmount = 0;
         for (RnRFormItemAdjustmentViewModel adjustInfo : adjustmentViewModels) {
             adjustAmount += adjustInfo.getQuantity() * adjustInfo.getKitStockOnHand();
         }
         return adjustAmount;
+    }
+
+    public String getFormattedKitAdjustmentMessage() {
+        StringBuilder messageBuilder = new StringBuilder();
+        messageBuilder.append(LMISApp.getContext().getString(R.string.label_adjustment_dialog_header));
+        for (RnRFormItemAdjustmentViewModel adjustmentViewModel : adjustmentViewModels) {
+            messageBuilder.append(adjustmentViewModel.formatAdjustmentContentForProduct(productName));
+        }
+        messageBuilder.append("\n");
+        messageBuilder.append(LMISApp.getContext().getString(R.string.label_adjustment_dialog_initial_amount, theoretical));
+        messageBuilder.append(LMISApp.getContext().getString(R.string.label_adjustment_dialog_adjusted_amount, adjustedTheoretical));
+        return messageBuilder.toString();
     }
 }
