@@ -50,6 +50,6 @@ class << FeatureNameMemory
 end
 
 def reset_regression_server_data
-  puts "reset server data..."
+  puts "reset regression server data..."
   system("cd #{LMIS_MOZ_DIR} && ./data/functional_tests/regression/reset_data.sh")
 end

@@ -15,7 +15,7 @@ Before('@reinstall_app') do
 end
 
 def reset_local_server_data
-  puts "reset server data..."
+  puts "reset local server data..."
   system("cd #{LMIS_MOZ_DIR} && ./build/setup-data.sh")
 end
 
