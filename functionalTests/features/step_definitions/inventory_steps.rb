@@ -21,14 +21,21 @@ When(/^I select the item called "(.*?)"$/) do |name|
   end
 end
 
-When(/^I unselect the item called "(.*?)"$/) do |name|
-  q = query("android.widget.TextView {text CONTAINS '#{name}'}")
-  while q.empty?
-    scroll("RecyclerView", :down)
-    q = query("android.widget.TextView {text CONTAINS '#{name}'}")
-   end
+When(/^I select the inventory item called "(.*?)"$/) do |name|
+  q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
 
-  touch(q)
+  if !q.empty?
+    touch(q)
+  end
+
+end
+
+When(/^I unselect the inventory item called "(.*?)"$/) do |name|
+ q = query("android.widget.CheckBox id:'checkbox' checked:'true'")
+
+ if !q.empty?
+   touch(q)
+ end
 end
 
 
