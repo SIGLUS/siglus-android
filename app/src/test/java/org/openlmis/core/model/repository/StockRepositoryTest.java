@@ -250,10 +250,9 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldGetStockCardsByProgramIdWithoutKitAndDeacitivated() throws Exception {
         //when
-        long programId1 = createNewStockCard("code1", ProductBuilder.create().setCode("p1").setIsActive(true).setIsKit(false).build());
+        long id1 = createNewStockCard("code1", ProductBuilder.create().setCode("p1").setIsActive(true).setIsKit(false).build());
+        long id2 = createNewStockCard("code2", ProductBuilder.create().setCode("p2").setIsActive(true).setIsKit(false).build());
         createNewStockCard("code1", ProductBuilder.create().setCode("p3").setIsActive(false).setIsKit(false).build());
-
-        long programId2 = createNewStockCard("code2", ProductBuilder.create().setCode("p2").setIsActive(true).setIsKit(false).build());
         createNewStockCard("code2", ProductBuilder.create().setCode("p4").setIsActive(true).setIsKit(true).build());
 
         Product product = ProductBuilder.buildAdultProduct();
@@ -261,11 +260,11 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         productRepository.createOrUpdate(product);
 
         //then
-        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listActiveStockCardsByProgramId(programId1);
+        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listActiveStockCardsByProgramId(id1);
         assertThat(stockCardsBeforeTimeLine.size(), is(1));
 
-        List<StockCard> stockCardsBeforeTimeLine2 = stockRepository.listActiveStockCardsByProgramId(programId2);
-        assertThat(stockCardsBeforeTimeLine2.size(), is(2));
+        List<StockCard> stockCardsBeforeTimeLine2 = stockRepository.listActiveStockCardsByProgramId(id2);
+        assertThat(stockCardsBeforeTimeLine2.size(), is(1));
     }
 
     @Test
