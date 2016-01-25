@@ -22,6 +22,8 @@ import android.text.TextUtils;
 
 import org.openlmis.core.model.RnrFormItem;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
@@ -39,7 +41,7 @@ public class RequisitionFormItemViewModel {
     private String totalRequest;
     private String requestAmount;
     private String approvedAmount;
-    private long adjustKitProductAmount;
+    private List<RnRFormItemAdjustmentViewModel> adjustmentViewModels;
     private RnrFormItem item;
 
     public RequisitionFormItemViewModel() {
@@ -81,12 +83,21 @@ public class RequisitionFormItemViewModel {
     }
 
     public void adjustTheoreticalByKitProductAmount() {
+        long adjustAmount = calculateAjustAmount();
         long theoreticalLong = Long.valueOf(this.theoretical);
-        if (adjustKitProductAmount <= theoreticalLong) {
-            theoreticalLong = theoreticalLong - adjustKitProductAmount;
+        if (adjustAmount <= theoreticalLong) {
+            theoreticalLong = theoreticalLong - adjustAmount;
         } else {
             theoreticalLong = 0;
         }
         this.theoretical = String.valueOf(theoreticalLong);
+    }
+
+    private long calculateAjustAmount() {
+        long adjustAmount = 0;
+        for (RnRFormItemAdjustmentViewModel adjustInfo : adjustmentViewModels) {
+            adjustAmount += adjustInfo.getQuantity() * adjustInfo.getKitStockOnHand();
+        }
+        return adjustAmount;
     }
 }

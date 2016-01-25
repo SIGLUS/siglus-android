@@ -440,6 +440,7 @@ public class VIARequisitionPresenterTest {
         when(mockProductRepository.queryKitProductByProductCode("code")).thenReturn(kitProducts);
 
         Product product = new Product();
+        product.setPrimaryName("KitName");
         when(mockProductRepository.getByCode("kit")).thenReturn(product);
 
         StockCard stockCard = new StockCard();
@@ -449,8 +450,11 @@ public class VIARequisitionPresenterTest {
         List<RequisitionFormItemViewModel> viewModelsFromRnrForm = presenter.getViewModelsFromRnrForm(rnRForm);
 
         assertThat(viewModelsFromRnrForm.size(), is(1));
-        assertThat(viewModelsFromRnrForm.get(0).getAdjustKitProductAmount(), is(200L));
         assertThat(viewModelsFromRnrForm.get(0).getTheoretical(), is("799"));
+        assertThat(viewModelsFromRnrForm.get(0).getAdjustmentViewModels().size(), is(1));
+        assertThat(viewModelsFromRnrForm.get(0).getAdjustmentViewModels().get(0).getQuantity(), is(2));
+        assertThat(viewModelsFromRnrForm.get(0).getAdjustmentViewModels().get(0).getKitStockOnHand(), is(100L));
+        assertThat(viewModelsFromRnrForm.get(0).getAdjustmentViewModels().get(0).getKitName(), is("KitName"));
     }
 
     private ViaKitsViewModel buildDefaultViaKit() {

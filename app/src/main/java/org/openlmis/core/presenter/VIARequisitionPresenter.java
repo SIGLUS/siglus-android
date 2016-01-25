@@ -38,6 +38,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
+import org.openlmis.core.view.viewmodel.RnRFormItemAdjustmentViewModel;
 import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
@@ -111,36 +112,42 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             @Override
             public RequisitionFormItemViewModel apply(RnrFormItem item) {
                 RequisitionFormItemViewModel requisitionFormItemViewModel = new RequisitionFormItemViewModel(item);
-                setAdjustKitProductAmount(requisitionFormItemViewModel);
+                adjustTheoretical(requisitionFormItemViewModel);
                 return requisitionFormItemViewModel;
             }
         }).toList();
     }
 
-    private void setAdjustKitProductAmount(RequisitionFormItemViewModel requisitionFormItemViewModel) {
+    private void adjustTheoretical(RequisitionFormItemViewModel requisitionFormItemViewModel) {
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_kit)) {
             return;
         }
         Product product = requisitionFormItemViewModel.getItem().getProduct();
-        requisitionFormItemViewModel.setAdjustKitProductAmount(calculateAdjustKitProductAmount(product));
+        requisitionFormItemViewModel.setAdjustmentViewModels(generateAdjustInfo(product));
         requisitionFormItemViewModel.adjustTheoreticalByKitProductAmount();
     }
 
-    private long calculateAdjustKitProductAmount(Product product) {
-        long adjustKitProductAmount = 0;
+    private List generateAdjustInfo(Product product) {
+        List list = new ArrayList();
         try {
             List<KitProduct> kitProducts = productRepository.queryKitProductByProductCode(product.getCode());
             for (KitProduct kitProduct : kitProducts) {
-                adjustKitProductAmount += kitProduct.getQuantity() * getKitSOH(kitProduct.getKitCode());
+                RnRFormItemAdjustmentViewModel rnRFormItemAdjustmentViewModel = new RnRFormItemAdjustmentViewModel();
+
+                Product kit = productRepository.getByCode(kitProduct.getKitCode());
+                rnRFormItemAdjustmentViewModel.setKitStockOnHand(getKitSOH(kit));
+                rnRFormItemAdjustmentViewModel.setQuantity(kitProduct.getQuantity());
+                rnRFormItemAdjustmentViewModel.setKitName(kit.getPrimaryName());
+
+                list.add(rnRFormItemAdjustmentViewModel);
             }
         } catch (LMISException e) {
             e.reportToFabric();
         }
-        return adjustKitProductAmount;
+        return list;
     }
 
-    private long getKitSOH(String kitCode) throws LMISException {
-        Product kit = productRepository.getByCode(kitCode);
+    private long getKitSOH(Product kit) throws LMISException {
         return stockRepository.queryStockCardByProductId(kit.getId()).getStockOnHand();
     }
 
