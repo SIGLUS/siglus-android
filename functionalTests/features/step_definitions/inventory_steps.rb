@@ -21,16 +21,15 @@ When(/^I select the item called "(.*?)"$/) do |name|
   end
 end
 
-When(/^I select the inventory item called "(.*?)"$/) do |name|
+When(/^I select the inventory item/) do
   q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
 
   if !q.empty?
     touch(q)
   end
-
 end
 
-When(/^I unselect the inventory item called "(.*?)"$/) do |name|
+When(/^I unselect the inventory item/) do
  q = query("android.widget.CheckBox id:'checkbox' checked:'true'")
 
  if !q.empty?
