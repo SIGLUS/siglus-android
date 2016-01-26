@@ -450,7 +450,7 @@ public class VIARequisitionPresenterTest {
         List<RequisitionFormItemViewModel> viewModelsFromRnrForm = presenter.getViewModelsFromRnrForm(rnRForm);
 
         assertThat(viewModelsFromRnrForm.size(), is(1));
-        assertThat(viewModelsFromRnrForm.get(0).getAdjustedTheoretical(), is("799"));
+        assertThat(viewModelsFromRnrForm.get(0).getAdjustedTotalRequest(), is("799"));
         assertThat(viewModelsFromRnrForm.get(0).getAdjustmentViewModels().size(), is(1));
         assertThat(viewModelsFromRnrForm.get(0).getAdjustmentViewModels().get(0).getQuantity(), is(2));
         assertThat(viewModelsFromRnrForm.get(0).getAdjustmentViewModels().get(0).getKitStockOnHand(), is(100L));
@@ -486,7 +486,7 @@ public class VIARequisitionPresenterTest {
         List<RequisitionFormItemViewModel> viewModelsFromRnrForm = presenter.getViewModelsFromRnrForm(rnRForm);
 
         assertThat(viewModelsFromRnrForm.size(), is(1));
-        assertThat(viewModelsFromRnrForm.get(0).getAdjustedTheoretical(), is("999"));
+        assertThat(viewModelsFromRnrForm.get(0).getAdjustedTotalRequest(), is("999"));
         assertThat(viewModelsFromRnrForm.get(0).getAdjustmentViewModels().size(), is(1));
         assertThat(viewModelsFromRnrForm.get(0).getAdjustmentViewModels().get(0).getQuantity(), is(2));
         assertThat(viewModelsFromRnrForm.get(0).getAdjustmentViewModels().get(0).getKitName(), is("KitName"));

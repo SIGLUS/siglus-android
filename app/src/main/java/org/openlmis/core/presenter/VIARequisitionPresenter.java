@@ -126,15 +126,18 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         requisitionFormItemViewModel.setAdjustmentViewModels(generateAdjustInfo(product));
     }
 
-    private List generateAdjustInfo(Product product) {
-        List list = new ArrayList();
+    private List<RnRFormItemAdjustmentViewModel> generateAdjustInfo(Product product) {
+        List<RnRFormItemAdjustmentViewModel> list = new ArrayList<>();
         try {
             List<KitProduct> kitProducts = productRepository.queryKitProductByProductCode(product.getCode());
             for (KitProduct kitProduct : kitProducts) {
-                RnRFormItemAdjustmentViewModel rnRFormItemAdjustmentViewModel = new RnRFormItemAdjustmentViewModel();
-
                 Product kit = productRepository.getByCode(kitProduct.getKitCode());
-                rnRFormItemAdjustmentViewModel.setKitStockOnHand(getKitSOH(kit));
+                long kitSOH = getKitSOH(kit);
+                if (kitSOH == 0) {
+                    continue;
+                }
+                RnRFormItemAdjustmentViewModel rnRFormItemAdjustmentViewModel = new RnRFormItemAdjustmentViewModel();
+                rnRFormItemAdjustmentViewModel.setKitStockOnHand(kitSOH);
                 rnRFormItemAdjustmentViewModel.setQuantity(kitProduct.getQuantity());
                 rnRFormItemAdjustmentViewModel.setKitName(kit.getPrimaryName());
 

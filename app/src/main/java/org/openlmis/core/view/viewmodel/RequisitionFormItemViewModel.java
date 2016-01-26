@@ -43,7 +43,7 @@ public class RequisitionFormItemViewModel {
     private String totalRequest;
     private String requestAmount;
     private String approvedAmount;
-    private String adjustedTheoretical;
+    private String adjustedTotalRequest;
     private List<RnRFormItemAdjustmentViewModel> adjustmentViewModels;
     private RnrFormItem item;
 
@@ -62,16 +62,15 @@ public class RequisitionFormItemViewModel {
         long theoretical = item.getInitialAmount() + received - item.getIssued();
         long inventory = item.getInventory();
         long different = inventory - theoretical;
-
         this.initAmount = String.valueOf(item.getInitialAmount());
         this.received = String.valueOf(received);
         this.issued = String.valueOf(issued);
         this.theoretical = String.valueOf(theoretical);
-        this.adjustedTheoretical = String.valueOf(theoretical);
         this.total = "-";
         this.inventory = String.valueOf(inventory);
         this.different = String.valueOf(different);
         this.totalRequest = String.valueOf(item.getCalculatedOrderQuantity());
+        this.adjustedTotalRequest = totalRequest;
         this.requestAmount = (null == item.getRequestAmount()) ? this.totalRequest : String.valueOf(item.getRequestAmount());
         this.approvedAmount = (null == item.getApprovedAmount()) ? this.totalRequest : String.valueOf(item.getApprovedAmount());
     }
@@ -93,13 +92,13 @@ public class RequisitionFormItemViewModel {
 
     private void adjustTheoreticalByKitProductAmount() {
         long adjustAmount = calculateAdjustAmount();
-        long theoreticalLong = Long.valueOf(this.theoretical);
-        if (adjustAmount <= theoreticalLong) {
-            theoreticalLong = theoreticalLong - adjustAmount;
+        long theoreticalTotalRequest = Long.valueOf(this.totalRequest);
+        if (adjustAmount <= theoreticalTotalRequest) {
+            theoreticalTotalRequest = theoreticalTotalRequest - adjustAmount;
         } else {
-            theoreticalLong = 0;
+            theoreticalTotalRequest = 0;
         }
-        this.adjustedTheoretical = String.valueOf(theoreticalLong);
+        this.adjustedTotalRequest = String.valueOf(theoreticalTotalRequest);
     }
 
     private long calculateAdjustAmount() {
@@ -116,8 +115,8 @@ public class RequisitionFormItemViewModel {
         for (RnRFormItemAdjustmentViewModel adjustmentViewModel : adjustmentViewModels) {
             messageBuilder.append(adjustmentViewModel.formatAdjustmentContentForProduct(productName));
         }
-        messageBuilder.append(LMISApp.getContext().getString(R.string.label_adjustment_dialog_initial_amount, theoretical));
-        messageBuilder.append(LMISApp.getContext().getString(R.string.label_adjustment_dialog_adjusted_amount, adjustedTheoretical));
+        messageBuilder.append(LMISApp.getContext().getString(R.string.label_adjustment_dialog_initial_amount, totalRequest));
+        messageBuilder.append(LMISApp.getContext().getString(R.string.label_adjustment_dialog_adjusted_amount, adjustedTotalRequest));
         return messageBuilder.toString();
     }
 }

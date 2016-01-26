@@ -32,7 +32,7 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
     @InjectView(R.id.tx_issued)
     TextView issued;
     @InjectView(R.id.tx_theoretical)
-    TextView adjustedTheoretical;
+    TextView theoretical;
     @InjectView(R.id.tx_total)
     TextView total;
     @InjectView(R.id.tx_inventory)
@@ -65,11 +65,11 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
         initAmount.setText(entry.getInitAmount());
         received.setText(entry.getReceived());
         issued.setText(entry.getIssued());
-        adjustedTheoretical.setText(entry.getAdjustedTheoretical());
+        theoretical.setText(entry.getTheoretical());
         total.setText(entry.getTotal());
         inventory.setText(entry.getInventory());
         different.setText(entry.getDifferent());
-        totalRequest.setText(entry.getTotalRequest());
+        totalRequest.setText(entry.getAdjustedTotalRequest());
 
         populateAdjustmentTheoreticalIcon(entry);
         populateRequestApprovedAmount(entry, status);

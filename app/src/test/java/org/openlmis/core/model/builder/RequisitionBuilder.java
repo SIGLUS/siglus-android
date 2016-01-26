@@ -31,7 +31,7 @@ public class RequisitionBuilder {
         viewModel.setReceived(text);
         viewModel.setIssued(text);
         viewModel.setTheoretical(text);
-        viewModel.setAdjustedTheoretical(text);
+        viewModel.setAdjustedTotalRequest(text);
         viewModel.setTotal(text);
         viewModel.setInventory(text);
         viewModel.setDifferent(text);
