@@ -224,8 +224,6 @@
     <string name="label_via_name">Via Classica Requisition</string>
     <string name="label_mmia_name">MMIA</string>
 
-    <string name="action_delete_rnr_form">Remove from tablet</string>
-
     <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b>No %1$s has been created.</b>]]> Completed your inventory before creating a requisition</string>
     <string name="btn_view_uncompleted_physical_inventory">Complete Inventory</string>
     <string name="label_completed_physical_inventory_message"><![CDATA[<b>No %1$s has been created.</b>]]></string>

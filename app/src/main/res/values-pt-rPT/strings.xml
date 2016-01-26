@@ -199,7 +199,6 @@
     <string name="title_requisition_list">Requisições/Balancetes Históricas para Via Clássica</string>
     <string name="title_mmia_list">MMIAs Históricos</string>
     <string name="label_total">Total:%1$s</string>
-    <string name="action_delete_rnr_form">Remove from tablet</string>
     <!--Signature-->
     <string name="dialog_request_signature">Insira as iniciais do seu nome para rubricar o movimento</string>
     <string name="dialog_request_signature_cancel">Cancelar</string>
