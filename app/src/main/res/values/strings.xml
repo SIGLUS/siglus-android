@@ -139,7 +139,7 @@
     <string name="msg_requisition_signature_message_notify">Please hand the device to the person responsible for approval and submission of the Requisition Balancete</string>
     <string name="btn_continue">Continue</string>
     <string name="label_adjustment_dialog_header"><![CDATA[The reorder quantity has been adjusted based on: <br/><br/>]]></string>
-    <string name="label_adjustment_dialog_adjust_content"><![CDATA[<b>%1$s</b> unopened <i>%2$s</i> kits. <br/>Each kit contains %3$s <i>%4$s</i> <br/><br/>]]></string>
+    <string name="label_adjustment_dialog_adjust_content"><![CDATA[<b>%1$s</b> unopened <i>%2$s</i> kits <br/>Each kit contains %3$s <i>%4$s</i> <br/><br/>]]></string>
     <string name="label_adjustment_dialog_initial_amount"><![CDATA[Initial reorder amount is <b>%1$s</b> <br/>]]></string>
     <string name="label_adjustment_dialog_adjusted_amount"><![CDATA[Adjusted reorder amount is <b>%1$s</b> <br/>]]></string>
 
