@@ -192,7 +192,7 @@ Feature: Log in and initialize Inventory
     And I do physical inventory with "100" by fnm "08S36"
     And I do physical inventory with "100" by fnm "08S01ZY"
 
-    And I scroll down until I see the "Complete"
+    And I search drug by fnm "08S01Y"
     And I press "Complete"
     And I sign with "sign"
     Then I wait for "STOCK CARD OVERVIEW" to appear
