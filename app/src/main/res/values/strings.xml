@@ -138,10 +138,10 @@
     <string name="msg_approve_signature">Enter your initials and then approve the Requisition Balancete</string>
     <string name="msg_requisition_signature_message_notify">Please hand the device to the person responsible for approval and submission of the Requisition Balancete</string>
     <string name="btn_continue">Continue</string>
-    <string name="label_adjustment_dialog_header">The reorder quantity has been adjusted based on:\n</string>
-    <string name="label_adjustment_dialog_adjust_content"><b>%1$s</b> unopened %2$s kits. Each kit contains %3$s %4$s\n</string>
-    <string name="label_adjustment_dialog_initial_amount">Initial reorder amount is <b>%1$s</b>\n</string>
-    <string name="label_adjustment_dialog_adjusted_amount">Adjusted reorder amount is <b>%1$s</b>\n</string>
+    <string name="label_adjustment_dialog_header">The reorder quantity has been adjusted based on: \r\n \r\n</string>
+    <string name="label_adjustment_dialog_adjust_content">• <b>%1$s</b> unopened %2$s kits. Each kit contains %3$s %4$s \r\n</string>
+    <string name="label_adjustment_dialog_initial_amount">Initial reorder amount is <b>%1$s</b> \r\n</string>
+    <string name="label_adjustment_dialog_adjusted_amount">Adjusted reorder amount is <b>%1$s</b> \r\n</string>
 
     <string name="btn_del">Delete</string>
     <string name="msg_del_requisition">Warning!!! \n Are you sure you want to delete this? This requisition is already synced to the server. If you click DELETE then this requisition will disappear on your tablet, but remain saved on the server.</string>

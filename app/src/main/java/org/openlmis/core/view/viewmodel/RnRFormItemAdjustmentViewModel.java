@@ -13,9 +13,9 @@ public class RnRFormItemAdjustmentViewModel {
 
     public String formatAdjustmentContentForProduct(String productName) {
         return LMISApp.getContext().getResources().getString(R.string.label_adjustment_dialog_adjust_content,
-                quantity,
-                kitName,
                 kitStockOnHand,
+                kitName,
+                quantity,
                 productName
         );
     }
