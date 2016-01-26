@@ -2,6 +2,7 @@ package org.openlmis.core.view.holder;
 
 import android.app.AlertDialog;
 import android.text.Editable;
+import android.text.Html;
 import android.text.InputFilter;
 import android.view.View;
 import android.widget.EditText;
@@ -88,7 +89,7 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
                 @Override
                 public void onClick(View v) {
                     new AlertDialog.Builder(context)
-                            .setMessage(itemViewModel.getFormattedKitAdjustmentMessage())
+                            .setMessage(Html.fromHtml(itemViewModel.getFormattedKitAdjustmentMessage()))
                             .setPositiveButton(R.string.btn_ok, null)
                             .show();
                 }
