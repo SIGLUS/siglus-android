@@ -76,7 +76,7 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
     }
 
     private void populateAdjustmentTheoreticalIcon(final RequisitionFormItemViewModel itemViewModel) {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_kit)) {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_theoretical)) {
             adjustTheoreticalIcon.setVisibility(View.GONE);
             return;
         }
