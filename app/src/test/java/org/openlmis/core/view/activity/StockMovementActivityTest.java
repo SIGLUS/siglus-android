@@ -1,5 +1,6 @@
 package org.openlmis.core.view.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.view.MenuItem;
 
@@ -27,6 +28,7 @@ import roboguice.RoboGuice;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
@@ -73,6 +75,14 @@ public class StockMovementActivityTest {
         verify(mockedPresenter).setStockCard(100L);
 
         assertThat(stockMovementActivity.getTitle()).isEqualTo("Stock Name");
+    }
+
+    @Test
+    public void shouldRefreshStockCardWhenUnpackKitSuccessful() throws LMISException {
+        stockMovementActivity.onActivityResult(Constants.REQUEST_UNPACK_KIT, Activity.RESULT_OK, new Intent());
+
+        verify(mockedPresenter, times(2)).setStockCard(100L);
+        verify(mockedPresenter, times(2)).loadStockMovementViewModels();
     }
 
     @Test

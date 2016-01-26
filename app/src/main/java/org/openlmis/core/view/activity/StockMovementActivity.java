@@ -102,17 +102,21 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
         super.onCreate(savedInstanceState);
 
-        try {
-            presenter.setStockCard(stockId);
-        } catch (LMISException e) {
-            ToastUtil.show(R.string.msg_db_error);
-            finish();
-        }
+        loadStockCard();
 
         initUI();
 
         if (savedInstanceState == null) {
             presenter.loadStockMovementViewModels();
+        }
+    }
+
+    private void loadStockCard() {
+        try {
+            presenter.setStockCard(stockId);
+        } catch (LMISException e) {
+            ToastUtil.show(R.string.msg_db_error);
+            finish();
         }
     }
 
@@ -255,6 +259,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_UNPACK_KIT) {
+            loadStockCard();
             presenter.loadStockMovementViewModels();
         }
     }

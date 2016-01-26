@@ -111,7 +111,6 @@ public class StockMovementPresenter extends Presenter {
                 stockMovementModelList.clear();
                 stockMovementModelList.addAll(stockMovementViewModels);
                 stockMovementModelList.add(new StockMovementViewModel());
-
                 view.refreshStockMovement();
                 view.loaded();
             }
