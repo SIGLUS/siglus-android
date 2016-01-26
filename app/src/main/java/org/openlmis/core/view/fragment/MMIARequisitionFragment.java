@@ -142,9 +142,11 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         if (isHistoryForm) {
             scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             bottomView.setVisibility(View.GONE);
+            etComment.setEnabled(false);
         } else {
             scrollView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
             bottomView.setVisibility(View.VISIBLE);
+            etComment.setEnabled(true);
         }
         disableFreezeHeaderScroll();
         initActionBarHeight();
@@ -329,7 +331,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     };
 
     private void highlightTotalDifference() {
-        if (hasEmptyColumn() || isTotalEqual() || etComment.getText().toString().length() >= 5) {
+        if (isHistoryForm || hasEmptyColumn() || isTotalEqual() || etComment.getText().toString().length() >= 5) {
             regimeListView.deHighLightTotal();
             mmiaInfoListView.deHighLightTotal();
             tvMismatch.setVisibility(View.INVISIBLE);
