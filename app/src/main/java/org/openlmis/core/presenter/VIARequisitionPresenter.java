@@ -167,8 +167,8 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                     }
                     subscriber.onNext(rnrForm);
                     subscriber.onCompleted();
-                } catch (Exception e) {
-//                    e.reportToFabric();
+                } catch (LMISException e) {
+                    e.reportToFabric();
                     subscriber.onError(e);
                 }
             }
