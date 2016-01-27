@@ -16,7 +16,7 @@ public class UnpackKitViewHolder extends PhysicalInventoryViewHolder {
     }
 
     public void populate(InventoryViewModel inventoryViewModel) {
-        etQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(0, (int) inventoryViewModel.getKitExpectQuantity())});
+        etQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(0, 2 * (int)inventoryViewModel.getKitExpectQuantity() - 1)});
 
         populate(inventoryViewModel, StringUtils.EMPTY);
 
