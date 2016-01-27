@@ -115,6 +115,7 @@ public class RequisitionFormItemViewModel {
         for (RnRFormItemAdjustmentViewModel adjustmentViewModel : adjustmentViewModels) {
             messageBuilder.append(adjustmentViewModel.formatAdjustmentContentForProduct(productName));
         }
+        messageBuilder.append(LMISApp.getContext().getString(R.string.label_adjustment_dialog_adjust_amount, calculateAdjustAmount(), productName));
         messageBuilder.append(LMISApp.getContext().getString(R.string.label_adjustment_dialog_initial_amount, totalRequest));
         messageBuilder.append(LMISApp.getContext().getString(R.string.label_adjustment_dialog_adjusted_amount, adjustedTotalRequest));
         return messageBuilder.toString();
