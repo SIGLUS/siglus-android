@@ -131,7 +131,7 @@ public class UnpackKitPresenter extends Presenter {
                     }).toList());
 
                     stockCards.add(getStockCardForKit());
-                    stockRepository.batchSaveStockCardsWithMovementItems(stockCards);
+                    stockRepository.batchSaveStockCardsWithMovementItemsAndUpdateProduct(stockCards);
 
                     subscriber.onNext(null);
                     subscriber.onCompleted();
@@ -200,6 +200,7 @@ public class UnpackKitPresenter extends Presenter {
 
         stockCard.setStockOnHand(stockCard.getStockOnHand() + movementQuantity);
         stockCard.setExpireDates(DateUtil.uniqueExpiryDates(inventoryViewModel.getExpiryDates(), stockCard.getExpireDates()));
+        stockCard.getProduct().setArchived(false);
 
         stockMovementItems.add(createUnpackMovementItem(stockCard, movementQuantity));
         stockCard.setStockMovementItemsWrapper(stockMovementItems);

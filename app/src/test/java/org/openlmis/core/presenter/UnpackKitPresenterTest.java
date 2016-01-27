@@ -111,12 +111,21 @@ public class UnpackKitPresenterTest {
     }
 
     @Test
-    public void shouldOnlySaveStockMovementItemsWhenStockCardExists() throws Exception {
+    public void shouldSaveStockCardAndStockMovementAndUpdateProductAsNotArchived() throws Exception {
+        Product product2 = new ProductBuilder().setIsKit(false).setCode("productCode2").setPrimaryName("name2").setProductId(333L).setIsArchived(true).build();
+        InventoryViewModel viewModel2 = new StockCardViewModelBuilder(product2).setChecked(true).setKitExpectQuantity(300).setQuantity("200").build();
+
         StockCard productStockCard = new StockCardBuilder().setStockCardId(111)
                 .setStockOnHand(100)
                 .setCreateDate(new Date())
                 .setProduct(product)
                 .setExpireDates("20/1/2026,15/2/2026")
+                .build();
+
+        StockCard productStockCard2 = new StockCardBuilder().setStockCardId(222)
+                .setStockOnHand(100)
+                .setCreateDate(new Date())
+                .setProduct(product2)
                 .build();
 
         Product kit = new ProductBuilder().setIsKit(true).setProductId(888L)
@@ -131,10 +140,11 @@ public class UnpackKitPresenterTest {
 
         TestSubscriber<Void> testSubscriber = new TestSubscriber();
         presenter.unpackProductsSubscriber = testSubscriber;
-        presenter.inventoryViewModels = Arrays.asList(viewModel);
+        presenter.inventoryViewModels = Arrays.asList(viewModel, viewModel2);
         presenter.kitCode = "SD1112";
 
         when(stockRepository.queryStockCardByProductId(200L)).thenReturn(productStockCard);
+        when(stockRepository.queryStockCardByProductId(333L)).thenReturn(productStockCard2);
 
         when(productRepository.getByCode("SD1112")).thenReturn(kit);
         when(stockRepository.queryStockCardByProductId(888L)).thenReturn(kitStockCard);
@@ -143,10 +153,11 @@ public class UnpackKitPresenterTest {
         testSubscriber.awaitTerminalEvent();
 
         testSubscriber.assertNoErrors();
-        verify(stockRepository).batchSaveStockCardsWithMovementItems(anyList());
+        verify(stockRepository).batchSaveStockCardsWithMovementItemsAndUpdateProduct(anyList());
 
         assertThat(productStockCard.getStockOnHand()).isEqualTo(300);
         assertThat(productStockCard.getExpireDates()).isEqualTo("20/1/2026,15/2/2026,30/5/2026");
+        assertThat(product2.isArchived());
     }
 
     @Test

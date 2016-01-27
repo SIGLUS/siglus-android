@@ -69,13 +69,14 @@ public class StockRepository {
         productGenericDao = new GenericDao<>(Product.class, context);
     }
 
-    public void batchSaveStockCardsWithMovementItems(final List<StockCard> stockCards) {
+    public void batchSaveStockCardsWithMovementItemsAndUpdateProduct(final List<StockCard> stockCards) {
         try {
             dbUtil.withDaoAsBatch(StockCard.class, new DbUtil.Operation<StockCard, Object>() {
                 @Override
                 public Object operate(Dao<StockCard, String> dao) throws SQLException, LMISException {
                     for (StockCard stockCard : stockCards) {
                         dao.createOrUpdate(stockCard);
+                        updateProductOfStockCard(stockCard);
                         batchCreateOrUpdateStockMovements(stockCard.getStockMovementItemsWrapper());
                     }
                     return null;

@@ -49,6 +49,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.openlmis.core.model.StockMovementItem.MovementType.ISSUE;
 import static org.openlmis.core.model.StockMovementItem.MovementType.RECEIVE;
 import static org.openlmis.core.model.builder.StockCardBuilder.saveStockCardWithOneMovement;
@@ -103,17 +104,21 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         for (int i = 0; i < 10; i++) {
             StockCard stockCard = new StockCard();
             stockCard.setStockOnHand(i);
+            product.setArchived(true);
             stockCard.setProduct(product);
             stockCard.setStockMovementItemsWrapper(Arrays.asList(stockCard.generateInitialStockMovementItem()));
 
             stockCards.add(stockCard);
         }
 
-        stockRepository.batchSaveStockCardsWithMovementItems(stockCards);
+        stockRepository.batchSaveStockCardsWithMovementItemsAndUpdateProduct(stockCards);
 
-        assertThat(stockRepository.list().size(), is(10));
-        assertThat(stockRepository.list().get(0).getProduct(), is(NotNull.NOT_NULL));
-        assertThat(stockRepository.list().get(0).getForeignStockMovementItems().size(), is(1));
+        List<StockCard> stockCardList = stockRepository.list();
+
+        assertThat(stockCardList.size(), is(10));
+        assertThat(stockCardList.get(0).getProduct(), is(NotNull.NOT_NULL));
+        assertThat(stockCardList.get(0).getForeignStockMovementItems().size(), is(1));
+        assertTrue(stockCardList.get(0).getProduct().isArchived());
     }
 
     @Test
