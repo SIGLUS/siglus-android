@@ -6,6 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
 
+import com.ibm.icu.impl.duration.DateFormatter;
+
+import org.apache.commons.lang3.time.DateParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +19,7 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.StockCardBuilder;
+import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.builder.StockMovementViewModelBuilder;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
@@ -26,6 +30,7 @@ import org.robolectric.shadows.ShadowAlertDialog;
 import org.robolectric.shadows.ShadowDatePickerDialog;
 import org.robolectric.shadows.ShadowToast;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -40,6 +45,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
 public class StockMovementViewHolderTest {
@@ -334,6 +340,18 @@ public class StockMovementViewHolderTest {
         listener.onComplete(issueReason);
 
         assertThat(viewHolder.txReason.getCurrentTextColor(), is(RuntimeEnvironment.application.getResources().getColor(R.color.color_black)));
+    }
+
+    @Test
+    public void shouldGetLatestMovementDateAsThePreviousMovementDate() throws ParseException {
+        StockCard stockCard = new StockCard();
+        StockMovementItem stockMovementItem1 = new StockMovementItemBuilder().withMovementDate("2015-10-10").build();
+        StockMovementItem stockMovementItem2 = new StockMovementItemBuilder().withMovementDate("2015-11-12").build();
+        StockMovementItem stockMovementItem3 = new StockMovementItemBuilder().withMovementDate("2015-09-10").build();
+        stockCard.setStockMovementItemsWrapper(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
+
+        Date previousMovementDate = viewHolder.getPreviousMovementDate(stockCard);
+        assertThat(DateUtil.formatDate(previousMovementDate), is("12 Nov 2015"));
     }
 
 }

@@ -17,7 +17,7 @@ public class StockMovementItemBuilder {
 
     public StockMovementItem build() throws ParseException {
         StockMovementItem stockMovementItem = new StockMovementItem();
-        stockMovementItem.setMovementDate(DateUtil.parseString(movementDate, "mm/dd/YYYY"));
+        stockMovementItem.setMovementDate(DateUtil.parseString(movementDate, DateUtil.DB_DATE_FORMAT));
         stockMovementItem.setDocumentNumber(documentNo);
         stockMovementItem.setStockOnHand(stockExistence);
         stockMovementItem.setReason(movementReason);

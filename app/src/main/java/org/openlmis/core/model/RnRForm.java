@@ -26,10 +26,10 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.ListUtil;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -131,17 +131,17 @@ public class RnRForm extends BaseModel {
     }
 
     public List<RnrFormItem> getRnrFormItemListWrapper() {
-        rnrFormItemListWrapper = wrapOrEmpty(rnrFormItemList, rnrFormItemListWrapper);
+        rnrFormItemListWrapper = ListUtil.wrapOrEmpty(rnrFormItemList, rnrFormItemListWrapper);
         return rnrFormItemListWrapper;
     }
 
     public List<BaseInfoItem> getBaseInfoItemListWrapper() {
-        baseInfoItemListWrapper = wrapOrEmpty(baseInfoItemList, baseInfoItemListWrapper);
+        baseInfoItemListWrapper = ListUtil.wrapOrEmpty(baseInfoItemList, baseInfoItemListWrapper);
         return baseInfoItemListWrapper;
     }
 
     public List<RegimenItem> getRegimenItemListWrapper() {
-        regimenItemListWrapper = wrapOrEmpty(regimenItemList, regimenItemListWrapper);
+        regimenItemListWrapper = ListUtil.wrapOrEmpty(regimenItemList, regimenItemListWrapper);
         return regimenItemListWrapper;
     }
 
@@ -174,12 +174,5 @@ public class RnRForm extends BaseModel {
                 return isKit.isKit() == rnrFormItem.getProduct().isKit();
             }
         }).toList();
-    }
-
-    private <T> List<T> wrapOrEmpty(ForeignCollection<T> origin, List<T> target) {
-        if (target == null) {
-            return (origin == null ? new ArrayList<T>() : new ArrayList<>(origin));
-        }
-        return target;
     }
 }

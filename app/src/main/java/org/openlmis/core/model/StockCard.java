@@ -31,6 +31,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.ListUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -85,5 +86,9 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
         initInventory.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
         initInventory.setMovementQuantity(stockOnHand);
         return initInventory;
+    }
+
+    public List<StockMovementItem> getStockMovementItemsWrapper() {
+        return ListUtil.wrapOrEmpty(foreignStockMovementItems, stockMovementItemsWrapper);
     }
 }

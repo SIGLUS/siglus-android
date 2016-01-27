@@ -42,8 +42,9 @@ import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 import org.openlmis.core.view.widget.MovementTypeDialog;
 
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -289,10 +290,15 @@ public class StockMovementViewHolder extends BaseViewHolder {
         hideUnderline();
     }
 
-    public Date getPreviousMovementDate(StockCard stockCard) {
-        if (stockCard.getForeignStockMovementItems() != null) {
-            List<StockMovementItem> stockMovements = new ArrayList<>(stockCard.getForeignStockMovementItems());
+    protected Date getPreviousMovementDate(StockCard stockCard) {
+        List<StockMovementItem> stockMovements = stockCard.getStockMovementItemsWrapper();
+        if (stockMovements != null) {
             if (!stockMovements.isEmpty()) {
+                Collections.sort(stockMovements, new Comparator<StockMovementItem>() {
+                    public int compare(StockMovementItem item1, StockMovementItem item2) {
+                        return item1.getMovementDate().compareTo(item2.getMovementDate());
+                    }
+                });
                 return stockMovements.get(stockMovements.size() - 1).getMovementDate();
             }
         }
