@@ -33,6 +33,11 @@ Feature: MMIA
     Then I should see issued movement "2"
     Then I should see inventory "121"
     Then I swipe left
+    
+    Then I scroll "scrollView" down to "Submit for Approval"
+    Then I press "Submit for Approval"
+    Then I should see "Invalid Input"
+    
     And I enter patient totals
 
     Then I navigate back
@@ -52,6 +57,11 @@ Feature: MMIA
     Then I press "No"
     Then I wait for "MMIA -" to appear
     Then I wait for 1 second
+    
+    Then I scroll "scrollView" down to "Submit for Approval"
+    Then I press "Submit for Approval"
+    Then I should see "Invalid Input"
+    
     Then I press "Save"
     Then I wait for 1 second
     Then I should see text containing "Continue Working on MMIA"
