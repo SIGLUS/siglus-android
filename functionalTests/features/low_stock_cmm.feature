@@ -21,6 +21,7 @@ Feature: low stock
 
     And I select a reason "Issues" "Public pharmacy"
     Then I wait for 1 second
+    And I enter document number "520"
     Then I swipe right
     And I enter issued number "390"
     Then I wait for "Complete" to appear
@@ -35,6 +36,7 @@ Feature: low stock
     Then I select stock card code called "[01A01]"
     Then I wait for "Stock Card" to appear
     Then I wait for 1 second
+    Then I should see last document number "520"
     And I select a reason "Positive Adjustments" "Donations to Deposit"
     Then I swipe right
     Then I wait for 1 second

@@ -19,6 +19,13 @@ And(/^I clear banner message$/) do
     touch(query("android.widget.ImageView id:'iv_product_update_banner_clear'"))
 end
 
+
+And(/^I enter document number "(.*?)"$/) do |number|
+    touch(query("android.widget.EditText id:'et_document_no'").last);
+    keyboard_enter_text(number)
+    hide_soft_keyboard
+end
+
 And(/^I enter received number "(.*?)"$/) do |number|
     touch(query("android.widget.EditText id:'et_received'").last);
     keyboard_enter_text(number)
@@ -150,6 +157,14 @@ Then(/^I should see lowStock "(\d+)" and warning on product "(.*?)"$/) do |low_s
 
     unless !(warning_icon.empty?)
         fail "Low stock warning not appear"
+    end
+end
+
+Then(/^I should see last document number "(\d+)"$/) do |documentNo|
+    binding.pry
+    actual = query("android.widget.EditText id:'et_document_no'", :text)[-2]
+    unless actual == documentNo
+        fail "Document Number Does not perform correctly"
     end
 end
 
