@@ -161,7 +161,6 @@ Then(/^I should see lowStock "(\d+)" and warning on product "(.*?)"$/) do |low_s
 end
 
 Then(/^I should see last document number "(\d+)"$/) do |documentNo|
-    binding.pry
     actual = query("android.widget.EditText id:'et_document_no'", :text)[-2]
     unless actual == documentNo
         fail "Document Number Does not perform correctly"
