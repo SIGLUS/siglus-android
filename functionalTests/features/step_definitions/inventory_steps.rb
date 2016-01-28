@@ -106,22 +106,22 @@ end
 
 When(/^I Select MMIA Item$/) do
   steps %Q{
-    When I search product by fnm "08S42B" and select this item with quantity "123"
-    When I search product by fnm "08S18Y" and select this item with quantity "123"
-    When I search product by fnm "08S40Z" and select this item with quantity "123"
-    When I search product by fnm "08S36" and select this item with quantity "123"
-    When I search product by fnm "08S32Z" and select this item with quantity "123"
-	}
+    When I search product by primary name "Zidovudina/Lamivudina/Nevirapi; 60mg+30mg+50mg 60 Comprimidos; Embalagem" and select this item with quantity "123"
+    When I search product by primary name "Tenofovir/Lamivudina/Efavirenz; 300mg + 300mg + 600mg 30Comp; Embalagem" and select this item with quantity "123"
+    When I search product by primary name "Lamivudina+Zidovudina; 30mg+60mg, 60 Comprimidos; Embalagem" and select this item with quantity "123"
+    When I search product by primary name "Estavudina/Lamivudina/Nevirapi; 200mg+150mg+30mg 60Comp; Embalagem" and select this item with quantity "123"
+    When I search product by primary name "Estavudina/Lamivudina; 6mg+30mg, 60 Comp (Baby); Embalagem" and select this item with quantity "123"
+  }
 end
 
 When(/^I Select VIA Item$/) do
   steps %Q{
-    When I search product by fnm "01A01" and select this item with quantity "123"
-    When I search product by fnm "01A02" and select this item with quantity "123"
-    When I search product by fnm "01A03Z" and select this item with quantity "123"
-    When I search product by fnm "01A04Z" and select this item with quantity "123"
-    When I search product by fnm "01A05" and select this item with quantity "123"
-	}
+    When I search product by primary name "Digoxina 0,25mg Comp" and select this item with quantity "123"
+    When I search product by primary name "Digoxina; 2,5mg/50ml; Gotas Orais" and select this item with quantity "123"
+    When I search product by primary name "Digoxina; 0,25mg/2mL; Inject" and select this item with quantity "123"
+    When I search product by primary name "Dobutamina; 250mg/20mL; Inject" and select this item with quantity "123"
+    When I search product by primary name "Dopamina HCL; 200mg/5mL; Inject" and select this item with quantity "123"
+  }
 end
 
 When(/^I initialize inventory$/) do
