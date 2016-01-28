@@ -71,8 +71,12 @@ public class RequisitionFormItemViewModel {
         this.different = String.valueOf(different);
         this.totalRequest = String.valueOf(item.getCalculatedOrderQuantity());
         this.adjustedTotalRequest = totalRequest;
-        this.requestAmount = (null == item.getRequestAmount()) ? this.totalRequest : String.valueOf(item.getRequestAmount());
-        this.approvedAmount = (null == item.getApprovedAmount()) ? this.totalRequest : String.valueOf(item.getApprovedAmount());
+        inflateTotalAmount();
+    }
+
+    private void inflateTotalAmount() {
+        this.requestAmount = (null == item.getRequestAmount()) ? this.adjustedTotalRequest : String.valueOf(item.getRequestAmount());
+        this.approvedAmount = (null == item.getApprovedAmount()) ? this.adjustedTotalRequest : String.valueOf(item.getApprovedAmount());
     }
 
     public void setAdjustmentViewModels(List<RnRFormItemAdjustmentViewModel> viewModels) {
@@ -99,6 +103,8 @@ public class RequisitionFormItemViewModel {
             theoreticalTotalRequest = 0;
         }
         this.adjustedTotalRequest = String.valueOf(theoreticalTotalRequest);
+
+        inflateTotalAmount();
     }
 
     private long calculateAdjustAmount() {
