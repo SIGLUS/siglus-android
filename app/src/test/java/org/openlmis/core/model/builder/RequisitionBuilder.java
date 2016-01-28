@@ -18,6 +18,7 @@
 
 package org.openlmis.core.model.builder;
 
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 
 public class RequisitionBuilder {
@@ -38,6 +39,7 @@ public class RequisitionBuilder {
         viewModel.setTotalRequest(text);
         viewModel.setRequestAmount(text);
         viewModel.setApprovedAmount(text);
+        viewModel.setItem(new RnrFormItem());
 
         return viewModel;
     }

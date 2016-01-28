@@ -106,7 +106,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     private RequisitionFormAdapter requisitionFormAdapter;
     private boolean consultationNumbersHasChanged;
-    protected boolean isHistoryForm;
     private static final String TAG_BACK_PRESSED = "onBackPressed";
     private static final String TAG_SHOW_MESSAGE_NOTIFY_DIALOG = "showMessageNotifyDialog";
     protected View containerView;
@@ -117,8 +116,8 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
-        isHistoryForm = formId != 0;
     }
+
 
     @Override
     public Presenter initPresenter() {
@@ -323,6 +322,11 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         return kitView.validate();
     }
 
+    @Override
+    public boolean isHistoryForm() {
+        return formId != 0;
+    }
+
     protected void onProcessButtonClick() {
         String consultationNumbers = etConsultationNumbers.getText().toString();
         presenter.processRequisition(consultationNumbers);
@@ -434,7 +438,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     private void removeTempForm() {
-        if (!isHistoryForm) {
+        if (!isHistoryForm()) {
             try {
                 presenter.removeRequisition();
             } catch (LMISException e) {

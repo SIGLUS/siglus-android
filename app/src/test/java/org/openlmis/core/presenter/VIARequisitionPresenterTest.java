@@ -459,6 +459,44 @@ public class VIARequisitionPresenterTest {
     }
 
     @Test
+    public void shouldNotSetAdjustKitProductAmountInHistoryForm() throws Exception {
+        when(VIARequisitionFragment.isHistoryForm()).thenReturn(true);
+
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_theoretical, true);
+        RnRForm rnRForm = new RnRForm();
+        presenter.rnRForm = rnRForm;
+
+        ArrayList<RnrFormItem> rnrFormItemListWrapper = new ArrayList<>();
+        RnrFormItem rnrFormItem = createRnrFormItem(1);
+        rnrFormItem.setInitialAmount(1000);
+        rnrFormItem.setCalculatedOrderQuantity(400L);
+        rnrFormItemListWrapper.add(rnrFormItem);
+
+        rnRForm.setRnrFormItemListWrapper(rnrFormItemListWrapper);
+
+        ArrayList<KitProduct> kitProducts = new ArrayList<>();
+        KitProduct kitProduct = new KitProduct();
+        kitProduct.setQuantity(2);
+        kitProduct.setKitCode("kit");
+        kitProducts.add(kitProduct);
+        when(mockProductRepository.queryKitProductByProductCode("code")).thenReturn(kitProducts);
+
+        Product product = new Product();
+        product.setPrimaryName("KitName");
+        when(mockProductRepository.getByCode("kit")).thenReturn(product);
+
+        StockCard stockCard = new StockCard();
+        stockCard.setStockOnHand(100L);
+        when(mockStockRepository.queryStockCardByProductId(product.getId())).thenReturn(stockCard);
+
+        List<RequisitionFormItemViewModel> viewModelsFromRnrForm = presenter.getViewModelsFromRnrForm(rnRForm);
+
+        assertThat(viewModelsFromRnrForm.size(), is(1));
+        assertThat(viewModelsFromRnrForm.get(0).getAdjustedTotalRequest(), is("400"));
+        assertNull(viewModelsFromRnrForm.get(0).getAdjustmentViewModels());
+    }
+
+    @Test
     public void shouldNotAddAdjustItemsWhenKitIsNotFound() throws LMISException {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_theoretical, true);
         RnRForm rnRForm = new RnRForm();
@@ -489,7 +527,6 @@ public class VIARequisitionPresenterTest {
 
         assertThat(viewModelsFromRnrForm.size(), is(1));
         assertThat(viewModelsFromRnrForm.get(0).getAdjustmentViewModels().size(), is(0));
-
     }
 
     private ViaKitsViewModel buildDefaultViaKit() {

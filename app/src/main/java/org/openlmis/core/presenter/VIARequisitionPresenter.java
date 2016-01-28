@@ -112,7 +112,9 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             @Override
             public RequisitionFormItemViewModel apply(RnrFormItem item) {
                 RequisitionFormItemViewModel requisitionFormItemViewModel = new RequisitionFormItemViewModel(item);
-                adjustTheoretical(requisitionFormItemViewModel);
+                if (!view.isHistoryForm()) {
+                    adjustTheoretical(requisitionFormItemViewModel);
+                }
                 return requisitionFormItemViewModel;
             }
         }).toList();
@@ -292,5 +294,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         boolean validateConsultationNumber();
 
         boolean validateKitData();
+
+        boolean isHistoryForm();
     }
 }
