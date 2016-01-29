@@ -207,11 +207,13 @@
     <string name="hint_update_banner_tips">%1$s has been deactivated and removed to the <![CDATA[<b>archived drug</b>]]> list</string>
 
     <!-- Physical Inventory Page -->
-    <string name="label_physical_inventory_stock_on_hand">Current stock on hand: %1$s</string>
+    <string name="label_physical_inventory_stock_on_hand">Current stock on hand:</string>
 
     <!-- Unpack Kit -->
     <string name="hint_quantity_in_unpack_kit">Quantity received</string>
-    <string name="label_unpack_kit_quantity_expected">Quantity expected  %1$s</string>
+    <string name="label_unpack_kit_quantity_expected">Quantity expected</string>
+    <string name="label_unpack_kit_quantity_less_than_expected"><![CDATA[<b>Smaller</b>]]> quantity entered than expected for a single kit. Please double check it</string>
+    <string name="label_unpack_kit_quantity_more_than_expected"><![CDATA[<b>Larger</b>]]> quantity entered  than expected for a single kit. Please double check it</string>
 
     <!-- Server Sync Errors -->
     <string name="sync_server_error">Sync failed due to technical problem on the server. Please contact system administrator.</string>

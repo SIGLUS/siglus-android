@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
@@ -54,6 +55,26 @@ public class UnpackKitViewHolderTest {
         viewHolder.expireDateViewGroup = mockedExpireDateView;
 
         assertThat(viewHolder.etQuantity.getText().toString()).isEqualTo("150");
+    }
+
+    @Test
+    public void shouldChangePopUIWhenQuantityChanged() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_warning_unpack_kit_quantity, true);
+        InventoryViewModel viewModel = new StockCardViewModelBuilder(product)
+                .setQuantity("100")
+                .setSOH(100l)
+                .setChecked(true)
+                .setType("Embalagem")
+                .build();
+
+        viewHolder.afterQuantityChanged(viewModel, "60");
+        assertThat(viewHolder.tvStockOnHandInInventoryTip.getText().toString()).isEqualTo("Smaller quantity entered than expected for a single kit. Please double check it");
+
+        viewHolder.afterQuantityChanged(viewModel, "100");
+        assertThat(viewHolder.tvStockOnHandInInventoryTip.getText().toString()).isEqualTo("Quantity expected");
+
+        viewHolder.afterQuantityChanged(viewModel, "120");
+        assertThat(viewHolder.tvStockOnHandInInventoryTip.getText().toString()).isEqualTo("Larger quantity entered than expected for a single kit. Please double check it");
     }
 
 }

@@ -18,6 +18,7 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
 
     TextView tvProductName;
     TextView tvStockOnHandInInventory;
+    TextView tvStockOnHandInInventoryTip;
     TextView tvProductUnit;
     EditText etQuantity;
     TextInputLayout lyQuantity;
@@ -28,6 +29,7 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
         etQuantity = (EditText) itemView.findViewById(R.id.tx_quantity);
         tvProductName = (TextView) itemView.findViewById(R.id.product_name);
         tvStockOnHandInInventory = (TextView) itemView.findViewById(R.id.stock_on_hand_in_inventory);
+        tvStockOnHandInInventoryTip = (TextView) itemView.findViewById(R.id.tv_stock_on_hand_in_inventory_tip);
         tvProductUnit = (TextView) itemView.findViewById(R.id.product_unit);
         etQuantity = (EditText) itemView.findViewById(R.id.tx_quantity);
         lyQuantity = (TextInputLayout) itemView.findViewById(R.id.ly_quantity);
@@ -41,8 +43,7 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
         tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledName()));
         tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledUnit()));
 
-        tvStockOnHandInInventory.setText(context.getString(R.string.label_physical_inventory_stock_on_hand,
-                Long.toString(inventoryViewModel.getStockOnHand())));
+        tvStockOnHandInInventory.setText(Long.toString(inventoryViewModel.getStockOnHand()));
 
         EditTextWatcher textWatcher = new EditTextWatcher(inventoryViewModel);
         etQuantity.removeTextChangedListener(textWatcher);
@@ -68,9 +69,14 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
 
         @Override
         public void afterTextChanged(Editable editable) {
-            viewModel.setHasDataChanged(true);
-            viewModel.setQuantity(editable.toString());
+            afterQuantityChanged(viewModel, editable.toString());
         }
+
+    }
+
+    public void afterQuantityChanged(InventoryViewModel viewModel, String quantity) {
+        viewModel.setHasDataChanged(true);
+        viewModel.setQuantity(quantity);
     }
 
 }

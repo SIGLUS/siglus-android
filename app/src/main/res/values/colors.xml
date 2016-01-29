@@ -43,4 +43,6 @@
     <color name="color_warning_banner">#FCF8E2</color>
     <color name="color_warning_text">#8B6E37</color>
 
+    <color name="color_warning_text_unpack_kit_pop">#8A6D3B</color>
+
 </resources>
