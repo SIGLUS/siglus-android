@@ -52,23 +52,26 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/vg_soh_pop"
             style="@style/ItemPhysical.SOHText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_small">
 
             <TextView
                 android:id="@+id/tv_stock_on_hand_in_inventory_tip"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="8"
+                android:layout_gravity="center"
+                android:layout_weight="1"
                 android:gravity="right"
+                android:paddingLeft="@dimen/padding_medium"
                 android:text="@string/label_physical_inventory_stock_on_hand" />
 
             <TextView
                 android:id="@+id/stock_on_hand_in_inventory"
-                android:layout_width="0dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
                 android:gravity="center"
                 android:textColor="@color/color_text_secondary"
                 android:textStyle="bold" />

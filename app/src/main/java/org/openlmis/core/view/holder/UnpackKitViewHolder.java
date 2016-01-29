@@ -6,6 +6,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 
 import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
@@ -15,8 +16,11 @@ import org.openlmis.core.view.widget.InputFilterMinMax;
 
 public class UnpackKitViewHolder extends PhysicalInventoryViewHolder {
 
+    private final ViewGroup vg_soh_pop;
+
     public UnpackKitViewHolder(View itemView) {
         super(itemView);
+        vg_soh_pop = (ViewGroup) itemView.findViewById(R.id.vg_soh_pop);
         etQuantity.setHint(R.string.hint_quantity_in_unpack_kit);
     }
 
@@ -29,8 +33,6 @@ public class UnpackKitViewHolder extends PhysicalInventoryViewHolder {
         tvStockOnHandInInventory.setText(Long.toString(inventoryViewModel.getKitExpectQuantity()));
 
     }
-
-    //TODO change background
 
     @Override
     public void afterQuantityChanged(InventoryViewModel viewModel, String quantity) {
@@ -49,19 +51,20 @@ public class UnpackKitViewHolder extends PhysicalInventoryViewHolder {
         long stockOnHand = viewModel.getKitExpectQuantity();
 
         if ((quantityLong > stockOnHand)) {
-            setPopLabel(Html.fromHtml(context.getString(R.string.label_unpack_kit_quantity_more_than_expected)));
+            setWarningPopLabel(Html.fromHtml(context.getString(R.string.label_unpack_kit_quantity_more_than_expected)));
         } else if (quantityLong < stockOnHand) {
-            setPopLabel(Html.fromHtml(context.getString(R.string.label_unpack_kit_quantity_less_than_expected)));
+            setWarningPopLabel(Html.fromHtml(context.getString(R.string.label_unpack_kit_quantity_less_than_expected)));
         } else {
             setDefaultPop();
         }
     }
 
-    private void setPopLabel(Spanned text) {
+    private void setWarningPopLabel(Spanned text) {
         tvStockOnHandInInventoryTip.setText(text);
         tvStockOnHandInInventoryTip.setTextColor(context.getResources().getColor(R.color.color_warning_text_unpack_kit_pop));
         tvStockOnHandInInventoryTip.setGravity(Gravity.LEFT);
         tvStockOnHandInInventory.setTextColor(context.getResources().getColor(R.color.color_warning_text_unpack_kit_pop));
+        vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop_warning);
     }
 
     private void setDefaultPop() {
@@ -69,5 +72,6 @@ public class UnpackKitViewHolder extends PhysicalInventoryViewHolder {
         tvStockOnHandInInventoryTip.setText(context.getString(R.string.label_unpack_kit_quantity_expected));
         tvStockOnHandInInventoryTip.setGravity(Gravity.RIGHT);
         tvStockOnHandInInventory.setTextColor(context.getResources().getColor(R.color.color_text_secondary));
+        vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop);
     }
 }
