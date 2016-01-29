@@ -233,7 +233,10 @@ Then(/^I do physical inventory for all items$/) do
       scroll('recyclerView', :down)
     end
   end
-  hide_soft_keyboard
+  while query("* marked:'Complete'").empty?
+    scroll('recyclerView', :down)
+  end
+
   tap_when_element_exists("* marked:'Complete'")
 
   steps %Q{
