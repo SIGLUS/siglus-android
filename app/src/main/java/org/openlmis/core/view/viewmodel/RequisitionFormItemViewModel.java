@@ -91,6 +91,7 @@ public class RequisitionFormItemViewModel {
         if (!TextUtils.isEmpty(approvedAmount)) {
             item.setApprovedAmount(Long.valueOf(approvedAmount));
         }
+        item.setCalculatedOrderQuantity(Long.valueOf(this.adjustedTotalRequest));
         return item;
     }
 
