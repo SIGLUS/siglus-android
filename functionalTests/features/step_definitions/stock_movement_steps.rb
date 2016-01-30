@@ -72,7 +72,8 @@ Then(/^I make a movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_ca
         And I select a reason "#{first_reason}" "#{second_reason}"
     }
 
-    if movement_column.eql? "positive adjustment" or movement_column.eql? "issued"
+    if movement_column.eql? "negative adjustment" or movement_column.eql? "positive adjustment" or movement_column.eql? "issued"
+    # physical device could be too narrow for the negative adjustment column to show, so we need to swipe right for it too
         steps %Q{
             Then I swipe right
         }

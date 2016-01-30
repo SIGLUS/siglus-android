@@ -20,10 +20,3 @@ Given(/^I try to log in with "(.*?)" "(.*?)"$/) do |username, password|
         And I press "LOG IN"
 	}
 end
-
-And (/^I sign out$/) do
-    tap_when_element_exists("* contentDescription:'More options'")
-    steps %Q{
-        Then I press "Sign Out"
-    }
-end

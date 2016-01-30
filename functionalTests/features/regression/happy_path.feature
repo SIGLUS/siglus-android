@@ -5,7 +5,9 @@ Feature: Log in and initialize Inventory
 
     # Initialize inventory and check stock card overview
     Given I try to log in with "superuser" "password1"
-    And I wait up to 30 seconds for "Initial Inventory" to appear
+    And I wait up to 120 seconds for "Initial Inventory" to appear
+    # to run this in a physical device, we need to wait longer, IO is low on physical devices
+
     # 01A01, 01A02, 01A03Z, 01A04Z, 01A05
     When I Select VIA Item
     # 08S42B, 08S18Y, 08S40Z, 08S36, 08S32Z
@@ -70,6 +72,8 @@ Feature: Log in and initialize Inventory
     And I press "Complete"
     And I sign with "superuser"
     Then I see "123"
+    And I swipe right
+    #physical device portrait view is too narrow for signature to show, need to swipe right
     And I see "super" in signature field
 
     # Make stock movements with different movement types
@@ -195,6 +199,7 @@ Feature: Log in and initialize Inventory
     And I search drug by fnm "08S01ZY"
     And I press "Complete"
     And I sign with "sign"
+    # the line above just does not work on physical devices ......
     Then I wait for "STOCK CARD OVERVIEW" to appear
     When I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
@@ -205,6 +210,9 @@ Feature: Log in and initialize Inventory
     # Sign out
     When I navigate back
     And I navigate back
+    And I wait for 1 second
     And I press the menu key
-    And I sign out
+    And I wait for "Sign Out" to appear
+    # note: sometimes the wait for sign out to appear fails, reason unknown
+    And I press "Sign Out"
     Then I wait for the "LoginActivity" screen to appear
