@@ -119,7 +119,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
         }
     }
 
-    private void logout() {
+    protected void logout() {
         startActivity(new Intent(this, LoginActivity.class));
         LMISApp.lastOperateTime = 0L;
     }

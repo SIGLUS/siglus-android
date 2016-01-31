@@ -88,6 +88,11 @@ public class HomeActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (UserInfoMgr.getInstance().getUser() == null) {
+            // In case some users use some unknown way entered here!!!
+            logout();
+        }
+
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
             setContentView(R.layout.activity_home_page);
             setTitle(UserInfoMgr.getInstance().getFacilityName());
