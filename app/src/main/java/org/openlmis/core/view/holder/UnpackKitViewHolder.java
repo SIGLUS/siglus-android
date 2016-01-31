@@ -48,11 +48,11 @@ public class UnpackKitViewHolder extends PhysicalInventoryViewHolder {
         }
 
         long quantityLong = Long.parseLong(quantity);
-        long stockOnHand = viewModel.getKitExpectQuantity();
+        long kitExpectQuantity = viewModel.getKitExpectQuantity();
 
-        if ((quantityLong > stockOnHand)) {
+        if ((quantityLong > kitExpectQuantity)) {
             setWarningPopLabel(Html.fromHtml(context.getString(R.string.label_unpack_kit_quantity_more_than_expected)));
-        } else if (quantityLong < stockOnHand) {
+        } else if (quantityLong < kitExpectQuantity) {
             setWarningPopLabel(Html.fromHtml(context.getString(R.string.label_unpack_kit_quantity_less_than_expected)));
         } else {
             setDefaultPop();

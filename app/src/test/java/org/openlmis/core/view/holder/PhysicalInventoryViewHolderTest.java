@@ -50,7 +50,7 @@ public class PhysicalInventoryViewHolderTest {
         assertThat(viewHolder.tvProductName.getText().toString()).isEqualTo("Lamivudina 150mg [08S40]");
         assertThat(viewHolder.tvProductUnit.getText().toString()).isEqualTo("10mg VIA");
         assertThat(viewHolder.etQuantity.getText().toString()).isEqualTo("10");
-        assertThat(viewHolder.tvStockOnHandInInventory.getText().toString()).isEqualTo("Current stock on hand: 123");
+        assertThat(viewHolder.tvStockOnHandInInventory.getText().toString()).isEqualTo("123");
         assertThat(RobolectricUtils.getErrorTextView(viewHolder.lyQuantity)).isNull();
 
         verify(mockedExpireDateView).initExpireDateViewGroup(viewModel, false);

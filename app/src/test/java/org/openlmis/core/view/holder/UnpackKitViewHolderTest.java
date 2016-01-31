@@ -62,7 +62,7 @@ public class UnpackKitViewHolderTest {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_warning_unpack_kit_quantity, true);
         InventoryViewModel viewModel = new StockCardViewModelBuilder(product)
                 .setQuantity("100")
-                .setSOH(100l)
+                .setKitExpectQuantity(100l)
                 .setChecked(true)
                 .setType("Embalagem")
                 .build();
