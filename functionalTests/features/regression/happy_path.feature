@@ -113,7 +113,7 @@ Feature: Log in and initialize Inventory
     And I press "Complete"
     And I sign with "superuser"
     Then I see "0"
-    And I wait for 1 second
+    And I swipe right
     And I see "super" in signature field
     And I press the menu key
     Then I see "Archive drugs"
