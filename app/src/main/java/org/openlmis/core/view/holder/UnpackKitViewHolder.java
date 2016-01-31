@@ -17,6 +17,8 @@ import org.openlmis.core.view.widget.InputFilterMinMax;
 public class UnpackKitViewHolder extends PhysicalInventoryViewHolder {
 
     private final ViewGroup vg_soh_pop;
+    private final int minExpectedQuantity = 0;
+    private int maxExpectedQuantity = 99999;
 
     public UnpackKitViewHolder(View itemView) {
         super(itemView);
@@ -25,7 +27,7 @@ public class UnpackKitViewHolder extends PhysicalInventoryViewHolder {
     }
 
     public void populate(InventoryViewModel inventoryViewModel) {
-        etQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(0, 2 * (int) inventoryViewModel.getKitExpectQuantity() - 1)});
+        etQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(minExpectedQuantity, maxExpectedQuantity)});
 
         populate(inventoryViewModel, StringUtils.EMPTY);
 
