@@ -215,7 +215,7 @@ public class MMIAInfoList extends LinearLayout {
     }
 
     private boolean isTotalPatient(BaseInfoItem item) {
-        return getResources().getString(R.string.label_total_patients).equals(item.getName());
+        return "Total Patients".equals(item.getName()) || "Total de pacientes em TARV na US".equals(item.getName());
     }
 
 
