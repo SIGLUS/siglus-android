@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="TOTAL_MONTH_DISPENSE">
+        // should be consistent with R.string.label_total_month_dispense
+        <item>Total Dispensed</item>
+        <item>Total de Meses dispensados</item>
+    </string-array>
+    <string-array name="TOTAL_PATIENTS">
+        // should be consistent with R.string.label_total_patients
+        <item>Total Patients</item>
+        <item>Total de pacientes em TARV na US</item>
+    </string-array>
+</resources>

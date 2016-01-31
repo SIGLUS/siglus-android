@@ -37,6 +37,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MMIAInfoList extends LinearLayout {
@@ -211,11 +212,13 @@ public class MMIAInfoList extends LinearLayout {
     }
 
     private boolean isTotalInfoView(BaseInfoItem item) {
-        return getResources().getString(R.string.label_total_month_dispense).equals(item.getName()) || isTotalPatient(item);
+        List<String> monthDispenseLabels = Arrays.asList(getResources().getStringArray(R.array.TOTAL_MONTH_DISPENSE));
+        return monthDispenseLabels.contains(item.getName()) || isTotalPatient(item);
     }
 
     private boolean isTotalPatient(BaseInfoItem item) {
-        return "Total Patients".equals(item.getName()) || "Total de pacientes em TARV na US".equals(item.getName());
+        List<String> totalPatientLabels = Arrays.asList(getResources().getStringArray(R.array.TOTAL_PATIENTS));
+        return totalPatientLabels.contains(item.getName());
     }
 
 
