@@ -17,6 +17,8 @@ import org.robolectric.RuntimeEnvironment;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(LMISTestRunner.class)
 public class UnpackKitViewHolderTest {
@@ -77,4 +79,18 @@ public class UnpackKitViewHolderTest {
         assertThat(viewHolder.tvStockOnHandInInventoryTip.getText().toString()).isEqualTo("Larger quantity entered than expected for a single kit. Please double check it");
     }
 
+    @Test
+    public void shouldChangePopUIWhenPopulate() throws Exception {
+        UnpackKitViewHolder spyViewHolder = spy(viewHolder);
+
+        InventoryViewModel viewModel = new StockCardViewModelBuilder(product)
+                .setQuantity("100")
+                .setKitExpectQuantity(100l)
+                .setChecked(true)
+                .setType("Embalagem")
+                .build();
+        spyViewHolder.populate(viewModel);
+
+        verify(spyViewHolder).updatePop(viewModel, "100");
+    }
 }
