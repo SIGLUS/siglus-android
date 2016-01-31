@@ -8,5 +8,5 @@
     <bool name="feature_home_page_update">true</bool>
     <bool name="feature_syncup_unsync_stockcards">true</bool>
     <bool name="feature_requisition_theoretical">true</bool>
-    <bool name="feature_warning_unpack_kit_quantity">false</bool>
+    <bool name="feature_warning_unpack_kit_quantity">true</bool>
 </resources>
