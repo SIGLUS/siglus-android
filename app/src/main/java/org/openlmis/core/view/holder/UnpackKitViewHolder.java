@@ -68,6 +68,7 @@ public class UnpackKitViewHolder extends PhysicalInventoryViewHolder {
         tvStockOnHandInInventoryTip.setTextColor(context.getResources().getColor(R.color.color_warning_text_unpack_kit_pop));
         tvStockOnHandInInventoryTip.setGravity(Gravity.LEFT);
         tvStockOnHandInInventory.setTextColor(context.getResources().getColor(R.color.color_warning_text_unpack_kit_pop));
+        etQuantity.setTextColor(context.getResources().getColor(R.color.color_warning_text_unpack_kit_pop));
         vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop_warning);
     }
 
@@ -76,6 +77,7 @@ public class UnpackKitViewHolder extends PhysicalInventoryViewHolder {
         tvStockOnHandInInventoryTip.setText(context.getString(R.string.label_unpack_kit_quantity_expected));
         tvStockOnHandInInventoryTip.setGravity(Gravity.RIGHT);
         tvStockOnHandInInventory.setTextColor(context.getResources().getColor(R.color.color_text_secondary));
+        etQuantity.setTextColor(context.getResources().getColor(R.color.color_text_secondary));
         vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop);
     }
 }
