@@ -103,7 +103,7 @@ Feature: Log in and initialize Inventory
     And I wait for 1 second
     And I select stock card code called "[01A01]"
     And I wait for "Stock Card" to appear
-    And I select a reason "Issues" "PAV"
+    And I select a reason "Issues" "Maternity"
     And I wait for 1 second
     And I swipe right
     And I enter issued number "125"
