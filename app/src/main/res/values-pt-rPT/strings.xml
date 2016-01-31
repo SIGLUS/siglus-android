@@ -84,7 +84,7 @@
     <string name="hint_mmia_total_not_equal">O Total dos regimes terapêuticos não confere com o Total de pacientes em TARV na US.</string>
     <string name="msg_mmia_not_unique">Não é possivel submeter duas vezes o MMIA no mesmo período.</string>
     <string name="msg_reason_for_total_not_match">Adicionar razão para a diferença entre totais de regimes e pacientesAdicionar razão para a diferença entre totais de regimes e pacientes</string>
-    <string name="msg_regime_total_and_patient_total_not_match">Os totais não correspondem. Por favor, verifique os números digitados. Se os valores continuam diferentes, adicione uma justificação nas \\"Observações\\".</string>
+    <string name="msg_regime_total_and_patient_total_not_match">Os totais não correspondem. Por favor, verifique os números digitados. Se os valores continuam diferentes, adicione uma justificação nas \"Observações\".</string>
     <string name="btn_ok">OK</string>
     <!--VIA Form-->
     <string name="label_via_kit_received">No. de Kits Recebido</string>
@@ -189,7 +189,7 @@
     <!--Rnr form historical list-->
     <string name="label_via_name">Requisição/Balancete Via Clássica</string>
     <string name="label_mmia_name">MMIA</string>
-    <string name="label_incomplete_requisition">Este <![CDATA[<b>%1$s</b>]]> está incompleto. Para completá-lo, selecione \\"Elaborar %1$s\\" na página principal</string>
+    <string name="label_incomplete_requisition">Este <![CDATA[<b>%1$s</b>]]> está incompleto. Para completá-lo, selecione \"Elaborar %1$s\" na página principal</string>
     <string name="label_unsynced_requisition">Este <![CDATA[<b>%1$s</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
     <string name="label_submitted_message">%1$s enviado com sucesso no dia on the  %2$s</string>
     <string name="btn_view_requisition">Ver %s</string>
