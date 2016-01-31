@@ -22,6 +22,7 @@
     <dimen name="font_size_huge">34sp</dimen>
 
     <!--Margins-->
+    <dimen name="margin_tiny">4dp</dimen>
     <dimen name="margin_small">8dp</dimen>
     <dimen name="margin_normal">16dp</dimen>
     <dimen name="margin_medium">24dp</dimen>
