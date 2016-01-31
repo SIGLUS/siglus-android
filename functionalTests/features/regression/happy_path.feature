@@ -94,9 +94,11 @@ Feature: Log in and initialize Inventory
     Then I wait for "Complete" to appear
     And I press "Complete"
     And I sign with "superuser"
+    And I wait for 1 second
     Then I see the text "Donations to Deposit"
     And I see "125"
     And I see "super" in signature field
+    And I rotate the page to "portrait"
 
     # Archive VIA drug
     When I navigate back
@@ -111,6 +113,7 @@ Feature: Log in and initialize Inventory
     And I press "Complete"
     And I sign with "superuser"
     Then I see "0"
+    And I wait for 1 second
     And I see "super" in signature field
     And I press the menu key
     Then I see "Archive drugs"
