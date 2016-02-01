@@ -113,6 +113,11 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        showLastSyncTime();
+        popUpBottomSheet();
+    }
+
+    private void popUpBottomSheet() {
         SyncDateBottomSheet syncDateBottomSheet = new SyncDateBottomSheet();
         syncDateBottomSheet.setArguments(SyncDateBottomSheet.getArgumentsToMe(rnrLastSyncTime, stockLastSyncTime));
         syncDateBottomSheet.show(((BaseActivity) context).getFragmentManager());
