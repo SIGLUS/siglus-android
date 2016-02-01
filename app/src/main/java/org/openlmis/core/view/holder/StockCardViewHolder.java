@@ -1,12 +1,19 @@
 package org.openlmis.core.view.holder;
 
+import android.app.DialogFragment;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import org.joda.time.DateTime;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.activity.BaseActivity;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import roboguice.RoboGuice;
@@ -24,6 +31,8 @@ public class StockCardViewHolder extends BaseViewHolder {
     View stockOnHandBg;
     @InjectView(R.id.iv_warning)
     View iv_warning;
+    @InjectView(R.id.iv_expiry_date_warning)
+    View ivExpiryDateWarning;
 
     protected StockRepository stockRepository;
     private OnItemViewClickListener listener;
@@ -48,7 +57,41 @@ public class StockCardViewHolder extends BaseViewHolder {
         tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledName()));
         tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledUnit()));
 
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_warning_expiry_date)) {
+            initExpiryDateWarning(inventoryViewModel);
+        }
         initStockOnHandWarning(inventoryViewModel);
+    }
+
+    private void initExpiryDateWarning(InventoryViewModel inventoryViewModel) {
+        String earliestExpiryDateString = inventoryViewModel.getStockCard().getEarliestExpireDate();
+        if (TextUtils.isEmpty(earliestExpiryDateString)) {
+            return;
+        }
+
+        DateTime earliestExpiryDate = new DateTime(DateUtil.parseString(earliestExpiryDateString, DateUtil.SIMPLE_DATE_FORMAT));
+        DateTime currentTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+
+        if (earliestExpiryDate.isBefore(currentTime) || isExpiryDateInCurrentMonth(earliestExpiryDate, currentTime)) {
+            ivExpiryDateWarning.setVisibility(View.VISIBLE);
+            ivExpiryDateWarning.setOnClickListener(expireDateWarningListener);
+        } else {
+            ivExpiryDateWarning.setVisibility(View.GONE);
+        }
+    }
+
+    View.OnClickListener expireDateWarningListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
+                    context.getString(R.string.msg_expiry_warning),
+                    context.getString(R.string.btn_ok));
+            dialogFragment.show(((BaseActivity)context).getFragmentManager(),"expiryDateWarningDialog");
+        }
+    };
+
+    private boolean isExpiryDateInCurrentMonth(DateTime earliestExpiryDate, DateTime currentTime) {
+        return earliestExpiryDate.getYear() == currentTime.getYear() && earliestExpiryDate.getMonthOfYear() == currentTime.getMonthOfYear();
     }
 
     private void setListener(final InventoryViewModel inventoryViewModel) {

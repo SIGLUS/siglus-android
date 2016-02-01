@@ -205,6 +205,7 @@
         <item>Sort by quantity: Low to High</item>
     </string-array>
     <string name="hint_update_banner_tips">%1$s has been deactivated and removed to the <![CDATA[<b>archived drug</b>]]> list</string>
+    <string name="msg_expiry_warning">Some of the stock of this product will be expiring on the following dates</string>
 
     <!-- Physical Inventory Page -->
     <string name="label_physical_inventory_stock_on_hand">Current stock on hand:</string>

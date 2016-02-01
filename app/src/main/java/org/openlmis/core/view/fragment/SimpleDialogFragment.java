@@ -49,6 +49,10 @@ public class SimpleDialogFragment extends RoboDialogFragment {
 
     private MsgDialogCallBack mListener;
 
+    public static SimpleDialogFragment newInstance(String title, String message, String positiveText) {
+        return newInstance(title, message, positiveText, null, null);
+    }
+
     public static SimpleDialogFragment newInstance(String title, String message, String positiveText, String tag) {
         return newInstance(title, message, positiveText, null, tag);
     }

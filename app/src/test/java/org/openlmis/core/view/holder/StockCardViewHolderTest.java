@@ -1,21 +1,24 @@
 package org.openlmis.core.view.holder;
 
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.RuntimeEnvironment;
+
+import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -80,11 +83,45 @@ public class StockCardViewHolderTest {
         assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_STOCK_OUT);
     }
 
-    @NonNull
-    private RnrFormItem getRnrFormItem(long issued) {
-        RnrFormItem rnrFormItem = new RnrFormItem();
-        rnrFormItem.setInventory(10);
-        rnrFormItem.setIssued(issued);
-        return rnrFormItem;
+    @Test
+    public void shouldShowIconWhenExpireDateInCurrentMonth() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_warning_expiry_date, true);
+        StockCard stockCard = StockCardBuilder.buildStockCard();
+        stockCard.setExpireDates("28/02/2016, 11/10/2016, 12/10/2017");
+        InventoryViewModel inventoryViewModel = new InventoryViewModel(stockCard);
+        Date mockCurrentDate = DateUtil.parseString("15/02/2016", DateUtil.SIMPLE_DATE_FORMAT);
+        LMISTestApp.getInstance().setCurrentTimeMillis(mockCurrentDate.getTime());
+
+        viewHolder.populate(inventoryViewModel, "");
+
+        assertThat(viewHolder.ivExpiryDateWarning.getVisibility()).isEqualTo(View.VISIBLE);
+    }
+
+    @Test
+    public void shouldShowIconWhenExpireDateBeforeCurrentTime() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_warning_expiry_date, true);
+        StockCard stockCard = StockCardBuilder.buildStockCard();
+        stockCard.setExpireDates("14/02/2016, 11/10/2016, 12/10/2017");
+        InventoryViewModel inventoryViewModel = new InventoryViewModel(stockCard);
+        Date mockCurrentDate = DateUtil.parseString("16/02/2016", DateUtil.SIMPLE_DATE_FORMAT);
+        LMISTestApp.getInstance().setCurrentTimeMillis(mockCurrentDate.getTime());
+
+        viewHolder.populate(inventoryViewModel, "");
+
+        assertThat(viewHolder.ivExpiryDateWarning.getVisibility()).isEqualTo(View.VISIBLE);
+    }
+
+    @Test
+    public void shouldHideIconWhenExpireDateAfterCurrentMonth() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_warning_expiry_date, true);
+        StockCard stockCard = StockCardBuilder.buildStockCard();
+        stockCard.setExpireDates("14/03/2016, 11/10/2016, 12/10/2017");
+        InventoryViewModel inventoryViewModel = new InventoryViewModel(stockCard);
+        Date mockCurrentDate = DateUtil.parseString("16/02/2016", DateUtil.SIMPLE_DATE_FORMAT);
+        LMISTestApp.getInstance().setCurrentTimeMillis(mockCurrentDate.getTime());
+
+        viewHolder.populate(inventoryViewModel, "");
+
+        assertThat(viewHolder.ivExpiryDateWarning.getVisibility()).isEqualTo(View.GONE);
     }
 }
