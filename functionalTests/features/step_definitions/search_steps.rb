@@ -87,7 +87,7 @@ And(/^I clean search bar/) do
 end
 
 When(/^I search drug by fnm "(.*?)"$/) do |fnm|
-    search_bar = query("android.support.v7.widget.SearchView id:'action_search'")
+    search_bar = query("android.support.v7.widget.SearchView id:'action_search'").first
     touch(search_bar)
     enter_text("android.support.v7.widget.SearchView id:'action_search'", fnm)
 end
