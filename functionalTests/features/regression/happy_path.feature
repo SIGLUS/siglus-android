@@ -162,7 +162,7 @@ Feature: Log in and initialize Inventory
     When I press "View movement history"
     And I wait for the "StockMovementHistoryActivity" screen to appear
     Then I see the text "Inventory"
-    Then I see the text "PAV"
+    Then I see the text "Maternity"
 
     # Unarchive a drug
     When I navigate back
