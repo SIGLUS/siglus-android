@@ -25,6 +25,16 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/iv_expire_date_warning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:background="@color/color_white"
+        android:padding="5dp"
+        android:src="@drawable/ic_warning"
+        android:visibility="gone" />
+
     <RelativeLayout
         android:id="@+id/vg_stock_on_hand_bg"
         android:layout_width="120dp"
@@ -45,7 +55,7 @@
             style="@style/ItemStock.TextSOH"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toEndOf="@+id/iv_warning" />
+            android:layout_toEndOf="@id/iv_warning" />
 
     </RelativeLayout>
 
