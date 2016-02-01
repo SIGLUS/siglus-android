@@ -349,6 +349,7 @@ public class VIARequisitionPresenterTest {
         for (int i = 0; i < 3; i++) {
             list.add(new RequisitionFormItemViewModel(createRnrFormItem(i)));
             list.get(i).setRequestAmount(String.valueOf(i));
+            list.get(i).setAdjustedTotalRequest(String.valueOf(i));
         }
 
         ViaKitsViewModel viaKitsViewModel = buildDefaultViaKit();
@@ -363,6 +364,7 @@ public class VIARequisitionPresenterTest {
 
         verify(VIARequisitionFragment, never()).showErrorMessage(anyString());
         Assert.assertEquals(5, presenter.rnRForm.getRnrFormItemListWrapper().size());
+        assertThat(presenter.getRnRForm().getRnrFormItemListWrapper().get(1).getCalculatedOrderQuantity(), is(1L));
     }
 
     @Test
