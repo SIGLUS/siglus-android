@@ -13,8 +13,10 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.builder.RequisitionBuilder;
+import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.RnRFormItemAdjustmentViewModel;
+import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowAlertDialog;
 
@@ -32,7 +34,8 @@ public class RequisitionFormViewHolderTest {
 
     @Before
     public void setup() {
-        View itemView = LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_requisition_body, null, false);
+        VIARequisitionActivity viaRequisitionActivity = Robolectric.buildActivity(VIARequisitionActivity.class).create().get();
+        View itemView = LayoutInflater.from(viaRequisitionActivity).inflate(R.layout.item_requisition_body, null, false);
         viewHolder = new RequisitionFormViewHolder(itemView);
         viewModel = RequisitionBuilder.buildFakeRequisitionViewModel();
     }

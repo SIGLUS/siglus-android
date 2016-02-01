@@ -42,26 +42,26 @@ public class SimpleDialogFragment extends RoboDialogFragment {
     private static final String ARG_TAG = "tag";
 
     private String title;
-    private String message;
+    private CharSequence message;
     private String positiveText;
     private String negativeText;
     private String tag;
 
     private MsgDialogCallBack mListener;
 
-    public static SimpleDialogFragment newInstance(String title, String message, String positiveText) {
+    public static SimpleDialogFragment newInstance(String title, CharSequence message, String positiveText) {
         return newInstance(title, message, positiveText, null, null);
     }
 
-    public static SimpleDialogFragment newInstance(String title, String message, String positiveText, String tag) {
+    public static SimpleDialogFragment newInstance(String title, CharSequence message, String positiveText, String tag) {
         return newInstance(title, message, positiveText, null, tag);
     }
 
-    public static SimpleDialogFragment newInstance(String title, String message, String positiveText, String negativeText, String tag) {
+    public static SimpleDialogFragment newInstance(String title, CharSequence message, String positiveText, String negativeText, String tag) {
         Bundle bundle = new Bundle();
 
         bundle.putString(ARG_TITLE, title);
-        bundle.putString(ARG_MESSAGE, message);
+        bundle.putCharSequence(ARG_MESSAGE, message);
         bundle.putString(ARG_POSITIVE_BUTTON, positiveText);
         bundle.putString(ARG_NEGATIVE_BUTTON, negativeText);
         bundle.putString(ARG_TAG, tag);
@@ -89,7 +89,7 @@ public class SimpleDialogFragment extends RoboDialogFragment {
 
         final Bundle arguments = getArguments();
         title = arguments.getString(ARG_TITLE);
-        message = arguments.getString(ARG_MESSAGE);
+        message = arguments.getCharSequence(ARG_MESSAGE);
         positiveText = arguments.getString(ARG_POSITIVE_BUTTON);
         negativeText = arguments.getString(ARG_NEGATIVE_BUTTON);
         tag = arguments.getString(ARG_TAG);

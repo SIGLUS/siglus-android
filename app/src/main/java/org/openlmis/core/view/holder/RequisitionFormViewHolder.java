@@ -1,6 +1,6 @@
 package org.openlmis.core.view.holder;
 
-import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputFilter;
@@ -13,6 +13,8 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.utils.SingleTextWatcher;
+import org.openlmis.core.view.activity.BaseActivity;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 
@@ -88,10 +90,10 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
             adjustTheoreticalIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new AlertDialog.Builder(context)
-                            .setMessage(Html.fromHtml(itemViewModel.getFormattedKitAdjustmentMessage()))
-                            .setPositiveButton(R.string.btn_ok, null)
-                            .show();
+                    DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
+                            Html.fromHtml(itemViewModel.getFormattedKitAdjustmentMessage()),
+                            context.getString(R.string.btn_ok));
+                    dialogFragment.show(((BaseActivity) context).getFragmentManager(), "adjustmentTheoreticalDialog");
                 }
             });
         }
