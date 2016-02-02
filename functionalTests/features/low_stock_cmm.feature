@@ -26,6 +26,7 @@ Feature: low stock
     And I enter issued number "390"
     Then I wait for "Complete" to appear
     And I press "Complete"
+    And I wait for "Enter your initials" to appear
     And I sign with "low_stock"
     Then I see "10"
     Then I see "low_s" in signature field
@@ -43,6 +44,7 @@ Feature: low stock
     And I enter positive adjustment number "1"
     Then I wait for "Complete" to appear
     And I press "Complete"
+    And I wait for "Enter your initials" to appear
     And I sign with "superuser"
     Then I see "11"
     Then I navigate back

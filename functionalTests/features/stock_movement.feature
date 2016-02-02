@@ -21,6 +21,7 @@ Feature: stock movement Page
     And I enter negative adjustment number "123"
     Then I wait for "Complete" to appear
     And I press "Complete"
+    And I wait for "Enter your initials" to appear
     And I sign with "superuser"
     Then I see "123"
     Then I see "super" in signature field
@@ -60,6 +61,7 @@ Feature: stock movement Page
     And I enter issued number "123"
     Then I wait for "Complete" to appear
     And I press "Complete"
+    And I wait for "Enter your initials" to appear
     And I sign with "superuser"
     Then I see "123"
     Then I see "super" in signature field

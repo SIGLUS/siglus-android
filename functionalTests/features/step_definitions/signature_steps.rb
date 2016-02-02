@@ -1,4 +1,6 @@
 And(/^I sign with "(.*?)"$/) do |text|
+    touch(query("android.widget.EditText id:'et_signature'").first)
+
     enter_text("android.widget.EditText id:'et_signature'", text)
     hide_soft_keyboard
 

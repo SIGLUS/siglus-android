@@ -205,6 +205,7 @@ Then(/^I do physical inventory for mmia items$/) do
         Then I scroll "recyclerView" down to "Complete"
         And I wait for 1 second
         And I press "Complete"
+        And I wait for "Enter your initials" to appear
         And I sign with "sign"
     }
 end
@@ -219,6 +220,7 @@ Then(/^I do physical inventory for via items$/) do
         Then I scroll "recyclerView" down to "Complete"
         And I wait for 1 second
         And I press "Complete"
+        And I wait for "Enter your initials" to appear
         And I sign with "sign"
     }
 end
@@ -240,6 +242,7 @@ Then(/^I do physical inventory for all items$/) do
   tap_when_element_exists("* marked:'Complete'")
 
   steps %Q{
+        And I wait for "Enter your initials" to appear
         And I sign with "sign"
     }
   hide_soft_keyboard

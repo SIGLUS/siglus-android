@@ -23,6 +23,7 @@ Feature: Unpack Kit
     And I enter negative adjustment number "2"
     Then I wait for "Complete" to appear
     And I press "Complete"
+    And I wait for "Enter your initials" to appear
     And I sign with "superuser"
     And I wait for 1 second
     And I press the menu key
@@ -40,6 +41,7 @@ Feature: Unpack Kit
     And I enter received number "1"
     Then I wait for "Complete" to appear
     And I press "Complete"
+    And I wait for "Enter your initials" to appear
     And I sign with "superuser"
     Then I wait for "Unpack Kit" to appear
     Then I see "1"

@@ -17,6 +17,7 @@ Feature: Archive drug
     And I enter negative adjustment number "123"
     Then I wait for "Complete" to appear
     And I press "Complete"
+    And I wait for "Enter your initials" to appear
     And I sign with "superuser"
 
     Then I see "0"

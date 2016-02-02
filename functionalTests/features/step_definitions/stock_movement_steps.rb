@@ -83,6 +83,7 @@ Then(/^I make a movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_ca
         And I enter #{movement_column} number "#{number}"
         Then I wait for "Complete" to appear
         And I press "Complete"
+        And I wait for "Enter your initials" to appear
         And I sign with "superuser"
         Then I wait for 2 seconds
         Then I navigate back

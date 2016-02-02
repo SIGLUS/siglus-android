@@ -70,6 +70,7 @@ Feature: Log in and initialize Inventory
     And I enter negative adjustment number "123"
     And I wait for "Complete" to appear
     And I press "Complete"
+    And I wait for "Enter your initials" to appear
     And I sign with "superuser"
     Then I see "123"
     And I swipe right
@@ -93,6 +94,7 @@ Feature: Log in and initialize Inventory
     And I rotate the page to "landscape"
     Then I wait for "Complete" to appear
     And I press "Complete"
+    And I wait for "Enter your initials" to appear
     And I sign with "superuser"
     And I wait for 1 second
     Then I see the text "Donations to Deposit"
@@ -110,6 +112,7 @@ Feature: Log in and initialize Inventory
     And I enter issued number "125"
     And I wait for "Complete" to appear
     And I press "Complete"
+    And I wait for "Enter your initials" to appear
     And I sign with "superuser"
     Then I see "0"
     And I press the menu key
@@ -129,6 +132,7 @@ Feature: Log in and initialize Inventory
     And I enter negative adjustment number "123"
     And I wait for "Complete" to appear
     And I press "Complete"
+    And I wait for "Enter your initials" to appear
     And I sign with "superuser"
     Then I see "0"
     When I press the menu key
@@ -146,11 +150,70 @@ Feature: Log in and initialize Inventory
     Then I shouldn't see product "01A01" in this page
     And I shouldn't see product "08S32Z" in this page
 
-    # Archived drugs screen
+
+    # Physical inventory cannot include blank quantities
+    And I search drug by fnm "08S01ZY"
+    When I press "Complete"
+    Then I should see text containing "Quantity cannot be left blank!"
+
+    # Do physical inventory and SOH should be adjusted
+    When I do physical inventory with "100" by fnm "08S42B"
+    And I do physical inventory with "100" by fnm "08S18Y"
+    And I do physical inventory with "100" by fnm "08S40Z"
+    #And I do physical inventory with "100" by fnm "01A01"
+    And I do physical inventory with "100" by fnm "01A03Z"
+    And I do physical inventory with "100" by fnm "01A02"
+    And I do physical inventory with "100" by fnm "01A04Z"
+    And I do physical inventory with "100" by fnm "01A05"
+    And I do physical inventory with "100" by fnm "08S36"
+    And I do physical inventory with "100" by fnm "08S01ZY"
+
+    And I search drug by fnm "08S01ZY"
+    And I press "Complete"
+    And I wait for "Enter your initials" to appear
+    And I sign with "sign"
+    # the line above just does not work on physical devices ......
+    Then I wait for "STOCK CARD OVERVIEW" to appear
+    When I press "Stock Card Overview"
+    Then I wait for "Stock Overview" to appear
+    Then I should see SOH of "08S42B" is "100"
+    Then I should see SOH of "08S18Y" is "100"
+    Then I should see SOH of "08S40Z" is "100"
+
+    #Archived drugs don't appear in via
     When I navigate back
     And I wait for 1 second
     And I navigate back
     And I wait for "STOCK CARD OVERVIEW" to appear
+    And I press "Via Classica Requisitions"
+    Then I wait for "Via Classica Requisitions" to appear
+    Then I should see text containing "Create Via Classica Requisition"
+
+    When I press "Create Via Classica Requisition"
+    Then I should not see "01A01"
+
+    #columns of Archived drugs are 0 in mmia
+    When I navigate back
+    Then I wait to see "Are you sure you want to quit without saving your work?"
+    When I press "Yes"
+    Then I wait for "Via Classica Requisitions" to appear
+    When I navigate back
+    Then I wait for "STOCK CARD OVERVIEW" to appear
+    When I press "MMIA"
+    Then I should see text containing "Create MMIA"
+    When I press "Create MMIA"
+    Then I wait for "MMIA -" to appear
+    Then I swipe right
+    Then I wait for 1 second
+    And I should see inventory "0"
+
+    # Archived drugs screen
+   When I navigate back
+   Then I wait to see "Are you sure you want to quit without saving your work?"
+   When I press "Yes"
+   Then I wait for "Create MMIA" to appear
+   When I navigate back
+   Then I wait for "STOCK CARD OVERVIEW" to appear
     And I press "Stock Card Overview"
     And I wait for "Stock Overview" to appear
     And I press the menu key
@@ -164,7 +227,7 @@ Feature: Log in and initialize Inventory
     Then I see the text "Inventory"
     Then I see the text "Maternity"
 
-    # Unarchive a drug
+    # Unarchive a drug from archived page
     When I navigate back
     And I press "Add drug to stock overview"
     And I navigate back
@@ -172,46 +235,48 @@ Feature: Log in and initialize Inventory
     Then I should see total:"10" on stock list page
     Then I see the text "[01A01]"
 
+    #Unarchive a drug from add new drug page
+    When I press the menu key
+    And I wait for "Add new product" to appear
+    And I press "Add new product"
+    And I wait for "Add new product" to appear
+    And I select new drug "08S32Z" with SOH "111" quantity
+
+    And I press "Complete"
+
     # Unarchived drug shows up in monthly inventory
     When I navigate back
     Then I wait for "STOCK CARD OVERVIEW" to appear
     And I press "Do Monthly Inventory"
-    Then I wait for "Inventory" to appear
+    And I wait for "Inventory" to appear
     Then I should see product "01A01" in this page
+    And I clean search bar
+    Then I should see product "08S32Z" in this page
 
-    # Physical inventory cannot include blank quantities
-    When I press "Complete"
-    Then I should see text containing "Quantity cannot be left blank!"
+    #Unarchived drugs appear in via
+    And I navigate back
+    And I wait for 1 second
+    And I navigate back
+    And I wait for "STOCK CARD OVERVIEW" to appear
+    And I press "Via Classica Requisitions"
+    Then I wait for "Via Classica Requisitions" to appear
+    Then I should see text containing "Create Via Classica Requisition"
 
-    # Do physical inventory and SOH should be adjusted
-    When I do physical inventory with "100" by fnm "08S42B"
-    And I do physical inventory with "100" by fnm "08S18Y"
-    And I do physical inventory with "100" by fnm "08S40Z"
-    And I do physical inventory with "100" by fnm "01A01"
-    And I do physical inventory with "100" by fnm "01A03Z"
-    And I do physical inventory with "100" by fnm "01A02"
-    And I do physical inventory with "100" by fnm "01A04Z"
-    And I do physical inventory with "100" by fnm "01A05"
-    And I do physical inventory with "100" by fnm "08S36"
-    And I do physical inventory with "100" by fnm "08S01ZY"
-
-    And I search drug by fnm "08S01ZY"
-    And I press "Complete"
-    And I sign with "sign"
-    # the line above just does not work on physical devices ......
-    Then I wait for "STOCK CARD OVERVIEW" to appear
-    When I press "Stock Card Overview"
-    Then I wait for "Stock Overview" to appear
-    Then I should see SOH of "08S42B" is "100"
-    Then I should see SOH of "08S18Y" is "100"
-    Then I should see SOH of "08S40Z" is "100"
+    When I press "Create Via Classica Requisition"
+    And I swipe right
+    And I wait for "inventory" to appear
+    Then I should see "01A01"
 
     # Sign out
     When I navigate back
-    And I navigate back
-    And I wait for 1 second
+    Then I wait to see "Are you sure you want to quit without saving your work?"
+    When I press "Yes"
+    Then I wait for "Via Classica Requisitions" to appear
+    When I navigate back
+    Then I wait for "STOCK CARD OVERVIEW" to appear
     And I press the menu key
     And I wait for "Sign Out" to appear
     # note: sometimes the wait for sign out to appear fails, reason unknown
     And I press "Sign Out"
     Then I wait for the "LoginActivity" screen to appear
+
