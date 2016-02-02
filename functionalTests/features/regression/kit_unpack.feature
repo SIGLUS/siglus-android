@@ -1,4 +1,4 @@
-@KIT_UNPACK
+@regression
 Feature: Unpack Kit
 
   Background: Navigate to Home Page

@@ -241,10 +241,11 @@ Feature: Log in and initialize Inventory
     And I press "Add new product"
     And I wait for "Add new product" to appear
     And I select new drug "08S32Z" with SOH "111" quantity
-
+    Then I wait for "Complete" to appear
     And I press "Complete"
 
     # Unarchived drug shows up in monthly inventory
+    Then I wait for "Stock Overview" to appear
     When I navigate back
     Then I wait for "STOCK CARD OVERVIEW" to appear
     And I press "Do Monthly Inventory"
