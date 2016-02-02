@@ -1,10 +1,10 @@
 <resources>
     <string name="server_base_url">http://52.193.129.131:8000/</string>
-    <string name="sync_account_type">org.clintonhealthaccess.lmismoz.regression</string>
+    <string name="sync_account_type">org.clintonhealthaccess.lmismoz.upgrade</string>
     <integer name="sync_interval">3600</integer>
-    <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync</string>
+    <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.upgrade</string>
 
-    <string name="app_name">CHAI LMIS REGRESSION</string>
+    <string name="app_name">CHAI LMIS UPGRADE</string>
 
     <string-array name="medicine_adult">
         <item>08S42</item>
