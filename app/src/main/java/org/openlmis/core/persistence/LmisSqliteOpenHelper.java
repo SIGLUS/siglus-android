@@ -40,8 +40,9 @@ import org.openlmis.core.persistence.migrations.CreateDummyRegimes;
 import org.openlmis.core.persistence.migrations.CreateInitTables;
 import org.openlmis.core.persistence.migrations.CreateKitProductsTable;
 import org.openlmis.core.persistence.migrations.CreateRnRFormSignature;
-import org.openlmis.core.persistence.migrations.UpdateProductsFalseValueToZero;
 import org.openlmis.core.persistence.migrations.SetQuantityOfStockMovementForInitialInventory;
+import org.openlmis.core.persistence.migrations.UpdateCreateTimeAndUpdateTime;
+import org.openlmis.core.persistence.migrations.UpdateProductsFalseValueToZero;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +68,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new AddIsKitColumnToProduct());
             add(new CreateKitProductsTable());
             add(new UpdateProductsFalseValueToZero());
+            add(new UpdateCreateTimeAndUpdateTime());
         }
     };
     private static int instanceCount = 0;
