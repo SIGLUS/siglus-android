@@ -207,7 +207,15 @@ task functionalTests(type: Exec, dependsOn: ['bundleInstall', 'assembleLocalDebu
     args "run", "$targetPath", "--tags @dev --format html --out reports.html"
 }
 
-task upgradeTests(type: Exec, dependsOn: ['bundleInstall', 'assembleProdsimDebug']) {
+task upgradeTestSetup(type: Exec, dependsOn: ['bundleInstall']) {
+    group JavaBasePlugin.VERIFICATION_GROUP
+    workingDir "$projectDir/../functionalTests"
+
+    executable 'calabash-android'
+    args "run", "$projectDir/../functionalTests/oldVersionApk/app-upgrade-debug-1.4.52.apk", "--tags @upgrade_setup --format html --out upgrade_test_setup_reports.html"
+}
+
+task upgradeTests(type: Exec, dependsOn: ['bundleInstall', 'assembleUpgradeDebug']) {
     description 'Run Calabash Tests against specified apk (-PapkPath)'
     group JavaBasePlugin.VERIFICATION_GROUP
     workingDir "$projectDir/../functionalTests"
@@ -219,9 +227,6 @@ task upgradeTests(type: Exec, dependsOn: ['bundleInstall', 'assembleProdsimDebug
     } else {
         targetPath = "$projectDir/build/outputs/apk/app-upgrade-debug.apk"
     }
-
-    executable 'calabash-android'
-    args "run", "$projectDir/../functionalTests/oldVersionApk/app-upgrade-debug-1.4.52.apk", "--tags @upgrade_setup --format html --out upgrade_test_setup_reports.html"
 
     executable 'calabash-android'
     args "run", "$targetPath", "--tags @upgrade --format html --out upgrade_test_reports.html"
