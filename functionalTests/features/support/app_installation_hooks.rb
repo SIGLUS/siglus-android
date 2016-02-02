@@ -15,9 +15,13 @@ Before('@upgrade') do |scenario|
 
   if first_time
     install_app(ENV["TEST_APP_PATH"])
-    install_app(ENV["APP_PATH"])
+    update_app(ENV["APP_PATH"])
     first_time = false
   end
+end
+
+After('@upgrade') do |scenario|
+  uninstall_apps
 end
 
 Before('~@upgrade') do |scenario|
