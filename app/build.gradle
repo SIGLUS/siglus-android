@@ -53,6 +53,9 @@ android {
         prodsim {
             applicationId 'org.openlmis.core.prodsim'
         }
+        showcase {
+            applicationId 'org.openlmis.core.showcase'
+        }
         staging {
             applicationId 'org.openlmis.core.staging'
         }
