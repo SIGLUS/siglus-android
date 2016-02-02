@@ -10,6 +10,16 @@ Before('@regression') do |scenario|
   reset_regression_server_data
 end
 
+Before('@upgrade') do |scenario|
+  first_time = true
+
+  if first_time
+    install_app(ENV["TEST_APP_PATH"])
+    install_app(ENV["APP_PATH"])
+    first_time = false
+  end
+end
+
 Before('~@upgrade') do |scenario|
   @scenario_is_outline = (scenario.class == Cucumber::Ast::OutlineTable::ExampleRow)
   if @scenario_is_outline
