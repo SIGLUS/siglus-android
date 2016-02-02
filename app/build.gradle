@@ -59,6 +59,9 @@ android {
         regression {
             applicationId 'org.openlmis.core.regression'
         }
+        upgrade {
+            applicationId 'org.openlmis.core.upgrade'
+        }
         prd {
             applicationId 'org.openlmis.core'
         }
