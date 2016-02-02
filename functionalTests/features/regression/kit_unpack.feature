@@ -1,11 +1,11 @@
-@UNPACK_KIT
+@regression
 Feature: Unpack Kit
 
   Background: Navigate to Home Page
     Given I try to log in with "kit" "password1"
 
   Scenario: Unpack US kit and verify kit products SOH
-    Then I wait up to 30 seconds for "Initial Inventory" to appear
+    And I wait up to 120 seconds for "Initial Inventory" to appear
     Then I wait for "Initial inventory" to appear
     When I search product by fnm "08L01X" and select this item with quantity "888"
     When I search product by fnm "15C0ZY" and select this item with quantity "2"
@@ -45,6 +45,10 @@ Feature: Unpack Kit
     And I sign with "superuser"
     Then I wait for "Unpack Kit" to appear
     Then I see "1"
+    Then I swipe right
+    Then I wait for 1 second
+    Then I swipe right
+    Then I wait for 1 second
     Then I see "super" in signature field
 
     And I press "Unpack Kit"
@@ -137,11 +141,3 @@ Feature: Unpack Kit
     And I press "Via Classica Requisitions"
     Then I wait for "Via Classica Requisitions" to appear
     Then I should see text containing "View Via Classica Requisition"
-
-
-
-
-
-
-
-
