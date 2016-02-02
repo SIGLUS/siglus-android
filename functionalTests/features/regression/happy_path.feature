@@ -264,8 +264,6 @@ Feature: Log in and initialize Inventory
     Then I should see text containing "Create Via Classica Requisition"
 
     When I press "Create Via Classica Requisition"
-    And I swipe right
-    And I wait for "inventory" to appear
     Then I should see "01A01"
 
     # Sign out

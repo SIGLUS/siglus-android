@@ -1,4 +1,4 @@
-@regression
+@LOW_STOCK_CMM
 Feature: low stock
 
   Scenario: Calculate low stock and cmm without stock out in 3 months
