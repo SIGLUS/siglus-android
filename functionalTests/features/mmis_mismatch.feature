@@ -28,6 +28,8 @@ Feature: MMIA Page total mismatch
     When I press "OK"
     And I enter "just because!" in "Observations"
     Then I wait for 1 second
+    Then I should not see "Add reason for mismatch between regime & patient totals"
+    Then I wait for 1 second
     Then I press "Submit for Approval"
     And I sign requisition with "superuser" "testUser" and complete
     Then I should see text containing "Your MMIA form has been successfully saved,"
