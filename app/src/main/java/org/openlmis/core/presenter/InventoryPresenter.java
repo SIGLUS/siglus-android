@@ -28,9 +28,11 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DraftInventory;
+import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
@@ -60,6 +62,9 @@ public class InventoryPresenter extends Presenter {
 
     @Inject
     StockRepository stockRepository;
+
+    @Inject
+    InventoryRepository inventoryRepository;
 
     @Inject
     SharedPreferenceMgr sharedPreferenceMgr;
@@ -300,6 +305,7 @@ public class InventoryPresenter extends Presenter {
                     stockRepository.clearDraftInventory();
                     sharedPreferenceMgr.setLatestPhysicInventoryTime(DateUtil.formatDate(new Date(), DateUtil.DATE_TIME_FORMAT));
 
+                    saveInventoryDate();
                     subscriber.onNext(null);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
@@ -308,6 +314,10 @@ public class InventoryPresenter extends Presenter {
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private void saveInventoryDate() {
+        inventoryRepository.save(new Inventory());
     }
 
     protected Action1<Object> nextMainPageAction = new Action1<Object>() {
@@ -339,6 +349,7 @@ public class InventoryPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
                 initStockCards(list);
+                saveInventoryDate();
                 subscriber.onNext(null);
                 subscriber.onCompleted();
             }

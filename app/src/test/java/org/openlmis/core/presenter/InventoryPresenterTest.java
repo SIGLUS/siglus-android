@@ -32,11 +32,13 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DraftInventory;
+import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
+import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
@@ -79,11 +81,13 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
     private Product product;
     private StockCard stockCard;
     private SharedPreferenceMgr sharedPreferenceMgr;
+    private InventoryRepository mockInventoryRepository;
 
     @Before
     public void setup() throws Exception {
         stockRepositoryMock = mock(StockRepository.class);
         productRepositoryMock = mock(ProductRepository.class);
+        mockInventoryRepository = mock(InventoryRepository.class);
         sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
 
         view = mock(InventoryPresenter.InventoryView.class);
@@ -377,11 +381,36 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         verify(sharedPreferenceMgr).setLatestPhysicInventoryTime(anyString());
     }
 
+    @Test
+    public void shouldSaveInventoryWhenCompletePhysicalInventory() throws Exception {
+        ArrayList<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
+        TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
+        Observable observable = inventoryPresenter.stockMovementObservable(inventoryViewModels);
+        observable.subscribe(subscriber);
+
+        subscriber.awaitTerminalEvent();
+
+        verify(mockInventoryRepository).save(any(Inventory.class));
+    }
+
+    @Test
+    public void shouldSaveInventoryWhenCompleteInitialInventory() throws Exception {
+        ArrayList<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
+        TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
+        Observable observable = inventoryPresenter.initStockCardObservable(inventoryViewModels);
+        observable.subscribe(subscriber);
+
+        subscriber.awaitTerminalEvent();
+
+        verify(mockInventoryRepository).save(any(Inventory.class));
+    }
+
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
             bind(StockRepository.class).toInstance(stockRepositoryMock);
             bind(ProductRepository.class).toInstance(productRepositoryMock);
+            bind(InventoryRepository.class).toInstance(mockInventoryRepository);
             bind(SharedPreferenceMgr.class).toInstance(sharedPreferenceMgr);
         }
     }

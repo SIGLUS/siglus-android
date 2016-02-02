@@ -28,6 +28,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import org.openlmis.core.persistence.migrations.AddActiveColumnToProductTable;
 import org.openlmis.core.persistence.migrations.AddCreatedTimeToStockMovement;
 import org.openlmis.core.persistence.migrations.AddFacilityIdToUser;
+import org.openlmis.core.persistence.migrations.AddInventoryTable;
 import org.openlmis.core.persistence.migrations.AddIsArchivedToProduct;
 import org.openlmis.core.persistence.migrations.AddIsKitColumnToProduct;
 import org.openlmis.core.persistence.migrations.AddSignatureFieldInStockMovementItemTable;
@@ -69,6 +70,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new CreateKitProductsTable());
             add(new UpdateProductsFalseValueToZero());
             add(new UpdateCreateTimeAndUpdateTime());
+            add(new AddInventoryTable());
         }
     };
     private static int instanceCount = 0;
