@@ -34,13 +34,12 @@ import lombok.Data;
 @Data
 public class RnRFormViewModel {
 
-    public static final int TYPE_UNCOMPLETE_INVENTORY = 1;
-    public static final int TYPE_SELECT_CLOSE_OF_PERIOD = 6;
-    //TODO rename
-    public static final int TYPE_COMPLETED_INVENTORY = 2;
-    public static final int TYPE_UN_AUTHORIZED = 3;
-    public static final int TYPE_UNSYNC = 4;
-    public static final int TYPE_HISTORICAL = 5;
+    public static final int TYPE_UNCOMPLETE_INVENTORY = 10;
+    public static final int TYPE_SELECT_CLOSE_OF_PERIOD = 20;
+    public static final int TYPE_CLOSE_OF_PERIOD_SELECTED = 30;
+    public static final int TYPE_UN_AUTHORIZED = 40;
+    public static final int TYPE_UNSYNC = 50;
+    public static final int TYPE_HISTORICAL = 60;
 
     int type;
     String syncedDate;

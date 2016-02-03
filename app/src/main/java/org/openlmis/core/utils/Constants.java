@@ -32,11 +32,13 @@ public final class Constants {
     public static final String PARAM_FORM_ID = "formId";
     public static final String PARAM_IS_FROM_ARCHIVE = "isFromArchive";
     public static final String PARAM_IS_KIT = "isKit";
+    public static final String PARAM_SELECTED_INVENTORY = "selectedInventory";
 
     // Request Params
     public static final int REQUEST_FROM_STOCK_LIST_PAGE = 100;
     public static final int REQUEST_UNPACK_KIT = 200;
     public static final int REQUEST_FROM_RNR_LIST_PAGE = 300;
+    public static final int REQUEST_SELECT_PERIOD_END = 400;
     public static final String INTENT_FILTER_SET_SYNCED_TIME = LMISApp.getContext().getPackageName()+".set_synced_time";
 
     private Constants(){

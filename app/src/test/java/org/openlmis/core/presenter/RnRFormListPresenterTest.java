@@ -139,7 +139,7 @@ public class RnRFormListPresenterTest {
 
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
         assertThat(rnRFormViewModels.size()).isEqualTo(1);
-        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_COMPLETED_INVENTORY);
+        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED);
     }
 
 
@@ -193,16 +193,6 @@ public class RnRFormListPresenterTest {
         rnRForm.setStatus(status);
         rnRForm.setSynced(true);
         return rnRForm;
-    }
-
-    @Test
-    public void shouldGetRightPeriodWhenLastRequisitionExists() {
-        RnRForm rnRForm = new RnRForm();
-        rnRForm.setPeriodBegin(new DateTime("2016-12-23").toDate());
-        rnRForm.setPeriodEnd(new DateTime("2016-01-21").toDate());
-
-        when(rnrFormRepository.queryLatestAuthorizedRnRForm()).thenReturn(rnRForm);
-
     }
 
 }

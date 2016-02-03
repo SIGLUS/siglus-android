@@ -63,7 +63,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 configHolder(model, R.string.btn_view_select_close_of_period, null);
                 btnView.setOnClickListener(new BtnViewClickListener(model, programCode));
                 break;
-            case RnRFormViewModel.TYPE_COMPLETED_INVENTORY:
+            case RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED:
                 configHolder(model, R.string.btn_view_completed_physical_inventory, Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, model.getName())));
                 btnView.setOnClickListener(new BtnViewClickListener(model, programCode));
                 btnView.setBackground(context.getResources().getDrawable(R.drawable.blue_button));
@@ -156,7 +156,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
             }
 
             if (model.getType() == RnRFormViewModel.TYPE_SELECT_CLOSE_OF_PERIOD) {
-                context.startActivity(SelectPeriodActivity.getIntentToMe());
+                ((Activity)context).startActivityForResult(SelectPeriodActivity.getIntentToMe(context, programCode), Constants.REQUEST_SELECT_PERIOD_END);
                 return;
             }
 

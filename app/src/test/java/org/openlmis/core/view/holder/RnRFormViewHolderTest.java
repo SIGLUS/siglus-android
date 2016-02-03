@@ -1,5 +1,6 @@
 package org.openlmis.core.view.holder;
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -15,10 +16,13 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.activity.SelectPeriodActivity;
 import org.openlmis.core.view.adapter.RnRFormListAdapter;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.shadows.ShadowApplication;
 
+import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
@@ -109,9 +113,9 @@ public class RnRFormViewHolderTest {
 
     @Test
     public void shouldShowCompletedInventory() {
-        RnRFormViewModel viewModel = new RnRFormViewModel(new Period(new DateTime()), "MMIA", RnRFormViewModel.TYPE_COMPLETED_INVENTORY);
+        RnRFormViewModel viewModel = new RnRFormViewModel(new Period(new DateTime()), "MMIA", RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED);
 
-        viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_COMPLETED_INVENTORY);
+        viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED);
         viewHolder.populate(viewModel, "MMIA");
 
         assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getPeriod()));
@@ -135,6 +139,23 @@ public class RnRFormViewHolderTest {
         assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_submitted_message, viewModel.getName(), viewModel.getSyncedDate())));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_requisition, viewModel.getName())));
         assertThat(viewHolder.ivDelete.getVisibility(), is(View.VISIBLE));
+    }
+
+    @Test
+    public void shouldShowSelectCloseOfPeriodStyle() {
+        RnRFormViewModel viewModel = new RnRFormViewModel(new Period(new DateTime()), "MMIA", RnRFormViewModel.TYPE_SELECT_CLOSE_OF_PERIOD);
+
+        viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_SELECT_CLOSE_OF_PERIOD);
+        viewHolder.populate(viewModel, "MMIA");
+
+        assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_select_close_of_period)));
+
+        viewHolder.btnView.performClick();
+
+        Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
+
+        assertNotNull(nextStartedIntent);
+        assertThat(nextStartedIntent.getComponent().getClassName(), is(SelectPeriodActivity.class.getName()));
     }
 
     @SuppressWarnings("ConstantConditions")

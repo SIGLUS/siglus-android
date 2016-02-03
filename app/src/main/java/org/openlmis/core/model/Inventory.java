@@ -21,10 +21,12 @@ package org.openlmis.core.model;
 
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.io.Serializable;
+
 import lombok.Data;
 
 @Data
 @DatabaseTable(tableName = "inventory")
-public class Inventory extends BaseModel{
+public class Inventory extends BaseModel implements Serializable {
 
 }
