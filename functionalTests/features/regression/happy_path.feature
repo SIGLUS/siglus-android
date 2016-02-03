@@ -11,7 +11,7 @@ Feature: Log in and initialize Inventory
     # Initialize inventory and check stock card overview
     Given I try to log in with "superuser" "password1"
     And I wait up to 120 seconds for "Initial Inventory" to appear
-    # to run this in a physical device, we need to wait longer, IO is low on physical devices
+    # to run this in a physical device, we need to wait longer, IO is slow on physical devices
 
     # 01A01, 01A02, 01A03Z, 01A04Z, 01A05
     When I Select VIA Item
