@@ -1,10 +1,8 @@
 @regression
 Feature: Unpack Kit
 
-  Background: Navigate to Home Page
-    Given I try to log in with "kit" "password1"
-
   Scenario: Unpack US kit and verify kit products SOH
+    Given I try to log in with "kit" "password1"
     And I wait up to 120 seconds for "Initial Inventory" to appear
     Then I wait for "Initial inventory" to appear
     When I search product by fnm "08L01X" and select this item with quantity "888"
