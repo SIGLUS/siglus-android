@@ -12,3 +12,10 @@ And(/^I enter quantity for all products in kit$/) do
         end
         tap_when_element_exists("* marked:'Complete'")
 end
+
+Then(/^I click the last sync banner$/) do
+    last_sync_banner=query("android.widget.TextView id:'tx_sync_time'")
+    binding.pry
+    fail "can not find the last sync banner" if last_sync_banner.nil?
+    touch(last_sync_banner)
+end
