@@ -2,6 +2,7 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.AbstractModule;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -178,22 +179,30 @@ public class RnRFormListPresenterTest {
         assertThat(rnRFormViewModels.size()).isEqualTo(0);
     }
 
-
-
     private List<RnRForm> createRnRForms() {
         return newArrayList(createRnRForm(RnRForm.STATUS.DRAFT), createRnRForm(RnRForm.STATUS.AUTHORIZED), createRnRForm(RnRForm.STATUS.AUTHORIZED));
     }
 
-    private RnRForm createRnRForm(RnRForm.STATUS statu) {
+    private RnRForm createRnRForm(RnRForm.STATUS status) {
         Program program = new Program();
         program.setProgramCode("MMIA");
         program.setProgramName("MMIA");
 
         RnRForm rnRForm = RnRForm.init(program, DateUtil.today());
         rnRForm.setId(1L);
-        rnRForm.setStatus(statu);
+        rnRForm.setStatus(status);
         rnRForm.setSynced(true);
         return rnRForm;
+    }
+
+    @Test
+    public void shouldGetRightPeriodWhenLastRequisitionExists() {
+        RnRForm rnRForm = new RnRForm();
+        rnRForm.setPeriodBegin(new DateTime("2016-12-23").toDate());
+        rnRForm.setPeriodEnd(new DateTime("2016-01-21").toDate());
+
+        when(rnrFormRepository.queryLatestAuthorizedRnRForm()).thenReturn(rnRForm);
+
     }
 
 }
