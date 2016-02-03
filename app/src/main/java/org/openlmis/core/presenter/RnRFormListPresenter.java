@@ -133,13 +133,14 @@ public class RnRFormListPresenter extends Presenter {
     }
 
     private RnRFormViewModel generateRnrFormVIewModelWithoutRnrForm(Period currentPeriod) {
-        Date periodBegin = currentPeriod.getBegin().toDate();
+        Date inventoryBegin = currentPeriod.getInventoryBegin().toDate();
+        //TODO change logic to from db
         Date latestPhysicalInventoryTime = DateUtil.parseString(sharedPreferenceMgr.getLatestPhysicInventoryTime(), DateUtil.DATE_TIME_FORMAT);
 
-        if (latestPhysicalInventoryTime.before(periodBegin)) {
+        if (latestPhysicalInventoryTime.before(inventoryBegin)) {
             return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
         } else {
-            return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_COMPLETED_INVENTORY);
+            return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_SELECT_CLOSE_OF_PERIOD);
         }
     }
 

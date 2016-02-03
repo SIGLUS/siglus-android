@@ -35,6 +35,8 @@ import lombok.Data;
 public class RnRFormViewModel {
 
     public static final int TYPE_UNCOMPLETE_INVENTORY = 1;
+    public static final int TYPE_SELECT_CLOSE_OF_PERIOD = 6;
+    //TODO rename
     public static final int TYPE_COMPLETED_INVENTORY = 2;
     public static final int TYPE_UN_AUTHORIZED = 3;
     public static final int TYPE_UNSYNC = 4;
