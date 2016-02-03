@@ -181,5 +181,20 @@ Then(/^I shouldn't see lowStock "(\d+)" and warning on product "(.*?)"$/) do |lo
     unless (warning_icon.empty?)
         fail "Low stock warning should not appear"
     end
+end
 
+Then (/^I should see more than (\d+) movements in stock card page$/) do|movement_number|
+    movement_reasons=query("android.widget.TextView id:'tx_reason'")
+    unless movement_reasons.size > movement_number.to_i+2
+    #we need to add 2 to the number because there is a header line and an empty line at the bottom
+        fail "there are no movements"
+    end
+end
+
+Then (/^I should see more than (\d+) movements in movement history page$/) do|movement_number|
+    movement_reasons=query("android.widget.TextView id:'tx_reason'")
+    unless movement_reasons.size > movement_number.to_i+1
+    #we need to add 1 to the number because there is a header line
+        fail "there are no movements"
+    end
 end

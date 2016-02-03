@@ -11,3 +11,7 @@ Feature: After version upgrade, data integrity should not be broken
     And I wait for "Stock Overview" to appear
     Then I select drug number 1
     And I wait for "Stock Card" to appear
+    Then I should see more than 0 movements in stock card page
+    Then I press "Movement History"
+    And I wait for "Date of Movement" to appear
+    Then I should see more than 0 movements in movement history page
