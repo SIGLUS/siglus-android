@@ -8,6 +8,7 @@ Feature: stock movement Page
     Given I have initialized inventory
 
   Scenario: deactivated product show notify banner
+    When I wait for "Stock Card Overview" to appear
     When I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
