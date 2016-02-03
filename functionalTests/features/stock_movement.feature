@@ -26,6 +26,7 @@ Feature: stock movement Page
     Then I see "123"
     Then I see "super" in signature field
     Then I navigate back
+    And I wait for "Stock Overview" to appear
     Then I navigate back
     Then I wait for "STOCK CARD OVERVIEW" to appear
 
