@@ -16,6 +16,7 @@ import org.openlmis.core.network.SyncErrorsMap;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.activity.InventoryActivity;
 import org.openlmis.core.view.activity.MMIARequisitionActivity;
+import org.openlmis.core.view.activity.SelectPeriodActivity;
 import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.view.adapter.RnRFormListAdapter;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
@@ -49,23 +50,27 @@ public class RnRFormViewHolder extends BaseViewHolder {
     }
 
     public void populate(final RnRFormViewModel model, String programCode) {
-        if(btnViewOld != null) {
+        if (btnViewOld != null) {
             btnViewOld.setVisibility(View.GONE);
         }
 
         switch (model.getType()) {
             case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY:
-                configHolder(model, R.string.label_uncompleted_physical_inventory_message, R.string.btn_view_uncompleted_physical_inventory);
+                configHolder(model, R.string.btn_view_uncompleted_physical_inventory, Html.fromHtml(context.getString(R.string.label_uncompleted_physical_inventory_message, model.getName())));
+                btnView.setOnClickListener(new BtnViewClickListener(model, programCode));
+                break;
+            case RnRFormViewModel.TYPE_SELECT_CLOSE_OF_PERIOD:
+                configHolder(model, R.string.btn_view_select_close_of_period, null);
                 btnView.setOnClickListener(new BtnViewClickListener(model, programCode));
                 break;
             case RnRFormViewModel.TYPE_COMPLETED_INVENTORY:
-                configHolder(model, R.string.label_completed_physical_inventory_message, R.string.btn_view_completed_physical_inventory);
+                configHolder(model, R.string.btn_view_completed_physical_inventory, Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, model.getName())));
                 btnView.setOnClickListener(new BtnViewClickListener(model, programCode));
                 btnView.setBackground(context.getResources().getDrawable(R.drawable.blue_button));
                 btnView.setTextColor(context.getResources().getColor(R.color.color_white));
                 break;
             case RnRFormViewModel.TYPE_UN_AUTHORIZED:
-                configHolder(model, R.string.label_incomplete_requisition, R.string.btn_view_incomplete_requisition);
+                configHolder(model, R.string.btn_view_incomplete_requisition, Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())));
                 btnView.setOnClickListener(new BtnViewClickListener(model, programCode));
                 break;
             case RnRFormViewModel.TYPE_UNSYNC:
@@ -104,11 +109,11 @@ public class RnRFormViewHolder extends BaseViewHolder {
         }
     }
 
-    private void configHolder(RnRFormViewModel model, int messageText, int btnText) {
+    private void configHolder(RnRFormViewModel model, int btnText, Spanned text) {
         txPeriod.setText(model.getPeriod());
         txPeriod.setBackgroundResource(R.color.color_draft_title);
         txPeriod.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_description, 0, 0, 0);
-        txMessage.setText(Html.fromHtml(context.getString(messageText, model.getName())));
+        txMessage.setText(text);
         ivDelete.setVisibility(View.GONE);
         btnView.setText(context.getString(btnText, model.getName()));
     }
@@ -146,24 +151,29 @@ public class RnRFormViewHolder extends BaseViewHolder {
             if (model.getType() == RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY) {
                 Intent intent = new Intent(context, InventoryActivity.class);
                 intent.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
-                ((Activity)context).startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
+                ((Activity) context).startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
+                return;
+            }
+
+            if (model.getType() == RnRFormViewModel.TYPE_SELECT_CLOSE_OF_PERIOD) {
+                context.startActivity(SelectPeriodActivity.getIntentToMe());
                 return;
             }
 
             if (model.getType() == RnRFormViewModel.TYPE_HISTORICAL) {
                 if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
-                    ((Activity)context).startActivityForResult(MMIARequisitionActivity.getIntentToMe(context, model.getId()), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+                    ((Activity) context).startActivityForResult(MMIARequisitionActivity.getIntentToMe(context, model.getId()), Constants.REQUEST_FROM_RNR_LIST_PAGE);
                 } else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)) {
-                    ((Activity)context).startActivityForResult(VIARequisitionActivity.getIntentToMe(context, model.getId()), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+                    ((Activity) context).startActivityForResult(VIARequisitionActivity.getIntentToMe(context, model.getId()), Constants.REQUEST_FROM_RNR_LIST_PAGE);
                 }
                 return;
             }
 
             if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
-                ((Activity)context).startActivityForResult(MMIARequisitionActivity.getIntentToMe(context, DEFAULT_FORM_ID_OF_NOT_AUTHORIZED), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+                ((Activity) context).startActivityForResult(MMIARequisitionActivity.getIntentToMe(context, DEFAULT_FORM_ID_OF_NOT_AUTHORIZED), Constants.REQUEST_FROM_RNR_LIST_PAGE);
 
             } else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)) {
-                ((Activity)context).startActivityForResult(VIARequisitionActivity.getIntentToMe(context, DEFAULT_FORM_ID_OF_NOT_AUTHORIZED), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+                ((Activity) context).startActivityForResult(VIARequisitionActivity.getIntentToMe(context, DEFAULT_FORM_ID_OF_NOT_AUTHORIZED), Constants.REQUEST_FROM_RNR_LIST_PAGE);
             }
 
         }

@@ -9,8 +9,11 @@ public class Period {
 
     public static final int BEGIN_DAY = 21;
     public static final int END_DAY = 20;
+    public static final int INVENTORY_BEGIN_DAY = 18;
+    public static final int INVENTORY_END_DAY = 25;
     private DateTime periodBegin;
     private DateTime periodEnd;
+    private DateTime inventoryBegin;
 
     public Period(DateTime dateTime) {
         if (dateTime.dayOfMonth().get() >= BEGIN_DAY) {
@@ -20,6 +23,7 @@ public class Period {
             periodBegin = DateUtil.cutTimeStamp(lastMonth(dateTime).withDayOfMonth(BEGIN_DAY));
             periodEnd = DateUtil.cutTimeStamp(dateTime.withDayOfMonth(END_DAY));
         }
+        inventoryBegin = DateUtil.cutTimeStamp(dateTime.withDayOfMonth(INVENTORY_BEGIN_DAY));
     }
 
     public static Period of(Date date) {
@@ -33,6 +37,10 @@ public class Period {
 
     public DateTime getBegin() {
         return periodBegin;
+    }
+
+    public DateTime getInventoryBegin() {
+        return inventoryBegin;
     }
 
     public DateTime getEnd() {
@@ -50,5 +58,4 @@ public class Period {
     private DateTime nextMonth(DateTime dateTime) {
         return dateTime.plusMonths(1);
     }
-
 }

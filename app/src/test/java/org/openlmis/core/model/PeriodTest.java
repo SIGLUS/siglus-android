@@ -2,7 +2,6 @@ package org.openlmis.core.model;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
-import org.openlmis.core.model.Period;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -27,6 +26,13 @@ public class PeriodTest {
         //then
         assertThat(prevPeriod.getBegin(), is(DateTime.parse("2015-04-21")));
         assertThat(prevPeriod.getEnd(), is(DateTime.parse("2015-05-20")));
+    }
+
+    @Test
+    public void shouldGetInventoryBeginDate() throws Exception {
+        Period period = new Period(DateTime.parse("2015-06-07"));
+
+        assertThat(period.getInventoryBegin(), is(DateTime.parse("2015-06-18")));
     }
 
     private void testPeriodBeginEnd(String anyDayInPeriod, String begin, String end) {
