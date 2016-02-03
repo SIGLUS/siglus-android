@@ -21,3 +21,13 @@ Then(/^I should see total:"(\d+)" on stock list page/) do |expectTotal|
         fail(msg="Total drug quantity don't equals to expect quantity")
     end
 end
+
+Then(/^I select drug number (\d+)$/) do |nth|
+    drugs = query("android.widget.TextView id:'product_name'")
+    drug=drugs[nth.to_i-1]
+    if not drug.nil?
+        touch(drug)
+    else
+        fail(msg="There are no drugs in the list")
+    end
+end
