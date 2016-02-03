@@ -1,4 +1,4 @@
-@regression
+@cmm
 Feature: low stock
 
   Scenario: Calculate low stock and cmm without stock out in 3 months
@@ -6,12 +6,12 @@ Feature: low stock
     And I wait for 2 seconds
 
     Given I try to log in with "low_stock" "password1"
-    And I wait for "Stock Card Overview" to appear
+    And I wait up to 120 seconds for "Stock Card Overview" to appear
+    # to run this in a physical device, we need to wait longer, IO is slow on physical devices
     When I press "Stock Card Overview"
     And I wait for "Stock Overview" to appear
     And I wait for 1 second
     Then I should see SOH of "01A01" is "400"
-
 
     Then I select stock card code called "[01A01]"
     Then I wait for "Stock Card" to appear
@@ -29,7 +29,6 @@ Feature: low stock
     And I wait for "Enter your initials" to appear
     And I sign with "low_stock"
     Then I see "10"
-    Then I see "low_s" in signature field
     And I navigate back
     And I wait for 3 seconds
     Then I should see lowStock "10" and warning on product "01A01"
@@ -51,4 +50,3 @@ Feature: low stock
     Then I wait for 1 second
     Then I shouldn't see lowStock "11" and warning on product "01A01"
     Then I wait for 1 second
-
