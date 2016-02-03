@@ -3,6 +3,11 @@ Feature: Log in and initialize Inventory
 
   Scenario: User should be able to log in, initialize inventory and navigate to stock overview page
 
+    #Unauthenrised account shouldn't login to the app
+    Given I try to log in with "testlogin" "password1"
+    And I should see "Username or Password is incorrect."
+    Then I wait for 1 second
+
     # Initialize inventory and check stock card overview
     Given I try to log in with "superuser" "password1"
     And I wait up to 120 seconds for "Initial Inventory" to appear
