@@ -27,26 +27,24 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.view.holder.RnRFormViewHolder;
+import org.openlmis.core.view.holder.RnRFormViewHolder.RnRFormItemClickListener;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 
 import java.util.List;
-
-import lombok.Getter;
-import lombok.Setter;
 
 public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormViewHolder> {
 
     private LayoutInflater inflater;
     private List<RnRFormViewModel> data;
     private String programCode;
-    @Getter
-    @Setter
-    private RnRFromDeleteListener formDeleteListener;
 
-    public RnRFormListAdapter(Context context, String programCode, List<RnRFormViewModel> data) {
+    private RnRFormItemClickListener itemClickListener;
+
+    public RnRFormListAdapter(Context context, String programCode, List<RnRFormViewModel> data, RnRFormItemClickListener rnRFormItemClickListener) {
         this.inflater = LayoutInflater.from(context);
         this.programCode = programCode;
         this.data = data;
+        this.itemClickListener = rnRFormItemClickListener;
     }
 
     public void refreshList(List<RnRFormViewModel> data) {
@@ -63,12 +61,12 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormViewHolder> 
     @Override
     public RnRFormViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == RnRFormViewModel.TYPE_UNSYNC) {
-            return new RnRFormViewHolder(this, inflater.inflate(R.layout.item_rnr_card_unsync, parent, false));
+            return new RnRFormViewHolder(inflater.inflate(R.layout.item_rnr_card_unsync, parent, false), itemClickListener);
         } else {
             if (viewType == RnRFormViewModel.TYPE_UN_AUTHORIZED && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-                return new RnRFormViewHolder(this, inflater.inflate(R.layout.item_rnr_card_unsync, parent, false));
+                return new RnRFormViewHolder(inflater.inflate(R.layout.item_rnr_card_unsync, parent, false), itemClickListener);
             }
-            return new RnRFormViewHolder(this, inflater.inflate(R.layout.item_rnr_card, parent, false));
+            return new RnRFormViewHolder(inflater.inflate(R.layout.item_rnr_card, parent, false), itemClickListener);
         }
     }
 

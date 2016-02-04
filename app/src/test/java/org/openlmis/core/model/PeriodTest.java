@@ -39,7 +39,7 @@ public class PeriodTest {
     public void shouldGetInventoryEndDate() throws Exception {
         Period period = new Period(DateTime.parse("2015-06-07"));
 
-        assertThat(period.getInventoryBegin(), is(DateTime.parse("2015-06-26")));
+        assertThat(period.getInventoryEnd(), is(DateTime.parse("2015-06-26")));
     }
 
     private void testPeriodBeginEnd(String anyDayInPeriod, String begin, String end) {

@@ -44,7 +44,7 @@ public class InventoryRepositoryTest {
         List<Inventory> inventories = repository.queryPeriodInventory(new Period(new DateTime(DateUtil.parseString("2016-02-28 11:33:44", DateUtil.DATE_TIME_FORMAT))));
 
         assertThat(inventories.size(), is(3));
-        assertThat(inventories.get(0).getCreatedAt(), is(DateUtil.parseString("2016-02-18 11:33:44", DateUtil.DATE_TIME_FORMAT)));
+        assertThat(inventories.get(0).getCreatedAt(), is(DateUtil.parseString("2016-02-25 11:33:44", DateUtil.DATE_TIME_FORMAT)));
     }
 
     @NonNull

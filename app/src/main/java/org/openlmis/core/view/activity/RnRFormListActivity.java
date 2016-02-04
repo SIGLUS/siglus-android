@@ -29,12 +29,14 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
+import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.presenter.RnRFormListPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.RnRFormListAdapter;
 import org.openlmis.core.view.fragment.WarningDialog;
+import org.openlmis.core.view.holder.RnRFormViewHolder.RnRFormItemClickListener;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 
 import java.util.ArrayList;
@@ -47,6 +49,8 @@ import rx.Subscription;
 
 @ContentView(R.layout.activity_rnr_list)
 public class RnRFormListActivity extends BaseActivity implements RnRFormListPresenter.RnRFormListView {
+
+    public static final int DEFAULT_FORM_ID_OF_NOT_AUTHORIZED = 0;
 
     @InjectView(R.id.rnr_form_list)
     RecyclerView listView;
@@ -61,13 +65,13 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         programCode = getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE);
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)){
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
             if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
                 setTitle(R.string.mmia_list);
             } else {
                 setTitle(R.string.requisition_list);
             }
-        }else {
+        } else {
             if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
                 setTitle(R.string.title_mmia_list);
             } else {
@@ -100,17 +104,16 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         listView.setHasFixedSize(true);
 
         data = new ArrayList<>();
-        adapter = new RnRFormListAdapter(this, programCode, data);
-        adapter.setFormDeleteListener(formDeleteListener);
+        adapter = new RnRFormListAdapter(this, programCode, data, rnRFormItemClickListener);
         listView.setAdapter(adapter);
 
         loading();
         presenter.loadRnRFormList().subscribe(getRnRFormSubscriber());
     }
 
-    private RnRFormListAdapter.RnRFromDeleteListener formDeleteListener = new RnRFormListAdapter.RnRFromDeleteListener() {
+    protected RnRFormItemClickListener rnRFormItemClickListener = new RnRFormItemClickListener() {
         @Override
-        public void delete(final RnRForm form) {
+        public void deleteForm(final RnRForm form) {
             WarningDialog warningDialog = new WarningDialog();
             warningDialog.setDelegate(new WarningDialog.DialogDelegate() {
                 @Override
@@ -119,6 +122,34 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
                 }
             });
             warningDialog.show(getFragmentManager(), "WarningDialog");
+        }
+
+        @Override
+        public void clickBtnView(RnRFormViewModel model, String programCode) {
+            switch (model.getType()) {
+                case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY:
+                    Intent intent = new Intent(RnRFormListActivity.this, InventoryActivity.class);
+                    intent.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
+                    startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
+                    return;
+                case RnRFormViewModel.TYPE_SELECT_CLOSE_OF_PERIOD:
+                    startActivityForResult(SelectPeriodActivity.getIntentToMe(RnRFormListActivity.this, programCode), Constants.REQUEST_SELECT_PERIOD_END);
+                    return;
+                case RnRFormViewModel.TYPE_HISTORICAL:
+                    if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
+                        startActivityForResult(MMIARequisitionActivity.getIntentToMe(RnRFormListActivity.this, model.getId()), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+                    } else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)) {
+                        startActivityForResult(VIARequisitionActivity.getIntentToMe(RnRFormListActivity.this, model.getId()), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+                    }
+                    return;
+            }
+
+            if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
+                startActivityForResult(MMIARequisitionActivity.getIntentToMe(RnRFormListActivity.this, DEFAULT_FORM_ID_OF_NOT_AUTHORIZED), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+
+            } else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)) {
+                startActivityForResult(VIARequisitionActivity.getIntentToMe(RnRFormListActivity.this, DEFAULT_FORM_ID_OF_NOT_AUTHORIZED), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+            }
         }
     };
 

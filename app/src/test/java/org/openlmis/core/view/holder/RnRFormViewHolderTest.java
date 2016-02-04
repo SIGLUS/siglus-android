@@ -1,6 +1,5 @@
 package org.openlmis.core.view.holder;
 
-import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -16,16 +15,15 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.view.activity.SelectPeriodActivity;
 import org.openlmis.core.view.adapter.RnRFormListAdapter;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.shadows.ShadowApplication;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(LMISTestRunner.class)
 public class RnRFormViewHolderTest {
@@ -33,10 +31,11 @@ public class RnRFormViewHolderTest {
     private Program program;
     private RnRFormViewHolder viewHolder;
     private RnRFormListAdapter mockAdapter;
+    private RnRFormViewHolder.RnRFormItemClickListener mockedListener;
 
     @Before
     public void setup() {
-        mockAdapter = mock(RnRFormListAdapter.class);
+        mockedListener = mock(RnRFormViewHolder.RnRFormItemClickListener.class);
         program = new Program();
         program.setProgramCode("MMIA");
         program.setProgramName("MMIA");
@@ -44,9 +43,9 @@ public class RnRFormViewHolderTest {
 
     private RnRFormViewHolder getViewHolderByType(int viewType) {
         if (viewType == RnRFormViewModel.TYPE_UNSYNC) {
-            return new RnRFormViewHolder(mockAdapter, LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card_unsync, null, false));
+            return new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card_unsync, null, false), mockedListener);
         } else {
-            return new RnRFormViewHolder(mockAdapter, LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card, null, false));
+            return new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card, null, false), mockedListener);
         }
     }
 
@@ -73,7 +72,7 @@ public class RnRFormViewHolderTest {
         form.setStatus(RnRForm.STATUS.DRAFT);
         RnRFormViewModel viewModel = new RnRFormViewModel(form);
 
-        viewHolder = new RnRFormViewHolder(mockAdapter, LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card_unsync, null, false));
+        viewHolder = new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card_unsync, null, false), mockedListener);
 
         viewHolder.populateOld(viewModel, "MMIA");
 
@@ -152,10 +151,7 @@ public class RnRFormViewHolderTest {
 
         viewHolder.btnView.performClick();
 
-        Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
-
-        assertNotNull(nextStartedIntent);
-        assertThat(nextStartedIntent.getComponent().getClassName(), is(SelectPeriodActivity.class.getName()));
+        verify(mockedListener).clickBtnView(viewModel, "MMIA");
     }
 
     @SuppressWarnings("ConstantConditions")
