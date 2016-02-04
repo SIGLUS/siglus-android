@@ -25,6 +25,7 @@ Feature: Log in and initialize Inventory
     And I wait for "Stock Overview" to appear
     And I press "Sort alphabetically: A to Z"
     And I press "Sort by quantity: High to Low"
+    And I wait for 1 second
     Then I should see SOH of "01A01" is "123"
     And I should see SOH of "08S42B" is "123"
 
@@ -42,10 +43,10 @@ Feature: Log in and initialize Inventory
     Then I should see text containing "Quantity cannot be left blank!"
 
     When I unselect the inventory item
-    When I search product by fnm "08S01ZY" and select this item with quantity "2008"
+    And I have added new drugs
     And I press "Complete"
     Then I wait for "Stock Overview" to appear
-    Then I should see total:"11" on stock list page
+    And I check new drug quantity
 
     # Attempt to make a stock movement and cancel
     Given I navigate back
