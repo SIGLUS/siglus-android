@@ -138,7 +138,6 @@ public class RnRFormViewHolder extends BaseViewHolder {
                             return false;
                         }
                     });
-//                    rnRFormListAdapter.getFormDeleteListener().delete(form);
                 }
             });
         }
