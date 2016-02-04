@@ -131,7 +131,7 @@ Feature: Unpack Kit
     Then I see "Sync Data"
     And I press "Sync Data"
 
-    And I wait for "0 minutes since last sync" to appear
+    And I wait up to 120 seconds for "0 minutes since last sync" to appear
     And I click the last sync banner
     Then I see "Requisition last synced 0 minutes ago"
     Then I go back
