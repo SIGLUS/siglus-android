@@ -138,10 +138,10 @@ public class RnRFormListPresenter extends Presenter {
 
     private RnRFormViewModel generateRnrFormVIewModelWithoutRnrForm(Period currentPeriod) throws LMISException {
 
-        Date inventoryBegin = currentPeriod.getInventoryBegin().toDate();
+        Date periodBegin = currentPeriod.getBegin().toDate();
         Date latestPhysicalInventoryTime = DateUtil.parseString(sharedPreferenceMgr.getLatestPhysicInventoryTime(), DateUtil.DATE_TIME_FORMAT);
 
-        if (latestPhysicalInventoryTime.before(inventoryBegin)) {
+        if (latestPhysicalInventoryTime.before(periodBegin)) {
             return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
         } else {
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
