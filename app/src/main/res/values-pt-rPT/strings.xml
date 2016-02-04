@@ -189,6 +189,7 @@
         <item>Ordenar por quantidade: Baixa para Alta</item>
     </string-array>
     <string name="hint_update_banner_tips">%1$s Foi desactivado e removido para a <![CDATA[<b>produtos arquivados</b>]]> lista</string>
+    <string name="msg_expiry_warning">Este producto tem um stock que vai  espirar neste mês, por favor veja as datas de espiração do producto.</string>
     <!--Physical Inventory Page-->
     <string name="label_physical_inventory_stock_on_hand">Stock existente actual</string>
     <!--Unpack Kit-->
@@ -206,6 +207,7 @@
     <!--Rnr form historical list-->
     <string name="label_via_name">Requisição/Balancete Via Clássica</string>
     <string name="label_mmia_name">MMIA</string>
+    <string name="action_delete_rnr_form">Remover do tablet</string>
     <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b>No%1$s foi criado. </ B>]]> Conclúa o seu inventário antes de criar uma requisição.</string>
     <string name="btn_view_uncompleted_physical_inventory">Completar Inventário</string>
     <string name="label_completed_physical_inventory_message"><![CDATA[<b>No %1$s Foi criado.</b>]]></string>
@@ -239,4 +241,5 @@
     <string name="label_view_movement_history">Ver histórico de movimentos</string>
     <string name="label_add_drug_to_stock">Adicionar produto para a lista geral de stock</string>
     <string name="label_empty_archived_drugs">Nenhum produto arquivado</string>
+    <!--Select Period-->
 </resources>
