@@ -55,14 +55,17 @@ And(/^I enter positive adjustment number "(.*?)"$/) do |number|
 end
 
 When(/^I search stockcard by code "(.*?)" and select this item$/) do |stock_card_code|
+    steps %Q{
+        When I search stockcard by "#{stock_card_code}"
+        Then I select stock card code called "#{stock_card_code}"
+    }
+end
+
+When(/^I search stockcard by "(.*?)"$/) do |search_key|
     search_bar = query("android.support.v7.widget.SearchView id:'action_search'")
     touch(search_bar)
     clear_text_in(search_bar)
-    enter_text("android.support.v7.widget.SearchView id:'action_search'", stock_card_code)
-    
-    steps %Q{
-        Then I select stock card code called "#{stock_card_code}"
-    }
+    enter_text("android.support.v7.widget.SearchView id:'action_search'", search_key)
 end
 
 Then(/^I make a movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_card_code, first_reason, second_reason, movement_column, number|
