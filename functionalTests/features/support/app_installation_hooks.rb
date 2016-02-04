@@ -6,10 +6,6 @@ AfterConfiguration do |config|
   FeatureNameMemory.feature_name = nil
 end
 
-Before('@regression') do |scenario|
-  reset_regression_server_data
-end
-
 Before('@upgrade') do |scenario|
   first_time = true
 
@@ -61,9 +57,4 @@ FeatureNameMemory = Class.new
 class << FeatureNameMemory
   @feature_name = nil
   attr_accessor :feature_name, :invocation
-end
-
-def reset_regression_server_data
-  puts "reset regression server data..."
-  system("cd #{LMIS_MOZ_DIR} && ./data/functional_tests/regression/reset_data.sh")
 end
