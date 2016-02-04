@@ -39,7 +39,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
         this.itemClickListener = itemClickListener;
     }
 
-    public void populate(final RnRFormViewModel model, String programCode) {
+    public void populate(final RnRFormViewModel model) {
         if (btnViewOld != null) {
             btnViewOld.setVisibility(View.GONE);
         }
@@ -47,21 +47,21 @@ public class RnRFormViewHolder extends BaseViewHolder {
         switch (model.getType()) {
             case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY:
                 configHolder(model, R.string.btn_view_uncompleted_physical_inventory, Html.fromHtml(context.getString(R.string.label_uncompleted_physical_inventory_message, model.getName())));
-                btnView.setOnClickListener(new BtnViewClickListener(model, programCode));
+                btnView.setOnClickListener(new BtnViewClickListener(model));
                 break;
             case RnRFormViewModel.TYPE_SELECT_CLOSE_OF_PERIOD:
                 configHolder(model, R.string.btn_view_select_close_of_period, null);
-                btnView.setOnClickListener(new BtnViewClickListener(model, programCode));
+                btnView.setOnClickListener(new BtnViewClickListener(model));
                 break;
             case RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED:
                 configHolder(model, R.string.btn_view_completed_physical_inventory, Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, model.getName())));
-                btnView.setOnClickListener(new BtnViewClickListener(model, programCode));
+                btnView.setOnClickListener(new BtnViewClickListener(model));
                 btnView.setBackground(context.getResources().getDrawable(R.drawable.blue_button));
                 btnView.setTextColor(context.getResources().getColor(R.color.color_white));
                 break;
             case RnRFormViewModel.TYPE_UN_AUTHORIZED:
                 configHolder(model, R.string.btn_view_incomplete_requisition, Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())));
-                btnView.setOnClickListener(new BtnViewClickListener(model, programCode));
+                btnView.setOnClickListener(new BtnViewClickListener(model));
                 break;
             case RnRFormViewModel.TYPE_UNSYNC:
                 String error = context.getString(R.string.label_unsynced_requisition, model.getName());
@@ -73,12 +73,12 @@ public class RnRFormViewHolder extends BaseViewHolder {
             case RnRFormViewModel.TYPE_HISTORICAL:
                 configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedDate())), R.drawable.ic_done_green, INT_UNSET, model.getForm());
                 btnView.setText(context.getString(R.string.btn_view_requisition, model.getName()));
-                btnView.setOnClickListener(new BtnViewClickListener(model, programCode));
+                btnView.setOnClickListener(new BtnViewClickListener(model));
                 break;
         }
     }
 
-    public void populateOld(final RnRFormViewModel model, String programCode) {
+    public void populateOld(final RnRFormViewModel model) {
         switch (model.getType()) {
             case RnRFormViewModel.TYPE_UN_AUTHORIZED:
                 configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_incomplete_requisition_old, model.getName())), R.drawable.ic_description, R.color.color_draft_title, model.getForm());
@@ -94,7 +94,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 btnView.setVisibility(View.GONE);
                 configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedDate())), R.drawable.ic_done, INT_UNSET, model.getForm());
                 btnViewOld.setText(context.getString(R.string.btn_view_requisition, model.getName()));
-                btnViewOld.setOnClickListener(new BtnViewClickListener(model, programCode));
+                btnViewOld.setOnClickListener(new BtnViewClickListener(model));
                 break;
         }
     }
@@ -129,23 +129,21 @@ public class RnRFormViewHolder extends BaseViewHolder {
     public interface RnRFormItemClickListener {
         void deleteForm(RnRForm form);
 
-        void clickBtnView(RnRFormViewModel model, String programCode);
+        void clickBtnView(RnRFormViewModel model);
     }
 
     private class BtnViewClickListener implements View.OnClickListener {
 
         private final RnRFormViewModel model;
-        private final String programCode;
 
-        public BtnViewClickListener(final RnRFormViewModel model, String programCode) {
+        public BtnViewClickListener(final RnRFormViewModel model) {
             this.model = model;
-            this.programCode = programCode;
         }
 
         @Override
         public void onClick(View v) {
             if (itemClickListener != null) {
-                itemClickListener.clickBtnView(model, programCode);
+                itemClickListener.clickBtnView(model);
             }
         }
     }

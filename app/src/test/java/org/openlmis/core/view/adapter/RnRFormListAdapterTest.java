@@ -32,7 +32,7 @@ public class RnRFormListAdapterTest {
 
         List<RnRFormViewModel> models = newArrayList(new RnRFormViewModel(form), new RnRFormViewModel(form));
 
-        rnRFormListAdapter = new RnRFormListAdapter(RuntimeEnvironment.application, "VIA", models, null);
+        rnRFormListAdapter = new RnRFormListAdapter(RuntimeEnvironment.application, models, null);
     }
 
     @Test

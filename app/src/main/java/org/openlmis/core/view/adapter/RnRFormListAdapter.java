@@ -25,7 +25,6 @@ import android.view.ViewGroup;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.view.holder.RnRFormViewHolder;
 import org.openlmis.core.view.holder.RnRFormViewHolder.RnRFormItemClickListener;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
@@ -36,13 +35,11 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormViewHolder> 
 
     private LayoutInflater inflater;
     private List<RnRFormViewModel> data;
-    private String programCode;
 
     private RnRFormItemClickListener itemClickListener;
 
-    public RnRFormListAdapter(Context context, String programCode, List<RnRFormViewModel> data, RnRFormItemClickListener rnRFormItemClickListener) {
+    public RnRFormListAdapter(Context context, List<RnRFormViewModel> data, RnRFormItemClickListener rnRFormItemClickListener) {
         this.inflater = LayoutInflater.from(context);
-        this.programCode = programCode;
         this.data = data;
         this.itemClickListener = rnRFormItemClickListener;
     }
@@ -75,19 +72,15 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormViewHolder> 
         final RnRFormViewModel model = data.get(position);
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-            holder.populate(model, programCode);
+            holder.populate(model);
         } else {
-            holder.populateOld(model, programCode);
+            holder.populateOld(model);
         }
     }
 
     @Override
     public int getItemViewType(int position) {
         return data.get(position).getType();
-    }
-
-    public interface RnRFromDeleteListener {
-        void delete(RnRForm form);
     }
 
 }

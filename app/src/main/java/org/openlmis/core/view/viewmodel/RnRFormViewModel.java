@@ -49,6 +49,7 @@ public class RnRFormViewModel {
     long id;
     String syncServerErrorMessage;
     private RnRForm form;
+    private String programCode;
 
     public RnRFormViewModel(RnRForm form) {
         this.form = form;
@@ -60,14 +61,15 @@ public class RnRFormViewModel {
         }
         this.period = generatePeriod(form.getPeriodBegin(), form.getPeriodEnd());
         this.id = form.getId();
-
-        setName(form.getProgram().getProgramCode());
+        this.programCode = form.getProgram().getProgramCode();
+        setName(programCode);
         setType(form);
     }
 
     public RnRFormViewModel(Period period, String programCode, int type) {
         this.period = generatePeriod(period.getBegin().toDate(), period.getEnd().toDate());
         this.type = type;
+        this.programCode = programCode;
         setName(programCode);
     }
 

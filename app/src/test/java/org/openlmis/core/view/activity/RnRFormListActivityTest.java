@@ -5,12 +5,14 @@ import android.content.Intent;
 
 import com.google.inject.AbstractModule;
 
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
@@ -20,6 +22,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowToast;
 
 import java.util.Date;
@@ -28,6 +31,9 @@ import roboguice.RoboGuice;
 import rx.Observable;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -99,5 +105,71 @@ public class RnRFormListActivityTest {
         rnRFormListActivity.getRnRFormSubscriber().onNext(newArrayList(new RnRFormViewModel(form), new RnRFormViewModel(form)));
 
         assertThat(rnRFormListActivity.listView.getAdapter().getItemCount()).isEqualTo(2);
+    }
+
+    @Test
+    public void shouldStartPhysicalInventoryWhenBtnClickedWithUncompleteInventory() throws Exception {
+        RnRFormViewModel viewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
+        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel);
+
+        Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
+
+        assertNotNull(nextStartedIntent);
+        assertEquals(nextStartedIntent.getComponent().getClassName(), InventoryActivity.class.getName());
+        assertTrue(nextStartedIntent.getBooleanExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, false));
+    }
+
+    @Test
+    public void shouldSelectPeriodWhenBtnClickedWithSelectClosePeriod() throws Exception {
+        RnRFormViewModel viewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_SELECT_CLOSE_OF_PERIOD);
+        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel);
+
+        Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
+
+        assertNotNull(nextStartedIntent);
+        assertEquals(nextStartedIntent.getComponent().getClassName(), SelectPeriodActivity.class.getName());
+        assertEquals(nextStartedIntent.getStringExtra(Constants.PARAM_PROGRAM_CODE), "MMIA");
+    }
+
+    @Test
+    public void shouldStartMMIAHistoryWhenBtnClickedWithTypeHistory() throws Exception {
+        RnRFormViewModel viewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_HISTORICAL);
+        viewModel.setId(999L);
+        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel);
+
+        Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
+
+        assertNotNull(nextStartedIntent);
+        assertEquals(nextStartedIntent.getComponent().getClassName(), MMIARequisitionActivity.class.getName());
+        assertEquals(nextStartedIntent.getLongExtra(Constants.PARAM_FORM_ID, 0), 999L);
+    }
+
+    @Test
+    public void shouldStartVIAHistoryWhenBtnClickedWithTypeHistory() throws Exception {
+        RnRFormViewModel viewModel = generateRnRFormViewModel("ESS_MEDS", RnRFormViewModel.TYPE_HISTORICAL);
+        viewModel.setId(999L);
+        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel);
+
+        Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
+
+        assertNotNull(nextStartedIntent);
+        assertEquals(nextStartedIntent.getComponent().getClassName(), VIARequisitionActivity.class.getName());
+        assertEquals(nextStartedIntent.getLongExtra(Constants.PARAM_FORM_ID, 0), 999L);
+    }
+
+    @Test
+    public void shouldStartMMIAEditPageWhenBtnClickedWithTypeUnauthorized() throws Exception {
+        RnRFormViewModel viewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_UN_AUTHORIZED);
+        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel);
+
+        Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
+
+        assertNotNull(nextStartedIntent);
+        assertEquals(nextStartedIntent.getComponent().getClassName(), MMIARequisitionActivity.class.getName());
+        assertEquals(nextStartedIntent.getLongExtra(Constants.PARAM_FORM_ID, 0), 0L);
+    }
+
+    private RnRFormViewModel generateRnRFormViewModel(String programCode, int viewModelType) {
+        return new RnRFormViewModel(new Period(new DateTime()), programCode, viewModelType);
     }
 }

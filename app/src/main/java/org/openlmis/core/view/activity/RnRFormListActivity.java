@@ -104,7 +104,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         listView.setHasFixedSize(true);
 
         data = new ArrayList<>();
-        adapter = new RnRFormListAdapter(this, programCode, data, rnRFormItemClickListener);
+        adapter = new RnRFormListAdapter(this, data, rnRFormItemClickListener);
         listView.setAdapter(adapter);
 
         loading();
@@ -125,30 +125,26 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         }
 
         @Override
-        public void clickBtnView(RnRFormViewModel model, String programCode) {
+        public void clickBtnView(RnRFormViewModel model) {
+            long rnrFormId = DEFAULT_FORM_ID_OF_NOT_AUTHORIZED;
             switch (model.getType()) {
                 case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY:
                     Intent intent = new Intent(RnRFormListActivity.this, InventoryActivity.class);
                     intent.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
                     startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
-                    return;
+                    break;
                 case RnRFormViewModel.TYPE_SELECT_CLOSE_OF_PERIOD:
-                    startActivityForResult(SelectPeriodActivity.getIntentToMe(RnRFormListActivity.this, programCode), Constants.REQUEST_SELECT_PERIOD_END);
-                    return;
+                    startActivityForResult(SelectPeriodActivity.getIntentToMe(RnRFormListActivity.this, model.getProgramCode()), Constants.REQUEST_SELECT_PERIOD_END);
+                    break;
                 case RnRFormViewModel.TYPE_HISTORICAL:
-                    if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
-                        startActivityForResult(MMIARequisitionActivity.getIntentToMe(RnRFormListActivity.this, model.getId()), Constants.REQUEST_FROM_RNR_LIST_PAGE);
-                    } else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)) {
-                        startActivityForResult(VIARequisitionActivity.getIntentToMe(RnRFormListActivity.this, model.getId()), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+                    rnrFormId = model.getId();
+                default:
+                    if (MMIARepository.MMIA_PROGRAM_CODE.equals(model.getProgramCode())) {
+                        startActivityForResult(MMIARequisitionActivity.getIntentToMe(RnRFormListActivity.this, rnrFormId), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+                    } else if (VIARepository.VIA_PROGRAM_CODE.equals(model.getProgramCode())) {
+                        startActivityForResult(VIARequisitionActivity.getIntentToMe(RnRFormListActivity.this, rnrFormId), Constants.REQUEST_FROM_RNR_LIST_PAGE);
                     }
-                    return;
-            }
-
-            if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
-                startActivityForResult(MMIARequisitionActivity.getIntentToMe(RnRFormListActivity.this, DEFAULT_FORM_ID_OF_NOT_AUTHORIZED), Constants.REQUEST_FROM_RNR_LIST_PAGE);
-
-            } else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)) {
-                startActivityForResult(VIARequisitionActivity.getIntentToMe(RnRFormListActivity.this, DEFAULT_FORM_ID_OF_NOT_AUTHORIZED), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+                    break;
             }
         }
     };

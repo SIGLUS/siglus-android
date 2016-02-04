@@ -15,11 +15,9 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.view.adapter.RnRFormListAdapter;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.RuntimeEnvironment;
 
-import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
@@ -30,7 +28,6 @@ public class RnRFormViewHolderTest {
 
     private Program program;
     private RnRFormViewHolder viewHolder;
-    private RnRFormListAdapter mockAdapter;
     private RnRFormViewHolder.RnRFormItemClickListener mockedListener;
 
     @Before
@@ -57,7 +54,7 @@ public class RnRFormViewHolderTest {
 
         viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_UN_AUTHORIZED);
 
-        viewHolder.populate(viewModel, "MMIA");
+        viewHolder.populate(viewModel);
 
         assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getPeriod()));
         assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_incomplete_requisition, viewModel.getName())));
@@ -74,7 +71,7 @@ public class RnRFormViewHolderTest {
 
         viewHolder = new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card_unsync, null, false), mockedListener);
 
-        viewHolder.populateOld(viewModel, "MMIA");
+        viewHolder.populateOld(viewModel);
 
         assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getPeriod()));
         assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_incomplete_requisition_old, viewModel.getName())));
@@ -89,7 +86,7 @@ public class RnRFormViewHolderTest {
         RnRFormViewModel viewModel = new RnRFormViewModel(form);
 
         viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_UNSYNC);
-        viewHolder.populate(viewModel, "MMIA");
+        viewHolder.populate(viewModel);
 
         assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getPeriod()));
         assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_unsynced_requisition, viewModel.getName())));
@@ -101,7 +98,7 @@ public class RnRFormViewHolderTest {
         RnRFormViewModel viewModel = new RnRFormViewModel(new Period(new DateTime()), "MMIA", RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
 
         viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
-        viewHolder.populate(viewModel, "MMIA");
+        viewHolder.populate(viewModel);
 
         assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getPeriod()));
         assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_uncompleted_physical_inventory_message, viewModel.getName())));
@@ -115,7 +112,7 @@ public class RnRFormViewHolderTest {
         RnRFormViewModel viewModel = new RnRFormViewModel(new Period(new DateTime()), "MMIA", RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED);
 
         viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED);
-        viewHolder.populate(viewModel, "MMIA");
+        viewHolder.populate(viewModel);
 
         assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getPeriod()));
         assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_completed_physical_inventory_message, viewModel.getName())));
@@ -132,7 +129,7 @@ public class RnRFormViewHolderTest {
         RnRFormViewModel viewModel = new RnRFormViewModel(form);
         viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_HISTORICAL);
 
-        viewHolder.populate(viewModel, "MMIA");
+        viewHolder.populate(viewModel);
 
         assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getPeriod()));
         assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_submitted_message, viewModel.getName(), viewModel.getSyncedDate())));
@@ -145,13 +142,13 @@ public class RnRFormViewHolderTest {
         RnRFormViewModel viewModel = new RnRFormViewModel(new Period(new DateTime()), "MMIA", RnRFormViewModel.TYPE_SELECT_CLOSE_OF_PERIOD);
 
         viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_SELECT_CLOSE_OF_PERIOD);
-        viewHolder.populate(viewModel, "MMIA");
+        viewHolder.populate(viewModel);
 
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_select_close_of_period)));
 
         viewHolder.btnView.performClick();
 
-        verify(mockedListener).clickBtnView(viewModel, "MMIA");
+        verify(mockedListener).clickBtnView(viewModel);
     }
 
     @SuppressWarnings("ConstantConditions")
