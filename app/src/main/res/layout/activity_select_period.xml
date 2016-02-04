@@ -40,4 +40,5 @@
         android:layout_marginTop="@dimen/margin_small"
         android:textColor="@color/color_white"
         android:text="@string/label_next" />
+
 </LinearLayout>

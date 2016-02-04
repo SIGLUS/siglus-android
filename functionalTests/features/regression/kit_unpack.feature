@@ -132,7 +132,7 @@ Feature: Unpack Kit
     And I press "Sync Data"
 
     And I wait for "0 minutes since last sync" to appear
-    And I press "0 minutes since last sync"
+    And I click the last sync banner
     Then I see "Requisition last synced 0 minutes ago"
     Then I go back
 

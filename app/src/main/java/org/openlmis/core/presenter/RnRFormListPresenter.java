@@ -113,8 +113,8 @@ public class RnRFormListPresenter extends Presenter {
             return viewModels;
         }
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)){
-            if (hasNoRnrFormInCurrentPeriod(rnRForms, currentPeriod)){
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
+            if (hasNoRnrFormInCurrentPeriod(rnRForms, currentPeriod)) {
                 viewModels.add(generateRnrFormVIewModelWithoutRnrForm(currentPeriod));
             }
         }
@@ -137,7 +137,6 @@ public class RnRFormListPresenter extends Presenter {
     }
 
     private RnRFormViewModel generateRnrFormVIewModelWithoutRnrForm(Period currentPeriod) throws LMISException {
-
         Date periodBegin = currentPeriod.getBegin().toDate();
         Date latestPhysicalInventoryTime = DateUtil.parseString(sharedPreferenceMgr.getLatestPhysicInventoryTime(), DateUtil.DATE_TIME_FORMAT);
 

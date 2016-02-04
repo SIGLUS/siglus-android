@@ -28,6 +28,7 @@ import roboguice.inject.InjectView;
 
 
 @ContentView(R.layout.activity_select_period)
+
 public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPresenter.SelectPeriodView {
 
     @InjectView(R.id.tv_select_period_instruction)
@@ -56,7 +57,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
 
     @Override
     protected int getThemeRes() {
-        switch(programCode) {
+        switch (programCode) {
             case MMIARepository.MMIA_PROGRAM_CODE:
                 return R.style.AppTheme_AMBER;
             case VIARepository.VIA_PROGRAM_CODE:

@@ -90,3 +90,8 @@ Feature: MMIA
     And I press "MMIA"
     Then I wait for "MMIA" to appear
     Then I should see text containing "View MMIA"
+
+    When I press the pop menu for delete rnr form
+    And I press "Remove from tablet"
+    And I press "Delete"
+    Then I see "Create MMIA"

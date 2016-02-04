@@ -11,6 +11,7 @@ public class Period {
     public static final int END_DAY = 20;
     public static final int INVENTORY_BEGIN_DAY = 18;
     public static final int INVENTORY_END_DAY = 26;
+
     private DateTime periodBegin;
     private DateTime periodEnd;
     private DateTime inventoryBegin;
