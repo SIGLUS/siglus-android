@@ -1,6 +1,8 @@
 require 'calabash-android/calabash_steps'
 require 'pry'
 
+index = 0
+
 When(/^I select the item called "(.*?)"$/) do |name|
   q = query("android.widget.TextView {text CONTAINS '#{name}'}")
   while q.empty?
@@ -124,22 +126,6 @@ When(/^I Select VIA Item$/) do
   }
 end
 
-When(/^I initialize inventory$/) do
-    if EnvConfig::STRESS_TEST
-        steps %Q{
-            Then I wait up to 30 seconds for "Initial Inventory" to appear
-            Then I wait for "Initial inventory" to appear
-            And I initialize "1254" products
-            And I press "Complete"
-            Then I wait for "STOCK CARD OVERVIEW" to appear
-        }
-    else
-       steps %Q{
-           Given I have initialized inventory
-       }
-    end
-end
-
 And(/^I do physical inventory with "(\d+)" by fnm "(.*?)"$/) do |quantity,fnm|
     steps %Q{
         When I search drug by fnm "#{fnm}"
@@ -172,19 +158,11 @@ And(/^I initialize "(\d+)" products/) do |quantity|
     end
 end
 
-Then(/^I check the initial result quantity on stock overview page/) do
-    if EnvConfig::STRESS_TEST
-        steps %Q{
-            Then I can see stock on hand "1254" in position "1"
-            Then I should see total:"1254" on stock list page
-        }
-    else
-        steps %Q{
-            Then I can see stock on hand "123" in position "1"
-            Then I should see total:"10" on stock list page
-        }
-    end
-
+And(/^I add "(\d+)" new products$/) do |number|
+    productsNum = number.to_i + index
+    steps %Q{
+        And I initialize "#{productsNum}" products
+    }
 end
 
 Then(/^I can see stock on hand "(\d+)" in position "(\d+)"$/) do |number, index|

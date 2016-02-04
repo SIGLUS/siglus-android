@@ -42,10 +42,10 @@ Feature: Log in and initialize Inventory
     Then I should see text containing "Quantity cannot be left blank!"
 
     When I unselect the inventory item
-    And I have added new drugs
+    When I search product by fnm "08S01ZY" and select this item with quantity "2008"
     And I press "Complete"
     Then I wait for "Stock Overview" to appear
-    And I check new drug quantity
+    Then I should see total:"11" on stock list page
 
     # Attempt to make a stock movement and cancel
     Given I navigate back

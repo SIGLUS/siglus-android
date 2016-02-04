@@ -71,13 +71,4 @@ Feature: stock movement Page
     And I clear banner message
     Then I should not see "has been deactivated and removed"
 
-  Scenario: Add all movements for one drug when is STRESS TEST
-    When I press "Stock Card Overview"
-    Then I wait for "Stock Overview" to appear
-    Then I wait for 1 second
-    Then I make all movements for "08S18Y"
-    Then I wait for 1 second
-    Then I navigate back
-    Then I wait for "STOCK CARD OVERVIEW" to appear
-
 
