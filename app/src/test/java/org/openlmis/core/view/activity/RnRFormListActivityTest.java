@@ -1,6 +1,7 @@
 package org.openlmis.core.view.activity;
 
 
+import android.app.Activity;
 import android.content.Intent;
 
 import com.google.inject.AbstractModule;
@@ -35,6 +36,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
@@ -167,6 +169,24 @@ public class RnRFormListActivityTest {
         assertNotNull(nextStartedIntent);
         assertEquals(nextStartedIntent.getComponent().getClassName(), MMIARequisitionActivity.class.getName());
         assertEquals(nextStartedIntent.getLongExtra(Constants.PARAM_FORM_ID, 0), 0L);
+    }
+
+    @Test
+    public void shouldGoToRequisitionPageWhenInvokeOnActivityResultWithSelectPeriodRequestCode() throws Exception {
+        rnRFormListActivity.onActivityResult(Constants.REQUEST_SELECT_PERIOD_END, Activity.RESULT_OK, new Intent());
+
+        Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
+
+        assertNotNull(nextStartedIntent);
+        assertEquals(nextStartedIntent.getComponent().getClassName(), MMIARequisitionActivity.class.getName());
+        assertEquals(nextStartedIntent.getLongExtra(Constants.PARAM_FORM_ID, -1L), 0L);
+    }
+
+    @Test
+    public void shouldRefreshUIWhenInvokeOnActivityResultWithRNRListRequestCode() throws Exception {
+        rnRFormListActivity.onActivityResult(Constants.REQUEST_FROM_RNR_LIST_PAGE, Activity.RESULT_OK, new Intent());
+
+        verify(mockedPresenter, times(2)).loadRnRFormList();
     }
 
     private RnRFormViewModel generateRnRFormViewModel(String programCode, int viewModelType) {
