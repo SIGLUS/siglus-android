@@ -10,6 +10,8 @@ import org.openlmis.core.view.adapter.KitStockCardListAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ProductsUpdateBanner;
 
+import java.util.ArrayList;
+
 import roboguice.inject.InjectView;
 
 public class KitStockCardListFragment extends StockCardListFragment {
@@ -27,7 +29,7 @@ public class KitStockCardListFragment extends StockCardListFragment {
 
     @Override
     protected void createAdapter() {
-        mAdapter = new KitStockCardListAdapter(inventoryViewModels, onItemViewClickListener);
+        mAdapter = new KitStockCardListAdapter(new ArrayList<InventoryViewModel>(), onItemViewClickListener);
     }
 
     @Override

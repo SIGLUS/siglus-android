@@ -29,8 +29,6 @@ public class KitStockCardViewHolderTest {
 
         View view = LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_stockcard, null, false);
         viewHolder = new KitStockCardViewHolder(view, listener);
-
-
     }
 
     @Test

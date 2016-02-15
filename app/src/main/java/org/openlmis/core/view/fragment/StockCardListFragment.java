@@ -45,6 +45,7 @@ import org.openlmis.core.view.holder.StockCardViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ProductsUpdateBanner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.inject.InjectView;
@@ -72,7 +73,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     SharedPreferenceMgr sharedPreferenceMgr;
 
     StockCardListAdapter mAdapter;
-    protected List<InventoryViewModel> inventoryViewModels;
+
     private int currentPosition;
 
     @Override
@@ -95,7 +96,10 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initView(view);
+        initRecycleView();
+        initSortSpinner();
+
+        loadStockCards();
     }
 
     @Override
@@ -124,22 +128,12 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     }
 
     @Override
-    public void refresh() {
-        inventoryViewModels = presenter.getInventoryViewModels();
-        createAdapter();
-        stockCardRecycleView.setAdapter(mAdapter);
-        tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
-        onItemSelected(sortSpinner, null, currentPosition, 0L);
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_FROM_STOCK_LIST_PAGE) {
             presenter.refreshStockCardViewModelsSOH();
-            loadStockCards();
-            mAdapter.notifyDataSetChanged();
-
             productsUpdateBanner.refreshBannerText();
+
+            loadStockCards();
         }
     }
 
@@ -148,30 +142,19 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
     }
 
     protected void createAdapter() {
-        mAdapter = new StockCardListAdapter(inventoryViewModels, onItemViewClickListener);
+        mAdapter = new StockCardListAdapter(new ArrayList<InventoryViewModel>(), onItemViewClickListener);
     }
 
     protected void loadStockCards() {
         presenter.loadStockCards(Active);
     }
 
-    private void initView(View view) {
-        sortSpinner = (Spinner) view.findViewById(R.id.sort_spinner);
-        stockCardRecycleView = (RecyclerView) view.findViewById(R.id.products_list);
-        inventoryViewModels = presenter.getInventoryViewModels();
+    private void initRecycleView() {
         createAdapter();
 
-        initProductList();
-        initSortSpinner();
-    }
-
-    private void initProductList() {
         stockCardRecycleView.setHasFixedSize(true);
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        stockCardRecycleView.setLayoutManager(mLayoutManager);
+        stockCardRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
         stockCardRecycleView.setAdapter(mAdapter);
-
-        loadStockCards();
     }
 
     protected StockCardViewHolder.OnItemViewClickListener onItemViewClickListener = new StockCardViewHolder.OnItemViewClickListener() {
@@ -193,4 +176,13 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
         sortSpinner.setAdapter(adapter);
         sortSpinner.setOnItemSelectedListener(this);
     }
+
+    @Override
+    public void refresh(List<InventoryViewModel> data) {
+        mAdapter.refreshList(data);
+
+        tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
+        onItemSelected(sortSpinner, null, currentPosition, 0L);
+    }
+
 }

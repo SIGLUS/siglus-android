@@ -24,6 +24,10 @@ public class KitStockCardViewHolder extends StockCardViewHolder {
     }
 
     @Override
+    protected void initView() {
+    }
+
+    @Override
     protected void inflateDate(InventoryViewModel inventoryViewModel, String queryKeyWord) {
         tvStockOnHand.setText(String.valueOf(inventoryViewModel.getStockOnHand()));
         tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, new SpannableStringBuilder(inventoryViewModel.getProduct().getPrimaryName())));

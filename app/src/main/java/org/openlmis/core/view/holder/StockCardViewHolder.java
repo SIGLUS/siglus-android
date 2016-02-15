@@ -46,6 +46,10 @@ public class StockCardViewHolder extends BaseViewHolder {
         this.listener = listener;
         this.stockRepository = RoboGuice.getInjector(context).getInstance(StockRepository.class);
 
+        initView();
+    }
+
+    protected void initView() {
         ivExpiryDateWarning.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

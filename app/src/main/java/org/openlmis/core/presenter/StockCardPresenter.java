@@ -47,7 +47,7 @@ import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 public class StockCardPresenter extends Presenter {
 
 
-    protected List<InventoryViewModel> inventoryViewModels;
+    private List<InventoryViewModel> inventoryViewModels;
 
     @Inject
     StockRepository stockRepository;
@@ -150,7 +150,7 @@ public class StockCardPresenter extends Presenter {
                 }).toList();
                 inventoryViewModels.clear();
                 inventoryViewModels.addAll(inventoryViewModelList);
-                view.refresh();
+                view.refresh(inventoryViewModels);
             }
         };
     }
@@ -206,6 +206,6 @@ public class StockCardPresenter extends Presenter {
     }
 
     public interface StockCardListView extends BaseView {
-        void refresh();
+        void refresh(List<InventoryViewModel> data);
     }
 }

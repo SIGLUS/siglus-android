@@ -59,12 +59,6 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements Stoc
         return false;
     }
 
-    @Override
-    public void refresh() {
-        List<InventoryViewModel> inventoryViewModels = presenter.getInventoryViewModels();
-        mAdapter.refreshList(inventoryViewModels);
-    }
-
     protected ArchiveStockCardListener archiveStockCardListener = new ArchiveStockCardListener() {
         @Override
         public void viewMovementHistory(StockCard stockCard) {
@@ -83,4 +77,9 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements Stoc
             setResult(RESULT_OK);
         }
     };
+
+    @Override
+    public void refresh(List<InventoryViewModel> data) {
+        mAdapter.refreshList(data);
+    }
 }

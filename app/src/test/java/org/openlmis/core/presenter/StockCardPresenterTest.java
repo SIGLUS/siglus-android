@@ -65,7 +65,7 @@ public class StockCardPresenterTest {
         StockCard stockCard2 = StockCardBuilder.buildStockCard();
         stockCardList = newArrayList(stockCard1, stockCard2, stockCard1);
         InventoryViewModel viewModel1 = new InventoryViewModel(stockCard1);
-        presenter.inventoryViewModels = newArrayList(viewModel1, viewModel1);
+        presenter.getInventoryViewModels().addAll(newArrayList(viewModel1, viewModel1));
     }
 
     @Test
@@ -83,8 +83,8 @@ public class StockCardPresenterTest {
 
         presenter.afterLoadHandler.onNext(cardList);
 
-        assertThat(presenter.inventoryViewModels.size()).isEqualTo(3);
-        verify(stockCardListView).refresh();
+        assertThat(presenter.getInventoryViewModels().size()).isEqualTo(3);
+        verify(stockCardListView).refresh(presenter.getInventoryViewModels());
 
         presenter.afterLoadHandler.onCompleted();
 
