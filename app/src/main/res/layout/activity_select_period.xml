@@ -29,6 +29,7 @@
         style="@style/Text.Red.Regular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
         android:text="@string/msg_select_period_warning"
         android:visibility="invisible" />
 
@@ -38,7 +39,7 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_small"
-        android:textColor="@color/color_white"
-        android:text="@string/label_next" />
+        android:text="@string/label_next"
+        android:textColor="@color/color_white" />
 
 </LinearLayout>

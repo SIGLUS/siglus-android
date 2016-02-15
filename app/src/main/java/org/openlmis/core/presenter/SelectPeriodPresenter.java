@@ -29,8 +29,6 @@ public class SelectPeriodPresenter extends Presenter {
 
     private SelectPeriodView view;
 
-    protected Subscriber<List<Inventory>> loadInventorySubscriber = getSubscriber();
-
     @Override
     public void attachView(BaseView v) throws ViewNotMatchException {
         view = (SelectPeriodView) v;
@@ -49,12 +47,12 @@ public class SelectPeriodPresenter extends Presenter {
                     subscriber.onError(e);
                 }
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(loadInventorySubscriber);
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(getSubscriber());
         subscriptions.add(subscription);
     }
 
     @NonNull
-    private Subscriber<List<Inventory>> getSubscriber() {
+    protected Subscriber<List<Inventory>> getSubscriber() {
         return new Subscriber<List<Inventory>>() {
             @Override
             public void onCompleted() {

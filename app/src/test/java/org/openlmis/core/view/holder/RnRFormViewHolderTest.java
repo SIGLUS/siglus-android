@@ -21,7 +21,6 @@ import org.robolectric.RuntimeEnvironment;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 @RunWith(LMISTestRunner.class)
 public class RnRFormViewHolderTest {
@@ -135,20 +134,6 @@ public class RnRFormViewHolderTest {
         assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_submitted_message, viewModel.getName(), viewModel.getSyncedDate())));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_requisition, viewModel.getName())));
         assertThat(viewHolder.ivDelete.getVisibility(), is(View.VISIBLE));
-    }
-
-    @Test
-    public void shouldShowSelectCloseOfPeriodStyle() {
-        RnRFormViewModel viewModel = new RnRFormViewModel(new Period(new DateTime()), "MMIA", RnRFormViewModel.TYPE_SELECT_CLOSE_OF_PERIOD);
-
-        viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_SELECT_CLOSE_OF_PERIOD);
-        viewHolder.populate(viewModel);
-
-        assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_select_close_of_period)));
-
-        viewHolder.btnView.performClick();
-
-        verify(mockedListener).clickBtnView(viewModel);
     }
 
     @SuppressWarnings("ConstantConditions")

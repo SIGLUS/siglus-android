@@ -3,6 +3,7 @@ package org.openlmis.core.view.activity;
 import android.app.Activity;
 import android.text.Html;
 import android.text.Spanned;
+import android.view.View;
 
 import com.google.inject.AbstractModule;
 
@@ -25,9 +26,7 @@ import java.util.List;
 
 import roboguice.RoboGuice;
 
-import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
-
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -71,7 +70,7 @@ public class SelectPeriodActivityTest {
     }
 
     @Test
-    public void shouldEnableNextBtnWhenUserChoseTheInventory() throws Exception {
+    public void shouldInVisibleWarningWhenUserChoseTheInventory() throws Exception {
         List<Inventory> inventoryList = Arrays.asList(
                 generateInventoryWithDate(new DateTime("2016-01-25").toDate()),
                 generateInventoryWithDate(new DateTime("2016-01-22").toDate()),
@@ -79,11 +78,9 @@ public class SelectPeriodActivityTest {
         );
         selectPeriodActivity.refreshDate(inventoryList);
 
-        assertFalse(selectPeriodActivity.nextBtn.isEnabled());
-
         shadowOf(selectPeriodActivity.vgContainer).performItemClick(2);
 
-        assertTrue(selectPeriodActivity.nextBtn.isEnabled());
+        assertThat(selectPeriodActivity.tvSelectPeriodWarning.getVisibility(), is(View.INVISIBLE));
 
         selectPeriodActivity.nextBtn.performClick();
 

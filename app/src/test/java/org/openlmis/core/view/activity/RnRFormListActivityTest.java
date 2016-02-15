@@ -148,6 +148,9 @@ public class RnRFormListActivityTest {
 
     @Test
     public void shouldStartVIAHistoryWhenBtnClickedWithTypeHistory() throws Exception {
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE);
+        rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).withIntent(intent).create().get();
+
         RnRFormViewModel viewModel = generateRnRFormViewModel("ESS_MEDS", RnRFormViewModel.TYPE_HISTORICAL);
         viewModel.setId(999L);
         rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel);

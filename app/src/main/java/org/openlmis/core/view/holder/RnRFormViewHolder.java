@@ -54,9 +54,6 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 btnView.setOnClickListener(new BtnViewClickListener(model));
                 break;
             case RnRFormViewModel.TYPE_SELECT_CLOSE_OF_PERIOD:
-                configHolder(model, R.string.btn_view_select_close_of_period, null);
-                btnView.setOnClickListener(new BtnViewClickListener(model));
-                break;
             case RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED:
                 configHolder(model, R.string.btn_view_completed_physical_inventory, Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, model.getName())));
                 btnView.setOnClickListener(new BtnViewClickListener(model));

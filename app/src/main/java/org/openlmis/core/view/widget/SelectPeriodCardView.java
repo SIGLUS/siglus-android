@@ -14,7 +14,7 @@ import org.openlmis.core.model.Inventory;
 
 public class SelectPeriodCardView extends CardView implements Checkable {
 
-    private boolean checked;
+    private boolean mChecked;
 
     private View inventoryContainer;
     private View horizontalLine;
@@ -54,13 +54,17 @@ public class SelectPeriodCardView extends CardView implements Checkable {
 
     @Override
     public void setChecked(boolean checked) {
+        if (mChecked == checked) {
+            return;
+        }
+
         if (checked) {
             setSelected();
         } else {
             setDeSelected();
         }
 
-        this.checked = checked;
+        this.mChecked = checked;
     }
 
     private void setDeSelected() {
@@ -85,12 +89,12 @@ public class SelectPeriodCardView extends CardView implements Checkable {
 
     @Override
     public boolean isChecked() {
-        return checked;
+        return mChecked;
     }
 
     @Override
     public void toggle() {
-        setChecked(!checked);
+        setChecked(!mChecked);
     }
 
 }

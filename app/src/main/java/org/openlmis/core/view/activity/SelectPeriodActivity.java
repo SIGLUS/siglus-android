@@ -28,7 +28,6 @@ import roboguice.inject.InjectView;
 
 
 @ContentView(R.layout.activity_select_period)
-
 public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPresenter.SelectPeriodView {
 
     @InjectView(R.id.tv_select_period_instruction)
@@ -39,6 +38,9 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
 
     @InjectView(R.id.btn_select_period_next)
     protected Button nextBtn;
+
+    @InjectView(R.id.tv_select_period_warning)
+    protected TextView tvSelectPeriodWarning;
 
     @InjectPresenter(SelectPeriodPresenter.class)
     SelectPeriodPresenter presenter;
@@ -92,6 +94,10 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (selectedInventory == null) {
+                    tvSelectPeriodWarning.setVisibility(View.VISIBLE);
+                    return;
+                }
                 Intent intent = new Intent();
                 intent.putExtra(Constants.PARAM_SELECTED_INVENTORY, selectedInventory);
                 setResult(RESULT_OK, intent);
@@ -101,7 +107,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     }
 
     private void invalidateNextBtn() {
-        nextBtn.setEnabled(selectedInventory != null);
+        tvSelectPeriodWarning.setVisibility(View.INVISIBLE);
     }
 
     public static Intent getIntentToMe(Context context, String programCode) {
