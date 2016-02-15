@@ -124,4 +124,24 @@ public class StockCardViewHolderTest {
 
         assertThat(viewHolder.ivExpiryDateWarning.getVisibility()).isEqualTo(View.GONE);
     }
+
+    @Test
+    public void shouldHideExpiryNotifyIconWhenExpiryDateIsEmpty() {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_warning_expiry_date, true);
+        Date mockCurrentDate = DateUtil.parseString("16/02/2016", DateUtil.SIMPLE_DATE_FORMAT);
+        LMISTestApp.getInstance().setCurrentTimeMillis(mockCurrentDate.getTime());
+        StockCard stockCard = StockCardBuilder.buildStockCard();
+
+        // The expiry date icon shows in the previous view
+        stockCard.setExpireDates("14/02/2016, 11/10/2016, 12/10/2017");
+        InventoryViewModel inventoryViewModel = new InventoryViewModel(stockCard);
+        viewHolder.populate(inventoryViewModel, "");
+
+        // Reuse the view with the empty expiry dates
+        stockCard.setExpireDates("");
+        InventoryViewModel secondInventoryViewModel = new InventoryViewModel(stockCard);
+        viewHolder.populate(secondInventoryViewModel, "");
+
+        assertThat(viewHolder.ivExpiryDateWarning.getVisibility()).isEqualTo(View.GONE);
+    }
 }

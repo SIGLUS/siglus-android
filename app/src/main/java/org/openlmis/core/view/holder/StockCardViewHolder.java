@@ -30,7 +30,7 @@ public class StockCardViewHolder extends BaseViewHolder {
     @InjectView(R.id.vg_stock_on_hand_bg)
     View stockOnHandBg;
     @InjectView(R.id.iv_warning)
-    View iv_warning;
+    View ivWarning;
     @InjectView(R.id.iv_expiry_date_warning)
     View ivExpiryDateWarning;
 
@@ -45,14 +45,24 @@ public class StockCardViewHolder extends BaseViewHolder {
         super(itemView);
         this.listener = listener;
         this.stockRepository = RoboGuice.getInjector(context).getInstance(StockRepository.class);
+
+        ivExpiryDateWarning.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
+                        context.getString(R.string.msg_expiry_warning),
+                        context.getString(R.string.btn_ok));
+                dialogFragment.show(((BaseActivity) context).getFragmentManager(), "expiryDateWarningDialog");
+            }
+        });
     }
 
     public void populate(final InventoryViewModel inventoryViewModel, String queryKeyWord) {
         setListener(inventoryViewModel);
-        initView(inventoryViewModel, queryKeyWord);
+        inflateDate(inventoryViewModel, queryKeyWord);
     }
 
-    protected void initView(InventoryViewModel inventoryViewModel, String queryKeyWord) {
+    protected void inflateDate(InventoryViewModel inventoryViewModel, String queryKeyWord) {
         tvStockOnHand.setText(inventoryViewModel.getStockOnHand() + "");
         tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledName()));
         tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledUnit()));
@@ -64,6 +74,8 @@ public class StockCardViewHolder extends BaseViewHolder {
     }
 
     private void initExpiryDateWarning(InventoryViewModel inventoryViewModel) {
+        ivExpiryDateWarning.setVisibility(View.GONE);
+
         String earliestExpiryDateString = inventoryViewModel.getStockCard().getEarliestExpireDate();
         if (TextUtils.isEmpty(earliestExpiryDateString)) {
             return;
@@ -74,21 +86,8 @@ public class StockCardViewHolder extends BaseViewHolder {
 
         if (earliestExpiryDate.isBefore(currentTime) || isExpiryDateInCurrentMonth(earliestExpiryDate, currentTime)) {
             ivExpiryDateWarning.setVisibility(View.VISIBLE);
-            ivExpiryDateWarning.setOnClickListener(expireDateWarningListener);
-        } else {
-            ivExpiryDateWarning.setVisibility(View.GONE);
         }
     }
-
-    View.OnClickListener expireDateWarningListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
-                    context.getString(R.string.msg_expiry_warning),
-                    context.getString(R.string.btn_ok));
-            dialogFragment.show(((BaseActivity)context).getFragmentManager(),"expiryDateWarningDialog");
-        }
-    };
 
     private boolean isExpiryDateInCurrentMonth(DateTime earliestExpiryDate, DateTime currentTime) {
         return earliestExpiryDate.getYear() == currentTime.getYear() && earliestExpiryDate.getMonthOfYear() == currentTime.getMonthOfYear();
@@ -114,20 +113,20 @@ public class StockCardViewHolder extends BaseViewHolder {
             case STOCK_ON_HAND_LOW_STOCK:
                 stockOnHandBg.setBackgroundResource(R.color.color_warning);
                 warningMsg = context.getString(R.string.msg_low_stock_warning);
-                iv_warning.setVisibility(View.VISIBLE);
+                ivWarning.setVisibility(View.VISIBLE);
                 break;
             case STOCK_ON_HAND_STOCK_OUT:
                 stockOnHandBg.setBackgroundResource(R.color.color_stock_out);
                 warningMsg = context.getString(R.string.msg_stock_out_warning);
-                iv_warning.setVisibility(View.VISIBLE);
+                ivWarning.setVisibility(View.VISIBLE);
                 break;
             default:
                 stockOnHandBg.setBackgroundResource(R.color.color_primary_50);
-                iv_warning.setVisibility(View.GONE);
+                ivWarning.setVisibility(View.GONE);
                 break;
         }
         final String finalWarningMsg = warningMsg;
-        iv_warning.setOnClickListener(new View.OnClickListener() {
+        ivWarning.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ToastUtil.showCustomToast(finalWarningMsg);
