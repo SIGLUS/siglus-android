@@ -54,25 +54,33 @@ public class SelectPeriodCardView extends CardView implements Checkable {
 
     @Override
     public void setChecked(boolean checked) {
-        this.checked = checked;
-
         if (checked) {
-            inventoryContainer.setBackgroundColor(getResources().getColor(R.color.color_teal));
-            inventoryDateWeek.setBackgroundColor(getResources().getColor(R.color.color_teal_dark));
-            inventoryDateDay.setTextColor(getResources().getColor(R.color.color_white));
-            inventoryDateMonth.setTextColor(getResources().getColor(R.color.color_white));
-            inventoryDateWeek.setTextColor(getResources().getColor(R.color.color_white));
-            horizontalLine.setVisibility(View.GONE);
-            checkmarkIcon.setVisibility(View.VISIBLE);
+            setSelected();
         } else {
-            inventoryContainer.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-            inventoryDateWeek.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-            inventoryDateDay.setTextColor(getResources().getColor(R.color.color_text_primary));
-            inventoryDateMonth.setTextColor(getResources().getColor(R.color.color_text_primary));
-            inventoryDateWeek.setTextColor(getResources().getColor(R.color.color_text_primary));
-            horizontalLine.setVisibility(View.VISIBLE);
-            checkmarkIcon.setVisibility(View.GONE);
+            setDeSelected();
         }
+
+        this.checked = checked;
+    }
+
+    private void setDeSelected() {
+        inventoryContainer.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        inventoryDateWeek.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        inventoryDateDay.setTextColor(getResources().getColor(R.color.color_text_primary));
+        inventoryDateMonth.setTextColor(getResources().getColor(R.color.color_text_primary));
+        inventoryDateWeek.setTextColor(getResources().getColor(R.color.color_text_primary));
+        horizontalLine.setVisibility(View.VISIBLE);
+        checkmarkIcon.setVisibility(View.GONE);
+    }
+
+    private void setSelected() {
+        inventoryContainer.setBackgroundColor(getResources().getColor(R.color.color_teal));
+        inventoryDateWeek.setBackgroundColor(getResources().getColor(R.color.color_teal_dark));
+        inventoryDateDay.setTextColor(getResources().getColor(R.color.color_white));
+        inventoryDateMonth.setTextColor(getResources().getColor(R.color.color_white));
+        inventoryDateWeek.setTextColor(getResources().getColor(R.color.color_white));
+        horizontalLine.setVisibility(View.GONE);
+        checkmarkIcon.setVisibility(View.VISIBLE);
     }
 
     @Override
