@@ -29,10 +29,10 @@
         android:id="@+id/iv_expiry_date_warning"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
         android:background="@color/color_white"
-        android:padding="5dp"
-        android:src="@drawable/ic_expiry_warning"
+        android:padding="@dimen/padding_small"
+        android:src="@drawable/ic_error_outline_red"
         android:visibility="gone" />
 
     <RelativeLayout

@@ -19,8 +19,8 @@
 package org.openlmis.core.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
@@ -52,27 +52,28 @@ public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> e
     @Override
     public void filter(final String keyword) {
         this.queryKeyWord = keyword;
-        if (StringUtils.isEmpty(keyword)) {
-            this.currentList = data;
-            this.notifyDataSetChanged();
-            return;
+
+        List<InventoryViewModel> filteredViewModels;
+
+        if (TextUtils.isEmpty(keyword)) {
+            filteredViewModels = data;
+        } else {
+            filteredViewModels = from(data).filter(new Predicate<InventoryViewModel>() {
+                @Override
+                public boolean apply(InventoryViewModel inventoryViewModel) {
+                    return inventoryViewModel.getProduct().getProductFullName().toLowerCase().contains(keyword.toLowerCase());
+                }
+            }).toList();
         }
 
-        this.currentList = from(data).filter(new Predicate<InventoryViewModel>() {
-            @Override
-            public boolean apply(InventoryViewModel inventoryViewModel) {
-                return inventoryViewModel.getProduct().getProductFullName().toLowerCase().contains(keyword.toLowerCase());
-            }
-        }).toList();
-
+        currentList.clear();
+        currentList.addAll(filteredViewModels);
         this.notifyDataSetChanged();
     }
 
     public void refreshList(List<InventoryViewModel> data) {
         this.data = data;
-        this.currentList.clear();
-        this.currentList.addAll(data);
-        notifyDataSetChanged();
+        filter(queryKeyWord);
     }
 
 

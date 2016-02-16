@@ -139,6 +139,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
 
     public void onSearch(String query) {
         mAdapter.filter(query);
+        tvTotal.setText(getString(R.string.label_total, mAdapter.getItemCount()));
     }
 
     protected void createAdapter() {
