@@ -104,13 +104,13 @@ public class UnpackKitPresenter extends Presenter {
         };
     }
 
-    public void saveUnpackProducts() {
+    public void saveUnpackProducts(int kitUnpackQuantity) {
         view.loading();
-        Subscription subscription = saveUnpackProductsObservable().subscribe(unpackProductsSubscriber);
+        Subscription subscription = saveUnpackProductsObservable(kitUnpackQuantity).subscribe(unpackProductsSubscriber);
         subscriptions.add(subscription);
     }
 
-    private Observable saveUnpackProductsObservable() {
+    private Observable saveUnpackProductsObservable(final int kitUnpackQuantity) {
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(final Subscriber<? super Void> subscriber) {
@@ -130,7 +130,7 @@ public class UnpackKitPresenter extends Presenter {
                         }
                     }).toList());
 
-                    stockCards.add(getStockCardForKit());
+                    stockCards.add(getStockCardForKit(kitUnpackQuantity));
                     stockRepository.batchSaveStockCardsWithMovementItemsAndUpdateProduct(stockCards);
 
                     subscriber.onNext(null);
@@ -143,8 +143,7 @@ public class UnpackKitPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    protected StockCard getStockCardForKit() throws LMISException {
-        int kitUnpackQuantity = 1;
+    protected StockCard getStockCardForKit(int kitUnpackQuantity) throws LMISException {
 
         Product kit = productRepository.getByCode(kitCode);
         StockCard kitStockCard = stockRepository.queryStockCardByProductId(kit.getId());

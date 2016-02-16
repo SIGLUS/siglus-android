@@ -55,7 +55,7 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        int kitNum = intent.getIntExtra(Constants.PARAM_KIT_NUM, Integer.MIN_VALUE);
+        final int kitNum = intent.getIntExtra(Constants.PARAM_KIT_NUM, Integer.MIN_VALUE);
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_open_multiple_kit)) {
             tvTotalKit.setText(getString(R.string.kit_number, kitNum));
@@ -76,7 +76,7 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
             @Override
             public void onClick(View v) {
                 if (validateAll()) {
-                    presenter.saveUnpackProducts();
+                    presenter.saveUnpackProducts(kitNum);
                 }
             }
         });

@@ -149,7 +149,7 @@ public class UnpackKitPresenterTest {
         when(productRepository.getByCode("SD1112")).thenReturn(kit);
         when(stockRepository.queryStockCardByProductId(888L)).thenReturn(kitStockCard);
 
-        presenter.saveUnpackProducts();
+        presenter.saveUnpackProducts(2);
         testSubscriber.awaitTerminalEvent();
 
         testSubscriber.assertNoErrors();
@@ -157,6 +157,7 @@ public class UnpackKitPresenterTest {
 
         assertThat(productStockCard.getStockOnHand()).isEqualTo(300);
         assertThat(productStockCard.getExpireDates()).isEqualTo("20/1/2026,15/2/2026,30/5/2026");
+        assertThat(kitStockCard.getStockOnHand()).isEqualTo(998);
         assertThat(product2.isArchived());
     }
 
@@ -210,7 +211,7 @@ public class UnpackKitPresenterTest {
         when(productRepository.getByCode("SD1112")).thenReturn(kit);
         when(stockRepository.queryStockCardByProductId(888L)).thenReturn(kitStockCard);
 
-        StockCard stockCardWithMovementItems = presenter.getStockCardForKit();
+        StockCard stockCardWithMovementItems = presenter.getStockCardForKit(1);
 
         assertThat(stockCardWithMovementItems.getStockOnHand()).isEqualTo(999);
         assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().size()).isEqualTo(1);

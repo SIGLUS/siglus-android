@@ -66,7 +66,7 @@ public class UnpackKitActivityTest {
 
         stockMovementActivity.completeBtn.performClick();
 
-        verify(mockedPresenter).saveUnpackProducts();
+        verify(mockedPresenter).saveUnpackProducts(1);
     }
 
     @Test
@@ -76,7 +76,7 @@ public class UnpackKitActivityTest {
 
         stockMovementActivity.completeBtn.performClick();
 
-        verify(mockedPresenter, never()).saveUnpackProducts();
+        verify(mockedPresenter, never()).saveUnpackProducts(1);
     }
 
     @After
