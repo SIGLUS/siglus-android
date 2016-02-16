@@ -5,12 +5,34 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_total"
-        style="@style/Inventory.TextTotal"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Total: 136" />
+        android:padding="@dimen/padding_normal">
+
+        <TextView
+            android:id="@+id/tv_total_kit"
+            style="@style/Inventory.TextTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            tools:text="Unpacking: 1 US kit" />
+
+        <TextView
+            android:id="@+id/tv_total"
+            style="@style/Inventory.TextTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            tools:text="Total: 136" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider"
+        android:background="@color/color_teal" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/products_list"

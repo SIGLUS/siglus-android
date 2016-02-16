@@ -211,6 +211,7 @@
     <string name="label_physical_inventory_stock_on_hand">Current stock on hand:</string>
 
     <!-- Unpack Kit -->
+    <string name="kit_number">Unpacking: %1$s US kit</string>
     <string name="hint_quantity_in_unpack_kit">Quantity received</string>
     <string name="label_unpack_kit_quantity_expected">Quantity expected</string>
     <string name="label_unpack_kit_quantity_less_than_expected"><![CDATA[<b>Smaller</b>]]> quantity entered than expected for a single kit. Please double check it</string>

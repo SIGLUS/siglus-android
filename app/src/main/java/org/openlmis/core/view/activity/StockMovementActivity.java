@@ -241,7 +241,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_unpack:
-                startActivityForResult(UnpackKitActivity.getIntentToMe(this, presenter.getStockCard().getProduct().getCode()), Constants.REQUEST_UNPACK_KIT);
+                startActivityForResult(UnpackKitActivity.getIntentToMe(this, presenter.getStockCard().getProduct().getCode(), 1), Constants.REQUEST_UNPACK_KIT);
                 return true;
             case R.id.action_history:
                 startActivity(StockMovementHistoryActivity.getIntentToMe(this, stockId, stockName, false, isKit));

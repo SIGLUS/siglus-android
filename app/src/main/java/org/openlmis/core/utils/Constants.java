@@ -28,6 +28,7 @@ public final class Constants {
     public static final String PARAM_IS_PHYSICAL_INVENTORY = "isPhysicalInventory";
     public static final String PARAM_IS_ADD_NEW_DRUG = "isAddNewDrug";
     public static final String PARAM_KIT_CODE = "kitCode";
+    public static final String PARAM_KIT_NUM = "kitNum";
     public static final String PARAM_PROGRAM_CODE = "programCode";
     public static final String PARAM_FORM_ID = "formId";
     public static final String PARAM_IS_FROM_ARCHIVE = "isFromArchive";

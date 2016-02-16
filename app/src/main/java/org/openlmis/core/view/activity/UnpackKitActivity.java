@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.UnpackKitPresenter;
 import org.openlmis.core.utils.Constants;
@@ -35,6 +36,9 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
     @InjectView(R.id.tv_total)
     protected TextView tvTotal;
 
+    @InjectView(R.id.tv_total_kit)
+    protected TextView tvTotalKit;
+
     @InjectPresenter(UnpackKitPresenter.class)
     private UnpackKitPresenter presenter;
 
@@ -50,6 +54,14 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_open_multiple_kit)) {
+            Intent intent = getIntent();
+            int kitNum = intent.getIntExtra(Constants.PARAM_KIT_NUM, Integer.MIN_VALUE);
+            tvTotalKit.setText(getString(R.string.kit_number, kitNum));
+        } else {
+            tvTotalKit.setVisibility(View.GONE);
+        }
+
         productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
         ArrayList<InventoryViewModel> list = new ArrayList<>();
         mAdapter = new UnpackKitAdapter(list);
@@ -62,7 +74,7 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         completeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(validateAll()) {
+                if (validateAll()) {
                     presenter.saveUnpackProducts();
                 }
             }
@@ -73,9 +85,10 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         tvTotal.setText(getString(R.string.label_total, total));
     }
 
-    public static Intent getIntentToMe(Context context, String code) {
+    public static Intent getIntentToMe(Context context, String code, int num) {
         Intent intent = new Intent(context, UnpackKitActivity.class);
         intent.putExtra(Constants.PARAM_KIT_CODE, code);
+        intent.putExtra(Constants.PARAM_KIT_NUM, num);
         return intent;
     }
 
