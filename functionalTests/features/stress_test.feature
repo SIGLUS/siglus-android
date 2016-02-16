@@ -17,7 +17,7 @@ Feature: Stock Card Overview page
     And I wait for 1 second
 
     Then I can see stock on hand "300" in position "1"
-    Then I should see total:"10" on stock list page
+    Then I should see total:"300" on stock list page
 
   Scenario: Add new drugs
     And I wait for "STOCK CARD OVERVIEW" to appear
