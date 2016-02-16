@@ -54,9 +54,10 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Intent intent = getIntent();
+        int kitNum = intent.getIntExtra(Constants.PARAM_KIT_NUM, Integer.MIN_VALUE);
+
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_open_multiple_kit)) {
-            Intent intent = getIntent();
-            int kitNum = intent.getIntExtra(Constants.PARAM_KIT_NUM, Integer.MIN_VALUE);
             tvTotalKit.setText(getString(R.string.kit_number, kitNum));
         } else {
             tvTotalKit.setVisibility(View.GONE);
@@ -67,9 +68,9 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         mAdapter = new UnpackKitAdapter(list);
         productListRecycleView.setAdapter(mAdapter);
 
-        kitCode = getIntent().getStringExtra(Constants.PARAM_KIT_CODE);
+        kitCode = intent.getStringExtra(Constants.PARAM_KIT_CODE);
 
-        presenter.loadKitProducts(kitCode);
+        presenter.loadKitProducts(kitCode, kitNum);
 
         completeBtn.setOnClickListener(new View.OnClickListener() {
             @Override

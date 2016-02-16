@@ -88,7 +88,7 @@ public class UnpackKitPresenterTest {
         presenter.kitProductsSubscriber = subscriber;
 
         // when
-        presenter.loadKitProducts("KIT_Code");
+        presenter.loadKitProducts("KIT_Code", 3);
 
         subscriber.awaitTerminalEvent();
         //then
@@ -104,8 +104,8 @@ public class UnpackKitPresenterTest {
 
         assertThat(viewModel1.getProduct().getCode()).isEqualTo(product1.getCode());
         assertThat(viewModel2.getProduct().getCode()).isEqualTo(product2.getCode());
-        assertThat(viewModel1.getKitExpectQuantity()).isEqualTo(100);
-        assertThat(viewModel2.getKitExpectQuantity()).isEqualTo(200);
+        assertThat(viewModel1.getKitExpectQuantity()).isEqualTo(300);
+        assertThat(viewModel2.getKitExpectQuantity()).isEqualTo(600);
         assertTrue(viewModel1.isChecked());
         assertTrue(viewModel2.isChecked());
     }

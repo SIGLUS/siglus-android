@@ -54,13 +54,13 @@ public class UnpackKitPresenter extends Presenter {
     public UnpackKitPresenter() {
     }
 
-    public void loadKitProducts(String kitCode) {
+    public void loadKitProducts(String kitCode, int kitNum) {
         this.kitCode = kitCode;
-        Subscription subscription = getKitProductsObservable(kitCode).subscribe(kitProductsSubscriber);
+        Subscription subscription = getKitProductsObservable(kitCode, kitNum).subscribe(kitProductsSubscriber);
         subscriptions.add(subscription);
     }
 
-    public Observable<List<InventoryViewModel>> getKitProductsObservable(final String kitCode) {
+    public Observable<List<InventoryViewModel>> getKitProductsObservable(final String kitCode, final int kitNum) {
         return Observable.create(new Observable.OnSubscribe<List<InventoryViewModel>>() {
             @Override
             public void call(Subscriber<? super List<InventoryViewModel>> subscriber) {
@@ -70,7 +70,7 @@ public class UnpackKitPresenter extends Presenter {
                     for (KitProduct kitProduct : kitProducts) {
                         Product product = productRepository.getByCode(kitProduct.getProductCode());
                         InventoryViewModel inventoryViewModel = new InventoryViewModel(product);
-                        inventoryViewModel.setKitExpectQuantity(kitProduct.getQuantity());
+                        inventoryViewModel.setKitExpectQuantity(kitProduct.getQuantity() * kitNum);
                         inventoryViewModel.setChecked(true);
                         inventoryViewModels.add(inventoryViewModel);
                     }

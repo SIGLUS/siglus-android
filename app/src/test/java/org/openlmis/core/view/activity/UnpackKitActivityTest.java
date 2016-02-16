@@ -50,13 +50,14 @@ public class UnpackKitActivityTest {
         });
 
         Intent intent = new Intent()
-                .putExtra(Constants.PARAM_KIT_CODE, "SD0001");
+                .putExtra(Constants.PARAM_KIT_CODE, "SD0001")
+                .putExtra(Constants.PARAM_KIT_NUM, 1);
         stockMovementActivity = Robolectric.buildActivity(UnpackKitActivity.class).withIntent(intent).create().visible().get();
     }
 
     @Test
     public void shouldLoadKitProductsWithKitCode() throws Exception {
-        verify(mockedPresenter).loadKitProducts("SD0001");
+        verify(mockedPresenter).loadKitProducts("SD0001", 1);
     }
 
     @Test
