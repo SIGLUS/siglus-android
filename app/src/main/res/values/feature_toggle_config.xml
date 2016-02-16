@@ -11,4 +11,5 @@
     <bool name="feature_warning_unpack_kit_quantity">true</bool>
     <bool name="feature_warning_expiry_date">false</bool>
     <bool name="feature_requisition_period_logic_change">false</bool>
+    <bool name="feature_open_multiple_kit">false</bool>
 </resources>
