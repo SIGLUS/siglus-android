@@ -35,6 +35,10 @@ public class UnpackKitViewHolder extends PhysicalInventoryViewHolder {
         tvStockOnHandInInventoryTip.setText(context.getString(R.string.label_unpack_kit_quantity_expected));
         tvStockOnHandInInventory.setText(Long.toString(inventoryViewModel.getKitExpectQuantity()));
 
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_auto_quantities_in_kit)) {
+            etQuantity.setText(Long.toString(inventoryViewModel.getKitExpectQuantity()));
+        }
+
         updatePop(inventoryViewModel, inventoryViewModel.getQuantity());
     }
 
