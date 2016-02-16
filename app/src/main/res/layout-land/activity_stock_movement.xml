@@ -9,16 +9,16 @@
 
     <LinearLayout
         android:id="@+id/stock_info_panel"
-        android:layout_below="@+id/stock_movement_banner"
         style="@style/StockMovement.TitlePanel_Horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/stock_movement_banner">
 
         <LinearLayout
             android:id="@+id/title_panel"
+            style="@style/StockMovement.Space_Land"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/StockMovement.Space_Land"
             android:orientation="horizontal">
 
             <ImageView
@@ -62,8 +62,8 @@
                 android:id="@+id/tv_cmm"
                 style="@style/ItemMovement.CellText"
                 android:layout_width="120dp"
-                android:layout_gravity="center_vertical"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical" />
 
             <org.openlmis.core.view.widget.ExpireDateViewGroup
                 android:id="@+id/vg_expire_date_container"
@@ -72,13 +72,33 @@
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/stock_unpack_container"
+            style="@style/Divider.Vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/padding_small"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/btn_unpack"
+                style="@style/Button.Blue"
+                android:layout_width="420dp"
+                android:layout_height="34dp"
+                android:layout_gravity="center_vertical"
+                android:textAllCaps="true"
+                android:text="@string/title_unpack_kit" />
+
+        </LinearLayout>
     </LinearLayout>
 
     <ListView
         android:id="@+id/list_stock_movement"
+        style="@style/StockMovement.Space_Land"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        style="@style/StockMovement.Space_Land"
         android:layout_above="@+id/action_panel"
         android:layout_below="@+id/stock_info_panel"
         android:layout_marginTop="10dp"

@@ -29,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -75,11 +76,17 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @InjectView(R.id.vg_expire_date_container)
     ExpireDateViewGroup expireDateViewGroup;
 
-    @InjectPresenter(StockMovementPresenter.class)
-    StockMovementPresenter presenter;
-
     @InjectView(R.id.action_panel)
     View buttonView;
+
+    @InjectView(R.id.stock_unpack_container)
+    View unpackContainer;
+
+    @InjectView(R.id.btn_unpack)
+    Button btnUnpack;
+
+    @InjectPresenter(StockMovementPresenter.class)
+    StockMovementPresenter presenter;
 
     @Inject
     LayoutInflater layoutInflater;
@@ -147,8 +154,8 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         stockMovementList.setAdapter(stockMovementAdapter);
 
         btnComplete.setOnClickListener(this);
-
         tvCancel.setOnClickListener(this);
+        btnUnpack.setOnClickListener(this);
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_show_cmm_on_stock_movement_page_227)) {
             tvCmm.setText(presenter.getStockCardCmm());
         } else {
@@ -183,7 +190,12 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @Override
     public void updateUnpackKitMenu(boolean unpackable) {
         isStockCardUnpackable = unpackable;
-        invalidateOptionsMenu();
+
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_unpack_btn_update_580)) {
+            unpackContainer.setVisibility(unpackable ? View.VISIBLE : View.GONE);
+        } else {
+            invalidateOptionsMenu();
+        }
     }
 
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
@@ -225,7 +237,14 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean isPrepared = super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.action_archive).setVisible(isStockCardArchivable);
-        menu.findItem(R.id.action_unpack).setVisible(isStockCardUnpackable);
+
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_unpack_btn_update_580)) {
+            // The unpack action should be directly removed from R.menu.menu_stock_movement when toggle enabled
+            menu.findItem(R.id.action_unpack).setVisible(false);
+        } else {
+            menu.findItem(R.id.action_unpack).setVisible(isStockCardUnpackable);
+        }
+
         return isPrepared;
     }
 
@@ -241,7 +260,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_unpack:
-                startActivityForResult(UnpackKitActivity.getIntentToMe(this, presenter.getStockCard().getProduct().getCode(), 1), Constants.REQUEST_UNPACK_KIT);
+                unpackKit();
                 return true;
             case R.id.action_history:
                 startActivity(StockMovementHistoryActivity.getIntentToMe(this, stockId, stockName, false, isKit));
@@ -254,6 +273,10 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void unpackKit() {
+        startActivityForResult(UnpackKitActivity.getIntentToMe(this, presenter.getStockCard().getProduct().getCode(), 1), Constants.REQUEST_UNPACK_KIT);
     }
 
     @Override
@@ -297,6 +320,9 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
                 StockMovementViewHolder viewHolder = (StockMovementViewHolder) stockMovementList.getChildAt(stockMovementList.getChildCount() - 1).getTag();
                 stockMovementAdapter.cancelStockMovement(viewHolder);
                 deactivatedStockDraft();
+                break;
+            case R.id.btn_unpack:
+                unpackKit();
                 break;
         }
     }
