@@ -172,7 +172,7 @@ public class SyncDownManager {
     }
 
     private void syncDownProducts(Subscriber<? super SyncProgress> subscriber) throws LMISException {
-        if (!sharedPreferenceMgr.hasGetProducts() || LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_latest_product_list)) {
+        if (!sharedPreferenceMgr.hasGetProducts()) {
             try {
                 subscriber.onNext(SyncProgress.SyncingProduct);
                 if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_kit)) {
@@ -228,10 +228,6 @@ public class SyncDownManager {
     }
 
     protected void updateDeactivateProductNotifyList(Product product) throws LMISException {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_latest_product_list)) {
-            return;
-        }
-
         Product existingProduct = productRepository.getByCode(product.getCode());
 
         if (existingProduct == null) {
@@ -270,11 +266,7 @@ public class SyncDownManager {
     }
 
     private SyncDownProductsResponse getSyncDownProductsResponse(User user) throws LMISException {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_latest_product_list)) {
-            return lmisRestApi.fetchLatestProducts(user.getFacilityId(), sharedPreferenceMgr.getLastSyncProductTime());
-        } else {
-            return lmisRestApi.fetchProducts(user.getFacilityCode());
-        }
+        return lmisRestApi.fetchLatestProducts(user.getFacilityId(), sharedPreferenceMgr.getLastSyncProductTime());
     }
 
     private void fetchAndSaveStockCards(String startDate, String endDate) throws LMISException {
