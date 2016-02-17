@@ -156,13 +156,8 @@ And(/^I initialize "(\d+)" products/) do |quantity|
         scroll("RecyclerView", :down)
         checkBox = query("android.widget.CheckBox id:'checkbox' checked:'false'").first
     end
-end
 
-And(/^I add "(\d+)" new products$/) do |number|
-    productsNum = number.to_i + index
-    steps %Q{
-        And I initialize "#{productsNum}" products
-    }
+    index = 0
 end
 
 Then(/^I can see stock on hand "(\d+)" in position "(\d+)"$/) do |number, index|
