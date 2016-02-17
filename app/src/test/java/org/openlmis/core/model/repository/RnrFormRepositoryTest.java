@@ -466,16 +466,27 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
+    public void shouldUseTodayToInitializeRnrFormIfFeatureToggleIsOff() throws LMISException {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, false);
+
+        rnrFormRepository.programCode = "P1";
+        when(mockProgramRepository.queryByCode("P1")).thenReturn(new Program());
+        RnRForm rnRForm = rnrFormRepository.initRnrForm();
+        assertThat(new DateTime(rnRForm.getPeriodBegin()).getDayOfMonth(), is(21));
+    }
+
+    @Test
     public void shouldUseInitialInventoryDateAsPeriodBeginIfNoPreviousRnrData() throws LMISException {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
+        Program viaProgram = new ProgramBuilder().setProgramCode("ESS_MEDS").build();
         Inventory initialInventory = new Inventory();
         initialInventory.setCreatedAt(DateUtil.parseString("2020-10-20", DateUtil.DB_DATE_FORMAT));
         when(mockInventoryRepository.queryInitialInventory()).thenReturn(initialInventory);
+        when(mockProgramRepository.queryByCode(viaProgram.getProgramCode())).thenReturn(viaProgram);
 
-        Program viaProgram = new ProgramBuilder().setProgramCode("ESS_MEDS").build();
-        Date periodBegin = rnrFormRepository.getPeriodBegin(viaProgram);
-        assertThat(periodBegin, is(initialInventory.getCreatedAt()));
+         RnRForm rnrForm = rnrFormRepository.initRnrForm();
+        assertThat(rnrForm.getPeriodBegin(), is(initialInventory.getCreatedAt()));
     }
 
     @Test
@@ -484,14 +495,15 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         Program viaProgram = new ProgramBuilder().setProgramId(1L).setProgramCode("ESS_MEDS").build();
 
+        when(mockProgramRepository.queryByCode(viaProgram.getProgramCode())).thenReturn(viaProgram);
         RnRForm previousRnrForm = new RnRForm();
         previousRnrForm.setProgram(viaProgram);
         previousRnrForm.setPeriodEnd(DateUtil.parseString("2020-10-20", DateUtil.DB_DATE_FORMAT));
 
         rnrFormRepository.create(previousRnrForm);
 
-        Date periodBegin = rnrFormRepository.getPeriodBegin(viaProgram);
-        assertThat(periodBegin, is(previousRnrForm.getPeriodEnd()));
+        RnRForm rnRForm = rnrFormRepository.initRnrForm();
+        assertThat(rnRForm.getPeriodBegin(), is(previousRnrForm.getPeriodEnd()));
     }
 
     public class MyTestModule extends AbstractModule {

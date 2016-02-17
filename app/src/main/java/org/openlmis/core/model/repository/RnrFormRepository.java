@@ -25,6 +25,8 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Program;
@@ -88,16 +90,23 @@ public class RnrFormRepository {
             throw new LMISException("Program cannot be null !");
         }
 
-        final RnRForm form = RnRForm.init(program, DateUtil.today());
+        RnRForm form;
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
+            form = RnRForm.init(program, getPeriodBegin(program), null);
+        } else {
+            form = RnRForm.init(program, DateUtil.today());
+        }
+
+        final RnRForm finalRnrForm = form;
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-                    create(form);
-                    createRnrFormItems(generateRnrFormItems(form));
-                    createRegimenItems(generateRegimeItems(form));
-                    createBaseInfoItems(generateBaseInfoItems(form));
-                    genericDao.refresh(form);
+                    create(finalRnrForm);
+                    createRnrFormItems(generateRnrFormItems(finalRnrForm));
+                    createRegimenItems(generateRegimeItems(finalRnrForm));
+                    createBaseInfoItems(generateBaseInfoItems(finalRnrForm));
+                    genericDao.refresh(finalRnrForm);
                     return null;
                 }
             });
@@ -107,7 +116,7 @@ public class RnrFormRepository {
         return form;
     }
 
-    protected Date getPeriodBegin(Program program) throws LMISException {
+    private Date getPeriodBegin(Program program) throws LMISException {
         RnRForm lastRnR = queryLastRnr(program);
 
         if (lastRnR == null) {
@@ -287,7 +296,7 @@ public class RnrFormRepository {
     }
 
     protected List<BaseInfoItem> generateBaseInfoItems(RnRForm form) {
-        return null;
+        return new ArrayList<>();
     }
 
     protected List<RnrFormItem> generateRnrFormItems(final RnRForm form) throws LMISException {
