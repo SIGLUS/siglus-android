@@ -45,6 +45,7 @@ import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
@@ -52,6 +53,7 @@ import lombok.Setter;
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -82,6 +84,14 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     public VIARequisitionPresenter() {
         requisitionFormItemViewModels = new ArrayList<>();
         viaKitsViewModel = new ViaKitsViewModel();
+    }
+
+    @Override
+    public void loadData(long formId, Date periodEndDate) {
+        this.periodEndDate = periodEndDate;
+        view.loading();
+        Subscription subscription = getRnrFormObservable(formId).subscribe(loadDataOnNextAction, loadDataOnErrorAction);
+        subscriptions.add(subscription);
     }
 
     @Override

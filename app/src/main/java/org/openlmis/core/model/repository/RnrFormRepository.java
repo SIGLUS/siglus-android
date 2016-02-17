@@ -84,7 +84,7 @@ public class RnrFormRepository {
         this.context = context;
     }
 
-    public RnRForm initRnrForm() throws LMISException {
+    public RnRForm initRnrForm(Date periodEndDate) throws LMISException {
         final Program program = programRepository.queryByCode(programCode);
         if (program == null) {
             throw new LMISException("Program cannot be null !");
@@ -92,7 +92,7 @@ public class RnrFormRepository {
 
         RnRForm form;
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
-            form = RnRForm.init(program, getPeriodBegin(program), null);
+            form = RnRForm.init(program, getPeriodBegin(program), periodEndDate);
         } else {
             form = RnRForm.init(program, DateUtil.today());
         }

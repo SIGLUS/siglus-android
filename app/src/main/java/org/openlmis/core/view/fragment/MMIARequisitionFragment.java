@@ -36,6 +36,7 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.presenter.Presenter;
@@ -51,6 +52,7 @@ import org.openlmis.core.view.widget.RnrFormHorizontalScrollView;
 import org.openlmis.core.view.widget.SignatureDialog;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import roboguice.inject.InjectView;
 
@@ -103,6 +105,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     private boolean isHistoryForm;
     private long formId;
     protected View containerView;
+    private Date periodEndDate;
 
     protected static final String TAG_BACK_PRESSED = "onBackPressed";
     private static final String TAG_MISMATCH = "mismatch";
@@ -115,6 +118,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         super.onCreate(savedInstanceState);
 
         formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
+        periodEndDate = ((Inventory)getActivity().getIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY)).getCreatedAt();
         isHistoryForm = formId != 0;
     }
 
@@ -133,7 +137,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initUI();
-        presenter.loadData(formId);
+        presenter.loadData(formId, periodEndDate);
 
     }
 

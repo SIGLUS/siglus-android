@@ -471,7 +471,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         rnrFormRepository.programCode = "P1";
         when(mockProgramRepository.queryByCode("P1")).thenReturn(new Program());
-        RnRForm rnRForm = rnrFormRepository.initRnrForm();
+        RnRForm rnRForm = rnrFormRepository.initRnrForm(null);
         assertThat(new DateTime(rnRForm.getPeriodBegin()).getDayOfMonth(), is(21));
     }
 
@@ -485,8 +485,10 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         when(mockInventoryRepository.queryInitialInventory()).thenReturn(initialInventory);
         when(mockProgramRepository.queryByCode(viaProgram.getProgramCode())).thenReturn(viaProgram);
 
-         RnRForm rnrForm = rnrFormRepository.initRnrForm();
+        Date periodEndDate = DateUtil.parseString("2020-11-24", DateUtil.DB_DATE_FORMAT);
+        RnRForm rnrForm = rnrFormRepository.initRnrForm(periodEndDate);
         assertThat(rnrForm.getPeriodBegin(), is(initialInventory.getCreatedAt()));
+        assertThat(rnrForm.getPeriodEnd(), is(periodEndDate));
     }
 
     @Test
@@ -502,7 +504,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         rnrFormRepository.create(previousRnrForm);
 
-        RnRForm rnRForm = rnrFormRepository.initRnrForm();
+        RnRForm rnRForm = rnrFormRepository.initRnrForm(null);
         assertThat(rnRForm.getPeriodBegin(), is(previousRnrForm.getPeriodEnd()));
     }
 

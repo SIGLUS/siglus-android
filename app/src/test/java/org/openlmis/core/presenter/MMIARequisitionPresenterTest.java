@@ -76,7 +76,7 @@ public class MMIARequisitionPresenterTest {
         rnRForm = new RnRForm();
         rnRForm.setStatus(RnRForm.STATUS.DRAFT);
 
-        when(mmiaRepository.initRnrForm()).thenReturn(rnRForm);
+        when(mmiaRepository.initRnrForm(null)).thenReturn(rnRForm);
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
 
         presenter.loadDataOnNextAction.call(rnRForm);
@@ -88,7 +88,7 @@ public class MMIARequisitionPresenterTest {
         when(mmiaRepository.queryUnAuthorized()).thenReturn(null);
         presenter.getRnrForm(0);
         verify(mmiaRepository).queryUnAuthorized();
-        verify(mmiaRepository).initRnrForm();
+        verify(mmiaRepository).initRnrForm(null);
     }
 
     @Test
@@ -97,7 +97,7 @@ public class MMIARequisitionPresenterTest {
         when(mmiaRepository.queryUnAuthorized()).thenReturn(new RnRForm());
         presenter.getRnrForm(0);
         verify(mmiaRepository).queryUnAuthorized();
-        verify(mmiaRepository, never()).initRnrForm();
+        verify(mmiaRepository, never()).initRnrForm(null);
     }
 
     @Test
@@ -107,7 +107,7 @@ public class MMIARequisitionPresenterTest {
 
         RnRForm rnRForm = new RnRForm();
 
-        when(mmiaRepository.initRnrForm()).thenReturn(rnRForm);
+        when(mmiaRepository.initRnrForm(null)).thenReturn(rnRForm);
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
         presenter.getRnrForm(0);
 
@@ -134,7 +134,7 @@ public class MMIARequisitionPresenterTest {
 
         RnRForm rnRForm = new RnRForm();
 
-        when(mmiaRepository.initRnrForm()).thenReturn(rnRForm);
+        when(mmiaRepository.initRnrForm(null)).thenReturn(rnRForm);
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
         presenter.getRnrForm(0);
 
@@ -237,7 +237,7 @@ public class MMIARequisitionPresenterTest {
 
         RnRForm rnRForm = new RnRForm();
 
-        when(mmiaRepository.initRnrForm()).thenReturn(rnRForm);
+        when(mmiaRepository.initRnrForm(null)).thenReturn(rnRForm);
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
         when(mmiaRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(false);
 
@@ -252,7 +252,7 @@ public class MMIARequisitionPresenterTest {
 
         RnRForm rnRForm = new RnRForm();
 
-        when(mmiaRepository.initRnrForm()).thenReturn(rnRForm);
+        when(mmiaRepository.initRnrForm(null)).thenReturn(rnRForm);
         when(mmiaRepository.getTotalPatients(rnRForm)).thenReturn(100L);
         when(mmiaRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(true);
 

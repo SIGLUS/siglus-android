@@ -143,7 +143,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         if (isSavedInstanceState) {
             presenter.updateFormUI();
         } else {
-            presenter.loadData(formId);
+            presenter.loadData(formId, periodEndDate);
         }
     }
 

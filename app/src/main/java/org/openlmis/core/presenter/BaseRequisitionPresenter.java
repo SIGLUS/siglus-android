@@ -31,6 +31,8 @@ import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.view.BaseView;
 
+import java.util.Date;
+
 import lombok.Getter;
 import rx.Observable;
 import rx.Subscriber;
@@ -54,6 +56,8 @@ public abstract class BaseRequisitionPresenter extends Presenter {
 
     private BaseRequisitionView view;
 
+    protected Date periodEndDate;
+
     @Getter
     protected RnRForm rnRForm;
 
@@ -72,11 +76,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         }
     }
 
-    public void loadData(final long formId) {
-        view.loading();
-        Subscription subscription = getRnrFormObservable(formId).subscribe(loadDataOnNextAction, loadDataOnErrorAction);
-        subscriptions.add(subscription);
-    }
+    public abstract void loadData(final long formId, Date periodEndDate);
 
     protected Action1<RnRForm> loadDataOnNextAction = new Action1<RnRForm>() {
         @Override
@@ -115,7 +115,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         if (draftVIA != null) {
             return draftVIA;
         }
-        return rnrFormRepository.initRnrForm();
+        return rnrFormRepository.initRnrForm(periodEndDate);
     }
 
     protected void saveRequisition() {

@@ -29,6 +29,7 @@ import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.view.BaseView;
 
+import java.util.Date;
 import java.util.List;
 
 import roboguice.RoboGuice;
@@ -60,7 +61,8 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     @Override
-    public void loadData(final long formId) {
+    public void loadData(final long formId, Date periodEndDate) {
+        this.periodEndDate = periodEndDate;
         view.loading();
         Subscription subscription = getRnrFormObservable(formId).subscribe(loadDataOnNextAction, loadDataOnErrorAction);
         subscriptions.add(subscription);
