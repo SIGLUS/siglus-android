@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -26,6 +27,9 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
     @InjectView(R.id.btn_next)
     protected View btnNext;
 
+    @InjectView(R.id.tv_select_num_warning)
+    protected View tvSelectNumWarning;
+
     private UnpackNumAdapter adapter;
 
     private static final String PARAM_KIT_SOH = "param_kit_soh";
@@ -45,9 +49,22 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
         long kitSOH = intent.getLongExtra(PARAM_KIT_SOH, 0L);
         adapter = new UnpackNumAdapter(this, kitSOH, kitName);
         gridView.setAdapter(adapter);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                tvSelectNumWarning.setVisibility(View.INVISIBLE);
+            }
+        });
+
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (gridView.getCheckedItemPosition() == GridView.INVALID_POSITION) {
+                    tvSelectNumWarning.setVisibility(View.VISIBLE);
+                    return;
+                }
+
                 int unpackNum = gridView.getCheckedItemPosition() + 1;
                 startActivityForResult(UnpackKitActivity.getIntentToMe(SelectUnpackKitNumActivity.this, productCode, unpackNum, kitName), Constants.REQUEST_UNPACK_KIT);
             }

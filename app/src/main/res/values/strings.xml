@@ -278,5 +278,6 @@
     <!--Select Unpack Kit Numbers-->
     <string name="label_select_unpack_num">How many %1$s would you like to unpack?</string>
     <string name="title_select_unpack_num">Select number of kits to unpack</string>
+    <string name="msg_select_unpack_num_warning">Please Select a number of kits to unpack</string>
 
 </resources>

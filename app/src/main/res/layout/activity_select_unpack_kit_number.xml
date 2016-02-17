@@ -11,8 +11,8 @@
         style="@style/Text.Black.Normal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/label_select_unpack_num"
-        android:gravity="center" />
+        android:gravity="center"
+        android:text="@string/label_select_unpack_num" />
 
     <GridView
         android:id="@+id/vg_unpack_num_container"
@@ -24,6 +24,15 @@
         android:horizontalSpacing="@dimen/margin_small"
         android:numColumns="3"
         android:verticalSpacing="@dimen/margin_small" />
+
+    <TextView
+        android:id="@+id/tv_select_num_warning"
+        style="@style/Text.Red.Regular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
+        android:text="@string/msg_select_unpack_num_warning"
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/btn_next"
