@@ -72,6 +72,9 @@
         <activity
             android:name=".view.activity.SelectPeriodActivity"
             android:label="@string/title_select_period" />
+        <activity
+            android:name=".view.activity.SelectUnpackKitNumActivity"
+            android:label="@string/title_select_unpack_num" />
 
         <service
             android:name=".service.SyncService"

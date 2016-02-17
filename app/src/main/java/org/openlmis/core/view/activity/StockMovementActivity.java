@@ -276,7 +276,11 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     }
 
     private void unpackKit() {
-        startActivityForResult(UnpackKitActivity.getIntentToMe(this, presenter.getStockCard().getProduct().getCode(), 1), Constants.REQUEST_UNPACK_KIT);
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_open_multiple_kit_579)) {
+            startActivityForResult(UnpackKitActivity.getIntentToMe(this, presenter.getStockCard().getProduct().getCode(), 1), Constants.REQUEST_UNPACK_KIT);
+        } else {
+            startActivityForResult(SelectUnpackKitNumActivity.getIntentToMe(this, stockName, presenter.getStockCard().getProduct().getCode(), presenter.getStockCard().getStockOnHand()), Constants.REQUEST_UNPACK_KIT);
+        }
     }
 
     @Override

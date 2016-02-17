@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:id="@+id/tv_unpack_num_container"
+        android:layout_width="match_parent"
+
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/iv_checkmark"
+            android:layout_width="90dp"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/unpack_num_line"
+            android:layout_centerInParent="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_checkmark"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_unpack_num"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/unpack_num_line"
+            android:gravity="center"
+            android:textColor="@color/color_text_primary"
+            android:textSize="45sp"
+            tools:text="11" />
+
+        <View
+            android:id="@+id/unpack_num_line"
+            style="@style/HorizontalLine"
+            android:layout_above="@+id/tv_unpack_type" />
+
+        <TextView
+            android:id="@+id/tv_unpack_type"
+            style="@style/Text.Black.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:padding="@dimen/padding_small"
+            tools:text="type" />
+    </RelativeLayout>
+
+</merge>

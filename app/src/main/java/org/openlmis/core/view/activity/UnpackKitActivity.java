@@ -57,7 +57,7 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         Intent intent = getIntent();
         final int kitNum = intent.getIntExtra(Constants.PARAM_KIT_NUM, Integer.MIN_VALUE);
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_open_multiple_kit)) {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_open_multiple_kit_579)) {
             tvTotalKit.setText(getString(R.string.kit_number, kitNum));
         } else {
             tvTotalKit.setVisibility(View.GONE);

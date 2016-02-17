@@ -15,7 +15,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="24dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_inventory_checkmark"
+            android:src="@drawable/ic_checkmark"
             android:visibility="gone" />
 
         <TextView

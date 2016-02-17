@@ -275,4 +275,8 @@
     <string name="msg_select_period_warning">Please select an inventory to close the period</string>
     <string name="loading_inventory_list_failed">Inventory loading failed</string>
 
+    <!--Select Unpack Kit Numbers-->
+    <string name="label_select_unpack_num">How many %1$s would you like to unpack?</string>
+    <string name="title_select_unpack_num">Select number of kits to unpack</string>
+
 </resources>
