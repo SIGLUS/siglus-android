@@ -101,7 +101,7 @@ public class LoginPresenter extends Presenter {
             return;
         }
 
-        if (!SharedPreferenceMgr.getInstance().isLastMonthStockDataSynced()) {
+        if (!SharedPreferenceMgr.getInstance().isLastMonthStockDataSynced() && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)) {
             view.loaded();
             ToastUtil.show(R.string.msg_sync_stockmovement_failed);
             return;
@@ -141,7 +141,7 @@ public class LoginPresenter extends Presenter {
         userRepository.createOrUpdate(user);
 
         if (user.getFacilitySupportedPrograms() != null) {
-            for (String programCode : user.getFacilitySupportedPrograms()) {
+            for (String programCode: user.getFacilitySupportedPrograms()) {
                 Program program = new Program();
                 program.setProgramCode(programCode);
                 programRepository.createOrUpdate(program);

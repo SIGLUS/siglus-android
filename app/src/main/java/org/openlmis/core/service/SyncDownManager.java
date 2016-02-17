@@ -127,6 +127,10 @@ public class SyncDownManager {
     }
 
     private void syncDownLastYearStockCardsSilently(Subscriber<? super SyncProgress> subscriber) {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)) {
+            return;
+        }
+
         if (sharedPreferenceMgr.shouldSyncLastYearStockData()) {
             try {
                 subscriber.onNext(SyncProgress.SyncingStockCardsLastYear);
@@ -156,6 +160,10 @@ public class SyncDownManager {
     }
 
     private void syncDownLastMonthStockCards(Subscriber<? super SyncProgress> subscriber) throws LMISException {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)) {
+            return;
+        }
+
         if (!sharedPreferenceMgr.isLastMonthStockDataSynced()) {
             try {
                 subscriber.onNext(SyncProgress.SyncingStockCardsLastMonth);
@@ -172,7 +180,7 @@ public class SyncDownManager {
     }
 
     private void syncDownProducts(Subscriber<? super SyncProgress> subscriber) throws LMISException {
-        if (!sharedPreferenceMgr.hasGetProducts()) {
+        if (!sharedPreferenceMgr.hasGetProducts() || LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_latest_product_list)) {
             try {
                 subscriber.onNext(SyncProgress.SyncingProduct);
                 if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_kit)) {
@@ -228,6 +236,10 @@ public class SyncDownManager {
     }
 
     protected void updateDeactivateProductNotifyList(Product product) throws LMISException {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_latest_product_list)) {
+            return;
+        }
+
         Product existingProduct = productRepository.getByCode(product.getCode());
 
         if (existingProduct == null) {
@@ -266,7 +278,11 @@ public class SyncDownManager {
     }
 
     private SyncDownProductsResponse getSyncDownProductsResponse(User user) throws LMISException {
-        return lmisRestApi.fetchLatestProducts(user.getFacilityId(), sharedPreferenceMgr.getLastSyncProductTime());
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_latest_product_list)) {
+            return lmisRestApi.fetchLatestProducts(user.getFacilityId(), sharedPreferenceMgr.getLastSyncProductTime());
+        } else {
+            return lmisRestApi.fetchProducts(user.getFacilityCode());
+        }
     }
 
     private void fetchAndSaveStockCards(String startDate, String endDate) throws LMISException {
