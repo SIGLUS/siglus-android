@@ -44,8 +44,7 @@ public class InventoryRepository {
         });
     }
 
-    public Inventory queryPeriodLatestInventory(final Period period) throws LMISException {
-        List<Inventory> periodInventories = queryPeriodInventory(period);
-        return (periodInventories == null || periodInventories.size() == 0) ? null : periodInventories.get(0);
+    public Inventory queryInitialInventory() {
+        return null;
     }
 }

@@ -25,9 +25,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
@@ -37,6 +40,7 @@ import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
+import org.openlmis.core.model.builder.ProgramBuilder;
 import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
@@ -71,11 +75,14 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     private ProgramRepository mockProgramRepository;
 
+    private InventoryRepository mockInventoryRepository;
+
     @Before
     public void setup() throws LMISException {
         mockProgramRepository = mock(ProgramRepository.class);
         mockStockRepository = mock(StockRepository.class);
         mockRnrFormItemRepository = mock(RnrFormItemRepository.class);
+        mockInventoryRepository = mock(InventoryRepository.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
         rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormRepository.class);
@@ -458,12 +465,42 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         verify(mockRnrFormItemRepository).delete(anyList());
     }
 
+    @Test
+    public void shouldUseInitialInventoryDateAsPeriodBeginIfNoPreviousRnrData() throws LMISException {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
+
+        Inventory initialInventory = new Inventory();
+        initialInventory.setCreatedAt(DateUtil.parseString("2020-10-20", DateUtil.DB_DATE_FORMAT));
+        when(mockInventoryRepository.queryInitialInventory()).thenReturn(initialInventory);
+
+        Program viaProgram = new ProgramBuilder().setProgramCode("ESS_MEDS").build();
+        Date periodBegin = rnrFormRepository.getPeriodBegin(viaProgram);
+        assertThat(periodBegin, is(initialInventory.getCreatedAt()));
+    }
+
+    @Test
+    public void shouldUseLastRnrPeriodEndWhenPreviousRnrExists() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
+
+        Program viaProgram = new ProgramBuilder().setProgramId(1L).setProgramCode("ESS_MEDS").build();
+
+        RnRForm previousRnrForm = new RnRForm();
+        previousRnrForm.setProgram(viaProgram);
+        previousRnrForm.setPeriodEnd(DateUtil.parseString("2020-10-20", DateUtil.DB_DATE_FORMAT));
+
+        rnrFormRepository.create(previousRnrForm);
+
+        Date periodBegin = rnrFormRepository.getPeriodBegin(viaProgram);
+        assertThat(periodBegin, is(previousRnrForm.getPeriodEnd()));
+    }
+
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
             bind(ProgramRepository.class).toInstance(mockProgramRepository);
             bind(StockRepository.class).toInstance(mockStockRepository);
             bind(RnrFormItemRepository.class).toInstance(mockRnrFormItemRepository);
+            bind(InventoryRepository.class).toInstance(mockInventoryRepository);
         }
     }
 }

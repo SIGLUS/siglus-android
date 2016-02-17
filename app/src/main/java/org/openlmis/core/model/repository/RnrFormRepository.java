@@ -64,6 +64,9 @@ public class RnrFormRepository {
     @Inject
     ProgramRepository programRepository;
 
+    @Inject
+    InventoryRepository inventoryRepository;
+
     GenericDao<RnRForm> genericDao;
     GenericDao<RnrFormItem> rnrFormItemGenericDao;
 
@@ -80,13 +83,11 @@ public class RnrFormRepository {
     }
 
     public RnRForm initRnrForm() throws LMISException {
-        return initRnrForm(programRepository.queryByCode(programCode));
-    }
-
-    private RnRForm initRnrForm(final Program program) throws LMISException {
+        final Program program = programRepository.queryByCode(programCode);
         if (program == null) {
             throw new LMISException("Program cannot be null !");
         }
+
         final RnRForm form = RnRForm.init(program, DateUtil.today());
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
@@ -104,6 +105,16 @@ public class RnrFormRepository {
             throw new LMISException(e);
         }
         return form;
+    }
+
+    protected Date getPeriodBegin(Program program) throws LMISException {
+        RnRForm lastRnR = queryLastRnr(program);
+
+        if (lastRnR == null) {
+            return inventoryRepository.queryInitialInventory().getCreatedAt();
+        } else {
+            return lastRnR.getPeriodEnd();
+        }
     }
 
     public void createFormAndItems(final List<RnRForm> forms) throws LMISException {
@@ -431,5 +442,14 @@ public class RnrFormRepository {
             e.reportToFabric();
         }
         return false;
+    }
+
+    public RnRForm queryLastRnr(final Program program) throws LMISException {
+        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
+            @Override
+            public RnRForm operate(Dao<RnRForm, String> dao) throws SQLException {
+                return dao.queryBuilder().orderBy("periodBegin", false).where().eq("program_id", program.getId()).queryForFirst();
+            }
+        });
     }
 }

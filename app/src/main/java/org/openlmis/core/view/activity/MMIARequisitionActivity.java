@@ -22,8 +22,11 @@ import android.content.Context;
 import android.content.Intent;
 
 import org.openlmis.core.R;
+import org.openlmis.core.model.Inventory;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.MMIARequisitionFragment;
+
+import java.util.Date;
 
 import roboguice.inject.ContentView;
 
@@ -43,6 +46,12 @@ public class MMIARequisitionActivity extends BaseActivity {
     public static Intent getIntentToMe(Context context, long formId) {
         Intent intent = new Intent(context, MMIARequisitionActivity.class);
         intent.putExtra(Constants.PARAM_FORM_ID, formId);
+        return intent;
+    }
+
+    public static Intent getIntentToMe(Context context, Inventory inventory) {
+        Intent intent = new Intent(context, MMIARequisitionActivity.class);
+        intent.putExtra(Constants.PARAM_SELECTED_INVENTORY, inventory);
         return intent;
     }
 }

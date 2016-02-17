@@ -119,6 +119,14 @@ public class RnRForm extends BaseModel {
         return rnrForm;
     }
 
+    public static RnRForm init(Program program, Date periodBegin, Date periodEnd) {
+        RnRForm rnRForm = new RnRForm();
+        rnRForm.program = program;
+        rnRForm.periodBegin = periodBegin;
+        rnRForm.periodEnd = periodEnd;
+        return rnRForm;
+    }
+
     public static long calculateTotalRegimenAmount(Collection<RegimenItem> list) {
         long totalRegimenNumber = 0;
         for (RegimenItem item : list) {
