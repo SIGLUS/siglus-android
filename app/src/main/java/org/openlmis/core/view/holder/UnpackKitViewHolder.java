@@ -19,7 +19,7 @@ public class UnpackKitViewHolder extends PhysicalInventoryViewHolder {
     private final ViewGroup vg_soh_pop;
     private final int maxInputLength = 5;
     private final int minExpectedQuantity = 0;
-    private int maxExpectedQuantity = 99999;
+    private int maxExpectedQuantity = Integer.MAX_VALUE;
 
     public UnpackKitViewHolder(View itemView) {
         super(itemView);
