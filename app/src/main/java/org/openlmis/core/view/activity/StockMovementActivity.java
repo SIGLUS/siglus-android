@@ -38,6 +38,7 @@ import com.google.inject.Inject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.presenter.StockMovementPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
@@ -276,10 +277,11 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     }
 
     private void unpackKit() {
+        Product product = presenter.getStockCard().getProduct();
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_open_multiple_kit_579)) {
-            startActivityForResult(UnpackKitActivity.getIntentToMe(this, presenter.getStockCard().getProduct().getCode(), 1), Constants.REQUEST_UNPACK_KIT);
+            startActivityForResult(UnpackKitActivity.getIntentToMe(this, product.getCode(), 1, product.getPrimaryName()), Constants.REQUEST_UNPACK_KIT);
         } else {
-            startActivityForResult(SelectUnpackKitNumActivity.getIntentToMe(this, stockName, presenter.getStockCard().getProduct().getCode(), presenter.getStockCard().getStockOnHand()), Constants.REQUEST_UNPACK_KIT);
+            startActivityForResult(SelectUnpackKitNumActivity.getIntentToMe(this, product.getPrimaryName(), product.getCode(), presenter.getStockCard().getStockOnHand()), Constants.REQUEST_UNPACK_KIT);
         }
     }
 

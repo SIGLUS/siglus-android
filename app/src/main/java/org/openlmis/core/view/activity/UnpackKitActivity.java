@@ -56,9 +56,10 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
 
         Intent intent = getIntent();
         final int kitNum = intent.getIntExtra(Constants.PARAM_KIT_NUM, Integer.MIN_VALUE);
+        String kitName = intent.getStringExtra(Constants.PARAM_KIT_NAME);
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_open_multiple_kit_579)) {
-            tvTotalKit.setText(getString(R.string.kit_number, kitNum));
+            tvTotalKit.setText(getString(R.string.kit_number, kitNum, kitName));
         } else {
             tvTotalKit.setVisibility(View.GONE);
         }
@@ -86,10 +87,11 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         tvTotal.setText(getString(R.string.label_total, total));
     }
 
-    public static Intent getIntentToMe(Context context, String code, int num) {
+    public static Intent getIntentToMe(Context context, String code, int num, String kitName) {
         Intent intent = new Intent(context, UnpackKitActivity.class);
         intent.putExtra(Constants.PARAM_KIT_CODE, code);
         intent.putExtra(Constants.PARAM_KIT_NUM, num);
+        intent.putExtra(Constants.PARAM_KIT_NAME, kitName);
         return intent;
     }
 

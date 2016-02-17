@@ -28,9 +28,6 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
 
     private UnpackNumAdapter adapter;
 
-
-    private static final String PARAM_KIT_NAME = "param_kit_name";
-    private static final String PARAM_PRODUCT_CODE = "param_product_code";
     private static final String PARAM_KIT_SOH = "param_kit_soh";
 
     @Override
@@ -41,10 +38,10 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
 
     private void init() {
         Intent intent = getIntent();
-        String kitName = intent.getStringExtra(PARAM_KIT_NAME);
+        final String kitName = intent.getStringExtra(Constants.PARAM_KIT_NAME);
         tvLabel.setText(getString(R.string.label_select_unpack_num, kitName));
 
-        final String productCode = intent.getStringExtra(PARAM_PRODUCT_CODE);
+        final String productCode = intent.getStringExtra(Constants.PARAM_KIT_CODE);
         long kitSOH = intent.getLongExtra(PARAM_KIT_SOH, 0L);
         adapter = new UnpackNumAdapter(this, kitSOH, kitName);
         gridView.setAdapter(adapter);
@@ -52,7 +49,7 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 int unpackNum = gridView.getCheckedItemPosition() + 1;
-                startActivityForResult(UnpackKitActivity.getIntentToMe(SelectUnpackKitNumActivity.this, productCode, unpackNum), Constants.REQUEST_UNPACK_KIT);
+                startActivityForResult(UnpackKitActivity.getIntentToMe(SelectUnpackKitNumActivity.this, productCode, unpackNum, kitName), Constants.REQUEST_UNPACK_KIT);
             }
         });
     }
@@ -67,8 +64,8 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
 
     public static Intent getIntentToMe(Activity activity, String kitName, String productCode, long kitSoh) {
         Intent intent = new Intent(activity, SelectUnpackKitNumActivity.class);
-        intent.putExtra(PARAM_KIT_NAME, kitName);
-        intent.putExtra(PARAM_PRODUCT_CODE, productCode);
+        intent.putExtra(Constants.PARAM_KIT_NAME, kitName);
+        intent.putExtra(Constants.PARAM_KIT_CODE, productCode);
         intent.putExtra(PARAM_KIT_SOH, kitSoh);
         return intent;
     }
