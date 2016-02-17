@@ -160,7 +160,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldGetSubmitterSign() throws LMISException {
+    public void shouldGetSignatureByRnrForm() throws LMISException {
         Program program = new Program();
         RnRForm form = new RnRForm();
 
@@ -173,55 +173,11 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         rnrFormRepository.setSignature(form, "Submitter Signature", RnRFormSignature.TYPE.SUBMITTER);
         rnrFormRepository.setSignature(form, "Approver Signature", RnRFormSignature.TYPE.APPROVER);
 
-        RnRFormSignature SubmitterSign = rnrFormRepository.querySignature(form, RnRFormSignature.TYPE.SUBMITTER);
-        RnRFormSignature ApproverSign = rnrFormRepository.querySignature(form, RnRFormSignature.TYPE.APPROVER);
+        List<RnRFormSignature> signatures = rnrFormRepository.querySignaturesByRnrForm(form);
 
-        assertThat(SubmitterSign.getSignature(), is("Submitter Signature"));
-        assertThat(ApproverSign.getSignature(), is("Approver Signature"));
-    }
-
-    @Test
-    public void shouldGenerateRnRFromByLastPeriod() throws Exception {
-        Date generateDate = DateUtil.parseString("10/06/2015", DateUtil.SIMPLE_DATE_FORMAT);
-        RnRForm rnRForm = RnRForm.init(new Program(), generateDate);
-
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.SIMPLE_DATE_FORMAT), is("21/05/2015"));
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(), DateUtil.SIMPLE_DATE_FORMAT), is("20/06/2015"));
-
-        generateDate = DateUtil.parseString("30/05/2015", DateUtil.SIMPLE_DATE_FORMAT);
-        rnRForm = RnRForm.init(new Program(), generateDate);
-
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.SIMPLE_DATE_FORMAT), is("21/05/2015"));
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(), DateUtil.SIMPLE_DATE_FORMAT), is("20/06/2015"));
-
-
-        generateDate = DateUtil.parseString("25/01/2015", DateUtil.SIMPLE_DATE_FORMAT);
-        rnRForm = RnRForm.init(new Program(), generateDate);
-
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.SIMPLE_DATE_FORMAT), is("21/12/2014"));
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(), DateUtil.SIMPLE_DATE_FORMAT), is("20/01/2015"));
-    }
-
-    @Test
-    public void shouldGenerateRnRFromByCurrentPeriod() throws Exception {
-        Date generateDate = DateUtil.parseString("30/06/2015", DateUtil.SIMPLE_DATE_FORMAT);
-        RnRForm rnRForm = RnRForm.init(new Program(), generateDate);
-
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.SIMPLE_DATE_FORMAT), is("21/06/2015"));
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(), DateUtil.SIMPLE_DATE_FORMAT), is("20/07/2015"));
-
-        generateDate = DateUtil.parseString("05/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
-        rnRForm = RnRForm.init(new Program(), generateDate);
-
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.SIMPLE_DATE_FORMAT), is("21/06/2015"));
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(), DateUtil.SIMPLE_DATE_FORMAT), is("20/07/2015"));
-
-
-        generateDate = DateUtil.parseString("28/12/2015", DateUtil.SIMPLE_DATE_FORMAT);
-        rnRForm = RnRForm.init(new Program(), generateDate);
-
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodBegin(), DateUtil.SIMPLE_DATE_FORMAT), is("21/12/2015"));
-        assertThat(DateUtil.formatDate(rnRForm.getPeriodEnd(), DateUtil.SIMPLE_DATE_FORMAT), is("20/01/2016"));
+        assertThat(signatures.size(), is(2));
+        assertThat(signatures.get(0).getSignature(), is("Submitter Signature"));
+        assertThat(signatures.get(1).getSignature(), is("Approver Signature"));
     }
 
     @Test

@@ -409,18 +409,6 @@ public class RnrFormRepository {
         signatureDao.create(new RnRFormSignature(form, signature, type));
     }
 
-    public RnRFormSignature querySignature(final RnRForm form, final RnRFormSignature.TYPE type) throws LMISException {
-        if (form == null) {
-            throw new LMISException("RnRForm cannot be null !");
-        }
-        return dbUtil.withDao(RnRFormSignature.class, new DbUtil.Operation<RnRFormSignature, RnRFormSignature>() {
-            @Override
-            public RnRFormSignature operate(Dao<RnRFormSignature, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("form_id", form.getId()).and().eq("type", type).queryForFirst();
-            }
-        });
-    }
-
     public List<RnRFormSignature> querySignaturesByRnrForm(final RnRForm form) throws LMISException {
         if (form == null) {
             throw new LMISException("RnRForm cannot be null !");
