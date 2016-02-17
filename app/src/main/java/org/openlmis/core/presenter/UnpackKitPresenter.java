@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -71,7 +73,9 @@ public class UnpackKitPresenter extends Presenter {
                         Product product = productRepository.getByCode(kitProduct.getProductCode());
                         InventoryViewModel inventoryViewModel = new InventoryViewModel(product);
                         inventoryViewModel.setKitExpectQuantity(kitProduct.getQuantity() * kitNum);
-                        inventoryViewModel.setQuantity(String.valueOf(kitProduct.getQuantity() * kitNum));
+                        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_auto_quantities_in_kit)) {
+                            inventoryViewModel.setQuantity(String.valueOf(kitProduct.getQuantity() * kitNum));
+                        }
                         inventoryViewModel.setChecked(true);
                         inventoryViewModels.add(inventoryViewModel);
                     }
