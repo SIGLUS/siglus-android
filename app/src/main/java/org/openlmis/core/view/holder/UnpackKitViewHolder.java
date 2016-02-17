@@ -28,7 +28,7 @@ public class UnpackKitViewHolder extends PhysicalInventoryViewHolder {
     }
 
     public void populate(InventoryViewModel inventoryViewModel) {
-        etQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(minExpectedQuantity, maxExpectedQuantity),new InputFilter.LengthFilter(maxInputLength)});
+        etQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(minExpectedQuantity, maxExpectedQuantity), new InputFilter.LengthFilter(maxInputLength)});
 
         populate(inventoryViewModel, StringUtils.EMPTY);
 
@@ -36,7 +36,7 @@ public class UnpackKitViewHolder extends PhysicalInventoryViewHolder {
         tvStockOnHandInInventory.setText(Long.toString(inventoryViewModel.getKitExpectQuantity()));
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_auto_quantities_in_kit)) {
-            etQuantity.setText(Long.toString(inventoryViewModel.getKitExpectQuantity()));
+            etQuantity.setText(String.valueOf(inventoryViewModel.getKitExpectQuantity()));
         }
 
         updatePop(inventoryViewModel, inventoryViewModel.getQuantity());
