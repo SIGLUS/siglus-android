@@ -46,7 +46,7 @@ public class SelectUnpackNumCardView extends CardView implements Checkable {
 
     private void init() {
         inflate(getContext(), R.layout.view_unpack_num_card, this);
-        setPadding(0, 0, 0, 0);
+        setRadius(getResources().getDimension(R.dimen.cardview_radius));
 
         post(new Runnable() {
             @Override

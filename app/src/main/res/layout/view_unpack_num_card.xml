@@ -5,7 +5,6 @@
     <RelativeLayout
         android:id="@+id/tv_unpack_num_container"
         android:layout_width="match_parent"
-
         android:layout_height="match_parent">
 
         <ImageView

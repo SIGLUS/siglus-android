@@ -35,6 +35,7 @@ public class SelectPeriodCardView extends CardView implements Checkable {
 
     private void init() {
         inflate(getContext(), R.layout.view_card_checkable, this);
+        setRadius(getResources().getDimension(R.dimen.cardview_radius));
         inventoryDateDay = (TextView) findViewById(R.id.tv_inventory_date_day);
         inventoryDateMonth = (TextView) findViewById(R.id.tv_inventory_date_month);
         inventoryDateWeek = (TextView) findViewById(R.id.tv_inventory_date_week);
