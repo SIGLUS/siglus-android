@@ -18,10 +18,11 @@
 
 package org.openlmis.core.network.model;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
 
-import java.util.Date;
 import java.util.HashMap;
 
 import lombok.Data;
@@ -37,17 +38,18 @@ public class StockMovementEntry {
     String occurred;
     String referenceNumber;
     String type;
-    Date createdDate;
+    String createdTime;
 
-    HashMap<String,String> customProps = new HashMap<>();
+    HashMap<String, String> customProps = new HashMap<>();
 
-    public  StockMovementEntry(StockMovementItem stockMovementItem, String facilityId) {
+    public StockMovementEntry(StockMovementItem stockMovementItem, String facilityId) {
         this.setProductCode(stockMovementItem.getStockCard().getProduct().getCode());
         this.setQuantity(stockMovementItem.getMovementQuantity());
         this.setReasonName(stockMovementItem.getReason());
         this.setFacilityId(facilityId);
         this.setType("ADJUSTMENT");
         this.setOccurred(DateUtil.formatDate(stockMovementItem.getMovementDate(), DateUtil.DB_DATE_FORMAT));
+        this.setCreatedTime(new DateTime(stockMovementItem.getCreatedTime()).toString(ISODateTimeFormat.basicDateTime()));
         this.setReferenceNumber(stockMovementItem.getDocumentNumber());
         this.getCustomProps().put("expirationDates", stockMovementItem.getStockCard().getExpireDates());
         this.getCustomProps().put("signature", stockMovementItem.getSignature());
