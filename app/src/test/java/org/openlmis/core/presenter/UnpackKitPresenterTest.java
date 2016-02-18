@@ -1,11 +1,16 @@
 package org.openlmis.core.presenter;
 
+import android.support.annotation.NonNull;
+
 import com.google.inject.AbstractModule;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
@@ -29,6 +34,7 @@ import rx.observers.TestSubscriber;
 
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -70,19 +76,9 @@ public class UnpackKitPresenterTest {
 
     @Test
     public void shouldLoadKitProductList() throws Exception {
-        //given
-        Product kit = ProductBuilder.create().setCode("KIT_Code").setIsKit(true).build();
-        Product product1 = ProductBuilder.create().setPrimaryName("p1").setProductId(1L).setCode("P1_Code").setIsKit(false).build();
-        Product product2 = ProductBuilder.create().setPrimaryName("p2").setProductId(2L).setCode("P2_Code").setIsKit(false).build();
-        KitProduct kitProduct1 = KitProductBuilder.create().setKitCode("KIT_Code").setProductCode("P1_Code").setQuantity(100).build();
-        KitProduct kitProduct2 = KitProductBuilder.create().setKitCode("KIT_Code").setProductCode("P2_Code").setQuantity(200).build();
+        Product kit = prepareKit();
 
-        List<KitProduct> kitProducts = Arrays.asList(kitProduct1, kitProduct2);
-        kit.setKitProductList(kitProducts);
-
-        when(productRepository.queryKitProductByKitCode(kit.getCode())).thenReturn(kitProducts);
-        when(productRepository.getByCode(product1.getCode())).thenReturn(product1);
-        when(productRepository.getByCode(product2.getCode())).thenReturn(product2);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_auto_quantities_in_kit, true);
 
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
         presenter.kitProductsSubscriber = subscriber;
@@ -102,12 +98,59 @@ public class UnpackKitPresenterTest {
         InventoryViewModel viewModel1 = resultProducts.get(0);
         InventoryViewModel viewModel2 = resultProducts.get(1);
 
-        assertThat(viewModel1.getProduct().getCode()).isEqualTo(product1.getCode());
-        assertThat(viewModel2.getProduct().getCode()).isEqualTo(product2.getCode());
+        assertThat(viewModel1.getProduct().getCode()).isEqualTo("P1_Code");
+        assertThat(viewModel2.getProduct().getCode()).isEqualTo("P2_Code");
         assertThat(viewModel1.getKitExpectQuantity()).isEqualTo(300);
         assertThat(viewModel2.getKitExpectQuantity()).isEqualTo(600);
+        assertThat(viewModel2.getQuantity()).isEqualTo("600");
         assertTrue(viewModel1.isChecked());
         assertTrue(viewModel2.isChecked());
+    }
+
+    @NonNull
+    private Product prepareKit() throws LMISException {
+        //given
+        Product kit = ProductBuilder.create().setCode("KIT_Code").setIsKit(true).build();
+        Product product1 = ProductBuilder.create().setPrimaryName("p1").setProductId(1L).setCode("P1_Code").setIsKit(false).build();
+        Product product2 = ProductBuilder.create().setPrimaryName("p2").setProductId(2L).setCode("P2_Code").setIsKit(false).build();
+        KitProduct kitProduct1 = KitProductBuilder.create().setKitCode("KIT_Code").setProductCode("P1_Code").setQuantity(100).build();
+        KitProduct kitProduct2 = KitProductBuilder.create().setKitCode("KIT_Code").setProductCode("P2_Code").setQuantity(200).build();
+
+        List<KitProduct> kitProducts = Arrays.asList(kitProduct1, kitProduct2);
+        kit.setKitProductList(kitProducts);
+
+        when(productRepository.queryKitProductByKitCode(kit.getCode())).thenReturn(kitProducts);
+        when(productRepository.getByCode(product1.getCode())).thenReturn(product1);
+        when(productRepository.getByCode(product2.getCode())).thenReturn(product2);
+        return kit;
+    }
+
+    public void shouldNotSetQuantityWhenToggleOff() throws LMISException {
+        //given
+        Product kit = prepareKit();
+
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_auto_quantities_in_kit, false);
+
+        TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
+        presenter.kitProductsSubscriber = subscriber;
+
+        // when
+        presenter.loadKitProducts("KIT_Code", 3);
+
+        subscriber.awaitTerminalEvent();
+        //then
+
+        verify(productRepository).queryKitProductByKitCode(kit.getCode());
+        subscriber.assertNoErrors();
+
+        List<InventoryViewModel> resultProducts = subscriber.getOnNextEvents().get(0);
+        assertThat(resultProducts.size()).isEqualTo(2);
+
+        InventoryViewModel viewModel1 = resultProducts.get(0);
+        InventoryViewModel viewModel2 = resultProducts.get(1);
+
+        assertNull(viewModel1.getQuantity());
+        assertNull(viewModel2.getQuantity());
     }
 
     @Test
