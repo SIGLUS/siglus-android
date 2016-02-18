@@ -70,7 +70,7 @@ Feature: Unpack Kit
     And I press "Stock Card Overview"
     Then I should see "Total:44"
     When I search drug by fnm "08L01X"
-    Then I should see "1488"
+    Then I should see "889"
     And I clean search bar
     When I search drug by fnm "15C0ZY"
     Then I should see "[15C0ZY]"
