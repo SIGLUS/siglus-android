@@ -56,9 +56,10 @@ Feature: Unpack Kit
     Then I wait for "02A03" to appear
     And I should see "Unpacking"
     And I should see "600" in quantity and expected quantity
-    And I enter quantity "601" for first product
     When I press "Complete"
+    Then I should see "Quantity cannot be left blank!"
 
+    And I enter quantity for all products in kit
     Then I wait for "[SCOD10]" to appear
     Then I should not see "Unpack Kit"
     Then I navigate back
