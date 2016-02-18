@@ -175,6 +175,28 @@ public class RnRFormListActivityTest {
     }
 
     @Test
+    public void shouldNotLoadSameFormIdAfterLoadedViaHistoryForm() throws Exception {
+        RnRFormViewModel historyViewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_HISTORICAL);
+        historyViewModel.setId(1L);
+        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(historyViewModel);
+
+        Intent startedIntentWhenIsHistory = ShadowApplication.getInstance().getNextStartedActivity();
+
+        assertNotNull(startedIntentWhenIsHistory);
+        assertEquals(startedIntentWhenIsHistory.getComponent().getClassName(), MMIARequisitionActivity.class.getName());
+        assertEquals(1L, startedIntentWhenIsHistory.getLongExtra(Constants.PARAM_FORM_ID, 0));
+
+        RnRFormViewModel defaultViewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_UN_AUTHORIZED);
+        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(defaultViewModel);
+
+        Intent startedIntentWhenIsDefault = ShadowApplication.getInstance().getNextStartedActivity();
+
+        assertNotNull(startedIntentWhenIsDefault);
+        assertEquals(startedIntentWhenIsDefault.getComponent().getClassName(), MMIARequisitionActivity.class.getName());
+        assertEquals(0L, startedIntentWhenIsDefault.getLongExtra(Constants.PARAM_FORM_ID, 0));
+    }
+
+    @Test
     public void shouldGoToRequisitionPageWhenInvokeOnActivityResultWithSelectPeriodRequestCode() throws Exception {
         rnRFormListActivity.onActivityResult(Constants.REQUEST_SELECT_PERIOD_END, Activity.RESULT_OK, new Intent());
 
