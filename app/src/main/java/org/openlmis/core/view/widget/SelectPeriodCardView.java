@@ -11,6 +11,7 @@ import android.widget.TextView;
 import org.joda.time.DateTime;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Inventory;
+import org.openlmis.core.utils.DateUtil;
 
 public class SelectPeriodCardView extends CardView implements Checkable {
 
@@ -18,6 +19,7 @@ public class SelectPeriodCardView extends CardView implements Checkable {
 
     private View inventoryContainer;
     private View horizontalLine;
+    private TextView inventoryDateTime;
     private TextView inventoryDateDay;
     private TextView inventoryDateMonth;
     private TextView inventoryDateWeek;
@@ -36,6 +38,7 @@ public class SelectPeriodCardView extends CardView implements Checkable {
     private void init() {
         inflate(getContext(), R.layout.view_card_checkable, this);
         setRadius(getResources().getDimension(R.dimen.cardview_radius));
+        inventoryDateTime = (TextView) findViewById(R.id.tv_inventory_date_time);
         inventoryDateDay = (TextView) findViewById(R.id.tv_inventory_date_day);
         inventoryDateMonth = (TextView) findViewById(R.id.tv_inventory_date_month);
         inventoryDateWeek = (TextView) findViewById(R.id.tv_inventory_date_week);
@@ -47,6 +50,7 @@ public class SelectPeriodCardView extends CardView implements Checkable {
     public void populate(Inventory inventory) {
         DateTime date = new DateTime(inventory.getUpdatedAt());
 
+        inventoryDateTime.setText(date.toString(DateUtil.TIME_FORMAT));
         inventoryDateDay.setText(date.dayOfMonth().getAsText());
         inventoryDateMonth.setText(date.monthOfYear().getAsShortText());
         inventoryDateWeek.setText(date.dayOfWeek().getAsText());
@@ -71,6 +75,7 @@ public class SelectPeriodCardView extends CardView implements Checkable {
     private void setDeSelected() {
         inventoryContainer.setBackgroundColor(getResources().getColor(android.R.color.transparent));
         inventoryDateWeek.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        inventoryDateTime.setTextColor(getResources().getColor(R.color.color_text_primary));
         inventoryDateDay.setTextColor(getResources().getColor(R.color.color_text_primary));
         inventoryDateMonth.setTextColor(getResources().getColor(R.color.color_text_primary));
         inventoryDateWeek.setTextColor(getResources().getColor(R.color.color_text_primary));
@@ -81,6 +86,7 @@ public class SelectPeriodCardView extends CardView implements Checkable {
     private void setSelected() {
         inventoryContainer.setBackgroundColor(getResources().getColor(R.color.color_teal));
         inventoryDateWeek.setBackgroundColor(getResources().getColor(R.color.color_teal_dark));
+        inventoryDateTime.setTextColor(getResources().getColor(R.color.color_white));
         inventoryDateDay.setTextColor(getResources().getColor(R.color.color_white));
         inventoryDateMonth.setTextColor(getResources().getColor(R.color.color_white));
         inventoryDateWeek.setTextColor(getResources().getColor(R.color.color_white));

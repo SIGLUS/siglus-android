@@ -19,10 +19,19 @@
             android:visibility="gone" />
 
         <TextView
+            android:id="@+id/tv_inventory_date_time"
+            style="@style/Text.Black.Small"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            tools:text="23:00" />
+
+        <TextView
             android:id="@+id/tv_inventory_date_day"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_below="@id/tv_inventory_date_time"
             android:gravity="center"
             android:textColor="@color/color_text_primary"
             android:textSize="45sp"

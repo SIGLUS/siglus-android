@@ -18,13 +18,17 @@
 
 package org.openlmis.core.model.repository;
 
+import android.support.annotation.NonNull;
+
 import com.google.inject.AbstractModule;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Product;
@@ -38,6 +42,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -50,6 +55,7 @@ import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 
 @RunWith(LMISTestRunner.class)
@@ -79,15 +85,56 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldCalculateInfoFromStockCardByPeriod() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
+        Date mockDay1 = DateUtil.parseString("2017-01-10", DateUtil.DB_DATE_FORMAT);
+        Date mockDay2 = DateUtil.parseString("2017-01-15", DateUtil.DB_DATE_FORMAT);
+        Date mockDay3 = DateUtil.parseString("2017-01-20", DateUtil.DB_DATE_FORMAT);
+        Date mockToday = DateUtil.parseString("2017-01-22", DateUtil.DB_DATE_FORMAT);
+        LMISTestApp.getInstance().setCurrentTimeMillis(mockToday.getTime());
+
+        Product product = generateProduct();
+        StockCard stockCard = generateStockCard(product);
+
+        List<StockCard> stockCards = new ArrayList<>();
+        stockCards.add(stockCard);
+
+        StockMovementItem stockMovementItem1 = createMovementItem(StockMovementItem.MovementType.ISSUE, 10, stockCard, mockDay1, mockDay1);
+        StockMovementItem stockMovementItem2 = createMovementItem(StockMovementItem.MovementType.RECEIVE, 20, stockCard, mockDay2, mockDay2);
+        StockMovementItem stockMovementItem3 = createMovementItem(StockMovementItem.MovementType.POSITIVE_ADJUST, 30, stockCard, mockDay3, mockDay3);
+
+
+        when(mockStockRepository.listActiveStockCardsByProgramId(anyLong())).thenReturn(stockCards);
+        when(mockStockRepository.queryFirstStockMovementItem(any(StockCard.class))).thenReturn(stockMovementItem1);
+        when(mockStockRepository.queryStockItemsByPeriodDates(any(StockCard.class), any(Date.class), any(Date.class)))
+                .thenReturn(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
+
+        RnRForm form = mmiaRepository.initRnrForm(null);
+        assertThat(form.getRnrFormItemList().size(), is(24));
+
+        RnrFormItem item = form.getRnrFormItemListWrapper().get(1);
+        assertThat(item.getReceived(), is(20L));
+        assertThat(item.getIssued(), is(10L));
+        assertThat(item.getAdjustment(), is(30L));
+        assertThat(item.getInitialAmount(), is(10L));
+        assertThat(item.getInventory(), is(50L));
+    }
+
+    @NonNull
+    private Product generateProduct() {
         Product product = new Product();
         product.setId(1L);
         product.setPrimaryName("Test Product");
         product.setStrength("200");
+        return product;
+    }
 
-        StockCard stockCard = new StockCard();
-        stockCard.setProduct(product);
-        stockCard.setStockOnHand(10);
-        stockCard.setCreatedAt(RnRForm.init(program, DateUtil.today()).getPeriodEnd());
+    @Test
+    public void shouldCalculateInfoFromStockCardByPeriodWhenFeatureToggleOff() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, false);
+
+        Product product = generateProduct();
+
+        StockCard stockCard = generateStockCard(product);
 
         ArrayList<StockCard> stockCards = new ArrayList<>();
         stockCards.add(stockCard);
@@ -118,6 +165,15 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         RnrFormItem item = form.getRnrFormItemListWrapper().get(1);
         assertThat(item.getReceived(), is(25L));
         assertThat(item.getIssued(), is(20L));
+    }
+
+    @NonNull
+    private StockCard generateStockCard(Product product) {
+        StockCard stockCard = new StockCard();
+        stockCard.setProduct(product);
+        stockCard.setStockOnHand(10);
+        stockCard.setCreatedAt(RnRForm.init(program, DateUtil.today()).getPeriodEnd());
+        return stockCard;
     }
 
     @Test
@@ -183,6 +239,25 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
             products.add(product);
         }
         return products;
+    }
+
+    private StockMovementItem createMovementItem(StockMovementItem.MovementType type, long quantity, StockCard stockCard, Date createdTime, Date movementDate) throws LMISException {
+        StockMovementItem stockMovementItem = new StockMovementItem();
+        stockMovementItem.setMovementQuantity(quantity);
+        stockMovementItem.setMovementType(type);
+        stockMovementItem.setMovementDate(movementDate);
+        stockMovementItem.setStockCard(stockCard);
+        stockMovementItem.setCreatedTime(createdTime);
+
+        if (stockMovementItem.isPositiveMovement()) {
+            stockMovementItem.setStockOnHand(stockCard.getStockOnHand() + quantity);
+        } else {
+            stockMovementItem.setStockOnHand(stockCard.getStockOnHand() - quantity);
+        }
+
+        stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
+
+        return stockMovementItem;
     }
 
     public class MyTestModule extends AbstractModule {

@@ -121,7 +121,6 @@ public class RnrFormRepository {
         RnRForm lastRnR = queryLastRnr(program);
 
         DateTime periodBeginDate, periodEndDate = null;
-
         if (physicalInventoryDate != null) {
             periodEndDate = new DateTime(physicalInventoryDate);
         }
@@ -130,7 +129,7 @@ public class RnrFormRepository {
             DateTime todaysDateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
 
             Calendar currentBeginDate = Calendar.getInstance();
-            currentBeginDate.set(Calendar.DAY_OF_MONTH, Period.BEGIN_DAY);
+            currentBeginDate.set(todaysDateTime.getYear(), todaysDateTime.getMonthOfYear() - 1, Period.BEGIN_DAY);
             periodBeginDate = DateUtil.cutTimeStamp(new DateTime(currentBeginDate));
 
             if (todaysDateTime.getDayOfMonth() <= Period.INVENTORY_END_DAY) {
@@ -359,8 +358,13 @@ public class RnrFormRepository {
 
     protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {
         RnrFormItem rnrFormItem = new RnrFormItem();
+        List<StockMovementItem> stockMovementItems;
 
-        List<StockMovementItem> stockMovementItems = stockRepository.queryStockItems(stockCard, startDate, endDate);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
+            stockMovementItems = stockRepository.queryStockItemsByPeriodDates(stockCard, startDate, endDate);
+        } else {
+            stockMovementItems = stockRepository.queryStockItems(stockCard, startDate, endDate);
+        }
 
         if (stockMovementItems.isEmpty()) {
             initRnrFormItemWithoutMovement(stockCard, rnrFormItem);

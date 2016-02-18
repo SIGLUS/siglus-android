@@ -149,7 +149,7 @@ public class StockRepository {
     }
 
     public void saveStockItem(final StockMovementItem stockMovementItem) throws LMISException {
-        stockMovementItem.setCreatedTime(new Date());
+        stockMovementItem.setCreatedTime(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
         stockItemGenericDao.create(stockMovementItem);
     }
 
@@ -263,6 +263,22 @@ public class StockRepository {
                         .eq("stockCard_id", stockCard.getId())
                         .and().ge("movementDate", startDate)
                         .and().le("movementDate", endDate)
+                        .query();
+            }
+        });
+    }
+
+    public List<StockMovementItem> queryStockItemsByPeriodDates(final StockCard stockCard, final Date periodBeginDate, final Date periodEndDate) throws LMISException {
+        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
+            @Override
+            public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
+                return dao.queryBuilder()
+                        .orderBy("movementDate", true)
+                        .orderBy("createdTime", true)
+                        .where()
+                        .eq("stockCard_id", stockCard.getId())
+                        .and().ge("createdTime", periodBeginDate)
+                        .and().le("createdTime", periodEndDate)
                         .query();
             }
         });
@@ -411,10 +427,5 @@ public class StockRepository {
             }
         }
         return totalIssued;
-    }
-
-
-    public List<StockMovementItem> listCurrentPeriodPhsicalInventoryMovement() {
-        return null;
     }
 }

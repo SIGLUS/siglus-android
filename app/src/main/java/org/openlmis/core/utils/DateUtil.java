@@ -43,7 +43,8 @@ public final class DateUtil {
     public static final String DEFAULT_DATE_FORMAT = "dd MMM yyyy";
     public static final String DATE_FORMAT_ONLY_MONTH_AND_YEAR = "MMM yyyy";
     public static final String SIMPLE_DATE_FORMAT = "dd/MM/yyyy";
-    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+        public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String TIME_FORMAT = "HH:mm";
     public static final String DATE_FORMAT_ONLY_DAY_AND_MONTH = "dd MMM";
 
     public static final String DB_DATE_FORMAT = "yyyy-MM-dd";
