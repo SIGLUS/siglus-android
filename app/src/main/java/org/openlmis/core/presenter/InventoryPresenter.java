@@ -24,6 +24,8 @@ import android.support.annotation.Nullable;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -305,7 +307,9 @@ public class InventoryPresenter extends Presenter {
                     stockRepository.clearDraftInventory();
                     sharedPreferenceMgr.setLatestPhysicInventoryTime(DateUtil.formatDate(new Date(), DateUtil.DATE_TIME_FORMAT));
 
-                    saveInventoryDate();
+                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
+                        saveInventoryDate();
+                    }
                     subscriber.onNext(null);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
@@ -349,7 +353,9 @@ public class InventoryPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
                 initStockCards(list);
-                saveInventoryDate();
+                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
+                    saveInventoryDate();
+                }
                 subscriber.onNext(null);
                 subscriber.onCompleted();
             }
