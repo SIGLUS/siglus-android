@@ -36,7 +36,7 @@ Feature: Unpack Kit
     Then I wait for "[SCOD10]" to appear
     And I select a reason "Entries" "District( DDM)"
     And I wait for 1 second
-    And I enter received number "1"
+    And I enter received number "3"
     Then I wait for "Complete" to appear
     And I press "Complete"
     And I wait for "Enter your initials" to appear
@@ -50,7 +50,12 @@ Feature: Unpack Kit
     Then I see "super" in signature field
 
     And I press "Unpack Kit"
+    Then I wait for "Next" to appear
+    When I press "3"
+    And I press "Next"
     Then I wait for "02A03" to appear
+    And I should see "Unpacking"
+    And I should see "600" in quantity and expected quantity
     When I press "Complete"
     Then I should see "Quantity cannot be left blank!"
 
@@ -65,7 +70,7 @@ Feature: Unpack Kit
     And I press "Stock Card Overview"
     Then I should see "Total:44"
     When I search drug by fnm "08L01X"
-    Then I should see "889"
+    Then I should see "1488"
     And I clean search bar
     When I search drug by fnm "15C0ZY"
     Then I should see "[15C0ZY]"
@@ -106,7 +111,7 @@ Feature: Unpack Kit
     And I should see empty consultations number
     Then I enter consultationsNub "888"
     Then I swipe right
-    Then I should see "889" on index "1" of "tx_theoretical" field
+    Then I should see "1488" on index "1" of "tx_theoretical" field
     Then I swipe right
     Then I swipe right
     Then I enter QuantityRequested "345"
