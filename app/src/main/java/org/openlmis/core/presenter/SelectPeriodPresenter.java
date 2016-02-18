@@ -10,7 +10,7 @@ import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.repository.InventoryRepository;
-import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 
@@ -27,6 +27,9 @@ public class SelectPeriodPresenter extends Presenter {
     @Inject
     InventoryRepository inventoryRepository;
 
+    @Inject
+    RnrFormRepository rnrFormRepository;
+
     private SelectPeriodView view;
 
     @Override
@@ -34,13 +37,14 @@ public class SelectPeriodPresenter extends Presenter {
         view = (SelectPeriodView) v;
     }
 
-    public void loadData() {
+    public void loadData(final String programCode) {
         view.loading();
         Subscription subscription = Observable.create(new Observable.OnSubscribe<List<Inventory>>() {
             @Override
             public void call(Subscriber<? super List<Inventory>> subscriber) {
                 try {
-                    subscriber.onNext(inventoryRepository.queryPeriodInventory(Period.of(DateUtil.today())));
+                    Period currentPeriod = rnrFormRepository.generatePeriod(programCode, null);
+                    subscriber.onNext(inventoryRepository.queryPeriodInventory(currentPeriod));
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.reportToFabric();

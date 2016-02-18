@@ -25,17 +25,17 @@ public class Period {
             periodBegin = DateUtil.cutTimeStamp(lastMonth(dateTime).withDayOfMonth(BEGIN_DAY));
             periodEnd = DateUtil.cutTimeStamp(dateTime.withDayOfMonth(END_DAY));
         }
-        inventoryBegin = DateUtil.cutTimeStamp(dateTime.withDayOfMonth(INVENTORY_BEGIN_DAY));
-        inventoryEnd = DateUtil.cutTimeStamp(dateTime.withDayOfMonth(INVENTORY_END_DAY));
     }
 
     public static Period of(Date date) {
         return new Period(new DateTime(date));
     }
 
-    private Period(DateTime begin, DateTime end) {
+    public Period(DateTime begin, DateTime end) {
         this.periodBegin = begin;
         this.periodEnd = end;
+        this.inventoryBegin = DateUtil.cutTimeStamp(periodEnd.withDayOfMonth(INVENTORY_BEGIN_DAY));
+        this.inventoryEnd = DateUtil.cutTimeStamp(periodEnd.withDayOfMonth(INVENTORY_END_DAY));
     }
 
     public DateTime getBegin() {

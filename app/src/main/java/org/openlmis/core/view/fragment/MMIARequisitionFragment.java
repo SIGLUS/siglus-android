@@ -36,7 +36,6 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.presenter.Presenter;
@@ -118,8 +117,8 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         super.onCreate(savedInstanceState);
 
         formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
-        periodEndDate = ((Inventory)getActivity().getIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY)).getCreatedAt();
         isHistoryForm = formId != 0;
+        periodEndDate = ((Date) getActivity().getIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
     }
 
     @Override
@@ -209,14 +208,12 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
                 etComment.addTextChangedListener(commentTextWatcher);
             }
         });
-
         tvRegimeTotal.post(new Runnable() {
             @Override
             public void run() {
                 tvRegimeTotal.addTextChangedListener(totalTextWatcher);
             }
         });
-
         final EditText patientTotalView = mmiaInfoListView.getPatientTotalView();
         patientTotalView.post(new Runnable() {
             @Override
@@ -226,9 +223,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         });
 
         btnSave.setOnClickListener(this);
-
         btnComplete.setOnClickListener(this);
-
         scrollView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {

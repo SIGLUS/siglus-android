@@ -43,13 +43,4 @@ public class InventoryRepository {
             }
         });
     }
-
-    public Inventory queryInitialInventory() throws LMISException {
-        return dbUtil.withDao(Inventory.class, new DbUtil.Operation<Inventory, Inventory>() {
-            @Override
-            public Inventory operate(Dao<Inventory, String> dao) throws SQLException {
-                return dao.queryBuilder().orderBy("updatedAt", false).queryForFirst();
-            }
-        });
-    }
 }

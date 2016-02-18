@@ -22,9 +22,10 @@ import android.content.Context;
 import android.content.Intent;
 
 import org.openlmis.core.R;
-import org.openlmis.core.model.Inventory;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.VIARequisitionFragment;
+
+import java.util.Date;
 
 import roboguice.inject.ContentView;
 
@@ -47,9 +48,9 @@ public class VIARequisitionActivity extends BaseActivity {
         return intent;
     }
 
-    public static Intent getIntentToMe(Context context, Inventory inventory) {
+    public static Intent getIntentToMe(Context context, Date inventory) {
         Intent intent = new Intent(context, VIARequisitionActivity.class);
-        intent.putExtra(Constants.PARAM_SELECTED_INVENTORY, inventory);
+        intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, inventory);
         return intent;
     }
 }

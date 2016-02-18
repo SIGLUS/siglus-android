@@ -22,7 +22,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import org.openlmis.core.R;
-import org.openlmis.core.model.Inventory;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.MMIARequisitionFragment;
 
@@ -49,9 +48,9 @@ public class MMIARequisitionActivity extends BaseActivity {
         return intent;
     }
 
-    public static Intent getIntentToMe(Context context, Inventory inventory) {
+    public static Intent getIntentToMe(Context context, Date periodEndDate) {
         Intent intent = new Intent(context, MMIARequisitionActivity.class);
-        intent.putExtra(Constants.PARAM_SELECTED_INVENTORY, inventory);
+        intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, periodEndDate);
         return intent;
     }
 }

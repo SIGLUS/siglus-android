@@ -41,7 +41,7 @@ public class InventoryRepositoryTest {
         repository.save(getInventory(DateUtil.parseString("2016-02-25 11:33:44", DateUtil.DATE_TIME_FORMAT)));
         repository.save(getInventory(DateUtil.parseString("2016-02-26 11:33:44", DateUtil.DATE_TIME_FORMAT)));
 
-        List<Inventory> inventories = repository.queryPeriodInventory(new Period(new DateTime(DateUtil.parseString("2016-02-28 11:33:44", DateUtil.DATE_TIME_FORMAT))));
+        List<Inventory> inventories = repository.queryPeriodInventory(new Period(new DateTime("2016-01-21"), new DateTime("2016-02-20")));
 
         assertThat(inventories.size(), is(3));
         assertThat(inventories.get(0).getCreatedAt(), is(DateUtil.parseString("2016-02-25 11:33:44", DateUtil.DATE_TIME_FORMAT)));

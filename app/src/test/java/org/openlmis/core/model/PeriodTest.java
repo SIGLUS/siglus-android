@@ -29,17 +29,19 @@ public class PeriodTest {
     }
 
     @Test
-    public void shouldGetInventoryBeginDate() throws Exception {
-        Period period = new Period(DateTime.parse("2015-06-07"));
+    public void shouldGetInventoryBeginAndEndDateWhenPeriodEndDateInCurrentMonth() throws Exception {
+        Period period = new Period(DateTime.parse("2015-06-07"), DateTime.parse("2015-06-20"));
 
         assertThat(period.getInventoryBegin(), is(DateTime.parse("2015-06-18")));
+        assertThat(period.getInventoryEnd(), is(DateTime.parse("2015-06-26")));
     }
 
     @Test
-    public void shouldGetInventoryEndDate() throws Exception {
-        Period period = new Period(DateTime.parse("2015-06-07"));
+    public void shouldGetInventoryBeginAndEndDateWhenPeriodEndDateInNextMonth() throws Exception {
+        Period period = new Period(DateTime.parse("2015-07-23"), DateTime.parse("2015-08-24"));
 
-        assertThat(period.getInventoryEnd(), is(DateTime.parse("2015-06-26")));
+        assertThat(period.getInventoryBegin(), is(DateTime.parse("2015-08-18")));
+        assertThat(period.getInventoryEnd(), is(DateTime.parse("2015-08-26")));
     }
 
     private void testPeriodBeginEnd(String anyDayInPeriod, String begin, String end) {

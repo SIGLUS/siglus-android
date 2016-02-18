@@ -10,6 +10,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.repository.InventoryRepository;
+import org.openlmis.core.model.repository.RnrFormRepository;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.Arrays;
@@ -29,9 +30,9 @@ import static org.mockito.Mockito.when;
 @RunWith(LMISTestRunner.class)
 public class SelectPeriodPresenterTest {
 
-
-
     private SelectPeriodPresenter.SelectPeriodView view;
+
+    private RnrFormRepository rnrFormRepository;
 
     private InventoryRepository inventoryRepository;
 
@@ -42,11 +43,13 @@ public class SelectPeriodPresenterTest {
     public void setUp() throws Exception {
         view = mock(SelectPeriodPresenter.SelectPeriodView.class);
         inventoryRepository = mock(InventoryRepository.class);
+        rnrFormRepository = mock(RnrFormRepository.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
             protected void configure() {
                 bind(InventoryRepository.class).toInstance(inventoryRepository);
+                bind(RnrFormRepository.class).toInstance(rnrFormRepository);
             }
         });
         selectPeriodPresenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SelectPeriodPresenter.class);
@@ -62,13 +65,13 @@ public class SelectPeriodPresenterTest {
         selectPeriodPresenter=spy(selectPeriodPresenter);
         when(selectPeriodPresenter.getSubscriber()).thenReturn(testSubscriber);
 
-        selectPeriodPresenter.loadData();
+        selectPeriodPresenter.loadData("MMIA");
         testSubscriber.awaitTerminalEvent();
 
-        verify(inventoryRepository).queryPeriodInventory(any(Period.class));
         testSubscriber.assertNoErrors();
-        assertThat(testSubscriber.getOnNextEvents().get(0), is(inventories));
+        verify(rnrFormRepository).generatePeriod("MMIA", null);
         verify(inventoryRepository).queryPeriodInventory(any(Period.class));
+        assertThat(testSubscriber.getOnNextEvents().get(0), is(inventories));
     }
 
 

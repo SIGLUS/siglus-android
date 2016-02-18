@@ -21,6 +21,7 @@ package org.openlmis.core.model.repository;
 import com.google.inject.AbstractModule;
 
 import org.joda.time.DateTime;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +31,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
-import org.openlmis.core.model.Inventory;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
@@ -75,14 +76,11 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     private ProgramRepository mockProgramRepository;
 
-    private InventoryRepository mockInventoryRepository;
-
     @Before
     public void setup() throws LMISException {
         mockProgramRepository = mock(ProgramRepository.class);
         mockStockRepository = mock(StockRepository.class);
         mockRnrFormItemRepository = mock(RnrFormItemRepository.class);
-        mockInventoryRepository = mock(InventoryRepository.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
         rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormRepository.class);
@@ -476,22 +474,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldUseInitialInventoryDateAsPeriodBeginIfNoPreviousRnrData() throws LMISException {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
-
-        Program viaProgram = new ProgramBuilder().setProgramCode("ESS_MEDS").build();
-        Inventory initialInventory = new Inventory();
-        initialInventory.setCreatedAt(DateUtil.parseString("2020-10-20", DateUtil.DB_DATE_FORMAT));
-        when(mockInventoryRepository.queryInitialInventory()).thenReturn(initialInventory);
-        when(mockProgramRepository.queryByCode(viaProgram.getProgramCode())).thenReturn(viaProgram);
-
-        Date periodEndDate = DateUtil.parseString("2020-11-24", DateUtil.DB_DATE_FORMAT);
-        RnRForm rnrForm = rnrFormRepository.initRnrForm(periodEndDate);
-        assertThat(rnrForm.getPeriodBegin(), is(initialInventory.getCreatedAt()));
-        assertThat(rnrForm.getPeriodEnd(), is(periodEndDate));
-    }
-
-    @Test
     public void shouldUseLastRnrPeriodEndWhenPreviousRnrExists() throws Exception {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
@@ -500,13 +482,61 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         when(mockProgramRepository.queryByCode(viaProgram.getProgramCode())).thenReturn(viaProgram);
         RnRForm previousRnrForm = new RnRForm();
         previousRnrForm.setProgram(viaProgram);
-        previousRnrForm.setPeriodEnd(DateUtil.parseString("2020-10-20", DateUtil.DB_DATE_FORMAT));
+        previousRnrForm.setPeriodEnd(DateUtil.parseString("2020-10-18", DateUtil.DB_DATE_FORMAT));
 
         rnrFormRepository.create(previousRnrForm);
 
         RnRForm rnRForm = rnrFormRepository.initRnrForm(null);
         assertThat(rnRForm.getPeriodBegin(), is(previousRnrForm.getPeriodEnd()));
+        Assert.assertThat(new DateTime(rnRForm.getPeriodEnd()).getMonthOfYear(), is(11));
     }
+
+    @Test
+    public void shouldGeneratePeriodWithCurrentMonth21stAsBeginAndCurrentMonthAsEndIfNoPreviousRnrAndCurrentDateDayIsAfter25th() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
+
+        Program viaProgram = new ProgramBuilder().setProgramId(1L).setProgramCode("ESS_MEDS").build();
+        when(mockProgramRepository.queryByCode(viaProgram.getProgramCode())).thenReturn(viaProgram);
+
+        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime("2016-02-28").getMillis());
+
+        Period period = rnrFormRepository.generatePeriod(viaProgram.getProgramCode(), null);
+        assertThat(period.getBegin(), is(new DateTime("2016-02-21")));
+        assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(3));
+    }
+
+    @Test
+    public void shouldGeneratePeriodWithLastMonth21stAsBeginAndCurrentMonthAsEndIfNoPreviousRnrAndCurrentDateDayIsBefore25th() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
+
+        Program viaProgram = new ProgramBuilder().setProgramId(1L).setProgramCode("ESS_MEDS").build();
+        when(mockProgramRepository.queryByCode(viaProgram.getProgramCode())).thenReturn(viaProgram);
+
+        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime("2016-02-23").getMillis());
+
+        Period period = rnrFormRepository.generatePeriod(viaProgram.getProgramCode(), null);
+        assertThat(period.getBegin(), is(new DateTime("2016-01-21")));
+        assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(2));
+    }
+
+    @Test
+    public void shouldGeneratePeriodWithPreviousRnrEndDateAsBeginAndNextMonthAsEndDate() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
+
+        Program viaProgram = new ProgramBuilder().setProgramId(1L).setProgramCode("ESS_MEDS").build();
+        when(mockProgramRepository.queryByCode(viaProgram.getProgramCode())).thenReturn(viaProgram);
+
+        RnRForm previousRnrForm = new RnRForm();
+        previousRnrForm.setProgram(viaProgram);
+        previousRnrForm.setPeriodEnd(DateUtil.parseString("2020-10-18", DateUtil.DB_DATE_FORMAT));
+
+        rnrFormRepository.create(previousRnrForm);
+
+        Period period = rnrFormRepository.generatePeriod(viaProgram.getProgramCode(), null);
+        assertThat(period.getBegin().toDate(), is(previousRnrForm.getPeriodEnd()));
+        assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(11));
+    }
+
 
     public class MyTestModule extends AbstractModule {
         @Override
@@ -514,7 +544,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
             bind(ProgramRepository.class).toInstance(mockProgramRepository);
             bind(StockRepository.class).toInstance(mockStockRepository);
             bind(RnrFormItemRepository.class).toInstance(mockRnrFormItemRepository);
-            bind(InventoryRepository.class).toInstance(mockInventoryRepository);
         }
     }
 }

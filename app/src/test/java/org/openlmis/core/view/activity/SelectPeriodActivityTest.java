@@ -1,6 +1,7 @@
 package org.openlmis.core.view.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
@@ -54,7 +55,9 @@ public class SelectPeriodActivityTest {
             }
         });
 
-        selectPeriodActivity = Robolectric.buildActivity(SelectPeriodActivity.class).create().get();
+        Intent intent = new Intent();
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, "MMIA");
+        selectPeriodActivity = Robolectric.buildActivity(SelectPeriodActivity.class).withIntent(intent).create().get();
     }
 
     @Test
@@ -64,7 +67,7 @@ public class SelectPeriodActivityTest {
                 currentDateTime.monthOfYear().getAsShortText(),
                 currentDateTime.toString("dd MMM")));
 
-        verify(mockedPresenter).loadData();
+        verify(mockedPresenter).loadData("MMIA");
         assertThat(selectPeriodActivity.tvInstruction.getText().toString(), is(expectedFormattedText.toString()));
 
     }
@@ -86,8 +89,8 @@ public class SelectPeriodActivityTest {
 
         assertTrue(selectPeriodActivity.isFinishing());
         assertThat(shadowOf(selectPeriodActivity).getResultCode(), is(Activity.RESULT_OK));
-        Inventory selectedInventory = (Inventory) shadowOf(selectPeriodActivity).getResultIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY);
-        assertThat(selectedInventory.getUpdatedAt().toString(), is(new DateTime("2016-01-19").toDate().toString()));
+        Date selectedDate = (Date) shadowOf(selectPeriodActivity).getResultIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE);
+        assertThat(selectedDate, is(new DateTime("2016-01-19").toDate()));
     }
 
     private Inventory generateInventoryWithDate(Date date) {

@@ -170,7 +170,7 @@ public class RnRFormListPresenterTest {
     }
 
     @Test
-    public void shouldReturnEmptyRnrFormViewModleWhenThereIsNoRnrFormAndToggleOff() throws Exception {
+    public void shouldReturnEmptyRnrFormViewModelWhenThereIsNoRnrFormAndToggleOff() throws Exception {
         when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_home_page_update, false);
 

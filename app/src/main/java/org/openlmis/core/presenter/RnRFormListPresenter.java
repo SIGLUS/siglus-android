@@ -28,6 +28,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.SyncError;
@@ -104,18 +105,18 @@ public class RnRFormListPresenter extends Presenter {
             return viewModels;
         }
 
-        Period currentPeriod = DateUtil.generateRnRFormPeriodBy(new Date());
+        Period currentPeriod = generatePeriod();
 
         if (rnRForms.isEmpty()) {
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-                viewModels.add(generateRnrFormVIewModelWithoutRnrForm(currentPeriod));
+                viewModels.add(generateRnrFormViewModelWithoutRnrForm(currentPeriod));
             }
             return viewModels;
         }
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
             if (hasNoRnrFormInCurrentPeriod(rnRForms, currentPeriod)) {
-                viewModels.add(generateRnrFormVIewModelWithoutRnrForm(currentPeriod));
+                viewModels.add(generateRnrFormViewModelWithoutRnrForm(currentPeriod));
             }
         }
 
@@ -130,21 +131,36 @@ public class RnRFormListPresenter extends Presenter {
         return viewModels;
     }
 
+    protected Period generatePeriod() throws LMISException {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
+            return repository.generatePeriod(programCode, null);
+        } else {
+            return DateUtil.generateRnRFormPeriodBy(new Date());
+        }
+    }
+
     private boolean hasNoRnrFormInCurrentPeriod(List<RnRForm> rnRForms, Period currentPeriod) {
         RnRForm lastRnrForm = rnRForms.get(rnRForms.size() - 1);
         Date currentPeriodBegin = currentPeriod.getBegin().toDate();
         return lastRnrForm.getStatus().equals(RnRForm.STATUS.AUTHORIZED) && lastRnrForm.getPeriodBegin().before(currentPeriodBegin);
     }
 
-    private RnRFormViewModel generateRnrFormVIewModelWithoutRnrForm(Period currentPeriod) throws LMISException {
-        Date periodBegin = currentPeriod.getBegin().toDate();
-        Date latestPhysicalInventoryTime = DateUtil.parseString(sharedPreferenceMgr.getLatestPhysicInventoryTime(), DateUtil.DATE_TIME_FORMAT);
+    private RnRFormViewModel generateRnrFormViewModelWithoutRnrForm(Period currentPeriod) throws LMISException {
 
-        if (latestPhysicalInventoryTime.before(periodBegin)) {
-            return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
-        } else {
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
+            List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(currentPeriod);
+
+            if (physicalInventories == null || physicalInventories.size() == 0) {
+                return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
+            } else {
                 return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_SELECT_CLOSE_OF_PERIOD);
+            }
+        } else {
+            Date latestPhysicalInventoryTime = DateUtil.parseString(sharedPreferenceMgr.getLatestPhysicInventoryTime(), DateUtil.DATE_TIME_FORMAT);
+
+            Date periodBegin = currentPeriod.getBegin().toDate();
+            if (latestPhysicalInventoryTime.before(periodBegin)) {
+                return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
             } else {
                 return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED);
             }

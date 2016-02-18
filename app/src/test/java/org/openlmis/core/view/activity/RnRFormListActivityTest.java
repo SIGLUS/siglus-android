@@ -204,7 +204,6 @@ public class RnRFormListActivityTest {
 
         assertNotNull(nextStartedIntent);
         assertEquals(nextStartedIntent.getComponent().getClassName(), MMIARequisitionActivity.class.getName());
-        assertEquals(nextStartedIntent.getLongExtra(Constants.PARAM_FORM_ID, -1L), 0L);
     }
 
     @Test

@@ -75,7 +75,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
         DateTime date = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
         tvInstruction.setText(Html.fromHtml(this.getString(R.string.label_select_close_of_period, date.monthOfYear().getAsShortText(), date.toString("dd MMM"))));
 
-        presenter.loadData();
+        presenter.loadData(programCode);
         adapter = new SelectPeriodAdapter();
         vgContainer.setAdapter(adapter);
 
@@ -99,7 +99,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
                     return;
                 }
                 Intent intent = new Intent();
-                intent.putExtra(Constants.PARAM_SELECTED_INVENTORY, selectedInventory);
+                intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, selectedInventory.getCreatedAt());
                 setResult(RESULT_OK, intent);
                 finish();
             }

@@ -27,7 +27,6 @@ import android.support.v7.widget.RecyclerView;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
@@ -41,6 +40,7 @@ import org.openlmis.core.view.holder.RnRFormViewHolder.RnRFormItemClickListener;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import roboguice.inject.ContentView;
@@ -105,8 +105,8 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
                 initUI();
                 break;
             case Constants.REQUEST_SELECT_PERIOD_END:
-                Inventory selectedInventory = (Inventory) data.getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY);
-                createRequisition(selectedInventory);
+                Date periodEndDate = (Date) data.getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE);
+                createRequisition(periodEndDate);
                 break;
         }
     }
@@ -161,17 +161,17 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
 
     private void goToRequisitionPage(long rnrFormId) {
         if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
-            startActivityForResult(MMIARequisitionActivity.getIntentToMe(RnRFormListActivity.this, rnrFormId), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+            startActivityForResult(MMIARequisitionActivity.getIntentToMe(this, rnrFormId), Constants.REQUEST_FROM_RNR_LIST_PAGE);
         } else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)) {
-            startActivityForResult(VIARequisitionActivity.getIntentToMe(RnRFormListActivity.this, rnrFormId), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+            startActivityForResult(VIARequisitionActivity.getIntentToMe(this, rnrFormId), Constants.REQUEST_FROM_RNR_LIST_PAGE);
         }
     }
 
-    private void createRequisition(Inventory inventory) {
+    private void createRequisition(Date periodEndDate) {
         if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
-            startActivityForResult(MMIARequisitionActivity.getIntentToMe(RnRFormListActivity.this, inventory), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+            startActivityForResult(MMIARequisitionActivity.getIntentToMe(this, periodEndDate), Constants.REQUEST_FROM_RNR_LIST_PAGE);
         } else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)) {
-            startActivityForResult(VIARequisitionActivity.getIntentToMe(RnRFormListActivity.this, inventory), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+            startActivityForResult(VIARequisitionActivity.getIntentToMe(this, periodEndDate), Constants.REQUEST_FROM_RNR_LIST_PAGE);
         }
     }
 

@@ -27,7 +27,6 @@ import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.repository.RnrFormRepository;
-import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.view.BaseView;
 
@@ -36,7 +35,6 @@ import java.util.Date;
 import lombok.Getter;
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -50,9 +48,6 @@ public abstract class BaseRequisitionPresenter extends Presenter {
 
     @Inject
     SyncService syncService;
-
-    @Inject
-    SyncErrorsRepository syncErrorsRepository;
 
     private BaseRequisitionView view;
 

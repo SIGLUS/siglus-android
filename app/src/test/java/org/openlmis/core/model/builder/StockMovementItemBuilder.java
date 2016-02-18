@@ -5,6 +5,7 @@ import org.openlmis.core.model.StockMovementItem.MovementType;
 import org.openlmis.core.utils.DateUtil;
 
 import java.text.ParseException;
+import java.util.Date;
 
 public class StockMovementItemBuilder {
 
@@ -14,6 +15,7 @@ public class StockMovementItemBuilder {
     String movementReason = "ISSUE1";
     MovementType movementType = MovementType.ISSUE;
     int quantity = 12;
+    Date createdTime = new Date();
 
     public StockMovementItem build() throws ParseException {
         StockMovementItem stockMovementItem = new StockMovementItem();
@@ -23,6 +25,7 @@ public class StockMovementItemBuilder {
         stockMovementItem.setReason(movementReason);
         stockMovementItem.setMovementType(movementType);
         stockMovementItem.setMovementQuantity(quantity);
+        stockMovementItem.setCreatedTime(createdTime);
         return stockMovementItem;
     }
 

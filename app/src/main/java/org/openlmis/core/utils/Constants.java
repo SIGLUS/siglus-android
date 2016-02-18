@@ -29,21 +29,21 @@ public final class Constants {
     public static final String PARAM_IS_ADD_NEW_DRUG = "isAddNewDrug";
     public static final String PARAM_KIT_CODE = "kitCode";
     public static final String PARAM_KIT_NUM = "kitNum";
+    public static final String PARAM_KIT_NAME = "kitName";
     public static final String PARAM_PROGRAM_CODE = "programCode";
     public static final String PARAM_FORM_ID = "formId";
     public static final String PARAM_IS_FROM_ARCHIVE = "isFromArchive";
     public static final String PARAM_IS_KIT = "isKit";
-    public static final String PARAM_SELECTED_INVENTORY = "selectedInventory";
-    public static final String PARAM_KIT_NAME = "param_kit_name";
+    public static final String PARAM_SELECTED_INVENTORY_DATE = "selectedInventoryDate";
 
     // Request Params
     public static final int REQUEST_FROM_STOCK_LIST_PAGE = 100;
     public static final int REQUEST_UNPACK_KIT = 200;
     public static final int REQUEST_FROM_RNR_LIST_PAGE = 300;
     public static final int REQUEST_SELECT_PERIOD_END = 400;
-    public static final String INTENT_FILTER_SET_SYNCED_TIME = LMISApp.getContext().getPackageName()+".set_synced_time";
+    public static final String INTENT_FILTER_SET_SYNCED_TIME = LMISApp.getContext().getPackageName() + ".set_synced_time";
 
-    private Constants(){
+    private Constants() {
 
     }
 }

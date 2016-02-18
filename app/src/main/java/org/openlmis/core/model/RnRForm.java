@@ -119,11 +119,11 @@ public class RnRForm extends BaseModel {
         return rnrForm;
     }
 
-    public static RnRForm init(Program program, Date periodBegin, Date periodEnd) {
+    public static RnRForm init(Program program, Period period) {
         RnRForm rnRForm = new RnRForm();
         rnRForm.program = program;
-        rnRForm.periodBegin = periodBegin;
-        rnRForm.periodEnd = periodEnd;
+        rnRForm.periodBegin = period.getBegin().toDate();
+        rnRForm.periodEnd = period.getEnd().toDate();
         return rnRForm;
     }
 

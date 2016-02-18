@@ -25,10 +25,12 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 
+import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
@@ -43,6 +45,7 @@ import org.openlmis.core.utils.DateUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -65,9 +68,6 @@ public class RnrFormRepository {
 
     @Inject
     ProgramRepository programRepository;
-
-    @Inject
-    InventoryRepository inventoryRepository;
 
     GenericDao<RnRForm> genericDao;
     GenericDao<RnrFormItem> rnrFormItemGenericDao;
@@ -92,7 +92,7 @@ public class RnrFormRepository {
 
         RnRForm form;
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
-            form = RnRForm.init(program, getPeriodBegin(program), periodEndDate);
+            form = RnRForm.init(program, generatePeriod(programCode, periodEndDate));
         } else {
             form = RnRForm.init(program, DateUtil.today());
         }
@@ -116,14 +116,46 @@ public class RnrFormRepository {
         return form;
     }
 
-    private Date getPeriodBegin(Program program) throws LMISException {
+    public Period generatePeriod(String programCode, Date physicalInventoryDate) throws LMISException {
+        Program program = programRepository.queryByCode(programCode);
         RnRForm lastRnR = queryLastRnr(program);
 
-        if (lastRnR == null) {
-            return inventoryRepository.queryInitialInventory().getCreatedAt();
-        } else {
-            return lastRnR.getPeriodEnd();
+        DateTime periodBeginDate, periodEndDate = null;
+
+        if (physicalInventoryDate != null) {
+            periodEndDate = new DateTime(physicalInventoryDate);
         }
+
+        if (lastRnR == null) {
+            DateTime todaysDateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+
+            Calendar currentBeginDate = Calendar.getInstance();
+            currentBeginDate.set(Calendar.DAY_OF_MONTH, Period.BEGIN_DAY);
+            periodBeginDate = DateUtil.cutTimeStamp(new DateTime(currentBeginDate));
+
+            if (todaysDateTime.getDayOfMonth() <= Period.INVENTORY_END_DAY) {
+                periodBeginDate = periodBeginDate.minusMonths(1);
+            }
+
+            if (periodEndDate == null) {
+                int periodEndMonthIndex = periodBeginDate.getDayOfMonth() > Period.END_DAY
+                        ? periodBeginDate.getMonthOfYear() : periodBeginDate.getMonthOfYear() - 1;
+
+                Calendar date = Calendar.getInstance();
+                date.set(periodBeginDate.getYear(), periodEndMonthIndex, Period.END_DAY);
+                periodEndDate = new DateTime(date);
+            }
+        } else {
+            periodBeginDate = new DateTime(lastRnR.getPeriodEnd());
+
+            if (periodEndDate == null) {
+                Calendar date = Calendar.getInstance();
+                date.set(periodBeginDate.getYear(), periodBeginDate.getMonthOfYear(), Period.END_DAY);
+                periodEndDate = new DateTime(date);
+            }
+        }
+
+        return new Period(periodBeginDate, periodEndDate);
     }
 
     public void createFormAndItems(final List<RnRForm> forms) throws LMISException {
@@ -318,7 +350,7 @@ public class RnrFormRepository {
         for (Iterator iterator = stockCards.iterator(); iterator.hasNext(); ) {
             StockCard stockCard = (StockCard) iterator.next();
             StockMovementItem stockMovementItem = stockRepository.queryFirstStockMovementItem(stockCard);
-            if (stockMovementItem != null && stockMovementItem.getMovementDate().after(form.getPeriodEnd())) {
+            if (stockMovementItem != null && stockMovementItem.getMovementDate().after(form.getPeriodEnd()) && stockMovementItem.getCreatedTime().after(form.getPeriodEnd())) {
                 iterator.remove();
             }
         }
