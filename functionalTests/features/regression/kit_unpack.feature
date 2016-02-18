@@ -111,7 +111,7 @@ Feature: Unpack Kit
     And I should see empty consultations number
     Then I enter consultationsNub "888"
     Then I swipe right
-    Then I should see "1488" on index "1" of "tx_theoretical" field
+    Then I should see "889" on index "1" of "tx_theoretical" field
     Then I swipe right
     Then I swipe right
     Then I enter QuantityRequested "345"
