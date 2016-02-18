@@ -147,7 +147,10 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
                     break;
                 case RnRFormViewModel.TYPE_HISTORICAL:
                     rnrFormId = model.getId();
+                    goToRequisitionPage(rnrFormId);
+                    break;
                 default:
+                    rnrFormId = DEFAULT_FORM_ID_OF_NOT_AUTHORIZED;
                     goToRequisitionPage(rnrFormId);
                     break;
             }
