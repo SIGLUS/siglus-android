@@ -16,5 +16,5 @@ Feature: add new drug
 
     And I initialize "1264" products
     Then I press "Complete"
-    Then I wait for "Stock Overview" to appear
+    And I wait up to 300 seconds for "Stock Overview" to appear
     Then I should see total:"1264" on stock list page
