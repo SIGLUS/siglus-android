@@ -31,6 +31,7 @@ import com.google.gson.JsonSerializer;
 import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
@@ -91,9 +92,17 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
             e.reportToFabric();
             throw new JsonParseException("can not find Program by programCode");
         }
-        rnRForm.setPeriodEnd(Period.of(rnRForm.getPeriodBegin()).getEnd().toDate());
         rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
         rnRForm.setSynced(true);
+
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_period_date)) {
+            JsonElement periodStartDate = json.getAsJsonObject().get("periodStartDate");
+            if (periodStartDate != null) {
+                rnRForm.setPeriodBegin(new Date(periodStartDate.getAsLong()));
+                rnRForm.setPeriodEnd(Period.of(rnRForm.getPeriodBegin()).getEnd().toDate());
+            }
+        }
+
         return rnRForm;
     }
 

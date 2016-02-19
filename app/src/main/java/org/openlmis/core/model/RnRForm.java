@@ -85,11 +85,13 @@ public class RnRForm extends BaseModel {
     @DatabaseField
     private boolean synced = false;
 
-    @Expose(serialize = false)
-    @SerializedName("periodStartDate")
+    @Expose
+    @SerializedName("actualPeriodStartDate")
     @DatabaseField
     private Date periodBegin;
 
+    @Expose
+    @SerializedName("actualPeriodEndDate")
     @DatabaseField
     private Date periodEnd;
 
