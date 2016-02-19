@@ -20,6 +20,7 @@ import org.openlmis.core.presenter.SelectPeriodPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.SelectPeriodAdapter;
+import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
 
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     SelectPeriodPresenter presenter;
 
     private SelectPeriodAdapter adapter;
-    private Inventory selectedInventory;
+    private SelectInventoryViewModel selectedInventory;
     private String programCode;
 
     @Override
@@ -99,7 +100,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
                     return;
                 }
                 Intent intent = new Intent();
-                intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, selectedInventory.getCreatedAt());
+                intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, selectedInventory.getInventoryDate());
                 setResult(RESULT_OK, intent);
                 finish();
             }
@@ -117,7 +118,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     }
 
     @Override
-    public void refreshDate(List<Inventory> inventories) {
+    public void refreshDate(List<SelectInventoryViewModel> inventories) {
         adapter.refreshDate(inventories);
     }
 }

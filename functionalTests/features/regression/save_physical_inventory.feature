@@ -1,3 +1,4 @@
+@regression
 Feature: Save physical inventory
 
   Scenario: Save physical inventory, and check the stock on hand quantity that have been saved.

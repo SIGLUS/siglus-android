@@ -12,6 +12,7 @@ import org.joda.time.DateTime;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Inventory;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
 
 public class SelectPeriodCardView extends CardView implements Checkable {
 
@@ -47,9 +48,10 @@ public class SelectPeriodCardView extends CardView implements Checkable {
         checkmarkIcon = (ImageView) findViewById(R.id.inventory_checkmark);
     }
 
-    public void populate(Inventory inventory) {
-        DateTime date = new DateTime(inventory.getUpdatedAt());
+    public void populate(SelectInventoryViewModel selectInventoryViewModel) {
+        DateTime date = new DateTime(selectInventoryViewModel.getInventoryDate());
 
+        inventoryDateTime.setVisibility(selectInventoryViewModel.isShowTime() ? View.VISIBLE : View.INVISIBLE);
         inventoryDateTime.setText(date.toString(DateUtil.TIME_FORMAT));
         inventoryDateDay.setText(date.dayOfMonth().getAsText());
         inventoryDateMonth.setText(date.monthOfYear().getAsShortText());

@@ -11,8 +11,11 @@ import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.service.PeriodService;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
+import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
+import org.roboguice.shaded.goole.common.base.Function;
 
 import java.util.List;
 
@@ -21,6 +24,8 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class SelectPeriodPresenter extends Presenter {
 
@@ -39,12 +44,13 @@ public class SelectPeriodPresenter extends Presenter {
 
     public void loadData(final String programCode) {
         view.loading();
-        Subscription subscription = Observable.create(new Observable.OnSubscribe<List<Inventory>>() {
+        Subscription subscription = Observable.create(new Observable.OnSubscribe<List<SelectInventoryViewModel>>() {
             @Override
-            public void call(Subscriber<? super List<Inventory>> subscriber) {
+            public void call(Subscriber<? super List<SelectInventoryViewModel>> subscriber) {
                 try {
                     Period currentPeriod = periodService.generatePeriod(programCode, null);
-                    subscriber.onNext(inventoryRepository.queryPeriodInventory(currentPeriod));
+                    List<SelectInventoryViewModel> selectInventoryViewModels = generateSelectInventoryViewModels(inventoryRepository.queryPeriodInventory(currentPeriod));
+                    subscriber.onNext(selectInventoryViewModels);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.reportToFabric();
@@ -55,9 +61,29 @@ public class SelectPeriodPresenter extends Presenter {
         subscriptions.add(subscription);
     }
 
+    private List<SelectInventoryViewModel> generateSelectInventoryViewModels(final List<Inventory> inventories) {
+        return from(inventories).transform(new Function<Inventory, SelectInventoryViewModel>() {
+            @Override
+            public SelectInventoryViewModel apply(Inventory inventory) {
+                SelectInventoryViewModel selectInventoryViewModel = new SelectInventoryViewModel(inventory);
+
+                for (Inventory comparedInventory : inventories) {
+                    if (inventory == comparedInventory) continue;
+                    String formattedInventoryDate = DateUtil.formatDate(inventory.getCreatedAt(), DateUtil.DB_DATE_FORMAT);
+                    String formattedComparedInventoryDate = DateUtil.formatDate(comparedInventory.getCreatedAt(), DateUtil.DB_DATE_FORMAT);
+                    if (formattedInventoryDate.equals(formattedComparedInventoryDate)) {
+                        selectInventoryViewModel.setShowTime(true);
+                        break;
+                    }
+                }
+                return selectInventoryViewModel;
+            }
+        }).toList();
+    }
+
     @NonNull
-    protected Subscriber<List<Inventory>> getSubscriber() {
-        return new Subscriber<List<Inventory>>() {
+    protected Subscriber<List<SelectInventoryViewModel>> getSubscriber() {
+        return new Subscriber<List<SelectInventoryViewModel>>() {
             @Override
             public void onCompleted() {
                 view.loaded();
@@ -70,7 +96,7 @@ public class SelectPeriodPresenter extends Presenter {
             }
 
             @Override
-            public void onNext(List<Inventory> inventories) {
+            public void onNext(List<SelectInventoryViewModel> inventories) {
                 view.refreshDate(inventories);
             }
         };
@@ -78,6 +104,6 @@ public class SelectPeriodPresenter extends Presenter {
 
 
     public interface SelectPeriodView extends BaseView {
-        void refreshDate(List<Inventory> inventories);
+        void refreshDate(List<SelectInventoryViewModel> inventories);
     }
 }

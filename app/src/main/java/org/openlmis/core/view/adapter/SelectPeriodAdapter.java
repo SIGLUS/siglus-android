@@ -7,6 +7,7 @@ import android.widget.BaseAdapter;
 
 import org.openlmis.core.R;
 import org.openlmis.core.model.Inventory;
+import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
 import org.openlmis.core.view.widget.SelectPeriodCardView;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class SelectPeriodAdapter extends BaseAdapter {
 
-    private final List<Inventory> list;
+    private final List<SelectInventoryViewModel> list;
 
     public SelectPeriodAdapter() {
         list = new ArrayList();
@@ -26,7 +27,7 @@ public class SelectPeriodAdapter extends BaseAdapter {
     }
 
     @Override
-    public Inventory getItem(int position) {
+    public SelectInventoryViewModel getItem(int position) {
         return list.get(position);
     }
 
@@ -50,7 +51,7 @@ public class SelectPeriodAdapter extends BaseAdapter {
         return inventoryCardView;
     }
 
-    public void refreshDate(List<Inventory> inventories) {
+    public void refreshDate(List<SelectInventoryViewModel> inventories) {
         list.clear();
         list.addAll(inventories);
         notifyDataSetChanged();
