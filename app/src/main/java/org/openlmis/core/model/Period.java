@@ -10,7 +10,7 @@ public class Period {
     public static final int BEGIN_DAY = 21;
     public static final int END_DAY = 20;
     public static final int INVENTORY_BEGIN_DAY = 18;
-    public static final int INVENTORY_END_DAY = 26;
+    public static final int INVENTORY_END_DAY_NEXT = 26;
 
     private DateTime periodBegin;
     private DateTime periodEnd;
@@ -35,7 +35,7 @@ public class Period {
         this.periodBegin = begin;
         this.periodEnd = end;
         this.inventoryBegin = DateUtil.cutTimeStamp(periodEnd.withDayOfMonth(INVENTORY_BEGIN_DAY));
-        this.inventoryEnd = DateUtil.cutTimeStamp(periodEnd.withDayOfMonth(INVENTORY_END_DAY));
+        this.inventoryEnd = DateUtil.cutTimeStamp(periodEnd.withDayOfMonth(INVENTORY_END_DAY_NEXT));
     }
 
     public DateTime getBegin() {

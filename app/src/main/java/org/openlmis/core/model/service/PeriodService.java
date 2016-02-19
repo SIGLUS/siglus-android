@@ -25,7 +25,7 @@ public class PeriodService {
 
     public Period generatePeriod(String programCode, Date physicalInventoryDate) throws LMISException {
         Program program = programRepository.queryByCode(programCode);
-        RnRForm lastRnR = rnrFormRepository.queryLastRnr(program);
+        RnRForm lastRnR = rnrFormRepository.queryLastAuthorizedRnr(program);
 
         if (lastRnR == null) {
             return generatePeriodBasedOnDefaultDates(physicalInventoryDate);
@@ -65,7 +65,7 @@ public class PeriodService {
         Calendar currentBeginDate = Calendar.getInstance();
         currentBeginDate.set(todaysDateTime.getYear(), todaysDateTime.getMonthOfYear() - 1, Period.BEGIN_DAY);
         DateTime periodBeginDate = DateUtil.cutTimeStamp(new DateTime(currentBeginDate));
-        if (todaysDateTime.getDayOfMonth() <= Period.INVENTORY_END_DAY) {
+        if (todaysDateTime.getDayOfMonth() <= Period.INVENTORY_END_DAY_NEXT) {
             periodBeginDate = periodBeginDate.minusMonths(1);
         }
         return periodBeginDate;

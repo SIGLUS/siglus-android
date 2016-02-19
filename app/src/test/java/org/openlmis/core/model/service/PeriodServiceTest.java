@@ -74,7 +74,7 @@ public class PeriodServiceTest {
         RnRForm previousRnrForm = new RnRForm();
         previousRnrForm.setProgram(programMMIA);
         previousRnrForm.setPeriodEnd(DateUtil.parseString("2020-10-18", DateUtil.DB_DATE_FORMAT));
-        when(mockRnrFormRepository.queryLastRnr(programMMIA)).thenReturn(previousRnrForm);
+        when(mockRnrFormRepository.queryLastAuthorizedRnr(programMMIA)).thenReturn(previousRnrForm);
 
         Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
         assertThat(period.getBegin().toDate(), is(previousRnrForm.getPeriodEnd()));

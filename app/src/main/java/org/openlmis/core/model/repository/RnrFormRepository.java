@@ -449,11 +449,12 @@ public class RnrFormRepository {
         return false;
     }
 
-    public RnRForm queryLastRnr(final Program program) throws LMISException {
+    public RnRForm queryLastAuthorizedRnr(final Program program) throws LMISException {
         return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
             @Override
             public RnRForm operate(Dao<RnRForm, String> dao) throws SQLException {
-                return dao.queryBuilder().orderBy("periodBegin", false).where().eq("program_id", program.getId()).queryForFirst();
+                return dao.queryBuilder().orderBy("periodBegin", false).where().eq("program_id", program.getId()).and()
+                        .eq("status", RnRForm.STATUS.AUTHORIZED).queryForFirst();
             }
         });
     }
