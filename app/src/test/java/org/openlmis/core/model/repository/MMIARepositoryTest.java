@@ -155,6 +155,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
         when(mockStockRepository.listActiveStockCardsByProgramId(anyLong())).thenReturn(stockCards);
         StockMovementItem stockMovementItem = new StockMovementItem();
+        stockMovementItem.setCreatedTime(new Date());
         stockMovementItem.setMovementDate(DateUtil.generateRnRFormPeriodBy(new Date()).getBegin().toDate());
         when(mockStockRepository.queryFirstStockMovementItem(any(StockCard.class))).thenReturn(stockMovementItem);
         when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(stockMovementItems);

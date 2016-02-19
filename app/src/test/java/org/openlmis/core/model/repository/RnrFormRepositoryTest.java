@@ -244,6 +244,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         when(mockStockRepository.listActiveStockCardsByProgramId(anyLong())).thenReturn(stockCardList);
         StockMovementItem stockMovementItem = new StockMovementItem();
+        stockMovementItem.setCreatedTime(new Date());
         stockMovementItem.setMovementDate(movementDate);
         when(mockStockRepository.queryFirstStockMovementItem(stockCard)).thenReturn(stockMovementItem);
 
@@ -252,10 +253,11 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldNotGetStockCardCreatedAfterPeriodEndDate() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
+
         Program program = new Program();
         program.setId(123);
         program.setProgramCode(MMIARepository.MMIA_PROGRAM_CODE);
-
 
         DateTime periodBegin = new DateTime(DateUtil.parseString("2015-06-21 10:10:10", DateUtil.DATE_TIME_FORMAT));
         DateTime periodEnd = new DateTime(DateUtil.parseString("2015-07-21 11:11:11", DateUtil.DATE_TIME_FORMAT));
@@ -358,6 +360,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         dateTime.millisOfDay();
         StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setMovementDate(dateTime.toDate());
+        stockMovementItem.setCreatedTime(new Date());
         when(mockStockRepository.queryFirstStockMovementItem(any(StockCard.class))).thenReturn(stockMovementItem);
         when(mockStockRepository.queryStockItems(stockCard, form.getPeriodBegin(), form.getPeriodEnd())).thenReturn(stockMovementItems);
 

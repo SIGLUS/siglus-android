@@ -397,20 +397,6 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         verify(mockInventoryRepository).save(any(Inventory.class));
     }
 
-    @Test
-    public void shouldSaveInventoryWhenCompleteInitialInventory() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
-
-        List<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
-        TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
-        Observable observable = inventoryPresenter.initStockCardObservable(inventoryViewModels);
-        observable.subscribe(subscriber);
-
-        subscriber.awaitTerminalEvent();
-
-        verify(mockInventoryRepository).save(any(Inventory.class));
-    }
-
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {

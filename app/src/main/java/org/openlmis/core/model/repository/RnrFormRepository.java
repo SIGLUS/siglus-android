@@ -309,8 +309,14 @@ public class RnrFormRepository {
         for (Iterator iterator = stockCards.iterator(); iterator.hasNext(); ) {
             StockCard stockCard = (StockCard) iterator.next();
             StockMovementItem stockMovementItem = stockRepository.queryFirstStockMovementItem(stockCard);
-            if (stockMovementItem != null && (stockMovementItem.getMovementDate().after(form.getPeriodEnd()) || stockMovementItem.getCreatedTime().after(form.getPeriodEnd()))) {
-                iterator.remove();
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
+                if (stockMovementItem != null && (stockMovementItem.getMovementDate().after(form.getPeriodEnd()) || stockMovementItem.getCreatedTime().after(form.getPeriodEnd()))) {
+                    iterator.remove();
+                }
+            } else {
+                if (stockMovementItem != null && (stockMovementItem.getMovementDate().after(form.getPeriodEnd()))) {
+                    iterator.remove();
+                }
             }
         }
         return stockCards;
