@@ -12,6 +12,8 @@ describe "submit requisition to web server" do
       agentCode: "HF2",
       programCode: "ESS_MEDS",
       clientSubmittedTime: "2015-10-27 11:11:20",
+      actualPeriodStartDate: "2016-03-17 11:11:20",
+      actualPeriodEndDate: "2016-03-27 11:11:20",
       rnrSignatures: [
       {
         type: "SUBMITTER",
@@ -76,6 +78,8 @@ describe "submit requisition to web server" do
       programCode: "MMIA",
       clientSubmittedNotes: "I don't know",
       clientSubmittedTime: "2015-10-27 11:20:20",
+      actualPeriodStartDate: "2016-03-17 11:11:20",
+      actualPeriodEndDate: "2016-03-27 11:11:20",
       rnrSignatures: [
       {
         type: "SUBMITTER",
@@ -531,6 +535,8 @@ describe "submit requisition to web server" do
     expect(via_requisition['patientQuantifications'].length).to eq 1
     expect(via_requisition['periodStartDate']).not_to be_nil
     expect(via_requisition['clientSubmittedTime']).not_to be_nil
+    expect(via_requisition['actualPeriodStartDate']).not_to be_nil
+    expect(via_requisition['actualPeriodEndDate']).not_to be_nil
 
     expect(via_requisition['rnrSignatures'].length).to eq 2
 
@@ -563,6 +569,8 @@ describe "submit requisition to web server" do
     expect(mmia_requisition['patientQuantifications'].length).to eq 7
     expect(mmia_requisition['periodStartDate']).not_to be_nil
     expect(mmia_requisition['clientSubmittedTime']).not_to be_nil
+    expect(via_requisition['actualPeriodStartDate']).not_to be_nil
+    expect(via_requisition['actualPeriodEndDate']).not_to be_nil
 
     expect(mmia_requisition['rnrSignatures'].length).to eq 2
 
