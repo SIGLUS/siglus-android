@@ -50,3 +50,10 @@ And(/^I should see empty consultations number$/) do
 	end
 end
 
+
+Then(/^I should see consultations number is "(.*?)"$/) do |number|
+    if !element_exists("android.widget.EditText id:'edit_text' text:'#{number}'")
+		fail(msg="consultations number is not #{number}")
+	end
+end
+

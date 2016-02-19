@@ -41,5 +41,6 @@ Then(/^I add new drug number (\d+) with SOH (\d+) quantity, then I see the added
         And I wait for "Stock Overview" to appear
         When I search stockcard by "#{nth_drug["text"]}"
         Then I see "#{soh}"
+        And I navigate back
       }
 end
