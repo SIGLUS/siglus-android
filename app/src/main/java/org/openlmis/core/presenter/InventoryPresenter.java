@@ -353,9 +353,6 @@ public class InventoryPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
                 initStockCards(list);
-                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
-                    saveInventoryDate();
-                }
                 subscriber.onNext(null);
                 subscriber.onCompleted();
             }

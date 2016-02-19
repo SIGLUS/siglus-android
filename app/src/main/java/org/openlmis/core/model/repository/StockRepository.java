@@ -277,7 +277,7 @@ public class StockRepository {
                         .orderBy("createdTime", true)
                         .where()
                         .eq("stockCard_id", stockCard.getId())
-                        .and().ge("createdTime", periodBeginDate)
+                        .and().gt("createdTime", periodBeginDate)
                         .and().le("createdTime", periodEndDate)
                         .query();
             }

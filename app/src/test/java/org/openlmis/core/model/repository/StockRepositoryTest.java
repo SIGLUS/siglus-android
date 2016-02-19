@@ -346,7 +346,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldGetStockMovementsCreatedBetweenTwoDates() throws LMISException {
+    public void shouldGetStockMovementsCreatedBetweenTwoDatesExclusiveOfBeginDate() throws LMISException {
         stockCard.setStockOnHand(100);
         stockRepository.save(stockCard);
         createMovementItem(ISSUE, 1, stockCard, DateUtil.parseString("2020-01-21 13:00:00", DATE_TIME_FORMAT), new DateTime("2020-01-21").toDate(), false);
@@ -357,7 +357,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         List<StockMovementItem> stockMovementItems = stockRepository.queryStockItemsByPeriodDates(stockCard,
                 DateUtil.parseString("2020-01-21 13:00:00", DATE_TIME_FORMAT), DateUtil.parseString("2020-02-22 20:00:00", DATE_TIME_FORMAT));
 
-        Assert.assertThat(stockMovementItems.size(), is(3));
+        Assert.assertThat(stockMovementItems.size(), is(2));
     }
 
     private StockMovementItem getStockMovementItem(DateTime createdTime, DateTime movementDate) {
