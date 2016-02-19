@@ -36,6 +36,7 @@ import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
+import org.openlmis.core.model.service.PeriodService;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
@@ -71,6 +72,9 @@ public class RnRFormListPresenter extends Presenter {
 
     @Inject
     SharedPreferenceMgr sharedPreferenceMgr;
+
+    @Inject
+    PeriodService periodService;
 
     @Override
     public void attachView(BaseView v) throws ViewNotMatchException {
@@ -133,7 +137,7 @@ public class RnRFormListPresenter extends Presenter {
 
     protected Period generatePeriod() throws LMISException {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
-            return repository.generatePeriod(programCode, null);
+            return periodService.generatePeriod(programCode, null);
         } else {
             return DateUtil.generateRnRFormPeriodBy(new Date());
         }
