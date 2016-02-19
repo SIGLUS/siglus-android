@@ -20,6 +20,11 @@ Before('@regression') do |scenario|
   reset_regression_server_data
 end
 
+Before('@STRESS_TEST') do |scenario|
+  update_lmis_moz_code
+  reset_regression_server_data
+end
+
 def update_lmis_moz_code
   if !Dir.exists?(LMIS_MOZ_DIR)
     system("git clone --depth 1 --branch master hhttps://github.com/clintonhealthaccess/lmis-moz.git --single-branch #{LMIS_MOZ_DIR}")

@@ -3,7 +3,7 @@ Feature: all stock movements
 
   Scenario: Add all movements for one drug
     Given I try to log in with "initial_inventory" "password1"
-    Then I wait up to 30 seconds for "Initial Inventory" to appear
+    Then I wait up to 120 seconds for "Initial Inventory" to appear
     When I search product by primary name "Abacavir sulfato (ABC) 300mg,60comp Embalagem" and select this item with quantity "123"
     And I press "Complete"
 

@@ -3,7 +3,7 @@ Feature: add new drug
 
   Scenario: Add new drugs
     Given I try to log in with "initial_inventory" "password1"
-    And I wait up to 30 seconds for "Initial Inventory" to appear
+    And I wait up to 120 seconds for "Initial Inventory" to appear
     And I press "Complete"
     And I wait for "STOCK CARD OVERVIEW" to appear
     And I press "Stock Card Overview"
