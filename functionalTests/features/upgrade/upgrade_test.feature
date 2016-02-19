@@ -2,7 +2,7 @@
 Feature: After version upgrade, data integrity should not be broken
 
   Scenario: After version upgrade, user should still be able to use all pages with proper data
-    When I try to log in with "Michafutene" "password1"
+    When I try to log in with "marracuene" "password1"
     And I wait up to 120 seconds for "Stock Card Overview" to appear
     # to run this in a physical device, we need to wait longer, IO is slow on physical devices
 
@@ -41,5 +41,32 @@ Feature: After version upgrade, data integrity should not be broken
     And I press "Continue Working on Via Classica Requisition"
     And I wait for "Requisition -" to appear
     Then I should see consultations number is "888"
+    And I press "Save"
+    And I navigate back
+
+    And I wait for "Stock Card Overview" to appear
+    And I press "MMIA"
+    And I wait for "MMIA" to appear
+    And I press "Continue Working on MMIA"
+    And I wait for "MMIA -" to appear
+    When I scroll "scrollView" down to "Submit for Approval"
+    Then I should see patient total
+    And I press "Save"
+    And I navigate back
+
+    #after upgrade, user should still be able to do physical inventory
+    And I press "Do Monthly Inventory"
+    And I wait for "Inventory" to appear
+    Then I do physical inventory for all items
+
+
+
+
+
+
+
+
+
+
 
 

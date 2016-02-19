@@ -204,12 +204,9 @@ Then(/^I do physical inventory for all items$/) do
   while !query("android.widget.EditText text:''").empty?
     query("android.widget.EditText id:'tx_quantity'", {:setText => '1'})
 
-    if query("android.widget.TextView text:'Sulfato ferroso+Acido folico; 90mg+1mg; Comprimidos [06A07]'").empty?
+    if query("* marked:'Complete'").empty?
       scroll('recyclerView', :down)
     end
-  end
-  while query("* marked:'Complete'").empty?
-    scroll('recyclerView', :down)
   end
 
   tap_when_element_exists("* marked:'Complete'")
