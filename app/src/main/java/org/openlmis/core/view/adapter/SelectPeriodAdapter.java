@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import org.openlmis.core.R;
-import org.openlmis.core.model.Inventory;
 import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
 import org.openlmis.core.view.widget.SelectPeriodCardView;
 

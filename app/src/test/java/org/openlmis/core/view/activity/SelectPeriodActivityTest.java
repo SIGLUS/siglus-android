@@ -18,6 +18,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Inventory;
 import org.openlmis.core.presenter.SelectPeriodPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 
@@ -74,10 +75,10 @@ public class SelectPeriodActivityTest {
 
     @Test
     public void shouldInVisibleWarningWhenUserChoseTheInventory() throws Exception {
-        List<Inventory> inventoryList = Arrays.asList(
-                generateInventoryWithDate(new DateTime("2016-01-25").toDate()),
-                generateInventoryWithDate(new DateTime("2016-01-22").toDate()),
-                generateInventoryWithDate(new DateTime("2016-01-19").toDate())
+        List<SelectInventoryViewModel> inventoryList = Arrays.asList(
+                new SelectInventoryViewModel(generateInventoryWithDate(new DateTime("2016-01-25").toDate())),
+                new SelectInventoryViewModel(generateInventoryWithDate(new DateTime("2016-01-22").toDate())),
+                new SelectInventoryViewModel(generateInventoryWithDate(new DateTime("2016-01-19").toDate()))
         );
         selectPeriodActivity.refreshDate(inventoryList);
 

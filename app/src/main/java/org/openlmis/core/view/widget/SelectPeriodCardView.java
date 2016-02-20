@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.R;
-import org.openlmis.core.model.Inventory;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
 
