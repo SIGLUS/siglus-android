@@ -66,6 +66,8 @@
   ],
   "emergency": false,
   "clientSubmittedTime": 1445937080000,
+  "actualPeriodStartDate": 1455937080000,
+  "actualPeriodEndDate": 1465937080000,
   "clientSubmittedNotes": "I don't know",
   "programCode": "ESS_MEDS",
   "periodStartDate": 1388527200000

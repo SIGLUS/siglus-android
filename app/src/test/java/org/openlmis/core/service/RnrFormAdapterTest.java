@@ -25,7 +25,9 @@ import com.google.inject.AbstractModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.BaseInfoItem;
@@ -54,6 +56,7 @@ import roboguice.RoboGuice;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyString;
@@ -151,7 +154,7 @@ public class RnrFormAdapterTest {
 
     @Test
     public void shouldSerializeRnrFormWithRegimen() throws Exception {
-        ArrayList<RegimenItem> regimenItems=new ArrayList<>();
+        ArrayList<RegimenItem> regimenItems = new ArrayList<>();
         RegimenItem item = new RegimenItem();
         Regimen regimen = new Regimen();
         regimen.setName("name1");
@@ -191,15 +194,16 @@ public class RnrFormAdapterTest {
         rnRFormSignatureList.add(new RnRFormSignature(rnRForm, "abc", RnRFormSignature.TYPE.SUBMITTER));
 
         when(mockRnrFormRepository.querySignaturesByRnrForm(rnRForm)).thenReturn(rnRFormSignatureList);
-        JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm,RnRForm.class,null);
+        JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
         JsonObject rnrSignature = rnrJson.getAsJsonObject().get("rnrSignatures").getAsJsonArray().get(0).getAsJsonObject();
 
-        assertThat(rnrSignature.get("text").toString(),is("\"abc\""));
-        assertThat(rnrSignature.get("type").toString(),is("\""+RnRFormSignature.TYPE.SUBMITTER.toString()+"\""));
+        assertThat(rnrSignature.get("text").toString(), is("\"abc\""));
+        assertThat(rnrSignature.get("type").toString(), is("\"" + RnRFormSignature.TYPE.SUBMITTER.toString() + "\""));
     }
 
     @Test
     public void shouldDeserializeRnrFormJson() throws LMISException {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_period_date, true);
         when(mockProductRepository.getByCode(anyString())).thenReturn(new Product());
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(new Program());
 
@@ -225,8 +229,37 @@ public class RnrFormAdapterTest {
         assertThat(baseInfoItem.getValue(), is("30"));
 
         assertThat(rnRForm.getSubmittedTime(), is(new Date(1445937080000L)));
+
+        assertThat(rnRForm.getPeriodBegin(), is(new Date(1455937080000L)));
+        assertThat(rnRForm.getPeriodEnd(), is(new Date(1465937080000L)));
     }
 
+
+    @Test
+    public void shouldDeserializeRnrFormJsonWhenToggleOff() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_period_date, false);
+        when(mockProductRepository.getByCode(anyString())).thenReturn(new Product());
+        when(mockProgramRepository.queryByCode(anyString())).thenReturn(new Program());
+
+        String json = JsonFileReader.readJson(getClass(), "RequisitionRequest.json");
+
+        RnRForm rnRForm = rnrFormAdapter.deserialize(new JsonParser().parse(json), null, null);
+        assertThat(rnRForm.getPeriodBegin(), is(new Date(1388527200000L)));
+        assertThat(rnRForm.getPeriodEnd(), is(DateUtil.parseString("2014-1-20", "yyyy-MM-dd")));
+    }
+
+
+    @Test
+    public void shouldSerializeRnrFormWithPeriodDate() throws Exception {
+        UserInfoMgr.getInstance().setUser(new User("user", "password"));
+
+        rnRForm.setPeriodBegin(DateUtil.parseString("2015-10-15 01:01:11", "yyyy-MM-dd HH:mm:ss"));
+        rnRForm.setPeriodEnd(DateUtil.parseString("2015-11-15 01:01:11", "yyyy-MM-dd HH:mm:ss"));
+
+        JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
+        assertNotNull(rnrJson.getAsJsonObject().get("actualPeriodStartDate"));
+        assertNotNull(rnrJson.getAsJsonObject().get("actualPeriodEndDate"));
+    }
 
     @Test
     public void shouldSerializeRnrFormWithoutSubmittedTime() throws Exception {
