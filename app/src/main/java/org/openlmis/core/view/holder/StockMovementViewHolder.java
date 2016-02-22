@@ -253,7 +253,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
     }
 
     private void setItemViewTextColor(StockMovementViewModel model) {
-        if (model.getReason() != null && model.getReason().isIssueAdjustment()) {
+        if (model.isIssuedReason()) {
             setRowFontColor(R.color.color_black);
         } else {
             setRowFontColor(R.color.color_red);

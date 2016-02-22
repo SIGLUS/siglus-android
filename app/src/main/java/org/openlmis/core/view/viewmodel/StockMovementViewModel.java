@@ -117,6 +117,10 @@ public class StockMovementViewModel {
         return (isAnyQuantitiesNumeric() && Long.parseLong(stockExistence) >= 0);
     }
 
+    public boolean isIssuedReason() {
+        return getReason() != null && getReason().isIssueAdjustment();
+    }
+
     private boolean allQuantitiesEmpty() {
         return StringUtils.isEmpty(getReceived())
                 && StringUtils.isEmpty(getIssued())

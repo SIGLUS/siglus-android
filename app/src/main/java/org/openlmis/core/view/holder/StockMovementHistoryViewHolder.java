@@ -21,6 +21,7 @@ package org.openlmis.core.view.holder;
 import android.view.View;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
@@ -51,8 +52,6 @@ public class StockMovementHistoryViewHolder extends BaseViewHolder {
     }
 
     public void populate(final StockMovementViewModel model) {
-        setRowFontColor(blackColor);
-
         txMovementDate.setText(model.getMovementDate());
         etDocumentNo.setText(model.getDocumentNo());
         etReceived.setText(model.getReceived());
@@ -63,13 +62,27 @@ public class StockMovementHistoryViewHolder extends BaseViewHolder {
         txReason.setText(model.getReason().getDescription());
         txSignature.setText(model.getSignature());
 
-        setInventoryItemsFontColorToRed(model);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_change_stock_movement_color_481)) {
+            setItemViewTextColor(model);
+        } else {
+            setItemViewTextColorOld(model);
+        }
     }
 
-    private void setInventoryItemsFontColorToRed(StockMovementViewModel model) {
+    private void setItemViewTextColorOld(StockMovementViewModel model) {
         if (model.getReceived() != null
                 || model.getReason().getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY
                 || model.getReason().isInventoryAdjustment()) {
+            setRowFontColor(redColor);
+        }else {
+            setRowFontColor(blackColor);
+        }
+    }
+
+    private void setItemViewTextColor(StockMovementViewModel model) {
+        if (model.isIssuedReason()) {
+            setRowFontColor(blackColor);
+        } else {
             setRowFontColor(redColor);
         }
     }
