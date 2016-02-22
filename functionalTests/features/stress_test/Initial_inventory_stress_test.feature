@@ -12,7 +12,7 @@ Feature: Initial inventory and VIA requisition
     And I wait up to 120 seconds for "Stock Overview" to appear
     And I press "Sort alphabetically: A to Z"
     And I press "Sort by quantity: High to Low"
-    And I wait for 10 second
+    And I wait for 10 seconds
 
     Then I can see stock on hand "1264" in position "1"
     Then I should see total:"1264" on stock list page
