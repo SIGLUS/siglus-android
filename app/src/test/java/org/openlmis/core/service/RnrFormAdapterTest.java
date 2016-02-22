@@ -43,6 +43,7 @@ import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.JsonFileReader;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -202,7 +203,7 @@ public class RnrFormAdapterTest {
         when(mockProductRepository.getByCode(anyString())).thenReturn(new Product());
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(new Program());
 
-        String json = "{\"products\":[{\"id\":81,\"rnrId\":130,\"product\":\"Zidovudina 50mg/5ml Sol Oral Solution 10mg \",\"productDisplayOrder\":29,\"productCode\":\"08S17\",\"productCategory\":\"Antibiotics\",\"productCategoryDisplayOrder\":1,\"roundToZero\":false,\"packRoundingThreshold\":1,\"packSize\":10,\"dosesPerMonth\":13,\"dosesPerDispensingUnit\":10,\"dispensingUnit\":\"Strip\",\"maxMonthsOfStock\":3,\"fullSupply\":true,\"quantityReceived\":10,\"quantityDispensed\":10,\"beginningBalance\":10,\"totalLossesAndAdjustments\":0,\"stockInHand\":10,\"stockOutDays\":0,\"newPatientCount\":0,\"quantityRequested\":20,\"reasonForRequestedQuantity\":\"reason\",\"amc\":10,\"normalizedConsumption\":10,\"periodNormalizedConsumption\":10,\"calculatedOrderQuantity\":20,\"maxStockQuantity\":30,\"quantityApproved\":30,\"reportingDays\":30,\"packsToShip\":1,\"expirationDate\":\"10/10/2016\",\"price\":0,\"skipped\":false}],\"nonFullSupplyProducts\":[],\"regimens\":[{\"id\":21,\"rnrId\":130,\"code\":\"018\",\"name\":\"ABC+3TC+EFZ\",\"patientsOnTreatment\":1,\"category\":{\"id\":null,\"code\":null,\"name\":\"Paediatrics\",\"displayOrder\":2},\"regimenDisplayOrder\":3,\"skipped\":false}],\"patientQuantifications\":[{\"id\":17,\"rnrId\":130,\"category\":\"Total Patients\",\"total\":30}],\"emergency\":false,\"clientSubmittedTime\": 1445937080000,\"clientSubmittedNotes\":\"I don't know\",\"programCode\": \"ESS_MEDS\",\"periodStartDate\":1388527200000}";
+        String json = JsonFileReader.readJson(getClass(), "RequisitionRequest.json");
 
         RnRForm rnRForm = rnrFormAdapter.deserialize(new JsonParser().parse(json), null, null);
         assertThat(rnRForm.getComments(), is("I don't know"));
