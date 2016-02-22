@@ -84,9 +84,9 @@ And(/^I press the pop menu for delete rnr form$/) do
     touch(q)
 end
 
-Then(/^I should see patient total$/) do
-    if !element_exists("android.widget.EditText id:'et_value' text:'18'")
-		fail(msg="patient total is empty")
+Then(/^I should see patient total number is "(.*?)"$/) do |number|
+    if !element_exists("android.widget.EditText id:'et_value' text:'#{number}'")
+		fail(msg="patient total is #{number}")
 	end
 end
 

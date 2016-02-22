@@ -50,7 +50,7 @@ Feature: After version upgrade, data integrity should not be broken
     And I press "Continue Working on MMIA"
     And I wait for "MMIA -" to appear
     When I scroll "scrollView" down to "Submit for Approval"
-    Then I should see patient total
+    Then I should see patient total number is "18"
     And I press "Save"
     And I navigate back
 
