@@ -14,6 +14,15 @@ Before('@reinstall_app') do
   install_app(ENV["APP_PATH"])
 end
 
+Before('@change_date') do
+  system('adb shell date -s $ADB_DEVICE_ARG 20160121.130000')
+end
+
+After('@change_date') do
+  current_time = Time.now.strftime("%Y%m%d.%H%M%S")
+  system("adb shell date -s $ADB_DEVICE_ARG #{current_time}")
+end
+
 def reset_local_server_data
   puts "reset local server data..."
   system("cd #{LMIS_MOZ_DIR} && ./build/setup-data.sh")

@@ -1,4 +1,4 @@
-@MMIA @dev
+@MMIA @dev @change_date
 Feature: MMIA
 
   Background: Navigate to Home Page
@@ -25,6 +25,9 @@ Feature: MMIA
     Then I should see text containing "Create MMIA"
 
     Then I press "Create MMIA"
+    Then I should see "Select inventory to close period"
+    And I press "Thursday"
+    And I press "Next"
     Then I wait for "MMIA -" to appear
     Then I wait for 1 second
     Then I scroll down until I see the "Zidovudina/Lamivudina/Nevirapi; 60mg+30mg+50mg"
@@ -46,6 +49,8 @@ Feature: MMIA
     Then I wait for 1 second
 
     Then I press "Create MMIA"
+    And I press "Thursday"
+    And I press "Next"
     Then I wait for "MMIA -" to appear
     Then I wait for 1 second
     Then I scroll "scrollView" down to "Submit for Approval"

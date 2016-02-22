@@ -1,4 +1,4 @@
-@REQUISITION @dev
+@REQUISITION @dev @change_date
 Feature: Requisition
 
   Scenario: Save requisition draft
@@ -21,9 +21,13 @@ Feature: Requisition
     Then I do physical inventory for via items
 
     Then I wait for "Via Classica Requisitions" to appear
-    Then I should see text containing "Create Via Classica Requisition"
+    And I should see text containing "Create Via Classica Requisition"
 
     And I press "Create Via Classica Requisition"
+    Then I should see "Select inventory to close period"
+    And I press "Thursday"
+    And I press "Next"
+    Then I should see "to 21 Jan"
     Then I enter consultationsNub "2015"
     Then I wait for 1 second
     Then I navigate back
@@ -32,6 +36,8 @@ Feature: Requisition
     Then I wait for "Via Classica Requisitions" to appear
 
     And I press "Create Via Classica Requisition"
+    And I press "Thursday"
+    And I press "Next"
     And I should see empty consultations number
     Then I enter consultationsNub "888"
     Then I swipe right

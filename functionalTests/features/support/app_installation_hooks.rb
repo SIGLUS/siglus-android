@@ -41,7 +41,6 @@ Before('~@upgrade') do |scenario|
       uninstall_apps
       install_app(ENV["TEST_APP_PATH"])
       install_app(ENV["APP_PATH"])
-      system('adb shell date -s 20160120.130000')
       first_time = false
     end
 

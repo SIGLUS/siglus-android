@@ -1,4 +1,4 @@
-@MMIA_MISMATCH @dev
+@MMIA_MISMATCH @dev @change_date
 Feature: MMIA Page total mismatch
 
   Scenario: When I fill a field, if the regime total and patient total are different, I will see pop up if I press complete without filling comments.
@@ -17,6 +17,9 @@ Feature: MMIA Page total mismatch
     Then I should see text containing "Create MMIA"
 
     Then I press "Create MMIA"
+    Then I should see "Select inventory to close period"
+    And I press "Thursday"
+    And I press "Next"
     And I wait for "MMIA -" to appear
     And I scroll "ScrollView" down to "Submit for Approval"
     And I enter regimen totals
