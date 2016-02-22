@@ -207,7 +207,7 @@ public class RnrFormAdapterTest {
         when(mockProductRepository.getByCode(anyString())).thenReturn(new Product());
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(new Program());
 
-        String json = JsonFileReader.readJson(getClass(), "RequisitionRequest.json");
+        String json = JsonFileReader.readJson(getClass(), "RequisitionResponse.json");
 
         RnRForm rnRForm = rnrFormAdapter.deserialize(new JsonParser().parse(json), null, null);
         assertThat(rnRForm.getComments(), is("I don't know"));
