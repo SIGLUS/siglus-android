@@ -30,6 +30,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockCard;
@@ -113,7 +114,11 @@ public class StockMovementViewHolder extends BaseViewHolder {
             txReason.setText(StringUtils.EMPTY);
         }
 
-        setItemViewTextColor(model);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_change_stock_movement_color_481)) {
+            setItemViewTextColor(model);
+        } else {
+            setItemViewTextColorOld(model);
+        }
 
         if (model.isDraft()) {
             setInitialDraftStyle(model);
@@ -237,13 +242,21 @@ public class StockMovementViewHolder extends BaseViewHolder {
         etDocumentNo.addTextChangedListener(watcher4);
     }
 
-    private void setItemViewTextColor(StockMovementViewModel model) {
+    private void setItemViewTextColorOld(StockMovementViewModel model) {
         if (model.getReason() != null && (StringUtils.isNotEmpty(model.getReceived())
                 || model.getReason().isPhysicalInventory()
                 || model.getReason().isInventoryAdjustment())) {
             setRowFontColor(R.color.color_red);
         } else {
             setRowFontColor(R.color.color_black);
+        }
+    }
+
+    private void setItemViewTextColor(StockMovementViewModel model) {
+        if (model.getReason() != null && model.getReason().isIssueAdjustment()) {
+            setRowFontColor(R.color.color_black);
+        } else {
+            setRowFontColor(R.color.color_red);
         }
     }
 
@@ -377,7 +390,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
             clearQuantityAndDocumentNoField();
             setEditableQuantityField(model);
             highLightAndShowBottomBtn();
-            setItemViewTextColor(model);
+            setItemViewTextColorOld(model);
         }
 
         private void setMovementDate() {

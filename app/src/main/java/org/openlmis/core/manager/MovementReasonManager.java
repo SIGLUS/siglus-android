@@ -197,5 +197,9 @@ public final class MovementReasonManager {
         protected boolean canBeDisplayOnMovementMenu(){
             return !(code.startsWith(DEFAULT_PREFIX) || code.equalsIgnoreCase(INVENTORY));
         }
+
+        public boolean isIssueAdjustment() {
+            return StockMovementItem.MovementType.ISSUE == movementType;
+        }
     }
 }

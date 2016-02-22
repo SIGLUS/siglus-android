@@ -6,12 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
 
-import com.ibm.icu.impl.duration.DateFormatter;
-
-import org.apache.commons.lang3.time.DateParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -30,7 +28,6 @@ import org.robolectric.shadows.ShadowAlertDialog;
 import org.robolectric.shadows.ShadowDatePickerDialog;
 import org.robolectric.shadows.ShadowToast;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -59,7 +56,7 @@ public class StockMovementViewHolderTest {
     @Before
     public void setUp() throws LMISException, ParseException {
         itemView = LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_stock_movement, null, false);
-        mockedListener= mock(StockMovementAdapter.MovementChangedListener.class);
+        mockedListener = mock(StockMovementAdapter.MovementChangedListener.class);
         viewHolder = new StockMovementViewHolder(itemView, mockedListener);
 
         viewModel = new StockMovementViewModelBuilder()
@@ -104,7 +101,7 @@ public class StockMovementViewHolderTest {
     }
 
     @Test
-    public void shouldHideUnderline(){
+    public void shouldHideUnderline() {
         viewHolder.populate(viewModel, stockCard);
 
         assertNull(viewHolder.etIssued.getBackground());
@@ -116,6 +113,7 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldSetFontColorBlackIfNotInventoryAdjustment() {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_change_stock_movement_color_481, false);
         viewHolder.populate(viewModel, stockCard);
 
         int blackColor = RuntimeEnvironment.application.getResources().getColor(R.color.color_black);
@@ -127,6 +125,40 @@ public class StockMovementViewHolderTest {
         assertEquals(blackColor, viewHolder.etPositiveAdjustment.getCurrentTextColor());
         assertEquals(blackColor, viewHolder.etNegativeAdjustment.getCurrentTextColor());
         assertEquals(blackColor, viewHolder.txStockExistence.getCurrentTextColor());
+    }
+
+    @Test
+    public void shouldSetFontColorRedIfNotIssueAdjustment() {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_change_stock_movement_color_481, true);
+        viewModel.setReason(new MovementReasonManager.MovementReason(StockMovementItem.MovementType.NEGATIVE_ADJUST, "negative_adjust", "negative_adjust description"));
+        viewHolder.populate(viewModel, stockCard);
+
+        int red = RuntimeEnvironment.application.getResources().getColor(R.color.color_red);
+
+        assertEquals(red, viewHolder.txMovementDate.getCurrentTextColor());
+        assertEquals(red, viewHolder.txReason.getCurrentTextColor());
+        assertEquals(red, viewHolder.etDocumentNo.getCurrentTextColor());
+        assertEquals(red, viewHolder.etReceived.getCurrentTextColor());
+        assertEquals(red, viewHolder.etPositiveAdjustment.getCurrentTextColor());
+        assertEquals(red, viewHolder.etNegativeAdjustment.getCurrentTextColor());
+        assertEquals(red, viewHolder.txStockExistence.getCurrentTextColor());
+    }
+
+    @Test
+    public void shouldSetFontColorBlackIfIssueAdjustment() {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_change_stock_movement_color_481, true);
+        viewModel.setReason(new MovementReasonManager.MovementReason(StockMovementItem.MovementType.ISSUE, "ISSUE_1", "issue description"));
+        viewHolder.populate(viewModel, stockCard);
+
+        int black = RuntimeEnvironment.application.getResources().getColor(R.color.color_black);
+
+        assertEquals(black, viewHolder.txMovementDate.getCurrentTextColor());
+        assertEquals(black, viewHolder.txReason.getCurrentTextColor());
+        assertEquals(black, viewHolder.etDocumentNo.getCurrentTextColor());
+        assertEquals(black, viewHolder.etReceived.getCurrentTextColor());
+        assertEquals(black, viewHolder.etPositiveAdjustment.getCurrentTextColor());
+        assertEquals(black, viewHolder.etNegativeAdjustment.getCurrentTextColor());
+        assertEquals(black, viewHolder.txStockExistence.getCurrentTextColor());
     }
 
     @Test
