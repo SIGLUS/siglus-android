@@ -246,29 +246,29 @@ public class StockMovementViewHolder extends BaseViewHolder {
         if (model.getReason() != null && (StringUtils.isNotEmpty(model.getReceived())
                 || model.getReason().isPhysicalInventory()
                 || model.getReason().isInventoryAdjustment())) {
-            setRowFontColor(R.color.color_red);
+            setRowFontColor(context.getResources().getColor(R.color.color_red));
         } else {
-            setRowFontColor(R.color.color_black);
+            setRowFontColor(context.getResources().getColor(R.color.color_black));
         }
     }
 
     private void setItemViewTextColor(StockMovementViewModel model) {
         if (model.isIssuedReason()) {
-            setRowFontColor(R.color.color_black);
+            setRowFontColor(context.getResources().getColor(R.color.color_black));
         } else {
-            setRowFontColor(R.color.color_red);
+            setRowFontColor(context.getResources().getColor(R.color.color_red));
         }
     }
 
-    private void setRowFontColor(int colorResId) {
-        txMovementDate.setTextColor(context.getResources().getColor(colorResId));
-        txReason.setTextColor(context.getResources().getColor(colorResId));
-        etDocumentNo.setTextColor(context.getResources().getColor(colorResId));
-        etReceived.setTextColor(context.getResources().getColor(colorResId));
-        etPositiveAdjustment.setTextColor(context.getResources().getColor(colorResId));
-        etNegativeAdjustment.setTextColor(context.getResources().getColor(colorResId));
-        txStockExistence.setTextColor(context.getResources().getColor(colorResId));
-        txSignature.setTextColor(context.getResources().getColor(colorResId));
+    private void setRowFontColor(int color) {
+        txMovementDate.setTextColor(color);
+        txReason.setTextColor(color);
+        etDocumentNo.setTextColor(color);
+        etReceived.setTextColor(color);
+        etPositiveAdjustment.setTextColor(color);
+        etNegativeAdjustment.setTextColor(color);
+        txStockExistence.setTextColor(color);
+        txSignature.setTextColor(color);
     }
 
     private void hideUnderline() {
