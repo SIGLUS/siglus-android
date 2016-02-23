@@ -1,4 +1,3 @@
-@regression
 Feature: User re-selects movement reason after already entering numbers
 
   Scenario: Movement fields should be cleared if user changes movement reason
