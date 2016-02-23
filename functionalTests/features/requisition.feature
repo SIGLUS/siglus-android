@@ -74,3 +74,5 @@ Feature: Requisition
     And I press "Via Classica Requisitions"
     Then I wait for "Via Classica Requisitions" to appear
     Then I should see text containing "View Via Classica Requisition"
+    Then I should see text containing "You will be able to create a requisition on the 18th of"
+

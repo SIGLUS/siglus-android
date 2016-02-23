@@ -96,6 +96,8 @@ Feature: MMIA
     Then I wait for "MMIA" to appear
     Then I should see text containing "View MMIA"
 
+    Then I should see text containing "You will be able to create a requisition on the 18th of"
+
     When I press the pop menu for delete rnr form
     And I press "Remove from tablet"
     And I press "Delete"
