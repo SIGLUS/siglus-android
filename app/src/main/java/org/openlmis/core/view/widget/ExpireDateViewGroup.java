@@ -113,14 +113,21 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
         DatePickerDialog dialog = new DatePickerDialog(context, AlertDialog.THEME_HOLO_LIGHT, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                GregorianCalendar date = new GregorianCalendar(year, monthOfYear, dayOfMonth);
+                int defaultDay = new GregorianCalendar(year, monthOfYear, dayOfMonth).getActualMaximum(Calendar.DATE);
+                GregorianCalendar date = new GregorianCalendar(year, monthOfYear, defaultDay);
                 if (today.before(date)) {
-                    addDate(DateUtil.formatDateFromIntToString(year, monthOfYear, dayOfMonth));
+                    addDate(DateUtil.formatDateFromIntToString(year, monthOfYear, defaultDay));
                 } else {
                     ToastUtil.show(R.string.msg_invalid_date);
                 }
             }
-        }, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
+        }, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH)){
+            @Override
+            public void onDateChanged(DatePicker view, int year, int month, int day) {
+                int defaultDay = new GregorianCalendar(year, month, day).getActualMaximum(Calendar.DATE);
+                super.onDateChanged(view, year, month, defaultDay);
+            }
+        };
 
         dialog.show();
 
