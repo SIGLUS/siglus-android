@@ -6,7 +6,6 @@ import android.view.View;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -79,21 +78,6 @@ public class StockMovementHistoryViewHolderTest {
     }
 
     @Test
-    public void shouldSetFontColorBlackIfNotInventoryAdjustment() {
-        viewHolder.populate(viewModel);
-
-        int blackColor = RuntimeEnvironment.application.getResources().getColor(R.color.color_black);
-
-        assertEquals(blackColor, viewHolder.txMovementDate.getCurrentTextColor());
-        assertEquals(blackColor, viewHolder.txReason.getCurrentTextColor());
-        assertEquals(blackColor, viewHolder.etDocumentNo.getCurrentTextColor());
-        assertEquals(blackColor, viewHolder.etReceived.getCurrentTextColor());
-        assertEquals(blackColor, viewHolder.etPositiveAdjustment.getCurrentTextColor());
-        assertEquals(blackColor, viewHolder.etNegativeAdjustment.getCurrentTextColor());
-        assertEquals(blackColor, viewHolder.txStockExistence.getCurrentTextColor());
-    }
-
-    @Test
     public void shouldSetPhysicalInventoryFontColorToRed() {
         viewModel.setReason(new MovementReason(StockMovementItem.MovementType.PHYSICAL_INVENTORY, "INVENTORY", ""));
         viewHolder.populate(viewModel);
@@ -161,7 +145,6 @@ public class StockMovementHistoryViewHolderTest {
 
     @Test
     public void shouldSetFontColorToRedIfReasonIsNotIssue() {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_change_stock_movement_color_481, true);
         viewModel.setReason(new MovementReason(StockMovementItem.MovementType.POSITIVE_ADJUST, "positive_adjust", ""));
         viewModel.setIssued(null);
         viewModel.setPositiveAdjustment("123");
@@ -180,7 +163,6 @@ public class StockMovementHistoryViewHolderTest {
 
     @Test
     public void shouldSetFontColorToBlackIfReasonIsIssue() {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_change_stock_movement_color_481, true);
         viewModel.setReason(new MovementReason(StockMovementItem.MovementType.ISSUE, "Issued", ""));
         viewModel.setIssued("123");
         viewHolder.populate(viewModel);

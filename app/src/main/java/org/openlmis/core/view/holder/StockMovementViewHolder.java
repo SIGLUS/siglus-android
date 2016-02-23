@@ -30,7 +30,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockCard;
@@ -114,11 +113,9 @@ public class StockMovementViewHolder extends BaseViewHolder {
             txReason.setText(StringUtils.EMPTY);
         }
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_change_stock_movement_color_481)) {
-            setItemViewTextColor(model);
-        } else {
-            setItemViewTextColorOld(model);
-        }
+
+        setItemViewTextColor(model);
+
 
         if (model.isDraft()) {
             setInitialDraftStyle(model);
@@ -240,16 +237,6 @@ public class StockMovementViewHolder extends BaseViewHolder {
 
         EditTextWatcher watcher4 = new EditTextWatcher(etDocumentNo, model, currentStockOnHand);
         etDocumentNo.addTextChangedListener(watcher4);
-    }
-
-    private void setItemViewTextColorOld(StockMovementViewModel model) {
-        if (model.getReason() != null && (StringUtils.isNotEmpty(model.getReceived())
-                || model.getReason().isPhysicalInventory()
-                || model.getReason().isInventoryAdjustment())) {
-            setRowFontColor(context.getResources().getColor(R.color.color_red));
-        } else {
-            setRowFontColor(context.getResources().getColor(R.color.color_black));
-        }
     }
 
     private void setItemViewTextColor(StockMovementViewModel model) {
@@ -390,7 +377,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
             clearQuantityAndDocumentNoField();
             setEditableQuantityField(model);
             highLightAndShowBottomBtn();
-            setItemViewTextColorOld(model);
+            setItemViewTextColor(model);
         }
 
         private void setMovementDate() {

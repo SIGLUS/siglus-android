@@ -21,9 +21,7 @@ package org.openlmis.core.view.holder;
 import android.view.View;
 import android.widget.TextView;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
 import roboguice.inject.InjectView;
@@ -62,21 +60,7 @@ public class StockMovementHistoryViewHolder extends BaseViewHolder {
         txReason.setText(model.getReason().getDescription());
         txSignature.setText(model.getSignature());
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_change_stock_movement_color_481)) {
-            setItemViewTextColor(model);
-        } else {
-            setItemViewTextColorOld(model);
-        }
-    }
-
-    private void setItemViewTextColorOld(StockMovementViewModel model) {
-        if (model.getReceived() != null
-                || model.getReason().getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY
-                || model.getReason().isInventoryAdjustment()) {
-            setRowFontColor(redColor);
-        }else {
-            setRowFontColor(blackColor);
-        }
+        setItemViewTextColor(model);
     }
 
     private void setItemViewTextColor(StockMovementViewModel model) {

@@ -9,7 +9,6 @@ import android.widget.DatePicker;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -112,24 +111,7 @@ public class StockMovementViewHolderTest {
     }
 
     @Test
-    public void shouldSetFontColorBlackIfNotInventoryAdjustment() {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_change_stock_movement_color_481, false);
-        viewHolder.populate(viewModel, stockCard);
-
-        int blackColor = RuntimeEnvironment.application.getResources().getColor(R.color.color_black);
-
-        assertEquals(blackColor, viewHolder.txMovementDate.getCurrentTextColor());
-        assertEquals(blackColor, viewHolder.txReason.getCurrentTextColor());
-        assertEquals(blackColor, viewHolder.etDocumentNo.getCurrentTextColor());
-        assertEquals(blackColor, viewHolder.etReceived.getCurrentTextColor());
-        assertEquals(blackColor, viewHolder.etPositiveAdjustment.getCurrentTextColor());
-        assertEquals(blackColor, viewHolder.etNegativeAdjustment.getCurrentTextColor());
-        assertEquals(blackColor, viewHolder.txStockExistence.getCurrentTextColor());
-    }
-
-    @Test
     public void shouldSetFontColorRedIfNotIssueAdjustment() {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_change_stock_movement_color_481, true);
         viewModel.setReason(new MovementReasonManager.MovementReason(StockMovementItem.MovementType.NEGATIVE_ADJUST, "negative_adjust", "negative_adjust description"));
         viewHolder.populate(viewModel, stockCard);
 
@@ -146,7 +128,6 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldSetFontColorBlackIfIssueAdjustment() {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_change_stock_movement_color_481, true);
         viewModel.setReason(new MovementReasonManager.MovementReason(StockMovementItem.MovementType.ISSUE, "ISSUE_1", "issue description"));
         viewHolder.populate(viewModel, stockCard);
 
