@@ -23,6 +23,7 @@ import android.support.annotation.NonNull;
 
 import com.google.inject.Inject;
 
+import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -152,7 +153,7 @@ public class RnRFormListPresenter extends Presenter {
     private RnRFormViewModel generateRnrFormViewModelWithoutRnrForm(Period currentPeriod) throws LMISException {
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
-            if (DateUtil.beforeDayOf(Period.INVENTORY_BEGIN_DAY)){
+            if (isCanNotCreateRnr(currentPeriod)){
                 return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CAN_NOT_CREATE_RNR);
             }
 
@@ -173,6 +174,11 @@ public class RnRFormListPresenter extends Presenter {
                 return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED);
             }
         }
+    }
+
+    private boolean isCanNotCreateRnr(Period currentPeriod) {
+        DateTime dateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        return dateTime.isAfter(currentPeriod.getBegin()) && dateTime.isBefore(currentPeriod.getInventoryBegin());
     }
 
     private void populateSyncErrorsOnViewModels(final List<RnRFormViewModel> rnrViewModels) {

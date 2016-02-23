@@ -198,7 +198,4 @@ public final class DateUtil {
         return new SimpleDateFormat("MMM").format(CALENDAR_NOW.getTime());
     }
 
-    public static boolean beforeDayOf(int inventoryBeginDay) {
-        return new DateTime(LMISApp.getInstance().getCurrentTimeMillis()).getDayOfMonth() < inventoryBeginDay;
-    }
 }

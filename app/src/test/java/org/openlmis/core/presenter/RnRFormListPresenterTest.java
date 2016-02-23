@@ -2,6 +2,7 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.AbstractModule;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +20,7 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.model.repository.VIARepository;
+import org.openlmis.core.model.service.PeriodService;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.RuntimeEnvironment;
@@ -49,12 +51,18 @@ public class RnRFormListPresenterTest {
     private SharedPreferenceMgr sharedPreferenceMgr;
     private Period period;
 
+    private PeriodService periodService;
+    private long dateJanTwentySix = 1453766400000l;
+    private long dateFebTwentyOne = 1456012800000l;
+
     @Before
     public void setUp() {
         rnrFormRepository = mock(RnrFormRepository.class);
         stockRepository = mock(StockRepository.class);
         syncErrorsRepository = mock(SyncErrorsRepository.class);
         sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
+        periodService = mock(PeriodService.class);
+
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
             protected void configure() {
@@ -62,6 +70,7 @@ public class RnRFormListPresenterTest {
                 bind(RnrFormRepository.class).toInstance(rnrFormRepository);
                 bind(StockRepository.class).toInstance(stockRepository);
                 bind(SharedPreferenceMgr.class).toInstance(sharedPreferenceMgr);
+                bind(PeriodService.class).toInstance(periodService);
             }
         });
 
@@ -133,9 +142,12 @@ public class RnRFormListPresenterTest {
     public void shouldReturnCanNotCreateRnrTypeRnrFormViewModel() throws Exception {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
-        ((LMISTestApp) RuntimeEnvironment.application).setCurrentTimeMillis(1455408000000l);
+
+        long dateFebFourteen = 1455408000000l;
+        ((LMISTestApp) RuntimeEnvironment.application).setCurrentTimeMillis(dateFebFourteen);
         when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
         when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(DateUtil.generateRnRFormPeriodBy(new Date()).previous().getBegin().toDate(), DateUtil.DATE_TIME_FORMAT));
+        when(periodService.generatePeriod("ESS_MEDS", null)).thenReturn(new Period(new DateTime(dateJanTwentySix), new DateTime(dateFebTwentyOne)));
 
         presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
 
@@ -143,6 +155,24 @@ public class RnRFormListPresenterTest {
 
         assertThat(rnRFormViewModels.size()).isEqualTo(1);
         assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_CAN_NOT_CREATE_RNR);
+    }
+
+    @Test
+    public void shouldReturnUnCompleteInventoryTypeRnrFormViewModelWhenTimeAfterInventoryBegin() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
+
+        long dateFebEighteen = 1455753600000l;
+        ((LMISTestApp) RuntimeEnvironment.application).setCurrentTimeMillis(dateFebEighteen);
+        when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
+        when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(DateUtil.generateRnRFormPeriodBy(new Date()).previous().getBegin().toDate(), DateUtil.DATE_TIME_FORMAT));
+        when(periodService.generatePeriod("ESS_MEDS", null)).thenReturn(new Period(new DateTime(dateJanTwentySix), new DateTime(dateFebTwentyOne)));
+
+        presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
+
+        List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
+
+        assertThat(rnRFormViewModels.size()).isEqualTo(1);
+        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
     }
 
     @Test
