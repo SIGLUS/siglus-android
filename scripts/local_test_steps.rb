@@ -29,10 +29,3 @@ def run_ft
   stop_jetty
   ftResult
 end
-
-def run_st
-  start_jetty
-  stResult=system("./gradlew stressTests")
-  stop_jetty
-  stResult
-end
