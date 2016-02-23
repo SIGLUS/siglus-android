@@ -19,6 +19,7 @@
 package org.openlmis.core.view.widget;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -109,7 +110,7 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
     private void showDatePicker() {
         final Calendar today = GregorianCalendar.getInstance();
 
-        DatePickerDialog dialog = new DatePickerDialog(context, DatePickerDialog.BUTTON_NEUTRAL, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog dialog = new DatePickerDialog(context, AlertDialog.THEME_HOLO_LIGHT, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 GregorianCalendar date = new GregorianCalendar(year, monthOfYear, dayOfMonth);
@@ -122,6 +123,29 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
         }, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
 
         dialog.show();
+
+        hideDay(dialog);
+    }
+
+    private void hideDay(DatePickerDialog mDialog) {
+        DatePicker dp = mDialog.getDatePicker();
+        if (dp == null) {
+            return;
+        }
+        ViewGroup datePickerLayout = (ViewGroup) dp.getChildAt(0);
+        if (datePickerLayout == null) {
+            return;
+        }
+
+        try {
+            //hide CalendarView
+            datePickerLayout.getChildAt(1).setVisibility(View.GONE);
+            //hide day
+            ((ViewGroup) datePickerLayout.getChildAt(0))
+                    .getChildAt(1).setVisibility(View.GONE);
+        } catch (NullPointerException e) {
+            new LMISException(e).reportToFabric();
+        }
     }
 
     protected void addDate(String date) {
