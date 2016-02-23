@@ -15,12 +15,12 @@ Before('@reinstall_app') do
 end
 
 Before('@change_date') do
-  system('adb shell date -s $ADB_DEVICE_ARG 20160121.130000')
+  system('adb -s $ADB_DEVICE_ARG shell "su 0 date -s 20160121.130000"')
 end
 
 After('@change_date') do
   current_time = Time.now.strftime("%Y%m%d.%H%M%S")
-  system("adb shell date -s $ADB_DEVICE_ARG #{current_time}")
+  system("adb -s $ADB_DEVICE_ARG shell 'su 0 date -s #{current_time}'")
 end
 
 def reset_local_server_data
