@@ -1,5 +1,6 @@
 package org.openlmis.core.view.holder;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
@@ -21,6 +22,7 @@ import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.widget.DatePickerDialogWithoutDay;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 
 import java.text.ParseException;
@@ -166,7 +168,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     public void showDatePicker(final InventoryViewModel viewModel) {
         final Calendar today = GregorianCalendar.getInstance();
 
-        DatePickerDialog dialog = new DatePickerDialog(context, DatePickerDialog.BUTTON_NEUTRAL, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog dialog = new DatePickerDialogWithoutDay(context, AlertDialog.THEME_HOLO_LIGHT, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 GregorianCalendar date = new GregorianCalendar(year, monthOfYear, dayOfMonth);

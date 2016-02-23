@@ -110,49 +110,19 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
     private void showDatePicker() {
         final Calendar today = GregorianCalendar.getInstance();
 
-        DatePickerDialog dialog = new DatePickerDialog(context, AlertDialog.THEME_HOLO_LIGHT, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog dialog = new DatePickerDialogWithoutDay(context, AlertDialog.THEME_HOLO_LIGHT, new DatePickerDialog.OnDateSetListener() {
             @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                int defaultDay = new GregorianCalendar(year, monthOfYear, dayOfMonth).getActualMaximum(Calendar.DATE);
-                GregorianCalendar date = new GregorianCalendar(year, monthOfYear, defaultDay);
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int lastDayOfMonth) {
+                GregorianCalendar date = new GregorianCalendar(year, monthOfYear, lastDayOfMonth);
                 if (today.before(date)) {
-                    addDate(DateUtil.formatDateFromIntToString(year, monthOfYear, defaultDay));
+                    addDate(DateUtil.formatDateFromIntToString(year, monthOfYear, lastDayOfMonth));
                 } else {
                     ToastUtil.show(R.string.msg_invalid_date);
                 }
             }
-        }, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH)){
-            @Override
-            public void onDateChanged(DatePicker view, int year, int month, int day) {
-                int defaultDay = new GregorianCalendar(year, month, day).getActualMaximum(Calendar.DATE);
-                super.onDateChanged(view, year, month, defaultDay);
-            }
-        };
+        }, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
 
         dialog.show();
-
-        hideDay(dialog);
-    }
-
-    private void hideDay(DatePickerDialog mDialog) {
-        DatePicker dp = mDialog.getDatePicker();
-        if (dp == null) {
-            return;
-        }
-        ViewGroup datePickerLayout = (ViewGroup) dp.getChildAt(0);
-        if (datePickerLayout == null) {
-            return;
-        }
-
-        try {
-            //hide CalendarView
-            datePickerLayout.getChildAt(1).setVisibility(View.GONE);
-            //hide day
-            ((ViewGroup) datePickerLayout.getChildAt(0))
-                    .getChildAt(1).setVisibility(View.GONE);
-        } catch (NullPointerException e) {
-            new LMISException(e).reportToFabric();
-        }
     }
 
     protected void addDate(String date) {
