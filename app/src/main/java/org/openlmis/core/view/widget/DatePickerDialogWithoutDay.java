@@ -17,12 +17,12 @@ public class DatePickerDialogWithoutDay extends DatePickerDialog {
     private OnDateSetListener mDateSetListener;
 
     public DatePickerDialogWithoutDay(Context context, OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
-        super(context, callBack, year, monthOfYear, dayOfMonth);
+        super(context, null, year, monthOfYear, dayOfMonth);
         init(callBack);
     }
 
     public DatePickerDialogWithoutDay(Context context, int theme, OnDateSetListener listener, int year, int monthOfYear, int dayOfMonth) {
-        super(context, theme, listener, year, monthOfYear, dayOfMonth);
+        super(context, theme, null, year, monthOfYear, dayOfMonth);
         init(listener);
     }
 
