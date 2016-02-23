@@ -22,7 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.StockCard;
@@ -193,8 +192,8 @@ public final class DateUtil {
         return expiryDates;
     }
 
-    public static String getCurrentMonth() {
-        CALENDAR_NOW.setTimeInMillis(LMISApp.getInstance().getCurrentTimeMillis());
+    public static String getMonthAbbrByDate(Date date){
+        CALENDAR_NOW.setTime(date);
         return new SimpleDateFormat("MMM").format(CALENDAR_NOW.getTime());
     }
 

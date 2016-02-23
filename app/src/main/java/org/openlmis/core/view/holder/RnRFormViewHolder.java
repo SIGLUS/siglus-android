@@ -11,7 +11,6 @@ import android.widget.TextView;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.network.SyncErrorsMap;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 
 import roboguice.inject.InjectView;
@@ -51,7 +50,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
         form = model.getForm();
         switch (model.getType()) {
             case RnRFormViewModel.TYPE_CAN_NOT_CREATE_RNR:
-                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_can_not_create_rnr, DateUtil.getCurrentMonth())), R.drawable.ic_description, R.color.color_draft_title, form);
+                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_can_not_create_rnr, model.getPeriodEndMonth())), R.drawable.ic_description, R.color.color_draft_title, form);
                 break;
             case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY:
                 configHolder(model, R.string.btn_view_uncompleted_physical_inventory, Html.fromHtml(context.getString(R.string.label_uncompleted_physical_inventory_message, model.getName())));

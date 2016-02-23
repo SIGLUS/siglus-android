@@ -144,7 +144,7 @@ public class RnRFormViewHolderTest {
         viewHolder.populate(viewModel);
 
         assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getPeriod()));
-        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_can_not_create_rnr, DateUtil.getCurrentMonth())));
+        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_can_not_create_rnr, viewModel.getPeriodEndMonth())));
     }
 
     @SuppressWarnings("ConstantConditions")

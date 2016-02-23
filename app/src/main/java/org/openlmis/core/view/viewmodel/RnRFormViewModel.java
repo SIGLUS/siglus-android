@@ -45,6 +45,7 @@ public class RnRFormViewModel {
     int type;
     String syncedDate;
     String period;
+    String periodEndMonth;
     String title;
     String name;
     long id;
@@ -71,6 +72,7 @@ public class RnRFormViewModel {
         this.period = generatePeriod(period.getBegin().toDate(), period.getEnd().toDate());
         this.type = type;
         this.programCode = programCode;
+        this.periodEndMonth = DateUtil.getMonthAbbrByDate(period.getEnd().toDate());
         setName(programCode);
     }
 
