@@ -34,7 +34,7 @@ import lombok.Data;
 @Data
 public class RnRFormViewModel {
 
-
+    public static final int TYPE_CAN_NOT_CREATE_RNR = 70;
     public static final int TYPE_UNCOMPLETE_INVENTORY = 10;
     public static final int TYPE_SELECT_CLOSE_OF_PERIOD = 20;
     public static final int TYPE_CLOSE_OF_PERIOD_SELECTED = 30;

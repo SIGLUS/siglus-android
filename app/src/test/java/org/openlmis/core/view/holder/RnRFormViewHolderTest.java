@@ -38,7 +38,7 @@ public class RnRFormViewHolderTest {
     }
 
     private RnRFormViewHolder getViewHolderByType(int viewType) {
-        if (viewType == RnRFormViewModel.TYPE_UNSYNC) {
+        if (viewType == RnRFormViewModel.TYPE_UNSYNC || viewType == RnRFormViewModel.TYPE_CAN_NOT_CREATE_RNR) {
             return new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card_unsync, null, false), mockedListener);
         } else {
             return new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card, null, false), mockedListener);
@@ -134,6 +134,17 @@ public class RnRFormViewHolderTest {
         assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_submitted_message, viewModel.getName(), viewModel.getSyncedDate())));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_requisition, viewModel.getName())));
         assertThat(viewHolder.ivDelete.getVisibility(), is(View.VISIBLE));
+    }
+
+    @Test
+    public void shouldShowCanNotDoPhysicalInventoryType() {
+        RnRFormViewModel viewModel = new RnRFormViewModel(Period.of(DateUtil.today()), program.getProgramCode(), RnRFormViewModel.TYPE_CAN_NOT_CREATE_RNR);
+        viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_CAN_NOT_CREATE_RNR);
+
+        viewHolder.populate(viewModel);
+
+        assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getPeriod()));
+        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_can_not_create_rnr, DateUtil.getCurrentMonth())));
     }
 
     @SuppressWarnings("ConstantConditions")

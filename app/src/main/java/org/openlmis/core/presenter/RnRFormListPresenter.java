@@ -152,6 +152,10 @@ public class RnRFormListPresenter extends Presenter {
     private RnRFormViewModel generateRnrFormViewModelWithoutRnrForm(Period currentPeriod) throws LMISException {
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
+            if (DateUtil.beforeDayOf(Period.INVENTORY_BEGIN_DAY)){
+                return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CAN_NOT_CREATE_RNR);
+            }
+
             List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(currentPeriod);
 
             if (physicalInventories == null || physicalInventories.size() == 0) {

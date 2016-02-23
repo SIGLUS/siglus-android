@@ -57,7 +57,7 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormViewHolder> 
 
     @Override
     public RnRFormViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == RnRFormViewModel.TYPE_UNSYNC) {
+        if (viewType == RnRFormViewModel.TYPE_UNSYNC || (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change) && viewType == RnRFormViewModel.TYPE_CAN_NOT_CREATE_RNR)) {
             return new RnRFormViewHolder(inflater.inflate(R.layout.item_rnr_card_unsync, parent, false), itemClickListener);
         } else {
             if (viewType == RnRFormViewModel.TYPE_UN_AUTHORIZED && !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {

@@ -2,7 +2,6 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.AbstractModule;
 
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,6 +69,7 @@ public class RnRFormListPresenterTest {
         period = DateUtil.generateRnRFormPeriodBy(new Date());
         rnRForms = createRnRForms();
         viewModels = new ArrayList<>();
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_home_page_update, true);
     }
 
     @Test
@@ -107,7 +107,7 @@ public class RnRFormListPresenterTest {
         when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(period.getBegin().toDate(), DateUtil.DATE_TIME_FORMAT));
         when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
         presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_home_page_update, true);
+
 
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -123,7 +123,6 @@ public class RnRFormListPresenterTest {
         when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
         when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(DateUtil.generateRnRFormPeriodBy(new Date()).previous().getBegin().toDate(), DateUtil.DATE_TIME_FORMAT));
         presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_home_page_update, true);
 
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
         assertThat(rnRFormViewModels.size()).isEqualTo(1);
@@ -131,11 +130,26 @@ public class RnRFormListPresenterTest {
     }
 
     @Test
+    public void shouldReturnCanNotCreateRnrTypeRnrFormViewModel() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
+
+        ((LMISTestApp) RuntimeEnvironment.application).setCurrentTimeMillis(1455408000000l);
+        when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
+        when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(DateUtil.generateRnRFormPeriodBy(new Date()).previous().getBegin().toDate(), DateUtil.DATE_TIME_FORMAT));
+
+        presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
+
+        List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
+
+        assertThat(rnRFormViewModels.size()).isEqualTo(1);
+        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_CAN_NOT_CREATE_RNR);
+    }
+
+    @Test
     public void shouldReturnCreateFormTypeRnrFormViewModel() throws Exception {
         when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(new Date(), DateUtil.DATE_TIME_FORMAT));
         when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
         presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_home_page_update, true);
 
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
         assertThat(rnRFormViewModels.size()).isEqualTo(1);
@@ -160,7 +174,6 @@ public class RnRFormListPresenterTest {
         when(rnrFormRepository.list(VIARepository.VIA_PROGRAM_CODE)).thenReturn(rnRForms);
         when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(period.previous().getBegin().toDate(), DateUtil.DATE_TIME_FORMAT));
         presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_home_page_update, true);
 
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
