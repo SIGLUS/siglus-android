@@ -3,6 +3,7 @@ package org.openlmis.core.view.holder;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -54,8 +55,8 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
 
         expireDateViewGroup.initExpireDateViewGroup(inventoryViewModel, false);
 
-        if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_remove_expiry_date_when_soh_is_0_393)) {
-            expireDateViewGroup.hideAddExpiryDate(inventoryViewModel.getStockOnHand() == 0);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_remove_expiry_date_when_soh_is_0_393)) {
+            expireDateViewGroup.hideAddExpiryDate(shouldHideExpiryDate(inventoryViewModel));
         }
 
         if (inventoryViewModel.isValid()) {
@@ -63,6 +64,12 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
         } else {
             lyQuantity.setError(context.getString(R.string.msg_inventory_check_failed));
         }
+    }
+
+    private boolean shouldHideExpiryDate(InventoryViewModel inventoryViewModel) {
+        String inventoryQuantity = inventoryViewModel.getQuantity();
+        return (inventoryViewModel.getStockOnHand() == 0 && TextUtils.isEmpty(inventoryQuantity))
+                || (!TextUtils.isEmpty(inventoryQuantity) && Long.parseLong(inventoryQuantity) == 0);
     }
 
     class EditTextWatcher extends SingleTextWatcher {
@@ -76,7 +83,7 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
         @Override
         public void afterTextChanged(Editable editable) {
             String quantity = editable.toString();
-            if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_remove_expiry_date_when_soh_is_0_393)) {
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_remove_expiry_date_when_soh_is_0_393)) {
                 expireDateViewGroup.hideAddExpiryDate((!StringUtils.isEmpty(quantity) && 0 == Integer.parseInt(quantity)));
             }
             afterQuantityChanged(viewModel, quantity);

@@ -64,6 +64,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -102,10 +103,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         product.setPrimaryName("Test Product");
         product.setCode("ABC");
 
-        stockCard = new StockCard();
-        stockCard.setStockOnHand(100);
-        stockCard.setProduct(product);
-        stockCard.setExpireDates(StringUtils.EMPTY);
+        stockCard = buildDefaultStockCard();
 
         RxAndroidPlugins.getInstance().reset();
         RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
@@ -114,6 +112,14 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
                 return Schedulers.immediate();
             }
         });
+    }
+
+    private StockCard buildDefaultStockCard() {
+        StockCard stockCard = new StockCard();
+        stockCard.setStockOnHand(100);
+        stockCard.setProduct(product);
+        stockCard.setExpireDates(StringUtils.EMPTY);
+        return stockCard;
     }
 
     @After
@@ -344,7 +350,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @NonNull
     private InventoryViewModel buildStockCardWithOutDraft(int stockCardId, String quantity, String expireDate) {
-        InventoryViewModel inventoryViewModelWithOutDraft = new InventoryViewModel(stockCard);
+        InventoryViewModel inventoryViewModelWithOutDraft = new InventoryViewModel(buildDefaultStockCard());
         inventoryViewModelWithOutDraft.setStockCardId(stockCardId);
         inventoryViewModelWithOutDraft.setQuantity(quantity);
         ArrayList<String> expireDates = new ArrayList<>();
@@ -403,7 +409,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
         List<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
         InventoryViewModel firstStockCardViewModel = inventoryViewModels.get(0);
-        firstStockCardViewModel.setExpiryDates(Arrays.asList("2016-01-01", "2016-02-01"));
+        firstStockCardViewModel.setExpiryDates(Arrays.asList("01/01/2016", "02/01/2016"));
         firstStockCardViewModel.setQuantity("0");
 
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
@@ -421,7 +427,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
         List<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
         InventoryViewModel firstStockCardViewModel = inventoryViewModels.get(0);
-        firstStockCardViewModel.setExpiryDates(Arrays.asList("2016-01-01", "2016-02-01"));
+        firstStockCardViewModel.setExpiryDates(Arrays.asList("01/01/2016", "02/01/2016"));
         firstStockCardViewModel.setQuantity("0");
 
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
@@ -430,7 +436,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
         subscriber.awaitTerminalEvent();
 
-        assertThat(firstStockCardViewModel.getStockCard().getExpireDates(), is("2016-01-01,2016-02-01"));
+        assertThat(firstStockCardViewModel.getStockCard().getExpireDates(), is("01/01/2016,02/01/2016"));
     }
 
     public class MyTestModule extends AbstractModule {

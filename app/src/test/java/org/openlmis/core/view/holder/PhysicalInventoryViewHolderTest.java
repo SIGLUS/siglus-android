@@ -69,6 +69,7 @@ public class PhysicalInventoryViewHolderTest {
     public void shouldHideAddExpiryDateWhenSohIsZero() throws Exception {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, true);
         viewModel.setStockOnHand(0);
+        viewModel.setQuantity("");
 
         viewHolder.populate(viewModel, queryKeyWord);
 
