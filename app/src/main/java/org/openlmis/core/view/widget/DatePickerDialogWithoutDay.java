@@ -1,5 +1,6 @@
 package org.openlmis.core.view.widget;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,13 +18,8 @@ public class DatePickerDialogWithoutDay extends DatePickerDialog {
     private OnDateSetListener mDateSetListener;
 
     public DatePickerDialogWithoutDay(Context context, OnDateSetListener callBack, int year, int monthOfYear, int dayOfMonth) {
-        super(context, null, year, monthOfYear, dayOfMonth);
+        super(context, AlertDialog.THEME_HOLO_LIGHT, null, year, monthOfYear, dayOfMonth);
         init(callBack);
-    }
-
-    public DatePickerDialogWithoutDay(Context context, int theme, OnDateSetListener listener, int year, int monthOfYear, int dayOfMonth) {
-        super(context, theme, null, year, monthOfYear, dayOfMonth);
-        init(listener);
     }
 
     private void init(OnDateSetListener listener) {
@@ -47,7 +43,7 @@ public class DatePickerDialogWithoutDay extends DatePickerDialog {
         }
     }
 
-    private int getLastDayOfMonth(DatePicker datePicker) {
+    protected int getLastDayOfMonth(DatePicker datePicker) {
         return new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth()).getActualMaximum(Calendar.DATE);
     }
 

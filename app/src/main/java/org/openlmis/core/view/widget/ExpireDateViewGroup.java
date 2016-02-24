@@ -19,7 +19,6 @@
 package org.openlmis.core.view.widget;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -110,7 +109,7 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
     private void showDatePicker() {
         final Calendar today = GregorianCalendar.getInstance();
 
-        DatePickerDialog dialog = new DatePickerDialogWithoutDay(context, AlertDialog.THEME_HOLO_LIGHT, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog dialog = new DatePickerDialogWithoutDay(context, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int lastDayOfMonth) {
                 GregorianCalendar date = new GregorianCalendar(year, monthOfYear, lastDayOfMonth);
