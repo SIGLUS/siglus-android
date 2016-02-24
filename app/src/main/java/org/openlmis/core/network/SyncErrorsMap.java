@@ -11,6 +11,7 @@ public final class SyncErrorsMap {
     private static final String INVALID_PRODUCT_CODES = "Invalid product codes";
     private static final String PREVIOUS_FORM_NOT_FILLED = "Please finish all R&R of previous period(s)";
     private static final String USER_UNAUTHORIZED = "User does not have permission";
+    private static final String DUPLICATE_RNR = "RnR for this period has been submitted";
 
     private SyncErrorsMap() {
 
@@ -36,6 +37,9 @@ public final class SyncErrorsMap {
         }
         if (errorMessage.contains(context.getString(R.string.sync_server_error))){
             return context.getString(R.string.sync_server_error);
+        }
+        if (errorMessage.contains(DUPLICATE_RNR)) {
+            return context.getString(R.string.duplicate_rnr_error);
         }
         return context.getString(R.string.default_sync_data_error);
     }

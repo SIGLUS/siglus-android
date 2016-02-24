@@ -224,6 +224,7 @@
     <string name="period_configuration_missing">Sync failed due to missing server configuration for this period. Please contact system administrator.</string>
     <string name="product_code_invalid">Sync failed due attempted submission of invalid product in form %1$s. Please contact system administrator.</string>
     <string name="unauthorized_operation">Sync failed. You do not have permission to sync this requisition to the server. Please contact system administrator.</string>
+    <string name="duplicate_rnr_error">Sync failed. You have already submitted the requisition for this program in the same period.</string>
 
     <!-- Rnr form historical list -->
     <string name="label_via_name">Via Classica Requisition</string>
