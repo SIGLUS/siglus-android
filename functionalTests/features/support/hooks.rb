@@ -14,14 +14,6 @@ Before('@reinstall_app') do
   install_app(ENV["APP_PATH"])
 end
 
-Before('@change_date') do
-  if ENV["ADB_DEVICE_ARG"].nil?
-    system('adb shell "su 0 date -s 20160121.130000"')
-  else
-    system('adb -s $ADB_DEVICE_ARG shell "su 0 date -s 20160121.130000"')
-  end
-end
-
 After('@change_date') do
   current_time = Time.now.strftime("%Y%m%d.%H%M%S")
   system("adb -s $ADB_DEVICE_ARG shell 'su 0 date -s #{current_time}'")

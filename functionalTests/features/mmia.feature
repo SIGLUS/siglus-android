@@ -13,10 +13,23 @@ Feature: MMIA
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     Then I navigate back
+    Given I change device date to "20160117.130000"
+    And I wait for 2 seconds
+
+    And I press "MMIA"
+    Then I wait for "MMIA" to appear
+    Then I should see text containing "You will be able to create a requisition on the 18th of Jan"
+    And I navigate back
+
+    Given I change device date to "20160121.130000"
+    And I wait for 2 seconds
+    And I press "MMIA"
+    And I try to log in with "mmia" "password1"
+    And I wait for "Stock Card Overview" to appear
+
     And I press "MMIA"
     Then I wait for "MMIA" to appear
     Then I should see text containing "No MMIA has been created."
-
     Then I press "Complete Inventory"
     And I wait for "inventory" to appear
     Then I do physical inventory for mmia items

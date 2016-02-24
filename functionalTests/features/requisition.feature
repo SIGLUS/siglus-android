@@ -12,6 +12,21 @@ Feature: Requisition
     Then I navigate back
     Then I wait for "STOCK CARD OVERVIEW" to appear
 
+
+    Given I change device date to "20160117.130000"
+    And I wait for 2 seconds
+
+    And I press "Via Classica Requisitions"
+    Then I wait for "Via Classica Requisitions" to appear
+    Then I should see text containing "You will be able to create a requisition on the 18th of Jan"
+    And I navigate back
+
+    Given I change device date to "20160121.130000"
+    And I wait for 2 seconds
+    And I press "Via Classica Requisitions"
+    And I try to log in with "via" "password1"
+    And I wait for "Stock Card Overview" to appear
+
     And I press "Via Classica Requisitions"
     Then I wait for "Via Classica Requisitions" to appear
     Then I should see text containing "No Via Classica Requisition has been created."

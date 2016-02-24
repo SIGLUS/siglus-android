@@ -5,6 +5,7 @@ Feature: MMIA Page total mismatch
     Given I try to log in with "mmia_mismatch" "password1"
     Given I have initialized inventory with MMIA user
     Then I wait for "Stock Card Overview" to appear
+    Given I change device date to "20160121.130000"
     And I press "MMIA"
     Then I wait for "MMIA" to appear
     Then I should see text containing "No MMIA has been created."
