@@ -194,7 +194,7 @@ public final class DateUtil {
 
     public static String getMonthAbbrByDate(Date date){
         CALENDAR_NOW.setTime(date);
-        return new SimpleDateFormat("MMM").format(CALENDAR_NOW.getTime());
+        return new SimpleDateFormat("MMM", locale).format(CALENDAR_NOW.getTime());
     }
 
 }
