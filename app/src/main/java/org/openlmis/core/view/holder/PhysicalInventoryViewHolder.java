@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
@@ -83,10 +82,11 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
         @Override
         public void afterTextChanged(Editable editable) {
             String quantity = editable.toString();
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_remove_expiry_date_when_soh_is_0_393)) {
-                expireDateViewGroup.hideAddExpiryDate((!StringUtils.isEmpty(quantity) && 0 == Integer.parseInt(quantity)));
-            }
             afterQuantityChanged(viewModel, quantity);
+
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_remove_expiry_date_when_soh_is_0_393)) {
+                expireDateViewGroup.hideAddExpiryDate(shouldHideExpiryDate(viewModel));
+            }
         }
 
     }
