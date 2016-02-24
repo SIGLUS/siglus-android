@@ -428,4 +428,19 @@ public class StockRepository {
         }
         return totalIssued;
     }
+
+    public void updateStockCardWithProduct(final StockCard stockCard) {
+        try {
+            dbUtil.withDaoAsBatch(StockCard.class, new DbUtil.Operation<StockCard, Object>() {
+                @Override
+                public Object operate(Dao<StockCard, String> dao) throws SQLException, LMISException {
+                    dao.update(stockCard);
+                    updateProductOfStockCard(stockCard);
+                    return null;
+                }
+            });
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+    }
 }

@@ -20,6 +20,8 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Product.IsKit;
@@ -93,7 +95,14 @@ public class StockCardPresenter extends Presenter {
 
     public void archiveBackStockCard(StockCard stockCard) {
         stockCard.getProduct().setArchived(false);
-        stockRepository.updateProductOfStockCard(stockCard);
+
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_remove_expiry_date_when_soh_is_0_393)) {
+            stockCard.setExpireDates("");
+            stockRepository.updateStockCardWithProduct(stockCard);
+        } else {
+            stockRepository.updateProductOfStockCard(stockCard);
+        }
+
     }
 
     private Observable<List<StockCard>> getLoadStockCardsObservable(final ArchiveStatus status) {
