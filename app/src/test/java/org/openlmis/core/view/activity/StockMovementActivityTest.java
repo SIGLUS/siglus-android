@@ -40,13 +40,14 @@ public class StockMovementActivityTest {
 
     private StockMovementActivity stockMovementActivity;
     private StockMovementPresenter mockedPresenter;
+    private StockCard stockCard;
 
     @Before
     public void setUp() throws Exception {
         mockedPresenter = mock(StockMovementPresenter.class);
 
         Product product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setStrength("10mg").setType("VIA").build();
-        StockCard stockCard = new StockCardBuilder()
+        stockCard = new StockCardBuilder()
                 .setProduct(product)
                 .setStockOnHand(100)
                 .setExpireDates("11/11/2011")
@@ -164,6 +165,17 @@ public class StockMovementActivityTest {
 
         stockMovementActivity.updateUnpackKitMenu(true);
         assertThat(stockMovementActivity.unpackContainer.getVisibility()).isEqualTo(View.VISIBLE);
+    }
+
+    @Test
+    public void shouldHideExpiryDateWhenStockCardSOHIsZero() {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, true);
+
+        stockCard.setStockOnHand(0);
+
+        stockMovementActivity.updateExpiryDateViewGroup();
+
+        assertThat(stockMovementActivity.expireDateViewGroup.getVisibility()).isEqualTo(View.INVISIBLE);
     }
 
     @Test

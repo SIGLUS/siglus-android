@@ -26,7 +26,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.KitProduct;
@@ -116,8 +118,11 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldSaveAndRefresh() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, true);
+
         //given
         StockCard stockCard = createStockCard(1, false);
+        stockCard.setExpireDates("2016-01-01,2017-02-01");
 
         StockMovementItem item = new StockMovementItem();
         item.setStockOnHand(0L);
@@ -132,8 +137,10 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
 
         //then
         assertThat(stockMovementPresenter.getStockCard().getStockOnHand()).isEqualTo(item.getStockOnHand());
+        assertThat(stockCard.getExpireDates()).isEqualTo("");
         verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(item);
         verify(view).updateArchiveMenus(true);
+        verify(view).updateExpiryDateViewGroup();
     }
 
     @Test

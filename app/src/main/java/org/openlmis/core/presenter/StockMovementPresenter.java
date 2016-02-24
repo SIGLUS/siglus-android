@@ -23,6 +23,7 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
@@ -162,6 +163,9 @@ public class StockMovementPresenter extends Presenter {
             StockMovementItem stockMovementItem = viewModel.convertViewToModel();
             stockMovementItem.setStockCard(stockCard);
             stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_remove_expiry_date_when_soh_is_0_393) && stockCard.getStockOnHand() == 0) {
+                stockCard.setExpireDates("");
+            }
             saveStockMovement(stockMovementItem);
 
             viewModel.setDraft(false);
@@ -170,6 +174,10 @@ public class StockMovementPresenter extends Presenter {
             updateMenus();
             view.refreshStockMovement();
             view.deactivatedStockDraft();
+
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_remove_expiry_date_when_soh_is_0_393)) {
+                view.updateExpiryDateViewGroup();
+            }
         } catch (LMISException e) {
             e.reportToFabric();
         }
@@ -215,5 +223,7 @@ public class StockMovementPresenter extends Presenter {
         void updateArchiveMenus(boolean isArchivable);
 
         void updateUnpackKitMenu(boolean isUnpackable);
+
+        void updateExpiryDateViewGroup();
     }
 }

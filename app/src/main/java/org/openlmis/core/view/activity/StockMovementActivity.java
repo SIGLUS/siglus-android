@@ -39,6 +39,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockMovementPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
@@ -138,8 +139,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
         showBanner();
 
-        expireDateViewGroup.initExpireDateViewGroup(new InventoryViewModel(presenter.getStockCard()), true);
-
         buttonView.setVisibility(View.GONE);
 
         stockMovementAdapter = new StockMovementAdapter(presenter.getStockMovementModelList(), presenter.getStockCard());
@@ -164,6 +163,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             tvCmmLabel.setVisibility(View.GONE);
         }
 
+        updateExpiryDateViewGroup();
     }
 
     private void showBanner() {
@@ -196,6 +196,15 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             unpackContainer.setVisibility(unpackable ? View.VISIBLE : View.GONE);
         } else {
             invalidateOptionsMenu();
+        }
+    }
+
+    @Override
+    public void updateExpiryDateViewGroup() {
+        StockCard stockCard = presenter.getStockCard();
+        expireDateViewGroup.initExpireDateViewGroup(new InventoryViewModel(stockCard), true);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_remove_expiry_date_when_soh_is_0_393)) {
+            expireDateViewGroup.setVisibility(stockCard.getStockOnHand() == 0 ? View.INVISIBLE : View.VISIBLE);
         }
     }
 
