@@ -300,8 +300,13 @@ public class InventoryPresenter extends Presenter {
                 try {
                     for (InventoryViewModel model : list) {
                         StockCard stockCard = model.getStockCard();
-                        stockCard.setExpireDates(DateUtil.formatExpiryDateString(model.getExpiryDates()));
                         stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
+
+                        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_remove_expiry_date_when_soh_is_0_393) && stockCard.getStockOnHand() == 0) {
+                            stockCard.setExpireDates("");
+                        } else {
+                            stockCard.setExpireDates(DateUtil.formatExpiryDateString(model.getExpiryDates()));
+                        }
                         stockRepository.addStockMovementAndUpdateStockCard(calculateAdjustment(model, stockCard));
                     }
                     stockRepository.clearDraftInventory();
