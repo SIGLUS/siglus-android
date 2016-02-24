@@ -27,6 +27,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
@@ -64,7 +65,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -237,6 +237,80 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
         verify(stockRepositoryMock, times(1)).initStockCard(any(StockCard.class));
     }
+
+    @Test
+    public void shouldNotClearExpiryDateWhenSohIsZeroAndToggleOff() throws LMISException {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, false);
+        stockCard.setExpireDates("01/01/2016");
+        product.setArchived(true);
+
+        InventoryViewModel model = new StockCardViewModelBuilder(stockCard).setChecked(true)
+                .setQuantity("0").build();
+
+        inventoryPresenter.initStockCards(newArrayList(model));
+
+        assertThat(model.getStockCard().getExpireDates(), is("01/01/2016"));
+
+    }
+
+    @Test
+    public void shouldClearExpiryDateWhenSohIsZeroAndIsArchivedDrug() throws LMISException {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, true);
+        stockCard.setExpireDates("01/01/2016");
+        product.setArchived(true);
+
+        InventoryViewModel model = new StockCardViewModelBuilder(stockCard).setChecked(true)
+                .setQuantity("0").build();
+
+        inventoryPresenter.initStockCards(newArrayList(model));
+
+        assertThat(model.getStockCard().getExpireDates(), is(""));
+    }
+
+
+    @Test
+    public void shouldNotClearExpiryDateWhenSohIsNotZeroAndIsArchivedDrug() throws LMISException {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, true);
+        stockCard.setExpireDates("01/01/2016");
+        product.setArchived(true);
+
+        InventoryViewModel model = new StockCardViewModelBuilder(stockCard).setChecked(true)
+                .setQuantity("10").build();
+
+        inventoryPresenter.initStockCards(newArrayList(model));
+
+        assertThat(model.getStockCard().getExpireDates(), is("01/01/2016"));
+
+    }
+
+    @Test
+    public void shouldClearExpiryDateWhenSohIsZeroAndIsNewDrug() throws LMISException {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, true);
+
+        InventoryViewModel model = new StockCardViewModelBuilder(product).setChecked(true)
+                .setQuantity("0").setExpiryDates(newArrayList("01/01/2016")).build();
+
+        inventoryPresenter.initStockCards(newArrayList(model));
+
+        ArgumentCaptor<StockCard> argument = ArgumentCaptor.forClass(StockCard.class);
+        verify(stockRepositoryMock).initStockCard(argument.capture());
+        assertThat(argument.getValue().getExpireDates(), is(""));
+    }
+
+    @Test
+    public void shouldNotClearExpiryDateWhenSohIsNotZeroAndIsNewDrug() throws LMISException {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, true);
+
+        InventoryViewModel model = new StockCardViewModelBuilder(product).setChecked(true)
+                .setQuantity("10").setExpiryDates(newArrayList("01/01/2016")).build();
+
+        inventoryPresenter.initStockCards(newArrayList(model));
+
+        ArgumentCaptor<StockCard> argument = ArgumentCaptor.forClass(StockCard.class);
+        verify(stockRepositoryMock).initStockCard(argument.capture());
+        assertThat(argument.getValue().getExpireDates(), is("01/01/2016"));
+    }
+
 
     @Test
     public void shouldReInventoryArchivedStockCard() throws LMISException {

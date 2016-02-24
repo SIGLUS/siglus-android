@@ -191,7 +191,7 @@ public class InventoryPresenter extends Presenter {
         }
     }
 
-    public void initStockCards(List<InventoryViewModel> list) {
+    protected void initStockCards(List<InventoryViewModel> list) {
 
         from(list).filter(new Predicate<InventoryViewModel>() {
             @Override
@@ -212,7 +212,16 @@ public class InventoryPresenter extends Presenter {
 
             StockCard stockCard = isArchivedStockCard ? model.getStockCard() : new StockCard();
             stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
-            stockCard.setExpireDates(DateUtil.formatExpiryDateString(model.getExpiryDates()));
+
+            if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_remove_expiry_date_when_soh_is_0_393)) {
+                if(stockCard.getStockOnHand() != 0) {
+                    stockCard.setExpireDates(DateUtil.formatExpiryDateString(model.getExpiryDates()));
+                } else {
+                    stockCard.setExpireDates("");
+                }
+            } else {
+                stockCard.setExpireDates(DateUtil.formatExpiryDateString(model.getExpiryDates()));
+            }
 
             if (isArchivedStockCard) {
                 stockCard.getProduct().setArchived(false);
