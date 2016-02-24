@@ -152,4 +152,19 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
 
         assertThat(kitProducts.size(), is(1));
     }
+
+    @Test
+    public void shouldGetArchivedProducts() throws Exception {
+        Product product1 = ProductBuilder.create().setCode("P1").setIsArchived(true).build();
+        Product product2 = ProductBuilder.create().setCode("P2").setIsArchived(false).build();
+        Product product3 = ProductBuilder.create().setCode("P3").setIsArchived(true).build();
+
+        productRepository.createOrUpdate(product1);
+        productRepository.createOrUpdate(product2);
+        productRepository.createOrUpdate(product3);
+
+        List<Product> activeProducts = productRepository.listArchivedProducts();
+
+        assertEquals(2, activeProducts.size());
+    }
 }

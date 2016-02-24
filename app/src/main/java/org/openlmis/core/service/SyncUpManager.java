@@ -34,7 +34,6 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.repository.ProductRepository;
-import org.openlmis.core.model.repository.RnrFormItemRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
@@ -61,9 +60,6 @@ public class SyncUpManager {
 
     @Inject
     RnrFormRepository rnrFormRepository;
-
-    @Inject
-    RnrFormItemRepository rnrFormItemRepository;
 
     @Inject
     SharedPreferenceMgr sharedPreferenceMgr;
@@ -230,9 +226,9 @@ public class SyncUpManager {
 
     public void syncArchivedProducts() {
 
-        List<Product> archivedProducts = productRepository.getArchivedProducts();
         final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
         try {
+            List<Product> archivedProducts = productRepository.listArchivedProducts();
             lmisRestApi.syncUpArchivedProducts(facilityId, archivedProducts);
         } catch (LMISException e) {
             e.reportToFabric();

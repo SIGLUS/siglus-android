@@ -179,7 +179,12 @@ public class ProductRepository {
         });
     }
 
-    public List<Product> getArchivedProducts() {
-        return null;
+    public List<Product> listArchivedProducts() throws LMISException {
+        return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
+            @Override
+            public List<Product> operate(Dao<Product, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("isArchived", true).query();
+            }
+        });
     }
 }
