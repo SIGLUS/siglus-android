@@ -65,6 +65,7 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
     private static final String FRAGMENT_TAG = "MsgDialogFragment";
 
     LayoutInflater inflater;
+    private View tvAddExpiryDate;
 
     public ExpireDateViewGroup(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
@@ -96,7 +97,7 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
     }
 
     private void initView() {
-        View tvAddExpiryDate = inflater.inflate(R.layout.view_add_expire_date, null);
+        tvAddExpiryDate = inflater.inflate(R.layout.view_add_expire_date, null);
         tvAddExpiryDate.setOnClickListener(this);
         addView(tvAddExpiryDate);
     }
@@ -200,5 +201,9 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
             stockCard.setExpireDates(DateUtil.formatExpiryDateString(expireDates));
             stockRepository.update(stockCard);
         }
+    }
+
+    public void hideAddExpiryDate(boolean hideExpiryDate) {
+        tvAddExpiryDate.setVisibility(hideExpiryDate ? GONE : VISIBLE);
     }
 }
