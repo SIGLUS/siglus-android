@@ -163,7 +163,7 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
         productRepository.createOrUpdate(product2);
         productRepository.createOrUpdate(product3);
 
-        List<Product> activeProducts = productRepository.listArchivedProducts();
+        List<String> activeProducts = productRepository.listArchivedProducts();
 
         assertEquals(2, activeProducts.size());
     }

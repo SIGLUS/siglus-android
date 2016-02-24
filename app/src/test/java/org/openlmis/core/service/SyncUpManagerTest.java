@@ -231,7 +231,7 @@ public class SyncUpManagerTest {
 
     @Test
     public void shouldSyncArchivedProducts() throws Exception {
-        ArrayList<Product> products = new ArrayList<>();
+        List<String> products = new ArrayList<>();
         syncUpManager.productRepository = productRepository;
         when(productRepository.listArchivedProducts()).thenReturn(products);
         syncUpManager.syncArchivedProducts();

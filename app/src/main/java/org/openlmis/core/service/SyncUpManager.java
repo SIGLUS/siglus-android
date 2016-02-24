@@ -28,7 +28,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.SyncError;
@@ -228,7 +227,7 @@ public class SyncUpManager {
 
         final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
         try {
-            List<Product> archivedProducts = productRepository.listArchivedProducts();
+            List<String> archivedProducts = productRepository.listArchivedProducts();
             lmisRestApi.syncUpArchivedProducts(facilityId, archivedProducts);
         } catch (LMISException e) {
             e.reportToFabric();

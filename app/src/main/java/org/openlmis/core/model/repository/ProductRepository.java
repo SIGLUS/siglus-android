@@ -29,6 +29,8 @@ import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.sql.SQLException;
 import java.util.Collections;
@@ -179,12 +181,19 @@ public class ProductRepository {
         });
     }
 
-    public List<Product> listArchivedProducts() throws LMISException {
-        return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
+    public List<String> listArchivedProducts() throws LMISException {
+        List<Product> isArchived = dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
             @Override
             public List<Product> operate(Dao<Product, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("isArchived", true).query();
+                return dao.queryBuilder().selectColumns("code").where().eq("isArchived", true).query();
             }
         });
+
+        return FluentIterable.from(isArchived).transform(new Function<Product, String>() {
+            @Override
+            public String apply(Product product) {
+                return product.getCode();
+            }
+        }).toList();
     }
 }
