@@ -21,6 +21,7 @@ package org.openlmis.core.network;
 
 import org.json.JSONObject;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
@@ -72,4 +73,7 @@ public interface LMISRestApi {
 
     @POST("/rest-api/facilities/{facilityId}/unSyncedStockCards")
     Void syncUpUnSyncedStockCards(@Path("facilityId") String facilityId, @Body List<String> unSyncedStockCardCodes) throws LMISException;
+
+    @POST("/rest-api/facilities/{facilityId}/archivedProducts")
+    Void syncUpArchivedProducts(@Path("facilityId") String facilityId, @Body List<Product> archivedProducts) throws LMISException;
 }

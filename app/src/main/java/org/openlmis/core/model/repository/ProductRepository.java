@@ -178,4 +178,8 @@ public class ProductRepository {
             }
         });
     }
+
+    public List<Product> getArchivedProducts() {
+        return null;
+    }
 }

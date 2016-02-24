@@ -89,13 +89,15 @@ public class SyncUpManagerTest {
 
     SyncErrorsRepository syncErrorsRepository;
 
+    ProductRepository productRepository;
+
     @Before
     public void setup() throws LMISException {
         rnrFormRepository = mock(RnrFormRepository.class);
         syncErrorsRepository = mock(SyncErrorsRepository.class);
         lmisRestApi = mock(LMISRestApi.class);
         sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
-
+        productRepository = mock(ProductRepository.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
         syncUpManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncUpManager.class);
@@ -225,6 +227,15 @@ public class SyncUpManagerTest {
         UserInfoMgr.getInstance().setUser(user);
         syncUpManager.syncAppVersion();
         verify(lmisRestApi).updateAppVersion(any(AppInfoRequest.class));
+    }
+
+    @Test
+    public void shouldSyncArchivedProducts() throws Exception {
+        ArrayList<Product> products = new ArrayList<>();
+        syncUpManager.productRepository = productRepository;
+        when(productRepository.getArchivedProducts()).thenReturn(products);
+        syncUpManager.syncArchivedProducts();
+        verify(lmisRestApi).syncUpArchivedProducts(UserInfoMgr.getInstance().getUser().getFacilityId(), products);
     }
 
     @Test
