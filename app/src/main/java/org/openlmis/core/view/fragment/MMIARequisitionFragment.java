@@ -176,8 +176,8 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         getActivity().setTitle(getString(R.string.label_mmia_title,
                 DateUtil.formatDateWithoutYear(form.getPeriodBegin()),
                 DateUtil.formatDateWithoutYear(form.getPeriodEnd())));
-        highlightTotalDifference();
         etComment.setText(form.getComments());
+        highlightTotalDifference();
         bindListeners();
     }
 
