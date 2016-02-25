@@ -26,6 +26,7 @@ import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.StockMovementEntry;
+import org.openlmis.core.network.model.SyncDownArchivedProductCodesResponse;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownProductsResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
@@ -75,4 +76,7 @@ public interface LMISRestApi {
 
     @POST("/rest-api/facilities/{facilityId}/archivedProducts")
     Void syncUpArchivedProducts(@Path("facilityId") String facilityId, @Body List<String> archivedProductsCodes) throws LMISException;
+
+    @GET("/rest-api/facilities/{facilityId}/archivedProducts")
+    SyncDownArchivedProductCodesResponse fetchArchivedProducts(@Path("facilityId") String facilityId) throws LMISException;
 }

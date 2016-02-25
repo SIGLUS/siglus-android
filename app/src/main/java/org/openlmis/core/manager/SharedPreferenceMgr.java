@@ -56,6 +56,7 @@ public class SharedPreferenceMgr {
     public static final String KEY_PRODUCT_UPDATE_BANNER_TEXT = "product_update_banner_text";
     public static final String LATEST_PHYSICAL_INVENTORY_TIME = "latest_physical_inventory_time";
     public static final String LAST_MOVEMENT_HANDSHAKE_DATE = "last_movement_handshake_date";
+    private static final String KEY_SHOULD_SYNC_ARCHIVED_PRODUCTS = "should_sync_archived_products";
 
     @Inject
     public SharedPreferenceMgr(Context context) {
@@ -102,6 +103,14 @@ public class SharedPreferenceMgr {
 
     public void setShouldSyncLastYearStockCardData(boolean shouldSyncLastYearStockCardData) {
         sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_SHOULD_SYNC_LAST_YEAR, shouldSyncLastYearStockCardData).apply();
+    }
+
+    public boolean shouldSyncArchivedProducts() {
+        return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_SHOULD_SYNC_ARCHIVED_PRODUCTS, true);
+    }
+
+    public void setShouldSyncArchivedProducts(boolean shouldSyncArchivedProducts) {
+        sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_SHOULD_SYNC_ARCHIVED_PRODUCTS, shouldSyncArchivedProducts).apply();
     }
 
     public boolean isRequisitionDataSynced() {

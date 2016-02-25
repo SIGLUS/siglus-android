@@ -39,6 +39,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
+import org.openlmis.core.network.model.SyncDownArchivedProductCodesResponse;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownProductsResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
@@ -90,6 +91,9 @@ public class SyncDownManager {
                 try {
                     syncDownProducts(subscriber);
                     syncDownLastMonthStockCards(subscriber);
+                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_archived_product)) {
+                        syncDownArchivedProducts(subscriber);
+                    }
                     syncDownRequisition(subscriber);
                     syncDownLastYearStockCardsSilently(subscriber);
 
@@ -101,6 +105,24 @@ public class SyncDownManager {
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
+    }
+
+    private void syncDownArchivedProducts(Subscriber<? super SyncProgress> subscriber) throws LMISException {
+        if (sharedPreferenceMgr.shouldSyncArchivedProducts()) {
+
+            try {
+                subscriber.onNext(SyncProgress.SyncingArchivedProducts);
+                SyncDownArchivedProductCodesResponse response = lmisRestApi.fetchArchivedProducts(UserInfoMgr.getInstance().getUser().getFacilityId());
+
+                sharedPreferenceMgr.setShouldSyncArchivedProducts(false);
+                subscriber.onNext(SyncProgress.ArchivedProductsSynced);
+            } catch (LMISException e) {
+                sharedPreferenceMgr.setShouldSyncArchivedProducts(true);
+                e.reportToFabric();
+                throw new LMISException(errorMessage(R.string.msg_download_archived_products_fail));
+            }
+
+        }
     }
 
     public void syncDownLatestProducts() {
@@ -358,11 +380,13 @@ public class SyncDownManager {
         SyncingStockCardsLastMonth(R.string.msg_sync_stock_movements_data),
         SyncingRequisition(R.string.msg_sync_requisition_data),
         SyncingStockCardsLastYear,
+        SyncingArchivedProducts,
 
         ProductSynced,
         StockCardsLastMonthSynced,
         RequisitionSynced,
-        StockCardsLastYearSynced;
+        StockCardsLastYearSynced,
+        ArchivedProductsSynced;
 
         private int messageCode;
 
