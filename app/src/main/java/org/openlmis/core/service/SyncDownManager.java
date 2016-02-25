@@ -113,7 +113,7 @@ public class SyncDownManager {
             try {
                 subscriber.onNext(SyncProgress.SyncingArchivedProducts);
                 SyncDownArchivedProductCodesResponse response = lmisRestApi.fetchArchivedProducts(UserInfoMgr.getInstance().getUser().getFacilityId());
-
+                productRepository.updateArchivedStatus(response.getArchivedProductCodes());
                 sharedPreferenceMgr.setShouldSyncArchivedProducts(false);
                 subscriber.onNext(SyncProgress.ArchivedProductsSynced);
             } catch (LMISException e) {

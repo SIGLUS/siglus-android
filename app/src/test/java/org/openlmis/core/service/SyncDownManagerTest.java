@@ -171,6 +171,7 @@ public class SyncDownManagerTest {
         //then
         verify(lmisRestApi, times(1)).fetchProducts(anyString());
         verify(lmisRestApi, times(1)).fetchArchivedProducts(anyString());
+        verify(productRepository).updateArchivedStatus(anyList());
         assertThat(firstEnterSubscriber.syncProgresses.size(), is(10));
         assertThat(laterEnterSubscriber.syncProgresses.size(), is(0));
     }

@@ -23,6 +23,7 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.UpdateBuilder;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.KitProduct;
@@ -195,5 +196,24 @@ public class ProductRepository {
                 return product.getCode();
             }
         }).toList();
+    }
+
+    public void updateArchivedStatus(final List<String> codes) throws LMISException {
+        dbUtil.withDaoAsBatch(Product.class, new DbUtil.Operation<Product, Void>() {
+            @Override
+            public Void operate(Dao<Product, String> dao) throws LMISException {
+                for (String code : codes) {
+                    UpdateBuilder<Product, String> updateBuilder = dao.updateBuilder();
+                    try {
+                        updateBuilder.where().eq("code", code);
+                        updateBuilder.updateColumnValue("isArchived", true);
+                        updateBuilder.update();
+                    } catch (SQLException e) {
+                        throw new LMISException(e);
+                    }
+                }
+                return null;
+            }
+        });
     }
 }
