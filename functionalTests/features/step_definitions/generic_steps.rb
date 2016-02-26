@@ -9,3 +9,11 @@ Given(/^I change device date to "(.*?)"/) do |time|
         system("adb -s $ADB_DEVICE_ARG shell su 0 date -s #{time}")
       end
 end
+
+Given(/^I disable wifi/) do
+    system("adb shell svc wifi disable")
+end
+
+Given(/^I enable wifi/) do
+    system("adb shell svc wifi enable")
+end
