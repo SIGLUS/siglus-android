@@ -10,11 +10,11 @@
     <bool name="feature_requisition_theoretical">true</bool>
     <bool name="feature_warning_unpack_kit_quantity">true</bool>
     <bool name="feature_warning_expiry_date">true</bool>
-    <bool name="feature_requisition_period_logic_change">false</bool>
+    <bool name="feature_requisition_period_logic_change">true</bool>
     <bool name="feature_open_multiple_kit_579">true</bool>
-    <bool name="feature_auto_quantities_in_kit">false</bool>
+    <bool name="feature_auto_quantities_in_kit">true</bool>
     <bool name="feature_unpack_btn_update_580">true</bool>
-    <bool name="feature_sync_period_date">false</bool>
-    <bool name="feature_remove_expiry_date_when_soh_is_0_393">false</bool>
+    <bool name="feature_sync_period_date">true</bool>
+    <bool name="feature_remove_expiry_date_when_soh_is_0_393">true</bool>
     <bool name="feature_sync_archived_product">false</bool>
 </resources>
