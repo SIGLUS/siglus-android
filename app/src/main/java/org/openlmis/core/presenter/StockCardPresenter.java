@@ -100,7 +100,7 @@ public class StockCardPresenter extends Presenter {
             stockCard.setExpireDates("");
             stockRepository.updateStockCardWithProduct(stockCard);
         } else {
-            stockRepository.updateProductOfStockCard(stockCard);
+            stockRepository.updateProductOfStockCard(stockCard.getProduct());
         }
 
     }

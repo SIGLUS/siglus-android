@@ -99,12 +99,16 @@ public class ProductRepository {
         if (existingProduct != null) {
             product.setId(existingProduct.getId());
             product.setArchived(existingProduct.isArchived());
-            genericDao.update(product);
+            updateProduct(product);
         } else {
             genericDao.create(product);
         }
 
         createKitProductsIfNotExist(product);
+    }
+
+    public void updateProduct(Product product) throws LMISException {
+        genericDao.update(product);
     }
 
     private void createKitProductsIfNotExist(Product product) throws LMISException {

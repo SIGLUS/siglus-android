@@ -413,6 +413,21 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     }
 
+    @Test
+    public void shouldUpdateProductOfStockCard() throws Exception {
+        product.setArchived(true);
+        stockCard.setProduct(product);
+        stockCard.setExpireDates("01/01/2016");
+
+        stockRepository.save(stockCard);
+
+        stockCard.setExpireDates("");
+        product.setArchived(false);
+        stockRepository.updateProductOfStockCard(stockCard.getProduct());
+
+        assertThat(stockCard.getProduct().isArchived(), is(false));
+    }
+
     private void saveDraftInventory() throws LMISException {
         DraftInventory draftInventory1 = new DraftInventory();
         draftInventory1.setQuantity(10L);

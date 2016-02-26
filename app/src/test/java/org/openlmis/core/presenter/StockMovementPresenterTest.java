@@ -284,7 +284,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
 
         //then
         assertThat(stockCard.getProduct().isArchived()).isTrue();
-        verify(stockRepositoryMock).updateProductOfStockCard(stockCard);
+        verify(stockRepositoryMock).updateProductOfStockCard(stockCard.getProduct());
     }
 
     @Test

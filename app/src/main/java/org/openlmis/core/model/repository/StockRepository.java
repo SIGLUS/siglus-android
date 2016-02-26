@@ -54,10 +54,12 @@ public class StockRepository {
     @Inject
     Context context;
 
+    @Inject
+    ProductRepository productRepository;
+
     GenericDao<StockCard> genericDao;
     GenericDao<StockMovementItem> stockItemGenericDao;
     GenericDao<DraftInventory> draftInventoryGenericDao;
-    GenericDao<Product> productGenericDao;
 
     private final int LOW_STOCK_CALCULATE_MONTH_QUANTITY = 3;
 
@@ -66,7 +68,6 @@ public class StockRepository {
         genericDao = new GenericDao<>(StockCard.class, context);
         stockItemGenericDao = new GenericDao<>(StockMovementItem.class, context);
         draftInventoryGenericDao = new GenericDao<>(DraftInventory.class, context);
-        productGenericDao = new GenericDao<>(Product.class, context);
     }
 
     public void batchSaveStockCardsWithMovementItemsAndUpdateProduct(final List<StockCard> stockCards) {
@@ -76,7 +77,7 @@ public class StockRepository {
                 public Object operate(Dao<StockCard, String> dao) throws SQLException, LMISException {
                     for (StockCard stockCard : stockCards) {
                         dao.createOrUpdate(stockCard);
-                        updateProductOfStockCard(stockCard);
+                        updateProductOfStockCard(stockCard.getProduct());
                         batchCreateOrUpdateStockMovements(stockCard.getStockMovementItemsWrapper());
                     }
                     return null;
@@ -153,9 +154,9 @@ public class StockRepository {
         stockItemGenericDao.create(stockMovementItem);
     }
 
-    public void updateProductOfStockCard(final StockCard stockCard) {
+    public void updateProductOfStockCard(Product product) {
         try {
-            productGenericDao.update(stockCard.getProduct());
+            productRepository.updateProduct(product);
         } catch (LMISException e) {
             e.reportToFabric();
         }
@@ -182,7 +183,7 @@ public class StockRepository {
                 @Override
                 public Object call() throws Exception {
                     update(stockCard);
-                    updateProductOfStockCard(stockCard);
+                    updateProductOfStockCard(stockCard.getProduct());
                     saveStockItem(stockCard.generateInitialStockMovementItem());
                     return null;
                 }
@@ -435,7 +436,7 @@ public class StockRepository {
                 @Override
                 public Object operate(Dao<StockCard, String> dao) throws SQLException, LMISException {
                     dao.update(stockCard);
-                    updateProductOfStockCard(stockCard);
+                    updateProductOfStockCard(stockCard.getProduct());
                     return null;
                 }
             });

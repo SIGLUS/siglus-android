@@ -162,7 +162,7 @@ public class StockCardPresenterTest {
         presenter.archiveBackStockCard(stockCard);
 
         verify(stockRepository).updateStockCardWithProduct(stockCard);
-        verify(stockRepository, never()).updateProductOfStockCard(stockCard);
+        verify(stockRepository, never()).updateProductOfStockCard(stockCard.getProduct());
         assertThat(stockCard.getExpireDates()).isEqualTo("");
         assertFalse(stockCard.getProduct().isArchived());
     }
@@ -177,7 +177,7 @@ public class StockCardPresenterTest {
         presenter.archiveBackStockCard(stockCard);
 
         verify(stockRepository, never()).updateStockCardWithProduct(stockCard);
-        verify(stockRepository).updateProductOfStockCard(stockCard);
+        verify(stockRepository).updateProductOfStockCard(stockCard.getProduct());
         assertThat(stockCard.getExpireDates()).isEqualTo("01/01/2016");
         assertFalse(stockCard.getProduct().isArchived());
     }

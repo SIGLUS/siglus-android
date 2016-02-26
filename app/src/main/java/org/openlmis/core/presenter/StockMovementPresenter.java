@@ -203,7 +203,7 @@ public class StockMovementPresenter extends Presenter {
 
     public void archiveStockCard() {
         stockCard.getProduct().setArchived(true);
-        stockRepository.updateProductOfStockCard(stockCard);
+        stockRepository.updateProductOfStockCard(stockCard.getProduct());
     }
 
     public String getStockCardCmm() {
