@@ -22,6 +22,9 @@ public final class SyncErrorsMap {
             return null;
         }
         Context context = LMISApp.getContext();
+        if(errorMessage.equals(context.getString(R.string.hint_network_error))){
+            return null;
+        }
         if (errorMessage.contains(PROGRAM_CONFIG_ERROR)) {
             return context.getString(R.string.period_configuration_missing);
         }
