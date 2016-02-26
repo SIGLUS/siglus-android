@@ -90,10 +90,8 @@ public class SyncDownManager {
             public void call(Subscriber<? super SyncProgress> subscriber) {
                 try {
                     syncDownProducts(subscriber);
+                    syncDownArchivedProducts(subscriber);
                     syncDownLastMonthStockCards(subscriber);
-                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_archived_product)) {
-                        syncDownArchivedProducts(subscriber);
-                    }
                     syncDownRequisition(subscriber);
                     syncDownLastYearStockCardsSilently(subscriber);
 
@@ -108,23 +106,30 @@ public class SyncDownManager {
     }
 
     private void syncDownArchivedProducts(Subscriber<? super SyncProgress> subscriber) throws LMISException {
-        if (sharedPreferenceMgr.shouldSyncArchivedProducts()) {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_archived_product)){
+            return;
+        }
 
+        if (!sharedPreferenceMgr.isArchivedProductsSynced()) {
             try {
                 subscriber.onNext(SyncProgress.SyncingArchivedProducts);
-                SyncDownArchivedProductCodesResponse response = lmisRestApi.fetchArchivedProducts(UserInfoMgr.getInstance().getUser().getFacilityId());
-
-                List<String> archivedProductCodes = response.getArchivedProductCodes();
-                updateProductArchivedStatus(archivedProductCodes);
-                sharedPreferenceMgr.setShouldSyncArchivedProducts(false);
+                syncDownArchivedProductCodes();
+                sharedPreferenceMgr.setArchivedProductsSynced(true);
                 subscriber.onNext(SyncProgress.ArchivedProductsSynced);
             } catch (LMISException e) {
-                sharedPreferenceMgr.setShouldSyncArchivedProducts(true);
+                sharedPreferenceMgr.setArchivedProductsSynced(false);
                 e.reportToFabric();
                 throw new LMISException(errorMessage(R.string.msg_download_archived_products_fail));
             }
 
         }
+    }
+
+    private void syncDownArchivedProductCodes() throws LMISException {
+        SyncDownArchivedProductCodesResponse response = lmisRestApi.fetchArchivedProducts(UserInfoMgr.getInstance().getUser().getFacilityId());
+
+        List<String> archivedProductCodes = response.getArchivedProductCodes();
+        updateProductArchivedStatus(archivedProductCodes);
     }
 
     private void updateProductArchivedStatus(List<String> archivedProductCodes) throws LMISException {

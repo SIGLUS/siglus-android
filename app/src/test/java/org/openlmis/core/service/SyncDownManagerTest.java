@@ -138,10 +138,10 @@ public class SyncDownManagerTest {
         //then
         assertThat(subscriber.syncProgresses.get(0), is(SyncingProduct));
         assertThat(subscriber.syncProgresses.get(1), is(ProductSynced));
-        assertThat(subscriber.syncProgresses.get(2), is(SyncingStockCardsLastMonth));
-        assertThat(subscriber.syncProgresses.get(3), is(StockCardsLastMonthSynced));
-        assertThat(subscriber.syncProgresses.get(4), is(SyncingArchivedProducts));
-        assertThat(subscriber.syncProgresses.get(5), is(ArchivedProductsSynced));
+        assertThat(subscriber.syncProgresses.get(2), is(SyncingArchivedProducts));
+        assertThat(subscriber.syncProgresses.get(3), is(ArchivedProductsSynced));
+        assertThat(subscriber.syncProgresses.get(4), is(SyncingStockCardsLastMonth));
+        assertThat(subscriber.syncProgresses.get(5), is(StockCardsLastMonthSynced));
         assertThat(subscriber.syncProgresses.get(6), is(SyncingRequisition));
         assertThat(subscriber.syncProgresses.get(7), is(RequisitionSynced));
         assertThat(subscriber.syncProgresses.get(8), is(SyncingStockCardsLastYear));
@@ -293,7 +293,7 @@ public class SyncDownManagerTest {
             }
             if (progress == ArchivedProductsSynced) {
                 verify(lmisRestApi, times(1)).fetchArchivedProducts(anyString());
-                verify(sharedPreferenceMgr).setShouldSyncArchivedProducts(false);
+                verify(sharedPreferenceMgr).setArchivedProductsSynced(true);
             }
         } catch (LMISException e) {
             e.printStackTrace();
@@ -313,7 +313,7 @@ public class SyncDownManagerTest {
     }
 
     private void mockArchivedProductCodesResponse() throws LMISException {
-        when(sharedPreferenceMgr.shouldSyncArchivedProducts()).thenReturn(true);
+        when(sharedPreferenceMgr.isArchivedProductsSynced()).thenReturn(false);
         when(productRepository.getByCode("code")).thenReturn(new Product());
         SyncDownArchivedProductCodesResponse response = new SyncDownArchivedProductCodesResponse();
         ArrayList<String> archivedProductCodes = new ArrayList<>();

@@ -57,6 +57,7 @@ public class SharedPreferenceMgr {
     public static final String LATEST_PHYSICAL_INVENTORY_TIME = "latest_physical_inventory_time";
     public static final String LAST_MOVEMENT_HANDSHAKE_DATE = "last_movement_handshake_date";
     private static final String KEY_SHOULD_SYNC_ARCHIVED_PRODUCTS = "should_sync_archived_products";
+    protected StockRepository stockRepository = RoboGuice.getInjector(LMISApp.getContext()).getInstance(StockRepository.class);
 
     @Inject
     public SharedPreferenceMgr(Context context) {
@@ -89,7 +90,6 @@ public class SharedPreferenceMgr {
     }
 
     public boolean isLastMonthStockDataSynced() {
-        StockRepository stockRepository = RoboGuice.getInjector(LMISApp.getContext()).getInstance(StockRepository.class);
         return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, stockRepository.hasStockData());
     }
 
@@ -105,11 +105,11 @@ public class SharedPreferenceMgr {
         sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_SHOULD_SYNC_LAST_YEAR, shouldSyncLastYearStockCardData).apply();
     }
 
-    public boolean shouldSyncArchivedProducts() {
-        return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_SHOULD_SYNC_ARCHIVED_PRODUCTS, true);
+    public boolean isArchivedProductsSynced() {
+        return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_SHOULD_SYNC_ARCHIVED_PRODUCTS, stockRepository.hasStockData());
     }
 
-    public void setShouldSyncArchivedProducts(boolean shouldSyncArchivedProducts) {
+    public void setArchivedProductsSynced(boolean shouldSyncArchivedProducts) {
         sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_SHOULD_SYNC_ARCHIVED_PRODUCTS, shouldSyncArchivedProducts).apply();
     }
 
