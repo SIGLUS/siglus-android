@@ -56,6 +56,7 @@ import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -226,11 +227,13 @@ public class SyncDownManagerTest {
         product.setPrimaryName("name");
         product.setActive(false);
         product.setCode("code");
+        product.setArchived(false);
 
         Product existingProduct = ProductBuilder.create().setCode("code").setIsActive(true).setIsArchived(true).build();
         when(productRepository.getByCode(product.getCode())).thenReturn(existingProduct);
 
         StockCard stockCard = new StockCard();
+        stockCard.setProduct(product);
         stockCard.setStockOnHand(0);
         when(stockRepository.queryStockCardByProductId(anyLong())).thenReturn(stockCard);
 
@@ -239,6 +242,30 @@ public class SyncDownManagerTest {
 
         //then
         verify(sharedPreferenceMgr).setIsNeedShowProductsUpdateBanner(true, "name");
+    }
+
+    @Test
+    public void shouldNotUpdateNotifyBannerListWhenProductIsArchived() throws Exception {
+        //given
+        Product product = new Product();
+        product.setPrimaryName("name");
+        product.setActive(false);
+        product.setCode("code");
+        product.setArchived(true);
+
+        Product existingProduct = ProductBuilder.create().setCode("code").setIsActive(true).setIsArchived(true).build();
+        when(productRepository.getByCode(product.getCode())).thenReturn(existingProduct);
+
+        StockCard stockCard = new StockCard();
+        stockCard.setProduct(product);
+        stockCard.setStockOnHand(0);
+        when(stockRepository.queryStockCardByProductId(anyLong())).thenReturn(stockCard);
+
+        //when
+        syncDownManager.updateDeactivateProductNotifyList(product);
+
+        //then
+        verify(sharedPreferenceMgr, never()).setIsNeedShowProductsUpdateBanner(true, "name");
     }
 
     @Test

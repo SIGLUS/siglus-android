@@ -106,7 +106,7 @@ public class SyncDownManager {
     }
 
     private void syncDownArchivedProducts(Subscriber<? super SyncProgress> subscriber) throws LMISException {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_archived_product)){
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_archived_product)) {
             return;
         }
 
@@ -133,7 +133,7 @@ public class SyncDownManager {
     }
 
     private void updateProductArchivedStatus(List<String> archivedProductCodes) throws LMISException {
-        for(String code : archivedProductCodes){
+        for (String code : archivedProductCodes) {
             Product product = productRepository.getByCode(code);
             product.setArchived(true);
             productRepository.updateProduct(product);
@@ -295,6 +295,11 @@ public class SyncDownManager {
         if (stockCard == null) {
             return;
         }
+
+        if (stockCard.getProduct().isArchived()) {
+            return;
+        }
+
         if (stockCard.getStockOnHand() == 0) {
             sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, product.getPrimaryName());
         }
