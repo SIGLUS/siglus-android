@@ -8,6 +8,7 @@ import com.google.inject.AbstractModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
@@ -169,9 +170,11 @@ public class SyncDownManagerTest {
         laterEnterSubscriber.assertNoTerminalEvent();
 
         //then
+        ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
         verify(lmisRestApi, times(1)).fetchProducts(anyString());
         verify(lmisRestApi, times(1)).fetchArchivedProducts(anyString());
-        verify(productRepository).updateArchivedStatus(anyList());
+        verify(productRepository).updateProduct(productArgumentCaptor.capture());
+        assertThat(productArgumentCaptor.getValue().isArchived(), is(true));
         assertThat(firstEnterSubscriber.syncProgresses.size(), is(10));
         assertThat(laterEnterSubscriber.syncProgresses.size(), is(0));
     }
@@ -311,7 +314,12 @@ public class SyncDownManagerTest {
 
     private void mockArchivedProductCodesResponse() throws LMISException {
         when(sharedPreferenceMgr.shouldSyncArchivedProducts()).thenReturn(true);
-        when(lmisRestApi.fetchArchivedProducts(any(String.class))).thenReturn(new SyncDownArchivedProductCodesResponse());
+        when(productRepository.getByCode("code")).thenReturn(new Product());
+        SyncDownArchivedProductCodesResponse response = new SyncDownArchivedProductCodesResponse();
+        ArrayList<String> archivedProductCodes = new ArrayList<>();
+        archivedProductCodes.add("code");
+        response.setArchivedProductCodes(archivedProductCodes);
+        when(lmisRestApi.fetchArchivedProducts(any(String.class))).thenReturn(response);
     }
 
     private void mockSyncDownLatestProductResponse() throws LMISException {

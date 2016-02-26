@@ -32,7 +32,6 @@ import org.openlmis.core.model.builder.KitProductBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.robolectric.RuntimeEnvironment;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -167,25 +166,5 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
         List<String> activeProductCodes = productRepository.listArchivedProductCodes();
 
         assertEquals(2, activeProductCodes.size());
-    }
-
-    @Test
-    public void shouldUpdateArchivedProducts() throws Exception {
-        ArrayList<String> codes = new ArrayList<>();
-        codes.add("P1");
-        codes.add("P2");
-        Product product1 = ProductBuilder.create().setCode("P1").setIsArchived(false).build();
-        Product product2 = ProductBuilder.create().setCode("P2").setIsArchived(false).build();
-
-        productRepository.createOrUpdate(product1);
-        productRepository.createOrUpdate(product2);
-        List<String> productsBeforeUpdateCodes = productRepository.listArchivedProductCodes();
-        assertEquals(0, productsBeforeUpdateCodes.size());
-
-        productRepository.updateArchivedStatus(codes);
-
-        List<String> archivedProductCodes = productRepository.listArchivedProductCodes();
-
-        assertEquals(2, archivedProductCodes.size());
     }
 }
