@@ -25,12 +25,12 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.model.User;
 import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
-import java.net.ConnectException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -64,7 +64,7 @@ public class UserRepository extends LMISRestManager {
 
             @Override
             public void failure(RetrofitError error) {
-                if (error.getCause() instanceof ConnectException) {
+                if (error.getCause() instanceof NetWorkException) {
                     callback.timeout(error.getMessage());
                 } else {
                     callback.failure(error.getMessage());
