@@ -277,7 +277,24 @@ public class MMIARequisitionFragmentTest {
         when(regimeListView.hasEmptyField()).thenReturn(false);
         when(mmiaInfoListView.hasEmptyField()).thenReturn(true);
 
-        mmiaRequisitionFragment.etComment.setText("ab");
+        form.setComments("ab");
+
+        mmiaRequisitionFragment.regimeListView = regimeListView;
+        mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
+
+        mmiaRequisitionFragment.refreshRequisitionForm(form);
+
+        assertThat(mmiaRequisitionFragment.tvMismatch.getVisibility()).isEqualTo(View.INVISIBLE);
+    }
+
+    @Test
+    public void shouldDeHighlightWhenTotalNotMatchesAndMoreThanFive() {
+        when(regimeListView.getTotal()).thenReturn(20L);
+        when(mmiaInfoListView.getTotal()).thenReturn(40L);
+        when(regimeListView.hasEmptyField()).thenReturn(false);
+        when(mmiaInfoListView.hasEmptyField()).thenReturn(false);
+
+        form.setComments("abdasdsa");
 
         mmiaRequisitionFragment.regimeListView = regimeListView;
         mmiaRequisitionFragment.mmiaInfoListView = mmiaInfoListView;
