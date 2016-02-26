@@ -6,6 +6,7 @@ Feature: MMIA
 
   Scenario: Initial a MMIA
     Given I have initialized inventory with MMIA user
+    And I change device date to "20160121.130000"
     And I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second

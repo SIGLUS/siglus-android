@@ -68,6 +68,7 @@ Feature: Requisition
     And I wait for "Requisition -" to appear
     And I rotate the page to "landscape"
     Then I swipe right
+    Then I swipe right
     Then I should see "345" in the requisition form
 
     When I enter kit values
