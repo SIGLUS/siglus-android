@@ -29,3 +29,10 @@ def run_ft
   stop_jetty
   ftResult
 end
+
+def run_contract_tests
+  start_jetty
+  ctResult=system("./gradlew cT -P local")
+  stop_jetty
+  ctResult
+end
