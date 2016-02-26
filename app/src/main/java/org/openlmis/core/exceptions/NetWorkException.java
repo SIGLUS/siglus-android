@@ -20,13 +20,14 @@
 package org.openlmis.core.exceptions;
 
 
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
-
 public class NetWorkException extends LMISException {
 
-    public NetWorkException() {
-        super(LMISApp.getContext().getString(R.string.hint_network_error));
+    public NetWorkException(Exception e) {
+        super(e);
+    }
+
+    public NetWorkException(String msg) {
+        super(msg);
     }
 
 }
