@@ -182,7 +182,7 @@ public class ProductRepository {
         });
     }
 
-    public List<String> listArchivedProducts() throws LMISException {
+    public List<String> listArchivedProductCodes() throws LMISException {
         List<Product> isArchived = dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
             @Override
             public List<Product> operate(Dao<Product, String> dao) throws SQLException {

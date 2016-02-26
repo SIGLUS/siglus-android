@@ -227,8 +227,8 @@ public class SyncUpManager {
 
         final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
         try {
-            List<String> archivedProducts = productRepository.listArchivedProducts();
-            lmisRestApi.syncUpArchivedProducts(facilityId, archivedProducts);
+            List<String> archivedProductCodes = productRepository.listArchivedProductCodes();
+            lmisRestApi.syncUpArchivedProducts(facilityId, archivedProductCodes);
         } catch (LMISException e) {
             e.reportToFabric();
         }

@@ -164,9 +164,9 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
         productRepository.createOrUpdate(product2);
         productRepository.createOrUpdate(product3);
 
-        List<String> activeProducts = productRepository.listArchivedProducts();
+        List<String> activeProductCodes = productRepository.listArchivedProductCodes();
 
-        assertEquals(2, activeProducts.size());
+        assertEquals(2, activeProductCodes.size());
     }
 
     @Test
@@ -179,13 +179,13 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
 
         productRepository.createOrUpdate(product1);
         productRepository.createOrUpdate(product2);
-        List<String> productsBeforeUpdate = productRepository.listArchivedProducts();
-        assertEquals(0, productsBeforeUpdate.size());
+        List<String> productsBeforeUpdateCodes = productRepository.listArchivedProductCodes();
+        assertEquals(0, productsBeforeUpdateCodes.size());
 
         productRepository.updateArchivedStatus(codes);
 
-        List<String> archivedProducts = productRepository.listArchivedProducts();
+        List<String> archivedProductCodes = productRepository.listArchivedProductCodes();
 
-        assertEquals(2, archivedProducts.size());
+        assertEquals(2, archivedProductCodes.size());
     }
 }

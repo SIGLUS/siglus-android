@@ -231,11 +231,11 @@ public class SyncUpManagerTest {
 
     @Test
     public void shouldSyncArchivedProducts() throws Exception {
-        List<String> products = new ArrayList<>();
+        List<String> productCodes = new ArrayList<>();
         syncUpManager.productRepository = productRepository;
-        when(productRepository.listArchivedProducts()).thenReturn(products);
+        when(productRepository.listArchivedProductCodes()).thenReturn(productCodes);
         syncUpManager.syncArchivedProducts();
-        verify(lmisRestApi).syncUpArchivedProducts(UserInfoMgr.getInstance().getUser().getFacilityId(), products);
+        verify(lmisRestApi).syncUpArchivedProducts(UserInfoMgr.getInstance().getUser().getFacilityId(), productCodes);
     }
 
     @Test
