@@ -25,14 +25,11 @@ end
 
 def run_ft
   start_jetty
-  ftResult=system("./gradlew functionalTest")
-  stop_jetty
-  ftResult
-end
-
-def run_contract_tests
-  start_jetty
+  puts "Start running contract test..."
   ctResult=system("./gradlew cT -P local")
+  puts "Contract tests finished, start running functional test..."
+  ftResult=system("./gradlew functionalTest")
+  puts "functional tests finished"
   stop_jetty
-  ctResult
+  ctResult && ftResult
 end
