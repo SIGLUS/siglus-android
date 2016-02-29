@@ -23,7 +23,7 @@ def stop_jetty
   system("cd #{LMIS_MOZ_DIR} && ./build/stopLocal.sh")
 end
 
-def run_ft
+def run_ct_and_ft
   start_jetty
   puts "Start running contract test..."
   ctResult=system("./gradlew cT -P local")
