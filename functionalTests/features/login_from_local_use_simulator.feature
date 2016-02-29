@@ -1,6 +1,8 @@
 @LOGIN @dev
-#scenario for week network just can be simulated by simulator
+
 Feature: Log in from local
+
+#scenario for week network just can be simulated by simulator
 
   Scenario: Log in from local when network disable
 
