@@ -8,7 +8,6 @@ import com.google.inject.AbstractModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
@@ -30,7 +29,6 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
-import org.openlmis.core.network.model.SyncDownArchivedProductCodesResponse;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownProductsResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
@@ -61,12 +59,10 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.openlmis.core.service.SyncDownManager.SyncProgress.ArchivedProductsSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.ProductSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.RequisitionSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.StockCardsLastMonthSynced;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.StockCardsLastYearSynced;
-import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingArchivedProducts;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingProduct;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingRequisition;
 import static org.openlmis.core.service.SyncDownManager.SyncProgress.SyncingStockCardsLastMonth;
@@ -124,8 +120,6 @@ public class SyncDownManagerTest {
         //given
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_back_latest_product_list, false);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_back_stock_movement_273, true);
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_archived_product, true);
-        mockArchivedProductCodesResponse();
         mockProductResponse();
         mockRequisitionResponse();
         mockStockCardsResponse();
@@ -139,14 +133,12 @@ public class SyncDownManagerTest {
         //then
         assertThat(subscriber.syncProgresses.get(0), is(SyncingProduct));
         assertThat(subscriber.syncProgresses.get(1), is(ProductSynced));
-        assertThat(subscriber.syncProgresses.get(2), is(SyncingArchivedProducts));
-        assertThat(subscriber.syncProgresses.get(3), is(ArchivedProductsSynced));
-        assertThat(subscriber.syncProgresses.get(4), is(SyncingStockCardsLastMonth));
-        assertThat(subscriber.syncProgresses.get(5), is(StockCardsLastMonthSynced));
-        assertThat(subscriber.syncProgresses.get(6), is(SyncingRequisition));
-        assertThat(subscriber.syncProgresses.get(7), is(RequisitionSynced));
-        assertThat(subscriber.syncProgresses.get(8), is(SyncingStockCardsLastYear));
-        assertThat(subscriber.syncProgresses.get(9), is(StockCardsLastYearSynced));
+        assertThat(subscriber.syncProgresses.get(2), is(SyncingStockCardsLastMonth));
+        assertThat(subscriber.syncProgresses.get(3), is(StockCardsLastMonthSynced));
+        assertThat(subscriber.syncProgresses.get(4), is(SyncingRequisition));
+        assertThat(subscriber.syncProgresses.get(5), is(RequisitionSynced));
+        assertThat(subscriber.syncProgresses.get(6), is(SyncingStockCardsLastYear));
+        assertThat(subscriber.syncProgresses.get(7), is(StockCardsLastYearSynced));
     }
 
     @Test
@@ -154,8 +146,6 @@ public class SyncDownManagerTest {
         //given
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_back_latest_product_list, false);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_back_stock_movement_273, true);
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_archived_product, true);
-        mockArchivedProductCodesResponse();
         mockProductResponse();
         mockRequisitionResponse();
         mockStockCardsResponse();
@@ -171,12 +161,8 @@ public class SyncDownManagerTest {
         laterEnterSubscriber.assertNoTerminalEvent();
 
         //then
-        ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
         verify(lmisRestApi, times(1)).fetchProducts(anyString());
-        verify(lmisRestApi, times(1)).fetchArchivedProducts(anyString());
-        verify(productRepository).updateProduct(productArgumentCaptor.capture());
-        assertThat(productArgumentCaptor.getValue().isArchived(), is(true));
-        assertThat(firstEnterSubscriber.syncProgresses.size(), is(10));
+        assertThat(firstEnterSubscriber.syncProgresses.size(), is(8));
         assertThat(laterEnterSubscriber.syncProgresses.size(), is(0));
     }
 
@@ -318,10 +304,6 @@ public class SyncDownManagerTest {
                 verify(lmisRestApi, times(13)).fetchStockMovementData(anyString(), anyString(), anyString());
                 verify(sharedPreferenceMgr).setShouldSyncLastYearStockCardData(false);
             }
-            if (progress == ArchivedProductsSynced) {
-                verify(lmisRestApi, times(1)).fetchArchivedProducts(anyString());
-                verify(sharedPreferenceMgr).setArchivedProductsSynced(true);
-            }
         } catch (LMISException e) {
             e.printStackTrace();
         }
@@ -337,16 +319,6 @@ public class SyncDownManagerTest {
         response.setProgramsWithProducts(programsWithProducts);
         when(lmisRestApi.fetchProducts(any(String.class))).thenReturn(response);
         when(lmisRestApi.fetchLatestProducts(any(String.class), any(String.class))).thenReturn(response);
-    }
-
-    private void mockArchivedProductCodesResponse() throws LMISException {
-        when(sharedPreferenceMgr.isArchivedProductsSynced()).thenReturn(false);
-        when(productRepository.getByCode("code")).thenReturn(new Product());
-        SyncDownArchivedProductCodesResponse response = new SyncDownArchivedProductCodesResponse();
-        ArrayList<String> archivedProductCodes = new ArrayList<>();
-        archivedProductCodes.add("code");
-        response.setArchivedProductCodes(archivedProductCodes);
-        when(lmisRestApi.fetchArchivedProducts(any(String.class))).thenReturn(response);
     }
 
     private void mockSyncDownLatestProductResponse() throws LMISException {

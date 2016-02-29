@@ -55,6 +55,7 @@ public class Product extends BaseModel implements Comparable<Product> {
     @DatabaseField
     String type;
 
+    @SerializedName("archived")
     @DatabaseField
     boolean isArchived;
 

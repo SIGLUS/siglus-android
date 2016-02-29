@@ -105,14 +105,6 @@ public class SharedPreferenceMgr {
         sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_SHOULD_SYNC_LAST_YEAR, shouldSyncLastYearStockCardData).apply();
     }
 
-    public boolean isArchivedProductsSynced() {
-        return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_SHOULD_SYNC_ARCHIVED_PRODUCTS, stockRepository.hasStockData());
-    }
-
-    public void setArchivedProductsSynced(boolean shouldSyncArchivedProducts) {
-        sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_SHOULD_SYNC_ARCHIVED_PRODUCTS, shouldSyncArchivedProducts).apply();
-    }
-
     public boolean isRequisitionDataSynced() {
         RnrFormRepository rnrFormRepository = RoboGuice.getInjector(LMISApp.getContext()).getInstance(RnrFormRepository.class);
         return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, rnrFormRepository.hasRequisitionData());
