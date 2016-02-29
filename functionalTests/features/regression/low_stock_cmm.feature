@@ -45,6 +45,7 @@ Feature: low stock
     And I press "Complete"
     And I wait for "Enter your initials" to appear
     And I sign with "superuser"
+    And I wait for 1 second
     Then I see "11"
     Then I navigate back
     Then I wait for 1 second
