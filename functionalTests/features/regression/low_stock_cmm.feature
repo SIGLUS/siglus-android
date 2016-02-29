@@ -46,6 +46,7 @@ Feature: low stock
     And I wait for "Enter your initials" to appear
     And I sign with "superuser"
     And I wait for 1 second
+    And I swipe right
     Then I see "11"
     Then I navigate back
     Then I wait for 1 second
