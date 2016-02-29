@@ -1,8 +1,9 @@
-@regression
+@regression @change_date
 Feature: Unpack Kit
 
   Scenario: Unpack US kit and verify kit products SOH
-    Given I try to log in with "kit" "password1"
+    Given I change device date to "20160121.130000"
+    And I try to log in with "kit" "password1"
     And I wait up to 120 seconds for "Initial Inventory" to appear
     Then I wait for "Initial inventory" to appear
     When I search product by fnm "08L01X" and select this item with quantity "888"
@@ -57,9 +58,7 @@ Feature: Unpack Kit
     And I should see "Unpacking"
     And I should see "600" in quantity and expected quantity
     When I press "Complete"
-    Then I should see "Quantity cannot be left blank!"
 
-    And I enter quantity for all products in kit
     Then I wait for "[SCOD10]" to appear
     Then I should not see "Unpack Kit"
     Then I navigate back
@@ -70,7 +69,7 @@ Feature: Unpack Kit
     And I press "Stock Card Overview"
     Then I should see "Total:44"
     When I search drug by fnm "08L01X"
-    Then I should see "889"
+    Then I should see "1488"
     And I clean search bar
     When I search drug by fnm "15C0ZY"
     Then I should see "[15C0ZY]"
@@ -100,6 +99,11 @@ Feature: Unpack Kit
     Then I should see text containing "Create Via Classica Requisition"
 
     And I press "Create Via Classica Requisition"
+    Then I should see "Select inventory to close period"
+    And I press "Thursday"
+    And I press "Next"
+    Then I should see "to 21 Jan"
+
     Then I enter consultationsNub "2015"
     Then I wait for 1 second
     Then I navigate back
@@ -108,10 +112,15 @@ Feature: Unpack Kit
     Then I wait for "Via Classica Requisitions" to appear
 
     And I press "Create Via Classica Requisition"
+    Then I should see "Select inventory to close period"
+    And I press "Thursday"
+    And I press "Next"
+    Then I should see "to 21 Jan"
+
     And I should see empty consultations number
     Then I enter consultationsNub "888"
     Then I swipe right
-    Then I should see "889" on index "1" of "tx_theoretical" field
+    Then I should see "1488" on index "1" of "tx_theoretical" field
     Then I swipe right
     Then I swipe right
     Then I enter QuantityRequested "345"
@@ -120,7 +129,6 @@ Feature: Unpack Kit
     Then I wait for "Via Classica Requisitions" to appear
 
     And I press "Continue Working on Via Classica Requisition"
-    And I wait for "Requisition -" to appear
     And I rotate the page to "landscape"
     Then I swipe right
     Then I should see "345" in the requisition form
