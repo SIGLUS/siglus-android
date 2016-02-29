@@ -11,9 +11,9 @@ Given(/^I change device date to "(.*?)"/) do |time|
 end
 
 Given(/^I disable wifi/) do
-    system("adb shell svc wifi disable")
+    system("adb -s $ADB_DEVICE_ARG shell svc wifi disable")
 end
 
 Given(/^I enable wifi/) do
-    system("adb shell svc wifi enable")
+    system("adb -s $ADB_DEVICE_ARG shell svc wifi enable")
 end

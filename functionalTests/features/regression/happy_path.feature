@@ -1,8 +1,9 @@
-@regression
+@regression @change_date
 Feature: Log in and initialize Inventory
 
   Scenario: User should be able to log in, initialize inventory and navigate to stock overview page
 
+    Given I change device date to "20160121.130000"
     #Unauthenrised account shouldn't login to the app
     Given I try to log in with "testlogin" "password1"
     And I should see "Username or Password is incorrect."
@@ -103,7 +104,13 @@ Feature: Log in and initialize Inventory
     And I wait for "Enter your initials" to appear
     And I sign with "superuser"
     And I wait for 1 second
+    And I swipe left
+    And I swipe left
+    And I wait for 1 second
     Then I see the text "Donations to Deposit"
+    And I swipe right
+    And I swipe right
+    And I wait for 1 second
     And I see "125"
     And I rotate the page to "portrait"
 
@@ -156,7 +163,6 @@ Feature: Log in and initialize Inventory
     Then I shouldn't see product "01A01" in this page
     And I shouldn't see product "08S32Z" in this page
 
-
     # Physical inventory cannot include blank quantities
     And I search drug by fnm "08S01ZY"
     When I press "Complete"
@@ -178,7 +184,6 @@ Feature: Log in and initialize Inventory
     And I press "Complete"
     And I wait for "Enter your initials" to appear
     And I sign with "sign"
-    # the line above just does not work on physical devices ......
     Then I wait for "STOCK CARD OVERVIEW" to appear
     When I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
@@ -192,10 +197,16 @@ Feature: Log in and initialize Inventory
     And I navigate back
     And I wait for "STOCK CARD OVERVIEW" to appear
     And I press "Via Classica Requisitions"
+
     Then I wait for "Via Classica Requisitions" to appear
     Then I should see text containing "Create Via Classica Requisition"
 
     When I press "Create Via Classica Requisition"
+    Then I should see "Select inventory to close period"
+    And I press "Thursday"
+    And I press "Next"
+    Then I should see "to 21 Jan"
+
     Then I should not see "01A01"
 
     #columns of Archived drugs are 0 in mmia
@@ -208,18 +219,23 @@ Feature: Log in and initialize Inventory
     When I press "MMIA"
     Then I should see text containing "Create MMIA"
     When I press "Create MMIA"
+    Then I should see "Select inventory to close period"
+    And I press "Thursday"
+    And I press "Next"
     Then I wait for "MMIA -" to appear
+    Then I should see "to 21 Jan"
+
     Then I swipe right
     Then I wait for 1 second
     And I should see inventory "0"
 
     # Archived drugs screen
-   When I navigate back
-   Then I wait to see "Are you sure you want to quit without saving your work?"
-   When I press "Yes"
-   Then I wait for "Create MMIA" to appear
-   When I navigate back
-   Then I wait for "STOCK CARD OVERVIEW" to appear
+    When I navigate back
+    Then I wait to see "Are you sure you want to quit without saving your work?"
+    When I press "Yes"
+    Then I wait for "Create MMIA" to appear
+    When I navigate back
+    Then I wait for "STOCK CARD OVERVIEW" to appear
     And I press "Stock Card Overview"
     And I wait for "Stock Overview" to appear
     And I press the menu key
@@ -229,7 +245,6 @@ Feature: Log in and initialize Inventory
 
     # Stock movement history screen
     When I press "View movement history"
-    And I wait for the "StockMovementHistoryActivity" screen to appear
     Then I see the text "Inventory"
     Then I see the text "Maternity"
 
@@ -270,6 +285,10 @@ Feature: Log in and initialize Inventory
     Then I should see text containing "Create Via Classica Requisition"
 
     When I press "Create Via Classica Requisition"
+    Then I should see "Select inventory to close period"
+    And I press "Thursday"
+    And I press "Next"
+
     Then I should see "01A01"
 
     # Sign out

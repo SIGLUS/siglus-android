@@ -205,7 +205,7 @@ public class RnrFormRepository {
         return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
             @Override
             public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("program_id", programId).query();
+                return dao.queryBuilder().orderBy("periodBegin", true).where().eq("program_id", programId).query();
             }
         });
     }
@@ -281,7 +281,7 @@ public class RnrFormRepository {
     }
 
     private void deleteDeactivatedProductItemsFromForms(List<RnRForm> rnRForms) throws LMISException {
-        for (RnRForm rnRForm: rnRForms) {
+        for (RnRForm rnRForm : rnRForms) {
             deleteRnrFormItems(rnRForm.getDeactivatedProductItems());
         }
     }
