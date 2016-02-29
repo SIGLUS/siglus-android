@@ -85,5 +85,6 @@ describe "Get programs with products information for a facility" do
     expect(product1['product']['kitProductList']).to be_nil
     expect(product1['supportedPrograms'].length).to eq 1
     expect(product1['supportedPrograms'][0]).to eq 'MMIA'
+    expect(product1['product']['archived']).to eq false
   end
 end

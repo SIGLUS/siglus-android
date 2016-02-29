@@ -16,16 +16,5 @@ describe "update archived product codes to web server" do
       'Authorization' => http_basic_auth('mystique', 'password1')
 
     expect(syncUpResponse.code).to eq 200
-
-    syncDownResponse = RestClient.get 'http://#{WEB_DEV_URI}/rest-api/facilities/"#{facility_id}"/archivedProducts',
-      :content_type => :json,
-      :accept => :json,
-      'Authorization' => http_basic_auth('mystique', 'password1')
-
-    body = JSON.parse(syncDownResponse.body)
-    expect(body['archivedProductCodes'].length).to eq 1
-    expect(body['archivedProductCodes'][0]).to eq "08S01ZZ"
-
-    expect(syncDownResponse.code).to eq 200
   end
 end
