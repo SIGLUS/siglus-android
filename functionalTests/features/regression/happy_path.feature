@@ -104,7 +104,13 @@ Feature: Log in and initialize Inventory
     And I wait for "Enter your initials" to appear
     And I sign with "superuser"
     And I wait for 1 second
+    And I swipe left
+    And I swipe left
+    And I wait for 1 second
     Then I see the text "Donations to Deposit"
+    And I swipe right
+    And I swipe right
+    And I wait for 1 second
     And I see "125"
     And I rotate the page to "portrait"
 
@@ -239,7 +245,6 @@ Feature: Log in and initialize Inventory
 
     # Stock movement history screen
     When I press "View movement history"
-    And I wait for the "StockMovementHistoryActivity" screen to appear
     Then I see the text "Inventory"
     Then I see the text "Maternity"
 
