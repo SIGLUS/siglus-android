@@ -19,6 +19,7 @@
 package org.openlmis.core.network;
 
 
+import android.os.Build;
 import android.support.annotation.NonNull;
 
 import com.google.gson.GsonBuilder;
@@ -63,6 +64,7 @@ import javax.net.ssl.TrustManagerFactory;
 import lombok.Data;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
+import retrofit.RequestInterceptor.RequestFacade;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.OkClient;
@@ -94,7 +96,10 @@ public class LMISRestManager {
                 if (user != null) {
                     String basic = Credentials.basic(user.getUsername(), user.getPassword());
                     request.addHeader("Authorization", basic);
+                    request.addHeader("UserName", user.getUsername());
+                    request.addHeader("FacilityName", user.getFacilityName());
                 }
+                addDeviceInfoToRequestHeader(request);
             }
         };
 
@@ -108,6 +113,10 @@ public class LMISRestManager {
                 .build();
 
         lmisRestApi = restAdapter.create(LMISRestApi.class);
+    }
+
+    public LMISRestApi getLmisRestApi() {
+        return lmisRestApi;
     }
 
     public OkHttpClient getSSLClient() {
@@ -176,9 +185,10 @@ public class LMISRestManager {
         return client;
     }
 
-
-    public LMISRestApi getLmisRestApi() {
-        return lmisRestApi;
+    private void addDeviceInfoToRequestHeader(RequestFacade request) {
+        String deviceInfo = "OS: " + Build.VERSION.RELEASE
+                + " Model: " + android.os.Build.BRAND + " " + android.os.Build.MODEL;
+        request.addHeader("DeviceInfo", deviceInfo);
     }
 
     private GsonConverter registerTypeAdapter() {
