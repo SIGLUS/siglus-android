@@ -183,7 +183,6 @@ public class SyncDownManager {
             sharedPreferenceMgr.setHasGetProducts(true);
             subscriber.onNext(SyncProgress.ProductSynced);
         } catch (LMISException e) {
-            sharedPreferenceMgr.setHasGetProducts(false);
             e.reportToFabric();
             throw new LMISException(errorMessage(R.string.msg_sync_products_list_failed));
         }
