@@ -123,7 +123,9 @@ public class RnRFormListPresenter extends Presenter {
 
         Collections.reverse(rnRForms);
 
-        addMissedPeriodViewModel(viewModels, rnRForms);
+        if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)){
+            addMissedPeriodViewModel(viewModels, rnRForms);
+        }
 
         addCurrentPeriodViewModel(viewModels, rnRForms);
 

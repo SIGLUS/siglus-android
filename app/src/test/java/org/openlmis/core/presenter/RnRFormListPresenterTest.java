@@ -188,6 +188,7 @@ public class RnRFormListPresenterTest {
 
     @Test
     public void shouldReturnCreateFormTypeRnrFormViewModelWithoutRnrformInCurrentPeriod() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
         ArrayList<RnRForm> rnRForms = new ArrayList<>();
 
         RnRForm rnRForm = new RnRForm();
