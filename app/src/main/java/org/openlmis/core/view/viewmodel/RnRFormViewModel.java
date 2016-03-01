@@ -41,6 +41,7 @@ public class RnRFormViewModel {
     public static final int TYPE_UN_AUTHORIZED = 40;
     public static final int TYPE_UNSYNC = 50;
     public static final int TYPE_HISTORICAL = 60;
+    public static final int TYPE_NOT_CLOSED = 80;
 
     int type;
     String syncedDate;
@@ -53,12 +54,15 @@ public class RnRFormViewModel {
     private RnRForm form;
     private String programCode;
 
+    public RnRFormViewModel() {
+    }
+
     public RnRFormViewModel(RnRForm form) {
         this.form = form;
         Date submittedTime = form.getSubmittedTime();
         if (submittedTime != null) {
             this.syncedDate = DateUtil.formatDate(submittedTime);
-        }else {
+        } else {
             this.syncedDate = StringUtils.EMPTY;
         }
         this.period = generatePeriod(form.getPeriodBegin(), form.getPeriodEnd());
@@ -106,4 +110,9 @@ public class RnRFormViewModel {
         }
     }
 
+    public static RnRFormViewModel buildNotClosed() {
+        RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
+        rnRFormViewModel.type = TYPE_NOT_CLOSED;
+        return rnRFormViewModel;
+    }
 }

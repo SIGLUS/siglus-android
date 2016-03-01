@@ -127,6 +127,8 @@ public class RnRFormListPresenter extends Presenter {
 
         Collections.reverse(rnRForms);
 
+        addNotClosedViewModel(viewModels, rnRForms);
+
         addCurrentPeriodViewModel(viewModels, rnRForms);
 
         addPreviousPeriodViewModels(viewModels, rnRForms);
@@ -153,7 +155,7 @@ public class RnRFormListPresenter extends Presenter {
     private RnRFormViewModel generateRnrFormViewModelWithoutRnrForm(Period currentPeriod) throws LMISException {
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
-            if (isCanNotCreateRnr(currentPeriod)){
+            if (isCanNotCreateRnr(currentPeriod)) {
                 return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CAN_NOT_CREATE_RNR);
             }
 
@@ -207,6 +209,14 @@ public class RnRFormListPresenter extends Presenter {
         if (rnRForms.get(0).getStatus() != RnRForm.STATUS.AUTHORIZED) {
             viewModels.add(new RnRFormViewModel(rnRForms.get(0)));
             rnRForms.remove(0);
+        }
+    }
+
+    private void addNotClosedViewModel(List<RnRFormViewModel> viewModels, List<RnRForm> rnRForms) {
+        int currentMonth = new DateTime().getMonthOfYear();
+        int periodEndMonth = new DateTime(rnRForms.get(0).getPeriodEnd()).getMonthOfYear();
+        if (currentMonth != periodEndMonth) {
+            viewModels.add(RnRFormViewModel.buildNotClosed());
         }
     }
 
