@@ -88,36 +88,38 @@ public class HomeActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (UserInfoMgr.getInstance().getUser() == null) {
-            // In case some users use some unknown way entered here!!!
-            logout();
-        }
-
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-            setContentView(R.layout.activity_home_page);
-            setTitle(UserInfoMgr.getInstance().getFacilityName());
-            syncTimeView = (SyncTimeView) findViewById(R.id.view_sync_time);
-        } else {
-            setContentView(R.layout.activity_home_page_old);
-            txLastSyncedStockCard = (TextView) findViewById(R.id.tx_last_synced_stockcard);
-            txLastSyncedRnrForm = (TextView) findViewById(R.id.tx_last_synced_rnrform);
-        }
-
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        }
-
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-            btnVIAList.setText(LMISApp.getInstance().getText(R.string.btn_requisition_list_old));
-            btnMMIAList.setText(LMISApp.getInstance().getText(R.string.btn_mmia_list_old));
-        }
-
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.INTENT_FILTER_SET_SYNCED_TIME);
         registerReceiver(syncedTimeReceiver, filter);
 
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_kit)) {
-            btnKitStockCard.setVisibility(View.GONE);
+        if (UserInfoMgr.getInstance().getUser() == null) {
+            // In case some users use some unknown way entered here!!!
+            logout();
+            finish();
+        } else {
+
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
+                setContentView(R.layout.activity_home_page);
+                setTitle(UserInfoMgr.getInstance().getFacilityName());
+                syncTimeView = (SyncTimeView) findViewById(R.id.view_sync_time);
+            } else {
+                setContentView(R.layout.activity_home_page_old);
+                txLastSyncedStockCard = (TextView) findViewById(R.id.tx_last_synced_stockcard);
+                txLastSyncedRnrForm = (TextView) findViewById(R.id.tx_last_synced_rnrform);
+            }
+
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            }
+
+            if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
+                btnVIAList.setText(LMISApp.getInstance().getText(R.string.btn_requisition_list_old));
+                btnMMIAList.setText(LMISApp.getInstance().getText(R.string.btn_mmia_list_old));
+            }
+
+            if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_kit)) {
+                btnKitStockCard.setVisibility(View.GONE);
+            }
         }
     }
 
