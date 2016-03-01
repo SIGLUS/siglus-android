@@ -49,9 +49,6 @@ public interface LMISRestApi {
     @POST("/rest-api/update-app-info")
     Void updateAppVersion(@Body AppInfoRequest appInfo) throws LMISException;
 
-    @GET("/rest-api/programs-with-products")
-    SyncDownProductsResponse fetchProducts(@Query("facilityCode") String facilityCode) throws LMISException;
-
     @GET("/rest-api/latest-programs-with-products")
     SyncDownProductsResponse fetchLatestProducts(@Query("facilityId") String facilityId, @Query("afterUpdatedTime") String afterUpdatedTime) throws LMISException;
 

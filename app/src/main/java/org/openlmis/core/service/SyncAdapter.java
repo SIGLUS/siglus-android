@@ -69,9 +69,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private void triggerSync() {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_latest_product_list)) {
-            syncDownManager.syncDownLatestProducts();
-        }
+        syncDownManager.syncDownLatestProducts();
 
         boolean isSyncRnrSuccessful = syncUpManager.syncRnr();
         if (isSyncRnrSuccessful) {
@@ -86,7 +84,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         syncUpManager.syncUpUnSyncedStockCardCodes();
         sendSyncedTimeBroadcast();
         syncUpManager.syncAppVersion();
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_archived_product)){
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_archived_product)) {
             syncUpManager.syncArchivedProducts();
         }
     }

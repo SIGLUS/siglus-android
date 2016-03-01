@@ -112,13 +112,11 @@ public class SyncDownManagerTest {
                 return Schedulers.immediate();
             }
         });
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_back_latest_product_list, true);
     }
 
     @Test
     public void shouldSyncDownServerData() throws Exception {
         //given
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_back_latest_product_list, false);
         mockProductResponse();
         mockRequisitionResponse();
         mockStockCardsResponse();
@@ -143,7 +141,6 @@ public class SyncDownManagerTest {
     @Test
     public void shouldOnlySyncOnceWhenInvokedTwice() throws Exception {
         //given
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_back_latest_product_list, false);
         mockProductResponse();
         mockRequisitionResponse();
         mockStockCardsResponse();
@@ -159,7 +156,6 @@ public class SyncDownManagerTest {
         laterEnterSubscriber.assertNoTerminalEvent();
 
         //then
-        verify(lmisRestApi, times(1)).fetchProducts(anyString());
         assertThat(firstEnterSubscriber.syncProgresses.size(), is(8));
         assertThat(laterEnterSubscriber.syncProgresses.size(), is(0));
     }
@@ -167,7 +163,6 @@ public class SyncDownManagerTest {
     @Test
     public void shouldSyncDownLatestProductList() throws Exception {
         //given
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_back_latest_product_list, true);
         mockProductResponse();
 
         //when
@@ -182,7 +177,6 @@ public class SyncDownManagerTest {
     @Test
     public void shouldSyncDownNewLatestProductList() throws Exception {
 
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_back_latest_product_list, true);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_kit, true);
         mockSyncDownLatestProductResponse();
         mockRequisitionResponse();
@@ -314,7 +308,6 @@ public class SyncDownManagerTest {
         SyncDownProductsResponse response = new SyncDownProductsResponse();
         response.setLatestUpdatedTime("today");
         response.setProgramsWithProducts(programsWithProducts);
-        when(lmisRestApi.fetchProducts(any(String.class))).thenReturn(response);
         when(lmisRestApi.fetchLatestProducts(any(String.class), any(String.class))).thenReturn(response);
     }
 
