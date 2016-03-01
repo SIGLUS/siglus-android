@@ -119,7 +119,6 @@ public class SyncDownManagerTest {
     public void shouldSyncDownServerData() throws Exception {
         //given
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_back_latest_product_list, false);
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_back_stock_movement_273, true);
         mockProductResponse();
         mockRequisitionResponse();
         mockStockCardsResponse();
@@ -145,7 +144,6 @@ public class SyncDownManagerTest {
     public void shouldOnlySyncOnceWhenInvokedTwice() throws Exception {
         //given
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_back_latest_product_list, false);
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_back_stock_movement_273, true);
         mockProductResponse();
         mockRequisitionResponse();
         mockStockCardsResponse();
@@ -185,7 +183,6 @@ public class SyncDownManagerTest {
     public void shouldSyncDownNewLatestProductList() throws Exception {
 
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_back_latest_product_list, true);
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_back_stock_movement_273, true);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_kit, true);
         mockSyncDownLatestProductResponse();
         mockRequisitionResponse();

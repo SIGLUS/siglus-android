@@ -101,7 +101,7 @@ public class LoginPresenter extends Presenter {
             return;
         }
 
-        if (!SharedPreferenceMgr.getInstance().isLastMonthStockDataSynced() && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_back_stock_movement_273)) {
+        if (!SharedPreferenceMgr.getInstance().isLastMonthStockDataSynced()) {
             view.loaded();
             ToastUtil.show(R.string.msg_sync_stockmovement_failed);
             return;
