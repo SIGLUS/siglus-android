@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
@@ -66,9 +67,18 @@ public class DatePickerDialogWithoutDay extends DatePickerDialog {
         try {
             //hide CalendarView
             datePickerLayout.getChildAt(1).setVisibility(View.GONE);
+
             //hide day
-            ((ViewGroup) datePickerLayout.getChildAt(0))
-                    .getChildAt(1).setVisibility(View.GONE);
+            int dayIdentifier = Resources.getSystem().getIdentifier("day", "id", "android");
+            ViewGroup pickers = (ViewGroup) datePickerLayout.getChildAt(0);
+            for (int i = 0; i < pickers.getChildCount(); i++) {
+                View childView = pickers.getChildAt(i);
+                if (childView.getId() == dayIdentifier) {
+                    childView.setVisibility(View.GONE);
+                    return;
+                }
+
+            }
         } catch (NullPointerException e) {
             new LMISException(e).reportToFabric();
         }
