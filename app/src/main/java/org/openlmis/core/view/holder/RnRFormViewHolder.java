@@ -49,32 +49,32 @@ public class RnRFormViewHolder extends BaseViewHolder {
         }
         form = model.getForm();
         switch (model.getType()) {
-            case RnRFormViewModel.TYPE_CAN_NOT_CREATE_RNR:
+            case RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY:
                 configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_can_not_create_rnr, model.getPeriodEndMonth())), R.drawable.ic_description, R.color.color_draft_title, form);
                 break;
-            case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY:
+            case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD:
                 configHolder(model, R.string.btn_view_uncompleted_physical_inventory, Html.fromHtml(context.getString(R.string.label_uncompleted_physical_inventory_message, model.getName())));
                 btnView.setOnClickListener(new BtnViewClickListener(model));
                 break;
-            case RnRFormViewModel.TYPE_SELECT_CLOSE_OF_PERIOD:
+            case RnRFormViewModel.TYPE_INVENTORY_DONE:
             case RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED:
                 configHolder(model, R.string.btn_view_completed_physical_inventory, Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, model.getName())));
                 btnView.setOnClickListener(new BtnViewClickListener(model));
                 btnView.setBackground(context.getResources().getDrawable(R.drawable.blue_button));
                 btnView.setTextColor(context.getResources().getColor(R.color.color_white));
                 break;
-            case RnRFormViewModel.TYPE_UN_AUTHORIZED:
+            case RnRFormViewModel.TYPE_CREATED_BUT_UNCOMPLETED:
                 configHolder(model, R.string.btn_view_incomplete_requisition, Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())));
                 btnView.setOnClickListener(new BtnViewClickListener(model));
                 break;
-            case RnRFormViewModel.TYPE_UNSYNC:
+            case RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL:
                 String error = context.getString(R.string.label_unsynced_requisition, model.getName());
                 if (model.getSyncServerErrorMessage() != null) {
                     error = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage(model.getSyncServerErrorMessage());
                 }
                 configHolder(model.getPeriod(), Html.fromHtml(error), R.drawable.ic_error, R.color.color_red, form);
                 break;
-            case RnRFormViewModel.TYPE_HISTORICAL:
+            case RnRFormViewModel.TYPE_SYNCED_HISTORICAL:
                 configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedDate())), R.drawable.ic_done_green, INT_UNSET, form);
                 btnView.setText(context.getString(R.string.btn_view_requisition, model.getName()));
                 btnView.setOnClickListener(new BtnViewClickListener(model));

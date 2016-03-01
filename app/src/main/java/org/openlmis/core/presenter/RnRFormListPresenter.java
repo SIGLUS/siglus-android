@@ -154,22 +154,22 @@ public class RnRFormListPresenter extends Presenter {
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
             if (isCanNotCreateRnr(currentPeriod)) {
-                return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CAN_NOT_CREATE_RNR);
+                return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
             }
 
             List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(currentPeriod);
 
             if (physicalInventories == null || physicalInventories.size() == 0) {
-                return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
+                return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
             } else {
-                return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_SELECT_CLOSE_OF_PERIOD);
+                return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_INVENTORY_DONE);
             }
         } else {
             Date latestPhysicalInventoryTime = DateUtil.parseString(sharedPreferenceMgr.getLatestPhysicInventoryTime(), DateUtil.DATE_TIME_FORMAT);
 
             Date periodBegin = currentPeriod.getBegin().toDate();
             if (latestPhysicalInventoryTime.before(periodBegin)) {
-                return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
+                return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
             } else {
                 return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED);
             }

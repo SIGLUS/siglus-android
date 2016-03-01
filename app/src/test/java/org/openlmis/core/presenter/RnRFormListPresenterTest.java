@@ -134,7 +134,7 @@ public class RnRFormListPresenterTest {
 
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
         assertThat(rnRFormViewModels.size()).isEqualTo(1);
-        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
+        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
     }
 
     @Test
@@ -153,7 +153,7 @@ public class RnRFormListPresenterTest {
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
         assertThat(rnRFormViewModels.size()).isEqualTo(1);
-        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_CAN_NOT_CREATE_RNR);
+        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
     }
 
     @Test
@@ -171,7 +171,7 @@ public class RnRFormListPresenterTest {
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
         assertThat(rnRFormViewModels.size()).isEqualTo(1);
-        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
+        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
     }
 
     @Test
@@ -209,8 +209,8 @@ public class RnRFormListPresenterTest {
 
         assertThat(rnRFormViewModels.size()).isEqualTo(3);
         assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
-        assertThat(rnRFormViewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
-        assertThat(rnRFormViewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_UNSYNC);
+        assertThat(rnRFormViewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
+        assertThat(rnRFormViewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL);
     }
 
     private List<RnRForm> createRnRForms() {

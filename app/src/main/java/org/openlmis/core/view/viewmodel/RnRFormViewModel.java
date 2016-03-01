@@ -34,13 +34,13 @@ import lombok.Data;
 @Data
 public class RnRFormViewModel {
 
-    public static final int TYPE_CAN_NOT_CREATE_RNR = 70;
-    public static final int TYPE_UNCOMPLETE_INVENTORY = 10;
-    public static final int TYPE_SELECT_CLOSE_OF_PERIOD = 20;
-    public static final int TYPE_CLOSE_OF_PERIOD_SELECTED = 30;
-    public static final int TYPE_UN_AUTHORIZED = 40;
-    public static final int TYPE_UNSYNC = 50;
-    public static final int TYPE_HISTORICAL = 60;
+    public static final int TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD = 10;
+    public static final int TYPE_INVENTORY_DONE = 20;
+    public static final int TYPE_CLOSE_OF_PERIOD_SELECTED = 30; //Before period logic change
+    public static final int TYPE_CREATED_BUT_UNCOMPLETED = 40;
+    public static final int TYPE_UNSYNCED_HISTORICAL = 50;
+    public static final int TYPE_SYNCED_HISTORICAL = 60;
+    public static final int TYPE_CANNOT_DO_MONTHLY_INVENTORY = 70;
     public static final int TYPE_MISSED_PERIOD = 80;
 
     int type;
@@ -86,9 +86,9 @@ public class RnRFormViewModel {
 
     public void setType(RnRForm form) {
         if (form.getStatus() == RnRForm.STATUS.AUTHORIZED) {
-            this.type = form.isSynced() ? TYPE_HISTORICAL : TYPE_UNSYNC;
+            this.type = form.isSynced() ? TYPE_SYNCED_HISTORICAL : TYPE_UNSYNCED_HISTORICAL;
         } else {
-            this.type = TYPE_UN_AUTHORIZED;
+            this.type = TYPE_CREATED_BUT_UNCOMPLETED;
         }
     }
 

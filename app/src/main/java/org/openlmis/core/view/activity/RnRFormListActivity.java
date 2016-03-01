@@ -131,15 +131,15 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         @Override
         public void clickBtnView(RnRFormViewModel model) {
             switch (model.getType()) {
-                case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY:
+                case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD:
                     Intent intent = new Intent(RnRFormListActivity.this, InventoryActivity.class);
                     intent.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
                     startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
                     break;
-                case RnRFormViewModel.TYPE_SELECT_CLOSE_OF_PERIOD:
+                case RnRFormViewModel.TYPE_INVENTORY_DONE:
                     startActivityForResult(SelectPeriodActivity.getIntentToMe(RnRFormListActivity.this, model.getProgramCode()), Constants.REQUEST_SELECT_PERIOD_END);
                     break;
-                case RnRFormViewModel.TYPE_HISTORICAL:
+                case RnRFormViewModel.TYPE_SYNCED_HISTORICAL:
                     rnrFormId = model.getId();
                     goToRequisitionPage(rnrFormId);
                     break;

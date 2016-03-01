@@ -38,7 +38,7 @@ public class RnRFormViewHolderTest {
     }
 
     private RnRFormViewHolder getViewHolderByType(int viewType) {
-        if (viewType == RnRFormViewModel.TYPE_UNSYNC || viewType == RnRFormViewModel.TYPE_CAN_NOT_CREATE_RNR) {
+        if (viewType == RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL || viewType == RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY) {
             return new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card_disable, null, false), mockedListener);
         } else {
             return new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card, null, false), mockedListener);
@@ -51,7 +51,7 @@ public class RnRFormViewHolderTest {
         form.setStatus(RnRForm.STATUS.DRAFT);
         RnRFormViewModel viewModel = new RnRFormViewModel(form);
 
-        viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_UN_AUTHORIZED);
+        viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_CREATED_BUT_UNCOMPLETED);
 
         viewHolder.populate(viewModel);
 
@@ -69,7 +69,7 @@ public class RnRFormViewHolderTest {
         form.setSynced(false);
         RnRFormViewModel viewModel = new RnRFormViewModel(form);
 
-        viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_UNSYNC);
+        viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL);
         viewHolder.populate(viewModel);
 
         assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getPeriod()));
@@ -79,9 +79,9 @@ public class RnRFormViewHolderTest {
 
     @Test
     public void shouldShowUnCompleteInventory() {
-        RnRFormViewModel viewModel = new RnRFormViewModel(new Period(new DateTime()), "MMIA", RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
+        RnRFormViewModel viewModel = new RnRFormViewModel(new Period(new DateTime()), "MMIA", RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
 
-        viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
+        viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
         viewHolder.populate(viewModel);
 
         assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getPeriod()));
@@ -111,7 +111,7 @@ public class RnRFormViewHolderTest {
         form.setStatus(RnRForm.STATUS.AUTHORIZED);
         form.setSynced(true);
         RnRFormViewModel viewModel = new RnRFormViewModel(form);
-        viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_HISTORICAL);
+        viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_SYNCED_HISTORICAL);
 
         viewHolder.populate(viewModel);
 
@@ -123,8 +123,8 @@ public class RnRFormViewHolderTest {
 
     @Test
     public void shouldShowCanNotDoPhysicalInventoryType() {
-        RnRFormViewModel viewModel = new RnRFormViewModel(Period.of(DateUtil.today()), program.getProgramCode(), RnRFormViewModel.TYPE_CAN_NOT_CREATE_RNR);
-        viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_CAN_NOT_CREATE_RNR);
+        RnRFormViewModel viewModel = new RnRFormViewModel(Period.of(DateUtil.today()), program.getProgramCode(), RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
+        viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
 
         viewHolder.populate(viewModel);
 
