@@ -222,7 +222,7 @@ public class RnRFormListPresenterTest {
         Period nextPeriodInSchedule = new Period(periodBegin, periodEnd);
         when(periodService.generatePeriod(anyString(), any(Date.class))).thenReturn(nextPeriodInSchedule);
 
-        presenter.addPreviousPeriodMissedViewModel(viewModels, rnRForms);
+        presenter.addPreviousPeriodMissedViewModel(viewModels);
         assertThat(viewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
     }
 

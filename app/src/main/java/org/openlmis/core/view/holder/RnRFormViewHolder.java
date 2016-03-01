@@ -54,6 +54,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 break;
             case RnRFormViewModel.TYPE_MISSED_PERIOD:
                 configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_missed_period)), R.drawable.ic_description, R.color.color_draft_title, form);
+                btnView.setText(R.string.btn_select_close_period);
                 btnView.setBackground(context.getResources().getDrawable(R.drawable.blue_button));
                 btnView.setTextColor(context.getResources().getColor(R.color.color_white));
                 btnView.setOnClickListener(new BtnViewClickListener(model));

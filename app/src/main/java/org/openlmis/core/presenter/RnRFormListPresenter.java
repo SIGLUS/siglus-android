@@ -124,7 +124,7 @@ public class RnRFormListPresenter extends Presenter {
         Collections.reverse(rnRForms);
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
-            addPreviousPeriodMissedViewModel(viewModels, rnRForms);
+            addPreviousPeriodMissedViewModel(viewModels);
         }
 
         addCurrentPeriodViewModel(viewModels, rnRForms);
@@ -210,8 +210,7 @@ public class RnRFormListPresenter extends Presenter {
         }
     }
 
-    protected void addPreviousPeriodMissedViewModel(List<RnRFormViewModel> viewModels, List<RnRForm> rnRForms) throws LMISException {
-
+    protected void addPreviousPeriodMissedViewModel(List<RnRFormViewModel> viewModels) throws LMISException {
         DateTime nextPeriodInScheduleEnd = periodService.generatePeriod(programCode, null).getEnd();
 
         DateTime lastInventoryDateForNextPeriodInSchedule = nextPeriodInScheduleEnd
