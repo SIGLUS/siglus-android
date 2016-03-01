@@ -39,7 +39,7 @@ public class RnRFormViewHolderTest {
 
     private RnRFormViewHolder getViewHolderByType(int viewType) {
         if (viewType == RnRFormViewModel.TYPE_UNSYNC || viewType == RnRFormViewModel.TYPE_CAN_NOT_CREATE_RNR) {
-            return new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card_enable, null, false), mockedListener);
+            return new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card_disable, null, false), mockedListener);
         } else {
             return new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card, null, false), mockedListener);
         }
@@ -68,7 +68,7 @@ public class RnRFormViewHolderTest {
         form.setStatus(RnRForm.STATUS.DRAFT);
         RnRFormViewModel viewModel = new RnRFormViewModel(form);
 
-        viewHolder = new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card_enable, null, false), mockedListener);
+        viewHolder = new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card_disable, null, false), mockedListener);
 
         viewHolder.populateOld(viewModel);
 

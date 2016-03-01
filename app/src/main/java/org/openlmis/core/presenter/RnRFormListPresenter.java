@@ -127,7 +127,7 @@ public class RnRFormListPresenter extends Presenter {
 
         Collections.reverse(rnRForms);
 
-        addNotClosedViewModel(viewModels, rnRForms);
+        addMissedPeriodViewModel(viewModels, rnRForms);
 
         addCurrentPeriodViewModel(viewModels, rnRForms);
 
@@ -212,11 +212,11 @@ public class RnRFormListPresenter extends Presenter {
         }
     }
 
-    private void addNotClosedViewModel(List<RnRFormViewModel> viewModels, List<RnRForm> rnRForms) {
+    private void addMissedPeriodViewModel(List<RnRFormViewModel> viewModels, List<RnRForm> rnRForms) {
         int currentMonth = new DateTime().getMonthOfYear();
         int periodEndMonth = new DateTime(rnRForms.get(0).getPeriodEnd()).getMonthOfYear();
         if (currentMonth != periodEndMonth) {
-            viewModels.add(RnRFormViewModel.buildNotClosed());
+            viewModels.add(0, RnRFormViewModel.buildMissedPeriod());
         }
     }
 

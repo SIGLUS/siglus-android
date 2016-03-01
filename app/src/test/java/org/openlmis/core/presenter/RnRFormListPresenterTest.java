@@ -207,9 +207,10 @@ public class RnRFormListPresenterTest {
 
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
-        assertThat(rnRFormViewModels.size()).isEqualTo(2);
-        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
-        assertThat(rnRFormViewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_UNSYNC);
+        assertThat(rnRFormViewModels.size()).isEqualTo(3);
+        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+        assertThat(rnRFormViewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
+        assertThat(rnRFormViewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_UNSYNC);
     }
 
     @Test

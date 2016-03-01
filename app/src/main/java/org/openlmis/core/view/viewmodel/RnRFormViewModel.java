@@ -41,7 +41,7 @@ public class RnRFormViewModel {
     public static final int TYPE_UN_AUTHORIZED = 40;
     public static final int TYPE_UNSYNC = 50;
     public static final int TYPE_HISTORICAL = 60;
-    public static final int TYPE_NOT_CLOSED = 80;
+    public static final int TYPE_MISSED_PERIOD = 80;
 
     int type;
     String syncedDate;
@@ -110,9 +110,9 @@ public class RnRFormViewModel {
         }
     }
 
-    public static RnRFormViewModel buildNotClosed() {
+    public static RnRFormViewModel buildMissedPeriod() {
         RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
-        rnRFormViewModel.type = TYPE_NOT_CLOSED;
+        rnRFormViewModel.type = TYPE_MISSED_PERIOD;
         return rnRFormViewModel;
     }
 }
