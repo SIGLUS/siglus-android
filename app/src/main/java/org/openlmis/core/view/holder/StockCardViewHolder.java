@@ -71,9 +71,8 @@ public class StockCardViewHolder extends BaseViewHolder {
         tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledName()));
         tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledUnit()));
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_warning_expiry_date)) {
-            initExpiryDateWarning(inventoryViewModel);
-        }
+        initExpiryDateWarning(inventoryViewModel);
+
         initStockOnHandWarning(inventoryViewModel);
     }
 

@@ -85,7 +85,6 @@ public class StockCardViewHolderTest {
 
     @Test
     public void shouldShowIconWhenExpireDateInCurrentMonth() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_warning_expiry_date, true);
         StockCard stockCard = StockCardBuilder.buildStockCard();
         stockCard.setExpireDates("28/02/2016, 11/10/2016, 12/10/2017");
         InventoryViewModel inventoryViewModel = new InventoryViewModel(stockCard);
@@ -99,7 +98,6 @@ public class StockCardViewHolderTest {
 
     @Test
     public void shouldShowIconWhenExpireDateBeforeCurrentTime() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_warning_expiry_date, true);
         StockCard stockCard = StockCardBuilder.buildStockCard();
         stockCard.setExpireDates("14/02/2016, 11/10/2016, 12/10/2017");
         InventoryViewModel inventoryViewModel = new InventoryViewModel(stockCard);
@@ -113,7 +111,6 @@ public class StockCardViewHolderTest {
 
     @Test
     public void shouldHideIconWhenExpireDateAfterCurrentMonth() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_warning_expiry_date, true);
         StockCard stockCard = StockCardBuilder.buildStockCard();
         stockCard.setExpireDates("14/03/2016, 11/10/2016, 12/10/2017");
         InventoryViewModel inventoryViewModel = new InventoryViewModel(stockCard);
@@ -127,7 +124,6 @@ public class StockCardViewHolderTest {
 
     @Test
     public void shouldHideExpiryNotifyIconWhenExpiryDateIsEmpty() {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_warning_expiry_date, true);
         Date mockCurrentDate = DateUtil.parseString("16/02/2016", DateUtil.SIMPLE_DATE_FORMAT);
         LMISTestApp.getInstance().setCurrentTimeMillis(mockCurrentDate.getTime());
         StockCard stockCard = StockCardBuilder.buildStockCard();

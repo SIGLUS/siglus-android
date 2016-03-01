@@ -6,7 +6,6 @@
     <bool name="feature_syncup_unsync_stockcards">true</bool>
     <bool name="feature_requisition_theoretical">true</bool>
     <bool name="feature_warning_unpack_kit_quantity">true</bool>
-    <bool name="feature_warning_expiry_date">true</bool>
     <bool name="feature_requisition_period_logic_change">false</bool>
     <bool name="feature_auto_quantities_in_kit">false</bool>
     <bool name="feature_unpack_btn_update_580">true</bool>
