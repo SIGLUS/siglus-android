@@ -124,7 +124,7 @@ public class RnRFormListPresenter extends Presenter {
         Collections.reverse(rnRForms);
 
         if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)){
-            addMissedPeriodViewModel(viewModels, rnRForms);
+            addPreviousPeriodMissingViewModel(viewModels, rnRForms);
         }
 
         addCurrentPeriodViewModel(viewModels, rnRForms);
@@ -210,11 +210,11 @@ public class RnRFormListPresenter extends Presenter {
         }
     }
 
-    private void addMissedPeriodViewModel(List<RnRFormViewModel> viewModels, List<RnRForm> rnRForms) {
+    private void addPreviousPeriodMissingViewModel(List<RnRFormViewModel> viewModels, List<RnRForm> rnRForms) {
         int currentMonth = new DateTime().getMonthOfYear();
         int periodEndMonth = new DateTime(rnRForms.get(0).getPeriodEnd()).getMonthOfYear();
         if (currentMonth != periodEndMonth) {
-            viewModels.add(0, RnRFormViewModel.buildMissedPeriod());
+            viewModels.add(0, RnRFormViewModel.buildPreviousPeriodMissing());
         }
     }
 
