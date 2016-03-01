@@ -444,4 +444,8 @@ public class StockRepository {
             e.reportToFabric();
         }
     }
+
+    public Date getEarlistStockMovementDate() {
+        return new Date();
+    }
 }

@@ -3,13 +3,13 @@ package org.openlmis.core.model.service;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 
 import java.util.Calendar;
@@ -22,6 +22,9 @@ public class PeriodService {
 
     @Inject
     RnrFormRepository rnrFormRepository;
+
+    @Inject
+    StockRepository stockRepository;
 
     public Period generatePeriod(String programCode, Date physicalInventoryDate) throws LMISException {
         Program program = programRepository.queryByCode(programCode);
@@ -60,12 +63,20 @@ public class PeriodService {
     }
 
     private DateTime defaultBeginDateTo21st() {
-        DateTime todaysDateTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        DateTime initializeDateTime = new DateTime(stockRepository.getEarlistStockMovementDate());
+        int initializeDayOfMonth = initializeDateTime.getDayOfMonth();
 
         Calendar currentBeginDate = Calendar.getInstance();
-        currentBeginDate.set(todaysDateTime.getYear(), todaysDateTime.getMonthOfYear() - 1, Period.BEGIN_DAY);
+
+        if(initializeDayOfMonth >= Period.INVENTORY_BEGIN_DAY && initializeDayOfMonth < Period.INVENTORY_END_DAY_NEXT) {
+            currentBeginDate.set(initializeDateTime.getYear(), initializeDateTime.getMonthOfYear() - 1, initializeDayOfMonth);
+        } else {
+            currentBeginDate.set(initializeDateTime.getYear(), initializeDateTime.getMonthOfYear() - 1, Period.BEGIN_DAY);
+        }
+
         DateTime periodBeginDate = DateUtil.cutTimeStamp(new DateTime(currentBeginDate));
-        if (todaysDateTime.getDayOfMonth() <= Period.INVENTORY_END_DAY_NEXT) {
+
+        if (initializeDayOfMonth < Period.INVENTORY_BEGIN_DAY) {
             periodBeginDate = periodBeginDate.minusMonths(1);
         }
         return periodBeginDate;

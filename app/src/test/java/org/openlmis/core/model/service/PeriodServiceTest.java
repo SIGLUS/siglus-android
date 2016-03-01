@@ -15,6 +15,7 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -31,6 +32,7 @@ public class PeriodServiceTest {
 
     private ProgramRepository mockProgramRepository;
     private RnrFormRepository mockRnrFormRepository;
+    private StockRepository mockStockRepository;
 
     private PeriodService periodService;
     private Program programMMIA;
@@ -39,32 +41,13 @@ public class PeriodServiceTest {
     public void setup() throws LMISException {
         mockProgramRepository = mock(ProgramRepository.class);
         mockRnrFormRepository = mock(RnrFormRepository.class);
+        mockStockRepository = mock(StockRepository.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         periodService = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(PeriodService.class);
 
         programMMIA = new Program("MMIA", "MMIA", null);
         programMMIA.setId(1l);
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(programMMIA);
-    }
-
-    @Test
-    public void shouldGeneratePeriodWithCurrentMonth21stAsBeginAndCurrentMonthAsEndIfNoPreviousRnrAndCurrentDateDayIsAfter25th() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
-        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime("2016-02-28").getMillis());
-
-        Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
-        assertThat(period.getBegin(), is(new DateTime("2016-02-21")));
-        assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(3));
-    }
-
-    @Test
-    public void shouldGeneratePeriodWithLastMonth21stAsBeginAndCurrentMonthAsEndIfNoPreviousRnrAndCurrentDateDayIsBefore25th() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
-        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime("2016-02-23").getMillis());
-
-        Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
-        assertThat(period.getBegin(), is(new DateTime("2016-01-21")));
-        assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(2));
     }
 
     @Test
@@ -81,12 +64,45 @@ public class PeriodServiceTest {
         assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(11));
     }
 
+    @Test
+    public void shouldGeneratePeriodOfJan21ToFebWhenRnrNotExists() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
+
+        when(mockStockRepository.getEarlistStockMovementDate()).thenReturn(new DateTime("2016-02-17").toDate());
+
+        Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
+        assertThat(period.getBegin(), is(new DateTime("2016-01-21")));
+        assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(2));
+    }
+
+    @Test
+    public void shouldGeneratePeriodOfFeb18ToMarWhenRnrNotExists() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
+
+        when(mockStockRepository.getEarlistStockMovementDate()).thenReturn(new DateTime("2016-02-18").toDate());
+
+        Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
+        assertThat(period.getBegin(), is(new DateTime("2016-02-18")));
+        assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(3));
+    }
+
+    @Test
+    public void shouldGeneratePeriodOfFeb21ToMarWhenRnrNotExists() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
+
+        when(mockStockRepository.getEarlistStockMovementDate()).thenReturn(new DateTime("2016-02-26").toDate());
+
+        Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
+        assertThat(period.getBegin(), is(new DateTime("2016-02-21")));
+        assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(3));
+    }
 
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
             bind(ProgramRepository.class).toInstance(mockProgramRepository);
             bind(RnrFormRepository.class).toInstance(mockRnrFormRepository);
+            bind(StockRepository.class).toInstance(mockStockRepository);
         }
     }
 }
