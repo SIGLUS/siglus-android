@@ -57,6 +57,7 @@ import static org.assertj.core.util.Lists.newArrayList;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -131,6 +132,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         when(viewModel.convertViewToModel()).thenReturn(item);
         when(stockRepositoryMock.queryStockCardById(123)).thenReturn(stockCard);
         stockMovementPresenter.setStockCard(123);
+        reset(view);
 
         //when
         stockMovementPresenter.saveAndRefresh(viewModel);
@@ -203,7 +205,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldEnableUnpackMenuWhenStockCardSOHIsNotZeroAndKitHasProducts() throws Exception {
+    public void shouldEnableUnpackMenuAndUpdateExpiryDateGroupWhenStockCardSOHIsNotZeroAndKitHasProducts() throws Exception {
         //given
         StockCard stockCard = createStockCard(100, true);
         Product kit = ProductBuilder.buildAdultProduct();
@@ -211,12 +213,14 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         stockCard.setProduct(kit);
         when(stockRepositoryMock.queryStockCardById(200L)).thenReturn(stockCard);
         when(productRepository.queryKitProductByKitCode(kit.getCode())).thenReturn(Arrays.asList(new KitProduct()));
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, true);
 
         //when
         stockMovementPresenter.setStockCard(200L);
 
         //then
         verify(view).updateUnpackKitMenu(true);
+        verify(view).updateExpiryDateViewGroup();
     }
 
     @Test

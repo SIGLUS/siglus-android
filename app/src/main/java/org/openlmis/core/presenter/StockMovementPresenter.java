@@ -88,6 +88,10 @@ public class StockMovementPresenter extends Presenter {
     public void setStockCard(long stockCardId) throws LMISException {
         this.stockCard = stockRepository.queryStockCardById(stockCardId);
         updateMenus();
+
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_remove_expiry_date_when_soh_is_0_393)) {
+            view.updateExpiryDateViewGroup();
+        }
     }
 
     public void loadStockMovementViewModels() {

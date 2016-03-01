@@ -240,6 +240,52 @@ public class UnpackKitPresenterTest {
     }
 
     @Test
+    public void shouldRemoveExpiryDateWhenSOHIsZero() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, true);
+        Product kit = new ProductBuilder().setIsKit(true).setProductId(888L)
+                .setCode("SD1112").setPrimaryName("primary name").build();
+
+        StockCard kitStockCard = new StockCardBuilder().setStockCardId(112)
+                .setStockOnHand(1000)
+                .setCreateDate(new Date())
+                .setProduct(kit)
+                .setExpireDates("2015-11-11")
+                .build();
+
+        presenter.kitCode = kit.getCode();
+
+        when(productRepository.getByCode(kit.getCode())).thenReturn(kit);
+        when(stockRepository.queryStockCardByProductId(888)).thenReturn(kitStockCard);
+
+        StockCard stockCardForKit = presenter.getStockCardForKit(1000);
+
+        assertThat(stockCardForKit.getExpireDates()).isEqualTo("");
+    }
+
+    @Test
+    public void shouldNotRemoveExpiryDateWhenSOHIsZeroWhenToggleOff() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, false);
+        Product kit = new ProductBuilder().setIsKit(true).setProductId(888L)
+                .setCode("SD1112").setPrimaryName("primary name").build();
+
+        StockCard kitStockCard = new StockCardBuilder().setStockCardId(112)
+                .setStockOnHand(1000)
+                .setCreateDate(new Date())
+                .setProduct(kit)
+                .setExpireDates("2015-11-11")
+                .build();
+
+        presenter.kitCode = kit.getCode();
+
+        when(productRepository.getByCode(kit.getCode())).thenReturn(kit);
+        when(stockRepository.queryStockCardByProductId(888L)).thenReturn(kitStockCard);
+
+        StockCard stockCardForKit = presenter.getStockCardForKit(1000);
+
+        assertThat(stockCardForKit.getExpireDates()).isEqualTo("2015-11-11");
+    }
+
+    @Test
     public void shouldGetKitStockCardWithUnpackMovementItem() throws Exception {
         Product kit = new ProductBuilder().setIsKit(true).setProductId(888L)
                 .setCode("SD1112").setPrimaryName("primary name").build();
