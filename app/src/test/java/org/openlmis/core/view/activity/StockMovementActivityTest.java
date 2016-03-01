@@ -110,13 +110,13 @@ public class StockMovementActivityTest {
     }
 
     @Test
-    public void shouldGoToUnpackKitActivity() throws Exception {
+    public void shouldGoToSelectKitActivity() throws Exception {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_unpack_btn_update_580, false);
         shadowOf(stockMovementActivity).clickMenuItem(R.id.action_unpack);
         Intent startedIntent = ShadowApplication.getInstance().getNextStartedActivity();
 
         assertThat(startedIntent).isNotNull();
-        assertThat(startedIntent.getComponent().getClassName()).isEqualTo(UnpackKitActivity.class.getName());
+        assertThat(startedIntent.getComponent().getClassName()).isEqualTo(SelectUnpackKitNumActivity.class.getName());
         assertThat(startedIntent.getStringExtra(Constants.PARAM_KIT_CODE)).isEqualTo("08S40");
     }
 
@@ -139,7 +139,7 @@ public class StockMovementActivityTest {
     }
 
     @Test
-    public void shouldGoToUnpackKitActivityWhenUnpackKitClicked() throws Exception {
+    public void shouldGoToSelectKitActivityWhenUnpackKitClicked() throws Exception {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_unpack_btn_update_580, true);
         stockMovementActivity.updateUnpackKitMenu(true);
         stockMovementActivity.btnUnpack.performClick();
@@ -147,7 +147,7 @@ public class StockMovementActivityTest {
         Intent startedIntent = ShadowApplication.getInstance().getNextStartedActivity();
 
         assertThat(startedIntent).isNotNull();
-        assertThat(startedIntent.getComponent().getClassName()).isEqualTo(UnpackKitActivity.class.getName());
+        assertThat(startedIntent.getComponent().getClassName()).isEqualTo(SelectUnpackKitNumActivity.class.getName());
         assertThat(startedIntent.getStringExtra(Constants.PARAM_KIT_CODE)).isEqualTo("08S40");
     }
 

@@ -58,11 +58,7 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         final int kitNum = intent.getIntExtra(Constants.PARAM_KIT_NUM, Integer.MIN_VALUE);
         String kitName = intent.getStringExtra(Constants.PARAM_KIT_NAME);
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_open_multiple_kit_579)) {
-            tvTotalKit.setText(getString(R.string.kit_number, kitNum, kitName));
-        } else {
-            tvTotalKit.setVisibility(View.GONE);
-        }
+        tvTotalKit.setText(getString(R.string.kit_number, kitNum, kitName));
 
         productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
         ArrayList<InventoryViewModel> list = new ArrayList<>();
