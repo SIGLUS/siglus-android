@@ -49,6 +49,15 @@ public class RnRFormViewHolder extends BaseViewHolder {
         }
         form = model.getForm();
         switch (model.getType()) {
+            case RnRFormViewModel.TYPE_CURRENT_PERIOD_PREVIOUS_MISSING:
+                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_previous_period_missing)), R.drawable.ic_description, R.color.color_draft_title, form);
+                break;
+            case RnRFormViewModel.TYPE_MISSED_PERIOD:
+                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_missed_period)), R.drawable.ic_description, R.color.color_draft_title, form);
+                btnView.setBackground(context.getResources().getDrawable(R.drawable.blue_button));
+                btnView.setTextColor(context.getResources().getColor(R.color.color_white));
+                btnView.setOnClickListener(new BtnViewClickListener(model));
+                break;
             case RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY:
                 configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_can_not_create_rnr, model.getPeriodEndMonth())), R.drawable.ic_description, R.color.color_draft_title, form);
                 break;

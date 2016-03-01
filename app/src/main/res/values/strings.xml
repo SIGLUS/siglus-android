@@ -243,6 +243,8 @@
     <string name="btn_view_requisition">View %s</string>
     <string name="label_period_date">%1$s  to  %2$s</string>
     <string name="label_can_not_create_rnr"><![CDATA[<b>You will be able to create a requisition on the 18th of %1$s</b>]]> </string>
+    <string name="label_previous_period_missing"><![CDATA[<b>Requisition Balancete cannot be created</b> until previous periods are closed.<br> Please close all previous periods]]></string>
+    <string name="label_missed_period"><![CDATA[<b>Requisition is overdue and no inventory was taken.</b> A requisition will be automatically generated using the stock on hand amounts at the close of the period]]></string>
 
     <string name="label_incomplete_requisition_old">This <![CDATA[<b>%1$s</b>]]> is incomplete. To complete it, select \"Create a %1$s\" on the home page</string>
 

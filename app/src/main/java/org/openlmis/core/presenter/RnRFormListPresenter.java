@@ -123,8 +123,8 @@ public class RnRFormListPresenter extends Presenter {
 
         Collections.reverse(rnRForms);
 
-        if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)){
-            addPreviousPeriodMissingViewModel(viewModels, rnRForms);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
+            addPreviousPeriodMissedViewModel(viewModels, rnRForms);
         }
 
         addCurrentPeriodViewModel(viewModels, rnRForms);
@@ -210,11 +210,17 @@ public class RnRFormListPresenter extends Presenter {
         }
     }
 
-    private void addPreviousPeriodMissingViewModel(List<RnRFormViewModel> viewModels, List<RnRForm> rnRForms) {
-        int currentMonth = new DateTime().getMonthOfYear();
-        int periodEndMonth = new DateTime(rnRForms.get(0).getPeriodEnd()).getMonthOfYear();
-        if (currentMonth != periodEndMonth) {
-            viewModels.add(0, RnRFormViewModel.buildPreviousPeriodMissing());
+    protected void addPreviousPeriodMissedViewModel(List<RnRFormViewModel> viewModels, List<RnRForm> rnRForms) throws LMISException {
+
+        DateTime nextPeriodInScheduleEnd = periodService.generatePeriod(programCode, null).getEnd();
+
+        DateTime lastInventoryDateForNextPeriodInSchedule = nextPeriodInScheduleEnd
+                .withDate(nextPeriodInScheduleEnd.getYear(),
+                        nextPeriodInScheduleEnd.getMonthOfYear(),
+                        Period.INVENTORY_END_DAY_NEXT);
+
+        if (lastInventoryDateForNextPeriodInSchedule.isBefore(LMISApp.getInstance().getCurrentTimeMillis())) {
+            viewModels.add(0, RnRFormViewModel.buildPreviousMissedPeriod());
         }
     }
 

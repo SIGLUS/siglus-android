@@ -561,6 +561,7 @@
 
     <style name="ItemRnr.MessageTextType2" parent="Text.Black.Small">
         <item name="android:layout_marginStart">@dimen/margin_medium</item>
+        <item name="android:layout_marginEnd">@dimen/margin_medium</item>
         <item name="android:padding">@dimen/padding_small</item>
     </style>
 

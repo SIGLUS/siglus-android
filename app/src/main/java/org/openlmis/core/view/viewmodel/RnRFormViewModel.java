@@ -114,6 +114,16 @@ public class RnRFormViewModel {
     public static RnRFormViewModel buildPreviousPeriodMissing() {
         RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
         rnRFormViewModel.type = TYPE_CURRENT_PERIOD_PREVIOUS_MISSING;
+        Period currentPeriod = Period.of(new Date());
+        rnRFormViewModel.period = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDateWithoutDay(currentPeriod.getBegin().toDate()), DateUtil.formatDateWithoutDay(currentPeriod.getEnd().toDate()));;
+        return rnRFormViewModel;
+    }
+
+    public static RnRFormViewModel buildPreviousMissedPeriod() {
+        RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
+        rnRFormViewModel.type = TYPE_MISSED_PERIOD;
+        Period currentPeriod = Period.of(new Date());
+        rnRFormViewModel.period = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDateWithoutYear(currentPeriod.getBegin().toDate()), DateUtil.formatDateWithoutDay(currentPeriod.getEnd().toDate()));;
         return rnRFormViewModel;
     }
 }

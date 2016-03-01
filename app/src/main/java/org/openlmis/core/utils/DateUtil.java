@@ -52,7 +52,8 @@ public final class DateUtil {
 
 
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
-    public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_YEAR = new SimpleDateFormat(DATE_FORMAT_ONLY_DAY_AND_MONTH);
+    public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_YEAR= new SimpleDateFormat(DATE_FORMAT_ONLY_DAY_AND_MONTH);
+    public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_DAY = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR);
     private static Locale locale = Locale.getDefault();
 
     public static final long MILLISECONDS_MINUTE = 60000;
@@ -84,6 +85,10 @@ public final class DateUtil {
 
     public static String formatDateWithoutYear(Date date) {
         return DATE_FORMAT_NOT_DISPLAY_YEAR.format(date);
+    }
+
+    public static String formatDateWithoutDay(Date date) {
+        return DATE_FORMAT_NOT_DISPLAY_DAY.format(date);
     }
 
     public static String formatDate(Date date, String format) {

@@ -37,6 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.Lists.newArrayList;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -208,9 +209,21 @@ public class RnRFormListPresenterTest {
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
         assertThat(rnRFormViewModels.size()).isEqualTo(3);
-        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_CURRENT_PERIOD_PREVIOUS_MISSING);
         assertThat(rnRFormViewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
         assertThat(rnRFormViewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL);
+    }
+
+    @Test
+    public void shouldGenerateMissedPeriodViewModelWhenCurrentPeriodIsNotTheNextPeriodInSchedule() throws Exception {
+        LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-02-26 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
+        DateTime periodBegin = new DateTime(DateUtil.parseString("2015-01-21", DateUtil.DB_DATE_FORMAT));
+        DateTime periodEnd = new DateTime(DateUtil.parseString("2015-02-21", DateUtil.DB_DATE_FORMAT));
+        Period nextPeriodInSchedule = new Period(periodBegin, periodEnd);
+        when(periodService.generatePeriod(anyString(), any(Date.class))).thenReturn(nextPeriodInSchedule);
+
+        presenter.addPreviousPeriodMissedViewModel(viewModels, rnRForms);
+        assertThat(viewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
     }
 
     private List<RnRForm> createRnRForms() {
