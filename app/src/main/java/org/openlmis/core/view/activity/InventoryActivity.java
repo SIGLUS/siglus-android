@@ -30,7 +30,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.InventoryPresenter;
@@ -127,15 +126,11 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
 
     @Override
     public void goToParentPage() {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-            goToMainPage();
+        if (isPhysicalInventory) {
+            setResult(Activity.RESULT_OK);
+            finish();
         } else {
-            if (isPhysicalInventory) {
-                setResult(Activity.RESULT_OK);
-                finish();
-            } else {
-                goToMainPage();
-            }
+            goToMainPage();
         }
     }
 

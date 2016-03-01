@@ -33,8 +33,6 @@ public class SyncTimeViewTest {
     @Before
     public void setUp() throws Exception {
         mockPresenter = mock(SyncErrorsPresenter.class);
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_home_page_update, true);
-
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
             @Override
             public void configure(Binder binder) {

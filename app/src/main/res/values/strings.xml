@@ -251,8 +251,6 @@
 
     <string name="mmia_list">MMIA</string>
     <string name="requisition_list">Via Classica Requisitions</string>
-    <string name="title_requisition_list">Historic Requisitions / Balances for VIA Classica</string>
-    <string name="title_mmia_list">Historic MMIAs</string>
     <string name="label_total">Total:%1$s</string>
     <string name="requisition_delete_failed">Delete failed</string>
 

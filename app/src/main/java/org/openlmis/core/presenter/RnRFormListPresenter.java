@@ -113,16 +113,12 @@ public class RnRFormListPresenter extends Presenter {
         Period currentPeriod = generatePeriod();
 
         if (rnRForms.isEmpty()) {
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-                viewModels.add(generateRnrFormViewModelWithoutRnrForm(currentPeriod));
-            }
+            viewModels.add(generateRnrFormViewModelWithoutRnrForm(currentPeriod));
             return viewModels;
         }
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-            if (hasNoRnrFormInCurrentPeriod(rnRForms, currentPeriod)) {
-                viewModels.add(generateRnrFormViewModelWithoutRnrForm(currentPeriod));
-            }
+        if (hasNoRnrFormInCurrentPeriod(rnRForms, currentPeriod)) {
+            viewModels.add(generateRnrFormViewModelWithoutRnrForm(currentPeriod));
         }
 
         Collections.reverse(rnRForms);

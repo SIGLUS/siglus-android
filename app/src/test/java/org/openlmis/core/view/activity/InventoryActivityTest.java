@@ -28,7 +28,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -116,8 +115,6 @@ public class InventoryActivityTest {
             }
         });
         when(mockedPresenter.loadPhysicalInventory()).thenReturn(value);
-
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_home_page_update, true);
 
         inventoryActivity = Robolectric.buildActivity(InventoryActivity.class).withIntent(intentFromParentActivity).create().get();
         inventoryActivity.goToParentPage();

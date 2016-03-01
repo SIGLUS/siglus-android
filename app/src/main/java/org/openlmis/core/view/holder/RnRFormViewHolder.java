@@ -82,27 +82,6 @@ public class RnRFormViewHolder extends BaseViewHolder {
         }
     }
 
-    public void populateOld(final RnRFormViewModel model) {
-        switch (model.getType()) {
-            case RnRFormViewModel.TYPE_UN_AUTHORIZED:
-                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_incomplete_requisition_old, model.getName())), R.drawable.ic_description, R.color.color_draft_title, model.getForm());
-                break;
-            case RnRFormViewModel.TYPE_UNSYNC:
-                String error = context.getString(R.string.label_unsynced_requisition, model.getName());
-                if (model.getSyncServerErrorMessage() != null) {
-                    error = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage(model.getSyncServerErrorMessage());
-                }
-                configHolder(model.getPeriod(), Html.fromHtml(error), R.drawable.ic_error, R.color.color_red, model.getForm());
-                break;
-            case RnRFormViewModel.TYPE_HISTORICAL:
-                btnView.setVisibility(View.GONE);
-                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedDate())), R.drawable.ic_done, INT_UNSET, model.getForm());
-                btnViewOld.setText(context.getString(R.string.btn_view_requisition, model.getName()));
-                btnViewOld.setOnClickListener(new BtnViewClickListener(model));
-                break;
-        }
-    }
-
     private void configHolder(RnRFormViewModel model, int btnText, Spanned text) {
         txPeriod.setText(model.getPeriod());
         txPeriod.setBackgroundResource(R.color.color_draft_title);

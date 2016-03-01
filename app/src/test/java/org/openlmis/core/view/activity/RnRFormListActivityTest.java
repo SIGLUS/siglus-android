@@ -74,7 +74,7 @@ public class RnRFormListActivityTest {
 
     @Test
     public void shouldSetMmiaTitleAndProgramCodeWhenProgramCodeIsMmia() {
-        assertThat(rnRFormListActivity.getTitle()).isEqualTo(rnRFormListActivity.getResources().getString(R.string.title_mmia_list));
+        assertThat(rnRFormListActivity.getTitle()).isEqualTo(rnRFormListActivity.getResources().getString(R.string.mmia_list));
         verify(mockedPresenter).setProgramCode(MMIARepository.MMIA_PROGRAM_CODE);
     }
 
@@ -84,7 +84,7 @@ public class RnRFormListActivityTest {
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE);
         rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).withIntent(intent).create().get();
 
-        assertThat(rnRFormListActivity.getTitle()).isEqualTo(rnRFormListActivity.getResources().getString(R.string.title_requisition_list));
+        assertThat(rnRFormListActivity.getTitle()).isEqualTo(rnRFormListActivity.getResources().getString(R.string.requisition_list));
         verify(mockedPresenter).setProgramCode(VIARepository.VIA_PROGRAM_CODE);
     }
 

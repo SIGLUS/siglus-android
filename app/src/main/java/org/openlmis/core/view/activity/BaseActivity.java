@@ -135,9 +135,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-            setTheme(getThemeRes());
-        }
+        setTheme(getThemeRes());
         super.onCreate(savedInstanceState);
         initDataFragment();
         injectPresenter();

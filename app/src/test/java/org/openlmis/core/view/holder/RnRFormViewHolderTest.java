@@ -63,21 +63,6 @@ public class RnRFormViewHolderTest {
     }
 
     @Test
-    public void shouldShowDraftStyleWhenToggleOff() {
-        RnRForm form = RnRForm.init(program, DateUtil.today());
-        form.setStatus(RnRForm.STATUS.DRAFT);
-        RnRFormViewModel viewModel = new RnRFormViewModel(form);
-
-        viewHolder = new RnRFormViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_rnr_card_disable, null, false), mockedListener);
-
-        viewHolder.populateOld(viewModel);
-
-        assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getPeriod()));
-        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_incomplete_requisition_old, viewModel.getName())));
-        assertThat(((ColorDrawable) viewHolder.txPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_draft_title)));
-    }
-
-    @Test
     public void shouldShowUnSyncedStyle() {
         RnRForm form = RnRForm.init(program, DateUtil.today());
         form.setStatus(RnRForm.STATUS.AUTHORIZED);

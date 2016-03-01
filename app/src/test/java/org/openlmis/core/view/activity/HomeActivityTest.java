@@ -175,17 +175,7 @@ public class HomeActivityTest {
     }
 
     @Test
-    public void shouldShowOldTextOfMMIAListAndVIALIstButtons() throws Exception {
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_home_page_update, false);
-        HomeActivity activity = Robolectric.buildActivity(HomeActivity.class).create().get();
-
-        assertThat(activity.btnMMIAList.getText().toString(), is(activity.getString(R.string.btn_mmia_list_old)));
-        assertThat(activity.btnVIAList.getText().toString(), is(activity.getString(R.string.btn_requisition_list_old)));
-    }
-
-    @Test
     public void shouldShowNewTextOfMMIAListAndVIALIstButtons() throws Exception {
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_home_page_update, true);
         HomeActivity activity = Robolectric.buildActivity(HomeActivity.class).create().get();
 
         assertThat(activity.btnMMIAList.getText().toString(), is(activity.getString(R.string.mmia_list)));

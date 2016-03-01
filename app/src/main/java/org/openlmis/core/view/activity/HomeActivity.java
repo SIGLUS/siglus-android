@@ -36,7 +36,6 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
@@ -97,24 +96,12 @@ public class HomeActivity extends BaseActivity {
             logout();
             finish();
         } else {
-
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-                setContentView(R.layout.activity_home_page);
-                setTitle(UserInfoMgr.getInstance().getFacilityName());
-                syncTimeView = (SyncTimeView) findViewById(R.id.view_sync_time);
-            } else {
-                setContentView(R.layout.activity_home_page_old);
-                txLastSyncedStockCard = (TextView) findViewById(R.id.tx_last_synced_stockcard);
-                txLastSyncedRnrForm = (TextView) findViewById(R.id.tx_last_synced_rnrform);
-            }
+            setContentView(R.layout.activity_home_page);
+            setTitle(UserInfoMgr.getInstance().getFacilityName());
+            syncTimeView = (SyncTimeView) findViewById(R.id.view_sync_time);
 
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            }
-
-            if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-                btnVIAList.setText(LMISApp.getInstance().getText(R.string.btn_requisition_list_old));
-                btnMMIAList.setText(LMISApp.getInstance().getText(R.string.btn_mmia_list_old));
             }
 
             if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_kit)) {
@@ -193,22 +180,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     protected void setSyncedTime() {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-            showRnrFormLastSyncedTime();
-            showStockCardLastSyncedTime();
-        } else {
-            syncTimeView.showLastSyncTime();
-        }
-    }
-
-    private void showRnrFormLastSyncedTime() {
-        long rnrSyncedTimestamp = SharedPreferenceMgr.getInstance().getRnrLastSyncTime();
-        txLastSyncedRnrForm.setText(syncDateBottomSheetForOldHomeActivity.formatRnrLastSyncTime(rnrSyncedTimestamp));
-    }
-
-    private void showStockCardLastSyncedTime() {
-        long stockSyncedTimestamp = SharedPreferenceMgr.getInstance().getStockLastSyncTime();
-        txLastSyncedStockCard.setText(syncDateBottomSheetForOldHomeActivity.formatStockCardLastSyncTime(stockSyncedTimestamp));
+        syncTimeView.showLastSyncTime();
     }
 
     @Override
@@ -231,11 +203,7 @@ public class HomeActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_home_page_update)) {
-            inflater.inflate(R.menu.menu_home, menu);
-        } else {
-            inflater.inflate(R.menu.menu_home_old, menu);
-        }
+        inflater.inflate(R.menu.menu_home, menu);
         return true;
     }
 

@@ -78,7 +78,6 @@ public class RnRFormListPresenterTest {
         period = DateUtil.generateRnRFormPeriodBy(new Date());
         rnRForms = createRnRForms();
         viewModels = new ArrayList<>();
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_home_page_update, true);
     }
 
     @Test
@@ -211,16 +210,6 @@ public class RnRFormListPresenterTest {
         assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
         assertThat(rnRFormViewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY);
         assertThat(rnRFormViewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_UNSYNC);
-    }
-
-    @Test
-    public void shouldReturnEmptyRnrFormViewModelWhenThereIsNoRnrFormAndToggleOff() throws Exception {
-        when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_home_page_update, false);
-
-        List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
-
-        assertThat(rnRFormViewModels.size()).isEqualTo(0);
     }
 
     private List<RnRForm> createRnRForms() {
