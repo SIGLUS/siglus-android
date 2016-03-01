@@ -1,6 +1,6 @@
 LMIS_MOZ_DIR="#{Dir.pwd}/../lmis-moz"
 
-After('~@regression', '~@upgrade_setup', '~@upgrade') do
+After('~@regression', '~@upgrade_setup', '~@upgrade', '~@ARCHIVE_PRODUCT') do
   reset_local_server_data
 end
 

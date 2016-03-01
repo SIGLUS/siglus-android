@@ -17,3 +17,7 @@ end
 Given(/^I enable wifi/) do
     system("adb -s $ADB_DEVICE_ARG shell svc wifi enable")
 end
+
+Given(/^I clean app data/) do
+     clear_app_data
+end
