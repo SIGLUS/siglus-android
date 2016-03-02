@@ -117,9 +117,9 @@ Feature: Unpack Kit
 
     And I press "Create Via Classica Requisition"
     Then I should see "Select inventory to close period"
-    And I press "Thursday"
+    And I press "Monday"
     And I press "Next"
-    Then I should see "to 21 Jan"
+    Then I should see "to 18 Jan"
 
     And I should see empty consultations number
     Then I enter consultationsNub "888"

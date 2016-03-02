@@ -156,7 +156,11 @@ Feature: Log in and initialize Inventory
     And I don't see the text "[08S32Z]"
 
     # Archived drugs don't appear in monthly inventory
-    When I navigate back
+    Given I change device date to "20160118.140000"
+    And I navigate back
+    And I wait for 2 seconds
+    And I try to log in with "superuser" "password1"
+
     And I wait for "STOCK CARD OVERVIEW" to appear
     And I press "Do Monthly Inventory"
     And I wait for "Inventory" to appear
@@ -203,9 +207,9 @@ Feature: Log in and initialize Inventory
 
     When I press "Create Via Classica Requisition"
     Then I should see "Select inventory to close period"
-    And I press "Thursday"
+    And I press "Monday"
     And I press "Next"
-    Then I should see "to 21 Jan"
+    Then I should see "to 18 Jan"
 
     Then I should not see "01A01"
 
@@ -220,10 +224,10 @@ Feature: Log in and initialize Inventory
     Then I should see text containing "Create MMIA"
     When I press "Create MMIA"
     Then I should see "Select inventory to close period"
-    And I press "Thursday"
+    And I press "Monday"
     And I press "Next"
     Then I wait for "MMIA -" to appear
-    Then I should see "to 21 Jan"
+    Then I should see "to 18 Jan"
 
     Then I swipe right
     Then I wait for 1 second
@@ -266,11 +270,6 @@ Feature: Log in and initialize Inventory
     And I press "Complete"
 
     # Unarchived drug shows up in monthly inventory
-    Given I change device date to "20160118.140000"
-    And I navigate back
-    And I wait for 2 seconds
-    And I try to log in with "superuser" "password1"
-
     Then I wait for "Stock Overview" to appear
     When I navigate back
     Then I wait for "STOCK CARD OVERVIEW" to appear
@@ -291,7 +290,7 @@ Feature: Log in and initialize Inventory
 
     When I press "Create Via Classica Requisition"
     Then I should see "Select inventory to close period"
-    And I press "Thursday"
+    And I press "Monday"
     And I press "Next"
 
     Then I should see "01A01"
