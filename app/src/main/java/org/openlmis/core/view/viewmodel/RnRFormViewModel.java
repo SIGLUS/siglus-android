@@ -42,7 +42,7 @@ public class RnRFormViewModel {
     public static final int TYPE_SYNCED_HISTORICAL = 60;
     public static final int TYPE_CANNOT_DO_MONTHLY_INVENTORY = 70;
     public static final int TYPE_MISSED_PERIOD = 80;
-    public static final int TYPE_CURRENT_PERIOD_PREVIOUS_MISSING = 90;
+    public static final int TYPE_PREVIOUS_PERIOD_MISSING = 90;
 
     int type;
     String syncedDate;
@@ -113,7 +113,7 @@ public class RnRFormViewModel {
 
     public static RnRFormViewModel buildPreviousPeriodMissing() {
         RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
-        rnRFormViewModel.type = TYPE_CURRENT_PERIOD_PREVIOUS_MISSING;
+        rnRFormViewModel.type = TYPE_PREVIOUS_PERIOD_MISSING;
         Period currentPeriod = Period.of(new Date());
         rnRFormViewModel.period = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDateWithoutDay(currentPeriod.getBegin().toDate()), DateUtil.formatDateWithoutDay(currentPeriod.getEnd().toDate()));;
         return rnRFormViewModel;

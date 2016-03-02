@@ -49,7 +49,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
         }
         form = model.getForm();
         switch (model.getType()) {
-            case RnRFormViewModel.TYPE_CURRENT_PERIOD_PREVIOUS_MISSING:
+            case RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING:
                 configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_previous_period_missing)), R.drawable.ic_description, R.color.color_draft_title, form);
                 break;
             case RnRFormViewModel.TYPE_MISSED_PERIOD:

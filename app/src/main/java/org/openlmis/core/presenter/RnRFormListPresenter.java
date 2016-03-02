@@ -211,15 +211,45 @@ public class RnRFormListPresenter extends Presenter {
     }
 
     protected void addPreviousPeriodMissedViewModel(List<RnRFormViewModel> viewModels) throws LMISException {
-        DateTime nextPeriodInScheduleEnd = periodService.generatePeriod(programCode, null).getEnd();
+        Period nextPeriodInSchedule = periodService.generatePeriod(programCode, null);
+        DateTime nextPeriodInScheduleBegin = nextPeriodInSchedule.getBegin();
+        DateTime nextPeriodInScheduleEnd = nextPeriodInSchedule.getEnd();
+
 
         DateTime lastInventoryDateForNextPeriodInSchedule = nextPeriodInScheduleEnd
                 .withDate(nextPeriodInScheduleEnd.getYear(),
                         nextPeriodInScheduleEnd.getMonthOfYear(),
                         Period.INVENTORY_END_DAY_NEXT);
 
-        if (lastInventoryDateForNextPeriodInSchedule.isBefore(LMISApp.getInstance().getCurrentTimeMillis())) {
-            viewModels.add(0, RnRFormViewModel.buildPreviousMissedPeriod());
+
+        long currentTimeMillis = LMISApp.getInstance().getCurrentTimeMillis();
+        if (lastInventoryDateForNextPeriodInSchedule.isBefore(currentTimeMillis)) {
+
+            DateTime nextPeriodBeginDate = nextPeriodInScheduleBegin
+                    .withDate(nextPeriodInScheduleBegin.getYear(),
+                            nextPeriodInScheduleBegin.getMonthOfYear(),
+                            Period.INVENTORY_BEGIN_DAY);
+
+            DateTime currentDate = new DateTime(currentTimeMillis);
+            DateTime currentMonthInventoryBeginDate;
+            if (currentDate.getDayOfMonth() >= Period.INVENTORY_BEGIN_DAY) {
+                currentMonthInventoryBeginDate = currentDate
+                        .withDate(currentDate.getYear(),
+                                currentDate.getMonthOfYear(),
+                                Period.INVENTORY_BEGIN_DAY);
+            } else {
+                currentMonthInventoryBeginDate = currentDate
+                        .withDate(currentDate.getYear(),
+                                currentDate.getMonthOfYear() - 1,
+                                Period.INVENTORY_BEGIN_DAY);
+            }
+
+            int offsetMonth = (currentMonthInventoryBeginDate.getYear() * 12 + currentMonthInventoryBeginDate.getMonthOfYear()) - (nextPeriodBeginDate.getYear() * 12 + nextPeriodBeginDate.getMonthOfYear());
+
+            for (int i = 0; i < offsetMonth; i++) {
+                viewModels.add(i, RnRFormViewModel.buildPreviousPeriodMissing());
+            }
+            viewModels.add(offsetMonth, RnRFormViewModel.buildPreviousMissedPeriod());
         }
     }
 
