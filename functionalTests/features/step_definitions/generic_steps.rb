@@ -5,17 +5,25 @@ end
 Given(/^I change device date to "(.*?)"/) do |time|
     if ENV["ADB_DEVICE_ARG"].nil?
         system("adb shell su 0 date -s #{time}")
-      else
+    else
         system("adb -s $ADB_DEVICE_ARG shell su 0 date -s #{time}")
-      end
+    end
 end
 
 Given(/^I disable wifi/) do
-    system("adb -s $ADB_DEVICE_ARG shell svc wifi disable")
+    if ENV["ADB_DEVICE_ARG"].nil?
+        system("adb shell svc wifi disable")
+    else
+        system("adb -s $ADB_DEVICE_ARG shell svc wifi disable")
+    end
 end
 
 Given(/^I enable wifi/) do
-    system("adb -s $ADB_DEVICE_ARG shell svc wifi enable")
+    if ENV["ADB_DEVICE_ARG"].nil?
+        system("adb shell svc wifi enable")
+    else
+        system("adb -s $ADB_DEVICE_ARG shell svc wifi enable")
+    end
 end
 
 Given(/^I clean app data/) do

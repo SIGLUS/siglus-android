@@ -3,7 +3,7 @@ Feature: Log in and initialize Inventory
 
   Scenario: User should be able to log in, initialize inventory and navigate to stock overview page
 
-    Given I change device date to "20160121.130000"
+    Given I change device date to "20160116.130000"
     #Unauthenrised account shouldn't login to the app
     Given I try to log in with "testlogin" "password1"
     And I should see "Username or Password is incorrect."
@@ -266,6 +266,11 @@ Feature: Log in and initialize Inventory
     And I press "Complete"
 
     # Unarchived drug shows up in monthly inventory
+    Given I change device date to "20160118.140000"
+    And I navigate back
+    And I wait for 2 seconds
+    And I try to log in with "superuser" "password1"
+
     Then I wait for "Stock Overview" to appear
     When I navigate back
     Then I wait for "STOCK CARD OVERVIEW" to appear

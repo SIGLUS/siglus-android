@@ -2,6 +2,7 @@
 Feature: Requisition
 
   Scenario: Save requisition draft
+    Given I change device date to "20160128.130000"
     Given I try to log in with "via" "password1"
     Given I have initialized inventory with VIA user
     And I press "Stock Card Overview"
@@ -12,16 +13,12 @@ Feature: Requisition
     Then I navigate back
     Then I wait for "STOCK CARD OVERVIEW" to appear
 
-
-    Given I change device date to "20160117.130000"
-    And I wait for 2 seconds
-
     And I press "Via Classica Requisitions"
     Then I wait for "Via Classica Requisitions" to appear
-    Then I should see text containing "You will be able to create a requisition on the 18th of Jan"
+    Then I should see text containing "You will be able to create a requisition on the 18th of Feb"
     And I navigate back
 
-    Given I change device date to "20160121.130000"
+    Given I change device date to "20160218.140000"
     And I wait for 2 seconds
     And I press "Via Classica Requisitions"
     And I try to log in with "via" "password1"
@@ -42,7 +39,7 @@ Feature: Requisition
     Then I should see "Select inventory to close period"
     And I press "Thursday"
     And I press "Next"
-    Then I should see "to 21 Jan"
+    Then I should see "to 18 Feb"
     Then I enter consultationsNub "2015"
     Then I wait for 1 second
     Then I navigate back

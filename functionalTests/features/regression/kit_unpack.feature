@@ -2,7 +2,7 @@
 Feature: Unpack Kit
 
   Scenario: Unpack US kit and verify kit products SOH
-    Given I change device date to "20160121.130000"
+    Given I change device date to "20160116.130000"
     And I try to log in with "kit" "password1"
     And I wait up to 120 seconds for "Initial Inventory" to appear
     Then I wait for "Initial inventory" to appear
@@ -79,7 +79,11 @@ Feature: Unpack Kit
     And I wait for 1 second
     Then I navigate back
     And I wait for 1 second
-    Then I navigate back
+
+    Given I change device date to "20160118.140000"
+    And I navigate back
+    And I wait for 2 seconds
+    And I try to log in with "kit" "password1"
 
     Then I wait for "MMIA" to appear
     And I press "Via Classica Requisitions"
@@ -100,9 +104,9 @@ Feature: Unpack Kit
 
     And I press "Create Via Classica Requisition"
     Then I should see "Select inventory to close period"
-    And I press "Thursday"
+    And I press "Monday"
     And I press "Next"
-    Then I should see "to 21 Jan"
+    Then I should see "to 18 Jan"
 
     Then I enter consultationsNub "2015"
     Then I wait for 1 second

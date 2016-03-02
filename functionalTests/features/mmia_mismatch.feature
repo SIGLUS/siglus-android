@@ -2,10 +2,14 @@
 Feature: MMIA Page total mismatch
 
   Scenario: When I fill a field, if the regime total and patient total are different, I will see pop up if I press complete without filling comments.
+    Given I change device date to "20160116.130000"
     Given I try to log in with "mmia_mismatch" "password1"
     Given I have initialized inventory with MMIA user
     Then I wait for "Stock Card Overview" to appear
-    Given I change device date to "20160121.130000"
+
+    Given I change device date to "20160121.140000"
+    Then I press "MMIA"
+    And I try to log in with "mmia_mismatch" "password1"
     And I press "MMIA"
     Then I wait for "MMIA" to appear
     Then I should see text containing "No MMIA has been created."

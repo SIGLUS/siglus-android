@@ -19,9 +19,9 @@ And(/^I enter regimen totals$/) do
         if !element.eql? q.first
             touch(element)
             keyboard_enter_text(1)
+            hide_soft_keyboard
         end
     end
-    hide_soft_keyboard
 end
 
 
@@ -39,8 +39,8 @@ And(/^I enter patient totals$/) do
             touch(element)
             keyboard_enter_text(3)
         end
+        hide_soft_keyboard
     end
-    hide_soft_keyboard
 end
 
 
