@@ -95,14 +95,6 @@ public class RnRFormListPresenterTest {
     }
 
     @Test
-    public void shouldAddCurrentPeriodFormAndRemove() {
-        presenter.addCurrentPeriodViewModel(viewModels, rnRForms);
-
-        assertThat(rnRForms.size()).isEqualTo(2);
-        assertThat(viewModels.size()).isEqualTo(1);
-    }
-
-    @Test
     public void shouldAddPreviousPeriodForm() {
         rnRForms.remove(0);
         presenter.addPreviousPeriodViewModels(viewModels, rnRForms);
@@ -214,24 +206,18 @@ public class RnRFormListPresenterTest {
     }
 
     @Test
-    public void shouldNotGenerateMissedPeriodIfNoMissedPeriod() throws LMISException {
-        when(periodService.hasMissedPeriod(anyString())).thenReturn(false);
-        presenter.addPreviousPeriodMissedViewModels(viewModels);
-        assertThat(viewModels.size()).isEqualTo(0);
-    }
-
-    @Test
     public void shouldGenerateMissedPeriodViewModelWhenCurrentDateAfterInventoryCloseDate() throws Exception {
         when(periodService.hasMissedPeriod(anyString())).thenReturn(true);
         when(periodService.getMissedPeriodOffsetMonth(anyString())).thenReturn(4);
+        when(periodService.getCurrentMonthInventoryBeginDate()).thenReturn(new DateTime(DateUtil.parseString("2016-02-18", DateUtil.DB_DATE_FORMAT)));
+        when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn("2016-01-02 08:00:00");
 
         presenter.addPreviousPeriodMissedViewModels(viewModels);
-        assertThat(viewModels.size()).isEqualTo(5);
+        assertThat(viewModels.size()).isEqualTo(4);
         assertThat(viewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
         assertThat(viewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
         assertThat(viewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
-        assertThat(viewModels.get(3).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
-        assertThat(viewModels.get(4).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+        assertThat(viewModels.get(3).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
     }
 
     private List<RnRForm> createRnRForms() {

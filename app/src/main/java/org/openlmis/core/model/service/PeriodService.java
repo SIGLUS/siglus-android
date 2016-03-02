@@ -103,6 +103,13 @@ public class PeriodService {
     public int getMissedPeriodOffsetMonth(String programCode) throws LMISException {
         DateTime nextPeriodInScheduleBegin = generatePeriod(programCode, null).getBegin();
 
+        DateTime currentMonthInventoryBeginDate;
+        currentMonthInventoryBeginDate = getCurrentMonthInventoryBeginDate();
+
+        return (currentMonthInventoryBeginDate.getYear() * 12 + currentMonthInventoryBeginDate.getMonthOfYear()) - (nextPeriodInScheduleBegin.getYear() * 12 + nextPeriodInScheduleBegin.getMonthOfYear());
+    }
+
+    public DateTime getCurrentMonthInventoryBeginDate() {
         DateTime currentDate = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
         DateTime currentMonthInventoryBeginDate;
         if (currentDate.getDayOfMonth() >= Period.INVENTORY_BEGIN_DAY) {
@@ -116,7 +123,6 @@ public class PeriodService {
                             currentDate.getMonthOfYear() - 1,
                             Period.INVENTORY_BEGIN_DAY);
         }
-
-        return (currentMonthInventoryBeginDate.getYear() * 12 + currentMonthInventoryBeginDate.getMonthOfYear()) - (nextPeriodInScheduleBegin.getYear() * 12 + nextPeriodInScheduleBegin.getMonthOfYear());
+        return currentMonthInventoryBeginDate;
     }
 }

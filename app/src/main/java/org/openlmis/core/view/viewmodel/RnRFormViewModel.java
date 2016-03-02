@@ -111,19 +111,17 @@ public class RnRFormViewModel {
         }
     }
 
-    public static RnRFormViewModel buildPreviousPeriodMissing() {
+    public static RnRFormViewModel buildPreviousPeriodMissing(Date startDate, Date endDate) {
         RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
         rnRFormViewModel.type = TYPE_PREVIOUS_PERIOD_MISSING;
-        Period currentPeriod = Period.of(new Date());
-        rnRFormViewModel.period = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDateWithoutDay(currentPeriod.getBegin().toDate()), DateUtil.formatDateWithoutDay(currentPeriod.getEnd().toDate()));
+        rnRFormViewModel.period = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDateWithoutDay(startDate), DateUtil.formatDateWithoutDay(endDate));
         return rnRFormViewModel;
     }
 
-    public static RnRFormViewModel buildPreviousMissedPeriod() {
+    public static RnRFormViewModel buildPreviousMissedPeriod(Date startDate, Date endDate) {
         RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
         rnRFormViewModel.type = TYPE_MISSED_PERIOD;
-        Period currentPeriod = Period.of(new Date());
-        rnRFormViewModel.period = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDateWithoutYear(currentPeriod.getBegin().toDate()), DateUtil.formatDateWithoutDay(currentPeriod.getEnd().toDate()));
+        rnRFormViewModel.period = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDateWithoutYear(startDate), DateUtil.formatDateWithoutDay(endDate));
         return rnRFormViewModel;
     }
 }

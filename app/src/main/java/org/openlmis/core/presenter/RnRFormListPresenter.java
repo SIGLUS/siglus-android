@@ -106,30 +106,24 @@ public class RnRFormListPresenter extends Presenter {
 
         List<RnRForm> rnRForms = repository.list(programCode);
 
-        if (rnRForms == null) {
-            return viewModels;
-        }
-
-        Period currentPeriod = generatePeriod();
-
-        if (rnRForms.isEmpty()) {
-            viewModels.add(generateRnrFormViewModelWithoutRnrForm(currentPeriod));
-            return viewModels;
-        }
-
-        if (hasNoRnrFormInCurrentPeriod(rnRForms, currentPeriod)) {
-            viewModels.add(generateRnrFormViewModelWithoutRnrForm(currentPeriod));
-        }
-
         Collections.reverse(rnRForms);
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
-            addPreviousPeriodMissedViewModels(viewModels);
-        }
-
-        addCurrentPeriodViewModel(viewModels, rnRForms);
-
         addPreviousPeriodViewModels(viewModels, rnRForms);
+
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change) && periodService.hasMissedPeriod(programCode)) {
+            addPreviousPeriodMissedViewModels(viewModels);
+        } else {
+            Period nextPeriodInSchedule = generatePeriod();
+
+            if (rnRForms.isEmpty()) {
+                viewModels.add(generateRnrFormViewModelWithoutRnrForm(nextPeriodInSchedule));
+                return viewModels;
+            }
+
+            if (hasNoRnrFormInCurrentPeriod(rnRForms, nextPeriodInSchedule)) {
+                viewModels.add(0, generateRnrFormViewModelWithoutRnrForm(nextPeriodInSchedule));
+            }
+        }
 
         populateSyncErrorsOnViewModels(viewModels);
 
@@ -203,20 +197,26 @@ public class RnRFormListPresenter extends Presenter {
         }).toList());
     }
 
-    protected void addCurrentPeriodViewModel(List<RnRFormViewModel> viewModels, List<RnRForm> rnRForms) {
-        if (rnRForms.get(0).getStatus() != RnRForm.STATUS.AUTHORIZED) {
-            viewModels.add(new RnRFormViewModel(rnRForms.get(0)));
-            rnRForms.remove(0);
+    protected void addPreviousPeriodMissedViewModels(List<RnRFormViewModel> viewModels) throws LMISException {
+        int offsetMonth = periodService.getMissedPeriodOffsetMonth(this.programCode);
+
+        DateTime inventoryBeginDate = periodService.getCurrentMonthInventoryBeginDate();
+        int periodMissings = offsetMonth - 1;
+        for (int i = 0; i < periodMissings; i++) {
+            inventoryBeginDate = inventoryBeginDate.minusMonths(1);
+            viewModels.add(i, RnRFormViewModel.buildPreviousPeriodMissing(inventoryBeginDate.toDate(), inventoryBeginDate.plusMonths(1).toDate()));
         }
+        addNextPeriodViewModel(viewModels, periodMissings);
     }
 
-    protected void addPreviousPeriodMissedViewModels(List<RnRFormViewModel> viewModels) throws LMISException {
-        if (periodService.hasMissedPeriod(programCode)) {
-            int offsetMonth = periodService.getMissedPeriodOffsetMonth(this.programCode);
-            for (int i = 0; i < offsetMonth; i++) {
-                viewModels.add(i, RnRFormViewModel.buildPreviousPeriodMissing());
-            }
-            viewModels.add(offsetMonth, RnRFormViewModel.buildPreviousMissedPeriod());
+    private void addNextPeriodViewModel(List<RnRFormViewModel> viewModels, int periodMissings) throws LMISException {
+        Period nextPeriodInSchedule = generatePeriod();
+
+        Date latestPhysicalInventoryTime = DateUtil.parseString(sharedPreferenceMgr.getLatestPhysicInventoryTime(), DateUtil.DATE_TIME_FORMAT);
+        if (latestPhysicalInventoryTime.after(nextPeriodInSchedule.getBegin().toDate()) && latestPhysicalInventoryTime.before(nextPeriodInSchedule.getEnd().toDate())) {
+            viewModels.add(new RnRFormViewModel(nextPeriodInSchedule, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD));
+        } else {
+            viewModels.add(periodMissings, RnRFormViewModel.buildPreviousMissedPeriod(nextPeriodInSchedule.getBegin().toDate(), nextPeriodInSchedule.getEnd().toDate()));
         }
     }
 
