@@ -95,7 +95,7 @@ public class LoginPresenter extends Presenter {
         user = localUser;
         UserInfoMgr.getInstance().setUser(user);
 
-        if (!SharedPreferenceMgr.getInstance().hasGetProducts()) {
+        if (SharedPreferenceMgr.getInstance().getLastSyncProductTime() == null) {
             view.loaded();
             ToastUtil.show(R.string.msg_sync_products_list_failed);
             return;
@@ -141,7 +141,7 @@ public class LoginPresenter extends Presenter {
         userRepository.createOrUpdate(user);
 
         if (user.getFacilitySupportedPrograms() != null) {
-            for (String programCode: user.getFacilitySupportedPrograms()) {
+            for (String programCode : user.getFacilitySupportedPrograms()) {
                 Program program = new Program();
                 program.setProgramCode(programCode);
                 programRepository.createOrUpdate(program);

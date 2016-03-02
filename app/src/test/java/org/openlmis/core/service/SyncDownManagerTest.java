@@ -12,7 +12,6 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
@@ -276,24 +275,12 @@ public class SyncDownManagerTest {
         verify(stockRepository, times(0)).queryStockCardByProductId(anyLong());
     }
 
-    @Test
-    public void shouldNotSetHasProductWhenSyncDownProductError() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_kit,true);
-        when(sharedPreferenceMgr.getLastSyncProductTime()).thenReturn("time");
-        when(lmisRestApi.fetchLatestProducts("time")).thenThrow(new NetWorkException("net work error"));
-
-        syncDownManager.syncDownLatestProducts();
-
-        verify(sharedPreferenceMgr,never()).setHasGetProducts(false);
-    }
-
     private void testSyncProgress(SyncProgress progress) {
         try {
             if (progress == ProductSynced) {
                 if (!(LMISTestApp.getInstance()).getFeatureToggleFor(R.bool.feature_kit)) {
                     verify(programRepository).createOrUpdateProgramWithProduct(any(ArrayList.class));
                 }
-                verify(sharedPreferenceMgr).setHasGetProducts(true);
             }
             if (progress == StockCardsLastMonthSynced) {
                 verifyLastMonthStockCardsSynced();

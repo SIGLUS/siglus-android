@@ -180,7 +180,6 @@ public class SyncDownManager {
             } else {
                 fetchAndSaveProductsWithProgram();
             }
-            sharedPreferenceMgr.setHasGetProducts(true);
             subscriber.onNext(SyncProgress.ProductSynced);
         } catch (LMISException e) {
             e.reportToFabric();

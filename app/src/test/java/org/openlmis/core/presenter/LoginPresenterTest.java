@@ -189,14 +189,14 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldDoOfflineLoginWhenNoConnectionAndHasSynedData() {
+    public void shouldDoOfflineLoginWhenNoConnectionAndHasSyncedData() {
         appInject.setNetworkConnection(false);
         when(userRepository.getUserFromLocal(any(User.class))).thenReturn(new User("user", "password"));
         when(mockActivity.needInitInventory()).thenReturn(false);
 
-        SharedPreferenceMgr.getInstance().setHasGetProducts(true);
         SharedPreferenceMgr.getInstance().setLastMonthStockCardDataSynced(true);
         SharedPreferenceMgr.getInstance().setRequisitionDataSynced(true);
+        SharedPreferenceMgr.getInstance().setLastSyncProductTime("time");
 
         presenter.startLogin("user", "password");
 

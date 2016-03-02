@@ -81,14 +81,6 @@ public class SharedPreferenceMgr {
         sharedPreferences.edit().putBoolean(UserInfoMgr.getInstance().getVersion(), hasUpdated).apply();
     }
 
-    public boolean hasGetProducts() {
-        return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_HAS_GET_PRODUCTS, false);
-    }
-
-    public void setHasGetProducts(boolean hasGetProducts) {
-        sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_HAS_GET_PRODUCTS, hasGetProducts).apply();
-    }
-
     public boolean isLastMonthStockDataSynced() {
         return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS, stockRepository.hasStockData());
     }
