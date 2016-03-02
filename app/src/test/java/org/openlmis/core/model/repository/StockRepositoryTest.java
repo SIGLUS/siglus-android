@@ -428,6 +428,16 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(stockCard.getProduct().isArchived(), is(false));
     }
 
+    @Test
+    public void shouldQueryEarliestStockMovementItemCreatedTime() throws Exception {
+        createMovementItem(ISSUE, 100, stockCard, new DateTime("2017-01-01").toDate(), new DateTime("2017-01-01").toDate(), false);
+        createMovementItem(ISSUE, 100, stockCard, new DateTime("2016-12-25").toDate(), new DateTime("2016-12-25").toDate(), false);
+        createMovementItem(ISSUE, 100, stockCard, new DateTime("2017-03-02").toDate(), new DateTime("2017-03-02").toDate(), false);
+
+        Date earliestDate = stockRepository.queryEarliestStockMovementDate();
+        Assert.assertThat(earliestDate, is(new DateTime("2016-12-25").toDate()));
+    }
+
     private void saveDraftInventory() throws LMISException {
         DraftInventory draftInventory1 = new DraftInventory();
         draftInventory1.setQuantity(10L);

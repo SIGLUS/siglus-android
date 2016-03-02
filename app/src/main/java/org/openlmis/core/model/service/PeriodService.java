@@ -63,7 +63,7 @@ public class PeriodService {
     }
 
     private DateTime defaultBeginDateTo21st() {
-        DateTime initializeDateTime = new DateTime(stockRepository.getEarlistStockMovementDate());
+        DateTime initializeDateTime = new DateTime(stockRepository.queryEarliestStockMovementDate());
         int initializeDayOfMonth = initializeDateTime.getDayOfMonth();
 
         Calendar currentBeginDate = Calendar.getInstance();

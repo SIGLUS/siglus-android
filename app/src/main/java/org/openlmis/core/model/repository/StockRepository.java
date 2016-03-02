@@ -445,7 +445,19 @@ public class StockRepository {
         }
     }
 
-    public Date getEarlistStockMovementDate() {
-        return new Date();
+    public Date queryEarliestStockMovementDate() {
+        try {
+            return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
+                @Override
+                public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException {
+                    return dao.queryBuilder()
+                            .orderBy("createdTime", true)
+                            .queryForFirst();
+                }
+            }).getCreatedTime();
+        } catch (LMISException e) {
+            e.reportToFabric();
+            return null;
+        }
     }
 }

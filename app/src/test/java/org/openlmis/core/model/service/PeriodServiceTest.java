@@ -68,7 +68,7 @@ public class PeriodServiceTest {
     public void shouldGeneratePeriodOfJan21ToFebWhenRnrNotExists() throws Exception {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
-        when(mockStockRepository.getEarlistStockMovementDate()).thenReturn(new DateTime("2016-02-17").toDate());
+        when(mockStockRepository.queryEarliestStockMovementDate()).thenReturn(new DateTime("2016-02-17").toDate());
 
         Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
         assertThat(period.getBegin(), is(new DateTime("2016-01-21")));
@@ -79,7 +79,7 @@ public class PeriodServiceTest {
     public void shouldGeneratePeriodOfFeb18ToMarWhenRnrNotExists() throws Exception {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
-        when(mockStockRepository.getEarlistStockMovementDate()).thenReturn(new DateTime("2016-02-18").toDate());
+        when(mockStockRepository.queryEarliestStockMovementDate()).thenReturn(new DateTime("2016-02-18").toDate());
 
         Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
         assertThat(period.getBegin(), is(new DateTime("2016-02-18")));
@@ -90,7 +90,7 @@ public class PeriodServiceTest {
     public void shouldGeneratePeriodOfFeb21ToMarWhenRnrNotExists() throws Exception {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
-        when(mockStockRepository.getEarlistStockMovementDate()).thenReturn(new DateTime("2016-02-26").toDate());
+        when(mockStockRepository.queryEarliestStockMovementDate()).thenReturn(new DateTime("2016-02-26").toDate());
 
         Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
         assertThat(period.getBegin(), is(new DateTime("2016-02-21")));
