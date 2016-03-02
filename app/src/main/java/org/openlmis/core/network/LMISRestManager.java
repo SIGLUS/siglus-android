@@ -67,6 +67,7 @@ import retrofit.RequestInterceptor;
 import retrofit.RequestInterceptor.RequestFacade;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
+import retrofit.client.Client;
 import retrofit.client.OkClient;
 import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
@@ -109,17 +110,13 @@ public class LMISRestManager {
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setRequestInterceptor(requestInterceptor)
                 .setConverter(registerTypeAdapter())
-                .setClient(new OkClient(getSSLClient()))
-                .build();
+                .setClient(getSSLClient()).build();
 
         lmisRestApi = restAdapter.create(LMISRestApi.class);
     }
 
-    public LMISRestApi getLmisRestApi() {
-        return lmisRestApi;
-    }
-
-    public OkHttpClient getSSLClient() {
+    @NonNull
+    protected Client getSSLClient() {
         OkHttpClient client = getOkHttpClient();
 
         // loading CAs from an InputStream
@@ -139,7 +136,11 @@ public class LMISRestManager {
             new LMISException(e).reportToFabric();
         }
 
-        return client;
+        return new OkClient(client);
+    }
+
+    public LMISRestApi getLmisRestApi() {
+        return lmisRestApi;
     }
 
     private SSLContext getSslContext(Certificate ca) throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, KeyManagementException {

@@ -1,0 +1,31 @@
+{
+  "latestProducts": [
+    {
+      "product": {
+        "id": 9659,
+        "code": "01A01",
+        "primaryName": "Estavudina+Lamivudina+Nevirapi 6mg + 30mg +50mg, 60 Cps (BabyEmbalagem",
+        "description": "Estavudina+Lamivudina+Nevirapi",
+        "strength": "6mg + 30mg +50mg, 60 Cps (Baby",
+        "form": {
+          "id": 809,
+          "code": "Embalagem",
+          "displayOrder": 37
+        },
+        "dispensingUnit": "1",
+        "dosesPerDispensingUnit": 1,
+        "packSize": 1,
+        "active": false,
+        "archived": true,
+        "fullSupply": true,
+        "tracer": false,
+        "packRoundingThreshold": 0,
+        "roundToZero": false
+      },
+      "supportedPrograms": [
+        "MMIA"
+      ]
+    }
+  ],
+  "latestUpdatedTime": 1456895453179
+}
