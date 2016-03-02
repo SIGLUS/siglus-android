@@ -22,6 +22,7 @@ import android.support.annotation.NonNull;
 
 import com.google.inject.AbstractModule;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +43,6 @@ import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -105,6 +105,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
         when(mockStockRepository.listActiveStockCardsByProgramId(anyLong())).thenReturn(stockCards);
         when(mockStockRepository.queryFirstStockMovementItem(any(StockCard.class))).thenReturn(stockMovementItem1);
+        when(mockStockRepository.queryEarliestStockMovementDate()).thenReturn(new DateTime("2016-12-27").toDate());
         when(mockStockRepository.queryStockItemsByPeriodDates(any(StockCard.class), any(Date.class), any(Date.class)))
                 .thenReturn(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
 

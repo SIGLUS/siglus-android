@@ -79,10 +79,11 @@ public class PeriodServiceTest {
     public void shouldGeneratePeriodOfFeb18ToMarWhenRnrNotExists() throws Exception {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
-        when(mockStockRepository.queryEarliestStockMovementDate()).thenReturn(new DateTime("2016-02-18").toDate());
+        when(mockStockRepository.queryEarliestStockMovementDate()).thenReturn(DateUtil.parseString("2016-02-18 13:00:00", DateUtil.DATE_TIME_FORMAT));
 
         Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
-        assertThat(period.getBegin(), is(new DateTime("2016-02-18")));
+        
+        assertThat(period.getBegin(), is(new DateTime(DateUtil.parseString("2016-02-18 00:00:00", DateUtil.DATE_TIME_FORMAT))));
         assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(3));
     }
 
