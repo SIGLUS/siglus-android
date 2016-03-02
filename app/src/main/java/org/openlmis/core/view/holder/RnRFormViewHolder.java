@@ -27,9 +27,6 @@ public class RnRFormViewHolder extends BaseViewHolder {
     @InjectView(R.id.tx_message)
     TextView txMessage;
 
-    @InjectView(R.id.btn_view_old)
-    TextView btnViewOld;
-
     @InjectView(R.id.btn_view)
     Button btnView;
 
@@ -44,9 +41,6 @@ public class RnRFormViewHolder extends BaseViewHolder {
     }
 
     public void populate(final RnRFormViewModel model) {
-        if (btnViewOld != null) {
-            btnViewOld.setVisibility(View.GONE);
-        }
         form = model.getForm();
         switch (model.getType()) {
             case RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING:
