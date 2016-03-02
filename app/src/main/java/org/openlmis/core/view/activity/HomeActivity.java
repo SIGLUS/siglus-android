@@ -30,7 +30,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.google.inject.Inject;
 
@@ -42,13 +41,13 @@ import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.widget.SyncDateBottomSheet;
 import org.openlmis.core.view.widget.SyncTimeView;
 
+import roboguice.inject.ContentView;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
-
+@ContentView(R.layout.activity_home_page)
 public class HomeActivity extends BaseActivity {
 
     @InjectView(R.id.btn_stock_card)
@@ -58,10 +57,6 @@ public class HomeActivity extends BaseActivity {
     Button btnInventory;
 
     SyncTimeView syncTimeView;
-
-    TextView txLastSyncedRnrForm;
-
-    TextView txLastSyncedStockCard;
 
     @InjectView(R.id.btn_mmia_list)
     Button btnMMIAList;
@@ -78,25 +73,17 @@ public class HomeActivity extends BaseActivity {
     @Inject
     SyncService syncService;
 
-    @Inject
-    protected SyncDateBottomSheet syncDateBottomSheetForOldHomeActivity;
-
     private boolean exitPressedOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Constants.INTENT_FILTER_SET_SYNCED_TIME);
-        registerReceiver(syncedTimeReceiver, filter);
-
         if (UserInfoMgr.getInstance().getUser() == null) {
             // In case some users use some unknown way entered here!!!
             logout();
             finish();
         } else {
-            setContentView(R.layout.activity_home_page);
             setTitle(UserInfoMgr.getInstance().getFacilityName());
             syncTimeView = (SyncTimeView) findViewById(R.id.view_sync_time);
 
@@ -108,6 +95,13 @@ public class HomeActivity extends BaseActivity {
                 btnKitStockCard.setVisibility(View.GONE);
             }
         }
+        registerSyncTimeReceiver();
+    }
+
+    private void registerSyncTimeReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Constants.INTENT_FILTER_SET_SYNCED_TIME);
+        registerReceiver(syncedTimeReceiver, filter);
     }
 
     @Override
@@ -140,19 +134,6 @@ public class HomeActivity extends BaseActivity {
         Intent intent = new Intent(HomeActivity.this, InventoryActivity.class);
         intent.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
         startActivity(intent);
-    }
-
-    public void onClickMMIA(View view) {
-        startActivity(MMIARequisitionActivity.class, false);
-    }
-
-    public void onClickRequisition(View view) {
-        startActivity(VIARequisitionActivity.class, false);
-    }
-
-    public void onClickSyncData(View view) {
-        Log.d("HomeActivity", "requesting immediate sync");
-        syncService.requestSyncImmediately();
     }
 
     public void onClickSyncData() {
