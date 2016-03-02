@@ -26,6 +26,3 @@ Given(/^I enable wifi/) do
     end
 end
 
-Given(/^I clean app data/) do
-     clear_app_data
-end
