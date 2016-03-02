@@ -3,6 +3,7 @@ package org.openlmis.core.model.service;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
@@ -86,5 +87,36 @@ public class PeriodService {
         Calendar date = Calendar.getInstance();
         date.set(periodBeginDate.getYear(), periodBeginDate.getMonthOfYear(), Period.END_DAY);
         return new DateTime(date);
+    }
+
+    public boolean hasMissedPeriod(String programCode) throws LMISException {
+        DateTime nextPeriodInScheduleEnd = generatePeriod(programCode, null).getEnd();
+
+        DateTime lastInventoryDateForNextPeriodInSchedule = nextPeriodInScheduleEnd
+                .withDate(nextPeriodInScheduleEnd.getYear(),
+                        nextPeriodInScheduleEnd.getMonthOfYear(),
+                        Period.INVENTORY_END_DAY_NEXT);
+
+        return lastInventoryDateForNextPeriodInSchedule.isBefore(LMISApp.getInstance().getCurrentTimeMillis());
+    }
+
+    public int getMissedPeriodOffsetMonth(String programCode) throws LMISException {
+        DateTime nextPeriodInScheduleBegin = generatePeriod(programCode, null).getBegin();
+
+        DateTime currentDate = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        DateTime currentMonthInventoryBeginDate;
+        if (currentDate.getDayOfMonth() >= Period.INVENTORY_BEGIN_DAY) {
+            currentMonthInventoryBeginDate = currentDate
+                    .withDate(currentDate.getYear(),
+                            currentDate.getMonthOfYear(),
+                            Period.INVENTORY_BEGIN_DAY);
+        } else {
+            currentMonthInventoryBeginDate = currentDate
+                    .withDate(currentDate.getYear(),
+                            currentDate.getMonthOfYear() - 1,
+                            Period.INVENTORY_BEGIN_DAY);
+        }
+
+        return (currentMonthInventoryBeginDate.getYear() * 12 + currentMonthInventoryBeginDate.getMonthOfYear()) - (nextPeriodInScheduleBegin.getYear() * 12 + nextPeriodInScheduleBegin.getMonthOfYear());
     }
 }

@@ -214,36 +214,24 @@ public class RnRFormListPresenterTest {
     }
 
     @Test
-    public void shouldGenerateMissedPeriodViewModelWhenCurrentDateAfterInventoryCloseDate() throws Exception {
-        LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-05-18 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
-        DateTime nextPeriodBegin = new DateTime(DateUtil.parseString("2015-01-21", DateUtil.DB_DATE_FORMAT));
-        DateTime nextPeriodEnd = new DateTime(DateUtil.parseString("2015-02-20", DateUtil.DB_DATE_FORMAT));
-        Period nextPeriodInSchedule = new Period(nextPeriodBegin, nextPeriodEnd);
-        when(periodService.generatePeriod(anyString(), any(Date.class))).thenReturn(nextPeriodInSchedule);
+    public void shouldNotGenerateMissedPeriodIfNoMissedPeriod() throws LMISException {
+        when(periodService.hasMissedPeriod(anyString())).thenReturn(false);
+        presenter.addPreviousPeriodMissedViewModels(viewModels);
+        assertThat(viewModels.size()).isEqualTo(0);
+    }
 
-        presenter.addPreviousPeriodMissedViewModel(viewModels);
+    @Test
+    public void shouldGenerateMissedPeriodViewModelWhenCurrentDateAfterInventoryCloseDate() throws Exception {
+        when(periodService.hasMissedPeriod(anyString())).thenReturn(true);
+        when(periodService.getMissedPeriodOffsetMonth(anyString())).thenReturn(4);
+
+        presenter.addPreviousPeriodMissedViewModels(viewModels);
         assertThat(viewModels.size()).isEqualTo(5);
         assertThat(viewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
         assertThat(viewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
         assertThat(viewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
         assertThat(viewModels.get(3).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
         assertThat(viewModels.get(4).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
-    }
-
-    @Test
-    public void shouldGenerateMissedPeriodViewModelWhenCurrentDateBeforeInventoryCloseDate() throws Exception {
-        LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-05-17 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
-        DateTime nextPeriodBegin = new DateTime(DateUtil.parseString("2015-01-21", DateUtil.DB_DATE_FORMAT));
-        DateTime nextPeriodEnd = new DateTime(DateUtil.parseString("2015-02-20", DateUtil.DB_DATE_FORMAT));
-        Period nextPeriodInSchedule = new Period(nextPeriodBegin, nextPeriodEnd);
-        when(periodService.generatePeriod(anyString(), any(Date.class))).thenReturn(nextPeriodInSchedule);
-
-        presenter.addPreviousPeriodMissedViewModel(viewModels);
-        assertThat(viewModels.size()).isEqualTo(4);
-        assertThat(viewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
-        assertThat(viewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
-        assertThat(viewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
-        assertThat(viewModels.get(3).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
     }
 
     private List<RnRForm> createRnRForms() {

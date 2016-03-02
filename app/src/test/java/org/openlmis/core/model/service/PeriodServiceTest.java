@@ -21,10 +21,14 @@ import org.robolectric.RuntimeEnvironment;
 
 import roboguice.RoboGuice;
 
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
@@ -82,7 +86,7 @@ public class PeriodServiceTest {
         when(mockStockRepository.queryEarliestStockMovementDate()).thenReturn(DateUtil.parseString("2016-02-18 13:00:00", DateUtil.DATE_TIME_FORMAT));
 
         Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
-        
+
         assertThat(period.getBegin(), is(new DateTime(DateUtil.parseString("2016-02-18 00:00:00", DateUtil.DATE_TIME_FORMAT))));
         assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(3));
     }
@@ -96,6 +100,59 @@ public class PeriodServiceTest {
         Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
         assertThat(period.getBegin(), is(new DateTime("2016-02-21")));
         assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(3));
+    }
+
+    @Test
+    public void shouldReturnTrueWhenPreviousPeriodIsMissed() throws Exception {
+        periodService = spy(periodService);
+
+        LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-05-18 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
+        DateTime nextPeriodBegin = new DateTime(DateUtil.parseString("2015-01-21", DateUtil.DB_DATE_FORMAT));
+        DateTime nextPeriodEnd = new DateTime(DateUtil.parseString("2015-02-20", DateUtil.DB_DATE_FORMAT));
+        Period nextPeriodInSchedule = new Period(nextPeriodBegin, nextPeriodEnd);
+
+        doReturn(nextPeriodInSchedule).when(periodService).generatePeriod("P1", null);
+        assertTrue(periodService.hasMissedPeriod("P1"));
+    }
+
+    @Test
+    public void shouldReturnFalseWhenPreviousPeriodIsNotMissed() throws Exception {
+        periodService = spy(periodService);
+
+        LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-02-25 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
+        DateTime nextPeriodBegin = new DateTime(DateUtil.parseString("2015-01-21", DateUtil.DB_DATE_FORMAT));
+        DateTime nextPeriodEnd = new DateTime(DateUtil.parseString("2015-02-20", DateUtil.DB_DATE_FORMAT));
+        Period nextPeriodInSchedule = new Period(nextPeriodBegin, nextPeriodEnd);
+
+        doReturn(nextPeriodInSchedule).when(periodService).generatePeriod("P1", null);
+
+        assertFalse(periodService.hasMissedPeriod("P1"));
+    }
+
+    @Test
+    public void shouldGetOffsetPeriodMonthWhenHasMissedPeriod() throws Exception {
+        periodService = spy(periodService);
+
+        LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-05-18 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
+        DateTime nextPeriodBegin = new DateTime(DateUtil.parseString("2015-01-21", DateUtil.DB_DATE_FORMAT));
+        DateTime nextPeriodEnd = new DateTime(DateUtil.parseString("2015-02-20", DateUtil.DB_DATE_FORMAT));
+        Period nextPeriodInSchedule = new Period(nextPeriodBegin, nextPeriodEnd);
+        doReturn(nextPeriodInSchedule).when(periodService).generatePeriod("P1", null);
+
+        assertThat(periodService.getMissedPeriodOffsetMonth("P1"), is(4));
+    }
+
+    @Test
+    public void shouldGetOffsetPeriodIsZeroMonthWhenHasMissedPeriod() throws Exception {
+        periodService = spy(periodService);
+
+        LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-03-17 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
+        DateTime nextPeriodBegin = new DateTime(DateUtil.parseString("2015-01-21", DateUtil.DB_DATE_FORMAT));
+        DateTime nextPeriodEnd = new DateTime(DateUtil.parseString("2015-02-20", DateUtil.DB_DATE_FORMAT));
+        Period nextPeriodInSchedule = new Period(nextPeriodBegin, nextPeriodEnd);
+        doReturn(nextPeriodInSchedule).when(periodService).generatePeriod("P1", null);
+
+        assertThat(periodService.getMissedPeriodOffsetMonth("P1"), is(1));
     }
 
     public class MyTestModule extends AbstractModule {
