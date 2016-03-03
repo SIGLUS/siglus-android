@@ -86,7 +86,7 @@ public class PeriodServiceTest {
         when(mockStockRepository.queryEarliestStockMovementDate()).thenReturn(DateUtil.parseString("2016-02-18 13:00:00", DateUtil.DATE_TIME_FORMAT));
 
         Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
-
+        
         assertThat(period.getBegin(), is(new DateTime(DateUtil.parseString("2016-02-18 00:00:00", DateUtil.DATE_TIME_FORMAT))));
         assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(3));
     }
@@ -153,6 +153,28 @@ public class PeriodServiceTest {
         doReturn(nextPeriodInSchedule).when(periodService).generatePeriod("P1", null);
 
         assertThat(periodService.getMissedPeriodOffsetMonth("P1"), is(1));
+    }
+
+    @Test
+    public void shouldGeneratePeriodOfDes21ToJanWhenRnrNotExists() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
+
+        when(mockStockRepository.queryEarliestStockMovementDate()).thenReturn(new DateTime("2016-01-06").toDate());
+
+        Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
+        assertThat(period.getBegin(), is(new DateTime("2015-12-21")));
+        assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(1));
+    }
+
+    @Test
+    public void shouldGeneratePeriodOfDes19ToJanWhenRnrNotExists() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
+
+        when(mockStockRepository.queryEarliestStockMovementDate()).thenReturn(new DateTime("2015-12-19").toDate());
+
+        Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
+        assertThat(period.getBegin(), is(new DateTime("2015-12-19")));
+        assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(1));
     }
 
     public class MyTestModule extends AbstractModule {

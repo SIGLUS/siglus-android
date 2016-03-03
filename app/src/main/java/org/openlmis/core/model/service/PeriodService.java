@@ -53,7 +53,7 @@ public class PeriodService {
     }
 
     private Period generatePeriodBasedOnDefaultDates(Date physicalInventoryDate) {
-        DateTime periodBeginDate = defaultBeginDateTo21st();
+        DateTime periodBeginDate = calculatePeriodBeginDate();
         DateTime periodEndDate;
         if (physicalInventoryDate == null) {
             periodEndDate = defaultEndDateTo20th(periodBeginDate);
@@ -63,7 +63,7 @@ public class PeriodService {
         return new Period(periodBeginDate, periodEndDate);
     }
 
-    private DateTime defaultBeginDateTo21st() {
+    private DateTime calculatePeriodBeginDate() {
         DateTime initializeDateTime = new DateTime(stockRepository.queryEarliestStockMovementDate());
         int initializeDayOfMonth = initializeDateTime.getDayOfMonth();
 
