@@ -32,6 +32,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
@@ -39,6 +40,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.service.PeriodService;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -66,6 +68,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     StockRepository mockStockRepository;
     ProgramRepository mockProgramRepository;
     RnrFormRepository mockRnrFormRepository;
+    PeriodService mockPeriodService;
     private Program program;
 
     @Before
@@ -74,6 +77,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         mockProgramRepository = mock(ProgramRepository.class);
         mockRnrFormRepository = mock(RnrFormRepository.class);
         mockProductRepository = mock(ProductRepository.class);
+        mockPeriodService = mock(PeriodService.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         mmiaRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(MMIARepository.class);
@@ -105,7 +109,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
         when(mockStockRepository.listActiveStockCardsByProgramId(anyLong())).thenReturn(stockCards);
         when(mockStockRepository.queryFirstStockMovementItem(any(StockCard.class))).thenReturn(stockMovementItem1);
-        when(mockStockRepository.queryEarliestStockMovementDate()).thenReturn(new DateTime("2016-12-27").toDate());
+        when(mockPeriodService.generatePeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime("2016-12-27"), new DateTime("2017-01-20")));
         when(mockStockRepository.queryStockItemsByPeriodDates(any(StockCard.class), any(Date.class), any(Date.class)))
                 .thenReturn(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
 
@@ -269,6 +273,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
             bind(RnrFormRepository.class).toInstance(mockRnrFormRepository);
             bind(StockRepository.class).toInstance(mockStockRepository);
             bind(ProgramRepository.class).toInstance(mockProgramRepository);
+            bind(PeriodService.class).toInstance(mockPeriodService);
         }
     }
 }
