@@ -11,11 +11,13 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
+import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
@@ -55,6 +57,7 @@ public class RnRFormListPresenterTest {
     private PeriodService periodService;
     private long dateJanTwentySix = 1453766400000l;
     private long dateFebTwentyOne = 1456012800000l;
+    private InventoryRepository inventoryRepository;
 
     @Before
     public void setUp() {
@@ -63,6 +66,7 @@ public class RnRFormListPresenterTest {
         syncErrorsRepository = mock(SyncErrorsRepository.class);
         sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
         periodService = mock(PeriodService.class);
+        inventoryRepository = mock(InventoryRepository.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
@@ -72,6 +76,7 @@ public class RnRFormListPresenterTest {
                 bind(StockRepository.class).toInstance(stockRepository);
                 bind(SharedPreferenceMgr.class).toInstance(sharedPreferenceMgr);
                 bind(PeriodService.class).toInstance(periodService);
+                bind(InventoryRepository.class).toInstance(inventoryRepository);
             }
         });
 
@@ -210,7 +215,7 @@ public class RnRFormListPresenterTest {
         when(periodService.hasMissedPeriod(anyString())).thenReturn(true);
         when(periodService.getMissedPeriodOffsetMonth(anyString())).thenReturn(4);
         when(periodService.getCurrentMonthInventoryBeginDate()).thenReturn(new DateTime(DateUtil.parseString("2016-02-18", DateUtil.DB_DATE_FORMAT)));
-        when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn("2016-01-02 08:00:00");
+        when(inventoryRepository.queryPeriodInventory(any(Period.class))).thenReturn(new ArrayList<Inventory>());
         rnRForms.clear();
 
         presenter.addPreviousPeriodMissedViewModels(viewModels, rnRForms);
