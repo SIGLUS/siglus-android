@@ -111,7 +111,7 @@ public class RnRFormListPresenter extends Presenter {
         addPreviousPeriodViewModels(viewModels, rnRForms);
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change) && periodService.hasMissedPeriod(programCode)) {
-            addPreviousPeriodMissedViewModels(viewModels);
+            addPreviousPeriodMissedViewModels(viewModels, rnRForms);
         } else {
             Period nextPeriodInSchedule = generatePeriod();
 
@@ -197,7 +197,7 @@ public class RnRFormListPresenter extends Presenter {
         }).toList());
     }
 
-    protected void addPreviousPeriodMissedViewModels(List<RnRFormViewModel> viewModels) throws LMISException {
+    protected void addPreviousPeriodMissedViewModels(List<RnRFormViewModel> viewModels, List<RnRForm> rnRForms) throws LMISException {
         int offsetMonth = periodService.getMissedPeriodOffsetMonth(this.programCode);
 
         DateTime inventoryBeginDate = periodService.getCurrentMonthInventoryBeginDate();
@@ -206,14 +206,18 @@ public class RnRFormListPresenter extends Presenter {
             viewModels.add(i, RnRFormViewModel.buildPreviousPeriodMissing(inventoryBeginDate.toDate(), inventoryBeginDate.plusMonths(1).toDate()));
             inventoryBeginDate = inventoryBeginDate.minusMonths(1);
         }
-        addNextPeriodViewModel(viewModels, periodMissings);
+
+        if (rnRForms.size() == 0 || rnRForms.get(0).isAuthorized()) {
+            addNextPeriodViewModel(viewModels, periodMissings);
+        }
     }
 
     private void addNextPeriodViewModel(List<RnRFormViewModel> viewModels, int periodMissings) throws LMISException {
         Period nextPeriodInSchedule = generatePeriod();
 
         Date latestPhysicalInventoryTime = DateUtil.parseString(sharedPreferenceMgr.getLatestPhysicInventoryTime(), DateUtil.DATE_TIME_FORMAT);
-        if (latestPhysicalInventoryTime.after(nextPeriodInSchedule.getBegin().toDate()) && latestPhysicalInventoryTime.before(nextPeriodInSchedule.getEnd().toDate())) {
+        if (latestPhysicalInventoryTime.after(nextPeriodInSchedule.getBegin().toDate())
+                && latestPhysicalInventoryTime.before(nextPeriodInSchedule.getEnd().toDate())) {
             viewModels.add(new RnRFormViewModel(nextPeriodInSchedule, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD));
         } else {
             viewModels.add(periodMissings, RnRFormViewModel.buildPreviousMissedPeriod(nextPeriodInSchedule.getBegin().toDate(), nextPeriodInSchedule.getEnd().toDate()));

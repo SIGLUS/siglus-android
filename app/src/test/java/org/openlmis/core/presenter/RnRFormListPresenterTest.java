@@ -211,8 +211,9 @@ public class RnRFormListPresenterTest {
         when(periodService.getMissedPeriodOffsetMonth(anyString())).thenReturn(4);
         when(periodService.getCurrentMonthInventoryBeginDate()).thenReturn(new DateTime(DateUtil.parseString("2016-02-18", DateUtil.DB_DATE_FORMAT)));
         when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn("2016-01-02 08:00:00");
+        rnRForms.clear();
 
-        presenter.addPreviousPeriodMissedViewModels(viewModels);
+        presenter.addPreviousPeriodMissedViewModels(viewModels, rnRForms);
         assertThat(viewModels.size()).isEqualTo(5);
         assertThat(viewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
         assertThat(viewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
