@@ -218,7 +218,7 @@ public class RnRFormListPresenter extends Presenter {
         Date latestPhysicalInventoryTime = DateUtil.parseString(sharedPreferenceMgr.getLatestPhysicInventoryTime(), DateUtil.DATE_TIME_FORMAT);
         if (latestPhysicalInventoryTime.after(nextPeriodInSchedule.getBegin().toDate())
                 && latestPhysicalInventoryTime.before(nextPeriodInSchedule.getEnd().toDate())) {
-            viewModels.add(new RnRFormViewModel(nextPeriodInSchedule, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD));
+            viewModels.add(new RnRFormViewModel(nextPeriodInSchedule, programCode, RnRFormViewModel.TYPE_INVENTORY_DONE));
         } else {
             viewModels.add(periodMissings, RnRFormViewModel.buildPreviousMissedPeriod(nextPeriodInSchedule.getBegin().toDate(), nextPeriodInSchedule.getEnd().toDate()));
         }
