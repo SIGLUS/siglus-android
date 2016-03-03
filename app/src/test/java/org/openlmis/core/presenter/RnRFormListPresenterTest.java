@@ -213,11 +213,12 @@ public class RnRFormListPresenterTest {
         when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn("2016-01-02 08:00:00");
 
         presenter.addPreviousPeriodMissedViewModels(viewModels);
-        assertThat(viewModels.size()).isEqualTo(4);
+        assertThat(viewModels.size()).isEqualTo(5);
         assertThat(viewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
         assertThat(viewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
         assertThat(viewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
-        assertThat(viewModels.get(3).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+        assertThat(viewModels.get(3).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
+        assertThat(viewModels.get(4).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
     }
 
     private List<RnRForm> createRnRForms() {

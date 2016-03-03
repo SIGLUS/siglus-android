@@ -201,10 +201,10 @@ public class RnRFormListPresenter extends Presenter {
         int offsetMonth = periodService.getMissedPeriodOffsetMonth(this.programCode);
 
         DateTime inventoryBeginDate = periodService.getCurrentMonthInventoryBeginDate();
-        int periodMissings = offsetMonth - 1;
+        int periodMissings = offsetMonth;
         for (int i = 0; i < periodMissings; i++) {
-            inventoryBeginDate = inventoryBeginDate.minusMonths(1);
             viewModels.add(i, RnRFormViewModel.buildPreviousPeriodMissing(inventoryBeginDate.toDate(), inventoryBeginDate.plusMonths(1).toDate()));
+            inventoryBeginDate = inventoryBeginDate.minusMonths(1);
         }
         addNextPeriodViewModel(viewModels, periodMissings);
     }
