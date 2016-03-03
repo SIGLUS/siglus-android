@@ -119,5 +119,13 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     @Override
     public void refreshDate(List<SelectInventoryViewModel> inventories) {
         adapter.refreshDate(inventories);
+
+        for (SelectInventoryViewModel selectInventoryViewModel : inventories) {
+            if (selectInventoryViewModel.isChecked()) {
+                int position = inventories.indexOf(selectInventoryViewModel);
+                vgContainer.setItemChecked(position, true);
+                selectedInventory = adapter.getItem(position);
+            }
+        }
     }
 }

@@ -217,7 +217,7 @@ public class RnRFormListPresenter extends Presenter {
 
         List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(nextPeriodInSchedule);
         if (physicalInventories.isEmpty()) {
-            viewModels.add(periodMissings, RnRFormViewModel.buildPreviousMissedPeriod(nextPeriodInSchedule.getBegin().toDate(), nextPeriodInSchedule.getEnd().toDate()));
+            viewModels.add(periodMissings, RnRFormViewModel.buildPreviousMissedPeriod(programCode, nextPeriodInSchedule.getBegin().toDate(), nextPeriodInSchedule.getEnd().toDate()));
         } else {
             viewModels.add(new RnRFormViewModel(nextPeriodInSchedule, programCode, RnRFormViewModel.TYPE_INVENTORY_DONE));
         }

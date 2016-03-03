@@ -134,6 +134,18 @@ public class RnRFormListActivityTest {
     }
 
     @Test
+    public void shouldStartSelectPeriodPageWhenBtnClickedWithTypeMissedPeriod() throws Exception {
+        RnRFormViewModel viewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_MISSED_PERIOD);
+        rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel);
+
+        Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
+
+        assertNotNull(nextStartedIntent);
+        assertEquals(nextStartedIntent.getComponent().getClassName(), SelectPeriodActivity.class.getName());
+        assertEquals(nextStartedIntent.getStringExtra(Constants.PARAM_PROGRAM_CODE), "MMIA");
+    }
+
+    @Test
     public void shouldStartMMIAHistoryWhenBtnClickedWithTypeHistory() throws Exception {
         RnRFormViewModel viewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_SYNCED_HISTORICAL);
         viewModel.setId(999L);

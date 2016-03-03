@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.google.inject.Inject;
 
+import org.joda.time.DateTime;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
@@ -48,8 +49,14 @@ public class SelectPeriodPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super List<SelectInventoryViewModel>> subscriber) {
                 try {
-                    Period currentPeriod = periodService.generatePeriod(programCode, null);
-                    List<SelectInventoryViewModel> selectInventoryViewModels = generateSelectInventoryViewModels(inventoryRepository.queryPeriodInventory(currentPeriod));
+                    Period periodInSchedule = periodService.generatePeriod(programCode, null);
+                    List<Inventory> inventories = inventoryRepository.queryPeriodInventory(periodInSchedule);
+                    boolean isDefaultInventoryDate = false;
+                    if (inventories.isEmpty()) {
+                        isDefaultInventoryDate = true;
+                        generateDefaultInventoryDates(periodInSchedule, inventories);
+                    }
+                    List<SelectInventoryViewModel> selectInventoryViewModels = generateSelectInventoryViewModels(inventories, isDefaultInventoryDate);
                     subscriber.onNext(selectInventoryViewModels);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
@@ -61,11 +68,25 @@ public class SelectPeriodPresenter extends Presenter {
         subscriptions.add(subscription);
     }
 
-    private List<SelectInventoryViewModel> generateSelectInventoryViewModels(final List<Inventory> inventories) {
+    private void generateDefaultInventoryDates(Period periodInSchedule, List<Inventory> inventories) {
+        DateTime inventoryDate = new DateTime().secondOfDay().withMaximumValue().withDate(periodInSchedule.getEnd().getYear(), periodInSchedule.getEnd().getMonthOfYear(), Period.INVENTORY_BEGIN_DAY);
+        for (int i = 0; i < Period.INVENTORY_END_DAY_NEXT - Period.INVENTORY_BEGIN_DAY; i++) {
+            Inventory inventory = new Inventory();
+            inventory.setCreatedAt(inventoryDate.toDate());
+            inventories.add(inventory);
+            inventoryDate = inventoryDate.plusDays(1);
+        }
+    }
+
+    private List<SelectInventoryViewModel> generateSelectInventoryViewModels(final List<Inventory> inventories, final boolean isDefaultInventoryDate) {
         return from(inventories).transform(new Function<Inventory, SelectInventoryViewModel>() {
             @Override
             public SelectInventoryViewModel apply(Inventory inventory) {
                 SelectInventoryViewModel selectInventoryViewModel = new SelectInventoryViewModel(inventory);
+
+                if (isDefaultInventoryDate && new DateTime(selectInventoryViewModel.getInventoryDate()).getDayOfMonth() == Period.DEFAULT_INVENTORY_DAY) {
+                    selectInventoryViewModel.setChecked(true);
+                }
 
                 for (Inventory comparedInventory : inventories) {
                     if (inventory == comparedInventory) continue;

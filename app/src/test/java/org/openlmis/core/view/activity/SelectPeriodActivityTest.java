@@ -41,6 +41,7 @@ public class SelectPeriodActivityTest {
     private SelectPeriodPresenter mockedPresenter;
     private SelectPeriodActivity selectPeriodActivity;
     private DateTime currentDateTime;
+    private List<SelectInventoryViewModel> inventoryList;
 
     @Before
     public void setUp() throws Exception {
@@ -59,6 +60,12 @@ public class SelectPeriodActivityTest {
         Intent intent = new Intent();
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, "MMIA");
         selectPeriodActivity = Robolectric.buildActivity(SelectPeriodActivity.class).withIntent(intent).create().get();
+
+        inventoryList = Arrays.asList(
+                new SelectInventoryViewModel(generateInventoryWithDate(new DateTime("2016-01-25").toDate())),
+                new SelectInventoryViewModel(generateInventoryWithDate(new DateTime("2016-01-22").toDate())),
+                new SelectInventoryViewModel(generateInventoryWithDate(new DateTime("2016-01-19").toDate()))
+        );
     }
 
     @Test
@@ -75,11 +82,6 @@ public class SelectPeriodActivityTest {
 
     @Test
     public void shouldInVisibleWarningWhenUserChoseTheInventory() throws Exception {
-        List<SelectInventoryViewModel> inventoryList = Arrays.asList(
-                new SelectInventoryViewModel(generateInventoryWithDate(new DateTime("2016-01-25").toDate())),
-                new SelectInventoryViewModel(generateInventoryWithDate(new DateTime("2016-01-22").toDate())),
-                new SelectInventoryViewModel(generateInventoryWithDate(new DateTime("2016-01-19").toDate()))
-        );
         selectPeriodActivity.refreshDate(inventoryList);
 
         shadowOf(selectPeriodActivity.vgContainer).performItemClick(2);
@@ -92,6 +94,14 @@ public class SelectPeriodActivityTest {
         assertThat(shadowOf(selectPeriodActivity).getResultCode(), is(Activity.RESULT_OK));
         Date selectedDate = (Date) shadowOf(selectPeriodActivity).getResultIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE);
         assertThat(selectedDate, is(new DateTime("2016-01-19").toDate()));
+    }
+
+    @Test
+    public void shouldCheckedDefaultInventoryDay() throws Exception {
+        inventoryList.get(1).setChecked(true);
+        selectPeriodActivity.refreshDate(inventoryList);
+
+        assertThat(selectPeriodActivity.vgContainer.getCheckedItemPosition(), is(1));
     }
 
     private Inventory generateInventoryWithDate(Date date) {
