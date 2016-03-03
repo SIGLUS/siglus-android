@@ -15,7 +15,8 @@ public class LMISRestManagerMock extends LMISRestManager {
     }
 
     @NonNull
-    public static void buildMockClient(String url, int status, String reason, String json) {
+    public static LMISRestManagerMock getRestManagerWithMockClient(String url, int status, String reason, String json) {
         mockClient = MockClient.MockClientBuilder().withUrl(url).withStatusAndReason(status, reason).withResponseBody(json.getBytes());
+        return new LMISRestManagerMock();
     }
 }

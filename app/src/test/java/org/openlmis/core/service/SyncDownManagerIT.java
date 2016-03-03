@@ -13,8 +13,8 @@ import org.robolectric.RuntimeEnvironment;
 
 import roboguice.RoboGuice;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(LMISTestRunner.class)
 public class SyncDownManagerIT {
@@ -26,8 +26,7 @@ public class SyncDownManagerIT {
     public void shouldSyncDownLatestProductWithArchivedStatus() throws Exception {
         //given
         String json = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
-        LMISRestManagerMock.buildMockClient("/rest-api/latest-products",200,"OK",json);
-        lmisRestManager = new LMISRestManagerMock();
+        lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products", 200, "OK", json);
         syncDownManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncDownManager.class);
         syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
         productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
@@ -39,9 +38,9 @@ public class SyncDownManagerIT {
         //then
         Product product = productRepository.getByCode("01A01");
         assertTrue(product.isArchived());
-        assertNotNull(product.getPrimaryName());
-        assertNotNull(product.getType());
-        assertNotNull(product.getStrength());
+        assertEquals("Estavudina+Lamivudina+Nevirapi 6mg + 30mg +50mg, 60 Cps (BabyEmbalagem", product.getPrimaryName());
+        assertEquals("Embalagem", product.getType());
+        assertEquals("6mg + 30mg +50mg, 60 Cps (Baby", product.getStrength());
     }
 
 }
