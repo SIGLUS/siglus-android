@@ -160,8 +160,8 @@ Feature: Log in and initialize Inventory
     And I navigate back
     And I wait for 2 seconds
     And I try to log in with "superuser" "password1"
+    And I wait up to 120 seconds for "STOCK CARD OVERVIEW" to appear
 
-    And I wait for "STOCK CARD OVERVIEW" to appear
     And I press "Do Monthly Inventory"
     And I wait for "Inventory" to appear
     Then I shouldn't see product "01A01" in this page
