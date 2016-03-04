@@ -4,6 +4,8 @@ apply plugin: 'io.fabric'
 repositories {
     jcenter()
     maven { url 'https://maven.fabric.io/public' }
+    maven { url 'https://dl.bintray.com/cuipengfei/maven' }
+    //the line above is temporary, we will remove it when the lib syncs to jcenter, it'll take a while
 }
 
 android {
@@ -176,6 +178,8 @@ dependencies {
         transitive = true
     }
     compile 'net.danlew:android.joda:2.9.1'
+    compile 'com.autoupdateapk:autoupdateapk:1.0.2'
+    //this line above is from: https://github.com/NDMAC/android-auto-updater-client, we can update source and republish it if we need to
     testCompile 'junit:junit:4.12'
     testCompile 'org.hamcrest:hamcrest-all:1.3'
     testCompile 'org.mockito:mockito-all:1.10.19'
