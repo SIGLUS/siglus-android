@@ -26,6 +26,7 @@ import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.table.TableUtils;
 
+import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.StockMovementIsNullException;
@@ -150,7 +151,8 @@ public class StockRepository {
     }
 
     public void saveStockItem(final StockMovementItem stockMovementItem) throws LMISException {
-        stockMovementItem.setCreatedTime(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
+        DateTime movementDate = new DateTime(stockMovementItem.getMovementDate());
+        stockMovementItem.setCreatedTime(new DateTime().withDate(movementDate.getYear(), movementDate.getMonthOfYear(), movementDate.getDayOfMonth()).toDate());
         stockItemGenericDao.create(stockMovementItem);
     }
 
