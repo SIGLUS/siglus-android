@@ -52,12 +52,10 @@ public class SelectPeriodPresenter extends Presenter {
                 try {
                     Period periodInSchedule = periodService.generatePeriod(programCode, null);
                     List<Inventory> inventories = inventoryRepository.queryPeriodInventory(periodInSchedule);
-                    boolean isDefaultInventoryDate = false;
                     if (inventories.isEmpty() && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
-                        isDefaultInventoryDate = true;
                         generateDefaultInventoryDates(periodInSchedule, inventories);
                     }
-                    List<SelectInventoryViewModel> selectInventoryViewModels = generateSelectInventoryViewModels(inventories, isDefaultInventoryDate);
+                    List<SelectInventoryViewModel> selectInventoryViewModels = generateSelectInventoryViewModels(inventories);
                     subscriber.onNext(selectInventoryViewModels);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
@@ -79,16 +77,11 @@ public class SelectPeriodPresenter extends Presenter {
         }
     }
 
-    private List<SelectInventoryViewModel> generateSelectInventoryViewModels(final List<Inventory> inventories, final boolean isDefaultInventoryDate) {
+    private List<SelectInventoryViewModel> generateSelectInventoryViewModels(final List<Inventory> inventories) {
         return from(inventories).transform(new Function<Inventory, SelectInventoryViewModel>() {
             @Override
             public SelectInventoryViewModel apply(Inventory inventory) {
                 SelectInventoryViewModel selectInventoryViewModel = new SelectInventoryViewModel(inventory);
-
-                if (isDefaultInventoryDate && new DateTime(selectInventoryViewModel.getInventoryDate()).getDayOfMonth() == Period.DEFAULT_INVENTORY_DAY) {
-                    selectInventoryViewModel.setChecked(true);
-                }
-
                 for (Inventory comparedInventory : inventories) {
                     if (inventory == comparedInventory) continue;
                     String formattedInventoryDate = DateUtil.formatDate(inventory.getCreatedAt(), DateUtil.DB_DATE_FORMAT);

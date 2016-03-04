@@ -111,14 +111,14 @@ public class RnRFormViewModel {
         }
     }
 
-    public static RnRFormViewModel buildPreviousPeriodMissing(Date startDate, Date endDate) {
+    public static RnRFormViewModel buildMissedPeriod(Date startDate, Date endDate) {
         RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
         rnRFormViewModel.type = TYPE_MISSED_PERIOD;
         rnRFormViewModel.period = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDateWithoutDay(startDate), DateUtil.formatDateWithoutDay(endDate));
         return rnRFormViewModel;
     }
 
-    public static RnRFormViewModel buildPreviousMissedPeriod(String programCode, Date startDate, Date endDate) {
+    public static RnRFormViewModel buildFirstMissedPeriod(String programCode, Date startDate, Date endDate) {
         RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
         rnRFormViewModel.setProgramCode(programCode);
         rnRFormViewModel.type = TYPE_FIRST_MISSED_PERIOD;

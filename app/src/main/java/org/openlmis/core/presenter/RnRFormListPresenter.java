@@ -203,7 +203,7 @@ public class RnRFormListPresenter extends Presenter {
         DateTime inventoryBeginDate = periodService.getCurrentMonthInventoryBeginDate();
         int periodMissings = offsetMonth;
         for (int i = 0; i < periodMissings; i++) {
-            viewModels.add(i, RnRFormViewModel.buildPreviousPeriodMissing(inventoryBeginDate.toDate(), inventoryBeginDate.plusMonths(1).toDate()));
+            viewModels.add(i, RnRFormViewModel.buildMissedPeriod(inventoryBeginDate.toDate(), inventoryBeginDate.plusMonths(1).toDate()));
             inventoryBeginDate = inventoryBeginDate.minusMonths(1);
         }
 
@@ -217,7 +217,7 @@ public class RnRFormListPresenter extends Presenter {
 
         List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(nextPeriodInSchedule);
         if (physicalInventories.isEmpty()) {
-            viewModels.add(periodMissings, RnRFormViewModel.buildPreviousMissedPeriod(programCode, nextPeriodInSchedule.getBegin().toDate(), nextPeriodInSchedule.getEnd().toDate()));
+            viewModels.add(periodMissings, RnRFormViewModel.buildFirstMissedPeriod(programCode, nextPeriodInSchedule.getBegin().toDate(), nextPeriodInSchedule.getEnd().toDate()));
         } else {
             viewModels.add(new RnRFormViewModel(nextPeriodInSchedule, programCode, RnRFormViewModel.TYPE_INVENTORY_DONE));
         }

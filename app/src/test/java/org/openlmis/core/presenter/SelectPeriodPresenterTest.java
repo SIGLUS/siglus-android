@@ -118,9 +118,6 @@ public class SelectPeriodPresenterTest {
 
         assertThat(DateUtil.formatDate(inventoryViewModels.get(0).getInventoryDate(), DateUtil.DATE_TIME_FORMAT), is("2015-07-18 23:59:59"));
         assertThat(DateUtil.formatDate(inventoryViewModels.get(7).getInventoryDate(), DateUtil.DATE_TIME_FORMAT), is("2015-07-25 23:59:59"));
-
-        assertFalse(inventoryViewModels.get(0).isChecked());
-        assertTrue(inventoryViewModels.get(2).isChecked());
     }
 
     private Inventory generateInventoryWithDate(String formattedDate) {
