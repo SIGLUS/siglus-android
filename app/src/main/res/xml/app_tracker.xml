@@ -3,26 +3,7 @@
     <!-- End current session if app sleeps for a period of time -->
     <integer name="ga_sessionTimeout">300</integer>
 
-    <!-- Enable automatic Activity measurement -->
-    <bool name="ga_autoActivityTracking">true</bool>
-
     <!--  The property id associated with this analytics tracker -->
     <string name="ga_trackingId">UA-72363211-5</string>
-
-    <!--
-      See Project Structure -> Analytics -> Google Analytics -> Learn More
-      to learn more about configuring this file.
-    -->
-    <screenName name="org.openlmis.core.view.activity.HomeActivity">Home Screen</screenName>
-    <screenName name="org.openlmis.core.view.activity.InventoryActivity">Inventory Screen</screenName>
-    <screenName name="org.openlmis.core.view.activity.KitStockCardListActivity">Kit StockCard Overview Screen</screenName>
-    <screenName name="org.openlmis.core.view.activity.LoginActivity">Login Screen</screenName>
-    <screenName name="org.openlmis.core.view.activity.MMIARequisitionActivity">MMIA Requisition Screen</screenName>
-    <screenName name="org.openlmis.core.view.activity.VIARequisitionActivity">VIA Requisition Screen</screenName>
-    <screenName name="org.openlmis.core.view.activity.RnRFormListActivity">RnR Form History Screen</screenName>
-    <screenName name="org.openlmis.core.view.activity.StockCardListActivity">StockCard Overview Screen</screenName>
-    <screenName name="org.openlmis.core.view.activity.StockMovementActivity">StockCard Movement Screen</screenName>
-    <screenName name="org.openlmis.core.view.activity.StockMovementHistoryActivity">StockCard Movement History Screen</screenName>
-    <screenName name="org.openlmis.core.view.activity.ArchivedDrugsListActivity">Archived Drugs List Screen</screenName>
 
 </resources>

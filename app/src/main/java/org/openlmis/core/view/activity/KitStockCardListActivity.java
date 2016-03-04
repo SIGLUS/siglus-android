@@ -3,6 +3,8 @@ package org.openlmis.core.view.activity;
 import android.view.Menu;
 
 import org.openlmis.core.R;
+import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.view.fragment.KitStockCardListFragment;
 import org.openlmis.core.view.fragment.StockCardListFragment;
 
@@ -22,5 +24,11 @@ public class KitStockCardListActivity extends StockCardListActivity {
     protected void addMenus(Menu menu) {
         //kit stock overview should not have any menu items(search, add new product, archived drug)
         menu.clear();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.KitStockCardOverviewScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
     }
 }

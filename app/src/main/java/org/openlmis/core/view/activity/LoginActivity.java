@@ -35,7 +35,9 @@ import android.widget.TextView;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.User;
 import org.openlmis.core.presenter.LoginPresenter;
+import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.utils.InjectPresenter;
 
 import roboguice.inject.ContentView;
@@ -43,19 +45,24 @@ import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_login)
 public class LoginActivity extends BaseActivity implements LoginPresenter.LoginView, View.OnClickListener {
-
     @InjectView(R.id.tx_username)
     public EditText userName;
+
     @InjectView(R.id.tx_password)
     public EditText password;
+
     @InjectView(R.id.btn_login)
     public Button btnLogin;
+
     @InjectView(R.id.ly_username)
     public TextInputLayout lyUserName;
+
     @InjectView(R.id.ly_password)
     public TextInputLayout lyPassword;
+
     @InjectView(R.id.iv_visibility_pwd)
     public ImageView ivVisibilityPwd;
+
     @InjectPresenter(LoginPresenter.class)
     LoginPresenter presenter;
 
@@ -70,6 +77,17 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         }
 
         initUI();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        User latestUser = presenter.getLatestUser();
+        if (latestUser == null){
+            AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.LoginScreen.getScreenName(), "");
+        } else {
+            AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.LoginScreen.getScreenName(), latestUser.getFacilityName());
+        }
     }
 
     @Override
@@ -190,5 +208,4 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
         password.setSelection(password.getText().length());
     }
-
 }

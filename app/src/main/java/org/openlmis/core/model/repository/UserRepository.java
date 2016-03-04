@@ -73,7 +73,7 @@ public class UserRepository extends LMISRestManager {
         });
     }
 
-    public User getUserFromLocal(final User user) {
+    public User mapUserFromLocal(final User user) {
         List<User> users = null;
         try {
             users = dbUtil.withDao(User.class, new DbUtil.Operation<User, List<User>>() {
@@ -114,6 +114,21 @@ public class UserRepository extends LMISRestManager {
                 return dao.queryBuilder().where().eq("username", userName).query();
             }
         });
+    }
+
+    public User getLocalUser() {
+        User user = null;
+        try {
+            user = dbUtil.withDao(User.class, new DbUtil.Operation<User, User>() {
+                @Override
+                public User operate(Dao<User, String> dao) throws SQLException {
+                    return dao.queryBuilder().queryForFirst();
+                }
+            });
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 
     public interface NewCallback<T> {

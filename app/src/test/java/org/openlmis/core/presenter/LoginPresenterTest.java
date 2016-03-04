@@ -191,7 +191,7 @@ public class LoginPresenterTest {
     @Test
     public void shouldDoOfflineLoginWhenNoConnectionAndHasSyncedData() {
         appInject.setNetworkConnection(false);
-        when(userRepository.getUserFromLocal(any(User.class))).thenReturn(new User("user", "password"));
+        when(userRepository.mapUserFromLocal(any(User.class))).thenReturn(new User("user", "password"));
         when(mockActivity.needInitInventory()).thenReturn(false);
 
         SharedPreferenceMgr.getInstance().setLastMonthStockCardDataSynced(true);
@@ -200,7 +200,7 @@ public class LoginPresenterTest {
 
         presenter.startLogin("user", "password");
 
-        verify(userRepository).getUserFromLocal(any(User.class));
+        verify(userRepository).mapUserFromLocal(any(User.class));
         assertThat(UserInfoMgr.getInstance().getUser().getUsername()).isEqualTo("user");
 
         verify(mockActivity).loaded();
@@ -210,12 +210,12 @@ public class LoginPresenterTest {
     @Test
     public void shouldShowMessageWhenNoConnectionAndHasNotGetProducts() {
         appInject.setNetworkConnection(false);
-        when(userRepository.getUserFromLocal(any(User.class))).thenReturn(new User("user", "password"));
+        when(userRepository.mapUserFromLocal(any(User.class))).thenReturn(new User("user", "password"));
         when(mockActivity.needInitInventory()).thenReturn(false);
 
         presenter.startLogin("user", "password");
 
-        verify(userRepository).getUserFromLocal(any(User.class));
+        verify(userRepository).mapUserFromLocal(any(User.class));
         assertThat(UserInfoMgr.getInstance().getUser().getUsername()).isEqualTo("user");
 
         verify(mockActivity).loaded();
@@ -225,11 +225,11 @@ public class LoginPresenterTest {
     @Test
     public void shouldShowLoginFailErrorMsgWhenNoConnectionAndNoLocalCache() {
         appInject.setNetworkConnection(false);
-        when(userRepository.getUserFromLocal(any(User.class))).thenReturn(null);
+        when(userRepository.mapUserFromLocal(any(User.class))).thenReturn(null);
 
         presenter.startLogin("user", "password");
 
-        verify(userRepository).getUserFromLocal(any(User.class));
+        verify(userRepository).mapUserFromLocal(any(User.class));
 
         verify(mockActivity).loaded();
         verify(mockActivity).showInvalidAlert();

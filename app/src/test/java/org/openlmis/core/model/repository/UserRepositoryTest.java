@@ -52,7 +52,7 @@ public class UserRepositoryTest extends LMISRepositoryUnitTest {
         user.setFacilityName("Facility 1");
 
         userRepository.createOrUpdate(user);
-        User userSaved = userRepository.getUserFromLocal(new User("user", "123"));
+        User userSaved = userRepository.mapUserFromLocal(new User("user", "123"));
 
         assertThat(userSaved, notNullValue());
         assertThat(userSaved.getFacilityCode(), is("FC1"));

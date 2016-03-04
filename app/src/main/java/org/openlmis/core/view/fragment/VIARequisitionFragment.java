@@ -63,6 +63,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     @InjectView(R.id.requisition_form)
     ListView requisitionForm;
+
     @InjectView(R.id.product_name_list_view)
     ListView requisitionNameList;
 

@@ -22,6 +22,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import org.openlmis.core.R;
+import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.VIARequisitionFragment;
 
@@ -57,5 +59,11 @@ public class VIARequisitionActivity extends BaseActivity {
         intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, inventory);
         intent.putExtra(Constants.PARAM_IS_MISSED_PERIOD, isMissedPeriod);
         return intent;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.VIARequisitionScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
     }
 }

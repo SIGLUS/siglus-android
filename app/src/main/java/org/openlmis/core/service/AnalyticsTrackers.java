@@ -3,6 +3,7 @@ package org.openlmis.core.service;
 import android.content.Context;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Logger;
 import com.google.android.gms.analytics.Tracker;
 
@@ -44,6 +45,13 @@ public final class AnalyticsTrackers {
 
     public synchronized Tracker getDefault() {
         return mTracker;
+    }
+
+    public void sendScreenToGoogleAnalytics(String screenName, String facilityName) {
+        mTracker.setScreenName(screenName);
+        mTracker.send(new HitBuilders.ScreenViewBuilder()
+                .setCustomDimension(1, facilityName)
+                .build());
     }
 
 }

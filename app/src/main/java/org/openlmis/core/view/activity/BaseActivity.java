@@ -277,5 +277,29 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
                     .getWindowToken(), 0);
         }
     }
+
+    public enum ScreenName {
+        HomeScreen("Home Screen"),
+        InventoryScreen("Inventory Screen"),
+        KitStockCardOverviewScreen("Kit StockCard Overview Screen"),
+        LoginScreen("Login Screen"),
+        MMIARequisitionScreen("MMIA Requisition Screen"),
+        VIARequisitionScreen("VIA Requisition Screen"),
+        RnRFormHistoryScreen("RnR Form History Screen"),
+        StockCardOverviewScreen("StockCard Overview Screen"),
+        StockCardMovementScreen("StockCard Movement Screen"),
+        StockCardMovementHistoryScreen("StockCard Movement History Screen"),
+        ArchivedDrugsListScreen("Archived Drugs List Screen");
+
+        private final String screenName;
+
+        ScreenName(String ScreenName) {
+            this.screenName = ScreenName;
+        }
+
+        public String getScreenName() {
+            return this.screenName;
+        }
+    }
 }
 

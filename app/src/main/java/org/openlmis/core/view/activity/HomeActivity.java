@@ -38,6 +38,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
+import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
@@ -153,6 +154,11 @@ public class HomeActivity extends BaseActivity {
         startActivity(intent);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.HomeScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
+    }
 
     @Override
     protected void onResume() {

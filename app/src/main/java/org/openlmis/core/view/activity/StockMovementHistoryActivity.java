@@ -23,6 +23,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import org.openlmis.core.R;
+import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.utils.Constants;
 
 import roboguice.inject.ContentView;
@@ -41,6 +43,12 @@ public class StockMovementHistoryActivity extends BaseActivity {
         if (getIntent().getBooleanExtra(Constants.PARAM_IS_FROM_ARCHIVE, false) && getSupportActionBar() != null) {
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_white);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.StockCardMovementHistoryScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
     }
 
     @Override

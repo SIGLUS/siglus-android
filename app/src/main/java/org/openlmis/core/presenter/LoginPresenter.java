@@ -85,7 +85,7 @@ public class LoginPresenter extends Presenter {
     }
 
     private void authorizeAndLoginUserLocal(User user) {
-        User localUser = userRepository.getUserFromLocal(user);
+        User localUser = userRepository.mapUserFromLocal(user);
 
         if (localUser == null) {
             onLoginFailed();
@@ -227,6 +227,10 @@ public class LoginPresenter extends Presenter {
             view.goToHomePage();
         }
         hasGoneToNextPage = true;
+    }
+
+    public User getLatestUser() {
+        return userRepository.getLocalUser();
     }
 
     public interface LoginView extends BaseView {

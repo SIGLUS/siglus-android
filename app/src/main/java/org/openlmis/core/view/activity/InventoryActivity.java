@@ -31,8 +31,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.InventoryPresenter;
+import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
@@ -91,6 +93,12 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
         } else {
             initInitialInventoryUI();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.InventoryScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
     }
 
     @Override

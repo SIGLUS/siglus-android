@@ -45,7 +45,7 @@ public class ArchivedDrugsListActivityTest {
             }
         });
 
-        archivedListActivity = Robolectric.setupActivity(ArchivedDrugsListActivity.class);
+        archivedListActivity = Robolectric.buildActivity(ArchivedDrugsListActivity.class).create().get();
 
         Product product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setStrength("10mg").setType("VIA").build();
         stockCard = new StockCardBuilder()

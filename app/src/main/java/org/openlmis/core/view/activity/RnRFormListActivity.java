@@ -26,10 +26,12 @@ import android.support.v7.widget.RecyclerView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.presenter.RnRFormListPresenter;
+import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
@@ -202,5 +204,11 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
                 adapter.notifyDataSetChanged();
             }
         };
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.RnRFormHistoryScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
     }
 }
