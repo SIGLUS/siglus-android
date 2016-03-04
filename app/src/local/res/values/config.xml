@@ -5,6 +5,7 @@
     <integer name="sync_interval">3600</integer>
     <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.local</string>
 
+    <string name="ga_trackingId">UA-74647160-1</string>
 
     <string name="app_name">CHAI LMIS LOCAL</string>
 

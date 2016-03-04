@@ -4,6 +4,8 @@
     <integer name="sync_interval">3600</integer>
     <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.regression</string>
 
+    <string name="ga_trackingId">I am a track id</string>
+
     <string name="app_name">CHAI LMIS REGRESSION</string>
 
     <string-array name="medicine_adult">

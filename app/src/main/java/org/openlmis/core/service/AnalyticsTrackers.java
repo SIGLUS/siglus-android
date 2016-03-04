@@ -38,7 +38,8 @@ public final class AnalyticsTrackers {
     private AnalyticsTrackers(Context context) {
         Context mContext = context.getApplicationContext();
         GoogleAnalytics.getInstance(mContext).getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
-        mTracker = GoogleAnalytics.getInstance(mContext).newTracker(R.xml.app_tracker);
+        mTracker = GoogleAnalytics.getInstance(mContext).newTracker(mContext.getString(R.string.ga_trackingId));
+        mTracker.setSessionTimeout(300);
         mTracker.setAppVersion(BuildConfig.VERSION_NAME);
         mTracker.setAppId(BuildConfig.APPLICATION_ID);
     }

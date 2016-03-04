@@ -4,6 +4,7 @@
     <integer name="sync_interval">3600</integer>
     <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.qa</string>
 
+    <string name="ga_trackingId">UA-74647160-2</string>
 
     <string name="app_name">CHAI LMIS QA</string>
 
