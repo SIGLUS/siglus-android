@@ -35,6 +35,7 @@ public final class Constants {
     public static final String PARAM_IS_FROM_ARCHIVE = "isFromArchive";
     public static final String PARAM_IS_KIT = "isKit";
     public static final String PARAM_SELECTED_INVENTORY_DATE = "selectedInventoryDate";
+    public static final String PARAM_IS_MISSED_PERIOD = "isMissedPeriod";
 
     // Request Params
     public static final int REQUEST_FROM_STOCK_LIST_PAGE = 100;

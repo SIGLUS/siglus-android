@@ -48,6 +48,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     private SelectPeriodAdapter adapter;
     private SelectInventoryViewModel selectedInventory;
     private String programCode;
+    private boolean isMissedPeriod;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +101,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
                 }
                 Intent intent = new Intent();
                 intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, selectedInventory.getInventoryDate());
+                intent.putExtra(Constants.PARAM_IS_MISSED_PERIOD, isMissedPeriod);
                 setResult(RESULT_OK, intent);
                 finish();
             }
@@ -122,6 +124,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
 
         for (SelectInventoryViewModel selectInventoryViewModel : inventories) {
             if (selectInventoryViewModel.isChecked()) {
+                isMissedPeriod = true;
                 int position = inventories.indexOf(selectInventoryViewModel);
                 vgContainer.setItemChecked(position, true);
                 selectedInventory = adapter.getItem(position);

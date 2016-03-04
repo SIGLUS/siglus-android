@@ -98,7 +98,8 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
                 break;
             case Constants.REQUEST_SELECT_PERIOD_END:
                 Date periodEndDate = (Date) data.getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE);
-                createRequisition(periodEndDate);
+                boolean isMissedPeriod = data.getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false);
+                createRequisition(periodEndDate, isMissedPeriod);
                 break;
         }
     }
@@ -162,11 +163,11 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         }
     }
 
-    private void createRequisition(Date periodEndDate) {
+    private void createRequisition(Date periodEndDate, boolean isMissedPeriod) {
         if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
             startActivityForResult(MMIARequisitionActivity.getIntentToMe(this, periodEndDate), Constants.REQUEST_FROM_RNR_LIST_PAGE);
         } else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)) {
-            startActivityForResult(VIARequisitionActivity.getIntentToMe(this, periodEndDate), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+            startActivityForResult(VIARequisitionActivity.getIntentToMe(this, periodEndDate, isMissedPeriod), Constants.REQUEST_FROM_RNR_LIST_PAGE);
         }
     }
 

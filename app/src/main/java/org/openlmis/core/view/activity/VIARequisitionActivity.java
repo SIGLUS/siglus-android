@@ -49,8 +49,13 @@ public class VIARequisitionActivity extends BaseActivity {
     }
 
     public static Intent getIntentToMe(Context context, Date inventory) {
+        return getIntentToMe(context, inventory, false);
+    }
+
+    public static Intent getIntentToMe(Context context, Date inventory, boolean isMissedPeriod) {
         Intent intent = new Intent(context, VIARequisitionActivity.class);
         intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, inventory);
+        intent.putExtra(Constants.PARAM_IS_MISSED_PERIOD, isMissedPeriod);
         return intent;
     }
 }

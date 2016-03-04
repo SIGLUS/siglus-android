@@ -210,12 +210,23 @@ public class RnRFormListActivityTest {
 
     @Test
     public void shouldGoToRequisitionPageWhenInvokeOnActivityResultWithSelectPeriodRequestCode() throws Exception {
-        rnRFormListActivity.onActivityResult(Constants.REQUEST_SELECT_PERIOD_END, Activity.RESULT_OK, new Intent());
+        Intent data = new Intent();
+        Date inventoryDate = new Date();
+        data.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, inventoryDate);
+        data.putExtra(Constants.PARAM_IS_MISSED_PERIOD, true);
+
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE);
+        rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).withIntent(intent).create().get();
+
+        rnRFormListActivity.onActivityResult(Constants.REQUEST_SELECT_PERIOD_END, Activity.RESULT_OK, data);
 
         Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
 
         assertNotNull(nextStartedIntent);
-        assertEquals(nextStartedIntent.getComponent().getClassName(), MMIARequisitionActivity.class.getName());
+        assertEquals(nextStartedIntent.getComponent().getClassName(), VIARequisitionActivity.class.getName());
+
+        assertTrue(nextStartedIntent.getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false));
+        assertEquals(nextStartedIntent.getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE), inventoryDate);
     }
 
     @Test

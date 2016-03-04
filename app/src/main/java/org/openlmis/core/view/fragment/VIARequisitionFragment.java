@@ -115,6 +115,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     private long formId;
 
     private Date periodEndDate;
+    private boolean isMissedPeriod;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -122,6 +123,8 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
 
         periodEndDate = ((Date) getActivity().getIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
+
+        isMissedPeriod = getActivity().getIntent().getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false);
     }
 
 
@@ -192,6 +195,12 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         } else {
             vgContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
             actionPanel.setVisibility(View.VISIBLE);
+        }
+
+        if(isMissedPeriod){
+            requisitionForm.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        }else {
+            requisitionForm.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
         }
     }
 
