@@ -143,7 +143,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
                     rnrFormId = model.getId();
                     goToRequisitionPage(rnrFormId);
                     break;
-                case RnRFormViewModel.TYPE_MISSED_PERIOD:
+                case RnRFormViewModel.TYPE_FIRST_MISSED_PERIOD:
                     startActivityForResult(SelectPeriodActivity.getIntentToMe(RnRFormListActivity.this, model.getProgramCode()), Constants.REQUEST_SELECT_PERIOD_END);
                     break;
                 default:

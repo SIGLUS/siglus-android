@@ -135,7 +135,7 @@ public class RnRFormListActivityTest {
 
     @Test
     public void shouldStartSelectPeriodPageWhenBtnClickedWithTypeMissedPeriod() throws Exception {
-        RnRFormViewModel viewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_MISSED_PERIOD);
+        RnRFormViewModel viewModel = generateRnRFormViewModel("MMIA", RnRFormViewModel.TYPE_FIRST_MISSED_PERIOD);
         rnRFormListActivity.rnRFormItemClickListener.clickBtnView(viewModel);
 
         Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();

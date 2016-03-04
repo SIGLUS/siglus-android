@@ -220,11 +220,11 @@ public class RnRFormListPresenterTest {
 
         presenter.addPreviousPeriodMissedViewModels(viewModels, rnRForms);
         assertThat(viewModels.size()).isEqualTo(5);
-        assertThat(viewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
-        assertThat(viewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
-        assertThat(viewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
-        assertThat(viewModels.get(3).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
-        assertThat(viewModels.get(4).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+        assertThat(viewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+        assertThat(viewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+        assertThat(viewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+        assertThat(viewModels.get(3).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+        assertThat(viewModels.get(4).getType()).isEqualTo(RnRFormViewModel.TYPE_FIRST_MISSED_PERIOD);
     }
 
     @Test
@@ -241,10 +241,10 @@ public class RnRFormListPresenterTest {
         presenter.addPreviousPeriodMissedViewModels(viewModels, rnRForms);
 
         assertThat(viewModels.size()).isEqualTo(5);
-        assertThat(viewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
-        assertThat(viewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
-        assertThat(viewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
-        assertThat(viewModels.get(3).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
+        assertThat(viewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+        assertThat(viewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+        assertThat(viewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+        assertThat(viewModels.get(3).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
         assertThat(viewModels.get(4).getType()).isEqualTo(RnRFormViewModel.TYPE_INVENTORY_DONE);
     }
 
@@ -261,10 +261,10 @@ public class RnRFormListPresenterTest {
         presenter.addPreviousPeriodMissedViewModels(viewModels, rnRForms);
 
         assertThat(viewModels.size()).isEqualTo(4);
-        assertThat(viewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
-        assertThat(viewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
-        assertThat(viewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
-        assertThat(viewModels.get(3).getType()).isEqualTo(RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING);
+        assertThat(viewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+        assertThat(viewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+        assertThat(viewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+        assertThat(viewModels.get(3).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
     }
 
     private List<RnRForm> createRnRForms() {

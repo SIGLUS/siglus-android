@@ -41,8 +41,8 @@ public class RnRFormViewModel {
     public static final int TYPE_UNSYNCED_HISTORICAL = 50;
     public static final int TYPE_SYNCED_HISTORICAL = 60;
     public static final int TYPE_CANNOT_DO_MONTHLY_INVENTORY = 70;
-    public static final int TYPE_MISSED_PERIOD = 80;
-    public static final int TYPE_PREVIOUS_PERIOD_MISSING = 90;
+    public static final int TYPE_FIRST_MISSED_PERIOD = 80;
+    public static final int TYPE_MISSED_PERIOD = 90;
 
     int type;
     String syncedDate;
@@ -113,7 +113,7 @@ public class RnRFormViewModel {
 
     public static RnRFormViewModel buildPreviousPeriodMissing(Date startDate, Date endDate) {
         RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
-        rnRFormViewModel.type = TYPE_PREVIOUS_PERIOD_MISSING;
+        rnRFormViewModel.type = TYPE_MISSED_PERIOD;
         rnRFormViewModel.period = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDateWithoutDay(startDate), DateUtil.formatDateWithoutDay(endDate));
         return rnRFormViewModel;
     }
@@ -121,7 +121,7 @@ public class RnRFormViewModel {
     public static RnRFormViewModel buildPreviousMissedPeriod(String programCode, Date startDate, Date endDate) {
         RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
         rnRFormViewModel.setProgramCode(programCode);
-        rnRFormViewModel.type = TYPE_MISSED_PERIOD;
+        rnRFormViewModel.type = TYPE_FIRST_MISSED_PERIOD;
         rnRFormViewModel.period = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDateWithoutYear(startDate), DateUtil.formatDateWithoutDay(endDate));
         return rnRFormViewModel;
     }

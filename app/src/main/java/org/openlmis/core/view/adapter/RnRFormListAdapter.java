@@ -60,7 +60,7 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormViewHolder> 
 
         if (viewType == RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL
                 || (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change) && viewType == RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY)
-                || viewType == RnRFormViewModel.TYPE_PREVIOUS_PERIOD_MISSING) {
+                || viewType == RnRFormViewModel.TYPE_MISSED_PERIOD) {
             return new RnRFormViewHolder(inflater.inflate(R.layout.item_rnr_card_disable, parent, false), itemClickListener);
         }
 
