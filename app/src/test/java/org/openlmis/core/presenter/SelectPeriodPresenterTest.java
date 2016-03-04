@@ -6,7 +6,9 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Period;
@@ -69,7 +71,7 @@ public class SelectPeriodPresenterTest {
         when(inventoryRepository.queryPeriodInventory(any(Period.class))).thenReturn(inventories);
 
         TestSubscriber<List<SelectInventoryViewModel>> testSubscriber = new TestSubscriber<>();
-        selectPeriodPresenter=spy(selectPeriodPresenter);
+        selectPeriodPresenter = spy(selectPeriodPresenter);
         when(selectPeriodPresenter.getSubscriber()).thenReturn(testSubscriber);
 
         selectPeriodPresenter.loadData("MMIA");
@@ -94,13 +96,14 @@ public class SelectPeriodPresenterTest {
 
     @Test
     public void shouldGenerateDefaultInventoryViewModelsWhenThereIsNoInventoryDone() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
         when(inventoryRepository.queryPeriodInventory(any(Period.class))).thenReturn(new ArrayList<Inventory>());
         Period period = new Period(new DateTime("2015-06-18"), new DateTime("2015-07-20"));
         when(mockPeriodService.generatePeriod("MMIA", null)).thenReturn(period);
 
 
         TestSubscriber<List<SelectInventoryViewModel>> testSubscriber = new TestSubscriber<>();
-        selectPeriodPresenter=spy(selectPeriodPresenter);
+        selectPeriodPresenter = spy(selectPeriodPresenter);
         when(selectPeriodPresenter.getSubscriber()).thenReturn(testSubscriber);
 
         selectPeriodPresenter.loadData("MMIA");
@@ -113,8 +116,8 @@ public class SelectPeriodPresenterTest {
         List<SelectInventoryViewModel> inventoryViewModels = testSubscriber.getOnNextEvents().get(0);
         assertThat(inventoryViewModels.size(), is(8));
 
-        assertThat(DateUtil.formatDate(inventoryViewModels.get(0).getInventoryDate(), DateUtil.DATE_TIME_FORMAT),is("2015-07-18 23:59:59"));
-        assertThat(DateUtil.formatDate(inventoryViewModels.get(7).getInventoryDate(),DateUtil.DATE_TIME_FORMAT),is("2015-07-25 23:59:59"));
+        assertThat(DateUtil.formatDate(inventoryViewModels.get(0).getInventoryDate(), DateUtil.DATE_TIME_FORMAT), is("2015-07-18 23:59:59"));
+        assertThat(DateUtil.formatDate(inventoryViewModels.get(7).getInventoryDate(), DateUtil.DATE_TIME_FORMAT), is("2015-07-25 23:59:59"));
 
         assertFalse(inventoryViewModels.get(0).isChecked());
         assertTrue(inventoryViewModels.get(2).isChecked());
