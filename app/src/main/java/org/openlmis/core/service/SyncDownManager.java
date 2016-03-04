@@ -209,19 +209,15 @@ public class SyncDownManager {
     }
 
     private void fetchAndSaveProductsWithProgramsAndKits() throws LMISException {
-        try {
-            SyncDownLatestProductsResponse response = getSyncDownLatestProductResponse();
-            List<Product> productList = new ArrayList<>();
-            for (ProductAndSupportedPrograms productAndSupportedPrograms : response.getLatestProducts()) {
-                Product product = assignProgramFromResponseToProduct(productAndSupportedPrograms);
-                updateDeactivateProductNotifyList(product);
-                productList.add(product);
-            }
-            productRepository.batchCreateOrUpdateProducts(productList);
-            sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());
-        } catch (LMISException e) {
-            throw new LMISException(errorMessage(R.string.msg_sync_products_list_failed));
+        SyncDownLatestProductsResponse response = getSyncDownLatestProductResponse();
+        List<Product> productList = new ArrayList<>();
+        for (ProductAndSupportedPrograms productAndSupportedPrograms : response.getLatestProducts()) {
+            Product product = assignProgramFromResponseToProduct(productAndSupportedPrograms);
+            updateDeactivateProductNotifyList(product);
+            productList.add(product);
         }
+        productRepository.batchCreateOrUpdateProducts(productList);
+        sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());
     }
 
     protected void updateDeactivateProductNotifyList(Product product) throws LMISException {
