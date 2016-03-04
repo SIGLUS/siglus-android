@@ -255,6 +255,25 @@ public class StockRepository {
         });
     }
 
+    public StockMovementItem queryLastStockMovementItemBeforeDate(final StockCard stockCard, final Date endDate) throws LMISException {
+        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
+            @Override
+            public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException {
+                List<StockMovementItem> query = dao.queryBuilder()
+                        .orderBy("movementDate", true)
+                        .orderBy("createdTime", true)
+                        .where()
+                        .eq("stockCard_id", stockCard.getId())
+                        .and().lt("createdTime", endDate)
+                        .query();
+                if (query.isEmpty()) {
+                    return null;
+                }
+                return query.get(query.size() - 1);
+            }
+        });
+    }
+
     public List<StockMovementItem> queryStockItems(final StockCard stockCard, final Date startDate, final Date endDate) throws LMISException {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
             @Override
