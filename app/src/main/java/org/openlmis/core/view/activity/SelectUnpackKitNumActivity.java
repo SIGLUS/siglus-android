@@ -9,6 +9,8 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.adapter.UnpackNumAdapter;
 
@@ -17,7 +19,6 @@ import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_select_unpack_kit_number)
 public class SelectUnpackKitNumActivity extends BaseActivity {
-
     @InjectView(R.id.vg_unpack_num_container)
     protected GridView gridView;
 
@@ -69,6 +70,12 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
                 startActivityForResult(UnpackKitActivity.getIntentToMe(SelectUnpackKitNumActivity.this, productCode, unpackNum, kitName), Constants.REQUEST_UNPACK_KIT);
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.SelectUnpackKitNumberScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
     }
 
     @Override

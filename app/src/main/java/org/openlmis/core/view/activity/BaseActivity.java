@@ -289,7 +289,10 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
         StockCardOverviewScreen("StockCard Overview Screen"),
         StockCardMovementScreen("StockCard Movement Screen"),
         StockCardMovementHistoryScreen("StockCard Movement History Screen"),
-        ArchivedDrugsListScreen("Archived Drugs List Screen");
+        ArchivedDrugsListScreen("Archived Drugs List Screen"),
+        SelectPeriodScreen("Select Period Screen"),
+        SelectUnpackKitNumberScreen("Select Unpack Kit Number Screen"),
+        UnpackKitScreen("Uppack Kit Screen");
 
         private final String screenName;
 

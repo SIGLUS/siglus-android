@@ -11,7 +11,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.presenter.UnpackKitPresenter;
+import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.UnpackKitAdapter;
@@ -25,7 +27,6 @@ import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_kit_unpack)
 public class UnpackKitActivity extends BaseActivity implements UnpackKitPresenter.UnpackKitView {
-
     @InjectView(R.id.products_list)
     protected RecyclerView productListRecycleView;
 
@@ -42,8 +43,8 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
     private UnpackKitPresenter presenter;
 
     private String kitCode;
-    private UnpackKitAdapter mAdapter;
 
+    private UnpackKitAdapter mAdapter;
     @Override
     protected int getThemeRes() {
         return R.style.AppTheme_TEAL;
@@ -76,6 +77,12 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.UnpackKitScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
     }
 
     private void setTotal(int total) {

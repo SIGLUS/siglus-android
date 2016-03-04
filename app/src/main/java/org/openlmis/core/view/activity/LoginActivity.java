@@ -84,7 +84,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         super.onStart();
         User latestUser = presenter.getLatestUser();
         if (latestUser == null){
-            AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.LoginScreen.getScreenName(), "");
+            AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.LoginScreen.getScreenName(), "first time user login");
         } else {
             AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.LoginScreen.getScreenName(), latestUser.getFacilityName());
         }

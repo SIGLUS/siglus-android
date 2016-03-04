@@ -13,10 +13,12 @@ import android.widget.TextView;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.presenter.SelectPeriodPresenter;
+import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.SelectPeriodAdapter;
@@ -48,10 +50,10 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     SelectPeriodPresenter presenter;
 
     private SelectPeriodAdapter adapter;
+
     private SelectInventoryViewModel selectedInventory;
     private String programCode;
     private boolean isSetDefaultInventoryDate;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.programCode = getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE);
@@ -71,6 +73,12 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
             default:
                 return super.getThemeRes();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.SelectPeriodScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
     }
 
     private void init() {
