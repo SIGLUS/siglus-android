@@ -13,7 +13,6 @@ import android.widget.TextView;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
@@ -56,7 +55,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
 
     @Override
     protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.SelectPeriodScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
+        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.SelectPeriodScreen.getScreenName());
     }
 
     @Override

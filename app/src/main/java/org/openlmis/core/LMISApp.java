@@ -31,6 +31,7 @@ import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.network.NetworkConnectionManager;
 import org.openlmis.core.service.AnalyticsTrackers;
 
@@ -95,11 +96,11 @@ public class LMISApp extends Application {
         Crashlytics.logException(exception);
     }
 
-    public void sendScreenToGoogleAnalytics(String screenName, String facilityName) {
+    public void sendScreenToGoogleAnalytics(String screenName) {
         Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
         mTracker.setScreenName(screenName);
         mTracker.send(new HitBuilders.ScreenViewBuilder()
-                .setCustomDimension(1, facilityName)
+                .setCustomDimension(1, UserInfoMgr.getInstance().getFacilityName())
                 .build());
     }
 }

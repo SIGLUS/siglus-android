@@ -38,7 +38,6 @@ import com.google.inject.Inject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockMovementPresenter;
@@ -105,7 +104,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
     @Override
     protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.StockCardMovementScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
+        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.StockCardMovementScreen.getScreenName());
     }
 
     @Override

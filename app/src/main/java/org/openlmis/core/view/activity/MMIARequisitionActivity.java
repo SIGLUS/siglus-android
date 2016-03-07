@@ -23,7 +23,6 @@ import android.content.Intent;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.MMIARequisitionFragment;
 
@@ -36,7 +35,7 @@ public class MMIARequisitionActivity extends BaseActivity {
 
     @Override
     protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.MMIARequisitionScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
+        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.MMIARequisitionScreen.getScreenName());
     }
 
     @Override

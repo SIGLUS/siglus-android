@@ -24,7 +24,6 @@ import android.os.Bundle;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.utils.Constants;
 
 import roboguice.inject.ContentView;
@@ -36,7 +35,7 @@ public class StockMovementHistoryActivity extends BaseActivity {
 
     @Override
     protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.StockCardMovementHistoryScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
+        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.StockCardMovementHistoryScreen.getScreenName());
     }
 
     @Override

@@ -36,7 +36,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
-import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.presenter.LoginPresenter;
 import org.openlmis.core.utils.InjectPresenter;
 
@@ -85,7 +84,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
     @Override
     public void sendScreenToGoogleAnalyticsAfterLogin() {
-        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.LoginScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
+        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.LoginScreen.getScreenName());
     }
 
     @Override
