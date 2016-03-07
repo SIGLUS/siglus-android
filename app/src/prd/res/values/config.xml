@@ -5,6 +5,7 @@
     <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync</string>
 
     <string name="ga_trackingId">UA-72363211-5</string>
+    <bool name="ga_dryRun">false</bool>
 
     <string name="app_name">CHAI LMIS</string>
 

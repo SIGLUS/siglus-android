@@ -5,6 +5,7 @@
     <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync</string>
 
     <string name="ga_trackingId">I am a track id</string>
+    <bool name="ga_dryRun">true</bool>
 
     <string name="app_name">CHAI LMIS PRODSIM</string>
 

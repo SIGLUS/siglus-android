@@ -21,7 +21,6 @@ package org.openlmis.core;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.support.annotation.NonNull;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
@@ -33,8 +32,6 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.network.NetworkConnectionManager;
 import org.openlmis.core.service.AnalyticsTrackers;
-
-import java.util.ArrayList;
 
 import io.fabric.sdk.android.Fabric;
 import roboguice.RoboGuice;
@@ -60,18 +57,7 @@ public class LMISApp extends Application {
     protected void setupGoogleAnalytics() {
         AnalyticsTrackers.initialize(this);
 
-        if (!getGoogleAnalyticsEnvs().contains(BuildConfig.FLAVOR)) {
-            GoogleAnalytics.getInstance(this).setDryRun(true);
-        }
-    }
-
-    @NonNull
-    private ArrayList<String> getGoogleAnalyticsEnvs() {
-        ArrayList<String> googleAnalyticsEnvs = new ArrayList<>();
-        googleAnalyticsEnvs.add("prd");
-        googleAnalyticsEnvs.add("qa");
-        googleAnalyticsEnvs.add("local");
-        return googleAnalyticsEnvs;
+        GoogleAnalytics.getInstance(this).setDryRun(getContext().getResources().getBoolean(R.bool.ga_dryRun));
     }
 
     public static LMISApp getInstance() {
