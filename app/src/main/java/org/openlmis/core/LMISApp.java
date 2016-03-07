@@ -33,7 +33,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.network.NetworkConnectionManager;
-import org.openlmis.core.service.AnalyticsTrackers;
+import org.openlmis.core.googleAnalytics.AnalyticsTrackers;
 
 import io.fabric.sdk.android.Fabric;
 import roboguice.RoboGuice;
@@ -100,6 +100,15 @@ public class LMISApp extends Application {
         Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
         mTracker.setScreenName(screenName);
         mTracker.send(new HitBuilders.ScreenViewBuilder()
+                .setCustomDimension(1, UserInfoMgr.getInstance().getFacilityName())
+                .build());
+    }
+
+    public void trackerEvent(String category, String action, String label) {
+        Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
+        mTracker.send(new HitBuilders.EventBuilder(category, action)
+                .setLabel(label)
+                .setValue(1)
                 .setCustomDimension(1, UserInfoMgr.getInstance().getFacilityName())
                 .build());
     }

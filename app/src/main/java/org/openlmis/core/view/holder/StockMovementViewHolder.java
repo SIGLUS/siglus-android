@@ -30,10 +30,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.googleAnalytics.TrackerActions;
+import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
@@ -56,15 +59,32 @@ import roboguice.inject.InjectView;
 
 public class StockMovementViewHolder extends BaseViewHolder {
 
-    @InjectView(R.id.tx_date)TextView txMovementDate;
-    @InjectView(R.id.tx_reason)TextView txReason;
-    @InjectView(R.id.et_document_no)EditText etDocumentNo;
-    @InjectView(R.id.et_received)EditText etReceived;
-    @InjectView(R.id.et_negative_adjustment)EditText etNegativeAdjustment;
-    @InjectView(R.id.et_positive_adjustment)EditText etPositiveAdjustment;
-    @InjectView(R.id.et_issued)EditText etIssued;
-    @InjectView(R.id.tx_stock_on_hand)TextView txStockExistence;
-    @InjectView(R.id.tx_signature)TextView txSignature;
+    @InjectView(R.id.tx_date)
+    TextView txMovementDate;
+
+    @InjectView(R.id.tx_reason)
+    TextView txReason;
+
+    @InjectView(R.id.et_document_no)
+    EditText etDocumentNo;
+
+    @InjectView(R.id.et_received)
+    EditText etReceived;
+
+    @InjectView(R.id.et_negative_adjustment)
+    EditText etNegativeAdjustment;
+
+    @InjectView(R.id.et_positive_adjustment)
+    EditText etPositiveAdjustment;
+
+    @InjectView(R.id.et_issued)
+    EditText etIssued;
+
+    @InjectView(R.id.tx_stock_on_hand)
+    TextView txStockExistence;
+
+    @InjectView(R.id.tx_signature)
+    TextView txSignature;
 
     private Drawable editTextBackground;
     private StockMovementAdapter.MovementChangedListener movementChangeListener;
@@ -113,14 +133,12 @@ public class StockMovementViewHolder extends BaseViewHolder {
             txReason.setText(StringUtils.EMPTY);
         }
 
-
         setItemViewTextColor(model);
-
 
         if (model.isDraft()) {
             setInitialDraftStyle(model);
         } else {
-           itemView.setBackgroundColor(Color.TRANSPARENT);
+            itemView.setBackgroundColor(Color.TRANSPARENT);
         }
 
         addClickListeners(model, getPreviousMovementDate(stockCard));
@@ -197,6 +215,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
             public void onClick(View v) {
                 if (model.isDraft()) {
                     new MovementTypeDialog(context, new MovementSelectListener(model)).show();
+                    LMISApp.getInstance().trackerEvent(TrackerCategories.StockMovement.getString(), TrackerActions.SelectReason.getString(), "");
                 }
             }
         });
@@ -206,6 +225,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
             public void onClick(View v) {
                 if (model.isDraft()) {
                     showDatePickerDialog(model, previousMovementDate);
+                    LMISApp.getInstance().trackerEvent(TrackerCategories.StockMovement.getString(), TrackerActions.SelectMovementDate.getString(), "");
                 }
             }
         });
@@ -219,7 +239,6 @@ public class StockMovementViewHolder extends BaseViewHolder {
                 today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
 
         dialog.show();
-
     }
 
     private void addTextChangedListeners(StockMovementViewModel model, long currentStockOnHand) {
@@ -425,8 +444,13 @@ public class StockMovementViewHolder extends BaseViewHolder {
         private boolean validateStockMovementDate(Date previousMovementDate, Date chosenDate) {
             Calendar today = GregorianCalendar.getInstance();
 
-            if (previousMovementDate != null && previousMovementDate.after(chosenDate)) return false;
-            if (chosenDate.after(today.getTime())) return false;
+            if (previousMovementDate != null && previousMovementDate.after(chosenDate)) {
+                return false;
+            }
+
+            if (chosenDate.after(today.getTime())) {
+                return false;
+            }
 
             return true;
         }

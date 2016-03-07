@@ -40,6 +40,8 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.googleAnalytics.TrackerActions;
+import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.presenter.StockMovementPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
@@ -93,6 +95,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @Inject
     LayoutInflater layoutInflater;
 
+    private final String TRACKER_LABEL = "Movement Completed";
     private long stockId;
     private String stockName;
 
@@ -223,6 +226,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             StockMovementViewModel stockMovementViewModel = stockMovementAdapter.getEditableStockMovement();
             stockMovementViewModel.setSignature(sign);
             presenter.saveAndRefresh(stockMovementViewModel);
+            LMISApp.getInstance().trackerEvent(TrackerCategories.StockMovement.getString(), TrackerActions.SelectApprove.getString(), TRACKER_LABEL);
         }
     };
 
@@ -331,6 +335,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         switch (v.getId()) {
             case R.id.btn_complete:
                 presenter.submitStockMovement(stockMovementAdapter.getEditableStockMovement());
+                LMISApp.getInstance().trackerEvent(TrackerCategories.StockMovement.getString(), TrackerActions.SelectComplete.getString(), "");
                 break;
             case R.id.btn_cancel:
                 StockMovementViewHolder viewHolder = (StockMovementViewHolder) stockMovementList.getChildAt(stockMovementList.getChildCount() - 1).getTag();

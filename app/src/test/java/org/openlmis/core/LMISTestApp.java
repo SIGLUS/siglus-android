@@ -61,4 +61,8 @@ public class LMISTestApp extends LMISApp {
     @Override
     protected void setupGoogleAnalytics() {
     }
+
+    @Override
+    public void trackerEvent(String category, String action, String label) {
+    }
 }

@@ -1,4 +1,4 @@
-package org.openlmis.core.service;
+package org.openlmis.core.googleAnalytics;
 
 import android.content.Context;
 
