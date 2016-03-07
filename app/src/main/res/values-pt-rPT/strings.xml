@@ -256,4 +256,9 @@
     <string name="label_select_unpack_num">Quantos %1$s gostaria de desembalar?</string>
     <string name="title_select_unpack_num">Seleccione número de kits por desembalar</string>
     <string name="msg_select_unpack_num_warning">Por favor, Escolha um número de kits para desembalar</string>
+
+    <string name="app_update_suffix">atualizar</string>
+    <string name="update_available">atualização disponível</string>
+    <string name="select_to_install">Selecione a instalação</string>
+    <!-- update notification text-->
 </resources>
