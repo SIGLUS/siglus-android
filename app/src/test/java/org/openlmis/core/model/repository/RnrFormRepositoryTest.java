@@ -469,8 +469,10 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldInitRnrFormItemWithoutMovement() throws Exception {
         StockCard stockCard = new StockCard();
-        stockCard.setStockOnHand(100L);
         when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
+        StockMovementItem stockMovementItem = new StockMovementItem();
+        stockMovementItem.setStockOnHand(100L);
+        when(mockStockRepository.queryLastStockMovementItemBeforeDate(any(StockCard.class), any(Date.class))).thenReturn(stockMovementItem);
 
         RnrFormItem rnrFormItemByPeriod = rnrFormRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
 

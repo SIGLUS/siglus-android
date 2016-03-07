@@ -56,16 +56,12 @@ import java.util.Date;
 import roboguice.inject.InjectView;
 
 public class MMIARequisitionFragment extends BaseFragment implements MMIARequisitionPresenter.MMIARequisitionView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
-
     @InjectView(R.id.rnr_form_list)
     protected MMIARnrForm rnrFormList;
-
     @InjectView(R.id.regime_list)
     protected MMIARegimeList regimeListView;
-
     @InjectView(R.id.mmia_info_list)
     protected MMIAInfoList mmiaInfoListView;
-
     @InjectView(R.id.btn_complete)
     protected Button btnComplete;
 
