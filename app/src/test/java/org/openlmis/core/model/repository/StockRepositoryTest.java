@@ -349,13 +349,13 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     public void shouldGetStockMovementsCreatedBetweenTwoDatesExclusiveOfBeginDate() throws LMISException {
         stockCard.setStockOnHand(100);
         stockRepository.save(stockCard);
-        createMovementItem(ISSUE, 1, stockCard, DateUtil.parseString("2020-01-21 13:00:00", DATE_TIME_FORMAT), new DateTime("2020-01-21").toDate(), false);
-        createMovementItem(RECEIVE, 2, stockCard, DateUtil.parseString("2020-02-01 11:00:00", DATE_TIME_FORMAT) , new DateTime("2020-01-28").toDate(), false);
-        createMovementItem(ISSUE, 3, stockCard, DateUtil.parseString("2020-02-22 20:00:00", DATE_TIME_FORMAT), new DateTime("2020-02-18").toDate(), false);
-        createMovementItem(ISSUE, 4, stockCard, DateUtil.parseString("2020-02-25 13:00:00", DATE_TIME_FORMAT), new DateTime("2020-02-22").toDate(), false);
+        StockMovementItem movementItem = createMovementItem(ISSUE, 1, stockCard, DateUtil.parseString("2020-01-21 13:00:00", DATE_TIME_FORMAT), DateUtil.parseString("2020-01-21 13:00:00", DATE_TIME_FORMAT), false);
+        createMovementItem(RECEIVE, 2, stockCard, DateUtil.parseString("2020-02-01 11:00:00", DATE_TIME_FORMAT), DateUtil.parseString("2020-02-01 11:00:00", DATE_TIME_FORMAT), false);
+        createMovementItem(ISSUE, 3, stockCard, DateUtil.parseString("2020-02-22 20:00:00", DATE_TIME_FORMAT), DateUtil.parseString("2020-02-22 20:00:00", DATE_TIME_FORMAT), false);
+        createMovementItem(ISSUE, 4, stockCard, DateUtil.parseString("2020-02-25 13:00:00", DATE_TIME_FORMAT), DateUtil.parseString("2020-02-25 13:00:00", DATE_TIME_FORMAT), false);
 
         List<StockMovementItem> stockMovementItems = stockRepository.queryStockItemsByPeriodDates(stockCard,
-                DateUtil.parseString("2020-01-21 13:00:00", DATE_TIME_FORMAT), DateUtil.parseString("2020-02-22 20:00:00", DATE_TIME_FORMAT));
+                movementItem.getCreatedTime(), DateUtil.parseString("2020-02-22 20:00:00", DATE_TIME_FORMAT));
 
         Assert.assertThat(stockMovementItems.size(), is(2));
     }
@@ -431,11 +431,13 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldQueryEarliestStockMovementItemCreatedTime() throws Exception {
         createMovementItem(ISSUE, 100, stockCard, new DateTime("2017-01-01").toDate(), new DateTime("2017-01-01").toDate(), false);
-        createMovementItem(ISSUE, 100, stockCard, new DateTime("2016-12-25").toDate(), new DateTime("2016-12-25").toDate(), false);
+        DateTime dateTime = new DateTime("2016-12-25");
+        Date expectedDate = new DateTime().withDate(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth()).toDate();
+        createMovementItem(ISSUE, 100, stockCard, expectedDate, expectedDate, false);
         createMovementItem(ISSUE, 100, stockCard, new DateTime("2017-03-02").toDate(), new DateTime("2017-03-02").toDate(), false);
 
         Date earliestDate = stockRepository.queryEarliestStockMovementDate();
-        Assert.assertThat(earliestDate, is(new DateTime("2016-12-25").toDate()));
+        Assert.assertThat(DateUtil.cutTimeStamp(new DateTime(earliestDate)), is(DateUtil.cutTimeStamp(new DateTime(expectedDate))));
     }
 
     @Test
@@ -445,7 +447,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         StockMovementItem lastItem = createMovementItem(ISSUE, 100, stockCard, new DateTime("2017-03-02").toDate(), new DateTime("2017-03-02").toDate(), false);
         StockMovementItem stockMovementItem = stockRepository.queryLastStockMovementItemBeforeDate(stockCard, new DateTime("2018-01-01").toDate());
 
-        Assert.assertThat(stockMovementItem.getId(),is(lastItem.getId()));
+        Assert.assertThat(stockMovementItem.getId(), is(lastItem.getId()));
     }
 
     private void saveDraftInventory() throws LMISException {
