@@ -414,6 +414,11 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     }
 
     @Override
+    public boolean isMissedRnR() {
+        return false;
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_save:

@@ -110,7 +110,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         if (draftVIA != null) {
             return draftVIA;
         }
-        return rnrFormRepository.initRnrForm(periodEndDate);
+        return rnrFormRepository.initRnrForm(periodEndDate,view.isMissedRnR());
     }
 
     protected void saveRequisition() {
@@ -301,5 +301,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         void showSaveErrorMessage();
 
         void showCompleteErrorMessage();
+
+        boolean isMissedRnR();
     }
 }

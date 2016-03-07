@@ -198,7 +198,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             actionPanel.setVisibility(View.VISIBLE);
         }
 
-        if(isMissedPeriod){
+        if(isMissedPeriod||presenter.getRnRForm().isMissed()){
             requisitionForm.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         }else {
             requisitionForm.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
@@ -341,6 +341,11 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @Override
     public boolean isHistoryForm() {
         return formId != 0;
+    }
+
+    @Override
+    public boolean isMissedRnR() {
+        return isMissedPeriod;
     }
 
     protected void onProcessButtonClick() {

@@ -47,7 +47,9 @@ public class RnRForm extends BaseModel {
     public enum STATUS {
         DRAFT,
         SUBMITTED,
-        AUTHORIZED
+        AUTHORIZED,
+        DRAFT_MISSED,
+        SUBMITTED_MISSED,
     }
 
     @ForeignCollectionField()
@@ -101,11 +103,15 @@ public class RnRForm extends BaseModel {
     private Date submittedTime;
 
     public boolean isDraft() {
-        return getStatus() == STATUS.DRAFT;
+        return getStatus() == STATUS.DRAFT || getStatus() == STATUS.DRAFT_MISSED;
+    }
+
+    public boolean isMissed() {
+        return getStatus() == STATUS.DRAFT_MISSED || getStatus() == STATUS.SUBMITTED_MISSED;
     }
 
     public boolean isSubmitted() {
-        return getStatus() == STATUS.SUBMITTED;
+        return getStatus() == STATUS.SUBMITTED || getStatus() == STATUS.SUBMITTED_MISSED;
     }
 
     public boolean isAuthorized() {
