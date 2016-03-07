@@ -13,9 +13,9 @@ public class SelectInventoryViewModel {
 
     private Date inventoryDate;
     private boolean showTime;
+    private boolean isChecked;
 
     public SelectInventoryViewModel(Inventory inventory) {
         inventoryDate = inventory.getCreatedAt();
     }
-
 }

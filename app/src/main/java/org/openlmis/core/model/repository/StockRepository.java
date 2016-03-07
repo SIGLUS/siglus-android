@@ -255,7 +255,7 @@ public class StockRepository {
         });
     }
 
-    public StockMovementItem queryLastStockMovementItemBeforeDate(final StockCard stockCard, final Date endDate) throws LMISException {
+    public StockMovementItem queryLastStockMovementItemBeforeAndEqualDate(final StockCard stockCard, final Date endDate) throws LMISException {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
             @Override
             public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException {
@@ -264,7 +264,7 @@ public class StockRepository {
                         .orderBy("createdTime", true)
                         .where()
                         .eq("stockCard_id", stockCard.getId())
-                        .and().lt("createdTime", endDate)
+                        .and().le("createdTime", endDate)
                         .query();
                 if (query.isEmpty()) {
                     return null;

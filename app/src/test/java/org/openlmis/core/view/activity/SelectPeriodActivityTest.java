@@ -60,7 +60,7 @@ public class SelectPeriodActivityTest {
 
         Intent intent = new Intent();
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, "MMIA");
-        intent.putExtra(SelectPeriodActivity.PARAM_IS_SET_DEFAULT_INVENTORY_DATE, true);
+        intent.putExtra(Constants.PARAM_IS_MISSED_PERIOD, true);
         selectPeriodActivity = Robolectric.buildActivity(SelectPeriodActivity.class).withIntent(intent).create().get();
 
         List<SelectInventoryViewModel> selectInventoryViewModels = Arrays.asList(
@@ -101,10 +101,10 @@ public class SelectPeriodActivityTest {
 
     @Test
     public void shouldCheckedDefaultInventoryDay() throws Exception {
-        inventoryList.add(new SelectInventoryViewModel(generateInventoryWithDate(new DateTime("2016-01-20").toDate())));
+        inventoryList.get(1).setChecked(true);
 
         selectPeriodActivity.refreshDate(inventoryList);
-        assertThat(selectPeriodActivity.vgContainer.getCheckedItemPosition(), is(3));
+        assertThat(selectPeriodActivity.vgContainer.getCheckedItemPosition(), is(1));
     }
 
     private Inventory generateInventoryWithDate(Date date) {

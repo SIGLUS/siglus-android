@@ -13,7 +13,6 @@ import android.widget.TextView;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.model.Period;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.presenter.SelectPeriodPresenter;
@@ -30,7 +29,6 @@ import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_select_period)
 public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPresenter.SelectPeriodView {
-    public static final String PARAM_IS_SET_DEFAULT_INVENTORY_DATE = "isSetDefaultInventoryDate";
 
     @InjectView(R.id.tv_select_period_instruction)
     protected TextView tvInstruction;
@@ -51,7 +49,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
 
     private SelectInventoryViewModel selectedInventory;
     private String programCode;
-    private boolean isSetDefaultInventoryDate;
+    private boolean isMissedPeriod;
 
     @Override
     protected void sendScreenToGoogleAnalytics() {
@@ -61,7 +59,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.programCode = getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE);
-        isSetDefaultInventoryDate = getIntent().getBooleanExtra(PARAM_IS_SET_DEFAULT_INVENTORY_DATE, false);
+        isMissedPeriod = getIntent().getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false);
         super.onCreate(savedInstanceState);
 
         init();
@@ -110,7 +108,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
                 }
                 Intent intent = new Intent();
                 intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, selectedInventory.getInventoryDate());
-                intent.putExtra(Constants.PARAM_IS_MISSED_PERIOD, isSetDefaultInventoryDate);
+                intent.putExtra(Constants.PARAM_IS_MISSED_PERIOD, isMissedPeriod);
                 setResult(RESULT_OK, intent);
                 finish();
             }
@@ -125,25 +123,20 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
         return getIntentToMe(context, programCode, false);
     }
 
-    public static Intent getIntentToMe(Context context, String programCode, boolean isSetDefaultInventoryDate) {
+    public static Intent getIntentToMe(Context context, String programCode, boolean isMissedPeriod) {
         Intent intent = new Intent(context, SelectPeriodActivity.class);
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, programCode);
-        intent.putExtra(PARAM_IS_SET_DEFAULT_INVENTORY_DATE, isSetDefaultInventoryDate);
+        intent.putExtra(Constants.PARAM_IS_MISSED_PERIOD, isMissedPeriod);
         return intent;
     }
 
     @Override
     public void refreshDate(List<SelectInventoryViewModel> inventories) {
         adapter.refreshDate(inventories);
-        if (isSetDefaultInventoryDate) {
-            setDefaultInventoryDate(inventories);
-        }
-    }
 
-    private void setDefaultInventoryDate(List<SelectInventoryViewModel> inventories) {
-        for (SelectInventoryViewModel viewModel : inventories) {
-            if (new DateTime(viewModel.getInventoryDate()).getDayOfMonth() == Period.DEFAULT_INVENTORY_DAY) {
-                int position = inventories.indexOf(viewModel);
+        for (SelectInventoryViewModel selectInventoryViewModel : inventories) {
+            if (selectInventoryViewModel.isChecked()) {
+                int position = inventories.indexOf(selectInventoryViewModel);
                 vgContainer.setItemChecked(position, true);
                 selectedInventory = adapter.getItem(position);
             }

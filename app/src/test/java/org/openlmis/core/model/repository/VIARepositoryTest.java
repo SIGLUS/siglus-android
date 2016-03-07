@@ -66,7 +66,7 @@ public class VIARepositoryTest {
         Product product1 = new ProductBuilder().setIsKit(true).build();
         Product product2 = new ProductBuilder().setIsKit(true).build();
         when(productRepository.listActiveProducts(IsKit.Yes)).thenReturn(newArrayList(product1, product2));
-        when(mockStockRepository.queryLastStockMovementItemBeforeDate(any(StockCard.class), any(Date.class))).thenReturn(new StockMovementItem());
+        when(mockStockRepository.queryLastStockMovementItemBeforeAndEqualDate(any(StockCard.class), any(Date.class))).thenReturn(new StockMovementItem());
 
         List<RnrFormItem> rnrFormItemList = viaRepository.generateRnrFormItems(form);
         assertThat(rnrFormItemList.size(), is(3));

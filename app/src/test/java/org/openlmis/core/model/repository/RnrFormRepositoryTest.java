@@ -472,7 +472,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
         StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setStockOnHand(100L);
-        when(mockStockRepository.queryLastStockMovementItemBeforeDate(any(StockCard.class), any(Date.class))).thenReturn(stockMovementItem);
+        when(mockStockRepository.queryLastStockMovementItemBeforeAndEqualDate(any(StockCard.class), any(Date.class))).thenReturn(stockMovementItem);
 
         RnrFormItem rnrFormItemByPeriod = rnrFormRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
 

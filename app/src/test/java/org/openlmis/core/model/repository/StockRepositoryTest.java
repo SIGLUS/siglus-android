@@ -445,7 +445,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         createMovementItem(ISSUE, 100, stockCard, new DateTime("2017-01-01").toDate(), new DateTime("2017-01-01").toDate(), false);
         createMovementItem(ISSUE, 100, stockCard, new DateTime("2016-12-25").toDate(), new DateTime("2016-12-25").toDate(), false);
         StockMovementItem lastItem = createMovementItem(ISSUE, 100, stockCard, new DateTime("2017-03-02").toDate(), new DateTime("2017-03-02").toDate(), false);
-        StockMovementItem stockMovementItem = stockRepository.queryLastStockMovementItemBeforeDate(stockCard, new DateTime("2018-01-01").toDate());
+        StockMovementItem stockMovementItem = stockRepository.queryLastStockMovementItemBeforeAndEqualDate(stockCard, new DateTime("2018-01-01").toDate());
 
         Assert.assertThat(stockMovementItem.getId(), is(lastItem.getId()));
     }

@@ -359,7 +359,7 @@ public class RnrFormRepository {
         rnrFormItem.setAdjustment(0);
         rnrFormItem.setCalculatedOrderQuantity(0L);
 
-        StockMovementItem stockMovementItem = stockRepository.queryLastStockMovementItemBeforeDate(stockCard, startDate);
+        StockMovementItem stockMovementItem = stockRepository.queryLastStockMovementItemBeforeAndEqualDate(stockCard, startDate);
         rnrFormItem.setInitialAmount(stockMovementItem.getStockOnHand());
         rnrFormItem.setInventory(stockMovementItem.getStockOnHand());
     }
