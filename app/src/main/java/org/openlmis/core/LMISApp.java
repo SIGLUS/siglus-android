@@ -50,9 +50,13 @@ public class LMISApp extends Application {
 
         RoboGuice.getInjector(this).injectMembersWithoutViews(this);
         setupFabric();
-        AnalyticsTrackers.initialize(this);
+        setupGoogleAnalytics();
 
         instance = this;
+    }
+
+    protected void setupGoogleAnalytics() {
+        AnalyticsTrackers.initialize(this);
     }
 
     public static LMISApp getInstance() {
