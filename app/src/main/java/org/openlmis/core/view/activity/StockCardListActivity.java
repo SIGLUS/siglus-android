@@ -45,8 +45,10 @@ public class StockCardListActivity extends SearchBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        stockCardFragment = createFragment();
-        getFragmentManager().beginTransaction().replace(R.id.stock_card_container, stockCardFragment).commit();
+        if (savedInstanceState == null) {
+            stockCardFragment = createFragment();
+            getFragmentManager().beginTransaction().replace(R.id.stock_card_container, stockCardFragment).commit();
+        }
     }
 
     @Override
