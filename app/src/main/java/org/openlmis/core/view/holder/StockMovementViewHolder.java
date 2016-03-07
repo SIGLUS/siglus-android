@@ -191,22 +191,17 @@ public class StockMovementViewHolder extends BaseViewHolder {
         editText.setBackground(null);
     }
 
-
     private void removeTextChangeListeners(StockMovementViewModel model, long currentStockOnHand) {
-        EditTextWatcher watcher = new EditTextWatcher(etReceived, model, currentStockOnHand);
-        etReceived.removeTextChangedListener(watcher);
 
-        EditTextWatcher watcher1 = new EditTextWatcher(etNegativeAdjustment, model, currentStockOnHand);
-        etNegativeAdjustment.removeTextChangedListener(watcher1);
+        etReceived.removeTextChangedListener(new EditTextWatcher(etReceived, model, currentStockOnHand));
 
-        EditTextWatcher watcher2 = new EditTextWatcher(etPositiveAdjustment, model, currentStockOnHand);
-        etPositiveAdjustment.removeTextChangedListener(watcher2);
+        etNegativeAdjustment.removeTextChangedListener(new EditTextWatcher(etNegativeAdjustment, model, currentStockOnHand));
 
-        EditTextWatcher watcher3 = new EditTextWatcher(etIssued, model, currentStockOnHand);
-        etIssued.removeTextChangedListener(watcher3);
+        etPositiveAdjustment.removeTextChangedListener(new EditTextWatcher(etPositiveAdjustment, model, currentStockOnHand));
 
-        EditTextWatcher watcher4 = new EditTextWatcher(etDocumentNo, model, currentStockOnHand);
-        etDocumentNo.removeTextChangedListener(watcher4);
+        etIssued.removeTextChangedListener(new EditTextWatcher(etIssued, model, currentStockOnHand));
+
+        etDocumentNo.removeTextChangedListener(new EditTextWatcher(etDocumentNo, model, currentStockOnHand));
     }
 
     private void addClickListeners(final StockMovementViewModel model, final Date previousMovementDate) {
