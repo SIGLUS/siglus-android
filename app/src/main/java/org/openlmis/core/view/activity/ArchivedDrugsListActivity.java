@@ -40,7 +40,7 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements Stoc
 
     @Override
     protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.ArchivedDrugsListScreen.getScreenName());
+        LMISApp.getInstance().trackerScreen(ScreenName.ArchivedDrugsListScreen.getScreenName());
     }
 
     @Override

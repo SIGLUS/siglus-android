@@ -81,7 +81,7 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
 
     @Override
     protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.InventoryScreen.getScreenName());
+        LMISApp.getInstance().trackerScreen(ScreenName.InventoryScreen.getScreenName());
     }
 
     @Override

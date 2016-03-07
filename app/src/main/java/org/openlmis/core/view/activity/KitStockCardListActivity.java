@@ -16,7 +16,7 @@ public class KitStockCardListActivity extends StockCardListActivity {
 
     @Override
     protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.KitStockCardOverviewScreen.getScreenName());
+        LMISApp.getInstance().trackerScreen(ScreenName.KitStockCardOverviewScreen.getScreenName());
     }
 
     @Override

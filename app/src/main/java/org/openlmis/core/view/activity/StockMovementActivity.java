@@ -104,7 +104,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
     @Override
     protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.StockCardMovementScreen.getScreenName());
+        LMISApp.getInstance().trackerScreen(ScreenName.StockCardMovementScreen.getScreenName());
     }
 
     @Override

@@ -36,7 +36,7 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
 
     @Override
     protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.SelectUnpackKitNumberScreen.getScreenName());
+        LMISApp.getInstance().trackerScreen(ScreenName.SelectUnpackKitNumberScreen.getScreenName());
     }
 
     @Override

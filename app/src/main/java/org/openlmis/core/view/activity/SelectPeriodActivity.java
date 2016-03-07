@@ -53,7 +53,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
 
     @Override
     protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.SelectPeriodScreen.getScreenName());
+        LMISApp.getInstance().trackerScreen(ScreenName.SelectPeriodScreen.getScreenName());
     }
 
     @Override

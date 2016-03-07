@@ -51,7 +51,7 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
 
     @Override
     protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.UnpackKitScreen.getScreenName());
+        LMISApp.getInstance().trackerScreen(ScreenName.UnpackKitScreen.getScreenName());
     }
 
     @Override

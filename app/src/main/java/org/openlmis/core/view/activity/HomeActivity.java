@@ -77,7 +77,7 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.HomeScreen.getScreenName());
+        LMISApp.getInstance().trackerScreen(ScreenName.HomeScreen.getScreenName());
     }
 
     @Override

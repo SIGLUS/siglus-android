@@ -35,7 +35,7 @@ public class StockMovementHistoryActivity extends BaseActivity {
 
     @Override
     protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.StockCardMovementHistoryScreen.getScreenName());
+        LMISApp.getInstance().trackerScreen(ScreenName.StockCardMovementHistoryScreen.getScreenName());
     }
 
     @Override

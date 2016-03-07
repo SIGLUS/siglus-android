@@ -35,7 +35,7 @@ import roboguice.inject.ContentView;
 public class VIARequisitionActivity extends BaseActivity {
     @Override
     protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.VIARequisitionScreen.getScreenName());
+        LMISApp.getInstance().trackerScreen(ScreenName.VIARequisitionScreen.getScreenName());
     }
 
     @Override

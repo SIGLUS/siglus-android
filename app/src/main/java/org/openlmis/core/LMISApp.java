@@ -96,7 +96,7 @@ public class LMISApp extends Application {
         Crashlytics.logException(exception);
     }
 
-    public void sendScreenToGoogleAnalytics(String screenName) {
+    public void trackerScreen(String screenName) {
         Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
         mTracker.setScreenName(screenName);
         mTracker.send(new HitBuilders.ScreenViewBuilder()

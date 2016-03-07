@@ -40,7 +40,7 @@ public class StockCardListActivity extends SearchBarActivity {
 
     @Override
     protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.StockCardOverviewScreen.getScreenName());
+        LMISApp.getInstance().trackerScreen(ScreenName.StockCardOverviewScreen.getScreenName());
     }
 
     @Override

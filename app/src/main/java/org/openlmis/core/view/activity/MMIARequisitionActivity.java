@@ -35,7 +35,7 @@ public class MMIARequisitionActivity extends BaseActivity {
 
     @Override
     protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.MMIARequisitionScreen.getScreenName());
+        LMISApp.getInstance().trackerScreen(ScreenName.MMIARequisitionScreen.getScreenName());
     }
 
     @Override

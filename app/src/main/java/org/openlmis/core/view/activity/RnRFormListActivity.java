@@ -66,7 +66,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
 
     @Override
     protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.RnRFormHistoryScreen.getScreenName());
+        LMISApp.getInstance().trackerScreen(ScreenName.RnRFormHistoryScreen.getScreenName());
     }
 
     @Override
