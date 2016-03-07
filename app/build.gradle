@@ -70,6 +70,18 @@ android {
         }
     }
 
+    //the following code will change release apk file names to: {applicationId}-{versionCode}-release.apk
+    //this is needed for in-app upgrade to work, because it's how the upgrade server matches package names
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk') && outputFile.name.contains("-release")) {
+                def fileName = "${applicationId}-${versionCode}-release.apk"
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
