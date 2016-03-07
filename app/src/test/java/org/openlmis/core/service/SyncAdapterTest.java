@@ -29,11 +29,13 @@ public class SyncAdapterTest {
     private SyncUpManager mockSyncUpManager;
     private SharedPreferenceMgr sharedPreferenceMgr;
     private SyncDownManager mockSyncDownManager;
+    private UpgradeManager upgradeManager;
 
     @Before
     public void setUp() throws Exception {
         mockSyncUpManager = mock(SyncUpManager.class);
         mockSyncDownManager = mock(SyncDownManager.class);
+        upgradeManager = mock(UpgradeManager.class);
         sharedPreferenceMgr = new SharedPreferenceMgr(RuntimeEnvironment.application);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         syncAdapter = new SyncAdapter(RuntimeEnvironment.application, true);
@@ -123,11 +125,18 @@ public class SyncAdapterTest {
         assertEquals(0, lastRnrFormSyncedTimestamp);
     }
 
+    @Test
+    public void shouldTriggerUpgrade() throws Exception {
+        syncAdapter.onPerformSync(null, null, null, null, null);
+        verify(upgradeManager).triggerUpgrade();
+    }
+
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
             bind(SyncUpManager.class).toInstance(mockSyncUpManager);
             bind(SyncDownManager.class).toInstance(mockSyncDownManager);
+            bind(UpgradeManager.class).toInstance(upgradeManager);
         }
     }
 }

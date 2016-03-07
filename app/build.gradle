@@ -188,7 +188,7 @@ dependencies {
         transitive = true
     }
     compile 'net.danlew:android.joda:2.9.1'
-    compile 'com.autoupdateapk:autoupdateapk:1.0.3'
+    compile 'com.autoupdateapk:autoupdateapk:1.0.4'
     //this line above is from: https://github.com/cuipengfei/android-auto-updater-client, we can update source and republish it if we need to
     testCompile 'junit:junit:4.12'
     testCompile 'org.hamcrest:hamcrest-all:1.3'

@@ -47,6 +47,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     SyncDownManager syncDownManager;
 
     @Inject
+    UpgradeManager upgradeManager;
+
+    @Inject
     SharedPreferenceMgr sharedPreferenceMgr;
 
     Context context;
@@ -65,6 +68,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             return;
         }
         Log.d("SyncAdapter", "===> Syncing Data to server");
+        upgradeManager.triggerUpgrade();
         triggerSync();
     }
 
