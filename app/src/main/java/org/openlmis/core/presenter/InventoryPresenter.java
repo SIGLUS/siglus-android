@@ -185,10 +185,14 @@ public class InventoryPresenter extends Presenter {
             for (DraftInventory draftInventory : draftList) {
                 if (model.getStockCardId() == draftInventory.getStockCard().getId()) {
                     model.initExpiryDates(draftInventory.getExpireDates());
-                    model.setQuantity(String.valueOf(draftInventory.getQuantity()));
+                    model.setQuantity(formatQuantity(draftInventory.getQuantity()));
                 }
             }
         }
+    }
+
+    private String formatQuantity(Long quantity) {
+        return quantity == null ? "" : quantity.toString();
     }
 
     protected void initStockCards(List<InventoryViewModel> list) {

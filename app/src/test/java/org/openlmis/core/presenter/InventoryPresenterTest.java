@@ -414,6 +414,25 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         assertThat(inventoryViewModels.get(1).getExpiryDates().get(0), is("11/02/2015"));
     }
 
+    @Test
+    public void shouldRestoreDraftInventoryWithEmptyQuantity() throws Exception {
+
+        ArrayList<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
+
+        ArrayList<DraftInventory> draftInventories = new ArrayList<>();
+        DraftInventory draftInventory = new DraftInventory();
+        stockCard.setId(9);
+        draftInventory.setStockCard(stockCard);
+        draftInventory.setQuantity(null);
+        draftInventory.setExpireDates("11/10/2015");
+        draftInventories.add(draftInventory);
+
+        when(stockRepositoryMock.listDraftInventory()).thenReturn(draftInventories);
+
+        inventoryPresenter.restoreDraftInventory(inventoryViewModels);
+        assertThat(inventoryViewModels.get(0).getQuantity(), is(""));
+    }
+
     private ArrayList<InventoryViewModel> getStockCardViewModels() {
         ArrayList<InventoryViewModel> inventoryViewModels = new ArrayList<>();
         inventoryViewModels.add(buildStockCardWithOutDraft(9, "11", null));
