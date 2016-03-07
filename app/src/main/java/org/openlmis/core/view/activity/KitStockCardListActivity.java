@@ -2,9 +2,9 @@ package org.openlmis.core.view.activity;
 
 import android.view.Menu;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.view.fragment.KitStockCardListFragment;
 import org.openlmis.core.view.fragment.StockCardListFragment;
 
@@ -13,6 +13,11 @@ public class KitStockCardListActivity extends StockCardListActivity {
     @Override
     protected StockCardListFragment createFragment() {
         return new KitStockCardListFragment();
+    }
+
+    @Override
+    protected void sendScreenToGoogleAnalytics() {
+        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.KitStockCardOverviewScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
     }
 
     @Override
@@ -26,9 +31,4 @@ public class KitStockCardListActivity extends StockCardListActivity {
         menu.clear();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.KitStockCardOverviewScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
-    }
 }

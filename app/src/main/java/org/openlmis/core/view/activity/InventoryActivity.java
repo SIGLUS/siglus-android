@@ -30,11 +30,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.InventoryPresenter;
-import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
@@ -81,6 +81,11 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
     private boolean isAddNewDrug;
 
     @Override
+    protected void sendScreenToGoogleAnalytics() {
+        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.InventoryScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         isPhysicalInventory = getIntent().getBooleanExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, false);
         isAddNewDrug = getIntent().getBooleanExtra(Constants.PARAM_IS_ADD_NEW_DRUG, false);
@@ -93,12 +98,6 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
         } else {
             initInitialInventoryUI();
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.InventoryScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
     }
 
     @Override

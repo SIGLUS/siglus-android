@@ -24,7 +24,8 @@ import android.content.res.Configuration;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
-import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -49,15 +50,9 @@ public class LMISApp extends Application {
 
         RoboGuice.getInjector(this).injectMembersWithoutViews(this);
         setupFabric();
-        setupGoogleAnalytics();
-
-        instance = this;
-    }
-
-    protected void setupGoogleAnalytics() {
         AnalyticsTrackers.initialize(this);
 
-        GoogleAnalytics.getInstance(this).setDryRun(getContext().getResources().getBoolean(R.bool.ga_dryRun));
+        instance = this;
     }
 
     public static LMISApp getInstance() {
@@ -94,5 +89,13 @@ public class LMISApp extends Application {
 
     public void logErrorOnFabric(LMISException exception) {
         Crashlytics.logException(exception);
+    }
+
+    public void sendScreenToGoogleAnalytics(String screenName, String facilityName) {
+        Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
+        mTracker.setScreenName(screenName);
+        mTracker.send(new HitBuilders.ScreenViewBuilder()
+                .setCustomDimension(1, facilityName)
+                .build());
     }
 }

@@ -22,9 +22,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.utils.Constants;
 
 import roboguice.inject.ContentView;
@@ -35,6 +35,11 @@ public class StockMovementHistoryActivity extends BaseActivity {
     private boolean isKit;
 
     @Override
+    protected void sendScreenToGoogleAnalytics() {
+        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.StockCardMovementHistoryScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         isKit = getIntent().getBooleanExtra(Constants.PARAM_IS_KIT, false);
         super.onCreate(savedInstanceState);
@@ -43,12 +48,6 @@ public class StockMovementHistoryActivity extends BaseActivity {
         if (getIntent().getBooleanExtra(Constants.PARAM_IS_FROM_ARCHIVE, false) && getSupportActionBar() != null) {
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_white);
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.StockCardMovementHistoryScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
     }
 
     @Override

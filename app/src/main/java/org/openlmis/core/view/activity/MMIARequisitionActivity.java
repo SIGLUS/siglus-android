@@ -21,9 +21,9 @@ package org.openlmis.core.view.activity;
 import android.content.Context;
 import android.content.Intent;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.MMIARequisitionFragment;
 
@@ -33,6 +33,11 @@ import roboguice.inject.ContentView;
 
 @ContentView(R.layout.activity_mmia_requisition)
 public class MMIARequisitionActivity extends BaseActivity {
+
+    @Override
+    protected void sendScreenToGoogleAnalytics() {
+        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.MMIARequisitionScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
+    }
 
     @Override
     protected int getThemeRes() {
@@ -56,9 +61,4 @@ public class MMIARequisitionActivity extends BaseActivity {
         return intent;
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.MMIARequisitionScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
-    }
 }

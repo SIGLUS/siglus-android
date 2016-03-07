@@ -3,7 +3,6 @@ package org.openlmis.core.service;
 import android.content.Context;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Logger;
 import com.google.android.gms.analytics.Tracker;
 
@@ -37,6 +36,7 @@ public final class AnalyticsTrackers {
      */
     private AnalyticsTrackers(Context context) {
         Context mContext = context.getApplicationContext();
+        GoogleAnalytics.getInstance(mContext).setDryRun(mContext.getResources().getBoolean(R.bool.ga_dryRun));
         GoogleAnalytics.getInstance(mContext).getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
         mTracker = GoogleAnalytics.getInstance(mContext).newTracker(mContext.getString(R.string.ga_trackingId));
         mTracker.setSessionTimeout(300);
@@ -46,13 +46,6 @@ public final class AnalyticsTrackers {
 
     public synchronized Tracker getDefault() {
         return mTracker;
-    }
-
-    public void sendScreenToGoogleAnalytics(String screenName, String facilityName) {
-        mTracker.setScreenName(screenName);
-        mTracker.send(new HitBuilders.ScreenViewBuilder()
-                .setCustomDimension(1, facilityName)
-                .build());
     }
 
 }

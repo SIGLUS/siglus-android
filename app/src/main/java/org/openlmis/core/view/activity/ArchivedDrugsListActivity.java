@@ -6,11 +6,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockCardPresenter;
-import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.ArchivedListAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
@@ -40,16 +40,15 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements Stoc
     }
 
     @Override
+    protected void sendScreenToGoogleAnalytics() {
+        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.ArchivedDrugsListScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         initUI();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.ArchivedDrugsListScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
     }
 
     private void initUI() {

@@ -24,9 +24,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.StockCardListFragment;
 
@@ -38,6 +38,11 @@ public class StockCardListActivity extends SearchBarActivity {
     protected static final int MENU_ID_ADD_NEW_DRUG = 100;
     protected static final int MENU_ID_ARCHIVE_LIST = 200;
     protected StockCardListFragment stockCardFragment;
+
+    @Override
+    protected void sendScreenToGoogleAnalytics() {
+        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.StockCardOverviewScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,13 +70,6 @@ public class StockCardListActivity extends SearchBarActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.StockCardOverviewScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
     }
 
     @Override

@@ -162,6 +162,8 @@ public class LoginPresenter extends Presenter {
         view.clearErrorAlerts();
 
         syncDownManager.syncDownServerData(getSyncSubscriber());
+
+        view.sendScreenToGoogleAnalyticsAfterLogin();
     }
 
     public void onLoginFailed() {
@@ -250,5 +252,7 @@ public class LoginPresenter extends Presenter {
         void showPasswordEmpty();
 
         void clearErrorAlerts();
+
+        void sendScreenToGoogleAnalyticsAfterLogin();
     }
 }

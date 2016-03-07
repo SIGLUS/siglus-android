@@ -33,11 +33,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
-import org.openlmis.core.model.User;
+import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.presenter.LoginPresenter;
-import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.utils.InjectPresenter;
 
 import roboguice.inject.ContentView;
@@ -80,14 +80,12 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        User latestUser = presenter.getLatestUser();
-        if (latestUser == null){
-            AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.LoginScreen.getScreenName(), "first time user login");
-        } else {
-            AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.LoginScreen.getScreenName(), latestUser.getFacilityName());
-        }
+    protected void sendScreenToGoogleAnalytics() {
+    }
+
+    @Override
+    public void sendScreenToGoogleAnalyticsAfterLogin() {
+        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.LoginScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
     }
 
     @Override
@@ -132,7 +130,6 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         startActivity(intent);
         finish();
     }
-
 
     public void clearPassword() {
         password.setText(StringUtils.EMPTY);

@@ -42,7 +42,6 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockMovementPresenter;
-import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
@@ -105,6 +104,11 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     private boolean isKit;
 
     @Override
+    protected void sendScreenToGoogleAnalytics() {
+        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.StockCardMovementScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         stockId = getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
         stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
@@ -129,12 +133,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             ToastUtil.show(R.string.msg_db_error);
             finish();
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.StockCardMovementScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
     }
 
     @Override

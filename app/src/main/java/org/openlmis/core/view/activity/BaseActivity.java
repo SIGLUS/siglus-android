@@ -106,7 +106,10 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
     protected void onStart() {
         super.onStart();
         presenter.onStart();
+        sendScreenToGoogleAnalytics();
     }
+
+    protected abstract void sendScreenToGoogleAnalytics();
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {

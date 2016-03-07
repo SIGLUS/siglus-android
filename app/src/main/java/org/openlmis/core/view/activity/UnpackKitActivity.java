@@ -10,10 +10,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.presenter.UnpackKitPresenter;
-import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.UnpackKitAdapter;
@@ -51,6 +51,11 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
     }
 
     @Override
+    protected void sendScreenToGoogleAnalytics() {
+        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.UnpackKitScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -77,12 +82,6 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
                 }
             }
         });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.UnpackKitScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
     }
 
     private void setTotal(int total) {

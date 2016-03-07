@@ -38,7 +38,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
-import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
@@ -75,6 +74,11 @@ public class HomeActivity extends BaseActivity {
     SyncService syncService;
 
     private boolean exitPressedOnce = false;
+
+    @Override
+    protected void sendScreenToGoogleAnalytics() {
+        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.HomeScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,12 +156,6 @@ public class HomeActivity extends BaseActivity {
         Intent intent = new Intent(this, RnRFormListActivity.class);
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE);
         startActivity(intent);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.HomeScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
     }
 
     @Override

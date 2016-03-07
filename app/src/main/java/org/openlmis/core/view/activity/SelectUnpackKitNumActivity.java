@@ -8,9 +8,9 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.UserInfoMgr;
-import org.openlmis.core.service.AnalyticsTrackers;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.adapter.UnpackNumAdapter;
 
@@ -34,6 +34,11 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
     private UnpackNumAdapter adapter;
 
     private static final String PARAM_KIT_SOH = "param_kit_soh";
+
+    @Override
+    protected void sendScreenToGoogleAnalytics() {
+        LMISApp.getInstance().sendScreenToGoogleAnalytics(ScreenName.SelectUnpackKitNumberScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,12 +75,6 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
                 startActivityForResult(UnpackKitActivity.getIntentToMe(SelectUnpackKitNumActivity.this, productCode, unpackNum, kitName), Constants.REQUEST_UNPACK_KIT);
             }
         });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        AnalyticsTrackers.getInstance().sendScreenToGoogleAnalytics(ScreenName.SelectUnpackKitNumberScreen.getScreenName(), UserInfoMgr.getInstance().getFacilityName());
     }
 
     @Override
