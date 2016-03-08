@@ -78,7 +78,7 @@ public class SelectPeriodPresenterTest {
         testSubscriber.awaitTerminalEvent();
 
         testSubscriber.assertNoErrors();
-        verify(mockPeriodService).generatePeriod("MMIA", null);
+        verify(mockPeriodService).generateNextPeriod("MMIA", null);
         verify(inventoryRepository).queryPeriodInventory(any(Period.class));
         assertThat(testSubscriber.getOnNextEvents().get(0).size(), is(3));
         assertTrue(testSubscriber.getOnNextEvents().get(0).get(0).isShowTime());
@@ -99,7 +99,7 @@ public class SelectPeriodPresenterTest {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
         when(inventoryRepository.queryPeriodInventory(any(Period.class))).thenReturn(new ArrayList<Inventory>());
         Period period = new Period(new DateTime("2015-06-18"), new DateTime("2015-07-20"));
-        when(mockPeriodService.generatePeriod("MMIA", null)).thenReturn(period);
+        when(mockPeriodService.generateNextPeriod("MMIA", null)).thenReturn(period);
 
 
         TestSubscriber<List<SelectInventoryViewModel>> testSubscriber = new TestSubscriber<>();
@@ -110,7 +110,7 @@ public class SelectPeriodPresenterTest {
         testSubscriber.awaitTerminalEvent();
 
         testSubscriber.assertNoErrors();
-        verify(mockPeriodService).generatePeriod("MMIA", null);
+        verify(mockPeriodService).generateNextPeriod("MMIA", null);
         verify(inventoryRepository).queryPeriodInventory(any(Period.class));
 
         List<SelectInventoryViewModel> inventoryViewModels = testSubscriber.getOnNextEvents().get(0);

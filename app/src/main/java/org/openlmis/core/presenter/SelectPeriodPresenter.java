@@ -50,7 +50,7 @@ public class SelectPeriodPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super List<SelectInventoryViewModel>> subscriber) {
                 try {
-                    Period periodInSchedule = periodService.generatePeriod(programCode, null);
+                    Period periodInSchedule = periodService.generateNextPeriod(programCode, null);
                     List<Inventory> inventories = inventoryRepository.queryPeriodInventory(periodInSchedule);
                     boolean isDefaultIventoryDate = false;
                     if (inventories.isEmpty() && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {

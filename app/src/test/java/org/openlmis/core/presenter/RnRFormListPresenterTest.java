@@ -144,7 +144,7 @@ public class RnRFormListPresenterTest {
         ((LMISTestApp) RuntimeEnvironment.application).setCurrentTimeMillis(dateFebFourteen);
         when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
         when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(DateUtil.generateRnRFormPeriodBy(new Date()).previous().getBegin().toDate(), DateUtil.DATE_TIME_FORMAT));
-        when(periodService.generatePeriod("ESS_MEDS", null)).thenReturn(new Period(new DateTime(dateJanTwentySix), new DateTime(dateFebTwentyOne)));
+        when(periodService.generateNextPeriod("ESS_MEDS", null)).thenReturn(new Period(new DateTime(dateJanTwentySix), new DateTime(dateFebTwentyOne)));
 
         presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
 
@@ -162,7 +162,7 @@ public class RnRFormListPresenterTest {
         ((LMISTestApp) RuntimeEnvironment.application).setCurrentTimeMillis(dateFebEighteen);
         when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
         when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(DateUtil.generateRnRFormPeriodBy(new Date()).previous().getBegin().toDate(), DateUtil.DATE_TIME_FORMAT));
-        when(periodService.generatePeriod("ESS_MEDS", null)).thenReturn(new Period(new DateTime(dateJanTwentySix), new DateTime(dateFebTwentyOne)));
+        when(periodService.generateNextPeriod("ESS_MEDS", null)).thenReturn(new Period(new DateTime(dateJanTwentySix), new DateTime(dateFebTwentyOne)));
 
         presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
 

@@ -30,6 +30,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
 public class PeriodServiceTest {
@@ -61,9 +62,9 @@ public class PeriodServiceTest {
         RnRForm previousRnrForm = new RnRForm();
         previousRnrForm.setProgram(programMMIA);
         previousRnrForm.setPeriodEnd(DateUtil.parseString("2020-10-18", DateUtil.DB_DATE_FORMAT));
-        when(mockRnrFormRepository.queryLastAuthorizedRnr(programMMIA)).thenReturn(previousRnrForm);
+        when(mockRnrFormRepository.list(programMMIA.getProgramCode())).thenReturn(newArrayList(previousRnrForm));
 
-        Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
+        Period period = periodService.generateNextPeriod(programMMIA.getProgramCode(), null);
         assertThat(period.getBegin().toDate(), is(previousRnrForm.getPeriodEnd()));
         assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(11));
     }
@@ -74,7 +75,7 @@ public class PeriodServiceTest {
 
         when(mockStockRepository.queryEarliestStockMovementDate()).thenReturn(new DateTime("2016-02-17").toDate());
 
-        Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
+        Period period = periodService.generateNextPeriod(programMMIA.getProgramCode(), null);
         assertThat(period.getBegin(), is(new DateTime("2016-01-21")));
         assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(2));
     }
@@ -85,7 +86,7 @@ public class PeriodServiceTest {
 
         when(mockStockRepository.queryEarliestStockMovementDate()).thenReturn(DateUtil.parseString("2016-02-18 13:00:00", DateUtil.DATE_TIME_FORMAT));
 
-        Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
+        Period period = periodService.generateNextPeriod(programMMIA.getProgramCode(), null);
         
         assertThat(period.getBegin(), is(new DateTime(DateUtil.parseString("2016-02-18 00:00:00", DateUtil.DATE_TIME_FORMAT))));
         assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(3));
@@ -97,7 +98,7 @@ public class PeriodServiceTest {
 
         when(mockStockRepository.queryEarliestStockMovementDate()).thenReturn(new DateTime("2016-02-26").toDate());
 
-        Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
+        Period period = periodService.generateNextPeriod(programMMIA.getProgramCode(), null);
         assertThat(period.getBegin(), is(new DateTime("2016-02-21")));
         assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(3));
     }
@@ -111,7 +112,7 @@ public class PeriodServiceTest {
         DateTime nextPeriodEnd = new DateTime(DateUtil.parseString("2015-02-20", DateUtil.DB_DATE_FORMAT));
         Period nextPeriodInSchedule = new Period(nextPeriodBegin, nextPeriodEnd);
 
-        doReturn(nextPeriodInSchedule).when(periodService).generatePeriod("P1", null);
+        doReturn(nextPeriodInSchedule).when(periodService).generateNextPeriod("P1", null);
         assertTrue(periodService.hasMissedPeriod("P1"));
     }
 
@@ -124,7 +125,7 @@ public class PeriodServiceTest {
         DateTime nextPeriodEnd = new DateTime(DateUtil.parseString("2015-02-20", DateUtil.DB_DATE_FORMAT));
         Period nextPeriodInSchedule = new Period(nextPeriodBegin, nextPeriodEnd);
 
-        doReturn(nextPeriodInSchedule).when(periodService).generatePeriod("P1", null);
+        doReturn(nextPeriodInSchedule).when(periodService).generateNextPeriod("P1", null);
 
         assertFalse(periodService.hasMissedPeriod("P1"));
     }
@@ -137,9 +138,22 @@ public class PeriodServiceTest {
         DateTime nextPeriodBegin = new DateTime(DateUtil.parseString("2015-01-21", DateUtil.DB_DATE_FORMAT));
         DateTime nextPeriodEnd = new DateTime(DateUtil.parseString("2015-02-20", DateUtil.DB_DATE_FORMAT));
         Period nextPeriodInSchedule = new Period(nextPeriodBegin, nextPeriodEnd);
-        doReturn(nextPeriodInSchedule).when(periodService).generatePeriod("P1", null);
+        doReturn(nextPeriodInSchedule).when(periodService).generateNextPeriod("P1", null);
 
         assertThat(periodService.getMissedPeriodOffsetMonth("P1"), is(4));
+    }
+
+    @Test
+    public void shouldGetOffsetPeriodMonthWhenHasNoMissedPeriod() throws Exception {
+        periodService = spy(periodService);
+
+        LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-05-17 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
+        DateTime nextPeriodBegin = new DateTime(DateUtil.parseString("2015-04-21", DateUtil.DB_DATE_FORMAT));
+        DateTime nextPeriodEnd = new DateTime(DateUtil.parseString("2015-05-20", DateUtil.DB_DATE_FORMAT));
+        Period nextPeriodInSchedule = new Period(nextPeriodBegin, nextPeriodEnd);
+        doReturn(nextPeriodInSchedule).when(periodService).generateNextPeriod("P1", null);
+
+        assertThat(periodService.getMissedPeriodOffsetMonth("P1"), is(0));
     }
 
     @Test
@@ -150,7 +164,7 @@ public class PeriodServiceTest {
         DateTime nextPeriodBegin = new DateTime(DateUtil.parseString("2015-01-21", DateUtil.DB_DATE_FORMAT));
         DateTime nextPeriodEnd = new DateTime(DateUtil.parseString("2015-02-20", DateUtil.DB_DATE_FORMAT));
         Period nextPeriodInSchedule = new Period(nextPeriodBegin, nextPeriodEnd);
-        doReturn(nextPeriodInSchedule).when(periodService).generatePeriod("P1", null);
+        doReturn(nextPeriodInSchedule).when(periodService).generateNextPeriod("P1", null);
 
         assertThat(periodService.getMissedPeriodOffsetMonth("P1"), is(1));
     }
@@ -161,7 +175,7 @@ public class PeriodServiceTest {
 
         when(mockStockRepository.queryEarliestStockMovementDate()).thenReturn(new DateTime("2016-01-06").toDate());
 
-        Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
+        Period period = periodService.generateNextPeriod(programMMIA.getProgramCode(), null);
         assertThat(period.getBegin(), is(new DateTime("2015-12-21")));
         assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(1));
     }
@@ -172,7 +186,7 @@ public class PeriodServiceTest {
 
         when(mockStockRepository.queryEarliestStockMovementDate()).thenReturn(new DateTime("2015-12-19").toDate());
 
-        Period period = periodService.generatePeriod(programMMIA.getProgramCode(), null);
+        Period period = periodService.generateNextPeriod(programMMIA.getProgramCode(), null);
         assertThat(period.getBegin(), is(new DateTime("2015-12-19")));
         assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(1));
     }

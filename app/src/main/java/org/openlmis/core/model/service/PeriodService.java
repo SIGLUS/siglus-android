@@ -6,7 +6,6 @@ import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -15,6 +14,7 @@ import org.openlmis.core.utils.DateUtil;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class PeriodService {
 
@@ -27,14 +27,14 @@ public class PeriodService {
     @Inject
     StockRepository stockRepository;
 
-    public Period generatePeriod(String programCode, Date physicalInventoryDate) throws LMISException {
-        Program program = programRepository.queryByCode(programCode);
-        RnRForm lastRnR = rnrFormRepository.queryLastAuthorizedRnr(program);
+    public Period generateNextPeriod(String programCode, Date physicalInventoryDate) throws LMISException {
+        List<RnRForm> rnRForms = rnrFormRepository.list(programCode);
 
-        if (lastRnR == null) {
+        if (rnRForms.isEmpty()) {
             return generatePeriodBasedOnDefaultDates(physicalInventoryDate);
         }
 
+        RnRForm lastRnR = rnRForms.get(rnRForms.size() - 1);
         return generatePeriodBasedOnPreviousRnr(lastRnR, physicalInventoryDate);
     }
 
@@ -90,7 +90,7 @@ public class PeriodService {
     }
 
     public boolean hasMissedPeriod(String programCode) throws LMISException {
-        DateTime nextPeriodInScheduleEnd = generatePeriod(programCode, null).getEnd();
+        DateTime nextPeriodInScheduleEnd = generateNextPeriod(programCode, null).getEnd();
 
         DateTime lastInventoryDateForNextPeriodInSchedule = nextPeriodInScheduleEnd
                 .withDate(nextPeriodInScheduleEnd.getYear(),
@@ -101,7 +101,7 @@ public class PeriodService {
     }
 
     public int getMissedPeriodOffsetMonth(String programCode) throws LMISException {
-        DateTime nextPeriodInScheduleBegin = generatePeriod(programCode, null).getBegin();
+        DateTime nextPeriodInScheduleBegin = generateNextPeriod(programCode, null).getBegin();
 
         DateTime currentMonthInventoryBeginDate;
         currentMonthInventoryBeginDate = getCurrentMonthInventoryBeginDate();

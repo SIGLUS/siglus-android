@@ -132,7 +132,7 @@ public class RnRFormListPresenter extends Presenter {
 
     protected Period generatePeriod() throws LMISException {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
-            return periodService.generatePeriod(programCode, null);
+            return periodService.generateNextPeriod(programCode, null);
         } else {
             return DateUtil.generateRnRFormPeriodBy(new Date());
         }

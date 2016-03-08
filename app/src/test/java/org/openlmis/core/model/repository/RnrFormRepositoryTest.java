@@ -515,31 +515,12 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldInitRnrUsingPeriodReturnedByPeriodService() throws Exception {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
-        when(mockPeriodService.generatePeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime(), new DateTime()));
+        when(mockPeriodService.generateNextPeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime(), new DateTime()));
         rnrFormRepository.programCode = "MMIA";
 
         rnrFormRepository.initRnrForm(null, false);
-        verify(mockPeriodService).generatePeriod(rnrFormRepository.programCode, null);
+        verify(mockPeriodService).generateNextPeriod(rnrFormRepository.programCode, null);
     }
-
-    @Test
-    public void shouldReturnLastRnRBasedOnProgram() throws Exception {
-        Program program = new Program();
-        RnRForm form = new RnRForm();
-        form.setProgram(program);
-        form.setPeriodBegin(new Date());
-        form.setStatus(RnRForm.STATUS.AUTHORIZED);
-        rnrFormRepository.create(form);
-        RnRForm lastRnr = new RnRForm();
-        lastRnr.setProgram(program);
-        lastRnr.setPeriodBegin(new Date());
-        lastRnr.setStatus(RnRForm.STATUS.AUTHORIZED);
-        rnrFormRepository.create(lastRnr);
-
-        RnRForm rnRForm = rnrFormRepository.queryLastAuthorizedRnr(program);
-        assertThat(rnRForm.getPeriodBegin(), is(lastRnr.getPeriodBegin()));
-    }
-
 
     public class MyTestModule extends AbstractModule {
         @Override

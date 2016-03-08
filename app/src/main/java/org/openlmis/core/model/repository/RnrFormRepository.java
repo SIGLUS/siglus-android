@@ -93,7 +93,7 @@ public class RnrFormRepository {
 
         RnRForm form;
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
-            form = RnRForm.init(program, periodService.generatePeriod(programCode, periodEndDate));
+            form = RnRForm.init(program, periodService.generateNextPeriod(programCode, periodEndDate));
         } else {
             form = RnRForm.init(program, DateUtil.today());
         }
@@ -462,15 +462,5 @@ public class RnrFormRepository {
             e.reportToFabric();
         }
         return false;
-    }
-
-    public RnRForm queryLastAuthorizedRnr(final Program program) throws LMISException {
-        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
-            @Override
-            public RnRForm operate(Dao<RnRForm, String> dao) throws SQLException {
-                return dao.queryBuilder().orderBy("periodBegin", false).where().eq("program_id", program.getId()).and()
-                        .eq("status", RnRForm.STATUS.AUTHORIZED).queryForFirst();
-            }
-        });
     }
 }

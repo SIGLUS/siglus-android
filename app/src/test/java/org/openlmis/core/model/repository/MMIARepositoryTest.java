@@ -109,7 +109,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
         when(mockStockRepository.listActiveStockCardsByProgramId(anyLong())).thenReturn(stockCards);
         when(mockStockRepository.queryFirstStockMovementItem(any(StockCard.class))).thenReturn(stockMovementItem1);
-        when(mockPeriodService.generatePeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime("2016-12-27"), new DateTime("2017-01-20")));
+        when(mockPeriodService.generateNextPeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime("2016-12-27"), new DateTime("2017-01-20")));
         when(mockStockRepository.queryStockItemsByPeriodDates(any(StockCard.class), any(Date.class), any(Date.class)))
                 .thenReturn(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
 
