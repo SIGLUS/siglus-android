@@ -310,6 +310,34 @@ public class RnRFormListPresenterTest {
         assertThat(rnRFormViewModels.size()).isEqualTo(2);
     }
 
+    @Test
+    public void shouldInsertTypeInventoryDoneForFirstMissedPeriod() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
+
+        Program program = new ProgramBuilder().setProgramCode("VIA").build();
+        String programCode = program.getProgramCode();
+        presenter.programCode = programCode;
+        RnRForm rnRForm1 = createRnrFormByPeriod(RnRForm.STATUS.AUTHORIZED, DateUtil.parseString("2016-02-18", DateUtil.DB_DATE_FORMAT), program);
+        RnRForm rnRForm2 = createRnrFormByPeriod(RnRForm.STATUS.AUTHORIZED, DateUtil.parseString("2016-03-18", DateUtil.DB_DATE_FORMAT), program);
+
+        when(rnrFormRepository.list(programCode)).thenReturn(newArrayList(rnRForm1, rnRForm2));
+        when(periodService.hasMissedPeriod(programCode)).thenReturn(true);
+        Period firstMissedPeriod = new Period(new DateTime(rnRForm2.getPeriodEnd()),
+                new DateTime(DateUtil.parseString("2016-05-20", DateUtil.DB_DATE_FORMAT)));
+        when(periodService.generateNextPeriod(programCode, null)).thenReturn(firstMissedPeriod);
+        when(periodService.getMissedPeriodOffsetMonth(programCode)).thenReturn(2);
+        when(periodService.getCurrentMonthInventoryBeginDate()).thenReturn(new DateTime(DateUtil.parseString("2016-6-18", DateUtil.DB_DATE_FORMAT)));
+        when(inventoryRepository.queryPeriodInventory(firstMissedPeriod)).thenReturn(newArrayList(new Inventory()));
+        List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
+
+        assertThat(rnRFormViewModels.size()).isEqualTo(5);
+        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+        assertThat(rnRFormViewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+        assertThat(rnRFormViewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_INVENTORY_DONE);
+        assertThat(rnRFormViewModels.get(3).getType()).isEqualTo(RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL);
+        assertThat(rnRFormViewModels.get(4).getType()).isEqualTo(RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL);
+    }
+
     @NonNull
     private RnRForm createRnrFormByPeriod(RnRForm.STATUS status, Date periodBegin, Program program) {
         RnRForm rnRForm1 = new RnRForm();

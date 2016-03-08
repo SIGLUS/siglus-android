@@ -201,25 +201,24 @@ public class RnRFormListPresenter extends Presenter {
         int offsetMonth = periodService.getMissedPeriodOffsetMonth(this.programCode);
 
         DateTime inventoryBeginDate = periodService.getCurrentMonthInventoryBeginDate();
-        int periodMissings = offsetMonth;
-        for (int i = 0; i < periodMissings; i++) {
+        for (int i = 0; i < offsetMonth; i++) {
             viewModels.add(i, RnRFormViewModel.buildMissedPeriod(inventoryBeginDate.toDate(), inventoryBeginDate.plusMonths(1).toDate()));
             inventoryBeginDate = inventoryBeginDate.minusMonths(1);
         }
 
         if (rnRForms.size() == 0 || rnRForms.get(0).isAuthorized()) {
-            addNextPeriodViewModel(viewModels, periodMissings);
+            addNextPeriodViewModel(viewModels, offsetMonth);
         }
     }
 
-    private void addNextPeriodViewModel(List<RnRFormViewModel> viewModels, int periodMissings) throws LMISException {
+    private void addNextPeriodViewModel(List<RnRFormViewModel> viewModels, int periodOffset) throws LMISException {
         Period nextPeriodInSchedule = generatePeriod();
 
         List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(nextPeriodInSchedule);
         if (physicalInventories.isEmpty()) {
-            viewModels.add(periodMissings, RnRFormViewModel.buildFirstMissedPeriod(programCode, nextPeriodInSchedule.getBegin().toDate(), nextPeriodInSchedule.getEnd().toDate()));
+            viewModels.add(periodOffset, RnRFormViewModel.buildFirstMissedPeriod(programCode, nextPeriodInSchedule.getBegin().toDate(), nextPeriodInSchedule.getEnd().toDate()));
         } else {
-            viewModels.add(new RnRFormViewModel(nextPeriodInSchedule, programCode, RnRFormViewModel.TYPE_INVENTORY_DONE));
+            viewModels.add(periodOffset, new RnRFormViewModel(nextPeriodInSchedule, programCode, RnRFormViewModel.TYPE_INVENTORY_DONE));
         }
     }
 
