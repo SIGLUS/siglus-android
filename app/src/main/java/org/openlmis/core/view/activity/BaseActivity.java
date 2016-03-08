@@ -246,14 +246,6 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
         preferencesMgr.getPreference().edit().putString(key, value).apply();
     }
 
-    public void saveInt(String key, int value) {
-        preferencesMgr.getPreference().edit().putInt(key, value).apply();
-    }
-
-    public void saveBoolean(String key, boolean value) {
-        preferencesMgr.getPreference().edit().putBoolean(key, value).apply();
-    }
-
     public SharedPreferences getPreferences() {
         return preferencesMgr.getPreference();
     }

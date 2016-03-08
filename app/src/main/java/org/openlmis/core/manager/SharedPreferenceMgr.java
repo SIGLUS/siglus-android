@@ -45,7 +45,6 @@ public class SharedPreferenceMgr {
     private static final String KEY_LAST_SYNCED_TIME_STOCKCARD = "lastSyncedDateStockCard";
     public static final String KEY_LAST_LOGIN_USER = "last_user";
     private static final String KEY_NEEDS_INVENTORY = "init_inventory";
-    private static final String KEY_HAS_GET_PRODUCTS = "has_get_products";
     private static final String KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS = "has_get_month_stock_cards_synced";
     private static final String KEY_SHOULD_SYNC_LAST_YEAR = "should_sync_last_year";
     private static final String KEY_IS_REQUISITION_DATA_SYNCED = "is_requisition_data_synced";
@@ -56,7 +55,6 @@ public class SharedPreferenceMgr {
     public static final String KEY_PRODUCT_UPDATE_BANNER_TEXT = "product_update_banner_text";
     public static final String LATEST_PHYSICAL_INVENTORY_TIME = "latest_physical_inventory_time";
     public static final String LAST_MOVEMENT_HANDSHAKE_DATE = "last_movement_handshake_date";
-    private static final String KEY_SHOULD_SYNC_ARCHIVED_PRODUCTS = "should_sync_archived_products";
     protected StockRepository stockRepository = RoboGuice.getInjector(LMISApp.getContext()).getInstance(StockRepository.class);
 
     @Inject
