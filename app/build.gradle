@@ -226,7 +226,7 @@ task upgradeTestSetup(type: Exec, dependsOn: ['bundleInstall']) {
     workingDir "$projectDir/../functionalTests"
 
     executable 'calabash-android'
-    args "run", "$projectDir/../functionalTests/oldVersionApk/app-upgrade-debug-1.4.52.apk", "--tags @upgrade_setup --format html --out upgrade_test_setup_reports.html"
+    args "run", "$projectDir/../functionalTests/oldVersionApk/app-upgrade-v1.5.58-debug.apk", "--tags @upgrade_setup --format html --out upgrade_test_setup_reports.html"
 }
 
 task upgradeTests(type: Exec, dependsOn: ['bundleInstall', 'upgradeTestSetup', 'assembleUpgradeDebug']) {
