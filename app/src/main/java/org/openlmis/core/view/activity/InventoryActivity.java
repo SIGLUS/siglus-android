@@ -30,14 +30,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.TrackerActions;
+import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.InventoryPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.adapter.InitialInventoryAdapter;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
 import org.openlmis.core.view.adapter.PhysicalInventoryAdapter;
@@ -98,6 +99,8 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
         } else {
             initInitialInventoryUI();
         }
+
+        trackInventoryEvent(TrackerActions.SelectInventory.getString());
     }
 
     @Override
@@ -121,16 +124,20 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
             @Override
             public void onClick(View v) {
                 presenter.savePhysicalInventory(mAdapter.getData());
+                trackInventoryEvent(TrackerActions.SaveInventory.getString());
             }
         });
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 presenter.signPhysicalInventory();
-
-                TrackRnREventUtil.trackRnRListEvent(TrackerActions.CompleteInventory.getString(), getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE));
+                trackInventoryEvent(TrackerActions.CompleteInventory.getString());
             }
         });
+    }
+
+    private void trackInventoryEvent(String action) {
+        LMISApp.getInstance().trackerEvent(TrackerCategories.Inventory.getString(), action);
     }
 
     @Override
@@ -251,7 +258,7 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
         public void onSign(String sign) {
             presenter.doPhysicalInventory(mAdapter.getData(), sign);
 
-            TrackRnREventUtil.trackRnRListEvent(TrackerActions.ApproveInventory.getString(), getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE));
+            trackInventoryEvent(TrackerActions.ApproveInventory.getString());
         }
     };
 

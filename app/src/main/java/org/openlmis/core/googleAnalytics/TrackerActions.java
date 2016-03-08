@@ -8,12 +8,14 @@ public enum TrackerActions {
     SelectApprove("Select Approve"),
     SelectMMIA("Select MMIA"),
     SelectVIA("Select VIA"),
-    CompleteInventory("Complete Inventory"),
-    ApproveInventory("Approve Inventory"),
     CreateRnR("Create RnR"),
     SelectPeriod("Select Period"),
     SubmitRnR("Submit RnR"),
-    AuthoriseRnR("Authorise RnR");
+    AuthoriseRnR("Authorise RnR"),
+    SelectInventory("Select Inventory"),
+    CompleteInventory("Complete Inventory"),
+    ApproveInventory("Approve Inventory"),
+    SaveInventory("Save Inventory");
 
     private final String trackerAction;
 
