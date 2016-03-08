@@ -264,11 +264,12 @@ public class RnRFormListPresenterTest {
 
         presenter.addPreviousPeriodMissedViewModels(viewModels, rnRForms);
 
-        assertThat(viewModels.size()).isEqualTo(4);
+        assertThat(viewModels.size()).isEqualTo(5);
         assertThat(viewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
         assertThat(viewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
         assertThat(viewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
         assertThat(viewModels.get(3).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+        assertThat(viewModels.get(4).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
     }
 
     @Test
@@ -338,8 +339,37 @@ public class RnRFormListPresenterTest {
         assertThat(rnRFormViewModels.get(4).getType()).isEqualTo(RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL);
     }
 
+    @Test
+    public void shouldInsertTypeMissedForMissedPeriodAfterDraft() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
+
+        Program program = new ProgramBuilder().setProgramCode("VIA").build();
+        String programCode = program.getProgramCode();
+        presenter.programCode = programCode;
+        RnRForm rnRForm1 = createRnrFormByPeriod(RnRForm.STATUS.AUTHORIZED, DateUtil.parseString("2016-02-18", DateUtil.DB_DATE_FORMAT), program);
+        RnRForm rnRForm2 = createRnrFormByPeriod(RnRForm.STATUS.AUTHORIZED, DateUtil.parseString("2016-03-18", DateUtil.DB_DATE_FORMAT), program);
+        RnRForm rnRForm3 = createRnrFormByPeriod(RnRForm.STATUS.DRAFT_MISSED, DateUtil.parseString("2016-04-18", DateUtil.DB_DATE_FORMAT), program);
+
+        when(rnrFormRepository.list(programCode)).thenReturn(newArrayList(rnRForm1, rnRForm2, rnRForm3));
+        when(periodService.hasMissedPeriod(programCode)).thenReturn(true);
+        Period firstMissedPeriod = new Period(new DateTime(rnRForm3.getPeriodEnd()),
+                new DateTime(DateUtil.parseString("2016-06-20", DateUtil.DB_DATE_FORMAT)));
+        when(periodService.generateNextPeriod(programCode, null)).thenReturn(firstMissedPeriod);
+        when(periodService.getMissedPeriodOffsetMonth(programCode)).thenReturn(1);
+        when(periodService.getCurrentMonthInventoryBeginDate()).thenReturn(new DateTime(DateUtil.parseString("2016-6-18", DateUtil.DB_DATE_FORMAT)));
+        when(inventoryRepository.queryPeriodInventory(firstMissedPeriod)).thenReturn(new ArrayList<Inventory>());
+        List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
+
+        assertThat(rnRFormViewModels.size()).isEqualTo(5);
+        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+        assertThat(rnRFormViewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+        assertThat(rnRFormViewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_CREATED_BUT_UNCOMPLETED);
+        assertThat(rnRFormViewModels.get(3).getType()).isEqualTo(RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL);
+        assertThat(rnRFormViewModels.get(4).getType()).isEqualTo(RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL);
+    }
+
     @NonNull
-    private RnRForm createRnrFormByPeriod(RnRForm.STATUS status, Date periodBegin, Program program) {
+    protected RnRForm createRnrFormByPeriod(RnRForm.STATUS status, Date periodBegin, Program program) {
         RnRForm rnRForm1 = new RnRForm();
         rnRForm1.setPeriodBegin(periodBegin);
         rnRForm1.setPeriodEnd(new DateTime(periodBegin).plusDays(30).toDate());

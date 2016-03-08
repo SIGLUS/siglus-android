@@ -208,6 +208,8 @@ public class RnRFormListPresenter extends Presenter {
 
         if (rnRForms.size() == 0 || rnRForms.get(0).isAuthorized()) {
             addNextPeriodViewModel(viewModels, offsetMonth);
+        } else {
+            viewModels.add(offsetMonth, RnRFormViewModel.buildMissedPeriod(inventoryBeginDate.toDate(), inventoryBeginDate.plusMonths(1).toDate()));
         }
     }
 
