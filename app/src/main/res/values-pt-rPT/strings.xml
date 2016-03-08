@@ -27,6 +27,7 @@
     <string name="msg_sync_requisition_failed">Descarregamento de dados da requisição falhou</string>
     <string name="msg_sync_stockmovement_failed">Descarregamento de dados dos movimentos de stock falhou</string>
     <string name="msg_initial_sync_success">Sincronização inicial bem sucedida. Tablet está pronto para ser usado.</string>
+    <string name="msg_download_archived_products_fail">Descarregamento de produtos arquivados falhou</string>
     <!--Init Inventory-->
     <string name="hint_quantity_in_stock">Stock Existente</string>
     <string name="label_expire_date">Prazos de Validade</string>
@@ -193,6 +194,7 @@
     <!--Physical Inventory Page-->
     <string name="label_physical_inventory_stock_on_hand">Stock existente actual</string>
     <!--Unpack Kit-->
+    <string name="kit_number">Desembalando: %1$s %2$s kit</string>
     <string name="hint_quantity_in_unpack_kit">Quantidade recebida</string>
     <string name="label_unpack_kit_quantity_expected">Quantidade esperada</string>
     <string name="label_unpack_kit_quantity_less_than_expected"><![CDATA[<b>menor</b>]]>quantidade inserida do que o esperado para um único kit. Por favor, verifique </string>
@@ -204,12 +206,14 @@
     <string name="period_configuration_missing">Sincronização falhou devido à falta de configuração no servidor para este período. Entre em contacto com administrador do sistema.</string>
     <string name="product_code_invalid">Sincronização falhou devido à tentativa de submeter um produto inválido no formulário %1$s. Entre em contacto com administrador do sistema.</string>
     <string name="unauthorized_operation">Sincronização falhou. Não tem permissão para sincronizar esta requisicão para o servidor. Entre em contacto com administrador do sistema.</string>
+    <string name="duplicate_rnr_error">Sincronização falhou. Você já enviou a requisição deste programa no mesmo período.</string>
     <!--Rnr form historical list-->
     <string name="label_via_name">Requisição/Balancete Via Clássica</string>
     <string name="label_mmia_name">MMIA</string>
     <string name="action_delete_rnr_form">Remover do tablet</string>
-    <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b>Nenhuma%1$s foi criada. </ B>]]> Conclúa o seu inventário antes de criar uma requisição.</string>
+    <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b> Nenhuma%1$s foi criada.</b>]]> Complete o seu inventário antes de criar uma requisição</string>
     <string name="btn_view_uncompleted_physical_inventory">Completar Inventário</string>
+    <string name="label_select_close_of_period"><![CDATA[Por favor seleccione um inventário a partir da lista abaixo. Apenas inventários feitos em ou entre o <b>18</b> e <b>25</b> de <b>%1$s</b> podem ser usado para fechar o período. A data de hoje é <b>%2$s</b>]]></string>
     <string name="label_completed_physical_inventory_message"><![CDATA[<b>No %1$s Foi criado.</b>]]></string>
     <string name="btn_view_completed_physical_inventory">Criar%1$s</string>
     <string name="label_incomplete_requisition"><![CDATA[<b>%1$s</b>]]> está incompleto.</string>
@@ -218,6 +222,10 @@
     <string name="label_submitted_message">%1$s enviado com sucesso no dia on the  %2$s</string>
     <string name="btn_view_requisition">Ver %s</string>
     <string name="label_period_date">%1$s  a  %2$s</string>
+    <string name="label_can_not_create_rnr"><![CDATA[<b>Você será capaz de criar uma requisição no dia 18 de %1$s</b>]]></string>
+    <string name="label_previous_period_missing"><![CDATA[<b> Requisição Balancete não pode ser criado</b>até que os períodos anteriores estejam fechados.<br>Por favor, feche todos os períodos anteriores]]></string>
+    <string name="label_missed_period"><![CDATA[<b>Requisição está atrasada e nenhum inventário foi escolhido</b> Uma requisição será gerada automaticamente usando as quantidades do estoque fisico do fim do período]]></string>
+    <string name="btn_select_close_period">Seleccione o fecho do período</string>
     <string name="label_incomplete_requisition_old">Esta <![CDATA[<b>%1$s</b>]]> está incompleta. Para completá-la, selecione \"Criar uma %1$s\" na página inicial</string>
     <string name="btn_requisition_list_old">Ver histórico de Requisiçóes Via Clássica submetidas</string>
     <string name="btn_mmia_list_old">Ver histórico de MMIAs submetidos</string>
@@ -240,4 +248,12 @@
     <string name="label_add_drug_to_stock">Adicionar produto para a lista geral de stock</string>
     <string name="label_empty_archived_drugs">Nenhum produto arquivado</string>
     <!--Select Period-->
+    <string name="title_select_period">Selecione inventário para fechar período</string>
+    <string name="label_next">Próximo</string>
+    <string name="msg_select_period_warning">Por favor seleccione um inventário para fechar o período</string>
+    <string name="loading_inventory_list_failed">carregamento de inventário falhou</string>
+    <!--Select Unpack Kit Numbers-->
+    <string name="label_select_unpack_num">Quantos %1$s gostaria de desembalar?</string>
+    <string name="title_select_unpack_num">Seleccione número de kits por desembalar</string>
+    <string name="msg_select_unpack_num_warning">Por favor, Escolha um número de kits para desembalar</string>
 </resources>
