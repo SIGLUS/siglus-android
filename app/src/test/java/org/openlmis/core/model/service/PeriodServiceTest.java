@@ -13,6 +13,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.builder.ProgramBuilder;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
@@ -189,6 +190,25 @@ public class PeriodServiceTest {
         Period period = periodService.generateNextPeriod(programMMIA.getProgramCode(), null);
         assertThat(period.getBegin(), is(new DateTime("2015-12-19")));
         assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(1));
+    }
+
+    @Test
+    public void shouldReturnTrueIfRnrFromPreviousPeriodExistsButIsNotAuthorized() throws Exception {
+        periodService = spy(periodService);
+
+        LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-06-18 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
+        DateTime nextPeriodBegin = new DateTime(DateUtil.parseString("2015-05-18", DateUtil.DB_DATE_FORMAT));
+        DateTime nextPeriodEnd = new DateTime(DateUtil.parseString("2015-06-20", DateUtil.DB_DATE_FORMAT));
+        Period nextPeriodInSchedule = new Period(nextPeriodBegin, nextPeriodEnd);
+
+        doReturn(nextPeriodInSchedule).when(periodService).generateNextPeriod("P1", null);
+        RnRForm rnRForm = new RnRForm();
+        rnRForm.setStatus(RnRForm.STATUS.DRAFT_MISSED);
+        rnRForm.setPeriodBegin(DateUtil.parseString("2015-04-18", DateUtil.DB_DATE_FORMAT));
+        rnRForm.setPeriodEnd(DateUtil.parseString("2015-05-18", DateUtil.DB_DATE_FORMAT));
+        when(mockRnrFormRepository.list("P1")).thenReturn(newArrayList(rnRForm));
+
+        assertTrue(periodService.hasMissedPeriod("P1"));
     }
 
     public class MyTestModule extends AbstractModule {

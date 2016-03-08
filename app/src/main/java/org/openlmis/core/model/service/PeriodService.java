@@ -90,14 +90,20 @@ public class PeriodService {
     }
 
     public boolean hasMissedPeriod(String programCode) throws LMISException {
-        DateTime nextPeriodInScheduleEnd = generateNextPeriod(programCode, null).getEnd();
+        List<RnRForm> rnRForms = rnrFormRepository.list(programCode);
 
-        DateTime lastInventoryDateForNextPeriodInSchedule = nextPeriodInScheduleEnd
-                .withDate(nextPeriodInScheduleEnd.getYear(),
-                        nextPeriodInScheduleEnd.getMonthOfYear(),
-                        Period.INVENTORY_END_DAY_NEXT);
+        if (rnRForms.size() == 0 || rnRForms.get(rnRForms.size() - 1).isAuthorized()) {
+            DateTime nextPeriodInScheduleEnd = generateNextPeriod(programCode, null).getEnd();
 
-        return lastInventoryDateForNextPeriodInSchedule.isBefore(LMISApp.getInstance().getCurrentTimeMillis());
+            DateTime lastInventoryDateForNextPeriodInSchedule = nextPeriodInScheduleEnd
+                    .withDate(nextPeriodInScheduleEnd.getYear(),
+                            nextPeriodInScheduleEnd.getMonthOfYear(),
+                            Period.INVENTORY_END_DAY_NEXT);
+            return lastInventoryDateForNextPeriodInSchedule.isBefore(LMISApp.getInstance().getCurrentTimeMillis());
+        }
+
+        Date lastRnrPeriodEndDate = rnRForms.get(rnRForms.size() - 1).getPeriodEnd();
+        return new DateTime(lastRnrPeriodEndDate).isBefore(LMISApp.getInstance().getCurrentTimeMillis());
     }
 
     public int getMissedPeriodOffsetMonth(String programCode) throws LMISException {
