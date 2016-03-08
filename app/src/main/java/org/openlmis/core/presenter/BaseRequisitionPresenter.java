@@ -110,7 +110,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         if (draftVIA != null) {
             return draftVIA;
         }
-        return rnrFormRepository.initRnrForm(periodEndDate,view.isMissedRnR());
+        return rnrFormRepository.initRnrForm(periodEndDate, view.isMissedRnR());
     }
 
     protected void saveRequisition() {
@@ -183,6 +183,8 @@ public abstract class BaseRequisitionPresenter extends Presenter {
             public void onNext(Void aVoid) {
                 view.loaded();
                 updateUIAfterSubmit();
+
+                TrackRnREventUtil.trackRnRListEvent(TrackerActions.SubmitRnR.getString(), rnRForm.getProgram().getProgramCode());
             }
         });
     }
@@ -217,6 +219,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
                 view.loaded();
                 view.completeSuccess();
                 Log.d("BaseReqPresenter", "Signature signed, requesting immediate sync");
+                TrackRnREventUtil.trackRnRListEvent(TrackerActions.AuthoriseRnR.getString(), rnRForm.getProgram().getProgramCode());
                 syncService.requestSyncImmediately();
             }
         });

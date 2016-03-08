@@ -5,7 +5,15 @@ public enum TrackerActions {
     SelectReason("Select Reason"),
     SelectMovementDate("Select Movement Date"),
     SelectComplete("Select Complete"),
-    SelectApprove("Select Approve");
+    SelectApprove("Select Approve"),
+    SelectMMIA("Select MMIA"),
+    SelectVIA("Select VIA"),
+    CompleteInventory("Complete Inventory"),
+    ApproveInventory("Approve Inventory"),
+    CreateRnR("Create RnR"),
+    SelectPeriod("Select Period"),
+    SubmitRnR("Submit RnR"),
+    AuthoriseRnR("Authorise RnR");
 
     private final String trackerAction;
 

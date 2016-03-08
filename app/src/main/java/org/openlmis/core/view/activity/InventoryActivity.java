@@ -31,11 +31,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.InventoryPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.adapter.InitialInventoryAdapter;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
 import org.openlmis.core.view.adapter.PhysicalInventoryAdapter;
@@ -125,6 +127,8 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
             @Override
             public void onClick(View v) {
                 presenter.signPhysicalInventory();
+
+                TrackRnREventUtil.trackRnRListEvent(TrackerActions.CompleteInventory.getString(), getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE));
             }
         });
     }
@@ -246,6 +250,8 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
         @Override
         public void onSign(String sign) {
             presenter.doPhysicalInventory(mAdapter.getData(), sign);
+
+            TrackRnREventUtil.trackRnRListEvent(TrackerActions.ApproveInventory.getString(), getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE));
         }
     };
 

@@ -103,7 +103,7 @@ public class StockCardViewHolder extends BaseViewHolder {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    LMISApp.getInstance().trackerEvent(TrackerCategories.StockMovement.getString(), TrackerActions.SelectStockCard.getString(), "");
+                    LMISApp.getInstance().trackerEvent(TrackerCategories.StockMovement.getString(), TrackerActions.SelectStockCard.getString());
                     listener.onItemViewClick(inventoryViewModel);
                 }
             }

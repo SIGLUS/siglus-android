@@ -13,11 +13,13 @@ import android.widget.TextView;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.presenter.SelectPeriodPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
+import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.adapter.SelectPeriodAdapter;
 import org.openlmis.core.view.viewmodel.SelectInventoryViewModel;
 
@@ -109,6 +111,9 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
                 Intent intent = new Intent();
                 intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, selectedInventory.getInventoryDate());
                 intent.putExtra(Constants.PARAM_IS_MISSED_PERIOD, isMissedPeriod);
+
+                TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectPeriod.getString(), programCode);
+
                 setResult(RESULT_OK, intent);
                 finish();
             }

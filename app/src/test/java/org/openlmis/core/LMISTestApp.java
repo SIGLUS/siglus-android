@@ -63,6 +63,6 @@ public class LMISTestApp extends LMISApp {
     }
 
     @Override
-    public void trackerEvent(String category, String action, String label) {
+    public void trackerEvent(String category, String action) {
     }
 }

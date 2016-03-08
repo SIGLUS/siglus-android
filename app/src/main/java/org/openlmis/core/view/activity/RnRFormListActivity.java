@@ -26,6 +26,7 @@ import android.support.v7.widget.RecyclerView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
@@ -33,6 +34,7 @@ import org.openlmis.core.presenter.RnRFormListPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.adapter.RnRFormListAdapter;
 import org.openlmis.core.view.fragment.WarningDialog;
 import org.openlmis.core.view.holder.RnRFormViewHolder.RnRFormItemClickListener;
@@ -138,12 +140,11 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         public void clickBtnView(RnRFormViewModel model) {
             switch (model.getType()) {
                 case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD:
-                    Intent intent = new Intent(RnRFormListActivity.this, InventoryActivity.class);
-                    intent.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
-                    startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
+                    clickCompleteInventory();
                     break;
                 case RnRFormViewModel.TYPE_INVENTORY_DONE:
                     startActivityForResult(SelectPeriodActivity.getIntentToMe(RnRFormListActivity.this, model.getProgramCode()), Constants.REQUEST_SELECT_PERIOD_END);
+                    TrackRnREventUtil.trackRnRListEvent(TrackerActions.CreateRnR.getString(), programCode);
                     break;
                 case RnRFormViewModel.TYPE_SYNCED_HISTORICAL:
                     rnrFormId = model.getId();
@@ -159,6 +160,15 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
             }
         }
     };
+
+    private void clickCompleteInventory() {
+        Intent intent = new Intent(RnRFormListActivity.this, InventoryActivity.class);
+        intent.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, programCode);
+        startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
+
+        TrackRnREventUtil.trackRnRListEvent(TrackerActions.CompleteInventory.getString(), programCode);
+    }
 
     private void goToRequisitionPage(long rnrFormId) {
         if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {

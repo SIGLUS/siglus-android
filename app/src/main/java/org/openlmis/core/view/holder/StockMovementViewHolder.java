@@ -32,11 +32,11 @@ import android.widget.TextView;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.googleAnalytics.TrackerActions;
+import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
-import org.openlmis.core.googleAnalytics.TrackerActions;
-import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
@@ -210,7 +210,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
             public void onClick(View v) {
                 if (model.isDraft()) {
                     new MovementTypeDialog(context, new MovementSelectListener(model)).show();
-                    LMISApp.getInstance().trackerEvent(TrackerCategories.StockMovement.getString(), TrackerActions.SelectReason.getString(), "");
+                    LMISApp.getInstance().trackerEvent(TrackerCategories.StockMovement.getString(), TrackerActions.SelectReason.getString());
                 }
             }
         });
@@ -220,7 +220,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
             public void onClick(View v) {
                 if (model.isDraft()) {
                     showDatePickerDialog(model, previousMovementDate);
-                    LMISApp.getInstance().trackerEvent(TrackerCategories.StockMovement.getString(), TrackerActions.SelectMovementDate.getString(), "");
+                    LMISApp.getInstance().trackerEvent(TrackerCategories.StockMovement.getString(), TrackerActions.SelectMovementDate.getString());
                 }
             }
         });

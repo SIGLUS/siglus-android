@@ -30,10 +30,10 @@ import com.google.android.gms.analytics.Tracker;
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.googleAnalytics.AnalyticsTrackers;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.network.NetworkConnectionManager;
-import org.openlmis.core.googleAnalytics.AnalyticsTrackers;
 
 import io.fabric.sdk.android.Fabric;
 import roboguice.RoboGuice;
@@ -43,6 +43,9 @@ public class LMISApp extends Application {
     private static LMISApp instance;
 
     public static long lastOperateTime = 0L;
+    private final String defaultGAEventLabel = "completed";
+    private final int defaultGAEventValue = 0;
+    private final int facilityCustomDimensionKey = 1;
 
     @Override
     public void onCreate() {
@@ -100,16 +103,16 @@ public class LMISApp extends Application {
         Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
         mTracker.setScreenName(screenName);
         mTracker.send(new HitBuilders.ScreenViewBuilder()
-                .setCustomDimension(1, UserInfoMgr.getInstance().getFacilityName())
+                .setCustomDimension(facilityCustomDimensionKey, UserInfoMgr.getInstance().getFacilityName())
                 .build());
     }
 
-    public void trackerEvent(String category, String action, String label) {
+    public void trackerEvent(String category, String action) {
         Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
         mTracker.send(new HitBuilders.EventBuilder(category, action)
-                .setLabel(label)
-                .setValue(1)
-                .setCustomDimension(1, UserInfoMgr.getInstance().getFacilityName())
+                .setLabel(defaultGAEventLabel)
+                .setValue(defaultGAEventValue)
+                .setCustomDimension(facilityCustomDimensionKey, UserInfoMgr.getInstance().getFacilityName())
                 .build());
     }
 }

@@ -226,7 +226,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             StockMovementViewModel stockMovementViewModel = stockMovementAdapter.getEditableStockMovement();
             stockMovementViewModel.setSignature(sign);
             presenter.saveAndRefresh(stockMovementViewModel);
-            LMISApp.getInstance().trackerEvent(TrackerCategories.StockMovement.getString(), TrackerActions.SelectApprove.getString(), TRACKER_LABEL);
+            LMISApp.getInstance().trackerEvent(TrackerCategories.StockMovement.getString(), TrackerActions.SelectApprove.getString());
         }
     };
 
@@ -335,7 +335,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         switch (v.getId()) {
             case R.id.btn_complete:
                 presenter.submitStockMovement(stockMovementAdapter.getEditableStockMovement());
-                LMISApp.getInstance().trackerEvent(TrackerCategories.StockMovement.getString(), TrackerActions.SelectComplete.getString(), "");
+                LMISApp.getInstance().trackerEvent(TrackerCategories.StockMovement.getString(), TrackerActions.SelectComplete.getString());
                 break;
             case R.id.btn_cancel:
                 StockMovementViewHolder viewHolder = (StockMovementViewHolder) stockMovementList.getChildAt(stockMovementList.getChildCount() - 1).getTag();

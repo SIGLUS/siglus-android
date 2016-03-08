@@ -35,12 +35,14 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.widget.SyncTimeView;
 
 import roboguice.inject.ContentView;
@@ -150,12 +152,14 @@ public class HomeActivity extends BaseActivity {
         Intent intent = new Intent(this, RnRFormListActivity.class);
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, MMIARepository.MMIA_PROGRAM_CODE);
         startActivity(intent);
+        TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectMMIA.getString(), MMIARepository.MMIA_PROGRAM_CODE);
     }
 
     public void onClickVIAHistory(View view) {
         Intent intent = new Intent(this, RnRFormListActivity.class);
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE);
         startActivity(intent);
+        TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectVIA.getString(), VIARepository.VIA_PROGRAM_CODE);
     }
 
     @Override
