@@ -1,6 +1,7 @@
 package org.openlmis.core.googleAnalytics;
 
 public enum TrackerActions {
+    SelectStockCard("Select Stock Card"),
     SelectReason("Select Reason"),
     SelectMovementDate("Select Movement Date"),
     SelectComplete("Select Complete"),

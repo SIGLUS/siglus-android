@@ -8,6 +8,8 @@ import android.widget.TextView;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.googleAnalytics.TrackerActions;
+import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.TextStyleUtil;
@@ -101,6 +103,7 @@ public class StockCardViewHolder extends BaseViewHolder {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
+                    LMISApp.getInstance().trackerEvent(TrackerCategories.StockMovement.getString(), TrackerActions.SelectStockCard.getString(), "");
                     listener.onItemViewClick(inventoryViewModel);
                 }
             }
