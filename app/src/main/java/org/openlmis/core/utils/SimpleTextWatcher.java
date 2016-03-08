@@ -17,16 +17,22 @@
  */
 package org.openlmis.core.utils;
 
-public class SingleTextWatcher extends SimpleTextWatcher {
+import android.text.Editable;
+import android.text.TextWatcher;
 
+public class SimpleTextWatcher implements TextWatcher {
     @Override
-    public int hashCode() {
-        return super.hashCode();
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        
     }
 
     @Override
-    public boolean equals(Object o) {
-        // Used to avoid add multiple Listeners in ListView
-        return true;
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
     }
 }

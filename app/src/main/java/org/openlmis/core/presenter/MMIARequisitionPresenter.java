@@ -151,6 +151,10 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         }
     }
 
+    public void setComments(String comments) {
+        rnRForm.setComments(comments);
+    }
+
     public interface MMIARequisitionView extends BaseRequisitionView {
 
         void showValidationAlert();

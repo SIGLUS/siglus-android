@@ -183,7 +183,6 @@ public abstract class BaseRequisitionPresenter extends Presenter {
             public void onNext(Void aVoid) {
                 view.loaded();
                 updateUIAfterSubmit();
-
             }
         });
     }

@@ -41,6 +41,7 @@ import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.ViewUtil;
 import org.openlmis.core.view.activity.BaseActivity;
@@ -58,10 +59,13 @@ import roboguice.inject.InjectView;
 public class MMIARequisitionFragment extends BaseFragment implements MMIARequisitionPresenter.MMIARequisitionView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
     @InjectView(R.id.rnr_form_list)
     protected MMIARnrForm rnrFormList;
+
     @InjectView(R.id.regime_list)
     protected MMIARegimeList regimeListView;
+
     @InjectView(R.id.mmia_info_list)
     protected MMIAInfoList mmiaInfoListView;
+
     @InjectView(R.id.btn_complete)
     protected Button btnComplete;
 
@@ -133,7 +137,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         super.onViewCreated(view, savedInstanceState);
         initUI();
         presenter.loadData(formId, periodEndDate);
-
     }
 
     protected void initUI() {
@@ -262,7 +265,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         });
     }
 
-
     protected void hideOrDisplayRnrItemsHeader() {
         if (isNeedHideFreezeHeader()) {
             rnrItemsHeaderFreeze.setVisibility(View.INVISIBLE);
@@ -289,36 +291,16 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         scrollView.requestFocus();
     }
 
-    TextWatcher commentTextWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-        }
-
+    TextWatcher commentTextWatcher = new SimpleTextWatcher() {
         @Override
         public void afterTextChanged(Editable s) {
             commentHasChanged = true;
             highlightTotalDifference();
-            try {
-                presenter.getRnrForm(formId).setComments(s.toString());
-            } catch (LMISException e) {
-                e.reportToFabric();
-            }
+            presenter.setComments(s.toString());
         }
     };
 
-    TextWatcher totalTextWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-        }
-
+    TextWatcher totalTextWatcher = new SimpleTextWatcher() {
         @Override
         public void afterTextChanged(Editable s) {
             highlightTotalDifference();
