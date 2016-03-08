@@ -111,12 +111,11 @@ public class RnRFormListPresenterTest {
     }
 
     @Test
-    public void shouldReturnOneRnrFormViewModleWhenThereIsNoRnrFormAndToggleOn() throws Exception {
+    public void shouldReturnOneRnrFormViewModleWhenThereIsNoRnrForm() throws Exception {
+        presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
 
         when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(period.getBegin().toDate(), DateUtil.DATE_TIME_FORMAT));
         when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
-        presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
-
 
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -142,14 +141,13 @@ public class RnRFormListPresenterTest {
     public void shouldReturnCanNotCreateRnrTypeRnrFormViewModel() throws Exception {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
+        presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
 
         long dateFebFourteen = 1455408000000l;
         ((LMISTestApp) RuntimeEnvironment.application).setCurrentTimeMillis(dateFebFourteen);
-        when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
+        when(rnrFormRepository.list(presenter.programCode)).thenReturn(new ArrayList<RnRForm>());
         when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(DateUtil.generateRnRFormPeriodBy(new Date()).previous().getBegin().toDate(), DateUtil.DATE_TIME_FORMAT));
-        when(periodService.generateNextPeriod("VIA", null)).thenReturn(new Period(new DateTime(dateJanTwentySix), new DateTime(dateFebTwentyOne)));
-
-        presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
+        when(periodService.generateNextPeriod(presenter.programCode, null)).thenReturn(new Period(new DateTime(dateJanTwentySix), new DateTime(dateFebTwentyOne)));
 
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -161,13 +159,13 @@ public class RnRFormListPresenterTest {
     public void shouldReturnUnCompleteInventoryTypeRnrFormViewModelWhenTimeAfterInventoryBegin() throws Exception {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
+        presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
+
         long dateFebEighteen = 1455753600000l;
         ((LMISTestApp) RuntimeEnvironment.application).setCurrentTimeMillis(dateFebEighteen);
-        when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
+        when(rnrFormRepository.list(presenter.programCode)).thenReturn(new ArrayList<RnRForm>());
         when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(DateUtil.generateRnRFormPeriodBy(new Date()).previous().getBegin().toDate(), DateUtil.DATE_TIME_FORMAT));
-        when(periodService.generateNextPeriod("VIA", null)).thenReturn(new Period(new DateTime(dateJanTwentySix), new DateTime(dateFebTwentyOne)));
-
-        presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
+        when(periodService.generateNextPeriod(presenter.programCode, null)).thenReturn(new Period(new DateTime(dateJanTwentySix), new DateTime(dateFebTwentyOne)));
 
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
 
@@ -177,9 +175,10 @@ public class RnRFormListPresenterTest {
 
     @Test
     public void shouldReturnCreateFormTypeRnrFormViewModel() throws Exception {
-        when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(new Date(), DateUtil.DATE_TIME_FORMAT));
-        when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
         presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
+
+        when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(new Date(), DateUtil.DATE_TIME_FORMAT));
+        when(rnrFormRepository.list(presenter.programCode)).thenReturn(new ArrayList<RnRForm>());
 
         List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
         assertThat(rnRFormViewModels.size()).isEqualTo(1);
@@ -232,13 +231,14 @@ public class RnRFormListPresenterTest {
 
     @Test
     public void shouldReturnMissedPeriodAndInventoryDoneWhenHasMissedAndHasInventoryInPeriodAndHasNotRnR() throws Exception {
+        presenter.setProgramCode("VIA");
+
         when(periodService.hasMissedPeriod(anyString())).thenReturn(true);
         when(periodService.getMissedPeriodOffsetMonth(anyString())).thenReturn(4);
         when(periodService.getCurrentMonthInventoryBeginDate()).thenReturn(new DateTime(DateUtil.parseString("2016-02-18", DateUtil.DB_DATE_FORMAT)));
         ArrayList<Inventory> inventories = new ArrayList<>();
         inventories.add(new Inventory());
         when(inventoryRepository.queryPeriodInventory(any(Period.class))).thenReturn(inventories);
-        presenter.setProgramCode("VIA");
         rnRForms.clear();
 
         presenter.addPreviousPeriodMissedViewModels(viewModels, rnRForms);
@@ -253,13 +253,14 @@ public class RnRFormListPresenterTest {
 
     @Test
     public void shouldReturnMissPeriodWithOutNextPeriodModelWhenHasMissedAndHasUnCompleteRnr() throws Exception {
+        presenter.setProgramCode("VIA");
+
         when(periodService.hasMissedPeriod(anyString())).thenReturn(true);
         when(periodService.getMissedPeriodOffsetMonth(anyString())).thenReturn(4);
         when(periodService.getCurrentMonthInventoryBeginDate()).thenReturn(new DateTime(DateUtil.parseString("2016-02-18", DateUtil.DB_DATE_FORMAT)));
         ArrayList<Inventory> inventories = new ArrayList<>();
         inventories.add(new Inventory());
         when(inventoryRepository.queryPeriodInventory(any(Period.class))).thenReturn(inventories);
-        presenter.setProgramCode("VIA");
 
         presenter.addPreviousPeriodMissedViewModels(viewModels, rnRForms);
 
