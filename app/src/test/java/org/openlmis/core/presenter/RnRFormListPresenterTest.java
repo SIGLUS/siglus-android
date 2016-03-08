@@ -1,5 +1,7 @@
 package org.openlmis.core.presenter;
 
+import android.support.annotation.NonNull;
+
 import com.google.inject.AbstractModule;
 
 import org.joda.time.DateTime;
@@ -17,6 +19,7 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
+import org.openlmis.core.model.builder.ProgramBuilder;
 import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
@@ -144,7 +147,7 @@ public class RnRFormListPresenterTest {
         ((LMISTestApp) RuntimeEnvironment.application).setCurrentTimeMillis(dateFebFourteen);
         when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
         when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(DateUtil.generateRnRFormPeriodBy(new Date()).previous().getBegin().toDate(), DateUtil.DATE_TIME_FORMAT));
-        when(periodService.generateNextPeriod("ESS_MEDS", null)).thenReturn(new Period(new DateTime(dateJanTwentySix), new DateTime(dateFebTwentyOne)));
+        when(periodService.generateNextPeriod("VIA", null)).thenReturn(new Period(new DateTime(dateJanTwentySix), new DateTime(dateFebTwentyOne)));
 
         presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
 
@@ -162,7 +165,7 @@ public class RnRFormListPresenterTest {
         ((LMISTestApp) RuntimeEnvironment.application).setCurrentTimeMillis(dateFebEighteen);
         when(rnrFormRepository.list("VIA")).thenReturn(new ArrayList<RnRForm>());
         when(sharedPreferenceMgr.getLatestPhysicInventoryTime()).thenReturn(DateUtil.formatDate(DateUtil.generateRnRFormPeriodBy(new Date()).previous().getBegin().toDate(), DateUtil.DATE_TIME_FORMAT));
-        when(periodService.generateNextPeriod("ESS_MEDS", null)).thenReturn(new Period(new DateTime(dateJanTwentySix), new DateTime(dateFebTwentyOne)));
+        when(periodService.generateNextPeriod("VIA", null)).thenReturn(new Period(new DateTime(dateJanTwentySix), new DateTime(dateFebTwentyOne)));
 
         presenter.setProgramCode(VIARepository.VIA_PROGRAM_CODE);
 
@@ -265,6 +268,55 @@ public class RnRFormListPresenterTest {
         assertThat(viewModels.get(1).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
         assertThat(viewModels.get(2).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
         assertThat(viewModels.get(3).getType()).isEqualTo(RnRFormViewModel.TYPE_MISSED_PERIOD);
+    }
+
+    @Test
+    public void shouldAddCurrentFormModelIfHasNoRnrInCurrentPeriod() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
+
+        Program program = new ProgramBuilder().setProgramCode("VIA").build();
+        String programCode = program.getProgramCode();
+        presenter.programCode = programCode;
+        RnRForm rnRForm1 = createRnrFormByPeriod(RnRForm.STATUS.AUTHORIZED, DateUtil.parseString("2016-02-18", DateUtil.DB_DATE_FORMAT), program);
+        RnRForm rnRForm2 = createRnrFormByPeriod(RnRForm.STATUS.AUTHORIZED, DateUtil.parseString("2016-03-18", DateUtil.DB_DATE_FORMAT), program);
+
+        when(rnrFormRepository.list(programCode)).thenReturn(newArrayList(rnRForm1, rnRForm2));
+        when(periodService.hasMissedPeriod(programCode)).thenReturn(false);
+        when(periodService.generateNextPeriod(programCode, null)).thenReturn(new Period(new DateTime(DateUtil.parseString("2016-04-18", DateUtil.DB_DATE_FORMAT)), new DateTime(DateUtil.parseString("2016-05-20", DateUtil.DB_DATE_FORMAT))));
+
+        List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
+
+        assertThat(rnRFormViewModels.size()).isEqualTo(3);
+        assertThat(rnRFormViewModels.get(0).getType()).isEqualTo(RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
+    }
+
+    @Test
+    public void shouldNotAddCurrentFormModelIfHasRnrInCurrentPeriod() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
+
+        Program program = new ProgramBuilder().setProgramCode("VIA").build();
+        String programCode = program.getProgramCode();
+        presenter.programCode = programCode;
+        RnRForm rnRForm1 = createRnrFormByPeriod(RnRForm.STATUS.AUTHORIZED, DateUtil.parseString("2016-02-18", DateUtil.DB_DATE_FORMAT), program);
+        RnRForm rnRForm2 = createRnrFormByPeriod(RnRForm.STATUS.AUTHORIZED, DateUtil.parseString("2016-03-18", DateUtil.DB_DATE_FORMAT), program);
+
+        when(rnrFormRepository.list(programCode)).thenReturn(newArrayList(rnRForm1, rnRForm2));
+        when(periodService.hasMissedPeriod(programCode)).thenReturn(false);
+        when(periodService.generateNextPeriod(programCode, null)).thenReturn(new Period(new DateTime(DateUtil.parseString("2016-03-18", DateUtil.DB_DATE_FORMAT)), new DateTime(DateUtil.parseString("2016-05-20", DateUtil.DB_DATE_FORMAT))));
+
+        List<RnRFormViewModel> rnRFormViewModels = presenter.buildFormListViewModels();
+
+        assertThat(rnRFormViewModels.size()).isEqualTo(2);
+    }
+
+    @NonNull
+    private RnRForm createRnrFormByPeriod(RnRForm.STATUS status, Date periodBegin, Program program) {
+        RnRForm rnRForm1 = new RnRForm();
+        rnRForm1.setPeriodBegin(periodBegin);
+        rnRForm1.setPeriodEnd(new DateTime(periodBegin).plusDays(30).toDate());
+        rnRForm1.setStatus(status);
+        rnRForm1.setProgram(program);
+        return rnRForm1;
     }
 
     private List<RnRForm> createRnRForms() {
