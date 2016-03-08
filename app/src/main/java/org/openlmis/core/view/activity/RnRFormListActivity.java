@@ -24,7 +24,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRForm;
@@ -65,8 +64,8 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     private RnRFormListAdapter adapter;
 
     @Override
-    protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().trackerScreen(ScreenName.RnRFormHistoryScreen.getScreenName());
+    protected String getScreenName() {
+        return ScreenName.RnRFormHistoryScreen.getScreenName();
     }
 
     @Override

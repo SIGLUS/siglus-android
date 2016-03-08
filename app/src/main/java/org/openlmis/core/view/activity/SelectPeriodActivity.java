@@ -52,8 +52,8 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     private boolean isMissedPeriod;
 
     @Override
-    protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().trackerScreen(ScreenName.SelectPeriodScreen.getScreenName());
+    protected String getScreenName() {
+        return ScreenName.SelectPeriodScreen.getScreenName();
     }
 
     @Override

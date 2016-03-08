@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.UnpackKitPresenter;
 import org.openlmis.core.utils.Constants;
@@ -50,8 +49,8 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
     }
 
     @Override
-    protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().trackerScreen(ScreenName.UnpackKitScreen.getScreenName());
+    protected String getScreenName() {
+        return ScreenName.UnpackKitScreen.getScreenName();
     }
 
     @Override

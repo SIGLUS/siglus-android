@@ -30,7 +30,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.InventoryPresenter;
@@ -80,8 +79,8 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
     private boolean isAddNewDrug;
 
     @Override
-    protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().trackerScreen(ScreenName.InventoryScreen.getScreenName());
+    protected String getScreenName() {
+        return ScreenName.InventoryScreen.getScreenName();
     }
 
     @Override

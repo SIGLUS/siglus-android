@@ -76,8 +76,8 @@ public class HomeActivity extends BaseActivity {
     private boolean exitPressedOnce = false;
 
     @Override
-    protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().trackerScreen(ScreenName.HomeScreen.getScreenName());
+    protected String getScreenName() {
+        return ScreenName.HomeScreen.getScreenName();
     }
 
     @Override

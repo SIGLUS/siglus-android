@@ -109,7 +109,15 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
         sendScreenToGoogleAnalytics();
     }
 
-    protected abstract void sendScreenToGoogleAnalytics();
+    protected abstract String getScreenName();
+
+    protected void sendScreenToGoogleAnalytics() {
+        String screenName = getScreenName();
+
+        if (screenName != null) {
+            LMISApp.getInstance().trackerScreen(screenName);
+        }
+    };
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {

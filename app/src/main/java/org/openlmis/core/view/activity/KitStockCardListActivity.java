@@ -2,7 +2,6 @@ package org.openlmis.core.view.activity;
 
 import android.view.Menu;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.view.fragment.KitStockCardListFragment;
 import org.openlmis.core.view.fragment.StockCardListFragment;
@@ -15,8 +14,8 @@ public class KitStockCardListActivity extends StockCardListActivity {
     }
 
     @Override
-    protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().trackerScreen(ScreenName.KitStockCardOverviewScreen.getScreenName());
+    protected String getScreenName() {
+        return ScreenName.KitStockCardOverviewScreen.getScreenName();
     }
 
     @Override

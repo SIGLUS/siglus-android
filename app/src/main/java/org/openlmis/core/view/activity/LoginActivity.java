@@ -79,7 +79,8 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     @Override
-    protected void sendScreenToGoogleAnalytics() {
+    protected String getScreenName() {
+        return null;
     }
 
     @Override

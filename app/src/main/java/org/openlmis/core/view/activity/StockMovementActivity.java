@@ -38,10 +38,10 @@ import com.google.inject.Inject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.Product;
-import org.openlmis.core.model.StockCard;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.googleAnalytics.TrackerCategories;
+import org.openlmis.core.model.Product;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockMovementPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
@@ -106,8 +106,8 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     private boolean isKit;
 
     @Override
-    protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().trackerScreen(ScreenName.StockCardMovementScreen.getScreenName());
+    protected String getScreenName() {
+        return ScreenName.StockCardMovementScreen.getScreenName();
     }
 
     @Override

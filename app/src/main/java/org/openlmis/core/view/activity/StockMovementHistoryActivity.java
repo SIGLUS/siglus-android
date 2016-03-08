@@ -22,7 +22,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.Constants;
 
@@ -34,8 +33,8 @@ public class StockMovementHistoryActivity extends BaseActivity {
     private boolean isKit;
 
     @Override
-    protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().trackerScreen(ScreenName.StockCardMovementHistoryScreen.getScreenName());
+    protected String getScreenName() {
+        return ScreenName.StockCardMovementHistoryScreen.getScreenName();
     }
 
     @Override

@@ -21,7 +21,6 @@ package org.openlmis.core.view.activity;
 import android.content.Context;
 import android.content.Intent;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.MMIARequisitionFragment;
@@ -34,8 +33,8 @@ import roboguice.inject.ContentView;
 public class MMIARequisitionActivity extends BaseActivity {
 
     @Override
-    protected void sendScreenToGoogleAnalytics() {
-        LMISApp.getInstance().trackerScreen(ScreenName.MMIARequisitionScreen.getScreenName());
+    protected String getScreenName() {
+        return ScreenName.MMIARequisitionScreen.getScreenName();
     }
 
     @Override
