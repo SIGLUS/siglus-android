@@ -124,7 +124,6 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
             @Override
             public void onClick(View v) {
                 presenter.savePhysicalInventory(mAdapter.getData());
-                trackInventoryEvent(TrackerActions.SaveInventory.getString());
             }
         });
         btnDone.setOnClickListener(new View.OnClickListener() {
