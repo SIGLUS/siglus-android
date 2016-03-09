@@ -8,7 +8,7 @@ public enum TrackerActions {
     SelectApprove("Select Approve"),
     SelectMMIA("Select MMIA"),
     SelectVIA("Select VIA"),
-    CreateRnR("Create RnR"),
+    CreateRnR("Create RnR Form"),
     SelectPeriod("Select Period"),
     SubmitRnR("First Time Approve"),
     AuthoriseRnR("Second Time Approve"),
