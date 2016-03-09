@@ -25,6 +25,8 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import org.joda.time.DateTime;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
 import org.roboguice.shaded.goole.common.base.Predicate;
@@ -132,7 +134,24 @@ public class RnRForm extends BaseModel {
         rnRForm.program = program;
         rnRForm.periodBegin = period.getBegin().toDate();
         rnRForm.periodEnd = period.getEnd().toDate();
+
+        if (isMissed(period)) {
+            rnRForm.status = RnRForm.STATUS.DRAFT_MISSED;
+        } else {
+            rnRForm.status = RnRForm.STATUS.DRAFT;
+        }
+
         return rnRForm;
+    }
+
+    private static boolean isMissed(Period period) {
+        DateTime today = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        DateTime periodEnd = period.getEnd();
+        int monthOffset = DateUtil.calculateMonthOffset(today, periodEnd);
+        if (monthOffset > 0 || (monthOffset == 0 && today.getDayOfMonth() > Period.INVENTORY_END_DAY_NEXT)) {
+            return true;
+        }
+        return false;
     }
 
     public static long calculateTotalRegimenAmount(Collection<RegimenItem> list) {

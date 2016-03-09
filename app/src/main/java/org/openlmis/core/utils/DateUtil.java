@@ -52,7 +52,7 @@ public final class DateUtil {
 
 
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
-    public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_YEAR= new SimpleDateFormat(DATE_FORMAT_ONLY_DAY_AND_MONTH);
+    public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_YEAR = new SimpleDateFormat(DATE_FORMAT_ONLY_DAY_AND_MONTH);
     public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_DAY = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR);
     private static Locale locale = Locale.getDefault();
 
@@ -197,9 +197,12 @@ public final class DateUtil {
         return expiryDates;
     }
 
-    public static String getMonthAbbrByDate(Date date){
+    public static String getMonthAbbrByDate(Date date) {
         CALENDAR_NOW.setTime(date);
         return new SimpleDateFormat("MMM", locale).format(CALENDAR_NOW.getTime());
     }
 
+    public static int calculateMonthOffset(DateTime biggerTime, DateTime smallerTime) {
+        return biggerTime.getYear() * 12 + biggerTime.getMonthOfYear() - (smallerTime.getYear() * 12 + smallerTime.getMonthOfYear());
+    }
 }

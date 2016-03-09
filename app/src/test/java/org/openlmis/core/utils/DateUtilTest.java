@@ -1,5 +1,6 @@
 package org.openlmis.core.utils;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
@@ -119,5 +120,12 @@ public class DateUtilTest {
 
         int periodMonthNub = DateUtil.calculateDateMonthOffset(firstPeriod, secondPeriod);
         assertThat(periodMonthNub, is(1));
+    }
+
+    @Test
+    public void shouldCalculateMonthOffset() throws Exception {
+        assertThat(DateUtil.calculateMonthOffset(new DateTime(parseString("30/12/2015", SIMPLE_DATE_FORMAT)), new DateTime(parseString("20/11/2015", SIMPLE_DATE_FORMAT))), is(1));
+        assertThat(DateUtil.calculateMonthOffset(new DateTime(parseString("30/12/2016", SIMPLE_DATE_FORMAT)), new DateTime(parseString("20/11/2015", SIMPLE_DATE_FORMAT))), is(13));
+        assertThat(DateUtil.calculateMonthOffset(new DateTime(parseString("30/12/2015", SIMPLE_DATE_FORMAT)), new DateTime(parseString("20/12/2015", SIMPLE_DATE_FORMAT))), is(0));
     }
 }

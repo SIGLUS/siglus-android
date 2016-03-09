@@ -7,6 +7,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
@@ -26,6 +27,9 @@ public class PeriodService {
 
     @Inject
     StockRepository stockRepository;
+
+    @Inject
+    InventoryRepository inventoryRepository;
 
     public Period generateNextPeriod(String programCode, Date physicalInventoryDate) throws LMISException {
         List<RnRForm> rnRForms = rnrFormRepository.list(programCode);
@@ -69,7 +73,7 @@ public class PeriodService {
 
         Calendar currentBeginDate = Calendar.getInstance();
 
-        if(initializeDayOfMonth >= Period.INVENTORY_BEGIN_DAY && initializeDayOfMonth < Period.INVENTORY_END_DAY_NEXT) {
+        if (initializeDayOfMonth >= Period.INVENTORY_BEGIN_DAY && initializeDayOfMonth < Period.INVENTORY_END_DAY_NEXT) {
             currentBeginDate.set(initializeDateTime.getYear(), initializeDateTime.getMonthOfYear() - 1, initializeDayOfMonth);
         } else {
             currentBeginDate.set(initializeDateTime.getYear(), initializeDateTime.getMonthOfYear() - 1, Period.BEGIN_DAY);

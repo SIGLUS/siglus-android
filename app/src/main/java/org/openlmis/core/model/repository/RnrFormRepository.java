@@ -29,6 +29,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
@@ -85,7 +86,7 @@ public class RnrFormRepository {
         this.context = context;
     }
 
-    public RnRForm initRnrForm(Date periodEndDate, boolean isMissedRnR) throws LMISException {
+    public RnRForm initRnrForm(Date periodEndDate) throws LMISException {
         final Program program = programRepository.queryByCode(programCode);
         if (program == null) {
             throw new LMISException("Program cannot be null !");
@@ -93,13 +94,10 @@ public class RnrFormRepository {
 
         RnRForm form;
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
-            form = RnRForm.init(program, periodService.generateNextPeriod(programCode, periodEndDate));
+            Period period = periodService.generateNextPeriod(programCode, periodEndDate);
+            form = RnRForm.init(program, period);
         } else {
             form = RnRForm.init(program, DateUtil.today());
-        }
-
-        if (isMissedRnR) {
-            form.setStatus(RnRForm.STATUS.DRAFT_MISSED);
         }
 
         final RnRForm finalRnrForm = form;
@@ -162,7 +160,7 @@ public class RnrFormRepository {
     public void submit(RnRForm form) throws LMISException {
         if (form.isMissed()) {
             form.setStatus(RnRForm.STATUS.SUBMITTED_MISSED);
-        }else {
+        } else {
             form.setStatus(RnRForm.STATUS.SUBMITTED);
         }
         save(form);

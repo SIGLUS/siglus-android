@@ -508,7 +508,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         rnrFormRepository.programCode = "P1";
         when(mockProgramRepository.queryByCode("P1")).thenReturn(new Program());
-        RnRForm rnRForm = rnrFormRepository.initRnrForm(null, false);
+        RnRForm rnRForm = rnrFormRepository.initRnrForm(null);
         assertThat(new DateTime(rnRForm.getPeriodBegin()).getDayOfMonth(), is(21));
     }
 
@@ -518,7 +518,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         when(mockPeriodService.generateNextPeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime(), new DateTime()));
         rnrFormRepository.programCode = "MMIA";
 
-        rnrFormRepository.initRnrForm(null, false);
+        rnrFormRepository.initRnrForm(null);
         verify(mockPeriodService).generateNextPeriod(rnrFormRepository.programCode, null);
     }
 

@@ -343,11 +343,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         return formId != 0;
     }
 
-    @Override
-    public boolean isMissedRnR() {
-        return isMissedPeriod;
-    }
-
     protected void onProcessButtonClick() {
         String consultationNumbers = etConsultationNumbers.getText().toString();
         presenter.processRequisition(consultationNumbers);

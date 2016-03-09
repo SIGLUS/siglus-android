@@ -13,7 +13,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.builder.ProgramBuilder;
+import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
@@ -42,12 +42,14 @@ public class PeriodServiceTest {
 
     private PeriodService periodService;
     private Program programMMIA;
+    private InventoryRepository mockInventoryRepository;
 
     @Before
     public void setup() throws LMISException {
         mockProgramRepository = mock(ProgramRepository.class);
         mockRnrFormRepository = mock(RnrFormRepository.class);
         mockStockRepository = mock(StockRepository.class);
+        mockInventoryRepository = mock(InventoryRepository.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         periodService = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(PeriodService.class);
 
@@ -217,6 +219,7 @@ public class PeriodServiceTest {
             bind(ProgramRepository.class).toInstance(mockProgramRepository);
             bind(RnrFormRepository.class).toInstance(mockRnrFormRepository);
             bind(StockRepository.class).toInstance(mockStockRepository);
+            bind(InventoryRepository.class).toInstance(mockInventoryRepository);
         }
     }
 }
