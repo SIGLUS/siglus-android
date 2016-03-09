@@ -24,10 +24,12 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.service.SyncService;
+import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.BaseView;
 
 import java.util.Date;

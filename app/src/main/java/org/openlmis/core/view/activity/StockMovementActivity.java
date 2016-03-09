@@ -95,7 +95,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @Inject
     LayoutInflater layoutInflater;
 
-    private final String TRACKER_LABEL = "Movement Completed";
     private long stockId;
     private String stockName;
 

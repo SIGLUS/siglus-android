@@ -43,8 +43,6 @@ public class LMISApp extends Application {
     private static LMISApp instance;
 
     public static long lastOperateTime = 0L;
-    private final String defaultGAEventLabel = "";
-    private final int defaultGAEventValue = 0;
     private final int facilityCustomDimensionKey = 1;
 
     @Override
@@ -110,8 +108,6 @@ public class LMISApp extends Application {
     public void trackerEvent(String category, String action) {
         Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
         mTracker.send(new HitBuilders.EventBuilder(category, action)
-                .setLabel(defaultGAEventLabel)
-                .setValue(defaultGAEventValue)
                 .setCustomDimension(facilityCustomDimensionKey, UserInfoMgr.getInstance().getFacilityName())
                 .build());
     }
