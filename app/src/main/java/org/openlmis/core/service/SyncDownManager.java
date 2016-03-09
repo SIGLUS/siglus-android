@@ -122,7 +122,7 @@ public class SyncDownManager {
                 }
             });
         } catch (LMISException e) {
-            e.reportToFabric();
+            e.printStackTrace();
         }
     }
 
