@@ -4,8 +4,8 @@
     <integer name="sync_interval">3600</integer>
     <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.staging</string>
 
-    <string name="ga_trackingId">I am a track id</string>
-    <bool name="ga_dryRun">true</bool>
+    <string name="ga_trackingId">UA-72363211-6</string>
+    <bool name="ga_dryRun">false</bool>
     
     <string name="app_name">CHAI LMIS DEMO</string>
 
