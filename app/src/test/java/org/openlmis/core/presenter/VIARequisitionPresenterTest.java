@@ -281,7 +281,7 @@ public class VIARequisitionPresenterTest {
         assertNull(presenter.getConsultationNumbers());
 
         RnRForm rnRForm = mock(RnRForm.class);
-        when(rnRForm.getBaseInfoItemListWrapper()).thenReturn(null);
+        when(rnRForm.getBaseInfoItemListWrapper()).thenReturn(new ArrayList<BaseInfoItem>());
         presenter.rnRForm = rnRForm;
 
         assertNull(presenter.getConsultationNumbers());
