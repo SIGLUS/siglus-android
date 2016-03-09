@@ -275,7 +275,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             return null;
         }
         List<BaseInfoItem> baseInfoItemListWrapper = rnRForm.getBaseInfoItemListWrapper();
-        if (baseInfoItemListWrapper == null || baseInfoItemListWrapper.get(0) == null) {
+        if (baseInfoItemListWrapper.size() == 0) {
             return null;
         }
         return rnRForm.getBaseInfoItemListWrapper().get(0).getValue();
