@@ -166,8 +166,6 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         intent.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, programCode);
         startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
-
-        TrackRnREventUtil.trackRnRListEvent(TrackerActions.CompleteInventory.getString(), programCode);
     }
 
     private void goToRequisitionPage(long rnrFormId) {

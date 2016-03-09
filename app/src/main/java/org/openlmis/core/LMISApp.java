@@ -43,7 +43,7 @@ public class LMISApp extends Application {
     private static LMISApp instance;
 
     public static long lastOperateTime = 0L;
-    private final String defaultGAEventLabel = "completed";
+    private final String defaultGAEventLabel = "";
     private final int defaultGAEventValue = 0;
     private final int facilityCustomDimensionKey = 1;
 
