@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
@@ -30,7 +29,6 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
-import org.openlmis.core.network.model.SyncDownProductsResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
@@ -117,7 +115,7 @@ public class SyncDownManagerTest {
     @Test
     public void shouldSyncDownServerData() throws Exception {
         //given
-        mockProductResponse();
+        mockSyncDownLatestProductResponse();
         mockRequisitionResponse();
         mockStockCardsResponse();
 
@@ -141,7 +139,7 @@ public class SyncDownManagerTest {
     @Test
     public void shouldOnlySyncOnceWhenInvokedTwice() throws Exception {
         //given
-        mockProductResponse();
+        mockSyncDownLatestProductResponse();
         mockRequisitionResponse();
         mockStockCardsResponse();
 
@@ -161,23 +159,7 @@ public class SyncDownManagerTest {
     }
 
     @Test
-    public void shouldSyncDownLatestProductList() throws Exception {
-        //given
-        mockProductResponse();
-
-        //when
-        syncDownManager.syncDownLatestProducts();
-
-        //then
-        verify(lmisRestApi).fetchLatestProducts(anyString(), anyString());
-        verify(programRepository).createOrUpdateProgramWithProduct(anyList());
-        verify(sharedPreferenceMgr).setLastSyncProductTime("today");
-    }
-
-    @Test
     public void shouldSyncDownNewLatestProductList() throws Exception {
-
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_kit, true);
         mockSyncDownLatestProductResponse();
         mockRequisitionResponse();
         mockStockCardsResponse();
@@ -277,11 +259,6 @@ public class SyncDownManagerTest {
 
     private void testSyncProgress(SyncProgress progress) {
         try {
-            if (progress == ProductSynced) {
-                if (!(LMISTestApp.getInstance()).getFeatureToggleFor(R.bool.feature_kit)) {
-                    verify(programRepository).createOrUpdateProgramWithProduct(any(ArrayList.class));
-                }
-            }
             if (progress == StockCardsLastMonthSynced) {
                 verifyLastMonthStockCardsSynced();
                 verify(sharedPreferenceMgr).setLastMonthStockCardDataSynced(true);
@@ -297,17 +274,6 @@ public class SyncDownManagerTest {
         } catch (LMISException e) {
             e.printStackTrace();
         }
-    }
-
-    private void mockProductResponse() throws LMISException {
-        ArrayList<Program> programsWithProducts = new ArrayList<>();
-        Program program = new Program();
-        program.setProducts(new ArrayList<Product>());
-        programsWithProducts.add(program);
-        SyncDownProductsResponse response = new SyncDownProductsResponse();
-        response.setLatestUpdatedTime("today");
-        response.setProgramsWithProducts(programsWithProducts);
-        when(lmisRestApi.fetchLatestProducts(any(String.class), any(String.class))).thenReturn(response);
     }
 
     private void mockSyncDownLatestProductResponse() throws LMISException {

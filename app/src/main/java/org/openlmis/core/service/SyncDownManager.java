@@ -21,17 +21,14 @@ package org.openlmis.core.service;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.NoFacilityForUserException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -40,7 +37,6 @@ import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
-import org.openlmis.core.network.model.SyncDownProductsResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.utils.DateUtil;
@@ -175,36 +171,11 @@ public class SyncDownManager {
     private void syncDownProducts(Subscriber<? super SyncProgress> subscriber) throws LMISException {
         try {
             subscriber.onNext(SyncProgress.SyncingProduct);
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_kit)) {
-                fetchAndSaveProductsWithProgramsAndKits();
-            } else {
-                fetchAndSaveProductsWithProgram();
-            }
+            fetchAndSaveProductsWithProgramsAndKits();
             subscriber.onNext(SyncProgress.ProductSynced);
         } catch (LMISException e) {
             e.reportToFabric();
             throw new LMISException(errorMessage(R.string.msg_sync_products_list_failed));
-        }
-    }
-
-    private void fetchAndSaveProductsWithProgram() throws LMISException {
-        User user = UserInfoMgr.getInstance().getUser();
-        if (StringUtils.isEmpty(user.getFacilityCode())) {
-            throw new NoFacilityForUserException(errorMessage(R.string.msg_user_not_facility));
-        }
-        SyncDownProductsResponse response = getSyncDownProductsResponse(user);
-
-        List<Program> programsWithProducts = response.getProgramsWithProducts();
-        updateDeactivateProductNotifyListByPrograms(programsWithProducts);
-        programRepository.createOrUpdateProgramWithProduct(programsWithProducts);
-        sharedPreferenceMgr.setLastSyncProductTime(response.getLatestUpdatedTime());
-    }
-
-    private void updateDeactivateProductNotifyListByPrograms(List<Program> programsWithProducts) throws LMISException {
-        for (Program program : programsWithProducts) {
-            for (Product product : program.getProducts()) {
-                updateDeactivateProductNotifyList(product);
-            }
         }
     }
 
@@ -261,10 +232,6 @@ public class SyncDownManager {
 
     private SyncDownLatestProductsResponse getSyncDownLatestProductResponse() throws LMISException {
         return lmisRestApi.fetchLatestProducts(sharedPreferenceMgr.getLastSyncProductTime());
-    }
-
-    private SyncDownProductsResponse getSyncDownProductsResponse(User user) throws LMISException {
-        return lmisRestApi.fetchLatestProducts(user.getFacilityId(), sharedPreferenceMgr.getLastSyncProductTime());
     }
 
     private void fetchAndSaveStockCards(String startDate, String endDate) throws LMISException {

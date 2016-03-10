@@ -2,9 +2,7 @@ package org.openlmis.core.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.network.LMISRestManagerMock;
@@ -30,7 +28,6 @@ public class SyncDownManagerIT {
         syncDownManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncDownManager.class);
         syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
         productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_kit, true);
 
         //when
         syncDownManager.syncDownLatestProducts();

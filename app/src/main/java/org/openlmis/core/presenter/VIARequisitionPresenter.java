@@ -177,9 +177,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                     RnRForm rnrForm = getRnrForm(formId);
                     requisitionFormItemViewModels.clear();
                     requisitionFormItemViewModels.addAll(getViewModelsFromRnrForm(rnrForm));
-                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_kit)) {
-                        viaKitsViewModel.convertRnrKitItemsToViaKit(rnrForm.getRnrItems(IsKit.Yes));
-                    }
+                    viaKitsViewModel.convertRnrKitItemsToViaKit(rnrForm.getRnrItems(IsKit.Yes));
                     subscriber.onNext(rnrForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
@@ -243,10 +241,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     private void dataViewToModel(String consultationNumbers) {
         List<RnrFormItem> rnrFormItems = new ArrayList<>();
         rnrFormItems.addAll(convertRnrItemViewModelsToRnrItems());
-
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_kit)) {
-            rnrFormItems.addAll(viaKitsViewModel.convertToRnrItems());
-        }
+        rnrFormItems.addAll(viaKitsViewModel.convertToRnrItems());
 
         rnRForm.setRnrFormItemListWrapper(rnrFormItems);
         if (!TextUtils.isEmpty(consultationNumbers)) {

@@ -22,8 +22,6 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Product;
@@ -46,7 +44,7 @@ public class VIARepository extends RnrFormRepository {
     @Inject
     public VIARepository(Context context) {
         super(context);
-        programCode=VIA_PROGRAM_CODE;
+        programCode = VIA_PROGRAM_CODE;
     }
 
     @Override
@@ -60,16 +58,14 @@ public class VIARepository extends RnrFormRepository {
     @Override
     protected List<RnrFormItem> generateRnrFormItems(final RnRForm form) throws LMISException {
         List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form);
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_kit)) {
-            rnrFormItems.addAll(generateKitRnrItems(form));
-        }
+        rnrFormItems.addAll(generateKitRnrItems(form));
         return rnrFormItems;
     }
 
     private List<RnrFormItem> generateKitRnrItems(RnRForm form) throws LMISException {
         List<RnrFormItem> rnrFormItems = new ArrayList<>();
 
-        for(Product product : productRepository.listActiveProducts(IsKit.Yes)) {
+        for (Product product : productRepository.listActiveProducts(IsKit.Yes)) {
             RnrFormItem rnrFormItem = new RnrFormItem();
             rnrFormItem.setProduct(product);
             rnrFormItem.setForm(form);

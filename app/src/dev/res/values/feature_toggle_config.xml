@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <bool name="feature_kit">true</bool>
-    <bool name="feature_syncup_unsync_stockcards">true</bool>
     <bool name="feature_requisition_theoretical">true</bool>
     <bool name="feature_warning_unpack_kit_quantity">true</bool>
     <bool name="feature_requisition_period_logic_change">false</bool>

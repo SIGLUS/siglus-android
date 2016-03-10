@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -20,7 +19,6 @@ public class ViaKitViewTest {
 
     @Before
     public void setUp() throws Exception {
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_kit, true);
         viaKitView = new ViaKitView(LMISTestApp.getContext());
     }
 
@@ -44,19 +42,4 @@ public class ViaKitViewTest {
         boolean validate = viaKitView.validate();
         assertFalse(validate);
     }
-
-    @Test
-    public void shouldReturnTrueWhenToggleIsOFF() throws Exception {
-        ((LMISTestApp) LMISTestApp.getInstance()).setFeatureToggle(R.bool.feature_kit, false);
-        viaKitView = new ViaKitView(LMISTestApp.getContext());
-
-        viaKitView.etKitReceivedHF.setText("");
-        viaKitView.etKitReceivedCHW.setText("");
-        viaKitView.etKitOpenedHF.setText("");
-        viaKitView.etKitOpenedCHW.setText("");
-        boolean validate = viaKitView.validate();
-        assertTrue(validate);
-        assertEquals(View.INVISIBLE, viaKitView.getVisibility());
-    }
-
 }

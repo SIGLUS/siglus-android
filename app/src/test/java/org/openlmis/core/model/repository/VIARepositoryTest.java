@@ -5,9 +5,7 @@ import com.google.inject.AbstractModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Product.IsKit;
@@ -54,8 +52,6 @@ public class VIARepositoryTest {
 
     @Test
     public void shouldGenerateRnrItemsForKitWhenInitForm() throws LMISException {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_kit, true);
-
         RnRForm form = new RnRForm();
         form.setProgram(viaProgram);
         form.setComments("Submitted Form");

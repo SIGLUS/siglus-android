@@ -33,7 +33,6 @@ import android.widget.Button;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
@@ -97,10 +96,6 @@ public class HomeActivity extends BaseActivity {
 
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            }
-
-            if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_kit)) {
-                btnKitStockCard.setVisibility(View.GONE);
             }
         }
         registerSyncTimeReceiver();

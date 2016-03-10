@@ -28,7 +28,6 @@ import com.google.inject.Module;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -67,7 +66,6 @@ public class VIARequisitionFragmentTest {
 
     @Before
     public void setup() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_kit, true);
         presenter = mock(VIARequisitionPresenter.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
             @Override
