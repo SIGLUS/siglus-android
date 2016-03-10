@@ -198,9 +198,9 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             actionPanel.setVisibility(View.VISIBLE);
         }
 
-        if(isMissedPeriod||presenter.getRnRForm().isMissed()){
+        if (isMissedPeriod || presenter.getRnRForm().isMissed()) {
             requisitionForm.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        }else {
+        } else {
             requisitionForm.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
         }
     }

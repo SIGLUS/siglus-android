@@ -56,6 +56,7 @@ import roboguice.RoboGuice;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
@@ -520,6 +521,19 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         rnrFormRepository.initRnrForm(null);
         verify(mockPeriodService).generateNextPeriod(rnrFormRepository.programCode, null);
+    }
+
+    @Test
+    public void shouldSetRightSubmittedTypeWhenStatusIsMissed() throws Exception {
+        RnRForm form = new RnRForm();
+        form.setStatus(RnRForm.STATUS.DRAFT_MISSED);
+        rnrFormRepository.submit(form);
+        assertTrue(form.isMissed());
+        assertTrue(form.isSubmitted());
+
+        form.setStatus(RnRForm.STATUS.DRAFT);
+        rnrFormRepository.submit(form);
+        assertThat(form.getStatus(), is(RnRForm.STATUS.SUBMITTED));
     }
 
     public class MyTestModule extends AbstractModule {
