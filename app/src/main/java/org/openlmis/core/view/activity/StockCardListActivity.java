@@ -25,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import org.openlmis.core.R;
+import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.StockCardListFragment;
 
@@ -38,8 +39,8 @@ public class StockCardListActivity extends SearchBarActivity {
     protected StockCardListFragment stockCardFragment;
 
     @Override
-    protected String getScreenName() {
-        return ScreenName.StockCardOverviewScreen.getScreenName();
+    protected ScreenName getScreenName() {
+        return ScreenName.StockCardOverviewScreen;
     }
 
     @Override

@@ -35,6 +35,7 @@ import android.widget.TextView;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.LoginPresenter;
 import org.openlmis.core.utils.InjectPresenter;
@@ -79,13 +80,13 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     @Override
-    protected String getScreenName() {
+    protected ScreenName getScreenName() {
         return null;
     }
 
     @Override
     public void sendScreenToGoogleAnalyticsAfterLogin() {
-        LMISApp.getInstance().trackerScreen(ScreenName.LoginScreen.getScreenName());
+        LMISApp.getInstance().trackScreen(ScreenName.LoginScreen);
     }
 
     @Override

@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import org.openlmis.core.R;
+import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.MMIARequisitionFragment;
 
@@ -33,8 +34,8 @@ import roboguice.inject.ContentView;
 public class MMIARequisitionActivity extends BaseActivity {
 
     @Override
-    protected String getScreenName() {
-        return ScreenName.MMIARequisitionScreen.getScreenName();
+    protected ScreenName getScreenName() {
+        return ScreenName.MMIARequisitionScreen;
     }
 
     @Override

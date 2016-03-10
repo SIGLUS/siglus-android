@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.presenter.UnpackKitPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
@@ -49,8 +50,8 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
     }
 
     @Override
-    protected String getScreenName() {
-        return ScreenName.UnpackKitScreen.getScreenName();
+    protected ScreenName getScreenName() {
+        return ScreenName.UnpackKitScreen;
     }
 
     @Override

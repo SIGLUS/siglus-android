@@ -12,7 +12,7 @@ public enum TrackerCategories {
         this.trackerCategory = trackerCategory;
     }
 
-    public String getString() {
+    public String getString(){
         return this.trackerCategory;
     }
 }

@@ -38,6 +38,7 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.DummyPresenter;
 import org.openlmis.core.presenter.Presenter;
@@ -109,13 +110,13 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
         sendScreenToGoogleAnalytics();
     }
 
-    protected abstract String getScreenName();
+    protected abstract ScreenName getScreenName();
 
     protected void sendScreenToGoogleAnalytics() {
-        String screenName = getScreenName();
+        ScreenName screenName = getScreenName();
 
         if (screenName != null) {
-            LMISApp.getInstance().trackerScreen(screenName);
+            LMISApp.getInstance().trackScreen(screenName);
         }
     };
 
@@ -281,31 +282,5 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
         }
     }
 
-    public enum ScreenName {
-        HomeScreen("Home Screen"),
-        InventoryScreen("Inventory Screen"),
-        KitStockCardOverviewScreen("Kit StockCard Overview Screen"),
-        LoginScreen("Login Screen"),
-        MMIARequisitionScreen("MMIA Requisition Screen"),
-        VIARequisitionScreen("VIA Requisition Screen"),
-        RnRFormHistoryScreen("RnR Form History Screen"),
-        StockCardOverviewScreen("StockCard Overview Screen"),
-        StockCardMovementScreen("StockCard Movement Screen"),
-        StockCardMovementHistoryScreen("StockCard Movement History Screen"),
-        ArchivedDrugsListScreen("Archived Drugs List Screen"),
-        SelectPeriodScreen("Select Period Screen"),
-        SelectUnpackKitNumberScreen("Select Unpack Kit Number Screen"),
-        UnpackKitScreen("Uppack Kit Screen");
-
-        private final String screenName;
-
-        ScreenName(String ScreenName) {
-            this.screenName = ScreenName;
-        }
-
-        public String getScreenName() {
-            return this.screenName;
-        }
-    }
 }
 

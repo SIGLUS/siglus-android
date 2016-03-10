@@ -2,6 +2,8 @@ package org.openlmis.core;
 
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.googleAnalytics.TrackerActions;
+import org.openlmis.core.googleAnalytics.TrackerCategories;
 
 import java.util.HashMap;
 
@@ -63,6 +65,6 @@ public class LMISTestApp extends LMISApp {
     }
 
     @Override
-    public void trackerEvent(String category, String action) {
+    public void trackEvent(TrackerCategories category, TrackerActions action) {
     }
 }

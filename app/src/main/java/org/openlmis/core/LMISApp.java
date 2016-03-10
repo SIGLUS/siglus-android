@@ -31,6 +31,9 @@ import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.AnalyticsTrackers;
+import org.openlmis.core.googleAnalytics.ScreenName;
+import org.openlmis.core.googleAnalytics.TrackerActions;
+import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.network.NetworkConnectionManager;
@@ -97,17 +100,17 @@ public class LMISApp extends Application {
         Crashlytics.logException(exception);
     }
 
-    public void trackerScreen(String screenName) {
+    public void trackScreen(ScreenName screenName) {
         Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
-        mTracker.setScreenName(screenName);
+        mTracker.setScreenName(screenName.getScreenName());
         mTracker.send(new HitBuilders.ScreenViewBuilder()
                 .setCustomDimension(facilityCustomDimensionKey, UserInfoMgr.getInstance().getFacilityName())
                 .build());
     }
 
-    public void trackerEvent(String category, String action) {
+    public void trackEvent(TrackerCategories category, TrackerActions action) {
         Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
-        mTracker.send(new HitBuilders.EventBuilder(category, action)
+        mTracker.send(new HitBuilders.EventBuilder(category.getString(), action.getString())
                 .setCustomDimension(facilityCustomDimensionKey, UserInfoMgr.getInstance().getFacilityName())
                 .build());
     }

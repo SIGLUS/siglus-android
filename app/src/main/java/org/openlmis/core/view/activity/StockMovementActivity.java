@@ -38,6 +38,7 @@ import com.google.inject.Inject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.model.Product;
@@ -105,8 +106,8 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     private boolean isKit;
 
     @Override
-    protected String getScreenName() {
-        return ScreenName.StockCardMovementScreen.getScreenName();
+    protected ScreenName getScreenName() {
+        return ScreenName.StockCardMovementScreen;
     }
 
     @Override
@@ -225,7 +226,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             StockMovementViewModel stockMovementViewModel = stockMovementAdapter.getEditableStockMovement();
             stockMovementViewModel.setSignature(sign);
             presenter.saveAndRefresh(stockMovementViewModel);
-            LMISApp.getInstance().trackerEvent(TrackerCategories.StockMovement.getString(), TrackerActions.SelectApprove.getString());
+            LMISApp.getInstance().trackEvent(TrackerCategories.StockMovement, TrackerActions.SelectApprove);
         }
     };
 
@@ -334,7 +335,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         switch (v.getId()) {
             case R.id.btn_complete:
                 presenter.submitStockMovement(stockMovementAdapter.getEditableStockMovement());
-                LMISApp.getInstance().trackerEvent(TrackerCategories.StockMovement.getString(), TrackerActions.SelectComplete.getString());
+                LMISApp.getInstance().trackEvent(TrackerCategories.StockMovement, TrackerActions.SelectComplete);
                 break;
             case R.id.btn_cancel:
                 StockMovementViewHolder viewHolder = (StockMovementViewHolder) stockMovementList.getChildAt(stockMovementList.getChildCount() - 1).getTag();

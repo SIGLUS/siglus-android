@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.utils.InjectPresenter;
@@ -38,8 +39,8 @@ public class ArchivedDrugsListActivity extends SearchBarActivity implements Stoc
     }
 
     @Override
-    protected String getScreenName() {
-        return ScreenName.ArchivedDrugsListScreen.getScreenName();
+    protected ScreenName getScreenName() {
+        return ScreenName.ArchivedDrugsListScreen;
     }
 
     @Override

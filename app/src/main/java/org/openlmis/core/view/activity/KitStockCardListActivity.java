@@ -3,6 +3,7 @@ package org.openlmis.core.view.activity;
 import android.view.Menu;
 
 import org.openlmis.core.R;
+import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.view.fragment.KitStockCardListFragment;
 import org.openlmis.core.view.fragment.StockCardListFragment;
 
@@ -14,8 +15,8 @@ public class KitStockCardListActivity extends StockCardListActivity {
     }
 
     @Override
-    protected String getScreenName() {
-        return ScreenName.KitStockCardOverviewScreen.getScreenName();
+    protected ScreenName getScreenName() {
+        return ScreenName.KitStockCardOverviewScreen;
     }
 
     @Override

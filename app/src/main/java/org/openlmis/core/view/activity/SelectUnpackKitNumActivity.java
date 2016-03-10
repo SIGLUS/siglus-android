@@ -9,6 +9,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.adapter.UnpackNumAdapter;
 
@@ -34,8 +35,8 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
     private static final String PARAM_KIT_SOH = "param_kit_soh";
 
     @Override
-    protected String getScreenName() {
-        return ScreenName.SelectUnpackKitNumberScreen.getScreenName();
+    protected ScreenName getScreenName() {
+        return ScreenName.SelectUnpackKitNumberScreen;
     }
 
     @Override

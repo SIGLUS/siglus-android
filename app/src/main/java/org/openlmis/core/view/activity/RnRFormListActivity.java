@@ -26,6 +26,7 @@ import android.support.v7.widget.RecyclerView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
@@ -66,8 +67,8 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     private RnRFormListAdapter adapter;
 
     @Override
-    protected String getScreenName() {
-        return ScreenName.RnRFormHistoryScreen.getScreenName();
+    protected ScreenName getScreenName() {
+        return ScreenName.RnRFormHistoryScreen;
     }
 
     @Override
@@ -144,7 +145,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
                     break;
                 case RnRFormViewModel.TYPE_INVENTORY_DONE:
                     startActivityForResult(SelectPeriodActivity.getIntentToMe(RnRFormListActivity.this, model.getProgramCode()), Constants.REQUEST_SELECT_PERIOD_END);
-                    TrackRnREventUtil.trackRnRListEvent(TrackerActions.CreateRnR.getString(), programCode);
+                    TrackRnREventUtil.trackRnRListEvent(TrackerActions.CreateRnR, programCode);
                     break;
                 case RnRFormViewModel.TYPE_SYNCED_HISTORICAL:
                     rnrFormId = model.getId();

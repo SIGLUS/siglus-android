@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import org.openlmis.core.R;
+import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.utils.Constants;
 
 import roboguice.inject.ContentView;
@@ -33,8 +34,8 @@ public class StockMovementHistoryActivity extends BaseActivity {
     private boolean isKit;
 
     @Override
-    protected String getScreenName() {
-        return ScreenName.StockCardMovementHistoryScreen.getScreenName();
+    protected ScreenName getScreenName() {
+        return ScreenName.StockCardMovementHistoryScreen;
     }
 
     @Override

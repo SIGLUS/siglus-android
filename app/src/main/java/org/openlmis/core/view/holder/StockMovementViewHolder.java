@@ -210,7 +210,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
             public void onClick(View v) {
                 if (model.isDraft()) {
                     new MovementTypeDialog(context, new MovementSelectListener(model)).show();
-                    trackStockMovementEvent(TrackerActions.SelectReason.getString());
+                    trackStockMovementEvent(TrackerActions.SelectReason);
                 }
             }
         });
@@ -220,14 +220,14 @@ public class StockMovementViewHolder extends BaseViewHolder {
             public void onClick(View v) {
                 if (model.isDraft()) {
                     showDatePickerDialog(model, previousMovementDate);
-                    trackStockMovementEvent(TrackerActions.SelectMovementDate.getString());
+                    trackStockMovementEvent(TrackerActions.SelectMovementDate);
                 }
             }
         });
     }
 
-    private void trackStockMovementEvent(String action) {
-        LMISApp.getInstance().trackerEvent(TrackerCategories.StockMovement.getString(), action);
+    private void trackStockMovementEvent(TrackerActions action) {
+        LMISApp.getInstance().trackEvent(TrackerCategories.StockMovement, action);
     }
 
     private void showDatePickerDialog(final StockMovementViewModel model, final Date previousMovementDate) {

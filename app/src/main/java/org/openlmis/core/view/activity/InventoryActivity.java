@@ -32,6 +32,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.model.StockCard;
@@ -82,8 +83,8 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
     private boolean isAddNewDrug;
 
     @Override
-    protected String getScreenName() {
-        return ScreenName.InventoryScreen.getScreenName();
+    protected ScreenName getScreenName() {
+        return ScreenName.InventoryScreen;
     }
 
     @Override
@@ -100,7 +101,7 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
             initInitialInventoryUI();
         }
 
-        trackInventoryEvent(TrackerActions.SelectInventory.getString());
+        trackInventoryEvent(TrackerActions.SelectInventory);
     }
 
     @Override
@@ -130,13 +131,13 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
             @Override
             public void onClick(View v) {
                 presenter.signPhysicalInventory();
-                trackInventoryEvent(TrackerActions.CompleteInventory.getString());
+                trackInventoryEvent(TrackerActions.CompleteInventory);
             }
         });
     }
 
-    private void trackInventoryEvent(String action) {
-        LMISApp.getInstance().trackerEvent(TrackerCategories.Inventory.getString(), action);
+    private void trackInventoryEvent(TrackerActions action) {
+        LMISApp.getInstance().trackEvent(TrackerCategories.Inventory, action);
     }
 
     @Override
@@ -257,7 +258,7 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
         public void onSign(String sign) {
             presenter.doPhysicalInventory(mAdapter.getData(), sign);
 
-            trackInventoryEvent(TrackerActions.ApproveInventory.getString());
+            trackInventoryEvent(TrackerActions.ApproveInventory);
         }
     };
 

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
@@ -54,8 +55,8 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     private boolean isMissedPeriod;
 
     @Override
-    protected String getScreenName() {
-        return ScreenName.SelectPeriodScreen.getScreenName();
+    protected ScreenName getScreenName() {
+        return ScreenName.SelectPeriodScreen;
     }
 
     @Override
@@ -112,7 +113,7 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
                 intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, selectedInventory.getInventoryDate());
                 intent.putExtra(Constants.PARAM_IS_MISSED_PERIOD, isMissedPeriod);
 
-                TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectPeriod.getString(), programCode);
+                TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectPeriod, programCode);
 
                 setResult(RESULT_OK, intent);
                 finish();
