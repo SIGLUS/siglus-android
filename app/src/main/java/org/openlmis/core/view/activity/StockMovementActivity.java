@@ -164,12 +164,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         btnComplete.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
         btnUnpack.setOnClickListener(this);
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_show_cmm_on_stock_movement_page_227)) {
-            tvCmm.setText(presenter.getStockCardCmm());
-        } else {
-            tvCmm.setVisibility(View.GONE);
-            tvCmmLabel.setVisibility(View.GONE);
-        }
+        tvCmm.setText(presenter.getStockCardCmm());
 
         updateExpiryDateViewGroup();
     }
