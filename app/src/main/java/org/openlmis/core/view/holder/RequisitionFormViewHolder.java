@@ -9,7 +9,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.utils.SingleTextWatcher;
@@ -78,11 +77,6 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
     }
 
     private void populateAdjustmentTheoreticalIcon(final RequisitionFormItemViewModel itemViewModel) {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_theoretical)) {
-            adjustTheoreticalIcon.setVisibility(View.GONE);
-            return;
-        }
-
         if (itemViewModel.getAdjustmentViewModels() == null || itemViewModel.getAdjustmentViewModels().size() == 0) {
             adjustTheoreticalIcon.setVisibility(View.GONE);
         } else {

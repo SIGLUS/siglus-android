@@ -8,7 +8,6 @@ import android.view.View;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
@@ -90,7 +89,6 @@ public class RequisitionFormViewHolderTest {
 
     @Test
     public void shouldOnlyShowAdjustIconWhenAdjustmentQuantityIsNotZero() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_theoretical, true);
         viewHolder.populate(viewModel, RnRForm.STATUS.DRAFT);
 
         assertThat(viewHolder.adjustTheoreticalIcon.getVisibility(), is(View.GONE));
@@ -103,8 +101,6 @@ public class RequisitionFormViewHolderTest {
 
     @Test
     public void shouldShowPopTipsTotalReminderIconClicked() {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_theoretical, true);
-
         viewModel.setAdjustmentViewModels(Arrays.asList(generateAdjustmentViewModel()));
         viewHolder.populate(viewModel, RnRForm.STATUS.DRAFT);
 

@@ -131,9 +131,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     private void adjustTheoretical(RequisitionFormItemViewModel requisitionFormItemViewModel) {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_theoretical)) {
-            return;
-        }
         Product product = requisitionFormItemViewModel.getItem().getProduct();
         requisitionFormItemViewModel.setAdjustmentViewModels(generateAdjustInfo(product));
     }

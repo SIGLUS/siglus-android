@@ -391,7 +391,6 @@ public class VIARequisitionPresenterTest {
 
     @Test
     public void shouldSetAdjustKitProductAmount() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_theoretical, true);
         RnRForm rnRForm = new RnRForm();
         presenter.rnRForm = rnRForm;
 
@@ -432,7 +431,6 @@ public class VIARequisitionPresenterTest {
     public void shouldNotSetAdjustKitProductAmountInHistoryForm() throws Exception {
         when(VIARequisitionFragment.isHistoryForm()).thenReturn(true);
 
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_theoretical, true);
         RnRForm rnRForm = new RnRForm();
         presenter.rnRForm = rnRForm;
 
@@ -468,7 +466,6 @@ public class VIARequisitionPresenterTest {
 
     @Test
     public void shouldNotAddAdjustItemsWhenKitIsNotFound() throws LMISException {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_theoretical, true);
         RnRForm rnRForm = new RnRForm();
         presenter.rnRForm = rnRForm;
 

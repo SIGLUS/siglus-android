@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <bool name="feature_show_pop_up_even_no_data_changed_418">true</bool>
-    <bool name="feature_requisition_theoretical">true</bool>
     <bool name="feature_warning_unpack_kit_quantity">true</bool>
     <bool name="feature_requisition_period_logic_change">true</bool>
     <bool name="feature_auto_quantities_in_kit">true</bool>
