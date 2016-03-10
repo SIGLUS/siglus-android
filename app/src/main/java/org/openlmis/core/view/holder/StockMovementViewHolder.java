@@ -443,16 +443,8 @@ public class StockMovementViewHolder extends BaseViewHolder {
         private boolean validateStockMovementDate(Date previousMovementDate, Date chosenDate) {
             Calendar today = GregorianCalendar.getInstance();
 
-            if (previousMovementDate != null && previousMovementDate.after(chosenDate)) {
-                return false;
-            }
-
-            if (chosenDate.after(today.getTime())) {
-                return false;
-            }
-
-            return true;
+            return previousMovementDate == null || !previousMovementDate.after(chosenDate) && !chosenDate.after(today.getTime());
         }
-    };
+    }
 
 }
