@@ -101,17 +101,22 @@ public class LMISApp extends Application {
     }
 
     public void trackScreen(ScreenName screenName) {
-        Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
-        mTracker.setScreenName(screenName.getScreenName());
-        mTracker.send(new HitBuilders.ScreenViewBuilder()
-                .setCustomDimension(facilityCustomDimensionKey, UserInfoMgr.getInstance().getFacilityName())
-                .build());
+        if (UserInfoMgr.getInstance() != null) {
+            Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
+            mTracker.setScreenName(screenName.getScreenName());
+            mTracker.send(new HitBuilders.ScreenViewBuilder()
+                    .setCustomDimension(facilityCustomDimensionKey, UserInfoMgr.getInstance().getFacilityName())
+                    .build());
+        }
     }
 
     public void trackEvent(TrackerCategories category, TrackerActions action) {
-        Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
-        mTracker.send(new HitBuilders.EventBuilder(category.getString(), action.getString())
-                .setCustomDimension(facilityCustomDimensionKey, UserInfoMgr.getInstance().getFacilityName())
-                .build());
+        if (UserInfoMgr.getInstance() != null) {
+            Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
+            mTracker.send(new HitBuilders.EventBuilder(category.getString(), action.getString())
+                    .setCustomDimension(facilityCustomDimensionKey, UserInfoMgr.getInstance().getFacilityName())
+                    .build());
+        }
     }
+
 }

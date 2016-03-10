@@ -165,7 +165,6 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     private void clickCompleteInventory() {
         Intent intent = new Intent(RnRFormListActivity.this, InventoryActivity.class);
         intent.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
-        intent.putExtra(Constants.PARAM_PROGRAM_CODE, programCode);
         startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
     }
 
@@ -217,5 +216,4 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
             }
         };
     }
-
 }
