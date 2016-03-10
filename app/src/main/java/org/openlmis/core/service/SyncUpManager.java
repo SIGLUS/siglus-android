@@ -23,8 +23,6 @@ import android.util.Log;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
@@ -138,10 +136,6 @@ public class SyncUpManager {
     }
 
     public void syncUpUnSyncedStockCardCodes() {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_syncup_unsync_stockcards)) {
-            return;
-        }
-
         if (sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()) {
             return;
         }
