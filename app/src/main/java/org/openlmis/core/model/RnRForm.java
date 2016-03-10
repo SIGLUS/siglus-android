@@ -148,7 +148,7 @@ public class RnRForm extends BaseModel {
         DateTime today = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
         DateTime periodEnd = period.getEnd();
         int monthOffset = DateUtil.calculateMonthOffset(today, periodEnd);
-        if (monthOffset > 0 || (monthOffset == 0 && today.getDayOfMonth() > Period.INVENTORY_END_DAY_NEXT)) {
+        if (monthOffset > 0 || (monthOffset == 0 && today.getDayOfMonth() >= Period.INVENTORY_END_DAY_NEXT)) {
             return true;
         }
         return false;
