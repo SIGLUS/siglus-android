@@ -89,7 +89,7 @@ public class StockCardViewHolder extends BaseViewHolder {
         DateTime earliestExpiryDate = new DateTime(DateUtil.parseString(earliestExpiryDateString, DateUtil.SIMPLE_DATE_FORMAT));
         DateTime currentTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
 
-        if (earliestExpiryDate.isBefore(currentTime) || isExpiryDateInCurrentMonth(earliestExpiryDate, currentTime)) {
+        if (inventoryViewModel.getStockOnHand() > 0 && (earliestExpiryDate.isBefore(currentTime) || isExpiryDateInCurrentMonth(earliestExpiryDate, currentTime))) {
             ivExpiryDateWarning.setVisibility(View.VISIBLE);
         }
     }

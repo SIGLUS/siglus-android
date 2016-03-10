@@ -140,4 +140,18 @@ public class StockCardViewHolderTest {
 
         assertThat(viewHolder.ivExpiryDateWarning.getVisibility()).isEqualTo(View.GONE);
     }
+
+    @Test
+    public void shouldNotShowExpiryDateWarningWhenStockOnHandIsZero() {
+        Date mockCurrentDate = DateUtil.parseString("16/02/2016", DateUtil.SIMPLE_DATE_FORMAT);
+        LMISTestApp.getInstance().setCurrentTimeMillis(mockCurrentDate.getTime());
+        StockCard stockCard = StockCardBuilder.buildStockCard();
+        stockCard.setExpireDates("19/02/2016");
+        stockCard.setStockOnHand(0);
+        InventoryViewModel inventoryViewModel = new InventoryViewModel(stockCard);
+
+        viewHolder.inflateDate(inventoryViewModel, "");
+
+        assertThat(viewHolder.ivExpiryDateWarning.getVisibility()).isEqualTo(View.GONE);
+    }
 }
