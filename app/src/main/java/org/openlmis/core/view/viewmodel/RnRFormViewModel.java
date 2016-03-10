@@ -19,6 +19,7 @@
 package org.openlmis.core.view.viewmodel;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Period;
@@ -47,7 +48,7 @@ public class RnRFormViewModel {
     int type;
     String syncedDate;
     String period;
-    String periodEndMonth;
+    DateTime periodEndMonth;
     String title;
     String name;
     long id;
@@ -69,6 +70,7 @@ public class RnRFormViewModel {
         this.period = generatePeriod(form.getPeriodBegin(), form.getPeriodEnd());
         this.id = form.getId();
         this.programCode = form.getProgram().getProgramCode();
+        periodEndMonth = new DateTime(form.getPeriodEnd());
         setName(programCode);
         setType(form);
     }
@@ -77,7 +79,8 @@ public class RnRFormViewModel {
         this.period = generatePeriod(period.getBegin().toDate(), period.getEnd().toDate());
         this.type = type;
         this.programCode = programCode;
-        this.periodEndMonth = DateUtil.getMonthAbbrByDate(period.getEnd().toDate());
+//        this.periodEndMonth = DateUtil.getMonthAbbrByDate(period.getEnd().toDate());
+        periodEndMonth = period.getEnd();
         setName(programCode);
     }
 
@@ -114,6 +117,7 @@ public class RnRFormViewModel {
     public static RnRFormViewModel buildMissedPeriod(Date startDate, Date endDate) {
         RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
         rnRFormViewModel.type = TYPE_MISSED_PERIOD;
+        rnRFormViewModel.periodEndMonth = new DateTime(endDate);
         rnRFormViewModel.period = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDateWithoutDay(startDate), DateUtil.formatDateWithoutDay(endDate));
         return rnRFormViewModel;
     }
@@ -122,6 +126,7 @@ public class RnRFormViewModel {
         RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
         rnRFormViewModel.setProgramCode(programCode);
         rnRFormViewModel.type = TYPE_FIRST_MISSED_PERIOD;
+        rnRFormViewModel.periodEndMonth = new DateTime(endDate);
         rnRFormViewModel.period = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDateWithoutYear(startDate), DateUtil.formatDateWithoutDay(endDate));
         return rnRFormViewModel;
     }
