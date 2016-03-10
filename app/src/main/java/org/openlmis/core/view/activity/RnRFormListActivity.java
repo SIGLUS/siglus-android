@@ -141,7 +141,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         public void clickBtnView(RnRFormViewModel model) {
             switch (model.getType()) {
                 case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD:
-                    clickCompleteInventory();
+                    startActivityForResult(InventoryActivity.getIntentToMe(RnRFormListActivity.this, false, true), Constants.REQUEST_FROM_RNR_LIST_PAGE);
                     break;
                 case RnRFormViewModel.TYPE_INVENTORY_DONE:
                     startActivityForResult(SelectPeriodActivity.getIntentToMe(RnRFormListActivity.this, model.getProgramCode()), Constants.REQUEST_SELECT_PERIOD_END);
@@ -161,12 +161,6 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
             }
         }
     };
-
-    private void clickCompleteInventory() {
-        Intent intent = new Intent(RnRFormListActivity.this, InventoryActivity.class);
-        intent.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
-        startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
-    }
 
     private void goToRequisitionPage(long rnrFormId) {
         if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {

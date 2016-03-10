@@ -313,13 +313,19 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
         dialogFragment.show(getFragmentManager(), "");
     }
 
-    public static Intent getIntentToMe(Context context) {
-        return getIntentToMe(context, false);
-    }
-
     public static Intent getIntentToMe(Context context, boolean isAddNewDrug) {
         return new Intent(context, InventoryActivity.class)
                 .putExtra(Constants.PARAM_IS_ADD_NEW_DRUG, isAddNewDrug);
+    }
+
+    public static Intent getIntentToMe(Context context, boolean isAddNewDrug, boolean isPhysicalInventory) {
+        return new Intent(context, InventoryActivity.class)
+                .putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, isPhysicalInventory)
+                .putExtra(Constants.PARAM_IS_ADD_NEW_DRUG, isAddNewDrug);
+    }
+
+    public static Intent getIntentToMe(Context context) {
+        return getIntentToMe(context, false);
     }
 
     private void setTotal(int total) {
