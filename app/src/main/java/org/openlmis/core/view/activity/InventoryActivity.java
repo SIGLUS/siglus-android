@@ -114,26 +114,27 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
 
         final List<InventoryViewModel> list = new ArrayList<>();
         ((ViewGroup) bottomBtn.getParent()).removeView(bottomBtn);
-        mAdapter = new PhysicalInventoryAdapter(list, bottomBtn);
+        View.OnClickListener saveClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.savePhysicalInventory(mAdapter.getData());
+            }
+        };
+        View.OnClickListener completeClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.signPhysicalInventory();
+                trackInventoryEvent(TrackerActions.CompleteInventory);
+            }
+        };
+        mAdapter = new PhysicalInventoryAdapter(list, saveClickListener, completeClickListener);
         productListRecycleView.setAdapter(mAdapter);
 
         loading();
         Subscription subscription = presenter.loadPhysicalInventory().subscribe(stockCardSubscriber);
         subscriptions.add(subscription);
 
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.savePhysicalInventory(mAdapter.getData());
-            }
-        });
-        btnDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.signPhysicalInventory();
-                trackInventoryEvent(TrackerActions.CompleteInventory);
-            }
-        });
+        btnDone.setOnClickListener(completeClickListener);
     }
 
     private void trackInventoryEvent(TrackerActions action) {
