@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
@@ -61,7 +60,6 @@ public class UnpackKitViewHolderTest {
 
     @Test
     public void shouldChangePopUIWhenQuantityChanged() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_warning_unpack_kit_quantity, true);
         InventoryViewModel viewModel = new StockCardViewModelBuilder(product)
                 .setQuantity("100")
                 .setKitExpectQuantity(100l)

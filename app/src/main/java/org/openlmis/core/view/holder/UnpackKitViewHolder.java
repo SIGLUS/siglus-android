@@ -48,10 +48,6 @@ public class UnpackKitViewHolder extends PhysicalInventoryViewHolder {
     }
 
     protected void updatePop(InventoryViewModel viewModel, String quantity) {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_warning_unpack_kit_quantity)) {
-            return;
-        }
-
         if (TextUtils.isEmpty(quantity)) {
             setDefaultPop();
             return;
