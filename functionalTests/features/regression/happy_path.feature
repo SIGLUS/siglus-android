@@ -3,7 +3,7 @@ Feature: Log in and initialize Inventory
 
   Scenario: User should be able to log in, initialize inventory and navigate to stock overview page
 
-    Given I change device date to "20160116.130000"
+    Given I change device date to "20160216.130000"
     #Unauthenrised account shouldn't login to the app
     Given I try to log in with "testlogin" "password1"
     And I should see "Username or Password is incorrect."
@@ -209,7 +209,7 @@ Feature: Log in and initialize Inventory
     Then I should see "Select inventory to close period"
     And I press "Thursday"
     And I press "Next"
-    Then I should see "to 18 Jan"
+    Then I should see "to 18 Feb"
 
     Then I should not see "01A01"
 
@@ -227,7 +227,7 @@ Feature: Log in and initialize Inventory
     And I press "Thursday"
     And I press "Next"
     Then I wait for "MMIA -" to appear
-    Then I should see "to 18 Jan"
+    Then I should see "to 18 Feb"
 
     Then I swipe right
     Then I wait for 1 second
