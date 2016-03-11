@@ -7,8 +7,6 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.repository.InventoryRepository;
-import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
@@ -20,16 +18,10 @@ import java.util.List;
 public class PeriodService {
 
     @Inject
-    ProgramRepository programRepository;
-
-    @Inject
     RnrFormRepository rnrFormRepository;
 
     @Inject
     StockRepository stockRepository;
-
-    @Inject
-    InventoryRepository inventoryRepository;
 
     public Period generateNextPeriod(String programCode, Date physicalInventoryDate) throws LMISException {
         List<RnRForm> rnRForms = rnrFormRepository.list(programCode);
