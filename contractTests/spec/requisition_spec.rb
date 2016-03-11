@@ -12,8 +12,8 @@ describe "submit requisition to web server" do
       agentCode: "HF2",
       programCode: "ESS_MEDS",
       clientSubmittedTime: "2015-10-27 11:11:20",
-      actualPeriodStartDate: "2016-03-17 11:11:20",
-      actualPeriodEndDate: "2016-03-27 11:11:20",
+      actualPeriodStartDate: "2016-01-17 11:11:20",
+      actualPeriodEndDate: "2016-02-27 11:11:20",
       rnrSignatures: [
       {
         type: "SUBMITTER",
@@ -86,8 +86,8 @@ describe "submit requisition to web server" do
       programCode: "MMIA",
       clientSubmittedNotes: "I don't know",
       clientSubmittedTime: "2015-10-27 11:20:20",
-      actualPeriodStartDate: "2016-03-17 11:11:20",
-      actualPeriodEndDate: "2016-03-27 11:11:20",
+      actualPeriodStartDate: "2016-01-17 11:11:20",
+      actualPeriodEndDate: "2016-02-27 11:11:20",
       rnrSignatures: [
       {
         type: "SUBMITTER",
