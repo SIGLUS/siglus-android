@@ -2,15 +2,15 @@
 Feature: MMIA
 
   Background: Navigate to Home Page
-    Given I change device date to "20160116.130000"
+    Given I change device date to "20160216.130000"
     And I try to log in with "mmia" "password1"
 
   Scenario: Initial a MMIA
     Given I have initialized inventory with MMIA user
     And I press "MMIA"
     Then I wait for "MMIA" to appear
-    Then I should see text containing "You will be able to create a requisition on the 18th of Jan"
-    And I change device date to "20160121.140000"
+    Then I should see text containing "You will be able to create a requisition on the 18th of Feb"
+    And I change device date to "20160221.140000"
     And I navigate back
     And I wait for 2 seconds
     And I try to log in with "mmia" "password1"
@@ -34,7 +34,7 @@ Feature: MMIA
 
     Then I press "Create MMIA"
     Then I should see "Select inventory to close period"
-    And I press "Thursday"
+    And I press "Sunday"
     And I press "Next"
     Then I wait for "MMIA -" to appear
     Then I wait for 1 second
@@ -57,7 +57,7 @@ Feature: MMIA
     Then I wait for 1 second
 
     Then I press "Create MMIA"
-    And I press "Thursday"
+    And I press "Sunday"
     And I press "Next"
     Then I wait for "MMIA -" to appear
     Then I wait for 1 second
