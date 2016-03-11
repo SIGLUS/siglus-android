@@ -9,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.presenter.UnpackKitPresenter;
@@ -65,7 +64,7 @@ public class UnpackKitActivityTest {
     public void shouldSaveUnpackMovementsWhenQuantityIsValid() throws Exception {
         stockMovementActivity.refreshList(Arrays.asList(viewModel));
 
-        stockMovementActivity.mAdapter.onCreateViewHolder(stockMovementActivity.productListRecycleView, 1).itemView.findViewById(R.id.btn_complete).performClick();
+        stockMovementActivity.completeBtn.performClick();
 
         verify(mockedPresenter).saveUnpackProducts(1);
     }
@@ -75,7 +74,7 @@ public class UnpackKitActivityTest {
         viewModel.setQuantity("");
         stockMovementActivity.refreshList(Arrays.asList(viewModel));
 
-        stockMovementActivity.mAdapter.onCreateViewHolder(stockMovementActivity.productListRecycleView, 1).itemView.findViewById(R.id.btn_complete).performClick();
+        stockMovementActivity.completeBtn.performClick();
 
         verify(mockedPresenter, never()).saveUnpackProducts(1);
     }

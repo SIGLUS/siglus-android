@@ -22,6 +22,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.PhysicalInventoryViewHolder;
@@ -30,37 +31,62 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import java.util.List;
 
 
-public class PhysicalInventoryAdapter extends InventoryListAdapterWithBottomBtn implements FilterableAdapter {
+public class PhysicalInventoryAdapter extends InventoryListAdapter<RecyclerView.ViewHolder> implements FilterableAdapter {
 
-    private final View.OnClickListener saveClickListener;
-    private final View.OnClickListener completeClickListener;
+    private static final int TYPE_ITEM = 0;
+    private static final int TYPE_FOOTER = 1;
 
-    public PhysicalInventoryAdapter(List<InventoryViewModel> data, View.OnClickListener saveClickListener, View.OnClickListener completeClickListener) {
+    private View footView;
+
+    public PhysicalInventoryAdapter(List<InventoryViewModel> data, View footView) {
         super(data);
-        this.saveClickListener = saveClickListener;
-        this.completeClickListener = completeClickListener;
+        this.footView = footView;
+
+        if (!(footView instanceof EditText)) {
+            footView.setFocusable(false);
+        }
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateItemViewHolder(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_physical_inventory, parent, false);
-        return new PhysicalInventoryViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == TYPE_ITEM) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_physical_inventory, parent, false);
+            return new PhysicalInventoryViewHolder(view);
+        } else {
+            return new VHFooter(footView);
+        }
     }
 
     @Override
-    protected void populate(RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        if (position >= currentList.size()) {
+            return;
+        }
         PhysicalInventoryViewHolder holder = (PhysicalInventoryViewHolder) viewHolder;
         final InventoryViewModel viewModel = currentList.get(position);
 
         holder.populate(viewModel, queryKeyWord);
     }
 
+    public static class VHFooter extends RecyclerView.ViewHolder {
+        public VHFooter(View itemView) {
+            super(itemView);
+        }
+    }
+
     @Override
-    protected RecyclerView.ViewHolder onCreateFooterView(ViewGroup parent) {
-        VHFooter vhFooter = new VHFooter(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_form_action, parent, false));
-        vhFooter.itemView.findViewById(R.id.btn_save).setOnClickListener(saveClickListener);
-        vhFooter.itemView.findViewById(R.id.btn_complete).setOnClickListener(completeClickListener);
-        return vhFooter;
+    public int getItemCount() {
+        int itemCount = super.getItemCount();
+        return itemCount == 0 ? itemCount : itemCount + 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return isPositionFooter(position) ? TYPE_FOOTER : TYPE_ITEM;
+    }
+
+    private boolean isPositionFooter(int position) {
+        return position == currentList.size();
     }
 
     public boolean isHasDataChanged() {

@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.adapter;
 
+import android.widget.EditText;
+
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +28,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +45,7 @@ public class PhysicalInventoryAdapterTest {
 
     @Before
     public void setup() {
-        adapter = new PhysicalInventoryAdapter(new ArrayList<InventoryViewModel>(), null, null);
+        adapter = new PhysicalInventoryAdapter(new ArrayList<InventoryViewModel>(), new EditText(RuntimeEnvironment.application));
 
         product = new Product();
         product.setPrimaryName("Test Product");

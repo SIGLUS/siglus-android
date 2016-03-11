@@ -41,4 +41,20 @@
         android:layout_weight="1"
         android:scrollbars="vertical" />
 
+    <LinearLayout
+        style="@style/FormAction.Container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/default_button_bar_height"
+        android:layout_marginTop="@dimen/margin_small"
+        android:background="@color/color_white">
+
+        <Button
+            android:id="@+id/btn_complete"
+            style="@style/FormAction.CompleteBtn"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/default_button_height"
+            android:layout_weight="1"
+            android:text="@string/btn_complete" />
+    </LinearLayout>
+
 </LinearLayout>

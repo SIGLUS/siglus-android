@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
@@ -28,6 +29,9 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
     @InjectView(R.id.products_list)
     protected RecyclerView productListRecycleView;
 
+    @InjectView(R.id.btn_complete)
+    protected Button completeBtn;
+
     @InjectView(R.id.tv_total)
     protected TextView tvTotal;
 
@@ -39,8 +43,7 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
 
     private String kitCode;
 
-    protected UnpackKitAdapter mAdapter;
-
+    private UnpackKitAdapter mAdapter;
     @Override
     protected int getThemeRes() {
         return R.style.AppTheme_TEAL;
@@ -63,21 +66,21 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
 
         productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
         ArrayList<InventoryViewModel> list = new ArrayList<>();
-        View.OnClickListener onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validateAll()) {
-                    presenter.saveUnpackProducts(kitNum);
-                }
-            }
-        };
-        mAdapter = new UnpackKitAdapter(list, onClickListener);
+        mAdapter = new UnpackKitAdapter(list);
         productListRecycleView.setAdapter(mAdapter);
 
         kitCode = intent.getStringExtra(Constants.PARAM_KIT_CODE);
 
         presenter.loadKitProducts(kitCode, kitNum);
 
+        completeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (validateAll()) {
+                    presenter.saveUnpackProducts(kitNum);
+                }
+            }
+        });
     }
 
     private void setTotal(int total) {
