@@ -25,15 +25,11 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/iv_expiry_date_warning"
+    <ViewStub
+        android:id="@+id/vs_expiry_date_warning"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
-        android:background="@color/color_white"
-        android:padding="@dimen/padding_small"
-        android:src="@drawable/ic_error_outline_red"
-        android:visibility="gone" />
+        android:layout="@layout/view_warning_red" />
 
     <RelativeLayout
         android:id="@+id/vg_stock_on_hand_bg"
@@ -41,21 +37,18 @@
         android:layout_height="match_parent"
         android:background="@color/color_primary_50">
 
-        <ImageView
-            android:id="@+id/iv_warning"
+        <ViewStub
+            android:id="@+id/vs_warning"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:padding="5dp"
-            android:src="@drawable/ic_warning"
-            android:visibility="gone" />
+            android:layout_height="match_parent"
+            android:layout="@layout/view_warning" />
 
         <TextView
             android:id="@+id/tv_stock_on_hand"
             style="@style/ItemStock.TextSOH"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toEndOf="@id/iv_warning" />
+            android:layout_toEndOf="@id/vs_warning" />
 
     </RelativeLayout>
 

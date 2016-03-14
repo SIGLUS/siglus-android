@@ -20,6 +20,7 @@ import org.robolectric.RuntimeEnvironment;
 
 import java.util.Date;
 
+import static junit.framework.Assert.assertNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -119,7 +120,7 @@ public class StockCardViewHolderTest {
 
         viewHolder.populate(inventoryViewModel, "");
 
-        assertThat(viewHolder.ivExpiryDateWarning.getVisibility()).isEqualTo(View.GONE);
+        assertNull(viewHolder.ivExpiryDateWarning);
     }
 
     @Test
@@ -152,6 +153,6 @@ public class StockCardViewHolderTest {
 
         viewHolder.inflateDate(inventoryViewModel, "");
 
-        assertThat(viewHolder.ivExpiryDateWarning.getVisibility()).isEqualTo(View.GONE);
+        assertNull(viewHolder.ivExpiryDateWarning);
     }
 }

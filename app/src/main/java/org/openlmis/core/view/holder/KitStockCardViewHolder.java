@@ -24,7 +24,7 @@ public class KitStockCardViewHolder extends StockCardViewHolder {
     }
 
     @Override
-    protected void initView() {
+    protected void initWarningLister() {
     }
 
     @Override

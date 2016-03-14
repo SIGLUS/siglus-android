@@ -3,6 +3,7 @@ package org.openlmis.core.view.holder;
 import android.app.DialogFragment;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.TextView;
 
 import org.joda.time.DateTime;
@@ -31,9 +32,13 @@ public class StockCardViewHolder extends BaseViewHolder {
     TextView tvStockOnHand;
     @InjectView(R.id.vg_stock_on_hand_bg)
     View stockOnHandBg;
-    @InjectView(R.id.iv_warning)
+
+    @InjectView(R.id.vs_warning)
+    ViewStub vsWarning;
     View ivWarning;
-    @InjectView(R.id.iv_expiry_date_warning)
+
+    @InjectView(R.id.vs_expiry_date_warning)
+    ViewStub vsExpiryDateWarning;
     View ivExpiryDateWarning;
 
     protected StockRepository stockRepository;
@@ -47,20 +52,6 @@ public class StockCardViewHolder extends BaseViewHolder {
         super(itemView);
         this.listener = listener;
         this.stockRepository = RoboGuice.getInjector(context).getInstance(StockRepository.class);
-
-        initView();
-    }
-
-    protected void initView() {
-        ivExpiryDateWarning.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
-                        context.getString(R.string.msg_expiry_warning),
-                        context.getString(R.string.btn_ok));
-                dialogFragment.show(((BaseActivity) context).getFragmentManager(), "expiryDateWarningDialog");
-            }
-        });
     }
 
     public void populate(final InventoryViewModel inventoryViewModel, String queryKeyWord) {
@@ -79,10 +70,9 @@ public class StockCardViewHolder extends BaseViewHolder {
     }
 
     private void initExpiryDateWarning(InventoryViewModel inventoryViewModel) {
-        ivExpiryDateWarning.setVisibility(View.GONE);
-
         String earliestExpiryDateString = inventoryViewModel.getStockCard().getEarliestExpireDate();
         if (TextUtils.isEmpty(earliestExpiryDateString)) {
+            hideExpiryDate();
             return;
         }
 
@@ -90,8 +80,37 @@ public class StockCardViewHolder extends BaseViewHolder {
         DateTime currentTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
 
         if (inventoryViewModel.getStockOnHand() > 0 && (earliestExpiryDate.isBefore(currentTime) || isExpiryDateInCurrentMonth(earliestExpiryDate, currentTime))) {
-            ivExpiryDateWarning.setVisibility(View.VISIBLE);
+            showExpiryDate();
+        } else {
+            hideExpiryDate();
         }
+    }
+
+    private void showExpiryDate() {
+        if (ivExpiryDateWarning != null) {
+            ivExpiryDateWarning.setVisibility(View.VISIBLE);
+        } else {
+            ivExpiryDateWarning = vsExpiryDateWarning.inflate();
+        }
+        initWarningLister();
+    }
+
+    private void hideExpiryDate() {
+        if (ivExpiryDateWarning != null) {
+            ivExpiryDateWarning.setVisibility(View.GONE);
+        }
+    }
+
+    protected void initWarningLister() {
+        ivExpiryDateWarning.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
+                        context.getString(R.string.msg_expiry_warning),
+                        context.getString(R.string.btn_ok));
+                dialogFragment.show(((BaseActivity) context).getFragmentManager(), "expiryDateWarningDialog");
+            }
+        });
     }
 
     private boolean isExpiryDateInCurrentMonth(DateTime earliestExpiryDate, DateTime currentTime) {
@@ -113,32 +132,37 @@ public class StockCardViewHolder extends BaseViewHolder {
     private void initStockOnHandWarning(final InventoryViewModel stockCard) {
 
         int stockOnHandLevel = getStockOnHandLevel(stockCard);
-        String warningMsg = null;
 
         switch (stockOnHandLevel) {
             case STOCK_ON_HAND_LOW_STOCK:
                 stockOnHandBg.setBackgroundResource(R.color.color_warning);
-                warningMsg = context.getString(R.string.msg_low_stock_warning);
-                ivWarning.setVisibility(View.VISIBLE);
+                showWarning(context.getString(R.string.msg_low_stock_warning));
                 break;
             case STOCK_ON_HAND_STOCK_OUT:
                 stockOnHandBg.setBackgroundResource(R.color.color_stock_out);
-                warningMsg = context.getString(R.string.msg_stock_out_warning);
-                ivWarning.setVisibility(View.VISIBLE);
+                showWarning(context.getString(R.string.msg_stock_out_warning));
                 break;
             default:
                 stockOnHandBg.setBackgroundResource(R.color.color_primary_50);
-                ivWarning.setVisibility(View.GONE);
+                if (ivWarning != null) {
+                    ivWarning.setVisibility(View.GONE);
+                }
                 break;
         }
-        final String finalWarningMsg = warningMsg;
+    }
+
+    private void showWarning(final String warningMsg) {
+        if (ivWarning != null) {
+            ivWarning.setVisibility(View.VISIBLE);
+        } else {
+            ivWarning = vsWarning.inflate();
+        }
         ivWarning.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ToastUtil.showCustomToast(finalWarningMsg);
+                ToastUtil.showCustomToast(warningMsg);
             }
         });
-
     }
 
     protected int getStockOnHandLevel(InventoryViewModel inventoryViewModel) {
