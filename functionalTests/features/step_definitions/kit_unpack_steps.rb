@@ -32,3 +32,11 @@ Then(/^I click the last sync banner$/) do
     fail "can not find the last sync banner" if last_sync_banner.nil?
     touch(last_sync_banner)
 end
+
+Then(/^I should see Complete button in unpack page$/) do
+  q= query("android.widget.Button text:'Complete'")
+  while q.empty?
+    scroll('recyclerView', :down)
+    q= query("android.widget.Button text:'Complete'")
+  end
+end

@@ -57,6 +57,7 @@ Feature: Unpack Kit
     Then I wait for "02A03" to appear
     And I should see "Unpacking"
     And I should see "600" in quantity and expected quantity
+    Then I should see Complete button in unpack page
     When I press "Complete"
 
     Then I wait for "[SCOD10]" to appear
