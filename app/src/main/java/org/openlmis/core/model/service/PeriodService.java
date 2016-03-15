@@ -27,7 +27,7 @@ public class PeriodService {
         List<RnRForm> rnRForms = rnrFormRepository.list(programCode);
 
         if (rnRForms.isEmpty()) {
-            return generatePeriodBasedOnDefaultDates(physicalInventoryDate);
+            return generatePeriodBasedOnDefaultDates(physicalInventoryDate, programCode);
         }
 
         RnRForm lastRnR = rnRForms.get(rnRForms.size() - 1);
@@ -48,8 +48,8 @@ public class PeriodService {
         return new Period(periodBeginDate, periodEndDate);
     }
 
-    private Period generatePeriodBasedOnDefaultDates(Date physicalInventoryDate) {
-        DateTime periodBeginDate = calculatePeriodBeginDate();
+    private Period generatePeriodBasedOnDefaultDates(Date physicalInventoryDate, String programCode) throws LMISException {
+        DateTime periodBeginDate = calculatePeriodBeginDate(programCode);
         DateTime periodEndDate;
         if (physicalInventoryDate == null) {
             periodEndDate = defaultEndDateTo20th(periodBeginDate);
@@ -59,8 +59,8 @@ public class PeriodService {
         return new Period(periodBeginDate, periodEndDate);
     }
 
-    private DateTime calculatePeriodBeginDate() {
-        DateTime initializeDateTime = new DateTime(stockRepository.queryEarliestStockMovementDate());
+    private DateTime calculatePeriodBeginDate(String programCode) throws LMISException {
+        DateTime initializeDateTime = new DateTime(stockRepository.queryEarliestStockMovementDateByProgram(programCode));
         int initializeDayOfMonth = initializeDateTime.getDayOfMonth();
 
         Calendar currentBeginDate = Calendar.getInstance();

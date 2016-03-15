@@ -33,6 +33,7 @@ import org.openlmis.core.exceptions.StockMovementIsNullException;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
@@ -57,6 +58,9 @@ public class StockRepository {
 
     @Inject
     ProductRepository productRepository;
+
+    @Inject
+    ProgramRepository programRepository;
 
     GenericDao<StockCard> genericDao;
     GenericDao<StockMovementItem> stockItemGenericDao;
@@ -466,19 +470,19 @@ public class StockRepository {
         }
     }
 
-    public Date queryEarliestStockMovementDate() {
-        try {
-            return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
-                @Override
-                public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                    return dao.queryBuilder()
-                            .orderBy("createdTime", true)
-                            .queryForFirst();
-                }
-            }).getCreatedTime();
-        } catch (LMISException e) {
-            e.reportToFabric();
-            return null;
+    public Date queryEarliestStockMovementDateByProgram(final String programCode) throws LMISException {
+
+        Program program = programRepository.queryByCode(programCode);
+        List<StockCard> stockCards = listActiveStockCardsByProgramId(program.getId());
+        Date earliestDate = null;
+
+        for (StockCard stockCard: stockCards) {
+            Date firstMovementDate = queryFirstStockMovementItem(stockCard).getMovementDate();
+            if (earliestDate == null || firstMovementDate.before(earliestDate)) {
+                earliestDate = firstMovementDate;
+            }
         }
+        return earliestDate;
     }
+
 }
