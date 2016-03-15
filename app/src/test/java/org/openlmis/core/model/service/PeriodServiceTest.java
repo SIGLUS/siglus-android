@@ -26,7 +26,6 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -66,11 +65,15 @@ public class PeriodServiceTest {
         RnRForm previousRnrForm = new RnRForm();
         previousRnrForm.setProgram(programMMIA);
         previousRnrForm.setPeriodEnd(DateUtil.parseString("2020-10-18", DateUtil.DB_DATE_FORMAT));
+        DateTime dateTime = new DateTime(previousRnrForm.getPeriodEnd()).plusMonths(1);
+        DateTime expectedPeriodEnd = DateUtil.cutTimeStamp(dateTime.withDate(dateTime.getYear(), dateTime.getMonthOfYear(), Period.END_DAY));
         when(mockRnrFormRepository.list(programMMIA.getProgramCode())).thenReturn(newArrayList(previousRnrForm));
 
         Period period = periodService.generateNextPeriod(programMMIA.getProgramCode(), null);
         assertThat(period.getBegin().toDate(), is(previousRnrForm.getPeriodEnd()));
         assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(11));
+
+        assertThat(period.getEnd(), is(expectedPeriodEnd));
     }
 
     @Test
@@ -187,12 +190,14 @@ public class PeriodServiceTest {
     @Test
     public void shouldGeneratePeriodOfDes19ToJanWhenRnrNotExists() throws Exception {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
-
+        DateTime dateTime = new DateTime("2015-12-19").plusMonths(1);
+        DateTime expectedPeriodEnd = DateUtil.cutTimeStamp(dateTime.withDate(dateTime.getYear(), dateTime.getMonthOfYear(), Period.END_DAY));
         when(mockStockRepository.queryEarliestStockMovementDateByProgram(anyString())).thenReturn(new DateTime("2015-12-19").toDate());
 
         Period period = periodService.generateNextPeriod(programMMIA.getProgramCode(), null);
         assertThat(period.getBegin(), is(new DateTime("2015-12-19")));
         assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(1));
+        assertThat(period.getEnd(),is(expectedPeriodEnd));
     }
 
     @Test
