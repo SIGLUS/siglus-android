@@ -44,7 +44,8 @@
         </activity>
         <activity
             android:name=".view.activity.StockCardListActivity"
-            android:label="@string/title_stock_cards" />
+            android:label="@string/title_stock_cards"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.KitStockCardListActivity"
             android:label="@string/title_kit_stock_cards" />
