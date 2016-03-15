@@ -41,7 +41,7 @@ public class PeriodService {
         if (physicalInventoryDate == null) {
             Calendar date = Calendar.getInstance();
             date.set(periodBeginDate.getYear(), periodBeginDate.getMonthOfYear(), Period.END_DAY);
-            periodEndDate = new DateTime(date);
+            periodEndDate = DateUtil.cutTimeStamp(new DateTime(date));
         } else {
             periodEndDate = new DateTime(physicalInventoryDate);
         }
@@ -82,7 +82,7 @@ public class PeriodService {
     private DateTime defaultEndDateTo20th(DateTime periodBeginDate) {
         Calendar date = Calendar.getInstance();
         date.set(periodBeginDate.getYear(), periodBeginDate.getMonthOfYear(), Period.END_DAY);
-        return new DateTime(date);
+        return DateUtil.cutTimeStamp(new DateTime(date));
     }
 
     public boolean hasMissedPeriod(String programCode) throws LMISException {
