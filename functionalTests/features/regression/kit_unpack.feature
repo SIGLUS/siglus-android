@@ -56,10 +56,8 @@ Feature: Unpack Kit
     And I press "Next"
     Then I wait for "02A03" to appear
     And I should see "Unpacking"
-    And I should see "600" in quantity and expected quantity
-    Then I should see Complete button in unpack page
-    When I press "Complete"
 
+    And I enter quantity for all products in kit
     Then I wait for "[SCOD10]" to appear
     Then I should not see "Unpack Kit"
     Then I navigate back
@@ -70,7 +68,7 @@ Feature: Unpack Kit
     And I press "Stock Card Overview"
     Then I should see "Total:44"
     When I search drug by fnm "08L01X"
-    Then I should see "1488"
+    Then I should see "889"
     And I clean search bar
     When I search drug by fnm "15C0ZY"
     Then I should see "[15C0ZY]"
@@ -125,7 +123,7 @@ Feature: Unpack Kit
     And I should see empty consultations number
     Then I enter consultationsNub "888"
     Then I swipe right
-    Then I should see "1488" on index "1" of "tx_theoretical" field
+    Then I should see "889" on index "1" of "tx_theoretical" field
     Then I swipe right
     Then I swipe right
     Then I enter QuantityRequested "345"

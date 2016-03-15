@@ -10,6 +10,7 @@ And(/^I enter quantity for all products in kit$/) do
                 scroll('recyclerView', :down)
             end
         end
+        scroll('recyclerView', :down)
         tap_when_element_exists("* marked:'Complete'")
 end
 
