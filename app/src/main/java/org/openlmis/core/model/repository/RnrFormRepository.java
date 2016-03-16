@@ -358,8 +358,14 @@ public class RnrFormRepository {
         rnrFormItem.setCalculatedOrderQuantity(0L);
 
         StockMovementItem stockMovementItem = stockRepository.queryLastStockMovementItemBeforeAndEqualDate(stockCard, startDate);
-        rnrFormItem.setInitialAmount(stockMovementItem.getStockOnHand());
-        rnrFormItem.setInventory(stockMovementItem.getStockOnHand());
+
+        if (stockMovementItem == null) {
+            rnrFormItem.setInitialAmount(0);
+            rnrFormItem.setInventory(0);
+        } else {
+            rnrFormItem.setInitialAmount(stockMovementItem.getStockOnHand());
+            rnrFormItem.setInventory(stockMovementItem.getStockOnHand());
+        }
     }
 
     private void assignTotalValues(RnrFormItem rnrFormItem, List<StockMovementItem> stockMovementItems) {

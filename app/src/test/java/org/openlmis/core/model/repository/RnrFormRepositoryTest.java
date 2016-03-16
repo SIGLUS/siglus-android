@@ -484,6 +484,20 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
+    public void shouldInitRnrFormItemWithoutMovementAndMovementIsNull() throws Exception {
+        StockCard stockCard = new StockCard();
+        when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
+        when(mockStockRepository.queryLastStockMovementItemBeforeAndEqualDate(any(StockCard.class), any(Date.class))).thenReturn(null);
+
+        RnrFormItem rnrFormItemByPeriod = rnrFormRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
+
+        assertThat(rnrFormItemByPeriod.getReceived(), is(0L));
+        assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
+        assertThat(rnrFormItemByPeriod.getInventory(), is(0L));
+        assertThat(rnrFormItemByPeriod.getInitialAmount(), is(0L));
+    }
+
+    @Test
     public void shouldDeleteDeactivatedItemsFromRnrForms() throws Exception {
         Program program = new Program();
         RnRForm form = new RnRForm();
