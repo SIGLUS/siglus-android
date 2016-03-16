@@ -235,7 +235,7 @@
     <string name="requisition_delete_failed">Falha ao apagar</string>
     <!--Signature-->
     <string name="dialog_request_signature">Insira as iniciais do seu nome para rubricar o movimento</string>
-    <string name="dialog_request_signature_cancel">Cancelar</string>
+    <string name="dialog_cancel">Cancelar</string>
     <string name="dialog_request_signature_sign">Validar</string>
     <string name="label_physical_inventory_signature_title">Insira as iniciais do seu nome para rubricar todos os movimentos no inventário</string>
     <string name="hint_signature_error_message">Por favor, insira suas iniciais (mínimo 2 caracteres, máximo 5 caracteres)</string>

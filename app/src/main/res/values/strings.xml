@@ -259,7 +259,7 @@
 
     <!-- Signature -->
     <string name="dialog_request_signature">Enter your initials to sign the movement</string>
-    <string name="dialog_request_signature_cancel">Cancel</string>
+    <string name="dialog_cancel">Cancel</string>
     <string name="dialog_request_signature_sign">Approve</string>
     <string name="label_physical_inventory_signature_title">Enter your initials to sign all inventory movements</string>
     <string name="hint_signature_error_message">Please enter your initials(Minimum 2 characters,Maximum 5 characters)</string>
@@ -288,5 +288,7 @@
     <string name="app_update_suffix"> update</string>
     <string name="select_to_install">Select to install</string>
     <string name="update_available"> update available</string>
+
+    <string name="action_wipe_data">Re-sync data from server</string>
 
 </resources>

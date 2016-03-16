@@ -40,7 +40,7 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.adapter.RnRFormListAdapter;
-import org.openlmis.core.view.fragment.WarningDialog;
+import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.holder.RnRFormViewHolder.RnRFormItemClickListener;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 
@@ -132,14 +132,16 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     protected RnRFormItemClickListener rnRFormItemClickListener = new RnRFormItemClickListener() {
         @Override
         public void deleteForm(final RnRForm form) {
-            WarningDialog warningDialog = new WarningDialog();
-            warningDialog.setDelegate(new WarningDialog.DialogDelegate() {
+            WarningDialogFragment warningDialogFragment = WarningDialogFragment.newInstance(
+                    R.string.msg_del_requisition, R.string.dialog_cancel, R.string.btn_del
+            );
+            warningDialogFragment.setDelegate(new WarningDialogFragment.DialogDelegate() {
                 @Override
-                public void onDelete() {
+                public void onPositiveClick() {
                     deleteRnRForm(form);
                 }
             });
-            warningDialog.show(getFragmentManager(), "WarningDialog");
+            warningDialogFragment.show(getFragmentManager(), "WarningDialogFragment");
         }
 
         @Override
