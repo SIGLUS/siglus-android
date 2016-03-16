@@ -133,7 +133,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         @Override
         public void deleteForm(final RnRForm form) {
             WarningDialogFragment warningDialogFragment = WarningDialogFragment.newInstance(
-                    R.string.msg_del_requisition, R.string.dialog_cancel, R.string.btn_del
+                    R.string.msg_del_requisition, R.string.btn_del, R.string.dialog_cancel
             );
             warningDialogFragment.setDelegate(new WarningDialogFragment.DialogDelegate() {
                 @Override
