@@ -147,6 +147,7 @@
 
     <string name="btn_del">Delete</string>
     <string name="msg_del_requisition">Warning!!! \n Are you sure you want to delete this? This requisition is already synced to the server. If you click DELETE then this requisition will disappear on your tablet, but remain saved on the server.</string>
+    <string name="msg_stock_movement_is_not_ready">Application is trying to sync down all the stock movements, Please try again later.</string>
 
     <!-- Stock Movement -->
     <string name="title_stock_movement">Stock Card</string>

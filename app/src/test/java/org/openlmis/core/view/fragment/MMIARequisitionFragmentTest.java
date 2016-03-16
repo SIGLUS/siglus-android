@@ -35,6 +35,7 @@ import org.mockito.stubbing.Answer;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
@@ -59,9 +60,11 @@ import roboguice.RoboGuice;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -152,6 +155,17 @@ public class MMIARequisitionFragmentTest {
         verify(regimeListView).initView(regimenItems, mmiaRequisitionFragment.tvRegimeTotal);
         verify(mmiaInfoListView).initView(baseInfoItems);
 
+    }
+
+    @Test
+    public void shouldShowTheCannotInitFormToastWhenTheAllStockMovementsAreNotSyncDown() {
+        reset(mmiaFormPresenter);
+        SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(true);
+        mmiaRequisitionFragment = getMMIARequisitionFragmentWithoutIntent();
+
+        String msg = mmiaRequisitionFragment.getString(R.string.msg_stock_movement_is_not_ready);
+        assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(msg);
+        verify(mmiaFormPresenter, never()).loadData(anyLong(),any(Date.class));
     }
 
     @Test

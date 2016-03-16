@@ -36,6 +36,7 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.presenter.Presenter;
@@ -135,6 +136,13 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if(SharedPreferenceMgr.getInstance().shouldSyncLastYearStockData()){
+            ToastUtil.showInCenter(R.string.msg_stock_movement_is_not_ready);
+            finish();
+            return;
+        }
+
         initUI();
         presenter.loadData(formId, periodEndDate);
     }

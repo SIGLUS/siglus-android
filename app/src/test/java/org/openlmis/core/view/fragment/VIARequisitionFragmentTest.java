@@ -31,6 +31,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.builder.RequisitionBuilder;
@@ -42,6 +43,7 @@ import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.shadows.ShadowToast;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -50,8 +52,11 @@ import java.util.List;
 import roboguice.RoboGuice;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -185,6 +190,17 @@ public class VIARequisitionFragmentTest {
         VIARequisitionFragment.etConsultationNumbers.setText("");
         VIARequisitionFragment.validateConsultationNumber();
         assertThat(VIARequisitionFragment.etConsultationNumbers.getError().toString()).isEqualTo(VIARequisitionFragment.getString(R.string.hint_error_input));
+    }
+
+    @Test
+    public void shouldShowTheCannotInitFormToastWhenTheAllStockMovementsAreNotSyncDown() {
+        reset(presenter);
+        SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(true);
+        VIARequisitionFragment = getVIARequisitionFragmentFromActivityWithIntent();
+
+        String msg = VIARequisitionFragment.getString(R.string.msg_stock_movement_is_not_ready);
+        assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(msg);
+        verify(presenter, never()).loadData(anyLong(), any(Date.class));
     }
 }
 

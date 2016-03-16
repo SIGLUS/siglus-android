@@ -37,6 +37,7 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
@@ -142,6 +143,13 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if(SharedPreferenceMgr.getInstance().shouldSyncLastYearStockData()){
+            ToastUtil.showInCenter(R.string.msg_stock_movement_is_not_ready);
+            finish();
+            return;
+        }
+
         initUI();
 
         if (isSavedInstanceState) {
