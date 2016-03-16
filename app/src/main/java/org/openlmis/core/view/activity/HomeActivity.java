@@ -50,7 +50,6 @@ import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.widget.SyncTimeView;
 
-import io.fabric.sdk.android.services.network.NetworkUtils;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
@@ -196,6 +195,14 @@ public class HomeActivity extends BaseActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_home, menu);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_wipe_data_and_resync)) {
+            menu.findItem(R.id.action_wipe_data).setVisible(false);
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
