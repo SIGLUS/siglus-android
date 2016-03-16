@@ -42,7 +42,7 @@ public final class Constants {
     public static final int REQUEST_UNPACK_KIT = 200;
     public static final int REQUEST_FROM_RNR_LIST_PAGE = 300;
     public static final int REQUEST_SELECT_PERIOD_END = 400;
-    public static final String INTENT_FILTER_SET_SYNC_DATA = LMISApp.getContext().getPackageName() + ".set_synced_time";
+    public static final String INTENT_FILTER_SET_SYNC_DATA = LMISApp.getContext().getPackageName() + ".sync_data";
 
     private Constants() {
 
