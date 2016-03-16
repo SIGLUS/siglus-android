@@ -192,4 +192,15 @@ public class HomeActivityTest {
 
         assertNotNull(dialogFragment);
     }
+
+    @Test
+    public void shouldShowToastWhenResyncWithoutNetwork() {
+        LMISTestApp.getInstance().setNetworkConnection(false);
+
+        homeActivity.onOptionsItemSelected(new RoboMenuItem(R.id.action_wipe_data));
+
+        String toastMessage = ShadowToast.getTextOfLatestToast();
+        assertThat(toastMessage, is(LMISApp.getInstance().getString(R.string.message_wipe_no_connection)));
+    }
+
 }

@@ -50,6 +50,7 @@ import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.widget.SyncTimeView;
 
+import io.fabric.sdk.android.services.network.NetworkUtils;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
@@ -222,6 +223,11 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void alertWipeData() {
+        if (!LMISApp.getInstance().isConnectionAvailable()) {
+            ToastUtil.show(R.string.message_wipe_no_connection);
+            return;
+        }
+
         WarningDialogFragment wipeDataDialog = WarningDialogFragment.newInstance(
                 R.string.message_warning_wipe_data, R.string.btn_positive, R.string.btn_negative);
         wipeDataDialog.setDelegate(new WarningDialogFragment.DialogDelegate() {
