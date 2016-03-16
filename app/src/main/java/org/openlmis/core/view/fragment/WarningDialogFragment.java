@@ -61,16 +61,18 @@ public class WarningDialogFragment extends DialogFragment implements View.OnClic
     private void initUI(View contentView) {
         int messageResId = getArguments().getInt(PARAM_MESSAGE_RES);
         int positiveResId = getArguments().getInt(PARAM_POSITIVE_TEXT_RES);
+        int negativeResId = getArguments().getInt(PARAM_NEGATIVE_TEXT_RES);
 
         TextView tvMessage = (TextView) contentView.findViewById(R.id.dialog_message);
-        Button btnCancel = (Button) contentView.findViewById(R.id.btn_cancel);
+        Button btnNegative = (Button) contentView.findViewById(R.id.btn_cancel);
         Button btnPositive = (Button) contentView.findViewById(R.id.btn_del);
 
-        btnCancel.setOnClickListener(this);
+        btnNegative.setOnClickListener(this);
         btnPositive.setOnClickListener(this);
 
         tvMessage.setText(messageResId);
         btnPositive.setText(positiveResId);
+        btnNegative.setText(negativeResId);
     }
 
     private void setDialogAttributes() {

@@ -290,5 +290,6 @@
     <string name="update_available"> update available</string>
 
     <string name="action_wipe_data">Re-sync data from server</string>
+    <string name="message_warning_wipe_data">This operation will remove all the data from this device &amp; download previously submitted data back down to the tablet, \n WARNING \n Any un-synced movements or data will be lost. Do you want to continue?</string>
 
 </resources>

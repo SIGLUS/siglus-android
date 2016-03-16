@@ -18,6 +18,7 @@
 
 package org.openlmis.core.view.activity;
 
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -39,12 +40,14 @@ import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.fakes.RoboMenuItem;
 import org.robolectric.shadows.ShadowActivity;
+import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.shadows.ShadowToast;
 
 import roboguice.RoboGuice;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -165,7 +168,7 @@ public class HomeActivityTest {
     }
 
     @Test
-    public void shouldFinishMainActivityAndStartLoginActivityWhenSighOurClicked() {
+    public void shouldFinishMainActivityAndStartLoginActivityWhenSighOutClicked() {
         MenuItem signoutAction = new RoboMenuItem(R.id.action_sign_out);
 
         homeActivity.onOptionsItemSelected(signoutAction);
@@ -180,5 +183,13 @@ public class HomeActivityTest {
 
         assertThat(activity.btnMMIAList.getText().toString(), is(activity.getString(R.string.mmia_list)));
         assertThat(activity.btnVIAList.getText().toString(), is(activity.getString(R.string.requisition_list)));
+    }
+
+    @Test
+    public void shouldShowWarningDialogWhenWipeDataWaped() throws Exception {
+        homeActivity.onOptionsItemSelected(new RoboMenuItem(R.id.action_wipe_data));
+        DialogFragment dialogFragment = (DialogFragment) homeActivity.getFragmentManager().findFragmentByTag("WipeDataWarning");
+
+        assertNotNull(dialogFragment);
     }
 }

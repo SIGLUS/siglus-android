@@ -37,6 +37,9 @@ import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.network.NetworkConnectionManager;
+import org.openlmis.core.utils.FileUtil;
+
+import java.io.File;
 
 import io.fabric.sdk.android.Fabric;
 import roboguice.RoboGuice;
@@ -117,6 +120,19 @@ public class LMISApp extends Application {
                     .setCustomDimension(facilityCustomDimensionKey, UserInfoMgr.getInstance().getFacilityName())
                     .build());
         }
+    }
+
+    public void wipeAppData() {
+        File cache = getCacheDir();
+        File appDir = new File(cache.getParent());
+        if (new File(getCacheDir().getParent()).exists()) {
+            for (String s : appDir.list()) {
+                if (!s.equals("lib")) {
+                    FileUtil.deleteDir(new File(appDir, s));
+                }
+            }
+        }
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
 }

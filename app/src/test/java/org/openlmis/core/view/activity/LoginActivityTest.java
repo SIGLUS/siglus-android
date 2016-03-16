@@ -33,6 +33,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.LoginPresenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
@@ -71,8 +72,8 @@ public class LoginActivityTest {
 
     @Test
     public void shouldLoginWithFilledUsernameAndPassword() {
-        loginActivity.userName.setText("superuser");
-        loginActivity.password.setText("super@password");
+        loginActivity.etUsername.setText("superuser");
+        loginActivity.etPassword.setText("super@password");
 
         loginActivity.btnLogin.performClick();
 
@@ -85,17 +86,17 @@ public class LoginActivityTest {
 
         LoginActivity secondLoginActivity = Robolectric.buildActivity(LoginActivity.class).create().get();
 
-        assertThat(secondLoginActivity.userName.getText().toString()).isEqualTo("superuser");
+        assertThat(secondLoginActivity.etUsername.getText().toString()).isEqualTo("superuser");
     }
 
     @Test
     public void shouldClearPasswordAfterMethodInvoked() {
-        loginActivity.userName.setText("superuser");
-        loginActivity.password.setText("password");
+        loginActivity.etUsername.setText("superuser");
+        loginActivity.etPassword.setText("password");
 
         loginActivity.clearPassword();
 
-        assertThat(loginActivity.password.getText().toString()).isEqualTo("");
+        assertThat(loginActivity.etPassword.getText().toString()).isEqualTo("");
     }
 
     @Test
@@ -182,13 +183,24 @@ public class LoginActivityTest {
         ShadowImageView shadowPwdImageView = shadowOf(loginActivity.ivVisibilityPwd);
 
         assertThat(shadowPwdImageView.getImageResourceId()).isEqualTo(R.drawable.ic_visibility_off);
-        assertThat(loginActivity.password.getInputType()).isEqualTo(InputType.TYPE_CLASS_TEXT
+        assertThat(loginActivity.etPassword.getInputType()).isEqualTo(InputType.TYPE_CLASS_TEXT
                 | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
 
         loginActivity.ivVisibilityPwd.performClick();
 
         assertThat(shadowPwdImageView.getImageResourceId()).isEqualTo(R.drawable.ic_visibility);
-        assertThat(loginActivity.password.getInputType()).isEqualTo(InputType.TYPE_CLASS_TEXT
+        assertThat(loginActivity.etPassword.getInputType()).isEqualTo(InputType.TYPE_CLASS_TEXT
                 | EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+    }
+
+    @Test
+    public void shouldStartLoginWhenRestoreFromResync() throws Exception {
+        Intent intent = new Intent();
+        intent.putExtra(Constants.PARAM_USERNAME, "username");
+        intent.putExtra(Constants.PARAM_PASSWORD, "password");
+
+        loginActivity = Robolectric.buildActivity(LoginActivity.class).withIntent(intent).create().get();
+
+        verify(mockedPresenter).startLogin("username", "password");
     }
 }

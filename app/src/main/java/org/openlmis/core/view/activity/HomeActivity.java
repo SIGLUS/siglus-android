@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.activity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -33,16 +35,19 @@ import android.widget.Button;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
+import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.widget.SyncTimeView;
 
 import roboguice.inject.ContentView;
@@ -139,7 +144,7 @@ public class HomeActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    public void onClickSyncData() {
+    public void syncData() {
         Log.d("HomeActivity", "requesting immediate sync");
         syncService.requestSyncImmediately();
     }
@@ -194,21 +199,53 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_sign_out) {
-            startActivity(LoginActivity.class);
-            finish();
-            return true;
-        } else if (item.getItemId() == R.id.action_sync_data) {
-            onClickSyncData();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_sign_out:
+                startActivity(LoginActivity.class);
+                finish();
+                return true;
+            case R.id.action_sync_data:
+                syncData();
+                return true;
+            case R.id.action_wipe_data:
+                alertWipeData();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     public static Intent getIntentToMe(Context context) {
         Intent intent = new Intent(context, HomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
+    }
+
+    private void alertWipeData() {
+        WarningDialogFragment wipeDataDialog = WarningDialogFragment.newInstance(
+                R.string.message_warning_wipe_data, R.string.btn_positive, R.string.btn_negative);
+        wipeDataDialog.setDelegate(new WarningDialogFragment.DialogDelegate() {
+            @Override
+            public void onPositiveClick() {
+                setRestartIntent();
+                LMISApp.getInstance().wipeAppData();
+            }
+        });
+        wipeDataDialog.show(getFragmentManager(), "WipeDataWarning");
+    }
+
+    private void setRestartIntent() {
+        int requestCode = 100;
+        int startAppInterval = 500;
+
+        User currentUser = UserInfoMgr.getInstance().getUser();
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.putExtra(Constants.PARAM_USERNAME, currentUser.getUsername());
+        intent.putExtra(Constants.PARAM_PASSWORD, currentUser.getPassword());
+
+        PendingIntent mPendingIntent = PendingIntent.getActivity(this, requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + startAppInterval, mPendingIntent);
     }
 
 }

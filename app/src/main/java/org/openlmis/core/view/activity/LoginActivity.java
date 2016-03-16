@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -38,6 +39,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.LoginPresenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 
 import roboguice.inject.ContentView;
@@ -46,10 +48,10 @@ import roboguice.inject.InjectView;
 @ContentView(R.layout.activity_login)
 public class LoginActivity extends BaseActivity implements LoginPresenter.LoginView, View.OnClickListener {
     @InjectView(R.id.tx_username)
-    public EditText userName;
+    public EditText etUsername;
 
     @InjectView(R.id.tx_password)
-    public EditText password;
+    public EditText etPassword;
 
     @InjectView(R.id.btn_login)
     public Button btnLogin;
@@ -77,6 +79,21 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         }
 
         initUI();
+
+        restoreFromResync();
+    }
+
+    private void restoreFromResync() {
+        String strUsername = getIntent().getStringExtra(Constants.PARAM_USERNAME);
+        String strPassword = getIntent().getStringExtra(Constants.PARAM_PASSWORD);
+
+        if (TextUtils.isEmpty(strUsername) || TextUtils.isEmpty(strPassword)) {
+            return;
+        }
+
+        etUsername.setText(strUsername);
+        etPassword.setText(strPassword);
+        startLogin();
     }
 
     @Override
@@ -100,12 +117,12 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
         String lastLoginUser = getPreferences().getString(SharedPreferenceMgr.KEY_LAST_LOGIN_USER, StringUtils.EMPTY);
         if (StringUtils.isNotBlank(lastLoginUser)) {
-            userName.setText(lastLoginUser);
-            password.requestFocus();
+            etUsername.setText(lastLoginUser);
+            etPassword.requestFocus();
         }
 
-        password.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        etPassword.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        etPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -127,13 +144,13 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     public void launchActivity(Intent intent) {
-        saveString(SharedPreferenceMgr.KEY_LAST_LOGIN_USER, userName.getText().toString().trim());
+        saveString(SharedPreferenceMgr.KEY_LAST_LOGIN_USER, etUsername.getText().toString().trim());
         startActivity(intent);
         finish();
     }
 
     public void clearPassword() {
-        password.setText(StringUtils.EMPTY);
+        etPassword.setText(StringUtils.EMPTY);
     }
 
     public void clearErrorAlerts() {
@@ -165,7 +182,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     private void startLogin() {
-        presenter.startLogin(userName.getText().toString(), password.getText().toString());
+        presenter.startLogin(etUsername.getText().toString(), etPassword.getText().toString());
     }
 
     @Override
@@ -193,17 +210,17 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     private void setPwdVisibility() {
-        if (password.getInputType() == (InputType.TYPE_CLASS_TEXT
+        if (etPassword.getInputType() == (InputType.TYPE_CLASS_TEXT
                 | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD)) {
             ivVisibilityPwd.setImageResource(R.drawable.ic_visibility);
-            password.setInputType(InputType.TYPE_CLASS_TEXT
+            etPassword.setInputType(InputType.TYPE_CLASS_TEXT
                     | EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
         } else {
-            password.setInputType(InputType.TYPE_CLASS_TEXT
+            etPassword.setInputType(InputType.TYPE_CLASS_TEXT
                     | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
             ivVisibilityPwd.setImageResource(R.drawable.ic_visibility_off);
         }
 
-        password.setSelection(password.getText().length());
+        etPassword.setSelection(etPassword.getText().length());
     }
 }
