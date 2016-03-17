@@ -1,1 +1,1 @@
-./gradlew clean checkstyle findbugs jacocoTestReport assembleQaRelease
+./gradlew clean jacocoTestReport checkstyle findbugs assembleQaRelease
