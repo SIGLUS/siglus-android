@@ -40,6 +40,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.HomeActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_home" >
         </activity>
         <activity
@@ -48,6 +49,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.KitStockCardListActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_kit_stock_cards" />
         <activity
             android:name=".view.activity.MMIARequisitionActivity"
@@ -56,6 +58,7 @@
         <activity
             android:name=".view.activity.ArchivedDrugsListActivity"
             android:label="@string/title_archived_drugs"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".view.activity.VIARequisitionActivity"
@@ -69,12 +72,15 @@
         <activity
             android:name=".view.activity.RnRFormListActivity"
             android:label="@string/title_stock_movement"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".view.activity.SelectPeriodActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_select_period" />
         <activity
             android:name=".view.activity.SelectUnpackKitNumActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_select_unpack_num" />
 
         <service
