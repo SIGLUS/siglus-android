@@ -25,52 +25,23 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.model.User;
-import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
 import java.sql.SQLException;
 import java.util.List;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
-public class UserRepository extends LMISRestManager {
+public class UserRepository {
 
     @Inject
     DbUtil dbUtil;
 
     GenericDao<User> genericDao;
 
-
     @Inject
     public UserRepository(Context context) {
         genericDao = new GenericDao<>(User.class, context);
-    }
-
-    public void authorizeUser(final User user, final NewCallback<User> callback) {
-        lmisRestApi.authorizeUser(user, new Callback<UserResponse>() {
-            @Override
-            public void success(UserResponse userResponse, Response response) {
-                if (userResponse.getUserInformation() != null) {
-                    callback.success(userResponse.getUserInformation());
-                } else {
-                    callback.failure(null);
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                if (error.getCause() instanceof NetWorkException) {
-                    callback.timeout(error.getMessage());
-                } else {
-                    callback.failure(error.getMessage());
-                }
-            }
-        });
     }
 
     public User mapUserFromLocal(final User user) {
@@ -129,13 +100,5 @@ public class UserRepository extends LMISRestManager {
             e.printStackTrace();
         }
         return user;
-    }
-
-    public interface NewCallback<T> {
-        void success(T t);
-
-        void failure(String error);
-
-        void timeout(String error);
     }
 }

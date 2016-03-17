@@ -34,7 +34,6 @@ import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.network.LMISRestApi;
-import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
@@ -71,7 +70,7 @@ public class SyncDownManager {
     ProductRepository productRepository;
 
     public SyncDownManager() {
-        lmisRestApi = new LMISRestManager().getLmisRestApi();
+        lmisRestApi = LMISApp.getInstance().getRestApi();
     }
 
     public void syncDownServerData(Subscriber<SyncProgress> subscriber) {

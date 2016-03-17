@@ -23,6 +23,7 @@ import android.util.Log;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
@@ -35,7 +36,6 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.network.LMISRestApi;
-import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.model.AppInfoRequest;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.roboguice.shaded.goole.common.base.Function;
@@ -73,7 +73,7 @@ public class SyncUpManager {
     protected LMISRestApi lmisRestApi;
 
     public SyncUpManager() {
-        lmisRestApi = new LMISRestManager().getLmisRestApi();
+        lmisRestApi = LMISApp.getInstance().getRestApi();
     }
 
     public boolean syncRnr() {

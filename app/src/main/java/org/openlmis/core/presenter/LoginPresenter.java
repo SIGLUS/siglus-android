@@ -27,19 +27,23 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.UserRepository;
-import org.openlmis.core.model.repository.UserRepository.NewCallback;
+import org.openlmis.core.network.model.LoginResponse;
 import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import rx.Subscriber;
 
 public class LoginPresenter extends Presenter {
@@ -116,23 +120,26 @@ public class LoginPresenter extends Presenter {
     }
 
     private void authorizeAndLoginUserRemote(final User user) {
-        userRepository.authorizeUser(user, new NewCallback<User>() {
+        LMISApp.getInstance().getRestApi().authorizeUser(user, new Callback<LoginResponse>() {
             @Override
-            public void success(User remoteUser) {
-                remoteUser.setUsername(user.getUsername());
-                remoteUser.setPassword(user.getPassword());
-
-                onLoginSuccess(remoteUser);
+            public void success(LoginResponse loginResponse, Response response) {
+                User remoteUser = loginResponse.getUserInformation();
+                if (remoteUser == null) {
+                    onLoginFailed();
+                } else {
+                    remoteUser.setUsername(user.getUsername());
+                    remoteUser.setPassword(user.getPassword());
+                    onLoginSuccess(remoteUser);
+                }
             }
 
             @Override
-            public void failure(String error) {
-                onLoginFailed();
-            }
-
-            @Override
-            public void timeout(String error) {
-                authorizeAndLoginUserLocal(user);
+            public void failure(RetrofitError error) {
+                if (error.getCause() instanceof NetWorkException) {
+                    authorizeAndLoginUserLocal(user);
+                } else {
+                    onLoginFailed();
+                }
             }
         });
     }

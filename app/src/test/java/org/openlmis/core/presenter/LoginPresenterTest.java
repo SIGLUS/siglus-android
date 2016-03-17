@@ -37,7 +37,9 @@ import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.UserRepository;
-import org.openlmis.core.model.repository.UserRepository.NewCallback;
+import org.openlmis.core.network.LMISRestApi;
+import org.openlmis.core.network.LMISRestManagerMock;
+import org.openlmis.core.network.model.LoginResponse;
 import org.openlmis.core.network.model.SyncDownProductsResponse;
 import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
@@ -48,6 +50,8 @@ import org.robolectric.shadows.ShadowToast;
 
 import java.util.List;
 
+import retrofit.Callback;
+import retrofit.client.Response;
 import roboguice.RoboGuice;
 import rx.Subscriber;
 
@@ -72,12 +76,15 @@ public class LoginPresenterTest {
     SyncService syncService;
 
     @Captor
-    private ArgumentCaptor<NewCallback<User>> loginCB;
+    private ArgumentCaptor<Callback<LoginResponse>> loginCB;
 
     private LMISTestApp appInject;
     private Subscriber<SyncProgress> syncSubscriber;
     private SyncDownManager syncDownManager;
     private ProgramRepository programRepository;
+    private LMISRestApi mockedApi;
+    private Response retrofitResponse;
+    private LoginResponse loginResponse;
 
     @Before
     public void setup() {
@@ -90,6 +97,15 @@ public class LoginPresenterTest {
         mockSyncDownProductsResponse = mock(SyncDownProductsResponse.class);
         syncService = mock(SyncService.class);
         syncDownManager = mock(SyncDownManager.class);
+
+        mockedApi = mock(LMISRestApi.class);
+        appInject.setRestApi(mockedApi);
+
+
+        retrofitResponse = LMISRestManagerMock.createDummyJsonResponse("http://unknown.com", 200, "", "");
+        loginResponse = new LoginResponse();
+        loginResponse.setUserInformation(new User("username", "password"));
+
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         MockitoAnnotations.initMocks(this);
@@ -107,9 +123,9 @@ public class LoginPresenterTest {
         presenter.startLogin("user", "password");
 
         verify(mockActivity).loading();
+        verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
 
-        verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
-        loginCB.getValue().success(new User("user", "password"));
+        loginCB.getValue().success(loginResponse, retrofitResponse);
 
         verify(userRepository).createOrUpdate(any(User.class));
     }
@@ -122,14 +138,12 @@ public class LoginPresenterTest {
 
         verify(mockActivity).loading();
 
-        verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
-
-        User user = new User("user", "password");
+        verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
 
         List<String> supportedPrograms = newArrayList("PR", "PR@");
 
-        user.setFacilitySupportedPrograms(supportedPrograms);
-        loginCB.getValue().success(user);
+        loginResponse.getUserInformation().setFacilitySupportedPrograms(supportedPrograms);
+        loginCB.getValue().success(loginResponse, retrofitResponse);
 
         verify(userRepository).createOrUpdate(any(User.class));
         verify(programRepository, times(2)).createOrUpdate(any(Program.class));
@@ -140,12 +154,12 @@ public class LoginPresenterTest {
         appInject.setNetworkConnection(true);
 
         presenter.startLogin("user", "password");
-        User user = new User("user", "password");
-        verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
 
-        loginCB.getValue().success(user);
+        verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
 
-        verify(syncService).createSyncAccount(user);
+        loginCB.getValue().success(loginResponse, retrofitResponse);
+
+        verify(syncService).createSyncAccount(loginResponse.getUserInformation());
     }
 
     @Test
@@ -153,13 +167,13 @@ public class LoginPresenterTest {
         appInject.setNetworkConnection(true);
 
         presenter.startLogin("user", "password");
-        User user = new User("user", "password");
-        verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
 
-        loginCB.getValue().success(user);
+        verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
 
-        verify(userRepository).createOrUpdate(user);
-        assertThat(UserInfoMgr.getInstance().getUser()).isEqualTo(user);
+        loginCB.getValue().success(loginResponse, retrofitResponse);
+
+        verify(userRepository).createOrUpdate(loginResponse.getUserInformation());
+        assertThat(UserInfoMgr.getInstance().getUser()).isEqualTo(loginResponse.getUserInformation());
         verify(mockActivity).clearErrorAlerts();
     }
 
@@ -168,8 +182,9 @@ public class LoginPresenterTest {
         appInject.setNetworkConnection(true);
 
         presenter.startLogin("user", "password");
-        verify(userRepository).authorizeUser(any(User.class), loginCB.capture());
-        loginCB.getValue().success(new User("user", "password"));
+
+        verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
+        loginCB.getValue().success(loginResponse, retrofitResponse);
 
         verify(syncDownManager).syncDownServerData(any(Subscriber.class));
     }

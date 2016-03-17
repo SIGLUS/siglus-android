@@ -19,6 +19,7 @@
 package org.openlmis.core.network;
 
 
+import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
@@ -61,7 +62,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManagerFactory;
 
-import lombok.Data;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RequestInterceptor.RequestFacade;
@@ -76,16 +76,14 @@ import static javax.net.ssl.HttpsURLConnection.getDefaultHostnameVerifier;
 
 public class LMISRestManager {
 
-    public String END_POINT;
+    private static LMISRestManager instance;
+    private LMISRestApi lmisRestApi;
 
-    protected RestAdapter restAdapter;
-    protected LMISRestApi lmisRestApi;
-    private String hostName;
-
-    public LMISRestManager() {
-        END_POINT = LMISApp.getContext().getResources().getString(R.string.server_base_url);
+    protected LMISRestManager(Context context) {
+        String baseUrl = context.getString(R.string.server_base_url);
+        String hostName = null;
         try {
-            hostName = new URL(END_POINT).getHost();
+            hostName = new URL(baseUrl).getHost();
         } catch (Exception e) {
             new LMISException(e).reportToFabric();
         }
@@ -104,19 +102,21 @@ public class LMISRestManager {
             }
         };
 
-        restAdapter = new RestAdapter.Builder()
-                .setEndpoint(END_POINT)
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(baseUrl)
                 .setErrorHandler(new APIErrorHandler())
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setRequestInterceptor(requestInterceptor)
                 .setConverter(registerTypeAdapter())
-                .setClient(getSSLClient()).build();
+                .setClient(getSSLClient(hostName)).build();
 
         lmisRestApi = restAdapter.create(LMISRestApi.class);
+
+        instance = this;
     }
 
     @NonNull
-    protected Client getSSLClient() {
+    protected Client getSSLClient(final String hostName) {
         OkHttpClient client = getOkHttpClient();
 
         // loading CAs from an InputStream
@@ -137,6 +137,13 @@ public class LMISRestManager {
         }
 
         return new OkClient(client);
+    }
+
+    public static LMISRestManager getInstance(Context context) {
+        if (instance == null) {
+            instance = new LMISRestManager(context);
+        }
+        return instance;
     }
 
     public LMISRestApi getLmisRestApi() {
@@ -205,11 +212,6 @@ public class LMISRestManager {
         return new RnrFormAdapter();
     }
 
-    @Data
-    public static class UserResponse {
-        User userInformation;
-    }
-
     class APIErrorHandler implements ErrorHandler {
         @Override
         public Throwable handleError(RetrofitError cause) {
@@ -223,7 +225,7 @@ public class LMISRestManager {
             if (r != null && r.getStatus() == 500) {
                 return new SyncServerException(LMISApp.getContext().getString(R.string.sync_server_error));
             }
-            if(cause.getKind() == RetrofitError.Kind.NETWORK){
+            if (cause.getKind() == RetrofitError.Kind.NETWORK) {
                 return new NetWorkException(cause);
             }
             return new LMISException(cause);

@@ -36,6 +36,8 @@ import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.network.LMISRestApi;
+import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.NetworkConnectionManager;
 import org.openlmis.core.utils.FileUtil;
 
@@ -101,6 +103,10 @@ public class LMISApp extends Application {
 
     public void logErrorOnFabric(LMISException exception) {
         Crashlytics.logException(exception);
+    }
+
+    public LMISRestApi getRestApi() {
+        return LMISRestManager.getInstance(this).getLmisRestApi();
     }
 
     public void trackScreen(ScreenName screenName) {
