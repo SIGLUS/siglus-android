@@ -69,9 +69,9 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     @Override
     protected int getThemeRes() {
         switch (programCode) {
-            case MMIA_PROGRAM_CODE:
+            case Constants.MMIA_PROGRAM_CODE:
                 return R.style.AppTheme_AMBER;
-            case VIA_PROGRAM_CODE:
+            case Constants.VIA_PROGRAM_CODE:
                 return R.style.AppTheme_PURPLE;
             default:
                 return super.getThemeRes();

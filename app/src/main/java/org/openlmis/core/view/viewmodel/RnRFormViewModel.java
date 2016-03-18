@@ -24,6 +24,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
 import java.util.Date;
@@ -100,10 +101,10 @@ public class RnRFormViewModel {
 
     private void setName(String programCode) {
         switch (programCode) {
-            case MMIA_PROGRAM_CODE:
+            case Constants.MMIA_PROGRAM_CODE:
                 this.name = LMISApp.getContext().getString(R.string.label_mmia_name);
                 break;
-            case VIA_PROGRAM_CODE:
+            case Constants.VIA_PROGRAM_CODE:
                 this.name = LMISApp.getContext().getString(R.string.label_via_name);
                 break;
             default:

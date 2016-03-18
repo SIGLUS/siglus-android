@@ -67,6 +67,12 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     private String programCode;
     private RnRFormListAdapter adapter;
 
+    public static Intent getIntentToMe(Context context, String programCode) {
+        Intent intent = new Intent(context, RnRFormListActivity.class);
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, programCode);
+        return intent;
+    }
+
     @Override
     protected ScreenName getScreenName() {
         return ScreenName.RnRFormHistoryScreen;
@@ -74,14 +80,11 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        programCode = getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE);
-        if (Constants.MMIA_PROGRAM_CODE.equals(programCode)) {
-            setTitle(R.string.mmia_list);
-        } else {
-            setTitle(R.string.requisition_list);
-        }
-
         super.onCreate(savedInstanceState);
+
+        programCode = getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE);
+        setTitle(Constants.MMIA_PROGRAM_CODE.equals(programCode) ? R.string.mmia_list : R.string.requisition_list);
+
         presenter.setProgramCode(programCode);
         initUI();
 

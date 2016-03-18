@@ -148,16 +148,12 @@ public class HomeActivity extends BaseActivity {
     }
 
     public void onClickMMIAHistory(View view) {
-        Intent intent = new Intent(this, RnRFormListActivity.class);
-        intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.MMIA_PROGRAM_CODE);
-        startActivity(intent);
+        startActivity(RnRFormListActivity.getIntentToMe(this, Constants.MMIA_PROGRAM_CODE));
         TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectMMIA, Constants.MMIA_PROGRAM_CODE);
     }
 
     public void onClickVIAHistory(View view) {
-        Intent intent = new Intent(this, RnRFormListActivity.class);
-        intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.VIA_PROGRAM_CODE);
-        startActivity(intent);
+        startActivity(RnRFormListActivity.getIntentToMe(this, Constants.VIA_PROGRAM_CODE));
         TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectVIA, Constants.VIA_PROGRAM_CODE);
     }
 
