@@ -43,6 +43,9 @@ public class Program extends BaseModel {
     @DatabaseField
     String programName;
 
+    @DatabaseField
+    String parentCode;
+
     @ForeignCollectionField(columnName = "products")
     private Collection<Product> products;
 }

@@ -31,6 +31,7 @@ import org.openlmis.core.persistence.migrations.AddFacilityIdToUser;
 import org.openlmis.core.persistence.migrations.AddInventoryTable;
 import org.openlmis.core.persistence.migrations.AddIsArchivedToProduct;
 import org.openlmis.core.persistence.migrations.AddIsKitColumnToProduct;
+import org.openlmis.core.persistence.migrations.AddParentCodeToProgramTable;
 import org.openlmis.core.persistence.migrations.AddSignatureFieldInStockMovementItemTable;
 import org.openlmis.core.persistence.migrations.AddSubmittedDateToRnRForm;
 import org.openlmis.core.persistence.migrations.AddSyncErrorsMessageTable;
@@ -71,6 +72,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new UpdateProductsFalseValueToZero());
             add(new UpdateCreateTimeAndUpdateTime());
             add(new AddInventoryTable());
+            add(new AddParentCodeToProgramTable());
         }
     };
     private static int instanceCount = 0;
