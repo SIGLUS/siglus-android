@@ -44,6 +44,7 @@ import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.service.PeriodService;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -228,7 +229,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     public void shouldGetStockCardsExistedInPeriodLastDay() throws Exception {
         Program program = new Program();
         program.setId(123);
-        program.setProgramCode(MMIARepository.MMIA_PROGRAM_CODE);
+        program.setProgramCode(Constants.MMIA_PROGRAM_CODE);
 
         Date generateDate = DateUtil.parseString("20/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
         Date movementDate = DateUtil.parseString("20/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
@@ -258,7 +259,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         Program program = new Program();
         program.setId(123);
-        program.setProgramCode(MMIARepository.MMIA_PROGRAM_CODE);
+        program.setProgramCode(Constants.MMIA_PROGRAM_CODE);
 
         DateTime periodBegin = new DateTime(DateUtil.parseString("2015-06-21 10:10:10", DateUtil.DATE_TIME_FORMAT));
         DateTime periodEnd = new DateTime(DateUtil.parseString("2015-07-21 11:11:11", DateUtil.DATE_TIME_FORMAT));

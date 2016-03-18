@@ -28,13 +28,12 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class VIARepository extends RnrFormRepository {
-
-    public static final String VIA_PROGRAM_CODE = "ESS_MEDS";
 
     public static final String ATTR_CONSULTATION = "consultation";
 
@@ -44,7 +43,7 @@ public class VIARepository extends RnrFormRepository {
     @Inject
     public VIARepository(Context context) {
         super(context);
-        programCode = VIA_PROGRAM_CODE;
+        programCode = Constants.VIA_PROGRAM_CODE;
     }
 
     @Override

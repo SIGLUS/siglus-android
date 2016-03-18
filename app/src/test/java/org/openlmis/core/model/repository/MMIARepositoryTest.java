@@ -41,6 +41,7 @@ import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.service.PeriodService;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -212,7 +213,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldInflateMMIAProducts() throws Exception {
         Program program = new Program();
-        program.setProgramCode(org.openlmis.core.model.repository.MMIARepository.MMIA_PROGRAM_CODE);
+        program.setProgramCode(Constants.MMIA_PROGRAM_CODE);
 
         RnRForm rnRForm = new RnRForm();
         rnRForm.setProgram(program);

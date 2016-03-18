@@ -21,6 +21,11 @@ package org.openlmis.core.utils;
 import org.openlmis.core.LMISApp;
 
 public final class Constants {
+
+    // Don't change these program codes!!!
+    public static final String MMIA_PROGRAM_CODE = "MMIA";
+    public static final String VIA_PROGRAM_CODE = "ESS_MEDS";
+
     // Intent Params
     public static final String PARAM_STOCK_CARD_ID = "stockCardId";
     public static final String PARAM_STOCK_NAME = "stockName";
@@ -44,6 +49,8 @@ public final class Constants {
     public static final int REQUEST_UNPACK_KIT = 200;
     public static final int REQUEST_FROM_RNR_LIST_PAGE = 300;
     public static final int REQUEST_SELECT_PERIOD_END = 400;
+
+    // Broadcast Intent Filter
     public static final String INTENT_FILTER_SET_SYNC_DATA = LMISApp.getContext().getPackageName() + ".sync_data";
 
     private Constants() {

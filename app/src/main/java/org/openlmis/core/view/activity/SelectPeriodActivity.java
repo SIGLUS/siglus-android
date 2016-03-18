@@ -15,8 +15,6 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
-import org.openlmis.core.model.repository.MMIARepository;
-import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.presenter.SelectPeriodPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
@@ -71,9 +69,9 @@ public class SelectPeriodActivity extends BaseActivity implements SelectPeriodPr
     @Override
     protected int getThemeRes() {
         switch (programCode) {
-            case MMIARepository.MMIA_PROGRAM_CODE:
+            case MMIA_PROGRAM_CODE:
                 return R.style.AppTheme_AMBER;
-            case VIARepository.VIA_PROGRAM_CODE:
+            case VIA_PROGRAM_CODE:
                 return R.style.AppTheme_PURPLE;
             default:
                 return super.getThemeRes();

@@ -41,6 +41,7 @@ import org.openlmis.core.model.service.PeriodService;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
 import java.sql.SQLException;
@@ -223,7 +224,7 @@ public class RnrFormRepository {
     }
 
     public List<RnRForm> listMMIA() throws LMISException {
-        return list(MMIARepository.MMIA_PROGRAM_CODE);
+        return list(Constants.MMIA_PROGRAM_CODE);
     }
 
 

@@ -16,8 +16,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.repository.MMIARepository;
-import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.presenter.RnRFormListPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
@@ -63,7 +61,7 @@ public class RnRFormListActivityTest {
         });
 
         intent = new Intent();
-        intent.putExtra(Constants.PARAM_PROGRAM_CODE, MMIARepository.MMIA_PROGRAM_CODE);
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.MMIA_PROGRAM_CODE);
         rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).withIntent(intent).create().get();
     }
 
@@ -75,17 +73,17 @@ public class RnRFormListActivityTest {
     @Test
     public void shouldSetMmiaTitleAndProgramCodeWhenProgramCodeIsMmia() {
         assertThat(rnRFormListActivity.getTitle()).isEqualTo(rnRFormListActivity.getResources().getString(R.string.mmia_list));
-        verify(mockedPresenter).setProgramCode(MMIARepository.MMIA_PROGRAM_CODE);
+        verify(mockedPresenter).setProgramCode(Constants.MMIA_PROGRAM_CODE);
     }
 
     @Test
     public void shouldSetViaTitleAndProgramCodeWhenProgramCodeIsVia() {
 
-        intent.putExtra(Constants.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE);
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.VIA_PROGRAM_CODE);
         rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).withIntent(intent).create().get();
 
         assertThat(rnRFormListActivity.getTitle()).isEqualTo(rnRFormListActivity.getResources().getString(R.string.requisition_list));
-        verify(mockedPresenter).setProgramCode(VIARepository.VIA_PROGRAM_CODE);
+        verify(mockedPresenter).setProgramCode(Constants.VIA_PROGRAM_CODE);
     }
 
     @Test
@@ -160,7 +158,7 @@ public class RnRFormListActivityTest {
 
     @Test
     public void shouldStartVIAHistoryWhenBtnClickedWithTypeHistory() throws Exception {
-        intent.putExtra(Constants.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE);
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.VIA_PROGRAM_CODE);
         rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).withIntent(intent).create().get();
 
         RnRFormViewModel viewModel = generateRnRFormViewModel("ESS_MEDS", RnRFormViewModel.TYPE_SYNCED_HISTORICAL);
@@ -215,7 +213,7 @@ public class RnRFormListActivityTest {
         data.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, inventoryDate);
         data.putExtra(Constants.PARAM_IS_MISSED_PERIOD, true);
 
-        intent.putExtra(Constants.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE);
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.VIA_PROGRAM_CODE);
         rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).withIntent(intent).create().get();
 
         rnRFormListActivity.onActivityResult(Constants.REQUEST_SELECT_PERIOD_END, Activity.RESULT_OK, data);

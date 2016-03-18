@@ -32,8 +32,6 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.repository.MMIARepository;
-import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.presenter.RnRFormListPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
@@ -77,7 +75,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         programCode = getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE);
-        if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
+        if (Constants.MMIA_PROGRAM_CODE.equals(programCode)) {
             setTitle(R.string.mmia_list);
         } else {
             setTitle(R.string.requisition_list);
@@ -92,7 +90,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
 
     @Override
     protected int getThemeRes() {
-        if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
+        if (Constants.MMIA_PROGRAM_CODE.equals(programCode)) {
             return R.style.AppTheme_AMBER;
         } else {
             return R.style.AppTheme_PURPLE;
@@ -170,17 +168,17 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     };
 
     private void goToRequisitionPage(long rnrFormId) {
-        if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
+        if (Constants.MMIA_PROGRAM_CODE.equals(programCode)) {
             startActivityForResult(MMIARequisitionActivity.getIntentToMe(this, rnrFormId), Constants.REQUEST_FROM_RNR_LIST_PAGE);
-        } else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)) {
+        } else if (Constants.VIA_PROGRAM_CODE.equals(programCode)) {
             startActivityForResult(VIARequisitionActivity.getIntentToMe(this, rnrFormId), Constants.REQUEST_FROM_RNR_LIST_PAGE);
         }
     }
 
     private void createRequisition(Date periodEndDate, boolean isMissedPeriod) {
-        if (MMIARepository.MMIA_PROGRAM_CODE.equals(programCode)) {
+        if (Constants.MMIA_PROGRAM_CODE.equals(programCode)) {
             startActivityForResult(MMIARequisitionActivity.getIntentToMe(this, periodEndDate), Constants.REQUEST_FROM_RNR_LIST_PAGE);
-        } else if (VIARepository.VIA_PROGRAM_CODE.equals(programCode)) {
+        } else if (Constants.VIA_PROGRAM_CODE.equals(programCode)) {
             startActivityForResult(VIARequisitionActivity.getIntentToMe(this, periodEndDate, isMissedPeriod), Constants.REQUEST_FROM_RNR_LIST_PAGE);
         }
     }

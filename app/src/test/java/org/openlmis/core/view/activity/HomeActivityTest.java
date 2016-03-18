@@ -33,14 +33,11 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
-import org.openlmis.core.model.repository.MMIARepository;
-import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.utils.Constants;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.fakes.RoboMenuItem;
 import org.robolectric.shadows.ShadowActivity;
-import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.shadows.ShadowToast;
 
@@ -104,7 +101,7 @@ public class HomeActivityTest {
         Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
 
         assertThat(startedIntent.getComponent().getClassName(), equalTo(RnRFormListActivity.class.getName()));
-        assertThat(startedIntent.getStringExtra(Constants.PARAM_PROGRAM_CODE), is(MMIARepository.MMIA_PROGRAM_CODE));
+        assertThat(startedIntent.getStringExtra(Constants.PARAM_PROGRAM_CODE), is(Constants.MMIA_PROGRAM_CODE));
     }
 
     @Test
@@ -114,7 +111,7 @@ public class HomeActivityTest {
         Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
 
         assertThat(startedIntent.getComponent().getClassName(), equalTo(RnRFormListActivity.class.getName()));
-        assertThat(startedIntent.getStringExtra(Constants.PARAM_PROGRAM_CODE), is(VIARepository.VIA_PROGRAM_CODE));
+        assertThat(startedIntent.getStringExtra(Constants.PARAM_PROGRAM_CODE), is(Constants.VIA_PROGRAM_CODE));
     }
 
     private void verifyNextPage(String className) {

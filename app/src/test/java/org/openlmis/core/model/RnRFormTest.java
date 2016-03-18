@@ -9,7 +9,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.RnrFormItemBuilder;
-import org.openlmis.core.model.repository.MMIARepository;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
 import java.util.Date;
@@ -111,7 +111,7 @@ public class RnRFormTest {
 
         Program program = new Program();
         program.setId(123);
-        program.setProgramCode(MMIARepository.MMIA_PROGRAM_CODE);
+        program.setProgramCode(Constants.MMIA_PROGRAM_CODE);
 
         DateTime periodBegin = new DateTime(DateUtil.parseString("2015-06-21 10:10:10", DateUtil.DATE_TIME_FORMAT));
         DateTime periodEnd = new DateTime(DateUtil.parseString("2015-07-21 11:11:11", DateUtil.DATE_TIME_FORMAT));

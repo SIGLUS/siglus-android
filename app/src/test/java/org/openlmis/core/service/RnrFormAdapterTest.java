@@ -39,11 +39,11 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.User;
-import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.JsonFileReader;
 import org.robolectric.RuntimeEnvironment;
@@ -83,7 +83,7 @@ public class RnrFormAdapterTest {
         rnRForm = new RnRForm();
         UserInfoMgr.getInstance().setUser(new User("user", "password"));
         Program program = new Program();
-        program.setProgramCode(MMIARepository.MMIA_PROGRAM_CODE);
+        program.setProgramCode(Constants.MMIA_PROGRAM_CODE);
         rnRForm.setProgram(program);
     }
 

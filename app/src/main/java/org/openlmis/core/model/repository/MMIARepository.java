@@ -31,6 +31,7 @@ import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.utils.Constants;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -56,8 +57,6 @@ public class MMIARepository extends RnrFormRepository {
     @InjectResource(R.string.label_ppe)
     public String ATTR_PPE;
 
-    public static final String MMIA_PROGRAM_CODE = "MMIA";
-
     @Inject
     ProgramRepository programRepository;
 
@@ -67,7 +66,7 @@ public class MMIARepository extends RnrFormRepository {
     @Inject
     public MMIARepository(Context context) {
         super(context);
-        programCode = MMIA_PROGRAM_CODE;
+        programCode = Constants.MMIA_PROGRAM_CODE;
     }
 
     @Override
@@ -114,7 +113,7 @@ public class MMIARepository extends RnrFormRepository {
     protected List<RnrFormItem> generateRnrFormItems(RnRForm form) throws LMISException {
         List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form);
 
-        List<Product> products = productRepository.queryProducts(programRepository.queryByCode(MMIA_PROGRAM_CODE).getId());
+        List<Product> products = productRepository.queryProducts(programRepository.queryByCode(Constants.MMIA_PROGRAM_CODE).getId());
         ArrayList<RnrFormItem> result = new ArrayList<>();
 
         for (Product product : products) {

@@ -41,8 +41,6 @@ import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
-import org.openlmis.core.model.repository.MMIARepository;
-import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
@@ -151,16 +149,16 @@ public class HomeActivity extends BaseActivity {
 
     public void onClickMMIAHistory(View view) {
         Intent intent = new Intent(this, RnRFormListActivity.class);
-        intent.putExtra(Constants.PARAM_PROGRAM_CODE, MMIARepository.MMIA_PROGRAM_CODE);
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.MMIA_PROGRAM_CODE);
         startActivity(intent);
-        TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectMMIA, MMIARepository.MMIA_PROGRAM_CODE);
+        TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectMMIA, Constants.MMIA_PROGRAM_CODE);
     }
 
     public void onClickVIAHistory(View view) {
         Intent intent = new Intent(this, RnRFormListActivity.class);
-        intent.putExtra(Constants.PARAM_PROGRAM_CODE, VIARepository.VIA_PROGRAM_CODE);
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.VIA_PROGRAM_CODE);
         startActivity(intent);
-        TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectVIA, VIARepository.VIA_PROGRAM_CODE);
+        TrackRnREventUtil.trackRnRListEvent(TrackerActions.SelectVIA, Constants.VIA_PROGRAM_CODE);
     }
 
     @Override
