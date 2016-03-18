@@ -9,9 +9,11 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.builder.ProgramBuilder;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import roboguice.RoboGuice;
 
@@ -81,4 +83,21 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(productRepository.listActiveProducts(IsKit.No).get(1).getPrimaryName(), is("Test Product2 Updated"));
     }
 
+    @Test
+    public void shouldQueryProgramCodeOrByParentCode() throws Exception {
+        insertProgram("MMIA", "MMIA Program", null);
+        insertProgram("VIA", "VIA Program", null);
+        insertProgram("TB", "Nutrition Program", "VIA");
+
+        List<Program> programs = programRepository.queryByProgramCodeOrParentCode("VIA");
+        assertThat(programs.size(), is(2));
+    }
+
+    private void insertProgram(String programCode, String programName, String parentCode) throws LMISException {
+        Program program = new ProgramBuilder()
+                .setProgramCode(programCode)
+                .setProgramName(programName)
+                .setParentCode(parentCode).build();
+        programRepository.createOrUpdate(program);
+    }
 }

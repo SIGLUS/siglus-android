@@ -103,4 +103,14 @@ public class ProgramRepository {
             }
         });
     }
+
+    public List<Program> queryByProgramCodeOrParentCode(final String programCode) throws LMISException {
+        return dbUtil.withDao(Program.class, new DbUtil.Operation<Program, List<Program>>() {
+            @Override
+            public List<Program> operate(Dao<Program, String> dao) throws SQLException, LMISException {
+                return dao.queryBuilder().where().eq("parentCode", programCode)
+                        .or().eq("programCode", programCode).query();
+            }
+        });
+    }
 }
