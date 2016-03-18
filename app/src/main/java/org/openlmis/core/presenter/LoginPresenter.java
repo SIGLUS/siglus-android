@@ -58,6 +58,7 @@ public class LoginPresenter extends Presenter {
 
     @Inject
     SyncDownManager syncDownManager;
+
     private boolean hasGoneToNextPage;
 
     @Inject
@@ -144,19 +145,27 @@ public class LoginPresenter extends Presenter {
         });
     }
 
-    private void saveUserDataToLocalDatabase(UserResponse response) throws LMISException {
+    protected void saveUserDataToLocalDatabase(UserResponse response) throws LMISException {
         userRepository.createOrUpdate(response.getUserInformation());
 
-        if (response.getUserInformation().getFacilitySupportedPrograms() != null) {
-            for (String programCode : response.getUserInformation().getFacilitySupportedPrograms()) {
-                Program program = new Program();
-                program.setProgramCode(programCode);
-                programRepository.createOrUpdate(program);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_via_multiple_programs)) {
+            if (response.getFacilitySupportedPrograms() != null) {
+                for (Program program : response.getFacilitySupportedPrograms()) {
+                    programRepository.createOrUpdate(program);
+                }
+            }
+        } else {
+            if (response.getUserInformation().getFacilitySupportedPrograms() != null) {
+                for (String programCode : response.getUserInformation().getFacilitySupportedPrograms()) {
+                    Program program = new Program();
+                    program.setProgramCode(programCode);
+                    programRepository.createOrUpdate(program);
+                }
             }
         }
     }
 
-    protected void onLoginSuccess(UserResponse userResponse) {
+    private void onLoginSuccess(UserResponse userResponse) {
         Log.d("Login Presenter", "Log in successful, setting up sync account");
         syncService.createSyncAccount(userResponse.getUserInformation());
 

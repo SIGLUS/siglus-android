@@ -19,6 +19,11 @@ public class ProgramBuilder {
         return this;
     }
 
+    public ProgramBuilder setParentCode(String parentCode) {
+        program.setParentCode(parentCode);
+        return this;
+    }
+
     public ProgramBuilder setProgramId(long programId) {
         program.setId(programId);
         return this;

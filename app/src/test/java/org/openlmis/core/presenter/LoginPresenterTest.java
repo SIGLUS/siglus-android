@@ -34,6 +34,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.builder.ProgramBuilder;
 import org.openlmis.core.model.builder.UserBuilder;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -49,6 +50,7 @@ import org.openlmis.core.view.activity.LoginActivity;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
 
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit.Callback;
@@ -297,10 +299,29 @@ public class LoginPresenterTest {
         UserResponse userResponse = new UserResponse();
         userResponse.setUserInformation(user);
 
-        presenter.onLoginSuccess(userResponse);
+        presenter.saveUserDataToLocalDatabase(userResponse);
 
         verify(userRepository).createOrUpdate(user);
         verify(programRepository, times(user.getFacilitySupportedPrograms().size())).createOrUpdate(any(Program.class));
+    }
+
+    @Test
+    public void shouldSaveUserDataAndSupportedFacilityCodeToDBWhenMultipleProgramToggleON() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_via_multiple_programs, true);
+
+        User user = UserBuilder.defaultUser();
+        UserResponse userResponse = new UserResponse();
+        userResponse.setUserInformation(user);
+        userResponse.setFacilitySupportedPrograms(Arrays.asList(
+                new ProgramBuilder().setProgramCode("via_code").setProgramName("VIA name").build(),
+                new ProgramBuilder().setProgramCode("mmia_code").setProgramName("MMIA name").build(),
+                new ProgramBuilder().setProgramCode("nutrition_code").setProgramName("Nutrition name").setParentCode("via_code").build()
+        ));
+
+        presenter.saveUserDataToLocalDatabase(userResponse);
+
+        verify(userRepository).createOrUpdate(user);
+        verify(programRepository, times(3)).createOrUpdate(any(Program.class));
     }
 
     public class MyTestModule extends AbstractModule {
