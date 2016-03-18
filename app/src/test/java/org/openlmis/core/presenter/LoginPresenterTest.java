@@ -34,6 +34,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.builder.UserBuilder;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.UserRepository;
@@ -288,6 +289,20 @@ public class LoginPresenterTest {
         verify(mockActivity, times(0)).goToHomePage();
     }
 
+    @Test
+    public void shouldSaveUserDataAndSupportedFacilityCodeToDBWhenMultipleProgramToggleOff() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_via_multiple_programs, false);
+
+        User user = UserBuilder.defaultUser();
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setUserInformation(user);
+
+        presenter.onLoginSuccess(loginResponse);
+
+        verify(userRepository).createOrUpdate(user);
+        verify(programRepository, times(user.getFacilitySupportedPrograms().size())).createOrUpdate(any(Program.class));
+    }
+
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
@@ -298,4 +313,6 @@ public class LoginPresenterTest {
             bind(ProgramRepository.class).toInstance(programRepository);
         }
     }
+
+
 }

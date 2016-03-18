@@ -53,7 +53,7 @@ public class PeriodServiceTest {
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         periodService = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(PeriodService.class);
 
-        programMMIA = new Program("MMIA", "MMIA", null);
+        programMMIA = new Program("MMIA", "MMIA", null, null);
         programMMIA.setId(1l);
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(programMMIA);
     }

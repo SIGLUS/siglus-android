@@ -82,7 +82,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         mmiaRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(MMIARepository.class);
 
-        program = new Program("ART", "ART", null);
+        program = new Program("ART", "ART", null, null);
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
         when(mockProductRepository.queryProducts(anyLong())).thenReturn(createProducts());
     }

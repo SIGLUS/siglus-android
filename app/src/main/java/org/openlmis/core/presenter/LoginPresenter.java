@@ -123,13 +123,13 @@ public class LoginPresenter extends Presenter {
         LMISApp.getInstance().getRestApi().authorizeUser(user, new Callback<LoginResponse>() {
             @Override
             public void success(LoginResponse loginResponse, Response response) {
-                User remoteUser = loginResponse.getUserInformation();
-                if (remoteUser == null) {
+                if (loginResponse == null || loginResponse.getUserInformation() == null) {
                     onLoginFailed();
                 } else {
-                    remoteUser.setUsername(user.getUsername());
-                    remoteUser.setPassword(user.getPassword());
-                    onLoginSuccess(remoteUser);
+                    loginResponse.getUserInformation().setUsername(user.getUsername());
+                    loginResponse.getUserInformation().setPassword(user.getPassword());
+
+                    onLoginSuccess(loginResponse);
                 }
             }
 
@@ -144,11 +144,11 @@ public class LoginPresenter extends Presenter {
         });
     }
 
-    private void saveUserDataToLocalDatabase(User user) throws LMISException {
-        userRepository.createOrUpdate(user);
+    private void saveUserDataToLocalDatabase(LoginResponse response) throws LMISException {
+        userRepository.createOrUpdate(response.getUserInformation());
 
-        if (user.getFacilitySupportedPrograms() != null) {
-            for (String programCode : user.getFacilitySupportedPrograms()) {
+        if (response.getUserInformation().getFacilitySupportedPrograms() != null) {
+            for (String programCode : response.getUserInformation().getFacilitySupportedPrograms()) {
                 Program program = new Program();
                 program.setProgramCode(programCode);
                 programRepository.createOrUpdate(program);
@@ -156,16 +156,16 @@ public class LoginPresenter extends Presenter {
         }
     }
 
-    protected void onLoginSuccess(User user) {
+    protected void onLoginSuccess(LoginResponse loginResponse) {
         Log.d("Login Presenter", "Log in successful, setting up sync account");
-        syncService.createSyncAccount(user);
+        syncService.createSyncAccount(loginResponse.getUserInformation());
 
         try {
-            saveUserDataToLocalDatabase(user);
+            saveUserDataToLocalDatabase(loginResponse);
         } catch (LMISException e) {
             e.reportToFabric();
         }
-        UserInfoMgr.getInstance().setUser(user);
+        UserInfoMgr.getInstance().setUser(loginResponse.getUserInformation());
         view.clearErrorAlerts();
 
         syncDownManager.syncDownServerData(getSyncSubscriber());

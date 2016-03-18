@@ -52,10 +52,10 @@ public class User extends BaseModel{
     @DatabaseField
     String facilityName;
 
-
     @DatabaseField
     String facilityId;
 
+    @Deprecated
     List<String> facilitySupportedPrograms;
 
     public User(String username, String password){

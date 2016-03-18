@@ -46,7 +46,7 @@ public class VIARepositoryTest {
 
         viaRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(VIARepository.class);
 
-        viaProgram = new Program("VIA", "VIA", null);
+        viaProgram = new Program("VIA", "VIA", null, null);
         viaProgram.setId(1l);
     }
 
