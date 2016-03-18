@@ -554,7 +554,7 @@ describe "submit requisition to web server" do
     expect(via_approver_signature['text']).to eq 'magneto'
 
 
-    product1 = via_requisition['products'].detect { |p| p['productCode'] == '01A01' }
+    product1 = via_requisition['products'].detect { |p| p['productCode'] == '26B06' }
     expect(product1['beginningBalance']).to eq 10
     expect(product1['quantityReceived']).to eq 30
     expect(product1['quantityDispensed']).to eq 20
