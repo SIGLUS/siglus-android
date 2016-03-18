@@ -28,6 +28,7 @@ import com.j256.ormlite.table.TableUtils;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.StockMovementIsNullException;
 import org.openlmis.core.model.DraftInventory;
@@ -40,6 +41,8 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.Lists;
 
 import java.sql.SQLException;
@@ -236,16 +239,27 @@ public class StockRepository {
         return false;
     }
 
-    public List<StockCard> listActiveStockCardsByProgramId(final long programId) throws LMISException {
+    public List<StockCard> listActiveStockCardsByProgramCode(final String programCode) throws LMISException {
         return dbUtil.withDao(StockCard.class, new DbUtil.Operation<StockCard, List<StockCard>>() {
             @Override
-            public List<StockCard> operate(Dao<StockCard, String> dao) throws SQLException {
-
+            public List<StockCard> operate(Dao<StockCard, String> dao) throws SQLException, LMISException {
                 QueryBuilder<Product, String> productQueryBuilder = DbUtil.initialiseDao(Product.class).queryBuilder();
-                productQueryBuilder.where().eq("program_id", programId).and().eq("isActive", true).and().eq("isKit", false);
 
-                return dao.queryBuilder().join(productQueryBuilder)
-                        .query();
+                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_via_multiple_programs)) {
+                    List<Program> programs = programRepository.queryByProgramCodeOrParentCode(programCode);
+                    List<Long> programIds = FluentIterable.from(programs).transform(new Function<Program, Long>() {
+                        @Override
+                        public Long apply(Program program) {
+                            return program.getId();
+                        }
+                    }).toList();
+                    productQueryBuilder.where().in("program_id", programIds).and().eq("isActive", true).and().eq("isKit", false);
+                } else {
+                    Program program = programRepository.queryByCode(programCode);
+                    productQueryBuilder.where().eq("program_id", program.getId()).and().eq("isActive", true).and().eq("isKit", false);
+                }
+
+                return dao.queryBuilder().join(productQueryBuilder).query();
             }
         });
     }
@@ -471,9 +485,7 @@ public class StockRepository {
     }
 
     public Date queryEarliestStockMovementDateByProgram(final String programCode) throws LMISException {
-
-        Program program = programRepository.queryByCode(programCode);
-        List<StockCard> stockCards = listActiveStockCardsByProgramId(program.getId());
+        List<StockCard> stockCards = listActiveStockCardsByProgramCode(programCode);
         Date earliestDate = null;
 
         for (StockCard stockCard: stockCards) {

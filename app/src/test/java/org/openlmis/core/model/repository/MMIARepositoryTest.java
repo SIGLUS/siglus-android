@@ -108,7 +108,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         StockMovementItem stockMovementItem3 = createMovementItem(StockMovementItem.MovementType.POSITIVE_ADJUST, 30, stockCard, mockDay3, mockDay3);
 
 
-        when(mockStockRepository.listActiveStockCardsByProgramId(anyLong())).thenReturn(stockCards);
+        when(mockStockRepository.listActiveStockCardsByProgramCode(anyString())).thenReturn(stockCards);
         when(mockStockRepository.queryFirstStockMovementItem(any(StockCard.class))).thenReturn(stockMovementItem1);
         when(mockPeriodService.generateNextPeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime("2016-12-27"), new DateTime("2017-01-20")));
         when(mockStockRepository.queryStockItemsByPeriodDates(any(StockCard.class), any(Date.class), any(Date.class)))
@@ -159,7 +159,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
             stockMovementItems.add(stockMovementItem);
         }
 
-        when(mockStockRepository.listActiveStockCardsByProgramId(anyLong())).thenReturn(stockCards);
+        when(mockStockRepository.listActiveStockCardsByProgramCode(anyString())).thenReturn(stockCards);
         StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setCreatedTime(new Date());
         stockMovementItem.setMovementDate(DateUtil.generateRnRFormPeriodBy(new Date()).getBegin().toDate());
