@@ -24,7 +24,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.network.model.AppInfoRequest;
-import org.openlmis.core.network.model.LoginResponse;
+import org.openlmis.core.network.model.UserResponse;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
@@ -43,7 +43,7 @@ import retrofit.http.Query;
 public interface LMISRestApi {
 
     @POST("/rest-api/login")
-    void authorizeUser(@Body User user, Callback<LoginResponse> callback);
+    void authorizeUser(@Body User user, Callback<UserResponse> callback);
 
     @POST("/rest-api/update-app-info")
     Void updateAppVersion(@Body AppInfoRequest appInfo) throws LMISException;

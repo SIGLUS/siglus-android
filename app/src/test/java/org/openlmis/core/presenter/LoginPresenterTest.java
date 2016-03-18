@@ -40,7 +40,7 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManagerMock;
-import org.openlmis.core.network.model.LoginResponse;
+import org.openlmis.core.network.model.UserResponse;
 import org.openlmis.core.network.model.SyncDownProductsResponse;
 import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
@@ -77,7 +77,7 @@ public class LoginPresenterTest {
     SyncService syncService;
 
     @Captor
-    private ArgumentCaptor<Callback<LoginResponse>> loginCB;
+    private ArgumentCaptor<Callback<UserResponse>> loginCB;
 
     private LMISTestApp appInject;
     private Subscriber<SyncProgress> syncSubscriber;
@@ -85,7 +85,7 @@ public class LoginPresenterTest {
     private ProgramRepository programRepository;
     private LMISRestApi mockedApi;
     private Response retrofitResponse;
-    private LoginResponse loginResponse;
+    private UserResponse userResponse;
 
     @Before
     public void setup() {
@@ -104,8 +104,8 @@ public class LoginPresenterTest {
 
 
         retrofitResponse = LMISRestManagerMock.createDummyJsonResponse("http://unknown.com", 200, "", "");
-        loginResponse = new LoginResponse();
-        loginResponse.setUserInformation(new User("username", "password"));
+        userResponse = new UserResponse();
+        userResponse.setUserInformation(new User("username", "password"));
 
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
@@ -126,7 +126,7 @@ public class LoginPresenterTest {
         verify(mockActivity).loading();
         verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
 
-        loginCB.getValue().success(loginResponse, retrofitResponse);
+        loginCB.getValue().success(userResponse, retrofitResponse);
 
         verify(userRepository).createOrUpdate(any(User.class));
     }
@@ -143,8 +143,8 @@ public class LoginPresenterTest {
 
         List<String> supportedPrograms = newArrayList("PR", "PR@");
 
-        loginResponse.getUserInformation().setFacilitySupportedPrograms(supportedPrograms);
-        loginCB.getValue().success(loginResponse, retrofitResponse);
+        userResponse.getUserInformation().setFacilitySupportedPrograms(supportedPrograms);
+        loginCB.getValue().success(userResponse, retrofitResponse);
 
         verify(userRepository).createOrUpdate(any(User.class));
         verify(programRepository, times(2)).createOrUpdate(any(Program.class));
@@ -158,9 +158,9 @@ public class LoginPresenterTest {
 
         verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
 
-        loginCB.getValue().success(loginResponse, retrofitResponse);
+        loginCB.getValue().success(userResponse, retrofitResponse);
 
-        verify(syncService).createSyncAccount(loginResponse.getUserInformation());
+        verify(syncService).createSyncAccount(userResponse.getUserInformation());
     }
 
     @Test
@@ -171,10 +171,10 @@ public class LoginPresenterTest {
 
         verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
 
-        loginCB.getValue().success(loginResponse, retrofitResponse);
+        loginCB.getValue().success(userResponse, retrofitResponse);
 
-        verify(userRepository).createOrUpdate(loginResponse.getUserInformation());
-        assertThat(UserInfoMgr.getInstance().getUser()).isEqualTo(loginResponse.getUserInformation());
+        verify(userRepository).createOrUpdate(userResponse.getUserInformation());
+        assertThat(UserInfoMgr.getInstance().getUser()).isEqualTo(userResponse.getUserInformation());
         verify(mockActivity).clearErrorAlerts();
     }
 
@@ -185,7 +185,7 @@ public class LoginPresenterTest {
         presenter.startLogin("user", "password");
 
         verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
-        loginCB.getValue().success(loginResponse, retrofitResponse);
+        loginCB.getValue().success(userResponse, retrofitResponse);
 
         verify(syncDownManager).syncDownServerData(any(Subscriber.class));
     }
@@ -294,10 +294,10 @@ public class LoginPresenterTest {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_via_multiple_programs, false);
 
         User user = UserBuilder.defaultUser();
-        LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setUserInformation(user);
+        UserResponse userResponse = new UserResponse();
+        userResponse.setUserInformation(user);
 
-        presenter.onLoginSuccess(loginResponse);
+        presenter.onLoginSuccess(userResponse);
 
         verify(userRepository).createOrUpdate(user);
         verify(programRepository, times(user.getFacilitySupportedPrograms().size())).createOrUpdate(any(Program.class));

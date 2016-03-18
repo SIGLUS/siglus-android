@@ -8,7 +8,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class LoginResponse {
+public class UserResponse {
     private User userInformation;
     private List<Program> facilitySupportedPrograms;
 }

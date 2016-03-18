@@ -34,7 +34,7 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.UserRepository;
-import org.openlmis.core.network.model.LoginResponse;
+import org.openlmis.core.network.model.UserResponse;
 import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.openlmis.core.service.SyncService;
@@ -120,16 +120,16 @@ public class LoginPresenter extends Presenter {
     }
 
     private void authorizeAndLoginUserRemote(final User user) {
-        LMISApp.getInstance().getRestApi().authorizeUser(user, new Callback<LoginResponse>() {
+        LMISApp.getInstance().getRestApi().authorizeUser(user, new Callback<UserResponse>() {
             @Override
-            public void success(LoginResponse loginResponse, Response response) {
-                if (loginResponse == null || loginResponse.getUserInformation() == null) {
+            public void success(UserResponse userResponse, Response response) {
+                if (userResponse == null || userResponse.getUserInformation() == null) {
                     onLoginFailed();
                 } else {
-                    loginResponse.getUserInformation().setUsername(user.getUsername());
-                    loginResponse.getUserInformation().setPassword(user.getPassword());
+                    userResponse.getUserInformation().setUsername(user.getUsername());
+                    userResponse.getUserInformation().setPassword(user.getPassword());
 
-                    onLoginSuccess(loginResponse);
+                    onLoginSuccess(userResponse);
                 }
             }
 
@@ -144,7 +144,7 @@ public class LoginPresenter extends Presenter {
         });
     }
 
-    private void saveUserDataToLocalDatabase(LoginResponse response) throws LMISException {
+    private void saveUserDataToLocalDatabase(UserResponse response) throws LMISException {
         userRepository.createOrUpdate(response.getUserInformation());
 
         if (response.getUserInformation().getFacilitySupportedPrograms() != null) {
@@ -156,16 +156,16 @@ public class LoginPresenter extends Presenter {
         }
     }
 
-    protected void onLoginSuccess(LoginResponse loginResponse) {
+    protected void onLoginSuccess(UserResponse userResponse) {
         Log.d("Login Presenter", "Log in successful, setting up sync account");
-        syncService.createSyncAccount(loginResponse.getUserInformation());
+        syncService.createSyncAccount(userResponse.getUserInformation());
 
         try {
-            saveUserDataToLocalDatabase(loginResponse);
+            saveUserDataToLocalDatabase(userResponse);
         } catch (LMISException e) {
             e.reportToFabric();
         }
-        UserInfoMgr.getInstance().setUser(loginResponse.getUserInformation());
+        UserInfoMgr.getInstance().setUser(userResponse.getUserInformation());
         view.clearErrorAlerts();
 
         syncDownManager.syncDownServerData(getSyncSubscriber());
