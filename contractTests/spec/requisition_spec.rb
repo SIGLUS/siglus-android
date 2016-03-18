@@ -26,7 +26,7 @@ describe "submit requisition to web server" do
       ],
       products: [
       {
-        productCode: "01A01",
+        productCode: "26B06",
         beginningBalance: 10,
         quantityReceived: 30,
         quantityDispensed: 20,
@@ -38,7 +38,7 @@ describe "submit requisition to web server" do
         reasonForRequestedQuantity: "reason"
       },
       {
-        productCode: "01A02",
+        productCode: "26B07",
         beginningBalance: 100,
         quantityReceived: 300,
         quantityDispensed: 100,
