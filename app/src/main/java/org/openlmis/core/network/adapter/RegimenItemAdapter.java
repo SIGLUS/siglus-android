@@ -14,6 +14,7 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.repository.RegimenRepository;
 
@@ -37,12 +38,22 @@ public class RegimenItemAdapter implements JsonSerializer<RegimenItem>, JsonDese
     public RegimenItem deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         RegimenItem regimenItem = gson.fromJson(json, RegimenItem.class);
         try {
-            regimenItem.setRegimen(regimenRepository.getByCode(json.getAsJsonObject().get("code").getAsString()));
+            Regimen regimen = regimenRepository.getByCode(json.getAsJsonObject().get("code").getAsString());
+            if (regimen == null) {
+                regimen = createRegimen(json);
+            }
+            regimenItem.setRegimen(regimen);
         } catch (LMISException e) {
             e.reportToFabric();
             throw new JsonParseException("can not find RegimenItem by code");
         }
         return regimenItem;
+    }
+
+    private Regimen createRegimen(JsonElement json) throws LMISException {
+        Regimen regimen = gson.fromJson(json, Regimen.class);
+        regimenRepository.create(regimen);
+        return regimen;
     }
 
     @Override
