@@ -59,6 +59,11 @@ public class Period {
         return new Period(lastMonth(periodBegin), lastMonth(periodEnd));
     }
 
+    public static Boolean isWithinSubmissionWindow(DateTime date) {
+        int day = date.dayOfMonth().get();
+        return day >= INVENTORY_BEGIN_DAY && day < INVENTORY_END_DAY_NEXT;
+    }
+
     private DateTime lastMonth(DateTime dateTime) {
         return dateTime.minusMonths(1);
     }

@@ -4,7 +4,9 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class PeriodTest {
     @Test
@@ -42,6 +44,21 @@ public class PeriodTest {
 
         assertThat(period.getInventoryBegin(), is(DateTime.parse("2015-08-18")));
         assertThat(period.getInventoryEnd(), is(DateTime.parse("2015-08-26")));
+    }
+
+    @Test
+    public void shouldTellIfDateIsWithInSubmissionWindow() throws Exception {
+        Boolean is17ThWinthin = Period.isWithinSubmissionWindow(DateTime.parse("2015-05-17"));
+        assertFalse(is17ThWinthin);
+
+        Boolean is18ThWinthin = Period.isWithinSubmissionWindow(DateTime.parse("2014-12-18"));
+        assertTrue(is18ThWinthin);
+
+        Boolean is25ThWinthin = Period.isWithinSubmissionWindow(DateTime.parse("2016-01-25"));
+        assertTrue(is25ThWinthin);
+
+        Boolean is26ThWinthin = Period.isWithinSubmissionWindow(DateTime.parse("2017-08-26"));
+        assertFalse(is26ThWinthin);
     }
 
     private void testPeriodBeginEnd(String anyDayInPeriod, String begin, String end) {
