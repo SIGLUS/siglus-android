@@ -392,92 +392,122 @@ describe "submit requisition to web server" do
       {
         code: "001",
         name: "AZT+3TC+NVP",
-        patientsOnTreatment: 8
+        patientsOnTreatment: 8,
+        categoryName: "Adults"
       },
       {
         code: "002",
         name: "TDF+3TC+EFV",
-        patientsOnTreatment: 2
+        patientsOnTreatment: 2,
+        categoryName: "Adults"
       },
       {
         code: "003",
         name: "AZT+3TC+EFV",
-        patientsOnTreatment: 3
+        patientsOnTreatment: 3,
+        categoryName: "Adults"
       },
       {
         code: "004",
         name: "d4T 30+3TC+NVP",
-        patientsOnTreatment: 1
+        patientsOnTreatment: 1,
+        categoryName: "Adults"
       },
       {
         code: "005",
         name: "d4T 30+3TC+EFV",
-        patientsOnTreatment: 1
+        patientsOnTreatment: 1,
+        categoryName: "Adults"
       },
       {
         code: "006",
         name: "AZT+3TC+LPV/r",
-        patientsOnTreatment: 1
+        patientsOnTreatment: 1,
+        categoryName: "Adults"
       },
       {
         code: "007",
         name: "TDF+3TC+LPV/r",
-        patientsOnTreatment: 1
+        patientsOnTreatment: 1,
+        categoryName: "Adults"
       },
       {
         code: "008",
         name: "ABC+3TC+LPV/r",
-        patientsOnTreatment: 1
+        patientsOnTreatment: 1,
+        categoryName: "Adults"
       },
       {
         code: "009",
         name: "d4T+3TC+NVP(3DFC Baby)",
-        patientsOnTreatment: 1
+        patientsOnTreatment: 1,
+        categoryName: "Paediatrics"
       },
       {
         code: "010",
         name: "d4T+3TC+LPV/r(2DFC Baby + LPV/r)",
-        patientsOnTreatment: 1
+        patientsOnTreatment: 1,
+        categoryName: "Paediatrics"
       },
       {
         code: "011",
         name: "d4T+3TC+ABC(2DFC Baby + ABC)",
-        patientsOnTreatment: 1
+        patientsOnTreatment: 1,
+        categoryName: "Paediatrics"
       },
       {
         code: "012",
         name: "d4T+3TC+EFV(2DFC Baby + EFV)",
-        patientsOnTreatment: 1
+        patientsOnTreatment: 1,
+        categoryName: "Paediatrics"
       },
       {
         code: "013",
         name: "AZT60+3TC+NVP(3DFC)",
-        patientsOnTreatment: 1
+        patientsOnTreatment: 1,
+        categoryName: "Paediatrics"
       },
       {
         code: "014",
         name: "AZT60+3TC+EFV(2DFC + EFV)",
-        patientsOnTreatment: 1
+        patientsOnTreatment: 1,
+        categoryName: "Paediatrics"
       },
       {
         code: "015",
         name: "AZT60+3TC+ABC(2DFC + ABC)",
-        patientsOnTreatment: 1
+        patientsOnTreatment: 1,
+        categoryName: "Paediatrics"
       },
       {
         code: "016",
         name: "AZT60+3TC+LPV/r(2DFC + LPV/r)",
-        patientsOnTreatment: 1
+        patientsOnTreatment: 1,
+        categoryName: "Paediatrics"
       },
       {
         code: "017",
         name: "ABC+3TC+LPV/r",
-        patientsOnTreatment: 1
+        patientsOnTreatment: 1,
+        categoryName: "Paediatrics"
       },
       {
         code: "018",
         name: "ABC+3TC+EFZ",
-        patientsOnTreatment: 1
+        patientsOnTreatment: 1,
+        categoryName: "Paediatrics"
+      },
+      {
+        code: "019",
+        name: "NEW+TEST",
+        patientsOnTreatment: 1,
+        categoryName: "Paediatrics"
+      },
+      {
+        code: "020",
+        name: "NEW1+TEST2",
+        patientsOnTreatment: 2,
+        categoryName: "Adults"
       }
       ],
       patientQuantifications: [
@@ -573,7 +603,11 @@ describe "submit requisition to web server" do
 
     expect(mmia_requisition['products'].length).to eq 24
     expect(mmia_requisition['clientSubmittedNotes']).to eq "I don't know"
-    expect(mmia_requisition['regimens'].length).to eq 18
+    expect(mmia_requisition['regimens'].length).to eq 20
+    regimen_adults = mmia_requisition['regimens'].detect { |r| r['name'] == 'AZT+3TC+NVP'}
+    expect(regimen_adults['categoryName']).to eq "Adults"
+    regimen_paediatrics = mmia_requisition['regimens'].detect { |r| r['name'] == 'ABC+3TC+EFZ'}
+    expect(regimen_paediatrics['categoryName']).to eq "Paediatrics"
     expect(mmia_requisition['patientQuantifications'].length).to eq 7
     expect(mmia_requisition['periodStartDate']).not_to be_nil
     expect(mmia_requisition['clientSubmittedTime']).not_to be_nil
