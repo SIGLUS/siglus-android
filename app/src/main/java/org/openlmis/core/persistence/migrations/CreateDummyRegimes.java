@@ -45,25 +45,25 @@ public class CreateDummyRegimes extends Migration {
                 @Override
                 public String operate(Dao dao) throws SQLException {
 
-                    createRegime(dao, "001", "AZT+3TC+NVP", Regimen.RegimeType.ADULT);
-                    createRegime(dao, "002", "TDF+3TC+EFV", Regimen.RegimeType.ADULT);
-                    createRegime(dao, "003", "AZT+3TC+EFV", Regimen.RegimeType.ADULT);
-                    createRegime(dao, "004", "d4T 30+3TC+NVP", Regimen.RegimeType.ADULT);
-                    createRegime(dao, "005", "d4T 30+3TC+EFV", Regimen.RegimeType.ADULT);
-                    createRegime(dao, "006", "AZT+3TC+LPV/r", Regimen.RegimeType.ADULT);
-                    createRegime(dao, "007", "TDF+3TC+LPV/r", Regimen.RegimeType.ADULT);
-                    createRegime(dao, "008", "ABC+3TC+LPV/r", Regimen.RegimeType.ADULT);
+                    createRegime(dao, "001", "AZT+3TC+NVP", Regimen.RegimeType.Adults);
+                    createRegime(dao, "002", "TDF+3TC+EFV", Regimen.RegimeType.Adults);
+                    createRegime(dao, "003", "AZT+3TC+EFV", Regimen.RegimeType.Adults);
+                    createRegime(dao, "004", "d4T 30+3TC+NVP", Regimen.RegimeType.Adults);
+                    createRegime(dao, "005", "d4T 30+3TC+EFV", Regimen.RegimeType.Adults);
+                    createRegime(dao, "006", "AZT+3TC+LPV/r", Regimen.RegimeType.Adults);
+                    createRegime(dao, "007", "TDF+3TC+LPV/r", Regimen.RegimeType.Adults);
+                    createRegime(dao, "008", "ABC+3TC+LPV/r", Regimen.RegimeType.Adults);
 
-                    createRegime(dao, "009", "d4T+3TC+NVP(3DFC Baby)", Regimen.RegimeType.BABY);
-                    createRegime(dao, "010", "d4T+3TC+LPV/r(2DFC Baby + LPV/r)", Regimen.RegimeType.BABY);
-                    createRegime(dao, "011", "d4T+3TC+ABC(2DFC Baby + ABC)", Regimen.RegimeType.BABY);
-                    createRegime(dao, "012", "d4T+3TC+EFV(2DFC Baby + EFV)", Regimen.RegimeType.BABY);
-                    createRegime(dao, "013", "AZT60+3TC+NVP(3DFC)", Regimen.RegimeType.BABY);
-                    createRegime(dao, "014", "AZT60+3TC+EFV(2DFC + EFV)", Regimen.RegimeType.BABY);
-                    createRegime(dao, "015", "AZT60+3TC+ABC(2DFC + ABC)", Regimen.RegimeType.BABY);
-                    createRegime(dao, "016", "AZT60+3TC+LPV/r(2DFC + LPV/r)", Regimen.RegimeType.BABY);
-                    createRegime(dao, "017", "ABC+3TC+LPV/r", Regimen.RegimeType.BABY);
-                    createRegime(dao, "018", "ABC+3TC+EFZ", Regimen.RegimeType.BABY);
+                    createRegime(dao, "009", "d4T+3TC+NVP(3DFC Baby)", Regimen.RegimeType.Paediatrics);
+                    createRegime(dao, "010", "d4T+3TC+LPV/r(2DFC Baby + LPV/r)", Regimen.RegimeType.Paediatrics);
+                    createRegime(dao, "011", "d4T+3TC+ABC(2DFC Baby + ABC)", Regimen.RegimeType.Paediatrics);
+                    createRegime(dao, "012", "d4T+3TC+EFV(2DFC Baby + EFV)", Regimen.RegimeType.Paediatrics);
+                    createRegime(dao, "013", "AZT60+3TC+NVP(3DFC)", Regimen.RegimeType.Paediatrics);
+                    createRegime(dao, "014", "AZT60+3TC+EFV(2DFC + EFV)", Regimen.RegimeType.Paediatrics);
+                    createRegime(dao, "015", "AZT60+3TC+ABC(2DFC + ABC)", Regimen.RegimeType.Paediatrics);
+                    createRegime(dao, "016", "AZT60+3TC+LPV/r(2DFC + LPV/r)", Regimen.RegimeType.Paediatrics);
+                    createRegime(dao, "017", "ABC+3TC+LPV/r", Regimen.RegimeType.Paediatrics);
+                    createRegime(dao, "018", "ABC+3TC+EFZ", Regimen.RegimeType.Paediatrics);
 
                     return null;
                 }

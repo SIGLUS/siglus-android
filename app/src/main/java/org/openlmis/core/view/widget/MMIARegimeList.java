@@ -111,7 +111,7 @@ public class MMIARegimeList extends LinearLayout {
                 etTotal.setText(String.valueOf(item.getAmount()));
             }
 
-            if (Regimen.RegimeType.BABY.equals(regimen.getType())) {
+            if (Regimen.RegimeType.Paediatrics.equals(regimen.getType())) {
                 view.setBackgroundResource(R.color.color_regime_baby);
             } else {
                 view.setBackgroundResource(R.color.color_green_light);

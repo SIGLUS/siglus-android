@@ -32,8 +32,8 @@ import lombok.Setter;
 public class Regimen extends BaseModel {
 
     public enum RegimeType {
-        ADULT,
-        BABY,
+        Adults,
+        Paediatrics,
     }
 
     @Expose
@@ -46,6 +46,8 @@ public class Regimen extends BaseModel {
     @DatabaseField
     private String code;
 
+    @Expose
+    @SerializedName("categoryName")
     @DatabaseField
     private RegimeType type;
 }

@@ -45,6 +45,7 @@ import org.openlmis.core.persistence.migrations.CreateRnRFormSignature;
 import org.openlmis.core.persistence.migrations.SetQuantityOfStockMovementForInitialInventory;
 import org.openlmis.core.persistence.migrations.UpdateCreateTimeAndUpdateTime;
 import org.openlmis.core.persistence.migrations.UpdateProductsFalseValueToZero;
+import org.openlmis.core.persistence.migrations.UpdateRegimenType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +74,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new UpdateCreateTimeAndUpdateTime());
             add(new AddInventoryTable());
             add(new AddParentCodeToProgramTable());
+            add(new UpdateRegimenType());
         }
     };
     private static int instanceCount = 0;
