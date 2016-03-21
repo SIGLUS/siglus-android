@@ -6,5 +6,5 @@
     <bool name="feature_sync_period_date">true</bool>
     <bool name="feature_remove_expiry_date_when_soh_is_0_393">true</bool>
     <bool name="feature_sync_archived_product">true</bool>
-    <bool name="feature_via_multiple_programs">true</bool>
+    <bool name="feature_via_multiple_programs">false</bool>
 </resources>
