@@ -46,6 +46,8 @@ public class MMIARegimeList extends LinearLayout {
     private List<EditText> editTexts = new ArrayList<>();
     private LayoutInflater layoutInflater;
     private boolean hasDataChanged = false;
+    private ArrayList<RegimenItem> adults;
+    private ArrayList<RegimenItem> paediatrics;
 
     public MMIARegimeList(Context context) {
         super(context);
@@ -64,18 +66,36 @@ public class MMIARegimeList extends LinearLayout {
     }
 
     public void initView(List<RegimenItem> regimenItems, TextView totalView) {
+        initCategoryList(regimenItems);
         this.dataList = regimenItems;
         this.totalView = totalView;
         addHeaderView();
 
-        for (int i = 0; i < dataList.size(); i++) {
-            RegimenItem item = dataList.get(i);
-            if (item != null) {
-                addItemView(item, i);
-            }
+        for (int i = 0; i < adults.size(); i++) {
+            addItemView(adults.get(i), i);
         }
+        for (int i = 0; i < paediatrics.size(); i++) {
+            addItemView(paediatrics.get(i), adults.size() + i);
+        }
+
         editTexts.get(editTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
         totalView.setText(String.valueOf(getTotal()));
+    }
+
+    private void initCategoryList(List<RegimenItem> regimenItems) {
+        adults = new ArrayList<>();
+        paediatrics = new ArrayList<>();
+
+        for (RegimenItem item : regimenItems) {
+            if (item == null) {
+                continue;
+            }
+            if (Regimen.RegimeType.Paediatrics.equals(item.getRegimen().getType())) {
+                paediatrics.add(item);
+            } else {
+                adults.add(item);
+            }
+        }
     }
 
     public List<RegimenItem> getDataList() {
