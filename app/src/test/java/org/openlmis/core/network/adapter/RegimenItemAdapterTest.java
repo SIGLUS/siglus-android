@@ -55,7 +55,7 @@ public class RegimenItemAdapterTest {
 
     @Test
     public void shouldDeSerializeRegimenItem() throws Exception {
-        when(regimenRepository.getByCode("020")).thenReturn(null);
+        when(regimenRepository.getByName("d4T 30+3TC+EFV")).thenReturn(null);
 
         String json = JsonFileReader.readJson(getClass(), "RegimenItemResponse.json");
 

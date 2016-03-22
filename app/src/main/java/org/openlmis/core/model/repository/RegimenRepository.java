@@ -49,11 +49,11 @@ public class RegimenRepository {
         return  regimenGenericDao.queryForAll();
     }
 
-    public Regimen getByCode(final String code) throws LMISException {
+    public Regimen getByName(final String name) throws LMISException {
         return dbUtil.withDao(Regimen.class, new DbUtil.Operation<Regimen, Regimen>() {
             @Override
             public Regimen operate(Dao<Regimen, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("code", code).queryForFirst();
+                return dao.queryBuilder().where().eq("name", name).queryForFirst();
             }
         });
     }

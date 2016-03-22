@@ -38,14 +38,14 @@ public class RegimenItemAdapter implements JsonSerializer<RegimenItem>, JsonDese
     public RegimenItem deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         RegimenItem regimenItem = gson.fromJson(json, RegimenItem.class);
         try {
-            Regimen regimen = regimenRepository.getByCode(json.getAsJsonObject().get("code").getAsString());
+            Regimen regimen = regimenRepository.getByName(json.getAsJsonObject().get("name").getAsString());
             if (regimen == null) {
                 regimen = createRegimen(json);
             }
             regimenItem.setRegimen(regimen);
         } catch (LMISException e) {
             e.reportToFabric();
-            throw new JsonParseException("can not find RegimenItem by code");
+            throw new JsonParseException("can not find RegimenItem by name");
         }
         return regimenItem;
     }
