@@ -31,6 +31,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
@@ -38,6 +39,8 @@ import org.openlmis.core.model.RnRForm;
 
 import java.util.ArrayList;
 import java.util.List;
+
+//TODO hide custom regime
 
 public class MMIARegimeList extends LinearLayout {
     private Context context;
@@ -74,12 +77,34 @@ public class MMIARegimeList extends LinearLayout {
         for (int i = 0; i < adults.size(); i++) {
             addItemView(adults.get(i), i);
         }
+
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_custom_regimen)) {
+            addAdultBtnView();
+        }
+
         for (int i = 0; i < paediatrics.size(); i++) {
             addItemView(paediatrics.get(i), adults.size() + i);
         }
 
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_custom_regimen)) {
+            addPaediatricsBtnView();
+        }
         editTexts.get(editTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
         totalView.setText(String.valueOf(getTotal()));
+    }
+
+    private void addAdultBtnView() {
+        TextView view = (TextView) layoutInflater.inflate(R.layout.item_add_custom_regime, this, false);
+        view.setText(R.string.label_add_adult_regime);
+        view.setBackgroundResource(R.color.color_green_light);
+        addView(view);
+    }
+
+    private void addPaediatricsBtnView() {
+        TextView view = (TextView) layoutInflater.inflate(R.layout.item_add_custom_regime, this, false);
+        view.setText(R.string.label_add_child_regime);
+        view.setBackgroundResource(R.color.color_regime_baby);
+        addView(view);
     }
 
     private void initCategoryList(List<RegimenItem> regimenItems) {

@@ -101,6 +101,8 @@
     <string name="msg_reason_for_total_not_match"><![CDATA[Add reason for mismatch between regime & patient totals]]></string>
     <string name="msg_regime_total_and_patient_total_not_match">The regime and patient totals do not match. Please correct your figures or add a comment that explains why the totals differ</string>
     <string name="btn_ok">OK</string>
+    <string name="label_add_adult_regime">+ Adult regime</string>
+    <string name="label_add_child_regime">+ Child regime</string>
 
 
     <!-- VIA Form -->
