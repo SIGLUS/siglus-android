@@ -5,16 +5,16 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import org.openlmis.core.R;
-import org.openlmis.core.model.Product;
 import org.openlmis.core.view.holder.SelectProductsViewHolder;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.List;
 
 public class SelectDrugsAdapter extends RecyclerView.Adapter<SelectProductsViewHolder> {
 
-    private List<Product> products;
+    private List<InventoryViewModel> products;
 
-    public SelectDrugsAdapter(List<Product> products) {
+    public SelectDrugsAdapter(List<InventoryViewModel> products) {
         this.products = products;
     }
 
@@ -25,7 +25,7 @@ public class SelectDrugsAdapter extends RecyclerView.Adapter<SelectProductsViewH
 
     @Override
     public void onBindViewHolder(SelectProductsViewHolder holder, int position) {
-        Product product = products.get(position);
+        InventoryViewModel product = products.get(position);
         holder.populate(product);
     }
 

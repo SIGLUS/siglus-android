@@ -5,7 +5,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.model.Product;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import roboguice.inject.InjectView;
@@ -26,8 +25,7 @@ public class SelectProductsViewHolder extends BaseViewHolder {
         super(itemView);
     }
 
-    public void populate(Product product) {
-        InventoryViewModel viewModel = new InventoryViewModel(product);
+    public void populate(InventoryViewModel viewModel) {
         productName.setText(viewModel.getStyledName());
         productUnit.setText(viewModel.getStyleType());
     }
