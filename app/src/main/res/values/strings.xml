@@ -287,6 +287,9 @@
     <string name="title_select_unpack_num">Select number of kits to unpack</string>
     <string name="msg_select_unpack_num_warning">Please Select a number of kits to unpack</string>
 
+    <!--Select Drugs-->
+    <string name="title_select_drugs">Select the drugs that are part of the regime</string>
+
     <!-- update notification text-->
     <string name="app_update_suffix"> update</string>
     <string name="select_to_install">Select to install</string>

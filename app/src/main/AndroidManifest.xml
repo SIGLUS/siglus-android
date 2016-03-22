@@ -82,6 +82,10 @@
             android:name=".view.activity.SelectUnpackKitNumActivity"
             android:screenOrientation="portrait"
             android:label="@string/title_select_unpack_num" />
+        <activity
+            android:name=".view.activity.SelectDrugsActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_select_drugs" />
 
         <service
             android:name=".service.SyncService"

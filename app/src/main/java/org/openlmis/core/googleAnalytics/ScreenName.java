@@ -14,7 +14,8 @@ public enum ScreenName {
     ArchivedDrugsListScreen("Archived Drugs List Screen"),
     SelectPeriodScreen("Select Period Screen"),
     SelectUnpackKitNumberScreen("Select Unpack Kit Number Screen"),
-    UnpackKitScreen("Unpack Kit Screen");
+    UnpackKitScreen("Unpack Kit Screen"),
+    SelectDrugsScreen("Select drugs Screen");
 
     private final String screenName;
 

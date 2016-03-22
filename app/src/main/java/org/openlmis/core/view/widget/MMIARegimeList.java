@@ -36,6 +36,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.view.activity.SelectDrugsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,16 +95,28 @@ public class MMIARegimeList extends LinearLayout {
     }
 
     private void addAdultBtnView() {
-        TextView view = (TextView) layoutInflater.inflate(R.layout.item_add_custom_regime, this, false);
+        final TextView view = (TextView) layoutInflater.inflate(R.layout.item_add_custom_regime, this, false);
         view.setText(R.string.label_add_adult_regime);
         view.setBackgroundResource(R.color.color_green_light);
+        view.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                view.getContext().startActivity(SelectDrugsActivity.getIntentToMe(view.getContext()));
+            }
+        });
         addView(view);
     }
 
     private void addPaediatricsBtnView() {
-        TextView view = (TextView) layoutInflater.inflate(R.layout.item_add_custom_regime, this, false);
+        final TextView view = (TextView) layoutInflater.inflate(R.layout.item_add_custom_regime, this, false);
         view.setText(R.string.label_add_child_regime);
         view.setBackgroundResource(R.color.color_regime_baby);
+        view.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                view.getContext().startActivity(SelectDrugsActivity.getIntentToMe(view.getContext()));
+            }
+        });
         addView(view);
     }
 
