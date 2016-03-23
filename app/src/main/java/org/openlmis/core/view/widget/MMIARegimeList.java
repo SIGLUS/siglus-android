@@ -18,6 +18,8 @@
 
 package org.openlmis.core.view.widget;
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -37,6 +39,7 @@ import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.view.activity.SelectProductsActivity;
+import org.openlmis.core.view.fragment.MMIARequisitionFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,7 +104,7 @@ public class MMIARegimeList extends LinearLayout {
         view.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                view.getContext().startActivity(SelectProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Adults));
+                getFragment().startActivityForResult(SelectProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Adults), MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME);
             }
         });
         addView(view);
@@ -114,10 +117,14 @@ public class MMIARegimeList extends LinearLayout {
         view.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                view.getContext().startActivity(SelectProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Paediatrics));
+                getFragment().startActivity(SelectProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Paediatrics));
             }
         });
         addView(view);
+    }
+
+    private Fragment getFragment() {
+        return ((Activity) getContext()).getFragmentManager().findFragmentById(R.id.fragment_requisition);
     }
 
     private void initCategoryList(List<RegimenItem> regimenItems) {
