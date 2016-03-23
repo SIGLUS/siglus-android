@@ -60,7 +60,9 @@ import java.util.concurrent.TimeUnit;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
@@ -102,16 +104,17 @@ public class LMISRestManager {
             }
         };
 
-        RestAdapter restAdapter = new RestAdapter.Builder()
+        RestAdapter.Builder restBuilder = new RestAdapter.Builder()
                 .setEndpoint(baseUrl)
                 .setErrorHandler(new APIErrorHandler())
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setRequestInterceptor(requestInterceptor)
-                .setConverter(registerTypeAdapter())
-                .setClient(getSSLClient(hostName)).build();
+                .setConverter(registerTypeAdapter());
 
-        lmisRestApi = restAdapter.create(LMISRestApi.class);
+        // TODO: when all facilities have upgraded, remove the below code!!!
+        restBuilder.setClient(getSSLClient(hostName));
 
+        lmisRestApi = restBuilder.build().create(LMISRestApi.class);
         instance = this;
     }
 
@@ -119,9 +122,10 @@ public class LMISRestManager {
     protected Client getSSLClient(final String hostName) {
         OkHttpClient client = getOkHttpClient();
 
-        // loading CAs from an InputStream
         try {
-            SSLContext sslContext = getSslContext(getCertificate());
+            SSLContext sslContext = LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_enable_secure_ssl)
+                    ? getAllTrustedSSL() : getCustomCertifiedSSL(getCertificate());
+
             client.setSslSocketFactory(sslContext.getSocketFactory());
             client.setHostnameVerifier(new HostnameVerifier() {
                 @Override
@@ -135,7 +139,6 @@ public class LMISRestManager {
         } catch (Exception e) {
             new LMISException(e).reportToFabric();
         }
-
         return new OkClient(client);
     }
 
@@ -150,7 +153,37 @@ public class LMISRestManager {
         return lmisRestApi;
     }
 
-    private SSLContext getSslContext(Certificate ca) throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, KeyManagementException {
+    private SSLContext getAllTrustedSSL() throws NoSuchAlgorithmException, KeyManagementException {
+        // WARNING: The below lines of code trusts all certificates. This is a hack because
+        // we are changing our SSL certificate from self-signed to LetsEncrypt.
+        // TODO: when all facilities have upgraded, remove the below code!!!
+        final TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+            @Override
+            public void checkClientTrusted(
+                    java.security.cert.X509Certificate[] chain,
+                    String authType) throws CertificateException {
+            }
+
+            @Override
+            public void checkServerTrusted(
+                    java.security.cert.X509Certificate[] chain,
+                    String authType) throws CertificateException {
+            }
+
+            @Override
+            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+        }};
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+        return sslContext;
+    }
+
+    private SSLContext getCustomCertifiedSSL(Certificate ca) throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, KeyManagementException {
+        // creating an SSLSocketFactory that uses our TrustManager
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+
         // creating a KeyStore containing our trusted CAs
         KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
         keyStore.load(null, null);
@@ -162,7 +195,6 @@ public class LMISRestManager {
         tmf.init(keyStore);
 
         // creating an SSLSocketFactory that uses our TrustManager
-        SSLContext sslContext = SSLContext.getInstance("TLS");
         sslContext.init(null, tmf.getTrustManagers(), null);
         return sslContext;
     }
