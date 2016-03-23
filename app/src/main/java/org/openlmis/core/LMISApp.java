@@ -35,6 +35,7 @@ import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManager;
@@ -139,6 +140,10 @@ public class LMISApp extends Application {
             }
         }
         android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
+    public boolean isQAEnabled() {
+        return SharedPreferenceMgr.getInstance().isQaDebugEnabled();
     }
 
 }

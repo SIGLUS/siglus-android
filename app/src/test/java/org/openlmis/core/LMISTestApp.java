@@ -78,4 +78,9 @@ public class LMISTestApp extends LMISApp {
     @Override
     public void trackEvent(TrackerCategories category, TrackerActions action) {
     }
+
+    @Override
+    public boolean isQAEnabled() {
+        return false;
+    }
 }

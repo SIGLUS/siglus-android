@@ -55,6 +55,7 @@ public class SharedPreferenceMgr {
     public static final String KEY_PRODUCT_UPDATE_BANNER_TEXT = "product_update_banner_text";
     public static final String LATEST_PHYSICAL_INVENTORY_TIME = "latest_physical_inventory_time";
     public static final String LAST_MOVEMENT_HANDSHAKE_DATE = "last_movement_handshake_date";
+    public static final String KEY_ENABLE_QA_DEBUG = "enable_qa_debug";
     protected StockRepository stockRepository = RoboGuice.getInjector(LMISApp.getContext()).getInstance(StockRepository.class);
 
     @Inject
@@ -183,5 +184,13 @@ public class SharedPreferenceMgr {
 
     public void setLastMovementHandShakeDateToToday() {
         sharedPreferences.edit().putLong(LAST_MOVEMENT_HANDSHAKE_DATE, LMISApp.getInstance().getCurrentTimeMillis()).apply();
+    }
+
+    public void setEnableQaDebug(boolean enabled) {
+        sharedPreferences.edit().putBoolean(KEY_ENABLE_QA_DEBUG, enabled).apply();
+    }
+
+    public boolean isQaDebugEnabled() {
+        return sharedPreferences.getBoolean(KEY_ENABLE_QA_DEBUG, false);
     }
 }

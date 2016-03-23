@@ -34,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.BuildConfig;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
@@ -41,6 +42,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.LoginPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
+import org.openlmis.core.utils.ToastUtil;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -64,6 +66,9 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
 
     @InjectView(R.id.iv_visibility_pwd)
     public ImageView ivVisibilityPwd;
+
+    @InjectView(R.id.iv_logo)
+    public ImageView ivLogo;
 
     @InjectPresenter(LoginPresenter.class)
     LoginPresenter presenter;
@@ -133,6 +138,10 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
                 return false;
             }
         });
+
+        if (BuildConfig.DEBUG) {
+            setDeveloperMode();
+        }
     }
 
     public void goToInitInventory() {
@@ -222,5 +231,27 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         }
 
         etPassword.setSelection(etPassword.getText().length());
+    }
+
+    // This code is purely for enable some hacker ways for tester
+    private static int clickTimes;
+
+    private void setDeveloperMode() {
+        clickTimes = 0;
+        final int developerTimes = 7;
+        ivLogo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (clickTimes == developerTimes) {
+                    return;
+                }
+                if (++clickTimes == developerTimes) {
+                    SharedPreferenceMgr.getInstance().setEnableQaDebug(true);
+                    ToastUtil.show("Woohoo! You are Cong now, please test me");
+                } else if (clickTimes > 3) {
+                    ToastUtil.show("Tap it " + (developerTimes - clickTimes) + " times to be Cong");
+                }
+            }
+        });
     }
 }

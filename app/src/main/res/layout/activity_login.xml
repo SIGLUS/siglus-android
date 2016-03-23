@@ -11,6 +11,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
+            android:id="@+id/iv_logo"
             android:layout_width="350dp"
             android:layout_height="350dp"
             android:src="@mipmap/logo" />

@@ -63,6 +63,11 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
         } else {
             lyQuantity.setError(context.getString(R.string.msg_inventory_check_failed));
         }
+
+        // This auto populate is added for tester
+        if (LMISApp.getInstance().isQAEnabled()) {
+            etQuantity.setText(String.valueOf(inventoryViewModel.getStockOnHand()));
+        }
     }
 
     private boolean shouldHideExpiryDate(InventoryViewModel inventoryViewModel) {
