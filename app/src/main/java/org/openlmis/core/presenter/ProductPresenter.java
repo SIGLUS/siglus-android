@@ -62,20 +62,21 @@ public class ProductPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    public Observable<Void> saveRegimes(List<InventoryViewModel> viewModels, Regimen.RegimeType regimeType) {
+    public Observable<Regimen> saveRegimes(List<InventoryViewModel> viewModels, final Regimen.RegimeType regimeType) {
         final String regimenName = generateRegimeName(viewModels);
 
-        final Regimen regimen = new Regimen();
-        regimen.setType(regimeType);
-        regimen.setName(regimenName);
-
-        return Observable.create(new Observable.OnSubscribe<Void>() {
+        return Observable.create(new Observable.OnSubscribe<Regimen>() {
             @Override
-            public void call(Subscriber<? super Void> subscriber) {
+            public void call(Subscriber<? super Regimen> subscriber) {
                 try {
-                    if (regimenRepository.getByName(regimen.getName()) == null) {
+                    Regimen regimen = regimenRepository.getByName(regimenName);
+                    if (regimen == null) {
+                        regimen = new Regimen();
+                        regimen.setType(regimeType);
+                        regimen.setName(regimenName);
                         regimenRepository.create(regimen);
                     }
+                    subscriber.onNext(regimen);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.printStackTrace();

@@ -11,6 +11,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.presenter.ProductPresenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.SelectDrugsAdapter;
@@ -117,11 +118,9 @@ public class SelectProductsActivity extends BaseActivity {
         }
     };
 
-    Subscriber<Void> saveSubscriber = new Subscriber<Void>() {
+    Subscriber<Regimen> saveSubscriber = new Subscriber<Regimen>() {
         @Override
         public void onCompleted() {
-            loaded();
-            //TODO code next
         }
 
         @Override
@@ -131,7 +130,12 @@ public class SelectProductsActivity extends BaseActivity {
         }
 
         @Override
-        public void onNext(Void data) {
+        public void onNext(Regimen regimen) {
+            loaded();
+            Intent intent = new Intent();
+            intent.putExtra(Constants.PARAM_CUSTOM_REGIMEN, regimen);
+            setResult(RESULT_OK, intent);
+            finish();
         }
     };
 }

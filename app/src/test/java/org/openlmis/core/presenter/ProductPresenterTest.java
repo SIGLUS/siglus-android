@@ -85,7 +85,7 @@ public class ProductPresenterTest {
     public void shouldSaveRegime() throws Exception {
         when(regimenRepository.getByName(anyString())).thenReturn(null);
 
-        TestSubscriber<Void> subscriber = new TestSubscriber<>();
+        TestSubscriber<Regimen> subscriber = new TestSubscriber<>();
         presenter.saveRegimes(getInventoryViewModels(), Regimen.RegimeType.Adults).subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
@@ -104,7 +104,7 @@ public class ProductPresenterTest {
     public void shouldNotSaveRegimeWhenHasRegimeInDB() throws Exception {
         when(regimenRepository.getByName(anyString())).thenReturn(new Regimen());
 
-        TestSubscriber<Void> subscriber = new TestSubscriber<>();
+        TestSubscriber<Regimen> subscriber = new TestSubscriber<>();
         presenter.saveRegimes(getInventoryViewModels(), Regimen.RegimeType.Adults).subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();

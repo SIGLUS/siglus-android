@@ -43,6 +43,7 @@ public final class Constants {
     public static final String PARAM_IS_MISSED_PERIOD = "isMissedPeriod";
     public static final String PARAM_USERNAME = "username";
     public static final String PARAM_PASSWORD = "password";
+    public static final String PARAM_CUSTOM_REGIMEN = "customRegimen";
 
     // Request Params
     public static final int REQUEST_FROM_STOCK_LIST_PAGE = 100;
