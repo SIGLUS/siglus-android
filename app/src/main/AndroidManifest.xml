@@ -83,7 +83,7 @@
             android:screenOrientation="portrait"
             android:label="@string/title_select_unpack_num" />
         <activity
-            android:name=".view.activity.SelectDrugsActivity"
+            android:name=".view.activity.SelectProductsActivity"
             android:screenOrientation="portrait"
             android:label="@string/title_select_drugs" />
 

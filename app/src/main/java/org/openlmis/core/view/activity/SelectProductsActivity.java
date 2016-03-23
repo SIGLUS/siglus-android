@@ -28,7 +28,7 @@ import rx.Subscription;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 @ContentView(R.layout.activity_select_drugs)
-public class SelectDrugsActivity extends BaseActivity {
+public class SelectProductsActivity extends BaseActivity {
 
     public static final String PARAM_REGIME_TYPE = "regime_type";
 
@@ -55,7 +55,7 @@ public class SelectDrugsActivity extends BaseActivity {
     }
 
     public static Intent getIntentToMe(Context context, Regimen.RegimeType type) {
-        Intent intent = new Intent(context, SelectDrugsActivity.class);
+        Intent intent = new Intent(context, SelectProductsActivity.class);
         intent.putExtra(PARAM_REGIME_TYPE, type);
         return intent;
     }

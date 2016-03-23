@@ -36,7 +36,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.view.activity.SelectDrugsActivity;
+import org.openlmis.core.view.activity.SelectProductsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,7 +101,7 @@ public class MMIARegimeList extends LinearLayout {
         view.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                view.getContext().startActivity(SelectDrugsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Adults));
+                view.getContext().startActivity(SelectProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Adults));
             }
         });
         addView(view);
@@ -114,7 +114,7 @@ public class MMIARegimeList extends LinearLayout {
         view.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                view.getContext().startActivity(SelectDrugsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Paediatrics));
+                view.getContext().startActivity(SelectProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Paediatrics));
             }
         });
         addView(view);

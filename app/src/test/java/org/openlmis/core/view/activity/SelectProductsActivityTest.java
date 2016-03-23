@@ -35,9 +35,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
-public class SelectDrugsActivityTest {
+public class SelectProductsActivityTest {
 
-    private SelectDrugsActivity selectDrugsActivity;
+    private SelectProductsActivity selectProductsActivity;
     ProductPresenter presenter;
 
     @Before
@@ -61,15 +61,15 @@ public class SelectDrugsActivityTest {
         when(presenter.loadMMIAProducts()).thenReturn(value);
 
         Intent intent = new Intent();
-        intent.putExtra(SelectDrugsActivity.PARAM_REGIME_TYPE, Regimen.RegimeType.Adults);
-        selectDrugsActivity = Robolectric.buildActivity(SelectDrugsActivity.class).withIntent(intent).create().get();
+        intent.putExtra(SelectProductsActivity.PARAM_REGIME_TYPE, Regimen.RegimeType.Adults);
+        selectProductsActivity = Robolectric.buildActivity(SelectProductsActivity.class).withIntent(intent).create().get();
     }
 
 
     @Test
     public void shouldShowToastWhenHasNotChecked() throws Exception {
-        selectDrugsActivity.viewModels = getInventoryViewModels();
-        selectDrugsActivity.btnNext.performClick();
+        selectProductsActivity.viewModels = getInventoryViewModels();
+        selectProductsActivity.btnNext.performClick();
 
         assertThat(ShadowToast.getTextOfLatestToast(), is("Please check product for regime"));
     }
@@ -84,11 +84,11 @@ public class SelectDrugsActivityTest {
         });
         when(presenter.saveRegimes(anyList(), any(Regimen.RegimeType.class))).thenReturn(value);
 
-        selectDrugsActivity.viewModels = getInventoryViewModels();
-        selectDrugsActivity.viewModels.get(0).setChecked(true);
-        selectDrugsActivity.btnNext.performClick();
+        selectProductsActivity.viewModels = getInventoryViewModels();
+        selectProductsActivity.viewModels.get(0).setChecked(true);
+        selectProductsActivity.btnNext.performClick();
 
-        verify(presenter).saveRegimes(newArrayList(selectDrugsActivity.viewModels.get(0)), Regimen.RegimeType.Adults);
+        verify(presenter).saveRegimes(newArrayList(selectProductsActivity.viewModels.get(0)), Regimen.RegimeType.Adults);
     }
 
     private ArrayList<InventoryViewModel> getInventoryViewModels() {
