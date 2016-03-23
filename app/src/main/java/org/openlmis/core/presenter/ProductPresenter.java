@@ -5,15 +5,19 @@ import com.google.inject.Inject;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.RegimenRepository;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import roboguice.util.Strings;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -29,8 +33,12 @@ public class ProductPresenter extends Presenter {
     @Inject
     private ProgramRepository programRepository;
 
+    @Inject
+    private RegimenRepository regimenRepository;
+
     @Override
-    public void attachView(BaseView v) throws ViewNotMatchException {}
+    public void attachView(BaseView v) throws ViewNotMatchException {
+    }
 
     public Observable<List<InventoryViewModel>> loadMMIAProducts() {
         return Observable.create(new Observable.OnSubscribe<List<InventoryViewModel>>() {
@@ -54,7 +62,34 @@ public class ProductPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    public void saveRegimes() {
+    public Observable<Void> saveRegimes(List<InventoryViewModel> viewModels, Regimen.RegimeType regimeType) {
+        final String regimenName = generateRegimeName(viewModels);
 
+        final Regimen regimen = new Regimen();
+        regimen.setType(regimeType);
+        regimen.setName(regimenName);
+
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    if (regimenRepository.getByName(regimen.getName()) == null) {
+                        regimenRepository.create(regimen);
+                    }
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+    }
+
+    private String generateRegimeName(List<InventoryViewModel> viewModels) {
+        List<String> list = new ArrayList<>();
+        for (InventoryViewModel model : viewModels) {
+            list.add(model.getProduct().getCode());
+        }
+        return Strings.join("+", list);
     }
 }
