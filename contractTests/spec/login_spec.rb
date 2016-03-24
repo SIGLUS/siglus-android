@@ -17,7 +17,7 @@ describe "log in to web server" do
 
     expect(body['facilitySupportedPrograms'].length).to eq 5
     tb_program = body['facilitySupportedPrograms'].detect {|p| p['programCode'] == 'TB'}
-    expect(tb_program['parentCode']).to eq 'ESS_MEDS'
+    expect(tb_program['parentCode']).to eq 'VIA'
     expect(tb_program['programName']).to eq 'TB'
   end
 end
