@@ -61,6 +61,7 @@ public class MMIARegimeList extends LinearLayout {
     private ArrayList<RegimenItem> adults;
     private ArrayList<RegimenItem> paediatrics;
     protected MMIARequisitionPresenter presenter;
+    private BaseActivity activity;
 
     public MMIARegimeList(Context context) {
         super(context);
@@ -74,6 +75,7 @@ public class MMIARegimeList extends LinearLayout {
 
     private void init(Context context) {
         this.context = context;
+        activity = (BaseActivity) getContext();
         setOrientation(LinearLayout.VERTICAL);
         layoutInflater = LayoutInflater.from(context);
     }
@@ -232,7 +234,6 @@ public class MMIARegimeList extends LinearLayout {
         dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
             @Override
             public void positiveClick(String tag) {
-                final BaseActivity activity = (BaseActivity) getContext();
                 activity.loading();
                 presenter.deleteRegimeItem(item).subscribe(new Subscriber<Void>() {
                     @Override
@@ -283,6 +284,30 @@ public class MMIARegimeList extends LinearLayout {
     public void refreshRegimeView() {
         removeAllViews();
         initView(totalView, presenter);
+    }
+
+    public void addCustomRegimenItem(Regimen regimen) {
+        presenter.addCustomRegimenItem(regimen).subscribe(customRegimenItemSubscriber());
+    }
+
+    private Subscriber<Void> customRegimenItemSubscriber() {
+        return new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+                refreshRegimeView();
+                activity.loaded();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                activity.loaded();
+                ToastUtil.show(e.getMessage());
+            }
+
+            @Override
+            public void onNext(Void data) {
+            }
+        };
     }
 
     class EditTextWatcher implements android.text.TextWatcher {

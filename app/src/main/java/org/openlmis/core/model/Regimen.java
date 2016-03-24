@@ -55,7 +55,7 @@ public class Regimen extends BaseModel {
     @DatabaseField
     private RegimeType type;
 
-    public static final ArrayList<String> defaultRegimesName = newArrayList(
+    public static final ArrayList<String> DEFAULT_REGIMES_NAME = newArrayList(
             "AZT+3TC+NVP",
             "TDF+3TC+EFV",
             "AZT+3TC+EFV",
@@ -76,6 +76,6 @@ public class Regimen extends BaseModel {
             "ABC+3TC+EFZ");
 
     public boolean isCustom() {
-        return !defaultRegimesName.contains(name);
+        return !DEFAULT_REGIMES_NAME.contains(name);
     }
 }

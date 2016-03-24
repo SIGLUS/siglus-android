@@ -477,8 +477,6 @@ public class MMIARequisitionFragmentTest {
         data.putExtra(Constants.PARAM_CUSTOM_REGIMEN, regimen);
         mmiaRequisitionFragmentSpy.onActivityResult(MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME, Activity.RESULT_OK, data);
 
-        verify(mmiaFormPresenter).addCustomRegimenItem(regimen);
-
-        verify(mmiaRequisitionFragmentSpy.regimeListView).refreshRegimeView();
+        verify(mmiaRequisitionFragmentSpy.regimeListView).addCustomRegimenItem(regimen);
     }
 }

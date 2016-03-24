@@ -58,7 +58,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import roboguice.inject.InjectView;
-import rx.Subscriber;
 
 public class MMIARequisitionFragment extends BaseFragment implements MMIARequisitionPresenter.MMIARequisitionView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
     @InjectView(R.id.rnr_form_list)
@@ -487,34 +486,13 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     public void negativeClick(String tag) {
     }
 
-    //TODO del icon  update to red icon
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_FOR_CUSTOM_REGIME) {
             final Regimen regimen = (Regimen) data.getSerializableExtra(Constants.PARAM_CUSTOM_REGIMEN);
             loading();
-            presenter.addCustomRegimenItem(regimen).subscribe(customRegimenItemSubscriber());
+            regimeListView.addCustomRegimenItem(regimen);
         }
-    }
-
-    private Subscriber<Void> customRegimenItemSubscriber() {
-        return new Subscriber<Void>() {
-            @Override
-            public void onCompleted() {
-                regimeListView.refreshRegimeView();
-                loaded();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                loaded();
-                ToastUtil.show(e.getMessage());
-            }
-
-            @Override
-            public void onNext(Void data) {
-            }
-        };
     }
 }
