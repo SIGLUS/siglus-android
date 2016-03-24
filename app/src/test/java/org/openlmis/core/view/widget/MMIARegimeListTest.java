@@ -14,6 +14,7 @@ import rx.Observable;
 import rx.Subscriber;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -34,6 +35,7 @@ public class MMIARegimeListTest {
 
     @Test
     public void shouldCallDeleteMethodWhenDialogPositive() throws Exception {
+        mmiaRegimeList = spy(mmiaRegimeList);
         RegimenItem item = new RegimenItem();
         Observable<Void> value = Observable.create(new Observable.OnSubscribe<Void>() {
 
@@ -50,7 +52,7 @@ public class MMIARegimeListTest {
         mListener.positiveClick("");
 
         verify(presenter).deleteRegimeItem(item);
-        //TODO add test
+        verify(mmiaRegimeList).refreshRegimeView();
     }
 
 }

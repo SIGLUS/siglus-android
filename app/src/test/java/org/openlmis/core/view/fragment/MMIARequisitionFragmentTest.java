@@ -157,7 +157,7 @@ public class MMIARequisitionFragmentTest {
         mmiaRequisitionFragment.refreshRequisitionForm(form);
 
         verify(rnrFormList).initView(any(ArrayList.class));
-        verify(regimeListView).initView(regimenItems, mmiaRequisitionFragment.tvRegimeTotal, mmiaFormPresenter);
+        verify(regimeListView).initView(mmiaRequisitionFragment.tvRegimeTotal, mmiaFormPresenter);
         verify(mmiaInfoListView).initView(baseInfoItems);
 
     }
@@ -479,7 +479,6 @@ public class MMIARequisitionFragmentTest {
 
         verify(mmiaFormPresenter).addCustomRegimenItem(regimen);
 
-        verify(mmiaRequisitionFragmentSpy.regimeListView).removeAllViews();
-        verify(mmiaRequisitionFragmentSpy.regimeListView).initView(mmiaFormPresenter.getRnRForm().getRegimenItemListWrapper(), mmiaRequisitionFragmentSpy.tvRegimeTotal, mmiaFormPresenter);
+        verify(mmiaRequisitionFragmentSpy.regimeListView).refreshRegimeView();
     }
 }

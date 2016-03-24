@@ -180,7 +180,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     public void refreshRequisitionForm(RnRForm form) {
         scrollView.setVisibility(View.VISIBLE);
         rnrFormList.initView(new ArrayList<>(form.getRnrFormItemListWrapper()));
-        regimeListView.initView(form.getRegimenItemListWrapper(), tvRegimeTotal, presenter);
+        regimeListView.initView(tvRegimeTotal, presenter);
         mmiaInfoListView.initView(form.getBaseInfoItemListWrapper());
 
         InflateFreezeHeaderView();
@@ -504,7 +504,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         return new Subscriber<Void>() {
             @Override
             public void onCompleted() {
-                refreshRegimeView();
+                regimeListView.refreshRegimeView();
                 loaded();
             }
 
@@ -518,10 +518,5 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
             public void onNext(Void data) {
             }
         };
-    }
-
-    public void refreshRegimeView() {
-        regimeListView.removeAllViews();
-        regimeListView.initView(presenter.getRnRForm().getRegimenItemListWrapper(), tvRegimeTotal, presenter);
     }
 }

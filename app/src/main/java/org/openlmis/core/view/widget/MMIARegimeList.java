@@ -80,10 +80,10 @@ public class MMIARegimeList extends LinearLayout {
         layoutInflater = LayoutInflater.from(context);
     }
 
-    public void initView(List<RegimenItem> regimenItems, TextView totalView, MMIARequisitionPresenter presenter) {
+    public void initView(TextView totalView, MMIARequisitionPresenter presenter) {
         this.presenter = presenter;
-        initCategoryList(regimenItems);
-        this.dataList = regimenItems;
+        this.dataList = presenter.getRnRForm().getRegimenItemListWrapper();
+        initCategoryList(dataList);
         this.totalView = totalView;
         addHeaderView();
 
@@ -235,7 +235,7 @@ public class MMIARegimeList extends LinearLayout {
                 presenter.deleteRegimeItem(item).subscribe(new Subscriber<Void>() {
                     @Override
                     public void onCompleted() {
-                        ((MMIARequisitionFragment)getFragment()).refreshRegimeView();
+                        refreshRegimeView();
                         activity.loaded();
                     }
 
@@ -276,6 +276,11 @@ public class MMIARegimeList extends LinearLayout {
             }
         }
         return false;
+    }
+
+    public void refreshRegimeView() {
+        removeAllViews();
+        initView(totalView, presenter);
     }
 
     class EditTextWatcher implements android.text.TextWatcher {
