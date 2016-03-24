@@ -28,8 +28,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 
+import lombok.Getter;
 import roboguice.fragment.provided.RoboDialogFragment;
 
 
@@ -47,6 +49,7 @@ public class SimpleDialogFragment extends RoboDialogFragment {
     private String negativeText;
     private String tag;
 
+    @Getter
     private MsgDialogCallBack mListener;
 
     public static SimpleDialogFragment newInstance(String title, CharSequence message, String positiveText) {
@@ -55,6 +58,10 @@ public class SimpleDialogFragment extends RoboDialogFragment {
 
     public static SimpleDialogFragment newInstance(String title, CharSequence message, String positiveText, String tag) {
         return newInstance(title, message, positiveText, null, tag);
+    }
+
+    public static SimpleDialogFragment newInstance(CharSequence message) {
+        return newInstance(null, message, LMISApp.getContext().getString(R.string.btn_positive), LMISApp.getContext().getString(R.string.btn_negative), null);
     }
 
     public static SimpleDialogFragment newInstance(String title, CharSequence message, String positiveText, String negativeText, String tag) {

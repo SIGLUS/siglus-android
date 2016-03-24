@@ -180,7 +180,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     public void refreshRequisitionForm(RnRForm form) {
         scrollView.setVisibility(View.VISIBLE);
         rnrFormList.initView(new ArrayList<>(form.getRnrFormItemListWrapper()));
-        regimeListView.initView(form.getRegimenItemListWrapper(), tvRegimeTotal);
+        regimeListView.initView(form.getRegimenItemListWrapper(), tvRegimeTotal, presenter);
         mmiaInfoListView.initView(form.getBaseInfoItemListWrapper());
 
         InflateFreezeHeaderView();
@@ -487,7 +487,9 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     public void negativeClick(String tag) {
     }
 
-    //TODO del icon
+    //TODO del icon  update to red icon
+    //TODO hide custom
+    //TODO history don't show add btn
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -518,8 +520,8 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         };
     }
 
-    private void refreshRegimeView() {
+    public void refreshRegimeView() {
         regimeListView.removeAllViews();
-        regimeListView.initView(presenter.getRnRForm().getRegimenItemListWrapper(), tvRegimeTotal);
+        regimeListView.initView(presenter.getRnRForm().getRegimenItemListWrapper(), tvRegimeTotal, presenter);
     }
 }

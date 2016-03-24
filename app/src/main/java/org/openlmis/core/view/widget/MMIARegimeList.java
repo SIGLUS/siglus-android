@@ -28,6 +28,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewStub;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -38,11 +39,17 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.presenter.MMIARequisitionPresenter;
+import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.SelectProductsActivity;
 import org.openlmis.core.view.fragment.MMIARequisitionFragment;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.Subscriber;
 
 //TODO hide custom regime
 
@@ -55,6 +62,7 @@ public class MMIARegimeList extends LinearLayout {
     private boolean hasDataChanged = false;
     private ArrayList<RegimenItem> adults;
     private ArrayList<RegimenItem> paediatrics;
+    protected MMIARequisitionPresenter presenter;
 
     public MMIARegimeList(Context context) {
         super(context);
@@ -72,7 +80,8 @@ public class MMIARegimeList extends LinearLayout {
         layoutInflater = LayoutInflater.from(context);
     }
 
-    public void initView(List<RegimenItem> regimenItems, TextView totalView) {
+    public void initView(List<RegimenItem> regimenItems, TextView totalView, MMIARequisitionPresenter presenter) {
+        this.presenter = presenter;
         initCategoryList(regimenItems);
         this.dataList = regimenItems;
         this.totalView = totalView;
@@ -196,8 +205,56 @@ public class MMIARegimeList extends LinearLayout {
                     return false;
                 }
             });
+
+            setDelIconForCustomRegime(item, view);
         }
         addView(view);
+    }
+
+    private void setDelIconForCustomRegime(final RegimenItem item, View view) {
+        if (item.getRegimen().isCustom()) {
+            View ivDel = ((ViewStub) view.findViewById(R.id.vs_del)).inflate();
+            ivDel.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDelConfirmDialog(item);
+                }
+            });
+        }
+    }
+
+    protected void showDelConfirmDialog(final RegimenItem item) {
+        SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
+                LMISApp.getContext().getString(R.string.msg_regime_del_confirm));
+        dialogFragment.show(((Activity) getContext()).getFragmentManager(), "del_confirm_dialog");
+        dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
+            @Override
+            public void positiveClick(String tag) {
+                final BaseActivity activity = (BaseActivity) getContext();
+                activity.loading();
+                presenter.deleteRegimeItem(item).subscribe(new Subscriber<Void>() {
+                    @Override
+                    public void onCompleted() {
+                        ((MMIARequisitionFragment)getFragment()).refreshRegimeView();
+                        activity.loaded();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        activity.loaded();
+                        ToastUtil.show(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(Void aVoid) {
+                    }
+                });
+            }
+
+            @Override
+            public void negativeClick(String tag) {
+            }
+        });
     }
 
     public boolean hasDataChanged() {

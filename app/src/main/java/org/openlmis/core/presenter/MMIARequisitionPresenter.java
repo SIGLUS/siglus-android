@@ -191,6 +191,22 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         return regimenItem;
     }
 
+    public Observable<Void> deleteRegimeItem(final RegimenItem item) {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    rnRForm.getRegimenItemListWrapper().remove(item);
+                    mmiaRepository.deleteRegimeItem(item);
+                } catch (LMISException e) {
+                    e.reportToFabric();
+                    subscriber.onError(e);
+                }
+                subscriber.onCompleted();
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+    }
+
     public interface MMIARequisitionView extends BaseRequisitionView {
 
         void showValidationAlert();

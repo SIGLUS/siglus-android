@@ -293,8 +293,24 @@ public class MMIARequisitionPresenterTest {
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
 
-        verify(mmiaRepository,never()).createRegimenItem(any(RegimenItem.class));
+        verify(mmiaRepository, never()).createRegimenItem(any(RegimenItem.class));
         assertThat(regimenItemListWrapper.size(), is(size));
+    }
+
+    @Test
+    public void shouldDeleteCustomRegimenItem() throws Exception {
+        List<RegimenItem> regimenItemListWrapper = rnRForm.getRegimenItemListWrapper();
+        RegimenItem item = new RegimenItem();
+        regimenItemListWrapper.add(item);
+        int size = regimenItemListWrapper.size();
+
+        TestSubscriber<Void> subscriber = new TestSubscriber<>();
+        presenter.deleteRegimeItem(item).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+
+        verify(mmiaRepository).deleteRegimeItem(item);
+        assertThat(regimenItemListWrapper.size(), is(size - 1));
     }
 
     private void waitObservableToExecute() {

@@ -12,6 +12,12 @@
         android:layout_weight="1"
         android:labelFor="@+id/et_total" />
 
+    <ViewStub
+        android:id="@+id/vs_del"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout="@layout/imageview_del" />
+
     <EditText
         android:id="@+id/et_total"
         style="@style/ItemRegime.EditText"

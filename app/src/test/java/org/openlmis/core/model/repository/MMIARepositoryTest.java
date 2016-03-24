@@ -235,6 +235,16 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         assertThat(baseInfoItems.get(baseInfoItems.size() - 1).getName(), is(mmiaRepository.ATTR_TOTAL_PATIENTS));
     }
 
+    @Test
+    public void shouldDeleteSuccessful() throws Exception {
+        RegimenItem regimenItem = new RegimenItem();
+        mmiaRepository.createRegimenItem(regimenItem);
+        assertThat(mmiaRepository.queryRegimeItem().size(), is(1));
+
+        mmiaRepository.deleteRegimeItem(regimenItem);
+        assertThat(mmiaRepository.queryRegimeItem().size(), is(0));
+    }
+
     private ArrayList<Product> createProducts() {
         ArrayList<Product> products = new ArrayList<>();
 

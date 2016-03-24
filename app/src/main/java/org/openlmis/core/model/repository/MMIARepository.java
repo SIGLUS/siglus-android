@@ -22,6 +22,7 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 
 import com.google.inject.Inject;
+import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -31,10 +32,12 @@ import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.utils.Constants;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,5 +132,24 @@ public class MMIARepository extends RnrFormRepository {
             result.add(rnrFormItem);
         }
         return result;
+    }
+
+    public void deleteRegimeItem(final RegimenItem item) throws LMISException {
+        dbUtil.withDao(RegimenItem.class, new DbUtil.Operation<RegimenItem, Void>() {
+            @Override
+            public Void operate(Dao<RegimenItem, String> dao) throws SQLException {
+                dao.delete(item);
+                return null;
+            }
+        });
+    }
+
+    public List<RegimenItem> queryRegimeItem() throws LMISException {
+        return dbUtil.withDao(RegimenItem.class, new DbUtil.Operation<RegimenItem, List<RegimenItem>>() {
+            @Override
+            public List<RegimenItem> operate(Dao<RegimenItem, String> dao) throws SQLException {
+                return dao.queryForAll();
+            }
+        });
     }
 }

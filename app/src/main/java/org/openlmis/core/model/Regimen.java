@@ -50,4 +50,10 @@ public class Regimen extends BaseModel {
     @SerializedName("categoryName")
     @DatabaseField
     private RegimeType type;
+
+    //TODO code method
+    public boolean isCustom(){
+        //code in hard code list
+        return false;
+    }
 }
