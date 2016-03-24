@@ -278,6 +278,25 @@ public class MMIARequisitionPresenterTest {
         assertThat(regimenItemListWrapper.size(), is(size + 1));
     }
 
+    @Test
+    public void shouldNotCreateCustomRegimenItemWhenExists() throws Exception {
+        List<RegimenItem> regimenItemListWrapper = rnRForm.getRegimenItemListWrapper();
+        Regimen regimen = new Regimen();
+        regimen.setId(12);
+        RegimenItem regimenItem = new RegimenItem();
+        regimenItem.setRegimen(regimen);
+        regimenItemListWrapper.add(regimenItem);
+        int size = regimenItemListWrapper.size();
+
+        TestSubscriber<Void> subscriber = new TestSubscriber<>();
+        presenter.addCustomRegimenItem(regimen).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+
+        verify(mmiaRepository,never()).createRegimenItem(any(RegimenItem.class));
+        assertThat(regimenItemListWrapper.size(), is(size));
+    }
+
     private void waitObservableToExecute() {
         try {
             Thread.sleep(1500);

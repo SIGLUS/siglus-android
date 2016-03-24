@@ -161,8 +161,10 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    RegimenItem regimenItem = createRegimenItem(regimen);
-                    rnRForm.getRegimenItemListWrapper().add(regimenItem);
+                    if (!isRegimeItemExists(regimen)) {
+                        RegimenItem regimenItem = createRegimenItem(regimen);
+                        rnRForm.getRegimenItemListWrapper().add(regimenItem);
+                    }
                 } catch (LMISException e) {
                     e.reportToFabric();
                     subscriber.onError(e);
@@ -170,6 +172,15 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
                 subscriber.onCompleted();
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+    }
+
+    private boolean isRegimeItemExists(Regimen regimen) {
+        for (RegimenItem item : rnRForm.getRegimenItemListWrapper()) {
+            if (regimen.getId() == item.getRegimen().getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private RegimenItem createRegimenItem(Regimen regimen) throws LMISException {

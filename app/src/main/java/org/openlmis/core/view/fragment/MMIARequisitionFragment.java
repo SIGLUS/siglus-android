@@ -487,7 +487,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     public void negativeClick(String tag) {
     }
 
-    //TODO 去重
     //TODO del icon
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
