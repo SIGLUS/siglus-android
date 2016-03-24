@@ -489,7 +489,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
 
     //TODO del icon  update to red icon
     //TODO hide custom
-    //TODO history don't show add btn
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

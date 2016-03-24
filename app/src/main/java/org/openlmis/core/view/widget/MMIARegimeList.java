@@ -92,7 +92,9 @@ public class MMIARegimeList extends LinearLayout {
         }
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_custom_regimen)) {
-            addAdultBtnView();
+            if (!presenter.getRnRForm().isAuthorized()) {
+                addAdultBtnView();
+            }
         }
 
         for (int i = 0; i < paediatrics.size(); i++) {
@@ -100,7 +102,9 @@ public class MMIARegimeList extends LinearLayout {
         }
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_custom_regimen)) {
-            addPaediatricsBtnView();
+            if (!presenter.getRnRForm().isAuthorized()) {
+                addPaediatricsBtnView();
+            }
         }
         editTexts.get(editTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
         totalView.setText(String.valueOf(getTotal()));
