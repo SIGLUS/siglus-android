@@ -4,19 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/tv_name"
-        style="@style/ItemRegime.Text"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:labelFor="@+id/et_total" />
+        android:orientation="horizontal">
 
-    <ViewStub
-        android:id="@+id/vs_del"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout="@layout/imageview_del" />
+        <TextView
+            android:id="@+id/tv_name"
+            style="@style/ItemRegime.Text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:labelFor="@+id/et_total" />
+
+        <ViewStub
+            android:id="@+id/vs_del"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout="@layout/imageview_del" />
+    </LinearLayout>
 
     <EditText
         android:id="@+id/et_total"
