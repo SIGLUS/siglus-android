@@ -7,15 +7,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.model.Product;
-import org.openlmis.core.model.Program;
+import org.openlmis.core.model.RegimeProduct;
 import org.openlmis.core.model.Regimen;
-import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RegimenRepository;
-import org.openlmis.core.utils.Constants;
-import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -62,23 +59,17 @@ public class ProductPresenterTest {
     @Test
     public void shouldLoadMMIAProducts() throws Exception {
         // when
-        Program program = new Program();
-        when(programRepository.queryByCode(Constants.MMIA_PROGRAM_CODE)).thenReturn(program);
-        ArrayList<Product> list = new ArrayList<>();
-        Product product = ProductBuilder.buildAdultProduct();
-        list.add(product);
-        when(productRepository.queryProducts(program.getId())).thenReturn(list);
 
-        TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
+        TestSubscriber<List<RegimeProductViewModel>> subscriber = new TestSubscriber<>();
         presenter.loadRegimeProducts().subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
 
         subscriber.assertNoErrors();
-        verify(productRepository).queryProducts(programRepository.queryByCode(Constants.MMIA_PROGRAM_CODE).getId());
 
-        Product actual = subscriber.getOnNextEvents().get(0).get(0).getProduct();
-        assertThat(actual, is(product));
+        assertThat(subscriber.getOnNextEvents().get(0).size(), is(20));
+        assertThat(subscriber.getOnNextEvents().get(0).get(0).getShortCode(), is("3TC 150mg"));
+        assertThat(subscriber.getOnNextEvents().get(0).get(19).getShortCode(), is("AZT 50mg/5ml sol oral"));
     }
 
     @Test
@@ -96,7 +87,7 @@ public class ProductPresenterTest {
         verify(regimenRepository).create(regimenArgumentCaptor.capture());
 
         Regimen regimen = regimenArgumentCaptor.getValue();
-        assertThat(regimen.getName(), is("Product code+Product code"));
+        assertThat(regimen.getName(), is("3TC 150mg+3TC 150mg"));
         assertThat(regimen.getType(), is(Regimen.RegimeType.Adults));
     }
 
@@ -114,8 +105,8 @@ public class ProductPresenterTest {
         verify(regimenRepository, never()).create(any(Regimen.class));
     }
 
-    private ArrayList<InventoryViewModel> getInventoryViewModels() {
-        Product product = new ProductBuilder().setCode("Product code").setPrimaryName("Primary name").setStrength("10mg").build();
-        return newArrayList(new InventoryViewModel(product), new InventoryViewModel(product));
+    private ArrayList<RegimeProductViewModel> getInventoryViewModels() {
+        RegimeProduct regimeProduct = new RegimeProduct("3TC 150mg", "Lamivudina 150mg");
+        return newArrayList(new RegimeProductViewModel(regimeProduct), new RegimeProductViewModel(regimeProduct));
     }
 }

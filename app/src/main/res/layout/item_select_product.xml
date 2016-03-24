@@ -37,7 +37,7 @@
                 tools:text="@string/label_dummy_product" />
 
             <TextView
-                android:id="@+id/product_unit"
+                android:id="@+id/tv_short_code"
                 style="@style/Text.Gray.Normal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

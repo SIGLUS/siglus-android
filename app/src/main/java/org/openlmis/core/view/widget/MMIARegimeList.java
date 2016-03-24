@@ -130,7 +130,7 @@ public class MMIARegimeList extends LinearLayout {
         view.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragment().startActivity(SelectProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Paediatrics));
+                getFragment().startActivityForResult(SelectProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Paediatrics), MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME);
             }
         });
         addView(view);

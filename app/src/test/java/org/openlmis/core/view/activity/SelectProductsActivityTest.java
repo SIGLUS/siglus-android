@@ -10,12 +10,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.model.Product;
+import org.openlmis.core.model.RegimeProduct;
 import org.openlmis.core.model.Regimen;
-import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.presenter.ProductPresenter;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowActivity;
@@ -57,9 +56,9 @@ public class SelectProductsActivityTest {
         });
 
 
-        Observable<List<InventoryViewModel>> value = Observable.create(new Observable.OnSubscribe<List<InventoryViewModel>>() {
+        Observable<List<RegimeProductViewModel>> value = Observable.create(new Observable.OnSubscribe<List<RegimeProductViewModel>>() {
             @Override
-            public void call(Subscriber<? super List<InventoryViewModel>> subscriber) {
+            public void call(Subscriber<? super List<RegimeProductViewModel>> subscriber) {
 
             }
         });
@@ -81,7 +80,7 @@ public class SelectProductsActivityTest {
     @Test
     public void shouldShowToastWhenMoreThanLimitChecked() throws Exception {
         selectProductsActivity.viewModels = getInventoryViewModels();
-        for (InventoryViewModel model : selectProductsActivity.viewModels) {
+        for (RegimeProductViewModel model : selectProductsActivity.viewModels) {
             model.setChecked(true);
         }
         selectProductsActivity.btnNext.performClick();
@@ -120,8 +119,8 @@ public class SelectProductsActivityTest {
         assertTrue(shadowActivity.isFinishing());
     }
 
-    private ArrayList<InventoryViewModel> getInventoryViewModels() {
-        Product product = new ProductBuilder().setCode("Product code").setPrimaryName("Primary name").setStrength("10mg").build();
-        return newArrayList(new InventoryViewModel(product), new InventoryViewModel(product), new InventoryViewModel(product), new InventoryViewModel(product), new InventoryViewModel(product), new InventoryViewModel(product));
+    private ArrayList<RegimeProductViewModel> getInventoryViewModels() {
+        RegimeProduct product = new RegimeProduct("3TC 150mg", "Lamivudina 150mg");
+        return newArrayList(new RegimeProductViewModel(product), new RegimeProductViewModel(product), new RegimeProductViewModel(product), new RegimeProductViewModel(product), new RegimeProductViewModel(product), new RegimeProductViewModel(product));
     }
 }

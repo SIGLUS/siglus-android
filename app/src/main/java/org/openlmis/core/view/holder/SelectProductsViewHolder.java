@@ -7,7 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
 
 import roboguice.inject.InjectView;
 
@@ -17,8 +17,8 @@ public class SelectProductsViewHolder extends BaseViewHolder {
     @InjectView(R.id.product_name)
     TextView productName;
 
-    @InjectView(R.id.product_unit)
-    TextView productUnit;
+    @InjectView(R.id.tv_short_code)
+    TextView tvShortCode;
 
     @InjectView(R.id.touchArea_checkbox)
     LinearLayout taCheckbox;
@@ -36,9 +36,9 @@ public class SelectProductsViewHolder extends BaseViewHolder {
         });
     }
 
-    public void populate(final InventoryViewModel viewModel) {
-        productName.setText(viewModel.getStyledName());
-        productUnit.setText(viewModel.getStyleType());
+    public void populate(final RegimeProductViewModel viewModel) {
+        productName.setText(viewModel.getEntireName());
+        tvShortCode.setText(viewModel.getShortCode());
 
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

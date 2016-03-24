@@ -15,7 +15,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.SelectDrugsAdapter;
-import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class SelectProductsActivity extends BaseActivity {
 
     @InjectPresenter(ProductPresenter.class)
     ProductPresenter presenter;
-    protected List<InventoryViewModel> viewModels;
+    protected List<RegimeProductViewModel> viewModels;
     private final int MAX_CHECKED_LIMIT = 5;
 
     @Override
@@ -84,7 +84,7 @@ public class SelectProductsActivity extends BaseActivity {
     }
 
     private void validateAndSaveRegime(Regimen.RegimeType regimeType) {
-        List<InventoryViewModel> checkedViewModels = getCheckedProducts();
+        List<RegimeProductViewModel> checkedViewModels = getCheckedProducts();
         if (checkedViewModels.isEmpty()) {
             ToastUtil.show(R.string.hint_no_product_has_checked);
             return;
@@ -99,16 +99,16 @@ public class SelectProductsActivity extends BaseActivity {
         subscriptions.add(subscription);
     }
 
-    private List<InventoryViewModel> getCheckedProducts() {
-        return from(viewModels).filter(new Predicate<InventoryViewModel>() {
+    private List<RegimeProductViewModel> getCheckedProducts() {
+        return from(viewModels).filter(new Predicate<RegimeProductViewModel>() {
             @Override
-            public boolean apply(InventoryViewModel inventoryViewModel) {
-                return inventoryViewModel.isChecked();
+            public boolean apply(RegimeProductViewModel viewModel) {
+                return viewModel.isChecked();
             }
         }).toList();
     }
 
-    Subscriber<List<InventoryViewModel>> subscriber = new Subscriber<List<InventoryViewModel>>() {
+    Subscriber<List<RegimeProductViewModel>> subscriber = new Subscriber<List<RegimeProductViewModel>>() {
         @Override
         public void onCompleted() {
             loaded();
@@ -122,7 +122,7 @@ public class SelectProductsActivity extends BaseActivity {
         }
 
         @Override
-        public void onNext(List<InventoryViewModel> data) {
+        public void onNext(List<RegimeProductViewModel> data) {
             viewModels.clear();
             viewModels.addAll(data);
         }
