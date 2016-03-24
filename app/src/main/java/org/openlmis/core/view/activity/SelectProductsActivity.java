@@ -44,6 +44,7 @@ public class SelectProductsActivity extends BaseActivity {
     @InjectPresenter(ProductPresenter.class)
     ProductPresenter presenter;
     protected List<InventoryViewModel> viewModels;
+    private final int MAX_CHECKED_LIMIT = 5;
 
     @Override
     protected ScreenName getScreenName() {
@@ -77,16 +78,25 @@ public class SelectProductsActivity extends BaseActivity {
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<InventoryViewModel> checkedViewModels = getCheckedProducts();
-                if (checkedViewModels.isEmpty()) {
-                    ToastUtil.show(R.string.hint_no_product_has_checked);
-                    return;
-                }
-                loading();
-                Subscription subscription = presenter.saveRegimes(checkedViewModels, regimeType).subscribe(saveSubscriber);
-                subscriptions.add(subscription);
+                validateAndSaveRegime(regimeType);
             }
         });
+    }
+
+    private void validateAndSaveRegime(Regimen.RegimeType regimeType) {
+        List<InventoryViewModel> checkedViewModels = getCheckedProducts();
+        if (checkedViewModels.isEmpty()) {
+            ToastUtil.show(R.string.hint_no_product_has_checked);
+            return;
+        }
+
+        if (checkedViewModels.size() > MAX_CHECKED_LIMIT) {
+            ToastUtil.show(R.string.hint_more_than_limit_product_has_checked);
+            return;
+        }
+        loading();
+        Subscription subscription = presenter.saveRegimes(checkedViewModels, regimeType).subscribe(saveSubscriber);
+        subscriptions.add(subscription);
     }
 
     private List<InventoryViewModel> getCheckedProducts() {

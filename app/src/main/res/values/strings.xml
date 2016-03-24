@@ -291,6 +291,7 @@
     <!--Select Drugs-->
     <string name="title_select_drugs">Select the drugs that are part of the regime</string>
     <string name="hint_no_product_has_checked">Please check product for regime</string>
+    <string name="hint_more_than_limit_product_has_checked">the maximum number of regimes is 5</string>
 
     <!-- update notification text-->
     <string name="app_update_suffix"> update</string>

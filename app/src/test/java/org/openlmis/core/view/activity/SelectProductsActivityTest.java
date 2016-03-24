@@ -79,7 +79,18 @@ public class SelectProductsActivityTest {
     }
 
     @Test
-    public void shouldSaveRegimeWhenHasChecked() throws Exception {
+    public void shouldShowToastWhenMoreThanLimitChecked() throws Exception {
+        selectProductsActivity.viewModels = getInventoryViewModels();
+        for (InventoryViewModel model : selectProductsActivity.viewModels) {
+            model.setChecked(true);
+        }
+        selectProductsActivity.btnNext.performClick();
+
+        assertThat(ShadowToast.getTextOfLatestToast(), is("the maximum number of regimes is 5"));
+    }
+
+    @Test
+    public void shouldSaveRegimeWhenOneProductHasChecked() throws Exception {
         Observable<Void> value = Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
@@ -111,6 +122,6 @@ public class SelectProductsActivityTest {
 
     private ArrayList<InventoryViewModel> getInventoryViewModels() {
         Product product = new ProductBuilder().setCode("Product code").setPrimaryName("Primary name").setStrength("10mg").build();
-        return newArrayList(new InventoryViewModel(product), new InventoryViewModel(product));
+        return newArrayList(new InventoryViewModel(product), new InventoryViewModel(product), new InventoryViewModel(product), new InventoryViewModel(product), new InventoryViewModel(product), new InventoryViewModel(product));
     }
 }
