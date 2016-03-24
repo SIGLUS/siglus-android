@@ -91,9 +91,9 @@ public class SelectProductsActivityTest {
 
     @Test
     public void shouldSaveRegimeWhenOneProductHasChecked() throws Exception {
-        Observable<Void> value = Observable.create(new Observable.OnSubscribe<Void>() {
+        Observable<Regimen> value = Observable.create(new Observable.OnSubscribe<Regimen>() {
             @Override
-            public void call(Subscriber<? super Void> subscriber) {
+            public void call(Subscriber<? super Regimen> subscriber) {
 
             }
         });
