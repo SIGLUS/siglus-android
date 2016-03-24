@@ -196,8 +196,6 @@ public class MMIARegimeList extends LinearLayout {
                     return false;
                 }
             });
-
-
         }
         addView(view);
     }

@@ -23,6 +23,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
@@ -153,6 +154,30 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
 
     public void setComments(String comments) {
         rnRForm.setComments(comments);
+    }
+
+    public Observable<Void> addCustomRegimenItem(final Regimen regimen) {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    RegimenItem regimenItem = createRegimenItem(regimen);
+                    rnRForm.getRegimenItemListWrapper().add(regimenItem);
+                } catch (LMISException e) {
+                    e.reportToFabric();
+                    subscriber.onError(e);
+                }
+                subscriber.onCompleted();
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+    }
+
+    private RegimenItem createRegimenItem(Regimen regimen) throws LMISException {
+        RegimenItem regimenItem = new RegimenItem();
+        regimenItem.setRegimen(regimen);
+        regimenItem.setForm(rnRForm);
+        mmiaRepository.createRegimenItem(regimenItem);
+        return regimenItem;
     }
 
     public interface MMIARequisitionView extends BaseRequisitionView {

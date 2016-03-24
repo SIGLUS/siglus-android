@@ -266,6 +266,16 @@ public class RnrFormRepository {
         });
     }
 
+    public void createRegimenItem(final RegimenItem regimenItem) throws LMISException {
+        dbUtil.withDao(RegimenItem.class, new DbUtil.Operation<RegimenItem, Void>() {
+            @Override
+            public Void operate(Dao<RegimenItem, String> dao) throws SQLException {
+                dao.create(regimenItem);
+                return null;
+            }
+        });
+    }
+
     public void createBaseInfoItems(final List<BaseInfoItem> baseInfoItemList) throws LMISException {
         dbUtil.withDaoAsBatch(BaseInfoItem.class, new DbUtil.Operation<BaseInfoItem, Void>() {
             @Override

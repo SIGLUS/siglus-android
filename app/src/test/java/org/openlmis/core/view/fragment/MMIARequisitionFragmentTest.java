@@ -17,6 +17,7 @@
  */
 package org.openlmis.core.view.fragment;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Intent;
@@ -38,6 +39,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
@@ -56,6 +58,8 @@ import java.sql.Date;
 import java.util.ArrayList;
 
 import roboguice.RoboGuice;
+import rx.Observable;
+import rx.Subscriber;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -65,6 +69,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -165,7 +170,7 @@ public class MMIARequisitionFragmentTest {
 
         String msg = mmiaRequisitionFragment.getString(R.string.msg_stock_movement_is_not_ready);
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(msg);
-        verify(mmiaFormPresenter, never()).loadData(anyLong(),any(Date.class));
+        verify(mmiaFormPresenter, never()).loadData(anyLong(), any(Date.class));
     }
 
     @Test
@@ -451,5 +456,30 @@ public class MMIARequisitionFragmentTest {
 
         mmiaRequisitionFragment.hideOrDisplayRnrItemsHeader();
         verify(mockRnrItemsHeaderFreeze).setVisibility(View.INVISIBLE);
+    }
+
+    @Test
+    public void shouldAddCustomRegimenItem() throws Exception {
+        MMIARequisitionFragment mmiaRequisitionFragmentSpy = spy(mmiaRequisitionFragment);
+
+        Regimen regimen = new Regimen();
+        Observable<Void> value = Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                subscriber.onCompleted();
+            }
+        });
+        when(mmiaFormPresenter.addCustomRegimenItem(regimen)).thenReturn(value);
+        RnRForm rnRForm = new RnRForm();
+        when(mmiaFormPresenter.getRnRForm()).thenReturn(rnRForm);
+
+        Intent data = new Intent();
+        data.putExtra(Constants.PARAM_CUSTOM_REGIMEN, regimen);
+        mmiaRequisitionFragmentSpy.onActivityResult(MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME, Activity.RESULT_OK, data);
+
+        verify(mmiaFormPresenter).addCustomRegimenItem(regimen);
+
+        verify(mmiaRequisitionFragmentSpy.regimeListView).removeAllViews();
+        verify(mmiaRequisitionFragmentSpy.regimeListView).initView(mmiaFormPresenter.getRnRForm().getRegimenItemListWrapper(), mmiaRequisitionFragmentSpy.tvRegimeTotal);
     }
 }

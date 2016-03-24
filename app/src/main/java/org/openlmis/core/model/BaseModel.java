@@ -24,13 +24,14 @@ import com.j256.ormlite.field.DatabaseField;
 
 import org.openlmis.core.utils.DateUtil;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import lombok.Data;
 
 
 @Data
-public abstract class BaseModel {
+public abstract class BaseModel implements Serializable{
 
     @DatabaseField(uniqueIndex = true, generatedId = true)
     private long id;

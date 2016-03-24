@@ -30,6 +30,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
@@ -40,10 +41,13 @@ import org.robolectric.RuntimeEnvironment;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -258,7 +262,20 @@ public class MMIARequisitionPresenterTest {
 
         presenter.processRequisition(regimenItems, baseInfoItems, anyString());
         verify(mockMMIAformView, never()).showErrorMessage(anyString());
+    }
 
+    @Test
+    public void shouldCreateCustomRegimenItem() throws Exception {
+        List<RegimenItem> regimenItemListWrapper = rnRForm.getRegimenItemListWrapper();
+        int size = regimenItemListWrapper.size();
+        Regimen regimen = new Regimen();
+        TestSubscriber<Void> subscriber = new TestSubscriber<>();
+        presenter.addCustomRegimenItem(regimen).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+
+        verify(mmiaRepository).createRegimenItem(any(RegimenItem.class));
+        assertThat(regimenItemListWrapper.size(), is(size + 1));
     }
 
     private void waitObservableToExecute() {
