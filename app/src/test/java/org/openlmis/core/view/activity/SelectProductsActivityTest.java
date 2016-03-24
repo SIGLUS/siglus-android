@@ -63,7 +63,7 @@ public class SelectProductsActivityTest {
 
             }
         });
-        when(presenter.loadMMIAProducts()).thenReturn(value);
+        when(presenter.loadRegimeProducts()).thenReturn(value);
 
         Intent intent = new Intent();
         intent.putExtra(SelectProductsActivity.PARAM_REGIME_TYPE, Regimen.RegimeType.Adults);

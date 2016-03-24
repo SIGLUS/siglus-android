@@ -70,7 +70,7 @@ public class ProductPresenterTest {
         when(productRepository.queryProducts(program.getId())).thenReturn(list);
 
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
-        presenter.loadMMIAProducts().subscribe(subscriber);
+        presenter.loadRegimeProducts().subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
 

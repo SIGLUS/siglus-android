@@ -72,7 +72,7 @@ public class SelectProductsActivity extends BaseActivity {
         mAdapter = new SelectDrugsAdapter(viewModels);
         productListRecycleView.setAdapter(mAdapter);
         loading();
-        Subscription subscription = presenter.loadMMIAProducts().subscribe(subscriber);
+        Subscription subscription = presenter.loadRegimeProducts().subscribe(subscriber);
         subscriptions.add(subscription);
 
         btnNext.setOnClickListener(new View.OnClickListener() {

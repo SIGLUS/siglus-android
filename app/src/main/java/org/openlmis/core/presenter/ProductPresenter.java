@@ -40,7 +40,7 @@ public class ProductPresenter extends Presenter {
     public void attachView(BaseView v) throws ViewNotMatchException {
     }
 
-    public Observable<List<InventoryViewModel>> loadMMIAProducts() {
+    public Observable<List<InventoryViewModel>> loadRegimeProducts() {
         return Observable.create(new Observable.OnSubscribe<List<InventoryViewModel>>() {
             @Override
             public void call(Subscriber<? super List<InventoryViewModel>> subscriber) {
