@@ -28,9 +28,12 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
+import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.sql.SQLException;
 import java.util.List;
+
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class RegimenRepository {
 
@@ -60,5 +63,14 @@ public class RegimenRepository {
 
     public void create(Regimen regimen) throws LMISException{
         regimenGenericDao.create(regimen);
+    }
+
+    public List<Regimen> listDefaultRegime() throws LMISException {
+        return from(list()).filter(new Predicate<Regimen>() {
+            @Override
+            public boolean apply(Regimen regimen) {
+                return !regimen.isCustom();
+            }
+        }).toList();
     }
 }

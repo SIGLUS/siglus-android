@@ -51,8 +51,6 @@ import java.util.List;
 
 import rx.Subscriber;
 
-//TODO hide custom regime
-
 public class MMIARegimeList extends LinearLayout {
     private Context context;
     private TextView totalView;

@@ -7,6 +7,8 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Regimen;
 import org.robolectric.RuntimeEnvironment;
 
+import java.util.List;
+
 import roboguice.RoboGuice;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -31,5 +33,15 @@ public class RegimenRepositoryTest {
 
         Regimen actualRegime = repository.getByName(regimeName);
         assertThat(actualRegime.getName(), is(regimeName));
+    }
+
+    @Test
+    public void shouldListDefaultRegime() throws Exception {
+        Regimen customRegime = new Regimen();
+        customRegime.setName("customName");
+        repository.create(customRegime);
+
+        List<Regimen> regimens = repository.listDefaultRegime();
+        assertThat(regimens.size(), is(18));
     }
 }

@@ -488,7 +488,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     }
 
     //TODO del icon  update to red icon
-    //TODO hide custom
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
