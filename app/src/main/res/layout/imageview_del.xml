@@ -5,4 +5,4 @@
     android:layout_height="match_parent"
     android:layout_gravity="center_vertical"
     android:padding="@dimen/padding_small"
-    android:src="@drawable/ic_clear" />
+    android:src="@drawable/ic_clear_red" />
