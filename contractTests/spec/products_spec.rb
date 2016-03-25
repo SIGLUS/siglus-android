@@ -5,7 +5,7 @@ describe "Get programs with products information for a facility" do
     response = RestClient.get "http://#{WEB_DEV_URI}/rest-api/latest-products",
       :content_type => :json,
       :accept => :json,
-      :authorization => http_basic_auth('mystique', 'password1')
+      :authorization => http_basic_auth('stock_card', 'password1')
 
     body = JSON.parse(response.body)
     expect(response.code).to eq 200
