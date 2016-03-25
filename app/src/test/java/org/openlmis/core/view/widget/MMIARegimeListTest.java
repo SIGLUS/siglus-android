@@ -29,6 +29,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
 public class MMIARegimeListTest {
@@ -91,20 +92,21 @@ public class MMIARegimeListTest {
     public void shouldShowTheDelIconWhenTheFormIsNotAuthorised() throws Exception {
         RnRForm rnRForm = new RnRForm();
         rnRForm.setStatus(RnRForm.STATUS.DRAFT);
-
-        Regimen regimen = new Regimen();
-        regimen.setType(Regimen.RegimeType.Adults);
-        regimen.setName("customName");
-        RegimenItem regimenItem = new RegimenItem();
-        regimenItem.setRegimen(regimen);
-        ArrayList<RegimenItem> regimenItems = new ArrayList<>();
-        regimenItems.add(regimenItem);
-        rnRForm.setRegimenItemListWrapper(regimenItems);
+        rnRForm.setRegimenItemListWrapper(newArrayList(generateRegimenItem()));
 
         when(presenter.getRnRForm()).thenReturn(rnRForm);
 
         mmiaRegimeList.initView(new TextView(LMISTestApp.getContext()), presenter);
 
         assertThat(mmiaRegimeList.getChildAt(1).findViewById(R.id.image_view_del).getVisibility(), is(View.VISIBLE));
+    }
+
+    private RegimenItem generateRegimenItem() {
+        Regimen regimen = new Regimen();
+        regimen.setType(Regimen.RegimeType.Adults);
+        regimen.setName("customName");
+        RegimenItem regimenItem = new RegimenItem();
+        regimenItem.setRegimen(regimen);
+        return regimenItem;
     }
 }

@@ -28,10 +28,11 @@ public class RegimenRepositoryTest {
     public void shouldQueryByNameSuccessful() throws Exception {
         Regimen regimen = new Regimen();
         String regimeName = "regimeName";
+        regimen.setType(Regimen.RegimeType.Adults);
         regimen.setName(regimeName);
         repository.create(regimen);
 
-        Regimen actualRegime = repository.getByName(regimeName);
+        Regimen actualRegime = repository.getByNameAndCategory(regimeName, Regimen.RegimeType.Adults);
         assertThat(actualRegime.getName(), is(regimeName));
     }
 

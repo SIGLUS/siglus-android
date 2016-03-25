@@ -189,11 +189,7 @@ public class MMIARegimeList extends LinearLayout {
                 etTotal.setText(String.valueOf(item.getAmount()));
             }
 
-            if (Regimen.RegimeType.Paediatrics.equals(regimen.getType())) {
-                view.setBackgroundResource(R.color.color_regime_baby);
-            } else {
-                view.setBackgroundResource(R.color.color_green_light);
-            }
+            setBackground(view, regimen);
 
             etTotal.addTextChangedListener(new EditTextWatcher(item));
 
@@ -215,6 +211,14 @@ public class MMIARegimeList extends LinearLayout {
             }
         }
         addView(view);
+    }
+
+    private void setBackground(View view, Regimen regimen) {
+        if (Regimen.RegimeType.Paediatrics.equals(regimen.getType())) {
+            view.setBackgroundResource(R.color.color_regime_baby);
+        } else {
+            view.setBackgroundResource(R.color.color_green_light);
+        }
     }
 
     private void setDelIconForCustomRegime(final RegimenItem item, View view) {

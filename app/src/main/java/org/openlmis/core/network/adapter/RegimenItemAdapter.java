@@ -22,6 +22,8 @@ import java.lang.reflect.Type;
 
 import roboguice.RoboGuice;
 
+import static org.openlmis.core.model.Regimen.RegimeType;
+
 public class RegimenItemAdapter implements JsonSerializer<RegimenItem>, JsonDeserializer<RegimenItem> {
 
     private final Gson gson;
@@ -37,15 +39,24 @@ public class RegimenItemAdapter implements JsonSerializer<RegimenItem>, JsonDese
     @Override
     public RegimenItem deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         RegimenItem regimenItem = gson.fromJson(json, RegimenItem.class);
+
+        RegimeType regimeType = null;
+        String categoryName = json.getAsJsonObject().get("categoryName").getAsString();
+        if(categoryName.equals(RegimeType.Adults.toString())) {
+            regimeType = RegimeType.Adults;
+        } else if (categoryName.equals(RegimeType.Paediatrics.toString())) {
+            regimeType = RegimeType.Paediatrics;
+        }
+
         try {
-            Regimen regimen = regimenRepository.getByName(json.getAsJsonObject().get("name").getAsString());
+            Regimen regimen = regimenRepository.getByNameAndCategory(json.getAsJsonObject().get("name").getAsString(), regimeType);
             if (regimen == null) {
                 regimen = createRegimen(json);
             }
             regimenItem.setRegimen(regimen);
         } catch (LMISException e) {
             e.reportToFabric();
-            throw new JsonParseException("can not find RegimenItem by name");
+            throw new JsonParseException("can not find RegimenItem by name and category");
         }
         return regimenItem;
     }

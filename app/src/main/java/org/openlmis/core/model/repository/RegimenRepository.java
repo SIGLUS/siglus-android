@@ -52,11 +52,11 @@ public class RegimenRepository {
         return  regimenGenericDao.queryForAll();
     }
 
-    public Regimen getByName(final String name) throws LMISException {
+    public Regimen getByNameAndCategory(final String name, final Regimen.RegimeType category) throws LMISException {
         return dbUtil.withDao(Regimen.class, new DbUtil.Operation<Regimen, Regimen>() {
             @Override
             public Regimen operate(Dao<Regimen, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("name", name).queryForFirst();
+                return dao.queryBuilder().where().eq("name", name).and().eq("type", category).queryForFirst();
             }
         });
     }

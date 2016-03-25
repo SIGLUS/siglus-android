@@ -45,6 +45,7 @@
       "rnrId": 130,
       "code": "018",
       "name": "ABC+3TC+EFZ",
+      "categoryName": "Paediatrics",
       "patientsOnTreatment": 1,
       "category": {
         "id": null,

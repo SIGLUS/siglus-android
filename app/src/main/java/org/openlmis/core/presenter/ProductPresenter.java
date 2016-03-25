@@ -93,7 +93,7 @@ public class ProductPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super Regimen> subscriber) {
                 try {
-                    Regimen regimen = regimenRepository.getByName(regimenName);
+                    Regimen regimen = regimenRepository.getByNameAndCategory(regimenName, regimeType);
                     if (regimen == null) {
                         regimen = new Regimen();
                         regimen.setType(regimeType);
