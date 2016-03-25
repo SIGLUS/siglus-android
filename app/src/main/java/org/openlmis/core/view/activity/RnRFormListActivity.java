@@ -86,7 +86,14 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         setTitle(Constants.MMIA_PROGRAM_CODE.equals(programCode) ? R.string.mmia_list : R.string.requisition_list);
 
         presenter.setProgramCode(programCode);
-        initUI();
+
+        listView.setLayoutManager(new LinearLayoutManager(this));
+        listView.setHasFixedSize(true);
+        data = new ArrayList<>();
+        adapter = new RnRFormListAdapter(this, data, rnRFormItemClickListener);
+        listView.setAdapter(adapter);
+
+        loadRnRFrom();
 
         registerRnrSyncReceiver();
     }
@@ -108,7 +115,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
 
         switch (requestCode) {
             case Constants.REQUEST_FROM_RNR_LIST_PAGE:
-                initUI();
+                loadRnRFrom();
                 break;
             case Constants.REQUEST_SELECT_PERIOD_END:
                 Date periodEndDate = (Date) data.getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE);
@@ -118,13 +125,10 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         }
     }
 
-    private void initUI() {
-        listView.setLayoutManager(new LinearLayoutManager(this));
-        listView.setHasFixedSize(true);
-
-        data = new ArrayList<>();
-        adapter = new RnRFormListAdapter(this, data, rnRFormItemClickListener);
-        listView.setAdapter(adapter);
+    private void loadRnRFrom() {
+        if (loadingDialog.isShowing()) {
+            return;
+        }
 
         loading();
         presenter.loadRnRFormList().subscribe(getRnRFormSubscriber());
@@ -228,7 +232,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     BroadcastReceiver rnrSyncReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            initUI();
+            loadRnRFrom();
         }
     };
 
