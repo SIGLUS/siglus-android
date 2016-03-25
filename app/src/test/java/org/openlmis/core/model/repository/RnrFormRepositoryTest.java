@@ -116,6 +116,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         programMMIA.setId(1l);
         Program programVIA = new Program();
         programVIA.setId(2l);
+        when(mockProgramRepository.queryByProgramCodeOrParentCode(Constants.MMIA_PROGRAM_CODE)).thenReturn(newArrayList(programMMIA));
 
         for (int i = 0; i < 11; i++) {
             RnRForm form = new RnRForm();
@@ -548,6 +549,30 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         form.setStatus(RnRForm.STATUS.DRAFT);
         rnrFormRepository.submit(form);
         assertThat(form.getStatus(), is(RnRForm.STATUS.SUBMITTED));
+    }
+
+    @Test
+    public void shouldListFormsForProgramAndSubprograms() throws Exception {
+        Program programEss = new Program();
+        programEss.setId(1L);
+        programEss.setProgramCode("ESS_MEDS");
+        Program programVIA = new Program();
+        programVIA.setId(2L);
+        programVIA.setProgramCode(Constants.VIA_PROGRAM_CODE);
+        programEss.setParentCode(Constants.VIA_PROGRAM_CODE);
+        when(mockProgramRepository.queryByProgramCodeOrParentCode(Constants.VIA_PROGRAM_CODE)).thenReturn(newArrayList(programEss, programVIA));
+        RnRForm form = new RnRForm();
+        form.setProgram(programEss);
+        form.setStatus(RnRForm.STATUS.AUTHORIZED);
+        RnRForm form2 = new RnRForm();
+        form2.setProgram(programVIA);
+        form.setStatus(RnRForm.STATUS.AUTHORIZED);
+
+        rnrFormRepository.create(form);
+        rnrFormRepository.create(form2);
+
+        List<RnRForm> list = rnrFormRepository.list(Constants.VIA_PROGRAM_CODE);
+        assertThat(list.size(), is(2));
     }
 
     public class MyTestModule extends AbstractModule {

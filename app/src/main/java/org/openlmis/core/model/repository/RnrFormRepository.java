@@ -43,6 +43,8 @@ import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -207,12 +209,17 @@ public class RnrFormRepository {
     }
 
     public List<RnRForm> list(String programCode) throws LMISException {
-        final long programId = programRepository.queryByCode(programCode).getId();
-
+        List<Program> programs = programRepository.queryByProgramCodeOrParentCode(programCode);
+        final List<Long> programIds = FluentIterable.from(programs).transform(new Function<Program, Long>() {
+            @Override
+            public Long apply(Program program) {
+                return program.getId();
+            }
+        }).toList();
         return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
             @Override
             public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
-                return dao.queryBuilder().orderBy("periodBegin", true).where().eq("program_id", programId).query();
+                return dao.queryBuilder().orderBy("periodBegin", true).where().in("program_id", programIds).query();
             }
         });
     }
