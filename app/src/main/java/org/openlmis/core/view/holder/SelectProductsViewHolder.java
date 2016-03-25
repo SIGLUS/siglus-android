@@ -37,15 +37,15 @@ public class SelectProductsViewHolder extends BaseViewHolder {
     }
 
     public void populate(final RegimeProductViewModel viewModel) {
-        productName.setText(viewModel.getEntireName());
-        tvShortCode.setText(viewModel.getShortCode());
-
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 viewModel.setChecked(isChecked);
             }
         });
+        checkBox.setChecked(viewModel.isChecked());
+        productName.setText(viewModel.getEntireName());
+        tvShortCode.setText(viewModel.getShortCode());
     }
 
     private void triggerCheckbox() {
