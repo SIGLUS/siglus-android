@@ -9,7 +9,7 @@ describe "submit requisition to web server" do
 
     via_requisition =
     {
-      agentCode: "F_STOCKCARD",
+      agentCode: "HF2",
       programCode: "VIA",
       clientSubmittedTime: "2016-10-27 11:11:20",
       actualPeriodStartDate: "2016-01-20 11:11:20",
@@ -61,7 +61,7 @@ describe "submit requisition to web server" do
     via_response = RestClient.post "http://#{WEB_DEV_URI}/rest-api/requisitions",
       via_requisition.to_json, 'Content-Type' => 'application/json',
       'Accept' => 'application/json',
-      'Authorization' => http_basic_auth('stock_card', 'password1')
+      'Authorization' => http_basic_auth('mystique', 'password1')
 
     expect(via_response.code).to eq 201
 
@@ -73,7 +73,7 @@ describe "submit requisition to web server" do
     via_responseDuplicate = RestClient.post "http://#{WEB_DEV_URI}/rest-api/requisitions",
           via_requisition.to_json, 'Content-Type' => 'application/json',
           'Accept' => 'application/json',
-          'Authorization' => http_basic_auth('stock_card', 'password1')
+          'Authorization' => http_basic_auth('mystique', 'password1')
 
     expect(via_responseDuplicate.code).to eq 200
 
@@ -82,7 +82,7 @@ describe "submit requisition to web server" do
 
     mmia_requisition =
     {
-      agentCode: "F_STOCKCARD",
+      agentCode: "HF2",
       programCode: "MMIA",
       clientSubmittedNotes: "I don't know",
       clientSubmittedTime: "2016-10-27 11:20:20",
@@ -556,10 +556,10 @@ describe "submit requisition to web server" do
 
     #Retrieve all requisitions
 
-    response = RestClient.get "http://#{WEB_DEV_URI}/rest-api/requisitions?facilityCode=F_STOCKCARD",
+    response = RestClient.get "http://#{WEB_DEV_URI}/rest-api/requisitions?facilityCode=HF2",
       'Content-Type' => 'application/json',
       'Accept' => 'application/json',
-      'Authorization' => http_basic_auth('stock_card', 'password1')
+      'Authorization' => http_basic_auth('mystique', 'password1')
 
     expect(response.code).to eq 200
 
