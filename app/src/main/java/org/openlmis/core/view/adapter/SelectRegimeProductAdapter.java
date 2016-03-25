@@ -10,11 +10,11 @@ import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
 
 import java.util.List;
 
-public class SelectDrugsAdapter extends RecyclerView.Adapter<SelectProductsViewHolder> {
+public class SelectRegimeProductAdapter extends RecyclerView.Adapter<SelectProductsViewHolder> {
 
     private List<RegimeProductViewModel> products;
 
-    public SelectDrugsAdapter(List<RegimeProductViewModel> products) {
+    public SelectRegimeProductAdapter(List<RegimeProductViewModel> products) {
         this.products = products;
     }
 

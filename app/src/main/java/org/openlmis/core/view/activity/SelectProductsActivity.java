@@ -14,7 +14,7 @@ import org.openlmis.core.presenter.ProductPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.adapter.SelectDrugsAdapter;
+import org.openlmis.core.view.adapter.SelectRegimeProductAdapter;
 import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
@@ -39,7 +39,7 @@ public class SelectProductsActivity extends BaseActivity {
     @InjectView(R.id.products_list)
     public RecyclerView productListRecycleView;
 
-    protected SelectDrugsAdapter mAdapter;
+    protected SelectRegimeProductAdapter mAdapter;
 
     @InjectPresenter(ProductPresenter.class)
     ProductPresenter presenter;
@@ -69,7 +69,7 @@ public class SelectProductsActivity extends BaseActivity {
 
         productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
         viewModels = new ArrayList<>();
-        mAdapter = new SelectDrugsAdapter(viewModels);
+        mAdapter = new SelectRegimeProductAdapter(viewModels);
         productListRecycleView.setAdapter(mAdapter);
         loading();
         Subscription subscription = presenter.loadRegimeProducts().subscribe(subscriber);
