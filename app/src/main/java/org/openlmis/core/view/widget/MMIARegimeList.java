@@ -210,7 +210,9 @@ public class MMIARegimeList extends LinearLayout {
                 }
             });
 
-            setDelIconForCustomRegime(item, view);
+            if (presenter.getRnRForm().getStatus() != RnRForm.STATUS.AUTHORIZED) {
+                setDelIconForCustomRegime(item, view);
+            }
         }
         addView(view);
     }
