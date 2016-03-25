@@ -52,4 +52,11 @@ public class SyncErrorsMapTest {
         String appDisplayError = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage("Something else");
         assertEquals(LMISTestApp.getContext().getString(R.string.default_sync_data_error), appDisplayError);
     }
+
+    @Test
+    public void shouldReturnAppPeriodErrorWhenServerReturnsPeriodError() {
+        String appDisplayError = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage("Submitted period is not next period in schedule.");
+        assertEquals(LMISTestApp.getContext().getString(R.string.period_mismatch_error), appDisplayError);
+    }
+
 }

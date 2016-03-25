@@ -12,6 +12,7 @@ public final class SyncErrorsMap {
     private static final String PREVIOUS_FORM_NOT_FILLED = "Please finish all R&R of previous period(s)";
     private static final String USER_UNAUTHORIZED = "User does not have permission";
     private static final String DUPLICATE_RNR = "RnR for this period has been submitted";
+    private static final String PERIOD_MISMATCH = "Submitted period is not next period in schedule";
 
     private SyncErrorsMap() {
 
@@ -43,6 +44,9 @@ public final class SyncErrorsMap {
         }
         if (errorMessage.contains(DUPLICATE_RNR)) {
             return context.getString(R.string.duplicate_rnr_error);
+        }
+        if (errorMessage.contains(PERIOD_MISMATCH)) {
+            return context.getString(R.string.period_mismatch_error);
         }
         return context.getString(R.string.default_sync_data_error);
     }
