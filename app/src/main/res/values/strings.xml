@@ -104,7 +104,7 @@
     <string name="btn_ok">OK</string>
     <string name="label_add_adult_regime">+ Adult regime</string>
     <string name="label_add_child_regime">+ Child regime</string>
-
+    <string name="msg_regime_already_exist">select regime already exist</string>
 
     <!-- VIA Form -->
     <string name="label_via_kit_received">No. of Kits Received</string>

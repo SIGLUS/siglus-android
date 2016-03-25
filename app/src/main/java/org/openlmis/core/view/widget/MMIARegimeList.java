@@ -293,6 +293,11 @@ public class MMIARegimeList extends LinearLayout {
     }
 
     public void addCustomRegimenItem(Regimen regimen) {
+        if (presenter.isRegimeItemExists(regimen)) {
+            ToastUtil.show(R.string.msg_regime_already_exist);
+            return;
+        }
+        activity.loading();
         presenter.addCustomRegimenItem(regimen).subscribe(customRegimenItemSubscriber());
     }
 

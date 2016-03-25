@@ -491,7 +491,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_FOR_CUSTOM_REGIME) {
             final Regimen regimen = (Regimen) data.getSerializableExtra(Constants.PARAM_CUSTOM_REGIMEN);
-            loading();
             regimeListView.addCustomRegimenItem(regimen);
         }
     }

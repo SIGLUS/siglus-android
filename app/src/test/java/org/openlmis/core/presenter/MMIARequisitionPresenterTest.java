@@ -46,6 +46,7 @@ import java.util.List;
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.any;
@@ -311,6 +312,17 @@ public class MMIARequisitionPresenterTest {
 
         verify(mmiaRepository).deleteRegimeItem(item);
         assertThat(regimenItemListWrapper.size(), is(size - 1));
+    }
+
+    @Test
+    public void shouldReturnTrueWhenHasExist() throws Exception {
+        Regimen regimen = new Regimen();
+        regimen.setId(100L);
+        RegimenItem regimenItem = new RegimenItem();
+        regimenItem.setRegimen(regimen);
+        presenter.getRnRForm().getRegimenItemListWrapper().add(regimenItem);
+
+        assertTrue(presenter.isRegimeItemExists(regimen));
     }
 
     private void waitObservableToExecute() {

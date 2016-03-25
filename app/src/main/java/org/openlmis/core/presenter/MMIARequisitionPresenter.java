@@ -174,7 +174,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    private boolean isRegimeItemExists(Regimen regimen) {
+    public boolean isRegimeItemExists(Regimen regimen) {
         for (RegimenItem item : rnRForm.getRegimenItemListWrapper()) {
             if (regimen.getId() == item.getRegimen().getId()) {
                 return true;
