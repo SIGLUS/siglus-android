@@ -29,5 +29,5 @@
         android:id="@+id/et_total"
         style="@style/ItemRegime.EditText"
         android:layout_width="@dimen/mmia_spread_item_common_width"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 </LinearLayout>
