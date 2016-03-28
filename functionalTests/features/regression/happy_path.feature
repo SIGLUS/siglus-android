@@ -65,6 +65,18 @@ Feature: Log in and initialize Inventory
     Then I don't see "Complete"
     And I don't see "CANCEL"
 
+    # Attempt to make a stock movement which make its soh negative
+    And I wait for 1 second
+    And I select a reason "Negative Adjustments" "Damaged on arrival"
+    And I wait for 1 second
+    And I swipe right
+    And I enter negative adjustment number "123456789098"
+    And I wait for "Complete" to appear
+    And I press "Complete"
+    Then I should see text containing "Invalid Input"
+    And I wait for 2 seconds
+    And I press "CANCEL"
+
     # Make a stock movement and save
     When I navigate back
     And I wait for 1 second
