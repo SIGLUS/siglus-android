@@ -105,6 +105,7 @@ public class MMIARegimeListTest {
         Regimen regimen = new Regimen();
         regimen.setType(Regimen.RegimeType.Adults);
         regimen.setName("customName");
+        regimen.setCustom(true);
         RegimenItem regimenItem = new RegimenItem();
         regimenItem.setRegimen(regimen);
         return regimenItem;

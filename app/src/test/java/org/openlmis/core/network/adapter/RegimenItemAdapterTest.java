@@ -67,6 +67,7 @@ public class RegimenItemAdapterTest {
         assertThat(regimen.getType(), is(Regimen.RegimeType.Adults));
         assertThat(regimen.getCode(), is("020"));
         assertThat(regimen.getName(), is("d4T 30+3TC+EFV"));
+        assertThat(regimen.isCustom(), is(true));
 
         verify(regimenRepository).create(regimen);
     }

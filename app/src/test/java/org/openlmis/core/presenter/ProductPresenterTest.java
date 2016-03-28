@@ -89,6 +89,7 @@ public class ProductPresenterTest {
         Regimen regimen = regimenArgumentCaptor.getValue();
         assertThat(regimen.getName(), is("3TC 150mg+3TC 150mg"));
         assertThat(regimen.getType(), is(Regimen.RegimeType.Adults));
+        assertThat(regimen.isCustom(), is(true));
     }
 
     @Test
