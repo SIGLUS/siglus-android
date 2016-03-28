@@ -92,7 +92,7 @@ public class MMIARegimeList extends LinearLayout {
         }
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_custom_regimen)) {
-            if (!presenter.getRnRForm().isAuthorized()) {
+            if (isCustomEnable()) {
                 addAdultBtnView();
             }
         }
@@ -102,12 +102,16 @@ public class MMIARegimeList extends LinearLayout {
         }
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_custom_regimen)) {
-            if (!presenter.getRnRForm().isAuthorized()) {
+            if (isCustomEnable()) {
                 addPaediatricsBtnView();
             }
         }
         editTexts.get(editTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
         totalView.setText(String.valueOf(getTotal()));
+    }
+
+    private boolean isCustomEnable() {
+        return !presenter.getRnRForm().isAuthorized() && !presenter.getRnRForm().isMissed();
     }
 
     private void addAdultBtnView() {
@@ -206,9 +210,7 @@ public class MMIARegimeList extends LinearLayout {
                 }
             });
 
-            if (presenter.getRnRForm().getStatus() != RnRForm.STATUS.AUTHORIZED) {
-                setDelIconForCustomRegime(item, view);
-            }
+            setDelIconForCustomRegime(item, view);
         }
         addView(view);
     }
@@ -222,7 +224,7 @@ public class MMIARegimeList extends LinearLayout {
     }
 
     private void setDelIconForCustomRegime(final RegimenItem item, View view) {
-        if (item.getRegimen().isCustom()) {
+        if (item.getRegimen().isCustom() && isCustomEnable()) {
             View ivDel = ((ViewStub) view.findViewById(R.id.vs_del)).inflate();
             ivDel.setOnClickListener(new OnClickListener() {
                 @Override
