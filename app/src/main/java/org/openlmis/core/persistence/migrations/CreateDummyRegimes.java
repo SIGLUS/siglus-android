@@ -78,6 +78,7 @@ public class CreateDummyRegimes extends Migration {
         regimen.setCode(code);
         regimen.setName(name);
         regimen.setType(regimeType);
+        regimen.setCustom(false);
         dao.create(regimen);
     }
 }

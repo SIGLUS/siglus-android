@@ -98,6 +98,7 @@ public class ProductPresenter extends Presenter {
                         regimen = new Regimen();
                         regimen.setType(regimeType);
                         regimen.setName(regimenName);
+                        regimen.setCustom(true);
                         regimenRepository.create(regimen);
                     }
                     subscriber.onNext(regimen);

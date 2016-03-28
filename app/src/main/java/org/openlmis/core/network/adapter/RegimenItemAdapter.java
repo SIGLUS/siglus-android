@@ -63,6 +63,7 @@ public class RegimenItemAdapter implements JsonSerializer<RegimenItem>, JsonDese
 
     private Regimen createRegimen(JsonElement json) throws LMISException {
         Regimen regimen = gson.fromJson(json, Regimen.class);
+        regimen.setCustom(true);
         regimenRepository.create(regimen);
         return regimen;
     }

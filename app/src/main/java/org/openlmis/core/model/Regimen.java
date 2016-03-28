@@ -23,12 +23,8 @@ import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import java.util.ArrayList;
-
 import lombok.Getter;
 import lombok.Setter;
-
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @Getter
 @Setter
@@ -55,27 +51,6 @@ public class Regimen extends BaseModel {
     @DatabaseField
     private RegimeType type;
 
-    public static final ArrayList<String> DEFAULT_REGIMES_NAME = newArrayList(
-            "AZT+3TC+NVP",
-            "TDF+3TC+EFV",
-            "AZT+3TC+EFV",
-            "d4T 30+3TC+NVP",
-            "d4T 30+3TC+EFV",
-            "AZT+3TC+LPV/r",
-            "TDF+3TC+LPV/r",
-            "ABC+3TC+LPV/r",
-            "d4T+3TC+NVP(3DFC Baby)",
-            "d4T+3TC+LPV/r(2DFC Baby + LPV/r)",
-            "d4T+3TC+ABC(2DFC Baby + ABC)",
-            "d4T+3TC+EFV(2DFC Baby + EFV)",
-            "AZT60+3TC+NVP(3DFC)",
-            "AZT60+3TC+EFV(2DFC + EFV)",
-            "AZT60+3TC+ABC(2DFC + ABC)",
-            "AZT60+3TC+LPV/r(2DFC + LPV/r)",
-            "ABC+3TC+LPV/r",
-            "ABC+3TC+EFZ");
-
-    public boolean isCustom() {
-        return !DEFAULT_REGIMES_NAME.contains(name);
-    }
+    @DatabaseField
+    private boolean isCustom;
 }

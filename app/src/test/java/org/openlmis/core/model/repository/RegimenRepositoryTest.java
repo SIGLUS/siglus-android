@@ -40,9 +40,15 @@ public class RegimenRepositoryTest {
     public void shouldListDefaultRegime() throws Exception {
         Regimen customRegime = new Regimen();
         customRegime.setName("customName");
+        customRegime.setCustom(true);
         repository.create(customRegime);
 
+        Regimen customRegime2 = new Regimen();
+        customRegime2.setName("default");
+        customRegime.setCustom(false);
+        repository.create(customRegime2);
+
         List<Regimen> regimens = repository.listDefaultRegime();
-        assertThat(regimens.size(), is(18));
+        assertThat(regimens.size(), is(1));
     }
 }

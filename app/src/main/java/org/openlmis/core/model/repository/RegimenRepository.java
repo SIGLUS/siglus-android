@@ -28,12 +28,9 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
-import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.sql.SQLException;
 import java.util.List;
-
-import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class RegimenRepository {
 
@@ -43,13 +40,8 @@ public class RegimenRepository {
     DbUtil dbUtil;
 
     @Inject
-    public RegimenRepository(Context context){
+    public RegimenRepository(Context context) {
         this.regimenGenericDao = new GenericDao<>(Regimen.class, context);
-    }
-
-
-    public List<Regimen> list() throws LMISException {
-        return  regimenGenericDao.queryForAll();
     }
 
     public Regimen getByNameAndCategory(final String name, final Regimen.RegimeType category) throws LMISException {
@@ -61,16 +53,19 @@ public class RegimenRepository {
         });
     }
 
-    public void create(Regimen regimen) throws LMISException{
+    public void create(Regimen regimen) throws LMISException {
         regimenGenericDao.create(regimen);
     }
 
     public List<Regimen> listDefaultRegime() throws LMISException {
-        return from(list()).filter(new Predicate<Regimen>() {
+        return dbUtil.withDao(Regimen.class, new DbUtil.Operation<Regimen, List<Regimen>>() {
             @Override
-            public boolean apply(Regimen regimen) {
-                return !regimen.isCustom();
+            public List<Regimen> operate(Dao<Regimen, String> dao) throws SQLException {
+                return dao.queryBuilder()
+                        .where()
+                        .eq("isCustom", false)
+                        .query();
             }
-        }).toList();
+        });
     }
 }
