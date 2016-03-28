@@ -55,7 +55,7 @@ public class MMIARegimeList extends LinearLayout {
     private Context context;
     private TextView totalView;
     private List<RegimenItem> dataList;
-    private List<EditText> editTexts = new ArrayList<>();
+    private List<EditText> editTexts;
     private LayoutInflater layoutInflater;
     private boolean hasDataChanged = false;
     private ArrayList<RegimenItem> adults;
@@ -83,6 +83,7 @@ public class MMIARegimeList extends LinearLayout {
     public void initView(TextView totalView, MMIARequisitionPresenter presenter) {
         this.presenter = presenter;
         this.dataList = presenter.getRnRForm().getRegimenItemListWrapper();
+        this.editTexts = new ArrayList<>();
         initCategoryList(dataList);
         this.totalView = totalView;
         addHeaderView();
