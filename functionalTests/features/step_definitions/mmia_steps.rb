@@ -27,6 +27,42 @@ And(/^I enter regimen totals$/) do
     end
 end
 
+And(/^I add custom regimens and enter total$/) do
+    steps %Q{
+        Then I press "+ Adult regime"
+        Then I wait for "Select the drugs that are part of the regime" to appear
+        And I select one drug to create a adult regime
+        Then I press "Next"
+
+        Then I wait for "MMIA" to appear
+        And I enter regimen totals
+
+        Then I press "+ Child regime"
+        Then I wait for "Select the drugs that are part of the regime" to appear
+        And I select one drug to create a baby regime
+        Then I press "Next"
+
+        Then I wait for "MMIA" to appear
+        And I enter regimen totals
+    }
+end
+
+And(/^I select one drug to create a adult regime$/) do
+    q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
+
+    if !q.empty?
+        touch(q)
+    end
+end
+
+And(/^I select one drug to create a baby regime$/) do
+    q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
+
+    if !q.empty?
+        touch(q)
+    end
+end
+
 
 And(/^I enter patient totals$/) do
     q = query("android.widget.EditText id:'et_value'")
@@ -37,7 +73,7 @@ And(/^I enter patient totals$/) do
 
         if element.eql? q.at(1)
             touch(element)
-            keyboard_enter_text(6)
+            keyboard_enter_text(8)
         else
             touch(element)
             keyboard_enter_text(3)
@@ -63,12 +99,6 @@ And(/^I enter patient total different from regime total$/) do
         end
     end
     hide_soft_keyboard
-end
-
-And(/^I should see empty patient total$/) do
-    if element_exists("android.widget.EditText id:'et_value' text:'3'") or element_exists("android.widget.EditText id:'et_value' text:'6'")
-		fail(msg="patient total not empty")
-	end
 end
 
 When(/^I enter "(.*)" in "Observations"$/) do |text|

@@ -61,28 +61,23 @@ Feature: MMIA
     And I press "Next"
     Then I wait for "MMIA -" to appear
     Then I wait for 1 second
-    Then I scroll "scrollView" down to "Therapeutic Regime"
-    And I should see empty patient total
+    Then I scroll "scrollView" down to "Submit for Approval"
 
-    And I enter regimen totals
+    And I enter patient totals
     Then I navigate back
     Then I should see text containing "Are you sure you want to quit without saving your work?"
     Then I press "No"
-    Then I wait for "MMIA -" to appear
-    Then I wait for 1 second
-    
-    Then I scroll "scrollView" down to "Submit for Approval"
-    Then I press "Submit for Approval"
-    Then I should see "Invalid Input"
-    
     Then I press "Save"
     Then I wait for 1 second
     Then I should see text containing "Continue Working on MMIA"
-
     And I press "Continue Working on MMIA"
-    And I wait for "MMIA -" to appear
-    Then I scroll "scrollView" down to "Submit for Approval"
-    And I enter patient totals
+    Then I wait for "MMIA -" to appear
+    Then I wait for 1 second
+    Then I scroll "scrollView" down to "Therapeutic Regime"
+    And I enter regimen totals
+    And I add custom regimens and enter total
+    And I scroll "scrollView" down to "Submit for Approval"
+
     Then I press "Submit for Approval"
     And I sign requisition with "superuser" "testUser" and complete
 
