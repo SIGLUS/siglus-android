@@ -52,12 +52,12 @@ public class SelectPeriodPresenter extends Presenter {
                 try {
                     Period periodInSchedule = periodService.generateNextPeriod(programCode, null);
                     List<Inventory> inventories = inventoryRepository.queryPeriodInventory(periodInSchedule);
-                    boolean isDefaultIventoryDate = false;
+                    boolean isDefaultInventoryDate = false;
                     if (inventories.isEmpty() && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
-                        isDefaultIventoryDate = true;
+                        isDefaultInventoryDate = true;
                         generateDefaultInventoryDates(periodInSchedule, inventories);
                     }
-                    List<SelectInventoryViewModel> selectInventoryViewModels = generateSelectInventoryViewModels(inventories, isDefaultIventoryDate);
+                    List<SelectInventoryViewModel> selectInventoryViewModels = generateSelectInventoryViewModels(inventories, isDefaultInventoryDate);
                     subscriber.onNext(selectInventoryViewModels);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
