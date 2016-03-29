@@ -49,6 +49,6 @@ public class RegimenRepositoryTest {
         repository.create(customRegime2);
 
         List<Regimen> regimens = repository.listDefaultRegime();
-        assertThat(regimens.size(), is(1));
+        assertThat(regimens.size(), is(19));
     }
 }
