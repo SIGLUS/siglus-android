@@ -61,7 +61,7 @@ Feature: MMIA
     And I press "Next"
     Then I wait for "MMIA -" to appear
     Then I wait for 1 second
-    Then I scroll "scrollView" down to "Submit for Approval"
+    Then I scroll "scrollView" down to "Therapeutic Regime"
     And I should see empty patient total
 
     And I enter regimen totals

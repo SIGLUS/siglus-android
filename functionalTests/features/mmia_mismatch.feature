@@ -26,7 +26,7 @@ Feature: MMIA Page total mismatch
     And I press "Thursday"
     And I press "Next"
     And I wait for "MMIA -" to appear
-    And I scroll "ScrollView" down to "Submit for Approval"
+    And I scroll "ScrollView" down to "Therapeutic Regime"
     And I enter regimen totals
     Then I wait for 1 second
     When I enter patient total different from regime total

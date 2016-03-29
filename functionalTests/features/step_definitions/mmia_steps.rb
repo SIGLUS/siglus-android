@@ -14,13 +14,16 @@ Then(/^I should see inventory "(.*?)"$/) do |number|
 end
 
 And(/^I enter regimen totals$/) do
-    q = query("android.widget.EditText id:'et_total'")
-    for element in q
-        if !element.eql? q.first
-            touch(element)
-            keyboard_enter_text(1)
-            hide_soft_keyboard
-        end
+    while !query("android.widget.EditText id:'et_total' text:''").empty?
+        query("android.widget.EditText id:'et_total'", {:setText => '1'})
+    end
+
+    steps %Q{
+        Then I scroll "scrollView" down to "Submit for Approval"
+    }
+
+    while !query("android.widget.EditText id:'et_total' text:''").empty?
+        query("android.widget.EditText id:'et_total'", {:setText => '1'})
     end
 end
 
