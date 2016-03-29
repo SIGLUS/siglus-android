@@ -19,13 +19,12 @@
 package org.openlmis.core.persistence.migrations;
 
 
-import com.j256.ormlite.dao.Dao;
-
-import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.Migration;
+import org.openlmis.core.utils.DateUtil;
 
-import java.sql.SQLException;
+import java.util.Date;
 
 public class CreateDummyRegimes extends Migration {
 
@@ -38,45 +37,25 @@ public class CreateDummyRegimes extends Migration {
 
     @Override
     public void up() {
+        String formatDate = DateUtil.formatDate(new Date(LMISApp.getInstance().getCurrentTimeMillis()), DateUtil.DATE_TIME_FORMAT);
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('001','AZT+3TC+NVP','Adults', '" + formatDate + "' , '" + formatDate + "')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('002','TDF+3TC+EFV','Adults', '" + formatDate + "' , '" + formatDate + "')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('003','AZT+3TC+EFV','Adults', '" + formatDate + "' , '" + formatDate + "')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('004','d4T 30+3TC+NVP','Adults', '" + formatDate + "' , '" + formatDate + "')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('005','d4T 30+3TC+EFV','Adults', '" + formatDate + "' , '" + formatDate + "')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('006','AZT+3TC+LPV/r','Adults', '" + formatDate + "' , '" + formatDate + "')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('007','TDF+3TC+LPV/r','Adults', '" + formatDate + "' , '" + formatDate + "')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('008','ABC+3TC+LPV/r','Adults', '" + formatDate + "' , '" + formatDate + "')");
 
-        try {
-            dbUtil.withDao(RegimenForMigration.class, new DbUtil.Operation<RegimenForMigration, String>() {
-                @Override
-                public String operate(Dao dao) throws SQLException {
-
-                    createRegime(dao, "001", "AZT+3TC+NVP", RegimenForMigration.RegimeType.Adults);
-                    createRegime(dao, "002", "TDF+3TC+EFV", RegimenForMigration.RegimeType.Adults);
-                    createRegime(dao, "003", "AZT+3TC+EFV", RegimenForMigration.RegimeType.Adults);
-                    createRegime(dao, "004", "d4T 30+3TC+NVP", RegimenForMigration.RegimeType.Adults);
-                    createRegime(dao, "005", "d4T 30+3TC+EFV", RegimenForMigration.RegimeType.Adults);
-                    createRegime(dao, "006", "AZT+3TC+LPV/r", RegimenForMigration.RegimeType.Adults);
-                    createRegime(dao, "007", "TDF+3TC+LPV/r", RegimenForMigration.RegimeType.Adults);
-                    createRegime(dao, "008", "ABC+3TC+LPV/r", RegimenForMigration.RegimeType.Adults);
-
-                    createRegime(dao, "009", "d4T+3TC+NVP(3DFC Baby)", RegimenForMigration.RegimeType.Paediatrics);
-                    createRegime(dao, "010", "d4T+3TC+LPV/r(2DFC Baby + LPV/r)", RegimenForMigration.RegimeType.Paediatrics);
-                    createRegime(dao, "011", "d4T+3TC+ABC(2DFC Baby + ABC)", RegimenForMigration.RegimeType.Paediatrics);
-                    createRegime(dao, "012", "d4T+3TC+EFV(2DFC Baby + EFV)", RegimenForMigration.RegimeType.Paediatrics);
-                    createRegime(dao, "013", "AZT60+3TC+NVP(3DFC)", RegimenForMigration.RegimeType.Paediatrics);
-                    createRegime(dao, "014", "AZT60+3TC+EFV(2DFC + EFV)", RegimenForMigration.RegimeType.Paediatrics);
-                    createRegime(dao, "015", "AZT60+3TC+ABC(2DFC + ABC)", RegimenForMigration.RegimeType.Paediatrics);
-                    createRegime(dao, "016", "AZT60+3TC+LPV/r(2DFC + LPV/r)", RegimenForMigration.RegimeType.Paediatrics);
-                    createRegime(dao, "017", "ABC+3TC+LPV/r", RegimenForMigration.RegimeType.Paediatrics);
-                    createRegime(dao, "018", "ABC+3TC+EFZ", RegimenForMigration.RegimeType.Paediatrics);
-
-                    return null;
-                }
-            });
-        } catch (LMISException e) {
-            e.reportToFabric();
-        }
-    }
-
-    private void createRegime(Dao dao, String code, String name, RegimenForMigration.RegimeType regimeType) throws SQLException {
-        RegimenForMigration regimen = new RegimenForMigration();
-        regimen.setCode(code);
-        regimen.setName(name);
-        regimen.setType(regimeType);
-        dao.create(regimen);
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('009','d4T+3TC+NVP(3DFC Baby)','Paediatrics', '" + formatDate + "' , '" + formatDate + "')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('010','d4T+3TC+LPV/r(2DFC Baby + LPV/r)','Paediatrics', '" + formatDate + "' , '" + formatDate + "')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('011','d4T+3TC+ABC(2DFC Baby + ABC)','Paediatrics', '" + formatDate + "' , '" + formatDate + "')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('012','d4T+3TC+EFV(2DFC Baby + EFV)','Paediatrics', '" + formatDate + "' , '" + formatDate + "')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('013','AZT60+3TC+NVP(3DFC)','Paediatrics', '" + formatDate + "' , '" + formatDate + "')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('014','AZT60+3TC+EFV(2DFC + EFV)','Paediatrics', '" + formatDate + "' , '" + formatDate + "')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('015','AZT60+3TC+ABC(2DFC + ABC)','Paediatrics', '" + formatDate + "' , '" + formatDate + "')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('016','AZT60+3TC+LPV/r(2DFC + LPV/r)','Paediatrics', '" + formatDate + "' , '" + formatDate + "')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('017','ABC+3TC+LPV/r','Paediatrics', '" + formatDate + "' , '" + formatDate + "')");
+        execSQL("INSERT INTO `regimes` (`code` ,`name` ,`type` ,`createdAt` ,`updatedAt` ) VALUES ('018','ABC+3TC+EFZ','Paediatrics', '" + formatDate + "' , '" + formatDate + "')");
     }
 }
