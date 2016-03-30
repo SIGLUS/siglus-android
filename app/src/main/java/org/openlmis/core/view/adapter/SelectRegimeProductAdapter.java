@@ -5,12 +5,12 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import org.openlmis.core.R;
-import org.openlmis.core.view.holder.SelectProductsViewHolder;
+import org.openlmis.core.view.holder.SelectRegimeProductsViewHolder;
 import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
 
 import java.util.List;
 
-public class SelectRegimeProductAdapter extends RecyclerView.Adapter<SelectProductsViewHolder> {
+public class SelectRegimeProductAdapter extends RecyclerView.Adapter<SelectRegimeProductsViewHolder> {
 
     private List<RegimeProductViewModel> products;
 
@@ -19,12 +19,12 @@ public class SelectRegimeProductAdapter extends RecyclerView.Adapter<SelectProdu
     }
 
     @Override
-    public SelectProductsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new SelectProductsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_select_product, parent, false));
+    public SelectRegimeProductsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new SelectRegimeProductsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_select_product, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(SelectProductsViewHolder holder, int position) {
+    public void onBindViewHolder(SelectRegimeProductsViewHolder holder, int position) {
         RegimeProductViewModel product = products.get(position);
         holder.populate(product);
     }

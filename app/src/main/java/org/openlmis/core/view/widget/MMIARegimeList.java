@@ -42,7 +42,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.BaseActivity;
-import org.openlmis.core.view.activity.SelectProductsActivity;
+import org.openlmis.core.view.activity.SelectRegimeProductsActivity;
 import org.openlmis.core.view.fragment.MMIARequisitionFragment;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 
@@ -122,7 +122,7 @@ public class MMIARegimeList extends LinearLayout {
         view.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragment().startActivityForResult(SelectProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Adults), MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME);
+                getFragment().startActivityForResult(SelectRegimeProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Adults), MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME);
             }
         });
         addView(view);
@@ -135,7 +135,7 @@ public class MMIARegimeList extends LinearLayout {
         view.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragment().startActivityForResult(SelectProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Paediatrics), MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME);
+                getFragment().startActivityForResult(SelectRegimeProductsActivity.getIntentToMe(view.getContext(), Regimen.RegimeType.Paediatrics), MMIARequisitionFragment.REQUEST_FOR_CUSTOM_REGIME);
             }
         });
         addView(view);

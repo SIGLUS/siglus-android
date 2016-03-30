@@ -40,7 +40,7 @@ import static org.robolectric.Shadows.shadowOf;
 @RunWith(LMISTestRunner.class)
 public class SelectProductsActivityTest {
 
-    private SelectProductsActivity selectProductsActivity;
+    private SelectRegimeProductsActivity selectProductsActivity;
     ProductPresenter presenter;
 
     @Before
@@ -64,8 +64,8 @@ public class SelectProductsActivityTest {
         when(presenter.loadRegimeProducts()).thenReturn(value);
 
         Intent intent = new Intent();
-        intent.putExtra(SelectProductsActivity.PARAM_REGIME_TYPE, Regimen.RegimeType.Adults);
-        selectProductsActivity = Robolectric.buildActivity(SelectProductsActivity.class).withIntent(intent).create().get();
+        intent.putExtra(SelectRegimeProductsActivity.PARAM_REGIME_TYPE, Regimen.RegimeType.Adults);
+        selectProductsActivity = Robolectric.buildActivity(SelectRegimeProductsActivity.class).withIntent(intent).create().get();
     }
 
     @Test

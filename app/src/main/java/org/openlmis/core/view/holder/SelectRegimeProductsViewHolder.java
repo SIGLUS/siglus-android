@@ -12,7 +12,7 @@ import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
 import roboguice.inject.InjectView;
 
 
-public class SelectProductsViewHolder extends BaseViewHolder {
+public class SelectRegimeProductsViewHolder extends BaseViewHolder {
 
     @InjectView(R.id.product_name)
     TextView productName;
@@ -26,7 +26,7 @@ public class SelectProductsViewHolder extends BaseViewHolder {
     @InjectView(R.id.checkbox)
     CheckBox checkBox;
 
-    public SelectProductsViewHolder(View itemView) {
+    public SelectRegimeProductsViewHolder(View itemView) {
         super(itemView);
         taCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override
