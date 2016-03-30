@@ -61,7 +61,9 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
@@ -470,11 +472,20 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldInitRnrFormItemWithoutMovement() throws Exception {
+        rnrFormRepository = spy(rnrFormRepository);
+
+        Product product = new Product();
+        RnRForm form = new RnRForm();
+        RnrFormItem rnrFormItem = new RnrFormItem();
+        rnrFormItem.setInventory(100L);
+        rnrFormItem.setProduct(product);
+        form.setRnrFormItemListWrapper(newArrayList(rnrFormItem));
+        doReturn(newArrayList(form)).when(rnrFormRepository).list(anyString());
+
         StockCard stockCard = new StockCard();
+        product.setId(20);
+        stockCard.setProduct(product);
         when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
-        StockMovementItem stockMovementItem = new StockMovementItem();
-        stockMovementItem.setStockOnHand(100L);
-        when(mockStockRepository.queryLastStockMovementItemBeforeAndEqualDate(any(StockCard.class), any(Date.class))).thenReturn(stockMovementItem);
 
         RnrFormItem rnrFormItemByPeriod = rnrFormRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
 
@@ -486,9 +497,10 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldInitRnrFormItemWithoutMovementAndMovementIsNull() throws Exception {
+        rnrFormRepository = spy(rnrFormRepository);
         StockCard stockCard = new StockCard();
         when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
-        when(mockStockRepository.queryLastStockMovementItemBeforeAndEqualDate(any(StockCard.class), any(Date.class))).thenReturn(null);
+        doReturn(new ArrayList<>()).when(rnrFormRepository).list(anyString());
 
         RnrFormItem rnrFormItemByPeriod = rnrFormRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
 
@@ -566,7 +578,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         form.setStatus(RnRForm.STATUS.AUTHORIZED);
         RnRForm form2 = new RnRForm();
         form2.setProgram(programVIA);
-        form.setStatus(RnRForm.STATUS.AUTHORIZED);
+        form2.setStatus(RnRForm.STATUS.AUTHORIZED);
 
         rnrFormRepository.create(form);
         rnrFormRepository.create(form2);

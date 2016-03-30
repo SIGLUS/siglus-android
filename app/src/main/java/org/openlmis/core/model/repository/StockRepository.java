@@ -26,7 +26,6 @@ import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.table.TableUtils;
 
-import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -158,8 +157,7 @@ public class StockRepository {
     }
 
     public void saveStockItem(final StockMovementItem stockMovementItem) throws LMISException {
-        DateTime movementDate = new DateTime(stockMovementItem.getMovementDate());
-        stockMovementItem.setCreatedTime(new DateTime().withDate(movementDate.getYear(), movementDate.getMonthOfYear(), movementDate.getDayOfMonth()).toDate());
+        stockMovementItem.setCreatedTime(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
         stockItemGenericDao.create(stockMovementItem);
     }
 
@@ -269,25 +267,6 @@ public class StockRepository {
             @Override
             public List<StockMovementItem> operate(Dao<StockMovementItem, String> dao) throws SQLException {
                 return Lists.reverse(dao.queryBuilder().limit(5L).orderBy("movementDate", false).orderBy("createdTime", false).orderBy("id", false).where().eq("stockCard_id", stockCardId).query());
-            }
-        });
-    }
-
-    public StockMovementItem queryLastStockMovementItemBeforeAndEqualDate(final StockCard stockCard, final Date endDate) throws LMISException {
-        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
-            @Override
-            public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                List<StockMovementItem> query = dao.queryBuilder()
-                        .orderBy("movementDate", true)
-                        .orderBy("createdTime", true)
-                        .where()
-                        .eq("stockCard_id", stockCard.getId())
-                        .and().le("createdTime", endDate)
-                        .query();
-                if (query.isEmpty()) {
-                    return null;
-                }
-                return query.get(query.size() - 1);
             }
         });
     }

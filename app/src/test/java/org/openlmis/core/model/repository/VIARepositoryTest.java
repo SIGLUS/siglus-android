@@ -13,18 +13,15 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.robolectric.RuntimeEnvironment;
 
-import java.util.Date;
 import java.util.List;
 
 import roboguice.RoboGuice;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
@@ -62,7 +59,6 @@ public class VIARepositoryTest {
         Product product1 = new ProductBuilder().setIsKit(true).build();
         Product product2 = new ProductBuilder().setIsKit(true).build();
         when(productRepository.listActiveProducts(IsKit.Yes)).thenReturn(newArrayList(product1, product2));
-        when(mockStockRepository.queryLastStockMovementItemBeforeAndEqualDate(any(StockCard.class), any(Date.class))).thenReturn(new StockMovementItem());
 
         List<RnrFormItem> rnrFormItemList = viaRepository.generateRnrFormItems(form);
         assertThat(rnrFormItemList.size(), is(3));

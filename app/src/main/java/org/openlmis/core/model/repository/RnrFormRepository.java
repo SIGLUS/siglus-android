@@ -375,15 +375,23 @@ public class RnrFormRepository {
         rnrFormItem.setAdjustment(0);
         rnrFormItem.setCalculatedOrderQuantity(0L);
 
-        StockMovementItem stockMovementItem = stockRepository.queryLastStockMovementItemBeforeAndEqualDate(stockCard, startDate);
+        long lastRnrInventory = lastRnrInventory(stockCard);
+        rnrFormItem.setInitialAmount(lastRnrInventory);
+        rnrFormItem.setInventory(lastRnrInventory);
+    }
 
-        if (stockMovementItem == null) {
-            rnrFormItem.setInitialAmount(0);
-            rnrFormItem.setInventory(0);
-        } else {
-            rnrFormItem.setInitialAmount(stockMovementItem.getStockOnHand());
-            rnrFormItem.setInventory(stockMovementItem.getStockOnHand());
+    private long lastRnrInventory(StockCard stockCard) throws LMISException {
+        List<RnRForm> rnRForms = list(programCode);
+        if (rnRForms.isEmpty()) {
+            return 0;
         }
+        List<RnrFormItem> rnrFormItemListWrapper = rnRForms.get(rnRForms.size() - 1).getRnrFormItemListWrapper();
+        for (RnrFormItem item : rnrFormItemListWrapper) {
+            if (item.getProduct().getId() == stockCard.getProduct().getId()) {
+                return item.getInventory();
+            }
+        }
+        return 0;
     }
 
     private void assignTotalValues(RnrFormItem rnrFormItem, List<StockMovementItem> stockMovementItems) {
