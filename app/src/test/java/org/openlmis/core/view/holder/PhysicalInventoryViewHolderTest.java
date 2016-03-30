@@ -75,7 +75,7 @@ public class PhysicalInventoryViewHolderTest {
     @Test
     public void shouldShowErrorWhenStockCardViewModelIsInvalid() {
         InventoryViewModel viewModel = new StockCardViewModelBuilder(product)
-                .setQuantity("invalid10")
+                .setQuantity("")
                 .setChecked(true)
                 .setValid(false)
                 .setType("Embalagem")
