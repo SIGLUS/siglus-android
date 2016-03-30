@@ -8,4 +8,5 @@
     <bool name="feature_custom_regimen">true</bool>
     <bool name="feature_via_multiple_programs">true</bool>
     <bool name="feature_enable_secure_ssl">true</bool>
+    <bool name="feature_create_emergency_rnr">false</bool>
 </resources>

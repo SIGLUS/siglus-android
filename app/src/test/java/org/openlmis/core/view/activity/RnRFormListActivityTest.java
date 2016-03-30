@@ -3,6 +3,8 @@ package org.openlmis.core.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.inject.AbstractModule;
 
@@ -11,6 +13,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Period;
@@ -31,6 +34,7 @@ import rx.Observable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -38,6 +42,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
 public class RnRFormListActivityTest {
@@ -232,6 +237,30 @@ public class RnRFormListActivityTest {
         rnRFormListActivity.onActivityResult(Constants.REQUEST_FROM_RNR_LIST_PAGE, Activity.RESULT_OK, new Intent());
 
         verify(mockedPresenter, times(2)).loadRnRFormList();
+    }
+
+    @Test
+    public void shouldOnlyShowCreateEmergencyRnRButtonInVIAPage() {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_create_emergency_rnr, true);
+
+        Intent intent = new Intent();
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.VIA_PROGRAM_CODE);
+        rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).withIntent(intent).create().visible().get();
+
+        MenuItem createEmergencyRnr = shadowOf(rnRFormListActivity).getOptionsMenu().findItem(R.id.action_create_emergency_rnr);
+        assertTrue(createEmergencyRnr.isVisible());
+    }
+
+    @Test
+    public void shouldHideCreateEmergencyRnRButtonInMMIAPage() {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_create_emergency_rnr, true);
+
+        Intent intent = new Intent();
+        intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.MMIA_PROGRAM_CODE);
+        rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).withIntent(intent).create().visible().get();
+
+        MenuItem createEmergencyRnr = shadowOf(rnRFormListActivity).getOptionsMenu().findItem(R.id.action_create_emergency_rnr);
+        assertFalse(createEmergencyRnr.isVisible());
     }
 
     private RnRFormViewModel generateRnRFormViewModel(String programCode, int viewModelType) {

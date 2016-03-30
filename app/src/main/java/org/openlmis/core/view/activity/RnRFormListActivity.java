@@ -26,7 +26,9 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
@@ -83,7 +85,8 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         super.onCreate(savedInstanceState);
 
         programCode = getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE);
-        setTitle(Constants.MMIA_PROGRAM_CODE.equals(programCode) ? R.string.mmia_list : R.string.requisition_list);
+
+        setTitle(isMMIA() ? R.string.mmia_list : R.string.requisition_list);
 
         presenter.setProgramCode(programCode);
 
@@ -100,11 +103,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
 
     @Override
     protected int getThemeRes() {
-        if (Constants.MMIA_PROGRAM_CODE.equals(programCode)) {
-            return R.style.AppTheme_AMBER;
-        } else {
-            return R.style.AppTheme_PURPLE;
-        }
+        return isMMIA() ? R.style.AppTheme_AMBER : R.style.AppTheme_PURPLE;
     }
 
     @Override
@@ -173,19 +172,18 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     };
 
     private void goToRequisitionPage(long rnrFormId) {
-        if (Constants.MMIA_PROGRAM_CODE.equals(programCode)) {
-            startActivityForResult(MMIARequisitionActivity.getIntentToMe(this, rnrFormId), Constants.REQUEST_FROM_RNR_LIST_PAGE);
-        } else if (Constants.VIA_PROGRAM_CODE.equals(programCode)) {
-            startActivityForResult(VIARequisitionActivity.getIntentToMe(this, rnrFormId), Constants.REQUEST_FROM_RNR_LIST_PAGE);
-        }
+        Intent intent = isMMIA() ? MMIARequisitionActivity.getIntentToMe(this, rnrFormId) : VIARequisitionActivity.getIntentToMe(this, rnrFormId);
+        startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
+    }
+
+    private boolean isMMIA() {
+        return Constants.MMIA_PROGRAM_CODE.equals(programCode);
     }
 
     private void createRequisition(Date periodEndDate, boolean isMissedPeriod) {
-        if (Constants.MMIA_PROGRAM_CODE.equals(programCode)) {
-            startActivityForResult(MMIARequisitionActivity.getIntentToMe(this, periodEndDate), Constants.REQUEST_FROM_RNR_LIST_PAGE);
-        } else if (Constants.VIA_PROGRAM_CODE.equals(programCode)) {
-            startActivityForResult(VIARequisitionActivity.getIntentToMe(this, periodEndDate, isMissedPeriod), Constants.REQUEST_FROM_RNR_LIST_PAGE);
-        }
+        Intent intent = isMMIA() ? MMIARequisitionActivity.getIntentToMe(this, periodEndDate)
+                : VIARequisitionActivity.getIntentToMe(this, periodEndDate, isMissedPeriod);
+        startActivityForResult(intent, Constants.REQUEST_FROM_RNR_LIST_PAGE);
     }
 
     private void deleteRnRForm(RnRForm form) {
@@ -240,4 +238,21 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         super.onDestroy();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_rnr_list, menu);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_create_emergency_rnr)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean isPrepare = super.onPrepareOptionsMenu(menu);
+        menu.findItem(R.id.action_create_emergency_rnr).setVisible(!isMMIA());
+        return isPrepare;
+    }
 }

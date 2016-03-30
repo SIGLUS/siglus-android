@@ -9,4 +9,5 @@
     <bool name="feature_wipe_data_and_resync">true</bool>
     <bool name="feature_via_multiple_programs">true</bool>
     <bool name="feature_custom_regimen">true</bool>
+    <bool name="feature_create_emergency_rnr">true</bool>
 </resources>
