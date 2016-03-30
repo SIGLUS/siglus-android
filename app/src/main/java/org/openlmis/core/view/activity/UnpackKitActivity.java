@@ -41,8 +41,6 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
 
     protected UnpackKitAdapter mAdapter;
 
-    private static final int MAX_UNPACK_QUANTITY = 100;
-
     @Override
     protected int getThemeRes() {
         return R.style.AppTheme_TEAL;
@@ -58,7 +56,7 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        final int kitNum = Math.min(intent.getIntExtra(Constants.PARAM_KIT_NUM, 0), MAX_UNPACK_QUANTITY);
+        final int kitNum = intent.getIntExtra(Constants.PARAM_KIT_NUM, 0);
         String kitName = intent.getStringExtra(Constants.PARAM_KIT_NAME);
 
         tvTotalKit.setText(getString(R.string.kit_number, kitNum, kitName));

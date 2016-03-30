@@ -32,6 +32,8 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
 
     private UnpackNumAdapter adapter;
 
+    private static final int MAX_UNPACK_QUANTITY = 100;
+
     private static final String PARAM_KIT_SOH = "param_kit_soh";
 
     @Override
@@ -51,7 +53,7 @@ public class SelectUnpackKitNumActivity extends BaseActivity {
         tvLabel.setText(getString(R.string.label_select_unpack_num, kitName));
 
         final String productCode = intent.getStringExtra(Constants.PARAM_KIT_CODE);
-        long kitSOH = intent.getLongExtra(PARAM_KIT_SOH, 0L);
+        long kitSOH = Math.min(intent.getLongExtra(PARAM_KIT_SOH, 0L), MAX_UNPACK_QUANTITY);
         adapter = new UnpackNumAdapter(this, kitSOH, kitName);
         gridView.setAdapter(adapter);
 
