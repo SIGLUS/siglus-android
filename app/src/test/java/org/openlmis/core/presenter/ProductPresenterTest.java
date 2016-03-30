@@ -7,7 +7,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.model.RegimeProduct;
+import org.openlmis.core.model.Product;
+import org.openlmis.core.model.RegimeShortCode;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
@@ -57,9 +58,15 @@ public class ProductPresenterTest {
     }
 
     @Test
-    public void shouldLoadMMIAProducts() throws Exception {
+    public void shouldLoadRegimeProducts() throws Exception {
         // when
-
+        RegimeShortCode regimeShortCode = new RegimeShortCode();
+        regimeShortCode.setCode("code");
+        regimeShortCode.setShortCode("3TC 150mg");
+        when(regimenRepository.listRegimeShortCode()).thenReturn(newArrayList(regimeShortCode));
+        Product product = new Product();
+        product.setPrimaryName("PrimaryName");
+        when(productRepository.getByCode("code")).thenReturn(product);
         TestSubscriber<List<RegimeProductViewModel>> subscriber = new TestSubscriber<>();
         presenter.loadRegimeProducts().subscribe(subscriber);
 
@@ -67,9 +74,9 @@ public class ProductPresenterTest {
 
         subscriber.assertNoErrors();
 
-        assertThat(subscriber.getOnNextEvents().get(0).size(), is(20));
+        assertThat(subscriber.getOnNextEvents().get(0).size(), is(1));
         assertThat(subscriber.getOnNextEvents().get(0).get(0).getShortCode(), is("3TC 150mg"));
-        assertThat(subscriber.getOnNextEvents().get(0).get(19).getShortCode(), is("AZT 50mg/5ml sol oral"));
+        assertThat(subscriber.getOnNextEvents().get(0).get(0).getEntireName(), is("PrimaryName"));
     }
 
     @Test
@@ -107,7 +114,6 @@ public class ProductPresenterTest {
     }
 
     private ArrayList<RegimeProductViewModel> getInventoryViewModels() {
-        RegimeProduct regimeProduct = new RegimeProduct("3TC 150mg", "Lamivudina 150mg");
-        return newArrayList(new RegimeProductViewModel(regimeProduct), new RegimeProductViewModel(regimeProduct));
+        return newArrayList(new RegimeProductViewModel("3TC 150mg", "Lamivudina 150mg"), new RegimeProductViewModel("3TC 150mg", "Lamivudina 150mg"));
     }
 }

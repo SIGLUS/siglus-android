@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.model.RegimeShortCode;
 import org.openlmis.core.model.Regimen;
 import org.robolectric.RuntimeEnvironment;
 
@@ -50,5 +51,13 @@ public class RegimenRepositoryTest {
 
         List<Regimen> regimens = repository.listDefaultRegime();
         assertThat(regimens.size(), is(19));
+    }
+
+    @Test
+    public void shouldListRegimeShortCode() throws Exception {
+        List<RegimeShortCode> regimeShortCodes = repository.listRegimeShortCode();
+        assertThat(regimeShortCodes.size(), is(20));
+        assertThat(regimeShortCodes.get(0).getShortCode(), is("3TC 150mg"));
+        assertThat(regimeShortCodes.get(19).getCode(), is("08S17"));
     }
 }

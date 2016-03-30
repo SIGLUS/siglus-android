@@ -4,15 +4,13 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
-import org.openlmis.core.model.RegimeProduct;
+import org.openlmis.core.model.RegimeShortCode;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RegimenRepository;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
-import org.roboguice.shaded.goole.common.base.Function;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +20,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
-import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class ProductPresenter extends Presenter {
 
@@ -43,15 +39,14 @@ public class ProductPresenter extends Presenter {
     public Observable<List<RegimeProductViewModel>> loadRegimeProducts() {
         return Observable.create(new Observable.OnSubscribe<List<RegimeProductViewModel>>() {
             @Override
-            public void call(Subscriber<? super List<RegimeProductViewModel>> subscriber) {
+            public void call(final Subscriber<? super List<RegimeProductViewModel>> subscriber) {
                 try {
-                    List<RegimeProduct> products = Constants.getRegimeProducts();
-                    List<RegimeProductViewModel> regimeProductViewModels = from(products).transform(new Function<RegimeProduct, RegimeProductViewModel>() {
-                        @Override
-                        public RegimeProductViewModel apply(RegimeProduct product) {
-                            return new RegimeProductViewModel(product);
-                        }
-                    }).toList();
+                    List<RegimeShortCode> regimeShortCodes = regimenRepository.listRegimeShortCode();
+                    List<RegimeProductViewModel> regimeProductViewModels = new ArrayList<>();
+                    for (RegimeShortCode item : regimeShortCodes) {
+                        RegimeProductViewModel regimeProductViewModel = new RegimeProductViewModel(item.getShortCode(), productRepository.getByCode(item.getCode()).getPrimaryName());
+                        regimeProductViewModels.add(regimeProductViewModel);
+                    }
                     subscriber.onNext(regimeProductViewModels);
                     subscriber.onCompleted();
                 } catch (LMISException e) {

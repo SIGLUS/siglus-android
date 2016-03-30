@@ -19,12 +19,6 @@
 package org.openlmis.core.utils;
 
 import org.openlmis.core.LMISApp;
-import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.RegimeProduct;
-
-import java.util.ArrayList;
-
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public final class Constants {
 
@@ -63,29 +57,5 @@ public final class Constants {
 
     private Constants() {
 
-    }
-
-    public static ArrayList<RegimeProduct> getRegimeProducts() throws LMISException {
-        return newArrayList(
-                new RegimeProduct("3TC 150mg", "Lamivudina 150mg"),
-                new RegimeProduct("AZT 300 mg", "zidovudina 300mg"),
-                new RegimeProduct("NVP 200 mg", "Nevirapina 200mg"),
-                new RegimeProduct("TDF 300mg+3TC 300mg", "Tenofovir 300mg+Lamivudina 300mg"),
-                new RegimeProduct("TDF 300 mg", "Tenofovir 300mg"),
-                new RegimeProduct("EFV 600 mg", "Efavirenze 600mg"),
-                new RegimeProduct("Lpv/r 200/50mg", "Lopinavir/Ritonavir 200/50 mg"),
-                new RegimeProduct("ABC 300mg", "Abacavir 300mg"),
-                new RegimeProduct("D4T 30mg", "Stavudina 30mg"),
-                new RegimeProduct("3TC 30mg+D4T 6mg", "Lamivudina 30mg+Stavudina 6mg"),
-                new RegimeProduct("3TC 30mg+AZT 60mg", "Lamivudina 30mg+Zidovudina 60mg"),
-                new RegimeProduct("NVP 50mg", "Nevirapina 50mg"),
-                new RegimeProduct("Lpv/r 100/25mg", "Lopinavir/Ritonavir 100/25mg"),
-                new RegimeProduct("Lpv/r 80/20mL Solucao oral", "Lopinavir/Ritonavir 80/20mL Solucao oral"),
-                new RegimeProduct("EFV 200mg", "Efavirenze 200mg"),
-                new RegimeProduct("EFV 50mg", "Efavirenze 50mg"),
-                new RegimeProduct("ABC60mg", "Abacavir 60mg"),
-                new RegimeProduct("ABC 60mg+3TC 30mg", "Abacavir 60mg/Lamivudina 30mg"),
-                new RegimeProduct("NVP 50mg/5ml sol oral", "Nevirapina 50mg/5ml sol oral"),
-                new RegimeProduct("AZT 50mg/5ml sol oral", "zidovudina 50mg/5ml sol oral"));
     }
 }

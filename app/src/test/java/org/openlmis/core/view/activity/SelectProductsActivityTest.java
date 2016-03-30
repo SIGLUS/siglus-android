@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.model.RegimeProduct;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.presenter.ProductPresenter;
 import org.openlmis.core.utils.Constants;
@@ -120,7 +119,6 @@ public class SelectProductsActivityTest {
     }
 
     private ArrayList<RegimeProductViewModel> getInventoryViewModels() {
-        RegimeProduct product = new RegimeProduct("3TC 150mg", "Lamivudina 150mg");
-        return newArrayList(new RegimeProductViewModel(product), new RegimeProductViewModel(product), new RegimeProductViewModel(product), new RegimeProductViewModel(product), new RegimeProductViewModel(product), new RegimeProductViewModel(product));
+        return newArrayList(new RegimeProductViewModel("3TC 150mg", "Lamivudina 150mg"), new RegimeProductViewModel("3TC 150mg", "Lamivudina 150mg"), new RegimeProductViewModel("3TC 150mg", "Lamivudina 150mg"), new RegimeProductViewModel("3TC 150mg", "Lamivudina 150mg"), new RegimeProductViewModel("3TC 150mg", "Lamivudina 150mg"), new RegimeProductViewModel("3TC 150mg", "Lamivudina 150mg"));
     }
 }

@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.RegimeShortCode;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
@@ -65,6 +66,15 @@ public class RegimenRepository {
                         .where()
                         .eq("isCustom", false)
                         .query();
+            }
+        });
+    }
+
+    public List<RegimeShortCode> listRegimeShortCode() throws LMISException {
+        return dbUtil.withDao(RegimeShortCode.class, new DbUtil.Operation<RegimeShortCode, List<RegimeShortCode>>() {
+            @Override
+            public List<RegimeShortCode> operate(Dao<RegimeShortCode, String> dao) throws SQLException {
+                return dao.queryBuilder().query();
             }
         });
     }
