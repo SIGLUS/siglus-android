@@ -25,9 +25,7 @@ import com.google.inject.AbstractModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.BaseInfoItem;
@@ -203,7 +201,6 @@ public class RnrFormAdapterTest {
 
     @Test
     public void shouldDeserializeRnrFormJson() throws LMISException {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_period_date, true);
         when(mockProductRepository.getByCode(anyString())).thenReturn(new Product());
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(new Program());
 
@@ -232,20 +229,6 @@ public class RnrFormAdapterTest {
 
         assertThat(rnRForm.getPeriodBegin(), is(new Date(1455937080000L)));
         assertThat(rnRForm.getPeriodEnd(), is(new Date(1465937080000L)));
-    }
-
-
-    @Test
-    public void shouldDeserializeRnrFormJsonWhenToggleOff() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_period_date, false);
-        when(mockProductRepository.getByCode(anyString())).thenReturn(new Product());
-        when(mockProgramRepository.queryByCode(anyString())).thenReturn(new Program());
-
-        String json = JsonFileReader.readJson(getClass(), "RequisitionResponse.json");
-
-        RnRForm rnRForm = rnrFormAdapter.deserialize(new JsonParser().parse(json), null, null);
-        assertThat(rnRForm.getPeriodBegin(), is(new Date(1388527200000L)));
-        assertThat(rnRForm.getPeriodEnd(), is(DateUtil.parseString("2014-1-20", "yyyy-MM-dd")));
     }
 
 
