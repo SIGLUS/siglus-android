@@ -155,10 +155,8 @@ public class UnpackKitPresenter extends Presenter {
 
         kitStockCard.setStockOnHand(kitStockCard.getStockOnHand() - kitUnpackQuantity);
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_remove_expiry_date_when_soh_is_0_393)) {
-            if (0 == kitStockCard.getStockOnHand()) {
-                kitStockCard.setExpireDates("");
-            }
+        if (0 == kitStockCard.getStockOnHand()) {
+            kitStockCard.setExpireDates("");
         }
 
         StockMovementItem kitMovementItem = new StockMovementItem(kitStockCard);

@@ -54,9 +54,7 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
 
         expireDateViewGroup.initExpireDateViewGroup(inventoryViewModel, false);
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_remove_expiry_date_when_soh_is_0_393)) {
-            expireDateViewGroup.hideAddExpiryDate(shouldHideExpiryDate(inventoryViewModel));
-        }
+        expireDateViewGroup.hideAddExpiryDate(shouldHideExpiryDate(inventoryViewModel));
 
         if (inventoryViewModel.isValid()) {
             lyQuantity.setErrorEnabled(false);
@@ -89,9 +87,7 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
             String quantity = editable.toString();
             afterQuantityChanged(viewModel, quantity);
 
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_remove_expiry_date_when_soh_is_0_393)) {
-                expireDateViewGroup.hideAddExpiryDate(shouldHideExpiryDate(viewModel));
-            }
+            expireDateViewGroup.hideAddExpiryDate(shouldHideExpiryDate(viewModel));
         }
 
     }

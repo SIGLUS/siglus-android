@@ -199,24 +199,22 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     public void updateExpiryDateViewGroup() {
         StockCard stockCard = presenter.getStockCard();
         expireDateViewGroup.initExpireDateViewGroup(new InventoryViewModel(stockCard), true);
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_remove_expiry_date_when_soh_is_0_393)) {
-            expireDateViewGroup.setVisibility(stockCard.getStockOnHand() == 0 ? View.INVISIBLE : View.VISIBLE);
+        expireDateViewGroup.setVisibility(stockCard.getStockOnHand() == 0 ? View.INVISIBLE : View.VISIBLE);
+    }
+
+    protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
+        @Override
+        public void onCancel() {
         }
-    }
 
-protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
-    @Override
-    public void onCancel() {
-    }
-
-    @Override
-    public void onSign(String sign) {
-        StockMovementViewModel stockMovementViewModel = stockMovementAdapter.getEditableStockMovement();
-        stockMovementViewModel.setSignature(sign);
-        presenter.saveAndRefresh(stockMovementViewModel);
-        LMISApp.getInstance().trackEvent(TrackerCategories.StockMovement, TrackerActions.SelectApprove);
-    }
-};
+        @Override
+        public void onSign(String sign) {
+            StockMovementViewModel stockMovementViewModel = stockMovementAdapter.getEditableStockMovement();
+            stockMovementViewModel.setSignature(sign);
+            presenter.saveAndRefresh(stockMovementViewModel);
+            LMISApp.getInstance().trackEvent(TrackerCategories.StockMovement, TrackerActions.SelectApprove);
+        }
+    };
 
     public void deactivatedStockDraft() {
         StockMovementViewHolder viewHolder = (StockMovementViewHolder) stockMovementList.getChildAt(stockMovementList.getChildCount() - 1).getTag();

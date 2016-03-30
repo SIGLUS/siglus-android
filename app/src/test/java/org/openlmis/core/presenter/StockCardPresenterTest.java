@@ -5,9 +5,7 @@ import com.google.inject.AbstractModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Product.IsKit;
@@ -154,8 +152,6 @@ public class StockCardPresenterTest {
 
     @Test
     public void shouldUpdateStockCardExpiryDateAndProduct() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, true);
-
         StockCard stockCard = stockCard(false, true, false, 0);
         stockCard.setExpireDates("01/01/2016");
 
@@ -164,21 +160,6 @@ public class StockCardPresenterTest {
         verify(stockRepository).updateStockCardWithProduct(stockCard);
         verify(stockRepository, never()).updateProductOfStockCard(stockCard.getProduct());
         assertThat(stockCard.getExpireDates()).isEqualTo("");
-        assertFalse(stockCard.getProduct().isArchived());
-    }
-
-    @Test
-    public void shouldNotUpdateStockCardExpiryDateAndProductWhenToggleOff() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, false);
-
-        StockCard stockCard = stockCard(false, true, false, 0);
-        stockCard.setExpireDates("01/01/2016");
-
-        presenter.archiveBackStockCard(stockCard);
-
-        verify(stockRepository, never()).updateStockCardWithProduct(stockCard);
-        verify(stockRepository).updateProductOfStockCard(stockCard.getProduct());
-        assertThat(stockCard.getExpireDates()).isEqualTo("01/01/2016");
         assertFalse(stockCard.getProduct().isArchived());
     }
 

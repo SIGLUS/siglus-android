@@ -11,7 +11,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -135,8 +134,6 @@ public class StockMovementActivityTest {
 
     @Test
     public void shouldHideExpiryDateWhenStockCardSOHIsZero() {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, true);
-
         stockCard.setStockOnHand(0);
 
         stockMovementActivity.updateExpiryDateViewGroup();

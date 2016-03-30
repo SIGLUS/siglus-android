@@ -7,7 +7,6 @@ import android.widget.TextView;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
@@ -19,9 +18,7 @@ import org.openlmis.core.view.widget.ExpireDateViewGroup;
 import org.robolectric.RuntimeEnvironment;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LMISTestRunner.class)
@@ -67,23 +64,12 @@ public class PhysicalInventoryViewHolderTest {
 
     @Test
     public void shouldHideAddExpiryDateWhenSohIsZero() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, true);
         viewModel.setStockOnHand(0);
         viewModel.setQuantity("");
 
         viewHolder.populate(viewModel, queryKeyWord);
 
         verify(mockedExpireDateView).hideAddExpiryDate(true);
-    }
-
-    @Test
-    public void shouldNotHideAddExpiryDateWhenSohIsZeroAndToggleOff() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, false);
-        viewModel.setStockOnHand(0);
-
-        viewHolder.populate(viewModel, queryKeyWord);
-
-        verify(mockedExpireDateView, never()).hideAddExpiryDate(anyBoolean());
     }
 
     @Test
@@ -114,8 +100,6 @@ public class PhysicalInventoryViewHolderTest {
 
     @Test
     public void shouldHideAddExpiryDateWhenUserEnterZeroQuantity() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, true);
-
         viewHolder.populate(viewModel, queryKeyWord);
 
         viewHolder.etQuantity.setText("0");
@@ -125,22 +109,9 @@ public class PhysicalInventoryViewHolderTest {
 
     @Test
     public void shouldNotHideAddExpiryDateWhenUserNotEnterQuantity() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, true);
-
         viewModel.setQuantity("");
         viewHolder.populate(viewModel, queryKeyWord);
 
         verify(mockedExpireDateView).hideAddExpiryDate(false);
-    }
-
-    @Test
-    public void shouldNotHideAddExpiryDateWhenUserEnterZeroQuantityWhenToggleOff() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, false);
-
-        viewHolder.populate(viewModel, queryKeyWord);
-
-        viewHolder.etQuantity.setText("0");
-
-        verify(mockedExpireDateView, never()).hideAddExpiryDate(anyBoolean());
     }
 }

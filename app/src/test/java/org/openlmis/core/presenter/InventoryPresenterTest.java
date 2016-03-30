@@ -239,23 +239,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldNotClearExpiryDateWhenSohIsZeroAndToggleOff() throws LMISException {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, false);
-        stockCard.setExpireDates("01/01/2016");
-        product.setArchived(true);
-
-        InventoryViewModel model = new StockCardViewModelBuilder(stockCard).setChecked(true)
-                .setQuantity("0").build();
-
-        inventoryPresenter.initStockCards(newArrayList(model));
-
-        assertThat(model.getStockCard().getExpireDates(), is("01/01/2016"));
-
-    }
-
-    @Test
     public void shouldClearExpiryDateWhenSohIsZeroAndIsArchivedDrug() throws LMISException {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, true);
         stockCard.setExpireDates("01/01/2016");
         product.setArchived(true);
 
@@ -270,7 +254,6 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldNotClearExpiryDateWhenSohIsNotZeroAndIsArchivedDrug() throws LMISException {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, true);
         stockCard.setExpireDates("01/01/2016");
         product.setArchived(true);
 
@@ -285,8 +268,6 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldClearExpiryDateWhenSohIsZeroAndIsNewDrug() throws LMISException {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, true);
-
         InventoryViewModel model = new StockCardViewModelBuilder(product).setChecked(true)
                 .setQuantity("0").setExpiryDates(newArrayList("01/01/2016")).build();
 
@@ -299,8 +280,6 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldNotClearExpiryDateWhenSohIsNotZeroAndIsNewDrug() throws LMISException {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, true);
-
         InventoryViewModel model = new StockCardViewModelBuilder(product).setChecked(true)
                 .setQuantity("10").setExpiryDates(newArrayList("01/01/2016")).build();
 
@@ -498,8 +477,6 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldClearExpiryDatesWhenSaveStockCardWithEmptySOH() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, true);
-
         List<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
         InventoryViewModel firstStockCardViewModel = inventoryViewModels.get(0);
         firstStockCardViewModel.setExpiryDates(Arrays.asList("01/01/2016", "02/01/2016"));
@@ -512,24 +489,6 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         subscriber.awaitTerminalEvent();
 
         assertThat(firstStockCardViewModel.getStockCard().getExpireDates(), is(""));
-    }
-
-    @Test
-    public void shouldNotClearExpiryDatesWhenSaveStockCardWithEmptySOHWhenToggleOff() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_remove_expiry_date_when_soh_is_0_393, false);
-
-        List<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
-        InventoryViewModel firstStockCardViewModel = inventoryViewModels.get(0);
-        firstStockCardViewModel.setExpiryDates(Arrays.asList("01/01/2016", "02/01/2016"));
-        firstStockCardViewModel.setQuantity("0");
-
-        TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
-        Observable observable = inventoryPresenter.stockMovementObservable(inventoryViewModels);
-        observable.subscribe(subscriber);
-
-        subscriber.awaitTerminalEvent();
-
-        assertThat(firstStockCardViewModel.getStockCard().getExpireDates(), is("01/01/2016,02/01/2016"));
     }
 
     public class MyTestModule extends AbstractModule {

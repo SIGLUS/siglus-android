@@ -217,14 +217,10 @@ public class InventoryPresenter extends Presenter {
             StockCard stockCard = isArchivedStockCard ? model.getStockCard() : new StockCard();
             stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
 
-            if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_remove_expiry_date_when_soh_is_0_393)) {
-                if(stockCard.getStockOnHand() != 0) {
-                    stockCard.setExpireDates(DateUtil.formatExpiryDateString(model.getExpiryDates()));
-                } else {
-                    stockCard.setExpireDates("");
-                }
-            } else {
+            if (stockCard.getStockOnHand() != 0) {
                 stockCard.setExpireDates(DateUtil.formatExpiryDateString(model.getExpiryDates()));
+            } else {
+                stockCard.setExpireDates("");
             }
 
             if (isArchivedStockCard) {
@@ -315,11 +311,10 @@ public class InventoryPresenter extends Presenter {
                         StockCard stockCard = model.getStockCard();
                         stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
 
-                        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_remove_expiry_date_when_soh_is_0_393) && stockCard.getStockOnHand() == 0) {
+                        if (stockCard.getStockOnHand() == 0) {
                             stockCard.setExpireDates("");
-                        } else {
-                            stockCard.setExpireDates(DateUtil.formatExpiryDateString(model.getExpiryDates()));
                         }
+
                         stockRepository.addStockMovementAndUpdateStockCard(calculateAdjustment(model, stockCard));
                     }
                     stockRepository.clearDraftInventory();
