@@ -126,12 +126,10 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     }
 
     private void loadRnRFrom() {
-        if (loadingDialog.isShowing()) {
-            return;
+        if (!isLoading) {
+            loading();
+            presenter.loadRnRFormList().subscribe(getRnRFormSubscriber());
         }
-
-        loading();
-        presenter.loadRnRFormList().subscribe(getRnRFormSubscriber());
     }
 
     protected RnRFormItemClickListener rnRFormItemClickListener = new RnRFormItemClickListener() {

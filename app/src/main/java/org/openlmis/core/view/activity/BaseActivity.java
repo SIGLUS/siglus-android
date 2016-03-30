@@ -71,6 +71,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
 
     protected Class<? extends Presenter> presenterClass;
     protected ProgressDialog loadingDialog;
+    protected boolean isLoading = false;
 
     private long APP_TIMEOUT;
 
@@ -229,6 +230,8 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
         if (!isFinishing()) {
             loadingDialog.show();
         }
+
+        isLoading = true;
     }
 
     @Override
@@ -237,6 +240,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
             if (loadingDialog != null && !isFinishing()) {
                 loadingDialog.dismiss();
                 loadingDialog = null;
+                isLoading = false;
             }
         } catch (IllegalArgumentException e) {
             Log.d("View", "loaded -> dialog already dismissed");
