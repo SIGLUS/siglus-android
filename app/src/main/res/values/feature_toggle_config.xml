@@ -8,7 +8,7 @@
     <bool name="feature_remove_expiry_date_when_soh_is_0_393">true</bool>
     <bool name="feature_sync_archived_product">true</bool>
     <bool name="feature_wipe_data_and_resync">false</bool>
-    <bool name="feature_custom_regimen">false</bool>
+    <bool name="feature_custom_regimen">true</bool>
     <bool name="feature_via_multiple_programs">true</bool>
     <bool name="feature_enable_secure_ssl">true</bool>
 </resources>
