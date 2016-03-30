@@ -1,11 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_unpack"
-        android:title="@string/menu_item_kit_unpack"
-        android:visible="false"
-        app:showAsAction="ifRoom|withText" />
-    <item
         android:id="@+id/action_history"
         android:icon="@drawable/ic_history_white"
         android:title="@string/menu_item_stock_movement_history"

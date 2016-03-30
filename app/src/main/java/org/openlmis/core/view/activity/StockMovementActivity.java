@@ -101,7 +101,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
     private StockMovementAdapter stockMovementAdapter;
     private boolean isStockCardArchivable;
-    private boolean isStockCardUnpackable;
     private boolean isActivated;
     private boolean isKit;
 
@@ -193,13 +192,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
     @Override
     public void updateUnpackKitMenu(boolean unpackable) {
-        isStockCardUnpackable = unpackable;
-
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_unpack_btn_update_580)) {
-            unpackContainer.setVisibility(unpackable ? View.VISIBLE : View.GONE);
-        } else {
-            invalidateOptionsMenu();
-        }
+        unpackContainer.setVisibility(unpackable ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -211,19 +204,19 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         }
     }
 
-    protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
-        @Override
-        public void onCancel() {
-        }
+protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
+    @Override
+    public void onCancel() {
+    }
 
-        @Override
-        public void onSign(String sign) {
-            StockMovementViewModel stockMovementViewModel = stockMovementAdapter.getEditableStockMovement();
-            stockMovementViewModel.setSignature(sign);
-            presenter.saveAndRefresh(stockMovementViewModel);
-            LMISApp.getInstance().trackEvent(TrackerCategories.StockMovement, TrackerActions.SelectApprove);
-        }
-    };
+    @Override
+    public void onSign(String sign) {
+        StockMovementViewModel stockMovementViewModel = stockMovementAdapter.getEditableStockMovement();
+        stockMovementViewModel.setSignature(sign);
+        presenter.saveAndRefresh(stockMovementViewModel);
+        LMISApp.getInstance().trackEvent(TrackerCategories.StockMovement, TrackerActions.SelectApprove);
+    }
+};
 
     public void deactivatedStockDraft() {
         StockMovementViewHolder viewHolder = (StockMovementViewHolder) stockMovementList.getChildAt(stockMovementList.getChildCount() - 1).getTag();
@@ -252,13 +245,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         boolean isPrepared = super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.action_archive).setVisible(isStockCardArchivable);
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_unpack_btn_update_580)) {
-            // The unpack action should be directly removed from R.menu.menu_stock_movement when toggle enabled
-            menu.findItem(R.id.action_unpack).setVisible(false);
-        } else {
-            menu.findItem(R.id.action_unpack).setVisible(isStockCardUnpackable);
-        }
-
         return isPrepared;
     }
 
@@ -273,9 +259,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_unpack:
-                unpackKit();
-                return true;
             case R.id.action_history:
                 startActivity(StockMovementHistoryActivity.getIntentToMe(this, stockId, stockName, false, isKit));
                 return true;

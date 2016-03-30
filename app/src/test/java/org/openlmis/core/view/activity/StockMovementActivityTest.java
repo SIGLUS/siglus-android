@@ -110,37 +110,7 @@ public class StockMovementActivityTest {
     }
 
     @Test
-    public void shouldGoToSelectKitActivity() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_unpack_btn_update_580, false);
-        shadowOf(stockMovementActivity).clickMenuItem(R.id.action_unpack);
-        Intent startedIntent = ShadowApplication.getInstance().getNextStartedActivity();
-
-        assertThat(startedIntent).isNotNull();
-        assertThat(startedIntent.getComponent().getClassName()).isEqualTo(SelectUnpackKitNumActivity.class.getName());
-        assertThat(startedIntent.getStringExtra(Constants.PARAM_KIT_CODE)).isEqualTo("08S40");
-    }
-
-    @Test
-    public void shouldShowUnpackMenu() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_unpack_btn_update_580, false);
-
-        stockMovementActivity.updateUnpackKitMenu(true);
-
-        assertThat(shadowOf(stockMovementActivity).getOptionsMenu().findItem(R.id.action_unpack).isVisible()).isTrue();
-    }
-
-    @Test
-    public void shouldHideUnpackKitMenu() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_unpack_btn_update_580, false);
-
-        stockMovementActivity.updateUnpackKitMenu(false);
-
-        assertThat(shadowOf(stockMovementActivity).getOptionsMenu().findItem(R.id.action_unpack).isVisible()).isFalse();
-    }
-
-    @Test
     public void shouldGoToSelectKitActivityWhenUnpackKitClicked() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_unpack_btn_update_580, true);
         stockMovementActivity.updateUnpackKitMenu(true);
         stockMovementActivity.btnUnpack.performClick();
 
@@ -153,16 +123,12 @@ public class StockMovementActivityTest {
 
     @Test
     public void shouldShowUnpackContainer() {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_unpack_btn_update_580, true);
-
         stockMovementActivity.updateUnpackKitMenu(false);
         assertThat(stockMovementActivity.unpackContainer.getVisibility()).isEqualTo(View.GONE);
     }
 
     @Test
     public void shouldHideUnpackContainer() {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_unpack_btn_update_580, true);
-
         stockMovementActivity.updateUnpackKitMenu(true);
         assertThat(stockMovementActivity.unpackContainer.getVisibility()).isEqualTo(View.VISIBLE);
     }
