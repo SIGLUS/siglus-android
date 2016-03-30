@@ -9,13 +9,11 @@ import android.view.View;
 
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
-import org.openlmis.core.model.Regimen;
 import org.openlmis.core.presenter.ProductPresenter;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.adapter.SelectRegimeProductAdapter;
-import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
+import org.openlmis.core.view.adapter.SelectEmergencyProductAdapter;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.ArrayList;
@@ -29,9 +27,7 @@ import rx.Subscription;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 @ContentView(R.layout.activity_select_drugs)
-public class SelectRegimeProductsActivity extends BaseActivity {
-
-    public static final String PARAM_REGIME_TYPE = "regime_type";
+public class SelectEmergencyProductsActivity extends BaseActivity {
 
     @InjectView(R.id.btn_next)
     public View btnNext;
@@ -39,52 +35,47 @@ public class SelectRegimeProductsActivity extends BaseActivity {
     @InjectView(R.id.products_list)
     public RecyclerView productListRecycleView;
 
-    protected SelectRegimeProductAdapter mAdapter;
-
     @InjectPresenter(ProductPresenter.class)
     ProductPresenter presenter;
-    protected List<RegimeProductViewModel> viewModels;
-    private final int MAX_CHECKED_LIMIT = 5;
+
+    protected List<InventoryViewModel> viewModels;
+
+    protected SelectEmergencyProductAdapter mAdapter;
+
+    private final int MAX_CHECKED_LIMIT = 20;
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.SelectRegimeProductScreen;
+        return ScreenName.SelectEmergencyProductsScreen;
     }
 
     @Override
     protected int getThemeRes() {
-        return R.style.AppTheme_AMBER;
-    }
-
-    public static Intent getIntentToMe(Context context, Regimen.RegimeType type) {
-        Intent intent = new Intent(context, SelectRegimeProductsActivity.class);
-        intent.putExtra(PARAM_REGIME_TYPE, type);
-        return intent;
+        return R.style.AppTheme_PURPLE;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final Regimen.RegimeType regimeType = (Regimen.RegimeType) getIntent().getSerializableExtra(PARAM_REGIME_TYPE);
 
         productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
         viewModels = new ArrayList<>();
-        mAdapter = new SelectRegimeProductAdapter(viewModels);
+        mAdapter = new SelectEmergencyProductAdapter(viewModels);
         productListRecycleView.setAdapter(mAdapter);
         loading();
-        Subscription subscription = presenter.loadRegimeProducts().subscribe(subscriber);
+        Subscription subscription = presenter.loadEmergencyProducts().subscribe(subscriber);
         subscriptions.add(subscription);
 
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validateAndSaveRegime(regimeType);
+                validate();
             }
         });
     }
 
-    private void validateAndSaveRegime(Regimen.RegimeType regimeType) {
-        List<RegimeProductViewModel> checkedViewModels = getCheckedProducts();
+    private void validate() {
+        List<InventoryViewModel> checkedViewModels = getCheckedProducts();
         if (checkedViewModels.isEmpty()) {
             ToastUtil.show(R.string.hint_no_product_has_checked);
             return;
@@ -94,21 +85,18 @@ public class SelectRegimeProductsActivity extends BaseActivity {
             ToastUtil.show(getString(R.string.hint_more_than_limit_product_has_checked, MAX_CHECKED_LIMIT));
             return;
         }
-        loading();
-        Subscription subscription = presenter.saveRegimes(checkedViewModels, regimeType).subscribe(saveSubscriber);
-        subscriptions.add(subscription);
     }
 
-    private List<RegimeProductViewModel> getCheckedProducts() {
-        return from(viewModels).filter(new Predicate<RegimeProductViewModel>() {
+    private List<InventoryViewModel> getCheckedProducts() {
+        return from(viewModels).filter(new Predicate<InventoryViewModel>() {
             @Override
-            public boolean apply(RegimeProductViewModel viewModel) {
+            public boolean apply(InventoryViewModel viewModel) {
                 return viewModel.isChecked();
             }
         }).toList();
     }
 
-    Subscriber<List<RegimeProductViewModel>> subscriber = new Subscriber<List<RegimeProductViewModel>>() {
+    Subscriber<List<InventoryViewModel>> subscriber = new Subscriber<List<InventoryViewModel>>() {
         @Override
         public void onCompleted() {
             loaded();
@@ -122,30 +110,14 @@ public class SelectRegimeProductsActivity extends BaseActivity {
         }
 
         @Override
-        public void onNext(List<RegimeProductViewModel> data) {
+        public void onNext(List<InventoryViewModel> data) {
             viewModels.clear();
             viewModels.addAll(data);
         }
     };
 
-    Subscriber<Regimen> saveSubscriber = new Subscriber<Regimen>() {
-        @Override
-        public void onCompleted() {
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            loaded();
-            ToastUtil.show(e.getMessage());
-        }
-
-        @Override
-        public void onNext(Regimen regimen) {
-            loaded();
-            Intent intent = new Intent();
-            intent.putExtra(Constants.PARAM_CUSTOM_REGIMEN, regimen);
-            setResult(RESULT_OK, intent);
-            finish();
-        }
-    };
+    public static Intent getIntentToMe(Context context) {
+        Intent intent = new Intent(context, SelectEmergencyProductsActivity.class);
+        return intent;
+    }
 }

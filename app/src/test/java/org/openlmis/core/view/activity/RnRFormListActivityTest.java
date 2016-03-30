@@ -3,7 +3,6 @@ package org.openlmis.core.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.inject.AbstractModule;
@@ -24,6 +23,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.fakes.RoboMenuItem;
 import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowToast;
 
@@ -262,6 +262,17 @@ public class RnRFormListActivityTest {
         MenuItem createEmergencyRnr = shadowOf(rnRFormListActivity).getOptionsMenu().findItem(R.id.action_create_emergency_rnr);
         assertFalse(createEmergencyRnr.isVisible());
     }
+
+    @Test
+    public void shouldOpenEmergencyRnrPageWhenEmergencyActionMenuClicked() {
+        rnRFormListActivity.onOptionsItemSelected(new RoboMenuItem(R.id.action_create_emergency_rnr));
+
+        Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
+
+        assertNotNull(nextStartedIntent);
+        assertEquals(nextStartedIntent.getComponent().getClassName(), SelectEmergencyProductsActivity.class.getName());
+    }
+
 
     private RnRFormViewModel generateRnRFormViewModel(String programCode, int viewModelType) {
         return new RnRFormViewModel(new Period(new DateTime()), programCode, viewModelType);

@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -242,11 +243,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu_rnr_list, menu);
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_create_emergency_rnr)) {
-            return true;
-        } else {
-            return false;
-        }
+        return LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_create_emergency_rnr);
     }
 
     @Override
@@ -254,5 +251,16 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         boolean isPrepare = super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.action_create_emergency_rnr).setVisible(!isMMIA());
         return isPrepare;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_create_emergency_rnr:
+                startActivity(SelectEmergencyProductsActivity.getIntentToMe(this));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

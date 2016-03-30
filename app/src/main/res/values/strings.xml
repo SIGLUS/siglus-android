@@ -292,8 +292,8 @@
 
     <!--Select Drugs-->
     <string name="title_select_drugs">Select the drugs that are part of the regime</string>
-    <string name="hint_no_product_has_checked">Please check product for regime</string>
-    <string name="hint_more_than_limit_product_has_checked">the maximum number of regimes is 5</string>
+    <string name="hint_no_product_has_checked">Please check product</string>
+    <string name="hint_more_than_limit_product_has_checked">checked product limit is %1$s</string>
 
     <!-- update notification text-->
     <string name="app_update_suffix"> update</string>
@@ -303,5 +303,8 @@
     <string name="action_wipe_data">Re-sync data from server</string>
     <string name="message_warning_wipe_data">This operation will remove all the data from this device &amp; download previously submitted data back down to the tablet, \n WARNING \n Any un-synced movements or data will be lost. Do you want to continue?</string>
     <string name="message_wipe_no_connection">Network is not available, cannot re-sync</string>
+
+     <!--Select Emergency Products-->
+    <string name="title_select_emergency_products">Select the drugs to add to your emergency requisition</string>
 
 </resources>

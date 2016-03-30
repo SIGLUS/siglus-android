@@ -10,9 +10,14 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RegimeShortCode;
 import org.openlmis.core.model.Regimen;
+import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RegimenRepository;
+import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.utils.Constants;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
 import org.robolectric.RuntimeEnvironment;
 
@@ -39,11 +44,13 @@ public class ProductPresenterTest {
     private ProductRepository productRepository;
     private ProgramRepository programRepository;
     private RegimenRepository regimenRepository;
+    private StockRepository stockRepository;
 
     @Before
     public void setup() throws Exception {
         productRepository = mock(ProductRepository.class);
         programRepository = mock(ProgramRepository.class);
+        stockRepository = mock(StockRepository.class);
         regimenRepository = mock(RegimenRepository.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
@@ -52,6 +59,7 @@ public class ProductPresenterTest {
                 bind(ProductRepository.class).toInstance(productRepository);
                 bind(ProgramRepository.class).toInstance(programRepository);
                 bind(RegimenRepository.class).toInstance(regimenRepository);
+                bind(StockRepository.class).toInstance(stockRepository);
             }
         });
         presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductPresenter.class);
@@ -77,6 +85,23 @@ public class ProductPresenterTest {
         assertThat(subscriber.getOnNextEvents().get(0).size(), is(1));
         assertThat(subscriber.getOnNextEvents().get(0).get(0).getShortCode(), is("3TC 150mg"));
         assertThat(subscriber.getOnNextEvents().get(0).get(0).getEntireName(), is("PrimaryName"));
+    }
+
+    @Test
+    public void loadEmergencyProducts() throws Exception {
+        StockCard stockCard = new StockCard();
+        stockCard.setProduct(new ProductBuilder().setPrimaryName("Product name").setCode("011111").build());
+        when(stockRepository.listActiveStockCardsByProgramCode(Constants.VIA_PROGRAM_CODE)).thenReturn(newArrayList(stockCard));
+
+        TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
+        presenter.loadEmergencyProducts().subscribe(subscriber);
+
+        subscriber.awaitTerminalEvent();
+
+        subscriber.assertNoErrors();
+
+        assertThat(subscriber.getOnNextEvents().get(0).size(), is(1));
+        assertThat(subscriber.getOnNextEvents().get(0).get(0).getProductName(), is("Product name"));
     }
 
     @Test

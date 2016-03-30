@@ -15,7 +15,8 @@ public enum ScreenName {
     SelectPeriodScreen("Select Period Screen"),
     SelectUnpackKitNumberScreen("Select Unpack Kit Number Screen"),
     UnpackKitScreen("Unpack Kit Screen"),
-    SelectRegimeProductScreen("Select Regime Products Screen");
+    SelectRegimeProductScreen("Select Regime Products Screen"),
+    SelectEmergencyProductsScreen("Select Emergency Products Screen");
 
     private final String screenName;
 

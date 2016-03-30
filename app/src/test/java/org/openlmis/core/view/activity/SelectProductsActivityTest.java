@@ -73,7 +73,7 @@ public class SelectProductsActivityTest {
         selectProductsActivity.viewModels = getInventoryViewModels();
         selectProductsActivity.btnNext.performClick();
 
-        assertThat(ShadowToast.getTextOfLatestToast(), is("Please check product for regime"));
+        assertThat(ShadowToast.getTextOfLatestToast(), is("Please check product"));
     }
 
     @Test
@@ -84,7 +84,7 @@ public class SelectProductsActivityTest {
         }
         selectProductsActivity.btnNext.performClick();
 
-        assertThat(ShadowToast.getTextOfLatestToast(), is("the maximum number of regimes is 5"));
+        assertThat(ShadowToast.getTextOfLatestToast(), is("checked product limit is 5"));
     }
 
     @Test

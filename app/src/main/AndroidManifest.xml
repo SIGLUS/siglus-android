@@ -86,6 +86,10 @@
             android:name=".view.activity.SelectRegimeProductsActivity"
             android:screenOrientation="portrait"
             android:label="@string/title_select_drugs" />
+        <activity
+            android:name=".view.activity.SelectEmergencyProductsActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_select_emergency_products" />
 
         <service
             android:name=".service.SyncService"
