@@ -91,7 +91,7 @@ public class ProductPresenterTest {
     public void loadEmergencyProducts() throws Exception {
         StockCard stockCard = new StockCard();
         stockCard.setProduct(new ProductBuilder().setPrimaryName("Product name").setCode("011111").build());
-        when(stockRepository.listActiveStockCardsByProgramCode(Constants.VIA_PROGRAM_CODE)).thenReturn(newArrayList(stockCard));
+        when(stockRepository.listActiveStockCardsWithOutKit(Constants.VIA_PROGRAM_CODE)).thenReturn(newArrayList(stockCard));
 
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
         presenter.loadEmergencyProducts().subscribe(subscriber);

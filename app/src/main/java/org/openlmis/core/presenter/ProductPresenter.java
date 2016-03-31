@@ -106,7 +106,7 @@ public class ProductPresenter extends Presenter {
             @Override
             public void call(final Subscriber<? super List<InventoryViewModel>> subscriber) {
                 try {
-                    ImmutableList<InventoryViewModel> inventoryViewModels = from(stockRepository.listActiveStockCardsByProgramCode(Constants.VIA_PROGRAM_CODE)).transform(new Function<StockCard, InventoryViewModel>() {
+                    ImmutableList<InventoryViewModel> inventoryViewModels = from(stockRepository.listActiveStockCardsWithOutKit(Constants.VIA_PROGRAM_CODE)).transform(new Function<StockCard, InventoryViewModel>() {
                         @Override
                         public InventoryViewModel apply(StockCard stockCard) {
                             return new InventoryViewModel(stockCard.getProduct());

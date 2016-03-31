@@ -263,10 +263,10 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         productRepository.createOrUpdate(product);
 
         //then
-        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listActiveStockCardsByProgramCode("code1");
+        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listActiveStockCardsWithOutKit("code1");
         assertThat(stockCardsBeforeTimeLine.size(), is(1));
 
-        List<StockCard> stockCardsBeforeTimeLine2 = stockRepository.listActiveStockCardsByProgramCode("code2");
+        List<StockCard> stockCardsBeforeTimeLine2 = stockRepository.listActiveStockCardsWithOutKit("code2");
         assertThat(stockCardsBeforeTimeLine2.size(), is(1));
     }
 
@@ -286,10 +286,10 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         productRepository.createOrUpdate(product);
 
         //then
-        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listActiveStockCardsByProgramCode("code1");
+        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listActiveStockCardsWithOutKit("code1");
         assertThat(stockCardsBeforeTimeLine.size(), is(2));
 
-        List<StockCard> stockCardsBeforeTimeLine2 = stockRepository.listActiveStockCardsByProgramCode("code2");
+        List<StockCard> stockCardsBeforeTimeLine2 = stockRepository.listActiveStockCardsWithOutKit("code2");
         assertThat(stockCardsBeforeTimeLine2.size(), is(1));
     }
 

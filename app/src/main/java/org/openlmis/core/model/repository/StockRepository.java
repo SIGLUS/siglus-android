@@ -270,8 +270,7 @@ public class StockRepository {
         return listActiveStockCards(programCode, true);
     }
 
-    //TODO rename
-    public List<StockCard> listActiveStockCardsByProgramCode(final String programCode) throws LMISException {
+    public List<StockCard> listActiveStockCardsWithOutKit(final String programCode) throws LMISException {
         return listActiveStockCards(programCode, false);
     }
 
@@ -477,7 +476,7 @@ public class StockRepository {
     }
 
     public Date queryEarliestStockMovementDateByProgram(final String programCode) throws LMISException {
-        List<StockCard> stockCards = listActiveStockCardsByProgramCode(programCode);
+        List<StockCard> stockCards = listActiveStockCardsWithOutKit(programCode);
         Date earliestDate = null;
 
         for (StockCard stockCard : stockCards) {

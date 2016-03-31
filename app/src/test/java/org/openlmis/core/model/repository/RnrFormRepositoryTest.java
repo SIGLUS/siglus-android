@@ -270,7 +270,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         List<StockCard> stockCardList = new ArrayList<>();
         StockCard stockCard = new StockCard();
         stockCardList.add(stockCard);
-        when(mockStockRepository.listActiveStockCardsByProgramCode(anyString())).thenReturn(stockCardList);
+        when(mockStockRepository.listActiveStockCardsWithOutKit(anyString())).thenReturn(stockCardList);
 
         Date movementDate = DateUtil.parseString("2015-07-21", DateUtil.DB_DATE_FORMAT);
         Date createdTime = DateUtil.parseString("2015-07-21 11:11:13", DateUtil.DATE_TIME_FORMAT);
