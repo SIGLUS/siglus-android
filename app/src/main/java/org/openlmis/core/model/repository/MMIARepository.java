@@ -115,7 +115,10 @@ public class MMIARepository extends RnrFormRepository {
     @Override
     protected List<RnrFormItem> generateRnrFormItems(RnRForm form) throws LMISException {
         List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form);
+        return fillAllMMIAProducts(form, rnrFormItems);
+    }
 
+    private ArrayList<RnrFormItem> fillAllMMIAProducts(RnRForm form, List<RnrFormItem> rnrFormItems) throws LMISException {
         List<Product> products = productRepository.queryProducts(programRepository.queryByCode(Constants.MMIA_PROGRAM_CODE).getId());
         ArrayList<RnrFormItem> result = new ArrayList<>();
 
