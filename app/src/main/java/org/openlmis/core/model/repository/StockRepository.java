@@ -24,6 +24,7 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.table.TableUtils;
 
 import org.openlmis.core.LMISApp;
@@ -237,12 +238,13 @@ public class StockRepository {
         return false;
     }
 
-    public List<StockCard> listActiveStockCardsByProgramCode(final String programCode) throws LMISException {
+    private List<StockCard> listActiveStockCards(final String programCode, final boolean isWithKit) throws LMISException {
         return dbUtil.withDao(StockCard.class, new DbUtil.Operation<StockCard, List<StockCard>>() {
             @Override
             public List<StockCard> operate(Dao<StockCard, String> dao) throws SQLException, LMISException {
                 QueryBuilder<Product, String> productQueryBuilder = DbUtil.initialiseDao(Product.class).queryBuilder();
 
+                Where<Product, String> where = productQueryBuilder.where();
                 if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_via_multiple_programs)) {
                     List<Program> programs = programRepository.queryByProgramCodeOrParentCode(programCode);
                     List<Long> programIds = FluentIterable.from(programs).transform(new Function<Program, Long>() {
@@ -251,15 +253,26 @@ public class StockRepository {
                             return program.getId();
                         }
                     }).toList();
-                    productQueryBuilder.where().in("program_id", programIds).and().eq("isActive", true).and().eq("isKit", false);
+                    where.in("program_id", programIds).and().eq("isActive", true);
                 } else {
                     Program program = programRepository.queryByCode(programCode);
-                    productQueryBuilder.where().eq("program_id", program.getId()).and().eq("isActive", true).and().eq("isKit", false);
+                    where.eq("program_id", program.getId()).and().eq("isActive", true);
                 }
-
+                if (!isWithKit) {
+                    where.and().eq("isKit", false);
+                }
                 return dao.queryBuilder().join(productQueryBuilder).query();
             }
         });
+    }
+
+    public List<StockCard> listActiveStockCardsWithKit(final String programCode) throws LMISException {
+        return listActiveStockCards(programCode, true);
+    }
+
+    //TODO rename
+    public List<StockCard> listActiveStockCardsByProgramCode(final String programCode) throws LMISException {
+        return listActiveStockCards(programCode, false);
     }
 
     public List<StockMovementItem> listLastFive(final long stockCardId) throws LMISException {
@@ -467,7 +480,7 @@ public class StockRepository {
         List<StockCard> stockCards = listActiveStockCardsByProgramCode(programCode);
         Date earliestDate = null;
 
-        for (StockCard stockCard: stockCards) {
+        for (StockCard stockCard : stockCards) {
             Date firstMovementDate = queryFirstStockMovementItem(stockCard).getMovementDate();
             if (earliestDate == null || firstMovementDate.before(earliestDate)) {
                 earliestDate = firstMovementDate;

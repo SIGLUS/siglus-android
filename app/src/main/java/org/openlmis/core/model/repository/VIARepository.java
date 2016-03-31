@@ -22,12 +22,8 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
-import org.openlmis.core.model.Product;
-import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.utils.Constants;
 
 import java.util.ArrayList;
@@ -36,9 +32,6 @@ import java.util.List;
 public class VIARepository extends RnrFormRepository {
 
     public static final String ATTR_CONSULTATION = "consultation";
-
-    @Inject
-    private ProductRepository productRepository;
 
     @Inject
     public VIARepository(Context context) {
@@ -52,28 +45,6 @@ public class VIARepository extends RnrFormRepository {
         List<BaseInfoItem> baseInfoItemList = new ArrayList<>();
         baseInfoItemList.add(newPatients);
         return baseInfoItemList;
-    }
-
-    @Override
-    protected List<RnrFormItem> generateRnrFormItems(final RnRForm form) throws LMISException {
-        List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form);
-        rnrFormItems.addAll(generateKitRnrItems(form));
-        return rnrFormItems;
-    }
-
-    private List<RnrFormItem> generateKitRnrItems(RnRForm form) throws LMISException {
-        List<RnrFormItem> rnrFormItems = new ArrayList<>();
-
-        for (Product product : productRepository.listActiveProducts(IsKit.Yes)) {
-            RnrFormItem rnrFormItem = new RnrFormItem();
-            rnrFormItem.setProduct(product);
-            rnrFormItem.setForm(form);
-            rnrFormItem.setIssued(Long.MIN_VALUE); //placeholder, this should be auto-populated with stock card values when open kit story done
-            rnrFormItem.setReceived(Long.MIN_VALUE);
-            rnrFormItem.setInventory(Long.MIN_VALUE);
-            rnrFormItems.add(rnrFormItem);
-        }
-        return rnrFormItems;
     }
 
 }

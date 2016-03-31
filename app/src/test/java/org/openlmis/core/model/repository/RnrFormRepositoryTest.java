@@ -246,7 +246,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         stockCardList.add(stockCard);
 
-        when(mockStockRepository.listActiveStockCardsByProgramCode(anyString())).thenReturn(stockCardList);
+        when(mockStockRepository.listActiveStockCardsWithKit(anyString())).thenReturn(stockCardList);
         StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setCreatedTime(new Date());
         stockMovementItem.setMovementDate(movementDate);
@@ -359,7 +359,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         form.setPeriodEnd(DateUtil.parseString("10/20/2015", DateUtil.SIMPLE_DATE_FORMAT));
         form.setProgram(new Program("mmia", "mmia", null, null));
 
-        when(mockStockRepository.listActiveStockCardsByProgramCode(anyString())).thenReturn(stockCards);
+        when(mockStockRepository.listActiveStockCardsWithKit(anyString())).thenReturn(stockCards);
         DateTime dateTime = new DateTime();
         dateTime.millisOfDay();
         StockMovementItem stockMovementItem = new StockMovementItem();

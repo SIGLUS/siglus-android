@@ -294,6 +294,29 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
+    public void shouldGetStockCardsWithKit() throws Exception {
+        //when
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_via_multiple_programs, true);
+
+        createNewStockCard("code1", null, ProductBuilder.create().setCode("p1").setIsActive(true).setIsKit(false).build());
+        createNewStockCard("code3", "code1", ProductBuilder.create().setCode("p1").setIsActive(true).setIsKit(false).build());
+        createNewStockCard("code2", null, ProductBuilder.create().setCode("p2").setIsActive(true).setIsKit(false).build());
+        createNewStockCard("code1", null, ProductBuilder.create().setCode("p3").setIsActive(false).setIsKit(false).build());
+        createNewStockCard("code2", null, ProductBuilder.create().setCode("p4").setIsActive(true).setIsKit(true).build());
+
+        Product product = ProductBuilder.buildAdultProduct();
+        product.setKit(true);
+        productRepository.createOrUpdate(product);
+
+        //then
+        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listActiveStockCardsWithKit("code1");
+        assertThat(stockCardsBeforeTimeLine.size(), is(2));
+
+        List<StockCard> stockCardsBeforeTimeLine2 = stockRepository.listActiveStockCardsWithKit("code2");
+        assertThat(stockCardsBeforeTimeLine2.size(), is(2));
+    }
+
+    @Test
     public void shouldGetFirstItemWhenMovementDateDiff() throws Exception {
         //given
         DateTime dateTime = new DateTime();
