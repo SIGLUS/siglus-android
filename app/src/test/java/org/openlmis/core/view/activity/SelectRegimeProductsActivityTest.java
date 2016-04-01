@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
-public class SelectProductsActivityTest {
+public class SelectRegimeProductsActivityTest {
 
     private SelectRegimeProductsActivity selectProductsActivity;
     ProductPresenter presenter;
