@@ -13,13 +13,13 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 @RunWith(LMISTestRunner.class)
-public class ViaKitViewTest {
+public class ViaKitViewForToggleOffTest {
 
-    private ViaKitView viaKitView;
+    private ViaKitViewForToggleOff viaKitView;
 
     @Before
     public void setUp() throws Exception {
-        viaKitView = new ViaKitView(LMISTestApp.getContext());
+        viaKitView = new ViaKitViewForToggleOff(LMISTestApp.getContext());
     }
 
     @Test

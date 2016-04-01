@@ -10,13 +10,15 @@ import lombok.Data;
 @Data
 public class ViaKitsViewModel {
 
-    private String kitsReceivedHF = "";
+    private final String DEFAULT_VALUE = "0";
 
-    private String kitsReceivedCHW = "";
+    private String kitsReceivedHF = DEFAULT_VALUE;
 
-    private String kitsOpenedHF = "";
+    private String kitsReceivedCHW = DEFAULT_VALUE;
 
-    private String kitsOpenedCHW = "";
+    private String kitsOpenedHF = DEFAULT_VALUE;
+
+    private String kitsOpenedCHW = DEFAULT_VALUE;
 
     private List<RnrFormItem> kitItems = new ArrayList<>();
 
@@ -30,19 +32,19 @@ public class ViaKitsViewModel {
         for (RnrFormItem rnrKitItem : rnrKitItems) {
 
             if (US_KIT.equals(rnrKitItem.getProduct().getCode())) {
-                if(rnrKitItem.getReceived() > Long.MIN_VALUE){
+                if (rnrKitItem.getReceived() > Long.MIN_VALUE) {
                     kitsReceivedHF = String.valueOf(rnrKitItem.getReceived());
                 }
 
-                if(rnrKitItem.getIssued() > Long.MIN_VALUE){
+                if (rnrKitItem.getIssued() > Long.MIN_VALUE) {
                     kitsOpenedHF = String.valueOf(rnrKitItem.getIssued());
                 }
             } else if (APE_KIT.equals(rnrKitItem.getProduct().getCode())) {
-                if(rnrKitItem.getReceived() > Long.MIN_VALUE){
+                if (rnrKitItem.getReceived() > Long.MIN_VALUE) {
                     kitsReceivedCHW = String.valueOf(rnrKitItem.getReceived());
                 }
 
-                if(rnrKitItem.getIssued() > Long.MIN_VALUE){
+                if (rnrKitItem.getIssued() > Long.MIN_VALUE) {
                     kitsOpenedCHW = String.valueOf(rnrKitItem.getIssued());
                 }
             }
@@ -88,9 +90,9 @@ public class ViaKitsViewModel {
     }
 
     private void setInventoryForItem(RnrFormItem rnrFormItem) {
-        if(kitsOpenedHF.isEmpty() || kitsReceivedHF.isEmpty()) {
+        if (kitsOpenedHF.isEmpty() || kitsReceivedHF.isEmpty()) {
             rnrFormItem.setInventory(Long.MIN_VALUE);
-        }else{
+        } else {
             rnrFormItem.setInventory(rnrFormItem.getReceived() - rnrFormItem.getIssued());
         }
     }

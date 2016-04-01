@@ -107,8 +107,8 @@ public class ViaKitsViewModelTest {
 
         viaKitsViewModel.convertRnrKitItemsToViaKit(rnrFormItems);
 
-        assertThat(viaKitsViewModel.getKitsOpenedCHW(), is(""));
-        assertThat(viaKitsViewModel.getKitsOpenedHF(), is(""));
+        assertThat(viaKitsViewModel.getKitsOpenedCHW(), is("0"));
+        assertThat(viaKitsViewModel.getKitsOpenedHF(), is("0"));
     }
 
     @Test
