@@ -7,6 +7,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.adapter.SelectEmergencyProductAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import roboguice.inject.InjectView;
@@ -36,10 +38,14 @@ public class SelectEmergencyProductsViewHolder extends BaseViewHolder {
         });
     }
 
-    public void populate(final InventoryViewModel viewModel) {
+    public void populate(final SelectEmergencyProductAdapter selectEmergencyProductAdapter, final InventoryViewModel viewModel) {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked && selectEmergencyProductAdapter.isOutOfLimit()) {
+                    ToastUtil.show(R.string.msg_out_limit_of_selected_emergency_products);
+                    return;
+                }
                 viewModel.setChecked(isChecked);
             }
         });

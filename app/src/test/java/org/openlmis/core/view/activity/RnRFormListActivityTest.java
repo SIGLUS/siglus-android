@@ -7,6 +7,7 @@ import android.view.MenuItem;
 
 import com.google.inject.AbstractModule;
 
+import org.hamcrest.MatcherAssert;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
@@ -20,19 +21,25 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.RnRFormListPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.fakes.RoboMenuItem;
+import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowApplication;
+import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.shadows.ShadowToast;
 
 import java.util.Date;
 
 import roboguice.RoboGuice;
 import rx.Observable;
+import rx.Subscriber;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -264,15 +271,47 @@ public class RnRFormListActivityTest {
     }
 
     @Test
-    public void shouldOpenEmergencyRnrPageWhenEmergencyActionMenuClicked() {
-        rnRFormListActivity.onOptionsItemSelected(new RoboMenuItem(R.id.action_create_emergency_rnr));
-
-        Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
-
-        assertNotNull(nextStartedIntent);
-        assertEquals(nextStartedIntent.getComponent().getClassName(), SelectEmergencyProductsActivity.class.getName());
+    public void shouldShowToastWhenDateNotInEmergencyDate() throws Exception {
+        LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-05-18 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
+        rnRFormListActivity.checkAndGotoEmergencyPage();
+        MatcherAssert.assertThat(ShadowToast.getTextOfLatestToast(), is("You are not allowed to create an emergency between 18th and 25th because this is the requisition submit time-window."));
     }
 
+    @Test
+    public void shouldShowToastWhenHasMissed() throws Exception {
+        LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-05-17 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
+
+        Observable<Boolean> value = Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                subscriber.onNext(true);
+            }
+        });
+
+        when(mockedPresenter.hasMissedPeriod()).thenReturn(value);
+        rnRFormListActivity.checkAndGotoEmergencyPage();
+        MatcherAssert.assertThat(ShadowToast.getTextOfLatestToast(), is("You are not allowed to create an emergency requisition until you complete all your previous requisitions"));
+    }
+
+    @Test
+    public void shouldGotoEmergencyPage() throws Exception {
+        LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-05-17 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
+
+        Observable<Boolean> value = Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                subscriber.onNext(false);
+            }
+        });
+        when(mockedPresenter.hasMissedPeriod()).thenReturn(value);
+
+        rnRFormListActivity.checkAndGotoEmergencyPage();
+
+        ShadowActivity shadowActivity = shadowOf(rnRFormListActivity);
+        Intent startedIntent = shadowActivity.getNextStartedActivity();
+        ShadowIntent shadowIntent = shadowOf(startedIntent);
+        MatcherAssert.assertThat(shadowIntent.getComponent().getClassName(), equalTo(SelectEmergencyProductsActivity.class.getName()));
+    }
 
     private RnRFormViewModel generateRnRFormViewModel(String programCode, int viewModelType) {
         return new RnRFormViewModel(new Period(new DateTime()), programCode, viewModelType);

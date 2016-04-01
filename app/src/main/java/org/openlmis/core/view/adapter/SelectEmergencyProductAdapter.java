@@ -7,15 +7,28 @@ import android.view.ViewGroup;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.SelectEmergencyProductsViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.List;
 
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+
 public class SelectEmergencyProductAdapter extends RecyclerView.Adapter<SelectEmergencyProductsViewHolder> {
 
+    public static final int MAX_CHECKED_LIMIT = 10;
     private List<InventoryViewModel> products;
 
     public SelectEmergencyProductAdapter(List<InventoryViewModel> products) {
         this.products = products;
+    }
+
+    public List<InventoryViewModel> getCheckedProducts() {
+        return from(products).filter(new Predicate<InventoryViewModel>() {
+            @Override
+            public boolean apply(InventoryViewModel viewModel) {
+                return viewModel.isChecked();
+            }
+        }).toList();
     }
 
     @Override
@@ -26,11 +39,15 @@ public class SelectEmergencyProductAdapter extends RecyclerView.Adapter<SelectEm
     @Override
     public void onBindViewHolder(SelectEmergencyProductsViewHolder holder, int position) {
         InventoryViewModel product = products.get(position);
-        holder.populate(product);
+        holder.populate(this, product);
     }
 
     @Override
     public int getItemCount() {
         return products.size();
+    }
+
+    public boolean isOutOfLimit() {
+        return getCheckedProducts().size() > MAX_CHECKED_LIMIT;
     }
 }

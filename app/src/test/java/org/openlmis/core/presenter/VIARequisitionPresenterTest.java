@@ -23,6 +23,7 @@ import com.google.inject.AbstractModule;
 
 import junit.framework.Assert;
 
+import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,6 +53,7 @@ import org.robolectric.RuntimeEnvironment;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import roboguice.RoboGuice;
@@ -494,6 +496,20 @@ public class VIARequisitionPresenterTest {
 
         assertThat(viewModelsFromRnrForm.size(), is(1));
         assertThat(viewModelsFromRnrForm.get(0).getAdjustmentViewModels().size(), is(0));
+    }
+
+    @Test
+    public void shouldInitEmergencyRnr() throws Exception {
+        ArrayList<StockCard> stockCards = newArrayList();
+        Date periodEndDate = new Date();
+        RnRForm rnRForm = new RnRForm();
+        when(mockRnrFormRepository.initRnrForm(periodEndDate)).thenReturn(rnRForm);
+        ArrayList<RnrFormItem> rnrFormItems = new ArrayList<>();
+        when(mockRnrFormRepository.generateRnrFormItems(rnRForm, stockCards)).thenReturn(rnrFormItems);
+
+        RnRForm rnRForm1 = presenter.initEmergencyRnr(stockCards, periodEndDate);
+
+        org.junit.Assert.assertThat(rnRForm1.getRnrFormItemListWrapper(), Is.<List<RnrFormItem>>is(rnrFormItems));
     }
 
     private ViaKitsViewModel buildDefaultViaKit() {

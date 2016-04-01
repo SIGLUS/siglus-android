@@ -33,6 +33,7 @@ import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.utils.Constants;
 import org.roboguice.shaded.goole.common.base.Function;
@@ -114,8 +115,8 @@ public class MMIARepository extends RnrFormRepository {
     }
 
     @Override
-    protected List<RnrFormItem> generateRnrFormItems(RnRForm form) throws LMISException {
-        List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form);
+    public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards) throws LMISException {
+        List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form, stockCards);
         return fillAllMMIAProducts(form, rnrFormItems);
     }
 

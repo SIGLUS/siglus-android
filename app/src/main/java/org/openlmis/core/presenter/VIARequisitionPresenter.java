@@ -32,6 +32,7 @@ import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
@@ -92,6 +93,32 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         view.loading();
         Subscription subscription = getRnrFormObservable(formId).subscribe(loadDataOnNextAction, loadDataOnErrorAction);
         subscriptions.add(subscription);
+    }
+
+    public void loadEmergencyData(final List<StockCard> stockCards, final Date periodEndDate) {
+        this.periodEndDate = periodEndDate;
+        view.loading();
+        Subscription subscription = Observable.create(new Observable.OnSubscribe<RnRForm>() {
+            @Override
+            public void call(Subscriber<? super RnRForm> subscriber) {
+                try {
+                    RnRForm rnrForm = initEmergencyRnr(stockCards, periodEndDate);
+                    convertRnrToViewModel(rnrForm);
+                    subscriber.onNext(rnrForm);
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    e.reportToFabric();
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(loadDataOnNextAction, loadDataOnErrorAction);
+        subscriptions.add(subscription);
+    }
+
+    protected RnRForm initEmergencyRnr(List<StockCard> stockCards, Date periodEndDate) throws LMISException {
+        RnRForm rnRForm = rnrFormRepository.initRnrForm(periodEndDate);
+        rnRForm.setRnrFormItemListWrapper(rnrFormRepository.generateRnrFormItems(rnRForm, stockCards));
+        return rnRForm;
     }
 
     @Override
@@ -172,9 +199,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             public void call(Subscriber<? super RnRForm> subscriber) {
                 try {
                     RnRForm rnrForm = getRnrForm(formId);
-                    requisitionFormItemViewModels.clear();
-                    requisitionFormItemViewModels.addAll(getViewModelsFromRnrForm(rnrForm));
-                    viaKitsViewModel.convertRnrKitItemsToViaKit(rnrForm.getRnrItems(IsKit.Yes));
+                    convertRnrToViewModel(rnrForm);
                     subscriber.onNext(rnrForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
@@ -183,6 +208,12 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                 }
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+    }
+
+    private void convertRnrToViewModel(RnRForm rnrForm) throws LMISException {
+        requisitionFormItemViewModels.clear();
+        requisitionFormItemViewModels.addAll(getViewModelsFromRnrForm(rnrForm));
+        viaKitsViewModel.convertRnrKitItemsToViaKit(rnrForm.getRnrItems(IsKit.Yes));
     }
 
     @Override

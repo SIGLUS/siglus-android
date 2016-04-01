@@ -221,4 +221,10 @@ public class InventoryViewModel {
         draftInventory.setStockCard(stockCard);
         return draftInventory;
     }
+
+    public static InventoryViewModel buildEmergencyModel(StockCard stockCard) {
+        InventoryViewModel viewModel = new InventoryViewModel(stockCard.getProduct());
+        viewModel.stockCard = stockCard;
+        return viewModel;
+    }
 }

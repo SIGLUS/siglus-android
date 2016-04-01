@@ -260,14 +260,14 @@ public class StockRepository {
     }
 
     private List<Long> getProgramIds(String programCode) throws LMISException {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_via_multiple_programs)) {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rnr_multiple_programs)) {
             return programRepository.queryProgramIdsByProgramCodeOrParentCode(programCode);
         } else {
             Program program = programRepository.queryByCode(programCode);
             return newArrayList(program.getId());
         }
     }
-
+    //TODO get constants from db
     public List<StockCard> listEmergencyStockCards() throws LMISException {
         List<Long> programIds = from(programRepository.list()).filter(new Predicate<Program>() {
             @Override

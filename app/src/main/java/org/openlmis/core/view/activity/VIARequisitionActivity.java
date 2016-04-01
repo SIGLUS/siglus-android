@@ -23,9 +23,11 @@ import android.content.Intent;
 
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.fragment.VIARequisitionFragment;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import roboguice.inject.ContentView;
@@ -33,6 +35,8 @@ import roboguice.inject.ContentView;
 
 @ContentView(R.layout.activity_requisition)
 public class VIARequisitionActivity extends BaseActivity {
+    public static final String PARAM_SELECTED_EMERGENCY = "selected_emergency";
+
     @Override
     protected ScreenName getScreenName() {
         return ScreenName.VIARequisitionScreen;
@@ -65,4 +69,9 @@ public class VIARequisitionActivity extends BaseActivity {
         return intent;
     }
 
+    public static Intent getIntentToMe(Context context, ArrayList<StockCard> stockCards) {
+        Intent intent = new Intent(context, VIARequisitionActivity.class);
+        intent.putExtra(PARAM_SELECTED_EMERGENCY, stockCards);
+        return intent;
+    }
 }

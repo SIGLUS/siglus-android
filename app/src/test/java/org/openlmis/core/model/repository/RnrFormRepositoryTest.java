@@ -369,7 +369,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         when(mockStockRepository.queryFirstStockMovementItem(any(StockCard.class))).thenReturn(stockMovementItem);
         when(mockStockRepository.queryStockItems(stockCard, form.getPeriodBegin(), form.getPeriodEnd())).thenReturn(stockMovementItems);
 
-        List<RnrFormItem> rnrFormItemList = rnrFormRepository.generateRnrFormItems(form);
+        List<RnrFormItem> rnrFormItemList = rnrFormRepository.generateRnrFormItems(form, rnrFormRepository.getStockCardsBeforePeriodEnd(form));
 
         RnrFormItem rnrFormItem = rnrFormItemList.get(0);
         int expectAdjustment = positiveQuantity - negativeQuantity;

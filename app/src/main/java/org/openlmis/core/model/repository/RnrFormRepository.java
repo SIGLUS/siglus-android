@@ -104,7 +104,7 @@ public class RnrFormRepository {
                 @Override
                 public Object call() throws Exception {
                     create(finalRnrForm);
-                    createRnrFormItems(generateRnrFormItems(finalRnrForm));
+                    createRnrFormItems(generateRnrFormItems(finalRnrForm, getStockCardsBeforePeriodEnd(finalRnrForm)));
                     createRegimenItems(generateRegimeItems(finalRnrForm));
                     createBaseInfoItems(generateBaseInfoItems(finalRnrForm));
                     genericDao.refresh(finalRnrForm);
@@ -304,11 +304,8 @@ public class RnrFormRepository {
         return new ArrayList<>();
     }
 
-    protected List<RnrFormItem> generateRnrFormItems(final RnRForm form) throws LMISException {
-        List<StockCard> stockCards = getStockCardsBeforePeriodEnd(form);
-
+    public List<RnrFormItem> generateRnrFormItems(final RnRForm form, List<StockCard> stockCards) throws LMISException {
         List<RnrFormItem> rnrFormItems = new ArrayList<>();
-
         for (StockCard stockCard : stockCards) {
             RnrFormItem rnrFormItem = createRnrFormItemByPeriod(stockCard, form.getPeriodBegin(), form.getPeriodEnd());
             rnrFormItem.setForm(form);

@@ -234,6 +234,22 @@ public class RnRFormListPresenter extends Presenter {
         return rnRForms.isEmpty() || rnRForms.get(rnRForms.size() - 1).getStatus() == RnRForm.STATUS.AUTHORIZED;
     }
 
+    public Observable<Boolean> hasMissedPeriod() {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                try {
+                    subscriber.onNext(periodService.hasMissedPeriod(programCode));
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    e.reportToFabric();
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+    }
+
     public interface RnRFormListView extends BaseView {
 
     }

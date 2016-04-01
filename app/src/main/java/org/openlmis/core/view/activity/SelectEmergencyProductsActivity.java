@@ -9,12 +9,14 @@ import android.view.View;
 
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.ProductPresenter;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.SelectEmergencyProductAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.roboguice.shaded.goole.common.base.Predicate;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +44,6 @@ public class SelectEmergencyProductsActivity extends BaseActivity {
 
     protected SelectEmergencyProductAdapter mAdapter;
 
-    private final int MAX_CHECKED_LIMIT = 10;
-
     @Override
     protected ScreenName getScreenName() {
         return ScreenName.SelectEmergencyProductsScreen;
@@ -69,32 +69,31 @@ public class SelectEmergencyProductsActivity extends BaseActivity {
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validate();
+                validateAndGotoRnrPage();
             }
         });
     }
 
-    private void validate() {
-        List<InventoryViewModel> checkedViewModels = getCheckedProducts();
+    private void validateAndGotoRnrPage() {
+        List<InventoryViewModel> checkedViewModels = mAdapter.getCheckedProducts();
         if (checkedViewModels.isEmpty()) {
             ToastUtil.show(R.string.hint_no_product_has_checked);
             return;
         }
 
-        if (checkedViewModels.size() > MAX_CHECKED_LIMIT) {
-            ToastUtil.show(getString(R.string.hint_more_than_limit_product_has_checked, MAX_CHECKED_LIMIT));
-            return;
-        }
-    }
-
-    private List<InventoryViewModel> getCheckedProducts() {
-        return from(viewModels).filter(new Predicate<InventoryViewModel>() {
+        ImmutableList<StockCard> immutableList = from(checkedViewModels).transform(new Function<InventoryViewModel, StockCard>() {
             @Override
-            public boolean apply(InventoryViewModel viewModel) {
-                return viewModel.isChecked();
+            public StockCard apply(InventoryViewModel inventoryViewModel) {
+                return inventoryViewModel.getStockCard();
             }
         }).toList();
+        ArrayList<StockCard> stockCards = new ArrayList<>();
+        stockCards.addAll(immutableList);
+        startActivity(VIARequisitionActivity.getIntentToMe(this, stockCards));
+        finish();
     }
+
+
 
     Subscriber<List<InventoryViewModel>> subscriber = new Subscriber<List<InventoryViewModel>>() {
         @Override

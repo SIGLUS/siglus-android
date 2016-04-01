@@ -73,6 +73,12 @@ public class ViaReportConsultationNumberView extends LinearLayout {
         editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         editText.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
 
-        ((TextView) findViewById(R.id.header)).setText(headerText);
+        ((TextView) findViewById(R.id.via_rnr_header)).setText(headerText);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        editText.setEnabled(enabled);
     }
 }

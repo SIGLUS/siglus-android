@@ -108,7 +108,7 @@ public class ProductPresenter extends Presenter {
                     ImmutableList<InventoryViewModel> inventoryViewModels = from(stockRepository.listEmergencyStockCards()).transform(new Function<StockCard, InventoryViewModel>() {
                         @Override
                         public InventoryViewModel apply(StockCard stockCard) {
-                            return new InventoryViewModel(stockCard.getProduct());
+                            return InventoryViewModel.buildEmergencyModel(stockCard);
                         }
                     }).toList();
                     subscriber.onNext(inventoryViewModels);

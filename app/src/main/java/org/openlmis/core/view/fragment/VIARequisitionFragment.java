@@ -40,6 +40,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
@@ -49,6 +50,7 @@ import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.ViewUtil;
 import org.openlmis.core.view.activity.BaseActivity;
+import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 import org.openlmis.core.view.adapter.RequisitionProductAdapter;
 import org.openlmis.core.view.holder.RequisitionFormViewHolder;
@@ -57,13 +59,14 @@ import org.openlmis.core.view.widget.InputFilterMinMax;
 import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.ViaKitView;
 import org.openlmis.core.view.widget.ViaKitViewForToggleOff;
+import org.openlmis.core.view.widget.ViaReportConsultationNumberView;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import roboguice.inject.InjectView;
 
 public class VIARequisitionFragment extends BaseFragment implements VIARequisitionPresenter.VIARequisitionView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
-
     @InjectView(R.id.requisition_form)
     ListView requisitionForm;
 
@@ -76,6 +79,9 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @InjectView(R.id.btn_save)
     View btnSave;
 
+    @InjectView(R.id.view_consultation)
+    ViaReportConsultationNumberView consultationView;
+
     @InjectView(R.id.vg_kit)
     ViaKitView kitView;
 
@@ -87,6 +93,12 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     @InjectView(R.id.edit_text)
     EditText etConsultationNumbers;
+
+    @InjectView(R.id.via_rnr_header)
+    TextView viaRnrHeader;
+
+    @InjectView(R.id.via_top_vg)
+    ViewGroup viaTopVg;
 
     @InjectView(R.id.requisition_header_right)
     View bodyHeaderView;
@@ -121,6 +133,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     private Date periodEndDate;
     private boolean isMissedPeriod;
     private ViaKitViewForToggleOff kitViewToggleOff;
+    private ArrayList<StockCard> emergencyStockCards;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -130,6 +143,8 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         periodEndDate = ((Date) getActivity().getIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
 
         isMissedPeriod = getActivity().getIntent().getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false);
+
+        emergencyStockCards = (ArrayList<StockCard>) getActivity().getIntent().getSerializableExtra(VIARequisitionActivity.PARAM_SELECTED_EMERGENCY);
     }
 
 
@@ -158,18 +173,56 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         if (isSavedInstanceState) {
             presenter.updateFormUI();
         } else {
+            loadData();
+        }
+    }
+
+    private void loadData() {
+        if (isEmergency()) {
+            presenter.loadEmergencyData(emergencyStockCards, new Date(LMISApp.getInstance().getCurrentTimeMillis()));
+        } else {
             presenter.loadData(formId, periodEndDate);
         }
     }
 
     @Override
     public void refreshRequisitionForm(RnRForm rnRForm) {
-        setTitleWithPeriod(rnRForm);
         requisitionProductAdapter.notifyDataSetChanged();
         requisitionFormAdapter.updateStatus(rnRForm.getStatus());
+
+        if (isEmergency()) {
+            refreshEmergencyRnr();
+        } else {
+            refreshNormalRnr(rnRForm);
+        }
+    }
+
+    private void refreshNormalRnr(RnRForm rnRForm) {
+        viaRnrHeader.setText(R.string.label_requisition_header_consultation_header);
+        consultationView.setEnabled(true);
+        btnSave.setVisibility(View.VISIBLE);
+        setTitleWithPeriod(rnRForm);
         setConsultationNumbers();
         setKitValues();
         setEditable();
+    }
+
+    private void refreshEmergencyRnr() {
+        consultationView.setEnabled(false);
+        viaRnrHeader.setText(R.string.label_emergency_requisition_balance);
+        getActivity().setTitle(getString(R.string.label_emergency_requisition_title,
+                DateUtil.formatDateWithoutYear(new Date(LMISApp.getInstance().getCurrentTimeMillis()))));
+        btnSave.setVisibility(View.GONE);
+        viaTopVg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtil.show(R.string.msg_emergency_requisition_cant_edit);
+            }
+        });
+    }
+
+    private boolean isEmergency() {
+        return emergencyStockCards != null;
     }
 
     public void setTitleWithPeriod(RnRForm rnRForm) {
@@ -363,8 +416,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     protected void onProcessButtonClick() {
-        String consultationNumbers = etConsultationNumbers.getText().toString();
-        presenter.processRequisition(consultationNumbers);
+        presenter.processRequisition(etConsultationNumbers.getText().toString());
     }
 
     @Override
@@ -403,14 +455,12 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @Override
     public void saveSuccess() {
         finish();
-
     }
 
     @Override
     public void completeSuccess() {
         ToastUtil.showForLongTime(R.string.msg_requisition_submit_tip);
         finish();
-
     }
 
     private void onSaveBtnClick() {

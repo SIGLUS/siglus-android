@@ -29,11 +29,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.RnRFormListPresenter;
 import org.openlmis.core.utils.Constants;
@@ -257,10 +259,41 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_create_emergency_rnr:
-                startActivity(SelectEmergencyProductsActivity.getIntentToMe(this));
+                checkAndGotoEmergencyPage();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    protected void checkAndGotoEmergencyPage() {
+        int dayOfMonth = new DateTime(LMISApp.getInstance().getCurrentTimeMillis()).getDayOfMonth();
+        if (dayOfMonth >= Period.INVENTORY_BEGIN_DAY && dayOfMonth < Period.INVENTORY_END_DAY_NEXT) {
+            ToastUtil.show(R.string.msg_create_emergency_date_invalid);
+            return;
+        }
+
+        loading();
+        presenter.hasMissedPeriod().subscribe(new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+                loaded();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                loaded();
+                ToastUtil.show(e.getMessage());
+            }
+
+            @Override
+            public void onNext(Boolean hasMissed) {
+                if (hasMissed) {
+                    ToastUtil.show(R.string.msg_create_emergency_has_missed);
+                } else {
+                    startActivity(SelectEmergencyProductsActivity.getIntentToMe(RnRFormListActivity.this));
+                }
+            }
+        });
     }
 }
