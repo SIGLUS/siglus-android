@@ -201,4 +201,13 @@ public class ProductRepository {
             }
         }).toList();
     }
+
+    public List<Product> queryProductsByProgramIds(final List<Long> programIds) throws LMISException {
+        return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
+            @Override
+            public List<Product> operate(Dao<Product, String> dao) throws SQLException, LMISException {
+                return dao.queryBuilder().where().in("program_id", programIds).query();
+            }
+        });
+    }
 }

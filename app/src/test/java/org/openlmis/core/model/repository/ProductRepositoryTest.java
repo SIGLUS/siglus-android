@@ -28,8 +28,10 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Product.IsKit;
+import org.openlmis.core.model.Program;
 import org.openlmis.core.model.builder.KitProductBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
+import org.openlmis.core.model.builder.ProgramBuilder;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.Arrays;
@@ -166,5 +168,20 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
         List<String> activeProductCodes = productRepository.listArchivedProductCodes();
 
         assertEquals(2, activeProductCodes.size());
+    }
+
+    @Test
+    public void shouldGetProductsByProgramIds() throws Exception {
+        Program ptvProgram = new ProgramBuilder().setProgramId(2l).build();
+        Program tarvProgram = new ProgramBuilder().setProgramId(3l).build();
+
+        Product product1 = ProductBuilder.create().setCode("08A01").setProgram(ptvProgram).build();
+        Product product2 = ProductBuilder.create().setCode("08A02").setProgram(tarvProgram).build();
+        productRepository.createOrUpdate(product1);
+        productRepository.createOrUpdate(product2);
+
+        List<Product> products = productRepository.queryProductsByProgramIds(newArrayList(2l,3l));
+        assertThat(products.size(),is(2));
+        assertThat(products.get(0).getCode(),is("08A01"));
     }
 }
