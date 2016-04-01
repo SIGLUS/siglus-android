@@ -15,9 +15,7 @@
  * this program. If not, see http://www.gnu.org/licenses. For additional
  * information contact info@OpenLMIS.org
  */
-
 package org.openlmis.core.model.repository;
-
 
 import android.content.Context;
 
@@ -52,7 +50,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
-
 
 public class RnrFormRepository {
 
@@ -328,7 +325,12 @@ public class RnrFormRepository {
     }
 
     protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm form) throws LMISException {
-        List<StockCard> stockCards = stockRepository.listActiveStockCardsWithKit(form.getProgram().getProgramCode());
+        List<StockCard> stockCards;
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_auto_fill_kit_rnr)) {
+            stockCards = stockRepository.listActiveStockCardsWithKit(form.getProgram().getProgramCode());
+        } else {
+            stockCards = stockRepository.listActiveStockCardsWithOutKit(form.getProgram().getProgramCode());
+        }
 
         for (Iterator iterator = stockCards.iterator(); iterator.hasNext(); ) {
             StockCard stockCard = (StockCard) iterator.next();

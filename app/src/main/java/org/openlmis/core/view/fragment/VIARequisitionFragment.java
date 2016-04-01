@@ -35,6 +35,7 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -55,6 +56,7 @@ import org.openlmis.core.view.widget.DoubleListScrollListener;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.ViaKitView;
+import org.openlmis.core.view.widget.ViaKitViewForToggleOff;
 
 import java.util.Date;
 
@@ -118,6 +120,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     private Date periodEndDate;
     private boolean isMissedPeriod;
+    private ViaKitViewForToggleOff kitViewToggleOff;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -144,7 +147,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if(SharedPreferenceMgr.getInstance().shouldSyncLastYearStockData()){
+        if (SharedPreferenceMgr.getInstance().shouldSyncLastYearStockData()) {
             ToastUtil.showInCenter(R.string.msg_stock_movement_is_not_ready);
             finish();
             return;
@@ -224,7 +227,20 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     private void setKitValues() {
-        kitView.setValue(presenter.getViaKitsViewModel());
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_auto_fill_kit_rnr)) {
+            kitView.removeAllViews();
+            kitViewToggleOff = new ViaKitViewForToggleOff(getActivity());
+            kitView.addView(kitViewToggleOff);
+            kitViewToggleOff.setValue(presenter.getViaKitsViewModel());
+            kitViewToggleOff.post(new Runnable() {
+                @Override
+                public void run() {
+                    kitViewToggleOff.addTextChangeListeners(presenter.getViaKitsViewModel());
+                }
+            });
+        } else {
+            kitView.setValue(presenter.getViaKitsViewModel());
+        }
     }
 
     @Override
@@ -337,7 +353,11 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     @Override
     public boolean validateKitData() {
-        return kitView.validate();
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_auto_fill_kit_rnr)) {
+            return kitViewToggleOff.validate();
+        } else {
+            return kitView.validate();
+        }
     }
 
     @Override

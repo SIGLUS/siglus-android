@@ -94,6 +94,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         programMMIA.setId(1l);
 
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(programMMIA);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_auto_fill_kit_rnr, true);
     }
 
     @Test
