@@ -11,7 +11,6 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RegimenRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
@@ -106,7 +105,7 @@ public class ProductPresenter extends Presenter {
             @Override
             public void call(final Subscriber<? super List<InventoryViewModel>> subscriber) {
                 try {
-                    ImmutableList<InventoryViewModel> inventoryViewModels = from(stockRepository.listActiveStockCardsWithOutKit(Constants.VIA_PROGRAM_CODE)).transform(new Function<StockCard, InventoryViewModel>() {
+                    ImmutableList<InventoryViewModel> inventoryViewModels = from(stockRepository.listEmergencyStockCards()).transform(new Function<StockCard, InventoryViewModel>() {
                         @Override
                         public InventoryViewModel apply(StockCard stockCard) {
                             return new InventoryViewModel(stockCard.getProduct());

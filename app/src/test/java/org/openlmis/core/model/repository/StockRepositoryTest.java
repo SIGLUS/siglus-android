@@ -37,6 +37,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.ProgramBuilder;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -503,6 +504,21 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
         Date earliestDate = stockRepository.queryEarliestStockMovementDateByProgram(via.getProgramCode());
         Assert.assertThat(DateUtil.cutTimeStamp(new DateTime(earliestDate)), is(DateUtil.cutTimeStamp(new DateTime(expectedDate))));
+    }
+
+    @Test
+    public void shouldLoadEmergencyProducts() throws Exception {
+        //when
+        createNewStockCard(Constants.TARV_PROGRAM_CODE, null, ProductBuilder.create().setCode("p1").setIsActive(true).setIsKit(false).build());
+        createNewStockCard("otherCode", "parentCode", ProductBuilder.create().setCode("p2").setIsActive(true).setIsKit(false).build());
+
+        Product product = ProductBuilder.buildAdultProduct();
+        product.setKit(true);
+        productRepository.createOrUpdate(product);
+
+        //then
+        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listEmergencyStockCards();
+        assertThat(stockCardsBeforeTimeLine.size(), is(1));
     }
 
     private void saveDraftInventory() throws LMISException {

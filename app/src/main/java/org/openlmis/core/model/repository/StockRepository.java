@@ -40,7 +40,10 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.Lists;
 
 import java.sql.SQLException;
@@ -49,6 +52,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public class StockRepository {
     @Inject
@@ -236,20 +242,15 @@ public class StockRepository {
         return false;
     }
 
-    private List<StockCard> listActiveStockCards(final String programCode, final boolean isWithKit) throws LMISException {
+    private List<StockCard> listActiveStockCards(final List<Long> programIds, final boolean isWithKit) throws LMISException {
         return dbUtil.withDao(StockCard.class, new DbUtil.Operation<StockCard, List<StockCard>>() {
             @Override
             public List<StockCard> operate(Dao<StockCard, String> dao) throws SQLException, LMISException {
                 QueryBuilder<Product, String> productQueryBuilder = DbUtil.initialiseDao(Product.class).queryBuilder();
 
                 Where<Product, String> where = productQueryBuilder.where();
-                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rnr_multiple_programs)) {
-                    List<Long> programIds = programRepository.queryProgramIdsByProgramCodeOrParentCode(programCode);
-                    where.in("program_id", programIds).and().eq("isActive", true);
-                } else {
-                    Program program = programRepository.queryByCode(programCode);
-                    where.eq("program_id", program.getId()).and().eq("isActive", true);
-                }
+                where.in("program_id", programIds).and().eq("isActive", true);
+
                 if (!isWithKit) {
                     where.and().eq("isKit", false);
                 }
@@ -258,12 +259,36 @@ public class StockRepository {
         });
     }
 
+    private List<Long> getProgramIds(String programCode) throws LMISException {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_via_multiple_programs)) {
+            return programRepository.queryProgramIdsByProgramCodeOrParentCode(programCode);
+        } else {
+            Program program = programRepository.queryByCode(programCode);
+            return newArrayList(program.getId());
+        }
+    }
+
+    public List<StockCard> listEmergencyStockCards() throws LMISException {
+        List<Long> programIds = from(programRepository.list()).filter(new Predicate<Program>() {
+            @Override
+            public boolean apply(Program program) {
+                return !program.getProgramCode().equals(Constants.TARV_PROGRAM_CODE);
+            }
+        }).transform(new Function<Program, Long>() {
+            @Override
+            public Long apply(Program program) {
+                return program.getId();
+            }
+        }).toList();
+        return listActiveStockCards(programIds, false);
+    }
+
     public List<StockCard> listActiveStockCardsWithKit(final String programCode) throws LMISException {
-        return listActiveStockCards(programCode, true);
+        return listActiveStockCards(getProgramIds(programCode), true);
     }
 
     public List<StockCard> listActiveStockCardsWithOutKit(final String programCode) throws LMISException {
-        return listActiveStockCards(programCode, false);
+        return listActiveStockCards(getProgramIds(programCode), false);
     }
 
     public List<StockMovementItem> listLastFive(final long stockCardId) throws LMISException {
@@ -479,5 +504,4 @@ public class StockRepository {
         }
         return earliestDate;
     }
-
 }
