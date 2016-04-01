@@ -42,7 +42,7 @@ public class SelectEmergencyProductsActivity extends BaseActivity {
 
     protected SelectEmergencyProductAdapter mAdapter;
 
-    private final int MAX_CHECKED_LIMIT = 20;
+    private final int MAX_CHECKED_LIMIT = 10;
 
     @Override
     protected ScreenName getScreenName() {
