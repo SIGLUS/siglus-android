@@ -31,6 +31,8 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -104,13 +106,21 @@ public class ProgramRepository {
         });
     }
 
-    public List<Program> queryByProgramCodeOrParentCode(final String programCode) throws LMISException {
-        return dbUtil.withDao(Program.class, new DbUtil.Operation<Program, List<Program>>() {
+    public List<Long> queryProgramIdsByProgramCodeOrParentCode(final String programCode) throws LMISException {
+        List<Program> programs = dbUtil.withDao(Program.class, new DbUtil.Operation<Program, List<Program>>() {
             @Override
             public List<Program> operate(Dao<Program, String> dao) throws SQLException, LMISException {
                 return dao.queryBuilder().where().eq("parentCode", programCode)
                         .or().eq("programCode", programCode).query();
             }
         });
+
+        List<Long> programIds = FluentIterable.from(programs).transform(new Function<Program, Long>() {
+            @Override
+            public Long apply(Program program) {
+                return program.getId();
+            }
+        }).toList();
+        return programIds;
     }
 }

@@ -293,7 +293,7 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldSaveUserDataAndSupportedFacilityCodeToDBWhenMultipleProgramToggleOff() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_via_multiple_programs, false);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, false);
 
         User user = UserBuilder.defaultUser();
         UserResponse userResponse = new UserResponse();
@@ -307,7 +307,7 @@ public class LoginPresenterTest {
 
     @Test
     public void shouldSaveUserDataAndSupportedFacilityCodeToDBWhenMultipleProgramToggleON() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_via_multiple_programs, true);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, true);
 
         User user = UserBuilder.defaultUser();
         UserResponse userResponse = new UserResponse();

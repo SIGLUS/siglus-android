@@ -119,7 +119,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         programMMIA.setId(1l);
         Program programVIA = new Program();
         programVIA.setId(2l);
-        when(mockProgramRepository.queryByProgramCodeOrParentCode(Constants.MMIA_PROGRAM_CODE)).thenReturn(newArrayList(programMMIA));
+        when(mockProgramRepository.queryProgramIdsByProgramCodeOrParentCode(Constants.MMIA_PROGRAM_CODE)).thenReturn(newArrayList(1L));
 
         for (int i = 0; i < 11; i++) {
             RnRForm form = new RnRForm();
@@ -573,7 +573,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         programVIA.setId(2L);
         programVIA.setProgramCode(Constants.VIA_PROGRAM_CODE);
         programEss.setParentCode(Constants.VIA_PROGRAM_CODE);
-        when(mockProgramRepository.queryByProgramCodeOrParentCode(Constants.VIA_PROGRAM_CODE)).thenReturn(newArrayList(programEss, programVIA));
+        when(mockProgramRepository.queryProgramIdsByProgramCodeOrParentCode(Constants.VIA_PROGRAM_CODE)).thenReturn(newArrayList(1L, 2L));
         RnRForm form = new RnRForm();
         form.setProgram(programEss);
         form.setStatus(RnRForm.STATUS.AUTHORIZED);

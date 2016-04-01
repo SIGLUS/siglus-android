@@ -252,7 +252,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldGetStockCardsByProgramIdWithoutKitAndDeacitivatedWhenFeatureToggleOff() throws Exception {
         //when
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_via_multiple_programs, false);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, false);
         createNewStockCard("code1", null, ProductBuilder.create().setCode("p1").setIsActive(true).setIsKit(false).build());
         createNewStockCard("code2", null, ProductBuilder.create().setCode("p2").setIsActive(true).setIsKit(false).build());
         createNewStockCard("code1", null, ProductBuilder.create().setCode("p3").setIsActive(false).setIsKit(false).build());
@@ -273,7 +273,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldGetStockCardsByProgramIdWithoutKitAndDeacitivatedWhenFeatureToggleON() throws Exception {
         //when
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_via_multiple_programs, true);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, true);
 
         createNewStockCard("code1", null, ProductBuilder.create().setCode("p1").setIsActive(true).setIsKit(false).build());
         createNewStockCard("code3", "code1", ProductBuilder.create().setCode("p1").setIsActive(true).setIsKit(false).build());
@@ -296,7 +296,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldGetStockCardsWithKit() throws Exception {
         //when
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_via_multiple_programs, true);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, true);
 
         createNewStockCard("code1", null, ProductBuilder.create().setCode("p1").setIsActive(true).setIsKit(false).build());
         createNewStockCard("code3", "code1", ProductBuilder.create().setCode("p1").setIsActive(true).setIsKit(false).build());

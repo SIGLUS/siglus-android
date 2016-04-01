@@ -148,7 +148,7 @@ public class LoginPresenter extends Presenter {
     protected void saveUserDataToLocalDatabase(UserResponse response) throws LMISException {
         userRepository.createOrUpdate(response.getUserInformation());
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_via_multiple_programs)) {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rnr_multiple_programs)) {
             if (response.getFacilitySupportedPrograms() != null) {
                 for (Program program : response.getFacilitySupportedPrograms()) {
                     programRepository.createOrUpdate(program);

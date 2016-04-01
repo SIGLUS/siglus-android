@@ -41,8 +41,6 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.DateUtil;
-import org.roboguice.shaded.goole.common.base.Function;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.Lists;
 
 import java.sql.SQLException;
@@ -245,14 +243,8 @@ public class StockRepository {
                 QueryBuilder<Product, String> productQueryBuilder = DbUtil.initialiseDao(Product.class).queryBuilder();
 
                 Where<Product, String> where = productQueryBuilder.where();
-                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_via_multiple_programs)) {
-                    List<Program> programs = programRepository.queryByProgramCodeOrParentCode(programCode);
-                    List<Long> programIds = FluentIterable.from(programs).transform(new Function<Program, Long>() {
-                        @Override
-                        public Long apply(Program program) {
-                            return program.getId();
-                        }
-                    }).toList();
+                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rnr_multiple_programs)) {
+                    List<Long> programIds = programRepository.queryProgramIdsByProgramCodeOrParentCode(programCode);
                     where.in("program_id", programIds).and().eq("isActive", true);
                 } else {
                     Program program = programRepository.queryByCode(programCode);

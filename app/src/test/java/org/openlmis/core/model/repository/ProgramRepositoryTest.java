@@ -86,11 +86,15 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldQueryProgramCodeOrByParentCode() throws Exception {
         insertProgram("MMIA", "MMIA Program", null);
+        insertProgram("PTV", "ptv Program", "MMIA");
+        insertProgram("TARV", "tarv Program", "MMIA");
         insertProgram("VIA", "VIA Program", null);
         insertProgram("TB", "Nutrition Program", "VIA");
 
-        List<Program> programs = programRepository.queryByProgramCodeOrParentCode("VIA");
-        assertThat(programs.size(), is(2));
+        List<Long> viaProgramIds = programRepository.queryProgramIdsByProgramCodeOrParentCode("VIA");
+        List<Long> mmiaProgramIds = programRepository.queryProgramIdsByProgramCodeOrParentCode("MMIA");
+        assertThat(viaProgramIds.size(), is(2));
+        assertThat(mmiaProgramIds.size(), is(3));
     }
 
     private void insertProgram(String programCode, String programName, String parentCode) throws LMISException {
