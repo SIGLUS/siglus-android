@@ -3,10 +3,11 @@ require 'pry'
 
 And(/^I enter quantity for all products in kit$/) do
 
-        while !query("android.widget.EditText text:''").empty?
-            query("android.widget.EditText id:'tx_quantity'", {:setText => '1'})
+       while query("android.widget.TextView text:'Seringa descartavel, 10ml c/agulha 21gx1 1/2 3 [MMC00006]'").empty?
+             query("android.widget.EditText id:'tx_quantity'", {:setText => '1'})
 
-            if query("android.widget.TextView text:'Seringa descartavel, 10ml c/agulha 21gx1 1/2 3 [MMC00006]'").empty?
+             last_sync_banner=query("android.widget.Button id:'btn_complete'")
+             if last_sync_banner.empty?
                 scroll('recyclerView', :down)
             end
         end
@@ -40,4 +41,10 @@ Then(/^I should see Complete button in unpack page$/) do
     scroll('recyclerView', :down)
     q= query("android.widget.Button text:'Complete'")
   end
+end
+
+Then(/^I should see kit receive number and open number is "(.*?)"$/) do |number|
+    unless (element_exists("android.widget.TextView id:'et_via_kit_received_hf'' text:'#{number}'") && element_exists("android.widget.TextView id:'et_via_kit_opened_hf'' text:'#{number}'"))
+        fail(msg="quantity invalid")
+    end
 end

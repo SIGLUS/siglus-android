@@ -68,7 +68,6 @@ Feature: Requisition
     Then I swipe right
     Then I should see "345" in the requisition form
 
-    When I enter kit values
     And I press "Submit for Approval"
     And I sign requisition with "superuser" "testUser" and complete
     Then I wait for "Via Classica Requisitions" to appear

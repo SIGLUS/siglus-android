@@ -106,6 +106,7 @@ Feature: Unpack Kit
     And I press "Thursday"
     And I press "Next"
     Then I should see "to 18 Feb"
+    Then I should see kit receive number and open number is "3"
 
     Then I enter consultationsNub "2015"
     Then I wait for 1 second
@@ -119,6 +120,7 @@ Feature: Unpack Kit
     And I press "Thursday"
     And I press "Next"
     Then I should see "to 18 Feb"
+    Then I should see kit receive number and open number is "3"
 
     And I should see empty consultations number
     Then I enter consultationsNub "888"
@@ -136,7 +138,6 @@ Feature: Unpack Kit
     # Then I swipe right
     # Then I should see "345" in the requisition form
 
-    When I enter kit values
     And I press "Submit for Approval"
     And I sign requisition with "superuser" "testUser" and complete
     Then I wait for "Via Classica Requisitions" to appear
