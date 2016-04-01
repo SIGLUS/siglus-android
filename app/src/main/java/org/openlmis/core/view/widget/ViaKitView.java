@@ -1,7 +1,6 @@
 package org.openlmis.core.view.widget;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
@@ -46,13 +45,6 @@ public class ViaKitView extends LinearLayout {
         LayoutInflater.from(context).inflate(R.layout.view_via_kit, this);
         RoboGuice.injectMembers(getContext(), this);
         RoboGuice.getInjector(getContext()).injectViewMembers(this);
-    }
-
-    public boolean validate() {
-        return !TextUtils.isEmpty(etKitReceivedHF.getText().toString())
-                && !TextUtils.isEmpty(etKitReceivedCHW.getText().toString())
-                && !TextUtils.isEmpty(etKitOpenedHF.getText().toString())
-                && !TextUtils.isEmpty(etKitOpenedCHW.getText().toString());
     }
 
     public void setValue(ViaKitsViewModel viaKitsViewModel) {

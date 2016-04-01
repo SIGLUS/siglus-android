@@ -351,13 +351,10 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         return ViewUtil.checkEditTextEmpty(etConsultationNumbers);
     }
 
+    //TODO when feature_auto_fill_kit_rnr removed, then you can remove this method
     @Override
     public boolean validateKitData() {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_auto_fill_kit_rnr)) {
-            return kitViewToggleOff.validate();
-        } else {
-            return kitView.validate();
-        }
+        return kitViewToggleOff.validate();
     }
 
     @Override

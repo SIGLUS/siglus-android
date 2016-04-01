@@ -205,7 +205,11 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     protected boolean validateForm() {
-        return view.validateConsultationNumber() && view.validateKitData() && validateRnrFormItems();
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_auto_fill_kit_rnr)) {
+            return view.validateConsultationNumber() && view.validateKitData() && validateRnrFormItems();
+        } else {
+            return view.validateConsultationNumber() && validateRnrFormItems();
+        }
     }
 
     protected boolean validateRnrFormItems() {
