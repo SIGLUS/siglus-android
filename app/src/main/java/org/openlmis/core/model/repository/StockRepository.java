@@ -15,9 +15,7 @@
  * this program. If not, see http://www.gnu.org/licenses. For additional
  * information contact info@OpenLMIS.org
  */
-
 package org.openlmis.core.model.repository;
-
 import android.content.Context;
 
 import com.google.inject.Inject;
@@ -59,16 +57,12 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 public class StockRepository {
     @Inject
     DbUtil dbUtil;
-
     @Inject
     Context context;
-
     @Inject
     ProductRepository productRepository;
-
     @Inject
     ProgramRepository programRepository;
-
     GenericDao<StockCard> genericDao;
     GenericDao<StockMovementItem> stockItemGenericDao;
     GenericDao<DraftInventory> draftInventoryGenericDao;
@@ -237,7 +231,7 @@ public class StockRepository {
                 return true;
             }
         } catch (LMISException e) {
-            e.printStackTrace();
+            e.reportToFabric();
         }
         return false;
     }
@@ -267,7 +261,7 @@ public class StockRepository {
             return newArrayList(program.getId());
         }
     }
-    //TODO get constants from db
+
     public List<StockCard> listEmergencyStockCards() throws LMISException {
         List<Long> programIds = from(programRepository.list()).filter(new Predicate<Program>() {
             @Override
@@ -443,7 +437,6 @@ public class StockRepository {
         return getTotalIssues(issuePerMonths) * 1f / LOW_STOCK_CALCULATE_MONTH_QUANTITY;
     }
 
-
     private long getTotalIssues(List<Long> issuePerMonths) {
         long total = 0;
         for (Long totalIssues : issuePerMonths) {
@@ -461,11 +454,9 @@ public class StockRepository {
             e.reportToFabric();
             return null;
         }
-
         if (stockMovementItems.isEmpty()) {
             return 0L;
         }
-
         for (StockMovementItem item : stockMovementItems) {
             if (item.getStockOnHand() == 0) {
                 return null;

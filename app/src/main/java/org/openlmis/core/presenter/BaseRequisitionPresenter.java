@@ -29,6 +29,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.service.SyncService;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.BaseView;
 
@@ -227,8 +228,13 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         });
     }
 
-    public void removeRequisition() throws LMISException {
-        rnrFormRepository.removeRnrForm(rnRForm);
+    public void removeRequisition() {
+        try {
+            rnrFormRepository.removeRnrForm(rnRForm);
+        } catch (LMISException e) {
+            ToastUtil.show("Delete Failed");
+            e.reportToFabric();
+        }
     }
 
     public void processSign(String signName, RnRForm rnRForm) {

@@ -36,7 +36,6 @@ import android.widget.TextView;
 import com.google.inject.Inject;
 
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RnRForm;
@@ -358,12 +357,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
 
     private void removeTempForm() {
         if (!isHistoryForm) {
-            try {
-                presenter.removeRequisition();
-            } catch (LMISException e) {
-                ToastUtil.show("Delete Failed");
-                e.reportToFabric();
-            }
+            presenter.removeRequisition();
         }
     }
 

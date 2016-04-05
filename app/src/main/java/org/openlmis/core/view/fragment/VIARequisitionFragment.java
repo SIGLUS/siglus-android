@@ -34,7 +34,6 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
@@ -133,7 +132,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
         emergencyStockCards = (ArrayList<StockCard>) getActivity().getIntent().getSerializableExtra(VIARequisitionActivity.PARAM_SELECTED_EMERGENCY);
     }
-
 
     @Override
     public Presenter initPresenter() {
@@ -482,12 +480,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     private void removeTempForm() {
         if (!isHistoryForm()) {
-            try {
-                presenter.removeRequisition();
-            } catch (LMISException e) {
-                ToastUtil.show("Delete Failed");
-                e.reportToFabric();
-            }
+            presenter.removeRequisition();
         }
     }
 
