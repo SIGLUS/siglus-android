@@ -10,4 +10,5 @@
     <bool name="feature_enable_secure_ssl">true</bool>
     <bool name="feature_create_emergency_rnr">false</bool>
     <bool name="feature_auto_fill_kit_rnr">false</bool>
+    <bool name="feature_deactivate_program_product">false</bool>
 </resources>
