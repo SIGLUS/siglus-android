@@ -16,7 +16,6 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RegimenRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.RegimeProductViewModel;
 import org.robolectric.RuntimeEnvironment;
@@ -91,7 +90,7 @@ public class ProductPresenterTest {
     public void loadEmergencyProducts() throws Exception {
         StockCard stockCard = new StockCard();
         stockCard.setProduct(new ProductBuilder().setPrimaryName("Product name").setCode("011111").build());
-        when(stockRepository.listActiveStockCardsWithOutKit(Constants.VIA_PROGRAM_CODE)).thenReturn(newArrayList(stockCard));
+        when(stockRepository.listEmergencyStockCards()).thenReturn(newArrayList(stockCard));
 
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
         presenter.loadEmergencyProducts().subscribe(subscriber);
