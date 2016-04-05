@@ -13,15 +13,6 @@ Then(/^I enter consultationsNub "(\d+)"/) do |consultationsNub|
           hide_soft_keyboard
 end
 
-When(/^I enter kit values$/) do
-  enter_text("android.widget.EditText id:'et_via_kit_received_hf'", 5)
-  enter_text("android.widget.EditText id:'et_via_kit_received_chw'", 4)
-  enter_text("android.widget.EditText id:'et_via_kit_opened_hf'", 3)
-  enter_text("android.widget.EditText id:'et_via_kit_opened_chw'", 2)
-
-  hide_soft_keyboard
-end
-
 Then(/^I enter QuantityRequested "(\d+)"/) do |requestedNub|
     ets = query("android.widget.EditText id:'et_request_amount' ")
     for et in ets
