@@ -20,9 +20,6 @@ package org.openlmis.core.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -46,16 +43,13 @@ import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListViewUtil;
-import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.utils.ViewUtil;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 import org.openlmis.core.view.adapter.RequisitionProductAdapter;
 import org.openlmis.core.view.holder.RequisitionFormViewHolder;
 import org.openlmis.core.view.widget.DoubleListScrollListener;
-import org.openlmis.core.view.widget.InputFilterMinMax;
 import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.ViaKitView;
 import org.openlmis.core.view.widget.ViaKitViewForToggleOff;
@@ -91,12 +85,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @InjectView(R.id.vg_container)
     ViewGroup vgContainer;
 
-    @InjectView(R.id.edit_text)
-    EditText etConsultationNumbers;
-
-    @InjectView(R.id.via_rnr_header)
-    TextView viaRnrHeader;
-
     @InjectView(R.id.via_top_vg)
     ViewGroup viaTopVg;
 
@@ -123,7 +111,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     private RequisitionProductAdapter requisitionProductAdapter;
 
     private RequisitionFormAdapter requisitionFormAdapter;
-    private boolean consultationNumbersHasChanged;
     private static final String TAG_BACK_PRESSED = "onBackPressed";
     private static final String TAG_SHOW_MESSAGE_NOTIFY_DIALOG = "showMessageNotifyDialog";
     protected View containerView;
@@ -198,18 +185,18 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     private void refreshNormalRnr(RnRForm rnRForm) {
-        viaRnrHeader.setText(R.string.label_requisition_header_consultation_header);
+        consultationView.setNormalRnrHeader();
         consultationView.setEnabled(true);
         btnSave.setVisibility(View.VISIBLE);
         setTitleWithPeriod(rnRForm);
-        setConsultationNumbers();
+        consultationView.setConsultationNumbers(presenter);
         setKitValues();
         setEditable();
     }
 
     private void refreshEmergencyRnr() {
         consultationView.setEnabled(false);
-        viaRnrHeader.setText(R.string.label_emergency_requisition_balance);
+        consultationView.setEmergencyRnrHeader();
         getActivity().setTitle(getString(R.string.label_emergency_requisition_title,
                 DateUtil.formatDateWithoutYear(new Date(LMISApp.getInstance().getCurrentTimeMillis()))));
         btnSave.setVisibility(View.GONE);
@@ -267,16 +254,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         } else {
             requisitionForm.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
         }
-    }
-
-    private void setConsultationNumbers() {
-        etConsultationNumbers.setText(presenter.getConsultationNumbers());
-        etConsultationNumbers.post(new Runnable() {
-            @Override
-            public void run() {
-                etConsultationNumbers.addTextChangedListener(etConsultationNumbersTextWatcher);
-            }
-        });
     }
 
     private void setKitValues() {
@@ -355,8 +332,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             }
         });
 
-        etConsultationNumbers.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
-
+        consultationView.initUI();
         bindListeners();
     }
 
@@ -365,13 +341,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         requisitionNameList.setOnScrollListener(new DoubleListScrollListener(requisitionNameList, requisitionForm));
         btnComplete.setOnClickListener(this);
         btnSave.setOnClickListener(this);
-
-        etConsultationNumbers.post(new Runnable() {
-            @Override
-            public void run() {
-                etConsultationNumbers.addTextChangedListener(etConsultationNumbersTextWatcher);
-            }
-        });
 
         formLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -401,7 +370,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     @Override
     public boolean validateConsultationNumber() {
-        return ViewUtil.checkEditTextEmpty(etConsultationNumbers);
+        return consultationView.validate();
     }
 
     //TODO when feature_auto_fill_kit_rnr removed, then you can remove this method
@@ -416,7 +385,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     protected void onProcessButtonClick() {
-        presenter.processRequisition(etConsultationNumbers.getText().toString());
+        presenter.processRequisition(consultationView.getValue());
     }
 
     @Override
@@ -464,7 +433,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     private void onSaveBtnClick() {
-        presenter.saveVIAForm(etConsultationNumbers.getText().toString());
+        presenter.saveVIAForm(consultationView.getValue());
     }
 
     private void finish() {
@@ -474,7 +443,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     private boolean hasDataChanged() {
         if (hasDataChanged == null) {
-            hasDataChanged = requisitionFormChanged() || consultationNumbersHasChanged;
+            hasDataChanged = requisitionFormChanged() || consultationView.isHasChanged();
         }
         return hasDataChanged;
     }
@@ -490,17 +459,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         }
         return false;
     }
-
-    TextWatcher etConsultationNumbersTextWatcher = new SingleTextWatcher() {
-        @Override
-        public void afterTextChanged(Editable s) {
-            String input = etConsultationNumbers.getText().toString();
-            if (!input.equals(presenter.getConsultationNumbers())) {
-                consultationNumbersHasChanged = true;
-                presenter.setConsultationNumbers(input);
-            }
-        }
-    };
 
     public void onBackPressed() {
         if (getResources().getBoolean(R.bool.feature_show_pop_up_even_no_data_changed_418)) {

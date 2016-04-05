@@ -186,13 +186,6 @@ public class VIARequisitionFragmentTest {
     }
 
     @Test
-    public void shouldShowErrorWhenConsultationNumbersIsEmpty() throws Exception {
-        VIARequisitionFragment.etConsultationNumbers.setText("");
-        VIARequisitionFragment.validateConsultationNumber();
-        assertThat(VIARequisitionFragment.etConsultationNumbers.getError().toString()).isEqualTo(VIARequisitionFragment.getString(R.string.hint_error_input));
-    }
-
-    @Test
     public void shouldShowTheCannotInitFormToastWhenTheAllStockMovementsAreNotSyncDown() {
         reset(presenter);
         SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(true);
