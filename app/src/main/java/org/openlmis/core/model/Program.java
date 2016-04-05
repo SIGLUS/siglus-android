@@ -34,7 +34,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor(suppressConstructorProperties = true)
 @NoArgsConstructor
-@DatabaseTable(tableName = "program")
+@DatabaseTable(tableName = "programs")
 public class Program extends BaseModel {
 
     @DatabaseField

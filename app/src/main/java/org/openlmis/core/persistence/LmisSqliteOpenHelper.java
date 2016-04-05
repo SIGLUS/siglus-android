@@ -25,6 +25,8 @@ import android.util.Log;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.persistence.migrations.AddActiveColumnToProductTable;
 import org.openlmis.core.persistence.migrations.AddCreatedTimeToStockMovement;
 import org.openlmis.core.persistence.migrations.AddFacilityIdToUser;
@@ -32,12 +34,14 @@ import org.openlmis.core.persistence.migrations.AddInventoryTable;
 import org.openlmis.core.persistence.migrations.AddIsArchivedToProduct;
 import org.openlmis.core.persistence.migrations.AddIsCustomColumnToRegime;
 import org.openlmis.core.persistence.migrations.AddIsKitColumnToProduct;
+import org.openlmis.core.persistence.migrations.AddNewPrograms;
 import org.openlmis.core.persistence.migrations.AddParentCodeToProgramTable;
 import org.openlmis.core.persistence.migrations.AddSignatureFieldInStockMovementItemTable;
 import org.openlmis.core.persistence.migrations.AddSubmittedDateToRnRForm;
 import org.openlmis.core.persistence.migrations.AddSyncErrorsMessageTable;
 import org.openlmis.core.persistence.migrations.AddSyncTagToStockMovementItem;
 import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
+import org.openlmis.core.persistence.migrations.ChangeProgramTableName;
 import org.openlmis.core.persistence.migrations.CreateDraftInventoryTable;
 import org.openlmis.core.persistence.migrations.CreateDummyRegimes;
 import org.openlmis.core.persistence.migrations.CreateInitTables;
@@ -79,6 +83,10 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new UpdateRegimenType());
             add(new AddIsCustomColumnToRegime());
             add(new CreateRegimeShortCodeTable());
+            add(new ChangeProgramTableName());
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rnr_multiple_programs)) {
+                add(new AddNewPrograms());
+            }
         }
     };
     private static int instanceCount = 0;
