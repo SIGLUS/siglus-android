@@ -42,6 +42,7 @@ import org.openlmis.core.persistence.migrations.AddSyncErrorsMessageTable;
 import org.openlmis.core.persistence.migrations.AddSyncTagToStockMovementItem;
 import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
 import org.openlmis.core.persistence.migrations.ChangeProgramTableName;
+import org.openlmis.core.persistence.migrations.ConvertEssMedsToVIAProgram;
 import org.openlmis.core.persistence.migrations.CreateDraftInventoryTable;
 import org.openlmis.core.persistence.migrations.CreateDummyRegimes;
 import org.openlmis.core.persistence.migrations.CreateInitTables;
@@ -86,6 +87,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new ChangeProgramTableName());
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rnr_multiple_programs)) {
                 add(new AddNewPrograms());
+                add(new ConvertEssMedsToVIAProgram());
             }
         }
     };
