@@ -162,11 +162,7 @@ public class RnrFormRepository {
     }
 
     public void submit(RnRForm form) throws LMISException {
-        if (form.isMissed()) {
-            form.setStatus(RnRForm.STATUS.SUBMITTED_MISSED);
-        } else {
-            form.setStatus(RnRForm.STATUS.SUBMITTED);
-        }
+        form.setStatus(form.isMissed() ? RnRForm.STATUS.SUBMITTED_MISSED : RnRForm.STATUS.SUBMITTED);
         save(form);
     }
 
@@ -178,14 +174,13 @@ public class RnrFormRepository {
 
     public boolean isPeriodUnique(final RnRForm form) {
         try {
-            RnRForm rnRForm = dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
+            return null == dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
                 @Override
                 public RnRForm operate(Dao<RnRForm, String> dao) throws SQLException {
                     return dao.queryBuilder().where().eq("program_id", form.getProgram().getId()).and().eq("status", RnRForm.STATUS.AUTHORIZED).and().eq("periodBegin", form.getPeriodBegin()).and().eq("periodEnd", form.getPeriodEnd()).queryForFirst();
                 }
             });
 
-            return rnRForm == null;
         } catch (LMISException e) {
             e.reportToFabric();
         }
