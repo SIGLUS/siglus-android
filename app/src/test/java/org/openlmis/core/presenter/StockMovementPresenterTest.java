@@ -37,6 +37,7 @@ import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
@@ -68,6 +69,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
     StockRepository stockRepositoryMock;
     ProductRepository productRepository;
     StockMovementPresenter.StockMovementView view;
+    StockService stockServiceMock;
 
     SharedPreferenceMgr sharedPreferenceMgr;
 
@@ -76,6 +78,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         stockRepositoryMock = mock(StockRepository.class);
         productRepository = mock(ProductRepository.class);
         sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
+        stockServiceMock = mock(StockService.class);
 
         view = mock(StockMovementPresenter.StockMovementView.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
@@ -290,7 +293,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
     public void shouldGetCmm() {
         //given
         StockCard stockCard = stockMovementPresenter.stockCard;
-        when(stockRepositoryMock.getCmm(stockCard)).thenReturn(10);
+        when(stockServiceMock.getCmm(stockCard)).thenReturn(10);
 
         //when
         String stockCardCmm = stockMovementPresenter.getStockCardCmm();
@@ -328,6 +331,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         protected void configure() {
             bind(StockRepository.class).toInstance(stockRepositoryMock);
             bind(ProductRepository.class).toInstance(productRepository);
+            bind(StockService.class).toInstance(stockServiceMock);
         }
     }
 }

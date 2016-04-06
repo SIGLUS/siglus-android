@@ -13,7 +13,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.StockCardBuilder;
-import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.RuntimeEnvironment;
@@ -31,7 +31,7 @@ public class StockCardViewHolderTest {
 
     private StockCardViewHolder viewHolder;
     private StockCardViewHolder.OnItemViewClickListener mockedListener;
-    private StockRepository stockRepository;
+    private StockService stockService;
     protected StockCard stockCard;
 
     @Before
@@ -41,8 +41,8 @@ public class StockCardViewHolderTest {
 
         viewHolder = new StockCardViewHolder(view, mockedListener);
 
-        stockRepository = mock(StockRepository.class);
-        viewHolder.stockRepository = stockRepository;
+        stockService = mock(StockService.class);
+        viewHolder.stockService = stockService;
 
         stockCard = new StockCard();
         final Product product = new Product();
@@ -52,7 +52,7 @@ public class StockCardViewHolderTest {
 
     @Test
     public void shouldGetNormalLevelWhenSOHGreaterThanAvg() throws LMISException {
-        when(stockRepository.getLowStockAvg(any(StockCard.class))).thenReturn(80);
+        when(stockService.getLowStockAvg(any(StockCard.class))).thenReturn(80);
 
         stockCard.setStockOnHand(100);
 
@@ -64,7 +64,7 @@ public class StockCardViewHolderTest {
 
     @Test
     public void shouldGetLowLevelWhenSOHSmallerThanAvg() throws LMISException {
-        when(stockRepository.getLowStockAvg(any(StockCard.class))).thenReturn(100);
+        when(stockService.getLowStockAvg(any(StockCard.class))).thenReturn(100);
 
         stockCard.setStockOnHand(2);
 
@@ -75,7 +75,7 @@ public class StockCardViewHolderTest {
 
     @Test
     public void shouldGetStockOutLevelWhenSOHIsZero() throws LMISException {
-        when(stockRepository.getLowStockAvg(any(StockCard.class))).thenReturn(80);
+        when(stockService.getLowStockAvg(any(StockCard.class))).thenReturn(80);
 
         stockCard.setStockOnHand(0);
 

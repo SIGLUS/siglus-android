@@ -32,6 +32,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
@@ -57,6 +58,9 @@ public class StockMovementPresenter extends Presenter {
 
     @Inject
     StockRepository stockRepository;
+
+    @Inject
+    StockService stockService;
 
     StockCard stockCard;
 
@@ -205,7 +209,7 @@ public class StockMovementPresenter extends Presenter {
     }
 
     public String getStockCardCmm() {
-        return String.valueOf(stockRepository.getCmm(stockCard));
+        return String.valueOf(stockService.getCmm(stockCard));
     }
 
 

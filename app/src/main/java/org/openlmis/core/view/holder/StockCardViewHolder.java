@@ -11,7 +11,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.googleAnalytics.TrackerCategories;
-import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.utils.ToastUtil;
@@ -41,7 +41,7 @@ public class StockCardViewHolder extends BaseViewHolder {
     ViewStub vsExpiryDateWarning;
     View ivExpiryDateWarning;
 
-    protected StockRepository stockRepository;
+    protected StockService stockService;
     private OnItemViewClickListener listener;
 
     protected static final int STOCK_ON_HAND_NORMAL = 1;
@@ -51,7 +51,7 @@ public class StockCardViewHolder extends BaseViewHolder {
     public StockCardViewHolder(View itemView, OnItemViewClickListener listener) {
         super(itemView);
         this.listener = listener;
-        this.stockRepository = RoboGuice.getInjector(context).getInstance(StockRepository.class);
+        this.stockService = RoboGuice.getInjector(context).getInstance(StockService.class);
     }
 
     public void populate(final InventoryViewModel inventoryViewModel, String queryKeyWord) {
@@ -167,7 +167,7 @@ public class StockCardViewHolder extends BaseViewHolder {
 
     protected int getStockOnHandLevel(InventoryViewModel inventoryViewModel) {
 
-        int lowStockAvg = stockRepository.getLowStockAvg(inventoryViewModel.getStockCard());
+        int lowStockAvg = stockService.getLowStockAvg(inventoryViewModel.getStockCard());
 
         long stockOnHand = inventoryViewModel.getStockOnHand();
 

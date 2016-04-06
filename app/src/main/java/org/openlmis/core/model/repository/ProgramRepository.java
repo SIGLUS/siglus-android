@@ -25,6 +25,8 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
@@ -37,6 +39,8 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public class ProgramRepository {
 
@@ -139,5 +143,14 @@ public class ProgramRepository {
                             .or().eq("programCode", programCode).query();
                 }
             });
+    }
+
+    public List<Long> getProgramIdsByProgramCode(String programCode) throws LMISException {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rnr_multiple_programs)) {
+            return queryProgramIdsByProgramCodeOrParentCode(programCode);
+        } else {
+            Program program = queryByCode(programCode);
+            return newArrayList(program.getId());
+        }
     }
 }

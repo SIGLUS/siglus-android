@@ -228,34 +228,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(firstPeriodBegin, is(parseString("21/08/2014", SIMPLE_DATE_FORMAT)));
     }
 
-    @Test
-    public void shouldGetLowStockAvgIsZeroWhenOnlyTwoValidPeriod() throws Exception {
-        StockCard stockCard = new StockCard();
-        stockCard.setStockOnHand(300);
-        stockRepository.save(stockCard);
-
-        createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
-        createMovementItem(ISSUE, 100, stockCard, new Date(), lastSecondMonthDate, false);
-
-        int lowStockAvg = stockRepository.getLowStockAvg(stockCard);
-        assertEquals(2, stockRepository.listLastFive(stockCard.getId()).size());
-        assertEquals(0, lowStockAvg);
-    }
-
-    @Test
-    public void shouldGetLowStockAvgCorrectly() throws Exception {
-
-        stockCard.setStockOnHand(400);
-        stockRepository.save(stockCard);
-
-        createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
-        createMovementItem(ISSUE, 100, stockCard, new Date(), lastSecondMonthDate, false);
-        createMovementItem(ISSUE, 100, stockCard, new Date(), lastThirdMonthDate, false);
-
-        int lowStockAvg = stockRepository.getLowStockAvg(stockCard);
-        assertEquals(3, stockRepository.listLastFive(stockCard.getId()).size());
-        assertEquals(5, lowStockAvg);
-    }
 
     @Test
     public void shouldGetStockCardsByProgramIdWithoutKitAndDeacitivatedWhenMultipleProgramsToggleOnAndDeactivateProgramToggleOff() throws Exception {
@@ -384,38 +356,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldGetLowStockAvgWhenLastMonthHaveNoStockItem() throws Exception {
-        stockCard.setStockOnHand(400);
-        stockRepository.save(stockCard);
-
-        createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
-        createMovementItem(ISSUE, 100, stockCard, new Date(), lastThirdMonthDate, false);
-        createMovementItem(ISSUE, 100, stockCard, new Date(), lastForthMonthDate, false);
-
-        int lowStockAvg = stockRepository.getLowStockAvg(stockCard);
-        assertEquals(3, stockRepository.listLastFive(stockCard.getId()).size());
-        assertEquals(4, lowStockAvg);
-    }
-
-    @Test
-    public void shouldGetAverageMonthlyConsumptionCorrectly() throws LMISException {
-        //given
-        stockCard.setStockOnHand(200);
-        stockRepository.save(stockCard);
-        createMovementItem(ISSUE, 100, stockCard, new Date(), lastForthMonthDate, false);
-        createMovementItem(ISSUE, 100, stockCard, new Date(), lastThirdMonthDate, false);
-        createMovementItem(RECEIVE, 400, stockCard, new Date(), lastSecondMonthDate, false);
-        createMovementItem(ISSUE, 100, stockCard, new Date(), lastSecondMonthDate, false);
-        createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
-
-        //when
-        long consumption = stockRepository.getCmm(stockCard);
-
-        //then
-        assertEquals(100, consumption);
-    }
-
-    @Test
     public void shouldGetStockMovementsCreatedBetweenTwoDatesExclusiveOfBeginDate() throws LMISException {
         stockCard.setStockOnHand(100);
         stockRepository.save(stockCard);
@@ -479,20 +419,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         return program;
     }
 
-
-    @Test
-    public void shouldGetLowStockAvgWhenLastMonthSOHIsZero() throws Exception {
-        stockCard.setStockOnHand(300);
-        stockRepository.save(stockCard);
-
-        createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
-        createMovementItem(ISSUE, 100, stockCard, new Date(), lastThirdMonthDate, false);
-        createMovementItem(ISSUE, 100, stockCard, new Date(), lastSecondMonthDate, false);
-
-        int lowStockAvg = stockRepository.getLowStockAvg(stockCard);
-        assertEquals(3, stockRepository.listLastFive(stockCard.getId()).size());
-        assertEquals(0, lowStockAvg);
-    }
 
     @Test
     public void shouldUpdateStockCardAndProduct() throws Exception {

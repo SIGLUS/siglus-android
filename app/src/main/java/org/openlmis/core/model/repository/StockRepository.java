@@ -16,6 +16,7 @@
  * information contact info@OpenLMIS.org
  */
 package org.openlmis.core.model.repository;
+
 import android.content.Context;
 
 import com.google.inject.Inject;
@@ -30,7 +31,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.StockMovementIsNullException;
 import org.openlmis.core.model.DraftInventory;
-import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
@@ -40,21 +40,18 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.Lists;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public class StockRepository {
     @Inject
@@ -71,8 +68,6 @@ public class StockRepository {
     GenericDao<StockCard> genericDao;
     GenericDao<StockMovementItem> stockItemGenericDao;
     GenericDao<DraftInventory> draftInventoryGenericDao;
-
-    private final int LOW_STOCK_CALCULATE_MONTH_QUANTITY = 3;
 
     @Inject
     public StockRepository(Context context) {
@@ -157,7 +152,6 @@ public class StockRepository {
         } catch (SQLException e) {
             throw new LMISException(e);
         }
-
     }
 
     public void saveStockItem(final StockMovementItem stockMovementItem) throws LMISException {
@@ -267,14 +261,6 @@ public class StockRepository {
         });
     }
 
-    private List<Long> getProgramIds(String programCode) throws LMISException {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rnr_multiple_programs)) {
-            return programRepository.queryProgramIdsByProgramCodeOrParentCode(programCode);
-        } else {
-            Program program = programRepository.queryByCode(programCode);
-            return newArrayList(program.getId());
-        }
-    }
 
     public List<StockCard> listEmergencyStockCards() throws LMISException {
         List<Program> programs = from(programRepository.list()).filter(new Predicate<Program>() {
@@ -311,7 +297,7 @@ public class StockRepository {
             List<Long> productIds = queryActiveProductIdsByProgramsWithKits(programCodes, true);
             return listActiveStockCardsByProductIds(productIds);
         } else {
-            return listActiveStockCards(getProgramIds(programCode), true);
+            return listActiveStockCards(programRepository.getProgramIdsByProgramCode(programCode), true);
         }
     }
 
@@ -321,7 +307,7 @@ public class StockRepository {
             List<Long> productIds = queryActiveProductIdsByProgramsWithKits(programCodes, false);
             return listActiveStockCardsByProductIds(productIds);
         } else {
-            return listActiveStockCards(getProgramIds(programCode), false);
+            return listActiveStockCards(programRepository.getProgramIdsByProgramCode(programCode), false);
         }
     }
 
@@ -409,7 +395,7 @@ public class StockRepository {
         }
     }
 
-    protected StockMovementItem queryFirstStockMovementItem(final StockCard stockCard) throws LMISException {
+    public StockMovementItem queryFirstStockMovementItem(final StockCard stockCard) throws LMISException {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
             @Override
             public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException {
@@ -429,83 +415,6 @@ public class StockRepository {
             throw new StockMovementIsNullException(stockCard);
         }
         return stockMovementItem.getMovementPeriod().getBegin().toDate();
-    }
-
-    public int getLowStockAvg(StockCard stockCard) {
-        return (int) Math.ceil(calculateAverageMonthlyConsumption(stockCard) * 0.05);
-    }
-
-    public int getCmm(StockCard stockCard) {
-        return (int) Math.ceil(calculateAverageMonthlyConsumption(stockCard));
-    }
-
-    private float calculateAverageMonthlyConsumption(StockCard stockCard) {
-        Date firstPeriodBegin;
-        try {
-            firstPeriodBegin = queryFirstPeriodBegin(stockCard);
-        } catch (LMISException e) {
-            e.reportToFabric();
-            return 0;
-        }
-
-        List<Long> issuePerMonths = new ArrayList<>();
-        Period period = Period.of(DateUtil.today());
-        int periodQuantity = DateUtil.calculateDateMonthOffset(firstPeriodBegin, period.getBegin().toDate());
-
-        if (periodQuantity < LOW_STOCK_CALCULATE_MONTH_QUANTITY) {
-            return 0;
-        }
-
-        for (int i = 0; i < periodQuantity; i++) {
-            period = period.previous();
-            Long totalIssuesEachMonth = calculateTotalIssuesPerMonth(stockCard, period);
-
-            if (totalIssuesEachMonth == null) {
-                continue;
-            }
-
-            issuePerMonths.add(totalIssuesEachMonth);
-
-            if (issuePerMonths.size() == LOW_STOCK_CALCULATE_MONTH_QUANTITY) {
-                break;
-            }
-        }
-
-        if (issuePerMonths.size() < LOW_STOCK_CALCULATE_MONTH_QUANTITY) {
-            return 0;
-        }
-        return getTotalIssues(issuePerMonths) * 1f / LOW_STOCK_CALCULATE_MONTH_QUANTITY;
-    }
-
-    private long getTotalIssues(List<Long> issuePerMonths) {
-        long total = 0;
-        for (Long totalIssues : issuePerMonths) {
-            total += totalIssues;
-        }
-        return total;
-    }
-
-    private Long calculateTotalIssuesPerMonth(StockCard stockCard, Period period) {
-        long totalIssued = 0;
-        List<StockMovementItem> stockMovementItems;
-        try {
-            stockMovementItems = queryStockItems(stockCard, period.getBegin().toDate(), period.getEnd().toDate());
-        } catch (LMISException e) {
-            e.reportToFabric();
-            return null;
-        }
-        if (stockMovementItems.isEmpty()) {
-            return 0L;
-        }
-        for (StockMovementItem item : stockMovementItems) {
-            if (item.getStockOnHand() == 0) {
-                return null;
-            }
-            if (StockMovementItem.MovementType.ISSUE == item.getMovementType()) {
-                totalIssued += item.getMovementQuantity();
-            }
-        }
-        return totalIssued;
     }
 
     public void updateStockCardWithProduct(final StockCard stockCard) {
