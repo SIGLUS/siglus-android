@@ -27,6 +27,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
 import org.roboguice.shaded.goole.common.base.Predicate;
@@ -192,12 +193,17 @@ public class RnRForm extends BaseModel {
         }
     }
 
-    public List<RnrFormItem> getDeactivatedProductItems() {
+    public List<RnrFormItem> getDeactivatedAndUnsupportedProductItems(final List<String> supportedProductCodes) {
 
         return FluentIterable.from(getRnrFormItemListWrapper()).filter(new Predicate<RnrFormItem>() {
             @Override
             public boolean apply(RnrFormItem rnrFormItem) {
-                return !rnrFormItem.getProduct().isActive();
+                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deactivate_program_product)) {
+                    return !(rnrFormItem.getProduct().isActive()
+                            && supportedProductCodes.contains(rnrFormItem.getProduct().getCode()));
+                } else {
+                    return !rnrFormItem.getProduct().isActive();
+                }
             }
         }).toList();
     }

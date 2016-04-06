@@ -12,6 +12,7 @@ import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +27,9 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 public class RnRFormTest {
 
     @Test
-    public void shouldReturnListWithDeactivatedItems() {
+    public void shouldReturnListWithDeactivatedItemsWhenDeactivateProgramToggleOff() {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, false);
+
         RnRForm rnRForm = new RnRForm();
         Product activeProduct = new ProductBuilder().setIsActive(true).build();
         Product inactiveProduct = new ProductBuilder().setIsActive(false).build();
@@ -35,8 +38,28 @@ public class RnRFormTest {
 
         rnRForm.setRnrFormItemListWrapper(newArrayList(activeRnrProduct, inactiveRnrProduct));
 
-        List<RnrFormItem> rnrFormDeactivatedItemList = rnRForm.getDeactivatedProductItems();
+        List<RnrFormItem> rnrFormDeactivatedItemList = rnRForm.getDeactivatedAndUnsupportedProductItems(null);
         assertEquals(1, rnrFormDeactivatedItemList.size());
+        assertEquals(false, rnrFormDeactivatedItemList.get(0).getProduct().isActive());
+    }
+
+    @Test
+    public void shouldReturnListWithDeactivatedItemsWhenDeactivateProgramToggleOn() {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, true);
+
+        RnRForm rnRForm = new RnRForm();
+        Product activeSupportedProduct = new ProductBuilder().setCode("P1").setIsActive(true).build();
+        Product inactiveProduct = new ProductBuilder().setCode("P2").setIsActive(false).build();
+        Product unsupportedProduct = new ProductBuilder().setCode("P3").setIsActive(true).build();
+
+        RnrFormItem activeRnrProduct = new RnrFormItemBuilder().setProduct(activeSupportedProduct).build();
+        RnrFormItem inactiveRnrProduct = new RnrFormItemBuilder().setProduct(inactiveProduct).build();
+        RnrFormItem unsupportedRnrProduct = new RnrFormItemBuilder().setProduct(unsupportedProduct).build();
+
+        rnRForm.setRnrFormItemListWrapper(newArrayList(activeRnrProduct, inactiveRnrProduct, unsupportedRnrProduct));
+
+        List<RnrFormItem> rnrFormDeactivatedItemList = rnRForm.getDeactivatedAndUnsupportedProductItems(Arrays.asList("P1", "P2"));
+        assertEquals(2, rnrFormDeactivatedItemList.size());
         assertEquals(false, rnrFormDeactivatedItemList.get(0).getProduct().isActive());
     }
 

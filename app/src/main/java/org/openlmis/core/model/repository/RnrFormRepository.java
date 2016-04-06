@@ -28,6 +28,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
@@ -41,6 +42,8 @@ import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -62,6 +65,9 @@ public class RnrFormRepository {
 
     @Inject
     RnrFormItemRepository rnrFormItemRepository;
+
+    @Inject
+    ProductProgramRepository productProgramRepository;
 
     @Inject
     ProgramRepository programRepository;
@@ -214,9 +220,9 @@ public class RnrFormRepository {
         });
     }
 
-    public List<RnRForm> deleteDeactivatedProductItemsFromUnsyncedForms() throws LMISException {
+    public List<RnRForm> queryAllUnsyncedForms() throws LMISException {
         List<RnRForm> unsyncedRnr = listUnsynced();
-        deleteDeactivatedProductItemsFromForms(unsyncedRnr);
+        deleteDeactivatedAndUnsupportedProductItems(unsyncedRnr);
         return unsyncedRnr;
     }
 
@@ -285,7 +291,7 @@ public class RnrFormRepository {
         });
     }
 
-    private List<RnRForm> listUnsynced() throws LMISException {
+    protected List<RnRForm> listUnsynced() throws LMISException {
         return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
             @Override
             public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
@@ -294,9 +300,19 @@ public class RnrFormRepository {
         });
     }
 
-    private void deleteDeactivatedProductItemsFromForms(List<RnRForm> rnRForms) throws LMISException {
+    protected void deleteDeactivatedAndUnsupportedProductItems(List<RnRForm> rnRForms) throws LMISException {
         for (RnRForm rnRForm : rnRForms) {
-            deleteRnrFormItems(rnRForm.getDeactivatedProductItems());
+
+            String programCode = rnRForm.getProgram().getProgramCode();
+            List<String> programCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode(programCode);
+            List<String> supportedProductCodes = FluentIterable.from(productProgramRepository.listActiveProductProgramsByProgramCodes(programCodes)).transform(new Function<ProductProgram, String>() {
+                @Override
+                public String apply(ProductProgram productProgram) {
+                    return productProgram.getProductCode();
+                }
+            }).toList();
+
+            deleteRnrFormItems(rnRForm.getDeactivatedAndUnsupportedProductItems(supportedProductCodes));
         }
     }
 

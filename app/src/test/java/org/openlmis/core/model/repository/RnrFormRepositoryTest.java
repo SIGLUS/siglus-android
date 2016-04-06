@@ -40,6 +40,8 @@ import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
+import org.openlmis.core.model.builder.ProgramBuilder;
+import org.openlmis.core.model.builder.RnRFormBuilder;
 import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
@@ -49,6 +51,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -86,6 +89,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         mockStockRepository = mock(StockRepository.class);
         mockRnrFormItemRepository = mock(RnrFormItemRepository.class);
         mockPeriodService = mock(PeriodService.class);
+
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
         rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormRepository.class);
@@ -100,17 +104,20 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldGetAllUnsyncedMMIAForms() throws LMISException {
         for (int i = 0; i < 10; i++) {
-            RnRForm form = new RnRForm();
-            form.setComments("Rnr Form" + i);
-            form.setStatus(RnRForm.STATUS.AUTHORIZED);
-            if (i % 2 == 0) {
-                form.setSynced(true);
-            }
+            RnRForm form = new RnRFormBuilder().setComments("Rnr Form" + i)
+                    .setStatus(RnRForm.STATUS.AUTHORIZED)
+                    .setProgram(createProgram("MMIA" + i))
+                    .setSynced(i % 2 == 0)
+                    .build();
             rnrFormRepository.create(form);
         }
 
-        List<RnRForm> list = rnrFormRepository.deleteDeactivatedProductItemsFromUnsyncedForms();
-        assertThat(list.size(), is(5));
+        List<RnRForm> unsyncedForms = rnrFormRepository.listUnsynced();
+        assertThat(unsyncedForms.size(), is(5));
+    }
+
+    private Program createProgram(String programCode) throws LMISException {
+        return new ProgramBuilder().setProgramCode(programCode).setProgramName("MMIA name").build();
     }
 
     @Test
@@ -122,14 +129,10 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         when(mockProgramRepository.queryProgramIdsByProgramCodeOrParentCode(Constants.MMIA_PROGRAM_CODE)).thenReturn(newArrayList(1L));
 
         for (int i = 0; i < 11; i++) {
-            RnRForm form = new RnRForm();
-            form.setComments("Rnr Form" + i);
-            form.setStatus(RnRForm.STATUS.AUTHORIZED);
-            if (i % 2 == 0) {
-                form.setProgram(programMMIA);
-            } else {
-                form.setProgram(programVIA);
-            }
+            RnRForm form = new RnRFormBuilder().setComments("Rnr Form" + i)
+                    .setStatus(RnRForm.STATUS.AUTHORIZED)
+                    .setProgram(i % 2 == 0 ? programMMIA : programVIA)
+                    .build();
             rnrFormRepository.create(form);
         }
 
@@ -141,10 +144,8 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     public void shouldGetDraftForm() throws LMISException {
         Program program = new Program();
 
-        RnRForm form = new RnRForm();
-        form.setProgram(program);
-        form.setComments("DRAFT Form");
-        form.setStatus(RnRForm.STATUS.DRAFT);
+        RnRForm form = new RnRFormBuilder().setComments("DRAFT Form")
+                .setStatus(RnRForm.STATUS.DRAFT).setProgram(program).build();
 
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
 
@@ -159,10 +160,10 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     public void shouldGetSubmittedForm() throws LMISException {
         Program program = new Program();
 
-        RnRForm form = new RnRForm();
-        form.setProgram(program);
-        form.setComments("Submitted Form");
-        form.setStatus(RnRForm.STATUS.SUBMITTED);
+        RnRForm form = new RnRFormBuilder().setComments("Submitted Form")
+                .setStatus(RnRForm.STATUS.SUBMITTED)
+                .setProgram(program).build();
+
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
 
         rnrFormRepository.create(form);
@@ -174,11 +175,10 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldGetSignatureByRnrForm() throws LMISException {
         Program program = new Program();
-        RnRForm form = new RnRForm();
 
-        form.setProgram(program);
-        form.setComments("Submitted Form");
-        form.setStatus(RnRForm.STATUS.SUBMITTED);
+        RnRForm form = new RnRFormBuilder().setComments("Submitted Form")
+                .setStatus(RnRForm.STATUS.SUBMITTED)
+                .setProgram(program).build();
 
         rnrFormRepository.create(form);
 
@@ -513,20 +513,14 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldDeleteDeactivatedItemsFromRnrForms() throws Exception {
-        Program program = new Program();
-        RnRForm form = new RnRForm();
-        form.setProgram(program);
-        form.setComments("Submitted Form");
-        form.setStatus(RnRForm.STATUS.AUTHORIZED);
-        form.setSynced(false);
+        RnRForm form = new RnRFormBuilder().setComments("Submitted Form")
+                .setStatus(RnRForm.STATUS.AUTHORIZED)
+                .setSynced(false).setProgram(createProgram("MMIA")).build();
 
         RnrFormItem deactivatedProductItem = new RnrFormItemBuilder().setProduct(new ProductBuilder().setCode("P1").setIsActive(false).build()).build();
-
         form.setRnrFormItemListWrapper(newArrayList(deactivatedProductItem));
 
-        rnrFormRepository.create(form);
-
-        rnrFormRepository.deleteDeactivatedProductItemsFromUnsyncedForms();
+        rnrFormRepository.deleteDeactivatedAndUnsupportedProductItems(Arrays.asList(form));
 
         verify(mockRnrFormItemRepository).delete(anyList());
     }
