@@ -264,7 +264,7 @@ public class SyncDownManagerTest {
                 verify(sharedPreferenceMgr).setLastMonthStockCardDataSynced(true);
             }
             if (progress == RequisitionSynced) {
-                verify(rnrFormRepository, times(1)).createFormAndItems(any(ArrayList.class));
+                verify(rnrFormRepository, times(1)).createRnRsWithItems(any(ArrayList.class));
                 verify(sharedPreferenceMgr).setRequisitionDataSynced(true);
             }
             if (progress == StockCardsLastYearSynced) {

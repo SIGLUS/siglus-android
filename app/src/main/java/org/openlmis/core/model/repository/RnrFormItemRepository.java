@@ -47,7 +47,7 @@ public class RnrFormItemRepository {
         });
     }
 
-    public void delete(final List<RnrFormItem> rnrFormItemListWrapper) throws LMISException {
+    public void deleteFormItems(final List<RnrFormItem> rnrFormItemListWrapper) throws LMISException {
         dbUtil.withDaoAsBatch(RnrFormItem.class, new DbUtil.Operation<RnrFormItem, Void>() {
             @Override
             public Void operate(Dao<RnrFormItem, String> dao) throws SQLException {

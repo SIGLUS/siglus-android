@@ -136,7 +136,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
             rnrFormRepository.create(form);
         }
 
-        List<RnRForm> list = rnrFormRepository.listMMIA();
+        List<RnRForm> list = rnrFormRepository.list(Constants.MMIA_PROGRAM_CODE);
         assertThat(list.size(), is(6));
     }
 
@@ -429,7 +429,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         ArrayList<RnRForm> rnRForms = new ArrayList<>();
         rnRForms.add(form);
 
-        rnrFormRepository.createFormAndItems(rnRForms);
+        rnrFormRepository.createRnRsWithItems(rnRForms);
 
         RnRForm form2 = RnRForm.init(program, DateUtil.parseString("01/01/2015", DateUtil.SIMPLE_DATE_FORMAT));
         ArrayList<BaseInfoItem> baseInfoItems = new ArrayList<>();
@@ -442,7 +442,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         RnRForm.fillFormId(form2);
         ArrayList<RnRForm> rnRForms2 = new ArrayList<>();
         rnRForms2.add(form2);
-        rnrFormRepository.createFormAndItems(rnRForms2);
+        rnrFormRepository.createRnRsWithItems(rnRForms2);
         assertThat(form.getId(), is(1L));
         assertThat(form2.getId(), is(2L));
         RnRForm rnRForm = rnrFormRepository.queryRnRForm(2L);
@@ -522,7 +522,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         rnrFormRepository.deleteDeactivatedAndUnsupportedProductItems(Arrays.asList(form));
 
-        verify(mockRnrFormItemRepository).delete(anyList());
+        verify(mockRnrFormItemRepository).deleteFormItems(anyList());
     }
 
     @Test

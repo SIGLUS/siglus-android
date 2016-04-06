@@ -265,7 +265,7 @@ public class SyncDownManager {
             throw new LMISException("Can't get SyncDownRequisitionsResponse, you can check json parse to POJO logic");
         }
 
-        rnrFormRepository.createFormAndItems(syncDownRequisitionsResponse.getRequisitions());
+        rnrFormRepository.createRnRsWithItems(syncDownRequisitionsResponse.getRequisitions());
     }
 
     private void fetchLatestOneMonthMovements() throws LMISException {

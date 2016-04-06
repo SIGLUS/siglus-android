@@ -36,11 +36,11 @@ import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.helper.RnrFormHelper;
 import org.openlmis.core.model.service.PeriodService;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -71,6 +71,9 @@ public class RnrFormRepository {
 
     @Inject
     ProgramRepository programRepository;
+
+    @Inject
+    RnrFormHelper rnrFormHelper;
 
     GenericDao<RnRForm> genericDao;
     GenericDao<RnrFormItem> rnrFormItemGenericDao;
@@ -110,7 +113,7 @@ public class RnrFormRepository {
                 @Override
                 public Object call() throws Exception {
                     create(finalRnrForm);
-                    createRnrFormItems(generateRnrFormItems(finalRnrForm, getStockCardsBeforePeriodEnd(finalRnrForm)));
+                    rnrFormItemRepository.create(generateRnrFormItems(finalRnrForm, getStockCardsBeforePeriodEnd(finalRnrForm)));
                     createRegimenItems(generateRegimeItems(finalRnrForm));
                     createBaseInfoItems(generateBaseInfoItems(finalRnrForm));
                     genericDao.refresh(finalRnrForm);
@@ -123,14 +126,14 @@ public class RnrFormRepository {
         return form;
     }
 
-    public void createFormAndItems(final List<RnRForm> forms) throws LMISException {
+    public void createRnRsWithItems(final List<RnRForm> forms) throws LMISException {
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
                     for (RnRForm form : forms) {
                         create(form);
-                        createRnrFormItems(form.getRnrFormItemListWrapper());
+                        rnrFormItemRepository.create(form.getRnrFormItemListWrapper());
                         createRegimenItems(form.getRegimenItemListWrapper());
                         createBaseInfoItems(form.getBaseInfoItemListWrapper());
                     }
@@ -151,7 +154,7 @@ public class RnrFormRepository {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-                    updateWrapperList(form);
+                    rnrFormHelper.updateWrapperList(form);
                     genericDao.update(form);
                     return null;
                 }
@@ -187,19 +190,6 @@ public class RnrFormRepository {
         return false;
     }
 
-
-    public void updateWrapperList(RnRForm form) throws SQLException {
-        for (RnrFormItem item : form.getRnrFormItemListWrapper()) {
-            form.getRnrFormItemList().update(item);
-        }
-        for (RegimenItem item : form.getRegimenItemListWrapper()) {
-            form.getRegimenItemList().update(item);
-        }
-        for (BaseInfoItem item : form.getBaseInfoItemListWrapper()) {
-            form.getBaseInfoItemList().update(item);
-        }
-    }
-
     public List<RnRForm> list() throws LMISException {
         return genericDao.queryForAll();
     }
@@ -221,11 +211,6 @@ public class RnrFormRepository {
         return unsyncedRnr;
     }
 
-    public List<RnRForm> listMMIA() throws LMISException {
-        return list(Constants.MMIA_PROGRAM_CODE);
-    }
-
-
     public RnRForm queryUnAuthorized() throws LMISException {
         final Program program = programRepository.queryByCode(programCode);
         if (program == null) {
@@ -246,10 +231,6 @@ public class RnrFormRepository {
                 return dao.queryBuilder().where().eq("id", id).queryForFirst();
             }
         });
-    }
-
-    private void createRnrFormItems(List<RnrFormItem> form) throws LMISException {
-        rnrFormItemRepository.create(form);
     }
 
     public void createRegimenItems(final List<RegimenItem> regimenItemList) throws LMISException {
@@ -307,7 +288,7 @@ public class RnrFormRepository {
                 }
             }).toList();
 
-            deleteRnrFormItems(rnRForm.getDeactivatedAndUnsupportedProductItems(supportedProductCodes));
+            rnrFormItemRepository.deleteFormItems(rnRForm.getDeactivatedAndUnsupportedProductItems(supportedProductCodes));
         }
     }
 
@@ -360,27 +341,16 @@ public class RnrFormRepository {
         }
 
         if (stockMovementItems.isEmpty()) {
-            initRnrFormItemWithoutMovement(stockCard, rnrFormItem, startDate);
+            rnrFormHelper.initRnrFormItemWithoutMovement(rnrFormItem, lastRnrInventory(stockCard));
         } else {
             rnrFormItem.setInitialAmount(stockMovementItems.get(0).calculatePreviousSOH());
-            assignTotalValues(rnrFormItem, stockMovementItems);
+            rnrFormHelper.assignTotalValues(rnrFormItem, stockMovementItems);
         }
 
         rnrFormItem.setProduct(stockCard.getProduct());
         rnrFormItem.setValidate(stockCard.getEarliestExpireDate());
 
         return rnrFormItem;
-    }
-
-    private void initRnrFormItemWithoutMovement(StockCard stockCard, RnrFormItem rnrFormItem, Date startDate) throws LMISException {
-        rnrFormItem.setReceived(0);
-        rnrFormItem.setIssued(0);
-        rnrFormItem.setAdjustment(0);
-        rnrFormItem.setCalculatedOrderQuantity(0L);
-
-        long lastRnrInventory = lastRnrInventory(stockCard);
-        rnrFormItem.setInitialAmount(lastRnrInventory);
-        rnrFormItem.setInventory(lastRnrInventory);
     }
 
     private long lastRnrInventory(StockCard stockCard) throws LMISException {
@@ -397,44 +367,13 @@ public class RnrFormRepository {
         return 0;
     }
 
-    private void assignTotalValues(RnrFormItem rnrFormItem, List<StockMovementItem> stockMovementItems) {
-        long totalReceived = 0;
-        long totalIssued = 0;
-        long totalAdjustment = 0;
-
-        for (StockMovementItem item : stockMovementItems) {
-            if (StockMovementItem.MovementType.RECEIVE == item.getMovementType()) {
-                totalReceived += item.getMovementQuantity();
-            } else if (StockMovementItem.MovementType.ISSUE == item.getMovementType()) {
-                totalIssued += item.getMovementQuantity();
-            } else if (StockMovementItem.MovementType.NEGATIVE_ADJUST == item.getMovementType()) {
-                totalAdjustment -= item.getMovementQuantity();
-            } else if (StockMovementItem.MovementType.POSITIVE_ADJUST == item.getMovementType()) {
-                totalAdjustment += item.getMovementQuantity();
-            }
-        }
-        rnrFormItem.setReceived(totalReceived);
-        rnrFormItem.setIssued(totalIssued);
-        rnrFormItem.setAdjustment(totalAdjustment);
-
-        Long inventory = stockMovementItems.get(stockMovementItems.size() - 1).getStockOnHand();
-        rnrFormItem.setInventory(inventory);
-
-        rnrFormItem.setCalculatedOrderQuantity(calculatedOrderQuantity(totalIssued, inventory));
-    }
-
-    private long calculatedOrderQuantity(long totalIssued, Long inventory) {
-        Long totalRequest = totalIssued * 2 - inventory;
-        return totalRequest > 0 ? totalRequest : 0;
-    }
-
     protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
         return new ArrayList<>();
     }
 
     public void removeRnrForm(RnRForm form) throws LMISException {
         if (form != null) {
-            deleteRnrFormItems(form.getRnrFormItemListWrapper());
+            rnrFormItemRepository.deleteFormItems(form.getRnrFormItemListWrapper());
             deleteRegimenItems(form.getRegimenItemListWrapper());
             deleteBaseInfoItems(form.getBaseInfoItemListWrapper());
             genericDao.delete(form);
@@ -463,10 +402,6 @@ public class RnrFormRepository {
                 return null;
             }
         });
-    }
-
-    private void deleteRnrFormItems(final List<RnrFormItem> rnrFormItemListWrapper) throws LMISException {
-        rnrFormItemRepository.delete(rnrFormItemListWrapper);
     }
 
     public void setSignature(RnRForm form, String signature, RnRFormSignature.TYPE type) throws LMISException {
