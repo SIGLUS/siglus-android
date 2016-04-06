@@ -261,10 +261,10 @@ public class SyncDownManager {
     private void fetchLatestOneMonthMovements() throws LMISException {
         Date now = new Date();
         Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH);
-        String startDateStr = DateUtil.formatDate(startDate, "yyyy-MM-dd");
+        String startDateStr = DateUtil.formatDate(startDate, DateUtil.DB_DATE_FORMAT);
 
         Date endDate = DateUtil.addDayOfMonth(now, 1);
-        String endDateStr = DateUtil.formatDate(endDate, "yyyy-MM-dd");
+        String endDateStr = DateUtil.formatDate(endDate, DateUtil.DB_DATE_FORMAT);
         fetchAndSaveStockCards(startDateStr, endDateStr);
 
         List<StockCard> syncedStockCard = stockRepository.list();
@@ -282,10 +282,10 @@ public class SyncDownManager {
 
         for (int month = startMonth; month <= MONTHS_OF_YEAR; month++) {
             Date startDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH * (month + 1));
-            String startDateStr = DateUtil.formatDate(startDate, "yyyy-MM-dd");
+            String startDateStr = DateUtil.formatDate(startDate, DateUtil.DB_DATE_FORMAT);
 
             Date endDate = DateUtil.minusDayOfMonth(now, DAYS_OF_MONTH * month);
-            String endDateStr = DateUtil.formatDate(endDate, "yyyy-MM-dd");
+            String endDateStr = DateUtil.formatDate(endDate, DateUtil.DB_DATE_FORMAT);
 
             try {
                 fetchAndSaveStockCards(startDateStr, endDateStr);
