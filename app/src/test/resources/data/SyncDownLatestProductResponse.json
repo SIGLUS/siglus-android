@@ -24,7 +24,15 @@
       },
       "supportedPrograms": [
         "MMIA"
+      ],
+      "productPrograms":[
+        {
+          "programCode": "ESS_MEDS",
+          "productCode": "01A01",
+          "active": true
+        }
       ]
+
     }
   ],
   "latestUpdatedTime": 1456895453179

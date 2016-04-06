@@ -29,6 +29,7 @@ import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -68,6 +69,8 @@ public class SyncDownManager {
     ProgramRepository programRepository;
     @Inject
     ProductRepository productRepository;
+    @Inject
+    ProductProgramRepository productProgramRepository;
 
     public SyncDownManager() {
         lmisRestApi = LMISApp.getInstance().getRestApi();
@@ -182,7 +185,14 @@ public class SyncDownManager {
         SyncDownLatestProductsResponse response = getSyncDownLatestProductResponse();
         List<Product> productList = new ArrayList<>();
         for (ProductAndSupportedPrograms productAndSupportedPrograms : response.getLatestProducts()) {
-            Product product = assignProgramFromResponseToProduct(productAndSupportedPrograms);
+            Product product;
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deactivate_program_product)) {
+                product = productAndSupportedPrograms.getProduct();
+                productProgramRepository.batchSave(productAndSupportedPrograms.getProductPrograms());
+            } else {
+                product = assignProgramFromResponseToProduct(productAndSupportedPrograms);
+            }
+
             updateDeactivateProductNotifyList(product);
             productList.add(product);
         }

@@ -90,7 +90,9 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
                 add(new AddNewPrograms());
                 add(new ConvertEssMedsToVIAProgram());
             }
-            add(new CreateProductProgramsTable());
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deactivate_program_product)) {
+                add(new CreateProductProgramsTable());
+            }
         }
     };
     private static int instanceCount = 0;

@@ -40,6 +40,7 @@ public class Product extends BaseModel implements Comparable<Product> {
     public static final String MEDICINE_TYPE_BABY = "Baby";
     public static final String MEDICINE_TYPE_OTHER = "Other";
 
+    @Deprecated
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private Program program;
 
