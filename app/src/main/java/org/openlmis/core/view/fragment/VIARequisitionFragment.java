@@ -206,7 +206,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         });
     }
 
-    private boolean isEmergency() {
+    public boolean isEmergency() {
         return emergencyStockCards != null;
     }
 

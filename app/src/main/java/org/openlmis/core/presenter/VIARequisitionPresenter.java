@@ -38,6 +38,7 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.BaseView;
+import org.openlmis.core.view.fragment.VIARequisitionFragment;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.RnRFormItemAdjustmentViewModel;
 import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
@@ -73,7 +74,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     @Inject
     StockRepository stockRepository;
 
-    VIARequisitionView view;
+    VIARequisitionFragment view;
 
     @Getter
     protected List<RequisitionFormItemViewModel> requisitionFormItemViewModels;
@@ -130,7 +131,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     @Override
     public void attachView(BaseView baseView) throws ViewNotMatchException {
         if (baseView instanceof VIARequisitionView) {
-            this.view = (VIARequisitionView) baseView;
+            this.view = (VIARequisitionFragment) baseView;
         } else {
             throw new ViewNotMatchException("required VIARequisitionView");
         }
@@ -237,7 +238,9 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     protected boolean validateForm() {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_auto_fill_kit_rnr)) {
+        if (view.isEmergency()) {
+            return validateRnrFormItems();
+        } else if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_auto_fill_kit_rnr)) {
             return view.validateConsultationNumber() && view.validateKitData() && validateRnrFormItems();
         } else {
             return view.validateConsultationNumber() && validateRnrFormItems();
