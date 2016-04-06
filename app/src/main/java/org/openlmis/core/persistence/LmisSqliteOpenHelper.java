@@ -88,13 +88,13 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new CreateRegimeShortCodeTable());
             add(new ChangeProgramTableName());
             add(new CreateProductProgramsTable());
+            add(new CreateProductProgramsTable());
+            add(new AddIsEmergencyColumnToProgram());
 
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rnr_multiple_programs)) {
                 add(new AddNewPrograms());
                 add(new ConvertEssMedsToVIAProgram());
-                add(new AddIsEmergencyColumnToProgram());
             }
-
         }
     };
     private static int instanceCount = 0;

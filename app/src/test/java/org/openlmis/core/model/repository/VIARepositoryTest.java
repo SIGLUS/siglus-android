@@ -27,7 +27,7 @@ public class VIARepositoryTest {
     public void setup() throws LMISException {
         viaRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(VIARepository.class);
 
-        viaProgram = new Program("VIA", "VIA", null, null);
+        viaProgram = new Program("VIA", "VIA", null, false, null);
         viaProgram.setId(1l);
     }
 

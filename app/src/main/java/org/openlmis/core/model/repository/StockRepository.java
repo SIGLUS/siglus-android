@@ -39,9 +39,7 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
-import org.openlmis.core.utils.Constants;
 import org.roboguice.shaded.goole.common.base.Function;
-import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.Lists;
 
@@ -264,12 +262,7 @@ public class StockRepository {
 
 
     public List<StockCard> listEmergencyStockCards() throws LMISException {
-        List<Program> programs = from(programRepository.list()).filter(new Predicate<Program>() {
-            @Override
-            public boolean apply(Program program) {
-                return !program.getProgramCode().equals(Constants.TARV_PROGRAM_CODE);
-            }
-        }).toList();
+        List<Program> programs = programRepository.listEmergencyPrograms();
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deactivate_program_product)) {
             List<String> programCodes = from(programs).transform(new Function<Program, String>() {

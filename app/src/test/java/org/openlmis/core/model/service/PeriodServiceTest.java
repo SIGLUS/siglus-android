@@ -53,7 +53,7 @@ public class PeriodServiceTest {
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         periodService = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(PeriodService.class);
 
-        programMMIA = new Program("MMIA", "MMIA", null, null);
+        programMMIA = new Program("MMIA", "MMIA", null, false, null);
         programMMIA.setId(1l);
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(programMMIA);
     }
@@ -94,7 +94,7 @@ public class PeriodServiceTest {
         when(mockStockRepository.queryEarliestStockMovementDateByProgram(anyString())).thenReturn(DateUtil.parseString("2016-02-18 13:00:00", DateUtil.DATE_TIME_FORMAT));
 
         Period period = periodService.generateNextPeriod(programMMIA.getProgramCode(), null);
-        
+
         assertThat(period.getBegin(), is(new DateTime(DateUtil.parseString("2016-02-18 00:00:00", DateUtil.DATE_TIME_FORMAT))));
         assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(3));
     }
@@ -197,7 +197,7 @@ public class PeriodServiceTest {
         Period period = periodService.generateNextPeriod(programMMIA.getProgramCode(), null);
         assertThat(period.getBegin(), is(new DateTime("2015-12-19")));
         assertThat(new DateTime(period.getEnd()).getMonthOfYear(), is(1));
-        assertThat(period.getEnd(),is(expectedPeriodEnd));
+        assertThat(period.getEnd(), is(expectedPeriodEnd));
     }
 
     @Test

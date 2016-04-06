@@ -41,7 +41,6 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.ProductProgramBuilder;
 import org.openlmis.core.model.builder.ProgramBuilder;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -380,6 +379,13 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     private long createNewStockCard(String code, String parentCode, Product product) throws LMISException {
         Program program = createNewProgram(code, parentCode);
+        return createNewStockCard(code, parentCode, product, false);
+    }
+
+    private long createNewStockCard(String code, String parentCode, Product product, boolean isEmergency) throws LMISException {
+        Program program = createNewProgram(code,parentCode);
+        program.setEmergency(isEmergency);
+        programRepository.createOrUpdate(program);
 
         product.setProgram(program);
         productRepository.createOrUpdate(product);
@@ -481,8 +487,8 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldLoadEmergencyProducts() throws Exception {
         //when
-        createNewStockCard(Constants.TARV_PROGRAM_CODE, null, ProductBuilder.create().setCode("p1").setIsActive(true).setIsKit(false).build());
-        createNewStockCard("otherCode", "parentCode", ProductBuilder.create().setCode("p2").setIsActive(true).setIsKit(false).build());
+        createNewStockCard("code", null, ProductBuilder.create().setCode("p1").setIsActive(true).setIsKit(false).build(), true);
+        createNewStockCard("otherCode", "parentCode", ProductBuilder.create().setCode("p2").setIsActive(true).setIsKit(false).build(), false);
 
         Product product = ProductBuilder.buildAdultProduct();
         product.setKit(true);

@@ -63,6 +63,15 @@ public class ProgramRepository {
         return genericDao.queryForAll();
     }
 
+    public List<Program> listEmergencyPrograms() throws LMISException{
+        return dbUtil.withDao(Program.class, new DbUtil.Operation<Program, List<Program>>() {
+            @Override
+            public List<Program> operate(Dao<Program, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("isEmergency", true).query();
+            }
+        });
+    }
+
     public void createOrUpdate(Program program) throws LMISException {
         Program existingProgram = queryByCode(program.getProgramCode());
         if (existingProgram != null) {
