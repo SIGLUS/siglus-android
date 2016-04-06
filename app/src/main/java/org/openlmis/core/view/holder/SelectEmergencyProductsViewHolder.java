@@ -42,8 +42,9 @@ public class SelectEmergencyProductsViewHolder extends BaseViewHolder {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked && selectEmergencyProductAdapter.isOutOfLimit()) {
+                if (isChecked && selectEmergencyProductAdapter.isAllowedSelect()) {
                     ToastUtil.show(R.string.msg_out_limit_of_selected_emergency_products);
+                    checkBox.setChecked(false);
                     return;
                 }
                 viewModel.setChecked(isChecked);

@@ -47,7 +47,7 @@ public class SelectEmergencyProductAdapter extends RecyclerView.Adapter<SelectEm
         return products.size();
     }
 
-    public boolean isOutOfLimit() {
-        return getCheckedProducts().size() > MAX_CHECKED_LIMIT;
+    public boolean isAllowedSelect() {
+        return getCheckedProducts().size() >= MAX_CHECKED_LIMIT;
     }
 }
