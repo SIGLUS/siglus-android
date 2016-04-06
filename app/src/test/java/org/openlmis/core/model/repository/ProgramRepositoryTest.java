@@ -17,6 +17,7 @@ import java.util.List;
 
 import roboguice.RoboGuice;
 
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -84,7 +85,7 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldQueryProgramCodeOrByParentCode() throws Exception {
+    public void shouldQueryProgramIdsByProgramCodeOrParentCode() throws Exception {
         insertProgram("MMIA", "MMIA Program", null);
         insertProgram("PTV", "ptv Program", "MMIA");
         insertProgram("TARV", "tarv Program", "MMIA");
@@ -95,6 +96,22 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
         List<Long> mmiaProgramIds = programRepository.queryProgramIdsByProgramCodeOrParentCode("MMIA");
         assertThat(viaProgramIds.size(), is(2));
         assertThat(mmiaProgramIds.size(), is(3));
+    }
+
+    @Test
+    public void shouldQueryProgramCodesByProgramCodeOrParentCode() throws Exception {
+        insertProgram("MMIA", "MMIA Program", null);
+        insertProgram("PTV", "ptv Program", "MMIA");
+        insertProgram("TARV", "tarv Program", "MMIA");
+        insertProgram("VIA", "VIA Program", null);
+        insertProgram("TB", "Nutrition Program", "VIA");
+
+        List<String> viaProgramCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode("VIA");
+        List<String> mmiaProgramCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode("MMIA");
+        assertThat(viaProgramCodes.size(), is(2));
+        assertTrue(viaProgramCodes.contains("TB"));
+        assertThat(mmiaProgramCodes.size(), is(3));
+        assertTrue(mmiaProgramCodes.contains("PTV") && mmiaProgramCodes.contains("MMIA"));
     }
 
     private void insertProgram(String programCode, String programName, String parentCode) throws LMISException {

@@ -107,13 +107,7 @@ public class ProgramRepository {
     }
 
     public List<Long> queryProgramIdsByProgramCodeOrParentCode(final String programCode) throws LMISException {
-        List<Program> programs = dbUtil.withDao(Program.class, new DbUtil.Operation<Program, List<Program>>() {
-            @Override
-            public List<Program> operate(Dao<Program, String> dao) throws SQLException, LMISException {
-                return dao.queryBuilder().where().eq("parentCode", programCode)
-                        .or().eq("programCode", programCode).query();
-            }
-        });
+        List<Program> programs = queryProgramsByProgramCodeOrParentCode(programCode);
 
         List<Long> programIds = FluentIterable.from(programs).transform(new Function<Program, Long>() {
             @Override
@@ -122,5 +116,28 @@ public class ProgramRepository {
             }
         }).toList();
         return programIds;
+    }
+
+    public List<String> queryProgramCodesByProgramCodeOrParentCode(final String programCode) throws LMISException {
+        List<Program> programs = queryProgramsByProgramCodeOrParentCode(programCode);
+
+        List<String> programCodes = FluentIterable.from(programs).transform(new Function<Program, String>() {
+            @Override
+            public String apply(Program program) {
+                return program.getProgramCode();
+            }
+        }).toList();
+
+        return programCodes;
+    }
+
+    public List<Program> queryProgramsByProgramCodeOrParentCode(final String programCode) throws LMISException {
+        return dbUtil.withDao(Program.class, new DbUtil.Operation<Program, List<Program>>() {
+                @Override
+                public List<Program> operate(Dao<Program, String> dao) throws SQLException, LMISException {
+                    return dao.queryBuilder().where().eq("parentCode", programCode)
+                            .or().eq("programCode", programCode).query();
+                }
+            });
     }
 }

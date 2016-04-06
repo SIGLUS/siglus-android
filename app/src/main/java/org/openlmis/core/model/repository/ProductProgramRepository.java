@@ -45,7 +45,16 @@ public class ProductProgramRepository {
         }
     }
 
-    private void createOrUpdate(ProductProgram productProgram) throws LMISException {
+    public List<ProductProgram> listActiveProductProgramsByProgramCodes(final List<String> programCodes) throws LMISException {
+        return dbUtil.withDao(ProductProgram.class, new DbUtil.Operation<ProductProgram, List<ProductProgram>>() {
+            @Override
+            public List<ProductProgram> operate(Dao<ProductProgram, String> dao) throws SQLException, LMISException {
+                return dao.queryBuilder().where().eq("isActive", true).and().in("programCode", programCodes).query();
+            }
+        });
+    }
+
+    public void createOrUpdate(ProductProgram productProgram) throws LMISException {
         ProductProgram existingProductProgram = queryByCode(productProgram.getProductCode(), productProgram.getProgramCode());
         if (existingProductProgram == null) {
             genericDao.create(productProgram);

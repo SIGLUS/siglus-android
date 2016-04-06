@@ -32,6 +32,7 @@ import org.openlmis.core.exceptions.StockMovementIsNullException;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -42,6 +43,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.Lists;
 
 import java.sql.SQLException;
@@ -63,6 +65,9 @@ public class StockRepository {
     ProductRepository productRepository;
     @Inject
     ProgramRepository programRepository;
+    @Inject
+    ProductProgramRepository productProgramRepository;
+
     GenericDao<StockCard> genericDao;
     GenericDao<StockMovementItem> stockItemGenericDao;
     GenericDao<DraftInventory> draftInventoryGenericDao;
@@ -253,6 +258,15 @@ public class StockRepository {
         });
     }
 
+    private List<StockCard> listActiveStockCardsByProductIds(final List<Long> productIds) throws LMISException {
+        return dbUtil.withDao(StockCard.class, new DbUtil.Operation<StockCard, List<StockCard>>() {
+            @Override
+            public List<StockCard> operate(Dao<StockCard, String> dao) throws SQLException, LMISException {
+                return dao.queryBuilder().where().in("product_id", productIds).query();
+            }
+        });
+    }
+
     private List<Long> getProgramIds(String programCode) throws LMISException {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rnr_multiple_programs)) {
             return programRepository.queryProgramIdsByProgramCodeOrParentCode(programCode);
@@ -263,26 +277,52 @@ public class StockRepository {
     }
 
     public List<StockCard> listEmergencyStockCards() throws LMISException {
-        List<Long> programIds = from(programRepository.list()).filter(new Predicate<Program>() {
+        List<Program> programs = from(programRepository.list()).filter(new Predicate<Program>() {
             @Override
             public boolean apply(Program program) {
                 return !program.getProgramCode().equals(Constants.TARV_PROGRAM_CODE);
             }
-        }).transform(new Function<Program, Long>() {
-            @Override
-            public Long apply(Program program) {
-                return program.getId();
-            }
         }).toList();
-        return listActiveStockCards(programIds, false);
+
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deactivate_program_product)) {
+            List<String> programCodes = from(programs).transform(new Function<Program, String>() {
+                @Override
+                public String apply(Program program) {
+                    return program.getProgramCode();
+                }
+            }).toList();
+            List<Long> productIds = queryActiveProductIdsByProgramsWithKits(programCodes, false);
+            return listActiveStockCardsByProductIds(productIds);
+        } else {
+            List<Long> programIds = from(programs).transform(new Function<Program, Long>() {
+                @Override
+                public Long apply(Program program) {
+                    return program.getId();
+                }
+            }).toList();
+            return listActiveStockCards(programIds, false);
+        }
+
     }
 
     public List<StockCard> listActiveStockCardsWithKit(final String programCode) throws LMISException {
-        return listActiveStockCards(getProgramIds(programCode), true);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deactivate_program_product)) {
+            List<String> programCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode(programCode);
+            List<Long> productIds = queryActiveProductIdsByProgramsWithKits(programCodes, true);
+            return listActiveStockCardsByProductIds(productIds);
+        } else {
+            return listActiveStockCards(getProgramIds(programCode), true);
+        }
     }
 
     public List<StockCard> listActiveStockCardsWithOutKit(final String programCode) throws LMISException {
-        return listActiveStockCards(getProgramIds(programCode), false);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deactivate_program_product)) {
+            List<String> programCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode(programCode);
+            List<Long> productIds = queryActiveProductIdsByProgramsWithKits(programCodes, false);
+            return listActiveStockCardsByProductIds(productIds);
+        } else {
+            return listActiveStockCards(getProgramIds(programCode), false);
+        }
     }
 
     public List<StockMovementItem> listLastFive(final long stockCardId) throws LMISException {
@@ -495,4 +535,22 @@ public class StockRepository {
         }
         return earliestDate;
     }
+
+    public List<Long> queryActiveProductIdsByProgramsWithKits(List<String> programCodes, boolean isWithKit) throws LMISException {
+        List<ProductProgram> productPrograms = productProgramRepository.listActiveProductProgramsByProgramCodes(programCodes);
+        List<String> productCodes = FluentIterable.from(productPrograms).transform(new Function<ProductProgram, String>() {
+            @Override
+            public String apply(ProductProgram productProgram) {
+                return productProgram.getProductCode();
+            }
+        }).toList();
+
+        return FluentIterable.from(productRepository.queryActiveProductsByCodesWithKits(productCodes, isWithKit)).transform(new Function<Product, Long>() {
+            @Override
+            public Long apply(Product product) {
+                return product.getId();
+            }
+        }).toList();
+    }
+
 }

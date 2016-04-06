@@ -54,6 +54,19 @@ public class ProductProgramRepositoryTest extends LMISRepositoryUnitTest {
 
         ProductProgram productProgram = repository.queryByCode("P1", "PR1");
         assertFalse(productProgram.isActive());
+    }
 
+    @Test
+    public void shouldListActiveProductProgramsByProgramCode() throws Exception {
+        List<ProductProgram> productPrograms = Arrays.asList(
+                new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P1").setActive(true).build(),
+                new ProductProgramBuilder().setProgramCode("PR2").setProductCode("P1").setActive(false).build()
+        );
+        repository.batchSave(productPrograms);
+
+        List<ProductProgram> queriedProductPrograms = repository.listActiveProductProgramsByProgramCodes(Arrays.asList("PR1", "PR2"));
+
+        assertEquals(1, queriedProductPrograms.size());
+        assertEquals("PR1", queriedProductPrograms.get(0).getProgramCode());
     }
 }

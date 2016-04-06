@@ -23,6 +23,7 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.Where;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.KitProduct;
@@ -173,6 +174,19 @@ public class ProductRepository {
             @Override
             public List<Product> operate(Dao<Product, String> dao) throws SQLException {
                 return dao.queryBuilder().where().eq("program_id", programId).query();
+            }
+        });
+    }
+
+    public List<Product> queryActiveProductsByCodesWithKits(final List<String> productCodes, final boolean isWithKit) throws LMISException {
+        return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
+            @Override
+            public List<Product> operate(Dao<Product, String> dao) throws SQLException {
+                Where<Product, String> queryBuilder = dao.queryBuilder().where().in("code", productCodes).and().eq("isActive", true);
+                if (!isWithKit) {
+                    queryBuilder.and().eq("isKit", false);
+                }
+                return queryBuilder.query();
             }
         });
     }
