@@ -84,7 +84,7 @@ public class SelectRegimeProductsActivityTest {
         }
         selectProductsActivity.btnNext.performClick();
 
-        assertThat(ShadowToast.getTextOfLatestToast(), is("checked product limit is 5"));
+        assertThat(ShadowToast.getTextOfLatestToast(), is("You can only select 5 products for regime"));
     }
 
     @Test

@@ -91,7 +91,7 @@ public class SelectRegimeProductsActivity extends BaseActivity {
         }
 
         if (checkedViewModels.size() > MAX_CHECKED_LIMIT) {
-            ToastUtil.show(getString(R.string.hint_more_than_limit_product_has_checked, MAX_CHECKED_LIMIT));
+            ToastUtil.show(getString(R.string.hint_more_than_limit_product_has_checked));
             return;
         }
         loading();
