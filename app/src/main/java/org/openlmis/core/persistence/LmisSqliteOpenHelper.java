@@ -33,6 +33,7 @@ import org.openlmis.core.persistence.migrations.AddFacilityIdToUser;
 import org.openlmis.core.persistence.migrations.AddInventoryTable;
 import org.openlmis.core.persistence.migrations.AddIsArchivedToProduct;
 import org.openlmis.core.persistence.migrations.AddIsCustomColumnToRegime;
+import org.openlmis.core.persistence.migrations.AddIsEmergencyColumnToProgram;
 import org.openlmis.core.persistence.migrations.AddIsKitColumnToProduct;
 import org.openlmis.core.persistence.migrations.AddNewPrograms;
 import org.openlmis.core.persistence.migrations.AddParentCodeToProgramTable;
@@ -87,9 +88,11 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new CreateRegimeShortCodeTable());
             add(new ChangeProgramTableName());
             add(new CreateProductProgramsTable());
+
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rnr_multiple_programs)) {
                 add(new AddNewPrograms());
                 add(new ConvertEssMedsToVIAProgram());
+                add(new AddIsEmergencyColumnToProgram());
             }
 
         }

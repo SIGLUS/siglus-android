@@ -46,6 +46,9 @@ public class Program extends BaseModel {
     @DatabaseField
     String parentCode;
 
+    @DatabaseField
+    boolean isEmergency;
+
     @ForeignCollectionField(columnName = "products")
     private Collection<Product> products;
 }
