@@ -17,5 +17,6 @@ describe "log in to web server" do
     tb_program = body['facilitySupportedPrograms'].detect {|p| p['programCode'] == 'TB'}
     expect(tb_program['parentCode']).to eq 'VIA'
     expect(tb_program['programName']).to eq 'TB'
+    expect(tb_program['isEmergency']).not_to be_nil
   end
 end
