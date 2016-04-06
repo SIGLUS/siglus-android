@@ -95,8 +95,11 @@ public class StockCardPresenter extends Presenter {
         stockCard.getProduct().setArchived(false);
 
         stockCard.setExpireDates("");
-        stockRepository.updateStockCardWithProduct(stockCard);
-
+        try {
+            stockRepository.updateStockCardWithProduct(stockCard);
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
     }
 
     private Observable<List<StockCard>> getLoadStockCardsObservable(final ArchiveStatus status) {

@@ -222,6 +222,18 @@ public class StockRepository {
         return stockCards;
     }
 
+    private List<StockCard> list(String programCode) throws LMISException {
+        final List<Long> programIds = programRepository.getProgramIdsByProgramCode(programCode);
+        return dbUtil.withDao(StockCard.class, new DbUtil.Operation<StockCard, List<StockCard>>() {
+            @Override
+            public List<StockCard> operate(Dao<StockCard, String> dao) throws SQLException, LMISException {
+                QueryBuilder<Product, String> productQueryBuilder = DbUtil.initialiseDao(Product.class).queryBuilder();
+                productQueryBuilder.where().in("program_id", programIds);
+                return dao.queryBuilder().join(productQueryBuilder).query();
+            }
+        });
+    }
+
     public boolean hasStockData() {
         try {
             List<StockCard> list = list();
@@ -420,24 +432,21 @@ public class StockRepository {
         return stockMovementItem.getMovementPeriod().getBegin().toDate();
     }
 
-    public void updateStockCardWithProduct(final StockCard stockCard) {
-        try {
-            dbUtil.withDaoAsBatch(StockCard.class, new DbUtil.Operation<StockCard, Object>() {
-                @Override
-                public Object operate(Dao<StockCard, String> dao) throws SQLException, LMISException {
-                    dao.update(stockCard);
-                    updateProductOfStockCard(stockCard.getProduct());
-                    return null;
-                }
-            });
-        } catch (LMISException e) {
-            e.reportToFabric();
-        }
+
+    public void updateStockCardWithProduct(final StockCard stockCard) throws LMISException {
+        dbUtil.withDaoAsBatch(StockCard.class, new DbUtil.Operation<StockCard, Object>() {
+            @Override
+            public Object operate(Dao<StockCard, String> dao) throws SQLException, LMISException {
+                dao.update(stockCard);
+                updateProductOfStockCard(stockCard.getProduct());
+                return null;
+            }
+        });
+
     }
 
     public Date queryEarliestStockMovementDateByProgram(final String programCode) throws LMISException {
-        // TODO: fix bug
-        List<StockCard> stockCards = listActiveStockCardsWithOutKit(programCode);
+        List<StockCard> stockCards = list(programCode);
         Date earliestDate = null;
 
         for (StockCard stockCard : stockCards) {
