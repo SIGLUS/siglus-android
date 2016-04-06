@@ -241,7 +241,7 @@ public class StockRepository {
                 QueryBuilder<Product, String> productQueryBuilder = DbUtil.initialiseDao(Product.class).queryBuilder();
 
                 Where<Product, String> where = productQueryBuilder.where();
-                where.in("program_id", programIds).and().eq("isActive", true);
+                where.in("program_id", programIds).and().eq("isActive", true).and().eq("isArchived", false);
 
                 if (!isWithKit) {
                     where.and().eq("isKit", false);
@@ -436,6 +436,7 @@ public class StockRepository {
     }
 
     public Date queryEarliestStockMovementDateByProgram(final String programCode) throws LMISException {
+        // TODO: fix bug
         List<StockCard> stockCards = listActiveStockCardsWithOutKit(programCode);
         Date earliestDate = null;
 
