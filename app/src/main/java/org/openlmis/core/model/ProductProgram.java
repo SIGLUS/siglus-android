@@ -9,8 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@DatabaseTable(tableName = "program_products")
-public class ProgramProduct {
+@DatabaseTable(tableName = "product_programs")
+public class ProductProgram {
     private String programCode;
     private String productCode;
     private boolean isActive;

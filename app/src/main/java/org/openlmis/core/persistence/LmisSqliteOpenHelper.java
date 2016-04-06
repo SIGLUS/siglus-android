@@ -47,7 +47,7 @@ import org.openlmis.core.persistence.migrations.CreateDraftInventoryTable;
 import org.openlmis.core.persistence.migrations.CreateDummyRegimes;
 import org.openlmis.core.persistence.migrations.CreateInitTables;
 import org.openlmis.core.persistence.migrations.CreateKitProductsTable;
-import org.openlmis.core.persistence.migrations.CreateProgramProductsTable;
+import org.openlmis.core.persistence.migrations.CreateProductProgramsTable;
 import org.openlmis.core.persistence.migrations.CreateRegimeShortCodeTable;
 import org.openlmis.core.persistence.migrations.CreateRnRFormSignature;
 import org.openlmis.core.persistence.migrations.SetQuantityOfStockMovementForInitialInventory;
@@ -90,7 +90,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
                 add(new AddNewPrograms());
                 add(new ConvertEssMedsToVIAProgram());
             }
-            add(new CreateProgramProductsTable());
+            add(new CreateProductProgramsTable());
         }
     };
     private static int instanceCount = 0;
