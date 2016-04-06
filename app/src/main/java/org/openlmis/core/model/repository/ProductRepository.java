@@ -182,7 +182,7 @@ public class ProductRepository {
         return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
             @Override
             public List<Product> operate(Dao<Product, String> dao) throws SQLException {
-                Where<Product, String> queryBuilder = dao.queryBuilder().where().in("code", productCodes).and().eq("isActive", true);
+                Where<Product, String> queryBuilder = dao.queryBuilder().where().in("code", productCodes).and().eq("isActive", true).and().eq("isArchived", false);
                 if (!isWithKit) {
                     queryBuilder.and().eq("isKit", false);
                 }

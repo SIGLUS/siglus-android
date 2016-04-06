@@ -266,6 +266,8 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         createNewStockCardWithProductPrograms("code2", null, ProductBuilder.create().setCode("p2").setIsActive(true).setIsKit(false).build());
         createNewStockCardWithProductPrograms("code1", null, ProductBuilder.create().setCode("p3").setIsActive(false).setIsKit(false).build());
         createNewStockCardWithProductPrograms("code2", null, ProductBuilder.create().setCode("p4").setIsActive(true).setIsKit(true).build());
+        createNewStockCardWithProductPrograms("code4", null, ProductBuilder.create().setCode("p6").setIsActive(true).setIsArchived(false).setIsKit(true).build());
+        createNewStockCardWithProductPrograms("code4", null, ProductBuilder.create().setCode("p7").setIsActive(true).setIsArchived(true).setIsKit(true).build());
     }
 
     @Test
@@ -285,12 +287,16 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldGetStockCardsWithKitWhenMultipleProgramsToggleOnAndDeactivateProgramToggleOn() throws Exception {
+    public void shouldGetActiveStockCardsWithKit() throws Exception {
         //when
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, true);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, true);
 
         batchSaveNewStockCardsWithProductPrograms();
+
+        Product product = ProductBuilder.buildAdultProduct();
+        product.setKit(true);
+        productRepository.createOrUpdate(product);
 
         //then
         List<StockCard> stockCardsBeforeTimeLine = stockRepository.listActiveStockCardsWithKit("code1");
@@ -298,6 +304,9 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
         List<StockCard> stockCardsBeforeTimeLine2 = stockRepository.listActiveStockCardsWithKit("code2");
         assertThat(stockCardsBeforeTimeLine2.size(), is(2));
+
+        List<StockCard> stockCardsBeforeTimeLine3 = stockRepository.listActiveStockCardsWithKit("code4");
+        assertThat(stockCardsBeforeTimeLine3.size(), is(1));
     }
 
     private void batchCreateNewStockCards() throws LMISException {
@@ -378,7 +387,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     private long createNewStockCard(String code, String parentCode, Product product) throws LMISException {
-        Program program = createNewProgram(code, parentCode);
         return createNewStockCard(code, parentCode, product, false);
     }
 
