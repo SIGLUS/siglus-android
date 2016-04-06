@@ -567,7 +567,7 @@ describe "submit requisition to web server" do
 
     #Check VIA requisition fields
 
-    via_requisition = body['requisitions'].detect { |r| r['programCode'] == 'VIA'}
+    via_requisition = body['requisitions'].detect { |r| r['programCode'] == 'VIA' && !r['emergency']}
 
     expect(via_requisition['products'].length).to eq 2
     expect(via_requisition['patientQuantifications'].length).to eq 1
