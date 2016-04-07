@@ -40,6 +40,8 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.builder.ProductBuilder;
+import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.openlmis.core.model.service.PeriodService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
@@ -69,6 +71,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     StockRepository mockStockRepository;
     ProgramRepository mockProgramRepository;
     RnrFormRepository mockRnrFormRepository;
+    ProductProgramRepository productProgramRepository;
     PeriodService mockPeriodService;
     private Program program;
 
@@ -79,13 +82,14 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         mockRnrFormRepository = mock(RnrFormRepository.class);
         mockProductRepository = mock(ProductRepository.class);
         mockPeriodService = mock(PeriodService.class);
+        productProgramRepository = mock(ProductProgramRepository.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         mmiaRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(MMIARepository.class);
 
         program = new Program("ART", "ART", null, false, null);
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
-        when(mockProductRepository.queryProducts(anyLong())).thenReturn(createProducts());
+        when(mockProductRepository.queryProductsByProgramId(anyLong())).thenReturn(createProducts());
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_auto_fill_kit_rnr, true);
     }
 
@@ -278,6 +282,116 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         return stockMovementItem;
     }
 
+    @Test
+    public void shouldFillAllItemsForMMIAWhenMultipleProgramsToggleOnAndDeactivateProgramToggleOn() throws Exception {
+        //Given
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, true);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, true);
+
+        List<String> programCodes = newArrayList("MMIA");
+        when(mockProgramRepository.queryProgramCodesByProgramCodeOrParentCode(Constants.MMIA_PROGRAM_CODE)).thenReturn(programCodes);
+
+        List<Long> productIds = newArrayList(100L);
+        when(productProgramRepository.queryActiveProductIdsByProgramsWithKits(programCodes, false)).thenReturn(productIds);
+
+        Product product1 = new ProductBuilder().setProductId(100L).build();
+        Product product2 = new ProductBuilder().setProductId(200L).build();
+
+        when(mockProductRepository.queryProductsByProductIds(productIds)).thenReturn(newArrayList(product1, product2));
+
+
+        //when
+        RnrFormItem rnrFormItem = new RnrFormItemBuilder().setProduct(product1).build();
+        ArrayList<RnrFormItem> rnrFormItems = new ArrayList<>();
+        rnrFormItems.add(rnrFormItem);
+        RnRForm rnRForm = new RnRForm();
+
+        ArrayList<RnrFormItem> items = mmiaRepository.fillAllMMIAProducts(rnRForm, rnrFormItems);
+
+        //then
+        assertThat(items.size(), is(2));
+    }
+
+    @Test
+    public void shouldFillAllItemsForMMIAWhenMultipleProgramsToggleOnAndDeactivateProgramToggleOff () throws Exception {
+        //Given
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, true);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, false);
+
+        List<Long> programIds = newArrayList(1L);
+        when(mockProgramRepository.queryProgramIdsByProgramCodeOrParentCode(Constants.MMIA_PROGRAM_CODE)).thenReturn(programIds);
+
+        Product product1 = new ProductBuilder().setProductId(100L).build();
+        Product product2 = new ProductBuilder().setProductId(200L).build();
+
+        when(mockProductRepository.queryProductsByProgramIds(programIds)).thenReturn(newArrayList(product1, product2));
+
+        //when
+        RnrFormItem rnrFormItem = new RnrFormItemBuilder().setProduct(product1).build();
+        ArrayList<RnrFormItem> rnrFormItems = new ArrayList<>();
+        rnrFormItems.add(rnrFormItem);
+        RnRForm rnRForm = new RnRForm();
+
+        ArrayList<RnrFormItem> items = mmiaRepository.fillAllMMIAProducts(rnRForm, rnrFormItems);
+
+        //then
+        assertThat(items.size(), is(2));
+    }
+
+    @Test
+    public void shouldFillAllItemsForMMIAWhenMultipleProgramsToggleOffAndDeactivateProgramToggleOn () throws Exception {
+        //Given
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, false);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, true);
+
+        List<Long> productIds = newArrayList(100L);
+        when(productProgramRepository.queryActiveProductIdsByProgramsWithKits(newArrayList("MMIA"), false)).thenReturn(productIds);
+
+        Product product1 = new ProductBuilder().setProductId(100L).build();
+        Product product2 = new ProductBuilder().setProductId(200L).build();
+
+        when(mockProductRepository.queryProductsByProductIds(productIds)).thenReturn(newArrayList(product1, product2));
+
+
+        //when
+        RnrFormItem rnrFormItem = new RnrFormItemBuilder().setProduct(product1).build();
+        ArrayList<RnrFormItem> rnrFormItems = new ArrayList<>();
+        rnrFormItems.add(rnrFormItem);
+        RnRForm rnRForm = new RnRForm();
+
+        ArrayList<RnrFormItem> items = mmiaRepository.fillAllMMIAProducts(rnRForm, rnrFormItems);
+
+        //then
+        assertThat(items.size(), is(2));
+    }
+
+    @Test
+    public void shouldFillAllItemsForMMIAWhenMultipleProgramsToggleOffAndDeactivateProgramToggleOff () throws Exception {
+        //Given
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, false);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, false);
+
+        Program program = new Program();
+        program.setId(1L);
+        when(mockProgramRepository.queryByCode(Constants.MMIA_PROGRAM_CODE)).thenReturn(program);
+
+        Product product1 = new ProductBuilder().setProductId(100L).build();
+        Product product2 = new ProductBuilder().setProductId(200L).build();
+
+        when(mockProductRepository.queryProductsByProgramId(1L)).thenReturn(newArrayList(product1, product2));
+
+        //when
+        RnrFormItem rnrFormItem = new RnrFormItemBuilder().setProduct(product1).build();
+        ArrayList<RnrFormItem> rnrFormItems = new ArrayList<>();
+        rnrFormItems.add(rnrFormItem);
+        RnRForm rnRForm = new RnRForm();
+
+        ArrayList<RnrFormItem> items = mmiaRepository.fillAllMMIAProducts(rnRForm, rnrFormItems);
+
+        //then
+        assertThat(items.size(), is(2));
+    }
+
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
@@ -286,6 +400,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
             bind(StockRepository.class).toInstance(mockStockRepository);
             bind(ProgramRepository.class).toInstance(mockProgramRepository);
             bind(PeriodService.class).toInstance(mockPeriodService);
+            bind(ProductProgramRepository.class).toInstance(productProgramRepository);
         }
     }
 }

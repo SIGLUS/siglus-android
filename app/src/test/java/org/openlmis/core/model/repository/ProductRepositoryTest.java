@@ -188,25 +188,42 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldQueryActiveProductsByCodesWithKits() throws Exception {
 
-        productRepository.createOrUpdate(ProductBuilder.create().setCode("08A01").setIsActive(true).setIsKit(true).build());
-        productRepository.createOrUpdate(ProductBuilder.create().setCode("08A02").setIsActive(true).setIsKit(false).build());
-        productRepository.createOrUpdate(ProductBuilder.create().setCode("08A03").setIsActive(false).setIsKit(true).build());
-        productRepository.createOrUpdate(ProductBuilder.create().setCode("08A04").setIsActive(true).setIsKit(false).build());
+        createSeveralProducts();
 
         List<Product> queriedProducts = productRepository.queryActiveProductsByCodesWithKits(Arrays.asList("08A01", "08A02", "08A03", "08A04"), true);
 
         assertEquals(3, queriedProducts.size());
     }
 
+    private void createSeveralProducts() throws LMISException {
+        productRepository.createOrUpdate(ProductBuilder.create().setCode("08A01").setIsActive(true).setIsKit(true).build());
+        productRepository.createOrUpdate(ProductBuilder.create().setCode("08A02").setIsActive(true).setIsKit(false).build());
+        productRepository.createOrUpdate(ProductBuilder.create().setCode("08A03").setIsActive(false).setIsKit(true).build());
+        productRepository.createOrUpdate(ProductBuilder.create().setCode("08A04").setIsActive(true).setIsKit(false).build());
+    }
+
     @Test
     public void shouldQueryActiveProductsByCodesWithoutKits() throws Exception {
 
+        createSeveralProducts();
+
+        List<Product> queriedProducts = productRepository.queryActiveProductsByCodesWithKits(Arrays.asList("08A01", "08A02", "08A03", "08A04"), false);
+
+        assertEquals(2, queriedProducts.size());
+    }
+
+    @Test
+    public void shouldQueryProductsByProductIds() throws Exception {
         productRepository.createOrUpdate(ProductBuilder.create().setCode("08A01").setIsActive(true).setIsKit(true).build());
         productRepository.createOrUpdate(ProductBuilder.create().setCode("08A02").setIsActive(true).setIsKit(false).build());
         productRepository.createOrUpdate(ProductBuilder.create().setCode("08A03").setIsActive(false).setIsKit(true).build());
         productRepository.createOrUpdate(ProductBuilder.create().setCode("08A04").setIsActive(true).setIsKit(false).build());
 
-        List<Product> queriedProducts = productRepository.queryActiveProductsByCodesWithKits(Arrays.asList("08A01", "08A02", "08A03", "08A04"), false);
+        Product product1 = productRepository.getByCode("08A01");
+        Product product2 = productRepository.getByCode("08A03");
+
+
+        List<Product> queriedProducts = productRepository.queryProductsByProductIds(Arrays.asList(product1.getId(), product2.getId()));
 
         assertEquals(2, queriedProducts.size());
     }

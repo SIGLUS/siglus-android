@@ -169,7 +169,7 @@ public class ProductRepository {
     }
 
 
-    public List<Product> queryProducts(final long programId) throws LMISException {
+    public List<Product> queryProductsByProgramId(final long programId) throws LMISException {
         return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
             @Override
             public List<Product> operate(Dao<Product, String> dao) throws SQLException {
@@ -221,6 +221,15 @@ public class ProductRepository {
             @Override
             public List<Product> operate(Dao<Product, String> dao) throws SQLException, LMISException {
                 return dao.queryBuilder().where().in("program_id", programIds).query();
+            }
+        });
+    }
+
+    public List<Product> queryProductsByProductIds(final List<Long> productIds) throws LMISException {
+        return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
+            @Override
+            public List<Product> operate(Dao<Product, String> dao) throws SQLException, LMISException {
+                return dao.queryBuilder().where().in("id", productIds).query();
             }
         });
     }

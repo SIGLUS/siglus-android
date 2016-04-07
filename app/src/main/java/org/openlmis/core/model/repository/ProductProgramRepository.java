@@ -6,9 +6,12 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -19,6 +22,10 @@ public class ProductProgramRepository {
 
     @Inject
     DbUtil dbUtil;
+
+    @Inject
+    ProductRepository productRepository;
+
 
     @Inject
     public ProductProgramRepository(Context context) {
@@ -67,5 +74,23 @@ public class ProductProgramRepository {
 
     protected List<ProductProgram> listAll() throws LMISException {
         return genericDao.queryForAll();
+    }
+
+
+    public List<Long> queryActiveProductIdsByProgramsWithKits(List<String> programCodes, boolean isWithKit) throws LMISException {
+        List<ProductProgram> productPrograms = listActiveProductProgramsByProgramCodes(programCodes);
+        List<String> productCodes = FluentIterable.from(productPrograms).transform(new Function<ProductProgram, String>() {
+            @Override
+            public String apply(ProductProgram productProgram) {
+                return productProgram.getProductCode();
+            }
+        }).toList();
+
+        return FluentIterable.from(productRepository.queryActiveProductsByCodesWithKits(productCodes, isWithKit)).transform(new Function<Product, Long>() {
+            @Override
+            public Long apply(Product product) {
+                return product.getId();
+            }
+        }).toList();
     }
 }

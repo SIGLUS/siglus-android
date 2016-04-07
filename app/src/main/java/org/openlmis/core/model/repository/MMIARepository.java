@@ -45,6 +45,8 @@ import java.util.List;
 
 import roboguice.inject.InjectResource;
 
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
+
 public class MMIARepository extends RnrFormRepository {
 
     @InjectResource(R.string.label_new_patients)
@@ -67,6 +69,9 @@ public class MMIARepository extends RnrFormRepository {
 
     @Inject
     ProductRepository productRepository;
+
+    @Inject
+    ProductProgramRepository productProgramRepository;
 
     @Inject
     public MMIARepository(Context context) {
@@ -120,13 +125,26 @@ public class MMIARepository extends RnrFormRepository {
         return fillAllMMIAProducts(form, rnrFormItems);
     }
 
-    private ArrayList<RnrFormItem> fillAllMMIAProducts(RnRForm form, List<RnrFormItem> rnrFormItems) throws LMISException {
+    protected ArrayList<RnrFormItem> fillAllMMIAProducts(RnRForm form, List<RnrFormItem> rnrFormItems) throws LMISException {
         List<Product> products;
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rnr_multiple_programs)){
-            List<Long> programIds = programRepository.queryProgramIdsByProgramCodeOrParentCode(Constants.MMIA_PROGRAM_CODE);
-            products = productRepository.queryProductsByProgramIds(programIds);
+
+            if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deactivate_program_product)) {
+                List<String> programCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode(Constants.MMIA_PROGRAM_CODE);
+                List<Long> productIds = productProgramRepository.queryActiveProductIdsByProgramsWithKits(programCodes, false);
+                products = productRepository.queryProductsByProductIds(productIds);
+            } else {
+                List<Long> programIds = programRepository.queryProgramIdsByProgramCodeOrParentCode(Constants.MMIA_PROGRAM_CODE);
+                products = productRepository.queryProductsByProgramIds(programIds);
+            }
         }else {
-            products = productRepository.queryProducts(programRepository.queryByCode(Constants.MMIA_PROGRAM_CODE).getId());
+            if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deactivate_program_product)) {
+                List<String> programCodes = newArrayList(Constants.MMIA_PROGRAM_CODE);
+                List<Long> productIds = productProgramRepository.queryActiveProductIdsByProgramsWithKits(programCodes, false);
+                products = productRepository.queryProductsByProductIds(productIds);
+            } else {
+                products = productRepository.queryProductsByProgramId(programRepository.queryByCode(Constants.MMIA_PROGRAM_CODE).getId());
+            }
         }
         ArrayList<RnrFormItem> result = new ArrayList<>();
 
