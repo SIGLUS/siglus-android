@@ -247,7 +247,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         stockCardList.add(stockCard);
 
-        when(mockStockRepository.listActiveStockCardsWithKit(anyString())).thenReturn(stockCardList);
+        when(mockStockRepository.listActiveStockCards(anyString(), any(ProductRepository.IsWithKit.class))).thenReturn(stockCardList);
         StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setCreatedTime(new Date());
         stockMovementItem.setMovementDate(movementDate);
@@ -271,7 +271,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         List<StockCard> stockCardList = new ArrayList<>();
         StockCard stockCard = new StockCard();
         stockCardList.add(stockCard);
-        when(mockStockRepository.listActiveStockCardsWithOutKit(anyString())).thenReturn(stockCardList);
+        when(mockStockRepository.listActiveStockCards(anyString(), any(ProductRepository.IsWithKit.class))).thenReturn(stockCardList);
 
         Date movementDate = DateUtil.parseString("2015-07-21", DateUtil.DB_DATE_FORMAT);
         Date createdTime = DateUtil.parseString("2015-07-21 11:11:13", DateUtil.DATE_TIME_FORMAT);
@@ -360,7 +360,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         form.setPeriodEnd(DateUtil.parseString("10/20/2015", DateUtil.SIMPLE_DATE_FORMAT));
         form.setProgram(new Program("mmia", "mmia", null, false,null));
 
-        when(mockStockRepository.listActiveStockCardsWithKit(anyString())).thenReturn(stockCards);
+        when(mockStockRepository.listActiveStockCards(anyString(), any(ProductRepository.IsWithKit.class))).thenReturn(stockCards);
         DateTime dateTime = new DateTime();
         dateTime.millisOfDay();
         StockMovementItem stockMovementItem = new StockMovementItem();

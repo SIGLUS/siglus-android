@@ -313,9 +313,9 @@ public class RnrFormRepository {
     protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm form) throws LMISException {
         List<StockCard> stockCards;
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_auto_fill_kit_rnr)) {
-            stockCards = stockRepository.listActiveStockCardsWithKit(form.getProgram().getProgramCode());
+            stockCards = stockRepository.listActiveStockCards(form.getProgram().getProgramCode(), ProductRepository.IsWithKit.Yes);
         } else {
-            stockCards = stockRepository.listActiveStockCardsWithOutKit(form.getProgram().getProgramCode());
+            stockCards = stockRepository.listActiveStockCards(form.getProgram().getProgramCode(), ProductRepository.IsWithKit.No);
         }
 
         for (Iterator iterator = stockCards.iterator(); iterator.hasNext(); ) {

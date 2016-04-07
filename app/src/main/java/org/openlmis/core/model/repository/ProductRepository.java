@@ -37,8 +37,6 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-import static org.openlmis.core.model.Product.IsKit;
-
 public class ProductRepository {
 
     GenericDao<Product> genericDao;
@@ -54,7 +52,7 @@ public class ProductRepository {
         kitProductGenericDao = new GenericDao<>(KitProduct.class, context);
     }
 
-    public List<Product> listActiveProducts(final IsKit isKit) throws LMISException {
+    public List<Product> listActiveProducts(final Product.IsKit isKit) throws LMISException {
         List<Product> activeProducts = dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
             @Override
             public List<Product> operate(Dao<Product, String> dao) throws SQLException {
@@ -232,5 +230,20 @@ public class ProductRepository {
                 return dao.queryBuilder().where().in("id", productIds).query();
             }
         });
+    }
+
+    public enum IsWithKit {
+        Yes(true),
+        No(false);
+
+        public boolean IsWithKit() {
+            return IsWithKit;
+        }
+
+        private boolean IsWithKit;
+
+        IsWithKit(boolean IsWithKit) {
+            this.IsWithKit = IsWithKit;
+        }
     }
 }
