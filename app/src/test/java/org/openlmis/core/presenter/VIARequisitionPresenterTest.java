@@ -516,7 +516,7 @@ public class VIARequisitionPresenterTest {
         ArrayList<StockCard> stockCards = newArrayList();
         Date periodEndDate = new Date();
         RnRForm rnRForm = new RnRForm();
-        when(mockRnrFormRepository.initRnrForm(periodEndDate)).thenReturn(rnRForm);
+        when(mockRnrFormRepository.initRnrForm(periodEndDate, true)).thenReturn(rnRForm);
         ArrayList<RnrFormItem> rnrFormItems = new ArrayList<>();
         when(mockRnrFormRepository.generateRnrFormItems(rnRForm, stockCards)).thenReturn(rnrFormItems);
 

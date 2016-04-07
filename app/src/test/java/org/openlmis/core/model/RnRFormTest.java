@@ -140,15 +140,15 @@ public class RnRFormTest {
         DateTime periodEnd = new DateTime(DateUtil.parseString("2015-07-21 11:11:11", DateUtil.DATE_TIME_FORMAT));
 
         LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-07-26 10:10:10", DateUtil.DATE_TIME_FORMAT).getTime());
-        RnRForm form = RnRForm.init(program, new Period(periodBegin, periodEnd));
+        RnRForm form = RnRForm.init(program, new Period(periodBegin, periodEnd), false);
         assertTrue(form.isMissed());
 
         LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-07-25 10:10:10", DateUtil.DATE_TIME_FORMAT).getTime());
-        form = RnRForm.init(program, new Period(periodBegin, periodEnd));
+        form = RnRForm.init(program, new Period(periodBegin, periodEnd), false);
         assertFalse(form.isMissed());
 
         LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-06-25 10:10:10", DateUtil.DATE_TIME_FORMAT).getTime());
-        form = RnRForm.init(program, new Period(periodBegin, periodEnd));
+        form = RnRForm.init(program, new Period(periodBegin, periodEnd), false);
         assertFalse(form.isMissed());
     }
 }

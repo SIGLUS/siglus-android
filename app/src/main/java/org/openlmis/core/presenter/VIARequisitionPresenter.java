@@ -117,7 +117,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
     //TODO bug: rnr is create db item, so rnr will appear in rnn list, when on #84 will handle this bug
     protected RnRForm initEmergencyRnr(List<StockCard> stockCards, Date periodEndDate) throws LMISException {
-        RnRForm rnRForm = rnrFormRepository.initRnrForm(periodEndDate);
+        RnRForm rnRForm = rnrFormRepository.initRnrForm(periodEndDate, true);
         rnRForm.setRnrFormItemListWrapper(rnrFormRepository.generateRnrFormItems(rnRForm, stockCards));
         return rnRForm;
     }

@@ -130,13 +130,13 @@ public class RnRForm extends BaseModel {
         return rnrForm;
     }
 
-    public static RnRForm init(Program program, Period period) {
+    public static RnRForm init(Program program, Period period, boolean isEmergency) {
         RnRForm rnRForm = new RnRForm();
         rnRForm.program = program;
         rnRForm.periodBegin = period.getBegin().toDate();
         rnRForm.periodEnd = period.getEnd().toDate();
 
-        if (isMissed(period)) {
+        if (isMissed(period) && !isEmergency) {
             rnRForm.status = RnRForm.STATUS.DRAFT_MISSED;
         } else {
             rnRForm.status = RnRForm.STATUS.DRAFT;

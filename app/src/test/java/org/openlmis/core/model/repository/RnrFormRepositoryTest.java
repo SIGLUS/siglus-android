@@ -266,7 +266,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         DateTime periodBegin = new DateTime(DateUtil.parseString("2015-06-21 10:10:10", DateUtil.DATE_TIME_FORMAT));
         DateTime periodEnd = new DateTime(DateUtil.parseString("2015-07-21 11:11:11", DateUtil.DATE_TIME_FORMAT));
-        RnRForm form = RnRForm.init(program, new Period(periodBegin, periodEnd));
+        RnRForm form = RnRForm.init(program, new Period(periodBegin, periodEnd), false);
 
         List<StockCard> stockCardList = new ArrayList<>();
         StockCard stockCard = new StockCard();

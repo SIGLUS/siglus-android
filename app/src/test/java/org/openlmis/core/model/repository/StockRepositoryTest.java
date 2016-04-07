@@ -476,6 +476,21 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         Product viaProduct = new ProductBuilder().setProgram(via).setCode("A1").build();
         productRepository.createOrUpdate(viaProduct);
 
+        ArrayList<ProductProgram> productPrograms = new ArrayList<>();
+        ProductProgram viaProductProgram = new ProductProgram();
+        viaProductProgram.setProductCode(viaProduct.getCode());
+        viaProductProgram.setProgramCode(via.getProgramCode());
+        viaProductProgram.setActive(true);
+        productPrograms.add(viaProductProgram);
+
+        ProductProgram mmiaProductProgram = new ProductProgram();
+        mmiaProductProgram.setProductCode(viaProduct.getCode());
+        mmiaProductProgram.setProgramCode(via.getProgramCode());
+        mmiaProductProgram.setActive(true);
+        productPrograms.add(mmiaProductProgram);
+
+        productProgramRepository.batchSave(productPrograms);
+
         stockCard.setProduct(mmiaProduct);
         stockRepository.save(stockCard);
         StockCard stockCard2 = new StockCard();
