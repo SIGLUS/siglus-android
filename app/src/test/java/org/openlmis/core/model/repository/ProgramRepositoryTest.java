@@ -58,7 +58,7 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
         programRepository.createOrUpdateProgramWithProduct(programs);
 
         //then
-        assertThat(programRepository.list().size(), is(1));
+        assertThat(programRepository.list().size(), is(10)); // 9 initialized programs + 1 new TB
         assertThat(productRepository.listActiveProducts(IsKit.No).size(), is(1));
 
         //when add product to existing program
@@ -70,7 +70,7 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
         programRepository.createOrUpdateProgramWithProduct(programs);
 
         //then
-        assertThat(programRepository.list().size(), is(1));
+        assertThat(programRepository.list().size(), is(10)); // 9 initialized programs + 1 new TB
         assertThat(productRepository.listActiveProducts(IsKit.No).size(), is(2));
         assertThat(productRepository.listActiveProducts(IsKit.No).get(1).getPrimaryName(), is("Test Product2"));
 
@@ -79,7 +79,7 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
         programRepository.createOrUpdateProgramWithProduct(programs);
 
         //then
-        assertThat(programRepository.list().size(), is(1));
+        assertThat(programRepository.list().size(), is(10)); // 9 initialized programs + 1 new TB
         assertThat(productRepository.listActiveProducts(IsKit.No).size(), is(2));
         assertThat(productRepository.listActiveProducts(IsKit.No).get(1).getPrimaryName(), is("Test Product2 Updated"));
     }
@@ -94,8 +94,8 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
 
         List<Long> viaProgramIds = programRepository.queryProgramIdsByProgramCodeOrParentCode("VIA");
         List<Long> mmiaProgramIds = programRepository.queryProgramIdsByProgramCodeOrParentCode("MMIA");
-        assertThat(viaProgramIds.size(), is(2));
-        assertThat(mmiaProgramIds.size(), is(3));
+        assertThat(viaProgramIds.size(), is(7)); // 6 initialized VIA programs + TB
+        assertThat(mmiaProgramIds.size(), is(3)); // TARV + PTV + MMIA
     }
 
     @Test

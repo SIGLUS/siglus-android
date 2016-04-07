@@ -25,7 +25,7 @@ public final class Constants {
     // Don't change these program codes!!!
     public static final String MMIA_PROGRAM_CODE = "MMIA";
     public static final String VIA_PROGRAM_CODE = "VIA";
-    public static final String ESS_PRORGRAM_CODE = "ESS_MEDS";
+    public static final String ESS_PROGRAM_CODE = "ESS_MEDS";
 
     // Intent Params
     public static final String PARAM_STOCK_CARD_ID = "stockCardId";
