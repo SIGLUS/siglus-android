@@ -32,6 +32,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.StockMovementIsNullException;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -39,6 +40,7 @@ import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.Lists;
 
 import java.sql.SQLException;
@@ -223,11 +225,8 @@ public class StockRepository {
     private List<StockCard> list(String programCode) throws LMISException {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deactivate_program_product)) {
             List<String> programCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode(programCode);
-            List<Long> productIds = queryActiveProductIdsByProgramsWithKits(programCodes, false);
+            List<Long> productIds = productProgramRepository.queryActiveProductIdsByProgramsWithKits(programCodes, false);
             return listActiveStockCardsByProductIds(productIds);
-//            List<String> programCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode(programCode);
-//            List<Long> productIds = productProgramRepository.queryActiveProductIdsByProgramsWithKits(programCodes, false);
-//            return listActiveStockCardsByProductIds(productIds);
         } else {
             final List<Long> programIds = programRepository.getProgramIdsByProgramCode(programCode);
             return dbUtil.withDao(StockCard.class, new DbUtil.Operation<StockCard, List<StockCard>>() {
