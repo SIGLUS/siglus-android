@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public class StockRepository {
     @Inject
@@ -297,7 +298,7 @@ public class StockRepository {
             List<Long> productIds = queryActiveProductIdsByProgramsWithKits(programCodes, true);
             return listActiveStockCardsByProductIds(productIds);
         } else {
-            return listActiveStockCards(programRepository.getProgramIdsByProgramCode(programCode), true);
+            return listActiveStockCards(getProgramIds(programCode), true);
         }
     }
 
@@ -307,7 +308,16 @@ public class StockRepository {
             List<Long> productIds = queryActiveProductIdsByProgramsWithKits(programCodes, false);
             return listActiveStockCardsByProductIds(productIds);
         } else {
-            return listActiveStockCards(programRepository.getProgramIdsByProgramCode(programCode), false);
+            return listActiveStockCards(getProgramIds(programCode), false);
+        }
+    }
+
+    private List<Long> getProgramIds(String programCode) throws LMISException {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rnr_multiple_programs)) {
+            return programRepository.queryProgramIdsByProgramCodeOrParentCode(programCode);
+        } else {
+            Program program = programRepository.queryByCode(programCode);
+            return newArrayList(program.getId());
         }
     }
 
