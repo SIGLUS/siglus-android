@@ -12,9 +12,9 @@ public class AddNewPrograms extends Migration {
     public void up() {
         String formatDate = DateUtil.formatDate(new Date(LMISApp.getInstance().getCurrentTimeMillis()), DateUtil.DATE_TIME_FORMAT);
 
-        execSQL("INSERT INTO programs (programCode, programName, createdAt, updatedAt) "
+        execSQL("INSERT INTO programs(programCode, programName, createdAt, updatedAt) "
                 + "SELECT 'MMIA', 'MMIA', '" + formatDate + "' , '"  + formatDate + "' "
-                + "WHERE NOT EXISTS (SELECT * FROM programs WHERE programCode = 'MMIA')");
+                + "WHERE NOT EXISTS(SELECT * FROM programs WHERE programCode = 'MMIA')");
 
         execSQL("INSERT INTO programs (programCode, programName, createdAt, updatedAt) "
                 + "SELECT 'VIA', 'VIA', '" + formatDate + "' , '"  + formatDate + "' "

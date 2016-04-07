@@ -41,7 +41,6 @@ import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.SelectRegimeProductsActivity;
 import org.openlmis.core.view.fragment.MMIARequisitionFragment;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
@@ -61,7 +60,8 @@ public class MMIARegimeList extends LinearLayout {
     private ArrayList<RegimenItem> adults;
     private ArrayList<RegimenItem> paediatrics;
     protected MMIARequisitionPresenter presenter;
-    private BaseActivity activity;
+
+    private MMIARegimeListener regimeListener;
 
     public MMIARegimeList(Context context) {
         super(context);
@@ -75,7 +75,7 @@ public class MMIARegimeList extends LinearLayout {
 
     private void init(Context context) {
         this.context = context;
-        activity = (BaseActivity) getContext();
+
         setOrientation(LinearLayout.VERTICAL);
         layoutInflater = LayoutInflater.from(context);
     }
@@ -243,18 +243,24 @@ public class MMIARegimeList extends LinearLayout {
         dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
             @Override
             public void positiveClick(String tag) {
-                activity.loading();
+                if (regimeListener != null) {
+                    regimeListener.loading();
+                }
                 presenter.deleteRegimeItem(item).subscribe(new Subscriber<Void>() {
                     @Override
                     public void onCompleted() {
                         refreshRegimeView();
-                        activity.loaded();
+                        if (regimeListener != null) {
+                            regimeListener.loaded();
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        activity.loaded();
                         ToastUtil.show(e.getMessage());
+                        if (regimeListener != null) {
+                            regimeListener.loaded();
+                        }
                     }
 
                     @Override
@@ -300,7 +306,9 @@ public class MMIARegimeList extends LinearLayout {
             ToastUtil.show(R.string.msg_regime_already_exist);
             return;
         }
-        activity.loading();
+        if (regimeListener != null) {
+            regimeListener.loading();
+        }
         presenter.addCustomRegimenItem(regimen).subscribe(customRegimenItemSubscriber());
     }
 
@@ -309,13 +317,17 @@ public class MMIARegimeList extends LinearLayout {
             @Override
             public void onCompleted() {
                 refreshRegimeView();
-                activity.loaded();
+                if (regimeListener != null) {
+                    regimeListener.loaded();
+                }
             }
 
             @Override
             public void onError(Throwable e) {
-                activity.loaded();
                 ToastUtil.show(e.getMessage());
+                if (regimeListener != null) {
+                    regimeListener.loaded();
+                }
             }
 
             @Override
@@ -371,4 +383,13 @@ public class MMIARegimeList extends LinearLayout {
         return RnRForm.calculateTotalRegimenAmount(dataList);
     }
 
+
+    public interface MMIARegimeListener {
+        void loading();
+        void loaded();
+    }
+
+    public void setRegimeListener(MMIARegimeListener regimeListener) {
+        this.regimeListener = regimeListener;
+    }
 }

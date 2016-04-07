@@ -1,6 +1,9 @@
 package org.openlmis.core.view.widget;
 
+import android.app.Activity;
+import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.junit.Before;
@@ -13,9 +16,12 @@ import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
+import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.MMIARequisitionActivity;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.util.FragmentTestUtil;
 
 import java.util.ArrayList;
 
@@ -35,15 +41,25 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 public class MMIARegimeListTest {
 
     private MMIARegimeList mmiaRegimeList;
-    private MMIARequisitionActivity activity;
+//    private MMIARequisitionActivity activity;
     private MMIARequisitionPresenter presenter;
+    private DummyActivity dummyActivity;
 
     @Before
     public void setUp() throws Exception {
-        activity = Robolectric.buildActivity(MMIARequisitionActivity.class).create().get();
-        mmiaRegimeList = new MMIARegimeList(activity);
+        dummyActivity = Robolectric.setupActivity(DummyActivity.class);
+        mmiaRegimeList = new MMIARegimeList(dummyActivity);
         presenter = mock(MMIARequisitionPresenter.class);
         mmiaRegimeList.presenter = presenter;
+    }
+
+    private static class DummyActivity extends Activity {
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            LinearLayout view = new LinearLayout(this);
+            setContentView(view);
+        }
     }
 
     @Test
@@ -60,7 +76,8 @@ public class MMIARegimeListTest {
         when(presenter.deleteRegimeItem(item)).thenReturn(value);
 
         mmiaRegimeList.showDelConfirmDialog(item);
-        SimpleDialogFragment del_confirm_dialog = (SimpleDialogFragment) activity.getFragmentManager().findFragmentByTag("del_confirm_dialog");
+
+        SimpleDialogFragment del_confirm_dialog = (SimpleDialogFragment) dummyActivity.getFragmentManager().findFragmentByTag("del_confirm_dialog");
         SimpleDialogFragment.MsgDialogCallBack mListener = del_confirm_dialog.getMListener();
         mListener.positiveClick("");
 
@@ -83,7 +100,7 @@ public class MMIARegimeListTest {
 
         when(presenter.getRnRForm()).thenReturn(rnRForm);
 
-        mmiaRegimeList.initView(new TextView(LMISTestApp.getContext()), presenter);
+        mmiaRegimeList.initView(new TextView(RuntimeEnvironment.application), presenter);
 
         assertNull(mmiaRegimeList.getChildAt(1).findViewById(R.id.image_view_del));
     }

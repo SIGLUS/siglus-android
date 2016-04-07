@@ -163,6 +163,21 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         }
         disableFreezeHeaderScroll();
         initActionBarHeight();
+        setRegimenListener();
+    }
+
+    private void setRegimenListener() {
+        regimeListView.setRegimeListener(new MMIARegimeList.MMIARegimeListener() {
+            @Override
+            public void loading() {
+                MMIARequisitionFragment.this.loading();
+            }
+
+            @Override
+            public void loaded() {
+                MMIARequisitionFragment.this.loaded();
+            }
+        });
     }
 
     private void disableFreezeHeaderScroll() {
@@ -180,12 +195,8 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         rnrFormList.initView(new ArrayList<>(form.getRnrFormItemListWrapper()));
         regimeListView.initView(tvRegimeTotal, presenter);
         mmiaInfoListView.initView(form.getBaseInfoItemListWrapper());
-
         InflateFreezeHeaderView();
-
-        getActivity().setTitle(getString(R.string.label_mmia_title,
-                DateUtil.formatDateWithoutYear(form.getPeriodBegin()),
-                DateUtil.formatDateWithoutYear(form.getPeriodEnd())));
+        getActivity().setTitle(getString(R.string.label_mmia_title, DateUtil.formatDateWithoutYear(form.getPeriodBegin()), DateUtil.formatDateWithoutYear(form.getPeriodEnd())));
         etComment.setText(form.getComments());
         highlightTotalDifference();
         bindListeners();
@@ -342,12 +353,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         }
 
         if (hasDataChanged()) {
-            SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
-                    null,
-                    getString(R.string.msg_mmia_onback_confirm),
-                    getString(R.string.btn_positive),
-                    getString(R.string.btn_negative),
-                    TAG_BACK_PRESSED);
+            SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(null, getString(R.string.msg_mmia_onback_confirm), getString(R.string.btn_positive), getString(R.string.btn_negative), TAG_BACK_PRESSED);
             dialogFragment.show(getActivity().getFragmentManager(), "back_confirm_dialog");
             dialogFragment.setCallBackListener(this);
         } else {
