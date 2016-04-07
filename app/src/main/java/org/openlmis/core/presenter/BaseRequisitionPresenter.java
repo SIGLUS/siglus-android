@@ -22,6 +22,7 @@ import android.util.Log;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.googleAnalytics.TrackerActions;
@@ -232,7 +233,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         try {
             rnrFormRepository.removeRnrForm(rnRForm);
         } catch (LMISException e) {
-            ToastUtil.show("Delete Failed");
+            ToastUtil.show(context.getString(R.string.delete_rnr_form_failed_warning));
             e.reportToFabric();
         }
     }

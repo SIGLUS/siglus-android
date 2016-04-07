@@ -263,6 +263,8 @@
     <string name="label_total">Total:%1$s</string>
     <string name="requisition_delete_failed">Delete failed</string>
 
+    <string name="delete_rnr_form_failed_warning">Delete Failed</string>
+
     <!-- Signature -->
     <string name="dialog_request_signature">Enter your initials to sign the movement</string>
     <string name="dialog_cancel">Cancel</string>
