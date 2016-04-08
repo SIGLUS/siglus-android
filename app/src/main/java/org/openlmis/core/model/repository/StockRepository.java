@@ -98,6 +98,14 @@ public class StockRepository {
         }
     }
 
+    public void createOrUpdate(final StockCard stockCard){
+        try{
+            genericDao.createOrUpdate(stockCard);
+        }catch (LMISException e){
+            e.reportToFabric();
+        }
+    }
+
     public void update(final StockCard stockCard) {
         try {
             genericDao.update(stockCard);
@@ -183,7 +191,7 @@ public class StockRepository {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-                    update(stockCard);
+                    createOrUpdate(stockCard);
                     updateProductOfStockCard(stockCard.getProduct());
                     saveStockItem(stockCard.generateInitialStockMovementItem());
                     return null;

@@ -176,7 +176,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldLoadMasterProductsList() throws LMISException {
         StockCard stockCardVIA = StockCardBuilder.buildStockCard();
-        Product productVIA = new ProductBuilder().setPrimaryName("VIA Product").setCode("VIA Code").build();
+        Product productVIA = new ProductBuilder().setProductId(9L).setPrimaryName("VIA Product").setCode("VIA Code").build();
         stockCardVIA.setProduct(productVIA);
         StockCard stockCardMMIA = StockCardBuilder.buildStockCard();
         Product productMMIA = new ProductBuilder().setProductId(10L).setPrimaryName("MMIA Product").setCode("MMIA Code").setIsArchived(true).build();
@@ -189,9 +189,8 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         Product productUnknownB = new ProductBuilder().setPrimaryName("B Unknown Product").setCode("B Code").build();
         unknownBStockCard.setProduct(productUnknownB);
 
-        when(stockRepositoryMock.list()).thenReturn(Arrays.asList(stockCardVIA, stockCardMMIA));
+        when(stockRepositoryMock.queryStockCardByProductId(9L)).thenReturn(stockCardVIA);
         when(productRepositoryMock.listActiveProducts(IsKit.No)).thenReturn(Arrays.asList(productMMIA, productVIA, productUnknownB, productUnknownA));
-        when(stockRepositoryMock.queryStockCardByProductId(10L)).thenReturn(stockCardMMIA);
 
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
         Observable<List<InventoryViewModel>> observable = inventoryPresenter.loadInventory();
@@ -310,6 +309,23 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
         assertFalse(archivedStockCard.getProduct().isArchived());
         verify(stockRepositoryMock, times(1)).reInventoryArchivedStockCard(archivedStockCard);
+    }
+
+    @Test
+    public void shouldReInventoryArchivedProductWithOutStockCard() throws LMISException {
+        Product archivedProduct = new ProductBuilder().setPrimaryName("Archived product").setCode("BBC")
+                .setIsArchived(true).build();
+        InventoryViewModel archivedViewModel = new InventoryViewModel(archivedProduct);
+        archivedViewModel.setChecked(true);
+        archivedViewModel.setQuantity("200");
+
+        List<InventoryViewModel> inventoryViewModelList = newArrayList(archivedViewModel);
+
+        inventoryPresenter.initStockCards(inventoryViewModelList);
+
+        ArgumentCaptor<StockCard> argumentCaptor = ArgumentCaptor.forClass(StockCard.class);
+        verify(stockRepositoryMock).reInventoryArchivedStockCard(argumentCaptor.capture());
+        assertFalse(argumentCaptor.getValue().getProduct().isArchived());
     }
 
     @Test

@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.StockMovementIsNullException;
 import org.openlmis.core.model.Period;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
@@ -104,6 +105,15 @@ public class StockService {
             }
         }
         return totalIssued;
+    }
+
+    public boolean hasStockCard(Product product) {
+        try {
+            return stockRepository.queryStockCardByProductId(product.getId()) != null;
+        } catch (LMISException e) {
+            e.reportToFabric();
+            return false;
+        }
     }
 
 }
