@@ -35,6 +35,7 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Regimen;
@@ -343,7 +344,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     }
 
     public void onBackPressed() {
-        if (getResources().getBoolean(R.bool.feature_show_pop_up_even_no_data_changed_418)) {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_show_pop_up_even_no_data_changed_418)) {
             if (presenter.getRnrFormStatus() == RnRForm.STATUS.DRAFT) {
                 hasDataChanged = true;
             }
