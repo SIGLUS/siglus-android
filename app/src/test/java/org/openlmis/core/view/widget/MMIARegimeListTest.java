@@ -1,9 +1,6 @@
 package org.openlmis.core.view.widget;
 
-import android.app.Activity;
-import android.os.Bundle;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.junit.Before;
@@ -16,12 +13,10 @@ import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.MMIARequisitionPresenter;
-import org.openlmis.core.view.activity.BaseActivity;
-import org.openlmis.core.view.activity.MMIARequisitionActivity;
+import org.openlmis.core.view.activity.DummyActivity;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.util.FragmentTestUtil;
 
 import java.util.ArrayList;
 
@@ -41,7 +36,6 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 public class MMIARegimeListTest {
 
     private MMIARegimeList mmiaRegimeList;
-//    private MMIARequisitionActivity activity;
     private MMIARequisitionPresenter presenter;
     private DummyActivity dummyActivity;
 
@@ -51,15 +45,6 @@ public class MMIARegimeListTest {
         mmiaRegimeList = new MMIARegimeList(dummyActivity);
         presenter = mock(MMIARequisitionPresenter.class);
         mmiaRegimeList.presenter = presenter;
-    }
-
-    private static class DummyActivity extends Activity {
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            LinearLayout view = new LinearLayout(this);
-            setContentView(view);
-        }
     }
 
     @Test

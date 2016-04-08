@@ -1,6 +1,6 @@
 package org.openlmis.core.view.holder;
 
-import android.app.AlertDialog;
+import android.app.Fragment;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,12 +12,11 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.builder.RequisitionBuilder;
-import org.openlmis.core.view.activity.VIARequisitionActivity;
+import org.openlmis.core.view.activity.DummyActivity;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.RnRFormItemAdjustmentViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.shadows.ShadowAlertDialog;
 
 import java.util.Arrays;
 
@@ -30,11 +29,12 @@ public class RequisitionFormViewHolderTest {
 
     private RequisitionFormViewHolder viewHolder;
     private RequisitionFormItemViewModel viewModel;
+    private DummyActivity dummyActivity;
 
     @Before
     public void setup() {
-        VIARequisitionActivity viaRequisitionActivity = Robolectric.buildActivity(VIARequisitionActivity.class).create().get();
-        View itemView = LayoutInflater.from(viaRequisitionActivity).inflate(R.layout.item_requisition_body, null, false);
+        dummyActivity = Robolectric.setupActivity(DummyActivity.class);
+        View itemView = LayoutInflater.from(dummyActivity).inflate(R.layout.item_requisition_body, null, false);
         viewHolder = new RequisitionFormViewHolder(itemView);
         viewModel = RequisitionBuilder.buildFakeRequisitionViewModel();
     }
@@ -105,8 +105,10 @@ public class RequisitionFormViewHolderTest {
         viewHolder.populate(viewModel, RnRForm.STATUS.DRAFT);
 
         viewHolder.adjustTheoreticalIcon.performClick();
-        AlertDialog alertDialog = ShadowAlertDialog.getLatestAlertDialog();
-        assertNotNull(alertDialog);
+
+        Fragment dialogFragment = dummyActivity.getFragmentManager().findFragmentByTag("adjustmentTheoreticalDialog");
+
+        assertNotNull(dialogFragment);
     }
 
     private RnRFormItemAdjustmentViewModel generateAdjustmentViewModel() {

@@ -1,5 +1,6 @@
 package org.openlmis.core.view.holder;
 
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.text.Editable;
 import android.text.Html;
@@ -12,7 +13,6 @@ import android.widget.TextView;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.utils.SingleTextWatcher;
-import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.widget.InputFilterMinMax;
@@ -87,7 +87,7 @@ public class RequisitionFormViewHolder extends BaseViewHolder {
                     DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
                             Html.fromHtml(itemViewModel.getFormattedKitAdjustmentMessage()),
                             context.getString(R.string.btn_ok));
-                    dialogFragment.show(((BaseActivity) context).getFragmentManager(), "adjustmentTheoreticalDialog");
+                    dialogFragment.show(((Activity)context).getFragmentManager(), "adjustmentTheoreticalDialog");
                 }
             });
         }
