@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
@@ -53,7 +52,7 @@ public class SelectPeriodPresenter extends Presenter {
                     Period periodInSchedule = periodService.generateNextPeriod(programCode, null);
                     List<Inventory> inventories = inventoryRepository.queryPeriodInventory(periodInSchedule);
                     boolean isDefaultInventoryDate = false;
-                    if (inventories.isEmpty() && LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
+                    if (inventories.isEmpty()) {
                         isDefaultInventoryDate = true;
                         generateDefaultInventoryDates(periodInSchedule, inventories);
                     }

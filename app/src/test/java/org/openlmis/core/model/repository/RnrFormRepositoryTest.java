@@ -258,8 +258,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldNotGetStockCardCreatedAfterPeriodEndDate() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
-
         Program program = new Program();
         program.setId(123);
         program.setProgramCode(Constants.MMIA_PROGRAM_CODE);
@@ -346,8 +344,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         Product product = new Product();
         product.setCode("01A01");
 
-        StockCardBuilder stockCardBuilder = new StockCardBuilder();
-        StockCard stockCard = stockCardBuilder
+        StockCard stockCard = new StockCardBuilder()
                 .setCreateDate(new Date())
                 .setProduct(product)
                 .setExpireDates("10/10/2016, 11/10/2016, 12/10/2017")
@@ -367,7 +364,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         stockMovementItem.setMovementDate(dateTime.toDate());
         stockMovementItem.setCreatedTime(new Date());
         when(mockStockRepository.queryFirstStockMovementItem(any(StockCard.class))).thenReturn(stockMovementItem);
-        when(mockStockRepository.queryStockItems(stockCard, form.getPeriodBegin(), form.getPeriodEnd())).thenReturn(stockMovementItems);
+        when(mockStockRepository.queryStockItemsByPeriodDates(stockCard, form.getPeriodBegin(), form.getPeriodEnd())).thenReturn(stockMovementItems);
 
         List<RnrFormItem> rnrFormItemList = rnrFormRepository.generateRnrFormItems(form, rnrFormRepository.getStockCardsBeforePeriodEnd(form));
 
@@ -526,18 +523,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldUseTodayToInitializeRnrFormIfFeatureToggleIsOff() throws LMISException {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, false);
-
-        rnrFormRepository.programCode = "P1";
-        when(mockProgramRepository.queryByCode("P1")).thenReturn(new Program());
-        RnRForm rnRForm = rnrFormRepository.initRnrForm(null);
-        assertThat(new DateTime(rnRForm.getPeriodBegin()).getDayOfMonth(), is(21));
-    }
-
-    @Test
     public void shouldInitRnrUsingPeriodReturnedByPeriodService() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
         when(mockPeriodService.generateNextPeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime(), new DateTime()));
         rnrFormRepository.programCode = "MMIA";
 

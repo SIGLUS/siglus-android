@@ -23,7 +23,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.RnRFormViewHolder;
 import org.openlmis.core.view.holder.RnRFormViewHolder.RnRFormItemClickListener;
@@ -59,7 +58,7 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormViewHolder> 
     public RnRFormViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         if (viewType == RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL
-                || (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change) && viewType == RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY)
+                || (viewType == RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY)
                 || viewType == RnRFormViewModel.TYPE_MISSED_PERIOD) {
             return new RnRFormViewHolder(inflater.inflate(R.layout.item_rnr_card_disable, parent, false), itemClickListener);
         }
@@ -69,10 +68,7 @@ public class RnRFormListAdapter extends RecyclerView.Adapter<RnRFormViewHolder> 
 
     @Override
     public void onBindViewHolder(RnRFormViewHolder holder, int position) {
-        final RnRFormViewModel model = data.get(position);
-
-        holder.populate(model);
-
+        holder.populate(data.get(position));
     }
 
     @Override

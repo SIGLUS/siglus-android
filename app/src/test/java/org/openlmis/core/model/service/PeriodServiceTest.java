@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
@@ -60,8 +59,6 @@ public class PeriodServiceTest {
 
     @Test
     public void shouldGeneratePeriodWithPreviousRnrEndDateAsBeginAndNextMonthAsEndDate() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
-
         RnRForm previousRnrForm = new RnRForm();
         previousRnrForm.setProgram(programMMIA);
         previousRnrForm.setPeriodEnd(DateUtil.parseString("2020-10-18", DateUtil.DB_DATE_FORMAT));
@@ -78,8 +75,6 @@ public class PeriodServiceTest {
 
     @Test
     public void shouldGeneratePeriodOfJan21ToFebWhenRnrNotExists() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
-
         when(mockStockRepository.queryEarliestStockMovementDateByProgram(anyString())).thenReturn(new DateTime("2016-02-17").toDate());
 
         Period period = periodService.generateNextPeriod(programMMIA.getProgramCode(), null);
@@ -89,8 +84,6 @@ public class PeriodServiceTest {
 
     @Test
     public void shouldGeneratePeriodOfFeb18ToMarWhenRnrNotExists() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
-
         when(mockStockRepository.queryEarliestStockMovementDateByProgram(anyString())).thenReturn(DateUtil.parseString("2016-02-18 13:00:00", DateUtil.DATE_TIME_FORMAT));
 
         Period period = periodService.generateNextPeriod(programMMIA.getProgramCode(), null);
@@ -101,8 +94,6 @@ public class PeriodServiceTest {
 
     @Test
     public void shouldGeneratePeriodOfFeb21ToMarWhenRnrNotExists() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
-
         when(mockStockRepository.queryEarliestStockMovementDateByProgram(anyString())).thenReturn(new DateTime("2016-02-26").toDate());
 
         Period period = periodService.generateNextPeriod(programMMIA.getProgramCode(), null);
@@ -178,8 +169,6 @@ public class PeriodServiceTest {
 
     @Test
     public void shouldGeneratePeriodOfDes21ToJanWhenRnrNotExists() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
-
         when(mockStockRepository.queryEarliestStockMovementDateByProgram(anyString())).thenReturn(new DateTime("2016-01-06").toDate());
 
         Period period = periodService.generateNextPeriod(programMMIA.getProgramCode(), null);
@@ -189,7 +178,6 @@ public class PeriodServiceTest {
 
     @Test
     public void shouldGeneratePeriodOfDes19ToJanWhenRnrNotExists() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
         DateTime dateTime = new DateTime("2015-12-19").plusMonths(1);
         DateTime expectedPeriodEnd = DateUtil.cutTimeStamp(dateTime.withDate(dateTime.getYear(), dateTime.getMonthOfYear(), Period.END_DAY));
         when(mockStockRepository.queryEarliestStockMovementDateByProgram(anyString())).thenReturn(new DateTime("2015-12-19").toDate());

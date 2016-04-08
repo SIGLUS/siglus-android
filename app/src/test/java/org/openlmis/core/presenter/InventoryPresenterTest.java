@@ -29,9 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.openlmis.core.LMISRepositoryUnitTest;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DraftInventory;
@@ -463,8 +461,6 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldSaveInventoryWhenCompletePhysicalInventory() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
-
         List<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
         Observable observable = inventoryPresenter.stockMovementObservable(inventoryViewModels);

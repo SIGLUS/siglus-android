@@ -6,9 +6,7 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Period;
@@ -96,7 +94,6 @@ public class SelectPeriodPresenterTest {
 
     @Test
     public void shouldGenerateDefaultInventoryViewModelsWhenThereIsNoInventoryDone() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
         when(inventoryRepository.queryPeriodInventory(any(Period.class))).thenReturn(new ArrayList<Inventory>());
         Period period = new Period(new DateTime("2015-06-18"), new DateTime("2015-07-20"));
         when(mockPeriodService.generateNextPeriod("MMIA", null)).thenReturn(period);

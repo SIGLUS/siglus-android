@@ -99,31 +99,28 @@ public class RnrFormRepository {
             throw new LMISException("Program cannot be null !");
         }
 
-        RnRForm form;
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
-            Period period = periodService.generateNextPeriod(programCode, periodEndDate);
-            form = RnRForm.init(program, period, isEmergency);
-        } else {
-            form = RnRForm.init(program, DateUtil.today());
-        }
+        Period period = periodService.generateNextPeriod(programCode, periodEndDate);
+        return createInitRnrForm(program, period, isEmergency);
+    }
 
-        final RnRForm finalRnrForm = form;
+    private RnRForm createInitRnrForm(Program program, Period period, boolean isEmergency) throws LMISException {
+        final RnRForm rnrForm = RnRForm.init(program, period, isEmergency);
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-                    create(finalRnrForm);
-                    rnrFormItemRepository.create(generateRnrFormItems(finalRnrForm, getStockCardsBeforePeriodEnd(finalRnrForm)));
-                    createRegimenItems(generateRegimeItems(finalRnrForm));
-                    createBaseInfoItems(generateBaseInfoItems(finalRnrForm));
-                    genericDao.refresh(finalRnrForm);
+                    create(rnrForm);
+                    rnrFormItemRepository.create(generateRnrFormItems(rnrForm, getStockCardsBeforePeriodEnd(rnrForm)));
+                    createRegimenItems(generateRegimeItems(rnrForm));
+                    createBaseInfoItems(generateBaseInfoItems(rnrForm));
+                    genericDao.refresh(rnrForm);
                     return null;
                 }
             });
         } catch (SQLException e) {
             throw new LMISException(e);
         }
-        return form;
+        return rnrForm;
     }
 
     public RnRForm initRnrForm(Date periodEndDate) throws LMISException {
@@ -321,14 +318,8 @@ public class RnrFormRepository {
         for (Iterator iterator = stockCards.iterator(); iterator.hasNext(); ) {
             StockCard stockCard = (StockCard) iterator.next();
             StockMovementItem stockMovementItem = stockRepository.queryFirstStockMovementItem(stockCard);
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
-                if (stockMovementItem != null && (stockMovementItem.getMovementDate().after(form.getPeriodEnd()) || stockMovementItem.getCreatedTime().after(form.getPeriodEnd()))) {
-                    iterator.remove();
-                }
-            } else {
-                if (stockMovementItem != null && (stockMovementItem.getMovementDate().after(form.getPeriodEnd()))) {
-                    iterator.remove();
-                }
+            if (stockMovementItem != null && (stockMovementItem.getMovementDate().after(form.getPeriodEnd()))) {
+                iterator.remove();
             }
         }
         return stockCards;
@@ -336,13 +327,7 @@ public class RnrFormRepository {
 
     protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {
         RnrFormItem rnrFormItem = new RnrFormItem();
-        List<StockMovementItem> stockMovementItems;
-
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
-            stockMovementItems = stockRepository.queryStockItemsByPeriodDates(stockCard, startDate, endDate);
-        } else {
-            stockMovementItems = stockRepository.queryStockItems(stockCard, startDate, endDate);
-        }
+        List<StockMovementItem> stockMovementItems = stockRepository.queryStockItemsByPeriodDates(stockCard, startDate, endDate);
 
         if (stockMovementItems.isEmpty()) {
             rnrFormHelper.initRnrFormItemWithoutMovement(rnrFormItem, lastRnrInventory(stockCard));

@@ -130,8 +130,6 @@ public class RnRFormTest {
 
     @Test
     public void shouldInitFormMissedStatusWhenHasMissed() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
-
         Program program = new Program();
         program.setId(123);
         program.setProgramCode(Constants.MMIA_PROGRAM_CODE);

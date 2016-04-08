@@ -25,7 +25,6 @@ import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -38,7 +37,6 @@ import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.model.service.PeriodService;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
@@ -47,7 +45,6 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import lombok.Setter;
@@ -109,7 +106,7 @@ public class RnRFormListPresenter extends Presenter {
 
         generateRnrViewModelByRnrFormsInDB(rnRFormViewModels, rnRForms);
 
-        generateViewModelsByCurrentDate(rnRFormViewModels, rnRForms);
+        generateViewModelsByCurrentDate(rnRFormViewModels);
 
         populateSyncErrorsOnViewModels(rnRFormViewModels);
 
@@ -122,11 +119,11 @@ public class RnRFormListPresenter extends Presenter {
         return rnRFormViewModels;
     }
 
-    private void generateViewModelsByCurrentDate(List<RnRFormViewModel> rnRFormViewModels, List<RnRForm> rnRForms) throws LMISException {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change) && periodService.hasMissedPeriod(programCode)) {
-            addPreviousPeriodMissedViewModels(rnRFormViewModels, rnRForms);
+    private void generateViewModelsByCurrentDate(List<RnRFormViewModel> rnRFormViewModels) throws LMISException {
+        if (periodService.hasMissedPeriod(programCode)) {
+            addPreviousPeriodMissedViewModels(rnRFormViewModels);
         } else {
-            Period nextPeriodInSchedule = generatePeriod();
+            Period nextPeriodInSchedule = periodService.generateNextPeriod(programCode, null);
 
             if (isAllRnrFormInDBCompletedOrNoRnrFormInDB()) {
                 rnRFormViewModels.add(generateRnrFormViewModelWithoutRnrForm(nextPeriodInSchedule));
@@ -134,37 +131,17 @@ public class RnRFormListPresenter extends Presenter {
         }
     }
 
-    protected Period generatePeriod() throws LMISException {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
-            return periodService.generateNextPeriod(programCode, null);
-        } else {
-            return DateUtil.generateRnRFormPeriodBy(new Date());
-        }
-    }
-
     private RnRFormViewModel generateRnrFormViewModelWithoutRnrForm(Period currentPeriod) throws LMISException {
+        if (isCanNotCreateRnr(currentPeriod)) {
+            return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
+        }
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_requisition_period_logic_change)) {
-            if (isCanNotCreateRnr(currentPeriod)) {
-                return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY);
-            }
+        List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(currentPeriod);
 
-            List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(currentPeriod);
-
-            if (physicalInventories == null || physicalInventories.size() == 0) {
-                return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
-            } else {
-                return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_INVENTORY_DONE);
-            }
+        if (physicalInventories == null || physicalInventories.size() == 0) {
+            return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
         } else {
-            Date latestPhysicalInventoryTime = DateUtil.parseString(sharedPreferenceMgr.getLatestPhysicInventoryTime(), DateUtil.DATE_TIME_FORMAT);
-
-            Date periodBegin = currentPeriod.getBegin().toDate();
-            if (latestPhysicalInventoryTime.before(periodBegin)) {
-                return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD);
-            } else {
-                return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED);
-            }
+            return new RnRFormViewModel(currentPeriod, programCode, RnRFormViewModel.TYPE_INVENTORY_DONE);
         }
     }
 
@@ -195,7 +172,7 @@ public class RnRFormListPresenter extends Presenter {
         }).toList());
     }
 
-    protected void addPreviousPeriodMissedViewModels(List<RnRFormViewModel> viewModels, List<RnRForm> rnRForms) throws LMISException {
+    protected void addPreviousPeriodMissedViewModels(List<RnRFormViewModel> viewModels) throws LMISException {
         int offsetMonth = periodService.getMissedPeriodOffsetMonth(this.programCode);
 
         DateTime inventoryBeginDate = periodService.getCurrentMonthInventoryBeginDate();
@@ -215,7 +192,7 @@ public class RnRFormListPresenter extends Presenter {
     }
 
     private void addFirstMissedAndNotPendingRnrForm(List<RnRFormViewModel> viewModels, int periodOffset) throws LMISException {
-        Period nextPeriodInSchedule = generatePeriod();
+        Period nextPeriodInSchedule = periodService.generateNextPeriod(programCode, null);
 
         List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(nextPeriodInSchedule);
         if (physicalInventories.isEmpty()) {

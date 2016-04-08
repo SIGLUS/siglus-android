@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Inventory;
@@ -135,7 +134,6 @@ public class RnRFormListPresenterTest {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
         when(rnrFormRepository.list(program.getProgramCode())).thenReturn(newArrayList(rnRForm1, rnRForm2));
         when(periodService.hasMissedPeriod(program.getProgramCode())).thenReturn(false);
@@ -156,7 +154,6 @@ public class RnRFormListPresenterTest {
     public void shouldGenerate1CanDoInventoryAnd2HistoricalViewModelsAndSortCorrectlyWhenThereIsNoMissedRnrAndTwoRnrDoneAndItIs20May() throws Exception {
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-20", DateUtil.DB_DATE_FORMAT)).getMillis());
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
         when(rnrFormRepository.list(program.getProgramCode())).thenReturn(newArrayList(rnRForm1, rnRForm2));
         when(periodService.hasMissedPeriod(program.getProgramCode())).thenReturn(false);
@@ -179,7 +176,6 @@ public class RnRFormListPresenterTest {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-20", DateUtil.DB_DATE_FORMAT)).getMillis());
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
         when(rnrFormRepository.list(program.getProgramCode())).thenReturn(newArrayList(rnRForm1, rnRForm2));
         when(periodService.hasMissedPeriod(program.getProgramCode())).thenReturn(false);
@@ -202,7 +198,6 @@ public class RnRFormListPresenterTest {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-20", DateUtil.DB_DATE_FORMAT)).getMillis());
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
         RnRForm rnRForm3 = createRnrFormByPeriod(RnRForm.STATUS.DRAFT, periodAplToMay.getBegin().toDate(), periodAplToMay.getEnd().toDate(), program);
 
@@ -226,7 +221,6 @@ public class RnRFormListPresenterTest {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
         when(rnrFormRepository.list()).thenReturn(new ArrayList<RnRForm>());
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodAplToMay);
@@ -243,7 +237,6 @@ public class RnRFormListPresenterTest {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
         when(rnrFormRepository.list()).thenReturn(new ArrayList<RnRForm>());
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodAplToMay);
@@ -262,7 +255,6 @@ public class RnRFormListPresenterTest {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
         when(rnrFormRepository.list()).thenReturn(new ArrayList<RnRForm>());
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodAplToMay);
@@ -281,7 +273,6 @@ public class RnRFormListPresenterTest {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
 
         when(rnrFormRepository.list(program.getProgramCode())).thenReturn(newArrayList(rnRForm3));
@@ -301,7 +292,6 @@ public class RnRFormListPresenterTest {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
         when(rnrFormRepository.list(program.getProgramCode())).thenReturn(newArrayList(rnRForm1));
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodMarToApl);
@@ -326,7 +316,6 @@ public class RnRFormListPresenterTest {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
         when(rnrFormRepository.list(program.getProgramCode())).thenReturn(newArrayList(rnRForm1));
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodMarToApl);
@@ -351,7 +340,6 @@ public class RnRFormListPresenterTest {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
         when(rnrFormRepository.list(program.getProgramCode())).thenReturn(newArrayList(rnRForm1));
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodMarToApl);
@@ -378,7 +366,6 @@ public class RnRFormListPresenterTest {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
         Period periodMayToJun = new Period(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)), new DateTime(DateUtil.parseString("2016-06-18", DateUtil.DB_DATE_FORMAT)));
 
         when(rnrFormRepository.list(program.getProgramCode())).thenReturn(newArrayList(rnRForm2, rnRForm3));
@@ -406,7 +393,6 @@ public class RnRFormListPresenterTest {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
         when(rnrFormRepository.list(program.getProgramCode())).thenReturn(new ArrayList<RnRForm>());
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodFebToMar);
@@ -431,7 +417,6 @@ public class RnRFormListPresenterTest {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
         when(rnrFormRepository.list(program.getProgramCode())).thenReturn(new ArrayList<RnRForm>());
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodFebToMar);
@@ -456,7 +441,6 @@ public class RnRFormListPresenterTest {
         Program program = new ProgramBuilder().setProgramCode("VIA").build();
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_requisition_period_logic_change, true);
 
         when(rnrFormRepository.list(program.getProgramCode())).thenReturn(new ArrayList<RnRForm>());
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodFebToMar);

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <bool name="feature_requisition_period_logic_change">true</bool>
     <bool name="feature_auto_quantities_in_kit">true</bool>
     <bool name="feature_unpack_btn_update_580">true</bool>
     <bool name="feature_sync_period_date">true</bool>
