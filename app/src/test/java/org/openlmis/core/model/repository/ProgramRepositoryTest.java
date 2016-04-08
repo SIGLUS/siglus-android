@@ -108,7 +108,7 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
 
         List<String> viaProgramCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode("VIA");
         List<String> mmiaProgramCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode("MMIA");
-        assertThat(viaProgramCodes.size(), is(2));
+        assertThat(viaProgramCodes.size(), is(7));
         assertTrue(viaProgramCodes.contains("TB"));
         assertThat(mmiaProgramCodes.size(), is(3));
         assertTrue(mmiaProgramCodes.contains("PTV") && mmiaProgramCodes.contains("MMIA"));
