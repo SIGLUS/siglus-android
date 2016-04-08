@@ -181,7 +181,6 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         StockCard stockCardMMIA = StockCardBuilder.buildStockCard();
         Product productMMIA = new ProductBuilder().setProductId(10L).setPrimaryName("MMIA Product").setCode("MMIA Code").setIsArchived(true).build();
         stockCardMMIA.setProduct(productMMIA);
-        Product archivedProductWithoutStockCard = new ProductBuilder().setPrimaryName("archived").setCode("archived code").setIsArchived(true).setIsActive(true).build();
 
         StockCard unknownAStockCard = StockCardBuilder.buildStockCard();
         Product productUnknownA = new ProductBuilder().setPrimaryName("A Unknown Product").setCode("A Code").build();
@@ -191,7 +190,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         unknownBStockCard.setProduct(productUnknownB);
 
         when(stockRepositoryMock.list()).thenReturn(Arrays.asList(stockCardVIA, stockCardMMIA));
-        when(productRepositoryMock.listActiveProducts(IsKit.No)).thenReturn(Arrays.asList(productMMIA, productVIA, productUnknownB, productUnknownA,archivedProductWithoutStockCard));
+        when(productRepositoryMock.listActiveProducts(IsKit.No)).thenReturn(Arrays.asList(productMMIA, productVIA, productUnknownB, productUnknownA));
         when(stockRepositoryMock.queryStockCardByProductId(10L)).thenReturn(stockCardMMIA);
 
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
@@ -202,7 +201,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
         subscriber.assertNoErrors();
         List<InventoryViewModel> receivedInventoryViewModels = subscriber.getOnNextEvents().get(0);
-        assertEquals(4, receivedInventoryViewModels.size());
+        assertEquals(3, receivedInventoryViewModels.size());
     }
 
     @Test
