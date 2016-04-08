@@ -46,7 +46,6 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.ViewUtil;
-import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.widget.MMIAInfoList;
 import org.openlmis.core.view.widget.MMIARegimeList;
 import org.openlmis.core.view.widget.MMIARnrForm;
@@ -249,9 +248,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 clearEditErrorFocus();
-                if (getActivity() != null) {
-                    ((BaseActivity) getActivity()).hideImm();
-                }
+                hideImm();
                 return false;
             }
         });

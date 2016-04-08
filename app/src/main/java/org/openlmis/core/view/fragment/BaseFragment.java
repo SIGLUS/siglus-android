@@ -105,4 +105,10 @@ public abstract class BaseFragment extends RoboFragment implements BaseView {
             ((BaseActivity) getActivity()).loaded();
         }
     }
+
+    protected void hideImm() {
+        if (getActivity() instanceof BaseActivity) {
+            ((BaseActivity)getActivity()).hideImm();
+        }
+    }
 }

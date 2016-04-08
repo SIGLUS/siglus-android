@@ -43,7 +43,6 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListViewUtil;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.VIARequisitionActivity;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 import org.openlmis.core.view.adapter.RequisitionProductAdapter;
@@ -343,9 +342,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         formLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (getActivity() != null) {
-                    ((BaseActivity) getActivity()).hideImm();
-                }
+                hideImm();
                 return false;
             }
         });
