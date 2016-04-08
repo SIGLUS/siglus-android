@@ -51,49 +51,7 @@ public class ViaKitsViewModel {
         }
     }
 
-    public List<RnrFormItem> convertToRnrItems() {
-        for (RnrFormItem rnrFormItem : kitItems) {
-
-            if (US_KIT.equals(rnrFormItem.getProduct().getCode())) {
-                if (!kitsOpenedHF.isEmpty()) {
-                    rnrFormItem.setIssued(Long.parseLong(kitsOpenedHF));
-                } else {
-                    rnrFormItem.setIssued(Long.MIN_VALUE);
-                }
-
-                if (!kitsReceivedHF.isEmpty()) {
-                    rnrFormItem.setReceived(Long.parseLong(kitsReceivedHF));
-                } else {
-                    rnrFormItem.setReceived(Long.MIN_VALUE);
-                }
-
-                setInventoryForItem(rnrFormItem);
-
-            } else if (APE_KIT.equals(rnrFormItem.getProduct().getCode())) {
-                if (!kitsOpenedCHW.isEmpty()) {
-                    rnrFormItem.setIssued(Long.parseLong(kitsOpenedCHW));
-                } else {
-                    rnrFormItem.setIssued(Long.MIN_VALUE);
-                }
-
-                if (!kitsReceivedCHW.isEmpty()) {
-                    rnrFormItem.setReceived(Long.parseLong(kitsReceivedCHW));
-                } else {
-                    rnrFormItem.setReceived(Long.MIN_VALUE);
-                }
-
-                setInventoryForItem(rnrFormItem);
-            }
-        }
-
+    public List<RnrFormItem> toRnrFormItems() {
         return kitItems;
-    }
-
-    private void setInventoryForItem(RnrFormItem rnrFormItem) {
-        if (kitsOpenedHF.isEmpty() || kitsReceivedHF.isEmpty()) {
-            rnrFormItem.setInventory(Long.MIN_VALUE);
-        } else {
-            rnrFormItem.setInventory(rnrFormItem.getReceived() - rnrFormItem.getIssued());
-        }
     }
 }

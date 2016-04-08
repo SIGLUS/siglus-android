@@ -43,60 +43,6 @@ public class ViaKitsViewModelTest {
     }
 
     @Test
-    public void shouldConvertToRnrItemFromViaKitViewModel() throws Exception {
-        ViaKitsViewModel viaKitsViewModel = new ViaKitsViewModel();
-        viaKitsViewModel.setKitsOpenedCHW("10");
-        viaKitsViewModel.setKitsReceivedCHW("20");
-        viaKitsViewModel.setKitsOpenedHF("30");
-        viaKitsViewModel.setKitsReceivedHF("40");
-
-        Product usKit = new ProductBuilder().setCode(ViaKitsViewModel.US_KIT).build();
-        Product apeKit = new ProductBuilder().setCode(ViaKitsViewModel.APE_KIT).build();
-        viaKitsViewModel.setKitItems(newArrayList(new RnrFormItemBuilder().setProduct(usKit).build(),
-                new RnrFormItemBuilder().setProduct(apeKit).build()));
-
-        List<RnrFormItem> rnrFormItems = viaKitsViewModel.convertToRnrItems();
-
-        assertEquals(2, rnrFormItems.size());
-        assertEquals(10, rnrFormItems.get(1).getIssued());
-        assertEquals(20, rnrFormItems.get(1).getReceived());
-        assertEquals(10, rnrFormItems.get(1).getInventory());
-        assertEquals(ViaKitsViewModel.APE_KIT, rnrFormItems.get(1).getProduct().getCode());
-
-        assertEquals(30, rnrFormItems.get(0).getIssued());
-        assertEquals(40, rnrFormItems.get(0).getReceived());
-        assertEquals(10, rnrFormItems.get(0).getInventory());
-        assertEquals(ViaKitsViewModel.US_KIT, rnrFormItems.get(0).getProduct().getCode());
-    }
-
-    @Test
-    public void shouldConvertToRnrItemFromViaKitViewModelWhenQUantityIsEmpty() throws Exception {
-        ViaKitsViewModel viaKitsViewModel = new ViaKitsViewModel();
-        viaKitsViewModel.setKitsOpenedCHW("10");
-        viaKitsViewModel.setKitsReceivedCHW("");
-        viaKitsViewModel.setKitsOpenedHF("");
-        viaKitsViewModel.setKitsReceivedHF("40");
-
-        Product usKit = new ProductBuilder().setCode(ViaKitsViewModel.US_KIT).build();
-        Product apeKit = new ProductBuilder().setCode(ViaKitsViewModel.APE_KIT).build();
-        viaKitsViewModel.setKitItems(newArrayList(new RnrFormItemBuilder().setProduct(usKit).build(),
-                new RnrFormItemBuilder().setProduct(apeKit).build()));
-
-        List<RnrFormItem> rnrFormItems = viaKitsViewModel.convertToRnrItems();
-
-        assertEquals(2, rnrFormItems.size());
-        assertEquals(10, rnrFormItems.get(1).getIssued());
-        assertEquals(Long.MIN_VALUE, rnrFormItems.get(1).getReceived());
-        assertEquals(Long.MIN_VALUE, rnrFormItems.get(1).getInventory());
-        assertEquals(ViaKitsViewModel.APE_KIT, rnrFormItems.get(1).getProduct().getCode());
-
-        assertEquals(Long.MIN_VALUE, rnrFormItems.get(0).getIssued());
-        assertEquals(40, rnrFormItems.get(0).getReceived());
-        assertEquals(Long.MIN_VALUE, rnrFormItems.get(0).getInventory());
-        assertEquals(ViaKitsViewModel.US_KIT, rnrFormItems.get(0).getProduct().getCode());
-    }
-
-    @Test
     public void shouldNotPopulateAnyValueIfAmountIsBelowZero() {
         ViaKitsViewModel viaKitsViewModel = new ViaKitsViewModel();
 
@@ -109,18 +55,5 @@ public class ViaKitsViewModelTest {
 
         assertThat(viaKitsViewModel.getKitsOpenedCHW(), is("0"));
         assertThat(viaKitsViewModel.getKitsOpenedHF(), is("0"));
-    }
-
-    @Test
-    public void shouldNotThrowExceptionIfKitValuesAreEmpty() {
-        Product usKit = new ProductBuilder().setCode(ViaKitsViewModel.US_KIT).build();
-        Product apeKit = new ProductBuilder().setCode(ViaKitsViewModel.APE_KIT).build();
-        List<RnrFormItem> rnrFormItems = newArrayList(new RnrFormItemBuilder().setIssued(-1).setProduct(usKit).build(),
-                new RnrFormItemBuilder().setIssued(-1).setProduct(apeKit).build());
-
-        ViaKitsViewModel viaKitsViewModel = new ViaKitsViewModel();
-        viaKitsViewModel.setKitItems(rnrFormItems);
-
-        viaKitsViewModel.convertToRnrItems();
     }
 }
