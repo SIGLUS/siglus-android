@@ -50,8 +50,4 @@ public class ViaKitsViewModel {
             }
         }
     }
-
-    public List<RnrFormItem> toRnrFormItems() {
-        return kitItems;
-    }
 }

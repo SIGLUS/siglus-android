@@ -271,7 +271,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     private void dataViewToModel(String consultationNumbers) {
         List<RnrFormItem> rnrFormItems = new ArrayList<>();
         rnrFormItems.addAll(convertRnrItemViewModelsToRnrItems());
-        rnrFormItems.addAll(viaKitsViewModel.toRnrFormItems());
+        rnrFormItems.addAll(viaKitsViewModel.getKitItems());
 
         rnRForm.setRnrFormItemListWrapper(rnrFormItems);
         if (!TextUtils.isEmpty(consultationNumbers)) {
