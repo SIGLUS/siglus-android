@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.presenter.UnpackKitPresenter;
@@ -16,6 +17,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.UnpackKitAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.widget.SignatureDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +42,7 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
     private String kitCode;
 
     protected UnpackKitAdapter mAdapter;
+    private int kitNum;
 
     @Override
     protected int getThemeRes() {
@@ -56,7 +59,7 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        final int kitNum = intent.getIntExtra(Constants.PARAM_KIT_NUM, 0);
+        kitNum = intent.getIntExtra(Constants.PARAM_KIT_NUM, 0);
         String kitName = intent.getStringExtra(Constants.PARAM_KIT_NAME);
 
         tvTotalKit.setText(getString(R.string.kit_number, kitNum, kitName));
@@ -67,7 +70,11 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
             @Override
             public void onClick(View v) {
                 if (validateAll()) {
-                    presenter.saveUnpackProducts(kitNum);
+                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_signature_for_unpack_kit)) {
+                        showSignDialog();
+                    } else {
+                        presenter.saveUnpackProducts(kitNum, "");
+                    }
                 }
             }
         };
@@ -79,6 +86,24 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         presenter.loadKitProducts(kitCode, kitNum);
 
     }
+
+    private void showSignDialog() {
+        SignatureDialog signatureDialog = new SignatureDialog();
+        signatureDialog.setArguments(SignatureDialog.getBundleToMe(getString(R.string.dialog_unpack_kit_signature)));
+        signatureDialog.setDelegate(signatureDialogDelegate);
+        signatureDialog.show(getFragmentManager(), "signature_dialog_for_unpack_kit");
+    }
+
+    protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
+        @Override
+        public void onCancel() {
+        }
+
+        @Override
+        public void onSign(String sign) {
+            presenter.saveUnpackProducts(kitNum, sign);
+        }
+    };
 
     private void setTotal(int total) {
         tvTotal.setText(getString(R.string.label_total, total));

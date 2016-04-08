@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
@@ -23,6 +24,8 @@ import java.util.Arrays;
 
 import roboguice.RoboGuice;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -62,22 +65,44 @@ public class UnpackKitActivityTest {
     }
 
     @Test
-    public void shouldSaveUnpackMovementsWhenQuantityIsValid() throws Exception {
+    public void shouldShowDialogWhenQuantityIsValid() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_signature_for_unpack_kit, true);
         stockMovementActivity.refreshList(Arrays.asList(viewModel));
 
         stockMovementActivity.mAdapter.onCreateViewHolder(stockMovementActivity.productListRecycleView, 1).itemView.findViewById(R.id.btn_complete).performClick();
 
-        verify(mockedPresenter).saveUnpackProducts(1);
+        assertNotNull(stockMovementActivity.getFragmentManager().findFragmentByTag("signature_dialog_for_unpack_kit"));
     }
 
     @Test
-    public void shouldNotSaveUnpackMovementsWhenQuantityIsNotValid() throws Exception {
+    public void shouldNotShowDialogWhenQuantityIsNotValid() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_signature_for_unpack_kit, true);
         viewModel.setQuantity("");
         stockMovementActivity.refreshList(Arrays.asList(viewModel));
 
         stockMovementActivity.mAdapter.onCreateViewHolder(stockMovementActivity.productListRecycleView, 1).itemView.findViewById(R.id.btn_complete).performClick();
 
-        verify(mockedPresenter, never()).saveUnpackProducts(1);
+        assertNull(stockMovementActivity.getFragmentManager().findFragmentByTag("signature_dialog_for_unpack_kit"));
+    }
+
+    @Test
+    public void shouldSaveUnpackMovementsWhenQuantityIsValidWhenToggleOff() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_signature_for_unpack_kit, false);
+        stockMovementActivity.refreshList(Arrays.asList(viewModel));
+
+        stockMovementActivity.mAdapter.onCreateViewHolder(stockMovementActivity.productListRecycleView, 1).itemView.findViewById(R.id.btn_complete).performClick();
+        verify(mockedPresenter).saveUnpackProducts(1, "");
+    }
+
+    @Test
+    public void shouldNotSaveUnpackMovementsWhenQuantityIsNotValidWhenToggleOff() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_signature_for_unpack_kit, false);
+        viewModel.setQuantity("");
+        stockMovementActivity.refreshList(Arrays.asList(viewModel));
+
+        stockMovementActivity.mAdapter.onCreateViewHolder(stockMovementActivity.productListRecycleView, 1).itemView.findViewById(R.id.btn_complete).performClick();
+
+        verify(mockedPresenter, never()).saveUnpackProducts(1, "");
     }
 
     @After
