@@ -28,6 +28,7 @@ import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 
 import java.util.Date;
@@ -92,6 +93,16 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     @Override
+    protected int getSaveErrorMessage() {
+        return R.string.hint_save_mmia_failed;
+    }
+
+    @Override
+    protected int getCompleteErrorMessage() {
+        return R.string.hint_mmia_complete_failed;
+    }
+
+    @Override
     protected void updateFormUI() {
         if (rnRForm != null) {
             view.refreshRequisitionForm(rnRForm);
@@ -110,7 +121,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         }
 
         if (!rnrFormRepository.isPeriodUnique(rnRForm)) {
-            view.showErrorMessage(context.getResources().getString(R.string.msg_requisition_not_unique));
+            ToastUtil.show(R.string.msg_requisition_not_unique);
             return;
         }
 

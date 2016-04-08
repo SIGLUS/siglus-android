@@ -37,6 +37,7 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.VIARepository;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.fragment.VIARequisitionFragment;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
@@ -206,6 +207,16 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
+    @Override
+    protected int getSaveErrorMessage() {
+        return R.string.hint_save_mmia_failed;
+    }
+
+    @Override
+    protected int getCompleteErrorMessage() {
+        return R.string.hint_requisition_complete_failed;
+    }
+
     private void convertRnrToViewModel(RnRForm rnrForm) throws LMISException {
         requisitionFormItemViewModels.clear();
         requisitionFormItemViewModels.addAll(getViewModelsFromRnrForm(rnrForm));
@@ -259,7 +270,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }
 
         if (!rnrFormRepository.isPeriodUnique(rnRForm)) {
-            view.showErrorMessage(context.getResources().getString(R.string.msg_requisition_not_unique));
+            ToastUtil.show(R.string.msg_requisition_not_unique);
             return;
         }
 

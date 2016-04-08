@@ -271,21 +271,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     @Override
-    public void showErrorMessage(String msg) {
-        ToastUtil.show(msg);
-    }
-
-    @Override
-    public void showSaveErrorMessage() {
-        ToastUtil.show(getString(R.string.hint_save_mmia_failed));
-    }
-
-    @Override
-    public void showCompleteErrorMessage() {
-        ToastUtil.show(getString(R.string.hint_requisition_complete_failed));
-    }
-
-    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_save:

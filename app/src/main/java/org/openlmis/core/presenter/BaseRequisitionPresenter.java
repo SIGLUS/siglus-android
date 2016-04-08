@@ -91,7 +91,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         @Override
         public void call(Throwable throwable) {
             view.loaded();
-            view.showErrorMessage(throwable.getMessage());
+            ToastUtil.show(throwable.getMessage());
         }
     };
 
@@ -148,7 +148,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
             @Override
             public void onError(Throwable e) {
                 view.loaded();
-                view.showSaveErrorMessage();
+                ToastUtil.show(getSaveErrorMessage());
             }
 
             @Override
@@ -180,7 +180,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
             @Override
             public void onError(Throwable e) {
                 view.loaded();
-                view.showErrorMessage(e.getMessage());
+                ToastUtil.show(e.getMessage());
             }
 
             @Override
@@ -209,13 +209,12 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Subscriber<Void>() {
             @Override
             public void onCompleted() {
-
             }
 
             @Override
             public void onError(Throwable e) {
                 view.loaded();
-                view.showCompleteErrorMessage();
+                ToastUtil.show(getCompleteErrorMessage());
             }
 
             @Override
@@ -271,7 +270,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
             @Override
             public void onError(Throwable e) {
                 view.loaded();
-                view.showErrorMessage(e.getMessage());
+                ToastUtil.show(e.getMessage());
             }
 
             @Override
@@ -295,11 +294,14 @@ public abstract class BaseRequisitionPresenter extends Presenter {
 
     protected abstract Observable<RnRForm> getRnrFormObservable(long formId);
 
+    protected abstract int getSaveErrorMessage();
+
+    protected abstract int getCompleteErrorMessage();
+
+
     public interface BaseRequisitionView extends BaseView {
 
         void refreshRequisitionForm(RnRForm rnRForm);
-
-        void showErrorMessage(String msg);
 
         void showSignDialog(boolean isFormStatusDraft);
 
@@ -308,9 +310,5 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         void showMessageNotifyDialog();
 
         void saveSuccess();
-
-        void showSaveErrorMessage();
-
-        void showCompleteErrorMessage();
     }
 }

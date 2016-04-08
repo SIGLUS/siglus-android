@@ -159,7 +159,6 @@ public class MMIARequisitionFragmentTest {
         verify(rnrFormList).initView(any(ArrayList.class));
         verify(regimeListView).initView(mmiaRequisitionFragment.tvRegimeTotal, mmiaFormPresenter);
         verify(mmiaInfoListView).initView(baseInfoItems);
-
     }
 
     @Test
@@ -171,13 +170,6 @@ public class MMIARequisitionFragmentTest {
         String msg = mmiaRequisitionFragment.getString(R.string.msg_stock_movement_is_not_ready);
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(msg);
         verify(mmiaFormPresenter, never()).loadData(anyLong(), any(Date.class));
-    }
-
-    @Test
-    public void shouldShowErrorMessageWhenMethodCalled() {
-        mmiaRequisitionFragment.showErrorMessage("Hello message");
-
-        assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo("Hello message");
     }
 
     @Test

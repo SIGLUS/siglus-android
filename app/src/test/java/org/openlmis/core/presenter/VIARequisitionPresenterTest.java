@@ -50,6 +50,7 @@ import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
 import org.roboguice.shaded.goole.common.collect.Lists;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.shadows.ShadowToast;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -61,6 +62,7 @@ import rx.Observer;
 import rx.observers.TestSubscriber;
 
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.util.Lists.newArrayList;
@@ -69,7 +71,6 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -287,7 +288,8 @@ public class VIARequisitionPresenterTest {
 
         subscriber.onError(new Throwable("msg"));
         verify(VIARequisitionFragment).loaded();
-        verify(VIARequisitionFragment).showSaveErrorMessage();
+
+        assertNotNull(ShadowToast.getLatestToast());
     }
 
     @Test
@@ -322,7 +324,9 @@ public class VIARequisitionPresenterTest {
         when(VIARequisitionFragment.validateKitData()).thenReturn(true);
 
         presenter.processRequisition("123");
-        verify(VIARequisitionFragment).showErrorMessage(LMISTestApp.getContext().getResources().getString(R.string.msg_requisition_not_unique));
+
+        Assert.assertEquals(LMISTestApp.getContext().getResources().getString(R.string.msg_requisition_not_unique),
+                ShadowToast.getTextOfLatestToast());
     }
 
     @Test
@@ -349,7 +353,8 @@ public class VIARequisitionPresenterTest {
 
         presenter.processRequisition("123");
 
-        verify(VIARequisitionFragment, never()).showErrorMessage(anyString());
+        assertNull(ShadowToast.getLatestToast());
+
         Assert.assertEquals(5, presenter.rnRForm.getRnrFormItemListWrapper().size());
         assertThat(presenter.getRnRForm().getRnrFormItemListWrapper().get(1).getCalculatedOrderQuantity(), is(1L));
     }

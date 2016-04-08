@@ -63,7 +63,7 @@ import static org.mockito.Mockito.when;
 @RunWith(LMISTestRunner.class)
 public class VIARequisitionFragmentTest {
 
-    org.openlmis.core.view.fragment.VIARequisitionFragment VIARequisitionFragment;
+    VIARequisitionFragment VIARequisitionFragment;
     VIARequisitionPresenter presenter;
     private List<RequisitionFormItemViewModel> formItemList;
     private Program program;

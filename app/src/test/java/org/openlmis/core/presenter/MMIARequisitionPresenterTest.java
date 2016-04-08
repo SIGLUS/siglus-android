@@ -21,6 +21,8 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.AbstractModule;
 
+import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +40,7 @@ import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.service.SyncUpManager;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.shadows.ShadowToast;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -46,9 +49,11 @@ import java.util.List;
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -165,7 +170,7 @@ public class MMIARequisitionPresenterTest {
         reset(mockMMIAformView);
         presenter.loadDataOnErrorAction.call(new Exception("I am testing the onError action"));
         verify(mockMMIAformView).loaded();
-        verify(mockMMIAformView).showErrorMessage("I am testing the onError action");
+        assertEquals("I am testing the onError action", ShadowToast.getTextOfLatestToast());
     }
 
     @Test
@@ -247,7 +252,9 @@ public class MMIARequisitionPresenterTest {
         when(mmiaRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(false);
 
         presenter.processRequisition(regimenItems, baseInfoItems, anyString());
-        verify(mockMMIAformView).showErrorMessage(LMISTestApp.getContext().getResources().getString(R.string.msg_requisition_not_unique));
+
+        Assert.assertEquals(LMISTestApp.getContext().getResources().getString(R.string.msg_requisition_not_unique),
+                ShadowToast.getTextOfLatestToast());
     }
 
     @Test
@@ -262,7 +269,8 @@ public class MMIARequisitionPresenterTest {
         when(mmiaRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(true);
 
         presenter.processRequisition(regimenItems, baseInfoItems, anyString());
-        verify(mockMMIAformView, never()).showErrorMessage(anyString());
+
+        assertNull(ShadowToast.getLatestToast());
     }
 
     @Test
