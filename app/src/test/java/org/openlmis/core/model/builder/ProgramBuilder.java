@@ -24,6 +24,11 @@ public class ProgramBuilder {
         return this;
     }
 
+    public ProgramBuilder setSupportEmergency(boolean isSupportProgram) {
+        program.setSupportEmergency(isSupportProgram);
+        return this;
+    }
+
     public ProgramBuilder setProgramId(long programId) {
         program.setId(programId);
         return this;

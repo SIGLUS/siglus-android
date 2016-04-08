@@ -318,7 +318,8 @@ public class RnrFormRepository {
         for (Iterator iterator = stockCards.iterator(); iterator.hasNext(); ) {
             StockCard stockCard = (StockCard) iterator.next();
             StockMovementItem stockMovementItem = stockRepository.queryFirstStockMovementItem(stockCard);
-            if (stockMovementItem != null && (stockMovementItem.getMovementDate().after(form.getPeriodEnd()))) {
+            if (stockMovementItem != null && (stockMovementItem.getMovementDate().after(form.getPeriodEnd())
+                    || stockMovementItem.getCreatedTime().after(form.getPeriodEnd()))) {
                 iterator.remove();
             }
         }

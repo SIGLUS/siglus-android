@@ -73,8 +73,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     Product product;
     private Date lastFirstMonthDate;
     private Date lastSecondMonthDate;
-    private Date lastThirdMonthDate;
-    private Date lastForthMonthDate;
     private ProgramRepository programRepository;
     private ProductProgramRepository productProgramRepository;
     private StockCard stockCard;
@@ -92,9 +90,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         Date today = DateUtil.today();
         lastFirstMonthDate = DateUtil.generatePreviousMonthDateBy(today);
         lastSecondMonthDate = DateUtil.generatePreviousMonthDateBy(lastFirstMonthDate);
-        lastThirdMonthDate = DateUtil.generatePreviousMonthDateBy(lastSecondMonthDate);
-        lastForthMonthDate = DateUtil.generatePreviousMonthDateBy(lastThirdMonthDate);
-
         stockCard = new StockCard();
     }
 
@@ -391,8 +386,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     private long createNewStockCard(String code, String parentCode, Product product, boolean isEmergency) throws LMISException {
-        Program program = createNewProgram(code,parentCode);
-        program.setSupportEmergency(isEmergency);
+        Program program = createNewProgram(code,parentCode, isEmergency);
         programRepository.createOrUpdate(program);
 
         product.setProgram(program);
@@ -406,7 +400,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     private long createNewStockCardWithProductPrograms(String programCode, String parentCode, Product product) throws LMISException {
-        Program program = createNewProgram(programCode, parentCode);
+        Program program = createNewProgram(programCode, parentCode, false);
 
         createNewProductProgram(programCode, product.getCode());
 
@@ -425,14 +419,11 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @NonNull
-    private Program createNewProgram(String code, String parentCode) throws LMISException {
-        Program program = new Program();
-        program.setProgramCode(code);
-        program.setParentCode(parentCode);
+    private Program createNewProgram(String code, String parentCode, boolean isSupportEmergency) throws LMISException {
+        Program program = new ProgramBuilder().setProgramCode(code).setParentCode(parentCode).setSupportEmergency(isSupportEmergency).build();
         programRepository.createOrUpdate(program);
         return program;
     }
-
 
     @Test
     public void shouldUpdateStockCardAndProduct() throws Exception {

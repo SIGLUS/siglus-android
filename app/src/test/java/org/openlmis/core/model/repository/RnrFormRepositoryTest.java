@@ -229,34 +229,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldGetStockCardsExistedInPeriodLastDay() throws Exception {
-        Program program = new Program();
-        program.setId(123);
-        program.setProgramCode(Constants.MMIA_PROGRAM_CODE);
-
-        Date generateDate = DateUtil.parseString("20/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
-        Date movementDate = DateUtil.parseString("20/07/2015", DateUtil.SIMPLE_DATE_FORMAT);
-
-        RnRForm form = RnRForm.init(program, generateDate);
-
-        form.setPeriodBegin(DateUtil.parseString("21/06/2015", DateUtil.SIMPLE_DATE_FORMAT));
-        form.setPeriodEnd(generateDate);
-
-        List<StockCard> stockCardList = new ArrayList<>();
-        StockCard stockCard = new StockCard();
-
-        stockCardList.add(stockCard);
-
-        when(mockStockRepository.listActiveStockCards(anyString(), any(ProductRepository.IsWithKit.class))).thenReturn(stockCardList);
-        StockMovementItem stockMovementItem = new StockMovementItem();
-        stockMovementItem.setCreatedTime(new Date());
-        stockMovementItem.setMovementDate(movementDate);
-        when(mockStockRepository.queryFirstStockMovementItem(stockCard)).thenReturn(stockMovementItem);
-
-        assertThat(rnrFormRepository.getStockCardsBeforePeriodEnd(form).size(), is(1));
-    }
-
-    @Test
     public void shouldNotGetStockCardCreatedAfterPeriodEndDate() throws Exception {
         Program program = new Program();
         program.setId(123);
@@ -278,6 +250,30 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         when(mockStockRepository.queryFirstStockMovementItem(stockCard)).thenReturn(stockMovementItem);
 
         assertThat(rnrFormRepository.getStockCardsBeforePeriodEnd(form).size(), is(0));
+    }
+
+    @Test
+    public void shouldGetStockCardCreatedAfterPeriodEndDate() throws Exception {
+        Program program = new Program();
+        program.setId(123);
+        program.setProgramCode(Constants.MMIA_PROGRAM_CODE);
+
+        DateTime periodBegin = new DateTime(DateUtil.parseString("2015-06-21 10:10:10", DateUtil.DATE_TIME_FORMAT));
+        DateTime periodEnd = new DateTime(DateUtil.parseString("2015-07-21 11:11:11", DateUtil.DATE_TIME_FORMAT));
+        RnRForm form = RnRForm.init(program, new Period(periodBegin, periodEnd), false);
+
+        List<StockCard> stockCardList = new ArrayList<>();
+        StockCard stockCard = new StockCard();
+        stockCardList.add(stockCard);
+        when(mockStockRepository.listActiveStockCards(anyString(), any(ProductRepository.IsWithKit.class))).thenReturn(stockCardList);
+
+        Date movementDate = DateUtil.parseString("2015-07-21", DateUtil.DB_DATE_FORMAT);
+        Date createdTime = DateUtil.parseString("2015-07-21 11:00:00", DateUtil.DATE_TIME_FORMAT);
+        StockMovementItem stockMovementItem = generateStockMovementItemWithDates(movementDate, createdTime);
+
+        when(mockStockRepository.queryFirstStockMovementItem(stockCard)).thenReturn(stockMovementItem);
+
+        assertThat(rnrFormRepository.getStockCardsBeforePeriodEnd(form).size(), is(1));
     }
 
     private StockMovementItem generateStockMovementItemWithDates(Date movementDate, Date createdTime) {
