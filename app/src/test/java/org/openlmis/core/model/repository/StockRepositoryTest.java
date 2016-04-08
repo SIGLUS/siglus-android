@@ -392,7 +392,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     private long createNewStockCard(String code, String parentCode, Product product, boolean isEmergency) throws LMISException {
         Program program = createNewProgram(code,parentCode);
-        program.setEmergency(isEmergency);
+        program.setSupportEmergency(isEmergency);
         programRepository.createOrUpdate(program);
 
         product.setProgram(program);

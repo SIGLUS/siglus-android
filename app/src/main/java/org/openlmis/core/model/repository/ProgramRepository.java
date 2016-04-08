@@ -67,7 +67,7 @@ public class ProgramRepository {
         return dbUtil.withDao(Program.class, new DbUtil.Operation<Program, List<Program>>() {
             @Override
             public List<Program> operate(Dao<Program, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("isEmergency", true).query();
+                return dao.queryBuilder().where().eq("isSupportEmergency", true).query();
             }
         });
     }
