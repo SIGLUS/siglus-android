@@ -315,5 +315,6 @@
     <string name="label_emergency_requisition_title">Emergency requisition - %1$s</string>
     <string name="label_emergency_requisition_balance">Emergency requisition balancete</string>
     <string name="msg_emergency_requisition_cant_edit">This information is not used when creating an emergency requisition</string>
+    <string name="document_number">Document number</string>
 
 </resources>

@@ -5,6 +5,21 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/actionbar_height"
+        android:background="@color/color_teal"
+        android:paddingLeft="@dimen/actionbar_height"
+        android:paddingRight="@dimen/actionbar_height">
+
+        <EditText
+            android:id="@+id/et_document_no"
+            style="@style/Unpack.EditText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:hint="@string/document_number" />
+    </LinearLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

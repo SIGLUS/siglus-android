@@ -714,4 +714,10 @@
         <item name="android:padding">@dimen/padding_small</item>
     </style>
 
+    <style name="Unpack" />
+    <style name="Unpack.EditText">
+        <item name="android:textColorHint">@color/color_white_alpha</item>
+        <item name="android:textColor">@color/color_white</item>
+    </style>
+
 </resources>

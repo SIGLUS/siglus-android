@@ -29,6 +29,7 @@
     <color name="color_black">#000</color>
     <color name="color_gray">#616161</color>
     <color name="color_green_light">#C2FFC1</color>
+    <color name="color_white_alpha">#90FFFFFF</color>
 
     <color name="color_mmia_speed_list_header">#EFEFEF</color>
     <color name="color_item_bg">#30B6B6B6</color>

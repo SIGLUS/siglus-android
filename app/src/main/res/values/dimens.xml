@@ -9,6 +9,7 @@
 
     <dimen name="default_button_height">36dp</dimen>
     <dimen name="default_button_bar_height">52dp</dimen>
+    <dimen name="actionbar_height">56dp</dimen>
 
     <dimen name="search_button_width">80dp</dimen>
     <dimen name="search_button_right_margin">-20dp</dimen>
