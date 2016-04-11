@@ -29,6 +29,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.persistence.migrations.AddActiveColumnToProductTable;
 import org.openlmis.core.persistence.migrations.AddCreatedTimeToStockMovement;
+import org.openlmis.core.persistence.migrations.AddEmergencyColumnToRnr;
 import org.openlmis.core.persistence.migrations.AddFacilityIdToUser;
 import org.openlmis.core.persistence.migrations.AddInventoryTable;
 import org.openlmis.core.persistence.migrations.AddIsArchivedToProduct;
@@ -92,6 +93,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new AddIsEmergencyColumnToProgram());
             add(new AddNewPrograms());
             add(new ConvertEssMedsToVIAProgram());
+            add(new AddEmergencyColumnToRnr());
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_update_products_program)){
                 add(new UpdateProductsProgram());
             }

@@ -87,12 +87,13 @@ public class RnrFormAdapterTest {
 
     @Test
     public void shouldSerializeRnrFormWithCommentsToJsonObject() throws LMISException {
-
         rnRForm.setComments("XYZ");
         rnRForm.setSubmittedTime(DateUtil.today());
+        rnRForm.setEmergency(true);
 
         JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
         assertEquals("\"XYZ\"", rnrJson.getAsJsonObject().get("clientSubmittedNotes").toString());
+        assertEquals("true", rnrJson.getAsJsonObject().get("emergency").toString());
     }
 
     @Test

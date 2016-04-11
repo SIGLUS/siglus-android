@@ -46,7 +46,6 @@ import static org.openlmis.core.model.Product.IsKit;
 @Setter
 @DatabaseTable(tableName = "rnr_forms")
 public class RnRForm extends BaseModel {
-
     public enum STATUS {
         DRAFT,
         SUBMITTED,
@@ -105,6 +104,10 @@ public class RnRForm extends BaseModel {
     @DatabaseField
     private Date submittedTime;
 
+    @Expose
+    @DatabaseField
+    private boolean emergency;
+
     public boolean isDraft() {
         return getStatus() == STATUS.DRAFT || getStatus() == STATUS.DRAFT_MISSED;
     }
@@ -135,6 +138,7 @@ public class RnRForm extends BaseModel {
         rnRForm.program = program;
         rnRForm.periodBegin = period.getBegin().toDate();
         rnRForm.periodEnd = period.getEnd().toDate();
+        rnRForm.setEmergency(isEmergency);
 
         if (isMissed(period) && !isEmergency) {
             rnRForm.status = RnRForm.STATUS.DRAFT_MISSED;

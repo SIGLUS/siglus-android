@@ -149,4 +149,19 @@ public class RnRFormTest {
         form = RnRForm.init(program, new Period(periodBegin, periodEnd), false);
         assertFalse(form.isMissed());
     }
+
+    @Test
+    public void shouldInitEmergencyForm() throws Exception {
+        Program program = new Program();
+        program.setId(123);
+        program.setProgramCode(Constants.MMIA_PROGRAM_CODE);
+
+        DateTime periodBegin = new DateTime(DateUtil.parseString("2015-06-21 10:10:10", DateUtil.DATE_TIME_FORMAT));
+        DateTime periodEnd = new DateTime(DateUtil.parseString("2015-07-21 11:11:11", DateUtil.DATE_TIME_FORMAT));
+
+        LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-07-26 10:10:10", DateUtil.DATE_TIME_FORMAT).getTime());
+        RnRForm form = RnRForm.init(program, new Period(periodBegin, periodEnd), true);
+        assertFalse(form.isMissed());
+        assertTrue(form.isEmergency());
+    }
 }

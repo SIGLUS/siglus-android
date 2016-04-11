@@ -137,6 +137,15 @@ public class SyncUpManagerTest {
         verify(syncErrorsRepository, times(10)).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
     }
 
+    @Test
+    public void shouldCallEmergencyRequisition() throws Exception {
+        RnRForm form = new RnRForm();
+        form.setEmergency(true);
+        when(rnrFormRepository.queryAllUnsyncedForms()).thenReturn(newArrayList(form));
+
+        syncUpManager.syncRnr();
+        verify(lmisRestApi).submitEmergencyRequisition(any(RnRForm.class));
+    }
 
     @Test
     public void shouldSyncUnSyncedStockMovementData() throws LMISException, SQLException, ParseException {

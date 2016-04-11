@@ -54,6 +54,9 @@ public interface LMISRestApi {
     @POST("/rest-api/requisitions")
     SyncUpRequisitionResponse submitRequisition(@Body RnRForm rnRForm) throws LMISException;
 
+    @POST("/rest-api/sdp-requisitions")
+    SyncUpRequisitionResponse submitEmergencyRequisition(@Body RnRForm rnRForm) throws LMISException;
+
     @POST("/rest-api/facilities/{facilityId}/stockCards")
     JSONObject syncUpStockMovementData(@Path("facilityId") String facilityId, @Body List<StockMovementEntry> entries) throws LMISException;
 
