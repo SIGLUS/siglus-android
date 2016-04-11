@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -66,37 +67,47 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
+        kitCode = intent.getStringExtra(Constants.PARAM_KIT_CODE);
         kitNum = intent.getIntExtra(Constants.PARAM_KIT_NUM, 0);
+
         String kitName = intent.getStringExtra(Constants.PARAM_KIT_NAME);
+        tvTotalKit.setText(getString(R.string.kit_number, kitNum, kitName));
 
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_enter_document_number_when_unpack_kit)) {
             documentNumberContainer.setVisibility(View.GONE);
         }
 
-        tvTotalKit.setText(getString(R.string.kit_number, kitNum, kitName));
-
-        productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        ArrayList<InventoryViewModel> list = new ArrayList<>();
-        View.OnClickListener onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validateAll()) {
-                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_signature_for_unpack_kit)) {
-                        showSignDialog();
-                    } else {
-                        presenter.saveUnpackProducts(kitNum, etDocumentNumber.getText().toString(), "");
-                    }
-                }
-            }
-        };
-        mAdapter = new UnpackKitAdapter(list, onClickListener);
-        productListRecycleView.setAdapter(mAdapter);
-
-        kitCode = intent.getStringExtra(Constants.PARAM_KIT_CODE);
+        initRecyclerView();
 
         presenter.loadKitProducts(kitCode, kitNum);
-
     }
+
+    private void initRecyclerView() {
+        productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new UnpackKitAdapter(new ArrayList<InventoryViewModel>(), signDialogListener);
+        productListRecycleView.setAdapter(mAdapter);
+        productListRecycleView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.requestFocus();
+                return false;
+            }
+        });
+    }
+
+    private View.OnClickListener signDialogListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            if (validateAll()) {
+                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_signature_for_unpack_kit)) {
+                    showSignDialog();
+                } else {
+                    presenter.saveUnpackProducts(kitNum, etDocumentNumber.getText().toString(), "");
+                }
+            }
+        }
+    };
 
     private void showSignDialog() {
         SignatureDialog signatureDialog = new SignatureDialog();
