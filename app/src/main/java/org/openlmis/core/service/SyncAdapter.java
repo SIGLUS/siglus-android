@@ -86,16 +86,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
         syncUpManager.syncUpUnSyncedStockCardCodes();
-        sendSyncedTimeBroadcast();
+        sendSyncDataBroadcast();
         syncUpManager.syncAppVersion();
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_archived_product)) {
             syncUpManager.syncArchivedProducts();
         }
     }
 
-    private void sendSyncedTimeBroadcast() {
+    private void sendSyncDataBroadcast() {
         Intent intent = new Intent();
-        intent.setAction(Constants.INTENT_FILTER_SET_SYNCED_TIME);
+        intent.setAction(Constants.INTENT_FILTER_SET_SYNC_DATA);
         context.sendBroadcast(intent);
     }
 }

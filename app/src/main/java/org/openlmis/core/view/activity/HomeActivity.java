@@ -103,7 +103,7 @@ public class HomeActivity extends BaseActivity {
 
     private void registerSyncTimeReceiver() {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Constants.INTENT_FILTER_SET_SYNCED_TIME);
+        filter.addAction(Constants.INTENT_FILTER_SET_SYNC_DATA);
         registerReceiver(syncedTimeReceiver, filter);
     }
 

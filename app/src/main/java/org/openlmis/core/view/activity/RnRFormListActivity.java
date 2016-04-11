@@ -19,7 +19,10 @@
 package org.openlmis.core.view.activity;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -83,6 +86,8 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         super.onCreate(savedInstanceState);
         presenter.setProgramCode(programCode);
         initUI();
+
+        registerRnrSyncReceiver();
     }
 
     @Override
@@ -210,4 +215,24 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
             }
         };
     }
+
+    private void registerRnrSyncReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Constants.INTENT_FILTER_SET_SYNC_DATA);
+        registerReceiver(rnrSyncReceiver, filter);
+    }
+
+    BroadcastReceiver rnrSyncReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            initUI();
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(rnrSyncReceiver);
+        super.onDestroy();
+    }
+
 }
