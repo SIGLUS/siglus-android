@@ -1,4 +1,4 @@
-@regression @change_date
+@unpack_kit @regression @change_date
 Feature: Unpack Kit
 
   Scenario: Unpack US kit and verify kit products SOH
@@ -23,7 +23,7 @@ Feature: Unpack Kit
     Then I wait for "Complete" to appear
     And I press "Complete"
     And I wait for "Enter your initials" to appear
-    And I sign with "superuser"
+    And I sign with "super"
     And I wait for 1 second
     And I press the menu key
     And I press "Archive drugs"
@@ -58,8 +58,15 @@ Feature: Unpack Kit
     And I should see "Unpacking"
 
     And I enter quantity for all products in kit
+    #signature
+    And I wait for "Please enter your initials to confirm the amounts entered" to appear
+    And I sign with "test"
+
     Then I wait for "[SCOD10]" to appear
-    Then I should not see "Unpack Kit"
+    And I should not see "Unpack Kit"
+    And I swipe right
+    Then I see "test" in signature field
+
     Then I navigate back
     And I wait for 1 second
     Then I navigate back
@@ -74,6 +81,9 @@ Feature: Unpack Kit
     Then I should see "[15C0ZY]"
     Then I select stock card code called "[15C0ZY]"
     Then I should see "District( DDM)"
+    And I swipe right
+    And I swipe right
+    Then I see "test" in signature field
     Then I navigate back
     And I wait for 1 second
     Then I navigate back
