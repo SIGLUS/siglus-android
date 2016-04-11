@@ -133,6 +133,7 @@ task checkstyle(type: Checkstyle) {
     source 'src/main'
     include '**/*.java'
     exclude '**/gen/**'
+    exclude '**/migrations/**'
 
     classpath = files()
 }
