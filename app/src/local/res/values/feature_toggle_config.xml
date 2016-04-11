@@ -11,4 +11,5 @@
     <bool name="feature_deactivate_program_product">true</bool>
     <bool name="feature_signature_for_unpack_kit">true</bool>
     <bool name="feature_update_products_program">false</bool>
+    <bool name="feature_enter_document_number_when_unpack_kit">true</bool>
 </resources>
