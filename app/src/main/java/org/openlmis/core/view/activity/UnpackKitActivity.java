@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.openlmis.core.LMISApp;
@@ -36,6 +37,12 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
     @InjectView(R.id.tv_total_kit)
     protected TextView tvTotalKit;
 
+    @InjectView(R.id.et_document_no)
+    protected EditText etDocumentNumber;
+
+    @InjectView(R.id.kit_docnumber_container)
+    protected View documentNumberContainer;
+
     @InjectPresenter(UnpackKitPresenter.class)
     private UnpackKitPresenter presenter;
 
@@ -62,6 +69,10 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         kitNum = intent.getIntExtra(Constants.PARAM_KIT_NUM, 0);
         String kitName = intent.getStringExtra(Constants.PARAM_KIT_NAME);
 
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_enter_document_number_when_unpack_kit)) {
+            documentNumberContainer.setVisibility(View.GONE);
+        }
+
         tvTotalKit.setText(getString(R.string.kit_number, kitNum, kitName));
 
         productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
@@ -73,7 +84,7 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
                     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_signature_for_unpack_kit)) {
                         showSignDialog();
                     } else {
-                        presenter.saveUnpackProducts(kitNum, "");
+                        presenter.saveUnpackProducts(kitNum, etDocumentNumber.getText().toString(), "");
                     }
                 }
             }
@@ -101,7 +112,7 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
 
         @Override
         public void onSign(String sign) {
-            presenter.saveUnpackProducts(kitNum, sign);
+            presenter.saveUnpackProducts(kitNum, etDocumentNumber.getText().toString(), sign);
         }
     };
 

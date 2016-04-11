@@ -109,13 +109,13 @@ public class UnpackKitPresenter extends Presenter {
         };
     }
 
-    public void saveUnpackProducts(int kitUnpackQuantity, String signature) {
+    public void saveUnpackProducts(int kitUnpackQuantity, String documentNumber, String signature) {
         view.loading();
-        Subscription subscription = saveUnpackProductsObservable(kitUnpackQuantity, signature).subscribe(unpackProductsSubscriber);
+        Subscription subscription = saveUnpackProductsObservable(kitUnpackQuantity, documentNumber, signature).subscribe(unpackProductsSubscriber);
         subscriptions.add(subscription);
     }
 
-    private Observable saveUnpackProductsObservable(final int kitUnpackQuantity, final String signature) {
+    private Observable saveUnpackProductsObservable(final int kitUnpackQuantity, final String documentNumber, final String signature) {
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(final Subscriber<? super Void> subscriber) {
@@ -127,7 +127,7 @@ public class UnpackKitPresenter extends Presenter {
                         @Override
                         public StockCard apply(InventoryViewModel inventoryViewModel) {
                             try {
-                                return createStockCardForProduct(inventoryViewModel, signature);
+                                return createStockCardForProduct(inventoryViewModel, documentNumber, signature);
                             } catch (LMISException e) {
                                 subscriber.onError(e);
                             }
@@ -194,7 +194,7 @@ public class UnpackKitPresenter extends Presenter {
     }
 
     @NonNull
-    protected StockCard createStockCardForProduct(InventoryViewModel inventoryViewModel, String signature) throws LMISException {
+    protected StockCard createStockCardForProduct(InventoryViewModel inventoryViewModel, String documentNumber, String signature) throws LMISException {
         List<StockMovementItem> stockMovementItems = new ArrayList<>();
 
         StockCard stockCard = stockRepository.queryStockCardByProductId(inventoryViewModel.getProductId());
@@ -211,18 +211,19 @@ public class UnpackKitPresenter extends Presenter {
         stockCard.setExpireDates(DateUtil.uniqueExpiryDates(inventoryViewModel.getExpiryDates(), stockCard.getExpireDates()));
         stockCard.getProduct().setArchived(false);
 
-        stockMovementItems.add(createUnpackMovementItem(stockCard, movementQuantity, signature));
+        stockMovementItems.add(createUnpackMovementItem(stockCard, movementQuantity, documentNumber, signature));
         stockCard.setStockMovementItemsWrapper(stockMovementItems);
 
         return stockCard;
     }
 
     @NonNull
-    private StockMovementItem createUnpackMovementItem(StockCard stockCard, long movementQuantity, String signature) {
+    private StockMovementItem createUnpackMovementItem(StockCard stockCard, long movementQuantity, String documentNumber, String signature) {
         StockMovementItem unpackMovementItem = new StockMovementItem(stockCard);
         unpackMovementItem.setReason(MovementReasonManager.DDM);
         unpackMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
         unpackMovementItem.setMovementQuantity(movementQuantity);
+        unpackMovementItem.setDocumentNumber(documentNumber);
         unpackMovementItem.setSignature(signature);
         return unpackMovementItem;
     }

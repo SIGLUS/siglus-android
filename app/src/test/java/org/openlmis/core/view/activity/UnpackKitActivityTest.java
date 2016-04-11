@@ -4,7 +4,6 @@ import android.content.Intent;
 
 import com.google.inject.AbstractModule;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -89,9 +88,10 @@ public class UnpackKitActivityTest {
     public void shouldSaveUnpackMovementsWhenQuantityIsValidWhenToggleOff() throws Exception {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_signature_for_unpack_kit, false);
         stockMovementActivity.refreshList(Arrays.asList(viewModel));
+        stockMovementActivity.etDocumentNumber.setText("DocumentNumber");
 
         stockMovementActivity.mAdapter.onCreateViewHolder(stockMovementActivity.productListRecycleView, 1).itemView.findViewById(R.id.btn_complete).performClick();
-        verify(mockedPresenter).saveUnpackProducts(1, "");
+        verify(mockedPresenter).saveUnpackProducts(1, "DocumentNumber", "");
     }
 
     @Test
@@ -99,14 +99,10 @@ public class UnpackKitActivityTest {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_signature_for_unpack_kit, false);
         viewModel.setQuantity("");
         stockMovementActivity.refreshList(Arrays.asList(viewModel));
+        stockMovementActivity.etDocumentNumber.setText("DocumentNumber");
 
         stockMovementActivity.mAdapter.onCreateViewHolder(stockMovementActivity.productListRecycleView, 1).itemView.findViewById(R.id.btn_complete).performClick();
 
-        verify(mockedPresenter, never()).saveUnpackProducts(1, "");
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        RoboGuice.Util.reset();
+        verify(mockedPresenter, never()).saveUnpackProducts(1, "DocumentNumber", "");
     }
 }

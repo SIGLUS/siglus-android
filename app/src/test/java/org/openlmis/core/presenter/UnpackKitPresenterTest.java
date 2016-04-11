@@ -49,6 +49,7 @@ public class UnpackKitPresenterTest {
     private Product product;
     private InventoryViewModel viewModel;
     private String signature;
+    private String documentNumber;
 
     @Before
     public void setup() throws Exception {
@@ -61,6 +62,7 @@ public class UnpackKitPresenterTest {
         expireDates.add("30/5/2026");
 
         signature = "super";
+        documentNumber = "test";
 
         product = new ProductBuilder().setIsKit(false).setCode("productCode1").setPrimaryName("name1").setProductId(200L).build();
         viewModel = new StockCardViewModelBuilder(product).setChecked(true).setKitExpectQuantity(300).setQuantity("200").setExpiryDates(expireDates).build();
@@ -195,7 +197,7 @@ public class UnpackKitPresenterTest {
         when(productRepository.getByCode("SD1112")).thenReturn(kit);
         when(stockRepository.queryStockCardByProductId(888L)).thenReturn(kitStockCard);
 
-        presenter.saveUnpackProducts(2, signature);
+        presenter.saveUnpackProducts(2, documentNumber, signature);
         testSubscriber.awaitTerminalEvent();
 
         testSubscriber.assertNoErrors();
@@ -212,7 +214,7 @@ public class UnpackKitPresenterTest {
         when(stockRepository.queryStockCardByProductId(200L)).thenReturn(null);
         viewModel.setQuantity("10");
 
-        StockCard stockCard = presenter.createStockCardForProduct(viewModel, signature);
+        StockCard stockCard = presenter.createStockCardForProduct(viewModel, documentNumber, signature);
         List<StockMovementItem> movementItems = stockCard.getStockMovementItemsWrapper();
 
         assertThat(stockCard.getStockOnHand()).isEqualTo(10);
@@ -221,6 +223,7 @@ public class UnpackKitPresenterTest {
         assertThat(movementItems.get(0).getSignature()).isEqualTo(null);
         assertThat(movementItems.get(1).getStockOnHand()).isEqualTo(10);
         assertThat(movementItems.get(1).getSignature()).isEqualTo(signature);
+        assertThat(movementItems.get(1).getDocumentNumber()).isEqualTo(documentNumber);
     }
 
     @Test
@@ -235,13 +238,14 @@ public class UnpackKitPresenterTest {
 
         when(stockRepository.queryStockCardByProductId(200L)).thenReturn(productStockCard);
 
-        StockCard stockCard = presenter.createStockCardForProduct(viewModel, signature);
+        StockCard stockCard = presenter.createStockCardForProduct(viewModel, documentNumber, signature);
         List<StockMovementItem> movementItems = stockCard.getStockMovementItemsWrapper();
 
         assertThat(stockCard.getStockOnHand()).isEqualTo(110);
         assertThat(movementItems.size()).isEqualTo(1);
         assertThat(movementItems.get(0).getStockOnHand()).isEqualTo(110);
         assertThat(movementItems.get(0).getSignature()).isEqualTo(signature);
+        assertThat(movementItems.get(0).getDocumentNumber()).isEqualTo(documentNumber);
         assertThat(stockCard.getExpireDates()).isEqualTo("20/1/2026,15/2/2026,30/5/2026");
     }
 
@@ -289,6 +293,7 @@ public class UnpackKitPresenterTest {
         assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getMovementQuantity()).isEqualTo(1);
         assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getStockOnHand()).isEqualTo(999);
         assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getSignature()).isEqualTo(signature);
+        assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getDocumentNumber()).isEqualTo(null);
     }
 
     @Test
