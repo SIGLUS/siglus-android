@@ -25,6 +25,8 @@ import android.util.Log;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.persistence.migrations.AddActiveColumnToProductTable;
 import org.openlmis.core.persistence.migrations.AddCreatedTimeToStockMovement;
 import org.openlmis.core.persistence.migrations.AddFacilityIdToUser;
@@ -52,6 +54,7 @@ import org.openlmis.core.persistence.migrations.CreateRnRFormSignature;
 import org.openlmis.core.persistence.migrations.SetQuantityOfStockMovementForInitialInventory;
 import org.openlmis.core.persistence.migrations.UpdateCreateTimeAndUpdateTime;
 import org.openlmis.core.persistence.migrations.UpdateProductsFalseValueToZero;
+import org.openlmis.core.persistence.migrations.UpdateProductsProgram;
 import org.openlmis.core.persistence.migrations.UpdateRegimenType;
 
 import java.util.ArrayList;
@@ -89,6 +92,9 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new AddIsEmergencyColumnToProgram());
             add(new AddNewPrograms());
             add(new ConvertEssMedsToVIAProgram());
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_update_products_program)){
+                add(new UpdateProductsProgram());
+            }
         }
     };
     private static int instanceCount = 0;
