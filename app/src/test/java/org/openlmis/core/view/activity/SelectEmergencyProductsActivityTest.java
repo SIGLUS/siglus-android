@@ -116,7 +116,7 @@ public class SelectEmergencyProductsActivityTest {
     private ArrayList<InventoryViewModel> getInventoryViewModels() {
         Product product = new ProductBuilder().setPrimaryName("Product name").setCode("011111").build();
         ArrayList<InventoryViewModel> inventoryViewModels = new ArrayList<>();
-        for (int i = 0; i < 11; i++) {
+        for (int i = 0; i < 10; i++) {
             inventoryViewModels.add(new InventoryViewModel(product));
         }
         return inventoryViewModels;
