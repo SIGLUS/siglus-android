@@ -18,7 +18,8 @@
             style="@style/Unpack.EditText"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:hint="@string/document_number" />
+            android:hint="@string/document_number"
+            android:theme="@style/MyActionBar.WhiteEditText" />
     </LinearLayout>
 
     <RelativeLayout

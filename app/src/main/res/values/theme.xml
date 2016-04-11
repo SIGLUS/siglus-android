@@ -79,6 +79,12 @@
         <item name="background">@color/color_gray</item>
     </style>
 
+    <style name="MyActionBar.WhiteEditText">
+        <item name="colorControlNormal">@color/color_white_alpha</item>
+        <item name="colorControlActivated">@color/color_white</item>
+        <item name="colorControlHighlight">@color/color_white</item>
+    </style>
+
     <!-- Basic style of TextView -->
     <style name="Text" />
 
