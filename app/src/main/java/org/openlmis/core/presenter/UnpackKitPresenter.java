@@ -135,7 +135,7 @@ public class UnpackKitPresenter extends Presenter {
                         }
                     }).toList());
 
-                    stockCards.add(getStockCardForKit(kitUnpackQuantity, signature));
+                    stockCards.add(getStockCardForKit(kitUnpackQuantity, documentNumber, signature));
                     stockRepository.batchSaveStockCardsWithMovementItemsAndUpdateProduct(stockCards);
 
                     subscriber.onNext(null);
@@ -148,7 +148,7 @@ public class UnpackKitPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    protected StockCard getStockCardForKit(int kitUnpackQuantity, String signature) throws LMISException {
+    protected StockCard getStockCardForKit(int kitUnpackQuantity, String documentNumber, String signature) throws LMISException {
 
         Product kit = productRepository.getByCode(kitCode);
         StockCard kitStockCard = stockRepository.queryStockCardByProductId(kit.getId());
@@ -164,6 +164,7 @@ public class UnpackKitPresenter extends Presenter {
         kitMovementItem.setMovementType(StockMovementItem.MovementType.ISSUE);
         kitMovementItem.setMovementQuantity(kitUnpackQuantity);
         kitMovementItem.setSignature(signature);
+        kitMovementItem.setDocumentNumber(documentNumber);
 
         List<StockMovementItem> stockMovementItems = new ArrayList<>();
         stockMovementItems.add(kitMovementItem);

@@ -266,7 +266,7 @@ public class UnpackKitPresenterTest {
         when(productRepository.getByCode(kit.getCode())).thenReturn(kit);
         when(stockRepository.queryStockCardByProductId(888)).thenReturn(kitStockCard);
 
-        StockCard stockCardForKit = presenter.getStockCardForKit(1000, signature);
+        StockCard stockCardForKit = presenter.getStockCardForKit(1000, documentNumber, signature);
 
         assertThat(stockCardForKit.getExpireDates()).isEqualTo("");
     }
@@ -286,14 +286,14 @@ public class UnpackKitPresenterTest {
         when(productRepository.getByCode("SD1112")).thenReturn(kit);
         when(stockRepository.queryStockCardByProductId(888L)).thenReturn(kitStockCard);
 
-        StockCard stockCardWithMovementItems = presenter.getStockCardForKit(1, signature);
+        StockCard stockCardWithMovementItems = presenter.getStockCardForKit(1, documentNumber, signature);
 
         assertThat(stockCardWithMovementItems.getStockOnHand()).isEqualTo(999);
         assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().size()).isEqualTo(1);
         assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getMovementQuantity()).isEqualTo(1);
         assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getStockOnHand()).isEqualTo(999);
         assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getSignature()).isEqualTo(signature);
-        assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getDocumentNumber()).isEqualTo(null);
+        assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getDocumentNumber()).isEqualTo(documentNumber);
     }
 
     @Test
