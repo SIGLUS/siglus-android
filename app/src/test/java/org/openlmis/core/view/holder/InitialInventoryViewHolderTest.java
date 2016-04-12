@@ -11,7 +11,6 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.ProductBuilder;
-import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.holder.InitialInventoryViewHolder.ViewHistoryListener;
@@ -27,7 +26,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
 public class InitialInventoryViewHolderTest {
@@ -36,7 +34,6 @@ public class InitialInventoryViewHolderTest {
     private String queryKeyWord = null;
     private Product product;
     private ViewHistoryListener mockedListener;
-    StockService stockService;
 
     @Before
     public void setUp() {
@@ -44,8 +41,6 @@ public class InitialInventoryViewHolderTest {
         viewHolder = new InitialInventoryViewHolder(itemView);
         product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").build();
         mockedListener = mock(ViewHistoryListener.class);
-        stockService = mock(StockService.class);
-        viewHolder.stockService = stockService;
     }
 
     @Test
@@ -174,7 +169,6 @@ public class InitialInventoryViewHolderTest {
                 .setChecked(false)
                 .setType("Embalagem")
                 .build();
-        when(stockService.hasStockCard(product)).thenReturn(true);
 
         viewHolder.populate(viewModel, queryKeyWord, mockedListener);
 
@@ -183,23 +177,6 @@ public class InitialInventoryViewHolderTest {
         viewHolder.tvHistoryAction.performClick();
 
         verify(mockedListener).viewHistory(viewModel.getStockCard());
-    }
-
-
-    @Test
-    public void shouldNotShowHistoryViewAndViewItHasNoStockCardAndProductIsArchived() {
-        ViewHistoryListener mockedListener = mock(ViewHistoryListener.class);
-        product.setArchived(true);
-        InventoryViewModel viewModel = new StockCardViewModelBuilder(product)
-                .setQuantity("10")
-                .setType("Embalagem")
-                .build();
-        when(stockService.hasStockCard(viewModel.getProduct())).thenReturn(false);
-
-        viewHolder.populate(viewModel, queryKeyWord, mockedListener);
-
-
-        assertThat(viewHolder.tvHistoryAction.getVisibility()).isEqualTo(View.GONE);
     }
 
 }

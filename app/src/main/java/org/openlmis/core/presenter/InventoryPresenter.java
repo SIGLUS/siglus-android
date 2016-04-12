@@ -35,7 +35,6 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
-import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
@@ -63,9 +62,6 @@ public class InventoryPresenter extends Presenter {
 
     @Inject
     StockRepository stockRepository;
-
-    @Inject
-    StockService stockService;
 
     @Inject
     InventoryRepository inventoryRepository;
@@ -108,11 +104,12 @@ public class InventoryPresenter extends Presenter {
     @NonNull
     private List<Product> getValidProductsForInventory() throws LMISException {
         List<Product> activeProducts = productRepository.listActiveProducts(IsKit.No);
+        final List<Product> productsWithStockCards = getProductsThatHaveStockCards();
 
         return FluentIterable.from(activeProducts).filter(new Predicate<Product>() {
             @Override
             public boolean apply(@Nullable Product product) {
-                return product.isArchived() || !stockService.hasStockCard(product);
+                return product.isArchived() || !productsWithStockCards.contains(product);
             }
         }).toList();
     }
@@ -121,7 +118,7 @@ public class InventoryPresenter extends Presenter {
     private InventoryViewModel convertProductToStockCardViewModel(Product product) {
         try {
             InventoryViewModel viewModel;
-            if (product.isArchived() && stockService.hasStockCard(product)) {
+            if (product.isArchived()) {
                 viewModel = new InventoryViewModel(stockRepository.queryStockCardByProductId(product.getId()));
             } else {
                 viewModel = new InventoryViewModel(product);
@@ -132,6 +129,15 @@ public class InventoryPresenter extends Presenter {
             e.reportToFabric();
         }
         return null;
+    }
+
+    private List<Product> getProductsThatHaveStockCards() throws LMISException {
+        return from(stockRepository.list()).transform(new Function<StockCard, Product>() {
+            @Override
+            public Product apply(StockCard stockCard) {
+                return stockCard.getProduct();
+            }
+        }).toList();
     }
 
     public Observable<List<InventoryViewModel>> loadPhysicalInventory() {
@@ -204,9 +210,9 @@ public class InventoryPresenter extends Presenter {
 
     private StockCard initStockCard(InventoryViewModel model) {
         try {
-            Product selectedProduct = model.getProduct();
+            boolean isArchivedStockCard = model.getStockCard() != null;
 
-            StockCard stockCard = model.getStockCard() != null ? model.getStockCard() : new StockCard();
+            StockCard stockCard = isArchivedStockCard ? model.getStockCard() : new StockCard();
             stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
 
             if (stockCard.getStockOnHand() != 0) {
@@ -215,26 +221,18 @@ public class InventoryPresenter extends Presenter {
                 stockCard.setExpireDates("");
             }
 
-            if (model.getProduct().isArchived()) {
-                stockCard.setProduct(selectedProduct);
-
-
+            if (isArchivedStockCard) {
                 stockCard.getProduct().setArchived(false);
                 stockRepository.reInventoryArchivedStockCard(stockCard);
             } else {
-                stockCard.setProduct(selectedProduct);
+                stockCard.setProduct(productRepository.getById(model.getProductId()));
                 stockRepository.initStockCard(stockCard);
             }
-
             return stockCard;
         } catch (LMISException e) {
             e.reportToFabric();
         }
         return null;
-    }
-
-    private boolean hasStockCard(Product product) {
-        return stockService.hasStockCard(product);
     }
 
 

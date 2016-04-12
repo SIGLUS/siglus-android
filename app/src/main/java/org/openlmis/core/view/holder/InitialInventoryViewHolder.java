@@ -16,7 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.TextStyleUtil;
@@ -29,7 +28,6 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
 
@@ -56,11 +54,8 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     @InjectView(R.id.touchArea_checkbox)
     LinearLayout taCheckbox;
 
-    StockService stockService;
-
     public InitialInventoryViewHolder(View itemView) {
         super(itemView);
-        this.stockService = RoboGuice.getInjector(context).getInstance(StockService.class);
         initView();
     }
 
@@ -134,7 +129,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     }
 
     private void initHistoryView(final InventoryViewModel viewModel, final ViewHistoryListener listener) {
-        tvHistoryAction.setVisibility(hasHistoryMovement(viewModel) ? View.VISIBLE : View.GONE);
+        tvHistoryAction.setVisibility(viewModel.getProduct().isArchived() ? View.VISIBLE : View.GONE);
         tvHistoryAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,10 +138,6 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
                 }
             }
         });
-    }
-
-    private boolean hasHistoryMovement(InventoryViewModel viewModel) {
-        return viewModel.getProduct().isArchived() && stockService.hasStockCard(viewModel.getProduct());
     }
 
     protected void populateEditPanel(String quantity, String expireDate) {
