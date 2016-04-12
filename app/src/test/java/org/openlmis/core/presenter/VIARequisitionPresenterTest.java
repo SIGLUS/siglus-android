@@ -521,13 +521,31 @@ public class VIARequisitionPresenterTest {
         ArrayList<StockCard> stockCards = newArrayList();
         Date periodEndDate = new Date();
         RnRForm rnRForm = new RnRForm();
-        when(mockRnrFormRepository.initRnrForm(periodEndDate, true)).thenReturn(rnRForm);
+        when(mockRnrFormRepository.initEmergencyRnrForm(periodEndDate, stockCards)).thenReturn(rnRForm);
         ArrayList<RnrFormItem> rnrFormItems = new ArrayList<>();
         when(mockRnrFormRepository.generateRnrFormItems(rnRForm, stockCards)).thenReturn(rnrFormItems);
 
         RnRForm rnRForm1 = presenter.initEmergencyRnr(stockCards, periodEndDate);
 
         org.junit.Assert.assertThat(rnRForm1.getRnrFormItemListWrapper(), Is.<List<RnrFormItem>>is(rnrFormItems));
+        verify(mockRnrFormRepository, never()).createRnRsWithItems(newArrayList(rnRForm));
+    }
+
+    @Test
+    public void shouldProcessEmergencySignature() throws Exception {
+        RnRForm rnRForm = new RnRForm();
+        rnRForm.setStatus(RnRForm.STATUS.DRAFT);
+        rnRForm.setEmergency(true);
+        String submitSign = "sign";
+        String approveSign = "approve sign";
+
+        presenter.processSign(submitSign, rnRForm);
+        assertThat(submitSign, is(rnRForm.getSubmitterSignature()));
+        verify(mockRnrFormRepository, never()).createRnRsWithItems(newArrayList(rnRForm));
+
+        presenter.processSign(approveSign, rnRForm);
+        assertThat(approveSign, is(rnRForm.getApproverSignature()));
+        verify(mockRnrFormRepository).saveEmergency(rnRForm);
     }
 
     private ViaKitsViewModel buildDefaultViaKit() {

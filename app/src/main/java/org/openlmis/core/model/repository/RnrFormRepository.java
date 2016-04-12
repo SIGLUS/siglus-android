@@ -103,6 +103,19 @@ public class RnrFormRepository {
         return createInitRnrForm(program, period, isEmergency);
     }
 
+    public RnRForm initEmergencyRnrForm(Date periodEndDate, List<StockCard> stockCards) throws LMISException {
+        final Program program = programRepository.queryByCode(programCode);
+        if (program == null) {
+            throw new LMISException("Program cannot be null !");
+        }
+
+        Period period = periodService.generateNextPeriod(programCode, periodEndDate);
+        final RnRForm rnRForm = RnRForm.init(program, period, true);
+
+        rnRForm.setRnrFormItemListWrapper(generateRnrFormItems(rnRForm, stockCards));
+        return rnRForm;
+    }
+
     private RnRForm createInitRnrForm(Program program, Period period, boolean isEmergency) throws LMISException {
         final RnRForm rnrForm = RnRForm.init(program, period, isEmergency);
         try {
@@ -420,5 +433,11 @@ public class RnrFormRepository {
             e.reportToFabric();
         }
         return false;
+    }
+
+    public void saveEmergency(RnRForm rnRForm) throws LMISException {
+        create(rnRForm);
+        rnrFormItemRepository.create(rnRForm.getRnrFormItemListWrapper());
+        genericDao.refresh(rnRForm);
     }
 }

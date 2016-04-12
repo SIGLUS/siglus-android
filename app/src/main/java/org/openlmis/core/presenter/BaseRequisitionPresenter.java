@@ -239,10 +239,12 @@ public abstract class BaseRequisitionPresenter extends Presenter {
 
     public void processSign(String signName, RnRForm rnRForm) {
         if (rnRForm.isDraft()) {
+            rnRForm.setSubmitterSignature(signName);
             submitSignature(signName, RnRFormSignature.TYPE.SUBMITTER, rnRForm);
             submitRequisition(rnRForm);
             view.showMessageNotifyDialog();
         } else {
+            rnRForm.setApproverSignature(signName);
             submitSignature(signName, RnRFormSignature.TYPE.APPROVER, rnRForm);
             authoriseRequisition(rnRForm);
         }

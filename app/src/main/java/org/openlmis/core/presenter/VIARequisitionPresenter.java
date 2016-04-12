@@ -31,6 +31,7 @@ import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.ProductRepository;
@@ -116,11 +117,8 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         subscriptions.add(subscription);
     }
 
-    //TODO bug: rnr is create db item, so rnr will appear in rnn list, when on #84 will handle this bug
     protected RnRForm initEmergencyRnr(List<StockCard> stockCards, Date periodEndDate) throws LMISException {
-        RnRForm rnRForm = rnrFormRepository.initRnrForm(periodEndDate, true);
-        rnRForm.setRnrFormItemListWrapper(rnrFormRepository.generateRnrFormItems(rnRForm, stockCards));
-        return rnRForm;
+        return rnrFormRepository.initEmergencyRnrForm(periodEndDate, stockCards);
     }
 
     @Override
@@ -324,6 +322,32 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         List<BaseInfoItem> baseInfoItemListWrapper = rnRForm.getBaseInfoItemListWrapper();
         if (baseInfoItemListWrapper != null) {
             baseInfoItemListWrapper.get(0).setValue(consultationNumbers);
+        }
+    }
+
+    @Override
+    public void processSign(String signName, RnRForm rnRForm) {
+        if (rnRForm.isEmergency()) {
+            processEmergencySign(signName, rnRForm);
+            return;
+        }
+        super.processSign(signName, rnRForm);
+    }
+
+    private void processEmergencySign(String signName, RnRForm rnRForm) {
+        if (rnRForm.isDraft()) {
+            rnRForm.setSubmitterSignature(signName);
+            rnRForm.setStatus(RnRForm.STATUS.SUBMITTED);
+        } else {
+            rnRForm.setApproverSignature(signName);
+            try {
+                rnrFormRepository.saveEmergency(rnRForm);
+            } catch (LMISException e) {
+                e.printStackTrace();
+            }
+            submitSignature(rnRForm.getSubmitterSignature(), RnRFormSignature.TYPE.SUBMITTER, rnRForm);
+            submitSignature(rnRForm.getApproverSignature(), RnRFormSignature.TYPE.APPROVER, rnRForm);
+            authoriseRequisition(rnRForm);
         }
     }
 

@@ -108,6 +108,9 @@ public class RnRForm extends BaseModel {
     @DatabaseField
     private boolean emergency;
 
+    private String submitterSignature;
+    private String approverSignature;
+
     public boolean isDraft() {
         return getStatus() == STATUS.DRAFT || getStatus() == STATUS.DRAFT_MISSED;
     }
