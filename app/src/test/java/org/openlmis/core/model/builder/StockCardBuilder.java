@@ -21,7 +21,7 @@ public class StockCardBuilder {
     public static StockCard saveStockCardWithOneMovement(StockRepository stockRepository) throws LMISException, ParseException {
         StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(90L);
-        stockRepository.save(stockCard);
+        stockRepository.createOrUpdate(stockCard);
 
         StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setStockCard(stockCard);

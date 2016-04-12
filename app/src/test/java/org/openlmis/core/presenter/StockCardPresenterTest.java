@@ -145,7 +145,7 @@ public class StockCardPresenterTest {
         subscriber.awaitTerminalEvent();
 
         //then
-        verify(stockRepository).initStockCard(any(StockCard.class));
+        verify(stockRepository).createOrUpdateStockCardWithStockMovement(any(StockCard.class));
         StockCard createdKitStockCard = subscriber.getOnNextEvents().get(0).get(0);
         assertThat(createdKitStockCard.getProduct().getPrimaryName()).isEqualTo("kit a");
     }

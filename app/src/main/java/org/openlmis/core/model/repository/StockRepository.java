@@ -98,6 +98,14 @@ public class StockRepository {
         }
     }
 
+    public void createOrUpdate(final StockCard stockCard){
+        try {
+            genericDao.createOrUpdate(stockCard);
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+    }
+
     public void update(final StockCard stockCard) {
         try {
             genericDao.update(stockCard);
@@ -140,7 +148,7 @@ public class StockRepository {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-                    save(stockCard);
+                    createOrUpdate(stockCard);
                     batchCreateOrUpdateStockMovements(stockCard.getStockMovementItemsWrapper());
                     return null;
                 }
@@ -163,27 +171,12 @@ public class StockRepository {
         }
     }
 
-    public void initStockCard(final StockCard stockCard) throws LMISException {
+    public void createOrUpdateStockCardWithStockMovement(final StockCard stockCard) throws LMISException {
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-                    save(stockCard);
-                    addStockMovementAndUpdateStockCard(stockCard.generateInitialStockMovementItem());
-                    return null;
-                }
-            });
-        } catch (SQLException e) {
-            throw new LMISException(e);
-        }
-    }
-
-    public void reInventoryArchivedStockCard(final StockCard stockCard) throws LMISException {
-        try {
-            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
-                @Override
-                public Object call() throws Exception {
-                    update(stockCard);
+                    createOrUpdate(stockCard);
                     updateProductOfStockCard(stockCard.getProduct());
                     saveStockItem(stockCard.generateInitialStockMovementItem());
                     return null;
@@ -200,7 +193,7 @@ public class StockRepository {
             return;
         }
 
-        update(stockcard);
+        createOrUpdate(stockcard);
         saveStockItem(stockMovementItem);
     }
 

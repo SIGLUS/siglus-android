@@ -105,7 +105,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldBatchSaveStockcardAndMovementSuccessful() throws LMISException {
+    public void shouldBatchSaveStockCardAndMovementSuccessful() throws LMISException {
         ArrayList<StockCard> stockCards = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             StockCard stockCard = new StockCard();
@@ -317,7 +317,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         //given
         DateTime dateTime = new DateTime();
 
-        stockRepository.save(stockCard);
+        stockRepository.createOrUpdate(stockCard);
 
         ArrayList<StockMovementItem> stockMovementItems = new ArrayList<>();
 
@@ -339,7 +339,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     public void shouldGetFirstItemWhenCreatedTimeDiff() throws Exception {
         //given
         DateTime dateTime = new DateTime();
-        stockRepository.save(stockCard);
+        stockRepository.createOrUpdate(stockCard);
 
         ArrayList<StockMovementItem> stockMovementItems = new ArrayList<>();
 
@@ -361,7 +361,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldGetStockMovementsCreatedBetweenTwoDatesExclusiveOfBeginDate() throws LMISException {
         stockCard.setStockOnHand(100);
-        stockRepository.save(stockCard);
+        stockRepository.createOrUpdate(stockCard);
         StockMovementItem movementItem = createMovementItem(ISSUE, 1, stockCard, DateUtil.parseString("2020-01-21 13:00:00", DATE_TIME_FORMAT), DateUtil.parseString("2020-01-21 13:00:00", DATE_TIME_FORMAT), false);
         createMovementItem(RECEIVE, 2, stockCard, DateUtil.parseString("2020-02-01 11:00:00", DATE_TIME_FORMAT), DateUtil.parseString("2020-02-01 11:00:00", DATE_TIME_FORMAT), false);
         createMovementItem(ISSUE, 3, stockCard, DateUtil.parseString("2020-02-22 20:00:00", DATE_TIME_FORMAT), DateUtil.parseString("2020-02-22 20:00:00", DATE_TIME_FORMAT), false);

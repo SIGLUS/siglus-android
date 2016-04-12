@@ -199,7 +199,7 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
         if (isUpdateDBImmediately) {
             final StockCard stockCard = model.getStockCard();
             stockCard.setExpireDates(DateUtil.formatExpiryDateString(expireDates));
-            stockRepository.update(stockCard);
+            stockRepository.createOrUpdate(stockCard);
         }
     }
 

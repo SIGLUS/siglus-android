@@ -200,7 +200,7 @@ public class SyncUpManagerTest {
         productRepository.createOrUpdate(product);
 
         stockCard.setProduct(product);
-        stockRepository.update(stockCard);
+        stockRepository.createOrUpdate(stockCard);
 
         //ready to sync
         StockMovementItem item = new StockMovementItem();
