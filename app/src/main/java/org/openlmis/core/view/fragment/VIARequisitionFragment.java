@@ -83,9 +83,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @InjectView(R.id.vg_container)
     ViewGroup vgContainer;
 
-    @InjectView(R.id.via_top_vg)
-    ViewGroup viaTopVg;
-
     @InjectView(R.id.requisition_header_right)
     View bodyHeaderView;
 
@@ -192,17 +189,18 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     private void refreshEmergencyRnr() {
-        consultationView.setEnabled(false);
-        consultationView.setEmergencyRnrHeader();
-        getActivity().setTitle(getString(R.string.label_emergency_requisition_title,
-                DateUtil.formatDateWithoutYear(new Date(LMISApp.getInstance().getCurrentTimeMillis()))));
-        btnSave.setVisibility(View.GONE);
-        viaTopVg.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ToastUtil.show(R.string.msg_emergency_requisition_cant_edit);
             }
-        });
+        };
+        consultationView.setEmergencyRnrHeader();
+        consultationView.setEditClickListener(onClickListener);
+        kitView.setEditClickListener(onClickListener);
+        getActivity().setTitle(getString(R.string.label_emergency_requisition_title,
+                DateUtil.formatDateWithoutYear(new Date(LMISApp.getInstance().getCurrentTimeMillis()))));
+        btnSave.setVisibility(View.GONE);
     }
 
     public boolean isEmergency() {

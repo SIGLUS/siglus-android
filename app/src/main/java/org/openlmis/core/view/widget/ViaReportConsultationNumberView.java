@@ -152,4 +152,9 @@ public class ViaReportConsultationNumberView extends LinearLayout {
     public void setNormalRnrHeader() {
         viaRnrHeader.setText(R.string.label_requisition_header_consultation_header);
     }
+
+    public void setEditClickListener(OnClickListener listener) {
+        editText.setFocusable(false);
+        editText.setOnClickListener(listener);
+    }
 }

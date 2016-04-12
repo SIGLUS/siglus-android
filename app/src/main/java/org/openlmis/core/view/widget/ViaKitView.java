@@ -53,4 +53,15 @@ public class ViaKitView extends LinearLayout {
         etKitReceivedCHW.setText(viaKitsViewModel.getKitsReceivedCHW());
         etKitOpenedCHW.setText(viaKitsViewModel.getKitsOpenedCHW());
     }
+
+    public void setEditClickListener(OnClickListener listener) {
+        etKitReceivedHF.setFocusable(false);
+        etKitOpenedHF.setFocusable(false);
+        etKitReceivedCHW.setFocusable(false);
+        etKitOpenedCHW.setFocusable(false);
+        etKitReceivedHF.setOnClickListener(listener);
+        etKitOpenedHF.setOnClickListener(listener);
+        etKitReceivedCHW.setOnClickListener(listener);
+        etKitOpenedCHW.setOnClickListener(listener);
+    }
 }
