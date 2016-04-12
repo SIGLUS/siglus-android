@@ -458,13 +458,15 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldQueryEarliestStockMovementItemCreatedTimeByProgram() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product,true);
+
         Program mmia = new ProgramBuilder().setProgramCode("MMIA").build();
         Program via = new ProgramBuilder().setProgramCode("VIA").build();
         programRepository.createOrUpdate(mmia);
         programRepository.createOrUpdate(via);
-        Product mmiaProduct = new ProductBuilder().setProgram(mmia).setCode("B1").build();
+        Product mmiaProduct = new ProductBuilder().setCode("B1").build();
         productRepository.createOrUpdate(mmiaProduct);
-        Product viaProduct = new ProductBuilder().setProgram(via).setCode("A1").build();
+        Product viaProduct = new ProductBuilder().setCode("A1").build();
         productRepository.createOrUpdate(viaProduct);
 
         ArrayList<ProductProgram> productPrograms = new ArrayList<>();
@@ -482,6 +484,34 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
         productProgramRepository.batchSave(productPrograms);
 
+        stockCard.setProduct(mmiaProduct);
+        stockRepository.save(stockCard);
+        StockCard stockCard2 = new StockCard();
+        stockCard2.setProduct(viaProduct);
+        stockRepository.save(stockCard2);
+
+        createMovementItem(ISSUE, 100, stockCard, new DateTime("2017-01-01").toDate(), new DateTime("2017-01-01").toDate(), false);
+        createMovementItem(ISSUE, 100, stockCard2, new DateTime("2018-01-01").toDate(), new DateTime("2018-01-01").toDate(), false);
+        DateTime dateTime = new DateTime("2018-01-01");
+        Date expectedDate = new DateTime().withDate(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth()).toDate();
+        createMovementItem(ISSUE, 100, stockCard2, new DateTime("2018-03-02").toDate(), new DateTime("2018-03-02").toDate(), false);
+
+        Date earliestDate = stockRepository.queryEarliestStockMovementDateByProgram(via.getProgramCode());
+        Assert.assertThat(DateUtil.cutTimeStamp(new DateTime(earliestDate)), is(DateUtil.cutTimeStamp(new DateTime(expectedDate))));
+    }
+
+    @Test
+    public void shouldQueryEarliestStockMovementDateByProgramWhenToggleOff() throws LMISException {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, false);
+
+        Program mmia = new ProgramBuilder().setProgramCode("MMIA").build();
+        Program via = new ProgramBuilder().setProgramCode("VIA").build();
+        programRepository.createOrUpdate(mmia);
+        programRepository.createOrUpdate(via);
+        Product mmiaProduct = new ProductBuilder().setProgram(mmia).setCode("B1").build();
+        productRepository.createOrUpdate(mmiaProduct);
+        Product viaProduct = new ProductBuilder().setProgram(via).setCode("A1").build();
+        productRepository.createOrUpdate(viaProduct);
         stockCard.setProduct(mmiaProduct);
         stockRepository.save(stockCard);
         StockCard stockCard2 = new StockCard();
