@@ -22,6 +22,7 @@ import android.content.Context;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
+import com.j256.ormlite.stmt.Where;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
@@ -208,15 +209,29 @@ public class RnrFormRepository {
         return genericDao.queryForAll();
     }
 
-    public List<RnRForm> list(String programCode) throws LMISException {
+    private List<RnRForm> list(String programCode, final boolean isWithEmergency) throws LMISException {
         final List<Long> programIds = programRepository.queryProgramIdsByProgramCodeOrParentCode(programCode);
 
         return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
             @Override
             public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
-                return dao.queryBuilder().orderBy("periodBegin", true).where().in("program_id", programIds).query();
+                Where<RnRForm, String> where = dao.queryBuilder().orderBy("periodBegin", true).where();
+                where.in("program_id", programIds);
+
+                if (!isWithEmergency) {
+                    where.and().eq("emergency", false);
+                }
+                return where.query();
             }
         });
+    }
+
+    public List<RnRForm> listWithEmergency(String programCode) throws LMISException {
+        return list(programCode, true);
+    }
+
+    public List<RnRForm> listWithoutEmergency(String programCode) throws LMISException {
+        return list(programCode, false);
     }
 
     public List<RnRForm> queryAllUnsyncedForms() throws LMISException {
@@ -357,7 +372,7 @@ public class RnrFormRepository {
     }
 
     private long lastRnrInventory(StockCard stockCard) throws LMISException {
-        List<RnRForm> rnRForms = list(programCode);
+        List<RnRForm> rnRForms = listWithoutEmergency(programCode);
         if (rnRForms.isEmpty()) {
             return 0;
         }

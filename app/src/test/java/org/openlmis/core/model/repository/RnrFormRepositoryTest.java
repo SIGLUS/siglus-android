@@ -136,7 +136,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
             rnrFormRepository.create(form);
         }
 
-        List<RnRForm> list = rnrFormRepository.list(Constants.MMIA_PROGRAM_CODE);
+        List<RnRForm> list = rnrFormRepository.listWithoutEmergency(Constants.MMIA_PROGRAM_CODE);
         assertThat(list.size(), is(6));
     }
 
@@ -474,7 +474,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         rnrFormItem.setInventory(100L);
         rnrFormItem.setProduct(product);
         form.setRnrFormItemListWrapper(newArrayList(rnrFormItem));
-        doReturn(newArrayList(form)).when(rnrFormRepository).list(anyString());
+        doReturn(newArrayList(form)).when(rnrFormRepository).listWithoutEmergency(anyString());
 
         StockCard stockCard = new StockCard();
         product.setId(20);
@@ -494,7 +494,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         rnrFormRepository = spy(rnrFormRepository);
         StockCard stockCard = new StockCard();
         when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
-        doReturn(new ArrayList<>()).when(rnrFormRepository).list(anyString());
+        doReturn(new ArrayList<>()).when(rnrFormRepository).listWithoutEmergency(anyString());
 
         RnrFormItem rnrFormItemByPeriod = rnrFormRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
 
@@ -553,15 +553,27 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         RnRForm form = new RnRForm();
         form.setProgram(programEss);
         form.setStatus(RnRForm.STATUS.AUTHORIZED);
+        form.setEmergency(false);
         RnRForm form2 = new RnRForm();
         form2.setProgram(programVIA);
         form2.setStatus(RnRForm.STATUS.AUTHORIZED);
+        form2.setEmergency(false);
+
+        RnRForm form3 = new RnRForm();
+        form3.setProgram(programVIA);
+        form3.setStatus(RnRForm.STATUS.AUTHORIZED);
+        form3.setEmergency(true);
 
         rnrFormRepository.create(form);
         rnrFormRepository.create(form2);
+        rnrFormRepository.create(form3);
 
-        List<RnRForm> list = rnrFormRepository.list(Constants.VIA_PROGRAM_CODE);
+        List<RnRForm> list = rnrFormRepository.listWithoutEmergency(Constants.VIA_PROGRAM_CODE);
         assertThat(list.size(), is(2));
+
+
+        List<RnRForm> listWithEmergency = rnrFormRepository.listWithEmergency(Constants.VIA_PROGRAM_CODE);
+        assertThat(listWithEmergency.size(), is(3));
     }
 
     public class MyTestModule extends AbstractModule {

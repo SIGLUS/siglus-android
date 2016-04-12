@@ -102,7 +102,8 @@ public class RnRFormListPresenter extends Presenter {
     protected List<RnRFormViewModel> buildFormListViewModels() throws LMISException {
         List<RnRFormViewModel> rnRFormViewModels = new ArrayList<>();
 
-        List<RnRForm> rnRForms = repository.list(programCode);
+        //TODO add emergency item  #383
+        List<RnRForm> rnRForms = repository.listWithoutEmergency(programCode);
 
         generateRnrViewModelByRnrFormsInDB(rnRFormViewModels, rnRForms);
 
@@ -207,7 +208,7 @@ public class RnRFormListPresenter extends Presenter {
     }
 
     private boolean isAllRnrFormInDBCompletedOrNoRnrFormInDB() throws LMISException {
-        List<RnRForm> rnRForms = repository.list(programCode);
+        List<RnRForm> rnRForms = repository.listWithoutEmergency(programCode);
         return rnRForms.isEmpty() || rnRForms.get(rnRForms.size() - 1).getStatus() == RnRForm.STATUS.AUTHORIZED;
     }
 
