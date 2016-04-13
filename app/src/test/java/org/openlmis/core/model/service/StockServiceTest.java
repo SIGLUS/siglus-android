@@ -47,8 +47,9 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldGetAverageMonthlyConsumptionCorrectly() throws LMISException {
         //given
+        StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(200);
-        stockService.stockRepository.save(stockCard);
+        stockService.stockRepository.createOrUpdate(stockCard);
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastForthMonthDate, false);
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastThirdMonthDate, false);
         createMovementItem(RECEIVE, 400, stockCard, new Date(), lastSecondMonthDate, false);
@@ -89,7 +90,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
     public void shouldGetLowStockAvgIsZeroWhenOnlyTwoValidPeriod() throws Exception {
         StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(300);
-        stockService.stockRepository.save(stockCard);
+        stockService.stockRepository.createOrUpdate(stockCard);
 
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastSecondMonthDate, false);
@@ -101,9 +102,9 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldGetLowStockAvgCorrectly() throws Exception {
-
+//        StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(400);
-        stockService.stockRepository.save(stockCard);
+        stockService.stockRepository.createOrUpdate(stockCard);
 
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastSecondMonthDate, false);
@@ -118,7 +119,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldGetLowStockAvgWhenLastMonthSOHIsZero() throws Exception {
         stockCard.setStockOnHand(300);
-        stockService.stockRepository.save(stockCard);
+        stockService.stockRepository.createOrUpdate(stockCard);
 
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastThirdMonthDate, false);
@@ -133,7 +134,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldGetLowStockAvgWhenLastMonthHaveNoStockItem() throws Exception {
         stockCard.setStockOnHand(400);
-        stockService.stockRepository.save(stockCard);
+        stockService.stockRepository.createOrUpdate(stockCard);
 
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastThirdMonthDate, false);

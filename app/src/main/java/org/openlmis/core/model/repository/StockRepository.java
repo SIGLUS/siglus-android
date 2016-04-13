@@ -90,25 +90,9 @@ public class StockRepository {
         }
     }
 
-    public void save(final StockCard stockCard) {
-        try {
-            genericDao.create(stockCard);
-        } catch (LMISException e) {
-            e.reportToFabric();
-        }
-    }
-
     public void createOrUpdate(final StockCard stockCard){
         try {
             genericDao.createOrUpdate(stockCard);
-        } catch (LMISException e) {
-            e.reportToFabric();
-        }
-    }
-
-    public void update(final StockCard stockCard) {
-        try {
-            genericDao.update(stockCard);
         } catch (LMISException e) {
             e.reportToFabric();
         }

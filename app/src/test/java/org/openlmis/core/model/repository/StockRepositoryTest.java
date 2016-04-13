@@ -95,10 +95,11 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldSaveStockCardsSuccessful() throws LMISException {
+        StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(1);
         stockCard.setProduct(product);
 
-        stockRepository.save(stockCard);
+        stockRepository.createOrUpdate(stockCard);
 
         assertThat(stockRepository.list().size(), is(1));
         assertThat(stockRepository.list().get(0).getProduct(), is(NotNull.NOT_NULL));
@@ -386,7 +387,8 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     private long createNewStockCard(String code, String parentCode, Product product, boolean isEmergency) throws LMISException {
-        Program program = createNewProgram(code,parentCode, isEmergency);
+        StockCard stockCard = new StockCard();
+        Program program = createNewProgram(code, parentCode, isEmergency);
         programRepository.createOrUpdate(program);
 
         product.setProgram(program);
@@ -394,12 +396,13 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
         stockCard.setProduct(product);
         stockCard.setCreatedAt(new Date());
-        stockRepository.save(stockCard);
+        stockRepository.createOrUpdate(stockCard);
 
         return program.getId();
     }
 
     private long createNewStockCardWithProductPrograms(String programCode, String parentCode, Product product) throws LMISException {
+        StockCard stockCard = new StockCard();
         Program program = createNewProgram(programCode, parentCode, false);
 
         createNewProductProgram(programCode, product.getCode());
@@ -408,7 +411,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
         stockCard.setProduct(product);
         stockCard.setCreatedAt(new Date());
-        stockRepository.save(stockCard);
+        stockRepository.createOrUpdate(stockCard);
 
         return program.getId();
     }
@@ -427,11 +430,12 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldUpdateStockCardAndProduct() throws Exception {
+        StockCard stockCard = new StockCard();
         product.setArchived(true);
         stockCard.setProduct(product);
         stockCard.setExpireDates("01/01/2016");
 
-        stockRepository.save(stockCard);
+        stockRepository.createOrUpdate(stockCard);
 
         stockCard.setExpireDates("");
         product.setArchived(false);
@@ -443,11 +447,12 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldUpdateProductOfStockCard() throws Exception {
+        StockCard stockCard = new StockCard();
         product.setArchived(true);
         stockCard.setProduct(product);
         stockCard.setExpireDates("01/01/2016");
 
-        stockRepository.save(stockCard);
+        stockRepository.createOrUpdate(stockCard);
 
         stockCard.setExpireDates("");
         product.setArchived(false);
@@ -458,7 +463,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldQueryEarliestStockMovementItemCreatedTimeByProgram() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product,true);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, true);
 
         Program mmia = new ProgramBuilder().setProgramCode("MMIA").build();
         Program via = new ProgramBuilder().setProgramCode("VIA").build();
@@ -484,11 +489,12 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
         productProgramRepository.batchSave(productPrograms);
 
+        StockCard stockCard = new StockCard();
         stockCard.setProduct(mmiaProduct);
-        stockRepository.save(stockCard);
+        stockRepository.createOrUpdate(stockCard);
         StockCard stockCard2 = new StockCard();
         stockCard2.setProduct(viaProduct);
-        stockRepository.save(stockCard2);
+        stockRepository.createOrUpdate(stockCard2);
 
         createMovementItem(ISSUE, 100, stockCard, new DateTime("2017-01-01").toDate(), new DateTime("2017-01-01").toDate(), false);
         createMovementItem(ISSUE, 100, stockCard2, new DateTime("2018-01-01").toDate(), new DateTime("2018-01-01").toDate(), false);
@@ -512,11 +518,12 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         productRepository.createOrUpdate(mmiaProduct);
         Product viaProduct = new ProductBuilder().setProgram(via).setCode("A1").build();
         productRepository.createOrUpdate(viaProduct);
+        StockCard stockCard = new StockCard();
         stockCard.setProduct(mmiaProduct);
-        stockRepository.save(stockCard);
+        stockRepository.createOrUpdate(stockCard);
         StockCard stockCard2 = new StockCard();
         stockCard2.setProduct(viaProduct);
-        stockRepository.save(stockCard2);
+        stockRepository.createOrUpdate(stockCard2);
 
         createMovementItem(ISSUE, 100, stockCard, new DateTime("2017-01-01").toDate(), new DateTime("2017-01-01").toDate(), false);
         createMovementItem(ISSUE, 100, stockCard2, new DateTime("2018-01-01").toDate(), new DateTime("2018-01-01").toDate(), false);
