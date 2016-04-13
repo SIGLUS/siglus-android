@@ -159,7 +159,7 @@ public class RnrFormRepository {
         });
     }
 
-    public void save(final RnRForm form) throws LMISException {
+    public void update(final RnRForm form) throws LMISException {
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
@@ -282,12 +282,6 @@ public class RnrFormRepository {
             e.reportToFabric();
         }
         return false;
-    }
-
-    public void saveEmergency(RnRForm rnRForm) throws LMISException {
-        create(rnRForm);
-        rnrFormItemRepository.create(rnRForm.getRnrFormItemListWrapper());
-        genericDao.refresh(rnRForm);
     }
 
     protected List<RnRForm> listUnsynced() throws LMISException {

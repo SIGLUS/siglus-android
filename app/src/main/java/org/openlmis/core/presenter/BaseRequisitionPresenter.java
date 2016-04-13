@@ -128,7 +128,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    rnrFormRepository.save(rnRForm);
+                    rnrFormRepository.update(rnRForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.reportToFabric();
@@ -161,18 +161,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
 
     protected void submitRequisition(final RnRForm rnRForm) {
         view.loading();
-        Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    rnrFormRepository.save(rnRForm);
-                    subscriber.onNext(null);
-                } catch (LMISException e) {
-                    e.reportToFabric();
-                    subscriber.onError(e);
-                }
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Subscriber<Void>() {
+        updateRnrForm(rnRForm).subscribe(new Subscriber<Void>() {
             @Override
             public void onCompleted() {
 
@@ -196,18 +185,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
 
     protected void authoriseRequisition(final RnRForm rnRForm) {
         view.loading();
-        Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    rnrFormRepository.save(rnRForm);
-                    subscriber.onNext(null);
-                } catch (LMISException e) {
-                    e.reportToFabric();
-                    subscriber.onError(e);
-                }
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Subscriber<Void>() {
+        updateRnrForm(rnRForm).subscribe(new Subscriber<Void>() {
             @Override
             public void onCompleted() {
             }
@@ -227,6 +205,21 @@ public abstract class BaseRequisitionPresenter extends Presenter {
                 syncService.requestSyncImmediately();
             }
         });
+    }
+
+    private Observable<Void> updateRnrForm(final RnRForm rnRForm) {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    rnrFormRepository.update(rnRForm);
+                    subscriber.onNext(null);
+                } catch (LMISException e) {
+                    e.reportToFabric();
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
     public void removeRequisition() {

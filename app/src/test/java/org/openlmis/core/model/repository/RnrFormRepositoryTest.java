@@ -182,7 +182,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         form.getSignaturesWrapper().add(new RnRFormSignature(form, "Submitter Signature", RnRFormSignature.TYPE.SUBMITTER));
         form.getSignaturesWrapper().add(new RnRFormSignature(form, "Approver Signature", RnRFormSignature.TYPE.APPROVER));
         rnrFormRepository.createAndRefresh(form);
-        rnrFormRepository.save(form);
+        rnrFormRepository.update(form);
 
         List<RnRFormSignature> signatures = rnrFormRepository.querySignaturesByRnrForm(form);
 
@@ -407,7 +407,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         form.setBaseInfoItemListWrapper(new ArrayList<BaseInfoItem>());
         form.getSignaturesWrapper().add(new RnRFormSignature(form, "sign", RnRFormSignature.TYPE.SUBMITTER));
         rnrFormRepository.createAndRefresh(form);
-        rnrFormRepository.save(form);
+        rnrFormRepository.update(form);
 
         RnRForm rnRForm = rnrFormRepository.queryRnRForm(1);
         assertThat(DateUtil.formatDate(rnRForm.getUpdatedAt(), DateUtil.SIMPLE_DATE_FORMAT), is(DateUtil.formatDate(DateUtil.today(), DateUtil.SIMPLE_DATE_FORMAT)));

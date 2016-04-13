@@ -194,7 +194,7 @@ public class VIARequisitionPresenterTest {
 
         //then
         assertThat(RnRForm.STATUS.SUBMITTED, is(form.getStatus()));
-        verify(mockRnrFormRepository).save(form);
+        verify(mockRnrFormRepository).update(form);
     }
 
     @Test
@@ -207,7 +207,7 @@ public class VIARequisitionPresenterTest {
         waitObservableToExecute();
 
         //then
-        verify(mockRnrFormRepository).save(form);
+        verify(mockRnrFormRepository).update(form);
         assertThat(RnRForm.STATUS.AUTHORIZED, is(form.getStatus()));
     }
 
@@ -269,7 +269,7 @@ public class VIARequisitionPresenterTest {
         presenter.getSaveFormObservable().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
-        verify(mockRnrFormRepository).save(presenter.getRnRForm());
+        verify(mockRnrFormRepository).update(presenter.getRnRForm());
     }
 
     @Test
@@ -540,11 +540,11 @@ public class VIARequisitionPresenterTest {
 
         presenter.processSign("sign", rnRForm);
         verify(mockRnrFormRepository, never()).createAndRefresh(rnRForm);
-        verify(mockRnrFormRepository, never()).save(rnRForm);
+        verify(mockRnrFormRepository, never()).update(rnRForm);
 
         presenter.processSign("sign", rnRForm);
         verify(mockRnrFormRepository).createAndRefresh(rnRForm);
-        verify(mockRnrFormRepository).save(rnRForm);
+        verify(mockRnrFormRepository).update(rnRForm);
     }
 
     private ViaKitsViewModel buildDefaultViaKit() {

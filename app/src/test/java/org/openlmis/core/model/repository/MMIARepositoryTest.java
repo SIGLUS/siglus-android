@@ -164,7 +164,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
             BaseInfoItem item = baseInfoItemListWrapper.get(i);
             item.setValue(String.valueOf(i));
         }
-        mmiaRepository.save(initForm);
+        mmiaRepository.update(initForm);
 
         List<RnRForm> list = mmiaRepository.list();
         RnRForm DBForm = list.get(list.size() - 1);

@@ -207,7 +207,7 @@ public class MMIARequisitionPresenterTest {
         waitObservableToExecute();
 
         assertThat(RnRForm.STATUS.SUBMITTED, is(form.getStatus()));
-        verify(mmiaRepository).save(form);
+        verify(mmiaRepository).update(form);
         verify(mockMMIAformView).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_complete));
         verify(mockMMIAformView).showMessageNotifyDialog();
     }
@@ -223,7 +223,7 @@ public class MMIARequisitionPresenterTest {
         waitObservableToExecute();
 
         assertThat(RnRForm.STATUS.AUTHORIZED, is(form.getStatus()));
-        verify(mmiaRepository).save(form);
+        verify(mmiaRepository).update(form);
     }
 
     @Test
