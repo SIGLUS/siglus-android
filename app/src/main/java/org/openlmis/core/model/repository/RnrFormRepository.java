@@ -94,51 +94,19 @@ public class RnrFormRepository {
         this.context = context;
     }
 
-    public RnRForm initRnrForm(Date periodEndDate, boolean isEmergency) throws LMISException {
-        final Program program = programRepository.queryByCode(programCode);
-        if (program == null) {
-            throw new LMISException("Program cannot be null !");
-        }
-
-        Period period = periodService.generateNextPeriod(programCode, periodEndDate);
-        return createInitRnrForm(program, period, isEmergency);
+    public RnRForm initNormalRnrForm(Date periodEndDate) throws LMISException {
+        RnRForm rnrForm = initRnRForm(periodEndDate, RnRForm.IsEmergency.No);
+        return createInitRnrForm(rnrForm);
     }
 
     public RnRForm initEmergencyRnrForm(Date periodEndDate, List<StockCard> stockCards) throws LMISException {
-        final Program program = programRepository.queryByCode(programCode);
-        if (program == null) {
-            throw new LMISException("Program cannot be null !");
-        }
-
-        Period period = periodService.generateNextPeriod(programCode, periodEndDate);
-        final RnRForm rnRForm = RnRForm.init(program, period, true);
-
+        RnRForm rnRForm = initRnRForm(periodEndDate, RnRForm.IsEmergency.Yes);
         rnRForm.setRnrFormItemListWrapper(generateRnrFormItems(rnRForm, stockCards));
         return rnRForm;
     }
 
-    private RnRForm createInitRnrForm(Program program, Period period, boolean isEmergency) throws LMISException {
-        final RnRForm rnrForm = RnRForm.init(program, period, isEmergency);
-        try {
-            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
-                @Override
-                public Object call() throws Exception {
-                    create(rnrForm);
-                    rnrFormItemRepository.create(generateRnrFormItems(rnrForm, getStockCardsBeforePeriodEnd(rnrForm)));
-                    createRegimenItems(generateRegimeItems(rnrForm));
-                    createBaseInfoItems(generateBaseInfoItems(rnrForm));
-                    genericDao.refresh(rnrForm);
-                    return null;
-                }
-            });
-        } catch (SQLException e) {
-            throw new LMISException(e);
-        }
-        return rnrForm;
-    }
-
-    public RnRForm initRnrForm(Date periodEndDate) throws LMISException {
-        return initRnrForm(periodEndDate, false);
+    public void create(RnRForm rnRForm) throws LMISException {
+        genericDao.create(rnRForm);
     }
 
     public void createRnRsWithItems(final List<RnRForm> forms) throws LMISException {
@@ -160,8 +128,38 @@ public class RnrFormRepository {
         }
     }
 
-    public void create(RnRForm rnRForm) throws LMISException {
-        genericDao.create(rnRForm);
+    public void createRegimenItems(final List<RegimenItem> regimenItemList) throws LMISException {
+        dbUtil.withDao(RegimenItem.class, new DbUtil.Operation<RegimenItem, Void>() {
+            @Override
+            public Void operate(Dao<RegimenItem, String> dao) throws SQLException {
+                for (RegimenItem item : regimenItemList) {
+                    dao.create(item);
+                }
+                return null;
+            }
+        });
+    }
+
+    public void createRegimenItem(final RegimenItem regimenItem) throws LMISException {
+        dbUtil.withDao(RegimenItem.class, new DbUtil.Operation<RegimenItem, Void>() {
+            @Override
+            public Void operate(Dao<RegimenItem, String> dao) throws SQLException {
+                dao.create(regimenItem);
+                return null;
+            }
+        });
+    }
+
+    public void createBaseInfoItems(final List<BaseInfoItem> baseInfoItemList) throws LMISException {
+        dbUtil.withDaoAsBatch(BaseInfoItem.class, new DbUtil.Operation<BaseInfoItem, Void>() {
+            @Override
+            public Void operate(Dao<BaseInfoItem, String> dao) throws SQLException {
+                for (BaseInfoItem item : baseInfoItemList) {
+                    dao.create(item);
+                }
+                return null;
+            }
+        });
     }
 
     public void save(final RnRForm form) throws LMISException {
@@ -209,29 +207,8 @@ public class RnrFormRepository {
         return genericDao.queryForAll();
     }
 
-    private List<RnRForm> list(String programCode, final boolean isWithEmergency) throws LMISException {
-        final List<Long> programIds = programRepository.queryProgramIdsByProgramCodeOrParentCode(programCode);
-
-        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
-            @Override
-            public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
-                Where<RnRForm, String> where = dao.queryBuilder().orderBy("periodBegin", true).where();
-                where.in("program_id", programIds);
-
-                if (!isWithEmergency) {
-                    where.and().eq("emergency", false);
-                }
-                return where.query();
-            }
-        });
-    }
-
-    public List<RnRForm> listWithEmergency(String programCode) throws LMISException {
-        return list(programCode, true);
-    }
-
-    public List<RnRForm> listWithoutEmergency(String programCode) throws LMISException {
-        return list(programCode, false);
+    public List<RnRForm> listWithEmergency(String programCode,  boolean isWithEmergency) throws LMISException {
+        return list(programCode, isWithEmergency);
     }
 
     public List<RnRForm> queryAllUnsyncedForms() throws LMISException {
@@ -262,49 +239,6 @@ public class RnrFormRepository {
         });
     }
 
-    public void createRegimenItems(final List<RegimenItem> regimenItemList) throws LMISException {
-        dbUtil.withDao(RegimenItem.class, new DbUtil.Operation<RegimenItem, Void>() {
-            @Override
-            public Void operate(Dao<RegimenItem, String> dao) throws SQLException {
-                for (RegimenItem item : regimenItemList) {
-                    dao.create(item);
-                }
-                return null;
-            }
-        });
-    }
-
-    public void createRegimenItem(final RegimenItem regimenItem) throws LMISException {
-        dbUtil.withDao(RegimenItem.class, new DbUtil.Operation<RegimenItem, Void>() {
-            @Override
-            public Void operate(Dao<RegimenItem, String> dao) throws SQLException {
-                dao.create(regimenItem);
-                return null;
-            }
-        });
-    }
-
-    public void createBaseInfoItems(final List<BaseInfoItem> baseInfoItemList) throws LMISException {
-        dbUtil.withDaoAsBatch(BaseInfoItem.class, new DbUtil.Operation<BaseInfoItem, Void>() {
-            @Override
-            public Void operate(Dao<BaseInfoItem, String> dao) throws SQLException {
-                for (BaseInfoItem item : baseInfoItemList) {
-                    dao.create(item);
-                }
-                return null;
-            }
-        });
-    }
-
-    protected List<RnRForm> listUnsynced() throws LMISException {
-        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
-            @Override
-            public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("synced", false).and().eq("status", RnRForm.STATUS.AUTHORIZED).query();
-            }
-        });
-    }
-
     protected void deleteDeactivatedAndUnsupportedProductItems(List<RnRForm> rnRForms) throws LMISException {
         for (RnRForm rnRForm : rnRForms) {
 
@@ -321,10 +255,6 @@ public class RnrFormRepository {
         }
     }
 
-    protected List<BaseInfoItem> generateBaseInfoItems(RnRForm form) {
-        return new ArrayList<>();
-    }
-
     public List<RnrFormItem> generateRnrFormItems(final RnRForm form, List<StockCard> stockCards) throws LMISException {
         List<RnrFormItem> rnrFormItems = new ArrayList<>();
         for (StockCard stockCard : stockCards) {
@@ -333,6 +263,58 @@ public class RnrFormRepository {
             rnrFormItems.add(rnrFormItem);
         }
         return rnrFormItems;
+    }
+
+    public void removeRnrForm(RnRForm form) throws LMISException {
+        if (form != null) {
+            rnrFormItemRepository.deleteFormItems(form.getRnrFormItemListWrapper());
+            deleteRegimenItems(form.getRegimenItemListWrapper());
+            deleteBaseInfoItems(form.getBaseInfoItemListWrapper());
+            genericDao.delete(form);
+        }
+    }
+
+    public void setSignature(RnRForm form, String signature, RnRFormSignature.TYPE type) throws LMISException {
+        signatureDao.create(new RnRFormSignature(form, signature, type));
+    }
+
+    public List<RnRFormSignature> querySignaturesByRnrForm(final RnRForm form) throws LMISException {
+        if (form == null) {
+            throw new LMISException("RnRForm cannot be null !");
+        }
+        return dbUtil.withDao(RnRFormSignature.class, new DbUtil.Operation<RnRFormSignature, List<RnRFormSignature>>() {
+            @Override
+            public List<RnRFormSignature> operate(Dao<RnRFormSignature, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("form_id", form.getId()).query();
+            }
+        });
+    }
+
+    public boolean hasRequisitionData() {
+        try {
+            List<RnRForm> list = list();
+            if (list != null && list.size() > 0) {
+                return true;
+            }
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+        return false;
+    }
+
+    public void saveEmergency(RnRForm rnRForm) throws LMISException {
+        create(rnRForm);
+        rnrFormItemRepository.create(rnRForm.getRnrFormItemListWrapper());
+        genericDao.refresh(rnRForm);
+    }
+
+    protected List<RnRForm> listUnsynced() throws LMISException {
+        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
+            @Override
+            public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("synced", false).and().eq("status", RnRForm.STATUS.AUTHORIZED).query();
+            }
+        });
     }
 
     protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm form) throws LMISException {
@@ -371,31 +353,41 @@ public class RnrFormRepository {
         return rnrFormItem;
     }
 
-    private long lastRnrInventory(StockCard stockCard) throws LMISException {
-        List<RnRForm> rnRForms = listWithoutEmergency(programCode);
-        if (rnRForms.isEmpty()) {
-            return 0;
-        }
-        List<RnrFormItem> rnrFormItemListWrapper = rnRForms.get(rnRForms.size() - 1).getRnrFormItemListWrapper();
-        for (RnrFormItem item : rnrFormItemListWrapper) {
-            if (item.getProduct().getId() == stockCard.getProduct().getId()) {
-                return item.getInventory();
-            }
-        }
-        return 0;
-    }
-
     protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
         return new ArrayList<>();
     }
 
-    public void removeRnrForm(RnRForm form) throws LMISException {
-        if (form != null) {
-            rnrFormItemRepository.deleteFormItems(form.getRnrFormItemListWrapper());
-            deleteRegimenItems(form.getRegimenItemListWrapper());
-            deleteBaseInfoItems(form.getBaseInfoItemListWrapper());
-            genericDao.delete(form);
+    protected List<BaseInfoItem> generateBaseInfoItems(RnRForm form) {
+        return new ArrayList<>();
+    }
+
+    private RnRForm initRnRForm(Date periodEndDate, RnRForm.IsEmergency isEmergency) throws LMISException {
+        final Program program = programRepository.queryByCode(programCode);
+        if (program == null) {
+            throw new LMISException("Program cannot be null !");
         }
+
+        Period period = periodService.generateNextPeriod(programCode, periodEndDate);
+        return RnRForm.init(program, period, isEmergency.IsEmergency());
+    }
+
+    private RnRForm createInitRnrForm(final RnRForm rnrForm) throws LMISException {
+        try {
+            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+                    create(rnrForm);
+                    rnrFormItemRepository.create(generateRnrFormItems(rnrForm, getStockCardsBeforePeriodEnd(rnrForm)));
+                    createRegimenItems(generateRegimeItems(rnrForm));
+                    createBaseInfoItems(generateBaseInfoItems(rnrForm));
+                    genericDao.refresh(rnrForm);
+                    return null;
+                }
+            });
+        } catch (SQLException e) {
+            throw new LMISException(e);
+        }
+        return rnrForm;
     }
 
     private void deleteBaseInfoItems(final List<BaseInfoItem> baseInfoItemListWrapper) throws LMISException {
@@ -422,37 +414,35 @@ public class RnrFormRepository {
         });
     }
 
-    public void setSignature(RnRForm form, String signature, RnRFormSignature.TYPE type) throws LMISException {
-        signatureDao.create(new RnRFormSignature(form, signature, type));
+    private long lastRnrInventory(StockCard stockCard) throws LMISException {
+        List<RnRForm> rnRForms = listWithEmergency(programCode, false);
+        if (rnRForms.isEmpty()) {
+            return 0;
+        }
+        List<RnrFormItem> rnrFormItemListWrapper = rnRForms.get(rnRForms.size() - 1).getRnrFormItemListWrapper();
+        for (RnrFormItem item : rnrFormItemListWrapper) {
+            if (item.getProduct().getId() == stockCard.getProduct().getId()) {
+                return item.getInventory();
+            }
+        }
+        return 0;
     }
 
-    public List<RnRFormSignature> querySignaturesByRnrForm(final RnRForm form) throws LMISException {
-        if (form == null) {
-            throw new LMISException("RnRForm cannot be null !");
-        }
-        return dbUtil.withDao(RnRFormSignature.class, new DbUtil.Operation<RnRFormSignature, List<RnRFormSignature>>() {
+    private List<RnRForm> list(String programCode, final boolean isWithEmergency) throws LMISException {
+        final List<Long> programIds = programRepository.queryProgramIdsByProgramCodeOrParentCode(programCode);
+
+        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, List<RnRForm>>() {
             @Override
-            public List<RnRFormSignature> operate(Dao<RnRFormSignature, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("form_id", form.getId()).query();
+            public List<RnRForm> operate(Dao<RnRForm, String> dao) throws SQLException {
+                Where<RnRForm, String> where = dao.queryBuilder().orderBy("periodBegin", true).where();
+                where.in("program_id", programIds);
+
+                if (!isWithEmergency) {
+                    where.and().eq("emergency", false);
+                }
+                return where.query();
             }
         });
     }
 
-    public boolean hasRequisitionData() {
-        try {
-            List<RnRForm> list = list();
-            if (list != null && list.size() > 0) {
-                return true;
-            }
-        } catch (LMISException e) {
-            e.reportToFabric();
-        }
-        return false;
-    }
-
-    public void saveEmergency(RnRForm rnRForm) throws LMISException {
-        create(rnRForm);
-        rnrFormItemRepository.create(rnRForm.getRnrFormItemListWrapper());
-        genericDao.refresh(rnRForm);
-    }
 }

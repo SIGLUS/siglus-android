@@ -173,7 +173,7 @@ public class VIARequisitionPresenterTest {
         when(mockRnrFormRepository.queryUnAuthorized()).thenReturn(null);
         presenter.getRnrForm(0);
         verify(mockRnrFormRepository).queryUnAuthorized();
-        verify(mockRnrFormRepository).initRnrForm(null);
+        verify(mockRnrFormRepository).initNormalRnrForm(null);
     }
 
     @Test
@@ -181,7 +181,7 @@ public class VIARequisitionPresenterTest {
         when(mockRnrFormRepository.queryUnAuthorized()).thenReturn(new RnRForm());
         presenter.getRnrForm(0);
         verify(mockRnrFormRepository).queryUnAuthorized();
-        verify(mockRnrFormRepository, never()).initRnrForm(null);
+        verify(mockRnrFormRepository, never()).initNormalRnrForm(null);
     }
 
     @Test

@@ -114,7 +114,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         if (draftVIA != null) {
             return draftVIA;
         }
-        return rnrFormRepository.initRnrForm(periodEndDate);
+        return rnrFormRepository.initNormalRnrForm(periodEndDate);
     }
 
     protected void saveRequisition() {

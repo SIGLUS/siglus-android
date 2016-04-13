@@ -118,7 +118,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         when(mockStockRepository.queryStockItemsByPeriodDates(any(StockCard.class), any(Date.class), any(Date.class)))
                 .thenReturn(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
 
-        RnRForm form = mmiaRepository.initRnrForm(null);
+        RnRForm form = mmiaRepository.initNormalRnrForm(null);
         assertThat(form.getRnrFormItemList().size(), is(24));
 
         RnrFormItem item = form.getRnrFormItemListWrapper().get(1);
@@ -151,7 +151,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     public void shouldSaveSuccess() throws Exception {
         when(mockPeriodService.generateNextPeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime("2016-12-27"), new DateTime("2017-01-20")));
 
-        RnRForm initForm = mmiaRepository.initRnrForm(null);
+        RnRForm initForm = mmiaRepository.initNormalRnrForm(null);
         List<RegimenItem> regimenItemListWrapper = initForm.getRegimenItemListWrapper();
 
         for (int i = 0; i < regimenItemListWrapper.size(); i++) {
@@ -186,9 +186,9 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         RnRForm rnRForm = new RnRForm();
         rnRForm.setProgram(program);
 
-        when(mockRnrFormRepository.initRnrForm(null)).thenReturn(rnRForm);
+        when(mockRnrFormRepository.initNormalRnrForm(null)).thenReturn(rnRForm);
 
-        RnRForm rnRFormTest = mmiaRepository.initRnrForm(null);
+        RnRForm rnRFormTest = mmiaRepository.initNormalRnrForm(null);
 
         assertThat(rnRFormTest.getRnrFormItemListWrapper().size(), is(24));
     }

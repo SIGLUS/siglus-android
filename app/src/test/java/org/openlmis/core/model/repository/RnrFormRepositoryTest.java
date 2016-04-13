@@ -62,6 +62,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
@@ -136,7 +137,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
             rnrFormRepository.create(form);
         }
 
-        List<RnRForm> list = rnrFormRepository.listWithoutEmergency(Constants.MMIA_PROGRAM_CODE);
+        List<RnRForm> list = rnrFormRepository.listWithEmergency(Constants.MMIA_PROGRAM_CODE, false);
         assertThat(list.size(), is(6));
     }
 
@@ -474,7 +475,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         rnrFormItem.setInventory(100L);
         rnrFormItem.setProduct(product);
         form.setRnrFormItemListWrapper(newArrayList(rnrFormItem));
-        doReturn(newArrayList(form)).when(rnrFormRepository).listWithoutEmergency(anyString());
+        doReturn(newArrayList(form)).when(rnrFormRepository).listWithEmergency(anyString(), anyBoolean());
 
         StockCard stockCard = new StockCard();
         product.setId(20);
@@ -494,7 +495,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         rnrFormRepository = spy(rnrFormRepository);
         StockCard stockCard = new StockCard();
         when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
-        doReturn(new ArrayList<>()).when(rnrFormRepository).listWithoutEmergency(anyString());
+        doReturn(new ArrayList<>()).when(rnrFormRepository).listWithEmergency(anyString(), anyBoolean());
 
         RnrFormItem rnrFormItemByPeriod = rnrFormRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
 
@@ -523,7 +524,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         when(mockPeriodService.generateNextPeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime(), new DateTime()));
         rnrFormRepository.programCode = "MMIA";
 
-        rnrFormRepository.initRnrForm(null);
+        rnrFormRepository.initNormalRnrForm(null);
         verify(mockPeriodService).generateNextPeriod(rnrFormRepository.programCode, null);
     }
 
@@ -568,11 +569,11 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         rnrFormRepository.create(form2);
         rnrFormRepository.create(form3);
 
-        List<RnRForm> list = rnrFormRepository.listWithoutEmergency(Constants.VIA_PROGRAM_CODE);
+        List<RnRForm> list = rnrFormRepository.listWithEmergency(Constants.VIA_PROGRAM_CODE, false);
         assertThat(list.size(), is(2));
 
 
-        List<RnRForm> listWithEmergency = rnrFormRepository.listWithEmergency(Constants.VIA_PROGRAM_CODE);
+        List<RnRForm> listWithEmergency = rnrFormRepository.listWithEmergency(Constants.VIA_PROGRAM_CODE, true);
         assertThat(listWithEmergency.size(), is(3));
     }
 
