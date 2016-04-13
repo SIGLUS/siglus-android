@@ -60,7 +60,6 @@ import roboguice.RoboGuice;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyList;
@@ -180,11 +179,10 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         RnRForm form = new RnRFormBuilder().setComments("Submitted Form")
                 .setStatus(RnRForm.STATUS.SUBMITTED)
                 .setProgram(program).build();
-
-        rnrFormRepository.create(form);
-
-        rnrFormRepository.setSignature(form, "Submitter Signature", RnRFormSignature.TYPE.SUBMITTER);
-        rnrFormRepository.setSignature(form, "Approver Signature", RnRFormSignature.TYPE.APPROVER);
+        form.getSignaturesWrapper().add(new RnRFormSignature(form, "Submitter Signature", RnRFormSignature.TYPE.SUBMITTER));
+        form.getSignaturesWrapper().add(new RnRFormSignature(form, "Approver Signature", RnRFormSignature.TYPE.APPROVER));
+        rnrFormRepository.createAndRefresh(form);
+        rnrFormRepository.save(form);
 
         List<RnRFormSignature> signatures = rnrFormRepository.querySignaturesByRnrForm(form);
 
@@ -352,7 +350,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         RnRForm form = new RnRForm();
         form.setPeriodBegin(DateUtil.parseString("9/21/2015", DateUtil.SIMPLE_DATE_FORMAT));
         form.setPeriodEnd(DateUtil.parseString("10/20/2015", DateUtil.SIMPLE_DATE_FORMAT));
-        form.setProgram(new Program("mmia", "mmia", null, false,null));
+        form.setProgram(new Program("mmia", "mmia", null, false, null));
 
         when(mockStockRepository.listActiveStockCards(anyString(), any(ProductRepository.IsWithKit.class))).thenReturn(stockCards);
         DateTime dateTime = new DateTime();
@@ -407,9 +405,9 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         form.setRnrFormItemListWrapper(new ArrayList<RnrFormItem>());
         form.setRegimenItemListWrapper(new ArrayList<RegimenItem>());
         form.setBaseInfoItemListWrapper(new ArrayList<BaseInfoItem>());
-
-        rnrFormRepository.create(form);
-        rnrFormRepository.authorise(form);
+        form.getSignaturesWrapper().add(new RnRFormSignature(form, "sign", RnRFormSignature.TYPE.SUBMITTER));
+        rnrFormRepository.createAndRefresh(form);
+        rnrFormRepository.save(form);
 
         RnRForm rnRForm = rnrFormRepository.queryRnRForm(1);
         assertThat(DateUtil.formatDate(rnRForm.getUpdatedAt(), DateUtil.SIMPLE_DATE_FORMAT), is(DateUtil.formatDate(DateUtil.today(), DateUtil.SIMPLE_DATE_FORMAT)));
@@ -442,27 +440,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         RnRForm rnRForm = rnrFormRepository.queryRnRForm(2L);
         assertThat(rnRForm.getBaseInfoItemListWrapper().get(0).getName(), is("Name1"));
         assertThat(rnRForm.getComments(), is("Comments"));
-    }
-
-    @Test
-    public void shouldGetAllSignaturesByRnrFormId() throws LMISException {
-        Program program = new Program();
-        RnRForm form = new RnRForm();
-
-        form.setProgram(program);
-        form.setComments("Submitted Form");
-        form.setStatus(RnRForm.STATUS.SUBMITTED);
-
-        rnrFormRepository.create(form);
-
-        rnrFormRepository.setSignature(form, "Submitter Signature", RnRFormSignature.TYPE.SUBMITTER);
-        rnrFormRepository.setSignature(form, "Approver Signature", RnRFormSignature.TYPE.APPROVER);
-
-        List<RnRFormSignature> signatures = rnrFormRepository.querySignaturesByRnrForm(form);
-
-        assertThat(signatures.size(), is(2));
-        assertThat(signatures.get(0).getSignature(), is("Submitter Signature"));
-        assertThat(signatures.get(1).getSignature(), is("Approver Signature"));
     }
 
     @Test
@@ -526,19 +503,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
         rnrFormRepository.initNormalRnrForm(null);
         verify(mockPeriodService).generateNextPeriod(rnrFormRepository.programCode, null);
-    }
-
-    @Test
-    public void shouldSetRightSubmittedTypeWhenStatusIsMissed() throws Exception {
-        RnRForm form = new RnRForm();
-        form.setStatus(RnRForm.STATUS.DRAFT_MISSED);
-        rnrFormRepository.submit(form);
-        assertTrue(form.isMissed());
-        assertTrue(form.isSubmitted());
-
-        form.setStatus(RnRForm.STATUS.DRAFT);
-        rnrFormRepository.submit(form);
-        assertThat(form.getStatus(), is(RnRForm.STATUS.SUBMITTED));
     }
 
     @Test

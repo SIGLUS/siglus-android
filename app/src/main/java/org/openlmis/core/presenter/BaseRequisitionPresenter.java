@@ -30,6 +30,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.service.SyncService;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.BaseView;
@@ -164,7 +165,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    rnrFormRepository.submit(rnRForm);
+                    rnrFormRepository.save(rnRForm);
                     subscriber.onNext(null);
                 } catch (LMISException e) {
                     e.reportToFabric();
@@ -199,7 +200,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    rnrFormRepository.authorise(rnRForm);
+                    rnrFormRepository.save(rnRForm);
                     subscriber.onNext(null);
                 } catch (LMISException e) {
                     e.reportToFabric();
@@ -239,47 +240,16 @@ public abstract class BaseRequisitionPresenter extends Presenter {
 
     public void processSign(String signName, RnRForm rnRForm) {
         if (rnRForm.isDraft()) {
-            rnRForm.setSubmitterSignature(signName);
-            submitSignature(signName, RnRFormSignature.TYPE.SUBMITTER, rnRForm);
+            rnRForm.getSignaturesWrapper().add(new RnRFormSignature(rnRForm, signName, RnRFormSignature.TYPE.SUBMITTER));
+            rnRForm.setStatus(rnRForm.isMissed() ? RnRForm.STATUS.SUBMITTED_MISSED : RnRForm.STATUS.SUBMITTED);
             submitRequisition(rnRForm);
             view.showMessageNotifyDialog();
         } else {
-            rnRForm.setApproverSignature(signName);
-            submitSignature(signName, RnRFormSignature.TYPE.APPROVER, rnRForm);
+            rnRForm.getSignaturesWrapper().add(new RnRFormSignature(rnRForm, signName, RnRFormSignature.TYPE.APPROVER));
+            rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
+            rnRForm.setSubmittedTime(DateUtil.today());
             authoriseRequisition(rnRForm);
         }
-    }
-
-    protected void submitSignature(final String signName, final RnRFormSignature.TYPE type, final RnRForm rnRForm) {
-        view.loading();
-        Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    rnrFormRepository.setSignature(rnRForm, signName, type);
-                    subscriber.onNext(null);
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    e.reportToFabric();
-                    subscriber.onError(e);
-                }
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Subscriber<Void>() {
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                view.loaded();
-                ToastUtil.show(e.getMessage());
-            }
-
-            @Override
-            public void onNext(Void aVoid) {
-                view.loaded();
-            }
-        });
     }
 
     public RnRForm.STATUS getRnrFormStatus() {

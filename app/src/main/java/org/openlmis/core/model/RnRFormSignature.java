@@ -23,19 +23,18 @@ import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
+@Data
 @Getter
-@Setter
 @DatabaseTable(tableName = "rnr_form_signature")
+@NoArgsConstructor
 public class RnRFormSignature {
     public enum TYPE {
         SUBMITTER,
         APPROVER
-    }
-
-    public RnRFormSignature() {
     }
 
     public RnRFormSignature(RnRForm form, String signature, TYPE type) {
@@ -43,6 +42,9 @@ public class RnRFormSignature {
         this.signature = signature;
         this.type = type;
     }
+
+    @DatabaseField(uniqueIndex = true, generatedId = true)
+    private long id;
 
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private RnRForm form;

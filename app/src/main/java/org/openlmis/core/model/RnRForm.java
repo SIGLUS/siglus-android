@@ -31,7 +31,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
 import org.roboguice.shaded.goole.common.base.Predicate;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.Collection;
 import java.util.Date;
@@ -39,6 +38,8 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 @Getter
 @Setter
@@ -73,6 +74,10 @@ public class RnRForm extends BaseModel {
     @SerializedName("patientQuantifications")
     private List<BaseInfoItem> baseInfoItemListWrapper;
 
+    @ForeignCollectionField()
+    private ForeignCollection<RnRFormSignature> signatures;
+    private List<RnRFormSignature> signaturesWrapper;
+
     @Expose
     @SerializedName("clientSubmittedNotes")
     @DatabaseField
@@ -105,9 +110,6 @@ public class RnRForm extends BaseModel {
     @Expose
     @DatabaseField
     private boolean emergency;
-
-    private String submitterSignature;
-    private String approverSignature;
 
     public boolean isDraft() {
         return getStatus() == STATUS.DRAFT || getStatus() == STATUS.DRAFT_MISSED;
@@ -186,6 +188,11 @@ public class RnRForm extends BaseModel {
         return regimenItemListWrapper;
     }
 
+    public List<RnRFormSignature> getSignaturesWrapper() {
+        signaturesWrapper = ListUtil.wrapOrEmpty(signatures, signaturesWrapper);
+        return signaturesWrapper;
+    }
+
     public static void fillFormId(RnRForm rnRForm) {
         for (RnrFormItem item : rnRForm.getRnrFormItemListWrapper()) {
             item.setForm(rnRForm);
@@ -200,7 +207,7 @@ public class RnRForm extends BaseModel {
 
     public List<RnrFormItem> getDeactivatedAndUnsupportedProductItems(final List<String> supportedProductCodes) {
 
-        return FluentIterable.from(getRnrFormItemListWrapper()).filter(new Predicate<RnrFormItem>() {
+        return from(getRnrFormItemListWrapper()).filter(new Predicate<RnrFormItem>() {
             @Override
             public boolean apply(RnrFormItem rnrFormItem) {
                 if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deactivate_program_product)) {
@@ -214,7 +221,7 @@ public class RnRForm extends BaseModel {
     }
 
     public List<RnrFormItem> getRnrItems(final Product.IsKit isKit) {
-        return FluentIterable.from(getRnrFormItemListWrapper()).filter(new Predicate<RnrFormItem>() {
+        return from(getRnrFormItemListWrapper()).filter(new Predicate<RnrFormItem>() {
             @Override
             public boolean apply(RnrFormItem rnrFormItem) {
                 return isKit.isKit() == rnrFormItem.getProduct().isKit();

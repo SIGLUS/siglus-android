@@ -128,22 +128,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         view.showSignDialog(rnRForm.isDraft());
     }
 
-    protected Observable<Void> getAuthoriseFormObservable() {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    rnrFormRepository.authorise(rnRForm);
-                    subscriber.onNext(null);
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    e.reportToFabric();
-                    subscriber.onError(e);
-                }
-            }
-        });
-    }
-
     private boolean validateTotalsMatch(RnRForm form) {
         return RnRForm.calculateTotalRegimenAmount(form.getRegimenItemListWrapper()) == mmiaRepository.getTotalPatients(form);
     }

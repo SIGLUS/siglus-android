@@ -35,7 +35,6 @@ import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.service.SyncUpManager;
@@ -199,19 +198,6 @@ public class MMIARequisitionPresenterTest {
     }
 
     @Test
-    public void shouldAuthoriseFormObservableAuthoriseForm() throws LMISException {
-        RnRForm form = new RnRForm();
-
-        presenter.rnRForm = form;
-
-        TestSubscriber<Void> subscriber = new TestSubscriber<>();
-        presenter.getAuthoriseFormObservable().subscribe(subscriber);
-        subscriber.awaitTerminalEvent();
-
-        verify(mmiaRepository).authorise(form);
-    }
-
-    @Test
     public void shouldSubmitFormWhenTheStatusIsDraft() throws LMISException {
         RnRForm form = new RnRForm();
         form.setStatus(RnRForm.STATUS.DRAFT);
@@ -220,8 +206,8 @@ public class MMIARequisitionPresenterTest {
         presenter.processSign(signature, form);
         waitObservableToExecute();
 
-        verify(mmiaRepository).setSignature(form, signature, RnRFormSignature.TYPE.SUBMITTER);
-        verify(mmiaRepository).submit(form);
+        assertThat(RnRForm.STATUS.SUBMITTED, is(form.getStatus()));
+        verify(mmiaRepository).save(form);
         verify(mockMMIAformView).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_complete));
         verify(mockMMIAformView).showMessageNotifyDialog();
     }
@@ -236,8 +222,8 @@ public class MMIARequisitionPresenterTest {
 
         waitObservableToExecute();
 
-        verify(mmiaRepository).setSignature(form, signature, RnRFormSignature.TYPE.APPROVER);
-        verify(mmiaRepository).authorise(form);
+        assertThat(RnRForm.STATUS.AUTHORIZED, is(form.getStatus()));
+        verify(mmiaRepository).save(form);
     }
 
     @Test

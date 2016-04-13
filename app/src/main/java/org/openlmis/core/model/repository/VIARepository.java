@@ -46,5 +46,4 @@ public class VIARepository extends RnrFormRepository {
         baseInfoItemList.add(newPatients);
         return baseInfoItemList;
     }
-
 }

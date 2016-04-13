@@ -42,7 +42,6 @@ import org.openlmis.core.model.service.PeriodService;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
-import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -80,7 +79,6 @@ public class RnrFormRepository {
     GenericDao<RnrFormItem> rnrFormItemGenericDao;
 
     private Context context;
-    private GenericDao<RnRFormSignature> signatureDao;
     protected String programCode;
 
     @Inject
@@ -90,7 +88,6 @@ public class RnrFormRepository {
     public RnrFormRepository(Context context) {
         genericDao = new GenericDao<>(RnRForm.class, context);
         rnrFormItemGenericDao = new GenericDao<>(RnrFormItem.class, context);
-        signatureDao = new GenericDao<>(RnRFormSignature.class, context);
         this.context = context;
     }
 
@@ -177,17 +174,6 @@ public class RnrFormRepository {
         }
     }
 
-    public void submit(RnRForm form) throws LMISException {
-        form.setStatus(form.isMissed() ? RnRForm.STATUS.SUBMITTED_MISSED : RnRForm.STATUS.SUBMITTED);
-        save(form);
-    }
-
-    public void authorise(RnRForm form) throws LMISException {
-        form.setStatus(RnRForm.STATUS.AUTHORIZED);
-        form.setSubmittedTime(DateUtil.today());
-        save(form);
-    }
-
     public boolean isPeriodUnique(final RnRForm form) {
         try {
             return null == dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
@@ -272,10 +258,6 @@ public class RnrFormRepository {
             deleteBaseInfoItems(form.getBaseInfoItemListWrapper());
             genericDao.delete(form);
         }
-    }
-
-    public void setSignature(RnRForm form, String signature, RnRFormSignature.TYPE type) throws LMISException {
-        signatureDao.create(new RnRFormSignature(form, signature, type));
     }
 
     public List<RnRFormSignature> querySignaturesByRnrForm(final RnRForm form) throws LMISException {
@@ -445,4 +427,8 @@ public class RnrFormRepository {
         });
     }
 
+    public void createAndRefresh(RnRForm rnRForm) throws LMISException {
+        create(rnRForm);
+        genericDao.refresh(rnRForm);
+    }
 }

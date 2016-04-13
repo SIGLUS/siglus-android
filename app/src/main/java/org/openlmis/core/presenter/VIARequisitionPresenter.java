@@ -31,7 +31,6 @@ import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.ProductRepository;
@@ -262,6 +261,26 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         return true;
     }
 
+    @Override
+    protected void submitRequisition(RnRForm rnRForm) {
+        if (rnRForm.isEmergency()) {
+            return;
+        }
+        super.submitRequisition(rnRForm);
+    }
+
+    @Override
+    protected void authoriseRequisition(RnRForm rnRForm) {
+        if (rnRForm.isEmergency()) {
+            try {
+                rnrFormRepository.createAndRefresh(rnRForm);
+            } catch (LMISException e) {
+                e.printStackTrace();
+            }
+        }
+        super.authoriseRequisition(rnRForm);
+    }
+
     public void processRequisition(String consultationNumbers) {
         if (!validateForm()) {
             return;
@@ -322,32 +341,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         List<BaseInfoItem> baseInfoItemListWrapper = rnRForm.getBaseInfoItemListWrapper();
         if (baseInfoItemListWrapper != null) {
             baseInfoItemListWrapper.get(0).setValue(consultationNumbers);
-        }
-    }
-
-    @Override
-    public void processSign(String signName, RnRForm rnRForm) {
-        if (rnRForm.isEmergency()) {
-            processEmergencySign(signName, rnRForm);
-            return;
-        }
-        super.processSign(signName, rnRForm);
-    }
-
-    private void processEmergencySign(String signName, RnRForm rnRForm) {
-        if (rnRForm.isDraft()) {
-            rnRForm.setSubmitterSignature(signName);
-            rnRForm.setStatus(RnRForm.STATUS.SUBMITTED);
-        } else {
-            rnRForm.setApproverSignature(signName);
-            try {
-                rnrFormRepository.saveEmergency(rnRForm);
-            } catch (LMISException e) {
-                e.printStackTrace();
-            }
-            submitSignature(rnRForm.getSubmitterSignature(), RnRFormSignature.TYPE.SUBMITTER, rnRForm);
-            submitSignature(rnRForm.getApproverSignature(), RnRFormSignature.TYPE.APPROVER, rnRForm);
-            authoriseRequisition(rnRForm);
         }
     }
 

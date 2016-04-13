@@ -38,7 +38,6 @@ import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.ProductBuilder;
@@ -186,28 +185,30 @@ public class VIARequisitionPresenterTest {
 
     @Test
     public void shouldSubmitAfterSignedAndStatusIsDraft() throws LMISException {
-        RnRForm form = testSignatureStatus(RnRForm.STATUS.DRAFT, RnRFormSignature.TYPE.SUBMITTER);
-        verify(mockRnrFormRepository).submit(form);
-    }
-
-    @Test
-    public void shouldCompleteAfterSignedAndStatusIsSubmit() throws LMISException {
-        RnRForm form = testSignatureStatus(RnRForm.STATUS.SUBMITTED, RnRFormSignature.TYPE.APPROVER);
-        verify(mockRnrFormRepository).authorise(form);
-    }
-
-    private RnRForm testSignatureStatus(RnRForm.STATUS formStatus, RnRFormSignature.TYPE signatureType)
-            throws LMISException {
         //given
-        RnRForm form = getRnRFormWithStatus(formStatus);
+        RnRForm form = getRnRFormWithStatus(RnRForm.STATUS.DRAFT);
 
         //when
         presenter.processSign("userSignature", form);
         waitObservableToExecute();
 
         //then
-        verify(mockRnrFormRepository).setSignature(form, "userSignature", signatureType);
-        return form;
+        assertThat(RnRForm.STATUS.SUBMITTED, is(form.getStatus()));
+        verify(mockRnrFormRepository).save(form);
+    }
+
+    @Test
+    public void shouldCompleteAfterSignedAndStatusIsSubmit() throws LMISException {
+        //given
+        RnRForm form = getRnRFormWithStatus(RnRForm.STATUS.SUBMITTED);
+
+        //when
+        presenter.processSign("userSignature", form);
+        waitObservableToExecute();
+
+        //then
+        verify(mockRnrFormRepository).save(form);
+        assertThat(RnRForm.STATUS.AUTHORIZED, is(form.getStatus()));
     }
 
     private RnRForm getRnRFormWithStatus(RnRForm.STATUS status) {
@@ -536,16 +537,14 @@ public class VIARequisitionPresenterTest {
         RnRForm rnRForm = new RnRForm();
         rnRForm.setStatus(RnRForm.STATUS.DRAFT);
         rnRForm.setEmergency(true);
-        String submitSign = "sign";
-        String approveSign = "approve sign";
 
-        presenter.processSign(submitSign, rnRForm);
-        assertThat(submitSign, is(rnRForm.getSubmitterSignature()));
-        verify(mockRnrFormRepository, never()).createRnRsWithItems(newArrayList(rnRForm));
+        presenter.processSign("sign", rnRForm);
+        verify(mockRnrFormRepository, never()).createAndRefresh(rnRForm);
+        verify(mockRnrFormRepository, never()).save(rnRForm);
 
-        presenter.processSign(approveSign, rnRForm);
-        assertThat(approveSign, is(rnRForm.getApproverSignature()));
-        verify(mockRnrFormRepository).saveEmergency(rnRForm);
+        presenter.processSign("sign", rnRForm);
+        verify(mockRnrFormRepository).createAndRefresh(rnRForm);
+        verify(mockRnrFormRepository).save(rnRForm);
     }
 
     private ViaKitsViewModel buildDefaultViaKit() {

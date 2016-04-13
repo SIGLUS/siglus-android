@@ -1,8 +1,8 @@
 package org.openlmis.core.model.helper;
 
+import com.j256.ormlite.dao.ForeignCollection;
+
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.BaseInfoItem;
-import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockMovementItem;
@@ -22,14 +22,19 @@ public class RnrFormHelper {
     }
 
     public void updateWrapperList(RnRForm form) throws SQLException {
-        for (RnrFormItem item : form.getRnrFormItemListWrapper()) {
-            form.getRnrFormItemList().update(item);
-        }
-        for (RegimenItem item : form.getRegimenItemListWrapper()) {
-            form.getRegimenItemList().update(item);
-        }
-        for (BaseInfoItem item : form.getBaseInfoItemListWrapper()) {
-            form.getBaseInfoItemList().update(item);
+        assignWrapperToForeignCollection(form.getRnrFormItemList(), form.getRnrFormItemListWrapper());
+        assignWrapperToForeignCollection(form.getRegimenItemList(), form.getRegimenItemListWrapper());
+        assignWrapperToForeignCollection(form.getBaseInfoItemList(), form.getBaseInfoItemListWrapper());
+        assignWrapperToForeignCollection(form.getSignatures(), form.getSignaturesWrapper());
+    }
+
+    private <T> void assignWrapperToForeignCollection(ForeignCollection<T> foreignCollection, List<T> list) throws SQLException {
+        for (T item : list) {
+            if (foreignCollection.contains(item)) {
+                foreignCollection.update(item);
+            } else {
+                foreignCollection.add(item);
+            }
         }
     }
 
