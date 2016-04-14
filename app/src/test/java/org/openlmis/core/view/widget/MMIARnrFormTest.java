@@ -6,6 +6,7 @@ import android.widget.TextView;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
@@ -64,6 +65,7 @@ public class MMIARnrFormTest {
 
     @Test
     public void shouldIncludeTheNewMMIAProductsWhichIsNotInList() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, true);
         List<RnrFormItem> rnrFormItems = Arrays.asList(
                 getRnrFormItem(1L, "product1", "08S17"),
                 getRnrFormItem(2L, "produc2", "01A01"),
