@@ -275,7 +275,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             try {
                 rnrFormRepository.createAndRefresh(rnRForm);
             } catch (LMISException e) {
-                e.printStackTrace();
+                e.reportToFabric();
             }
         }
         super.authoriseRequisition(rnRForm);
