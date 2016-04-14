@@ -180,6 +180,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         } else {
             refreshNormalRnr(rnRForm);
         }
+        setEditable();
     }
 
     private void refreshNormalRnr(RnRForm rnRForm) {
@@ -189,7 +190,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         setTitleWithPeriod(rnRForm);
         consultationView.setConsultationNumbers(presenter);
         setKitValues();
-        setEditable();
     }
 
     private void refreshEmergencyRnr() {

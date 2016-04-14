@@ -21,6 +21,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.inject.Binder;
@@ -120,6 +121,19 @@ public class VIARequisitionFragmentTest {
         VIARequisitionFragment.refreshRequisitionForm(rnRForm);
 
         assertThat(((TextView) VIARequisitionFragment.kitView.findViewById(R.id.et_via_kit_received_hf)).getText()).isEqualTo(StringUtils.EMPTY);
+    }
+
+    @Test
+    public void shouldSetButtonGoneWhenRnrIsAuthorized() {
+        RnRForm rnRForm = VIARequisitionFragment.presenter.getRnRForm();
+        rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
+
+        VIARequisitionFragment.refreshRequisitionForm(rnRForm);
+        assertThat(View.GONE).isEqualTo(VIARequisitionFragment.actionPanel.getVisibility());
+
+        rnRForm.setEmergency(true);
+        VIARequisitionFragment.refreshRequisitionForm(rnRForm);
+        assertThat(View.GONE).isEqualTo(VIARequisitionFragment.actionPanel.getVisibility());
     }
 
     @Test
