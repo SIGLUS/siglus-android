@@ -133,8 +133,8 @@ public class VIARequisitionPresenterTest {
     public void shouldNotValidateKitAndConsultaionNumberWhenFormIsEmergency() throws Exception {
         presenter.rnRForm = createRnrForm(RnRForm.IsEmergency.Yes);
 
-        verify(VIARequisitionFragment,never()).validateConsultationNumber();
-        verify(VIARequisitionFragment,never()).validateKitData();
+        verify(VIARequisitionFragment, never()).validateConsultationNumber();
+        verify(VIARequisitionFragment, never()).validateKitData();
     }
 
     @Test
@@ -561,6 +561,7 @@ public class VIARequisitionPresenterTest {
 
     @Test
     public void shouldProcessEmergencySignature() throws Exception {
+        presenter = spy(presenter);
         RnRForm rnRForm = new RnRForm();
         rnRForm.setStatus(RnRForm.STATUS.DRAFT);
         rnRForm.setEmergency(true);
@@ -568,6 +569,7 @@ public class VIARequisitionPresenterTest {
         presenter.processSign("sign", rnRForm);
         verify(mockRnrFormRepository, never()).createAndRefresh(rnRForm);
         verify(mockRnrFormRepository, never()).update(rnRForm);
+        verify(presenter).updateUIAfterSubmit();
 
         presenter.processSign("sign", rnRForm);
         verify(mockRnrFormRepository).createAndRefresh(rnRForm);

@@ -264,6 +264,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     @Override
     protected void submitRequisition(RnRForm rnRForm) {
         if (rnRForm.isEmergency()) {
+            updateUIAfterSubmit();
             return;
         }
         super.submitRequisition(rnRForm);
