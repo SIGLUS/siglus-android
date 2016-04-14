@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
+import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.SelectEmergencyProductAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
@@ -38,7 +39,7 @@ public class SelectEmergencyProductsViewHolder extends BaseViewHolder {
         });
     }
 
-    public void populate(final SelectEmergencyProductAdapter selectEmergencyProductAdapter, final InventoryViewModel viewModel) {
+    public void populate(final SelectEmergencyProductAdapter selectEmergencyProductAdapter, String queryKeyWord, final InventoryViewModel viewModel) {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -51,8 +52,9 @@ public class SelectEmergencyProductsViewHolder extends BaseViewHolder {
             }
         });
         checkBox.setChecked(viewModel.isChecked());
-        productName.setText(viewModel.getStyledName());
-        tvShortCode.setText(viewModel.getStyledUnit());
+
+        productName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyledName()));
+        tvShortCode.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyledUnit()));
     }
 
     private void triggerCheckbox() {

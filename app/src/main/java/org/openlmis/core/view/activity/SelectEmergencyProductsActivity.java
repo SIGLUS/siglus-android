@@ -31,7 +31,7 @@ import rx.Subscription;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 @ContentView(R.layout.activity_select_drugs)
-public class SelectEmergencyProductsActivity extends BaseActivity {
+public class SelectEmergencyProductsActivity extends SearchBarActivity {
 
     @InjectView(R.id.btn_next)
     public View btnNext;
@@ -41,8 +41,6 @@ public class SelectEmergencyProductsActivity extends BaseActivity {
 
     @InjectPresenter(ProductPresenter.class)
     ProductPresenter presenter;
-
-    protected List<InventoryViewModel> viewModels;
 
     protected SelectEmergencyProductAdapter mAdapter;
 
@@ -61,8 +59,7 @@ public class SelectEmergencyProductsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        viewModels = new ArrayList<>();
-        mAdapter = new SelectEmergencyProductAdapter(viewModels);
+        mAdapter = new SelectEmergencyProductAdapter(new ArrayList<InventoryViewModel>());
         productListRecycleView.setAdapter(mAdapter);
         loading();
         Subscription subscription = presenter.loadEmergencyProducts().subscribe(subscriber);
@@ -109,8 +106,7 @@ public class SelectEmergencyProductsActivity extends BaseActivity {
 
         @Override
         public void onNext(List<InventoryViewModel> data) {
-            viewModels.clear();
-            viewModels.addAll(data);
+            mAdapter.refreshList(data);
         }
     };
 
@@ -125,5 +121,11 @@ public class SelectEmergencyProductsActivity extends BaseActivity {
             setResult(RESULT_OK);
             finish();
         }
+    }
+
+    @Override
+    public boolean onSearchStart(String query) {
+        mAdapter.filter(query);
+        return false;
     }
 }

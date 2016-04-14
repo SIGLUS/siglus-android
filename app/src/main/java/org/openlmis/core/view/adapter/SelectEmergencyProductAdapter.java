@@ -1,6 +1,5 @@
 package org.openlmis.core.view.adapter;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -13,17 +12,15 @@ import java.util.List;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
-public class SelectEmergencyProductAdapter extends RecyclerView.Adapter<SelectEmergencyProductsViewHolder> {
-
+public class SelectEmergencyProductAdapter extends InventoryListAdapter<SelectEmergencyProductsViewHolder> implements FilterableAdapter {
     public static final int MAX_CHECKED_LIMIT = 10;
-    private List<InventoryViewModel> products;
 
-    public SelectEmergencyProductAdapter(List<InventoryViewModel> products) {
-        this.products = products;
+    public SelectEmergencyProductAdapter(List<InventoryViewModel> data) {
+        super(data);
     }
 
     public List<InventoryViewModel> getCheckedProducts() {
-        return from(products).filter(new Predicate<InventoryViewModel>() {
+        return from(data).filter(new Predicate<InventoryViewModel>() {
             @Override
             public boolean apply(InventoryViewModel viewModel) {
                 return viewModel.isChecked();
@@ -38,13 +35,7 @@ public class SelectEmergencyProductAdapter extends RecyclerView.Adapter<SelectEm
 
     @Override
     public void onBindViewHolder(SelectEmergencyProductsViewHolder holder, int position) {
-        InventoryViewModel product = products.get(position);
-        holder.populate(this, product);
-    }
-
-    @Override
-    public int getItemCount() {
-        return products.size();
+        holder.populate(this, queryKeyWord, data.get(position));
     }
 
     public boolean isReachLimit() {
