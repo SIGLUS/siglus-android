@@ -9,38 +9,5 @@
 
     <string name="app_name">CHAI LMIS UPGRADE</string>
 
-    <string-array name="medicine_adult">
-        <item>08S42</item>
-        <item>08S18Y</item>
-        <item>08S40</item>
-        <item>08S36</item>
-        <item>08S32</item>
-        <item>08S18Z</item>
-        <item>08S39Z</item>
-        <item>08S21</item>
-        <item>08S01</item>
-        <item>08S22</item>
-        <item>08S13</item>
-        <item>08S15</item>
-    </string-array>
-
-    <string-array name="medicine_baby">
-        <item>08S34B</item>
-        <item>08S32Z</item>
-        <item>08S42B</item>
-        <item>08S40Z</item>
-        <item>08S39B</item>
-        <item>08S39Y</item>
-        <item>08S01ZZ</item>
-        <item>08S20</item>
-        <item>08S19</item>
-        <item>08S01B</item>
-    </string-array>
-
-    <string-array name="medicine_other">
-        <item>08S23</item>
-        <item>08S17</item>
-    </string-array>
-
     <string name="app_time_out">3600000</string>
 </resources>
