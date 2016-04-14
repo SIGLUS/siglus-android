@@ -21,7 +21,6 @@ import org.openlmis.core.view.holder.SelectEmergencyProductsViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowToast;
 
 import java.util.ArrayList;
@@ -34,7 +33,6 @@ import rx.Subscriber;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -103,14 +101,12 @@ public class SelectEmergencyProductsActivityTest {
 
         activity.btnNext.performClick();
 
-        ShadowActivity shadowActivity = shadowOf(activity);
         Intent startedIntent = shadowOf(activity).getNextStartedActivity();
 
         MatcherAssert.assertThat(startedIntent.getComponent().getClassName(), equalTo(VIARequisitionActivity.class.getName()));
         ArrayList<StockCard> stockCards = (ArrayList<StockCard>) startedIntent.getSerializableExtra(VIARequisitionActivity.PARAM_SELECTED_EMERGENCY);
 
         MatcherAssert.assertThat(stockCards.get(0).getId(), Matchers.is(100L));
-        assertTrue(shadowActivity.isFinishing());
     }
 
     private ArrayList<InventoryViewModel> getInventoryViewModels() {

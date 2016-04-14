@@ -102,8 +102,7 @@ public class RnRFormListPresenter extends Presenter {
     protected List<RnRFormViewModel> buildFormListViewModels() throws LMISException {
         List<RnRFormViewModel> rnRFormViewModels = new ArrayList<>();
 
-        //TODO add emergency item  #383
-        List<RnRForm> rnRForms = repository.listWithEmergency(programCode, false);
+        List<RnRForm> rnRForms = repository.listWithEmergency(programCode, true);
 
         generateRnrViewModelByRnrFormsInDB(rnRFormViewModels, rnRForms);
 

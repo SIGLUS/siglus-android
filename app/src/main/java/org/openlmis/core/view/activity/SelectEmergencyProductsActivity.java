@@ -1,5 +1,6 @@
 package org.openlmis.core.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.ProductPresenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.SelectEmergencyProductAdapter;
@@ -89,11 +91,8 @@ public class SelectEmergencyProductsActivity extends BaseActivity {
         }).toList();
         ArrayList<StockCard> stockCards = new ArrayList<>();
         stockCards.addAll(immutableList);
-        startActivity(VIARequisitionActivity.getIntentToMe(this, stockCards));
-        finish();
+        startActivityForResult(VIARequisitionActivity.getIntentToMe(this, stockCards), Constants.REQUEST_FROM_RNR_LIST_PAGE);
     }
-
-
 
     Subscriber<List<InventoryViewModel>> subscriber = new Subscriber<List<InventoryViewModel>>() {
         @Override
@@ -118,5 +117,13 @@ public class SelectEmergencyProductsActivity extends BaseActivity {
     public static Intent getIntentToMe(Context context) {
         Intent intent = new Intent(context, SelectEmergencyProductsActivity.class);
         return intent;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_FROM_RNR_LIST_PAGE) {
+            setResult(RESULT_OK);
+            finish();
+        }
     }
 }

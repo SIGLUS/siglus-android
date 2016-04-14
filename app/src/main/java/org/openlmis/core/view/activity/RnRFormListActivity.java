@@ -291,7 +291,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
                 if (hasMissed) {
                     ToastUtil.show(R.string.msg_create_emergency_has_missed);
                 } else {
-                    startActivity(SelectEmergencyProductsActivity.getIntentToMe(RnRFormListActivity.this));
+                    startActivityForResult(SelectEmergencyProductsActivity.getIntentToMe(RnRFormListActivity.this), Constants.REQUEST_FROM_RNR_LIST_PAGE);
                 }
             }
         });
