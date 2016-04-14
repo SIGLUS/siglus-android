@@ -19,6 +19,8 @@
 
 package org.openlmis.core.presenter;
 
+import android.support.annotation.NonNull;
+
 import com.google.inject.AbstractModule;
 
 import junit.framework.Assert;
@@ -119,16 +121,30 @@ public class VIARequisitionPresenterTest {
 
     @Test
     public void shouldValidateFormReturnFalseWhenConsultationNumbersInvalid() throws Exception {
+        presenter.rnRForm = createRnrForm(RnRForm.IsEmergency.No);
         when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(false);
+
         boolean result = presenter.validateForm();
+
         assertFalse(result);
+    }
+
+    @Test
+    public void shouldNotValidateKitAndConsultaionNumberWhenFormIsEmergency() throws Exception {
+        presenter.rnRForm = createRnrForm(RnRForm.IsEmergency.Yes);
+
+        verify(VIARequisitionFragment,never()).validateConsultationNumber();
+        verify(VIARequisitionFragment,never()).validateKitData();
     }
 
     @Test
     public void shouldValidateFormReturnFalseWhenKitDataInvalid() throws Exception {
         when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
         when(VIARequisitionFragment.validateKitData()).thenReturn(false);
+        presenter.rnRForm = createRnrForm(RnRForm.IsEmergency.No);
+
         boolean result = presenter.validateForm();
+
         assertFalse(result);
     }
 
@@ -149,6 +165,7 @@ public class VIARequisitionPresenterTest {
     public void shouldReturnTrueWhenValidateFormSuccess() throws Exception {
         when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
         when(VIARequisitionFragment.validateKitData()).thenReturn(true);
+        presenter.rnRForm = createRnrForm(RnRForm.IsEmergency.No);
 
         List<RequisitionFormItemViewModel> list = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
@@ -229,6 +246,13 @@ public class VIARequisitionPresenterTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    @NonNull
+    private RnRForm createRnrForm(RnRForm.IsEmergency isEmergency) {
+        RnRForm rnRForm = new RnRForm();
+        rnRForm.setEmergency(isEmergency.IsEmergency());
+        return rnRForm;
     }
 
 
@@ -325,6 +349,7 @@ public class VIARequisitionPresenterTest {
         when(mockRnrFormRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(false);
         when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
         when(VIARequisitionFragment.validateKitData()).thenReturn(true);
+        presenter.rnRForm = createRnrForm(RnRForm.IsEmergency.No);
 
         presenter.processRequisition("123");
 
