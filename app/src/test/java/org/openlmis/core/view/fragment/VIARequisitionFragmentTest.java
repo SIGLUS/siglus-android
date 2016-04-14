@@ -21,10 +21,12 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
+import android.widget.TextView;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -108,6 +110,16 @@ public class VIARequisitionFragmentTest {
         VIARequisitionFragment.refreshRequisitionForm(VIARequisitionFragment.presenter.getRnRForm());
 
         assertThat(VIARequisitionFragment.getActivity().getTitle()).isEqualTo("Requisition - 21 Apr to 20 May");
+    }
+
+    @Test
+    public void shouldSetKitIsEmptyWhenRnrIsEmergency() {
+        RnRForm rnRForm = VIARequisitionFragment.presenter.getRnRForm();
+        rnRForm.setEmergency(true);
+
+        VIARequisitionFragment.refreshRequisitionForm(rnRForm);
+
+        assertThat(((TextView) VIARequisitionFragment.kitView.findViewById(R.id.et_via_kit_received_hf)).getText()).isEqualTo(StringUtils.EMPTY);
     }
 
     @Test

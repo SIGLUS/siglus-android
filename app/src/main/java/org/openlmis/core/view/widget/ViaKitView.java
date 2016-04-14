@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
 
@@ -63,5 +64,12 @@ public class ViaKitView extends LinearLayout {
         etKitOpenedHF.setOnClickListener(listener);
         etKitReceivedCHW.setOnClickListener(listener);
         etKitOpenedCHW.setOnClickListener(listener);
+    }
+
+    public void setEmergencyKitValues() {
+        etKitReceivedHF.setText(StringUtils.EMPTY);
+        etKitOpenedHF.setText(StringUtils.EMPTY);
+        etKitReceivedCHW.setText(StringUtils.EMPTY);
+        etKitOpenedCHW.setText(StringUtils.EMPTY);
     }
 }

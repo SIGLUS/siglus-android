@@ -136,7 +136,9 @@ public class VIARequisitionPresenterTest {
     public void shouldValidateFormReturnTrueWhenRnrIsEmergency() throws Exception {
         presenter = spy(presenter);
         doReturn(true).when(presenter).validateRnrFormItems();
-        when(VIARequisitionFragment.isEmergency()).thenReturn(true);
+        RnRForm rnRForm = new RnRForm();
+        rnRForm.setEmergency(true);
+        presenter.rnRForm = rnRForm;
         when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(false);
         when(VIARequisitionFragment.validateKitData()).thenReturn(false);
         boolean result = presenter.validateForm();

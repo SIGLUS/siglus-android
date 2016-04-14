@@ -240,7 +240,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     protected boolean validateForm() {
-        if (view.isEmergency()) {
+        if (rnRForm.isEmergency()) {
             return validateRnrFormItems();
         } else if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_auto_fill_kit_rnr)) {
             return view.validateConsultationNumber() && view.validateKitData() && validateRnrFormItems();

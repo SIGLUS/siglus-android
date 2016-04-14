@@ -159,11 +159,15 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     private void loadData() {
-        if (isEmergency()) {
+        if (isFromSelectEmergencyPage()) {
             presenter.loadEmergencyData(emergencyStockCards, new Date(LMISApp.getInstance().getCurrentTimeMillis()));
         } else {
             presenter.loadData(formId, periodEndDate);
         }
+    }
+
+    private boolean isFromSelectEmergencyPage() {
+        return emergencyStockCards != null;
     }
 
     @Override
@@ -171,7 +175,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         requisitionProductAdapter.notifyDataSetChanged();
         requisitionFormAdapter.updateStatus(rnRForm.getStatus());
 
-        if (isEmergency()) {
+        if (rnRForm.isEmergency()) {
             refreshEmergencyRnr();
         } else {
             refreshNormalRnr(rnRForm);
@@ -195,16 +199,13 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
                 ToastUtil.show(R.string.msg_emergency_requisition_cant_edit);
             }
         };
+        kitView.setEmergencyKitValues();
         consultationView.setEmergencyRnrHeader();
         consultationView.setEditClickListener(onClickListener);
         kitView.setEditClickListener(onClickListener);
         getActivity().setTitle(getString(R.string.label_emergency_requisition_title,
                 DateUtil.formatDateWithoutYear(new Date(LMISApp.getInstance().getCurrentTimeMillis()))));
         btnSave.setVisibility(View.GONE);
-    }
-
-    public boolean isEmergency() {
-        return emergencyStockCards != null;
     }
 
     public void setTitleWithPeriod(RnRForm rnRForm) {
