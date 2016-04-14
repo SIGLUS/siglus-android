@@ -53,7 +53,6 @@ import org.openlmis.core.view.widget.MMIARnrForm;
 import org.openlmis.core.view.widget.RnrFormHorizontalScrollView;
 import org.openlmis.core.view.widget.SignatureDialog;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import roboguice.inject.InjectView;
@@ -192,7 +191,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     @Override
     public void refreshRequisitionForm(RnRForm form) {
         scrollView.setVisibility(View.VISIBLE);
-        rnrFormList.initView(new ArrayList<>(form.getRnrFormItemListWrapper()));
+        rnrFormList.initView(form.getRnrFormItemListWrapper());
         regimeListView.initView(tvRegimeTotal, presenter);
         mmiaInfoListView.initView(form.getBaseInfoItemListWrapper());
         InflateFreezeHeaderView();

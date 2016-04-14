@@ -67,8 +67,6 @@ public class Product extends BaseModel implements Comparable<Product> {
     @DatabaseField
     boolean isKit;
 
-    String medicine_type;
-
     List<KitProduct> kitProductList = new ArrayList<>();
 
     @Override
