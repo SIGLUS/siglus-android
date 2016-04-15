@@ -31,13 +31,13 @@ import lombok.Data;
 
 
 @Data
-public abstract class BaseModel implements Serializable{
+public abstract class BaseModel implements Serializable {
 
     @DatabaseField(uniqueIndex = true, generatedId = true)
     private long id;
 
-    public BaseModel(){
-        createdAt = new Date();
+    public BaseModel() {
+        createdAt = DateUtil.parseString(DateUtil.formatDate(new Date(), DateUtil.DATE_TIME_FORMAT), DateUtil.DATE_TIME_FORMAT);
         updatedAt = createdAt;
     }
 
