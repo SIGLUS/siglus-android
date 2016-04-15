@@ -98,8 +98,8 @@ public class RnRFormListPresenterTest {
     public void shouldBuildFormListViewModels() throws LMISException {
         presenter.setProgramCode("MMIA");
         Collections.reverse(rnRForms);
-        when(rnrFormRepository.listWithEmergency("MMIA", true)).thenReturn(rnRForms);
-        when(rnrFormRepository.listWithEmergency("MMIA", false)).thenReturn(rnRForms);
+        when(rnrFormRepository.listIncludeEmergency("MMIA", RnRForm.Emergency.Yes)).thenReturn(rnRForms);
+        when(rnrFormRepository.listIncludeEmergency("MMIA", RnRForm.Emergency.No)).thenReturn(rnRForms);
         when(syncErrorsRepository.getBySyncTypeAndObjectId(any(SyncType.class), anyLong()))
                 .thenReturn(Arrays.asList(new SyncError("Error1", SyncType.RnRForm, 1), new SyncError("Error2", SyncType.RnRForm, 1)));
 
@@ -123,7 +123,7 @@ public class RnRFormListPresenterTest {
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
 
-        when(rnrFormRepository.listWithEmergency(program.getProgramCode(), true)).thenReturn(newArrayList(rnRForm1, rnRForm2));
+        when(rnrFormRepository.listIncludeEmergency(program.getProgramCode(), RnRForm.Emergency.Yes)).thenReturn(newArrayList(rnRForm1, rnRForm2));
         when(periodService.hasMissedPeriod(program.getProgramCode())).thenReturn(false);
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodAplToMay);
 
@@ -143,7 +143,7 @@ public class RnRFormListPresenterTest {
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-20", DateUtil.DB_DATE_FORMAT)).getMillis());
 
-        when(rnrFormRepository.listWithEmergency(program.getProgramCode(), true)).thenReturn(newArrayList(rnRForm1, rnRForm2));
+        when(rnrFormRepository.listIncludeEmergency(program.getProgramCode(), RnRForm.Emergency.Yes)).thenReturn(newArrayList(rnRForm1, rnRForm2));
         when(periodService.hasMissedPeriod(program.getProgramCode())).thenReturn(false);
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodAplToMay);
         when(inventoryRepository.queryPeriodInventory(periodAplToMay)).thenReturn(new ArrayList<Inventory>());
@@ -165,7 +165,7 @@ public class RnRFormListPresenterTest {
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-20", DateUtil.DB_DATE_FORMAT)).getMillis());
 
-        when(rnrFormRepository.listWithEmergency(program.getProgramCode(), true)).thenReturn(newArrayList(rnRForm1, rnRForm2));
+        when(rnrFormRepository.listIncludeEmergency(program.getProgramCode(), RnRForm.Emergency.Yes)).thenReturn(newArrayList(rnRForm1, rnRForm2));
         when(periodService.hasMissedPeriod(program.getProgramCode())).thenReturn(false);
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodAplToMay);
         when(inventoryRepository.queryPeriodInventory(periodAplToMay)).thenReturn(newArrayList(new Inventory()));
@@ -189,8 +189,8 @@ public class RnRFormListPresenterTest {
 
         RnRForm rnRForm3 = createRnrFormByPeriod(RnRForm.STATUS.DRAFT, periodAplToMay.getBegin().toDate(), periodAplToMay.getEnd().toDate(), program);
 
-        when(rnrFormRepository.listWithEmergency(program.getProgramCode(), true)).thenReturn(newArrayList(rnRForm1, rnRForm2, rnRForm3));
-        when(rnrFormRepository.listWithEmergency(program.getProgramCode(), false)).thenReturn(newArrayList(rnRForm1, rnRForm2, rnRForm3));
+        when(rnrFormRepository.listIncludeEmergency(program.getProgramCode(), RnRForm.Emergency.Yes)).thenReturn(newArrayList(rnRForm1, rnRForm2, rnRForm3));
+        when(rnrFormRepository.listIncludeEmergency(program.getProgramCode(), RnRForm.Emergency.No)).thenReturn(newArrayList(rnRForm1, rnRForm2, rnRForm3));
         when(periodService.hasMissedPeriod(program.getProgramCode())).thenReturn(false);
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodAplToMay);
 
@@ -264,8 +264,8 @@ public class RnRFormListPresenterTest {
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
 
 
-        when(rnrFormRepository.listWithEmergency(program.getProgramCode(), true)).thenReturn(newArrayList(rnRForm3));
-        when(rnrFormRepository.listWithEmergency(program.getProgramCode(), false)).thenReturn(newArrayList(rnRForm3));
+        when(rnrFormRepository.listIncludeEmergency(program.getProgramCode(), RnRForm.Emergency.Yes)).thenReturn(newArrayList(rnRForm3));
+        when(rnrFormRepository.listIncludeEmergency(program.getProgramCode(), RnRForm.Emergency.No)).thenReturn(newArrayList(rnRForm3));
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodAplToMay);
         when(inventoryRepository.queryPeriodInventory(periodAplToMay)).thenReturn(newArrayList(new Inventory()));
 
@@ -283,8 +283,8 @@ public class RnRFormListPresenterTest {
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
 
-        when(rnrFormRepository.listWithEmergency(program.getProgramCode(), true)).thenReturn(newArrayList(rnRForm1));
-        when(rnrFormRepository.listWithEmergency(program.getProgramCode(), false)).thenReturn(newArrayList(rnRForm1));
+        when(rnrFormRepository.listIncludeEmergency(program.getProgramCode(), RnRForm.Emergency.Yes)).thenReturn(newArrayList(rnRForm1));
+        when(rnrFormRepository.listIncludeEmergency(program.getProgramCode(), RnRForm.Emergency.No)).thenReturn(newArrayList(rnRForm1));
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodMarToApl);
         when(periodService.hasMissedPeriod(program.getProgramCode())).thenReturn(true);
         when(periodService.getMissedPeriodOffsetMonth(program.getProgramCode())).thenReturn(1);
@@ -308,7 +308,7 @@ public class RnRFormListPresenterTest {
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
 
-        when(rnrFormRepository.listWithEmergency(program.getProgramCode(), true)).thenReturn(newArrayList(rnRForm1));
+        when(rnrFormRepository.listIncludeEmergency(program.getProgramCode(), RnRForm.Emergency.Yes)).thenReturn(newArrayList(rnRForm1));
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodMarToApl);
         when(periodService.hasMissedPeriod(program.getProgramCode())).thenReturn(true);
         when(periodService.getMissedPeriodOffsetMonth(program.getProgramCode())).thenReturn(1);
@@ -332,7 +332,7 @@ public class RnRFormListPresenterTest {
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
 
-        when(rnrFormRepository.listWithEmergency(program.getProgramCode(), true)).thenReturn(newArrayList(rnRForm1));
+        when(rnrFormRepository.listIncludeEmergency(program.getProgramCode(), RnRForm.Emergency.Yes)).thenReturn(newArrayList(rnRForm1));
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodMarToApl);
         when(periodService.hasMissedPeriod(program.getProgramCode())).thenReturn(true);
         when(periodService.getMissedPeriodOffsetMonth(program.getProgramCode())).thenReturn(2);
@@ -359,8 +359,8 @@ public class RnRFormListPresenterTest {
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
         Period periodMayToJun = new Period(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)), new DateTime(DateUtil.parseString("2016-06-18", DateUtil.DB_DATE_FORMAT)));
 
-        when(rnrFormRepository.listWithEmergency(program.getProgramCode(), true)).thenReturn(newArrayList(rnRForm2, rnRForm3));
-        when(rnrFormRepository.listWithEmergency(program.getProgramCode(), false)).thenReturn(newArrayList(rnRForm2, rnRForm3));
+        when(rnrFormRepository.listIncludeEmergency(program.getProgramCode(), RnRForm.Emergency.Yes)).thenReturn(newArrayList(rnRForm2, rnRForm3));
+        when(rnrFormRepository.listIncludeEmergency(program.getProgramCode(), RnRForm.Emergency.No)).thenReturn(newArrayList(rnRForm2, rnRForm3));
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodMayToJun);
         when(periodService.hasMissedPeriod(program.getProgramCode())).thenReturn(true);
         when(periodService.getMissedPeriodOffsetMonth(program.getProgramCode())).thenReturn(1);
@@ -386,7 +386,7 @@ public class RnRFormListPresenterTest {
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
 
-        when(rnrFormRepository.listWithEmergency(program.getProgramCode(), false)).thenReturn(new ArrayList<RnRForm>());
+        when(rnrFormRepository.listIncludeEmergency(program.getProgramCode(), RnRForm.Emergency.No)).thenReturn(new ArrayList<RnRForm>());
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodFebToMar);
         when(periodService.hasMissedPeriod(program.getProgramCode())).thenReturn(true);
         when(periodService.getMissedPeriodOffsetMonth(program.getProgramCode())).thenReturn(2);
@@ -410,7 +410,7 @@ public class RnRFormListPresenterTest {
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-17", DateUtil.DB_DATE_FORMAT)).getMillis());
 
-        when(rnrFormRepository.listWithEmergency(program.getProgramCode(), false)).thenReturn(new ArrayList<RnRForm>());
+        when(rnrFormRepository.listIncludeEmergency(program.getProgramCode(), RnRForm.Emergency.No)).thenReturn(new ArrayList<RnRForm>());
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodFebToMar);
         when(periodService.hasMissedPeriod(program.getProgramCode())).thenReturn(true);
         when(periodService.getMissedPeriodOffsetMonth(program.getProgramCode())).thenReturn(2);
@@ -434,7 +434,7 @@ public class RnRFormListPresenterTest {
         presenter.setProgramCode(program.getProgramCode());
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime(DateUtil.parseString("2016-05-18", DateUtil.DB_DATE_FORMAT)).getMillis());
 
-        when(rnrFormRepository.listWithEmergency(program.getProgramCode(), false)).thenReturn(new ArrayList<RnRForm>());
+        when(rnrFormRepository.listIncludeEmergency(program.getProgramCode(), RnRForm.Emergency.No)).thenReturn(new ArrayList<RnRForm>());
         when(periodService.generateNextPeriod(program.getProgramCode(), null)).thenReturn(periodFebToMar);
         when(periodService.hasMissedPeriod(program.getProgramCode())).thenReturn(true);
         when(periodService.getMissedPeriodOffsetMonth(program.getProgramCode())).thenReturn(3);

@@ -64,7 +64,7 @@ public class PeriodServiceTest {
         previousRnrForm.setPeriodEnd(DateUtil.parseString("2020-10-18", DateUtil.DB_DATE_FORMAT));
         DateTime dateTime = new DateTime(previousRnrForm.getPeriodEnd()).plusMonths(1);
         DateTime expectedPeriodEnd = DateUtil.cutTimeStamp(dateTime.withDate(dateTime.getYear(), dateTime.getMonthOfYear(), Period.END_DAY));
-        when(mockRnrFormRepository.listWithEmergency(programMMIA.getProgramCode(), false)).thenReturn(newArrayList(previousRnrForm));
+        when(mockRnrFormRepository.listIncludeEmergency(programMMIA.getProgramCode(), RnRForm.Emergency.No)).thenReturn(newArrayList(previousRnrForm));
 
         Period period = periodService.generateNextPeriod(programMMIA.getProgramCode(), null);
         assertThat(period.getBegin().toDate(), is(previousRnrForm.getPeriodEnd()));
@@ -202,7 +202,7 @@ public class PeriodServiceTest {
         rnRForm.setStatus(RnRForm.STATUS.DRAFT_MISSED);
         rnRForm.setPeriodBegin(DateUtil.parseString("2015-04-18", DateUtil.DB_DATE_FORMAT));
         rnRForm.setPeriodEnd(DateUtil.parseString("2015-05-18", DateUtil.DB_DATE_FORMAT));
-        when(mockRnrFormRepository.listWithEmergency("P1", false)).thenReturn(newArrayList(rnRForm));
+        when(mockRnrFormRepository.listIncludeEmergency("P1", RnRForm.Emergency.No)).thenReturn(newArrayList(rnRForm));
 
         assertTrue(periodService.hasMissedPeriod("P1"));
     }

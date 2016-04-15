@@ -193,8 +193,8 @@ public class RnrFormRepository {
         return genericDao.queryForAll();
     }
 
-    public List<RnRForm> listWithEmergency(String programCode,  boolean isWithEmergency) throws LMISException {
-        return list(programCode, isWithEmergency);
+    public List<RnRForm> listIncludeEmergency(String programCode, RnRForm.Emergency includeEmergency) throws LMISException {
+        return list(programCode, includeEmergency.Emergency());
     }
 
     public List<RnRForm> queryAllUnsyncedForms() throws LMISException {
@@ -391,7 +391,7 @@ public class RnrFormRepository {
     }
 
     private long lastRnrInventory(StockCard stockCard) throws LMISException {
-        List<RnRForm> rnRForms = listWithEmergency(programCode, false);
+        List<RnRForm> rnRForms = listIncludeEmergency(programCode, RnRForm.Emergency.No);
         if (rnRForms.isEmpty()) {
             return 0;
         }
