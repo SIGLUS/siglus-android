@@ -69,7 +69,7 @@ public class SelectEmergencyProductsActivityTest {
 
     @Test
     public void shouldShowToastWhenHasNotChecked() throws Exception {
-        activity.viewModels = getInventoryViewModels();
+        activity.mAdapter.refreshList(getInventoryViewModels());
         activity.btnNext.performClick();
 
         assertThat(ShadowToast.getTextOfLatestToast(), is("Please check product"));
@@ -77,8 +77,9 @@ public class SelectEmergencyProductsActivityTest {
 
     @Test
     public void shouldShowToastWhenMoreThanLimitChecked() throws Exception {
-        activity.viewModels.addAll(getInventoryViewModels());
-        for (InventoryViewModel model : activity.viewModels) {
+        ArrayList<InventoryViewModel> inventoryViewModels = getInventoryViewModels();
+        activity.mAdapter.refreshList(inventoryViewModels);
+        for (InventoryViewModel model : inventoryViewModels) {
             model.setChecked(true);
         }
 
@@ -93,11 +94,12 @@ public class SelectEmergencyProductsActivityTest {
 
     @Test
     public void shouldGoToNextPage() throws Exception {
-        activity.viewModels.addAll(getInventoryViewModels());
-        activity.viewModels.get(0).setChecked(true);
+        ArrayList<InventoryViewModel> inventoryViewModels = getInventoryViewModels();
+        activity.mAdapter.refreshList(inventoryViewModels);
+        inventoryViewModels.get(0).setChecked(true);
         StockCard stockCard = new StockCard();
         stockCard.setId(100);
-        activity.viewModels.get(0).setStockCard(stockCard);
+        inventoryViewModels.get(0).setStockCard(stockCard);
 
         activity.btnNext.performClick();
 
