@@ -92,12 +92,12 @@ public class RnrFormRepository {
     }
 
     public RnRForm initNormalRnrForm(Date periodEndDate) throws LMISException {
-        RnRForm rnrForm = initRnRForm(periodEndDate, RnRForm.IsEmergency.No);
+        RnRForm rnrForm = initRnRForm(periodEndDate, RnRForm.Emergency.No);
         return createInitRnrForm(rnrForm);
     }
 
     public RnRForm initEmergencyRnrForm(Date periodEndDate, List<StockCard> stockCards) throws LMISException {
-        RnRForm rnRForm = initRnRForm(periodEndDate, RnRForm.IsEmergency.Yes);
+        RnRForm rnRForm = initRnRForm(periodEndDate, RnRForm.Emergency.Yes);
         rnRForm.setRnrFormItemListWrapper(generateRnrFormItems(rnRForm, stockCards));
         return rnRForm;
     }
@@ -337,14 +337,14 @@ public class RnrFormRepository {
         return new ArrayList<>();
     }
 
-    private RnRForm initRnRForm(Date periodEndDate, RnRForm.IsEmergency isEmergency) throws LMISException {
+    private RnRForm initRnRForm(Date periodEndDate, RnRForm.Emergency emergency) throws LMISException {
         final Program program = programRepository.queryByCode(programCode);
         if (program == null) {
             throw new LMISException("Program cannot be null !");
         }
 
         Period period = periodService.generateNextPeriod(programCode, periodEndDate);
-        return RnRForm.init(program, period, isEmergency.IsEmergency());
+        return RnRForm.init(program, period, emergency.Emergency());
     }
 
     private RnRForm createInitRnrForm(final RnRForm rnrForm) throws LMISException {

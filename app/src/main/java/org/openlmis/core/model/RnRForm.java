@@ -229,18 +229,18 @@ public class RnRForm extends BaseModel {
         }).toList();
     }
 
-    public enum IsEmergency {
+    public enum Emergency {
         Yes(true),
         No(false);
 
-        public boolean IsEmergency() {
-            return IsEmergency;
+        public boolean Emergency() {
+            return Emergency;
         }
 
-        private boolean IsEmergency;
+        private boolean Emergency;
 
-        IsEmergency(boolean IsEmergency) {
-            this.IsEmergency = IsEmergency;
+        Emergency(boolean Emergency) {
+            this.Emergency = Emergency;
         }
     }
 }

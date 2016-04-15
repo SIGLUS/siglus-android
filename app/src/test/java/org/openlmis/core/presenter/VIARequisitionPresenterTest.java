@@ -121,7 +121,7 @@ public class VIARequisitionPresenterTest {
 
     @Test
     public void shouldValidateFormReturnFalseWhenConsultationNumbersInvalid() throws Exception {
-        presenter.rnRForm = createRnrForm(RnRForm.IsEmergency.No);
+        presenter.rnRForm = createRnrForm(RnRForm.Emergency.No);
         when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(false);
 
         boolean result = presenter.validateForm();
@@ -131,7 +131,7 @@ public class VIARequisitionPresenterTest {
 
     @Test
     public void shouldNotValidateKitAndConsultaionNumberWhenFormIsEmergency() throws Exception {
-        presenter.rnRForm = createRnrForm(RnRForm.IsEmergency.Yes);
+        presenter.rnRForm = createRnrForm(RnRForm.Emergency.Yes);
 
         verify(VIARequisitionFragment, never()).validateConsultationNumber();
         verify(VIARequisitionFragment, never()).validateKitData();
@@ -141,7 +141,7 @@ public class VIARequisitionPresenterTest {
     public void shouldValidateFormReturnFalseWhenKitDataInvalid() throws Exception {
         when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
         when(VIARequisitionFragment.validateKitData()).thenReturn(false);
-        presenter.rnRForm = createRnrForm(RnRForm.IsEmergency.No);
+        presenter.rnRForm = createRnrForm(RnRForm.Emergency.No);
 
         boolean result = presenter.validateForm();
 
@@ -165,7 +165,7 @@ public class VIARequisitionPresenterTest {
     public void shouldReturnTrueWhenValidateFormSuccess() throws Exception {
         when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
         when(VIARequisitionFragment.validateKitData()).thenReturn(true);
-        presenter.rnRForm = createRnrForm(RnRForm.IsEmergency.No);
+        presenter.rnRForm = createRnrForm(RnRForm.Emergency.No);
 
         List<RequisitionFormItemViewModel> list = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
@@ -249,9 +249,9 @@ public class VIARequisitionPresenterTest {
     }
 
     @NonNull
-    private RnRForm createRnrForm(RnRForm.IsEmergency isEmergency) {
+    private RnRForm createRnrForm(RnRForm.Emergency emergency) {
         RnRForm rnRForm = new RnRForm();
-        rnRForm.setEmergency(isEmergency.IsEmergency());
+        rnRForm.setEmergency(emergency.Emergency());
         return rnRForm;
     }
 
@@ -349,7 +349,7 @@ public class VIARequisitionPresenterTest {
         when(mockRnrFormRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(false);
         when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
         when(VIARequisitionFragment.validateKitData()).thenReturn(true);
-        presenter.rnRForm = createRnrForm(RnRForm.IsEmergency.No);
+        presenter.rnRForm = createRnrForm(RnRForm.Emergency.No);
 
         presenter.processRequisition("123");
 
