@@ -26,6 +26,7 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 
 import org.openlmis.core.persistence.migrations.AddActiveColumnToProductTable;
+import org.openlmis.core.persistence.migrations.AddCategoryColumnToProductPrograms;
 import org.openlmis.core.persistence.migrations.AddCreatedTimeToStockMovement;
 import org.openlmis.core.persistence.migrations.AddEmergencyColumnToRnr;
 import org.openlmis.core.persistence.migrations.AddFacilityIdToUser;
@@ -91,6 +92,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new AddNewPrograms());
             add(new ConvertEssMedsToVIAProgram());
             add(new AddEmergencyColumnToRnr());
+            add(new AddCategoryColumnToProductPrograms());
         }
     };
     private static int instanceCount = 0;

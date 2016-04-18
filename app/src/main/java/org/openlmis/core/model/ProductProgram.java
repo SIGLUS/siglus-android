@@ -21,4 +21,7 @@ public class ProductProgram extends BaseModel {
     @DatabaseField
     @SerializedName("active")
     private boolean isActive;
+
+    @DatabaseField
+    private String category;
 }
