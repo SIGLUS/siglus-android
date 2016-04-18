@@ -176,7 +176,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         requisitionFormAdapter.updateStatus(rnRForm.getStatus());
 
         if (rnRForm.isEmergency()) {
-            refreshEmergencyRnr();
+            refreshEmergencyRnr(rnRForm);
         } else {
             refreshNormalRnr(rnRForm);
         }
@@ -192,17 +192,21 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         setKitValues();
     }
 
-    private void refreshEmergencyRnr() {
-        View.OnClickListener onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ToastUtil.show(R.string.msg_emergency_requisition_cant_edit);
-            }
-        };
+    private void refreshEmergencyRnr(RnRForm rnRForm) {
+        if (!rnRForm.isAuthorized()) {
+            View.OnClickListener onClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ToastUtil.show(R.string.msg_emergency_requisition_cant_edit);
+                }
+            };
+            consultationView.setEditClickListener(onClickListener);
+            kitView.setEditClickListener(onClickListener);
+        }
+
         kitView.setEmergencyKitValues();
         consultationView.setEmergencyRnrHeader();
-        consultationView.setEditClickListener(onClickListener);
-        kitView.setEditClickListener(onClickListener);
+
         getActivity().setTitle(getString(R.string.label_emergency_requisition_title,
                 DateUtil.formatDateWithoutYear(new Date(LMISApp.getInstance().getCurrentTimeMillis()))));
         btnSave.setVisibility(View.GONE);

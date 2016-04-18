@@ -31,6 +31,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -55,6 +56,7 @@ import java.util.List;
 import roboguice.RoboGuice;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
@@ -114,17 +116,24 @@ public class VIARequisitionFragmentTest {
     }
 
     @Test
-    public void shouldSetKitIsEmptyWhenRnrIsEmergency() {
+    public void shouldSetEmergencyViewWhenRnrIsEmergency() {
+        LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-04-21 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
+
         RnRForm rnRForm = VIARequisitionFragment.presenter.getRnRForm();
         rnRForm.setEmergency(true);
 
         VIARequisitionFragment.refreshRequisitionForm(rnRForm);
 
+        VIARequisitionFragment.consultationView.findViewById(R.id.edit_text).performClick();
+
+        assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo("This information is not used when creating an emergency requisition");
         assertThat(((TextView) VIARequisitionFragment.kitView.findViewById(R.id.et_via_kit_received_hf)).getText()).isEqualTo(StringUtils.EMPTY);
+        assertThat(((TextView) VIARequisitionFragment.consultationView.findViewById(R.id.via_rnr_header)).getText()).isEqualTo("Emergency requisition balancete");
+        assertThat(VIARequisitionFragment.getActivity().getTitle().toString()).isEqualTo("Emergency requisition - 21 Apr");
     }
 
     @Test
-    public void shouldSetButtonGoneWhenRnrIsAuthorized() {
+    public void shouldSetHistoryViewWhenRnrIsAuthorized() {
         RnRForm rnRForm = VIARequisitionFragment.presenter.getRnRForm();
         rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
 
@@ -134,6 +143,8 @@ public class VIARequisitionFragmentTest {
         rnRForm.setEmergency(true);
         VIARequisitionFragment.refreshRequisitionForm(rnRForm);
         assertThat(View.GONE).isEqualTo(VIARequisitionFragment.actionPanel.getVisibility());
+        assertFalse(VIARequisitionFragment.containerView.findViewById(R.id.edit_text).hasOnClickListeners());
+        assertFalse(VIARequisitionFragment.kitView.findViewById(R.id.et_via_kit_opened_chw).hasOnClickListeners());
     }
 
     @Test
