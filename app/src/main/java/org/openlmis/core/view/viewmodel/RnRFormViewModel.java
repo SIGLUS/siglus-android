@@ -45,10 +45,9 @@ public class RnRFormViewModel {
     public static final int TYPE_MISSED_PERIOD = 90;
 
     int type;
-    String syncedDate;
-    String period;
-    DateTime periodEndMonth;
+    String syncedTime;
     String title;
+    DateTime periodEndMonth;
     String name;
     long id;
     String syncServerErrorMessage;
@@ -62,11 +61,11 @@ public class RnRFormViewModel {
         this.form = form;
         Date submittedTime = form.getSubmittedTime();
         if (submittedTime != null) {
-            this.syncedDate = DateUtil.formatDate(submittedTime);
+            this.syncedTime = DateUtil.formatDate(submittedTime);
         } else {
-            this.syncedDate = StringUtils.EMPTY;
+            this.syncedTime = StringUtils.EMPTY;
         }
-        this.period = generatePeriod(form.getPeriodBegin(), form.getPeriodEnd());
+        this.title = generatePeriod(form.getPeriodBegin(), form.getPeriodEnd());
         this.id = form.getId();
         this.programCode = form.getProgram().getProgramCode();
         periodEndMonth = new DateTime(form.getPeriodEnd());
@@ -75,10 +74,9 @@ public class RnRFormViewModel {
     }
 
     public RnRFormViewModel(Period period, String programCode, int type) {
-        this.period = generatePeriod(period.getBegin().toDate(), period.getEnd().toDate());
+        this.title = generatePeriod(period.getBegin().toDate(), period.getEnd().toDate());
         this.type = type;
         this.programCode = programCode;
-//        this.periodEndMonth = DateUtil.getMonthAbbrByDate(period.getEnd().toDate());
         periodEndMonth = period.getEnd();
         setName(programCode);
     }
@@ -116,11 +114,24 @@ public class RnRFormViewModel {
         }
     }
 
+    public static RnRFormViewModel buildEmergency(RnRForm form) {
+        RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
+        rnRFormViewModel.form = form;
+        rnRFormViewModel.title = LMISApp.getContext().getString(R.string.label_emergency_date, DateUtil.formatDate(form.getSubmittedTime(), DateUtil.TIME_FORMAT_WITHOUT_YEAR));
+        rnRFormViewModel.syncedTime = DateUtil.formatDate(form.getSubmittedTime(), DateUtil.TIME_FORMAT_WITHOUT_YEAR);
+        rnRFormViewModel.name = LMISApp.getContext().getString(R.string.label_emergency_requisition_balance);
+        rnRFormViewModel.setType(form);
+        rnRFormViewModel.id = form.getId();
+        rnRFormViewModel.programCode = form.getProgram().getProgramCode();
+        rnRFormViewModel.periodEndMonth = new DateTime(form.getPeriodEnd());
+        return rnRFormViewModel;
+    }
+
     public static RnRFormViewModel buildMissedPeriod(Date startDate, Date endDate) {
         RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
         rnRFormViewModel.type = TYPE_MISSED_PERIOD;
         rnRFormViewModel.periodEndMonth = new DateTime(endDate);
-        rnRFormViewModel.period = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDateWithoutDay(startDate), DateUtil.formatDateWithoutDay(endDate));
+        rnRFormViewModel.title = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDateWithoutDay(startDate), DateUtil.formatDateWithoutDay(endDate));
         return rnRFormViewModel;
     }
 
@@ -129,7 +140,7 @@ public class RnRFormViewModel {
         rnRFormViewModel.setProgramCode(programCode);
         rnRFormViewModel.type = TYPE_FIRST_MISSED_PERIOD;
         rnRFormViewModel.periodEndMonth = new DateTime(endDate);
-        rnRFormViewModel.period = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDateWithoutYear(startDate), DateUtil.formatDateWithoutDay(endDate));
+        rnRFormViewModel.title = LMISApp.getContext().getString(R.string.label_period_date, DateUtil.formatDateWithoutYear(startDate), DateUtil.formatDateWithoutDay(endDate));
         return rnRFormViewModel;
     }
 }

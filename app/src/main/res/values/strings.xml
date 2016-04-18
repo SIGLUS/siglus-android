@@ -245,8 +245,10 @@
     <string name="btn_view_incomplete_requisition">Continue Working on %1$s</string>
     <string name="label_unsynced_requisition">This <![CDATA[<b>%1$s</b>]]> did not sync due to lack of internet connection.<![CDATA[<br/>]]>  The form will be submitted as soon as an internet connection is available.</string>
     <string name="label_submitted_message">%1$s successfully <![CDATA[<b>submitted</b>]]> on the  %2$s</string>
+    <string name="label_drug_count_message"><![CDATA[<b>%1$s</b>]]> drugs ordered</string>
     <string name="btn_view_requisition">View %s</string>
     <string name="label_period_date">%1$s  to  %2$s</string>
+    <string name="label_emergency_date">Emergency Requisition – %s</string>
     <string name="label_can_not_create_rnr"><![CDATA[<b>You will be able to create a requisition on the 18th of %1$s</b>]]> </string>
     <string name="label_previous_period_missing"><![CDATA[<b>Requisition Balancete cannot be created</b> until previous periods are closed.<br> Please close all previous periods]]></string>
     <string name="label_missed_period"><![CDATA[<b>Requisition is overdue and no inventory was taken.</b> A requisition will be automatically generated using the stock on hand amounts at the close of the period]]></string>

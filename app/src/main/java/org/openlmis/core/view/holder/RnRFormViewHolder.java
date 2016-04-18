@@ -26,13 +26,14 @@ public class RnRFormViewHolder extends BaseViewHolder {
     @InjectView(R.id.tx_message)
     TextView txMessage;
 
+    @InjectView(R.id.tx_drug_count)
+    TextView tvDrugCount;
+
     @InjectView(R.id.btn_view)
     Button btnView;
 
     @InjectView(R.id.iv_del)
     View ivDelete;
-
-    private RnRForm form;
 
     public RnRFormViewHolder(View inflate, RnRFormItemClickListener itemClickListener) {
         super(inflate);
@@ -40,31 +41,30 @@ public class RnRFormViewHolder extends BaseViewHolder {
     }
 
     public void populate(final RnRFormViewModel model) {
-        form = model.getForm();
         switch (model.getType()) {
             case RnRFormViewModel.TYPE_MISSED_PERIOD:
-                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_previous_period_missing)), R.drawable.ic_description, R.color.color_draft_title);
+                configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_previous_period_missing)), R.drawable.ic_description, R.color.color_draft_title);
                 break;
             case RnRFormViewModel.TYPE_FIRST_MISSED_PERIOD:
-                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_missed_period)), R.drawable.ic_description, R.color.color_draft_title);
+                configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_missed_period)), R.drawable.ic_description, R.color.color_draft_title);
                 setupButton(model, context.getString(R.string.btn_select_close_period));
                 setupButtonColor();
                 break;
             case RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY:
-                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_can_not_create_rnr, DateUtil.getMonthAbbrByDate(model.getPeriodEndMonth().toDate()))), R.drawable.ic_description, R.color.color_draft_title);
+                configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_can_not_create_rnr, DateUtil.getMonthAbbrByDate(model.getPeriodEndMonth().toDate()))), R.drawable.ic_description, R.color.color_draft_title);
                 break;
             case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD:
-                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_uncompleted_physical_inventory_message, model.getName())), R.drawable.ic_description, R.color.color_draft_title);
+                configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_uncompleted_physical_inventory_message, model.getName())), R.drawable.ic_description, R.color.color_draft_title);
                 setupButton(model, context.getString(R.string.btn_view_uncompleted_physical_inventory, model.getName()));
                 break;
             case RnRFormViewModel.TYPE_INVENTORY_DONE:
             case RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED:
-                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, model.getName())), R.drawable.ic_description, R.color.color_draft_title);
+                configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, model.getName())), R.drawable.ic_description, R.color.color_draft_title);
                 setupButton(model, context.getString(R.string.btn_view_completed_physical_inventory, model.getName()));
                 setupButtonColor();
                 break;
             case RnRFormViewModel.TYPE_CREATED_BUT_UNCOMPLETED:
-                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())), R.drawable.ic_description, R.color.color_draft_title);
+                configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())), R.drawable.ic_description, R.color.color_draft_title);
                 setupButton(model, context.getString(R.string.btn_view_incomplete_requisition, model.getName()));
                 break;
             case RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL:
@@ -72,13 +72,23 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 if (model.getSyncServerErrorMessage() != null) {
                     error = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage(model.getSyncServerErrorMessage());
                 }
-                configHolder(model.getPeriod(), Html.fromHtml(error), R.drawable.ic_error, R.color.color_red);
+                configHolder(model.getTitle(), Html.fromHtml(error), R.drawable.ic_error, R.color.color_red);
                 break;
             case RnRFormViewModel.TYPE_SYNCED_HISTORICAL:
-                configHolder(model.getPeriod(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedDate())), R.drawable.ic_done_green, R.color.color_white);
-                setupButton(model, context.getString(R.string.btn_view_requisition, model.getName()));
-                showDeleteMenu(form);
+                populateSyncedHistorical(model);
                 break;
+        }
+    }
+
+    private void populateSyncedHistorical(RnRFormViewModel model) {
+        RnRForm form = model.getForm();
+        configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedTime())), R.drawable.ic_done_green, R.color.color_white);
+        showDeleteMenu(form);
+        setupButton(model, context.getString(R.string.btn_view_requisition, model.getName()));
+
+        if(form.isEmergency()){
+            tvDrugCount.setVisibility(View.VISIBLE);
+            tvDrugCount.setText(Html.fromHtml(context.getString(R.string.label_drug_count_message, form.getRnrFormItemList().size())));
         }
     }
 

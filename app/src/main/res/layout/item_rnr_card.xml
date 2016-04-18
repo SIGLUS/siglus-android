@@ -28,6 +28,14 @@
             android:layout_height="wrap_content"
             tools:text="This is the message" />
 
+        <TextView
+            android:id="@+id/tx_drug_count"
+            style="@style/ItemRnr.MessageTextType2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:text="This is the message" />
+
         <Button
             android:id="@+id/btn_view"
             style="@style/ItemRnr.BtnView"
