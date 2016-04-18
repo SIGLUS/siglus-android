@@ -3,6 +3,7 @@ package org.openlmis.core.view.activity;
 
 import android.content.Intent;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.inject.AbstractModule;
 
@@ -93,6 +94,18 @@ public class SelectEmergencyProductsActivityTest {
     }
 
     @Test
+    public void shouldInflateCurrentDataAfterFilter() throws Exception {
+        activity.mAdapter.refreshList(getInventoryViewModels());
+
+        activity.mAdapter.filter("8");
+        SelectEmergencyProductsViewHolder viewHolder = activity.mAdapter.onCreateViewHolder(new LinearLayout(activity), 0);
+        activity.mAdapter.onBindViewHolder(viewHolder, 0);
+
+        String actualValue = ((TextView) viewHolder.itemView.findViewById(R.id.product_name)).getText().toString();
+        assertThat(actualValue, is(activity.mAdapter.getCurrentList().get(0).getStyledName().toString()));
+    }
+
+    @Test
     public void shouldGoToNextPage() throws Exception {
         ArrayList<InventoryViewModel> inventoryViewModels = getInventoryViewModels();
         activity.mAdapter.refreshList(inventoryViewModels);
@@ -112,9 +125,9 @@ public class SelectEmergencyProductsActivityTest {
     }
 
     private ArrayList<InventoryViewModel> getInventoryViewModels() {
-        Product product = new ProductBuilder().setPrimaryName("Product name").setCode("011111").build();
         ArrayList<InventoryViewModel> inventoryViewModels = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
+            Product product = new ProductBuilder().setPrimaryName("Product name").setCode(String.valueOf(i)).build();
             inventoryViewModels.add(new InventoryViewModel(product));
         }
         return inventoryViewModels;

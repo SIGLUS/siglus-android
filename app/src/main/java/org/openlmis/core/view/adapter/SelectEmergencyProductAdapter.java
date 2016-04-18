@@ -35,7 +35,7 @@ public class SelectEmergencyProductAdapter extends InventoryListAdapter<SelectEm
 
     @Override
     public void onBindViewHolder(SelectEmergencyProductsViewHolder holder, int position) {
-        holder.populate(this, queryKeyWord, data.get(position));
+        holder.populate(this, queryKeyWord, currentList.get(position));
     }
 
     public boolean isReachLimit() {
