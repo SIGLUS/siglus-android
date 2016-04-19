@@ -24,7 +24,7 @@ public class PeriodService {
     StockRepository stockRepository;
 
     public Period generateNextPeriod(String programCode, Date physicalInventoryDate) throws LMISException {
-        List<RnRForm> rnRForms = rnrFormRepository.listIncludeEmergency(programCode, RnRForm.Emergency.No);
+        List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.No, programCode);
 
         if (rnRForms.isEmpty()) {
             return generatePeriodBasedOnDefaultDates(physicalInventoryDate, programCode);
@@ -86,7 +86,7 @@ public class PeriodService {
     }
 
     public boolean hasMissedPeriod(String programCode) throws LMISException {
-        List<RnRForm> rnRForms = rnrFormRepository.listIncludeEmergency(programCode, RnRForm.Emergency.No);
+        List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.No, programCode);
 
         if (rnRForms.size() == 0 || rnRForms.get(rnRForms.size() - 1).isAuthorized()) {
             DateTime nextPeriodInScheduleEnd = generateNextPeriod(programCode, null).getEnd();

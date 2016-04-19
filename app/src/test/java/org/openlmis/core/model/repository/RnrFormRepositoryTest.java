@@ -139,7 +139,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
             rnrFormRepository.create(form);
         }
 
-        List<RnRForm> list = rnrFormRepository.listIncludeEmergency(Constants.MMIA_PROGRAM_CODE, RnRForm.Emergency.No);
+        List<RnRForm> list = rnrFormRepository.listInclude(RnRForm.Emergency.No, Constants.MMIA_PROGRAM_CODE);
         assertThat(list.size(), is(6));
     }
 
@@ -463,7 +463,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         rnrFormItem.setInventory(100L);
         rnrFormItem.setProduct(product);
         form.setRnrFormItemListWrapper(newArrayList(rnrFormItem));
-        doReturn(newArrayList(form)).when(rnrFormRepository).listIncludeEmergency(anyString(), any(RnRForm.Emergency.class));
+        doReturn(newArrayList(form)).when(rnrFormRepository).listInclude(any(RnRForm.Emergency.class), anyString());
 
         StockCard stockCard = new StockCard();
         product.setId(20);
@@ -483,7 +483,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         rnrFormRepository = spy(rnrFormRepository);
         StockCard stockCard = new StockCard();
         when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
-        doReturn(new ArrayList<>()).when(rnrFormRepository).listIncludeEmergency(anyString(), any(RnRForm.Emergency.class));
+        doReturn(new ArrayList<>()).when(rnrFormRepository).listInclude(any(RnRForm.Emergency.class), anyString());
 
         RnrFormItem rnrFormItemByPeriod = rnrFormRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
 
@@ -544,11 +544,11 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         rnrFormRepository.create(form2);
         rnrFormRepository.create(form3);
 
-        List<RnRForm> list = rnrFormRepository.listIncludeEmergency(Constants.VIA_PROGRAM_CODE, RnRForm.Emergency.No);
+        List<RnRForm> list = rnrFormRepository.listInclude(RnRForm.Emergency.No, Constants.VIA_PROGRAM_CODE);
         assertThat(list.size(), is(2));
 
 
-        List<RnRForm> listWithEmergency = rnrFormRepository.listIncludeEmergency(Constants.VIA_PROGRAM_CODE, RnRForm.Emergency.Yes);
+        List<RnRForm> listWithEmergency = rnrFormRepository.listInclude(RnRForm.Emergency.Yes, Constants.VIA_PROGRAM_CODE);
         assertThat(listWithEmergency.size(), is(3));
     }
 
