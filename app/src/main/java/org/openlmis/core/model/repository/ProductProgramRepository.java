@@ -42,6 +42,16 @@ public class ProductProgramRepository {
         });
     }
 
+    public ProductProgram queryByCode(final String productCode, final List<String> programCodes) throws LMISException {
+        return dbUtil.withDao(ProductProgram.class, new DbUtil.Operation<ProductProgram, ProductProgram>() {
+
+            @Override
+            public ProductProgram operate(Dao<ProductProgram, String> dao) throws SQLException, LMISException {
+                return dao.queryBuilder().where().in("programCode", programCodes).and().eq("productCode", productCode).queryForFirst();
+            }
+        });
+    }
+
     public void batchSave(final List<ProductProgram> productPrograms) {
         try {
             for (ProductProgram productProgram : productPrograms) {

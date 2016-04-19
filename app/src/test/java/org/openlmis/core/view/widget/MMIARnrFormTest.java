@@ -20,6 +20,10 @@ import java.util.List;
 import static junit.framework.TestCase.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.openlmis.core.model.Product.MEDICINE_TYPE_ADULT;
+import static org.openlmis.core.model.Product.MEDICINE_TYPE_CHILDREN;
+import static org.openlmis.core.model.Product.MEDICINE_TYPE_OTHER;
+import static org.openlmis.core.model.Product.MEDICINE_TYPE_SOLUTION;
 
 @RunWith(LMISTestRunner.class)
 public class MMIARnrFormTest {
@@ -34,13 +38,14 @@ public class MMIARnrFormTest {
 
     @Test
     public void shouldSortByType() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_mmia_list_from_web, false);
         ArrayList<RnrFormItem> list = new ArrayList<>();
-        // Product.MEDICINE_TYPE_OTHER
-        list.add(getRnrFormItem(1L, "product", "08S17"));
-        // Product.MEDICINE_TYPE_BABY
-        list.add(getRnrFormItem(2L, "product2", "08S32Z"));
+        // Product.MEDICINE_TYPE_SOLUTION
+        list.add(getRnrFormItem(1L, "product", "08S17", MEDICINE_TYPE_OTHER));
+        // Product.MEDICINE_TYPE_CHILDREN
+        list.add(getRnrFormItem(2L, "product2", "08S32Z", MEDICINE_TYPE_OTHER));
         // Product.MEDICINE_TYPE_ADULT
-        list.add(getRnrFormItem(3L, "product3", "08S39Z"));
+        list.add(getRnrFormItem(3L, "product3", "08S39Z", MEDICINE_TYPE_OTHER));
 
         mmiaRnrForm.initView(list);
 
@@ -64,12 +69,42 @@ public class MMIARnrFormTest {
     }
 
     @Test
+    public void shouldSortByProductCodeAndCategory() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_mmia_list_from_web, true);
+        ArrayList<RnrFormItem> list = new ArrayList<>();
+        // Product.MEDICINE_TYPE_SOLUTION
+        list.add(getRnrFormItem(1L, "product", "08S17", MEDICINE_TYPE_SOLUTION));
+        // Product.MEDICINE_TYPE_CHILDREN
+        list.add(getRnrFormItem(2L, "product2", "08S32Z", MEDICINE_TYPE_CHILDREN));
+        // Product.MEDICINE_TYPE_ADULT
+        list.add(getRnrFormItem(3L, "product3", "08S39Z", MEDICINE_TYPE_ADULT));
+        list.add(getRnrFormItem(4L, "product4", "08S22Z", MEDICINE_TYPE_ADULT));
+
+        mmiaRnrForm.initView(list);
+
+        ViewGroup leftViewGroup = (ViewGroup) mmiaRnrForm.findViewById(R.id.rnr_from_list_product_name);
+
+        String text = ((TextView) leftViewGroup.getChildAt(0)).getText().toString();
+        assertThat(text, is(list.get(3).getProduct().getPrimaryName()));
+
+        String text1 = ((TextView) leftViewGroup.getChildAt(1)).getText().toString();
+        assertThat(text1, is(list.get(2).getProduct().getPrimaryName()));
+
+        String text2 = ((TextView) leftViewGroup.getChildAt(4)).getText().toString();
+        assertThat(text2, is(list.get(1).getProduct().getPrimaryName()));
+
+        String text3 = ((TextView) leftViewGroup.getChildAt(6)).getText().toString();
+        assertThat(text3, is(list.get(0).getProduct().getPrimaryName()));
+    }
+
+    @Test
     public void shouldIncludeTheNewMMIAProductsWhichIsNotInList() throws Exception {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, true);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_mmia_list_from_web, false);
         List<RnrFormItem> rnrFormItems = Arrays.asList(
-                getRnrFormItem(1L, "product1", "08S17"),
-                getRnrFormItem(2L, "produc2", "01A01"),
-                getRnrFormItem(3L, "produc3", "08S20"));
+                getRnrFormItem(1L, "product1", "08S17", MEDICINE_TYPE_OTHER),
+                getRnrFormItem(2L, "produc2", "01A01", MEDICINE_TYPE_OTHER),
+                getRnrFormItem(3L, "produc3", "08S20", MEDICINE_TYPE_OTHER));
 
         mmiaRnrForm.initView(rnrFormItems);
         ViewGroup leftViewGroup = (ViewGroup) mmiaRnrForm.findViewById(R.id.rnr_from_list_product_name);
@@ -77,13 +112,14 @@ public class MMIARnrFormTest {
         assertEquals(7, leftViewGroup.getChildCount());
     }
 
-    private RnrFormItem getRnrFormItem(long id, String primaryName, String code) {
+    private RnrFormItem getRnrFormItem(long id, String primaryName, String code, String category) {
         RnrFormItem item = new RnrFormItem();
         Product product = new Product();
         product.setId(id);
         product.setPrimaryName(primaryName);
         product.setCode(code);
         item.setProduct(product);
+        item.setCategory(category);
         return item;
     }
 }

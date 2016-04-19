@@ -109,4 +109,22 @@ public class ProductProgramRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(productIds.size(), is(1));
         assertThat(productIds.get(0), is(100L));
     }
+
+
+    @Test
+    public void shouldQueryByProgramCodesAndProductCode() throws Exception {
+        List<ProductProgram> productPrograms = Arrays.asList(
+                new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P1").build(),
+                new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P2").build(),
+                new ProductProgramBuilder().setProgramCode("PR2").setProductCode("P1").build()
+        );
+
+        repository.batchSave(productPrograms);
+        List<String> programCodes = newArrayList("PR1", "PR2");
+
+
+        ProductProgram productProgram = repository.queryByCode("P1", programCodes);
+        assertEquals(productProgram.getProductCode(), "P1");
+        assertEquals(productProgram.getProgramCode(), "PR1");
+    }
 }

@@ -34,6 +34,9 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ViewUtil;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.base.Predicate;
+import org.roboguice.shaded.goole.common.collect.Ordering;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -42,6 +45,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import lombok.Getter;
+
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class MMIARnrForm extends LinearLayout {
     private ViewGroup leftViewGroup;
@@ -79,7 +84,11 @@ public class MMIARnrForm extends LinearLayout {
 
     public void initView(List<RnrFormItem> list) {
         addHeaderView();
-        addItemView(list);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_mmia_list_from_web)) {
+            addItemView(list);
+        } else {
+            addItemViewHardCode(list);
+        }
     }
 
     private void addHeaderView() {
@@ -102,26 +111,64 @@ public class MMIARnrForm extends LinearLayout {
     }
 
     private void addItemView(List<RnrFormItem> rnrFormItemList) {
+        List<RnrFormItem> sortedRnrFormItems = Ordering.natural().onResultOf(new Function<RnrFormItem, String>() {
+            @Override
+            public String apply(RnrFormItem rnrFormItem) {
+                return rnrFormItem.getProduct().getCode();
+            }
+        }).immutableSortedCopy(rnrFormItemList);
+
+        // Adult View
+        addViewByMedicineType(filterRnrFormItem(sortedRnrFormItems, Product.MEDICINE_TYPE_ADULT));
+        addDividerView(Product.MEDICINE_TYPE_ADULT);
+        addDividerView(Product.MEDICINE_TYPE_ADULT);
+
+        // Children View
+        addViewByMedicineType(filterRnrFormItem(sortedRnrFormItems, Product.MEDICINE_TYPE_CHILDREN));
+        addDividerView(Product.MEDICINE_TYPE_CHILDREN);
+
+        // Solution View
+        addViewByMedicineType(filterRnrFormItem(sortedRnrFormItems, Product.MEDICINE_TYPE_SOLUTION));
+        addDividerView(Product.MEDICINE_TYPE_SOLUTION);
+    }
+
+
+    private List<RnrFormItem> filterRnrFormItem(List<RnrFormItem> rnrFormItemList, final String category) {
+        return from(rnrFormItemList).filter(new Predicate<RnrFormItem>() {
+            @Override
+            public boolean apply(RnrFormItem rnrFormItem) {
+                return category.equals(rnrFormItem.getCategory());
+            }
+        }).toList();
+    }
+
+    private void addViewByMedicineType(List<RnrFormItem> categoriedFormItems) {
+        for (RnrFormItem item : categoriedFormItems) {
+            addRnrFormItemView(item.getCategory(), item);
+        }
+    }
+
+    private void addItemViewHardCode(List<RnrFormItem> rnrFormItemList) {
         initRnrFormItemConfigList();
 
-        addViewByMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_ADULT);
+        addViewByMedicineTypeHardCode(rnrFormItemList, Product.MEDICINE_TYPE_ADULT);
         addDividerView(Product.MEDICINE_TYPE_ADULT);
         addDividerView(Product.MEDICINE_TYPE_ADULT);
 
-        addViewByMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_BABY);
-        addDividerView(Product.MEDICINE_TYPE_BABY);
+        addViewByMedicineTypeHardCode(rnrFormItemList, Product.MEDICINE_TYPE_CHILDREN);
+        addDividerView(Product.MEDICINE_TYPE_CHILDREN);
 
-        addViewByMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_OTHER);
+        addViewByMedicineTypeHardCode(rnrFormItemList, Product.MEDICINE_TYPE_SOLUTION);
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deactivate_program_product)) {
             addViewForOtherMedicine(rnrFormItemList);
         }
-        addDividerView(Product.MEDICINE_TYPE_OTHER);
+        addDividerView(Product.MEDICINE_TYPE_SOLUTION);
     }
 
-    private void addViewByMedicineType(List<RnrFormItem> dataList, String medicineTypeName) {
+    private void addViewByMedicineTypeHardCode(List<RnrFormItem> rnrFormItems, String medicineTypeName) {
         List<String> fnms = rnrFormItemConfigList.get(medicineTypeName);
         for (String fnm : fnms) {
-            for (RnrFormItem item : dataList) {
+            for (RnrFormItem item : rnrFormItems) {
                 if (fnm.equals(item.getProduct().getCode())) {
                     addRnrFormItemView(medicineTypeName, item);
                 }
@@ -137,12 +184,12 @@ public class MMIARnrForm extends LinearLayout {
 
     private void addViewForOtherMedicine(List<RnrFormItem> dataList) {
         List<String> configuredMedicineCodes = rnrFormItemConfigList.get(Product.MEDICINE_TYPE_ADULT);
-        configuredMedicineCodes.addAll(rnrFormItemConfigList.get(Product.MEDICINE_TYPE_BABY));
-        configuredMedicineCodes.addAll(rnrFormItemConfigList.get(Product.MEDICINE_TYPE_OTHER));
+        configuredMedicineCodes.addAll(rnrFormItemConfigList.get(Product.MEDICINE_TYPE_CHILDREN));
+        configuredMedicineCodes.addAll(rnrFormItemConfigList.get(Product.MEDICINE_TYPE_SOLUTION));
 
         for (RnrFormItem item: dataList) {
             if (!configuredMedicineCodes.contains(item.getProduct().getCode())) {
-                addRnrFormItemView(Product.MEDICINE_TYPE_OTHER, item);
+                addRnrFormItemView(Product.MEDICINE_TYPE_SOLUTION, item);
             }
         }
     }
@@ -166,8 +213,8 @@ public class MMIARnrForm extends LinearLayout {
 
     public void initRnrFormItemConfigList() {
         rnrFormItemConfigList.put(Product.MEDICINE_TYPE_ADULT, new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.medicine_adult))));
-        rnrFormItemConfigList.put(Product.MEDICINE_TYPE_BABY, new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.medicine_baby))));
-        rnrFormItemConfigList.put(Product.MEDICINE_TYPE_OTHER, new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.medicine_other))));
+        rnrFormItemConfigList.put(Product.MEDICINE_TYPE_CHILDREN, new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.medicine_baby))));
+        rnrFormItemConfigList.put(Product.MEDICINE_TYPE_SOLUTION, new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.medicine_other))));
     }
 
     public void setItemSize(final View leftView, final ViewGroup rightView) {
@@ -219,10 +266,10 @@ public class MMIARnrForm extends LinearLayout {
             case Product.MEDICINE_TYPE_ADULT:
                 view.setBackgroundResource(R.color.color_green_light);
                 break;
-            case Product.MEDICINE_TYPE_BABY:
+            case Product.MEDICINE_TYPE_CHILDREN:
                 view.setBackgroundResource(R.color.color_regime_baby);
                 break;
-            case Product.MEDICINE_TYPE_OTHER:
+            case Product.MEDICINE_TYPE_SOLUTION:
                 view.setBackgroundResource(R.color.color_regime_other);
                 break;
             default:

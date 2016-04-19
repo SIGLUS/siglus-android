@@ -83,4 +83,6 @@ public class RnrFormItem extends BaseModel{
     @DatabaseField
     private long calculatedOrderQuantity;
 
+    private String category;
+
 }

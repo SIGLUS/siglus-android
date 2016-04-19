@@ -34,6 +34,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
@@ -56,6 +57,7 @@ import roboguice.RoboGuice;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -70,7 +72,6 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     MMIARepository mmiaRepository;
     StockRepository mockStockRepository;
     ProgramRepository mockProgramRepository;
-    RnrFormRepository mockRnrFormRepository;
     ProductProgramRepository productProgramRepository;
     PeriodService mockPeriodService;
     private Program program;
@@ -79,7 +80,6 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     public void setup() throws LMISException {
         mockStockRepository = mock(StockRepository.class);
         mockProgramRepository = mock(ProgramRepository.class);
-        mockRnrFormRepository = mock(RnrFormRepository.class);
         mockProductRepository = mock(ProductRepository.class);
         mockPeriodService = mock(PeriodService.class);
         productProgramRepository = mock(ProductProgramRepository.class);
@@ -117,6 +117,11 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         when(mockPeriodService.generateNextPeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime("2016-12-27"), new DateTime("2017-01-20")));
         when(mockStockRepository.queryStockItemsByPeriodDates(any(StockCard.class), any(Date.class), any(Date.class)))
                 .thenReturn(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
+
+        ProductProgram productProgram = new ProductProgram();
+        productProgram.setCategory("Adult");
+        when(productProgramRepository.queryByCode(anyString(), anyList())).thenReturn(productProgram);
+        when(mockProgramRepository.queryProgramCodesByProgramCodeOrParentCode(anyString())).thenReturn(newArrayList("MMIA"));
 
         RnRForm form = mmiaRepository.initNormalRnrForm(null);
         assertThat(form.getRnrFormItemList().size(), is(24));
@@ -180,14 +185,6 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     public void shouldInflateMMIAProducts() throws Exception {
         when(mockPeriodService.generateNextPeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime("2016-12-27"), new DateTime("2017-01-20")));
 
-        Program program = new Program();
-        program.setProgramCode(Constants.MMIA_PROGRAM_CODE);
-
-        RnRForm rnRForm = new RnRForm();
-        rnRForm.setProgram(program);
-
-        when(mockRnrFormRepository.initNormalRnrForm(null)).thenReturn(rnRForm);
-
         RnRForm rnRFormTest = mmiaRepository.initNormalRnrForm(null);
 
         assertThat(rnRFormTest.getRnrFormItemListWrapper().size(), is(24));
@@ -248,6 +245,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldFillAllItemsForMMIAWhenMultipleProgramsToggleOnAndDeactivateProgramToggleOn() throws Exception {
         //Given
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_mmia_list_from_web, false);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, true);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, true);
 
@@ -278,6 +276,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldFillAllItemsForMMIAWhenMultipleProgramsToggleOnAndDeactivateProgramToggleOff () throws Exception {
         //Given
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_mmia_list_from_web, false);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, true);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, false);
 
@@ -304,6 +303,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldFillAllItemsForMMIAWhenMultipleProgramsToggleOffAndDeactivateProgramToggleOn () throws Exception {
         //Given
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_mmia_list_from_web, false);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, false);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, true);
 
@@ -331,6 +331,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldFillAllItemsForMMIAWhenMultipleProgramsToggleOffAndDeactivateProgramToggleOff () throws Exception {
         //Given
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_mmia_list_from_web, false);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, false);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, false);
 
@@ -359,7 +360,6 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         @Override
         protected void configure() {
             bind(ProductRepository.class).toInstance(mockProductRepository);
-            bind(RnrFormRepository.class).toInstance(mockRnrFormRepository);
             bind(StockRepository.class).toInstance(mockStockRepository);
             bind(ProgramRepository.class).toInstance(mockProgramRepository);
             bind(PeriodService.class).toInstance(mockPeriodService);

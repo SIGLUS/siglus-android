@@ -32,6 +32,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
@@ -80,6 +81,8 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     private ProgramRepository mockProgramRepository;
 
+    private ProductProgramRepository mockProductProgramRepository;
+
     private PeriodService mockPeriodService;
 
     @Before
@@ -88,6 +91,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         mockStockRepository = mock(StockRepository.class);
         mockRnrFormItemRepository = mock(RnrFormItemRepository.class);
         mockPeriodService = mock(PeriodService.class);
+        mockProductProgramRepository = mock(ProductProgramRepository.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
@@ -283,6 +287,8 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldGenerateRnrFormItemWithCorrectAttributes() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_mmia_list_from_web, true);
+
         int stockExistence = 100;
         int issueQuantity = 10;
         int receiveQuantity = 20;
@@ -360,6 +366,11 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         when(mockStockRepository.queryFirstStockMovementItem(any(StockCard.class))).thenReturn(stockMovementItem);
         when(mockStockRepository.queryStockItemsByPeriodDates(stockCard, form.getPeriodBegin(), form.getPeriodEnd())).thenReturn(stockMovementItems);
 
+        ProductProgram productProgram = new ProductProgram();
+        productProgram.setCategory("Adult");
+        when(mockProductProgramRepository.queryByCode(anyString(), anyList())).thenReturn(productProgram);
+        when(mockProgramRepository.queryProgramCodesByProgramCodeOrParentCode(anyString())).thenReturn(new ArrayList<String>());
+
         List<RnrFormItem> rnrFormItemList = rnrFormRepository.generateRnrFormItems(form, rnrFormRepository.getStockCardsBeforePeriodEnd(form));
 
         RnrFormItem rnrFormItem = rnrFormItemList.get(0);
@@ -369,6 +380,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         expectOrderQuantity = expectOrderQuantity > 0 ? expectOrderQuantity : 0;
 
         assertThat(rnrFormItem.getProduct(), is(product));
+        assertThat(rnrFormItem.getCategory(), is("Adult"));
         assertEquals(stockExistence, rnrFormItem.getInitialAmount());
         assertEquals(issueQuantity, rnrFormItem.getIssued());
         assertEquals(receiveQuantity, rnrFormItem.getReceived());
@@ -547,6 +559,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
             bind(StockRepository.class).toInstance(mockStockRepository);
             bind(RnrFormItemRepository.class).toInstance(mockRnrFormItemRepository);
             bind(PeriodService.class).toInstance(mockPeriodService);
+            bind(ProductProgramRepository.class).toInstance(mockProductProgramRepository);
         }
     }
 }

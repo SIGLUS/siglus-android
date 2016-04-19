@@ -122,7 +122,11 @@ public class MMIARepository extends RnrFormRepository {
     @Override
     public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards) throws LMISException {
         List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form, stockCards);
-        return fillAllMMIAProducts(form, rnrFormItems);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_mmia_list_from_web)) {
+            return rnrFormItems;
+        } else {
+            return fillAllMMIAProducts(form, rnrFormItems);
+        }
     }
 
     protected ArrayList<RnrFormItem> fillAllMMIAProducts(RnRForm form, List<RnrFormItem> rnrFormItems) throws LMISException {

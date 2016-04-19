@@ -208,21 +208,26 @@ public class RnrFormRepository {
         if (program == null) {
             throw new LMISException("Program cannot be null !");
         }
-        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
+        RnRForm rnRForm = dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
             @Override
             public RnRForm operate(Dao<RnRForm, String> dao) throws SQLException {
                 return dao.queryBuilder().where().eq("program_id", program.getId()).and().ne("status", RnRForm.STATUS.AUTHORIZED).queryForFirst();
             }
         });
+        assignCategoryForRnrItems(rnRForm);
+        return rnRForm;
     }
 
     public RnRForm queryRnRForm(final long id) throws LMISException {
-        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
+        RnRForm rnRForm = dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
             @Override
             public RnRForm operate(Dao<RnRForm, String> dao) throws SQLException {
                 return dao.queryBuilder().where().eq("id", id).queryForFirst();
             }
         });
+        assignCategoryForRnrItems(rnRForm);
+
+        return rnRForm;
     }
 
     protected void deleteDeactivatedAndUnsupportedProductItems(List<RnRForm> rnRForms) throws LMISException {
@@ -243,10 +248,14 @@ public class RnrFormRepository {
 
     public List<RnrFormItem> generateRnrFormItems(final RnRForm form, List<StockCard> stockCards) throws LMISException {
         List<RnrFormItem> rnrFormItems = new ArrayList<>();
+        List<String> programCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode(form.getProgram().getProgramCode());
         for (StockCard stockCard : stockCards) {
             RnrFormItem rnrFormItem = createRnrFormItemByPeriod(stockCard, form.getPeriodBegin(), form.getPeriodEnd());
             rnrFormItem.setForm(form);
             rnrFormItems.add(rnrFormItem);
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_mmia_list_from_web)) {
+                rnrFormItem.setCategory(productProgramRepository.queryByCode(rnrFormItem.getProduct().getCode(), programCodes).getCategory());
+            }
         }
         return rnrFormItems;
     }
@@ -363,7 +372,27 @@ public class RnrFormRepository {
         } catch (SQLException e) {
             throw new LMISException(e);
         }
+
+        assignCategoryForRnrItems(rnrForm);
+
         return rnrForm;
+    }
+
+    private void assignCategoryForRnrItems(RnRForm rnrForm) throws LMISException {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_mmia_list_from_web)) {
+            return;
+        }
+
+        if (rnrForm == null || rnrForm.getRnrFormItemListWrapper() == null) {
+            return;
+        }
+        List<String> programCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode(programCode);
+
+        for (RnrFormItem item : rnrForm.getRnrFormItemListWrapper()) {
+            if (item.getProduct() != null) {
+                item.setCategory(productProgramRepository.queryByCode(item.getProduct().getCode(), programCodes).getCategory());
+            }
+        }
     }
 
     private void deleteBaseInfoItems(final List<BaseInfoItem> baseInfoItemListWrapper) throws LMISException {
