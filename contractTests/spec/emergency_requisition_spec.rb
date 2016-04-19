@@ -58,7 +58,7 @@ describe "submit emergency requisition to web server" do
 
     expect(requisition_id).not_to be_nil
 
-    via_responseDuplicate = RestClient.post "http://#{WEB_DEV_URI}/rest-api/requisitions",
+    via_responseDuplicate = RestClient.post "http://#{WEB_DEV_URI}/rest-api/sdp-requisitions",
           via_requisition.to_json, 'Content-Type' => 'application/json',
           'Accept' => 'application/json',
           'Authorization' => http_basic_auth('mystique', 'password1')
