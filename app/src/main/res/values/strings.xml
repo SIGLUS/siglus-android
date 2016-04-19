@@ -39,7 +39,7 @@
     <string name="label_dummy_product">Paracetamol</string>
     <string name="label_dummy_unit">500mg</string>
     <string name="msg_inventory_check_failed">Quantity cannot be left blank!</string>
-    <string name="msg_invalid_date">Cannot select past or current date</string>
+    <string name="msg_invalid_date">Cannot select past month</string>
     <string name="btn_done">Done</string>
     <string name="msg_remove_expire_date">Are you sure you want to remove this expiry date?</string>
     <string name="msg_save_before_exit">Please save initial inventory before exiting the app.</string>
