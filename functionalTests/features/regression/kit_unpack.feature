@@ -57,6 +57,8 @@ Feature: Unpack Kit
     Then I wait for "02A03" to appear
     And I should see "Unpacking"
 
+    And I enter document number for unpack kit
+
     And I enter quantity for all products in kit
     #signature
     And I wait for "Please enter your initials to confirm the amounts entered" to appear

@@ -47,3 +47,11 @@ Then(/^I should see kit receive number and open number is "(.*?)"$/) do |number|
         fail(msg="quantity invalid")
     end
 end
+
+And(/^I enter document number for unpack kit$/) do
+    h = query("android.widget.EditText id:'et_document_no'").first
+    clear_text_in(h)
+    touch(h)
+    keyboard_enter_text('1111')
+    hide_soft_keyboard
+end
