@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.network.SyncErrorsMap;
@@ -89,9 +90,9 @@ public class RnRFormViewHolder extends BaseViewHolder {
         showDeleteMenu(form);
         setupButton(model, context.getString(R.string.btn_view_requisition, model.getName()));
 
-        if(form.isEmergency()){
+        if (form.isEmergency()) {
             showDrugCount(form.getRnrFormItemList().size());
-        }else {
+        } else {
             hideDrugCount();
         }
     }
@@ -108,7 +109,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
         } else {
             tvDrugCount = (TextView) vsDrugCount.inflate();
         }
-        tvDrugCount.setText(Html.fromHtml(context.getString(R.string.label_drug_count_message, size)));
+        tvDrugCount.setText(Html.fromHtml(LMISApp.getContext().getResources().getQuantityString(R.plurals.label_drug_count_message, size, size)));
     }
 
     private void setupButtonColor() {

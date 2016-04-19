@@ -245,7 +245,10 @@
     <string name="btn_view_incomplete_requisition">Continue Working on %1$s</string>
     <string name="label_unsynced_requisition">This <![CDATA[<b>%1$s</b>]]> did not sync due to lack of internet connection.<![CDATA[<br/>]]>  The form will be submitted as soon as an internet connection is available.</string>
     <string name="label_submitted_message">%1$s successfully <![CDATA[<b>submitted</b>]]> on the  %2$s</string>
-    <string name="label_drug_count_message"><![CDATA[<b>%1$s</b>]]> drugs ordered</string>
+    <plurals name="label_drug_count_message">
+        <item quantity="one"><![CDATA[<b>%1$s</b>]]> drug ordered</item>
+        <item quantity="other"><![CDATA[<b>%1$s</b>]]> drugs ordered</item>
+    </plurals>
     <string name="btn_view_requisition">View %s</string>
     <string name="label_period_date">%1$s  to  %2$s</string>
     <string name="label_emergency_date">Emergency Requisition – %s</string>

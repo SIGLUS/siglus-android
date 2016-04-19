@@ -14,6 +14,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
@@ -135,17 +136,22 @@ public class RnRFormViewHolderTest {
         form.setSubmittedTime(DateUtil.parseString("2016-01-22 11:33:44", DateUtil.DATE_TIME_FORMAT));
         form.setEmergency(true);
         DbUtil.initialiseDao(RnRForm.class).assignEmptyForeignCollection(form, "rnrFormItemList");
+        form.getRnrFormItemList().add(new RnrFormItem());
         RnRFormViewModel viewModel = RnRFormViewModel.buildEmergencyViewModel(form);
         viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_SYNCED_HISTORICAL);
 
         viewHolder.populate(viewModel);
 
         assertThat(viewHolder.tvDrugCount.getVisibility(), is(View.VISIBLE));
-        assertThat(viewHolder.tvDrugCount.getText().toString(), is("0 drugs ordered"));
+        assertThat(viewHolder.tvDrugCount.getText().toString(), is("1 drug ordered"));
         assertTrue(viewHolder.txPeriod.getText().toString().equals("Emergency Requisition – 22 Jan 11:33"));
         assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_submitted_message, "Emergency requisition balancete", viewModel.getSyncedTime())));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_requisition, "Emergency requisition balancete")));
         assertThat(viewHolder.ivDelete.getVisibility(), is(View.VISIBLE));
+
+        form.getRnrFormItemList().add(new RnrFormItem());
+        viewHolder.populate(viewModel);
+        assertThat(viewHolder.tvDrugCount.getText().toString(), is("2 drugs ordered"));
     }
 
     @Test
