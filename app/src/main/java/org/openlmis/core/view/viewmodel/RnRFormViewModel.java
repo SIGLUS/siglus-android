@@ -54,23 +54,7 @@ public class RnRFormViewModel {
     private RnRForm form;
     private String programCode;
 
-    public RnRFormViewModel() {
-    }
-
-    public RnRFormViewModel(RnRForm form) {
-        this.form = form;
-        Date submittedTime = form.getSubmittedTime();
-        if (submittedTime != null) {
-            this.syncedTime = DateUtil.formatDate(submittedTime);
-        } else {
-            this.syncedTime = StringUtils.EMPTY;
-        }
-        this.title = generatePeriod(form.getPeriodBegin(), form.getPeriodEnd());
-        this.id = form.getId();
-        this.programCode = form.getProgram().getProgramCode();
-        periodEndMonth = new DateTime(form.getPeriodEnd());
-        setName(programCode);
-        setType(form);
+    private RnRFormViewModel() {
     }
 
     public RnRFormViewModel(Period period, String programCode, int type) {
@@ -114,16 +98,31 @@ public class RnRFormViewModel {
         }
     }
 
-    public static RnRFormViewModel buildEmergency(RnRForm form) {
+    public static RnRFormViewModel buildNormalRnrViewModel(RnRForm form) {
         RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
-        rnRFormViewModel.form = form;
+        rnRFormViewModel.setViewModleFormField(form);
+
+        rnRFormViewModel.syncedTime = form.getSubmittedTime() == null ? StringUtils.EMPTY : DateUtil.formatDate(form.getSubmittedTime());
+        rnRFormViewModel.title = rnRFormViewModel.generatePeriod(form.getPeriodBegin(), form.getPeriodEnd());
+        rnRFormViewModel.setName(rnRFormViewModel.programCode);
+        rnRFormViewModel.setType(form);
+        return rnRFormViewModel;
+    }
+
+    private void setViewModleFormField(RnRForm form) {
+        this.form = form;
+        this.id = form.getId();
+        this.programCode = form.getProgram().getProgramCode();
+        this.periodEndMonth = new DateTime(form.getPeriodEnd());
+    }
+
+    public static RnRFormViewModel buildEmergencyViewModel(RnRForm form) {
+        RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
+        rnRFormViewModel.setViewModleFormField(form);
         rnRFormViewModel.title = LMISApp.getContext().getString(R.string.label_emergency_date, DateUtil.formatDate(form.getSubmittedTime(), DateUtil.TIME_FORMAT_WITHOUT_YEAR));
         rnRFormViewModel.syncedTime = DateUtil.formatDate(form.getSubmittedTime(), DateUtil.TIME_FORMAT_WITHOUT_YEAR);
         rnRFormViewModel.name = LMISApp.getContext().getString(R.string.label_emergency_requisition_balance);
         rnRFormViewModel.setType(form);
-        rnRFormViewModel.id = form.getId();
-        rnRFormViewModel.programCode = form.getProgram().getProgramCode();
-        rnRFormViewModel.periodEndMonth = new DateTime(form.getPeriodEnd());
         return rnRFormViewModel;
     }
 

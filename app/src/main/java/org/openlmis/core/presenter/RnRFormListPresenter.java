@@ -167,7 +167,7 @@ public class RnRFormListPresenter extends Presenter {
         viewModels.addAll(FluentIterable.from(rnRForms).transform(new Function<RnRForm, RnRFormViewModel>() {
             @Override
             public RnRFormViewModel apply(RnRForm form) {
-                return form.isEmergency() ? RnRFormViewModel.buildEmergency(form) : new RnRFormViewModel(form);
+                return form.isEmergency() ? RnRFormViewModel.buildEmergencyViewModel(form) : RnRFormViewModel.buildNormalRnrViewModel(form);
             }
         }).toList());
     }

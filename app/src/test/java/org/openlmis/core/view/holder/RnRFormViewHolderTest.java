@@ -53,7 +53,7 @@ public class RnRFormViewHolderTest {
     public void shouldShowDraftStyle() {
         RnRForm form = RnRForm.init(program, DateUtil.today());
         form.setStatus(RnRForm.STATUS.DRAFT);
-        RnRFormViewModel viewModel = new RnRFormViewModel(form);
+        RnRFormViewModel viewModel = RnRFormViewModel.buildNormalRnrViewModel(form);
 
         viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_CREATED_BUT_UNCOMPLETED);
 
@@ -71,7 +71,7 @@ public class RnRFormViewHolderTest {
         RnRForm form = RnRForm.init(program, DateUtil.today());
         form.setStatus(RnRForm.STATUS.AUTHORIZED);
         form.setSynced(false);
-        RnRFormViewModel viewModel = new RnRFormViewModel(form);
+        RnRFormViewModel viewModel = RnRFormViewModel.buildNormalRnrViewModel(form);
 
         viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL);
         viewHolder.populate(viewModel);
@@ -114,7 +114,7 @@ public class RnRFormViewHolderTest {
         RnRForm form = RnRForm.init(program, DateUtil.today());
         form.setStatus(RnRForm.STATUS.AUTHORIZED);
         form.setSynced(true);
-        RnRFormViewModel viewModel = new RnRFormViewModel(form);
+        RnRFormViewModel viewModel = RnRFormViewModel.buildNormalRnrViewModel(form);
         viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_SYNCED_HISTORICAL);
 
         viewHolder.populate(viewModel);
@@ -134,7 +134,7 @@ public class RnRFormViewHolderTest {
         form.setSubmittedTime(DateUtil.parseString("2016-01-22 11:33:44", DateUtil.DATE_TIME_FORMAT));
         form.setEmergency(true);
         DbUtil.initialiseDao(RnRForm.class).assignEmptyForeignCollection(form, "rnrFormItemList");
-        RnRFormViewModel viewModel = RnRFormViewModel.buildEmergency(form);
+        RnRFormViewModel viewModel = RnRFormViewModel.buildEmergencyViewModel(form);
         viewHolder = getViewHolderByType(RnRFormViewModel.TYPE_SYNCED_HISTORICAL);
 
         viewHolder.populate(viewModel);

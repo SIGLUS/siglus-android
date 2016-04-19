@@ -30,7 +30,7 @@ public class RnRFormListAdapterTest {
         form.setPeriodBegin(new Date());
         form.setPeriodEnd(new Date());
 
-        List<RnRFormViewModel> models = newArrayList(new RnRFormViewModel(form), new RnRFormViewModel(form));
+        List<RnRFormViewModel> models = newArrayList(RnRFormViewModel.buildNormalRnrViewModel(form), RnRFormViewModel.buildNormalRnrViewModel(form));
 
         rnRFormListAdapter = new RnRFormListAdapter(RuntimeEnvironment.application, models, null);
     }
@@ -39,7 +39,7 @@ public class RnRFormListAdapterTest {
     public void shouldRefreshListWhenMethodCalled() {
         assertThat(rnRFormListAdapter.getItemCount()).isEqualTo(2);
 
-        rnRFormListAdapter.refreshList(newArrayList(new RnRFormViewModel(form)));
+        rnRFormListAdapter.refreshList(newArrayList(RnRFormViewModel.buildNormalRnrViewModel(form)));
 
         assertThat(rnRFormListAdapter.getItemCount()).isEqualTo(1);
     }

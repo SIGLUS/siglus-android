@@ -25,7 +25,6 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.fakes.RoboMenuItem;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowIntent;
@@ -114,7 +113,7 @@ public class RnRFormListActivityTest {
         form.setPeriodBegin(new Date());
         form.setPeriodEnd(new Date());
 
-        rnRFormListActivity.getRnRFormSubscriber().onNext(newArrayList(new RnRFormViewModel(form), new RnRFormViewModel(form)));
+        rnRFormListActivity.getRnRFormSubscriber().onNext(newArrayList(RnRFormViewModel.buildNormalRnrViewModel(form), RnRFormViewModel.buildNormalRnrViewModel(form)));
 
         assertThat(rnRFormListActivity.listView.getAdapter().getItemCount()).isEqualTo(2);
     }
