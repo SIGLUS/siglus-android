@@ -114,7 +114,7 @@ public class StockCardListFragmentTest {
         StockCardListAdapter adapter = new StockCardListAdapter(inventoryViewModels, null);
         adapter.sortByName(true);
 
-        List<InventoryViewModel> sortedList = adapter.getCurrentList();
+        List<InventoryViewModel> sortedList = adapter.getFilteredList();
         assertThat(sortedList.get(0).getProduct().getPrimaryName(), is("A Product"));
         assertThat(sortedList.get(1).getProduct().getPrimaryName(), is("B Product"));
         assertThat(sortedList.get(2).getProduct().getPrimaryName(), is("C Product"));
@@ -126,7 +126,7 @@ public class StockCardListFragmentTest {
         StockCardListAdapter adapter = new StockCardListAdapter(inventoryViewModels, null);
         adapter.sortBySOH(true);
 
-        List<InventoryViewModel> sortedList = adapter.getCurrentList();
+        List<InventoryViewModel> sortedList = adapter.getFilteredList();
         assertThat(sortedList.get(0).getStockOnHand(), is(1L));
         assertThat(sortedList.get(1).getStockOnHand(), is(2L));
         assertThat(sortedList.get(2).getStockOnHand(), is(3L));

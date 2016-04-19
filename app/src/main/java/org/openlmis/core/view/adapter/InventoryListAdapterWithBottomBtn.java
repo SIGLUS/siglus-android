@@ -38,7 +38,7 @@ public abstract class InventoryListAdapterWithBottomBtn extends InventoryListAda
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        if (position >= currentList.size()) {
+        if (position >= filteredList.size()) {
             return;
         }
         populate(viewHolder, position);
@@ -77,7 +77,7 @@ public abstract class InventoryListAdapterWithBottomBtn extends InventoryListAda
     }
 
     private boolean isPositionFooter(int position) {
-        return position == currentList.size();
+        return position == filteredList.size();
     }
 
 }

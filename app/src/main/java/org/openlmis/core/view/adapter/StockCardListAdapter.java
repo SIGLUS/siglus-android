@@ -50,7 +50,7 @@ public class StockCardListAdapter extends InventoryListAdapter<StockCardViewHold
 
     @Override
     public void onBindViewHolder(StockCardViewHolder holder, final int position) {
-        final InventoryViewModel inventoryViewModel = currentList.get(position);
+        final InventoryViewModel inventoryViewModel = filteredList.get(position);
         holder.populate(inventoryViewModel, queryKeyWord);
     }
 
@@ -67,7 +67,7 @@ public class StockCardListAdapter extends InventoryListAdapter<StockCardViewHold
             }
         };
 
-        Collections.sort(currentList, stockCardComparator);
+        Collections.sort(filteredList, stockCardComparator);
         Collections.sort(data, stockCardComparator);
 
         this.notifyDataSetChanged();
@@ -86,7 +86,7 @@ public class StockCardListAdapter extends InventoryListAdapter<StockCardViewHold
             }
         };
 
-        Collections.sort(currentList, stockCardComparator);
+        Collections.sort(filteredList, stockCardComparator);
         Collections.sort(data, stockCardComparator);
 
         this.notifyDataSetChanged();

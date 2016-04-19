@@ -50,7 +50,7 @@ public class PhysicalInventoryAdapter extends InventoryListAdapterWithBottomBtn 
     @Override
     protected void populate(RecyclerView.ViewHolder viewHolder, int position) {
         PhysicalInventoryViewHolder holder = (PhysicalInventoryViewHolder) viewHolder;
-        final InventoryViewModel viewModel = currentList.get(position);
+        final InventoryViewModel viewModel = filteredList.get(position);
 
         holder.populate(viewModel, queryKeyWord);
     }

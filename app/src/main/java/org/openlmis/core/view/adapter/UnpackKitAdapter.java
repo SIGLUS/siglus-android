@@ -22,7 +22,7 @@ public class UnpackKitAdapter extends InventoryListAdapterWithBottomBtn implemen
 
     @Override
     protected void populate(RecyclerView.ViewHolder viewHolder, int position) {
-        final InventoryViewModel viewModel = currentList.get(position);
+        final InventoryViewModel viewModel = filteredList.get(position);
         ((UnpackKitViewHolder) viewHolder).populate(viewModel);
     }
 

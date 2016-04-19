@@ -36,17 +36,17 @@ public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> e
     List<InventoryViewModel> data;
 
     @Getter
-    List<InventoryViewModel> currentList;
+    List<InventoryViewModel> filteredList;
     String queryKeyWord;
 
     public InventoryListAdapter(List<InventoryViewModel> data) {
         this.data = data;
-        currentList = this.data;
+        filteredList = this.data;
     }
 
     @Override
     public int getItemCount() {
-        return currentList.size();
+        return filteredList.size();
     }
 
     @Override
@@ -66,8 +66,8 @@ public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> e
             }).toList();
         }
 
-        currentList.clear();
-        currentList.addAll(filteredViewModels);
+        filteredList.clear();
+        filteredList.addAll(filteredViewModels);
         this.notifyDataSetChanged();
     }
 

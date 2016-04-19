@@ -26,7 +26,7 @@ public class ArchivedListAdapter extends InventoryListAdapter<ArchivedDrugsViewH
 
     @Override
     public void onBindViewHolder(ArchivedDrugsViewHolder holder, int position) {
-        holder.populate(currentList.get(position), queryKeyWord, stockCardListener);
+        holder.populate(filteredList.get(position), queryKeyWord, stockCardListener);
     }
 
 }
