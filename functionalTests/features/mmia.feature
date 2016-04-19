@@ -1,11 +1,10 @@
 @MMIA @dev @change_date
 Feature: MMIA
 
-  Background: Navigate to Home Page
+  Scenario: Initial a MMIA
     Given I change device date to "20160216.130000"
     And I try to log in with "mmia" "password1"
 
-  Scenario: Initial a MMIA
     Given I have initialized inventory with MMIA user
     And I press "MMIA"
     Then I wait for "MMIA" to appear
