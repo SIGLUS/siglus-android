@@ -70,6 +70,7 @@ Feature: Archive drug
     And I wait for "Add new product" to appear
 
     #can see 99X99
+    And I wait for 5 seconds
     When I search drug by fnm "99X99"
     Then I see "New Drug"
 
