@@ -21,6 +21,7 @@ import org.robolectric.RuntimeEnvironment;
 
 import java.sql.SQLException;
 
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -123,7 +124,7 @@ public class RnRFormViewHolderTest {
         assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_submitted_message, viewModel.getName(), viewModel.getSyncedTime())));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_requisition, viewModel.getName())));
         assertThat(viewHolder.ivDelete.getVisibility(), is(View.VISIBLE));
-        assertThat(viewHolder.tvDrugCount.getVisibility(), is(View.GONE));
+        assertNull(viewHolder.tvDrugCount);
     }
 
     @Test

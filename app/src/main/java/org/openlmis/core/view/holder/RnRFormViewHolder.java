@@ -4,6 +4,7 @@ import android.text.Html;
 import android.text.Spanned;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -26,8 +27,10 @@ public class RnRFormViewHolder extends BaseViewHolder {
     @InjectView(R.id.tx_message)
     TextView txMessage;
 
-    @InjectView(R.id.tx_drug_count)
+    @InjectView(R.id.tv_drug_count)
+    ViewStub vsDrugCount;
     TextView tvDrugCount;
+
 
     @InjectView(R.id.btn_view)
     Button btnView;
@@ -87,9 +90,25 @@ public class RnRFormViewHolder extends BaseViewHolder {
         setupButton(model, context.getString(R.string.btn_view_requisition, model.getName()));
 
         if(form.isEmergency()){
-            tvDrugCount.setVisibility(View.VISIBLE);
-            tvDrugCount.setText(Html.fromHtml(context.getString(R.string.label_drug_count_message, form.getRnrFormItemList().size())));
+            showDrugCount(form.getRnrFormItemList().size());
+        }else {
+            hideDrugCount();
         }
+    }
+
+    private void hideDrugCount() {
+        if (tvDrugCount != null) {
+            tvDrugCount.setVisibility(View.GONE);
+        }
+    }
+
+    private void showDrugCount(int size) {
+        if (tvDrugCount != null) {
+            tvDrugCount.setVisibility(View.VISIBLE);
+        } else {
+            tvDrugCount = (TextView) vsDrugCount.inflate();
+        }
+        tvDrugCount.setText(Html.fromHtml(context.getString(R.string.label_drug_count_message, size)));
     }
 
     private void setupButtonColor() {
