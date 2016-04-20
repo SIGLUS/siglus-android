@@ -5,7 +5,8 @@ public enum TrackerCategories {
     Inventory("Inventory"),
     MMIA("MMIA"),
     VIA("VIA"),
-    NETWORK("Network");
+    NETWORK("Network"),
+    SWITCH("Switch Power");
 
     private final String trackerCategory;
 

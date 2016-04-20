@@ -59,6 +59,6 @@ public final class UserInfoMgr {
     }
 
     public String getFacilityName() {
-        return user.getFacilityName();
+        return user == null? "" : user.getFacilityName();
     }
 }

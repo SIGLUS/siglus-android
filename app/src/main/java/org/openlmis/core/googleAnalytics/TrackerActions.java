@@ -16,7 +16,9 @@ public enum TrackerActions {
     CompleteInventory("Complete Inventory"),
     ApproveInventory("Approve Inventory"),
     NetworkConnected("Network Connected"),
-    NetworkDisconnected("Network Disconnected");
+    NetworkDisconnected("Network Disconnected"),
+    SwitchPowerOn("Tablet Power On"),
+    SwitchPowerOff("Tablet Power Off");
 
     private final String trackerAction;
 
