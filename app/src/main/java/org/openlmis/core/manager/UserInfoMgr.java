@@ -47,6 +47,7 @@ public final class UserInfoMgr {
         if (Fabric.isInitialized()) {
             Crashlytics.setUserIdentifier(user.getFacilityName());
         }
+        SharedPreferenceMgr.getInstance().setCurrentUserFacility(user.getFacilityName());
         this.user = user;
     }
 
@@ -59,6 +60,6 @@ public final class UserInfoMgr {
     }
 
     public String getFacilityName() {
-        return user == null? "" : user.getFacilityName();
+        return SharedPreferenceMgr.getInstance().getCurrentUserFacility();
     }
 }

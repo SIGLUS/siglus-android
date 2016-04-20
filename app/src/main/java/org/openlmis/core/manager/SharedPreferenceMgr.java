@@ -45,6 +45,7 @@ public class SharedPreferenceMgr {
     private static final String KEY_LAST_SYNCED_TIME_RNR_FORM = "lastSyncedDate";
     private static final String KEY_LAST_SYNCED_TIME_STOCKCARD = "lastSyncedDateStockCard";
     public static final String KEY_LAST_LOGIN_USER = "last_user";
+    public static final String KEY_USER_FACILITY = "user_facility";
     private static final String KEY_NEEDS_INVENTORY = "init_inventory";
     private static final String KEY_HAS_SYNCED_LATEST_MONTH_STOCKMOVEMENTS = "has_get_month_stock_cards_synced";
     private static final String KEY_SHOULD_SYNC_LAST_YEAR = "should_sync_last_year";
@@ -115,7 +116,15 @@ public class SharedPreferenceMgr {
     }
 
     public void setLastLoginUser(String lastLoginUser) {
-        sharedPreferences.edit().putString(SharedPreferenceMgr.KEY_LAST_LOGIN_USER, lastLoginUser);
+        sharedPreferences.edit().putString(SharedPreferenceMgr.KEY_LAST_LOGIN_USER, lastLoginUser).apply();
+    }
+
+    public String getCurrentUserFacility() {
+        return sharedPreferences.getString(SharedPreferenceMgr.KEY_USER_FACILITY, StringUtils.EMPTY);
+    }
+
+    public void setCurrentUserFacility(String userFacility) {
+        sharedPreferences.edit().putString(SharedPreferenceMgr.KEY_USER_FACILITY, userFacility).apply();
     }
 
     public void setIsNeedsInventory(boolean isNeedsInventory) {
