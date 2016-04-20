@@ -120,7 +120,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         ivVisibilityPwd.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
 
-        String lastLoginUser = getPreferences().getString(SharedPreferenceMgr.KEY_LAST_LOGIN_USER, StringUtils.EMPTY);
+        String lastLoginUser = SharedPreferenceMgr.getInstance().getLastLoginUser();
         if (StringUtils.isNotBlank(lastLoginUser)) {
             etUsername.setText(lastLoginUser);
             etPassword.requestFocus();
@@ -153,7 +153,7 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     public void launchActivity(Intent intent) {
-        saveString(SharedPreferenceMgr.KEY_LAST_LOGIN_USER, etUsername.getText().toString().trim());
+        SharedPreferenceMgr.getInstance().setLastLoginUser(etUsername.getText().toString().trim());
         startActivity(intent);
         finish();
     }

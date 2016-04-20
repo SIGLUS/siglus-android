@@ -24,6 +24,7 @@ import android.content.SharedPreferences;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -107,6 +108,14 @@ public class SharedPreferenceMgr {
 
     public boolean isNeedsInventory() {
         return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_NEEDS_INVENTORY, true);
+    }
+
+    public String getLastLoginUser() {
+        return sharedPreferences.getString(SharedPreferenceMgr.KEY_LAST_LOGIN_USER, StringUtils.EMPTY);
+    }
+
+    public void setLastLoginUser(String lastLoginUser) {
+        sharedPreferences.edit().putString(SharedPreferenceMgr.KEY_LAST_LOGIN_USER, lastLoginUser);
     }
 
     public void setIsNeedsInventory(boolean isNeedsInventory) {
