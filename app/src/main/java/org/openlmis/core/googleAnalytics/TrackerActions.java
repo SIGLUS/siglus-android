@@ -14,7 +14,9 @@ public enum TrackerActions {
     AuthoriseRnR("Second Time Approve"),
     SelectInventory("Select Inventory"),
     CompleteInventory("Complete Inventory"),
-    ApproveInventory("Approve Inventory");
+    ApproveInventory("Approve Inventory"),
+    NetworkConnected("Network Connected"),
+    NetworkDisconnected("Network Disconnected");
 
     private final String trackerAction;
 

@@ -4,7 +4,8 @@ public enum TrackerCategories {
     StockMovement("F.d.S"),
     Inventory("Inventory"),
     MMIA("MMIA"),
-    VIA("VIA");
+    VIA("VIA"),
+    NETWORK("Network");
 
     private final String trackerCategory;
 
