@@ -1,6 +1,7 @@
 package org.openlmis.core.model;
 
 import org.joda.time.DateTime;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
@@ -12,6 +13,7 @@ import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -26,13 +28,19 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 @RunWith(LMISTestRunner.class)
 public class RnRFormTest {
 
+    private RnRForm rnRForm;
+
+    @Before
+    public void setUp() throws Exception {
+        rnRForm = new RnRForm();
+    }
+
     @Test
     public void shouldReturnListWithDeactivatedItemsWhenDeactivateProgramToggleOff() {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, false);
 
-        RnRForm rnRForm = new RnRForm();
-        Product activeProduct = new ProductBuilder().setIsActive(true).build();
-        Product inactiveProduct = new ProductBuilder().setIsActive(false).build();
+        Product activeProduct = new ProductBuilder().setIsActive(true).setCode("activeProduct").build();
+        Product inactiveProduct = new ProductBuilder().setIsActive(false).setCode("inactiveProduct").build();
         RnrFormItem activeRnrProduct = new RnrFormItemBuilder().setProduct(activeProduct).build();
         RnrFormItem inactiveRnrProduct = new RnrFormItemBuilder().setProduct(inactiveProduct).build();
 
@@ -47,7 +55,6 @@ public class RnRFormTest {
     public void shouldReturnListWithDeactivatedItemsWhenDeactivateProgramToggleOn() {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, true);
 
-        RnRForm rnRForm = new RnRForm();
         Product activeSupportedProduct = new ProductBuilder().setCode("P1").setIsActive(true).build();
         Product inactiveProduct = new ProductBuilder().setCode("P2").setIsActive(false).build();
         Product unsupportedProduct = new ProductBuilder().setCode("P3").setIsActive(true).build();
@@ -65,13 +72,12 @@ public class RnRFormTest {
 
     @Test
     public void shouldGetNonKitFormItemAndKitFormItem() throws Exception {
-        RnRForm rnRForm = new RnRForm();
-        Product kitProduct = new ProductBuilder().setIsActive(true).setIsKit(true).build();
-        Product product = new ProductBuilder().setIsActive(true).setIsKit(false).build();
+        Product kitProduct = new ProductBuilder().setIsActive(true).setIsKit(true).setCode("kit").build();
+        Product product = new ProductBuilder().setIsActive(true).setIsKit(false).setCode("product").build();
         RnrFormItem kitRnrProduct = new RnrFormItemBuilder().setProduct(kitProduct).build();
         RnrFormItem rnrProduct = new RnrFormItemBuilder().setProduct(product).build();
 
-        rnRForm.setRnrFormItemListWrapper(newArrayList(kitRnrProduct, rnrProduct));
+        rnRForm.setRnrFormItemListWrapper(newArrayList(rnrProduct, kitRnrProduct));
 
         List<RnrFormItem> rnrNonKitItems = rnRForm.getRnrItems(IsKit.No);
         assertEquals(1, rnrNonKitItems.size());
@@ -163,5 +169,23 @@ public class RnRFormTest {
         RnRForm form = RnRForm.init(program, new Period(periodBegin, periodEnd), true);
         assertFalse(form.isMissed());
         assertTrue(form.isEmergency());
+    }
+
+    @Test
+    public void shouldSortRnrFormItemByProductCode() throws Exception {
+        List<RnrFormItem> rnrFormItems = new ArrayList<>();
+        rnrFormItems.add(generateRnrFormItem("03A02"));
+        rnrFormItems.add(generateRnrFormItem("01A02"));
+        rnrFormItems.add(generateRnrFormItem("10B02"));
+        rnRForm.setRnrFormItemListWrapper(rnrFormItems);
+
+        List<RnrFormItem> sortedRnrFormItems = rnRForm.getRnrFormItemListWrapper();
+        assertEquals("01A02", sortedRnrFormItems.get(0).getProduct().getCode());
+        assertEquals("03A02", sortedRnrFormItems.get(1).getProduct().getCode());
+        assertEquals("10B02", sortedRnrFormItems.get(2).getProduct().getCode());
+    }
+
+    private RnrFormItem generateRnrFormItem(String productCode) {
+        return new RnrFormItemBuilder().setProduct(new ProductBuilder().setCode(productCode).build()).build();
     }
 }

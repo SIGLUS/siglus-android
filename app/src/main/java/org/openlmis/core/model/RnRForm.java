@@ -30,7 +30,9 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
+import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
+import org.roboguice.shaded.goole.common.collect.Ordering;
 
 import java.util.Collection;
 import java.util.Date;
@@ -175,6 +177,14 @@ public class RnRForm extends BaseModel {
 
     public List<RnrFormItem> getRnrFormItemListWrapper() {
         rnrFormItemListWrapper = ListUtil.wrapOrEmpty(rnrFormItemList, rnrFormItemListWrapper);
+
+        rnrFormItemListWrapper = Ordering.natural().onResultOf(new Function<RnrFormItem, String>() {
+            @Override
+            public String apply(RnrFormItem rnrFormItem) {
+                return rnrFormItem.getProduct() == null ? "" : rnrFormItem.getProduct().getCode();
+            }
+        }).immutableSortedCopy(rnrFormItemListWrapper);
+
         return rnrFormItemListWrapper;
     }
 

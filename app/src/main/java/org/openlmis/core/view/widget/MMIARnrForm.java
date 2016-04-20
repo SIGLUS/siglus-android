@@ -34,9 +34,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ViewUtil;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
-import org.roboguice.shaded.goole.common.collect.Ordering;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -111,24 +109,18 @@ public class MMIARnrForm extends LinearLayout {
     }
 
     private void addItemView(List<RnrFormItem> rnrFormItemList) {
-        List<RnrFormItem> sortedRnrFormItems = Ordering.natural().onResultOf(new Function<RnrFormItem, String>() {
-            @Override
-            public String apply(RnrFormItem rnrFormItem) {
-                return rnrFormItem.getProduct().getCode();
-            }
-        }).immutableSortedCopy(rnrFormItemList);
 
         // Adult View
-        addViewByMedicineType(filterRnrFormItem(sortedRnrFormItems, Product.MEDICINE_TYPE_ADULT));
+        addViewByMedicineType(filterRnrFormItem(rnrFormItemList, Product.MEDICINE_TYPE_ADULT));
         addDividerView(Product.MEDICINE_TYPE_ADULT);
         addDividerView(Product.MEDICINE_TYPE_ADULT);
 
         // Children View
-        addViewByMedicineType(filterRnrFormItem(sortedRnrFormItems, Product.MEDICINE_TYPE_CHILDREN));
+        addViewByMedicineType(filterRnrFormItem(rnrFormItemList, Product.MEDICINE_TYPE_CHILDREN));
         addDividerView(Product.MEDICINE_TYPE_CHILDREN);
 
         // Solution View
-        addViewByMedicineType(filterRnrFormItem(sortedRnrFormItems, Product.MEDICINE_TYPE_SOLUTION));
+        addViewByMedicineType(filterRnrFormItem(rnrFormItemList, Product.MEDICINE_TYPE_SOLUTION));
         addDividerView(Product.MEDICINE_TYPE_SOLUTION);
     }
 

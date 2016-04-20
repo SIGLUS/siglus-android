@@ -74,24 +74,25 @@ public class MMIARnrFormTest {
         ArrayList<RnrFormItem> list = new ArrayList<>();
         // Product.MEDICINE_TYPE_SOLUTION
         list.add(getRnrFormItem(1L, "product", "08S17", MEDICINE_TYPE_SOLUTION));
+        // Product.MEDICINE_TYPE_ADULT
+        list.add(getRnrFormItem(3L, "product3", "08S22Z", MEDICINE_TYPE_ADULT));
         // Product.MEDICINE_TYPE_CHILDREN
         list.add(getRnrFormItem(2L, "product2", "08S32Z", MEDICINE_TYPE_CHILDREN));
         // Product.MEDICINE_TYPE_ADULT
-        list.add(getRnrFormItem(3L, "product3", "08S39Z", MEDICINE_TYPE_ADULT));
-        list.add(getRnrFormItem(4L, "product4", "08S22Z", MEDICINE_TYPE_ADULT));
+        list.add(getRnrFormItem(4L, "product4", "08S39Z", MEDICINE_TYPE_ADULT));
 
         mmiaRnrForm.initView(list);
 
         ViewGroup leftViewGroup = (ViewGroup) mmiaRnrForm.findViewById(R.id.rnr_from_list_product_name);
 
         String text = ((TextView) leftViewGroup.getChildAt(0)).getText().toString();
-        assertThat(text, is(list.get(3).getProduct().getPrimaryName()));
+        assertThat(text, is(list.get(1).getProduct().getPrimaryName()));
 
         String text1 = ((TextView) leftViewGroup.getChildAt(1)).getText().toString();
-        assertThat(text1, is(list.get(2).getProduct().getPrimaryName()));
+        assertThat(text1, is(list.get(3).getProduct().getPrimaryName()));
 
         String text2 = ((TextView) leftViewGroup.getChildAt(4)).getText().toString();
-        assertThat(text2, is(list.get(1).getProduct().getPrimaryName()));
+        assertThat(text2, is(list.get(2).getProduct().getPrimaryName()));
 
         String text3 = ((TextView) leftViewGroup.getChildAt(6)).getText().toString();
         assertThat(text3, is(list.get(0).getProduct().getPrimaryName()));

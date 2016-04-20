@@ -75,6 +75,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -384,7 +385,7 @@ public class VIARequisitionPresenterTest {
         assertNull(ShadowToast.getLatestToast());
 
         Assert.assertEquals(5, presenter.rnRForm.getRnrFormItemListWrapper().size());
-        assertThat(presenter.getRnRForm().getRnrFormItemListWrapper().get(1).getCalculatedOrderQuantity(), is(1L));
+        assertThat(presenter.getRnRForm().getRnrFormItemListWrapper().get(3).getCalculatedOrderQuantity(), is(1L));
     }
 
     @Test
@@ -560,18 +561,28 @@ public class VIARequisitionPresenterTest {
     }
 
     @Test
-    public void shouldProcessEmergencySignature() throws Exception {
+    public void shouldOnlyUpdateUIWhenProcessEmergencyAndDraftSignature() throws Exception {
         presenter = spy(presenter);
         RnRForm rnRForm = new RnRForm();
         rnRForm.setStatus(RnRForm.STATUS.DRAFT);
         rnRForm.setEmergency(true);
 
         presenter.processSign("sign", rnRForm);
-        verify(mockRnrFormRepository, never()).createAndRefresh(rnRForm);
-        verify(mockRnrFormRepository, never()).update(rnRForm);
         verify(presenter).updateUIAfterSubmit();
 
+        reset(presenter);
         presenter.processSign("sign", rnRForm);
+        verify(presenter, never()).updateUIAfterSubmit();
+    }
+
+    @Test
+    public void shouldCreateAndUpdateRnrFormWhenObservableSubscribed() throws Exception {
+        RnRForm rnRForm = new RnRForm();
+        TestSubscriber<Void> testSubscriber = new TestSubscriber<>();
+        presenter.createAndUpdateRnrForm(rnRForm).subscribe(testSubscriber);
+        testSubscriber.awaitTerminalEvent();
+
+        testSubscriber.assertNoErrors();
         verify(mockRnrFormRepository).createAndRefresh(rnRForm);
         verify(mockRnrFormRepository).update(rnRForm);
     }

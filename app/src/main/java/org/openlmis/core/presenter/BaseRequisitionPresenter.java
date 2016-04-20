@@ -40,6 +40,7 @@ import java.util.Date;
 import lombok.Getter;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -120,7 +121,8 @@ public abstract class BaseRequisitionPresenter extends Presenter {
 
     protected void saveRequisition() {
         view.loading();
-        getSaveFormObservable().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(getSaveFormSubscriber());
+        Subscription saveSubscription = getSaveFormObservable().subscribe(getSaveFormSubscriber());
+        subscriptions.add(saveSubscription);
     }
 
     protected Observable<Void> getSaveFormObservable() {
@@ -135,7 +137,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
                     subscriber.onError(e);
                 }
             }
-        });
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
     protected Subscriber<Void> getSaveFormSubscriber() {
@@ -161,7 +163,12 @@ public abstract class BaseRequisitionPresenter extends Presenter {
 
     protected void submitRequisition(final RnRForm rnRForm) {
         view.loading();
-        updateRnrForm(rnRForm).subscribe(new Subscriber<Void>() {
+        Subscription submitSubscription = updateRnrForm(rnRForm).subscribe(getSubmitRequisitionSubscriber());
+        subscriptions.add(submitSubscription);
+    }
+
+    protected Subscriber<Void> getSubmitRequisitionSubscriber() {
+        return new Subscriber<Void>() {
             @Override
             public void onCompleted() {
 
@@ -180,12 +187,19 @@ public abstract class BaseRequisitionPresenter extends Presenter {
 
                 TrackRnREventUtil.trackRnRListEvent(TrackerActions.SubmitRnR, rnRForm.getProgram().getProgramCode());
             }
-        });
+        };
     }
 
     protected void authoriseRequisition(final RnRForm rnRForm) {
         view.loading();
-        updateRnrForm(rnRForm).subscribe(new Subscriber<Void>() {
+
+        Observable<Void> authoriseObservable = rnRForm.isEmergency() ? createAndUpdateRnrForm(rnRForm) : updateRnrForm(rnRForm);
+        Subscription authoriseSubscription = authoriseObservable.subscribe(getAuthoriseRequisitionSubscriber());
+        subscriptions.add(authoriseSubscription);
+    }
+
+    protected Subscriber<Void> getAuthoriseRequisitionSubscriber() {
+        return new Subscriber<Void>() {
             @Override
             public void onCompleted() {
             }
@@ -204,7 +218,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
                 TrackRnREventUtil.trackRnRListEvent(TrackerActions.AuthoriseRnR, rnRForm.getProgram().getProgramCode());
                 syncService.requestSyncImmediately();
             }
-        });
+        };
     }
 
     private Observable<Void> updateRnrForm(final RnRForm rnRForm) {
@@ -214,6 +228,24 @@ public abstract class BaseRequisitionPresenter extends Presenter {
                 try {
                     rnrFormRepository.update(rnRForm);
                     subscriber.onNext(null);
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    e.reportToFabric();
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+    }
+
+    protected Observable<Void> createAndUpdateRnrForm(final RnRForm rnRForm) {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    rnrFormRepository.createAndRefresh(rnRForm);
+                    rnrFormRepository.update(rnRForm);
+                    subscriber.onNext(null);
+                    subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.reportToFabric();
                     subscriber.onError(e);
@@ -232,6 +264,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
     }
 
     public void processSign(String signName, RnRForm rnRForm) {
+        // Main Thread!!
         if (rnRForm.isDraft()) {
             rnRForm.getSignaturesWrapper().add(new RnRFormSignature(rnRForm, signName, RnRFormSignature.TYPE.SUBMITTER));
             rnRForm.setStatus(rnRForm.isMissed() ? RnRForm.STATUS.SUBMITTED_MISSED : RnRForm.STATUS.SUBMITTED);
