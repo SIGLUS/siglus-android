@@ -39,9 +39,9 @@ import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
-public class NetworkChangeListenerTest {
+public class NetworkChangeReceiverTest {
 
-    NetworkChangeListener listener;
+    NetworkChangeReceiver listener;
     Intent intent;
 
     SyncService syncService;
@@ -49,7 +49,7 @@ public class NetworkChangeListenerTest {
 
     @Before
     public void setup() throws LMISException {
-        listener = new NetworkChangeListener();
+        listener = new NetworkChangeReceiver();
         intent = mock(Intent.class);
 
         syncService = mock(SyncService.class);

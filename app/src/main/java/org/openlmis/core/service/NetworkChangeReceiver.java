@@ -30,17 +30,17 @@ import org.openlmis.core.network.NetworkConnectionManager;
 
 import roboguice.RoboGuice;
 
-public class NetworkChangeListener extends BroadcastReceiver {
+public class NetworkChangeReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         SyncService syncService = RoboGuice.getInjector(context).getInstance(SyncService.class);
         if (NetworkConnectionManager.isConnectionAvailable(context)) {
-            Log.d("NetworkChangeListener :", "network connected, start sync service...");
+            Log.d("NetworkChangeReceiver :", "network connected, start sync service...");
             LMISApp.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NetworkConnected);
             syncService.requestSyncImmediately();
             syncService.kickOff();
         } else {
-            Log.d("NetworkChangeListener :", "network disconnect, stop sync service...");
+            Log.d("NetworkChangeReceiver :", "network disconnect, stop sync service...");
             LMISApp.getInstance().trackEvent(TrackerCategories.NETWORK, TrackerActions.NetworkDisconnected);
             syncService.shutDown();
         }
