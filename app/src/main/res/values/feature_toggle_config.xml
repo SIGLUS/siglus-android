@@ -11,5 +11,5 @@
     <bool name="feature_deactivate_program_product">true</bool>
     <bool name="feature_signature_for_unpack_kit">true</bool>
     <bool name="feature_enter_document_number_when_unpack_kit">true</bool>
-    <bool name="feature_sync_mmia_list_from_web">false</bool>
+    <bool name="feature_sync_mmia_list_from_web">true</bool>
 </resources>
