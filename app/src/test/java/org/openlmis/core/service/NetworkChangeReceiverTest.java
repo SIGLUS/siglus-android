@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.receiver.NetworkChangeReceiver;
 import org.robolectric.RuntimeEnvironment;
 
 import roboguice.RoboGuice;

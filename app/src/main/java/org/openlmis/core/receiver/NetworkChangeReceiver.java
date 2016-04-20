@@ -16,7 +16,7 @@
  * information contact info@OpenLMIS.org
  */
 
-package org.openlmis.core.service;
+package org.openlmis.core.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -27,6 +27,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.network.NetworkConnectionManager;
+import org.openlmis.core.service.SyncService;
 
 import roboguice.RoboGuice;
 
