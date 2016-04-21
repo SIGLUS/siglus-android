@@ -270,6 +270,18 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         super.submitRequisition(rnRForm);
     }
 
+    @Override
+    protected void createAndUpdateRequisition(RnRForm rnRForm) throws LMISException {
+        if (rnRForm.isEmergency()) {
+            try {
+                rnrFormRepository.createAndRefresh(rnRForm);
+            } catch (LMISException e) {
+                e.reportToFabric();
+            }
+        }
+        super.createAndUpdateRequisition(rnRForm);
+    }
+
     public void processRequisition(String consultationNumbers) {
         if (!validateForm()) {
             return;

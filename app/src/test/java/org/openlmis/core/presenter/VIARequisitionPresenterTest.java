@@ -576,14 +576,28 @@ public class VIARequisitionPresenterTest {
     }
 
     @Test
-    public void shouldCreateAndUpdateRnrFormWhenObservableSubscribed() throws Exception {
+    public void shouldCreateAndUpdateRnrFormWhenAuthoriseEmergencyViaForm() throws Exception {
         RnRForm rnRForm = new RnRForm();
+        rnRForm.setEmergency(true);
         TestSubscriber<Void> testSubscriber = new TestSubscriber<>();
-        presenter.createAndUpdateRnrForm(rnRForm).subscribe(testSubscriber);
+        presenter.updateRnrForm(rnRForm).subscribe(testSubscriber);
         testSubscriber.awaitTerminalEvent();
 
         testSubscriber.assertNoErrors();
         verify(mockRnrFormRepository).createAndRefresh(rnRForm);
+        verify(mockRnrFormRepository).update(rnRForm);
+    }
+
+    @Test
+    public void shouldNotCreateAndUpdateRnrFormWhenAuthoriseNormalViaForm() throws Exception {
+        RnRForm rnRForm = new RnRForm();
+        rnRForm.setEmergency(false);
+        TestSubscriber<Void> testSubscriber = new TestSubscriber<>();
+        presenter.updateRnrForm(rnRForm).subscribe(testSubscriber);
+        testSubscriber.awaitTerminalEvent();
+
+        testSubscriber.assertNoErrors();
+        verify(mockRnrFormRepository, never()).createAndRefresh(rnRForm);
         verify(mockRnrFormRepository).update(rnRForm);
     }
 

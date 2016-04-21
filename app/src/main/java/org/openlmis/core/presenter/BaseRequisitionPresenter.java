@@ -192,9 +192,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
 
     protected void authoriseRequisition(final RnRForm rnRForm) {
         view.loading();
-
-        Observable<Void> authoriseObservable = rnRForm.isEmergency() ? createAndUpdateRnrForm(rnRForm) : updateRnrForm(rnRForm);
-        Subscription authoriseSubscription = authoriseObservable.subscribe(getAuthoriseRequisitionSubscriber());
+        Subscription authoriseSubscription = updateRnrForm(rnRForm).subscribe(getAuthoriseRequisitionSubscriber());
         subscriptions.add(authoriseSubscription);
     }
 
@@ -221,12 +219,12 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         };
     }
 
-    private Observable<Void> updateRnrForm(final RnRForm rnRForm) {
+    protected Observable<Void> updateRnrForm(final RnRForm rnRForm) {
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    rnrFormRepository.update(rnRForm);
+                    createAndUpdateRequisition(rnRForm);
                     subscriber.onNext(null);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
@@ -237,21 +235,8 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    protected Observable<Void> createAndUpdateRnrForm(final RnRForm rnRForm) {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    rnrFormRepository.createAndRefresh(rnRForm);
-                    rnrFormRepository.update(rnRForm);
-                    subscriber.onNext(null);
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    e.reportToFabric();
-                    subscriber.onError(e);
-                }
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+    protected void createAndUpdateRequisition(RnRForm rnRForm) throws LMISException {
+        rnrFormRepository.update(rnRForm);
     }
 
     public void removeRequisition() {
