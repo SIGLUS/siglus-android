@@ -79,15 +79,16 @@ public class SelectEmergencyProductsActivityTest {
     @Test
     public void shouldShowToastWhenMoreThanLimitChecked() throws Exception {
         ArrayList<InventoryViewModel> inventoryViewModels = getInventoryViewModels();
-        activity.mAdapter.refreshList(inventoryViewModels);
         for (InventoryViewModel model : inventoryViewModels) {
             model.setChecked(true);
         }
+        inventoryViewModels.add(new InventoryViewModel(new ProductBuilder().setPrimaryName("Product name").setCode(String.valueOf("code")).build()));
 
+        activity.mAdapter.refreshList(inventoryViewModels);
         activity.mAdapter.notifyDataSetChanged();
 
         SelectEmergencyProductsViewHolder viewHolder = activity.mAdapter.onCreateViewHolder(new LinearLayout(activity), 0);
-        activity.mAdapter.onBindViewHolder(viewHolder, 0);
+        activity.mAdapter.onBindViewHolder(viewHolder, 10);
         viewHolder.itemView.findViewById(R.id.touchArea_checkbox).performClick();
 
         assertThat(ShadowToast.getTextOfLatestToast(), is("You can only select 10 products for an emergency requisition"));
