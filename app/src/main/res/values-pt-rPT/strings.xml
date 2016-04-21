@@ -85,6 +85,7 @@
     <string name="hint_error_input">Entrada inválida</string>
     <string name="btn_save">Guardar</string>
     <string name="msg_mmia_onback_confirm">Tem certeza que quer sair sem gravar suas alteraçães? Se você clique sim, o seu projecto serão excluídos</string>
+    <string name="msg_regime_del_confirm">Tem a certeza que pretende remover este regime?</string>
     <string name="btn_positive">Sim</string>
     <string name="btn_negative">Não</string>
     <string name="msg_mmia_submit_tip">O seu MMIA foi gravado com sucesso,e vai ser submetido \r\n automaticamente quando tiver conecção a internet.</string>
@@ -93,6 +94,9 @@
     <string name="msg_reason_for_total_not_match">Adicionar razão para a diferença entre totais de regimes e total de pacientes</string>
     <string name="msg_regime_total_and_patient_total_not_match">Os totais não correspondem. Por favor, verifique os números digitados. Se os valores continuam diferentes, adicione uma justificação nas \"Observações\".</string>
     <string name="btn_ok">OK</string>
+    <string name="label_add_adult_regime">+ Regime Adulto</string>
+    <string name="label_add_child_regime">+ Regime Criança</string>
+    <string name="msg_regime_already_exist">selecione regime já existente</string>
     <!--VIA Form-->
     <string name="label_via_kit_received">No. de Kits recebidos</string>
     <string name="label_via_kit_opened">No. de Kits abertos</string>
@@ -136,6 +140,7 @@
     <string name="label_adjustment_dialog_adjusted_amount"><![CDATA[<b>%1$s</b> é a quantidade ajustada para requisitar <br/>]]></string>
     <string name="btn_del">Apagar</string>
     <string name="msg_del_requisition">Aviso!!! \ n Tem certeza de que deseja apagar? Esta requisição já está sincronizada com o servidor. Se você clicar em APAGAR, em seguida, esta requisição vai desaparecer do seu tablet, mas permanecem guardada no servidor.</string>
+    <string name="msg_stock_movement_is_not_ready">Aplicativo está tentando sincronizar todos os movimentos de estoque, por favor, tente novamente mais tarde.</string>
     <!--Stock Movement-->
     <string name="title_stock_movement">Ficha de Stock</string>
     <string name="label_default">-</string>
@@ -154,7 +159,7 @@
     <string name="msg_db_error">Ocorreu um erro inesperado. Por favor contacte o administrador.</string>
     <string name="label_cmm">CMM</string>
     <string name="label_validate_period">Prazos de Validade</string>
-    <string name="btn_add_expiry_date">+ Data de espiração</string>
+    <string name="btn_add_expiry_date">+ Data de expiração</string>
     <string name="menu_item_stock_movement_history">Histórico de movimentos</string>
     <string name="menu_item_kit_unpack">Desembalar Kit</string>
     <string name="title_add_new_drug">Adicionar novo producto</string>
@@ -201,12 +206,13 @@
     <string name="label_unpack_kit_quantity_more_than_expected"><![CDATA[<b>maior</b>]]>quantidade inserida do que o esperado para um único kit. Por favor, verifique </string>
     <!--Server Sync Errors-->
     <string name="sync_server_error">Sincronização falhou devido à problemas técnicos no servidor. Entre em contacto com administrador do sistema.</string>
-    <string name="default_sync_data_error">Sincronização falhou devido à um erro nos dados durante a sincronização da requisição. Entre em contacto com administrador do sistema.</string>
+    <string name="default_sync_data_error">Sincronização falhou devido a um erro desconhecido durante a sincronização da requisição. Entre em contato com administrador do sistema.</string>
     <string name="rnr_previous_not_filled">Sincronização falhou devido à falta da requisição do período anterior. Entre em contacto com administrador do sistema.</string>
     <string name="period_configuration_missing">Sincronização falhou devido à falta de configuração no servidor para este período. Entre em contacto com administrador do sistema.</string>
     <string name="product_code_invalid">Sincronização falhou devido à tentativa de submeter um produto inválido no formulário %1$s. Entre em contacto com administrador do sistema.</string>
     <string name="unauthorized_operation">Sincronização falhou. Não tem permissão para sincronizar esta requisicão para o servidor. Entre em contacto com administrador do sistema.</string>
     <string name="duplicate_rnr_error">Sincronização falhou. Você já enviou a requisição deste programa no mesmo período.</string>
+    <string name="period_mismatch_error">Sincronização falhou. O período que você está enviando não coincide com o período de programação.</string>
     <!--Rnr form historical list-->
     <string name="label_via_name">Requisição/Balancete Via Clássica</string>
     <string name="label_mmia_name">MMIA</string>
@@ -226,6 +232,7 @@
     <string name="label_previous_period_missing"><![CDATA[<b> Requisição Balancete não pode ser criado</b>até que os períodos anteriores estejam fechados.<br>Por favor, feche todos os períodos anteriores]]></string>
     <string name="label_missed_period"><![CDATA[<b>Requisição está atrasada e nenhum inventário foi escolhido</b> Uma requisição será gerada automaticamente usando as quantidades do estoque fisico do fim do período]]></string>
     <string name="btn_select_close_period">Seleccione o fecho do período</string>
+    <string name="label_create_emergency_rnr">Criar requisição de emergência</string>
     <string name="label_incomplete_requisition_old">Esta <![CDATA[<b>%1$s</b>]]> está incompleta. Para completá-la, selecione \"Criar uma %1$s\" na página inicial</string>
     <string name="btn_requisition_list_old">Ver histórico de Requisiçóes Via Clássica submetidas</string>
     <string name="btn_mmia_list_old">Ver histórico de MMIAs submetidos</string>
@@ -233,12 +240,14 @@
     <string name="requisition_list">Requisições Via Clássica </string>
     <string name="label_total">Total:%1$s</string>
     <string name="requisition_delete_failed">Falha ao apagar</string>
+    <string name="delete_rnr_form_failed_warning">Falha ao apagar</string>
     <!--Signature-->
     <string name="dialog_request_signature">Insira as iniciais do seu nome para rubricar o movimento</string>
     <string name="dialog_cancel">Cancelar</string>
     <string name="dialog_request_signature_sign">Validar</string>
     <string name="label_physical_inventory_signature_title">Insira as iniciais do seu nome para rubricar todos os movimentos no inventário</string>
     <string name="hint_signature_error_message">Por favor, insira suas iniciais (mínimo 2 caracteres, máximo 5 caracteres)</string>
+    <string name="dialog_unpack_kit_signature">Por favor, insira suas iniciais para confirmar os montantes inseridos &amp; desembalar o kit</string>
     <!--Archived Drugs-->
     <string name="menu_archive_drug">Arquivar produtos</string>
     <string name="title_archived_drugs">Produtos Arquivados</string>
@@ -256,9 +265,24 @@
     <string name="label_select_unpack_num">Quantos %1$s gostaria de desembalar?</string>
     <string name="title_select_unpack_num">Seleccione número de kits por desembalar</string>
     <string name="msg_select_unpack_num_warning">Por favor, Escolha um número de kits para desembalar</string>
-
-    <!-- update notification text-->
-    <string name="app_update_suffix">atualizar</string>
-    <string name="update_available">atualização disponível</string>
-    <string name="select_to_install">Selecione a instalação</string>
+    <!--Select Drugs-->
+    <string name="title_select_drugs">Selecione os medicamentos que fazem parte do regime</string>
+    <string name="hint_no_product_has_checked">Por favor, verifique o produto</string>
+    <string name="hint_more_than_limit_product_has_checked">Você só pode selecionar 5 produtos para regime</string>
+    <!--update notification text-->
+    <string name="app_update_suffix">Actualizar</string>
+    <string name="select_to_install">Selecione instalar</string>
+    <string name="update_available">Atualização disponível</string>
+    <string name="action_wipe_data">Voltar a sincronização dados do servidor</string>
+    <string name="message_warning_wipe_data">Esta operação irá remover todos os dados provenientes do dispositivo &amp; amp; descarregue dados previamente submetidos de volta para o tablet, \ n AVISO todos movimentos ou dados não sincronizados serão perdidos. Você quer continuar?</string>
+    <string name="message_wipe_no_connection">A rede não está disponível, não pode voltar a sincronizar</string>
+    <!--Select Emergency Products-->
+    <string name="title_select_emergency_products">Seleccione os productos para adicionar a sua requisição de emergência</string>
+    <string name="msg_create_emergency_date_invalid">Você não tem permissão para criar uma requisição de emergência entre os dias 18 e 25, porque este é o período de envio de requisição balancete normal.</string>
+    <string name="msg_create_emergency_has_missed">Você não tem permissão para criar uma requisição de emergência até que você conclua todas as suas requisições anteriores</string>
+    <string name="msg_out_limit_of_selected_emergency_products">Você só pode selecionar 10 produtos para uma requisição de emergência</string>
+    <string name="label_emergency_requisition_title">Requisição de emergência -%1$s</string>
+    <string name="label_emergency_requisition_balance">Requisição balancete de emergência</string>
+    <string name="msg_emergency_requisition_cant_edit">Esta informação não é utilizada ao criar uma requisição de emergência</string>
+    <string name="document_number">Número do documento</string>
 </resources>
