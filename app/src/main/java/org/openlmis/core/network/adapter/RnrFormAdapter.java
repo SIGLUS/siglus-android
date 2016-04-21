@@ -40,6 +40,7 @@ import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.RnrFormSignatureRepository;
 
 import java.lang.reflect.Type;
 import java.text.DateFormat;
@@ -54,6 +55,8 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
     public ProgramRepository programRepository;
     @Inject
     RnrFormRepository rnrFormRepository;
+    @Inject
+    RnrFormSignatureRepository signatureRepository;
 
     private final Gson gson;
     private final JsonParser jsonParser;
@@ -99,8 +102,7 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm>, JsonDeserializer
     private JsonElement buildRnrFormJson(RnRForm rnRForm) throws LMISException {
         JsonObject root = gson.toJsonTree(rnRForm).getAsJsonObject();
         String programCode = rnRForm.getProgram().getProgramCode();
-        List<RnRFormSignature> signatureList = rnrFormRepository.querySignaturesByRnrForm(rnRForm);
-
+        List<RnRFormSignature> signatureList = signatureRepository.queryByRnrFormId(rnRForm.getId());
         root.add("products", jsonParser.parse(gson.toJson(rnRForm.getRnrFormItemListWrapper())));
         root.add("regimens", jsonParser.parse(gson.toJson(rnRForm.getRegimenItemListWrapper())));
         root.add("patientQuantifications", jsonParser.parse(gson.toJson(rnRForm.getBaseInfoItemListWrapper())));

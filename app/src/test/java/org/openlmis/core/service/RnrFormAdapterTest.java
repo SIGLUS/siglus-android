@@ -40,6 +40,7 @@ import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.repository.RnrFormSignatureRepository;
 import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
@@ -57,6 +58,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -69,12 +71,14 @@ public class RnrFormAdapterTest {
     private ProductRepository mockProductRepository;
     private ProgramRepository mockProgramRepository;
     private RnrFormRepository mockRnrFormRepository;
+    private RnrFormSignatureRepository mockRnrFormSignatureRepository;
 
     @Before
     public void setUp() throws LMISException {
         mockProductRepository = mock(ProductRepository.class);
         mockProgramRepository = mock(ProgramRepository.class);
         mockRnrFormRepository = mock(RnrFormRepository.class);
+        mockRnrFormSignatureRepository = mock(RnrFormSignatureRepository.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         rnrFormAdapter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormAdapter.class);
@@ -192,7 +196,7 @@ public class RnrFormAdapterTest {
         List<RnRFormSignature> rnRFormSignatureList = new ArrayList<>();
         rnRFormSignatureList.add(new RnRFormSignature(rnRForm, "abc", RnRFormSignature.TYPE.SUBMITTER));
 
-        when(mockRnrFormRepository.querySignaturesByRnrForm(rnRForm)).thenReturn(rnRFormSignatureList);
+        when(mockRnrFormSignatureRepository.queryByRnrFormId(any(Long.class))).thenReturn(rnRFormSignatureList);
         JsonElement rnrJson = rnrFormAdapter.serialize(rnRForm, RnRForm.class, null);
         JsonObject rnrSignature = rnrJson.getAsJsonObject().get("rnrSignatures").getAsJsonArray().get(0).getAsJsonObject();
 
@@ -261,6 +265,7 @@ public class RnrFormAdapterTest {
             bind(ProductRepository.class).toInstance(mockProductRepository);
             bind(ProgramRepository.class).toInstance(mockProgramRepository);
             bind(RnrFormRepository.class).toInstance(mockRnrFormRepository);
+            bind(RnrFormSignatureRepository.class).toInstance(mockRnrFormSignatureRepository);
         }
     }
 

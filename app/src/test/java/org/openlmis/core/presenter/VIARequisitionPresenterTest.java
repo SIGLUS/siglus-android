@@ -214,7 +214,7 @@ public class VIARequisitionPresenterTest {
 
         //then
         assertThat(RnRForm.STATUS.SUBMITTED, is(form.getStatus()));
-        verify(mockRnrFormRepository).update(form);
+        verify(mockRnrFormRepository).createOrUpdateWithItems(form);
     }
 
     @Test
@@ -227,7 +227,7 @@ public class VIARequisitionPresenterTest {
         waitObservableToExecute();
 
         //then
-        verify(mockRnrFormRepository).update(form);
+        verify(mockRnrFormRepository).createOrUpdateWithItems(form);
         assertThat(RnRForm.STATUS.AUTHORIZED, is(form.getStatus()));
     }
 
@@ -296,7 +296,7 @@ public class VIARequisitionPresenterTest {
         presenter.getSaveFormObservable().subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
-        verify(mockRnrFormRepository).update(presenter.getRnRForm());
+        verify(mockRnrFormRepository).createOrUpdateWithItems(presenter.getRnRForm());
     }
 
     @Test
@@ -580,12 +580,11 @@ public class VIARequisitionPresenterTest {
         RnRForm rnRForm = new RnRForm();
         rnRForm.setEmergency(true);
         TestSubscriber<Void> testSubscriber = new TestSubscriber<>();
-        presenter.updateRnrForm(rnRForm).subscribe(testSubscriber);
+        presenter.createOrUpdateRnrForm(rnRForm).subscribe(testSubscriber);
         testSubscriber.awaitTerminalEvent();
 
         testSubscriber.assertNoErrors();
-        verify(mockRnrFormRepository).createAndRefresh(rnRForm);
-        verify(mockRnrFormRepository).update(rnRForm);
+        verify(mockRnrFormRepository).createOrUpdateWithItems(rnRForm);
     }
 
     @Test
@@ -593,12 +592,12 @@ public class VIARequisitionPresenterTest {
         RnRForm rnRForm = new RnRForm();
         rnRForm.setEmergency(false);
         TestSubscriber<Void> testSubscriber = new TestSubscriber<>();
-        presenter.updateRnrForm(rnRForm).subscribe(testSubscriber);
+        presenter.createOrUpdateRnrForm(rnRForm).subscribe(testSubscriber);
         testSubscriber.awaitTerminalEvent();
 
         testSubscriber.assertNoErrors();
         verify(mockRnrFormRepository, never()).createAndRefresh(rnRForm);
-        verify(mockRnrFormRepository).update(rnRForm);
+        verify(mockRnrFormRepository).createOrUpdateWithItems(rnRForm);
     }
 
     private ViaKitsViewModel buildDefaultViaKit() {

@@ -33,6 +33,7 @@ import org.openlmis.core.exceptions.StockMovementIsNullException;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
@@ -44,6 +45,7 @@ import org.roboguice.shaded.goole.common.collect.Lists;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -422,5 +424,29 @@ public class StockRepository {
         }
         return earliestDate;
     }
+
+    protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm form) throws LMISException {
+        List<StockCard> stockCards;
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_auto_fill_kit_rnr)) {
+            stockCards = listActiveStockCards(form.getProgram().getProgramCode(), ProductRepository.IsWithKit.Yes);
+        } else {
+            stockCards = listActiveStockCards(form.getProgram().getProgramCode(), ProductRepository.IsWithKit.No);
+        }
+
+        for (Iterator iterator = stockCards.iterator(); iterator.hasNext(); ) {
+            StockCard stockCard = (StockCard) iterator.next();
+            StockMovementItem stockMovementItem = queryFirstStockMovementItem(stockCard);
+            if (shouldRemoveStockCard(stockMovementItem, form.getPeriodEnd())) {
+                iterator.remove();
+            }
+        }
+        return stockCards;
+    }
+
+    protected boolean shouldRemoveStockCard(StockMovementItem stockMovementItem, Date periodEnd) {
+        return stockMovementItem != null && (stockMovementItem.getMovementDate().after(periodEnd)
+                || stockMovementItem.getCreatedTime().after(periodEnd));
+    }
+
 
 }

@@ -33,14 +33,17 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.DraftInventory;
+import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.ProductProgramBuilder;
 import org.openlmis.core.model.builder.ProgramBuilder;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -56,6 +59,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openlmis.core.model.StockMovementItem.MovementType.ISSUE;
 import static org.openlmis.core.model.StockMovementItem.MovementType.RECEIVE;
@@ -548,6 +552,46 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         //then
         List<StockCard> stockCardsBeforeTimeLine = stockRepository.listEmergencyStockCards();
         assertThat(stockCardsBeforeTimeLine.size(), is(1));
+    }
+
+    @Test
+    public void shouldKeepStockCardWhenItsInPeriod() {
+        Program program = new Program();
+        program.setId(123);
+        program.setProgramCode(Constants.MMIA_PROGRAM_CODE);
+
+        Date movementDate = DateUtil.parseString("2015-07-21", DateUtil.DB_DATE_FORMAT);
+        Date createdTime = DateUtil.parseString("2015-07-21 11:00:00", DateUtil.DATE_TIME_FORMAT);
+
+        DateTime periodBegin = new DateTime(DateUtil.parseString("2015-06-21 10:10:10", DateUtil.DATE_TIME_FORMAT));
+        DateTime periodEnd = new DateTime(DateUtil.parseString("2015-07-21 11:11:11", DateUtil.DATE_TIME_FORMAT));
+        RnRForm form = RnRForm.init(program, new Period(periodBegin, periodEnd), false);
+
+        StockMovementItem movementItem = new StockMovementItem();
+        movementItem.setMovementDate(movementDate);
+        movementItem.setCreatedTime(createdTime);
+
+        assertFalse(stockRepository.shouldRemoveStockCard(movementItem, form.getPeriodEnd()));
+    }
+
+    @Test
+    public void shouldRemoveStockCardWhenItsOutPeriod() {
+        Program program = new Program();
+        program.setId(123);
+        program.setProgramCode(Constants.MMIA_PROGRAM_CODE);
+
+        Date movementDate = DateUtil.parseString("2015-07-21", DateUtil.DB_DATE_FORMAT);
+        Date createdTime = DateUtil.parseString("2015-07-21 11:11:13", DateUtil.DATE_TIME_FORMAT);
+
+        DateTime periodBegin = new DateTime(DateUtil.parseString("2015-06-21 10:10:10", DateUtil.DATE_TIME_FORMAT));
+        DateTime periodEnd = new DateTime(DateUtil.parseString("2015-07-21 11:11:11", DateUtil.DATE_TIME_FORMAT));
+        RnRForm form = RnRForm.init(program, new Period(periodBegin, periodEnd), false);
+
+        StockMovementItem movementItem = new StockMovementItem();
+        movementItem.setMovementDate(movementDate);
+        movementItem.setCreatedTime(createdTime);
+
+        assertTrue(stockRepository.shouldRemoveStockCard(movementItem, form.getPeriodEnd()));
     }
 
     private void saveDraftInventory() throws LMISException {

@@ -35,12 +35,12 @@ public class RnrFormItemRepository {
         });
     }
 
-    public void create(final List<RnrFormItem> rnrFormItemList) throws LMISException {
+    public void batchCreateOrUpdate(final List<RnrFormItem> rnrFormItemList) throws LMISException {
         dbUtil.withDaoAsBatch(RnrFormItem.class, new DbUtil.Operation<RnrFormItem, Void>() {
             @Override
             public Void operate(Dao<RnrFormItem, String> dao) throws SQLException {
                 for (RnrFormItem item : rnrFormItemList) {
-                    dao.create(item);
+                    dao.createOrUpdate(item);
                 }
                 return null;
             }

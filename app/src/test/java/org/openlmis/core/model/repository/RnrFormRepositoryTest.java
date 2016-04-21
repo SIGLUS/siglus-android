@@ -175,24 +175,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(rnRForm.getComments(), is("Submitted Form"));
     }
 
-    @Test
-    public void shouldGetSignatureByRnrForm() throws LMISException {
-        Program program = new Program();
-
-        RnRForm form = new RnRFormBuilder().setComments("Submitted Form")
-                .setStatus(RnRForm.STATUS.SUBMITTED)
-                .setProgram(program).build();
-        form.getSignaturesWrapper().add(new RnRFormSignature(form, "Submitter Signature", RnRFormSignature.TYPE.SUBMITTER));
-        form.getSignaturesWrapper().add(new RnRFormSignature(form, "Approver Signature", RnRFormSignature.TYPE.APPROVER));
-        rnrFormRepository.createAndRefresh(form);
-        rnrFormRepository.update(form);
-
-        List<RnRFormSignature> signatures = rnrFormRepository.querySignaturesByRnrForm(form);
-
-        assertThat(signatures.size(), is(2));
-        assertThat(signatures.get(0).getSignature(), is("Submitter Signature"));
-        assertThat(signatures.get(1).getSignature(), is("Approver Signature"));
-    }
 
     @Test
     public void shouldReturnFalseIfThereIsAAuthorizedFormExisted() throws Exception {
@@ -228,54 +210,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         RnRForm rnRForm2 = RnRForm.init(program, generateDate);
 
         assertThat(rnrFormRepository.isPeriodUnique(rnRForm2), is(true));
-    }
-
-    @Test
-    public void shouldNotGetStockCardCreatedAfterPeriodEndDate() throws Exception {
-        Program program = new Program();
-        program.setId(123);
-        program.setProgramCode(Constants.MMIA_PROGRAM_CODE);
-
-        DateTime periodBegin = new DateTime(DateUtil.parseString("2015-06-21 10:10:10", DateUtil.DATE_TIME_FORMAT));
-        DateTime periodEnd = new DateTime(DateUtil.parseString("2015-07-21 11:11:11", DateUtil.DATE_TIME_FORMAT));
-        RnRForm form = RnRForm.init(program, new Period(periodBegin, periodEnd), false);
-
-        List<StockCard> stockCardList = new ArrayList<>();
-        StockCard stockCard = new StockCard();
-        stockCardList.add(stockCard);
-        when(mockStockRepository.listActiveStockCards(anyString(), any(ProductRepository.IsWithKit.class))).thenReturn(stockCardList);
-
-        Date movementDate = DateUtil.parseString("2015-07-21", DateUtil.DB_DATE_FORMAT);
-        Date createdTime = DateUtil.parseString("2015-07-21 11:11:13", DateUtil.DATE_TIME_FORMAT);
-        StockMovementItem stockMovementItem = generateStockMovementItemWithDates(movementDate, createdTime);
-
-        when(mockStockRepository.queryFirstStockMovementItem(stockCard)).thenReturn(stockMovementItem);
-
-        assertThat(rnrFormRepository.getStockCardsBeforePeriodEnd(form).size(), is(0));
-    }
-
-    @Test
-    public void shouldGetStockCardCreatedAfterPeriodEndDate() throws Exception {
-        Program program = new Program();
-        program.setId(123);
-        program.setProgramCode(Constants.MMIA_PROGRAM_CODE);
-
-        DateTime periodBegin = new DateTime(DateUtil.parseString("2015-06-21 10:10:10", DateUtil.DATE_TIME_FORMAT));
-        DateTime periodEnd = new DateTime(DateUtil.parseString("2015-07-21 11:11:11", DateUtil.DATE_TIME_FORMAT));
-        RnRForm form = RnRForm.init(program, new Period(periodBegin, periodEnd), false);
-
-        List<StockCard> stockCardList = new ArrayList<>();
-        StockCard stockCard = new StockCard();
-        stockCardList.add(stockCard);
-        when(mockStockRepository.listActiveStockCards(anyString(), any(ProductRepository.IsWithKit.class))).thenReturn(stockCardList);
-
-        Date movementDate = DateUtil.parseString("2015-07-21", DateUtil.DB_DATE_FORMAT);
-        Date createdTime = DateUtil.parseString("2015-07-21 11:00:00", DateUtil.DATE_TIME_FORMAT);
-        StockMovementItem stockMovementItem = generateStockMovementItemWithDates(movementDate, createdTime);
-
-        when(mockStockRepository.queryFirstStockMovementItem(stockCard)).thenReturn(stockMovementItem);
-
-        assertThat(rnrFormRepository.getStockCardsBeforePeriodEnd(form).size(), is(1));
     }
 
     private StockMovementItem generateStockMovementItemWithDates(Date movementDate, Date createdTime) {
@@ -371,7 +305,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         when(mockProductProgramRepository.queryByCode(anyString(), anyList())).thenReturn(productProgram);
         when(mockProgramRepository.queryProgramCodesByProgramCodeOrParentCode(anyString())).thenReturn(new ArrayList<String>());
 
-        List<RnrFormItem> rnrFormItemList = rnrFormRepository.generateRnrFormItems(form, rnrFormRepository.getStockCardsBeforePeriodEnd(form));
+        List<RnrFormItem> rnrFormItemList = rnrFormRepository.generateRnrFormItems(form, stockCards);
 
         RnrFormItem rnrFormItem = rnrFormItemList.get(0);
         int expectAdjustment = positiveQuantity - negativeQuantity;
@@ -418,7 +352,7 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         form.setBaseInfoItemListWrapper(new ArrayList<BaseInfoItem>());
         form.getSignaturesWrapper().add(new RnRFormSignature(form, "sign", RnRFormSignature.TYPE.SUBMITTER));
         rnrFormRepository.createAndRefresh(form);
-        rnrFormRepository.update(form);
+        rnrFormRepository.createOrUpdateWithItems(form);
 
         RnRForm rnRForm = rnrFormRepository.queryRnRForm(1);
         assertThat(DateUtil.formatDate(rnRForm.getUpdatedAt(), DateUtil.SIMPLE_DATE_FORMAT), is(DateUtil.formatDate(DateUtil.today(), DateUtil.SIMPLE_DATE_FORMAT)));

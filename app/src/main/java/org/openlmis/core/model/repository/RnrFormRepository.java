@@ -33,7 +33,6 @@ import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -48,7 +47,6 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -65,6 +63,15 @@ public class RnrFormRepository {
 
     @Inject
     RnrFormItemRepository rnrFormItemRepository;
+
+    @Inject
+    RegimenItemRepository regimenItemRepository;
+
+    @Inject
+    RnrFormSignatureRepository signatureRepository;
+
+    @Inject
+    BaseInfoItemRepository baseInfoItemRepository;
 
     @Inject
     ProductProgramRepository productProgramRepository;
@@ -112,10 +119,7 @@ public class RnrFormRepository {
                 @Override
                 public Object call() throws Exception {
                     for (RnRForm form : forms) {
-                        create(form);
-                        rnrFormItemRepository.create(form.getRnrFormItemListWrapper());
-                        createRegimenItems(form.getRegimenItemListWrapper());
-                        createBaseInfoItems(form.getBaseInfoItemListWrapper());
+                        createOrUpdateWithItems(form);
                     }
                     return null;
                 }
@@ -125,47 +129,14 @@ public class RnrFormRepository {
         }
     }
 
-    public void createRegimenItems(final List<RegimenItem> regimenItemList) throws LMISException {
-        dbUtil.withDao(RegimenItem.class, new DbUtil.Operation<RegimenItem, Void>() {
-            @Override
-            public Void operate(Dao<RegimenItem, String> dao) throws SQLException {
-                for (RegimenItem item : regimenItemList) {
-                    dao.create(item);
-                }
-                return null;
-            }
-        });
-    }
-
-    public void createRegimenItem(final RegimenItem regimenItem) throws LMISException {
-        dbUtil.withDao(RegimenItem.class, new DbUtil.Operation<RegimenItem, Void>() {
-            @Override
-            public Void operate(Dao<RegimenItem, String> dao) throws SQLException {
-                dao.create(regimenItem);
-                return null;
-            }
-        });
-    }
-
-    public void createBaseInfoItems(final List<BaseInfoItem> baseInfoItemList) throws LMISException {
-        dbUtil.withDaoAsBatch(BaseInfoItem.class, new DbUtil.Operation<BaseInfoItem, Void>() {
-            @Override
-            public Void operate(Dao<BaseInfoItem, String> dao) throws SQLException {
-                for (BaseInfoItem item : baseInfoItemList) {
-                    dao.create(item);
-                }
-                return null;
-            }
-        });
-    }
-
-    public void update(final RnRForm form) throws LMISException {
+    public void createOrUpdateWithItems(final RnRForm form) throws LMISException {
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-                    rnrFormHelper.updateWrapperList(form);
-                    genericDao.update(form);
+                    genericDao.createOrUpdate(form);
+                    createOrUpdateRnrWrappers(form);
+                    genericDao.refresh(form);
                     return null;
                 }
             });
@@ -232,7 +203,6 @@ public class RnrFormRepository {
 
     protected void deleteDeactivatedAndUnsupportedProductItems(List<RnRForm> rnRForms) throws LMISException {
         for (RnRForm rnRForm : rnRForms) {
-
             String programCode = rnRForm.getProgram().getProgramCode();
             List<String> programCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode(programCode);
             List<String> supportedProductCodes = FluentIterable.from(productProgramRepository.listActiveProductProgramsByProgramCodes(programCodes)).transform(new Function<ProductProgram, String>() {
@@ -263,22 +233,11 @@ public class RnrFormRepository {
     public void removeRnrForm(RnRForm form) throws LMISException {
         if (form != null) {
             rnrFormItemRepository.deleteFormItems(form.getRnrFormItemListWrapper());
-            deleteRegimenItems(form.getRegimenItemListWrapper());
-            deleteBaseInfoItems(form.getBaseInfoItemListWrapper());
+            regimenItemRepository.deleteRegimenItems(form.getRegimenItemListWrapper());
+            baseInfoItemRepository.batchDelete(form.getBaseInfoItemListWrapper());
+            signatureRepository.batchDelete(form.getSignaturesWrapper());
             genericDao.delete(form);
         }
-    }
-
-    public List<RnRFormSignature> querySignaturesByRnrForm(final RnRForm form) throws LMISException {
-        if (form == null) {
-            throw new LMISException("RnRForm cannot be null !");
-        }
-        return dbUtil.withDao(RnRFormSignature.class, new DbUtil.Operation<RnRFormSignature, List<RnRFormSignature>>() {
-            @Override
-            public List<RnRFormSignature> operate(Dao<RnRFormSignature, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("form_id", form.getId()).query();
-            }
-        });
     }
 
     public boolean hasRequisitionData() {
@@ -300,25 +259,6 @@ public class RnrFormRepository {
                 return dao.queryBuilder().where().eq("synced", false).and().eq("status", RnRForm.STATUS.AUTHORIZED).query();
             }
         });
-    }
-
-    protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm form) throws LMISException {
-        List<StockCard> stockCards;
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_auto_fill_kit_rnr)) {
-            stockCards = stockRepository.listActiveStockCards(form.getProgram().getProgramCode(), ProductRepository.IsWithKit.Yes);
-        } else {
-            stockCards = stockRepository.listActiveStockCards(form.getProgram().getProgramCode(), ProductRepository.IsWithKit.No);
-        }
-
-        for (Iterator iterator = stockCards.iterator(); iterator.hasNext(); ) {
-            StockCard stockCard = (StockCard) iterator.next();
-            StockMovementItem stockMovementItem = stockRepository.queryFirstStockMovementItem(stockCard);
-            if (stockMovementItem != null && (stockMovementItem.getMovementDate().after(form.getPeriodEnd())
-                    || stockMovementItem.getCreatedTime().after(form.getPeriodEnd()))) {
-                iterator.remove();
-            }
-        }
-        return stockCards;
     }
 
     protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {
@@ -362,9 +302,10 @@ public class RnrFormRepository {
                 @Override
                 public Object call() throws Exception {
                     create(rnrForm);
-                    rnrFormItemRepository.create(generateRnrFormItems(rnrForm, getStockCardsBeforePeriodEnd(rnrForm)));
-                    createRegimenItems(generateRegimeItems(rnrForm));
-                    createBaseInfoItems(generateBaseInfoItems(rnrForm));
+                    List<StockCard> stockCards = stockRepository.getStockCardsBeforePeriodEnd(rnrForm);
+                    rnrFormItemRepository.batchCreateOrUpdate(generateRnrFormItems(rnrForm, stockCards));
+                    regimenItemRepository.batchCreateOrUpdate(generateRegimeItems(rnrForm));
+                    baseInfoItemRepository.batchCreateOrUpdate(generateBaseInfoItems(rnrForm));
                     genericDao.refresh(rnrForm);
                     return null;
                 }
@@ -393,30 +334,6 @@ public class RnrFormRepository {
                 item.setCategory(productProgramRepository.queryByCode(item.getProduct().getCode(), programCodes).getCategory());
             }
         }
-    }
-
-    private void deleteBaseInfoItems(final List<BaseInfoItem> baseInfoItemListWrapper) throws LMISException {
-        dbUtil.withDaoAsBatch(BaseInfoItem.class, new DbUtil.Operation<BaseInfoItem, Void>() {
-            @Override
-            public Void operate(Dao<BaseInfoItem, String> dao) throws SQLException {
-                for (BaseInfoItem item : baseInfoItemListWrapper) {
-                    dao.delete(item);
-                }
-                return null;
-            }
-        });
-    }
-
-    private void deleteRegimenItems(final List<RegimenItem> regimenItemListWrapper) throws LMISException {
-        dbUtil.withDao(RegimenItem.class, new DbUtil.Operation<RegimenItem, Void>() {
-            @Override
-            public Void operate(Dao<RegimenItem, String> dao) throws SQLException {
-                for (RegimenItem item : regimenItemListWrapper) {
-                    dao.delete(item);
-                }
-                return null;
-            }
-        });
     }
 
     private long lastRnrInventory(StockCard stockCard) throws LMISException {
@@ -453,5 +370,12 @@ public class RnrFormRepository {
     public void createAndRefresh(RnRForm rnRForm) throws LMISException {
         create(rnRForm);
         genericDao.refresh(rnRForm);
+    }
+
+    private void createOrUpdateRnrWrappers(RnRForm form) throws SQLException, LMISException {
+        rnrFormItemRepository.batchCreateOrUpdate(form.getRnrFormItemListWrapper());
+        signatureRepository.batchCreateOrUpdate(form.getSignaturesWrapper());
+        regimenItemRepository.batchCreateOrUpdate(form.getRegimenItemListWrapper());
+        baseInfoItemRepository.batchCreateOrUpdate(form.getBaseInfoItemListWrapper());
     }
 }

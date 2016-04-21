@@ -1,13 +1,9 @@
 package org.openlmis.core.model.helper;
 
-import com.j256.ormlite.dao.ForeignCollection;
-
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockMovementItem;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class RnrFormHelper {
@@ -19,23 +15,6 @@ public class RnrFormHelper {
         rnrFormItem.setCalculatedOrderQuantity(0L);
         rnrFormItem.setInitialAmount(lastRnrInventory);
         rnrFormItem.setInventory(lastRnrInventory);
-    }
-
-    public void updateWrapperList(RnRForm form) throws SQLException {
-        assignWrapperToForeignCollection(form.getRnrFormItemList(), form.getRnrFormItemListWrapper());
-        assignWrapperToForeignCollection(form.getRegimenItemList(), form.getRegimenItemListWrapper());
-        assignWrapperToForeignCollection(form.getBaseInfoItemList(), form.getBaseInfoItemListWrapper());
-        assignWrapperToForeignCollection(form.getSignatures(), form.getSignaturesWrapper());
-    }
-
-    private <T> void assignWrapperToForeignCollection(ForeignCollection<T> foreignCollection, List<T> list) throws SQLException {
-        for (T item : list) {
-            if (foreignCollection.contains(item)) {
-                foreignCollection.update(item);
-            } else {
-                foreignCollection.add(item);
-            }
-        }
     }
 
     public void assignTotalValues(RnrFormItem rnrFormItem, List<StockMovementItem> stockMovementItems) {

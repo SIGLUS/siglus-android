@@ -192,7 +192,7 @@ public class SyncUpManager {
     private void markRnrFormSynced(RnRForm rnRForm) {
         rnRForm.setSynced(true);
         try {
-            rnrFormRepository.update(rnRForm);
+            rnrFormRepository.createOrUpdateWithItems(rnRForm);
         } catch (LMISException e) {
             e.reportToFabric();
             Log.e(TAG, "===> SyncRnr : mark synced failed -> " + rnRForm.getId());

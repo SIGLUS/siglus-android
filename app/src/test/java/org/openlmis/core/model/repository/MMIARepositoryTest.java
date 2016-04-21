@@ -75,6 +75,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     ProductProgramRepository productProgramRepository;
     PeriodService mockPeriodService;
     private Program program;
+    RegimenItemRepository regimenItemRepository;
 
     @Before
     public void setup() throws LMISException {
@@ -83,6 +84,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         mockProductRepository = mock(ProductRepository.class);
         mockPeriodService = mock(PeriodService.class);
         productProgramRepository = mock(ProductProgramRepository.class);
+        regimenItemRepository = mock(RegimenItemRepository.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         mmiaRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(MMIARepository.class);
@@ -111,12 +113,10 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         StockMovementItem stockMovementItem2 = createMovementItem(StockMovementItem.MovementType.RECEIVE, 20, stockCard, mockDay2, mockDay2);
         StockMovementItem stockMovementItem3 = createMovementItem(StockMovementItem.MovementType.POSITIVE_ADJUST, 30, stockCard, mockDay3, mockDay3);
 
-
-        when(mockStockRepository.listActiveStockCards(anyString(), any(ProductRepository.IsWithKit.class))).thenReturn(stockCards);
-        when(mockStockRepository.queryFirstStockMovementItem(any(StockCard.class))).thenReturn(stockMovementItem1);
         when(mockPeriodService.generateNextPeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime("2016-12-27"), new DateTime("2017-01-20")));
         when(mockStockRepository.queryStockItemsByPeriodDates(any(StockCard.class), any(Date.class), any(Date.class)))
                 .thenReturn(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
+        when(mockStockRepository.getStockCardsBeforePeriodEnd(any(RnRForm.class))).thenReturn(stockCards);
 
         ProductProgram productProgram = new ProductProgram();
         productProgram.setCategory("Adult");
@@ -169,7 +169,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
             BaseInfoItem item = baseInfoItemListWrapper.get(i);
             item.setValue(String.valueOf(i));
         }
-        mmiaRepository.update(initForm);
+        mmiaRepository.createOrUpdateWithItems(initForm);
 
         List<RnRForm> list = mmiaRepository.list();
         RnRForm DBForm = list.get(list.size() - 1);
@@ -198,16 +198,6 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         assertThat(baseInfoItems.get(0).getName(), is(mmiaRepository.ATTR_NEW_PATIENTS));
         assertThat(baseInfoItems.get(3).getName(), is(mmiaRepository.ATTR_PTV));
         assertThat(baseInfoItems.get(baseInfoItems.size() - 1).getName(), is(mmiaRepository.ATTR_TOTAL_PATIENTS));
-    }
-
-    @Test
-    public void shouldDeleteSuccessful() throws Exception {
-        RegimenItem regimenItem = new RegimenItem();
-        mmiaRepository.createRegimenItem(regimenItem);
-        assertThat(mmiaRepository.queryRegimeItem().size(), is(1));
-
-        mmiaRepository.deleteRegimeItem(regimenItem);
-        assertThat(mmiaRepository.queryRegimeItem().size(), is(0));
     }
 
     private ArrayList<Product> createProducts() {
@@ -364,6 +354,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
             bind(ProgramRepository.class).toInstance(mockProgramRepository);
             bind(PeriodService.class).toInstance(mockPeriodService);
             bind(ProductProgramRepository.class).toInstance(productProgramRepository);
+            bind(RegimenItemRepository.class).toInstance(regimenItemRepository);
         }
     }
 }

@@ -18,6 +18,8 @@
 
 package org.openlmis.core.presenter;
 
+import com.google.inject.Inject;
+
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -27,6 +29,7 @@ import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
+import org.openlmis.core.model.repository.RegimenItemRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
@@ -45,6 +48,9 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
 
     MMIARequisitionView view;
     private MMIARepository mmiaRepository;
+
+    @Inject
+    private RegimenItemRepository regimenItemRepository;
 
     @Override
     protected RnrFormRepository initRnrFormRepository() {
@@ -158,6 +164,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
                 try {
                     if (!isRegimeItemExists(regimen)) {
                         RegimenItem regimenItem = createRegimenItem(regimen);
+                        regimenItemRepository.create(regimenItem);
                         rnRForm.getRegimenItemListWrapper().add(regimenItem);
                     }
                 } catch (LMISException e) {
@@ -182,7 +189,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         RegimenItem regimenItem = new RegimenItem();
         regimenItem.setRegimen(regimen);
         regimenItem.setForm(rnRForm);
-        mmiaRepository.createRegimenItem(regimenItem);
         return regimenItem;
     }
 
@@ -192,7 +198,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
             public void call(Subscriber<? super Void> subscriber) {
                 try {
                     rnRForm.getRegimenItemListWrapper().remove(item);
-                    mmiaRepository.deleteRegimeItem(item);
+                    regimenItemRepository.deleteRegimeItem(item);
                 } catch (LMISException e) {
                     e.reportToFabric();
                     subscriber.onError(e);

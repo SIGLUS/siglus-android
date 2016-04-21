@@ -133,7 +133,7 @@ public class SyncUpManagerTest {
 
         syncUpManager.syncRnr();
         verify(lmisRestApi, times(10)).submitRequisition(any(RnRForm.class));
-        verify(rnrFormRepository, times(10)).update(any(RnRForm.class));
+        verify(rnrFormRepository, times(10)).createOrUpdateWithItems(any(RnRForm.class));
         verify(syncErrorsRepository, times(10)).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
     }
 
@@ -282,7 +282,7 @@ public class SyncUpManagerTest {
         syncUpManager.syncRnr();
         verify(rnrFormRepository, times(1)).queryAllUnsyncedForms();
         verify(lmisRestApi, times(2)).submitRequisition(any(RnRForm.class));
-        verify(rnrFormRepository, times(2)).update(any(RnRForm.class));
+        verify(rnrFormRepository, times(2)).createOrUpdateWithItems(any(RnRForm.class));
         verify(syncErrorsRepository, times(2)).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
     }
 

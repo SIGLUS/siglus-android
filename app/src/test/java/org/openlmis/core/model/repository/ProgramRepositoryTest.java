@@ -74,7 +74,7 @@ public class ProgramRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(productRepository.listActiveProducts(IsKit.No).size(), is(2));
         assertThat(productRepository.listActiveProducts(IsKit.No).get(1).getPrimaryName(), is("Test Product2"));
 
-        //when update existing product
+        //when createOrUpdateWithItems existing product
         newProduct.setPrimaryName("Test Product2 Updated");
         programRepository.createOrUpdateProgramWithProduct(programs);
 

@@ -53,7 +53,7 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
         rnrFormItemList.add(getRnrFormItem(form, product, 5));
         rnrFormItemList.add(getRnrFormItem(form, product, 7));
 
-        rnrFormItemRepository.create(rnrFormItemList);
+        rnrFormItemRepository.batchCreateOrUpdate(rnrFormItemList);
 
         rnrFormRepository.create(form);
 

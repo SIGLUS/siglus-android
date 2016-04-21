@@ -130,7 +130,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    rnrFormRepository.update(rnRForm);
+                    rnrFormRepository.createOrUpdateWithItems(rnRForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.reportToFabric();
@@ -163,7 +163,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
 
     protected void submitRequisition(final RnRForm rnRForm) {
         view.loading();
-        Subscription submitSubscription = updateRnrForm(rnRForm).subscribe(getSubmitRequisitionSubscriber());
+        Subscription submitSubscription = createOrUpdateRnrForm(rnRForm).subscribe(getSubmitRequisitionSubscriber());
         subscriptions.add(submitSubscription);
     }
 
@@ -192,7 +192,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
 
     protected void authoriseRequisition(final RnRForm rnRForm) {
         view.loading();
-        Subscription authoriseSubscription = updateRnrForm(rnRForm).subscribe(getAuthoriseRequisitionSubscriber());
+        Subscription authoriseSubscription = createOrUpdateRnrForm(rnRForm).subscribe(getAuthoriseRequisitionSubscriber());
         subscriptions.add(authoriseSubscription);
     }
 
@@ -219,12 +219,12 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         };
     }
 
-    protected Observable<Void> updateRnrForm(final RnRForm rnRForm) {
+    protected Observable<Void> createOrUpdateRnrForm(final RnRForm rnRForm) {
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    createAndUpdateRequisition(rnRForm);
+                    rnrFormRepository.createOrUpdateWithItems(rnRForm);
                     subscriber.onNext(null);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
@@ -233,10 +233,6 @@ public abstract class BaseRequisitionPresenter extends Presenter {
                 }
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-    }
-
-    protected void createAndUpdateRequisition(RnRForm rnRForm) throws LMISException {
-        rnrFormRepository.update(rnRForm);
     }
 
     public void removeRequisition() {

@@ -37,6 +37,7 @@ import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.RegimenItemRepository;
 import org.openlmis.core.service.SyncUpManager;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
@@ -70,6 +71,7 @@ public class MMIARequisitionPresenterTest {
     private ProgramRepository programRepository;
     private MMIARequisitionPresenter.MMIARequisitionView mockMMIAformView;
     private RnRForm rnRForm;
+    private RegimenItemRepository regimenItemRepository;
 
     @Before
     public void setup() throws Exception {
@@ -77,6 +79,7 @@ public class MMIARequisitionPresenterTest {
         programRepository = mock(ProgramRepository.class);
         mockMMIAformView = mock(MMIARequisitionPresenter.MMIARequisitionView.class);
         syncUpManager = mock(SyncUpManager.class);
+        regimenItemRepository = mock(RegimenItemRepository.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         MockitoAnnotations.initMocks(this);
 
@@ -207,7 +210,7 @@ public class MMIARequisitionPresenterTest {
         waitObservableToExecute();
 
         assertThat(RnRForm.STATUS.SUBMITTED, is(form.getStatus()));
-        verify(mmiaRepository).update(form);
+        verify(mmiaRepository).createOrUpdateWithItems(form);
         verify(mockMMIAformView).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_complete));
         verify(mockMMIAformView).showMessageNotifyDialog();
     }
@@ -223,7 +226,7 @@ public class MMIARequisitionPresenterTest {
         waitObservableToExecute();
 
         assertThat(RnRForm.STATUS.AUTHORIZED, is(form.getStatus()));
-        verify(mmiaRepository).update(form);
+        verify(mmiaRepository).createOrUpdateWithItems(form);
     }
 
     @Test
@@ -269,7 +272,7 @@ public class MMIARequisitionPresenterTest {
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
 
-        verify(mmiaRepository).createRegimenItem(any(RegimenItem.class));
+        verify(regimenItemRepository).create(any(RegimenItem.class));
         assertThat(regimenItemListWrapper.size(), is(size + 1));
     }
 
@@ -288,7 +291,7 @@ public class MMIARequisitionPresenterTest {
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
 
-        verify(mmiaRepository, never()).createRegimenItem(any(RegimenItem.class));
+        verify(regimenItemRepository, never()).create(any(RegimenItem.class));
         assertThat(regimenItemListWrapper.size(), is(size));
     }
 
@@ -304,7 +307,7 @@ public class MMIARequisitionPresenterTest {
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
 
-        verify(mmiaRepository).deleteRegimeItem(item);
+        verify(regimenItemRepository).deleteRegimeItem(item);
         assertThat(regimenItemListWrapper.size(), is(size - 1));
     }
 
@@ -343,6 +346,7 @@ public class MMIARequisitionPresenterTest {
             bind(ProgramRepository.class).toInstance(programRepository);
             bind(MMIARequisitionPresenter.MMIARequisitionView.class).toInstance(mockMMIAformView);
             bind(SyncUpManager.class).toInstance(syncUpManager);
+            bind(RegimenItemRepository.class).toInstance(regimenItemRepository);
         }
     }
 }
