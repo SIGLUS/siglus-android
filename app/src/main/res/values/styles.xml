@@ -498,12 +498,11 @@
 
     <style name="ItemRequisition.Kit.Edit" parent="ItemRequisition.ReportEdit">
         <item name="android:layout_width">0dp</item>
-        <item name="android:maxLength">3</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:minHeight">35dp</item>
         <item name="android:gravity">center</item>
         <item name="android:inputType">number</item>
-        <item name="android:layout_weight">1</item>
+        <item name="android:layout_weight">1.2</item>
     </style>
 
     <style name="ItemRnr" />
