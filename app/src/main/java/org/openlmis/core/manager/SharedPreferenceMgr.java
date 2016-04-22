@@ -59,12 +59,12 @@ public class SharedPreferenceMgr {
     public static final String LAST_MOVEMENT_HANDSHAKE_DATE = "last_movement_handshake_date";
     public static final String KEY_ENABLE_QA_DEBUG = "enable_qa_debug";
     public static final String LATEST_UPDATE_LOW_STOCK_AVG_TIME = "latest_update_low_stock_avg_time";
-
-    protected StockRepository stockRepository = RoboGuice.getInjector(LMISApp.getContext()).getInstance(StockRepository.class);
+    protected StockRepository stockRepository;
 
     @Inject
     public SharedPreferenceMgr(Context context) {
         sharedPreferences = context.getSharedPreferences(MY_PREFERENCE, Context.MODE_PRIVATE);
+        stockRepository = RoboGuice.getInjector(context).getInstance(StockRepository.class);
         self = this;
     }
 

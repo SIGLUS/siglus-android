@@ -59,8 +59,8 @@ public class LMISApp extends Application {
     public void onCreate() {
         super.onCreate();
         JodaTimeAndroid.init(this);
-
         RoboGuice.getInjector(this).injectMembersWithoutViews(this);
+        RoboGuice.getInjector(this).getInstance(SharedPreferenceMgr.class);
         setupFabric();
         setupGoogleAnalytics();
 
