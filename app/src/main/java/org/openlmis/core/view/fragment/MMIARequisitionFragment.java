@@ -216,10 +216,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         });
     }
 
-    @Override
-    public void setProcessButtonName(String name) {
-        btnComplete.setText(name);
-    }
 
     protected void bindListeners() {
         etComment.post(new Runnable() {
@@ -247,7 +243,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         scrollView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                clearEditErrorFocus();
+                scrollView.requestFocus();
                 hideImm();
                 return false;
             }
@@ -285,11 +281,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     }
 
     protected void hideOrDisplayRnrItemsHeader() {
-        if (isNeedHideFreezeHeader()) {
-            rnrItemsHeaderFreeze.setVisibility(View.INVISIBLE);
-        } else {
-            rnrItemsHeaderFreeze.setVisibility(View.VISIBLE);
-        }
+        rnrItemsHeaderFreeze.setVisibility(isNeedHideFreezeHeader() ? View.INVISIBLE : View.VISIBLE);
     }
 
     private boolean isNeedHideFreezeHeader() {
@@ -304,10 +296,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         final int hiddenThresholdY = rnrFormList.getHeight() - lastItemHeight;
 
         return offsetY > hiddenThresholdY;
-    }
-
-    private void clearEditErrorFocus() {
-        scrollView.requestFocus();
     }
 
     TextWatcher commentTextWatcher = new SimpleTextWatcher() {
@@ -358,12 +346,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         }
     }
 
-    private void removeTempForm() {
-        if (!isHistoryForm) {
-            presenter.removeRequisition();
-        }
-    }
-
     private boolean hasDataChanged() {
         if (hasDataChanged == null) {
             hasDataChanged = regimeListView.hasDataChanged() || mmiaInfoListView.hasDataChanged() || commentHasChanged;
@@ -386,22 +368,23 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     }
 
     @Override
+    public void setProcessButtonName(int resId) {
+        btnComplete.setText(resId);
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_save:
-                onSaveBtnClick();
+                presenter.saveMMIAForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
                 break;
             case R.id.btn_complete:
-                onProcessButtonClick();
+                if (regimeListView.isCompleted() && mmiaInfoListView.isCompleted()) {
+                    presenter.processRequisition(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
+                }
                 break;
             default:
                 break;
-        }
-    }
-
-    private void onProcessButtonClick() {
-        if (regimeListView.isCompleted() && mmiaInfoListView.isCompleted()) {
-            presenter.processRequisition(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
         }
     }
 
@@ -452,14 +435,12 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         return regimeListView.getTotal() == mmiaInfoListView.getTotal();
     }
 
-    private void onSaveBtnClick() {
-        presenter.saveMMIAForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
-    }
-
     @Override
     public void positiveClick(String tag) {
         if (tag.equals(TAG_BACK_PRESSED)) {
-            removeTempForm();
+            if (!isHistoryForm) {
+                presenter.removeRequisition();
+            }
             finish();
         }
     }

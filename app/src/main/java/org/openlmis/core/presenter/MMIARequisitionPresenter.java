@@ -78,7 +78,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
 
     @Override
     public void updateUIAfterSubmit() {
-        view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
+        view.setProcessButtonName(R.string.btn_complete);
     }
 
     @Override
@@ -112,7 +112,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     protected void updateFormUI() {
         if (rnRForm != null) {
             view.refreshRequisitionForm(rnRForm);
-            setBtnCompleteText();
+            view.setProcessButtonName(rnRForm.isDraft() ? R.string.btn_submit : R.string.btn_complete);
         }
     }
 
@@ -143,14 +143,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
         rnRForm.setBaseInfoItemListWrapper(baseInfoItemList);
         rnRForm.setComments(comments);
         saveRequisition();
-    }
-
-    public void setBtnCompleteText() {
-        if (rnRForm.getStatus() == RnRForm.STATUS.DRAFT) {
-            view.setProcessButtonName(context.getResources().getString(R.string.btn_submit));
-        } else {
-            view.setProcessButtonName(context.getResources().getString(R.string.btn_complete));
-        }
     }
 
     public void setComments(String comments) {
@@ -212,6 +204,6 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
 
         void showValidationAlert();
 
-        void setProcessButtonName(String name);
+        void setProcessButtonName(int resId);
     }
 }
