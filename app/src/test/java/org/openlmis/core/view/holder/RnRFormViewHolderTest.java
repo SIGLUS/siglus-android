@@ -144,7 +144,7 @@ public class RnRFormViewHolderTest {
 
         assertThat(viewHolder.tvDrugCount.getVisibility(), is(View.VISIBLE));
         assertThat(viewHolder.tvDrugCount.getText().toString(), is("1 drug ordered"));
-        assertTrue(viewHolder.txPeriod.getText().toString().equals("Emergency Requisition – 22 Jan 11:33"));
+        assertTrue(viewHolder.txPeriod.getText().toString().equals("Emergency Requisition – 22 Jan 2016 11:33"));
         assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_submitted_message, "Emergency requisition balancete", viewModel.getSyncedTime())));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_requisition, "Emergency requisition balancete")));
         assertThat(viewHolder.ivDelete.getVisibility(), is(View.VISIBLE));
