@@ -48,6 +48,7 @@ public final class UserInfoMgr {
             Crashlytics.setUserIdentifier(user.getFacilityName());
         }
         SharedPreferenceMgr.getInstance().setCurrentUserFacility(user.getFacilityName());
+        SharedPreferenceMgr.getInstance().setLastLoginUser(user.getUsername());
         this.user = user;
     }
 
@@ -56,10 +57,10 @@ public final class UserInfoMgr {
     }
 
     public String getFacilityCode() {
-        return user.getFacilityCode();
+        return user == null ? "" : user.getFacilityCode();
     }
 
     public String getFacilityName() {
-        return SharedPreferenceMgr.getInstance().getCurrentUserFacility();
+        return user == null ? "" : user.getFacilityName();
     }
 }

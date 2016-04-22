@@ -21,6 +21,7 @@ package org.openlmis.core;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
@@ -114,15 +115,21 @@ public class LMISApp extends Application {
         Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
         mTracker.setScreenName(screenName.getScreenName());
         mTracker.send(new HitBuilders.ScreenViewBuilder()
-                .setCustomDimension(facilityCustomDimensionKey, UserInfoMgr.getInstance().getFacilityName())
+                .setCustomDimension(facilityCustomDimensionKey, getFacilityNameForGA())
                 .build());
     }
 
     public void trackEvent(TrackerCategories category, TrackerActions action) {
         Tracker mTracker = AnalyticsTrackers.getInstance().getDefault();
         mTracker.send(new HitBuilders.EventBuilder(category.getString(), action.getString())
-                .setCustomDimension(facilityCustomDimensionKey, UserInfoMgr.getInstance().getFacilityName())
+                .setCustomDimension(facilityCustomDimensionKey, getFacilityNameForGA())
                 .build());
+    }
+
+    private String getFacilityNameForGA() {
+        String facilityName = UserInfoMgr.getInstance().getFacilityName();
+        return TextUtils.isEmpty(facilityName)
+                ? SharedPreferenceMgr.getInstance().getCurrentUserFacility() : facilityName;
     }
 
     public void wipeAppData() {

@@ -153,7 +153,6 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     }
 
     public void launchActivity(Intent intent) {
-        SharedPreferenceMgr.getInstance().setLastLoginUser(etUsername.getText().toString().trim());
         startActivity(intent);
         finish();
     }
