@@ -75,9 +75,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
     @InjectView(R.id.tv_cmm)
     TextView tvCmm;
 
-    @InjectView(R.id.tv_cmm_label)
-    TextView tvCmmLabel;
-
     @InjectView(R.id.vg_expire_date_container)
     ExpireDateViewGroup expireDateViewGroup;
 
@@ -163,7 +160,8 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         btnComplete.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
         btnUnpack.setOnClickListener(this);
-        tvCmm.setText(presenter.getStockCardCmm());
+
+        tvCmm.setText(String.valueOf((int) presenter.getStockCard().getAvgMonthlyConsumption()));
 
         updateExpiryDateViewGroup();
     }

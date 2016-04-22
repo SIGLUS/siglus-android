@@ -5,6 +5,10 @@ import org.openlmis.core.utils.DateUtil;
 
 import java.util.Date;
 
+/**
+ * use PeriodService instead of this class
+ */
+@Deprecated
 public class Period {
 
     public static final int BEGIN_DAY = 21;

@@ -58,6 +58,8 @@ public class SharedPreferenceMgr {
     public static final String LATEST_PHYSICAL_INVENTORY_TIME = "latest_physical_inventory_time";
     public static final String LAST_MOVEMENT_HANDSHAKE_DATE = "last_movement_handshake_date";
     public static final String KEY_ENABLE_QA_DEBUG = "enable_qa_debug";
+    public static final String LATEST_UPDATE_LOW_STOCK_AVG_TIME = "latest_update_low_stock_avg_time";
+
     protected StockRepository stockRepository = RoboGuice.getInjector(LMISApp.getContext()).getInstance(StockRepository.class);
 
     @Inject
@@ -211,4 +213,13 @@ public class SharedPreferenceMgr {
     public boolean isQaDebugEnabled() {
         return sharedPreferences.getBoolean(KEY_ENABLE_QA_DEBUG, false);
     }
+
+    public DateTime getLatestUpdateLowStockAvgTime() {
+        return new DateTime(sharedPreferences.getLong(LATEST_UPDATE_LOW_STOCK_AVG_TIME, 0));
+    }
+
+    public void updateLatestLowStockAvgTime() {
+        sharedPreferences.edit().putLong(LATEST_UPDATE_LOW_STOCK_AVG_TIME, LMISApp.getInstance().getCurrentTimeMillis()).apply();
+    }
+
 }

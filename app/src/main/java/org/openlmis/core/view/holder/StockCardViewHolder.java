@@ -167,11 +167,9 @@ public class StockCardViewHolder extends BaseViewHolder {
 
     protected int getStockOnHandLevel(InventoryViewModel inventoryViewModel) {
 
-        int lowStockAvg = stockService.getLowStockAvg(inventoryViewModel.getStockCard());
-
         long stockOnHand = inventoryViewModel.getStockOnHand();
 
-        if (stockOnHand > lowStockAvg) {
+        if (stockOnHand > inventoryViewModel.getLowStockAvg()) {
             return STOCK_ON_HAND_NORMAL;
         } else if (stockOnHand > 0) {
             return STOCK_ON_HAND_LOW_STOCK;

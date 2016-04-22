@@ -35,6 +35,7 @@ import org.openlmis.core.persistence.migrations.AddIsArchivedToProduct;
 import org.openlmis.core.persistence.migrations.AddIsCustomColumnToRegime;
 import org.openlmis.core.persistence.migrations.AddIsEmergencyColumnToProgram;
 import org.openlmis.core.persistence.migrations.AddIsKitColumnToProduct;
+import org.openlmis.core.persistence.migrations.AddLowStockAvgColumnToStockCardTable;
 import org.openlmis.core.persistence.migrations.AddNewPrograms;
 import org.openlmis.core.persistence.migrations.AddParentCodeToProgramTable;
 import org.openlmis.core.persistence.migrations.AddSignatureFieldInStockMovementItemTable;
@@ -93,6 +94,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new ConvertEssMedsToVIAProgram());
             add(new AddEmergencyColumnToRnr());
             add(new AddCategoryColumnToProductPrograms());
+            add(new AddLowStockAvgColumnToStockCardTable());
         }
     };
     private static int instanceCount = 0;

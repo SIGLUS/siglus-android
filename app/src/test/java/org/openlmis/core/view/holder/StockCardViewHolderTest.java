@@ -52,8 +52,7 @@ public class StockCardViewHolderTest {
 
     @Test
     public void shouldGetNormalLevelWhenSOHGreaterThanAvg() throws LMISException {
-        when(stockService.getLowStockAvg(any(StockCard.class))).thenReturn(80);
-
+        stockCard.setAvgMonthlyConsumption(80);
         stockCard.setStockOnHand(100);
 
         int stockOnHandLevel = viewHolder.getStockOnHandLevel(new InventoryViewModel(stockCard));
@@ -64,7 +63,7 @@ public class StockCardViewHolderTest {
 
     @Test
     public void shouldGetLowLevelWhenSOHSmallerThanAvg() throws LMISException {
-        when(stockService.getLowStockAvg(any(StockCard.class))).thenReturn(100);
+        stockCard.setAvgMonthlyConsumption(100);
 
         stockCard.setStockOnHand(2);
 
@@ -75,7 +74,7 @@ public class StockCardViewHolderTest {
 
     @Test
     public void shouldGetStockOutLevelWhenSOHIsZero() throws LMISException {
-        when(stockService.getLowStockAvg(any(StockCard.class))).thenReturn(80);
+        stockCard.setAvgMonthlyConsumption(80);
 
         stockCard.setStockOnHand(0);
 

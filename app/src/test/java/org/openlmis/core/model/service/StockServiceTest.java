@@ -1,5 +1,6 @@
 package org.openlmis.core.model.service;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,16 +8,28 @@ import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.Date;
+import java.util.List;
 
 import roboguice.RoboGuice;
 
+import static java.util.Arrays.asList;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.openlmis.core.model.StockMovementItem.MovementType.ISSUE;
 import static org.openlmis.core.model.StockMovementItem.MovementType.RECEIVE;
 
@@ -30,10 +43,13 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
     private Date lastThirdMonthDate;
     private Date lastForthMonthDate;
     private StockCard stockCard;
+    private StockRepository stockRepository;
 
     @Before
     public void setup() throws LMISException {
+        RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SharedPreferenceMgr.class);
         stockService = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockService.class);
+        stockRepository = mock(StockRepository.class);
 
         Date today = DateUtil.today();
         lastFirstMonthDate = DateUtil.generatePreviousMonthDateBy(today);
@@ -43,9 +59,32 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         stockCard = new StockCard();
     }
 
+    @Test
+    public void shouldUpdateAverageMonthlyConsumption() throws Exception {
+        List<StockCard> list = asList(new StockCard());
+        stockService = spy(stockService);
+        stockService.stockRepository = stockRepository;
+        doReturn(0F).when(stockService).calculateAverageMonthlyConsumption(any(StockCard.class));
+
+        stockService.updateLowStockAvg(list);
+
+        verify(stockRepository).createOrUpdate(any(StockCard.class));
+    }
 
     @Test
-    public void shouldGetAverageMonthlyConsumptionCorrectly() throws LMISException {
+    public void shouldNotUpdateAverageMonthlyConsumption() throws Exception {
+        LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().getMillis());
+        SharedPreferenceMgr.getInstance().updateLatestLowStockAvgTime();
+        List<StockCard> list = asList(new StockCard());
+        stockService.stockRepository = stockRepository;
+
+        stockService.updateLowStockAvg(list);
+
+        verify(stockRepository,never()).createOrUpdate(any(StockCard.class));
+    }
+
+    @Test
+    public void shouldCalculateAverageMonthlyConsumptionWithStockOutCorrectly() throws LMISException {
         //given
         StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(200);
@@ -57,10 +96,10 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
 
         //when
-        long consumption = stockService.getCmm(stockCard);
+        float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
 
         //then
-        assertEquals(100, consumption);
+        assertThat(100F, is(averageMonthlyConsumption));
     }
 
 
@@ -87,7 +126,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldGetLowStockAvgIsZeroWhenOnlyTwoValidPeriod() throws Exception {
+    public void shouldCalculateAverageMonthlyConsumptionIsZeroWhenOnlyTwoValidPeriod() throws Exception {
         StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(300);
         stockService.stockRepository.createOrUpdate(stockCard);
@@ -95,14 +134,13 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastSecondMonthDate, false);
 
-        int lowStockAvg = stockService.getLowStockAvg(stockCard);
+        float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
         assertEquals(2, stockService.stockRepository.listLastFive(stockCard.getId()).size());
-        assertEquals(0, lowStockAvg);
+        assertThat(0F, is(averageMonthlyConsumption));
     }
 
     @Test
-    public void shouldGetLowStockAvgCorrectly() throws Exception {
-//        StockCard stockCard = new StockCard();
+    public void shouldCalculateAverageMonthlyConsumptionCorrectly() throws Exception {
         stockCard.setStockOnHand(400);
         stockService.stockRepository.createOrUpdate(stockCard);
 
@@ -110,14 +148,14 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastSecondMonthDate, false);
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastThirdMonthDate, false);
 
-        int lowStockAvg = stockService.getLowStockAvg(stockCard);
+        float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
         assertEquals(3, stockService.stockRepository.listLastFive(stockCard.getId()).size());
-        assertEquals(5, lowStockAvg);
+        assertThat(100F, is(averageMonthlyConsumption));
     }
 
 
     @Test
-    public void shouldGetLowStockAvgWhenLastMonthSOHIsZero() throws Exception {
+    public void shouldCalculateAverageMonthlyConsumptionWhenLastMonthSOHIsZero() throws Exception {
         stockCard.setStockOnHand(300);
         stockService.stockRepository.createOrUpdate(stockCard);
 
@@ -125,14 +163,14 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastThirdMonthDate, false);
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastSecondMonthDate, false);
 
-        int lowStockAvg = stockService.getLowStockAvg(stockCard);
+        float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
         assertEquals(3, stockService.stockRepository.listLastFive(stockCard.getId()).size());
-        assertEquals(0, lowStockAvg);
+        assertThat(0F, is(averageMonthlyConsumption));
     }
 
 
     @Test
-    public void shouldGetLowStockAvgWhenLastMonthHaveNoStockItem() throws Exception {
+    public void shouldCalculateAverageMonthlyConsumptionWhenLastMonthHaveNoStockItem() throws Exception {
         stockCard.setStockOnHand(400);
         stockService.stockRepository.createOrUpdate(stockCard);
 
@@ -140,9 +178,9 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastThirdMonthDate, false);
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastForthMonthDate, false);
 
-        int lowStockAvg = stockService.getLowStockAvg(stockCard);
+        float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
         assertEquals(3, stockService.stockRepository.listLastFive(stockCard.getId()).size());
-        assertEquals(4, lowStockAvg);
+        assertThat(200F/3, is(averageMonthlyConsumption));
     }
 
 

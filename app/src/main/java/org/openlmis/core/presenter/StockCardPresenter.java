@@ -26,11 +26,14 @@ import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.model.service.PeriodService;
+import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
+import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +56,10 @@ public class StockCardPresenter extends Presenter {
     StockRepository stockRepository;
     @Inject
     ProductRepository productRepository;
+    @Inject
+    StockService stockService;
+    @Inject
+    PeriodService periodService;
 
     Observer<List<StockCard>> afterLoadHandler = getLoadStockCardsSubscriber();
 
@@ -107,7 +114,9 @@ public class StockCardPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super List<StockCard>> subscriber) {
                 try {
-                    subscriber.onNext(from(stockRepository.list()).filter(new Predicate<StockCard>() {
+                    List<StockCard> list = stockRepository.list();
+                    stockService.updateLowStockAvg(list);
+                    ImmutableList<StockCard> stockCards = from(list).filter(new Predicate<StockCard>() {
                         @Override
                         public boolean apply(StockCard stockCard) {
                             if (status.isArchived()) {
@@ -115,7 +124,9 @@ public class StockCardPresenter extends Presenter {
                             }
                             return showInOverview(stockCard);
                         }
-                    }).toList());
+                    }).toList();
+
+                    subscriber.onNext(stockCards);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     subscriber.onError(e);

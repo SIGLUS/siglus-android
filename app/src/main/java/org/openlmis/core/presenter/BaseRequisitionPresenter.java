@@ -29,6 +29,7 @@ import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.repository.RnrFormRepository;
+import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
@@ -54,6 +55,9 @@ public abstract class BaseRequisitionPresenter extends Presenter {
 
     @Inject
     SyncService syncService;
+
+    @Inject
+    StockService stockService;
 
     private BaseRequisitionView view;
 
@@ -215,6 +219,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
                 Log.d("BaseReqPresenter", "Signature signed, requesting immediate sync");
                 TrackRnREventUtil.trackRnRListEvent(TrackerActions.AuthoriseRnR, rnRForm.getProgram().getProgramCode());
                 syncService.requestSyncImmediately();
+                stockService.updateLowStockAvg();
             }
         };
     }

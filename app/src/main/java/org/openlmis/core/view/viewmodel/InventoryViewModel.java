@@ -47,21 +47,22 @@ public class InventoryViewModel {
 
     long productId;
     String productName;
-
     String fnm;
+
     String strength;
     String type;
     String quantity;
     boolean hasDataChanged;
-
     List<String> expiryDates = new ArrayList<>();
 
     long stockCardId;
 
     long stockOnHand;
-    long kitExpectQuantity;
 
+    long kitExpectQuantity;
     SpannableStringBuilder styledName;
+
+    int lowStockAvg;
 
     SpannableStringBuilder styledUnit;
 
@@ -80,6 +81,7 @@ public class InventoryViewModel {
         this.stockCardId = stockCard.getId();
         this.stockOnHand = stockCard.getStockOnHand();
         this.checked = true;
+        this.lowStockAvg = (int) Math.ceil(stockCard.getAvgMonthlyConsumption() * 0.05);
 
         initExpiryDates(stockCard.getExpireDates());
     }

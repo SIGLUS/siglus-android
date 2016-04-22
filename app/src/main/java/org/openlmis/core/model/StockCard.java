@@ -66,6 +66,9 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
     @SerializedName("stockOnHand")
     long stockOnHand;
 
+    @DatabaseField
+    private float avgMonthlyConsumption;
+
     public String getEarliestExpireDate() {
         if (!StringUtils.isEmpty(expireDates)) {
             List<String> expireDateList = Arrays.asList(expireDates.split(DIVIDER));

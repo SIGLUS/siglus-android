@@ -290,20 +290,6 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldGetCmm() {
-        //given
-        StockCard stockCard = stockMovementPresenter.stockCard;
-        when(stockServiceMock.getCmm(stockCard)).thenReturn(10);
-
-        //when
-        String stockCardCmm = stockMovementPresenter.getStockCardCmm();
-
-        //then
-        assertThat(stockCardCmm).isEqualTo("10");
-    }
-
-
-    @Test
     public void shouldUpdateNotifyDeactivatedProductList() throws LMISException {
         //given
         StockCard stockCard = stockMovementPresenter.stockCard;

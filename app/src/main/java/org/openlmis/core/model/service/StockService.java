@@ -2,8 +2,10 @@ package org.openlmis.core.model.service;
 
 import com.google.inject.Inject;
 
+import org.joda.time.DateTime;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.StockMovementIsNullException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -14,20 +16,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 public class StockService {
 
     private final int LOW_STOCK_CALCULATE_MONTH_QUANTITY = 3;
 
     @Inject
     StockRepository stockRepository;
-
-    public int getLowStockAvg(StockCard stockCard) {
-        return (int) Math.ceil(calculateAverageMonthlyConsumption(stockCard) * 0.05);
-    }
-
-    public int getCmm(StockCard stockCard) {
-        return (int) Math.ceil(calculateAverageMonthlyConsumption(stockCard));
-    }
 
     protected Date queryFirstPeriodBegin(final StockCard stockCard) throws LMISException {
         StockMovementItem stockMovementItem = stockRepository.queryFirstStockMovementItem(stockCard);
@@ -37,7 +36,48 @@ public class StockService {
         return stockMovementItem.getMovementPeriod().getBegin().toDate();
     }
 
-    private float calculateAverageMonthlyConsumption(StockCard stockCard) {
+    public void updateLowStockAvg() {
+        Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    updateLowStockAvg(stockRepository.list());
+                } catch (LMISException e) {
+                    e.reportToFabric();
+                    subscriber.onError(e);
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+
+            }
+        });
+    }
+
+    public void updateLowStockAvg(List<StockCard> stockCards) {
+        DateTime recordLowStockAvgPeriod = SharedPreferenceMgr.getInstance().getLatestUpdateLowStockAvgTime();
+        Period period = Period.of(DateUtil.today());
+        if (recordLowStockAvgPeriod.isBefore(period.getBegin())) {
+            for (StockCard stockCard : stockCards) {
+                stockCard.setAvgMonthlyConsumption(calculateAverageMonthlyConsumption(stockCard));
+                stockRepository.createOrUpdate(stockCard);
+            }
+            SharedPreferenceMgr.getInstance().updateLatestLowStockAvgTime();
+        }
+    }
+
+    protected float calculateAverageMonthlyConsumption(StockCard stockCard) {
         Date firstPeriodBegin;
         try {
             firstPeriodBegin = queryFirstPeriodBegin(stockCard);
