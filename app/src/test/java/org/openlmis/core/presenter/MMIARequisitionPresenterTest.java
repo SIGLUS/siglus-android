@@ -211,7 +211,7 @@ public class MMIARequisitionPresenterTest {
 
         assertThat(RnRForm.STATUS.SUBMITTED, is(form.getStatus()));
         verify(mmiaRepository).createOrUpdateWithItems(form);
-        verify(mockMMIAformView).setProcessButtonName(LMISTestApp.getContext().getString(R.string.btn_complete));
+        verify(mockMMIAformView).setProcessButtonName(R.string.btn_complete);
         verify(mockMMIAformView).showMessageNotifyDialog();
     }
 
