@@ -16,11 +16,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-
 public class StockService {
 
     private final int LOW_STOCK_CALCULATE_MONTH_QUANTITY = 3;
@@ -36,36 +31,8 @@ public class StockService {
         return stockMovementItem.getMovementPeriod().getBegin().toDate();
     }
 
-    public void updateLowStockAvg() {
-        Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    updateLowStockAvg(stockRepository.list());
-                } catch (LMISException e) {
-                    e.reportToFabric();
-                    subscriber.onError(e);
-                }
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Subscriber<Void>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Void aVoid) {
-
-            }
-        });
-    }
-
-    public void updateLowStockAvg(List<StockCard> stockCards) {
+    public List<StockCard> updateLowStockAvg() throws LMISException {
+        List<StockCard> stockCards = stockRepository.list();
         DateTime recordLowStockAvgPeriod = SharedPreferenceMgr.getInstance().getLatestUpdateLowStockAvgTime();
         Period period = Period.of(DateUtil.today());
         if (recordLowStockAvgPeriod.isBefore(period.getBegin())) {
@@ -75,6 +42,7 @@ public class StockService {
             }
             SharedPreferenceMgr.getInstance().updateLatestLowStockAvgTime();
         }
+        return stockCards;
     }
 
     protected float calculateAverageMonthlyConsumption(StockCard stockCard) {

@@ -114,8 +114,7 @@ public class StockCardPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super List<StockCard>> subscriber) {
                 try {
-                    List<StockCard> list = stockRepository.list();
-                    stockService.updateLowStockAvg(list);
+                    List<StockCard> list = stockService.updateLowStockAvg();
                     ImmutableList<StockCard> stockCards = from(list).filter(new Predicate<StockCard>() {
                         @Override
                         public boolean apply(StockCard stockCard) {

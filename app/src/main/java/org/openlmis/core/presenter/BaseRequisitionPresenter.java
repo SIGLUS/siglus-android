@@ -219,7 +219,6 @@ public abstract class BaseRequisitionPresenter extends Presenter {
                 Log.d("BaseReqPresenter", "Signature signed, requesting immediate sync");
                 TrackRnREventUtil.trackRnRListEvent(TrackerActions.AuthoriseRnR, rnRForm.getProgram().getProgramCode());
                 syncService.requestSyncImmediately();
-                stockService.updateLowStockAvg();
             }
         };
     }
@@ -230,6 +229,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
             public void call(Subscriber<? super Void> subscriber) {
                 try {
                     rnrFormRepository.createOrUpdateWithItems(rnRForm);
+                    stockService.updateLowStockAvg();
                     subscriber.onNext(null);
                     subscriber.onCompleted();
                 } catch (LMISException e) {

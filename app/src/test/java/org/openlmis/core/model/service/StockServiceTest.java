@@ -30,6 +30,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.openlmis.core.model.StockMovementItem.MovementType.ISSUE;
 import static org.openlmis.core.model.StockMovementItem.MovementType.RECEIVE;
 
@@ -64,9 +65,10 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         List<StockCard> list = asList(new StockCard());
         stockService = spy(stockService);
         stockService.stockRepository = stockRepository;
+        when(stockRepository.list()).thenReturn(list);
         doReturn(0F).when(stockService).calculateAverageMonthlyConsumption(any(StockCard.class));
 
-        stockService.updateLowStockAvg(list);
+        stockService.updateLowStockAvg();
 
         verify(stockRepository).createOrUpdate(any(StockCard.class));
     }
@@ -77,8 +79,9 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         SharedPreferenceMgr.getInstance().updateLatestLowStockAvgTime();
         List<StockCard> list = asList(new StockCard());
         stockService.stockRepository = stockRepository;
+        when(stockRepository.list()).thenReturn(list);
 
-        stockService.updateLowStockAvg(list);
+        stockService.updateLowStockAvg();
 
         verify(stockRepository,never()).createOrUpdate(any(StockCard.class));
     }
