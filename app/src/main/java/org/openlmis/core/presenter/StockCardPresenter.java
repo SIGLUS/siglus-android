@@ -33,7 +33,6 @@ import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
-import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,8 +113,9 @@ public class StockCardPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super List<StockCard>> subscriber) {
                 try {
-                    List<StockCard> list = stockService.updateLowStockAvg();
-                    ImmutableList<StockCard> stockCards = from(list).filter(new Predicate<StockCard>() {
+                    stockService.updateStockCardAvgMonthlyConsumption();
+
+                    subscriber.onNext(from(stockRepository.list()).filter(new Predicate<StockCard>() {
                         @Override
                         public boolean apply(StockCard stockCard) {
                             if (status.isArchived()) {
@@ -123,9 +123,7 @@ public class StockCardPresenter extends Presenter {
                             }
                             return showInOverview(stockCard);
                         }
-                    }).toList();
-
-                    subscriber.onNext(stockCards);
+                    }).toList());
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     subscriber.onError(e);

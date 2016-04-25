@@ -26,6 +26,7 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
@@ -83,6 +84,7 @@ public class SyncDownManagerTest {
     private ProductRepository productRepository;
     private Product productWithKits;
     private Product newProductWithoutPrograms;
+    private StockService stockService;
 
     @Before
     public void setUp() throws Exception {
@@ -92,6 +94,7 @@ public class SyncDownManagerTest {
         programRepository = mock(ProgramRepository.class);
         productRepository = mock(ProductRepository.class);
         stockRepository = mock(StockRepository.class);
+        stockService = mock(StockService.class);
 
         reset(rnrFormRepository);
         reset(lmisRestApi);
@@ -110,6 +113,8 @@ public class SyncDownManagerTest {
                 return Schedulers.immediate();
             }
         });
+
+        syncDownManager.stockService = stockService;
     }
 
     @Test
@@ -134,6 +139,7 @@ public class SyncDownManagerTest {
         assertThat(subscriber.syncProgresses.get(5), is(RequisitionSynced));
         assertThat(subscriber.syncProgresses.get(6), is(SyncingStockCardsLastYear));
         assertThat(subscriber.syncProgresses.get(7), is(StockCardsLastYearSynced));
+        verify(stockService).updateAvgMonthlyConsumptionImmediately();
     }
 
     @Test

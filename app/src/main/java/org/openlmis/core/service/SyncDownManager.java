@@ -34,6 +34,7 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.ProductAndSupportedPrograms;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
@@ -71,6 +72,8 @@ public class SyncDownManager {
     ProductRepository productRepository;
     @Inject
     ProductProgramRepository productProgramRepository;
+    @Inject
+    StockService stockService;
 
     public SyncDownManager() {
         lmisRestApi = LMISApp.getInstance().getRestApi();
@@ -130,6 +133,7 @@ public class SyncDownManager {
                 subscriber.onNext(SyncProgress.SyncingStockCardsLastYear);
                 fetchLatestYearStockMovements();
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
+                stockService.updateAvgMonthlyConsumptionImmediately();
                 subscriber.onNext(SyncProgress.StockCardsLastYearSynced);
             } catch (LMISException e) {
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);

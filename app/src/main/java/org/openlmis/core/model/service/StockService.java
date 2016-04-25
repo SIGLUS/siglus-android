@@ -31,18 +31,21 @@ public class StockService {
         return stockMovementItem.getMovementPeriod().getBegin().toDate();
     }
 
-    public List<StockCard> updateLowStockAvg() throws LMISException {
-        List<StockCard> stockCards = stockRepository.list();
+    public void updateStockCardAvgMonthlyConsumption() throws LMISException {
         DateTime recordLowStockAvgPeriod = SharedPreferenceMgr.getInstance().getLatestUpdateLowStockAvgTime();
         Period period = Period.of(DateUtil.today());
         if (recordLowStockAvgPeriod.isBefore(period.getBegin())) {
-            for (StockCard stockCard : stockCards) {
-                stockCard.setAvgMonthlyConsumption(calculateAverageMonthlyConsumption(stockCard));
-                stockRepository.createOrUpdate(stockCard);
-            }
-            SharedPreferenceMgr.getInstance().updateLatestLowStockAvgTime();
+           updateAvgMonthlyConsumptionImmediately();
         }
-        return stockCards;
+    }
+
+    public void updateAvgMonthlyConsumptionImmediately() throws LMISException {
+        List<StockCard> stockCards = stockRepository.list();
+        for (StockCard stockCard : stockCards) {
+            stockCard.setAvgMonthlyConsumption(calculateAverageMonthlyConsumption(stockCard));
+            stockRepository.createOrUpdate(stockCard);
+        }
+        SharedPreferenceMgr.getInstance().updateLatestLowStockAvgTime();
     }
 
     protected float calculateAverageMonthlyConsumption(StockCard stockCard) {

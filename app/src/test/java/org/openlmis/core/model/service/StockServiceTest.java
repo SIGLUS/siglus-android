@@ -68,7 +68,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         when(stockRepository.list()).thenReturn(list);
         doReturn(0F).when(stockService).calculateAverageMonthlyConsumption(any(StockCard.class));
 
-        stockService.updateLowStockAvg();
+        stockService.updateStockCardAvgMonthlyConsumption();
 
         verify(stockRepository).createOrUpdate(any(StockCard.class));
     }
@@ -81,7 +81,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         stockService.stockRepository = stockRepository;
         when(stockRepository.list()).thenReturn(list);
 
-        stockService.updateLowStockAvg();
+        stockService.updateStockCardAvgMonthlyConsumption();
 
         verify(stockRepository,never()).createOrUpdate(any(StockCard.class));
     }

@@ -229,7 +229,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
             public void call(Subscriber<? super Void> subscriber) {
                 try {
                     rnrFormRepository.createOrUpdateWithItems(rnRForm);
-                    stockService.updateLowStockAvg();
+                    stockService.updateStockCardAvgMonthlyConsumption();
                     subscriber.onNext(null);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
