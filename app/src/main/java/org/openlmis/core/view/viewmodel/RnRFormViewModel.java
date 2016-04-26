@@ -119,8 +119,8 @@ public class RnRFormViewModel {
     public static RnRFormViewModel buildEmergencyViewModel(RnRForm form) {
         RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
         rnRFormViewModel.setViewModleFormField(form);
-        rnRFormViewModel.title = LMISApp.getContext().getString(R.string.label_emergency_date, DateUtil.formatDate(form.getSubmittedTime(), DateUtil.TIME_FORMAT_WITHOUT_YEAR));
-        rnRFormViewModel.syncedTime = DateUtil.formatDate(form.getSubmittedTime(), DateUtil.TIME_FORMAT_WITHOUT_YEAR);
+        rnRFormViewModel.title = LMISApp.getContext().getString(R.string.label_emergency_date, DateUtil.formatDate(form.getSubmittedTime(), DateUtil.TIME_FORMAT_WITHOUT_SECOND));
+        rnRFormViewModel.syncedTime = DateUtil.formatDate(form.getSubmittedTime(), DateUtil.TIME_FORMAT_WITHOUT_SECOND);
         rnRFormViewModel.name = LMISApp.getContext().getString(R.string.label_emergency_requisition_balance);
         rnRFormViewModel.setType(form);
         return rnRFormViewModel;
