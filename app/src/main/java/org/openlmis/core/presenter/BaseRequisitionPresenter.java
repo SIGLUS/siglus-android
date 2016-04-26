@@ -229,12 +229,13 @@ public abstract class BaseRequisitionPresenter extends Presenter {
             public void call(Subscriber<? super Void> subscriber) {
                 try {
                     rnrFormRepository.createOrUpdateWithItems(rnRForm);
-                    stockService.updateStockCardAvgMonthlyConsumption();
                     subscriber.onNext(null);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.reportToFabric();
                     subscriber.onError(e);
+                } finally {
+                    stockService.updateStockCardAvgMonthlyConsumption();
                 }
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());

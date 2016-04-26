@@ -31,7 +31,7 @@ public class StockService {
         return stockMovementItem.getMovementPeriod().getBegin().toDate();
     }
 
-    public void updateStockCardAvgMonthlyConsumption() throws LMISException {
+    public void updateStockCardAvgMonthlyConsumption() {
         DateTime recordLowStockAvgPeriod = SharedPreferenceMgr.getInstance().getLatestUpdateLowStockAvgTime();
         Period period = Period.of(DateUtil.today());
         if (recordLowStockAvgPeriod.isBefore(period.getBegin())) {
@@ -39,11 +39,15 @@ public class StockService {
         }
     }
 
-    public void updateAvgMonthlyConsumptionImmediately() throws LMISException {
-        List<StockCard> stockCards = stockRepository.list();
-        for (StockCard stockCard : stockCards) {
-            stockCard.setAvgMonthlyConsumption(calculateAverageMonthlyConsumption(stockCard));
-            stockRepository.createOrUpdate(stockCard);
+    public void updateAvgMonthlyConsumptionImmediately() {
+        try {
+            List<StockCard> stockCards = stockRepository.list();
+            for (StockCard stockCard : stockCards) {
+                stockCard.setAvgMonthlyConsumption(calculateAverageMonthlyConsumption(stockCard));
+                stockRepository.createOrUpdate(stockCard);
+            }
+        } catch (LMISException e) {
+            e.reportToFabric();
         }
         SharedPreferenceMgr.getInstance().updateLatestLowStockAvgTime();
     }
