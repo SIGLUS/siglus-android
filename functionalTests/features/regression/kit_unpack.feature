@@ -6,7 +6,7 @@ Feature: Unpack Kit
     And I try to log in with "kit" "password1"
     And I wait up to 120 seconds for "Initial Inventory" to appear
     Then I wait for "Initial inventory" to appear
-    When I search product by fnm "08L01X" and select this item with quantity "888"
+    When I search product by fnm "02E02" and select this item with quantity "888"
     When I search product by fnm "15C0ZY" and select this item with quantity "2"
     Then I press "Complete"
 
@@ -54,7 +54,7 @@ Feature: Unpack Kit
     Then I wait for "Next" to appear
     When I press "3"
     And I press "Next"
-    Then I wait for "02A03" to appear
+    Then I wait for "02E02" to appear
     And I should see "Unpacking"
 
     And I enter document number for unpack kit
@@ -76,7 +76,7 @@ Feature: Unpack Kit
     Then I wait for "MMIA" to appear
     And I press "Stock Card Overview"
     Then I should see "Total:44"
-    When I search drug by fnm "08L01X"
+    When I search drug by fnm "02E02"
     Then I should see "889"
     And I clean search bar
     When I search drug by fnm "15C0ZY"
@@ -137,7 +137,7 @@ Feature: Unpack Kit
     And I should see empty consultations number
     Then I enter consultationsNub "888"
     Then I swipe right
-    Then I should see "889" on index "1" of "tx_theoretical" field
+    Then I should see "889" on index "2" of "tx_theoretical" field
     Then I swipe right
     Then I swipe right
     Then I enter QuantityRequested "345"
