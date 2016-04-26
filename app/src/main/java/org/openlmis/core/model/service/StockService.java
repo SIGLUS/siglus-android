@@ -31,15 +31,15 @@ public class StockService {
         return stockMovementItem.getMovementPeriod().getBegin().toDate();
     }
 
-    public void updateStockCardAvgMonthlyConsumption() {
+    public void monthlyUpdateAvgMonthlyConsumption() {
         DateTime recordLowStockAvgPeriod = SharedPreferenceMgr.getInstance().getLatestUpdateLowStockAvgTime();
         Period period = Period.of(DateUtil.today());
         if (recordLowStockAvgPeriod.isBefore(period.getBegin())) {
-           updateAvgMonthlyConsumptionImmediately();
+           immediatelyUpdateAvgMonthlyConsumption();
         }
     }
 
-    public void updateAvgMonthlyConsumptionImmediately() {
+    public void immediatelyUpdateAvgMonthlyConsumption() {
         try {
             List<StockCard> stockCards = stockRepository.list();
             for (StockCard stockCard : stockCards) {

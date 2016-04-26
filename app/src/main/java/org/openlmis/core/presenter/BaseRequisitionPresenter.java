@@ -235,7 +235,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
                     e.reportToFabric();
                     subscriber.onError(e);
                 } finally {
-                    stockService.updateStockCardAvgMonthlyConsumption();
+                    stockService.monthlyUpdateAvgMonthlyConsumption();
                 }
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());

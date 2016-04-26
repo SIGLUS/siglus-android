@@ -139,7 +139,7 @@ public class SyncDownManagerTest {
         assertThat(subscriber.syncProgresses.get(5), is(RequisitionSynced));
         assertThat(subscriber.syncProgresses.get(6), is(SyncingStockCardsLastYear));
         assertThat(subscriber.syncProgresses.get(7), is(StockCardsLastYearSynced));
-        verify(stockService).updateAvgMonthlyConsumptionImmediately();
+        verify(stockService).immediatelyUpdateAvgMonthlyConsumption();
     }
 
     @Test

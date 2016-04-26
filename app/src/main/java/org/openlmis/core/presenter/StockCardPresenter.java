@@ -113,7 +113,7 @@ public class StockCardPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super List<StockCard>> subscriber) {
                 try {
-                    stockService.updateStockCardAvgMonthlyConsumption();
+                    stockService.monthlyUpdateAvgMonthlyConsumption();
 
                     subscriber.onNext(from(stockRepository.list()).filter(new Predicate<StockCard>() {
                         @Override

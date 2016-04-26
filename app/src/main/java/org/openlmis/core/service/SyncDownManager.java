@@ -133,7 +133,7 @@ public class SyncDownManager {
                 subscriber.onNext(SyncProgress.SyncingStockCardsLastYear);
                 fetchLatestYearStockMovements();
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(false);
-                stockService.updateAvgMonthlyConsumptionImmediately();
+                stockService.immediatelyUpdateAvgMonthlyConsumption();
                 subscriber.onNext(SyncProgress.StockCardsLastYearSynced);
             } catch (LMISException e) {
                 sharedPreferenceMgr.setShouldSyncLastYearStockCardData(true);
