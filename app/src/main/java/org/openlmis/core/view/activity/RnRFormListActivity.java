@@ -87,7 +87,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        programCode = getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE);
+        programCode = getProgramCode();
 
         setTitle(isMMIA() ? R.string.mmia_list : R.string.requisition_list);
 
@@ -102,6 +102,13 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         loadRnRFrom();
 
         registerRnrSyncReceiver();
+    }
+
+    private String getProgramCode() {
+        if (programCode == null) {
+            programCode = getIntent().getStringExtra(Constants.PARAM_PROGRAM_CODE);
+        }
+        return programCode;
     }
 
     @Override
