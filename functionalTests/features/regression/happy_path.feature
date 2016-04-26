@@ -229,7 +229,7 @@ Feature: Log in and initialize Inventory
     When I navigate back
     Then I wait to see "Are you sure you want to quit without saving your work?"
     When I press "Yes"
-    Then I wait for "Create MMIA" to appear
+    Then I wait for "Create Via Classica Requisition" to appear
     When I navigate back
     Then I wait for "STOCK CARD OVERVIEW" to appear
     And I press "Stock Card Overview"
