@@ -19,18 +19,18 @@
     <string name="btn_login">LOG IN</string>
     <string name="msg_empty_user">User name and password cannot be blank</string>
     <string name="msg_invalid_user">Username or Password is incorrect.</string>
-    <string name="msg_user_not_facility">No facility for this user, please contact your administrator</string>
+    <string name="msg_user_not_facility">No facility for this user, please contact your administrator.</string>
     <string name="msg_save_products_failed">Save products to local Database failed</string>
-    <string name="msg_sync_products_list_failed">Download of products from the server failed</string>
+    <string name="msg_sync_products_list_failed">Download of products from the server failed, please login again.</string>
     <string name="msg_save_kit_products_failed">Save Kit failed because there are some products which do not exist</string>
     <string name="init_product_error">Initial Data Error,Please Retry</string>
     <string name="msg_sync_stock_movements_data">Synchronizing stock movement data</string>
     <string name="msg_fetching_products">Downloading product list…</string>
     <string name="msg_sync_requisition_data">Synchronizing requisition data</string>
-    <string name="msg_sync_requisition_failed">Download of requisition data failed</string>
-    <string name="msg_sync_stockmovement_failed">Download of stock movement data failed</string>
+    <string name="msg_sync_requisition_failed">Download of requisition data failed, please login again.</string>
+    <string name="msg_sync_stockmovement_failed">Download of stock movement data failed, please login again.</string>
     <string name="msg_initial_sync_success">Initial sync successful. Tablet is ready for use.</string>
-    <string name="msg_download_archived_products_fail">Download of archived products failed</string>
+    <string name="msg_download_archived_products_fail">Download of archived products failed, please login again.</string>
 
 
     <!-- Init Inventory -->
@@ -42,7 +42,7 @@
     <string name="msg_invalid_date">Cannot select past month</string>
     <string name="btn_done">Done</string>
     <string name="msg_remove_expire_date">Are you sure you want to remove this expiry date?</string>
-    <string name="msg_save_before_exit">Please save initial inventory before exiting the app.</string>
+    <string name="msg_save_before_exit">Please save initial inventory before exiting the app</string>
 
 
     <!-- Home Page -->
@@ -68,8 +68,8 @@
     <string name="label_stock_card_last_synced_time_ago">Stock cards last synced %s ago</string>
     <string name="msg_back_twice_to_exit">Press back button again to exit.</string>
     <string name="action_sign_out">Sign Out</string>
-    <string name="initial_rnr_sync_failed">Initial requisition sync failed</string>
-    <string name="initial_stock_movement_sync_failed">Initial stock card sync failed</string>
+    <string name="initial_rnr_sync_failed">Initial requisition sync failed, please retry.</string>
+    <string name="initial_stock_movement_sync_failed">Initial stock card sync failed, please retry.</string>
     <string name="initial_sync_failed">Initial sync failed</string>
 
     <!--MMIA-->
@@ -150,7 +150,7 @@
 
     <string name="btn_del">Delete</string>
     <string name="msg_del_requisition">Warning!!! \n Are you sure you want to delete this? This requisition is already synced to the server. If you click DELETE then this requisition will disappear on your tablet, but remain saved on the server.</string>
-    <string name="msg_stock_movement_is_not_ready">Application is trying to sync down all the stock movements, Please try again later.</string>
+    <string name="msg_stock_movement_is_not_ready">Application is trying to sync down all the stock movements, Please wait for this process to complete before continuing.</string>
 
     <!-- Stock Movement -->
     <string name="title_stock_movement">Stock Card</string>
@@ -165,7 +165,7 @@
     <string name="btn_cancel">CANCEL</string>
     <string name="btn_do_not_remove">Cancel</string>
     <string name="msg_validation_error">Invalid Input</string>
-    <string name="msg_validation_empty_error">Missing required field</string>
+    <string name="msg_validation_empty_error">Data missing from required field</string>
     <string name="msg_invalid_stock_movement_date">Invalid date</string>
     <string name="msg_db_error">An unexpected error has occurred. Please contact your administrator.</string>
     <string name="label_cmm">CMM</string>
@@ -199,10 +199,10 @@
     <!-- Stock Card List Page -->
     <string name="search_hint">Search…</string>
     <string name="action_navigate_archive">Archived drugs</string>
-    <string name="hint_save_mmia_failed">Unable to save MMIA form</string>
-    <string name="hint_save_requisition_failed">Unable to save Requisition Balencete</string>
-    <string name="hint_mmia_complete_failed">Unable to complete MMIA form</string>
-    <string name="hint_requisition_complete_failed">Unable to complete Requisition Balencete</string>
+    <string name="hint_save_mmia_failed">Unable to save MMIA form, Please contact your administrator.</string>
+    <string name="hint_save_requisition_failed">Unable to save Requisition Balencete, Please contact your administrator.</string>
+    <string name="hint_mmia_complete_failed">Unable to complete MMIA form, Please contact your administrator.</string>
+    <string name="hint_requisition_complete_failed">Unable to complete Requisition Balencete, Please contact your administrator.</string>
     <string-array name="sort_items_array">
         <item>Sort alphabetically: A to Z</item>
         <item>Sort alphabetically: Z to A</item>
@@ -219,8 +219,8 @@
     <string name="kit_number">Unpacking: %1$s %2$s kit</string>
     <string name="hint_quantity_in_unpack_kit">Quantity received</string>
     <string name="label_unpack_kit_quantity_expected">Quantity expected</string>
-    <string name="label_unpack_kit_quantity_less_than_expected"><![CDATA[<b>Smaller</b>]]> quantity entered than expected for a single kit. Please double check it</string>
-    <string name="label_unpack_kit_quantity_more_than_expected"><![CDATA[<b>Larger</b>]]> quantity entered  than expected for a single kit. Please double check it</string>
+    <string name="label_unpack_kit_quantity_less_than_expected"><![CDATA[<b>Smaller</b>]]> quantity entered than expected. Please recheck it</string>
+    <string name="label_unpack_kit_quantity_more_than_expected"><![CDATA[<b>Larger</b>]]> quantity entered than expected. Please recheck it</string>
 
     <!-- Server Sync Errors -->
     <string name="sync_server_error">Sync failed due to technical problem on the server. Please contact system administrator.</string>
@@ -229,7 +229,7 @@
     <string name="period_configuration_missing">Sync failed due to missing server configuration for this period. Please contact system administrator.</string>
     <string name="product_code_invalid">Sync failed due attempted submission of invalid product in form %1$s. Please contact system administrator.</string>
     <string name="unauthorized_operation">Sync failed. You do not have permission to sync this requisition to the server. Please contact system administrator.</string>
-    <string name="duplicate_rnr_error">Sync failed. You have already submitted the requisition for this program in the same period.</string>
+    <string name="duplicate_rnr_error">Sync failed. You have already submitted a requisition for this program in this requisition period.</string>
     <string name="period_mismatch_error">Sync failed. The period you are submitting does not match the period in schedule.</string>
 
     <!-- Rnr form historical list -->
@@ -266,7 +266,7 @@
     <string name="mmia_list">MMIA</string>
     <string name="requisition_list">Via Classica Requisitions</string>
     <string name="label_total">Total:%1$s</string>
-    <string name="requisition_delete_failed">Delete failed</string>
+    <string name="requisition_delete_failed">Delete Failed</string>
 
     <string name="delete_rnr_form_failed_warning">Delete Failed</string>
 
@@ -291,7 +291,7 @@
     <string name="title_select_period">Select inventory to close period</string>
     <string name="label_next">Next</string>
     <string name="msg_select_period_warning">Please select an inventory to close the period</string>
-    <string name="loading_inventory_list_failed">Inventory loading failed</string>
+    <string name="loading_inventory_list_failed">Inventory loading failed, please try again later</string>
 
     <!--Select Unpack Kit Numbers-->
     <string name="label_select_unpack_num">How many %1$s would you like to unpack?</string>
@@ -299,8 +299,8 @@
     <string name="msg_select_unpack_num_warning">Please Select a number of kits to unpack</string>
 
     <!--Select Drugs-->
-    <string name="title_select_drugs">Select the drugs that are part of the regime</string>
-    <string name="hint_no_product_has_checked">Please check product</string>
+    <string name="title_select_drugs">Selected regime already exists</string>
+    <string name="hint_no_product_has_checked">Please select product</string>
     <string name="hint_more_than_limit_product_has_checked">You can only select 5 products for regime</string>
 
     <!-- update notification text-->
@@ -310,12 +310,12 @@
 
     <string name="action_wipe_data">Re-sync data from server</string>
     <string name="message_warning_wipe_data">This operation will remove all the data from this device &amp; download previously submitted data back down to the tablet, \n WARNING \n Any un-synced movements or data will be lost. Do you want to continue?</string>
-    <string name="message_wipe_no_connection">Network is not available, cannot re-sync</string>
+    <string name="message_wipe_no_connection">Network is not available, please try again when you have the network.</string>
 
     <!--Select Emergency Products-->
     <string name="title_select_emergency_products">Select the drugs to add to your emergency requisition</string>
-    <string name="msg_create_emergency_date_invalid">You are not allowed to create an emergency between 18th and 25th because this is the requisition submit time-window.</string>
-    <string name="msg_create_emergency_has_missed">You are not allowed to create an emergency requisition until you complete all your previous requisitions</string>
+    <string name="msg_create_emergency_date_invalid">You are not allowed to create an emergency between 18th and 25th, please submit request using the monthly requisition form.</string>
+    <string name="msg_create_emergency_has_missed">You are not allowed to create an emergency requisition until you complete all your previous monthly requisitions.</string>
     <string name="msg_out_limit_of_selected_emergency_products">You can only select 10 products for an emergency requisition</string>
     <string name="label_emergency_requisition_title">Emergency requisition - %1$s</string>
     <string name="label_emergency_requisition_balance">Emergency requisition balancete</string>
