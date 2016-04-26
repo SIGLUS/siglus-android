@@ -24,15 +24,13 @@ end
 
 Then(/^I should see "(\d+)" on index "(\d+)" of "(.*?)" field/) do |num,index,fieldName|
     textView_text = query("android.widget.TextView id:'#{fieldName}' ", :text)[index.to_i-1]
-    unless (should_skip_validation() || textView_text.to_i == num.to_i)
+    unless (textView_text.to_i == num.to_i)
         fail(msg="#{num} number")
     end
 end
 
 Then(/^I should see "(\d+)" in the requisition form/) do |number|
-    unless should_skip_validation()
-        wait_for_text(number, timeout: 10)
-    end
+    wait_for_text(number, timeout: 10)
 end
 
 And(/^I should see empty consultations number$/) do

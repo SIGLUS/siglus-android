@@ -2,13 +2,13 @@ require 'calabash-android/calabash_steps'
 require 'pry'
 
 Then(/^I should see issued movement "(.*?)"$/) do |number|
-    unless (should_skip_validation() || element_exists("android.widget.TextView id:'tv_issued' text:'#{number}'"))
+    unless (element_exists("android.widget.TextView id:'tv_issued' text:'#{number}'"))
 		fail(msg="not found #{number}")
 	end
 end
 
 Then(/^I should see inventory "(.*?)"$/) do |number|
-    unless (should_skip_validation() || element_exists("android.widget.TextView id:'tv_inventory' text:'#{number}'"))
+    unless (element_exists("android.widget.TextView id:'tv_inventory' text:'#{number}'"))
 		fail(msg="not found #{number}")
 	end
 end

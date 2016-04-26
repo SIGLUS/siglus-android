@@ -9,10 +9,6 @@ password = EnvConfig.getConfig()[:password]
 index = 0
 pre_name = ""
 
-def should_skip_validation
-    DateTime.now().day >=21 && DateTime.now().day <=25
-end
-
 Then /^I navigate back/ do
     tap_when_element_exists("* contentDescription:'Navigate up'")
 end
