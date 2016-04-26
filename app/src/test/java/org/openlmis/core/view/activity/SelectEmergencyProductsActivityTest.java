@@ -73,7 +73,7 @@ public class SelectEmergencyProductsActivityTest {
         activity.mAdapter.refreshList(getInventoryViewModels());
         activity.btnNext.performClick();
 
-        assertThat(ShadowToast.getTextOfLatestToast(), is("Please check product"));
+        assertThat(ShadowToast.getTextOfLatestToast(), is("Please select product"));
     }
 
     @Test

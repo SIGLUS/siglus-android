@@ -80,10 +80,10 @@ public class SyncDateBottomSheetTest {
         when(presenter.hasStockCardSyncError()).thenReturn(true);
 
         String formatRnrLastSyncTime = fragment.formatRnrLastSyncTime(0);
-        assertThat(formatRnrLastSyncTime, equalTo("Initial requisition sync failed"));
+        assertThat(formatRnrLastSyncTime, equalTo("Initial requisition sync failed, please retry."));
 
         String formatStockCardLastSyncTimeWithMinute = fragment.formatStockCardLastSyncTime(0);
-        assertThat(formatStockCardLastSyncTimeWithMinute, equalTo("Initial stock card sync failed"));
+        assertThat(formatStockCardLastSyncTimeWithMinute, equalTo("Initial stock card sync failed, please retry."));
     }
 
     @Test

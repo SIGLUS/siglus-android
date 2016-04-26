@@ -73,7 +73,7 @@ public class SelectRegimeProductsActivityTest {
         selectProductsActivity.viewModels = getInventoryViewModels();
         selectProductsActivity.btnNext.performClick();
 
-        assertThat(ShadowToast.getTextOfLatestToast(), is("Please check product"));
+        assertThat(ShadowToast.getTextOfLatestToast(), is("Please select product"));
     }
 
     @Test

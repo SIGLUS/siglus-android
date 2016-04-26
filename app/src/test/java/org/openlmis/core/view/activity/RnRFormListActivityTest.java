@@ -273,7 +273,7 @@ public class RnRFormListActivityTest {
     public void shouldShowToastWhenDateNotInEmergencyDate() throws Exception {
         LMISTestApp.getInstance().setCurrentTimeMillis(DateUtil.parseString("2015-05-18 17:30:00", DateUtil.DATE_TIME_FORMAT).getTime());
         rnRFormListActivity.checkAndGotoEmergencyPage();
-        MatcherAssert.assertThat(ShadowToast.getTextOfLatestToast(), is("You are not allowed to create an emergency between 18th and 25th because this is the requisition submit time-window."));
+        MatcherAssert.assertThat(ShadowToast.getTextOfLatestToast(), is("You are not allowed to create an emergency between 18th and 25th, please submit request using the monthly requisition form."));
     }
 
     @Test
@@ -289,7 +289,7 @@ public class RnRFormListActivityTest {
 
         when(mockedPresenter.hasMissedPeriod()).thenReturn(value);
         rnRFormListActivity.checkAndGotoEmergencyPage();
-        MatcherAssert.assertThat(ShadowToast.getTextOfLatestToast(), is("You are not allowed to create an emergency requisition until you complete all your previous requisitions"));
+        MatcherAssert.assertThat(ShadowToast.getTextOfLatestToast(), is("You are not allowed to create an emergency requisition until you complete all your previous monthly requisitions."));
     }
 
     @Test
