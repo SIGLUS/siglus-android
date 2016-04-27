@@ -110,7 +110,6 @@ public class ProductProgramRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(productIds.get(0), is(100L));
     }
 
-
     @Test
     public void shouldQueryByProgramCodesAndProductCode() throws Exception {
         List<ProductProgram> productPrograms = Arrays.asList(
@@ -126,5 +125,24 @@ public class ProductProgramRepositoryTest extends LMISRepositoryUnitTest {
         ProductProgram productProgram = repository.queryByCode("P1", programCodes);
         assertEquals(productProgram.getProductCode(), "P1");
         assertEquals(productProgram.getProgramCode(), "PR1");
+    }
+
+    @Test
+    public void shouldCreateOrUpdateProductPrograms() throws Exception {
+        List<ProductProgram> productPrograms = Arrays.asList(
+                new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P1").setCategory("Adult").build(),
+                new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P2").setCategory("Children").build(),
+                new ProductProgramBuilder().setProgramCode("PR2").setProductCode("P1").setCategory("Adult").build()
+        );
+        repository.batchSave(productPrograms);
+
+        ProductProgram updateProductPrograms =
+                new ProductProgramBuilder().setProgramCode("PR1").setProductCode("P1").setCategory("Other").build();
+
+        repository.createOrUpdate(updateProductPrograms);
+
+        ProductProgram queriedProductProgram = repository.queryByCode("P1", "PR1");
+
+        assertEquals(queriedProductProgram.getCategory(), "Other");
     }
 }

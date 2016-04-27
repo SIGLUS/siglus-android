@@ -76,8 +76,8 @@ public class ProductProgramRepository {
         if (existingProductProgram == null) {
             genericDao.create(productProgram);
         } else {
-            existingProductProgram.setActive(productProgram.isActive());
-            genericDao.update(existingProductProgram);
+            productProgram.setId(existingProductProgram.getId());
+            genericDao.update(productProgram);
         }
     }
 

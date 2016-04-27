@@ -25,6 +25,11 @@ public class ProductProgramBuilder {
         return this;
     }
 
+    public ProductProgramBuilder setCategory(String category) {
+        productProgram.setCategory(category);
+        return this;
+    }
+
     public ProductProgram build() {
         return productProgram;
     }
