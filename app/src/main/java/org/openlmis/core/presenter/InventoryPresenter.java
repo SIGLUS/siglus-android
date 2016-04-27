@@ -208,27 +208,38 @@ public class InventoryPresenter extends Presenter {
         }).toList();
     }
 
+    // TODO: 4/27/16  rename
     private StockCard initStockCard(InventoryViewModel model) {
         try {
             boolean isArchivedStockCard = model.getStockCard() != null;
 
-            StockCard stockCard = isArchivedStockCard ? model.getStockCard() : new StockCard();
-            stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
-            stockCard.setProduct(model.getProduct());
-            stockCard.getProduct().setArchived(false);
-
-            if (stockCard.getStockOnHand() != 0) {
-                stockCard.setExpireDates(DateUtil.formatExpiryDateString(model.getExpiryDates()));
-            } else {
-                stockCard.setExpireDates("");
+            if (isArchivedStockCard) {
+                StockCard stockCard = model.getStockCard();
+                stockCard.getProduct().setArchived(false);
+                stockRepository.updateStockCardWithProduct(stockCard);
+                return stockCard;
             }
 
-            stockRepository.createOrUpdateStockCardWithStockMovement(stockCard);
-            return stockCard;
+            return createStockCardAndInventoryMovement(model);
+
         } catch (LMISException e) {
             e.reportToFabric();
         }
         return null;
+    }
+
+    private StockCard createStockCardAndInventoryMovement(InventoryViewModel model) throws LMISException {
+        StockCard stockCard = new StockCard();
+        stockCard.setProduct(model.getProduct());
+        stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
+        if (stockCard.getStockOnHand() != 0) {
+            stockCard.setExpireDates(DateUtil.formatExpiryDateString(model.getExpiryDates()));
+        } else {
+            stockCard.setExpireDates("");
+        }
+
+        stockRepository.createOrUpdateStockCardWithStockMovement(stockCard);
+        return stockCard;
     }
 
 

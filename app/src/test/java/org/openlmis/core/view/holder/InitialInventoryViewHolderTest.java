@@ -173,6 +173,7 @@ public class InitialInventoryViewHolderTest {
         viewHolder.populate(viewModel, queryKeyWord, mockedListener);
 
         assertThat(viewHolder.tvHistoryAction.getVisibility()).isEqualTo(View.VISIBLE);
+        assertThat(viewHolder.actionPanel.getVisibility()).isEqualTo(View.GONE);
 
         viewHolder.tvHistoryAction.performClick();
 

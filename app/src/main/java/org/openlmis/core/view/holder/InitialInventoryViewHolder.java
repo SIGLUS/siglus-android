@@ -112,7 +112,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+                if (isChecked && !viewModel.getProduct().isArchived()) {
                     showEditPanel(View.VISIBLE);
                 } else {
                     showEditPanel(View.GONE);

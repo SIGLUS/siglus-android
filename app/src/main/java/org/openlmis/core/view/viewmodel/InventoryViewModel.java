@@ -203,7 +203,7 @@ public class InventoryViewModel {
     }
 
     public boolean validate() {
-        valid = !checked || StringUtils.isNumeric(quantity);
+        valid = !checked || StringUtils.isNumeric(quantity) || product.isArchived();
         return valid;
     }
 

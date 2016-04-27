@@ -237,20 +237,6 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldClearExpiryDateWhenSohIsZeroAndIsArchivedDrug() throws LMISException {
-        stockCard.setExpireDates("01/01/2016");
-        product.setArchived(true);
-
-        InventoryViewModel model = new StockCardViewModelBuilder(stockCard).setChecked(true)
-                .setQuantity("0").build();
-
-        inventoryPresenter.initStockCards(newArrayList(model));
-
-        assertThat(model.getStockCard().getExpireDates(), is(""));
-    }
-
-
-    @Test
     public void shouldNotClearExpiryDateWhenSohIsNotZeroAndIsArchivedDrug() throws LMISException {
         stockCard.setExpireDates("01/01/2016");
         product.setArchived(true);
@@ -309,7 +295,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         inventoryPresenter.initStockCards(inventoryViewModelList);
 
         assertFalse(archivedStockCard.getProduct().isArchived());
-        verify(stockRepositoryMock, times(1)).createOrUpdateStockCardWithStockMovement(archivedStockCard);
+        verify(stockRepositoryMock, times(1)).updateStockCardWithProduct(archivedStockCard);
     }
 
     @Test
