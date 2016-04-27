@@ -43,6 +43,7 @@ Feature: Archive drug
     And I press "Complete"
     And I wait for "Enter your initials" to appear
     And I sign with "superuser"
+    Then I wait for 1 second
     And I press the menu key
     Then I see "Archive drugs"
     And I press "Archive drugs"

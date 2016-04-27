@@ -17,7 +17,7 @@ Feature: MMIA
     And I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
-    And I make a movement "[08S42B]" "Issues" "PAV" "issued" "2"
+    And I make a movement "[08S18Y]" "Issues" "PAV" "issued" "2"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     Then I navigate back
@@ -37,7 +37,7 @@ Feature: MMIA
     And I press "Next"
     Then I wait for "MMIA -" to appear
     Then I wait for 1 second
-    Then I scroll down until I see the "Zidovudina/Lamivudina/Nevirapi; 60mg+30mg+50mg"
+    Then I should see text containing "Tenofovir/Lamivudina/Efavirenz; 300mg + 300mg + 600mg 30Comp; Embalagem"
     Then I swipe right
     Then I wait for 1 second
     Then I should see issued movement "2"
