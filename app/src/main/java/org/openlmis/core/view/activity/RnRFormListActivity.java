@@ -187,7 +187,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     }
 
     private boolean isMMIA() {
-        return Constants.MMIA_PROGRAM_CODE.equals(programCode);
+        return Constants.MMIA_PROGRAM_CODE.equals(getProgramCode());
     }
 
     private void createRequisition(Date periodEndDate, boolean isMissedPeriod) {
