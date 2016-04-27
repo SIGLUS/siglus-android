@@ -225,11 +225,32 @@ Feature: Log in and initialize Inventory
 
     Then I should not see "01A01"
 
+    #columns of Archived drugs are 0 in mmia
+    When I navigate back
+    Then I wait to see "Are you sure you want to quit without saving your work?"
+    When I press "Yes"
+    Then I wait for "Via Classica Requisitions" to appear
+    When I navigate back
+    Then I wait for "STOCK CARD OVERVIEW" to appear
+    When I press "MMIA"
+    Then I should see text containing "Create MMIA"
+    When I press "Create MMIA"
+    Then I should see "Select inventory to close period"
+    And I press "Thursday"
+    And I press "Next"
+    Then I wait for "MMIA -" to appear
+    Then I should see "to 18 Feb"
+
+    Then I swipe right
+    Then I wait for 1 second
+    And I should see inventory "0"
+
+
     # Archived drugs screen
     When I navigate back
     Then I wait to see "Are you sure you want to quit without saving your work?"
     When I press "Yes"
-    Then I wait for "Create Via Classica Requisition" to appear
+    Then I wait for "Create MMIA" to appear
     When I navigate back
     Then I wait for "STOCK CARD OVERVIEW" to appear
     And I press "Stock Card Overview"
