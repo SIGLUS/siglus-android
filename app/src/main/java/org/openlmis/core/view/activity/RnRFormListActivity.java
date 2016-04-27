@@ -276,7 +276,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     protected void checkAndGotoEmergencyPage() {
         int dayOfMonth = new DateTime(LMISApp.getInstance().getCurrentTimeMillis()).getDayOfMonth();
         if (dayOfMonth >= Period.INVENTORY_BEGIN_DAY && dayOfMonth < Period.INVENTORY_END_DAY_NEXT) {
-            ToastUtil.show(R.string.msg_create_emergency_date_invalid);
+            ToastUtil.showForLongTime(R.string.msg_create_emergency_date_invalid);
             return;
         }
 
@@ -296,7 +296,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
             @Override
             public void onNext(Boolean hasMissed) {
                 if (hasMissed) {
-                    ToastUtil.show(R.string.msg_create_emergency_has_missed);
+                    ToastUtil.showForLongTime(R.string.msg_create_emergency_has_missed);
                 } else {
                     startActivityForResult(SelectEmergencyProductsActivity.getIntentToMe(RnRFormListActivity.this), Constants.REQUEST_FROM_RNR_LIST_PAGE);
                 }

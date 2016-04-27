@@ -48,7 +48,7 @@ public class SelectEmergencyProductsViewHolder extends BaseViewHolder {
                 }
 
                 if (isChecked && selectEmergencyProductAdapter.isReachLimit()) {
-                    ToastUtil.show(R.string.msg_out_limit_of_selected_emergency_products);
+                    ToastUtil.showForLongTime(R.string.msg_out_limit_of_selected_emergency_products);
                     checkBox.setChecked(false);
                     return;
                 }

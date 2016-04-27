@@ -197,7 +197,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             View.OnClickListener onClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ToastUtil.show(R.string.msg_emergency_requisition_cant_edit);
+                    ToastUtil.showForLongTime(R.string.msg_emergency_requisition_cant_edit);
                 }
             };
             consultationView.setEditClickListener(onClickListener);
