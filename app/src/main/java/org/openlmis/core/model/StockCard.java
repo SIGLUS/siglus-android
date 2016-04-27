@@ -93,11 +93,11 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
 
     @NonNull
     private StockMovementItem getStockMovementItem(String reason, StockMovementItem.MovementType movementType) {
-        StockMovementItem initInventory = new StockMovementItem(this);
-        initInventory.setReason(reason);
-        initInventory.setMovementType(movementType);
-        initInventory.setMovementQuantity(stockOnHand);
-        return initInventory;
+        StockMovementItem stockMovementItem = new StockMovementItem(this);
+        stockMovementItem.setReason(reason);
+        stockMovementItem.setMovementType(movementType);
+        stockMovementItem.setMovementQuantity(stockOnHand);
+        return stockMovementItem;
     }
 
     public List<StockMovementItem> getStockMovementItemsWrapper() {
