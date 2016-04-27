@@ -278,7 +278,7 @@ Feature: Log in and initialize Inventory
     And I wait for "Add new product" to appear
     And I press "Add new product"
     And I wait for "Add new product" to appear
-    And I select new drug "08S32Z" with SOH "111" quantity
+    And I select new drug "08S32Z"
     Then I wait for "Complete" to appear
     And I press "Complete"
 

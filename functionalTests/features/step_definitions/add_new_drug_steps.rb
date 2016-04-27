@@ -13,17 +13,14 @@ Then(/^I check new drug quantity/) do
        }
 end
 
-Then(/^I select new drug "(.*?)" with SOH "(.*?)" quantity/) do |drugproperty, soh|
+
+Then(/^I select new drug "(.*?)"/) do |drugproperty|
   steps %Q{
           When I search drug by fnm "#{drugproperty}"
       }
   q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
   if !q.empty?
     touch(q)
-    steps %Q{
-              When I select the item called "#{drugproperty}"
-              Then I enter quantity "#{soh}" on inventory page
-          }
   end
 end
 
