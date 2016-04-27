@@ -194,7 +194,7 @@ public class StockCardPresenter extends Presenter {
                     if (stockCard == null) {
                         stockCard = new StockCard();
                         stockCard.setProduct(product);
-                        stockRepository.createOrUpdateStockCardWithStockMovement(stockCard, stockCard.generateInitialStockMovementItem());
+                        stockRepository.createOrUpdateStockCardWithStockMovement(stockCard);
                     }
                 } catch (LMISException e) {
                     e.reportToFabric();

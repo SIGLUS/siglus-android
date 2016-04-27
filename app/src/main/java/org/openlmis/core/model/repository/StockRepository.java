@@ -157,14 +157,14 @@ public class StockRepository {
         }
     }
 
-    public void createOrUpdateStockCardWithStockMovement(final StockCard stockCard, final StockMovementItem stockMovementItem) throws LMISException {
+    public void createOrUpdateStockCardWithStockMovement(final StockCard stockCard) throws LMISException {
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
                     createOrUpdate(stockCard);
                     updateProductOfStockCard(stockCard.getProduct());
-                    saveStockItem(stockMovementItem);
+                    saveStockItem(stockCard.generateInitialStockMovementItem());
                     return null;
                 }
             });

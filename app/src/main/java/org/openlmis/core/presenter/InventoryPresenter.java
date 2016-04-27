@@ -223,9 +223,7 @@ public class InventoryPresenter extends Presenter {
                 stockCard.setExpireDates("");
             }
 
-            StockMovementItem stockMovementItem = isArchivedStockCard ? stockCard.generatePositiveInventoryStockMovementItem() : stockCard.generateInitialStockMovementItem();
-
-            stockRepository.createOrUpdateStockCardWithStockMovement(stockCard, stockMovementItem);
+            stockRepository.createOrUpdateStockCardWithStockMovement(stockCard);
             return stockCard;
         } catch (LMISException e) {
             e.reportToFabric();
