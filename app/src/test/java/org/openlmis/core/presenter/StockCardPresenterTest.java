@@ -10,6 +10,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
@@ -145,7 +146,7 @@ public class StockCardPresenterTest {
         subscriber.awaitTerminalEvent();
 
         //then
-        verify(stockRepository).createOrUpdateStockCardWithStockMovement(any(StockCard.class));
+        verify(stockRepository).createOrUpdateStockCardWithStockMovement(any(StockCard.class), any(StockMovementItem.class));
         StockCard createdKitStockCard = subscriber.getOnNextEvents().get(0).get(0);
         assertThat(createdKitStockCard.getProduct().getPrimaryName()).isEqualTo("kit a");
     }

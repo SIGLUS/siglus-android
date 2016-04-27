@@ -84,9 +84,18 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
     }
 
     public StockMovementItem generateInitialStockMovementItem() {
+        return getStockMovementItem(MovementReasonManager.INVENTORY, StockMovementItem.MovementType.PHYSICAL_INVENTORY);
+    }
+
+    public StockMovementItem generatePositiveInventoryStockMovementItem() {
+        return getStockMovementItem(MovementReasonManager.INVENTORY_POSITIVE, StockMovementItem.MovementType.POSITIVE_ADJUST);
+    }
+
+    @NonNull
+    private StockMovementItem getStockMovementItem(String reason, StockMovementItem.MovementType movementType) {
         StockMovementItem initInventory = new StockMovementItem(this);
-        initInventory.setReason(MovementReasonManager.INVENTORY);
-        initInventory.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
+        initInventory.setReason(reason);
+        initInventory.setMovementType(movementType);
         initInventory.setMovementQuantity(stockOnHand);
         return initInventory;
     }
