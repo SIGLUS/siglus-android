@@ -193,39 +193,27 @@ public class InventoryPresenter extends Presenter {
         return quantity == null ? "" : quantity.toString();
     }
 
-    protected void initStockCards(List<InventoryViewModel> list) {
-
-        from(list).filter(new Predicate<InventoryViewModel>() {
-            @Override
-            public boolean apply(InventoryViewModel inventoryViewModel) {
-                return inventoryViewModel.isChecked();
+    protected void initOrArchiveBackStockCards(List<InventoryViewModel> list) {
+        for (InventoryViewModel model : list) {
+            if (model.isChecked()) {
+                initOrArchiveBackStockCard(model);
             }
-        }).transform(new Function<InventoryViewModel, StockCard>() {
-            @Override
-            public StockCard apply(InventoryViewModel inventoryViewModel) {
-                return initStockCard(inventoryViewModel);
-            }
-        }).toList();
+        }
     }
 
-    // TODO: 4/27/16  rename
-    private StockCard initStockCard(InventoryViewModel model) {
+    private void initOrArchiveBackStockCard(InventoryViewModel model) {
         try {
-            boolean isArchivedStockCard = model.getStockCard() != null;
-
-            if (isArchivedStockCard) {
+            if (model.getProduct().isArchived()) {
                 StockCard stockCard = model.getStockCard();
                 stockCard.getProduct().setArchived(false);
                 stockRepository.updateStockCardWithProduct(stockCard);
-                return stockCard;
+                return;
             }
 
-            return createStockCardAndInventoryMovement(model);
-
+            createStockCardAndInventoryMovement(model);
         } catch (LMISException e) {
             e.reportToFabric();
         }
-        return null;
     }
 
     private StockCard createStockCardAndInventoryMovement(InventoryViewModel model) throws LMISException {
@@ -368,7 +356,7 @@ public class InventoryPresenter extends Presenter {
         return Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
-                initStockCards(list);
+                initOrArchiveBackStockCards(list);
                 subscriber.onNext(null);
                 subscriber.onCompleted();
             }
