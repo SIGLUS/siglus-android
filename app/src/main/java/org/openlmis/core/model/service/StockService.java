@@ -46,10 +46,10 @@ public class StockService {
                 stockCard.setAvgMonthlyConsumption(calculateAverageMonthlyConsumption(stockCard));
                 stockRepository.createOrUpdate(stockCard);
             }
+            SharedPreferenceMgr.getInstance().updateLatestLowStockAvgTime();
         } catch (LMISException e) {
             e.reportToFabric();
         }
-        SharedPreferenceMgr.getInstance().updateLatestLowStockAvgTime();
     }
 
     protected float calculateAverageMonthlyConsumption(StockCard stockCard) {
