@@ -22,9 +22,7 @@ import java.util.Date;
 
 import static junit.framework.Assert.assertNull;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
 public class StockCardViewHolderTest {
@@ -110,9 +108,9 @@ public class StockCardViewHolderTest {
     }
 
     @Test
-    public void shouldHideIconWhenExpireDateAfterCurrentMonth() throws Exception {
+    public void shouldHideIconWhenExpireDateAfterThreeMonthsWithCurrentTime() throws Exception {
         StockCard stockCard = StockCardBuilder.buildStockCard();
-        stockCard.setExpireDates("14/03/2016, 11/10/2016, 12/10/2017");
+        stockCard.setExpireDates("31/05/2016, 31/10/2016, 31/12/2017");
         InventoryViewModel inventoryViewModel = new InventoryViewModel(stockCard);
         Date mockCurrentDate = DateUtil.parseString("16/02/2016", DateUtil.SIMPLE_DATE_FORMAT);
         LMISTestApp.getInstance().setCurrentTimeMillis(mockCurrentDate.getTime());
@@ -146,8 +144,8 @@ public class StockCardViewHolderTest {
         Date mockCurrentDate = DateUtil.parseString("16/02/2016", DateUtil.SIMPLE_DATE_FORMAT);
         LMISTestApp.getInstance().setCurrentTimeMillis(mockCurrentDate.getTime());
         StockCard stockCard = StockCardBuilder.buildStockCard();
-        stockCard.setExpireDates("19/02/2016");
         stockCard.setStockOnHand(0);
+        stockCard.setExpireDates("");
         InventoryViewModel inventoryViewModel = new InventoryViewModel(stockCard);
 
         viewHolder.inflateDate(inventoryViewModel, "");

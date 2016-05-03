@@ -24,7 +24,7 @@ public class KitStockCardViewHolder extends StockCardViewHolder {
     }
 
     @Override
-    protected void initWarningLister() {
+    protected void initWarningLister(String expiryMsg) {
     }
 
     @Override

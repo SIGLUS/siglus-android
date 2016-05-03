@@ -1,12 +1,12 @@
 package org.openlmis.core.view.holder;
 
 import android.app.DialogFragment;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.TextView;
 
-import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.TrackerActions;
@@ -18,6 +18,9 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
@@ -76,23 +79,37 @@ public class StockCardViewHolder extends BaseViewHolder {
             return;
         }
 
-        DateTime earliestExpiryDate = new DateTime(DateUtil.parseString(earliestExpiryDateString, DateUtil.SIMPLE_DATE_FORMAT));
-        DateTime currentTime = new DateTime(LMISApp.getInstance().getCurrentTimeMillis());
+        Date earliestExpiryDate = DateUtil.parseString(earliestExpiryDateString, DateUtil.SIMPLE_DATE_FORMAT);
+        Calendar calendar = getCurrentDateWithLastDay();
 
-        if (inventoryViewModel.getStockOnHand() > 0 && (earliestExpiryDate.isBefore(currentTime) || isExpiryDateInCurrentMonth(earliestExpiryDate, currentTime))) {
-            showExpiryDate();
-        } else {
-            hideExpiryDate();
+        if (DateUtil.calculateDateMonthOffset(earliestExpiryDate, calendar.getTime()) > 0) {
+            showExpiryDateWithMessage(context.getString(R.string.msg_expired_warning));
+            return;
         }
+
+        if (DateUtil.calculateDateMonthOffset(calendar.getTime(), earliestExpiryDate) <= 2) {
+            showExpiryDateWithMessage(context.getString(R.string.msg_expiry_warning));
+            return;
+        }
+
+        hideExpiryDate();
     }
 
-    private void showExpiryDate() {
+    @NonNull
+    private Calendar getCurrentDateWithLastDay() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        return calendar;
+    }
+
+    private void showExpiryDateWithMessage(String expiryMsg) {
         if (ivExpiryDateWarning != null) {
             ivExpiryDateWarning.setVisibility(View.VISIBLE);
         } else {
             ivExpiryDateWarning = vsExpiryDateWarning.inflate();
         }
-        initWarningLister();
+        initWarningLister(expiryMsg);
     }
 
     private void hideExpiryDate() {
@@ -101,20 +118,16 @@ public class StockCardViewHolder extends BaseViewHolder {
         }
     }
 
-    protected void initWarningLister() {
+    protected void initWarningLister(final String expiryMsg) {
         ivExpiryDateWarning.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
-                        context.getString(R.string.msg_expiry_warning),
+                        expiryMsg,
                         context.getString(R.string.btn_ok));
                 dialogFragment.show(((BaseActivity) context).getFragmentManager(), "expiryDateWarningDialog");
             }
         });
-    }
-
-    private boolean isExpiryDateInCurrentMonth(DateTime earliestExpiryDate, DateTime currentTime) {
-        return earliestExpiryDate.getYear() == currentTime.getYear() && earliestExpiryDate.getMonthOfYear() == currentTime.getMonthOfYear();
     }
 
     private void setListener(final InventoryViewModel inventoryViewModel) {
