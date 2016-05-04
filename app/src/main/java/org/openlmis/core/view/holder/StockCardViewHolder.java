@@ -85,7 +85,7 @@ public class StockCardViewHolder extends BaseViewHolder {
             return;
         }
 
-        if (DateUtil.calculateDateMonthOffset(currentDate, earliestExpiryDate) <= 2) {
+        if (DateUtil.calculateDateMonthOffset(currentDate, earliestExpiryDate) <= 3) {
             showExpiryDateWithMessage(context.getString(R.string.msg_expiry_warning));
             return;
         }
