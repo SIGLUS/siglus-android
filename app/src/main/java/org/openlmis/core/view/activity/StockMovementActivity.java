@@ -161,7 +161,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         tvCancel.setOnClickListener(this);
         btnUnpack.setOnClickListener(this);
 
-        tvCmm.setText(String.valueOf((int) presenter.getStockCard().getAvgMonthlyConsumption()));
+        tvCmm.setText(presenter.getStockCard().getCMM());
 
         updateExpiryDateViewGroup();
     }

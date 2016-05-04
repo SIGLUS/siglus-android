@@ -81,7 +81,7 @@ public class InventoryViewModel {
         this.stockCardId = stockCard.getId();
         this.stockOnHand = stockCard.getStockOnHand();
         this.checked = true;
-        this.lowStockAvg = (int) Math.ceil(stockCard.getAvgMonthlyConsumption() * 0.05);
+        this.lowStockAvg = stockCard.getLowStockAvg();
 
         initExpiryDates(stockCard.getExpireDates());
     }

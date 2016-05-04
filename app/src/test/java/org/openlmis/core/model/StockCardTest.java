@@ -79,6 +79,18 @@ public class StockCardTest {
         MatcherAssert.assertThat(stockMovementItem.getStockCard(), is(stockCard));
     }
 
+    @Test
+    public void shouldGetCMM() throws Exception {
+        stockCard.setAvgMonthlyConsumption(0.77f);
+        assertThat(stockCard.getCMM()).isEqualTo("1");
+    }
+
+    @Test
+    public void shouldGetLowStockAvg() throws Exception {
+        stockCard.setAvgMonthlyConsumption(100.5f);
+        assertThat(stockCard.getLowStockAvg()).isEqualTo(6);
+    }
+
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {

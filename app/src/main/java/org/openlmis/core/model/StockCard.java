@@ -94,4 +94,12 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
     public List<StockMovementItem> getStockMovementItemsWrapper() {
         return ListUtil.wrapOrEmpty(foreignStockMovementItems, stockMovementItemsWrapper);
     }
+
+    public String getCMM() {
+        return String.valueOf((int) Math.ceil(this.avgMonthlyConsumption));
+    }
+
+    public int getLowStockAvg() {
+        return (int) Math.ceil(this.avgMonthlyConsumption * 0.05);
+    }
 }
