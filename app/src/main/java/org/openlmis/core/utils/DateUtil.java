@@ -33,10 +33,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
-
-import static org.joda.time.Months.monthsBetween;
 
 public final class DateUtil {
 
@@ -142,9 +141,14 @@ public final class DateUtil {
         return dateMinusMonth(date, 1);
     }
 
-    public static int calculateDateMonthOffset(Date earlierDate, Date laterDate) {
-        return monthsBetween(new DateTime(earlierDate), new DateTime(laterDate))
-                .getMonths();
+    public static int calculateDateMonthOffset(Date earlierDate, Date laterDate){
+        Calendar startCalendar = new GregorianCalendar();
+        startCalendar.setTime(earlierDate);
+        Calendar endCalendar = new GregorianCalendar();
+        endCalendar.setTime(laterDate);
+
+        int diffYear = endCalendar.get(Calendar.YEAR) - startCalendar.get(Calendar.YEAR);
+        return diffYear * 12 + endCalendar.get(Calendar.MONTH) - startCalendar.get(Calendar.MONTH);
     }
 
     private static Calendar calendarDate(Date date) {

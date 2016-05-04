@@ -110,7 +110,7 @@ public class StockCardViewHolderTest {
     @Test
     public void shouldHideIconWhenExpireDateAfterThreeMonthsWithCurrentTime() throws Exception {
         StockCard stockCard = StockCardBuilder.buildStockCard();
-        stockCard.setExpireDates("31/05/2016, 31/10/2016, 31/12/2017");
+        stockCard.setExpireDates("31/06/2016, 31/10/2016, 31/12/2017");
         InventoryViewModel inventoryViewModel = new InventoryViewModel(stockCard);
         Date mockCurrentDate = DateUtil.parseString("16/02/2016", DateUtil.SIMPLE_DATE_FORMAT);
         LMISTestApp.getInstance().setCurrentTimeMillis(mockCurrentDate.getTime());

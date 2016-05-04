@@ -1,7 +1,6 @@
 package org.openlmis.core.view.holder;
 
 import android.app.DialogFragment;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewStub;
@@ -19,7 +18,6 @@ import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import roboguice.RoboGuice;
@@ -80,27 +78,19 @@ public class StockCardViewHolder extends BaseViewHolder {
         }
 
         Date earliestExpiryDate = DateUtil.parseString(earliestExpiryDateString, DateUtil.SIMPLE_DATE_FORMAT);
-        Calendar calendar = getCurrentDateWithLastDay();
+        Date currentDate = new Date(LMISApp.getInstance().getCurrentTimeMillis());
 
-        if (DateUtil.calculateDateMonthOffset(earliestExpiryDate, calendar.getTime()) > 0) {
+        if (DateUtil.calculateDateMonthOffset(earliestExpiryDate, currentDate) > 0) {
             showExpiryDateWithMessage(context.getString(R.string.msg_expired_warning));
             return;
         }
 
-        if (DateUtil.calculateDateMonthOffset(calendar.getTime(), earliestExpiryDate) <= 2) {
+        if (DateUtil.calculateDateMonthOffset(currentDate, earliestExpiryDate) <= 2) {
             showExpiryDateWithMessage(context.getString(R.string.msg_expiry_warning));
             return;
         }
 
         hideExpiryDate();
-    }
-
-    @NonNull
-    private Calendar getCurrentDateWithLastDay() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
-        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-        return calendar;
     }
 
     private void showExpiryDateWithMessage(String expiryMsg) {
