@@ -108,7 +108,7 @@ public class PeriodService {
         DateTime currentMonthInventoryBeginDate;
         currentMonthInventoryBeginDate = getCurrentMonthInventoryBeginDate();
 
-        return (currentMonthInventoryBeginDate.getYear() * 12 + currentMonthInventoryBeginDate.getMonthOfYear()) - (nextPeriodInScheduleBegin.getYear() * 12 + nextPeriodInScheduleBegin.getMonthOfYear());
+        return DateUtil.calculateDateMonthOffset(nextPeriodInScheduleBegin.toDate(),currentMonthInventoryBeginDate.toDate());
     }
 
     public DateTime getCurrentMonthInventoryBeginDate() {
