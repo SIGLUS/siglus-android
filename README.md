@@ -18,14 +18,14 @@ Functional Tests
 Run all FunctionalTests
 
 ```
-./gradlew assembleDevDebug
+./gradlew assembleLocalDebug
 ./gradlew functionalTests
 ```
 
 Run Specific Tag Functional Test
 
 ```
-./gradlew assembleDevDebug
+./gradlew assembleLocalDebug
 cd functionalTests
 calabash-android run ../app/build/outputs/apk/app-dev-debug.apk --tags @MMIA
 ```
