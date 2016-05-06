@@ -35,12 +35,14 @@ public class StockMovementAdapter extends BaseAdapter {
 
     private final StockCard stockCard;
     List<StockMovementViewModel> stockMovementViewModels;
+    private boolean isApeKitOrUsKit;
 
     private MovementChangedListener movementChangeListener;
 
-    public StockMovementAdapter(List<StockMovementViewModel> stockMovementViewModels, StockCard stockCard) {
+    public StockMovementAdapter(List<StockMovementViewModel> stockMovementViewModels, StockCard stockCard, boolean isApeKitOrUsKit) {
         this.stockMovementViewModels = stockMovementViewModels;
         this.stockCard = stockCard;
+        this.isApeKitOrUsKit = isApeKitOrUsKit;
     }
 
     @Override
@@ -70,7 +72,7 @@ public class StockMovementAdapter extends BaseAdapter {
             holder = (StockMovementViewHolder) convertView.getTag();
         }
 
-        holder.populate(getItem(position), stockCard);
+        holder.populate(getItem(position), stockCard, isApeKitOrUsKit);
         return convertView;
     }
 

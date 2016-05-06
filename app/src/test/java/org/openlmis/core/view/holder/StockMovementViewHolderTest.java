@@ -76,7 +76,7 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldPopulateTextDataWhenPopulatingData() {
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
 
         assertEquals("12345", viewHolder.etDocumentNo.getText().toString());
         assertEquals("2015-11-11", viewHolder.txMovementDate.getText().toString());
@@ -90,7 +90,7 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldDisableLineWhenPopulatingData() {
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
 
         assertFalse(viewHolder.etDocumentNo.isEnabled());
         assertFalse(viewHolder.etReceived.isEnabled());
@@ -101,7 +101,7 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldHideUnderline() {
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
 
         assertNull(viewHolder.etIssued.getBackground());
         assertNull(viewHolder.etPositiveAdjustment.getBackground());
@@ -113,7 +113,7 @@ public class StockMovementViewHolderTest {
     @Test
     public void shouldSetFontColorRedIfNotIssueAdjustment() {
         viewModel.setReason(new MovementReasonManager.MovementReason(StockMovementItem.MovementType.NEGATIVE_ADJUST, "negative_adjust", "negative_adjust description"));
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
 
         int red = RuntimeEnvironment.application.getResources().getColor(R.color.color_red);
 
@@ -129,7 +129,7 @@ public class StockMovementViewHolderTest {
     @Test
     public void shouldSetFontColorBlackIfIssueAdjustment() {
         viewModel.setReason(new MovementReasonManager.MovementReason(StockMovementItem.MovementType.ISSUE, "ISSUE_1", "issue description"));
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
 
         int black = RuntimeEnvironment.application.getResources().getColor(R.color.color_black);
 
@@ -145,7 +145,7 @@ public class StockMovementViewHolderTest {
     @Test
     public void shouldShowMovementTypeDialogOnClick() {
         viewModel.setDraft(true);
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
 
         viewHolder.txReason.performClick();
 
@@ -157,7 +157,7 @@ public class StockMovementViewHolderTest {
     public void shouldSetReasonAndDateOnComplete() {
         MovementReasonManager.MovementReason reason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.RECEIVE, "DON", "Donations");
         String today = DateUtil.formatDate(new Date());
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
         viewHolder.txMovementDate.setText("");
         viewHolder.etIssued.setText("100");
 
@@ -176,7 +176,7 @@ public class StockMovementViewHolderTest {
     @Test
     public void shouldShowMovementDateDialogOnClick() {
         viewModel.setDraft(true);
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
 
         viewHolder.txMovementDate.performClick();
 
@@ -186,7 +186,7 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldValidateMovementDateOnSelectionAndShowToastIfInvalid() throws ParseException, LMISException {
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
 
         StockMovementViewHolder.MovementDateListener movementDateListener = viewHolder.new MovementDateListener(viewModel, new Date());
         movementDateListener.onDateSet(mock(DatePicker.class), 2015, 11, 10);
@@ -195,7 +195,7 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldValidateMovementDateOnSelectionAnd() throws ParseException, LMISException {
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
 
         StockMovementViewHolder.MovementDateListener movementDateListener = viewHolder.new MovementDateListener(viewModel, DateUtil.parseString("11-11-2015", "MM-dd-YYYY"));
         movementDateListener.onDateSet(mock(DatePicker.class), 2015, 10, 15);
@@ -208,7 +208,7 @@ public class StockMovementViewHolderTest {
     public void shouldOnlyEnableCurrentSelectedEditTextWhenChoseMovementType() throws ParseException, LMISException {
 
         viewModel.setDraft(true);
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
         viewHolder.txMovementDate.setText("");
 
         StockMovementViewHolder.MovementSelectListener listener = viewHolder.new MovementSelectListener(viewModel);
@@ -233,7 +233,7 @@ public class StockMovementViewHolderTest {
     @Test
     public void shouldEnableMovementTypeAndReasonIfModelIsDraft() {
         viewModel.setDraft(true);
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
 
         assertTrue(viewHolder.txMovementDate.isEnabled());
         assertTrue(viewHolder.txReason.isEnabled());
@@ -241,7 +241,7 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldSetValueAfterTextChange() {
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
 
         viewHolder.etIssued.setText("30");
         assertEquals("30", viewModel.getIssued());
@@ -252,7 +252,7 @@ public class StockMovementViewHolderTest {
     @Test
     public void shouldEnableIssueEditTextWhenModelWithIssueType() {
         viewModel.setDraft(true);
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
 
         assertTrue(viewHolder.etIssued.isEnabled());
     }
@@ -262,7 +262,7 @@ public class StockMovementViewHolderTest {
         MovementReasonManager.MovementReason receivedReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.RECEIVE, "RECEIVE_1", "receive description");
         viewModel.setDraft(true);
         viewModel.setReason(receivedReason);
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
 
         assertTrue(viewHolder.etReceived.isEnabled());
     }
@@ -272,7 +272,7 @@ public class StockMovementViewHolderTest {
         MovementReasonManager.MovementReason negativeReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.NEGATIVE_ADJUST, "NEGATIVE_1", "negative adjustment description");
         viewModel.setDraft(true);
         viewModel.setReason(negativeReason);
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
 
         assertTrue(viewHolder.etNegativeAdjustment.isEnabled());
     }
@@ -280,7 +280,7 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldClearDocumentNumberWhenReselectReason() {
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
         viewHolder.etDocumentNo.setText("888");
 
         StockMovementViewHolder.MovementSelectListener listener = viewHolder.new MovementSelectListener(viewModel);
@@ -292,7 +292,7 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldClearInputWhenReSelectSameReason() {
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
         StockMovementViewHolder.MovementSelectListener listener = viewHolder.new MovementSelectListener(viewModel);
         MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.RECEIVE, "DON", "Donations");
         listener.onComplete(receiveReason);
@@ -308,40 +308,40 @@ public class StockMovementViewHolderTest {
         MovementReasonManager.MovementReason positiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.POSITIVE_ADJUST, "POSITIVE_1", "positive adjustment description");
         viewModel.setDraft(true);
         viewModel.setReason(positiveReason);
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
 
         assertTrue(viewHolder.etPositiveAdjustment.isEnabled());
     }
 
     @Test
     public void shouldNotClearInputWhenRotate() {
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
         MovementReasonManager.MovementReason positiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.POSITIVE_ADJUST, "POSITIVE_1", "positive adjustment description");
         viewModel.setDraft(true);
         viewModel.setReason(positiveReason);
         viewHolder.etPositiveAdjustment.setText("10");
 
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
 
         assertThat(viewHolder.etPositiveAdjustment.getText().toString(), is("10"));
     }
 
     @Test
     public void shouldResetTxReasonValueWhenReuseViewModel() {
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
 
         assertEquals(viewHolder.txReason.getText().toString(), "issue description");
 
         viewModel.setDraft(true);
         viewModel.setReason(null);
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
 
         assertEquals(viewHolder.txReason.getText().toString(), "");
     }
 
     @Test
     public void shouldResetTextColorWhenReselectReason() {
-        viewHolder.populate(viewModel, stockCard);
+        viewHolder.populate(viewModel, stockCard, false);
 
         StockMovementViewHolder.MovementSelectListener listener = viewHolder.new MovementSelectListener(viewModel);
         MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.POSITIVE_ADJUST, "INVENTORY_POSITIVE", "Inventory description...");
