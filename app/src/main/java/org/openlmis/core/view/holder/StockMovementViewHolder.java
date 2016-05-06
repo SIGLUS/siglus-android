@@ -20,7 +20,6 @@ package org.openlmis.core.view.holder;
 
 import android.app.DatePickerDialog;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -86,15 +85,12 @@ public class StockMovementViewHolder extends BaseViewHolder {
     @InjectView(R.id.tx_signature)
     TextView txSignature;
 
-    private Drawable editTextBackground;
     private StockMovementAdapter.MovementChangedListener movementChangeListener;
     private Map<StockMovementItem.MovementType, EditText> movementViewMap;
 
     public StockMovementViewHolder(View itemView, StockMovementAdapter.MovementChangedListener movementChangeListener) {
         super(itemView);
         this.movementChangeListener = movementChangeListener;
-
-        editTextBackground = new EditText(context).getBackground();
 
         InputFilter[] filters = new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)};
         etReceived.setFilters(filters);
@@ -182,7 +178,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
 
     private void enableAndUnderlineEditText(EditText editText) {
         editText.setEnabled(true);
-        editText.setBackground(editTextBackground);
+        editText.setBackground(new EditText(context).getBackground());
     }
 
     private void disableAndRemoveUnderlineEditText(EditText editText) {

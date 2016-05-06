@@ -18,8 +18,7 @@
 
     <EditText
         android:id="@+id/et_document_no"
-        style="@style/ItemMovement.SheetText.Edit"
-        android:inputType="textMultiLine"
+        style="@style/ItemMovement.SheetText"
         android:layout_width="@dimen/stock_movement_item_common_width"
         android:layout_height="wrap_content" />
 
