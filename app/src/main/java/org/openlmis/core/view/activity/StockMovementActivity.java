@@ -51,7 +51,6 @@ import org.openlmis.core.view.adapter.StockMovementAdapter;
 import org.openlmis.core.view.holder.StockMovementViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
-import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
 import org.openlmis.core.view.widget.ExpireDateViewGroup;
 import org.openlmis.core.view.widget.SignatureDialog;
 
@@ -146,7 +145,7 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
         buttonView.setVisibility(View.GONE);
 
-        stockMovementAdapter = new StockMovementAdapter(presenter.getStockMovementModelList(), presenter.getStockCard(), isApeKitOrUsKit());
+        stockMovementAdapter = new StockMovementAdapter(presenter.getStockMovementModelList(), presenter.getStockCard());
         stockMovementAdapter.setMovementChangeListener(new StockMovementAdapter.MovementChangedListener() {
             @Override
             public void movementChange() {
@@ -165,11 +164,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         tvCmm.setText(presenter.getStockCard().getCMM());
 
         updateExpiryDateViewGroup();
-    }
-
-    private boolean isApeKitOrUsKit() {
-        String productCode = getIntent().getStringExtra(Constants.PARAM_PRODUCT_CODE);
-        return ViaKitsViewModel.US_KIT.equals(productCode) || ViaKitsViewModel.APE_KIT.equals(productCode);
     }
 
     private void showBanner() {
@@ -306,7 +300,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
         intent.putExtra(Constants.PARAM_STOCK_CARD_ID, inventoryViewModel.getStockCardId());
         intent.putExtra(Constants.PARAM_STOCK_NAME, inventoryViewModel.getProduct().getFormattedProductName());
         intent.putExtra(Constants.PARAM_IS_ACTIVATED, inventoryViewModel.getProduct().isActive());
-        intent.putExtra(Constants.PARAM_PRODUCT_CODE, inventoryViewModel.getProduct().getCode());
         intent.putExtra(Constants.PARAM_IS_KIT, isKit);
         return intent;
     }

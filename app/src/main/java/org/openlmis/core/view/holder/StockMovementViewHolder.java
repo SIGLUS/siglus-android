@@ -109,7 +109,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
         movementViewMap.put(StockMovementItem.MovementType.POSITIVE_ADJUST, etPositiveAdjustment);
     }
 
-    public void populate(final StockMovementViewModel model, StockCard stockCard, boolean isApeKitOrUsKit) {
+    public void populate(final StockMovementViewModel model, StockCard stockCard) {
         removeTextChangeListeners(model, stockCard.getStockOnHand());
 
         disableLine();
@@ -137,7 +137,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
             itemView.setBackgroundColor(Color.TRANSPARENT);
         }
 
-        addClickListeners(model, getPreviousMovementDate(stockCard), isApeKitOrUsKit);
+        addClickListeners(model, getPreviousMovementDate(stockCard));
 
         addTextChangedListeners(model, stockCard.getStockOnHand());
     }
@@ -200,12 +200,12 @@ public class StockMovementViewHolder extends BaseViewHolder {
         etDocumentNo.removeTextChangedListener(new EditTextWatcher(etDocumentNo, model, currentStockOnHand));
     }
 
-    private void addClickListeners(final StockMovementViewModel model, final Date previousMovementDate, final boolean isApeKitOrUsKit) {
+    private void addClickListeners(final StockMovementViewModel model, final Date previousMovementDate) {
         txReason.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (model.isDraft()) {
-                    new MovementTypeDialog(context, new MovementSelectListener(model), isApeKitOrUsKit).show();
+                    new MovementTypeDialog(context, new MovementSelectListener(model)).show();
                     trackStockMovementEvent(TrackerActions.SelectReason);
                 }
             }

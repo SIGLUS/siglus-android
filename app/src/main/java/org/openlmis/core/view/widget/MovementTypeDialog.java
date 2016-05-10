@@ -57,19 +57,13 @@ public class MovementTypeDialog {
     protected MovementReasonManager reasonManager;
 
 
-    public MovementTypeDialog(Context context, final OnMovementSelectListener listener, final boolean isApeKitOrUsKit) {
+    public MovementTypeDialog(Context context, final OnMovementSelectListener listener) {
 
         this.context = context;
         this.listener = listener;
 
         builder = new AlertDialog.Builder(context);
-        if (isApeKitOrUsKit) {
-            contentList = new ArrayList<>();
-            contentList.add(context.getResources().getString(R.string.label_received_mmia));
-            contentList.add(context.getResources().getString(R.string.label_issued_mmia));
-        }else {
-            contentList = newArrayList(context.getResources().getStringArray(R.array.movement_type_items_array));
-        }
+        contentList = newArrayList(context.getResources().getStringArray(R.array.movement_type_items_array));
 
         adapter = new ArrayAdapter<>(context, R.layout.item_movement_type, R.id.text, contentList);
 
@@ -81,11 +75,6 @@ public class MovementTypeDialog {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (status == STATUS_FIRST_MENU) {
                     status = position;
-
-                    if (isApeKitOrUsKit && position == 1){
-                        status = STATUS_SELECT_ISSUE;
-                    }
-
                     showSecondaryList();
                 } else {
                     performOnSelect(position);
