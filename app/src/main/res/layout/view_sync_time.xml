@@ -5,6 +5,13 @@
     android:gravity="center"
     android:orientation="horizontal">
 
+    <ProgressBar
+        android:id="@+id/pb_sync_data"
+        android:layout_width="29dp"
+        android:layout_height="29dp"
+        android:visibility="gone"
+        android:layout_marginRight="@dimen/margin_tiny"/>
+    
     <ImageView
         android:id="@+id/iv_sync_time_icon"
         android:layout_width="25dp"

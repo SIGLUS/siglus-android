@@ -101,13 +101,20 @@ public class HomeActivity extends BaseActivity {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             }
         }
-        registerSyncTimeReceiver();
+        registerSyncStartReceiver();
+        registerSyncFinishedReceiver();
     }
 
-    private void registerSyncTimeReceiver() {
+    private void registerSyncStartReceiver() {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Constants.INTENT_FILTER_SET_SYNC_DATA);
-        registerReceiver(syncedTimeReceiver, filter);
+        filter.addAction(Constants.INTENT_FILTER_START_SYNC_DATA);
+        registerReceiver(syncStartReceiver, filter);
+    }
+
+    private void registerSyncFinishedReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
+        registerReceiver(syncFinishedReceiver, filter);
     }
 
     @Override
@@ -115,7 +122,14 @@ public class HomeActivity extends BaseActivity {
         return R.style.AppTheme_Gray;
     }
 
-    BroadcastReceiver syncedTimeReceiver = new BroadcastReceiver() {
+    BroadcastReceiver syncStartReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            syncTimeView.showSyncProgressBarAndHideIcon();
+        }
+    };
+
+    BroadcastReceiver syncFinishedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             setSyncedTime();
@@ -124,7 +138,8 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        unregisterReceiver(syncedTimeReceiver);
+        unregisterReceiver(syncStartReceiver);
+        unregisterReceiver(syncFinishedReceiver);
         super.onDestroy();
     }
 

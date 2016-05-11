@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.openlmis.core.view.widget.SyncTimeView.*;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
@@ -108,5 +109,12 @@ public class SyncTimeViewTest {
         syncTimeView.showLastSyncTime();
         assertThat(syncTimeView.txSyncTime.getText().toString(), is("Initial sync failed"));
         assertNull(syncTimeView.ivSyncTimeIcon.getDrawable());
+    }
+
+    @Test
+    public void shouldHideProgressBarAndShowSyncTimeIconWhenShowLastSyncTime() throws Exception {
+        syncTimeView.showLastSyncTime();
+        assertThat(syncTimeView.progressBar.getVisibility(),is(GONE));
+        assertThat(syncTimeView.ivSyncTimeIcon.getVisibility(),is(VISIBLE));
     }
 }

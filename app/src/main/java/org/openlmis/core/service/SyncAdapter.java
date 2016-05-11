@@ -71,6 +71,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private void triggerSync() {
+        sendSyncStartBroadcast();
+
         syncDownManager.syncDownLatestProducts();
 
         boolean isSyncRnrSuccessful = syncUpManager.syncRnr();
@@ -87,12 +89,18 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         syncUpManager.syncAppVersion();
         syncUpManager.syncArchivedProducts();
 
-        sendSyncDataBroadcast();
+        sendSyncFinishedBroadcast();
     }
 
-    private void sendSyncDataBroadcast() {
+    private void sendSyncStartBroadcast() {
         Intent intent = new Intent();
-        intent.setAction(Constants.INTENT_FILTER_SET_SYNC_DATA);
+        intent.setAction(Constants.INTENT_FILTER_START_SYNC_DATA);
+        context.sendBroadcast(intent);
+    }
+
+    private void sendSyncFinishedBroadcast() {
+        Intent intent = new Intent();
+        intent.setAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
         context.sendBroadcast(intent);
     }
 }

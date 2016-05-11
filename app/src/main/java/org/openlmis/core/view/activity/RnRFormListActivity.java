@@ -231,7 +231,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
 
     private void registerRnrSyncReceiver() {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Constants.INTENT_FILTER_SET_SYNC_DATA);
+        filter.addAction(Constants.INTENT_FILTER_FINISH_SYNC_DATA);
         registerReceiver(rnrSyncReceiver, filter);
     }
 

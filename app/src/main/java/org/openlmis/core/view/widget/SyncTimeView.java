@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.inject.Inject;
@@ -21,6 +22,9 @@ import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
 public class SyncTimeView extends LinearLayout implements View.OnClickListener {
+
+    @InjectView(R.id.pb_sync_data)
+    ProgressBar progressBar;
 
     @InjectView(R.id.tx_sync_time)
     TextView txSyncTime;
@@ -59,6 +63,8 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
     }
 
     public void showLastSyncTime() {
+        hideSyncProgressBarAndShowIcon();
+
         rnrLastSyncTime = SharedPreferenceMgr.getInstance().getRnrLastSyncTime();
         stockLastSyncTime = SharedPreferenceMgr.getInstance().getStockLastSyncTime();
 
@@ -69,6 +75,10 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
             return;
         }
 
+        updateSyncTimeViewUI();
+    }
+
+    private void updateSyncTimeViewUI() {
         long syncTimeInterval = getSyncTimeInterval(rnrLastSyncTime, stockLastSyncTime);
 
         String syncTimeIntervalWithUnit;
@@ -121,5 +131,15 @@ public class SyncTimeView extends LinearLayout implements View.OnClickListener {
         SyncDateBottomSheet syncDateBottomSheet = new SyncDateBottomSheet();
         syncDateBottomSheet.setArguments(SyncDateBottomSheet.getArgumentsToMe(rnrLastSyncTime, stockLastSyncTime));
         syncDateBottomSheet.show(((BaseActivity) context).getFragmentManager());
+    }
+
+    public void showSyncProgressBarAndHideIcon() {
+        ivSyncTimeIcon.setVisibility(GONE);
+        progressBar.setVisibility(VISIBLE);
+    }
+
+    private void hideSyncProgressBarAndShowIcon() {
+        progressBar.setVisibility(GONE);
+        ivSyncTimeIcon.setVisibility(VISIBLE);
     }
 }
