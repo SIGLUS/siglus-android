@@ -23,7 +23,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:minWidth="@dimen/stock_movement_item_common_width" />
+        android:minWidth="@dimen/stock_movement_item_common_width"
+        android:maxLength="9"/>
 
     <EditText
         android:id="@+id/et_received"

@@ -21,7 +21,8 @@
         style="@style/ItemMovement.SheetText"
         android:imeOptions="actionDone"
         android:layout_width="@dimen/stock_movement_item_common_width"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:maxLength="9"/>
 
     <EditText
         android:id="@+id/et_received"
