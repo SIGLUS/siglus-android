@@ -91,7 +91,7 @@ public class UnpackKitActivityTest {
         stockMovementActivity.etDocumentNumber.setText("DocumentNumber");
 
         stockMovementActivity.mAdapter.onCreateViewHolder(stockMovementActivity.productListRecycleView, 1).itemView.findViewById(R.id.btn_complete).performClick();
-        verify(mockedPresenter).saveUnpackProducts(1, "DocumentNumber", "");
+        verify(mockedPresenter).saveUnpackProducts(1, "DocumentN", "");
     }
 
     @Test
