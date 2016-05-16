@@ -28,7 +28,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockMovementItem;
 import org.roboguice.shaded.goole.common.base.Function;
-import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
@@ -120,12 +119,7 @@ public class MovementTypeDialog {
         if (type !=null){
             movementReasons.addAll(reasonManager.buildReasonListForMovementType(type));
 
-            contentList.addAll(FluentIterable.from(reasonManager.buildReasonListForMovementType(type)).filter(new Predicate<MovementReasonManager.MovementReason>() {
-                @Override
-                public boolean apply(MovementReasonManager.MovementReason movementReason) {
-                    return !MovementReasonManager.UNPACK_KIT.equals(movementReason.getCode());
-                }
-            }).transform(new Function<MovementReasonManager.MovementReason, String>() {
+            contentList.addAll(FluentIterable.from(reasonManager.buildReasonListForMovementType(type)).transform(new Function<MovementReasonManager.MovementReason, String>() {
                 @Override
                 public String apply(MovementReasonManager.MovementReason reason) {
                     return reason.getDescription();

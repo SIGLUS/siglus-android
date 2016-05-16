@@ -76,7 +76,6 @@ public class MovementReasonManagerTest {
                 "Product defective, moved to quarantine",
                 "Returns from Customers(HF and dependent wards)",
                 "Returns of expired drugs (HF and dependent wards)",
-                "Donations to Deposit",
                 "Loans received at the health facility deposit",
                 "Inventory correction in case of under stock on Stock card (Stock on hand is more than stock in stock card)",
                 "Returns from Quarantine, in the case of quarantined product being fit for use");
@@ -114,6 +113,8 @@ public class MovementReasonManagerTest {
         assertThat(reasonManager.queryByCode(MovementReasonManager.DEFAULT_RECEIVE).canBeDisplayOnMovementMenu(), is(false));
         assertThat(reasonManager.queryByCode(MovementReasonManager.DEFAULT_NEGATIVE_ADJUSTMENT).canBeDisplayOnMovementMenu(), is(false));
         assertThat(reasonManager.queryByCode(MovementReasonManager.DEFAULT_POSITIVE_ADJUSTMENT).canBeDisplayOnMovementMenu(), is(false));
+        assertThat(reasonManager.queryByCode(MovementReasonManager.DONATION).canBeDisplayOnMovementMenu(),is(false));
+        assertThat(reasonManager.queryByCode(MovementReasonManager.UNPACK_KIT).canBeDisplayOnMovementMenu(),is(false));
     }
 
     @Test

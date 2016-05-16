@@ -61,6 +61,7 @@ public final class MovementReasonManager {
     public static final String DEFAULT_NEGATIVE_ADJUSTMENT = "DEFAULT_NEGATIVE_ADJUSTMENT";
     public static final String DEFAULT_POSITIVE_ADJUSTMENT = "DEFAULT_POSITIVE_ADJUSTMENT";
     public static final String UNPACK_KIT = "UNPACK_KIT";
+    public static final String DONATION = "DONATION";
     public static final String DDM = "DISTRICT_DDM";
 
     Context context;
@@ -195,7 +196,10 @@ public final class MovementReasonManager {
         }
 
         protected boolean canBeDisplayOnMovementMenu(){
-            return !(code.startsWith(DEFAULT_PREFIX) || code.equalsIgnoreCase(INVENTORY));
+            return !(code.startsWith(DEFAULT_PREFIX)
+                    || code.equalsIgnoreCase(INVENTORY)
+                    || MovementReasonManager.UNPACK_KIT.equals(code)
+                    || MovementReasonManager.DONATION.equals(code));
         }
 
         public boolean isIssueAdjustment() {
