@@ -37,7 +37,7 @@ Feature: low stock
     Then I wait for "Stock Card" to appear
     Then I wait for 1 second
     Then I should see last document number "520"
-    And I select a reason "Positive Adjustments" "Donations to Deposit"
+    And I select a reason "Positive Adjustments" "Loans received at the health facility deposit"
     Then I swipe right
     Then I wait for 1 second
     And I enter positive adjustment number "1"

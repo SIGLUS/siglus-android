@@ -14,7 +14,7 @@ Feature: User re-selects movement reason after already entering numbers
     And I wait for "Stock Card" to appear
     And I rotate the page to "landscape"
     And I wait for "Stock Card" to appear
-    And I select a reason "Positive Adjustments" "Donations to Deposit"
+    And I select a reason "Positive Adjustments" "Loans received at the health facility deposit"
     And I wait for 1 second
     And I enter "888" into documentNo
     And I wait for 1 second

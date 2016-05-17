@@ -123,7 +123,7 @@ Then(/^I make all movements for "(.*?)" when stress test$/) do |drugFNM|
         And I make a movement "#{drugFNM}" "Entries" "Province ( DPM)" "received" "5"
         And I make a movement "#{drugFNM}" "Positive Adjustments" "Returns from Customers(HF and dependent wards)" "positive adjustment" "1"
         And I make a movement "#{drugFNM}" "Positive Adjustments" "Returns of expired drugs (HF and dependent wards)" "positive adjustment" "1"
-        And I make a movement "#{drugFNM}" "Positive Adjustments" "Donations to Deposit" "positive adjustment" "1"
+        And I make a movement "#{drugFNM}" "Positive Adjustments" "Loans received at the health facility deposit" "positive adjustment" "1"
         And I make a movement "#{drugFNM}" "Positive Adjustments" "Loans received at the health facility deposit" "positive adjustment" "1"
         And I make a movement "#{drugFNM}" "Positive Adjustments" "Inventory correction in case of under stock on Stock card (Stock on hand is more than stock in stock card)" "positive adjustment" "1"
         And I make a movement "#{drugFNM}" "Positive Adjustments" "Returns from Quarantine, in the case of quarantined product being fit for use" "positive adjustment" "1"

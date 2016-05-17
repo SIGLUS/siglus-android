@@ -106,7 +106,7 @@ Feature: Log in and initialize Inventory
     # Make stock movements in landscape mode
     When I select stock card code called "[01A01]"
     And I wait for "Stock Card" to appear
-    And I select a reason "Positive Adjustments" "Donations to Deposit"
+    And I select a reason "Positive Adjustments" "Loans received at the health facility deposit"
     Then I swipe right
     Then I wait for 1 second
     And I enter positive adjustment number "2"
