@@ -133,6 +133,7 @@
     <string name="label_fnm">FNM</string>
     <string name="label_product_name">Product Name</string>
     <string name="msg_low_stock_warning">Your product has low stock.</string>
+    <string name="msg_over_stock_warning">Your product is overstock.</string>
     <string name="msg_stock_out_warning">Your product is stocked out.</string>
     <string name="msg_requisition_submit_tip">Your Requisition form has been successfully saved, \r\n and will submit automatically when you have a data connection </string>
     <string name="msg_requisition_not_unique">Cannot submit requisition twice in a period!</string>

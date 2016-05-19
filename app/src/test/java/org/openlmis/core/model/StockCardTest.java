@@ -91,6 +91,12 @@ public class StockCardTest {
         assertThat(stockCard.getLowStockAvg()).isEqualTo(6);
     }
 
+    @Test
+    public void shouldGetOverStockAvg() throws Exception {
+        stockCard.setAvgMonthlyConsumption(100.5f);
+        assertThat(stockCard.getOverStockAvg()).isEqualTo(201);
+    }
+
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
