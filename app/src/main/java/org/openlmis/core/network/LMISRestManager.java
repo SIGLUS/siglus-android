@@ -50,6 +50,7 @@ import retrofit.RequestInterceptor;
 import retrofit.RequestInterceptor.RequestFacade;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
+import retrofit.client.Client;
 import retrofit.client.OkClient;
 import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
@@ -67,7 +68,7 @@ public class LMISRestManager {
                 .setErrorHandler(new APIErrorHandler())
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setRequestInterceptor(getRequestInterceptor())
-                .setClient(new OkClient(getOkHttpClient()))
+                .setClient(getSSLClient())
                 .setConverter(registerTypeAdapter());
 
         lmisRestApi = restBuilder.build().create(LMISRestApi.class);
@@ -85,15 +86,13 @@ public class LMISRestManager {
         return lmisRestApi;
     }
 
-    @NonNull
-    private OkHttpClient getOkHttpClient() {
-        OkHttpClient client = new OkHttpClient();
+    protected Client getSSLClient() {
+        OkHttpClient httpClient = new OkHttpClient();
+        httpClient.setReadTimeout(1, TimeUnit.MINUTES);
+        httpClient.setConnectTimeout(15, TimeUnit.SECONDS);
+        httpClient.setWriteTimeout(30, TimeUnit.SECONDS);
 
-        //set timeout to 1 minutes
-        client.setReadTimeout(1, TimeUnit.MINUTES);
-        client.setConnectTimeout(15, TimeUnit.SECONDS);
-        client.setWriteTimeout(30, TimeUnit.SECONDS);
-        return client;
+        return new OkClient(httpClient);
     }
 
     @NonNull

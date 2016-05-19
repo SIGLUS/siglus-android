@@ -19,7 +19,7 @@ public class LMISRestManagerMock extends LMISRestManager {
 
     @NonNull
     @Override
-    protected Client getSSLClient(String hostName) {
+    protected Client getSSLClient() {
         return mockClient;
     }
 
