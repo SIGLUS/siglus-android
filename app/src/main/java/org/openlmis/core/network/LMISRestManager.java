@@ -24,7 +24,6 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSerializer;
 import com.squareup.okhttp.Credentials;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -44,37 +43,16 @@ import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.network.adapter.StockCardAdapter;
 import org.openlmis.core.network.model.DataErrorResponse;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
 
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RequestInterceptor.RequestFacade;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
-import retrofit.client.Client;
 import retrofit.client.OkClient;
 import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
-
-import static javax.net.ssl.HttpsURLConnection.getDefaultHostnameVerifier;
 
 public class LMISRestManager {
 
@@ -83,63 +61,17 @@ public class LMISRestManager {
 
     protected LMISRestManager(Context context) {
         String baseUrl = context.getString(R.string.server_base_url);
-        String hostName = null;
-        try {
-            hostName = new URL(baseUrl).getHost();
-        } catch (Exception e) {
-            new LMISException(e).reportToFabric();
-        }
-
-        RequestInterceptor requestInterceptor = new RequestInterceptor() {
-            @Override
-            public void intercept(RequestFacade request) {
-                User user = UserInfoMgr.getInstance().getUser();
-                if (user != null) {
-                    String basic = Credentials.basic(user.getUsername(), user.getPassword());
-                    request.addHeader("Authorization", basic);
-                    request.addHeader("UserName", user.getUsername());
-                    request.addHeader("FacilityName", user.getFacilityName());
-                }
-                addDeviceInfoToRequestHeader(request);
-            }
-        };
 
         RestAdapter.Builder restBuilder = new RestAdapter.Builder()
                 .setEndpoint(baseUrl)
                 .setErrorHandler(new APIErrorHandler())
                 .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setRequestInterceptor(requestInterceptor)
+                .setRequestInterceptor(getRequestInterceptor())
+                .setClient(new OkClient(getOkHttpClient()))
                 .setConverter(registerTypeAdapter());
-
-        // TODO: when all facilities have upgraded, remove the below code!!!
-        restBuilder.setClient(getSSLClient(hostName));
 
         lmisRestApi = restBuilder.build().create(LMISRestApi.class);
         instance = this;
-    }
-
-    @NonNull
-    protected Client getSSLClient(final String hostName) {
-        OkHttpClient client = getOkHttpClient();
-
-        try {
-            SSLContext sslContext = LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_enable_secure_ssl)
-                    ? getAllTrustedSSL() : getCustomCertifiedSSL(getCertificate());
-
-            client.setSslSocketFactory(sslContext.getSocketFactory());
-            client.setHostnameVerifier(new HostnameVerifier() {
-                @Override
-                public boolean verify(String hostname, SSLSession session) {
-                    if (hostname.equals(hostName)) {
-                        return true;
-                    }
-                    return getDefaultHostnameVerifier().verify(hostname, session);
-                }
-            });
-        } catch (Exception e) {
-            new LMISException(e).reportToFabric();
-        }
-        return new OkClient(client);
     }
 
     public static LMISRestManager getInstance(Context context) {
@@ -153,67 +85,6 @@ public class LMISRestManager {
         return lmisRestApi;
     }
 
-    private SSLContext getAllTrustedSSL() throws NoSuchAlgorithmException, KeyManagementException {
-        // WARNING: The below lines of code trusts all certificates. This is a hack because
-        // we are changing our SSL certificate from self-signed to LetsEncrypt.
-        // TODO: when all facilities have upgraded, remove the below code!!!
-        final TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
-            @Override
-            public void checkClientTrusted(
-                    java.security.cert.X509Certificate[] chain,
-                    String authType) throws CertificateException {
-            }
-
-            @Override
-            public void checkServerTrusted(
-                    java.security.cert.X509Certificate[] chain,
-                    String authType) throws CertificateException {
-            }
-
-            @Override
-            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                return null;
-            }
-        }};
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-        return sslContext;
-    }
-
-    private SSLContext getCustomCertifiedSSL(Certificate ca) throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, KeyManagementException {
-        // creating an SSLSocketFactory that uses our TrustManager
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-
-        // creating a KeyStore containing our trusted CAs
-        KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-        keyStore.load(null, null);
-        keyStore.setCertificateEntry("ca", ca);
-
-        // creating a TrustManager that trusts the CAs in our KeyStore
-        String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
-        TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
-        tmf.init(keyStore);
-
-        // creating an SSLSocketFactory that uses our TrustManager
-        sslContext.init(null, tmf.getTrustManagers(), null);
-        return sslContext;
-    }
-
-    private Certificate getCertificate() throws CertificateException, IOException {
-        CertificateFactory cf = CertificateFactory.getInstance("X.509");
-        InputStream cert = LMISApp.getContext().getResources().openRawResource(R.raw.ssl_cert);
-        Certificate ca = null;
-        try {
-            ca = cf.generateCertificate(cert);
-            System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
-        } catch (Exception e) {
-            new LMISException(e).reportToFabric();
-        } finally {
-            cert.close();
-        }
-        return ca;
-    }
-
     @NonNull
     private OkHttpClient getOkHttpClient() {
         OkHttpClient client = new OkHttpClient();
@@ -225,6 +96,23 @@ public class LMISRestManager {
         return client;
     }
 
+    @NonNull
+    private RequestInterceptor getRequestInterceptor() {
+        return new RequestInterceptor() {
+            @Override
+            public void intercept(RequestFacade request) {
+                User user = UserInfoMgr.getInstance().getUser();
+                if (user != null) {
+                    String basic = Credentials.basic(user.getUsername(), user.getPassword());
+                    request.addHeader("Authorization", basic);
+                    request.addHeader("UserName", user.getUsername());
+                    request.addHeader("FacilityName", user.getFacilityName());
+                }
+                addDeviceInfoToRequestHeader(request);
+            }
+        };
+    }
+
     private void addDeviceInfoToRequestHeader(RequestFacade request) {
         String deviceInfo = "OS: " + Build.VERSION.RELEASE
                 + " Model: " + android.os.Build.BRAND + " " + android.os.Build.MODEL;
@@ -233,15 +121,10 @@ public class LMISRestManager {
 
     private GsonConverter registerTypeAdapter() {
         return new GsonConverter(new GsonBuilder()
-                .registerTypeAdapter(RnRForm.class, getTypeAdapter())
+                .registerTypeAdapter(RnRForm.class, new RnrFormAdapter())
                 .registerTypeAdapter(Product.class, new ProductAdapter())
                 .registerTypeAdapter(StockCard.class, new StockCardAdapter())
                 .create());
-    }
-
-    @NonNull
-    private JsonSerializer getTypeAdapter() {
-        return new RnrFormAdapter();
     }
 
     class APIErrorHandler implements ErrorHandler {
