@@ -47,8 +47,7 @@ public class StockCardViewHolder extends BaseViewHolder {
 
     protected static final int STOCK_ON_HAND_NORMAL = 1;
     protected static final int STOCK_ON_HAND_LOW_STOCK = 2;
-    protected static final int STOCK_ON_HAND_OVER_STOCK = 3;
-    protected static final int STOCK_ON_HAND_STOCK_OUT = 4;
+    protected static final int STOCK_ON_HAND_STOCK_OUT = 3;
 
     public StockCardViewHolder(View itemView, OnItemViewClickListener listener) {
         super(itemView);
@@ -138,11 +137,6 @@ public class StockCardViewHolder extends BaseViewHolder {
         int stockOnHandLevel = getStockOnHandLevel(stockCard);
 
         switch (stockOnHandLevel) {
-            case STOCK_ON_HAND_OVER_STOCK:
-                stockOnHandBg.setBackgroundResource(R.color.color_over_stock);
-                tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_white));
-                showWarning(context.getString(R.string.msg_over_stock_warning));
-                break;
             case STOCK_ON_HAND_LOW_STOCK:
                 stockOnHandBg.setBackgroundResource(R.color.color_warning);
                 showWarning(context.getString(R.string.msg_low_stock_warning));
@@ -178,20 +172,12 @@ public class StockCardViewHolder extends BaseViewHolder {
 
         long stockOnHand = inventoryViewModel.getStockOnHand();
 
-        if (stockOnHand == 0) {
-            return STOCK_ON_HAND_STOCK_OUT;
-        }
-
-        if (inventoryViewModel.getAvgMonthlyConsumption() < 0 ) {
+        if (stockOnHand > inventoryViewModel.getLowStockAvg()) {
             return STOCK_ON_HAND_NORMAL;
+        } else if (stockOnHand > 0) {
+            return STOCK_ON_HAND_LOW_STOCK;
         } else {
-            if (stockOnHand > inventoryViewModel.getOverStockAvg()) {
-                return STOCK_ON_HAND_OVER_STOCK;
-            } else if(stockOnHand > inventoryViewModel.getLowStockAvg()) {
-                return STOCK_ON_HAND_NORMAL;
-            } else {
-                return STOCK_ON_HAND_LOW_STOCK;
-            }
+            return STOCK_ON_HAND_STOCK_OUT;
         }
     }
 

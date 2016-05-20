@@ -9,7 +9,6 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
-import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
@@ -130,7 +129,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldCalculateAverageMonthlyConsumptionLessThanZeroWhenOnlyTwoValidPeriod() throws Exception {
+    public void shouldCalculateAverageMonthlyConsumptionIsZeroWhenOnlyTwoValidPeriod() throws Exception {
         StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(300);
         stockService.stockRepository.createOrUpdate(stockCard);
@@ -140,23 +139,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
 
         float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
         assertEquals(2, stockService.stockRepository.listLastFive(stockCard.getId()).size());
-        assertThat(-1F, is(averageMonthlyConsumption));
-    }
-
-    @Test
-    public void shouldCalculateAverageMonthlyConsumptionLessThanZeroWhenThereIsNoStockMovement() throws Exception {
-        Product product = new Product();
-        product.setId(1L);
-        product.setPrimaryName("product");
-        StockCard stockCard = new StockCard();
-        stockCard.setStockOnHand(300);
-        stockCard.setProduct(product);
-
-        stockService.stockRepository.createOrUpdate(stockCard);
-        when(stockRepository.queryFirstStockMovementItem(stockCard)).thenReturn(null);
-
-        float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
-        assertThat(-1F, is(averageMonthlyConsumption));
+        assertThat(0F, is(averageMonthlyConsumption));
     }
 
     @Test
@@ -175,7 +158,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
 
 
     @Test
-    public void shouldCalculateAverageMonthlyConsumptionLessThanZeroWhenLastMonthSOHIsZero() throws Exception {
+    public void shouldCalculateAverageMonthlyConsumptionWhenLastMonthSOHIsZero() throws Exception {
         stockCard.setStockOnHand(300);
         stockService.stockRepository.createOrUpdate(stockCard);
 
@@ -185,8 +168,9 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
 
         float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
         assertEquals(3, stockService.stockRepository.listLastFive(stockCard.getId()).size());
-        assertThat(-1F, is(averageMonthlyConsumption));
+        assertThat(0F, is(averageMonthlyConsumption));
     }
+
 
     @Test
     public void shouldCalculateAverageMonthlyConsumptionWhenLastMonthHaveNoStockItem() throws Exception {

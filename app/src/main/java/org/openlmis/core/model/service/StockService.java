@@ -58,7 +58,7 @@ public class StockService {
             firstPeriodBegin = queryFirstPeriodBegin(stockCard);
         } catch (LMISException e) {
             e.reportToFabric();
-            return -1;
+            return 0;
         }
 
         List<Long> issuePerMonths = new ArrayList<>();
@@ -66,7 +66,7 @@ public class StockService {
         int periodQuantity = DateUtil.calculateDateMonthOffset(firstPeriodBegin, period.getBegin().toDate());
 
         if (periodQuantity < LOW_STOCK_CALCULATE_MONTH_QUANTITY) {
-            return -1;
+            return 0;
         }
 
         for (int i = 0; i < periodQuantity; i++) {
@@ -85,7 +85,7 @@ public class StockService {
         }
 
         if (issuePerMonths.size() < LOW_STOCK_CALCULATE_MONTH_QUANTITY) {
-            return -1;
+            return 0;
         }
         return getTotalIssues(issuePerMonths) * 1f / LOW_STOCK_CALCULATE_MONTH_QUANTITY;
     }

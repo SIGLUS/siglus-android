@@ -67,7 +67,7 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
     long stockOnHand;
 
     @DatabaseField
-    private float avgMonthlyConsumption = -1;
+    private float avgMonthlyConsumption;
 
     public String getEarliestExpireDate() {
         if (!StringUtils.isEmpty(expireDates)) {
@@ -101,9 +101,5 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
 
     public int getLowStockAvg() {
         return (int) Math.ceil(this.avgMonthlyConsumption * 0.05);
-    }
-
-    public int getOverStockAvg() {
-        return (int) Math.ceil(this.avgMonthlyConsumption * 2);
     }
 }
