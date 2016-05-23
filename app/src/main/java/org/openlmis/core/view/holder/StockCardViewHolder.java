@@ -139,9 +139,11 @@ public class StockCardViewHolder extends BaseViewHolder {
 
         switch (stockOnHandLevel) {
             case STOCK_ON_HAND_OVER_STOCK:
-                stockOnHandBg.setBackgroundResource(R.color.color_over_stock);
-                tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_white));
-                showWarning(context.getString(R.string.msg_over_stock_warning));
+                if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_over_stock)) {
+                    stockOnHandBg.setBackgroundResource(R.color.color_over_stock);
+                    tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_white));
+                    showWarning(context.getString(R.string.msg_over_stock_warning));
+                }
                 break;
             case STOCK_ON_HAND_LOW_STOCK:
                 stockOnHandBg.setBackgroundResource(R.color.color_warning);
