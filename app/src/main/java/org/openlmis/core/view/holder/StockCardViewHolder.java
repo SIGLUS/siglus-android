@@ -182,7 +182,7 @@ public class StockCardViewHolder extends BaseViewHolder {
             return STOCK_ON_HAND_STOCK_OUT;
         }
 
-        if (inventoryViewModel.getAvgMonthlyConsumption() < 0 ) {
+        if (inventoryViewModel.getAvgMonthlyConsumption() < 0) {
             return STOCK_ON_HAND_NORMAL;
         } else {
             if (stockOnHand > inventoryViewModel.getOverStockAvg()) {
