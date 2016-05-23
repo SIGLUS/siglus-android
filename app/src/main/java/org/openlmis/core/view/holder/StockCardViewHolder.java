@@ -145,14 +145,17 @@ public class StockCardViewHolder extends BaseViewHolder {
                 break;
             case STOCK_ON_HAND_LOW_STOCK:
                 stockOnHandBg.setBackgroundResource(R.color.color_warning);
+                tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_black));
                 showWarning(context.getString(R.string.msg_low_stock_warning));
                 break;
             case STOCK_ON_HAND_STOCK_OUT:
                 stockOnHandBg.setBackgroundResource(R.color.color_stock_out);
+                tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_black));
                 showWarning(context.getString(R.string.msg_stock_out_warning));
                 break;
             default:
                 stockOnHandBg.setBackgroundResource(R.color.color_primary_50);
+                tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_black));
                 if (ivWarning != null) {
                     ivWarning.setVisibility(View.GONE);
                 }
