@@ -1,8 +1,7 @@
 package org.openlmis.core.model.service;
 
-import com.google.inject.Inject;
-
 import org.joda.time.DateTime;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.StockMovementIsNullException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -16,12 +15,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import roboguice.RoboGuice;
+
 public class StockService {
 
     private final int LOW_STOCK_CALCULATE_MONTH_QUANTITY = 3;
 
-    @Inject
     StockRepository stockRepository;
+
+    public StockService() {
+        this.stockRepository = RoboGuice.getInjector(LMISApp.getContext()).getInstance(StockRepository.class);
+    }
 
     protected Date queryFirstPeriodBegin(final StockCard stockCard) throws LMISException {
         StockMovementItem stockMovementItem = stockRepository.queryFirstStockMovementItem(stockCard);
