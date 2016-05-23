@@ -64,6 +64,10 @@ public class InventoryViewModel {
 
     int lowStockAvg;
 
+    int overStockAvg;
+
+    float avgMonthlyConsumption;
+
     SpannableStringBuilder styledUnit;
 
     boolean valid = true;
@@ -82,6 +86,8 @@ public class InventoryViewModel {
         this.stockOnHand = stockCard.getStockOnHand();
         this.checked = true;
         this.lowStockAvg = stockCard.getLowStockAvg();
+        this.overStockAvg = stockCard.getOverStockAvg();
+        this.avgMonthlyConsumption = stockCard.getAvgMonthlyConsumption();
 
         initExpiryDates(stockCard.getExpireDates());
     }
