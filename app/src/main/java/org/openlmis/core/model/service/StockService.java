@@ -39,7 +39,7 @@ public class StockService {
         DateTime recordLowStockAvgPeriod = SharedPreferenceMgr.getInstance().getLatestUpdateLowStockAvgTime();
         Period period = Period.of(DateUtil.today());
         if (recordLowStockAvgPeriod.isBefore(period.getBegin())) {
-           immediatelyUpdateAvgMonthlyConsumption();
+            immediatelyUpdateAvgMonthlyConsumption();
         }
     }
 
@@ -110,9 +110,6 @@ public class StockService {
         } catch (LMISException e) {
             e.reportToFabric();
             return null;
-        }
-        if (stockMovementItems.isEmpty()) {
-            return 0L;
         }
         for (StockMovementItem item : stockMovementItems) {
             if (item.getStockOnHand() == 0) {
