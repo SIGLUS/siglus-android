@@ -2,7 +2,7 @@
     <string name="server_base_url">http://52.193.130.59:8000</string>
     <string name="sync_account_type">org.clintonhealthaccess.lmismoz.prodsim</string>
     <integer name="sync_interval">3600</integer>
-    <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync</string>
+    <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.prodsim</string>
 
     <string name="ga_trackingId">I am a track id</string>
     <bool name="ga_dryRun">true</bool>
