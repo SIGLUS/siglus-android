@@ -24,6 +24,12 @@ android {
     }
 
     signingConfigs {
+        debug {
+            storeFile file("../scripts/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
         release {
             storeFile file("../scripts/lmis_moz.jks")
             storePassword System.getenv("KSTOREPWD")
