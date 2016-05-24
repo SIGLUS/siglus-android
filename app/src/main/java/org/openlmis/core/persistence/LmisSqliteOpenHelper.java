@@ -27,6 +27,7 @@ import com.j256.ormlite.support.ConnectionSource;
 
 import org.openlmis.core.persistence.migrations.AddActiveColumnToProductTable;
 import org.openlmis.core.persistence.migrations.AddCategoryColumnToProductPrograms;
+import org.openlmis.core.persistence.migrations.AddCmmTable;
 import org.openlmis.core.persistence.migrations.AddCreatedTimeToStockMovement;
 import org.openlmis.core.persistence.migrations.AddEmergencyColumnToRnr;
 import org.openlmis.core.persistence.migrations.AddFacilityIdToUser;
@@ -99,6 +100,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new AddLowStockAvgColumnToStockCardTable());
             add(new UpdateCategoryColumnForMMIAProducts());
             add(new UpdateAvgColumn());
+            add(new AddCmmTable());
         }
     };
     private static int instanceCount = 0;
