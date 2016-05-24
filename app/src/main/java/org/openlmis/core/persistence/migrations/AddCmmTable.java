@@ -11,7 +11,8 @@ public class AddCmmTable extends Migration {
                         "`period_begin` VARCHAR," +
                         "`period_end` VARCHAR," +
                         "`createdAt` VARCHAR NOT NULL," +
-                        "`updatedAt` VARCHAR NOT NULL" +
+                        "`updatedAt` VARCHAR NOT NULL," +
+                        "`synced` SMALLINT" +
                         ")"
         );
     }
