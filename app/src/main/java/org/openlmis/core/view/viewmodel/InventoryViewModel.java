@@ -31,6 +31,7 @@ import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.holder.StockCardViewHolder;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -64,9 +65,7 @@ public class InventoryViewModel {
 
     int lowStockAvg;
 
-    int overStockAvg;
-
-    float avgMonthlyConsumption;
+    int cmm;
 
     SpannableStringBuilder styledUnit;
 
@@ -86,8 +85,7 @@ public class InventoryViewModel {
         this.stockOnHand = stockCard.getStockOnHand();
         this.checked = true;
         this.lowStockAvg = stockCard.getLowStockAvg();
-        this.overStockAvg = stockCard.getOverStockAvg();
-        this.avgMonthlyConsumption = stockCard.getAvgMonthlyConsumption();
+        this.cmm = stockCard.getCMM();
 
         initExpiryDates(stockCard.getExpireDates());
     }
@@ -234,5 +232,24 @@ public class InventoryViewModel {
         InventoryViewModel viewModel = new InventoryViewModel(stockCard.getProduct());
         viewModel.stockCard = stockCard;
         return viewModel;
+    }
+
+    public int getStockOnHandLevel() {
+
+        if (stockOnHand == 0) {
+            return StockCardViewHolder.STOCK_ON_HAND_STOCK_OUT;
+        }
+
+        if (cmm < 0) {
+            return StockCardViewHolder.STOCK_ON_HAND_NORMAL;
+        } else {
+            if (stockOnHand > 2 * cmm) {
+                return StockCardViewHolder.STOCK_ON_HAND_OVER_STOCK;
+            } else if(stockOnHand > lowStockAvg) {
+                return StockCardViewHolder.STOCK_ON_HAND_NORMAL;
+            } else {
+                return StockCardViewHolder.STOCK_ON_HAND_LOW_STOCK;
+            }
+        }
     }
 }

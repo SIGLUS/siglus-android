@@ -9,7 +9,6 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.StockCardBuilder;
@@ -46,72 +45,6 @@ public class StockCardViewHolderTest {
         final Product product = new Product();
         product.setPrimaryName("product");
         stockCard.setProduct(product);
-    }
-
-    @Test
-    public void shouldGetNormalLevelWhenSOHGreaterThanAvg() throws LMISException {
-        stockCard.setAvgMonthlyConsumption(80);
-        stockCard.setStockOnHand(100);
-
-        int stockOnHandLevel = viewHolder.getStockOnHandLevel(new InventoryViewModel(stockCard));
-
-        assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_NORMAL);
-
-    }
-
-    @Test
-    public void shouldGetNormalLevelWhenAvgMonthlyConsumptionLessThanZero() throws LMISException {
-        stockCard.setAvgMonthlyConsumption(-1);
-        stockCard.setStockOnHand(100);
-
-        int stockOnHandLevel = viewHolder.getStockOnHandLevel(new InventoryViewModel(stockCard));
-
-        assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_NORMAL);
-
-    }
-
-    @Test
-    public void shouldGetOverLevelWhenSOHSmallerThanAvg() throws LMISException {
-        stockCard.setAvgMonthlyConsumption(10);
-
-        stockCard.setStockOnHand(30);
-
-        int stockOnHandLevel = viewHolder.getStockOnHandLevel(new InventoryViewModel(stockCard));
-
-        assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_OVER_STOCK);
-    }
-
-    @Test
-    public void shouldGetLowLevelWhenSOHSmallerThanAvg() throws LMISException {
-        stockCard.setAvgMonthlyConsumption(100);
-
-        stockCard.setStockOnHand(2);
-
-        int stockOnHandLevel = viewHolder.getStockOnHandLevel(new InventoryViewModel(stockCard));
-
-        assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_LOW_STOCK);
-    }
-
-    @Test
-    public void shouldGetStockOutLevelWhenSOHIsZero() throws LMISException {
-        stockCard.setAvgMonthlyConsumption(80);
-
-        stockCard.setStockOnHand(0);
-
-        int stockOnHandLevel = viewHolder.getStockOnHandLevel(new InventoryViewModel(stockCard));
-
-        assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_STOCK_OUT);
-    }
-
-    @Test
-    public void shouldGetStockOutLevelWhenSOHIsZeroEvenAvgMonthlyConsumptionLessThanZero() throws LMISException {
-        stockCard.setAvgMonthlyConsumption(-1);
-
-        stockCard.setStockOnHand(0);
-
-        int stockOnHandLevel = viewHolder.getStockOnHandLevel(new InventoryViewModel(stockCard));
-
-        assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_STOCK_OUT);
     }
 
     @Test

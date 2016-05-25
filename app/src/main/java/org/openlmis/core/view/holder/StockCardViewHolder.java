@@ -45,10 +45,10 @@ public class StockCardViewHolder extends BaseViewHolder {
     protected StockService stockService;
     private OnItemViewClickListener listener;
 
-    protected static final int STOCK_ON_HAND_NORMAL = 1;
-    protected static final int STOCK_ON_HAND_LOW_STOCK = 2;
-    protected static final int STOCK_ON_HAND_OVER_STOCK = 3;
-    protected static final int STOCK_ON_HAND_STOCK_OUT = 4;
+    public static final int STOCK_ON_HAND_NORMAL = 1;
+    public static final int STOCK_ON_HAND_LOW_STOCK = 2;
+    public static final int STOCK_ON_HAND_OVER_STOCK = 3;
+    public static final int STOCK_ON_HAND_STOCK_OUT = 4;
 
     public StockCardViewHolder(View itemView, OnItemViewClickListener listener) {
         super(itemView);
@@ -135,7 +135,7 @@ public class StockCardViewHolder extends BaseViewHolder {
 
     private void initStockOnHandWarning(final InventoryViewModel stockCard) {
 
-        int stockOnHandLevel = getStockOnHandLevel(stockCard);
+        int stockOnHandLevel = stockCard.getStockOnHandLevel();
 
         switch (stockOnHandLevel) {
             case STOCK_ON_HAND_OVER_STOCK:
@@ -179,26 +179,26 @@ public class StockCardViewHolder extends BaseViewHolder {
         });
     }
 
-    protected int getStockOnHandLevel(InventoryViewModel inventoryViewModel) {
-
-        long stockOnHand = inventoryViewModel.getStockOnHand();
-
-        if (stockOnHand == 0) {
-            return STOCK_ON_HAND_STOCK_OUT;
-        }
-
-        if (inventoryViewModel.getAvgMonthlyConsumption() < 0) {
-            return STOCK_ON_HAND_NORMAL;
-        } else {
-            if (stockOnHand > inventoryViewModel.getOverStockAvg()) {
-                return STOCK_ON_HAND_OVER_STOCK;
-            } else if(stockOnHand > inventoryViewModel.getLowStockAvg()) {
-                return STOCK_ON_HAND_NORMAL;
-            } else {
-                return STOCK_ON_HAND_LOW_STOCK;
-            }
-        }
-    }
+//    protected int getStockOnHandLevel(InventoryViewModel inventoryViewModel) {
+//
+//        long stockOnHand = inventoryViewModel.getStockOnHand();
+//
+//        if (stockOnHand == 0) {
+//            return STOCK_ON_HAND_STOCK_OUT;
+//        }
+//
+//        if (inventoryViewModel.getCmm() < 0) {
+//            return STOCK_ON_HAND_NORMAL;
+//        } else {
+//            if (stockOnHand > inventoryViewModel.getOverStockAvg()) {
+//                return STOCK_ON_HAND_OVER_STOCK;
+//            } else if(stockOnHand > inventoryViewModel.getLowStockAvg()) {
+//                return STOCK_ON_HAND_NORMAL;
+//            } else {
+//                return STOCK_ON_HAND_LOW_STOCK;
+//            }
+//        }
+//    }
 
     public interface OnItemViewClickListener {
         void onItemViewClick(InventoryViewModel inventoryViewModel);
