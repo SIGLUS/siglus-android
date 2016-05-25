@@ -3,14 +3,21 @@ package org.openlmis.core.model.repository;
 import android.content.Context;
 
 import com.google.inject.Inject;
+import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Cmm;
+import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class CmmRepository {
+
+    @Inject
+    DbUtil dbUtil;
+
     private GenericDao<Cmm> cmmDao;
 
     @Inject
@@ -18,7 +25,21 @@ public class CmmRepository {
         cmmDao = new GenericDao<>(Cmm.class, context);
     }
 
-    public void save(Cmm cmm) throws LMISException {
+    public void save(final Cmm cmm) throws LMISException {
+        Cmm sameCardSamePeriodCmm = dbUtil.withDao(Cmm.class, new DbUtil.Operation<Cmm, Cmm>() {
+            @Override
+            public Cmm operate(Dao<Cmm, String> dao) throws SQLException, LMISException {
+                return dao.queryBuilder()
+                        .where().eq("stockCard_id", cmm.getStockCard().getId())
+                        .and().eq("periodBegin", cmm.getPeriodBegin())
+                        .and().eq("periodEnd", cmm.getPeriodEnd())
+                        .queryForFirst();
+            }
+        });
+
+        if (sameCardSamePeriodCmm != null) {
+            cmm.setId(sameCardSamePeriodCmm.getId());
+        }
         cmmDao.createOrUpdate(cmm);
     }
 
