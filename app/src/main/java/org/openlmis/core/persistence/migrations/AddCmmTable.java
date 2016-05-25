@@ -8,8 +8,8 @@ public class AddCmmTable extends Migration {
         execSQL("create table `cmm` (" +
                         "`id` INTEGER PRIMARY KEY AUTOINCREMENT," +
                         "`stockCard_id` BIGINT," +
-                        "`period_begin` VARCHAR," +
-                        "`period_end` VARCHAR," +
+                        "`periodBegin` VARCHAR," +
+                        "`periodEnd` VARCHAR," +
                         "`createdAt` VARCHAR NOT NULL," +
                         "`updatedAt` VARCHAR NOT NULL," +
                         "`synced` SMALLINT" +
