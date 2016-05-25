@@ -45,13 +45,13 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
     private Date lastThirdMonthDate;
     private Date lastForthMonthDate;
     private StockCard stockCard;
-    private StockRepository stockRepository;
+    private StockRepository mockedStockRepository;
 
     @Before
     public void setup() throws LMISException {
         RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SharedPreferenceMgr.class);
+        mockedStockRepository = mock(StockRepository.class);
         stockService = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockService.class);
-        stockRepository = mock(StockRepository.class);
 
         Date today = DateUtil.today();
         lastFirstMonthDate = DateUtil.generatePreviousMonthDateBy(today);
@@ -65,13 +65,13 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
     public void shouldUpdateAverageMonthlyConsumption() throws Exception {
         List<StockCard> list = asList(new StockCard());
         stockService = spy(stockService);
-        stockService.stockRepository = stockRepository;
-        when(stockRepository.list()).thenReturn(list);
+        stockService.stockRepository = mockedStockRepository;
+        when(mockedStockRepository.list()).thenReturn(list);
         doReturn(0F).when(stockService).calculateAverageMonthlyConsumption(any(StockCard.class));
 
         stockService.monthlyUpdateAvgMonthlyConsumption();
 
-        verify(stockRepository).createOrUpdate(any(StockCard.class));
+        verify(mockedStockRepository).createOrUpdate(any(StockCard.class));
     }
 
     @Test
@@ -79,12 +79,12 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         LMISTestApp.getInstance().setCurrentTimeMillis(new DateTime().getMillis());
         SharedPreferenceMgr.getInstance().updateLatestLowStockAvgTime();
         List<StockCard> list = asList(new StockCard());
-        stockService.stockRepository = stockRepository;
-        when(stockRepository.list()).thenReturn(list);
+        stockService.stockRepository = mockedStockRepository;
+        when(mockedStockRepository.list()).thenReturn(list);
 
         stockService.monthlyUpdateAvgMonthlyConsumption();
 
-        verify(stockRepository,never()).createOrUpdate(any(StockCard.class));
+        verify(mockedStockRepository, never()).createOrUpdate(any(StockCard.class));
     }
 
     @Test
@@ -153,7 +153,6 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         stockCard.setProduct(product);
 
         stockService.stockRepository.createOrUpdate(stockCard);
-        when(stockRepository.queryFirstStockMovementItem(stockCard)).thenReturn(null);
 
         float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
         assertThat(-1F, is(averageMonthlyConsumption));
@@ -199,7 +198,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
 
         float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
         assertEquals(3, stockService.stockRepository.listLastFive(stockCard.getId()).size());
-        assertThat(200F/3, is(averageMonthlyConsumption));
+        assertThat(200F / 3, is(averageMonthlyConsumption));
     }
 
 
