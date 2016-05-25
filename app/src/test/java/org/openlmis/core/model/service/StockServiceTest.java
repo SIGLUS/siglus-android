@@ -49,7 +49,6 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
 
     @Before
     public void setup() throws LMISException {
-        RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SharedPreferenceMgr.class);
         mockedStockRepository = mock(StockRepository.class);
         stockService = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockService.class);
 
