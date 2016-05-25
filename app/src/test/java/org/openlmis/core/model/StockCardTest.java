@@ -82,7 +82,7 @@ public class StockCardTest {
     @Test
     public void shouldGetCMM() throws Exception {
         stockCard.setAvgMonthlyConsumption(0.77f);
-        assertThat(stockCard.getCMM()).isEqualTo("1");
+        assertThat(stockCard.getCMM()).isEqualTo(1);
     }
 
     @Test
