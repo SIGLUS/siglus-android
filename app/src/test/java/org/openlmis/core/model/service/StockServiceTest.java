@@ -9,9 +9,11 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.repository.CmmRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
@@ -45,11 +47,14 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
     private Date lastThirdMonthDate;
     private Date lastForthMonthDate;
     private StockCard stockCard;
+
     private StockRepository mockedStockRepository;
+    private CmmRepository mockedCmmRepository;
 
     @Before
     public void setup() throws LMISException {
         mockedStockRepository = mock(StockRepository.class);
+        mockedCmmRepository = mock(CmmRepository.class);
         stockService = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockService.class);
 
         Date today = DateUtil.today();
@@ -65,12 +70,14 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         List<StockCard> list = asList(new StockCard());
         stockService = spy(stockService);
         stockService.stockRepository = mockedStockRepository;
+        stockService.cmmRepository = mockedCmmRepository;
         when(mockedStockRepository.list()).thenReturn(list);
         doReturn(0F).when(stockService).calculateAverageMonthlyConsumption(any(StockCard.class));
 
         stockService.monthlyUpdateAvgMonthlyConsumption();
 
         verify(mockedStockRepository).createOrUpdate(any(StockCard.class));
+        verify(mockedCmmRepository).save(any(Cmm.class));
     }
 
     @Test
@@ -79,11 +86,13 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         SharedPreferenceMgr.getInstance().updateLatestLowStockAvgTime();
         List<StockCard> list = asList(new StockCard());
         stockService.stockRepository = mockedStockRepository;
+        stockService.cmmRepository = mockedCmmRepository;
         when(mockedStockRepository.list()).thenReturn(list);
 
         stockService.monthlyUpdateAvgMonthlyConsumption();
 
         verify(mockedStockRepository, never()).createOrUpdate(any(StockCard.class));
+        verify(mockedCmmRepository, never()).save(any(Cmm.class));
     }
 
     @Test

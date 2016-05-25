@@ -3,13 +3,14 @@ package org.openlmis.core.model.service;
 import com.google.inject.Inject;
 
 import org.joda.time.DateTime;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.StockMovementIsNullException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.repository.CmmRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import roboguice.RoboGuice;
+import static org.openlmis.core.utils.DateUtil.today;
 
 public class StockService {
 
@@ -25,6 +26,8 @@ public class StockService {
 
     @Inject
     StockRepository stockRepository;
+    @Inject
+    CmmRepository cmmRepository;
 
     public StockService() {
     }
@@ -39,7 +42,7 @@ public class StockService {
 
     public void monthlyUpdateAvgMonthlyConsumption() {
         DateTime recordLowStockAvgPeriod = SharedPreferenceMgr.getInstance().getLatestUpdateLowStockAvgTime();
-        Period period = Period.of(DateUtil.today());
+        Period period = Period.of(today());
         if (recordLowStockAvgPeriod.isBefore(period.getBegin())) {
             immediatelyUpdateAvgMonthlyConsumption();
         }
@@ -51,6 +54,7 @@ public class StockService {
             for (StockCard stockCard : stockCards) {
                 stockCard.setAvgMonthlyConsumption(calculateAverageMonthlyConsumption(stockCard));
                 stockRepository.createOrUpdate(stockCard);
+                cmmRepository.save(Cmm.initWith(stockCard, Period.of(today())));
             }
             SharedPreferenceMgr.getInstance().updateLatestLowStockAvgTime();
         } catch (LMISException e) {
@@ -68,7 +72,7 @@ public class StockService {
         }
 
         List<Long> issuePerMonths = new ArrayList<>();
-        Period period = Period.of(DateUtil.today());
+        Period period = Period.of(today());
         int periodQuantity = DateUtil.calculateDateMonthOffset(firstPeriodBegin, period.getBegin().toDate());
 
         if (periodQuantity < LOW_STOCK_CALCULATE_MONTH_QUANTITY) {
