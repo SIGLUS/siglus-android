@@ -44,8 +44,6 @@ public class CmmRepositoryTest {
         //given
         Cmm cmm = createDummyCmm("2016-01-21", "2016-02-20", 7788, 123);
 
-        assertThat(cmmRepository.list().size(), is(0));
-
         //when
         cmmRepository.save(cmm);
 
@@ -60,6 +58,27 @@ public class CmmRepositoryTest {
         //then
         assertThat(cmmRepository.list().size(), is(1));
         assertThat(cmmRepository.list().get(0).getCmmValue(), is(456f));
+    }
+
+    @Test
+    public void shouldSaveSameCardDifferentPeriodCmmsAsSeparateEntries() throws LMISException {
+        //given
+        Cmm cmm = createDummyCmm("2016-01-21", "2016-02-20", 7788, 123);
+
+        //when
+        cmmRepository.save(cmm);
+
+        //then
+        assertThat(cmmRepository.list().size(), is(1));
+        assertThat(cmmRepository.list().get(0).getCmmValue(), is(123f));
+
+        //when
+        Cmm cmmOfSameCardSamePeriod = createDummyCmm("2016-02-21", "2016-03-20", 7788, 456);
+        cmmRepository.save(cmmOfSameCardSamePeriod);
+
+        //then
+        assertThat(cmmRepository.list().size(), is(2));
+        assertThat(cmmRepository.list().get(1).getCmmValue(), is(456f));
     }
 
     private Cmm createDummyCmm(String start, String end, int cardId, int cmmValue) {
