@@ -171,6 +171,17 @@ public class SyncUpManager {
         }
     }
 
+    public void syncArchivedProducts() {
+
+        final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
+        try {
+            List<String> archivedProductCodes = productRepository.listArchivedProductCodes();
+            lmisRestApi.syncUpArchivedProducts(facilityId, archivedProductCodes);
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+    }
+
     private boolean submitRequisition(RnRForm rnRForm) {
         try {
             if (rnRForm.isEmergency()) {
@@ -186,16 +197,6 @@ public class SyncUpManager {
             Log.e(TAG, "===> SyncRnr : sync failed ->" + e.getMessage());
             syncErrorsRepository.save(new SyncError(e.getMessage(), SyncType.RnRForm, rnRForm.getId()));
             return false;
-        }
-    }
-
-    private void markRnrFormSynced(RnRForm rnRForm) {
-        rnRForm.setSynced(true);
-        try {
-            rnrFormRepository.createOrUpdateWithItems(rnRForm);
-        } catch (LMISException e) {
-            e.reportToFabric();
-            Log.e(TAG, "===> SyncRnr : mark synced failed -> " + rnRForm.getId());
         }
     }
 
@@ -221,14 +222,13 @@ public class SyncUpManager {
         stockRepository.batchCreateOrUpdateStockMovements(stockMovementItems);
     }
 
-    public void syncArchivedProducts() {
-
-        final String facilityId = UserInfoMgr.getInstance().getUser().getFacilityId();
+    private void markRnrFormSynced(RnRForm rnRForm) {
+        rnRForm.setSynced(true);
         try {
-            List<String> archivedProductCodes = productRepository.listArchivedProductCodes();
-            lmisRestApi.syncUpArchivedProducts(facilityId, archivedProductCodes);
+            rnrFormRepository.createOrUpdateWithItems(rnRForm);
         } catch (LMISException e) {
             e.reportToFabric();
+            Log.e(TAG, "===> SyncRnr : mark synced failed -> " + rnRForm.getId());
         }
     }
 }
