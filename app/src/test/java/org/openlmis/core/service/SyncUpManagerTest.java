@@ -342,6 +342,19 @@ public class SyncUpManagerTest {
     }
 
     @Test
+    public void shouldNotInvokeNetworkWhenNoUnsyncedCmmPresent() throws Exception {
+        //given
+        List<Cmm> emptyCmmsList = new ArrayList<>();
+        when(mockedCmmRepository.listUnsynced()).thenReturn(emptyCmmsList);
+
+        //when
+        syncUpManager.syncUpCmms();
+
+        //then
+        verify(mockedLmisRestApi, never()).syncUpCmms(anyString(), anyList());
+    }
+
+    @Test
     public void shouldNotMarkCmmsAsSyncedWhenSyncUpFails() throws Exception {
         //given sync up encounters network failure
         List<Cmm> cmms = createCmmsData();

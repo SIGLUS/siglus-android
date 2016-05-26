@@ -191,18 +191,20 @@ public class SyncUpManager {
     public void syncUpCmms() {
         try {
             List<Cmm> unsyncedCmms = cmmRepository.listUnsynced();
-            List<CmmEntry> cmmEntries = FluentIterable.from(unsyncedCmms).transform(new Function<Cmm, CmmEntry>() {
-                @Override
-                public CmmEntry apply(Cmm cmm) {
-                    return CmmEntry.createFrom(cmm);
+            if (!unsyncedCmms.isEmpty()) {
+                List<CmmEntry> cmmEntries = FluentIterable.from(unsyncedCmms).transform(new Function<Cmm, CmmEntry>() {
+                    @Override
+                    public CmmEntry apply(Cmm cmm) {
+                        return CmmEntry.createFrom(cmm);
+                    }
+                }).toList();
+
+                lmisRestApi.syncUpCmms(UserInfoMgr.getInstance().getUser().getFacilityId(), cmmEntries);
+
+                for (Cmm cmm : unsyncedCmms) {
+                    cmm.setSynced(true);
+                    cmmRepository.save(cmm);
                 }
-            }).toList();
-
-            lmisRestApi.syncUpCmms(UserInfoMgr.getInstance().getUser().getFacilityId(), cmmEntries);
-
-            for (Cmm cmm : unsyncedCmms) {
-                cmm.setSynced(true);
-                cmmRepository.save(cmm);
             }
         } catch (LMISException e) {
             e.reportToFabric();
