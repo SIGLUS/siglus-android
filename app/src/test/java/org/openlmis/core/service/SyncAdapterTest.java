@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
@@ -20,6 +21,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,13 +31,13 @@ public class SyncAdapterTest {
     private SyncUpManager mockSyncUpManager;
     private SharedPreferenceMgr sharedPreferenceMgr;
     private SyncDownManager mockSyncDownManager;
-    private UpgradeManager upgradeManager;
+    private UpgradeManager mockupgradeManager;
 
     @Before
     public void setUp() throws Exception {
         mockSyncUpManager = mock(SyncUpManager.class);
         mockSyncDownManager = mock(SyncDownManager.class);
-        upgradeManager = mock(UpgradeManager.class);
+        mockupgradeManager = mock(UpgradeManager.class);
         sharedPreferenceMgr = new SharedPreferenceMgr(RuntimeEnvironment.application);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
         syncAdapter = new SyncAdapter(RuntimeEnvironment.application, true);
@@ -128,7 +130,21 @@ public class SyncAdapterTest {
     @Test
     public void shouldTriggerUpgrade() throws Exception {
         syncAdapter.onPerformSync(null, null, null, null, null);
-        verify(upgradeManager).triggerUpgrade();
+        verify(mockupgradeManager).triggerUpgrade();
+    }
+
+    @Test
+    public void shouldSyncCmmsWhenToggleOn() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_up_cmms, true);
+        syncAdapter.onPerformSync(null, null, null, null, null);
+        verify(mockSyncUpManager).syncUpCmms();
+    }
+
+    @Test
+    public void shouldNotSyncCmmsWhenToggleOff() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_up_cmms, false);
+        syncAdapter.onPerformSync(null, null, null, null, null);
+        verify(mockSyncUpManager, never()).syncUpCmms();
     }
 
     public class MyTestModule extends AbstractModule {
@@ -136,7 +152,7 @@ public class SyncAdapterTest {
         protected void configure() {
             bind(SyncUpManager.class).toInstance(mockSyncUpManager);
             bind(SyncDownManager.class).toInstance(mockSyncDownManager);
-            bind(UpgradeManager.class).toInstance(upgradeManager);
+            bind(UpgradeManager.class).toInstance(mockupgradeManager);
         }
     }
 }
