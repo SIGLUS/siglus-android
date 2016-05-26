@@ -79,27 +79,30 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 @RunWith(LMISTestRunner.class)
 public class SyncUpManagerTest {
 
-    SyncUpManager syncUpManager;
-    RnrFormRepository rnrFormRepository;
-    LMISRestApi lmisRestApi;
-    StockRepository stockRepository;
-    private SharedPreferenceMgr sharedPreferenceMgr;
+    private RnrFormRepository mockedRnrFormRepository;
+    private SyncErrorsRepository mockedSyncErrorsRepository;
+    private ProductRepository mockedProductRepository;
 
-    SyncErrorsRepository syncErrorsRepository;
+    private SharedPreferenceMgr mockedSharedPreferenceMgr;
 
-    ProductRepository productRepository;
+    private LMISRestApi mockedLmisRestApi;
+
+    private StockRepository stockRepository;
+
+    private SyncUpManager syncUpManager;
 
     @Before
     public void setup() throws LMISException {
-        rnrFormRepository = mock(RnrFormRepository.class);
-        syncErrorsRepository = mock(SyncErrorsRepository.class);
-        lmisRestApi = mock(LMISRestApi.class);
-        sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
-        productRepository = mock(ProductRepository.class);
+        mockedRnrFormRepository = mock(RnrFormRepository.class);
+        mockedSyncErrorsRepository = mock(SyncErrorsRepository.class);
+        mockedProductRepository = mock(ProductRepository.class);
+        mockedSharedPreferenceMgr = mock(SharedPreferenceMgr.class);
+        mockedLmisRestApi = mock(LMISRestApi.class);
+
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
         syncUpManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncUpManager.class);
-        syncUpManager.lmisRestApi = lmisRestApi;
+        syncUpManager.lmisRestApi = mockedLmisRestApi;
 
         stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockRepository.class);
 
@@ -125,33 +128,33 @@ public class SyncUpManagerTest {
             unSyncedList.add(form);
         }
 
-        when(rnrFormRepository.queryAllUnsyncedForms()).thenReturn(unSyncedList);
+        when(mockedRnrFormRepository.queryAllUnsyncedForms()).thenReturn(unSyncedList);
 
         SyncUpRequisitionResponse response = new SyncUpRequisitionResponse();
         response.setRequisitionId("1");
-        when(lmisRestApi.submitRequisition(any(RnRForm.class))).thenReturn(response);
+        when(mockedLmisRestApi.submitRequisition(any(RnRForm.class))).thenReturn(response);
 
         syncUpManager.syncRnr();
-        verify(lmisRestApi, times(10)).submitRequisition(any(RnRForm.class));
-        verify(rnrFormRepository, times(10)).createOrUpdateWithItems(any(RnRForm.class));
-        verify(syncErrorsRepository, times(10)).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
+        verify(mockedLmisRestApi, times(10)).submitRequisition(any(RnRForm.class));
+        verify(mockedRnrFormRepository, times(10)).createOrUpdateWithItems(any(RnRForm.class));
+        verify(mockedSyncErrorsRepository, times(10)).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
     }
 
     @Test
     public void shouldCallEmergencyRequisition() throws Exception {
         RnRForm form = new RnRForm();
         form.setEmergency(true);
-        when(rnrFormRepository.queryAllUnsyncedForms()).thenReturn(newArrayList(form));
+        when(mockedRnrFormRepository.queryAllUnsyncedForms()).thenReturn(newArrayList(form));
 
         syncUpManager.syncRnr();
-        verify(lmisRestApi).submitEmergencyRequisition(any(RnRForm.class));
+        verify(mockedLmisRestApi).submitEmergencyRequisition(any(RnRForm.class));
     }
 
     @Test
     public void shouldSyncUnSyncedStockMovementData() throws LMISException, SQLException, ParseException {
         StockCard stockCard = createTestStockCardData();
 
-        doReturn(null).when(lmisRestApi).syncUpStockMovementData(anyString(), anyList());
+        doReturn(null).when(mockedLmisRestApi).syncUpStockMovementData(anyString(), anyList());
         syncUpManager.syncStockCards();
         stockRepository.refresh(stockCard);
         List<StockMovementItem> items = newArrayList(stockCard.getForeignStockMovementItems());
@@ -159,24 +162,24 @@ public class SyncUpManagerTest {
         assertThat(items.size(), is(2));
         assertThat(items.get(0).isSynced(), is(true));
         assertThat(items.get(1).isSynced(), is(true));
-        verify(syncErrorsRepository).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
+        verify(mockedSyncErrorsRepository).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
     }
 
     @Test
     public void shouldSaveSyncErrorWhenUnSyncedStockMovementDataFail() throws LMISException, SQLException, ParseException {
         createTestStockCardData();
-        doThrow(new LMISException("mocked exception")).when(lmisRestApi).syncUpStockMovementData(anyString(), anyList());
+        doThrow(new LMISException("mocked exception")).when(mockedLmisRestApi).syncUpStockMovementData(anyString(), anyList());
 
         syncUpManager.syncStockCards();
 
-        verify(syncErrorsRepository).save(any(SyncError.class));
+        verify(mockedSyncErrorsRepository).save(any(SyncError.class));
     }
 
     @Test
     public void shouldNotMarkAsSyncedWhenStockMovementSyncFailed() throws LMISException, ParseException {
         StockCard stockCard = createTestStockCardData();
 
-        doThrow(new RuntimeException("Sync Failed")).when(lmisRestApi).syncUpStockMovementData(anyString(), anyList());
+        doThrow(new RuntimeException("Sync Failed")).when(mockedLmisRestApi).syncUpStockMovementData(anyString(), anyList());
 
         try {
             syncUpManager.syncStockCards();
@@ -228,20 +231,20 @@ public class SyncUpManagerTest {
 
     @Test
     public void shouldSyncAppVersion() throws Exception {
-        when(sharedPreferenceMgr.hasSyncedVersion()).thenReturn(false);
+        when(mockedSharedPreferenceMgr.hasSyncedVersion()).thenReturn(false);
         User user = new User();
         UserInfoMgr.getInstance().setUser(user);
         syncUpManager.syncAppVersion();
-        verify(lmisRestApi).updateAppVersion(any(AppInfoRequest.class));
+        verify(mockedLmisRestApi).updateAppVersion(any(AppInfoRequest.class));
     }
 
     @Test
     public void shouldSyncArchivedProducts() throws Exception {
         List<String> productCodes = new ArrayList<>();
-        syncUpManager.productRepository = productRepository;
-        when(productRepository.listArchivedProductCodes()).thenReturn(productCodes);
+        syncUpManager.productRepository = mockedProductRepository;
+        when(mockedProductRepository.listArchivedProductCodes()).thenReturn(productCodes);
         syncUpManager.syncArchivedProducts();
-        verify(lmisRestApi).syncUpArchivedProducts(UserInfoMgr.getInstance().getUser().getFacilityId(), productCodes);
+        verify(mockedLmisRestApi).syncUpArchivedProducts(UserInfoMgr.getInstance().getUser().getFacilityId(), productCodes);
     }
 
     @Test
@@ -250,19 +253,19 @@ public class SyncUpManagerTest {
         RnRForm form = new RnRForm();
         unSyncedList.add(form);
 
-        when(rnrFormRepository.queryAllUnsyncedForms()).thenReturn(unSyncedList);
+        when(mockedRnrFormRepository.queryAllUnsyncedForms()).thenReturn(unSyncedList);
 
-        doThrow(new LMISException("mocked exception")).when(lmisRestApi).submitRequisition(any(RnRForm.class));
+        doThrow(new LMISException("mocked exception")).when(mockedLmisRestApi).submitRequisition(any(RnRForm.class));
         syncUpManager.syncRnr();
 
-        verify(syncErrorsRepository).save(any(SyncError.class));
+        verify(mockedSyncErrorsRepository).save(any(SyncError.class));
     }
 
     @Test
     public void shouldNotSyncAppVersion() throws Exception {
-        when(sharedPreferenceMgr.hasSyncedVersion()).thenReturn(true);
+        when(mockedSharedPreferenceMgr.hasSyncedVersion()).thenReturn(true);
         syncUpManager.syncAppVersion();
-        verify(lmisRestApi, never()).updateAppVersion(any(AppInfoRequest.class));
+        verify(mockedLmisRestApi, never()).updateAppVersion(any(AppInfoRequest.class));
     }
 
     @Test
@@ -273,49 +276,49 @@ public class SyncUpManagerTest {
             unSyncedList.add(form);
         }
 
-        when(rnrFormRepository.queryAllUnsyncedForms()).thenReturn(unSyncedList);
+        when(mockedRnrFormRepository.queryAllUnsyncedForms()).thenReturn(unSyncedList);
 
         SyncUpRequisitionResponse response = new SyncUpRequisitionResponse();
         response.setRequisitionId("1");
-        when(lmisRestApi.submitRequisition(any(RnRForm.class))).thenReturn(response);
+        when(mockedLmisRestApi.submitRequisition(any(RnRForm.class))).thenReturn(response);
 
         syncUpManager.syncRnr();
-        verify(rnrFormRepository, times(1)).queryAllUnsyncedForms();
-        verify(lmisRestApi, times(2)).submitRequisition(any(RnRForm.class));
-        verify(rnrFormRepository, times(2)).createOrUpdateWithItems(any(RnRForm.class));
-        verify(syncErrorsRepository, times(2)).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
+        verify(mockedRnrFormRepository, times(1)).queryAllUnsyncedForms();
+        verify(mockedLmisRestApi, times(2)).submitRequisition(any(RnRForm.class));
+        verify(mockedRnrFormRepository, times(2)).createOrUpdateWithItems(any(RnRForm.class));
+        verify(mockedSyncErrorsRepository, times(2)).deleteBySyncTypeAndObjectId(any(SyncType.class), anyLong());
     }
 
     @Test
     public void shouldSyncUpUnSyncedStockCardListWhenHasNotSyncedUpLatestMovementLastDay() throws Exception {
-        when(sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()).thenReturn(false);
+        when(mockedSharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()).thenReturn(false);
         syncUpManager.syncUpUnSyncedStockCardCodes();
-        verify(lmisRestApi).syncUpUnSyncedStockCards("123", new ArrayList<String>());
-        verify(sharedPreferenceMgr).setLastMovementHandShakeDateToToday();
+        verify(mockedLmisRestApi).syncUpUnSyncedStockCards("123", new ArrayList<String>());
+        verify(mockedSharedPreferenceMgr).setLastMovementHandShakeDateToToday();
     }
 
     @Test
     public void shouldRefreshLastSyncStockCardDateWhenHasNoUnSyncedStockCard() throws Exception {
-        when(sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()).thenReturn(false);
+        when(mockedSharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()).thenReturn(false);
         syncUpManager.syncUpUnSyncedStockCardCodes();
-        verify(lmisRestApi).syncUpUnSyncedStockCards("123", new ArrayList<String>());
-        verify(sharedPreferenceMgr).setStockLastSyncTime();
+        verify(mockedLmisRestApi).syncUpUnSyncedStockCards("123", new ArrayList<String>());
+        verify(mockedSharedPreferenceMgr).setStockLastSyncTime();
     }
 
     @Test
     public void shouldNotSyncUpWhenHasSyncedUpLastDay() throws LMISException {
-        when(sharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()).thenReturn(true);
+        when(mockedSharedPreferenceMgr.hasSyncedUpLatestMovementLastDay()).thenReturn(true);
         syncUpManager.syncUpUnSyncedStockCardCodes();
-        verify(lmisRestApi, never()).syncUpUnSyncedStockCards("123", new ArrayList<String>());
-        verify(sharedPreferenceMgr, never()).setLastMovementHandShakeDateToToday();
+        verify(mockedLmisRestApi, never()).syncUpUnSyncedStockCards("123", new ArrayList<String>());
+        verify(mockedSharedPreferenceMgr, never()).setLastMovementHandShakeDateToToday();
     }
 
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
-            binder.bind(RnrFormRepository.class).toInstance(rnrFormRepository);
-            bind(SharedPreferenceMgr.class).toInstance(sharedPreferenceMgr);
-            bind(SyncErrorsRepository.class).toInstance(syncErrorsRepository);
+            binder.bind(RnrFormRepository.class).toInstance(mockedRnrFormRepository);
+            bind(SharedPreferenceMgr.class).toInstance(mockedSharedPreferenceMgr);
+            bind(SyncErrorsRepository.class).toInstance(mockedSyncErrorsRepository);
         }
     }
 }
