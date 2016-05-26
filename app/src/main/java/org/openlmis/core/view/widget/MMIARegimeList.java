@@ -112,7 +112,7 @@ public class MMIARegimeList extends LinearLayout {
     }
 
     private boolean isCustomEnable() {
-        return !presenter.getRnRForm().isAuthorized() && !presenter.getRnRForm().isMissed();
+        return !presenter.getRnRForm().isAuthorized();
     }
 
     private void addAdultBtnView() {

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import rx.Observable;
 import rx.Subscriber;
 
+import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -88,6 +89,28 @@ public class MMIARegimeListTest {
         mmiaRegimeList.initView(new TextView(RuntimeEnvironment.application), presenter);
 
         assertNull(mmiaRegimeList.getChildAt(1).findViewById(R.id.image_view_del));
+    }
+
+    @Test
+    public void shouldShowTheCustomRegimenWhenTheFormIsMissedAndNotAuthorised() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_custom_regimen, true);
+        RnRForm rnRForm = new RnRForm();
+        rnRForm.setStatus(RnRForm.STATUS.DRAFT_MISSED);
+
+
+        Regimen regimen = new Regimen();
+        regimen.setType(Regimen.RegimeType.Adults);
+        RegimenItem regimenItem = new RegimenItem();
+        regimenItem.setRegimen(regimen);
+        ArrayList<RegimenItem> regimenItems = new ArrayList<>();
+        regimenItems.add(regimenItem);
+        rnRForm.setRegimenItemListWrapper(regimenItems);
+
+        when(presenter.getRnRForm()).thenReturn(rnRForm);
+
+        mmiaRegimeList.initView(new TextView(RuntimeEnvironment.application), presenter);
+
+        assertEquals(4, mmiaRegimeList.getChildCount());
     }
 
     @Test
