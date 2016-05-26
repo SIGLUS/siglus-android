@@ -24,12 +24,13 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.User;
 import org.openlmis.core.network.model.AppInfoRequest;
-import org.openlmis.core.network.model.UserResponse;
+import org.openlmis.core.network.model.CmmEntry;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncDownLatestProductsResponse;
 import org.openlmis.core.network.model.SyncDownRequisitionsResponse;
 import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.network.model.SyncUpRequisitionResponse;
+import org.openlmis.core.network.model.UserResponse;
 
 import java.util.List;
 
@@ -62,6 +63,9 @@ public interface LMISRestApi {
 
     @POST("/rest-api/facilities/{facilityId}/archivedProducts")
     Void syncUpArchivedProducts(@Path("facilityId") String facilityId, @Body List<String> archivedProductsCodes) throws LMISException;
+
+    @POST("/rest-api/facilities/{facilityId}/Cmms")
+    Void syncUpCmms(@Path("facilityId") String facilityId, @Body List<CmmEntry> cmms) throws LMISException;
 
     @POST("/rest-api/update-app-info")
     Void updateAppVersion(@Body AppInfoRequest appInfo) throws LMISException;

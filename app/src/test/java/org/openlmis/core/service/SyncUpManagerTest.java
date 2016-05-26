@@ -30,6 +30,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
@@ -38,12 +39,14 @@ import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.builder.StockCardBuilder;
+import org.openlmis.core.model.repository.CmmRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.AppInfoRequest;
+import org.openlmis.core.network.model.CmmEntry;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.openlmis.core.network.model.SyncUpRequisitionResponse;
 import org.openlmis.core.utils.DateUtil;
@@ -52,6 +55,7 @@ import org.robolectric.RuntimeEnvironment;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import roboguice.RoboGuice;
@@ -65,8 +69,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -82,6 +88,7 @@ public class SyncUpManagerTest {
     private RnrFormRepository mockedRnrFormRepository;
     private SyncErrorsRepository mockedSyncErrorsRepository;
     private ProductRepository mockedProductRepository;
+    private CmmRepository mockedCmmRepository;
 
     private SharedPreferenceMgr mockedSharedPreferenceMgr;
 
@@ -96,6 +103,8 @@ public class SyncUpManagerTest {
         mockedRnrFormRepository = mock(RnrFormRepository.class);
         mockedSyncErrorsRepository = mock(SyncErrorsRepository.class);
         mockedProductRepository = mock(ProductRepository.class);
+        mockedCmmRepository = mock(CmmRepository.class);
+
         mockedSharedPreferenceMgr = mock(SharedPreferenceMgr.class);
         mockedLmisRestApi = mock(LMISRestApi.class);
 
@@ -313,12 +322,37 @@ public class SyncUpManagerTest {
         verify(mockedSharedPreferenceMgr, never()).setLastMovementHandShakeDateToToday();
     }
 
+    @Test
+    public void shouldSyncUpCmmsAndMarkThemAsSynced() throws Exception {
+        //given
+        Cmm cmm = new Cmm();
+        cmm.setStockCard(createTestStockCardData());
+        cmm.setPeriodBegin(new Date());
+        cmm.setPeriodEnd(new Date());
+
+        List<Cmm> cmms = new ArrayList<>();
+        cmms.add(cmm);
+
+        when(mockedCmmRepository.listUnsynced()).thenReturn(cmms);
+
+        assertThat(cmm.isSynced(), is(false));
+
+        //when
+        syncUpManager.syncUpCmms();
+
+        //then
+        verify(mockedLmisRestApi, times(1)).syncUpCmms(eq("123"), anyListOf(CmmEntry.class));
+        assertThat(cmm.isSynced(), is(true));
+        verify(mockedCmmRepository).save(cmm);
+    }
+
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
-            binder.bind(RnrFormRepository.class).toInstance(mockedRnrFormRepository);
+            bind(RnrFormRepository.class).toInstance(mockedRnrFormRepository);
             bind(SharedPreferenceMgr.class).toInstance(mockedSharedPreferenceMgr);
             bind(SyncErrorsRepository.class).toInstance(mockedSyncErrorsRepository);
+            bind(CmmRepository.class).toInstance(mockedCmmRepository);
         }
     }
 }

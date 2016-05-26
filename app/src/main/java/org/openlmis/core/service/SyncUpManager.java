@@ -27,16 +27,19 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.SyncError;
 import org.openlmis.core.model.SyncType;
+import org.openlmis.core.model.repository.CmmRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.SyncErrorsRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.model.AppInfoRequest;
+import org.openlmis.core.network.model.CmmEntry;
 import org.openlmis.core.network.model.StockMovementEntry;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
@@ -66,6 +69,9 @@ public class SyncUpManager {
 
     @Inject
     ProductRepository productRepository;
+
+    @Inject
+    CmmRepository cmmRepository;
 
     @Inject
     private SyncErrorsRepository syncErrorsRepository;
@@ -177,6 +183,27 @@ public class SyncUpManager {
         try {
             List<String> archivedProductCodes = productRepository.listArchivedProductCodes();
             lmisRestApi.syncUpArchivedProducts(facilityId, archivedProductCodes);
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+    }
+
+    public void syncUpCmms() {
+        try {
+            List<Cmm> unsyncedCmms = cmmRepository.listUnsynced();
+            List<CmmEntry> cmmEntries = FluentIterable.from(unsyncedCmms).transform(new Function<Cmm, CmmEntry>() {
+                @Override
+                public CmmEntry apply(Cmm cmm) {
+                    return CmmEntry.createFrom(cmm);
+                }
+            }).toList();
+
+            lmisRestApi.syncUpCmms(UserInfoMgr.getInstance().getUser().getFacilityId(), cmmEntries);
+
+            for (Cmm cmm : unsyncedCmms) {
+                cmm.setSynced(true);
+                cmmRepository.save(cmm);
+            }
         } catch (LMISException e) {
             e.reportToFabric();
         }
