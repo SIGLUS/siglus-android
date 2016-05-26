@@ -13,4 +13,5 @@
     <bool name="feature_enter_document_number_when_unpack_kit">true</bool>
     <bool name="feature_sync_mmia_list_from_web">true</bool>
     <bool name="feature_over_stock">true</bool>
+    <bool name="feature_allow_custom_regimen_in_missed_mmia_form">true</bool>
 </resources>
