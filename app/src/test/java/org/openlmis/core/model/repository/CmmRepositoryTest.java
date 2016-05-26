@@ -10,6 +10,8 @@ import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.StockCard;
 import org.robolectric.RuntimeEnvironment;
 
+import java.util.List;
+
 import roboguice.RoboGuice;
 
 import static org.hamcrest.core.Is.is;
@@ -81,6 +83,26 @@ public class CmmRepositoryTest {
         assertThat(cmmRepository.list().get(1).getCmmValue(), is(456f));
     }
 
+    @Test
+    public void shouldListUnsyncedCmms() throws Exception {
+        //given
+        Cmm cmm1 = createDummyCmm("2016-01-21", "2016-02-20", 7788, 123);
+        Cmm cmm2 = createDummyCmm("2016-01-21", "2016-02-20", 8899, 123);
+        cmm1.setSynced(true);
+        cmm2.setSynced(false);
+
+        cmmRepository.save(cmm1);
+        cmmRepository.save(cmm2);
+
+        //when
+        List<Cmm> allCmms = cmmRepository.list();
+        List<Cmm> unsyncedCmms = cmmRepository.listUnsynced();
+
+        //then
+        assertThat(unsyncedCmms.size(), is(1));
+        assertThat(allCmms.size(), is(2));
+    }
+
     private Cmm createDummyCmm(String start, String end, int cardId, int cmmValue) {
         StockCard stockCard = new StockCard();
         stockCard.setId(cardId);
@@ -90,7 +112,6 @@ public class CmmRepositoryTest {
         cmm.setCmmValue(cmmValue);
         cmm.setPeriodBegin(DateTime.parse(start).toDate());
         cmm.setPeriodEnd(DateTime.parse(end).toDate());
-        cmm.setSynced(false);
         return cmm;
     }
 }

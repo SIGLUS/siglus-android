@@ -9,6 +9,8 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Cmm;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
+import org.roboguice.shaded.goole.common.base.Predicate;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -45,5 +47,14 @@ public class CmmRepository {
 
     public List<Cmm> list() throws LMISException {
         return cmmDao.queryForAll();
+    }
+
+    public List<Cmm> listUnsynced() throws LMISException {
+        return FluentIterable.from(cmmDao.queryForAll()).filter(new Predicate<Cmm>() {
+            @Override
+            public boolean apply(Cmm cmm) {
+                return !cmm.isSynced();
+            }
+        }).toList();
     }
 }
