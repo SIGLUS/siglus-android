@@ -325,14 +325,9 @@ public class SyncUpManagerTest {
     @Test
     public void shouldSyncUpCmmsAndMarkThemAsSynced() throws Exception {
         //given
-        Cmm cmm = new Cmm();
-        cmm.setStockCard(createTestStockCardData());
-        cmm.setPeriodBegin(new Date());
-        cmm.setPeriodEnd(new Date());
+        List<Cmm> cmms = createCmmsData();
 
-        List<Cmm> cmms = new ArrayList<>();
-        cmms.add(cmm);
-
+        Cmm cmm = cmms.get(0);
         when(mockedCmmRepository.listUnsynced()).thenReturn(cmms);
 
         assertThat(cmm.isSynced(), is(false));
@@ -344,6 +339,37 @@ public class SyncUpManagerTest {
         verify(mockedLmisRestApi, times(1)).syncUpCmms(eq("123"), anyListOf(CmmEntry.class));
         assertThat(cmm.isSynced(), is(true));
         verify(mockedCmmRepository).save(cmm);
+    }
+
+    @Test
+    public void shouldNotMarkCmmsAsSyncedWhenSyncUpFails() throws Exception {
+        //given sync up encounters network failure
+        List<Cmm> cmms = createCmmsData();
+
+        Cmm cmm = cmms.get(0);
+        when(mockedCmmRepository.listUnsynced()).thenReturn(cmms);
+        when(mockedLmisRestApi.syncUpCmms(any(String.class), anyList())).thenThrow(new LMISException("some error"));
+
+        assertThat(cmm.isSynced(), is(false));
+
+        //when
+        syncUpManager.syncUpCmms();
+
+        //then
+        verify(mockedLmisRestApi, times(1)).syncUpCmms(eq("123"), anyListOf(CmmEntry.class));
+        assertThat(cmm.isSynced(), is(false));
+        verify(mockedCmmRepository, never()).save(cmm);
+    }
+
+    private List<Cmm> createCmmsData() throws LMISException, ParseException {
+        Cmm cmm = new Cmm();
+        cmm.setStockCard(createTestStockCardData());
+        cmm.setPeriodBegin(new Date());
+        cmm.setPeriodEnd(new Date());
+
+        List<Cmm> cmms = new ArrayList<>();
+        cmms.add(cmm);
+        return cmms;
     }
 
     public class MyTestModule extends AbstractModule {
