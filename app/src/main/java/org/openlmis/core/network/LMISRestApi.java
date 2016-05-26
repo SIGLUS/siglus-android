@@ -45,11 +45,8 @@ public interface LMISRestApi {
     @POST("/rest-api/login")
     void authorizeUser(@Body User user, Callback<UserResponse> callback);
 
-    @POST("/rest-api/update-app-info")
-    Void updateAppVersion(@Body AppInfoRequest appInfo) throws LMISException;
 
-    @GET("/rest-api/requisitions")
-    SyncDownRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode) throws LMISException;
+    //sync up
 
     @POST("/rest-api/requisitions")
     SyncUpRequisitionResponse submitRequisition(@Body RnRForm rnRForm) throws LMISException;
@@ -60,15 +57,24 @@ public interface LMISRestApi {
     @POST("/rest-api/facilities/{facilityId}/stockCards")
     JSONObject syncUpStockMovementData(@Path("facilityId") String facilityId, @Body List<StockMovementEntry> entries) throws LMISException;
 
-    @GET("/rest-api/facilities/{facilityId}/stockCards")
-    SyncDownStockCardResponse fetchStockMovementData(@Path("facilityId") String facilityId, @Query("startTime") String startDate, @Query("endTime") String endDate) throws LMISException;
-
-    @GET("/rest-api/latest-products")
-    SyncDownLatestProductsResponse fetchLatestProducts(@Query("afterUpdatedTime") String afterUpdatedTime) throws LMISException;
-
     @POST("/rest-api/facilities/{facilityId}/unSyncedStockCards")
     Void syncUpUnSyncedStockCards(@Path("facilityId") String facilityId, @Body List<String> unSyncedStockCardCodes) throws LMISException;
 
     @POST("/rest-api/facilities/{facilityId}/archivedProducts")
     Void syncUpArchivedProducts(@Path("facilityId") String facilityId, @Body List<String> archivedProductsCodes) throws LMISException;
+
+    @POST("/rest-api/update-app-info")
+    Void updateAppVersion(@Body AppInfoRequest appInfo) throws LMISException;
+
+
+    //sync down
+
+    @GET("/rest-api/requisitions")
+    SyncDownRequisitionsResponse fetchRequisitions(@Query("facilityCode") String facilityCode) throws LMISException;
+
+    @GET("/rest-api/facilities/{facilityId}/stockCards")
+    SyncDownStockCardResponse fetchStockMovementData(@Path("facilityId") String facilityId, @Query("startTime") String startDate, @Query("endTime") String endDate) throws LMISException;
+
+    @GET("/rest-api/latest-products")
+    SyncDownLatestProductsResponse fetchLatestProducts(@Query("afterUpdatedTime") String afterUpdatedTime) throws LMISException;
 }
