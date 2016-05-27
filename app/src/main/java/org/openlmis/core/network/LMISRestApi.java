@@ -38,6 +38,7 @@ import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
@@ -64,7 +65,7 @@ public interface LMISRestApi {
     @POST("/rest-api/facilities/{facilityId}/archivedProducts")
     Void syncUpArchivedProducts(@Path("facilityId") String facilityId, @Body List<String> archivedProductsCodes) throws LMISException;
 
-    @POST("/rest-api/facilities/{facilityId}/Cmms")
+    @PUT("/rest-api/facilities/{facilityId}/Cmms")
     Void syncUpCmms(@Path("facilityId") String facilityId, @Body List<CmmEntry> cmms) throws LMISException;
 
     @POST("/rest-api/update-app-info")
