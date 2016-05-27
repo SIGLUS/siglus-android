@@ -1,6 +1,3 @@
-# NOTE: API does not have delete endpoint and therefore can only
-# post until reaching the current period. Use UAT env because UAT will
-# clean up data regularly
 describe "submit requisition to web server" do
 
   it "should sync requisitions to server successfully and return expected response" do
