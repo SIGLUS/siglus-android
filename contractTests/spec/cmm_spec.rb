@@ -13,16 +13,16 @@ describe "update CMM" do
 
     [
       {
-        "productCode":"08S01ZZ",
-        "periodBegin":"2016-05-21",
-        "periodEnd":"2016-06-20",
-        "cmmValue":0.0
+        productCode: "08S01ZZ",
+        periodBegin: "2016-05-21",
+        periodEnd: "2016-06-20",
+        cmmValue: 0.0
       },
       {
-        "productCode":"08S01",
-        "periodBegin":"2016-05-21",
-        "periodEnd":"2016-06-20",
-        "cmmValue":0.6666667
+        productCode: "08S01",
+        periodBegin: "2016-05-21",
+        periodEnd: "2016-06-20",
+        cmmValue: 0.6666667
       }]
 
     response = RestClient.put "http://#{WEB_DEV_URI}/rest-api/facilities/#{facility_id}/Cmms",
