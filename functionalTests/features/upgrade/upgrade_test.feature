@@ -34,6 +34,8 @@ Feature: After version upgrade, data integrity should not be broken
     And I press the menu key
     Then I see "Sync Data"
     And I press "Sync Data"
+    Then I wait for 10 second
+    #wait before checking the label
     Then I see "0 minutes since last sync"
 
     #after upgrade, user should still be able to use the rnr form draft that are created on the old version
