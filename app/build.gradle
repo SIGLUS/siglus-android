@@ -186,7 +186,6 @@ dependencies {
     compile 'org.roboguice:roboguice:3.0.1'
     provided 'org.roboguice:roboblender:3.0.1'
     compile 'org.apache.commons:commons-lang3:3.3.2'
-    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     provided 'org.projectlombok:lombok:1.12.6'
     compile('com.crashlytics.sdk.android:crashlytics:2.5.1@aar') {
         transitive = true
