@@ -153,7 +153,12 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
             }
         });
 
-        View headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
+        View headerView;
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
+            headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
+        } else {
+            headerView = layoutInflater.inflate(R.layout.item_old_stock_movement_header, stockMovementList, false);
+        }
         stockMovementList.addHeaderView(headerView);
         stockMovementList.setAdapter(stockMovementAdapter);
 
