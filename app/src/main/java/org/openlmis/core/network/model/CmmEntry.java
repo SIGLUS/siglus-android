@@ -25,6 +25,6 @@ public class CmmEntry {
         return new CmmEntry(cmm.getStockCard().getProduct().getCode(),
                 cmm.getCmmValue(),
                 formatDate(cmm.getPeriodBegin(), DB_DATE_FORMAT),
-                formatDate(cmm.getPeriodBegin(), DB_DATE_FORMAT));
+                formatDate(cmm.getPeriodEnd(), DB_DATE_FORMAT));
     }
 }
