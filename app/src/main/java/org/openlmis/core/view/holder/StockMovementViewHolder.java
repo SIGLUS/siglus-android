@@ -55,8 +55,6 @@ import java.util.Map;
 
 import roboguice.inject.InjectView;
 
-import static java.util.Arrays.asList;
-
 
 public class StockMovementViewHolder extends BaseViewHolder {
 
@@ -81,9 +79,6 @@ public class StockMovementViewHolder extends BaseViewHolder {
     @InjectView(R.id.et_issued)
     EditText etIssued;
 
-    @InjectView(R.id.et_requested)
-    EditText etRequested;
-
     @InjectView(R.id.tx_stock_on_hand)
     TextView txStockExistence;
 
@@ -91,7 +86,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
     TextView txSignature;
 
     private StockMovementAdapter.MovementChangedListener movementChangeListener;
-    private Map<StockMovementItem.MovementType, List> movementViewMap;
+    private Map<StockMovementItem.MovementType, EditText> movementViewMap;
 
     public StockMovementViewHolder(View itemView, StockMovementAdapter.MovementChangedListener movementChangeListener) {
         super(itemView);
@@ -102,19 +97,16 @@ public class StockMovementViewHolder extends BaseViewHolder {
         etNegativeAdjustment.setFilters(filters);
         etPositiveAdjustment.setFilters(filters);
         etIssued.setFilters(filters);
-        etRequested.setFilters(filters);
+
         initStockViewMap();
     }
 
     private void initStockViewMap() {
         movementViewMap = new HashMap<>();
-        movementViewMap.put(StockMovementItem.MovementType.ISSUE, asList(etIssued, etRequested));
-
-        movementViewMap.put(StockMovementItem.MovementType.RECEIVE, asList(etReceived));
-
-        movementViewMap.put(StockMovementItem.MovementType.NEGATIVE_ADJUST, asList(etNegativeAdjustment));
-
-        movementViewMap.put(StockMovementItem.MovementType.POSITIVE_ADJUST, asList(etPositiveAdjustment));
+        movementViewMap.put(StockMovementItem.MovementType.ISSUE, etIssued);
+        movementViewMap.put(StockMovementItem.MovementType.RECEIVE, etReceived);
+        movementViewMap.put(StockMovementItem.MovementType.NEGATIVE_ADJUST, etNegativeAdjustment);
+        movementViewMap.put(StockMovementItem.MovementType.POSITIVE_ADJUST, etPositiveAdjustment);
     }
 
     public void populate(final StockMovementViewModel model, StockCard stockCard) {
@@ -168,15 +160,11 @@ public class StockMovementViewHolder extends BaseViewHolder {
     }
 
     private void resetStockEditText(StockMovementItem.MovementType type) {
-        for (Map.Entry<StockMovementItem.MovementType, List> movementView : movementViewMap.entrySet()) {
+        for (Map.Entry<StockMovementItem.MovementType, EditText> movementView : movementViewMap.entrySet()) {
             if (movementView.getKey().equals(type)) {
-                for (Object view : movementView.getValue()) {
-                    enableAndUnderlineEditText((EditText) view);
-                }
+                enableAndUnderlineEditText(movementView.getValue());
             } else {
-                for (Object view : movementView.getValue()) {
-                    disableAndRemoveUnderlineEditText((EditText) view);
-                }
+                disableAndRemoveUnderlineEditText(movementView.getValue());
             }
         }
     }
@@ -209,8 +197,6 @@ public class StockMovementViewHolder extends BaseViewHolder {
         etPositiveAdjustment.removeTextChangedListener(new EditTextWatcher(etPositiveAdjustment, model, currentStockOnHand));
 
         etIssued.removeTextChangedListener(new EditTextWatcher(etIssued, model, currentStockOnHand));
-
-        etRequested.removeTextChangedListener(new EditTextWatcher(etRequested, model, currentStockOnHand));
 
         etDocumentNo.removeTextChangedListener(new EditTextWatcher(etDocumentNo, model, currentStockOnHand));
     }
@@ -293,7 +279,6 @@ public class StockMovementViewHolder extends BaseViewHolder {
     private void hideUnderline() {
         etDocumentNo.setBackground(null);
         etIssued.setBackground(null);
-        etRequested.setBackground(null);
         etNegativeAdjustment.setBackground(null);
         etPositiveAdjustment.setBackground(null);
         etReceived.setBackground(null);
@@ -305,7 +290,6 @@ public class StockMovementViewHolder extends BaseViewHolder {
         etNegativeAdjustment.setEnabled(false);
         etPositiveAdjustment.setEnabled(false);
         etIssued.setEnabled(false);
-        etRequested.setEnabled(false);
         txMovementDate.setEnabled(false);
         txReason.setEnabled(false);
     }
