@@ -121,7 +121,6 @@ public class StockMovementViewHolder extends BaseViewHolder {
         etNegativeAdjustment.setText(model.getNegativeAdjustment());
         etPositiveAdjustment.setText(model.getPositiveAdjustment());
         etIssued.setText(model.getIssued());
-        etRequested.setText(model.getRequested());
         txStockExistence.setText(model.getStockExistence());
         txSignature.setText(model.getSignature());
         if (model.getReason() != null) {
@@ -252,9 +251,6 @@ public class StockMovementViewHolder extends BaseViewHolder {
 
         EditTextWatcher watcher4 = new EditTextWatcher(etDocumentNo, model, currentStockOnHand);
         etDocumentNo.addTextChangedListener(watcher4);
-
-        EditTextWatcher watcher5 = new EditTextWatcher(etRequested, model, currentStockOnHand);
-        etRequested.addTextChangedListener(watcher5);
     }
 
     private void setItemViewTextColor(StockMovementViewModel model) {
@@ -304,7 +300,6 @@ public class StockMovementViewHolder extends BaseViewHolder {
         etNegativeAdjustment.setText(StringUtils.EMPTY);
         etPositiveAdjustment.setText(StringUtils.EMPTY);
         etIssued.setText(StringUtils.EMPTY);
-        etRequested.setText(StringUtils.EMPTY);
         disableLine();
         hideUnderline();
     }
@@ -344,7 +339,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
         private void setValue(View v, StockMovementViewModel model, long currentStockOnHand) {
             String text = ((TextView) v).getText().toString();
 
-            if (v != etDocumentNo && v != etRequested) {
+            if (v != etDocumentNo) {
                 updateStockExistence(v, model, currentStockOnHand, text);
             }
 
@@ -358,8 +353,6 @@ public class StockMovementViewHolder extends BaseViewHolder {
                 model.setNegativeAdjustment(etNegativeAdjustment.getText().toString());
             } else if (v == etDocumentNo) {
                 model.setDocumentNo(etDocumentNo.getText().toString());
-            } else if (v == etRequested) {
-                model.setRequested(etRequested.getText().toString());
             }
         }
 

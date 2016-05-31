@@ -40,7 +40,6 @@ public class StockMovementViewModel {
     String stockExistence;
     String documentNo;
     String signature;
-    String requested;
     boolean isDraft = true;
 
     private HashMap<StockMovementItem.MovementType, String> typeQuantityMap = new HashMap<>();
@@ -50,11 +49,6 @@ public class StockMovementViewModel {
         documentNo = item.getDocumentNumber();
         stockExistence = String.valueOf(item.getStockOnHand());
         signature = item.getSignature();
-        if (null == item.getRequested()) {
-            requested = "";
-        } else {
-            requested = String.valueOf(item.getRequested());
-        }
         isDraft = false;
 
         try {
@@ -108,9 +102,6 @@ public class StockMovementViewModel {
 
         Long movementQuantity = Long.parseLong(typeQuantityMap.get(reason.getMovementType()));
         stockMovementItem.setMovementQuantity(movementQuantity);
-
-        stockMovementItem.setRequested((null == requested || requested.isEmpty()) ? null : Long.valueOf(requested));
-
         stockMovementItem.setSignature(signature);
 
         stockMovementItem.setMovementDate(DateUtil.parseString(getMovementDate(), DateUtil.DEFAULT_DATE_FORMAT));

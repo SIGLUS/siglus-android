@@ -76,7 +76,6 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldPopulateTextDataWhenPopulatingData() {
-        viewModel.setRequested("999");
         viewHolder.populate(viewModel, stockCard);
 
         assertEquals("12345", viewHolder.etDocumentNo.getText().toString());
@@ -86,7 +85,6 @@ public class StockMovementViewHolderTest {
         assertEquals("", viewHolder.etPositiveAdjustment.getText().toString());
         assertEquals("30", viewHolder.etIssued.getText().toString());
         assertEquals("70", viewHolder.txStockExistence.getText().toString());
-        assertEquals("999", viewHolder.etRequested.getText().toString());
         assertEquals("issue description", viewHolder.txReason.getText().toString());
     }
 
