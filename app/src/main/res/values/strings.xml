@@ -162,7 +162,6 @@
     <string name="label_negative_adjustment">Negative Adjustment</string>
     <string name="label_positive_adjustment">Positive Adjustment</string>
     <string name="label_stock_existence">Stock on Hand</string>
-    <string name="label_requested">Requested</string>
     <string name="label_signature">Signature</string>
     <string name="btn_cancel">CANCEL</string>
     <string name="btn_do_not_remove">Cancel</string>

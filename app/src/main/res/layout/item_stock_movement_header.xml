@@ -67,13 +67,6 @@
             android:text="@string/label_stock_existence" />
 
         <TextView
-            android:id="@+id/tx_requested"
-            style="@style/ItemMovement.SheetText"
-            android:layout_width="@dimen/stock_movement_item_common_width"
-            android:layout_height="wrap_content"
-            android:text="@string/label_requested" />
-
-        <TextView
             android:id="@+id/tx_signature"
             style="@style/ItemMovement.SheetText"
             android:layout_width="@dimen/stock_movement_item_common_width"
