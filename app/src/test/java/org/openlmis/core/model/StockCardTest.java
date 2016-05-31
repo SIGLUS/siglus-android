@@ -19,6 +19,7 @@ import java.util.List;
 
 import roboguice.RoboGuice;
 
+import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.mock;
@@ -86,15 +87,17 @@ public class StockCardTest {
     }
 
     @Test
-    public void shouldGetLowStockAvg() throws Exception {
+    public void shouldGetIsLowStockAvg() throws Exception {
+        stockCard.setStockOnHand(1);
         stockCard.setAvgMonthlyConsumption(100.5f);
-        assertThat(stockCard.getLowStockAvg()).isEqualTo(6);
+        assertTrue(stockCard.isLowStock());
     }
 
     @Test
     public void shouldGetOverStockAvg() throws Exception {
+        stockCard.setStockOnHand(220);
         stockCard.setAvgMonthlyConsumption(100.5f);
-        assertThat(stockCard.getOverStockAvg()).isEqualTo(201);
+        assertTrue(stockCard.isOverStock());
     }
 
     public class MyTestModule extends AbstractModule {

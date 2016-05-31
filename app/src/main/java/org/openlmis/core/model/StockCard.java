@@ -99,11 +99,11 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
         return (int) Math.ceil(this.avgMonthlyConsumption);
     }
 
-    public int getLowStockAvg() {
-        return (int) Math.ceil(this.avgMonthlyConsumption * 0.05);
+    public boolean isOverStock() {
+        return stockOnHand > (int) Math.ceil(this.avgMonthlyConsumption * 2);
     }
 
-    public int getOverStockAvg() {
-        return (int) Math.ceil(this.avgMonthlyConsumption * 2);
+    public boolean isLowStock() {
+        return stockOnHand < (int) Math.ceil(this.avgMonthlyConsumption * 0.05);
     }
 }

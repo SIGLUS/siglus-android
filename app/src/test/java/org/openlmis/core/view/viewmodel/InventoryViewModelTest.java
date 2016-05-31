@@ -57,18 +57,22 @@ public class InventoryViewModelTest {
 
     @Test
     public void shouldGetNormalLevelWhenSOHGreaterThanAvg() throws LMISException {
-        viewModel.setCmm(80);
+        StockCard stockCard = new StockCard();
+        stockCard.setStockOnHand(100);
+        stockCard.setAvgMonthlyConsumption(80);
+        viewModel.setStockCard(stockCard);
         viewModel.setStockOnHand(100);
 
         int stockOnHandLevel = viewModel.getStockOnHandLevel();
 
         Assertions.assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_NORMAL);
-
     }
 
     @Test
     public void shouldGetNormalLevelWhenAvgMonthlyConsumptionLessThanZero() throws LMISException {
-        viewModel.setCmm(-1);
+        StockCard stockCard = new StockCard();
+        stockCard.setAvgMonthlyConsumption(-1);
+        viewModel.setStockCard(stockCard);
         viewModel.setStockOnHand(100);
 
         int stockOnHandLevel = viewModel.getStockOnHandLevel();
@@ -79,7 +83,10 @@ public class InventoryViewModelTest {
 
     @Test
     public void shouldGetOverLevelWhenSOHSmallerThanAvg() throws LMISException {
-        viewModel.setCmm(10);
+        StockCard stockCard = new StockCard();
+        stockCard.setStockOnHand(30);
+        stockCard.setAvgMonthlyConsumption(10);
+        viewModel.setStockCard(stockCard);
 
         viewModel.setStockOnHand(30);
 
@@ -90,8 +97,10 @@ public class InventoryViewModelTest {
 
     @Test
     public void shouldGetLowLevelWhenSOHSmallerThanAvg() throws LMISException {
-        viewModel.setCmm(100);
-        viewModel.setLowStockAvg(5);
+        StockCard stockCard = new StockCard();
+        stockCard.setStockOnHand(2);
+        stockCard.setAvgMonthlyConsumption(100);
+        viewModel.setStockCard(stockCard);
         viewModel.setStockOnHand(2);
 
         int stockOnHandLevel = viewModel.getStockOnHandLevel();
@@ -101,7 +110,9 @@ public class InventoryViewModelTest {
 
     @Test
     public void shouldGetStockOutLevelWhenSOHIsZero() throws LMISException {
-        viewModel.setCmm(80);
+        StockCard stockCard = new StockCard();
+        stockCard.setAvgMonthlyConsumption(80);
+        viewModel.setStockCard(stockCard);
 
         viewModel.setStockOnHand(0);
 
@@ -112,7 +123,9 @@ public class InventoryViewModelTest {
 
     @Test
     public void shouldGetStockOutLevelWhenSOHIsZeroEvenAvgMonthlyConsumptionLessThanZero() throws LMISException {
-        viewModel.setCmm(-1);
+        StockCard stockCard = new StockCard();
+        stockCard.setAvgMonthlyConsumption(-1);
+        viewModel.setStockCard(stockCard);
 
         viewModel.setStockOnHand(0);
 

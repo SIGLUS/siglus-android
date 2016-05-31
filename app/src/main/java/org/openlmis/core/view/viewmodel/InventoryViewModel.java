@@ -63,10 +63,6 @@ public class InventoryViewModel {
     long kitExpectQuantity;
     SpannableStringBuilder styledName;
 
-    int lowStockAvg;
-
-    int cmm;
-
     SpannableStringBuilder styledUnit;
 
     boolean valid = true;
@@ -84,8 +80,6 @@ public class InventoryViewModel {
         this.stockCardId = stockCard.getId();
         this.stockOnHand = stockCard.getStockOnHand();
         this.checked = true;
-        this.lowStockAvg = stockCard.getLowStockAvg();
-        this.cmm = stockCard.getCMM();
 
         initExpiryDates(stockCard.getExpireDates());
     }
@@ -240,16 +234,16 @@ public class InventoryViewModel {
             return StockCardViewHolder.STOCK_ON_HAND_STOCK_OUT;
         }
 
-        if (cmm < 0) {
+        if (stockCard.getCMM() < 0) {
             return StockCardViewHolder.STOCK_ON_HAND_NORMAL;
         } else {
-            if (stockOnHand > 2 * cmm) {
+            if (stockCard.isOverStock()) {
                 return StockCardViewHolder.STOCK_ON_HAND_OVER_STOCK;
-            } else if(stockOnHand > lowStockAvg) {
-                return StockCardViewHolder.STOCK_ON_HAND_NORMAL;
-            } else {
+            }
+            if (stockCard.isLowStock()) {
                 return StockCardViewHolder.STOCK_ON_HAND_LOW_STOCK;
             }
+            return StockCardViewHolder.STOCK_ON_HAND_NORMAL;
         }
     }
 }

@@ -179,27 +179,6 @@ public class StockCardViewHolder extends BaseViewHolder {
         });
     }
 
-//    protected int getStockOnHandLevel(InventoryViewModel inventoryViewModel) {
-//
-//        long stockOnHand = inventoryViewModel.getStockOnHand();
-//
-//        if (stockOnHand == 0) {
-//            return STOCK_ON_HAND_STOCK_OUT;
-//        }
-//
-//        if (inventoryViewModel.getCmm() < 0) {
-//            return STOCK_ON_HAND_NORMAL;
-//        } else {
-//            if (stockOnHand > inventoryViewModel.getOverStockAvg()) {
-//                return STOCK_ON_HAND_OVER_STOCK;
-//            } else if(stockOnHand > inventoryViewModel.getLowStockAvg()) {
-//                return STOCK_ON_HAND_NORMAL;
-//            } else {
-//                return STOCK_ON_HAND_LOW_STOCK;
-//            }
-//        }
-//    }
-
     public interface OnItemViewClickListener {
         void onItemViewClick(InventoryViewModel inventoryViewModel);
     }
