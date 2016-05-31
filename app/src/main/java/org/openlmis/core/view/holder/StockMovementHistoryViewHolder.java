@@ -35,7 +35,6 @@ public class StockMovementHistoryViewHolder extends BaseViewHolder {
     @InjectView(R.id.et_negative_adjustment)TextView etNegativeAdjustment;
     @InjectView(R.id.et_positive_adjustment)TextView etPositiveAdjustment;
     @InjectView(R.id.et_issued)TextView etIssued;
-    @InjectView(R.id.et_requested)TextView etRequested;
     @InjectView(R.id.tx_stock_on_hand)TextView txStockExistence;
     @InjectView(R.id.tx_signature)TextView txSignature;
     private final int blackColor;
@@ -57,7 +56,6 @@ public class StockMovementHistoryViewHolder extends BaseViewHolder {
         etNegativeAdjustment.setText(model.getNegativeAdjustment());
         etPositiveAdjustment.setText(model.getPositiveAdjustment());
         etIssued.setText(model.getIssued());
-        etRequested.setText(model.getRequested());
         txStockExistence.setText(model.getStockExistence());
         txReason.setText(model.getReason().getDescription());
         txSignature.setText(model.getSignature());
@@ -87,7 +85,6 @@ public class StockMovementHistoryViewHolder extends BaseViewHolder {
     private void hideUnderline() {
         etDocumentNo.setBackground(null);
         etIssued.setBackground(null);
-        etRequested.setBackground(null);
         etNegativeAdjustment.setBackground(null);
         etPositiveAdjustment.setBackground(null);
         etReceived.setBackground(null);
@@ -99,7 +96,6 @@ public class StockMovementHistoryViewHolder extends BaseViewHolder {
         etNegativeAdjustment.setEnabled(false);
         etPositiveAdjustment.setEnabled(false);
         etIssued.setEnabled(false);
-        etRequested.setEnabled(false);
     }
 
 }
