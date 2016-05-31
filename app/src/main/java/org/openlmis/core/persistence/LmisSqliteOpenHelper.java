@@ -99,8 +99,8 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new AddCategoryColumnToProductPrograms());
             add(new AddLowStockAvgColumnToStockCardTable());
             add(new UpdateCategoryColumnForMMIAProducts());
-            add(new UpdateAvgColumn());
             add(new AddCmmTable());
+            add(new UpdateAvgColumn());
         }
     };
     private static int instanceCount = 0;
