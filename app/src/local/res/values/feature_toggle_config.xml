@@ -15,5 +15,5 @@
     <bool name="feature_over_stock">true</bool>
     <bool name="feature_allow_custom_regimen_in_missed_mmia_form">true</bool>
     <bool name="feature_sync_up_cmms">true</bool>
-    <bool name="feature_add_requested_in_stock_movement">false</bool>
+    <bool name="feature_add_requested_in_stock_movement">true</bool>
 </resources>
