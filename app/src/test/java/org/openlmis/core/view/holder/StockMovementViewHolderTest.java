@@ -9,6 +9,7 @@ import android.widget.DatePicker;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -76,6 +77,7 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldPopulateTextDataWhenPopulatingData() {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_add_requested_in_stock_movement, true);
         viewModel.setRequested("999");
         viewHolder.populate(viewModel, stockCard);
 
@@ -207,7 +209,8 @@ public class StockMovementViewHolderTest {
     }
 
     @Test
-    public void shouldOnlyEnableCurrentSelectedEditTextWhenChoseMovementType() throws ParseException, LMISException {
+    public void shouldOnlyEnableCurrentSelectedEditTextWhenChoseMovementTypeWhenToggleIsOn() throws ParseException, LMISException {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_add_requested_in_stock_movement, true);
 
         viewModel.setDraft(true);
         viewHolder.populate(viewModel, stockCard);
@@ -217,7 +220,6 @@ public class StockMovementViewHolderTest {
 
         MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.RECEIVE, "DON", "Donations");
         listener.onComplete(receiveReason);
-
         assertTrue(viewHolder.etReceived.isEnabled());
         assertFalse(viewHolder.etPositiveAdjustment.isEnabled());
         assertFalse(viewHolder.etNegativeAdjustment.isEnabled());
@@ -232,11 +234,33 @@ public class StockMovementViewHolderTest {
         assertFalse(viewHolder.etNegativeAdjustment.isEnabled());
         assertFalse(viewHolder.etIssued.isEnabled());
         assertFalse(viewHolder.etRequested.isEnabled());
-        assertFalse(viewHolder.etRequested.isEnabled());
     }
 
     @Test
-    public void shouldEnableIssueAndRequetedEditTextWhenChoseIssueMovementType() throws ParseException, LMISException {
+    public void shouldEnableIssueAndRequestedEditTextWhenChoseIssueMovementTypeWhenToggleIsOn() throws ParseException, LMISException {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_add_requested_in_stock_movement, true);
+        StockMovementViewHolder stockMovementViewHolder = new StockMovementViewHolder(itemView, mockedListener);
+
+        viewModel.setDraft(true);
+        stockMovementViewHolder.populate(viewModel, stockCard);
+        stockMovementViewHolder.txMovementDate.setText("");
+
+        StockMovementViewHolder.MovementSelectListener listener = stockMovementViewHolder.new MovementSelectListener(viewModel);
+
+        MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.ISSUE, "ISSUE_1", "issue description");
+
+        listener.onComplete(receiveReason);
+
+        assertFalse(stockMovementViewHolder.etReceived.isEnabled());
+        assertFalse(stockMovementViewHolder.etPositiveAdjustment.isEnabled());
+        assertFalse(stockMovementViewHolder.etNegativeAdjustment.isEnabled());
+        assertTrue(stockMovementViewHolder.etIssued.isEnabled());
+        assertTrue(stockMovementViewHolder.etRequested.isEnabled());
+    }
+
+    @Test
+    public void shouldNotThrowExceptionWhenChoseIssueMovementTypeWhenToggleIsOff() throws ParseException, LMISException {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_add_requested_in_stock_movement, false);
 
         viewModel.setDraft(true);
         viewHolder.populate(viewModel, stockCard);
@@ -252,8 +276,8 @@ public class StockMovementViewHolderTest {
         assertFalse(viewHolder.etPositiveAdjustment.isEnabled());
         assertFalse(viewHolder.etNegativeAdjustment.isEnabled());
         assertTrue(viewHolder.etIssued.isEnabled());
-        assertTrue(viewHolder.etRequested.isEnabled());
     }
+
 
     @Test
     public void shouldEnableMovementTypeAndReasonIfModelIsDraft() {
