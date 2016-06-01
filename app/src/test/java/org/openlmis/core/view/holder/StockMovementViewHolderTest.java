@@ -76,6 +76,7 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldPopulateTextDataWhenPopulatingData() {
+        viewModel.setRequested("999");
         viewHolder.populate(viewModel, stockCard);
 
         assertEquals("12345", viewHolder.etDocumentNo.getText().toString());
@@ -85,6 +86,7 @@ public class StockMovementViewHolderTest {
         assertEquals("", viewHolder.etPositiveAdjustment.getText().toString());
         assertEquals("30", viewHolder.etIssued.getText().toString());
         assertEquals("70", viewHolder.txStockExistence.getText().toString());
+        assertEquals("999", viewHolder.etRequested.getText().toString());
         assertEquals("issue description", viewHolder.txReason.getText().toString());
     }
 
@@ -220,6 +222,7 @@ public class StockMovementViewHolderTest {
         assertFalse(viewHolder.etPositiveAdjustment.isEnabled());
         assertFalse(viewHolder.etNegativeAdjustment.isEnabled());
         assertFalse(viewHolder.etIssued.isEnabled());
+        assertFalse(viewHolder.etRequested.isEnabled());
 
         MovementReasonManager.MovementReason positiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.POSITIVE_ADJUST, "POSITIVE", "BOUGHT");
         listener.onComplete(positiveReason);
@@ -228,6 +231,28 @@ public class StockMovementViewHolderTest {
         assertTrue(viewHolder.etPositiveAdjustment.isEnabled());
         assertFalse(viewHolder.etNegativeAdjustment.isEnabled());
         assertFalse(viewHolder.etIssued.isEnabled());
+        assertFalse(viewHolder.etRequested.isEnabled());
+        assertFalse(viewHolder.etRequested.isEnabled());
+    }
+
+    @Test
+    public void shouldEnableIssueAndRequetedEditTextWhenChoseIssueMovementType() throws ParseException, LMISException {
+
+        viewModel.setDraft(true);
+        viewHolder.populate(viewModel, stockCard);
+        viewHolder.txMovementDate.setText("");
+
+        StockMovementViewHolder.MovementSelectListener listener = viewHolder.new MovementSelectListener(viewModel);
+
+        MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.ISSUE, "ISSUE_1", "issue description");
+
+        listener.onComplete(receiveReason);
+
+        assertFalse(viewHolder.etReceived.isEnabled());
+        assertFalse(viewHolder.etPositiveAdjustment.isEnabled());
+        assertFalse(viewHolder.etNegativeAdjustment.isEnabled());
+        assertTrue(viewHolder.etIssued.isEnabled());
+        assertTrue(viewHolder.etRequested.isEnabled());
     }
 
     @Test

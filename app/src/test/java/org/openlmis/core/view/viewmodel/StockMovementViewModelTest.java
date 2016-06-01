@@ -29,7 +29,10 @@ import org.openlmis.core.utils.DateUtil;
 
 import java.util.Date;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(LMISTestRunner.class)
@@ -81,4 +84,38 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
         assertFalse(stockMovementViewModel.validateEmpty());
     }
 
+    @Test
+    public void shouldSetRequestedAsNullWhenRequestedIsNull() throws Exception {
+        stockMovementViewModel.setMovementDate(DateUtil.formatDate(new Date()));
+        stockMovementViewModel.setStockExistence("123");
+        stockMovementViewModel.setDocumentNo("111");
+        stockMovementViewModel.setReason(movementReason);
+        stockMovementViewModel.setReceived("100");
+        StockMovementItem stockMovementItem = stockMovementViewModel.convertViewToModel();
+        assertNull(stockMovementItem.getRequested());
+    }
+
+    @Test
+    public void shouldSetRequestedAsNullWhenRequestedIsEmpty() throws Exception {
+        stockMovementViewModel.setMovementDate(DateUtil.formatDate(new Date()));
+        stockMovementViewModel.setStockExistence("123");
+        stockMovementViewModel.setDocumentNo("111");
+        stockMovementViewModel.setReason(movementReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.ISSUE, "issue", "issue"));
+        stockMovementViewModel.setIssued("100");
+        stockMovementViewModel.setRequested("");
+        StockMovementItem stockMovementItem = stockMovementViewModel.convertViewToModel();
+        assertNull(stockMovementItem.getRequested());
+    }
+
+    @Test
+    public void shouldSetRequestedCorrectlyWhenRequestedNotEmptyAndNotNull() throws Exception {
+        stockMovementViewModel.setMovementDate(DateUtil.formatDate(new Date()));
+        stockMovementViewModel.setStockExistence("123");
+        stockMovementViewModel.setDocumentNo("111");
+        stockMovementViewModel.setReason(movementReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.ISSUE, "issue", "issue"));
+        stockMovementViewModel.setIssued("100");
+        stockMovementViewModel.setRequested("999");
+        StockMovementItem stockMovementItem = stockMovementViewModel.convertViewToModel();
+        assertThat(stockMovementItem.getRequested(), is(999L));
+    }
 }

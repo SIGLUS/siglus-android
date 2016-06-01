@@ -65,6 +65,10 @@ public class StockMovementItem extends BaseModel {
     @DatabaseField
     long movementQuantity;
 
+    @Expose
+    @DatabaseField
+    Long requested;
+
     @DatabaseField
     String reason;
 

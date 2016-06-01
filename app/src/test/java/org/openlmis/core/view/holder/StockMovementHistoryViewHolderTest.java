@@ -43,6 +43,7 @@ public class StockMovementHistoryViewHolderTest {
 
     @Test
     public void shouldPopulateTextDataWhenPopulatingData() {
+        viewModel.setRequested("999");
         viewHolder.populate(viewModel);
 
         assertEquals("12345", viewHolder.etDocumentNo.getText().toString());
@@ -51,6 +52,7 @@ public class StockMovementHistoryViewHolderTest {
         assertEquals("", viewHolder.etNegativeAdjustment.getText().toString());
         assertEquals("", viewHolder.etPositiveAdjustment.getText().toString());
         assertEquals("100", viewHolder.etIssued.getText().toString());
+        assertEquals("999", viewHolder.etRequested.getText().toString());
         assertEquals("200", viewHolder.txStockExistence.getText().toString());
         assertEquals("issue description", viewHolder.txReason.getText().toString());
     }
@@ -67,14 +69,22 @@ public class StockMovementHistoryViewHolderTest {
     }
 
     @Test
-    public void shouldHideUnderline(){
+    public void shouldHideUnderlineAndDisableLine(){
         viewHolder.populate(viewModel);
 
         assertNull(viewHolder.etIssued.getBackground());
+        assertNull(viewHolder.etRequested.getBackground());
         assertNull(viewHolder.etPositiveAdjustment.getBackground());
         assertNull(viewHolder.etNegativeAdjustment.getBackground());
         assertNull(viewHolder.etReceived.getBackground());
         assertNull(viewHolder.etDocumentNo.getBackground());
+
+        assertFalse(viewHolder.etIssued.isEnabled());
+        assertFalse(viewHolder.etRequested.isEnabled());
+        assertFalse(viewHolder.etPositiveAdjustment.isEnabled());
+        assertFalse(viewHolder.etNegativeAdjustment.isEnabled());
+        assertFalse(viewHolder.etReceived.isEnabled());
+        assertFalse(viewHolder.etDocumentNo.isEnabled());
     }
 
     @Test
