@@ -58,11 +58,13 @@ Feature: stock movement Page
     Then I wait for 1 second
     Then I swipe right
     And I enter issued number "123"
+    And I enter requested quantity "456"
     Then I wait for "Complete" to appear
     And I press "Complete"
     And I wait for "Enter your initials" to appear
     And I sign with "superuser"
     Then I see "123"
+    Then I see "456"
     Then I see "super" in signature field
     Then I navigate back
     Then I should see "has been deactivated and removed"

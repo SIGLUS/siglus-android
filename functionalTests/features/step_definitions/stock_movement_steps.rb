@@ -40,6 +40,14 @@ And(/^I enter issued number "(.*?)"$/) do |number|
     hide_soft_keyboard
 end
 
+And(/^I enter requested quantity "(.*?)"$/) do |number|
+    q = query("android.widget.EditText id:'et_requested'")
+    touch(q.last)
+    keyboard_enter_text(number)
+    hide_soft_keyboard
+end
+
+
 And(/^I enter negative adjustment number "(.*?)"$/) do |number|
     q = query("android.widget.EditText id:'et_negative_adjustment'")
     touch(q.last)

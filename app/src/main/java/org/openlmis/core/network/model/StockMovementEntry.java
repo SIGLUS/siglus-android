@@ -39,6 +39,7 @@ public class StockMovementEntry {
     String referenceNumber;
     String type;
     String createdTime;
+    Long requestedQuantity;
 
     HashMap<String, String> customProps = new HashMap<>();
 
@@ -51,6 +52,7 @@ public class StockMovementEntry {
         this.setOccurred(DateUtil.formatDate(stockMovementItem.getMovementDate(), DateUtil.DB_DATE_FORMAT));
         this.setCreatedTime(new DateTime(stockMovementItem.getCreatedTime()).toString(ISODateTimeFormat.basicDateTime()));
         this.setReferenceNumber(stockMovementItem.getDocumentNumber());
+        this.setRequestedQuantity(stockMovementItem.getRequested());
         this.getCustomProps().put("expirationDates", stockMovementItem.getStockCard().getExpireDates());
         this.getCustomProps().put("signature", stockMovementItem.getSignature());
         this.getCustomProps().put("SOH", String.valueOf(stockMovementItem.getStockOnHand()));

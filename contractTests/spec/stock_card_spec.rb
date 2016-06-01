@@ -32,6 +32,7 @@ describe "Sync stock card data" do
         reasonName: "PUB_PHARMACY",
         occurred: "2015-10-24",
         referenceNumber: "referenceNumber2",
+        requestedQuantity: 600,
         customProps: {
           expirationDates: "10/10/2017, 12/12/2017",
           signature: "signature",
