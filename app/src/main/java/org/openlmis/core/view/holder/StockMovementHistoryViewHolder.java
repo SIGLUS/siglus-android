@@ -21,6 +21,7 @@ package org.openlmis.core.view.holder;
 import android.view.View;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
@@ -57,7 +58,9 @@ public class StockMovementHistoryViewHolder extends BaseViewHolder {
         etNegativeAdjustment.setText(model.getNegativeAdjustment());
         etPositiveAdjustment.setText(model.getPositiveAdjustment());
         etIssued.setText(model.getIssued());
-        etRequested.setText(model.getRequested());
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
+            etRequested.setText(model.getRequested());
+        }
         txStockExistence.setText(model.getStockExistence());
         txReason.setText(model.getReason().getDescription());
         txSignature.setText(model.getSignature());
@@ -87,7 +90,9 @@ public class StockMovementHistoryViewHolder extends BaseViewHolder {
     private void hideUnderline() {
         etDocumentNo.setBackground(null);
         etIssued.setBackground(null);
-        etRequested.setBackground(null);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
+            etRequested.setBackground(null);
+        }
         etNegativeAdjustment.setBackground(null);
         etPositiveAdjustment.setBackground(null);
         etReceived.setBackground(null);
@@ -99,7 +104,9 @@ public class StockMovementHistoryViewHolder extends BaseViewHolder {
         etNegativeAdjustment.setEnabled(false);
         etPositiveAdjustment.setEnabled(false);
         etIssued.setEnabled(false);
-        etRequested.setEnabled(false);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
+            etRequested.setEnabled(false);
+        }
     }
 
 }

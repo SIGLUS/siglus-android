@@ -6,6 +6,7 @@ import android.view.View;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -27,6 +28,7 @@ public class StockMovementHistoryViewHolderTest {
 
     @Before
     public void setUp() {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_add_requested_in_stock_movement, true);
         View itemView = LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_stock_movement, null, false);
         viewHolder = new StockMovementHistoryViewHolder(itemView);
 
