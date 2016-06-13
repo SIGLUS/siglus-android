@@ -9,12 +9,12 @@ Feature: Save physical inventory
     And I press "Complete"
     Then I wait for "STOCK CARD OVERVIEW" to appear
 
-    And I press "Do Monthly Inventory"
+    And I press "Inventory"
     And I wait for "inventory" to appear
     And I do physical inventory with "2015" by fnm "08S42B"
     And I press "Save"
 
     And I wait for "STOCK CARD OVERVIEW" to appear
-    And I press "Do Monthly Inventory"
+    And I press "Inventory"
     And I wait for "inventory" to appear
     Then I should see text containing "2015"

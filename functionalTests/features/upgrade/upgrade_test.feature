@@ -56,7 +56,7 @@ Feature: After version upgrade, data integrity should not be broken
     # And I navigate back
 
     #after upgrade, user should still be able to do physical inventory
-    And I press "Do Monthly Inventory"
+    And I press "Inventory"
     And I wait for "Inventory" to appear
     Then I do physical inventory for all items
 

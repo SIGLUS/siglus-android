@@ -174,7 +174,7 @@ Feature: Log in and initialize Inventory
     And I try to log in with "superuser" "password1"
     And I wait up to 120 seconds for "STOCK CARD OVERVIEW" to appear
 
-    And I press "Do Monthly Inventory"
+    And I press "Inventory"
     And I wait for "Inventory" to appear
     Then I shouldn't see product "01A01" in this page
     And I shouldn't see product "08S32Z" in this page
@@ -286,7 +286,7 @@ Feature: Log in and initialize Inventory
     Then I wait for "Stock Overview" to appear
     When I navigate back
     Then I wait for "STOCK CARD OVERVIEW" to appear
-    And I press "Do Monthly Inventory"
+    And I press "Inventory"
     And I wait for "Inventory" to appear
     Then I should see product "01A01" in this page
     And I clean search bar
