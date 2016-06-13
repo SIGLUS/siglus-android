@@ -11,7 +11,7 @@ Then(/^I clean up server drug data which I updated/) do
 end
 
 Given(/^server deactivates products 12D03 and 07L01/) do
-  system("cd #{LMIS_MOZ_DIR} && bash ./data/functional_tests/deactivate_products.sh")
+  system("cd #{LMIS_MOZ_DIR} && bash ./data/functional_tests/regression/deactivate_products.sh")
 end
 
 When(/^server reactive products/) do
