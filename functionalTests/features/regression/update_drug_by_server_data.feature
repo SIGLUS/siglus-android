@@ -1,9 +1,13 @@
-@regression
+@regression @archive
 Feature: Archive drug
 
   Scenario: update product as server(update product & deactivated product & add new product)
+    Given server deactivates products 12D03 and 07L01
     Given I try to log in with "initial_inventory" "password1"
     And I wait up to 120 seconds for "Initial Inventory" to appear
+    Then I shouldn't see product "Alfa tocoferol (Vitamina E); 100mg; Cápsulas" in this page
+    And I shouldn't see product "Baclofeno; 10mg; Comprimidos" in this page
+
     And I search product by primary name "Estavudina/Lamivudina; 6mg+30mg, 60 Comp (Baby); Embalagem" and select this item with quantity "123"
     And I wait for "Complete" to appear
     And I press "Complete"
