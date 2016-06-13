@@ -1,3 +1,4 @@
+@regression
 Feature: Log in from local
 
   Scenario: Log in from local when network disable

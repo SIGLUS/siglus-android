@@ -57,12 +57,15 @@ Then(/^I shouldn't see product "(.*?)" in this page$/) do |productProperty|
     steps %Q{
        When I search drug by fnm "#{productProperty}"
     }
-    list = query("android.widget.RecyclerView id:'products_list'")
+    list = query("android.widget.TextView id:'product_name'")
     if list.empty?
         steps %Q{
-            And I clean search bar
-        }
-    end
+          And I clean search bar
+      }
+    else
+       fail "#{productProperty}" "should not see in this page"
+   end
+
 end
 
 Then(/^I should see product "(.*?)" in this page$/) do |productProperty|

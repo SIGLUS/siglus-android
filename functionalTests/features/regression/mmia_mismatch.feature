@@ -1,4 +1,4 @@
-@MMIA_MISMATCH @dev @change_date
+@MMIA_MISMATCH @regression @change_date
 Feature: MMIA Page total mismatch
 
   Scenario: When I fill a field, if the regime total and patient total are different, I will see pop up if I press complete without filling comments.
