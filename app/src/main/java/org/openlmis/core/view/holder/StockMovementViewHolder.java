@@ -261,23 +261,17 @@ public class StockMovementViewHolder extends BaseViewHolder {
     }
 
     private void addTextChangedListeners(StockMovementViewModel model, long currentStockOnHand) {
-        EditTextWatcher watcher = new EditTextWatcher(etReceived, model, currentStockOnHand);
-        etReceived.addTextChangedListener(watcher);
+        etReceived.addTextChangedListener(new EditTextWatcher(etReceived, model, currentStockOnHand));
 
-        EditTextWatcher watcher1 = new EditTextWatcher(etNegativeAdjustment, model, currentStockOnHand);
-        etNegativeAdjustment.addTextChangedListener(watcher1);
+        etNegativeAdjustment.addTextChangedListener(new EditTextWatcher(etNegativeAdjustment, model, currentStockOnHand));
 
-        EditTextWatcher watcher2 = new EditTextWatcher(etPositiveAdjustment, model, currentStockOnHand);
-        etPositiveAdjustment.addTextChangedListener(watcher2);
+        etPositiveAdjustment.addTextChangedListener(new EditTextWatcher(etPositiveAdjustment, model, currentStockOnHand));
 
-        EditTextWatcher watcher3 = new EditTextWatcher(etIssued, model, currentStockOnHand);
-        etIssued.addTextChangedListener(watcher3);
+        etIssued.addTextChangedListener(new EditTextWatcher(etIssued, model, currentStockOnHand));
 
-        EditTextWatcher watcher4 = new EditTextWatcher(etDocumentNo, model, currentStockOnHand);
-        etDocumentNo.addTextChangedListener(watcher4);
+        etDocumentNo.addTextChangedListener(new EditTextWatcher(etDocumentNo, model, currentStockOnHand));
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
-            EditTextWatcher watcher5 = new EditTextWatcher(etRequested, model, currentStockOnHand);
-            etRequested.addTextChangedListener(watcher5);
+            etRequested.addTextChangedListener(new EditTextWatcher(etRequested, model, currentStockOnHand));
         }
     }
 
