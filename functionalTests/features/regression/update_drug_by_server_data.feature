@@ -2,6 +2,7 @@
 Feature: Archive drug
 
   Scenario: update product as server(update product & deactivated product & add new product)
+    Given I see "CHAI"
     Given server deactivates products 12D03 and 07L01
     Given I try to log in with "initial_inventory" "password1"
     And I wait up to 120 seconds for "Initial Inventory" to appear
