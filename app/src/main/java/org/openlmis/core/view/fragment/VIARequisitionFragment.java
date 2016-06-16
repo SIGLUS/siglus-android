@@ -396,7 +396,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @Override
     public void showMessageNotifyDialog() {
         SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
-                getString(R.string.msg_requisition_signature_message_notify),
+                getString(R.string.msg_requisition_signature_message_notify_via),
                 getString(R.string.btn_continue),
                 null,
                 TAG_SHOW_MESSAGE_NOTIFY_DIALOG);
