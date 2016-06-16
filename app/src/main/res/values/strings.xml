@@ -170,6 +170,7 @@
     <string name="msg_validation_empty_error">Data missing from required field</string>
     <string name="msg_invalid_stock_movement_date">Invalid date</string>
     <string name="msg_db_error">An unexpected error has occurred. Please contact your administrator.</string>
+    <string name="msg_entries_error">Should input a positive number. 0 is not permitted.</string>
     <string name="label_cmm">CMM</string>
     <string name="label_validate_period">Expiry Date</string>
     <string name="btn_add_expiry_date">+ Expiry Date</string>

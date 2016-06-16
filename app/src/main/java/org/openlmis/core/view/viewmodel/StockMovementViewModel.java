@@ -70,6 +70,10 @@ public class StockMovementViewModel {
         return typeQuantityMap.get(StockMovementItem.MovementType.RECEIVE);
     }
 
+    public boolean isNotZeroInReceived(){
+        return Long.parseLong(typeQuantityMap.get(StockMovementItem.MovementType.RECEIVE)) > 0;
+    }
+
     public void setReceived(String received) {
         typeQuantityMap.put(StockMovementItem.MovementType.RECEIVE, received);
     }

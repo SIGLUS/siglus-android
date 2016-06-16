@@ -157,6 +157,7 @@
     <string name="msg_validation_empty_error">Dados em falta no campo obrigatório</string>
     <string name="msg_invalid_stock_movement_date">Data inválida</string>
     <string name="msg_db_error">Ocorreu um erro inesperado. Entre em contacto com o administrador.</string>
+    <string name="msg_entries_error">Should input a positive number. 0 is not permitted.</string>
     <string name="label_cmm">CMM</string>
     <string name="label_validate_period">Prazos de Validade</string>
     <string name="btn_add_expiry_date">+ Data de expiração</string>
