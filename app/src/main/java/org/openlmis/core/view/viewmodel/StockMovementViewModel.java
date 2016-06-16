@@ -127,7 +127,10 @@ public class StockMovementViewModel {
     }
 
     public boolean validateReceived() {
-        return Long.parseLong(typeQuantityMap.get(StockMovementItem.MovementType.RECEIVE)) > 0;
+        if (typeQuantityMap.get(StockMovementItem.MovementType.RECEIVE).length() > 0) {
+            return Long.parseLong(typeQuantityMap.get(StockMovementItem.MovementType.RECEIVE)) > 0;
+        }
+        return true;
     }
 
     public boolean isIssuedReason() {
