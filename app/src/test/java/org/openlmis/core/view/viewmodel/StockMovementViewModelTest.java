@@ -108,6 +108,24 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
     }
 
     @Test
+    public void shouldReturnFalseIfReceivedIsZero() {
+        stockMovementViewModel.setStockExistence("123");
+        stockMovementViewModel.setDocumentNo("111");
+        stockMovementViewModel.setReason(movementReason);
+        stockMovementViewModel.setReceived("0");
+        assertFalse(stockMovementViewModel.validateReceived());
+    }
+
+    @Test
+    public void shouldReturnTrueIfReceivedIsZero() {
+        stockMovementViewModel.setStockExistence("123");
+        stockMovementViewModel.setDocumentNo("111");
+        stockMovementViewModel.setReason(movementReason);
+        stockMovementViewModel.setReceived("12");
+        assertTrue(stockMovementViewModel.validateReceived());
+    }
+
+    @Test
     public void shouldSetRequestedCorrectlyWhenRequestedNotEmptyAndNotNull() throws Exception {
         stockMovementViewModel.setMovementDate(DateUtil.formatDate(new Date()));
         stockMovementViewModel.setStockExistence("123");

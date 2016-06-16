@@ -70,10 +70,6 @@ public class StockMovementViewModel {
         return typeQuantityMap.get(StockMovementItem.MovementType.RECEIVE);
     }
 
-    public boolean isNotZeroInReceived(){
-        return Long.parseLong(typeQuantityMap.get(StockMovementItem.MovementType.RECEIVE)) > 0;
-    }
-
     public void setReceived(String received) {
         typeQuantityMap.put(StockMovementItem.MovementType.RECEIVE, received);
     }
@@ -128,6 +124,10 @@ public class StockMovementViewModel {
 
     public boolean validateInputValid() {
         return (isAnyQuantitiesNumeric() && Long.parseLong(stockExistence) >= 0);
+    }
+
+    public boolean validateReceived() {
+        return Long.parseLong(typeQuantityMap.get(StockMovementItem.MovementType.RECEIVE)) > 0;
     }
 
     public boolean isIssuedReason() {

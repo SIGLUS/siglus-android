@@ -111,6 +111,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
         when(viewModel.validateInputValid()).thenReturn(true);
         when(viewModel.validateEmpty()).thenReturn(true);
+        when(viewModel.validateReceived()).thenReturn(true);
         when(viewModel.convertViewToModel()).thenReturn(item);
 
         stockMovementPresenter.submitStockMovement(viewModel);
