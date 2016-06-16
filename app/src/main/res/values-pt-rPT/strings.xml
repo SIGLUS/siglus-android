@@ -231,7 +231,7 @@
     <string name="btn_view_requisition">Ver %s</string>
     <string name="label_period_date">%1$s  a  %2$s</string>
     <string name="label_can_not_create_rnr"><![CDATA[<b>Você será capaz de criar uma requisição no dia 18 de %1$s</b>]]></string>
-    <string name="label_previous_period_missing"><![CDATA[<b> Requisição Balancete não pode ser criado</b>até que os períodos anteriores estejam fechados.<br>Por favor, feche todos os períodos anteriores]]></string>
+    <string name="label_previous_period_missing"><![CDATA[<b> Requisição Balancete não pode ser criado</b> até que os períodos anteriores estejam fechados.<br>Por favor, feche todos os períodos anteriores]]></string>
     <string name="label_missed_period"><![CDATA[<b>Requisição está atrasada e nenhum inventário foi escolhido</b> Uma requisição será gerada automaticamente usando as quantidades do estoque fisico do fim do período]]></string>
     <string name="btn_select_close_period">Seleccione o fecho do período</string>
     <string name="label_create_emergency_rnr">Criar requisição de emergência</string>
