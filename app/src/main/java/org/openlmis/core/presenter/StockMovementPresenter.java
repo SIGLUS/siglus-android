@@ -154,7 +154,7 @@ public class StockMovementPresenter extends Presenter {
     }
 
     public void submitStockMovement(StockMovementViewModel viewModel) {
-        if (viewModel.validateEmpty() && viewModel.validateInputValid() && viewModel.validateInputValid()) {
+        if (viewModel.validateEmpty() && viewModel.validateInputValid() && viewModel.validateReceived()) {
             view.showSignDialog();
         } else if (!viewModel.validateEmpty()) {
             view.showErrorAlert(context.getResources().getString(R.string.msg_validation_empty_error));
