@@ -113,16 +113,43 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
         stockMovementViewModel.setDocumentNo("111");
         stockMovementViewModel.setReason(movementReason);
         stockMovementViewModel.setReceived("0");
-        assertFalse(stockMovementViewModel.validateReceived());
+        assertFalse(stockMovementViewModel.validateQuantitiesNotZero());
     }
 
     @Test
-    public void shouldReturnTrueIfReceivedIsZero() {
+    public void shouldReturnFalseIfIssueIsZero() {
+        stockMovementViewModel.setStockExistence("123");
+        stockMovementViewModel.setDocumentNo("111");
+        stockMovementViewModel.setReason(movementReason);
+        stockMovementViewModel.setIssued("0");
+        assertFalse(stockMovementViewModel.validateQuantitiesNotZero());
+    }
+
+    @Test
+    public void shouldReturnFalseIfNegativeAdjustmentIsZero() {
+        stockMovementViewModel.setStockExistence("123");
+        stockMovementViewModel.setDocumentNo("111");
+        stockMovementViewModel.setReason(movementReason);
+        stockMovementViewModel.setNegativeAdjustment("0");
+        assertFalse(stockMovementViewModel.validateQuantitiesNotZero());
+    }
+
+    @Test
+    public void shouldReturnFalseIfPositiveAdjustmentIsZero() {
+        stockMovementViewModel.setStockExistence("123");
+        stockMovementViewModel.setDocumentNo("111");
+        stockMovementViewModel.setReason(movementReason);
+        stockMovementViewModel.setPositiveAdjustment("0");
+        assertFalse(stockMovementViewModel.validateQuantitiesNotZero());
+    }
+
+    @Test
+    public void shouldReturnTrueIfReceivedIsNotZero() {
         stockMovementViewModel.setStockExistence("123");
         stockMovementViewModel.setDocumentNo("111");
         stockMovementViewModel.setReason(movementReason);
         stockMovementViewModel.setReceived("12");
-        assertTrue(stockMovementViewModel.validateReceived());
+        assertTrue(stockMovementViewModel.validateQuantitiesNotZero());
     }
 
     @Test

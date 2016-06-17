@@ -126,9 +126,15 @@ public class StockMovementViewModel {
         return (isAnyQuantitiesNumeric() && Long.parseLong(stockExistence) >= 0);
     }
 
-    public boolean validateReceived() {
-        if (typeQuantityMap.get(StockMovementItem.MovementType.RECEIVE).length() > 0) {
-            return Long.parseLong(typeQuantityMap.get(StockMovementItem.MovementType.RECEIVE)) > 0;
+    public boolean validateQuantitiesNotZero() {
+        if (!StringUtils.isEmpty(getReceived())) {
+            return Long.parseLong(getReceived()) > 0;
+        } else if (!StringUtils.isEmpty(getIssued())) {
+            return Long.parseLong(getIssued()) > 0;
+        } else if (!StringUtils.isEmpty(getPositiveAdjustment())) {
+            return Long.parseLong(getPositiveAdjustment()) > 0;
+        } else if (!StringUtils.isEmpty(getNegativeAdjustment())) {
+            return Long.parseLong(getNegativeAdjustment()) > 0;
         }
         return true;
     }

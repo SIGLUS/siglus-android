@@ -154,13 +154,13 @@ public class StockMovementPresenter extends Presenter {
     }
 
     public void submitStockMovement(StockMovementViewModel viewModel) {
-        if (viewModel.validateEmpty() && viewModel.validateInputValid() && viewModel.validateReceived()) {
+        if (viewModel.validateEmpty() && viewModel.validateInputValid() && viewModel.validateQuantitiesNotZero()) {
             view.showSignDialog();
         } else if (!viewModel.validateEmpty()) {
             view.showErrorAlert(context.getResources().getString(R.string.msg_validation_empty_error));
         } else if (!viewModel.validateInputValid()) {
             view.showErrorAlert(context.getResources().getString(R.string.msg_validation_error));
-        } else if (!viewModel.validateReceived()) {
+        } else if (!viewModel.validateQuantitiesNotZero()) {
             view.showErrorAlert(context.getResources().getString(R.string.msg_entries_error));
         }
     }
