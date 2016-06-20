@@ -92,7 +92,7 @@ public class StockRepository {
         }
     }
 
-    public void createOrUpdate(final StockCard stockCard){
+    public void createOrUpdate(final StockCard stockCard) {
         try {
             genericDao.createOrUpdate(stockCard);
         } catch (LMISException e) {
@@ -327,7 +327,7 @@ public class StockRepository {
                         .orderBy("createdTime", true)
                         .where()
                         .eq("stockCard_id", stockCard.getId())
-                        .and().gt("createdTime", periodBeginDate)
+                        .and().gt("createdTime", periodBeginDate)//difference from the api above
                         .and().le("createdTime", periodEndDate)
                         .query();
             }
