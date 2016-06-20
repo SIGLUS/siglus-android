@@ -115,9 +115,9 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
 
         //then
-        assertThat(100F, is(averageMonthlyConsumption));
+        assertThat(averageMonthlyConsumption, is(100F));
     }
-//todo: expected and actual, reverse
+
     @Test
     public void shouldCalculateAverageMonthlyConsumptionWithContinuedStockOutCorrectly() throws LMISException {
         //given
