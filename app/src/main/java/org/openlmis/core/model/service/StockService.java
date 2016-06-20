@@ -13,12 +13,15 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.CmmRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
+import org.roboguice.shaded.goole.common.base.Optional;
+import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static org.openlmis.core.utils.DateUtil.today;
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class StockService {
 
@@ -81,7 +84,7 @@ public class StockService {
 
         for (int i = 0; i < periodQuantity; i++) {
             period = period.previous();
-            Long totalIssuesEachMonth = calculateTotalIssuesPerMonth(stockCard, period);
+            Long totalIssuesEachMonth = calculateTotalIssuesPerPeriod(stockCard, period);
 
             if (totalIssuesEachMonth == null) {
                 continue;
@@ -108,24 +111,50 @@ public class StockService {
         return total;
     }
 
-    private Long calculateTotalIssuesPerMonth(StockCard stockCard, Period period) {
+    private Long calculateTotalIssuesPerPeriod(StockCard stockCard, Period period) {
         long totalIssued = 0;
-        List<StockMovementItem> stockMovementItems;
         try {
-            stockMovementItems = stockRepository.queryStockItems(stockCard, period.getBegin().toDate(), period.getEnd().toDate());
+            List<StockMovementItem> stockMovementItems = stockRepository
+                    .queryStockItems(stockCard, period.getBegin().toDate(), period.getEnd().toDate());
+            //the query above is actually wasteful, the movement items have already been queried and associated to the stock card
+
+            boolean periodHasStockOut = periodHasStockOut(stockCard, stockMovementItems, period);
+            if (periodHasStockOut) {
+                return null;
+            }
+
+            for (StockMovementItem item : stockMovementItems) {
+                if (StockMovementItem.MovementType.ISSUE == item.getMovementType()) {
+                    totalIssued += item.getMovementQuantity();
+                }
+            }
+            return totalIssued;
         } catch (LMISException e) {
             e.reportToFabric();
             return null;
         }
-        for (StockMovementItem item : stockMovementItems) {
-            if (item.getStockOnHand() == 0) {
-                return null;
-            }
-            if (StockMovementItem.MovementType.ISSUE == item.getMovementType()) {
-                totalIssued += item.getMovementQuantity();
-            }
-        }
-        return totalIssued;
     }
 
+    private boolean periodHasStockOut(StockCard stockCard, List<StockMovementItem> stockMovementItems, final Period period) {
+        if (stockMovementItems.isEmpty()) {
+            Optional<StockMovementItem> lastMovementBeforePeriod = from(stockCard.getStockMovementItemsWrapper()).filter(new Predicate<StockMovementItem>() {
+                @Override
+                public boolean apply(StockMovementItem stockMovementItem) {
+                    return new DateTime(stockMovementItem.getMovementDate()).isBefore(period.getBegin());
+                }
+            }).last();
+
+            boolean isStockOutStatusInherited = lastMovementBeforePeriod.isPresent() && lastMovementBeforePeriod.get().getStockOnHand() == 0;
+            return isStockOutStatusInherited;//this boolean variable exists to explain its meaning, do not inline
+        } else {
+            boolean hasStockOutEventInThisPeriod = from(stockMovementItems).anyMatch(new Predicate<StockMovementItem>() {
+                @Override
+                public boolean apply(StockMovementItem stockMovementItem) {
+                    return stockMovementItem.getStockOnHand() == 0;
+                }
+            });
+
+            return hasStockOutEventInThisPeriod;//this boolean variable exists to explain its meaning, do not inline
+        }
+    }
 }

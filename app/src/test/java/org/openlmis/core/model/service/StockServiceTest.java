@@ -101,11 +101,15 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         StockCard stockCard = new StockCard();
         stockCard.setStockOnHand(200);
         stockService.stockRepository.createOrUpdate(stockCard);
-        createMovementItem(ISSUE, 100, stockCard, new Date(), lastForthMonthDate, false);
-        createMovementItem(ISSUE, 100, stockCard, new Date(), lastThirdMonthDate, false);
-        createMovementItem(RECEIVE, 400, stockCard, new Date(), lastSecondMonthDate, false);
-        createMovementItem(ISSUE, 100, stockCard, new Date(), lastSecondMonthDate, false);
-        createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
+
+        createMovementItem(ISSUE, 100, stockCard, new Date(), lastForthMonthDate, false);//4 month ago soh:100
+
+        createMovementItem(ISSUE, 100, stockCard, new Date(), lastThirdMonthDate, false);//3 month ago soh:0
+
+        createMovementItem(RECEIVE, 400, stockCard, new Date(), lastSecondMonthDate, false);//2 month ago soh:400
+        createMovementItem(ISSUE, 100, stockCard, new Date(), lastSecondMonthDate, false);//2 month ago soh:300
+
+        createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);//1 month ago soh:200
 
         //when
         float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
@@ -113,7 +117,29 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         //then
         assertThat(100F, is(averageMonthlyConsumption));
     }
+//todo: expected and actual, reverse
+    @Test
+    public void shouldCalculateAverageMonthlyConsumptionWithContinuedStockOutCorrectly() throws LMISException {
+        //given
+        StockCard stockCard = new StockCard();
+        stockCard.setStockOnHand(200);
+        stockService.stockRepository.createOrUpdate(stockCard);
 
+        createMovementItem(ISSUE, 200, stockCard, new Date(), lastForthMonthDate, false);//4 month ago soh:0
+
+        //3 month ago: no movement, so it inherits the stock out status of 4 month ago
+
+        createMovementItem(RECEIVE, 400, stockCard, new Date(), lastSecondMonthDate, false);//2 month ago soh:400
+        createMovementItem(ISSUE, 100, stockCard, new Date(), lastSecondMonthDate, false);//2 month ago soh:300
+
+        createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);//1 month ago soh:200
+
+        //when
+        float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
+
+        //then
+        assertThat(averageMonthlyConsumption, is(-1F));
+    }
 
     private StockMovementItem createMovementItem(StockMovementItem.MovementType type, long quantity, StockCard stockCard, Date createdTime, Date movementDate, boolean synced) throws LMISException {
         StockMovementItem stockMovementItem = new StockMovementItem();
@@ -187,8 +213,8 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         stockService.stockRepository.createOrUpdate(stockCard);
 
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastFirstMonthDate, false);
-        createMovementItem(ISSUE, 100, stockCard, new Date(), lastThirdMonthDate, false);
         createMovementItem(ISSUE, 100, stockCard, new Date(), lastSecondMonthDate, false);
+        createMovementItem(ISSUE, 100, stockCard, new Date(), lastThirdMonthDate, false);
 
         float averageMonthlyConsumption = stockService.calculateAverageMonthlyConsumption(stockCard);
         assertEquals(3, stockService.stockRepository.listLastFive(stockCard.getId()).size());
@@ -208,6 +234,4 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         assertEquals(3, stockService.stockRepository.listLastFive(stockCard.getId()).size());
         assertThat(200F / 3, is(averageMonthlyConsumption));
     }
-
-
 }
