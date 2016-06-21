@@ -377,7 +377,7 @@ public class MMIARequisitionFragmentTest {
 
         assertThat(dialog).isNotNull();
 
-        String alertMessage = mmiaRequisitionFragment.getString(R.string.msg_approve_signature);
+        String alertMessage = mmiaRequisitionFragment.getString(R.string.msg_approve_signature_mmia);
         assertThat(fragment.getArguments().getString("title")).isEqualTo(alertMessage);
     }
 

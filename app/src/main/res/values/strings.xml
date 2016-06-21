@@ -140,7 +140,8 @@
     <string name="btn_approve">Approve</string>
     <string name="msg_via_submit_signature">Enter your initials and then approve the requisition amounts</string>
     <string name="msg_mmia_submit_signature">Enter your initials to approve MMIA information</string>
-    <string name="msg_approve_signature">Enter your initials and then approve the Requisition Balancete</string>
+    <string name="msg_approve_signature_via">Enter your initials and then approve the Requisition Balancete</string>
+    <string name="msg_approve_signature_mmia">Enter your initials and then approve the MMIA</string>
     <string name="msg_requisition_signature_message_notify_via">Please hand the device to the person responsible for approval and submission of the Requisition Balancete</string>
     <string name="msg_requisition_signature_message_notify_mmia">Please hand the device to the person responsible for approval and submission of MMIA</string>
     <string name="btn_continue">Continue</string>
@@ -258,7 +259,7 @@
     <string name="label_period_date">%1$s  to  %2$s</string>
     <string name="label_emergency_date">Emergency Requisition – %s</string>
     <string name="label_can_not_create_rnr"><![CDATA[<b>You will be able to create a requisition on the 18th of %1$s</b>]]> </string>
-    <string name="label_previous_period_missing"><![CDATA[<b>Requisition Balancete cannot be created</b> until previous periods are closed.<br> Please close all previous periods]]></string>
+    <string name="label_previous_period_missing"><![CDATA[<b>The form cannot be created</b> until previous periods are closed.<br> Please close all previous periods]]></string>
     <string name="label_missed_period"><![CDATA[<b>Requisition is overdue and no inventory was taken.</b> A requisition will be automatically generated using the stock on hand amounts at the close of the period]]></string>
     <string name="btn_select_close_period">Select close of period</string>
     <string name="label_create_emergency_rnr">Create emergency requisition</string>

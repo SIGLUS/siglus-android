@@ -205,7 +205,7 @@ public class VIARequisitionFragmentTest {
 
         assertThat(dialog).isNotNull();
 
-        String alertMessage = VIARequisitionFragment.getString(R.string.msg_approve_signature);
+        String alertMessage = VIARequisitionFragment.getString(R.string.msg_approve_signature_via);
         assertThat(fragment.getArguments().getString("title")).isEqualTo(alertMessage);
     }
 

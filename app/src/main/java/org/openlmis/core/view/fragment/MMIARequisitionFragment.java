@@ -402,7 +402,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     @Override
     public void showSignDialog(boolean isFormStatusDraft) {
         SignatureDialog signatureDialog = new SignatureDialog();
-        String signatureDialogTitle = isFormStatusDraft ? getResources().getString(R.string.msg_mmia_submit_signature) : getResources().getString(R.string.msg_approve_signature);
+        String signatureDialogTitle = isFormStatusDraft ? getResources().getString(R.string.msg_mmia_submit_signature) : getResources().getString(R.string.msg_approve_signature_mmia);
 
         signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));
         signatureDialog.setDelegate(signatureDialogDelegate);

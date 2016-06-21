@@ -374,7 +374,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @Override
     public void showSignDialog(boolean isFormStatusDraft) {
         SignatureDialog signatureDialog = new SignatureDialog();
-        String signatureDialogTitle = isFormStatusDraft ? getResources().getString(R.string.msg_via_submit_signature) : getResources().getString(R.string.msg_approve_signature);
+        String signatureDialogTitle = isFormStatusDraft ? getResources().getString(R.string.msg_via_submit_signature) : getResources().getString(R.string.msg_approve_signature_via);
 
         signatureDialog.setArguments(SignatureDialog.getBundleToMe(signatureDialogTitle));
         signatureDialog.setDelegate(signatureDialogDelegate);
