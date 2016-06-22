@@ -15,8 +15,10 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.base.Predicate;
+import org.roboguice.shaded.goole.common.collect.Ordering;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -118,8 +120,7 @@ public class StockService {
                     .queryStockItems(stockCard, period.getBegin().toDate(), period.getEnd().toDate());
             //the query above is actually wasteful, the movement items have already been queried and associated to the stock card
 
-            boolean periodHasStockOut = periodHasStockOut(stockCard, stockMovementItems, period);
-            if (periodHasStockOut) {
+            if (periodHasStockOut(stockCard, stockMovementItems, period)) {
                 return null;
             }
 
@@ -137,24 +138,38 @@ public class StockService {
 
     private boolean periodHasStockOut(StockCard stockCard, List<StockMovementItem> stockMovementItems, final Period period) {
         if (stockMovementItems.isEmpty()) {
-            Optional<StockMovementItem> lastMovementBeforePeriod = from(stockCard.getStockMovementItemsWrapper()).filter(new Predicate<StockMovementItem>() {
-                @Override
-                public boolean apply(StockMovementItem stockMovementItem) {
-                    return new DateTime(stockMovementItem.getMovementDate()).isBefore(period.getBegin());
-                }
-            }).last();
-
-            boolean isStockOutStatusInherited = lastMovementBeforePeriod.isPresent() && lastMovementBeforePeriod.get().getStockOnHand() == 0;
-            return isStockOutStatusInherited;//this boolean variable exists to explain its meaning, do not inline
+            return isStockOutStatusInherited(stockCard, period);
         } else {
-            boolean hasStockOutEventInThisPeriod = from(stockMovementItems).anyMatch(new Predicate<StockMovementItem>() {
-                @Override
-                public boolean apply(StockMovementItem stockMovementItem) {
-                    return stockMovementItem.getStockOnHand() == 0;
-                }
-            });
-
-            return hasStockOutEventInThisPeriod;//this boolean variable exists to explain its meaning, do not inline
+            return hasStockOutInThisPeriod(stockMovementItems);
         }
+    }
+
+    private boolean hasStockOutInThisPeriod(List<StockMovementItem> stockMovementItems) {
+        return from(stockMovementItems).anyMatch(new Predicate<StockMovementItem>() {
+            @Override
+            public boolean apply(StockMovementItem stockMovementItem) {
+                return stockMovementItem.getStockOnHand() == 0;
+            }
+        });
+    }
+
+    private boolean isStockOutStatusInherited(StockCard stockCard, final Period period) {
+        List<StockMovementItem> orderedMovements = Ordering.from(new Comparator<StockMovementItem>() {
+            @Override
+            public int compare(StockMovementItem lhs, StockMovementItem rhs) {
+                return lhs.getMovementDate().compareTo(rhs.getMovementDate());
+            }
+        }).sortedCopy(stockCard.getStockMovementItemsWrapper());
+
+        Optional<StockMovementItem> lastMovementBeforePeriod = from(orderedMovements)
+                .filter(new Predicate<StockMovementItem>() {
+                    @Override
+                    public boolean apply(StockMovementItem stockMovementItem) {
+                        return new DateTime(stockMovementItem.getMovementDate()).isBefore(period.getBegin());
+                    }
+                })
+                .last();
+
+        return lastMovementBeforePeriod.isPresent() && lastMovementBeforePeriod.get().getStockOnHand() == 0;
     }
 }

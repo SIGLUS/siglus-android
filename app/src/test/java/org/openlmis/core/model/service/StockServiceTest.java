@@ -125,7 +125,8 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         stockCard.setStockOnHand(200);
         stockService.stockRepository.createOrUpdate(stockCard);
 
-        createMovementItem(ISSUE, 200, stockCard, new Date(), lastForthMonthDate, false);//4 month ago soh:0
+        createMovementItem(ISSUE, 100, stockCard, new Date(), lastForthMonthDate, false);//4 month ago soh:100
+        createMovementItem(ISSUE, 100, stockCard, new Date(), lastForthMonthDate, false);//4 month ago soh:0
 
         //3 month ago: no movement, so it inherits the stock out status of 4 month ago
 
