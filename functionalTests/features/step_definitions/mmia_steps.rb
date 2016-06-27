@@ -30,7 +30,7 @@ end
 And(/^I add custom regimens and enter total$/) do
     steps %Q{
         Then I press "+ Adult regime"
-        Then I wait for "Selected regime already exists" to appear
+        Then I wait for "Create regime" to appear
         And I select one drug to create a adult regime
         Then I press "Next"
 
@@ -38,7 +38,7 @@ And(/^I add custom regimens and enter total$/) do
         And I enter regimen totals
 
         Then I press "+ Child regime"
-        Then I wait for "Selected regime already exists" to appear
+        Then I wait for "Create regime" to appear
         And I select one drug to create a baby regime
         Then I press "Next"
 
