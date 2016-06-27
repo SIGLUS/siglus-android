@@ -424,7 +424,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     @Override
     public void showMessageNotifyDialog() {
         DialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
-                getString(R.string.msg_requisition_signature_message_notify_via),
+                getString(R.string.msg_requisition_signature_message_notify_mmia),
                 getString(R.string.btn_continue),
                 null,
                 TAG_SHOW_MESSAGE_NOTIFY_DIALOG);

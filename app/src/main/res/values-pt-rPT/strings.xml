@@ -123,8 +123,8 @@
     <string name="label_approved_amount">Qtd. Autorizada pelo Responsável Clínico</string>
     <string name="label_fnm">FNM</string>
     <string name="label_product_name">MEDICAMENTO</string>
-    <string name="msg_low_stock_warning">O seu produto tem estoque baixo</string>
-    <string name="msg_over_stock_warning">Seu produto tem estoque acumulado.</string>
+    <string name="msg_low_stock_warning">Este produto tem estoque em risco. Por favor, verifique as quantidades do produto.</string>
+    <string name="msg_over_stock_warning">Este produto tem estoque acumulado. Por favor, verifique as quantidades do produto.</string>
     <string name="msg_stock_out_warning">O seu produto está em roptura de stock</string>
     <string name="msg_requisition_submit_tip">A sua Requisicao foi gravada com sucesso,e vai ser submetida \r\n automaticamente quando tiver conecção a internet.</string>
     <string name="msg_requisition_not_unique">Não é possivel submeter duas vezes a requisição no mesmo período.</string>
@@ -132,7 +132,7 @@
     <string name="msg_via_submit_signature">Insira as iniciais do seu nome e aprove as quantidades da requisição</string>
     <string name="msg_mmia_submit_signature">Insira as iniciais do seu nome e aprove a informação do MMIA</string>
     <string name="msg_approve_signature_via">Insira as iniciais do seu nome e aprove a Requisição Balancete</string>
-    <string name="msg_approve_signature_mmia">Insira as iniciais do seu nome e aprove a MMIA</string>
+    <string name="msg_approve_signature_mmia">Insira as iniciais do seu nome e aprove o MMIA</string>
     <string name="msg_requisition_signature_message_notify_via">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão da Requisição de Balancete</string>
     <string name="msg_requisition_signature_message_notify_mmia">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão do MMIA</string>
     <string name="btn_continue">Continuar</string>
@@ -201,7 +201,7 @@
     </string-array>
     <string name="hint_update_banner_tips">%1$s Foi desactivado e removido para a <![CDATA[<b>produtos arquivados</b>]]> lista</string>
     <string name="msg_expiry_warning">Este produto tem estoque expirar em breve. Por favor, verifique os prazos de validade dos produtos.</string>
-    <string name="msg_expired_warning">Este produto tem estoque expirado. Por favor, verifique os prazos de validade dos produtos.</string>
+    <string name="msg_expired_warning">Este produto tem estoque expirado. Por favor, verifique os prazos de validade do produto.</string>
     <!--Physical Inventory Page-->
     <string name="label_physical_inventory_stock_on_hand">Stock existente actual</string>
     <!--Unpack Kit-->
@@ -240,7 +240,7 @@
     <string name="label_period_date">%1$s  a  %2$s</string>
     <string name="label_emergency_date">Requisição de Urgência – %s</string>
     <string name="label_can_not_create_rnr"><![CDATA[<b>Você será capaz de criar uma requisição no dia 18 de %1$s</b>]]></string>
-    <string name="label_previous_period_missing"><![CDATA[<b> A forma não pode ser criado</b>até que os períodos anteriores estejam fechados.<br>Por favor, feche todos os períodos anteriores]]></string>
+    <string name="label_previous_period_missing"><![CDATA[<b>O formulário não pode ser criado</b> até que períodos anteriores sejam fechados.<br> Por favor, feche todos os períodos anteriores]]></string>
     <string name="label_missed_period"><![CDATA[<b>Requisição está atrasada e nenhum inventário foi escolhido</b> Uma requisição será gerada automaticamente usando as quantidades do estoque fisico do fim do período]]></string>
     <string name="btn_select_close_period">Seleccione o fecho do período</string>
     <string name="label_create_emergency_rnr">Criar requisição de emergência</string>
@@ -277,7 +277,7 @@
     <string name="title_select_unpack_num">Seleccione número de kits por desembalar</string>
     <string name="msg_select_unpack_num_warning">Por favor, Escolha um número de kits para desembalar</string>
     <!--Select Drugs-->
-    <string name="title_select_drugs">Regime seleccionado já existe</string>
+    <string name="title_select_drugs">Criar regime</string>
     <string name="hint_no_product_has_checked">Por favor, selecione um produto</string>
     <string name="hint_more_than_limit_product_has_checked">Você só pode selecionar 5 produtos para regime</string>
     <!--update notification text-->
