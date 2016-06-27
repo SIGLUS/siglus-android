@@ -94,8 +94,8 @@
     <string name="msg_reason_for_total_not_match">Adicionar razão para a diferença entre totais de regimes e total de pacientes</string>
     <string name="msg_regime_total_and_patient_total_not_match">Os totais não correspondem. Por favor, verifique os números digitados. Se os valores continuam diferentes, adicione uma justificação nas \"Observações\".</string>
     <string name="btn_ok">OK</string>
-    <string name="label_add_adult_regime">+ Regime Adulto</string>
-    <string name="label_add_child_regime">+ Regime Criança</string>
+    <string name="label_add_adult_regime">+ Regimes de adultos</string>
+    <string name="label_add_child_regime">+ Regime de criancas</string>
     <string name="msg_regime_already_exist">selecione regime já existente</string>
     <!--VIA Form-->
     <string name="label_via_kit_received">No. de Kits recebidos</string>
@@ -130,7 +130,7 @@
     <string name="msg_requisition_not_unique">Não é possivel submeter duas vezes a requisição no mesmo período.</string>
     <string name="btn_approve">Visto</string>
     <string name="msg_via_submit_signature">Insira as iniciais do seu nome e aprove as quantidades da requisição</string>
-    <string name="msg_mmia_submit_signature">Insira as iniciais do seu nome e aprove a informação do MMIA</string>
+    <string name="msg_mmia_submit_signature">Insira as iniciais do seu nome e aprove o MMIA</string>
     <string name="msg_approve_signature_via">Insira as iniciais do seu nome e aprove a Requisição Balancete</string>
     <string name="msg_approve_signature_mmia">Insira as iniciais do seu nome e aprove o MMIA</string>
     <string name="msg_requisition_signature_message_notify_via">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão da Requisição de Balancete</string>
@@ -223,11 +223,11 @@
     <string name="label_via_name">Requisição/Balancete Via Clássica</string>
     <string name="label_mmia_name">MMIA</string>
     <string name="action_delete_rnr_form">Remover do tablet</string>
-    <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b> Nenhuma%1$s foi criada.</b>]]> Complete o seu inventário antes de criar uma requisição</string>
+    <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b> Nenhuma %1$s foi criada.</b>]]> Complete o seu inventário antes de criar uma requisição</string>
     <string name="btn_view_uncompleted_physical_inventory">Completar Inventário</string>
     <string name="label_select_close_of_period"><![CDATA[Por favor seleccione um inventário a partir da lista abaixo. Apenas inventários feitos em ou entre o <b>18</b> e <b>25</b> de <b>%1$s</b> podem ser usado para fechar o período. A data de hoje é <b>%2$s</b>]]></string>
-    <string name="label_completed_physical_inventory_message"><![CDATA[<b>No %1$s Foi criado.</b>]]></string>
-    <string name="btn_view_completed_physical_inventory">Criar%1$s</string>
+    <string name="label_completed_physical_inventory_message"><![CDATA[<b>Nenhuma %1$s Foi criada.</b>]]></string>
+    <string name="btn_view_completed_physical_inventory">Criar %1$s</string>
     <string name="label_incomplete_requisition"><![CDATA[<b>%1$s</b>]]> está incompleto.</string>
     <string name="btn_view_incomplete_requisition">Continuar trabalhando em %1$s</string>
     <string name="label_unsynced_requisition">Este <![CDATA[<b>%1$s</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
