@@ -220,7 +220,7 @@
     <string name="duplicate_rnr_error">Sincronização falhou. Você já enviou uma requisição para este programa neste período.</string>
     <string name="period_mismatch_error">Sincronização falhou. O período que você está enviando não coincide com o período de programação.</string>
     <!--Rnr form historical list-->
-    <string name="label_via_name">Requisição/Balancete Via Clássica</string>
+    <string name="label_via_name">Requisição</string>
     <string name="label_mmia_name">MMIA</string>
     <string name="action_delete_rnr_form">Remover do tablet</string>
     <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b> Nenhuma %1$s foi criada.</b>]]> Complete o seu inventário antes de criar uma requisição</string>
