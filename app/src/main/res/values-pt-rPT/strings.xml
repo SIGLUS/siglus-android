@@ -130,7 +130,7 @@
     <string name="msg_requisition_not_unique">Não é possivel submeter duas vezes a requisição no mesmo período.</string>
     <string name="btn_approve">Visto</string>
     <string name="msg_via_submit_signature">Insira as iniciais do seu nome e aprove as quantidades da requisição</string>
-    <string name="msg_mmia_submit_signature">Insira as iniciais do seu nome e aprove o MMIA</string>
+    <string name="msg_mmia_submit_signature">Insira as iniciais do seu nome e aprove a informação do MMIA</string>
     <string name="msg_approve_signature_via">Insira as iniciais do seu nome e aprove a Requisição Balancete</string>
     <string name="msg_approve_signature_mmia">Insira as iniciais do seu nome e aprove o MMIA</string>
     <string name="msg_requisition_signature_message_notify_via">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão da Requisição de Balancete</string>
