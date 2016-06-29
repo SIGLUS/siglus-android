@@ -88,7 +88,11 @@ public class RnRFormViewHolder extends BaseViewHolder {
         RnRForm form = model.getForm();
         configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedTime())), R.drawable.ic_done_green, R.color.color_white);
         showDeleteMenu(form);
-        setupButton(model, context.getString(R.string.btn_view_requisition, model.getName()));
+        if (model.getName().equals(LMISApp.getContext().getString(R.string.label_via_name))) {
+            setupButton(model, context.getString(R.string.btn_view_via_requisition, model.getName()));
+        } else {
+            setupButton(model, context.getString(R.string.btn_view_requisition, model.getName()));
+        }
 
         if (form.isEmergency()) {
             showDrugCount(form.getRnrFormItemList().size());

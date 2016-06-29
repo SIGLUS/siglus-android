@@ -200,7 +200,7 @@
         <item>Ordenar por quantidade: Baixa para Alta</item>
     </string-array>
     <string name="hint_update_banner_tips">%1$s Foi desactivado e removido para a <![CDATA[<b>produtos arquivados</b>]]> lista</string>
-    <string name="msg_expiry_warning">Este produto tem estoque expirar em breve. Por favor, verifique os prazos de validade dos produtos.</string>
+    <string name="msg_expiry_warning">Este produto tem estoque a expirar em breve. Por favor, verifique os prazos de validade dos produtos.</string>
     <string name="msg_expired_warning">Este produto tem estoque expirado. Por favor, verifique os prazos de validade do produto.</string>
     <!--Physical Inventory Page-->
     <string name="label_physical_inventory_stock_on_hand">Stock existente actual</string>
@@ -236,7 +236,8 @@
         <item quantity="one"><![CDATA[<b>%1$s</b>]]> Producto requisitado</item>
         <item quantity="other"><![CDATA[<b>%1$s</b>]]> Productos requisitados</item>
     </plurals>
-    <string name="btn_view_requisition">Ver %s Balancete</string>
+    <string name="btn_view_requisition">Ver %s</string>
+    <string name="btn_view_via_requisition">Ver %s Balancete</string>
     <string name="label_period_date">%1$s  a  %2$s</string>
     <string name="label_emergency_date">Requisição de Urgência – %s</string>
     <string name="label_can_not_create_rnr"><![CDATA[<b>Você será capaz de criar uma requisição no dia 18 de %1$s</b>]]></string>
