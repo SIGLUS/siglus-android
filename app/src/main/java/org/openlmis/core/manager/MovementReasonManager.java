@@ -63,6 +63,7 @@ public final class MovementReasonManager {
     public static final String UNPACK_KIT = "UNPACK_KIT";
     public static final String DONATION = "DONATION";
     public static final String DDM = "DISTRICT_DDM";
+    public static final String RETURN_TO_DDM = "RETURN_TO_DDM";
 
     Context context;
     public static final String RES_DIVIDER = "[|]";
@@ -196,10 +197,18 @@ public final class MovementReasonManager {
         }
 
         protected boolean canBeDisplayOnMovementMenu(){
-            return !(code.startsWith(DEFAULT_PREFIX)
-                    || code.equalsIgnoreCase(INVENTORY)
-                    || MovementReasonManager.UNPACK_KIT.equals(code)
-                    || MovementReasonManager.DONATION.equals(code));
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_return_to_ddm_in_stock_movement_reason)) {
+                return !(code.startsWith(DEFAULT_PREFIX)
+                        || code.equalsIgnoreCase(INVENTORY)
+                        || MovementReasonManager.UNPACK_KIT.equals(code)
+                        || MovementReasonManager.DONATION.equals(code));
+            } else {
+                return !(code.startsWith(DEFAULT_PREFIX)
+                        || code.equalsIgnoreCase(INVENTORY)
+                        || MovementReasonManager.UNPACK_KIT.equals(code)
+                        || MovementReasonManager.DONATION.equals(code))
+                        || MovementReasonManager.RETURN_TO_DDM.equals(code);
+            }
         }
 
         public boolean isIssueAdjustment() {
