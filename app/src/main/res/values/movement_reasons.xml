@@ -21,6 +21,7 @@
         <item>NEGATIVE_ADJUST|LOANS_DEPOSIT|Loans made from a health facility deposit</item>
         <item>NEGATIVE_ADJUST|INVENTORY_NEGATIVE|Inventory correction in case of over stock on Stock  card (Stock on  hand is less than stock in stock card)</item>
         <item>NEGATIVE_ADJUST|PROD_DEFECTIVE|Product defective, moved to quarantine</item>
+        <item>NEGATIVE_ADJUST|RETURN_TO_DDM|Return to DDM</item>
 
         <item>POSITIVE_ADJUST|CUSTOMER_RETURN|Returns from Customers(HF and dependent wards)</item>
         <item>POSITIVE_ADJUST|EXPIRED_RETURN_FROM_CUSTOMER|Returns of expired drugs (HF and dependent wards)</item>
