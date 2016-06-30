@@ -61,7 +61,6 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
 
     private void initView() {
         txQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
-        txQuantity.setHint(R.string.hint_quantity_in_stock);
         taCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
