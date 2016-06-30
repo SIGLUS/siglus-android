@@ -5,7 +5,7 @@
     <string name="title_login">Entrar</string>
     <string name="title_init_inventory">Inventário inicial</string>
     <string name="title_physical_inventory">Inventário</string>
-    <string name="title_stock_cards">Visão geral de stock</string>
+    <string name="title_stock_cards">Visão geral de estoque</string>
     <string name="title_kit_stock_cards">Visão geral de Kits</string>
     <string name="title_unpack_kit">Desembalar Kit</string>
     <string name="title_requisition">Elaborar Requisição/Balancete para Via Clássica</string>
@@ -39,7 +39,7 @@
     <string name="msg_remove_expire_date">Tem certeza que quer remover esta data de expiração?</string>
     <string name="msg_save_before_exit">Por favor, grave o inventário inicial, antes de sair da aplicação</string>
     <!--Home Page-->
-    <string name="label_stock_cards">Visão Geral da Ficha de Stock</string>
+    <string name="label_stock_cards">Visão Geral da Ficha de estoque</string>
     <string name="label_kits_stock_cards">KITS</string>
     <string name="label_mmia">Elaborar MMIA</string>
     <string name="label_sync">Sincronizar dados</string>
@@ -58,7 +58,7 @@
     </plurals>
     <string name="label_last_synced_ago">%s desde a última sincronização</string>
     <string name="label_rnr_form_last_synced_time_ago">Última sincronização da Requisição %s atrás</string>
-    <string name="label_stock_card_last_synced_time_ago">Última sincronização das Fichas de Estoque %s atrás</string>
+    <string name="label_stock_card_last_synced_time_ago">Última sincronização das Fichas de Estoque a %s atrás</string>
     <string name="msg_back_twice_to_exit">Pressione o botão \"voltar\" duas vezes para sair</string>
     <string name="action_sign_out">Sair</string>
     <string name="initial_rnr_sync_failed">Sincronização inicial da requisição falhou, por favor tente novamente.</string>
@@ -112,7 +112,7 @@
     <string name="label_kits_opened">No. de Kits Abertos</string>
     <string name="label_us">US</string>
     <string name="label_ape">APE</string>
-    <string name="label_initial_amount_requisition">Stock no Início do Período</string>
+    <string name="label_initial_amount_requisition">Estoque no Início do Período</string>
     <string name="label_received_requisition">Soma das Entradas</string>
     <string name="label_issued_requisition">Soma das Saídas</string>
     <string name="label_theoretical">Estoque Teórico no Fim do Período</string>
@@ -125,7 +125,7 @@
     <string name="label_product_name">MEDICAMENTO</string>
     <string name="msg_low_stock_warning">Este produto tem estoque em risco. Por favor, verifique as quantidades do produto.</string>
     <string name="msg_over_stock_warning">Este produto tem estoque acumulado. Por favor, verifique as quantidades do produto.</string>
-    <string name="msg_stock_out_warning">O seu produto está em roptura de stock</string>
+    <string name="msg_stock_out_warning">O seu produto está em roptura de estoque</string>
     <string name="msg_requisition_submit_tip">A sua Requisicao foi gravada com sucesso,e vai ser submetida \r\n automaticamente quando tiver conecção a internet.</string>
     <string name="msg_requisition_not_unique">Não é possivel submeter duas vezes a requisição no mesmo período.</string>
     <string name="btn_approve">Visto</string>
@@ -133,7 +133,7 @@
     <string name="msg_mmia_submit_signature">Insira as iniciais do seu nome e aprove a informação do MMIA</string>
     <string name="msg_approve_signature_via">Insira as iniciais do seu nome e aprove a Requisição Balancete</string>
     <string name="msg_approve_signature_mmia">Insira as iniciais do seu nome e aprove o MMIA</string>
-    <string name="msg_requisition_signature_message_notify_via">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão da Requisição de Balancete</string>
+    <string name="msg_requisition_signature_message_notify_via">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão da Requisição Balancete</string>
     <string name="msg_requisition_signature_message_notify_mmia">Por favor passe o dispositivo à pessoa responsável pela aprovação e submissão do MMIA</string>
     <string name="btn_continue">Continuar</string>
     <string name="label_adjustment_dialog_header"><![CDATA[A quantidade a requisitar foi ajustada com base em: <br/>]]></string>
@@ -145,7 +145,7 @@
     <string name="msg_del_requisition">Aviso!!! \ n Tem certeza de que deseja apagar? Esta requisição já está sincronizada com o servidor. Se você clicar em APAGAR, em seguida, esta requisição vai desaparecer do seu tablet, mas permanecem guardada no servidor.</string>
     <string name="msg_stock_movement_is_not_ready">Aplicativo está tentando sincronizar para todos os movimentos de estoque, por favor aguarde até que este processo seja concluído antes de continuar</string>
     <!--Stock Movement-->
-    <string name="title_stock_movement">Ficha de Stock</string>
+    <string name="title_stock_movement">Ficha de estoque</string>
     <string name="label_default">-</string>
     <string name="label_movement_date">Data do Movimento</string>
     <string name="label_reason">Origem/Destino do Movimento</string>
@@ -153,7 +153,7 @@
     <string name="label_negative_adjustment">Ajustes Negativos</string>
     <string name="label_positive_adjustment">Ajustes Positivos</string>
     <string name="label_stock_existence">Estoque Existente</string>
-    <string name="label_requested">Pedido</string>
+    <string name="label_requested">Pedidos</string>
     <string name="label_signature">Rúbrica</string>
     <string name="btn_cancel">CANCELAR</string>
     <string name="btn_do_not_remove">Cancelar</string>
@@ -203,7 +203,7 @@
     <string name="msg_expiry_warning">Este produto tem estoque a expirar em breve. Por favor, verifique os prazos de validade dos produtos.</string>
     <string name="msg_expired_warning">Este produto tem estoque expirado. Por favor, verifique os prazos de validade do produto.</string>
     <!--Physical Inventory Page-->
-    <string name="label_physical_inventory_stock_on_hand">Stock existente actual</string>
+    <string name="label_physical_inventory_stock_on_hand">Estoque existente actual</string>
     <!--Unpack Kit-->
     <string name="kit_number">Desembalando: %1$s %2$s kit</string>
     <string name="hint_quantity_in_unpack_kit">Quantidade recebida</string>
@@ -226,12 +226,12 @@
     <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b> Nenhuma %1$s foi criada.</b>]]> Complete o seu inventário antes de criar uma %1$s</string>
     <string name="btn_view_uncompleted_physical_inventory">Completar Inventário</string>
     <string name="label_select_close_of_period"><![CDATA[Por favor seleccione um inventário a partir da lista abaixo. Apenas inventários feitos em ou entre o <b>18</b> e <b>25</b> de <b>%1$s</b> podem ser usado para fechar o período. A data de hoje é <b>%2$s</b>]]></string>
-    <string name="label_completed_physical_inventory_message"><![CDATA[<b>Nenhuma %1$s Foi criada.</b>]]></string>
+    <string name="label_completed_physical_inventory_message"><![CDATA[<b>Nenhuma %1$s Foi criado.</b>]]></string>
     <string name="btn_view_completed_physical_inventory">Criar %1$s</string>
     <string name="label_incomplete_requisition"><![CDATA[<b>%1$s</b>]]> está incompleto.</string>
     <string name="btn_view_incomplete_requisition">Continuar trabalhando em %1$s</string>
     <string name="label_unsynced_requisition">Este <![CDATA[<b>%1$s</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
-    <string name="label_submitted_message">%1$s enviado com sucesso no dia %2$s</string>
+    <string name="label_submitted_message">%1$s enviada com sucesso no dia %2$s</string>
     <plurals name="label_drug_count_message">
         <item quantity="one"><![CDATA[<b>%1$s</b>]]> Producto requisitado</item>
         <item quantity="other"><![CDATA[<b>%1$s</b>]]> Productos requisitados</item>
@@ -240,7 +240,7 @@
     <string name="btn_view_via_requisition">Ver %s Balancete</string>
     <string name="label_period_date">%1$s  a  %2$s</string>
     <string name="label_emergency_date">Requisição de Urgência – %s</string>
-    <string name="label_can_not_create_rnr"><![CDATA[<b>Você será capaz de criar uma requisição no dia 18 de %1$s</b>]]></string>
+    <string name="label_can_not_create_rnr"><![CDATA[<b>Você será capaz de criar uma %1$s no dia 18 de %1$s</b>]]></string>
     <string name="label_previous_period_missing"><![CDATA[<b>O formulário não pode ser criado</b> até que períodos anteriores sejam fechados.<br> Por favor, feche todos os períodos anteriores]]></string>
     <string name="label_missed_period"><![CDATA[<b>Requisição está atrasada e nenhum inventário foi escolhido</b> Uma requisição será gerada automaticamente usando as quantidades do estoque fisico do fim do período]]></string>
     <string name="btn_select_close_period">Seleccione o fecho do período</string>
@@ -290,7 +290,7 @@
     <string name="message_wipe_no_connection">Rede indisponível, por favor, tente novamente quando a rede estiver disponível.</string>
     <!--Select Emergency Products-->
     <string name="title_select_emergency_products">Seleccione os produtos para adicionar a sua requisição de emergência</string>
-    <string name="msg_create_emergency_date_invalid">Você não tem permissão para criar uma Requisição de Urgência entre os dias 18 e 25, por favor submeta o pedido usando o formulário de requisição mensal.</string>
+    <string name="msg_create_emergency_date_invalid">Você não tem permissão para criar uma Requisição de emergencia entre os dias 18 e 25, por favor submeta o pedido usando o formulário de requisição mensal.</string>
     <string name="msg_create_emergency_has_missed">Você não tem permissão para criar uma Requisição de Urgência até que conclua todas as suas requisições mensais anteriores.</string>
     <string name="msg_out_limit_of_selected_emergency_products">Você só pode selecionar 10 produtos para uma requisição de emergência</string>
     <string name="label_emergency_requisition_title">Requisição de emergência -%1$s</string>
