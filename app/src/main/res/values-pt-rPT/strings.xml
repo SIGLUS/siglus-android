@@ -145,7 +145,7 @@
     <string name="msg_del_requisition">Aviso!!! \ n Tem certeza de que deseja apagar? Esta requisição já está sincronizada com o servidor. Se você clicar em APAGAR, em seguida, esta requisição vai desaparecer do seu tablet, mas permanecem guardada no servidor.</string>
     <string name="msg_stock_movement_is_not_ready">Aplicativo está tentando sincronizar para todos os movimentos de estoque, por favor aguarde até que este processo seja concluído antes de continuar</string>
     <!--Stock Movement-->
-    <string name="title_stock_movement">Ficha de estoque</string>
+    <string name="title_stock_movement">Ficha de Estoque</string>
     <string name="label_default">-</string>
     <string name="label_movement_date">Data do Movimento</string>
     <string name="label_reason">Origem/Destino do Movimento</string>
@@ -239,7 +239,7 @@
     <string name="btn_view_requisition">Ver %s</string>
     <string name="btn_view_via_requisition">Ver %s Balancete</string>
     <string name="label_period_date">%1$s  a  %2$s</string>
-    <string name="label_emergency_date">Requisição de Urgência – %s</string>
+    <string name="label_emergency_date">Requisição de Emergencia – %s</string>
     <string name="label_can_not_create_rnr"><![CDATA[<b>Você será capaz de criar uma %1$s no dia 18 de %1$s</b>]]></string>
     <string name="label_previous_period_missing"><![CDATA[<b>O formulário não pode ser criado</b> até que períodos anteriores sejam fechados.<br> Por favor, feche todos os períodos anteriores]]></string>
     <string name="label_missed_period"><![CDATA[<b>Requisição está atrasada e nenhum inventário foi escolhido</b> Uma requisição será gerada automaticamente usando as quantidades do estoque fisico do fim do período]]></string>
@@ -291,7 +291,7 @@
     <!--Select Emergency Products-->
     <string name="title_select_emergency_products">Seleccione os produtos para adicionar a sua requisição de emergência</string>
     <string name="msg_create_emergency_date_invalid">Você não tem permissão para criar uma Requisição de emergencia entre os dias 18 e 25, por favor submeta o pedido usando o formulário de requisição mensal.</string>
-    <string name="msg_create_emergency_has_missed">Você não tem permissão para criar uma Requisição de Urgência até que conclua todas as suas requisições mensais anteriores.</string>
+    <string name="msg_create_emergency_has_missed">Você não tem permissão para criar uma Requisição de emergencia até que conclua todas as suas requisições mensais anteriores.</string>
     <string name="msg_out_limit_of_selected_emergency_products">Você só pode selecionar 10 produtos para uma requisição de emergência</string>
     <string name="label_emergency_requisition_title">Requisição de emergência -%1$s</string>
     <string name="label_emergency_requisition_balance">Requisição balancete de emergência</string>
