@@ -61,16 +61,16 @@
                         android:hint="@string/hint_password"
                         android:inputType="textPassword"
                         android:paddingEnd="35dp" />
-                </android.support.design.widget.TextInputLayout>
 
-                <ImageView
-                    android:id="@+id/iv_visibility_pwd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/margin_large"
-                    android:layout_gravity="end"
-                    android:padding="5dp"
-                    android:src="@drawable/ic_visibility_off" />
+                    <ImageView
+                        android:id="@+id/iv_visibility_pwd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="-32dp"
+                        android:layout_gravity="end"
+                        android:padding="0dp"
+                        android:src="@drawable/ic_visibility_off" />
+                </android.support.design.widget.TextInputLayout>
             </FrameLayout>
 
 
