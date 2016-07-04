@@ -37,6 +37,7 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
         expireDateViewGroup = (ExpireDateViewGroup) itemView.findViewById(R.id.vg_expire_date_container);
 
         etQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
+        etQuantity.setHint(R.string.hint_quantity_in_stock);
     }
 
     public void populate(InventoryViewModel inventoryViewModel, String queryKeyWord) {

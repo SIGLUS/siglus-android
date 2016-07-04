@@ -46,7 +46,6 @@
                 <EditText
                     android:id="@+id/tx_quantity"
                     style="@style/ItemPhysical.EditQuantity"
-                    android:hint="@string/hint_quantity_in_stock"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </android.support.design.widget.TextInputLayout>
