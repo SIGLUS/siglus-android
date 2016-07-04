@@ -69,6 +69,23 @@ Feature: stock movement Page
     Then I navigate back
     Then I should see "has been deactivated and removed"
 
+    #Return to DDM stock movement
+    Then I select stock card code called "[01A01]"
+    Then I wait for "Stock Card" to appear
+    Then I wait for 1 second
+    And I select a reason "Negative Adjustments" "Return to DDM"
+    Then I wait for 1 second
+    Then I swipe right
+    And I enter negative adjustment number "123"
+    Then I wait for "Complete" to appear
+    And I press "Complete"
+    And I wait for "Enter your initials" to appear
+    And I sign with "superuser"
+    Then I see "123"
+    Then I see "super" in signature field
+    Then I navigate back
+    And I wait for "Stock Overview" to appear
+
     #clear warning banner
     And I clear banner message
     Then I should not see "has been deactivated and removed"

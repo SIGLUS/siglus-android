@@ -150,6 +150,7 @@ Then(/^I make all movements for "(.*?)" when stress test$/) do |drugFNM|
         And I make a movement "#{drugFNM}" "Negative Adjustments" "Loans made from a health facility deposit" "negative adjustment" "1"
         And I make a movement "#{drugFNM}" "Negative Adjustments" "Inventory correction in case of over stock on Stock card (Stock on hand is less than stock in stock card)" "negative adjustment" "1"
         And I make a movement "#{drugFNM}" "Negative Adjustments" "Product defective, moved to quarantine" "negative adjustment" "1"
+        And I make a movement "#{drugFNM}" "Negative Adjustments" "Return to DDM" "negative adjustment" "1"
     }
 end
 
