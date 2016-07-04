@@ -8,7 +8,7 @@
     <string name="ga_trackingId">UA-74647160-1</string>
     <bool name="ga_dryRun">true</bool>
 
-    <string name="app_name">CHAI LMIS LOCAL</string>
+    <string name="app_name">ESMS LOCAL</string>
 
     <string name="app_time_out">86400000</string>
 </resources>

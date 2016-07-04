@@ -7,7 +7,7 @@
     <string name="ga_trackingId">I am a track id</string>
     <bool name="ga_dryRun">true</bool>
 
-    <string name="app_name">CHAI LMIS PRODSIM</string>
+    <string name="app_name">LMIS PRODSIM</string>
 
     <string name="app_time_out">3600000</string>
 </resources>
