@@ -33,12 +33,10 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
         tvStockOnHandInInventory = (TextView) itemView.findViewById(R.id.stock_on_hand_in_inventory);
         tvStockOnHandInInventoryTip = (TextView) itemView.findViewById(R.id.tv_stock_on_hand_in_inventory_tip);
         tvProductUnit = (TextView) itemView.findViewById(R.id.product_unit);
-        etQuantity = (EditText) itemView.findViewById(R.id.tx_quantity);
         lyQuantity = (TextInputLayout) itemView.findViewById(R.id.ly_quantity);
         expireDateViewGroup = (ExpireDateViewGroup) itemView.findViewById(R.id.vg_expire_date_container);
 
         etQuantity.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
-        etQuantity.setHint(R.string.hint_quantity_in_stock);
     }
 
     public void populate(InventoryViewModel inventoryViewModel, String queryKeyWord) {
