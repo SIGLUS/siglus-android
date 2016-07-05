@@ -21,6 +21,7 @@ package org.openlmis.core.view.activity;
 
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.InputType;
@@ -175,18 +176,22 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     public void showInvalidAlert() {
         clearErrorAlerts();
         lyUserName.setError(getResources().getString(R.string.msg_invalid_user));
+        etUsername.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+        etPassword.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
     }
 
     @Override
     public void showPasswordEmpty() {
         clearErrorAlerts();
         lyPassword.setError(getResources().getString(R.string.msg_empty_user));
+        etPassword.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
     }
 
     @Override
     public void showUserNameEmpty() {
         clearErrorAlerts();
         lyUserName.setError(getResources().getString(R.string.msg_empty_user));
+        etUsername.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
     }
 
     private void startLogin() {
