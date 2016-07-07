@@ -75,6 +75,9 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
 
     private long APP_TIMEOUT;
 
+    private long onCreateStartMili;
+    private boolean isPageLoadTimerInProgress;
+
     public void injectPresenter() {
         Field[] fields = FieldUtils.getAllFields(this.getClass());
 
@@ -119,7 +122,9 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
         if (screenName != null) {
             LMISApp.getInstance().trackScreen(screenName);
         }
-    };
+    }
+
+    ;
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -148,6 +153,9 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        isPageLoadTimerInProgress = true;
+        onCreateStartMili = LMISApp.getInstance().getCurrentTimeMillis();
+
         setTheme(getThemeRes());
         super.onCreate(savedInstanceState);
         initDataFragment();
@@ -166,9 +174,12 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
         }
 
         APP_TIMEOUT = Long.parseLong(getResources().getString(R.string.app_time_out));
+
     }
 
-    protected @StyleRes int getThemeRes() {
+    protected
+    @StyleRes
+    int getThemeRes() {
         return R.style.AppTheme;
     }
 
@@ -241,6 +252,10 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
                 loadingDialog.dismiss();
                 loadingDialog = null;
                 isLoading = false;
+                if (isPageLoadTimerInProgress) {
+                    Log.d(this.getTitle() + " page", "load time " + (System.currentTimeMillis() - onCreateStartMili) + " ms");
+                    isPageLoadTimerInProgress = false;
+                }
             }
         } catch (IllegalArgumentException e) {
             Log.d("View", "loaded -> dialog already dismissed");
