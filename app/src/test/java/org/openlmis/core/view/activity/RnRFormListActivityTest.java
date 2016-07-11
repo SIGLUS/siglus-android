@@ -247,8 +247,6 @@ public class RnRFormListActivityTest {
 
     @Test
     public void shouldOnlyShowCreateEmergencyRnRButtonInVIAPage() {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_create_emergency_rnr, true);
-
         Intent intent = new Intent();
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.VIA_PROGRAM_CODE);
         rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).withIntent(intent).create().visible().get();
@@ -259,8 +257,6 @@ public class RnRFormListActivityTest {
 
     @Test
     public void shouldHideCreateEmergencyRnRButtonInMMIAPage() {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_create_emergency_rnr, true);
-
         Intent intent = new Intent();
         intent.putExtra(Constants.PARAM_PROGRAM_CODE, Constants.MMIA_PROGRAM_CODE);
         rnRFormListActivity = Robolectric.buildActivity(RnRFormListActivity.class).withIntent(intent).create().visible().get();

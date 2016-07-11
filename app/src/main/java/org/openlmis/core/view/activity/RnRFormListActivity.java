@@ -252,7 +252,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu_rnr_list, menu);
-        return LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_create_emergency_rnr);
+        return true;
     }
 
     @Override

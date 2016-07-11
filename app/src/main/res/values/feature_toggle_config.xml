@@ -3,7 +3,6 @@
     <bool name="feature_show_pop_up_even_no_data_changed_418">true</bool>
     <bool name="feature_auto_quantities_in_kit">false</bool>
     <bool name="feature_rnr_multiple_programs">true</bool>
-    <bool name="feature_create_emergency_rnr">true</bool>
     <bool name="feature_auto_fill_kit_rnr">true</bool>
     <bool name="feature_deactivate_program_product">true</bool>
     <bool name="feature_signature_for_unpack_kit">true</bool>
