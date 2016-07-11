@@ -231,7 +231,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldGetStockCardsByProgramIdWithoutKitAndDeacitivatedWhenMultipleProgramsToggleOnAndDeactivateProgramToggleOff() throws Exception {
         //when
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, true);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, false);
 
         batchCreateNewStockCards();
@@ -247,7 +246,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldGetStockCardsByProgramIdWithoutKitAndDeacitivatedWhenMultipleProgramsToggleOnAndDeactivateProgramToggleOn() throws Exception {
         //when
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, true);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, true);
 
         batchSaveNewStockCardsWithProductPrograms();
@@ -273,7 +271,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldGetStockCardsWithKitWhenMultiplePrgramsToggleOnAndDeactivateProgramToggleOff() throws Exception {
         //when
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, true);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, false);
 
         batchCreateNewStockCards();
@@ -289,7 +286,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldGetActiveStockCardsWithKit() throws Exception {
         //when
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, true);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, true);
 
         batchSaveNewStockCardsWithProductPrograms();

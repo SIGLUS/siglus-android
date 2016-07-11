@@ -236,7 +236,6 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     public void shouldFillAllItemsForMMIAWhenMultipleProgramsToggleOnAndDeactivateProgramToggleOn() throws Exception {
         //Given
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_mmia_list_from_web, false);
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, true);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, true);
 
         List<String> programCodes = newArrayList("MMIA");
@@ -267,7 +266,6 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     public void shouldFillAllItemsForMMIAWhenMultipleProgramsToggleOnAndDeactivateProgramToggleOff () throws Exception {
         //Given
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_mmia_list_from_web, false);
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, true);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, false);
 
         List<Long> programIds = newArrayList(1L);
@@ -277,62 +275,6 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         Product product2 = new ProductBuilder().setProductId(200L).build();
 
         when(mockProductRepository.queryProductsByProgramIds(programIds)).thenReturn(newArrayList(product1, product2));
-
-        //when
-        RnrFormItem rnrFormItem = new RnrFormItemBuilder().setProduct(product1).build();
-        ArrayList<RnrFormItem> rnrFormItems = new ArrayList<>();
-        rnrFormItems.add(rnrFormItem);
-        RnRForm rnRForm = new RnRForm();
-
-        ArrayList<RnrFormItem> items = mmiaRepository.fillAllMMIAProducts(rnRForm, rnrFormItems);
-
-        //then
-        assertThat(items.size(), is(2));
-    }
-
-    @Test
-    public void shouldFillAllItemsForMMIAWhenMultipleProgramsToggleOffAndDeactivateProgramToggleOn () throws Exception {
-        //Given
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_mmia_list_from_web, false);
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, false);
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, true);
-
-        List<Long> productIds = newArrayList(100L);
-        when(productProgramRepository.queryActiveProductIdsByProgramsWithKits(newArrayList("MMIA"), false)).thenReturn(productIds);
-
-        Product product1 = new ProductBuilder().setProductId(100L).build();
-        Product product2 = new ProductBuilder().setProductId(200L).build();
-
-        when(mockProductRepository.queryProductsByProductIds(productIds)).thenReturn(newArrayList(product1, product2));
-
-
-        //when
-        RnrFormItem rnrFormItem = new RnrFormItemBuilder().setProduct(product1).build();
-        ArrayList<RnrFormItem> rnrFormItems = new ArrayList<>();
-        rnrFormItems.add(rnrFormItem);
-        RnRForm rnRForm = new RnRForm();
-
-        ArrayList<RnrFormItem> items = mmiaRepository.fillAllMMIAProducts(rnRForm, rnrFormItems);
-
-        //then
-        assertThat(items.size(), is(2));
-    }
-
-    @Test
-    public void shouldFillAllItemsForMMIAWhenMultipleProgramsToggleOffAndDeactivateProgramToggleOff () throws Exception {
-        //Given
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_mmia_list_from_web, false);
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, false);
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, false);
-
-        Program program = new Program();
-        program.setId(1L);
-        when(mockProgramRepository.queryByCode(Constants.MMIA_PROGRAM_CODE)).thenReturn(program);
-
-        Product product1 = new ProductBuilder().setProductId(100L).build();
-        Product product2 = new ProductBuilder().setProductId(200L).build();
-
-        when(mockProductRepository.queryProductsByProgramId(1L)).thenReturn(newArrayList(product1, product2));
 
         //when
         RnrFormItem rnrFormItem = new RnrFormItemBuilder().setProduct(product1).build();

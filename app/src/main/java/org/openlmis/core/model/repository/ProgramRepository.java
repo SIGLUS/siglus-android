@@ -154,12 +154,4 @@ public class ProgramRepository {
             });
     }
 
-    public List<Long> getProgramIdsByProgramCode(String programCode) throws LMISException {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_rnr_multiple_programs)) {
-            return queryProgramIdsByProgramCodeOrParentCode(programCode);
-        } else {
-            Program program = queryByCode(programCode);
-            return newArrayList(program.getId());
-        }
-    }
 }

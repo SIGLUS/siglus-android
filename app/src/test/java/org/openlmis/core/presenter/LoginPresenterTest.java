@@ -292,23 +292,7 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void shouldSaveUserDataAndSupportedFacilityCodeToDBWhenMultipleProgramToggleOff() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, false);
-
-        User user = UserBuilder.defaultUser();
-        UserResponse userResponse = new UserResponse();
-        userResponse.setUserInformation(user);
-
-        presenter.saveUserDataToLocalDatabase(userResponse);
-
-        verify(userRepository).createOrUpdate(user);
-        verify(programRepository, times(user.getFacilitySupportedPrograms().size())).createOrUpdate(any(Program.class));
-    }
-
-    @Test
     public void shouldSaveUserDataAndSupportedFacilityCodeToDBWhenMultipleProgramToggleON() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_rnr_multiple_programs, true);
-
         User user = UserBuilder.defaultUser();
         UserResponse userResponse = new UserResponse();
         userResponse.setUserInformation(user);
