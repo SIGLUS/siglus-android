@@ -93,7 +93,6 @@ public class MMIARegimeListTest {
 
     @Test
     public void shouldShowTheCustomRegimenWhenTheFormIsMissedAndNotAuthorised() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_custom_regimen, true);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_allow_custom_regimen_in_missed_mmia_form, true);
         RnRForm rnRForm = new RnRForm();
         rnRForm.setStatus(RnRForm.STATUS.DRAFT_MISSED);
@@ -112,29 +111,6 @@ public class MMIARegimeListTest {
         mmiaRegimeList.initView(new TextView(RuntimeEnvironment.application), presenter);
 
         assertEquals(4, mmiaRegimeList.getChildCount());
-    }
-
-    @Test
-    public void shouldNotShowTheCustomRegimenWhenTheFormIsMissedAndNotAuthorisedWhenToggleOff() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_custom_regimen, true);
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_allow_custom_regimen_in_missed_mmia_form, false);
-        RnRForm rnRForm = new RnRForm();
-        rnRForm.setStatus(RnRForm.STATUS.DRAFT_MISSED);
-
-
-        Regimen regimen = new Regimen();
-        regimen.setType(Regimen.RegimeType.Adults);
-        RegimenItem regimenItem = new RegimenItem();
-        regimenItem.setRegimen(regimen);
-        ArrayList<RegimenItem> regimenItems = new ArrayList<>();
-        regimenItems.add(regimenItem);
-        rnRForm.setRegimenItemListWrapper(regimenItems);
-
-        when(presenter.getRnRForm()).thenReturn(rnRForm);
-
-        mmiaRegimeList.initView(new TextView(RuntimeEnvironment.application), presenter);
-
-        assertEquals(2, mmiaRegimeList.getChildCount());
     }
 
     @Test

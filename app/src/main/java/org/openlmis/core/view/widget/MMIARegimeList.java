@@ -92,21 +92,19 @@ public class MMIARegimeList extends LinearLayout {
             addItemView(adults.get(i), i);
         }
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_custom_regimen)) {
-            if (isCustomEnable()) {
-                addAdultBtnView();
-            }
+        if (isCustomEnable()) {
+            addAdultBtnView();
         }
+
 
         for (int i = 0; i < paediatrics.size(); i++) {
             addItemView(paediatrics.get(i), adults.size() + i);
         }
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_custom_regimen)) {
-            if (isCustomEnable()) {
-                addPaediatricsBtnView();
-            }
+        if (isCustomEnable()) {
+            addPaediatricsBtnView();
         }
+
         editTexts.get(editTexts.size() - 1).setImeOptions(EditorInfo.IME_ACTION_DONE);
         totalView.setText(String.valueOf(getTotal()));
     }
