@@ -4,7 +4,6 @@
     <bool name="feature_unpack_btn_update_580">true</bool>
     <bool name="feature_sync_period_date">true</bool>
     <bool name="feature_remove_expiry_date_when_soh_is_0_393">true</bool>
-    <bool name="feature_wipe_data_and_resync">true</bool>
     <bool name="feature_rnr_multiple_programs">true</bool>
     <bool name="feature_custom_regimen">true</bool>
     <bool name="feature_create_emergency_rnr">true</bool>

@@ -208,9 +208,6 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_wipe_data_and_resync)) {
-            menu.findItem(R.id.action_wipe_data).setVisible(false);
-        }
         return super.onPrepareOptionsMenu(menu);
     }
 

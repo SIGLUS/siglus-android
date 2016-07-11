@@ -184,8 +184,6 @@ public class HomeActivityTest {
 
     @Test
     public void shouldShowWarningDialogWhenWipeDataWiped() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_wipe_data_and_resync, true);
-
         LMISTestApp.getInstance().setNetworkConnection(true);
 
         homeActivity.onOptionsItemSelected(new RoboMenuItem(R.id.action_wipe_data));
@@ -196,8 +194,6 @@ public class HomeActivityTest {
 
     @Test
     public void shouldShowToastWhenResyncWithoutNetwork() {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_wipe_data_and_resync, true);
-
         LMISTestApp.getInstance().setNetworkConnection(false);
 
         homeActivity.onOptionsItemSelected(new RoboMenuItem(R.id.action_wipe_data));
