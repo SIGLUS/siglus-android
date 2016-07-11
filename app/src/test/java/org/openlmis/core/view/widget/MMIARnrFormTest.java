@@ -100,7 +100,6 @@ public class MMIARnrFormTest {
 
     @Test
     public void shouldIncludeTheNewMMIAProductsWhichIsNotInList() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, true);
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_mmia_list_from_web, false);
         List<RnrFormItem> rnrFormItems = Arrays.asList(
                 getRnrFormItem(1L, "product1", "08S17", MEDICINE_TYPE_OTHER),

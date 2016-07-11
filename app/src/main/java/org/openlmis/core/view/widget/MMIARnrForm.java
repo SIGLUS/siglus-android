@@ -151,9 +151,8 @@ public class MMIARnrForm extends LinearLayout {
         addDividerView(Product.MEDICINE_TYPE_CHILDREN);
 
         addViewByMedicineTypeHardCode(rnrFormItemList, Product.MEDICINE_TYPE_SOLUTION);
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deactivate_program_product)) {
-            addViewForOtherMedicine(rnrFormItemList);
-        }
+        addViewForOtherMedicine(rnrFormItemList);
+
         addDividerView(Product.MEDICINE_TYPE_SOLUTION);
     }
 

@@ -189,13 +189,8 @@ public class SyncDownManager {
         SyncDownLatestProductsResponse response = getSyncDownLatestProductResponse();
         List<Product> productList = new ArrayList<>();
         for (ProductAndSupportedPrograms productAndSupportedPrograms : response.getLatestProducts()) {
-            Product product;
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deactivate_program_product)) {
-                product = productAndSupportedPrograms.getProduct();
-                productProgramRepository.batchSave(productAndSupportedPrograms.getProductPrograms());
-            } else {
-                product = assignProgramFromResponseToProduct(productAndSupportedPrograms);
-            }
+            Product product = productAndSupportedPrograms.getProduct();
+            productProgramRepository.batchSave(productAndSupportedPrograms.getProductPrograms());
 
             updateDeactivateProductNotifyList(product);
             productList.add(product);

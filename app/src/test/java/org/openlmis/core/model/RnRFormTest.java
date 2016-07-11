@@ -36,25 +36,7 @@ public class RnRFormTest {
     }
 
     @Test
-    public void shouldReturnListWithDeactivatedItemsWhenDeactivateProgramToggleOff() {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, false);
-
-        Product activeProduct = new ProductBuilder().setIsActive(true).setCode("activeProduct").build();
-        Product inactiveProduct = new ProductBuilder().setIsActive(false).setCode("inactiveProduct").build();
-        RnrFormItem activeRnrProduct = new RnrFormItemBuilder().setProduct(activeProduct).build();
-        RnrFormItem inactiveRnrProduct = new RnrFormItemBuilder().setProduct(inactiveProduct).build();
-
-        rnRForm.setRnrFormItemListWrapper(newArrayList(activeRnrProduct, inactiveRnrProduct));
-
-        List<RnrFormItem> rnrFormDeactivatedItemList = rnRForm.getDeactivatedAndUnsupportedProductItems(null);
-        assertEquals(1, rnrFormDeactivatedItemList.size());
-        assertEquals(false, rnrFormDeactivatedItemList.get(0).getProduct().isActive());
-    }
-
-    @Test
     public void shouldReturnListWithDeactivatedItemsWhenDeactivateProgramToggleOn() {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, true);
-
         Product activeSupportedProduct = new ProductBuilder().setCode("P1").setIsActive(true).build();
         Product inactiveProduct = new ProductBuilder().setCode("P2").setIsActive(false).build();
         Product unsupportedProduct = new ProductBuilder().setCode("P3").setIsActive(true).build();

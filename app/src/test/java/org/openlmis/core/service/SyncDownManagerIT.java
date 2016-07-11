@@ -27,8 +27,6 @@ public class SyncDownManagerIT {
 
     @Test
     public void shouldSyncDownLatestProductWithArchivedStatus() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_deactivate_program_product, true);
-
         //given
         String json = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
         lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products", 200, "OK", json, RuntimeEnvironment.application);

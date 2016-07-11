@@ -220,12 +220,8 @@ public class RnRForm extends BaseModel {
         return from(getRnrFormItemListWrapper()).filter(new Predicate<RnrFormItem>() {
             @Override
             public boolean apply(RnrFormItem rnrFormItem) {
-                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_deactivate_program_product)) {
-                    return !(rnrFormItem.getProduct().isActive()
-                            && supportedProductCodes.contains(rnrFormItem.getProduct().getCode()));
-                } else {
-                    return !rnrFormItem.getProduct().isActive();
-                }
+                return !(rnrFormItem.getProduct().isActive() && supportedProductCodes.contains(rnrFormItem.getProduct().getCode()));
+
             }
         }).toList();
     }
