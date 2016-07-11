@@ -73,10 +73,6 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         String kitName = intent.getStringExtra(Constants.PARAM_KIT_NAME);
         tvTotalKit.setText(getString(R.string.kit_number, kitNum, kitName));
 
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_enter_document_number_when_unpack_kit)) {
-            documentNumberContainer.setVisibility(View.GONE);
-        }
-
         initRecyclerView();
 
         presenter.loadKitProducts(kitCode, kitNum);
