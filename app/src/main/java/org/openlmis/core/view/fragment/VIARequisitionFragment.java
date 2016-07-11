@@ -156,8 +156,18 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         } else {
             loadData();
         }
+        autoScrollLeftToRight();
     }
 
+    public void autoScrollLeftToRight() {
+        if (!isHistoryForm()) {
+            formLayout.postDelayed(new Runnable() {
+                public void run() {
+                    formLayout.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
+                }
+            }, 2000);
+        }
+    }
     private void loadData() {
         if (isFromSelectEmergencyPage()) {
             presenter.loadEmergencyData(emergencyStockCards, new Date(LMISApp.getInstance().getCurrentTimeMillis()));
