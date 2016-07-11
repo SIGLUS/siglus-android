@@ -65,7 +65,6 @@ public class UnpackKitActivityTest {
 
     @Test
     public void shouldShowDialogWhenQuantityIsValid() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_signature_for_unpack_kit, true);
         stockMovementActivity.refreshList(Arrays.asList(viewModel));
 
         stockMovementActivity.mAdapter.onCreateViewHolder(stockMovementActivity.productListRecycleView, 1).itemView.findViewById(R.id.btn_complete).performClick();
@@ -75,34 +74,11 @@ public class UnpackKitActivityTest {
 
     @Test
     public void shouldNotShowDialogWhenQuantityIsNotValid() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_signature_for_unpack_kit, true);
         viewModel.setQuantity("");
         stockMovementActivity.refreshList(Arrays.asList(viewModel));
 
         stockMovementActivity.mAdapter.onCreateViewHolder(stockMovementActivity.productListRecycleView, 1).itemView.findViewById(R.id.btn_complete).performClick();
 
         assertNull(stockMovementActivity.getFragmentManager().findFragmentByTag("signature_dialog_for_unpack_kit"));
-    }
-
-    @Test
-    public void shouldSaveUnpackMovementsWhenQuantityIsValidWhenToggleOff() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_signature_for_unpack_kit, false);
-        stockMovementActivity.refreshList(Arrays.asList(viewModel));
-        stockMovementActivity.etDocumentNumber.setText("DocumentNumber");
-
-        stockMovementActivity.mAdapter.onCreateViewHolder(stockMovementActivity.productListRecycleView, 1).itemView.findViewById(R.id.btn_complete).performClick();
-        verify(mockedPresenter).saveUnpackProducts(1, "DocumentN", "");
-    }
-
-    @Test
-    public void shouldNotSaveUnpackMovementsWhenQuantityIsNotValidWhenToggleOff() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_signature_for_unpack_kit, false);
-        viewModel.setQuantity("");
-        stockMovementActivity.refreshList(Arrays.asList(viewModel));
-        stockMovementActivity.etDocumentNumber.setText("DocumentNumber");
-
-        stockMovementActivity.mAdapter.onCreateViewHolder(stockMovementActivity.productListRecycleView, 1).itemView.findViewById(R.id.btn_complete).performClick();
-
-        verify(mockedPresenter, never()).saveUnpackProducts(1, "DocumentNumber", "");
     }
 }

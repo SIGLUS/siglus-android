@@ -100,11 +100,7 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         @Override
         public void onClick(View v) {
             if (validateAll()) {
-                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_signature_for_unpack_kit)) {
-                    showSignDialog();
-                } else {
-                    presenter.saveUnpackProducts(kitNum, etDocumentNumber.getText().toString(), "");
-                }
+                showSignDialog();
             }
         }
     };
