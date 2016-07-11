@@ -232,35 +232,6 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         return stockMovementItem;
     }
 
-    @Test
-    public void shouldFillAllItemsForMMIAWhenMultipleProgramsToggleOnAndDeactivateProgramToggleOn() throws Exception {
-        //Given
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_mmia_list_from_web, false);
-
-        List<String> programCodes = newArrayList("MMIA");
-        when(mockProgramRepository.queryProgramCodesByProgramCodeOrParentCode(Constants.MMIA_PROGRAM_CODE)).thenReturn(programCodes);
-
-        List<Long> productIds = newArrayList(100L);
-        when(productProgramRepository.queryActiveProductIdsByProgramsWithKits(programCodes, false)).thenReturn(productIds);
-
-        Product product1 = new ProductBuilder().setProductId(100L).build();
-        Product product2 = new ProductBuilder().setProductId(200L).build();
-
-        when(mockProductRepository.queryProductsByProductIds(productIds)).thenReturn(newArrayList(product1, product2));
-
-
-        //when
-        RnrFormItem rnrFormItem = new RnrFormItemBuilder().setProduct(product1).build();
-        ArrayList<RnrFormItem> rnrFormItems = new ArrayList<>();
-        rnrFormItems.add(rnrFormItem);
-        RnRForm rnRForm = new RnRForm();
-
-        ArrayList<RnrFormItem> items = mmiaRepository.fillAllMMIAProducts(rnRForm, rnrFormItems);
-
-        //then
-        assertThat(items.size(), is(2));
-    }
-
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {

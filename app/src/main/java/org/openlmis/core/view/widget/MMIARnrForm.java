@@ -82,11 +82,7 @@ public class MMIARnrForm extends LinearLayout {
 
     public void initView(List<RnrFormItem> list) {
         addHeaderView();
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_mmia_list_from_web)) {
-            addItemView(list);
-        } else {
-            addItemViewHardCode(list);
-        }
+        addItemView(list);
     }
 
     private void addHeaderView() {

@@ -221,8 +221,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldGenerateRnrFormItemWithCorrectAttributes() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_mmia_list_from_web, true);
-
         int stockExistence = 100;
         int issueQuantity = 10;
         int receiveQuantity = 20;

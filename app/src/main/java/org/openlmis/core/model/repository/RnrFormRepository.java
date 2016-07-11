@@ -223,9 +223,7 @@ public class RnrFormRepository {
             RnrFormItem rnrFormItem = createRnrFormItemByPeriod(stockCard, form.getPeriodBegin(), form.getPeriodEnd());
             rnrFormItem.setForm(form);
             rnrFormItems.add(rnrFormItem);
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_mmia_list_from_web)) {
-                rnrFormItem.setCategory(productProgramRepository.queryByCode(rnrFormItem.getProduct().getCode(), programCodes).getCategory());
-            }
+            rnrFormItem.setCategory(productProgramRepository.queryByCode(rnrFormItem.getProduct().getCode(), programCodes).getCategory());
         }
         return rnrFormItems;
     }
@@ -320,10 +318,6 @@ public class RnrFormRepository {
     }
 
     private void assignCategoryForRnrItems(RnRForm rnrForm) throws LMISException {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_mmia_list_from_web)) {
-            return;
-        }
-
         if (rnrForm == null || rnrForm.getRnrFormItemListWrapper() == null) {
             return;
         }
