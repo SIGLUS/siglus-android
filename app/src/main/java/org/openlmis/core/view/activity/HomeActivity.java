@@ -37,15 +37,18 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.service.PeriodService;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
+import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
 import org.openlmis.core.view.widget.SyncTimeView;
 
 import roboguice.inject.ContentView;
@@ -61,6 +64,7 @@ public class HomeActivity extends BaseActivity {
     @InjectView(R.id.btn_inventory)
     Button btnInventory;
 
+    IncompleteRequisitionBanner incompleteRequisitionBanner;
     SyncTimeView syncTimeView;
 
     @InjectView(R.id.btn_mmia_list)
@@ -77,6 +81,9 @@ public class HomeActivity extends BaseActivity {
 
     @Inject
     SyncService syncService;
+
+    @Inject
+    PeriodService periodService;
 
     private boolean exitPressedOnce = false;
 
@@ -96,7 +103,15 @@ public class HomeActivity extends BaseActivity {
         } else {
             setTitle(UserInfoMgr.getInstance().getFacilityName());
             syncTimeView = (SyncTimeView) findViewById(R.id.view_sync_time);
+            incompleteRequisitionBanner = (IncompleteRequisitionBanner) findViewById(R.id.view_incomplete_requisition_banner);
 
+            try {
+                if (!periodService.hasMissedPeriod("VIA") && !periodService.hasMissedPeriod("MMIA")) {
+                    incompleteRequisitionBanner.setVisibility(View.GONE);
+                }
+            } catch (LMISException e) {
+                e.printStackTrace();
+            }
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             }

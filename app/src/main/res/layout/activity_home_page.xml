@@ -11,6 +11,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <org.openlmis.core.view.widget.IncompleteRequisitionBanner
+            android:id="@+id/view_incomplete_requisition_banner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_normal" />
+
         <Button
             android:id="@+id/btn_stock_card"
             style="@style/Homepage.Button"
