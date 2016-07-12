@@ -71,7 +71,7 @@ public class UnpackKitViewHolderTest {
         assertThat(viewHolder.tvStockOnHandInInventoryTip.getText().toString()).isEqualTo("Smaller quantity entered than expected. Please recheck it");
 
         viewHolder.afterQuantityChanged(viewModel, "100");
-        assertThat(viewHolder.tvStockOnHandInInventoryTip.getText().toString()).isEqualTo("Quantity expected");
+        assertThat(viewHolder.tvStockOnHandInInventoryTip.getText().toString()).contains("Quantity expected");
 
         viewHolder.afterQuantityChanged(viewModel, "120");
         assertThat(viewHolder.tvStockOnHandInInventoryTip.getText().toString()).isEqualTo("Larger quantity entered than expected. Please recheck it");
