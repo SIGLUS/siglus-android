@@ -46,3 +46,8 @@ Then(/^I should see consultations number is "(.*?)"$/) do |number|
 	end
 end
 
+
+Then (/^I swipe to the left in via requisition form$/) do
+    pan("* id:'et_request_amount'", :right)
+    pan("* id:'tx_different'", :right, from: {x: 0, y: 100}, to: {x: 500, y:100})
+end

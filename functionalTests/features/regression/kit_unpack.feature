@@ -136,7 +136,7 @@ Feature: Unpack Kit
 
     And I should see empty consultations number
     Then I enter consultationsNub "888"
-    Then I swipe right
+    Then I swipe to the left in via requisition form
     Then I should see "889" on index "2" of "tx_theoretical" field
     Then I swipe right
     Then I swipe right

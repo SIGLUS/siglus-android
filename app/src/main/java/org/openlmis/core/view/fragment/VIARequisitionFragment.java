@@ -156,6 +156,17 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         } else {
             loadData();
         }
+        autoScrollLeftToRight();
+    }
+
+    public void autoScrollLeftToRight() {
+        if (!isHistoryForm()) {
+            formLayout.post(new Runnable() {
+                public void run() {
+                    formLayout.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
+                }
+            });
+        }
     }
 
     private void loadData() {

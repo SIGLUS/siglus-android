@@ -52,7 +52,7 @@ Feature: Requisition
     And I press "Next"
     And I should see empty consultations number
     Then I enter consultationsNub "888"
-    Then I swipe right
+    Then I swipe to the left in via requisition form
     Then I should see "113" on index "1" of "tx_theoretical" field
     Then I swipe right
     Then I swipe right
