@@ -3,7 +3,7 @@ Feature: After version upgrade, data integrity should not be broken
 
   Scenario: After version upgrade, user should still be able to use all pages with proper data
     When I try to log in with "marracuene" "password1"
-    And I wait up to 120 seconds for "Stock Card Overview" to appear
+    And I wait up to 180 seconds for "Stock Card Overview" to appear
     # to run this in a physical device, we need to wait longer, IO is slow on physical devices
 
     #after upgrade, user should still be able to see stock cards and stock movements history

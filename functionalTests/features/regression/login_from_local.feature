@@ -5,7 +5,7 @@ Feature: Log in from local
 
     Given I enable wifi
     Given I try to log in with "superuser" "password1"
-    And I wait up to 120 seconds for "Initial Inventory" to appear
+    And I wait up to 180 seconds for "Initial Inventory" to appear
     Then I wait for "Initial inventory" to appear
     When I search product by fnm "08L01X" and select this item with quantity "888"
     Then I press "Complete"
@@ -19,5 +19,5 @@ Feature: Log in from local
     Then I wait for the "LoginActivity" screen to appear
     And I wait for 1 second
     Then I try to log in with "superuser" "password1"
-    And I wait up to 120 seconds for "Stock Card Overview" to appear
+    And I wait up to 180 seconds for "Stock Card Overview" to appear
     And I enable wifi

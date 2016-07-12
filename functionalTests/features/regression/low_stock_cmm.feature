@@ -4,7 +4,7 @@ Feature: low stock
   Scenario: Calculate low stock and cmm without stock out in 3 months
   Given I change device date to "20160216.130000"
   Given I try to log in with "superuser" "password1"
-  And I wait up to 120 seconds for "Initial Inventory" to appear
+  And I wait up to 180 seconds for "Initial Inventory" to appear
 
   When I search product by primary name "Digoxina 0,25mg Comp" and select this item with quantity "500"
   And I wait for "Complete" to appear

@@ -11,7 +11,7 @@ Feature: Log in and initialize Inventory
 
     # Initialize inventory and check stock card overview
     Given I try to log in with "superuser" "password1"
-    And I wait up to 120 seconds for "Initial Inventory" to appear
+    And I wait up to 180 seconds for "Initial Inventory" to appear
     # to run this in a physical device, we need to wait longer, IO is slow on physical devices
 
     # 01A01, 01A02, 01A03Z, 01A04Z, 01A05
@@ -172,7 +172,7 @@ Feature: Log in and initialize Inventory
     And I navigate back
     And I wait for 2 seconds
     And I try to log in with "superuser" "password1"
-    And I wait up to 120 seconds for "STOCK CARD OVERVIEW" to appear
+    And I wait up to 180 seconds for "STOCK CARD OVERVIEW" to appear
 
     And I press "Inventory"
     And I wait for "Inventory" to appear

@@ -4,7 +4,7 @@ Feature: Unpack Kit
   Scenario: Unpack US kit and verify kit products SOH
     Given I change device date to "20160216.130000"
     And I try to log in with "kit" "password1"
-    And I wait up to 120 seconds for "Initial Inventory" to appear
+    And I wait up to 180 seconds for "Initial Inventory" to appear
     Then I wait for "Initial inventory" to appear
     When I search product by fnm "02E02" and select this item with quantity "888"
     When I search product by fnm "15C0ZY" and select this item with quantity "2"
@@ -160,7 +160,7 @@ Feature: Unpack Kit
     Then I see "Sync Data"
     And I press "Sync Data"
 
-    And I wait up to 120 seconds for "0 minutes since last sync" to appear
+    And I wait up to 180 seconds for "0 minutes since last sync" to appear
     And I click the last sync banner
     Then I see "Requisition last synced 0 minutes ago"
     Then I go back
