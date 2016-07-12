@@ -121,12 +121,17 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         ProductProgram productProgram = new ProductProgram();
         productProgram.setCategory("Adult");
         when(productProgramRepository.queryByCode(anyString(), anyList())).thenReturn(productProgram);
-        when(mockProgramRepository.queryProgramCodesByProgramCodeOrParentCode(anyString())).thenReturn(newArrayList("MMIA"));
+        List<String> mmiaCodes = newArrayList("MMIA");
+        when(mockProgramRepository.queryProgramCodesByProgramCodeOrParentCode(anyString())).thenReturn(mmiaCodes);
+        List<Long> mmiaProductIds = new ArrayList<>();
+        when(productProgramRepository.queryActiveProductIdsByProgramsWithKits(mmiaCodes, false)).thenReturn(mmiaProductIds);
+        Product someProduct = new Product();
+        when(mockProductRepository.queryProductsByProductIds(mmiaProductIds)).thenReturn(newArrayList(product, someProduct));
 
         RnRForm form = mmiaRepository.initNormalRnrForm(null);
-        assertThat(form.getRnrFormItemList().size(), is(24));
+        assertThat(form.getRnrFormItemList().size(), is(2));
 
-        RnrFormItem item = form.getRnrFormItemListWrapper().get(1);
+        RnrFormItem item = form.getRnrFormItemListWrapper().get(0);
         assertThat(item.getReceived(), is(20L));
         assertThat(item.getIssued(), is(10L));
         assertThat(item.getAdjustment(), is(30L));
@@ -179,15 +184,6 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         assertThat(expectRegimeTotal, is(regimenTotal));
 
         assertThat(mmiaRepository.getTotalPatients(initForm), is(mmiaRepository.getTotalPatients(DBForm)));
-    }
-
-    @Test
-    public void shouldInflateMMIAProducts() throws Exception {
-        when(mockPeriodService.generateNextPeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime("2016-12-27"), new DateTime("2017-01-20")));
-
-        RnRForm rnRFormTest = mmiaRepository.initNormalRnrForm(null);
-
-        assertThat(rnRFormTest.getRnrFormItemListWrapper().size(), is(24));
     }
 
     @Test
