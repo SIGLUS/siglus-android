@@ -23,7 +23,6 @@ import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.StyleRes;
 import android.util.Log;
@@ -264,10 +263,6 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
 
     public void saveString(String key, String value) {
         preferencesMgr.getPreference().edit().putString(key, value).apply();
-    }
-
-    public SharedPreferences getPreferences() {
-        return preferencesMgr.getPreference();
     }
 
     public void startActivity(Class activityName, boolean closeThis) {

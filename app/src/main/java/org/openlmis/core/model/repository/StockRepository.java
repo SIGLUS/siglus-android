@@ -23,8 +23,6 @@ import android.database.Cursor;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.table.TableUtils;
 
 import org.openlmis.core.LMISApp;
@@ -201,12 +199,6 @@ public class StockRepository {
         return stockCards;
     }
 
-    private List<StockCard> list(String programCode) throws LMISException {
-        List<String> programCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode(programCode);
-        List<Long> productIds = productProgramRepository.queryActiveProductIdsByProgramsWithKits(programCodes, false);
-        return listStockCardsByProductIds(productIds);
-    }
-
     public boolean hasStockData() {
         try {
             List<StockCard> list = list();
@@ -217,23 +209,6 @@ public class StockRepository {
             e.reportToFabric();
         }
         return false;
-    }
-
-    private List<StockCard> listActiveStockCards(final List<Long> programIds, final boolean isWithKit) throws LMISException {
-        return dbUtil.withDao(StockCard.class, new DbUtil.Operation<StockCard, List<StockCard>>() {
-            @Override
-            public List<StockCard> operate(Dao<StockCard, String> dao) throws SQLException, LMISException {
-                QueryBuilder<Product, String> productQueryBuilder = DbUtil.initialiseDao(Product.class).queryBuilder();
-
-                Where<Product, String> where = productQueryBuilder.where();
-                where.in("program_id", programIds).and().eq("isActive", true).and().eq("isArchived", false);
-
-                if (!isWithKit) {
-                    where.and().eq("isKit", false);
-                }
-                return dao.queryBuilder().join(productQueryBuilder).query();
-            }
-        });
     }
 
     private List<StockCard> listStockCardsByProductIds(final List<Long> productIds) throws LMISException {
