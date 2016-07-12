@@ -143,9 +143,9 @@ public class LoginPresenterTest {
 
         verify(mockedApi).authorizeUser(any(User.class), loginCB.capture());
 
-        List<String> supportedPrograms = newArrayList("PR", "PR@");
+        List<Program> supportedPrograms = newArrayList(new ProgramBuilder().build(), new ProgramBuilder().build());
 
-        userResponse.getUserInformation().setFacilitySupportedPrograms(supportedPrograms);
+        userResponse.setFacilitySupportedPrograms(supportedPrograms);
         loginCB.getValue().success(userResponse, retrofitResponse);
 
         verify(userRepository).createOrUpdate(any(User.class));

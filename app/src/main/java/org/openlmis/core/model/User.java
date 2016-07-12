@@ -22,8 +22,6 @@ package org.openlmis.core.model;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -54,9 +52,6 @@ public class User extends BaseModel{
 
     @DatabaseField
     String facilityId;
-
-    @Deprecated
-    List<String> facilitySupportedPrograms;
 
     public User(String username, String password){
         this.username = username;

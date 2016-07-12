@@ -27,7 +27,6 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
 import org.roboguice.shaded.goole.common.base.Function;

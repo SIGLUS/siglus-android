@@ -32,11 +32,6 @@ public class UserBuilder {
         return this;
     }
 
-    public UserBuilder setSupportPrograms(List<String> supportPrograms) {
-        user.setFacilitySupportedPrograms(supportPrograms);
-        return this;
-    }
-
     public User build() {
         return user;
     }
@@ -46,7 +41,6 @@ public class UserBuilder {
                 .setPassword("password")
                 .setFacilityName("Facility Name")
                 .setFacilityCode("facility_code")
-                .setSupportPrograms(Arrays.asList("VIA", "MMIA"))
                 .build();
     }
 }
