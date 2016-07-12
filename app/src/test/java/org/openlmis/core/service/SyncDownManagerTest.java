@@ -14,12 +14,14 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.builder.ProductBuilder;
+import org.openlmis.core.model.builder.ProductProgramBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
@@ -83,7 +85,6 @@ public class SyncDownManagerTest {
 
     private ProductRepository productRepository;
     private Product productWithKits;
-    private Product newProductWithoutPrograms;
     private StockService stockService;
 
     @Before
@@ -288,16 +289,9 @@ public class SyncDownManagerTest {
         productWithKits = new Product();
         productWithKits.setCode("ABC");
         productAndSupportedPrograms.setProduct(productWithKits);
-        productAndSupportedPrograms.setSupportedPrograms(newArrayList("PR"));
+        ProductProgram productProgram = new ProductProgramBuilder().setProductCode("ABC").setProgramCode("PR").setActive(true).build();
+        productAndSupportedPrograms.setProductPrograms(newArrayList(productProgram));
         productsAndSupportedPrograms.add(productAndSupportedPrograms);
-
-        ProductAndSupportedPrograms productWithoutSupportedPrograms = new ProductAndSupportedPrograms();
-        newProductWithoutPrograms = new Product();
-        newProductWithoutPrograms.setCode("ABCD");
-        productWithoutSupportedPrograms.setProduct(newProductWithoutPrograms);
-        productWithoutSupportedPrograms.setSupportedPrograms(null);
-
-        productsAndSupportedPrograms.add(productWithoutSupportedPrograms);
 
         SyncDownLatestProductsResponse response = new SyncDownLatestProductsResponse();
         response.setLatestUpdatedTime("today");

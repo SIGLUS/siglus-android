@@ -228,16 +228,6 @@ public class SyncDownManager {
         }
     }
 
-    private Product assignProgramFromResponseToProduct(ProductAndSupportedPrograms productAndSupportedPrograms) throws LMISException {
-        Product product = productAndSupportedPrograms.getProduct();
-        //product can only have one program now
-        if (productAndSupportedPrograms.getSupportedPrograms() != null && !productAndSupportedPrograms.getSupportedPrograms().isEmpty()) {
-            Program program = programRepository.queryByCode(productAndSupportedPrograms.getSupportedPrograms().get(0));
-            product.setProgram(program);
-        }
-        return product;
-    }
-
     private SyncDownLatestProductsResponse getSyncDownLatestProductResponse() throws LMISException {
         return lmisRestApi.fetchLatestProducts(sharedPreferenceMgr.getLastSyncProductTime());
     }

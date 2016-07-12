@@ -10,8 +10,6 @@ import lombok.Data;
 @Data
 public class ProductAndSupportedPrograms {
 
-    @Deprecated
-    private List<String> supportedPrograms;
     private Product product;
     private List<ProductProgram> productPrograms;
 }

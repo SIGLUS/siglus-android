@@ -355,9 +355,14 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         StockCard stockCard = new StockCard();
         Program program = createNewProgram(code, parentCode, isEmergency);
         programRepository.createOrUpdate(program);
-
-        product.setProgram(program);
         productRepository.createOrUpdate(product);
+
+        ProductProgram productProgram = new ProductProgramBuilder()
+                .setProductCode(product.getCode())
+                .setProgramCode(program.getProgramCode())
+                .setActive(true).build();
+
+        productProgramRepository.createOrUpdate(productProgram);
 
         stockCard.setProduct(product);
         stockCard.setCreatedAt(new Date());
