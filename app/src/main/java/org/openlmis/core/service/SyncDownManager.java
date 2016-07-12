@@ -27,7 +27,6 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;

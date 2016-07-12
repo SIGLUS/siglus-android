@@ -25,8 +25,6 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
@@ -39,8 +37,6 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.Callable;
-
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public class ProgramRepository {
 

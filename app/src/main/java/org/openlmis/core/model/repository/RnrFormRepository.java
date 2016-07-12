@@ -24,8 +24,6 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.Where;
 
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Period;

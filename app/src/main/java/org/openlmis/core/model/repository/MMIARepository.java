@@ -24,7 +24,6 @@ import android.content.Context;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
@@ -44,8 +43,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.inject.InjectResource;
-
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 public class MMIARepository extends RnrFormRepository {
 

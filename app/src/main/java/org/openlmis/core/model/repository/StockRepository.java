@@ -33,7 +33,6 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.StockMovementIsNullException;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
@@ -389,20 +388,20 @@ public class StockRepository {
     public Date queryEarliestStockMovementDateByProgram(final String programCode) throws LMISException {
         Date earliestDate = null;
 
-        String rawSql = "SELECT movementDate FROM stock_items s1 " +
-                "JOIN stock_cards s2 " +
-                "ON s1.stockCard_id = s2.id " +
-                "JOIN products p1 " +
-                "ON s2.product_id = p1.id " +
-                "JOIN product_programs p2 " +
-                "ON p2.productCode = p1.code " +
-                "JOIN programs p3 " +
-                "ON p2.programCode = p3.programCode " +
-                "WHERE p1.isActive = 1 " +
-                "AND p1.isArchived = 0 " +
-                "AND p2.isActive = 1 " +
-                "AND p3.programCode = '" + programCode + "' " +
-                "OR p3.parentCode = '" + programCode + "'";
+        String rawSql = "SELECT movementDate FROM stock_items s1 "
+                + "JOIN stock_cards s2 "
+                + "ON s1.stockCard_id = s2.id "
+                + "JOIN products p1 "
+                + "ON s2.product_id = p1.id "
+                + "JOIN product_programs p2 "
+                + "ON p2.productCode = p1.code "
+                + "JOIN programs p3 "
+                + "ON p2.programCode = p3.programCode "
+                + "WHERE p1.isActive = 1 "
+                + "AND p1.isArchived = 0 "
+                + "AND p2.isActive = 1 "
+                + "AND p3.programCode = '" + programCode + "' "
+                + "OR p3.parentCode = '" + programCode + "'";
         final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
         List<String> movementDates = new ArrayList<>();
         if (cursor.moveToFirst()) {
