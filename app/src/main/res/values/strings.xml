@@ -224,7 +224,7 @@
     <!-- Unpack Kit -->
     <string name="kit_number">Unpacking: %1$s %2$s kit</string>
     <string name="hint_quantity_in_unpack_kit">Quantity received</string>
-    <string name="label_unpack_kit_quantity_expected">Quantity expected</string>
+    <string name="label_unpack_kit_quantity_expected"><![CDATA[<small>Quantity expected</small>]]></string>
     <string name="label_unpack_kit_quantity_less_than_expected"><![CDATA[<b>Smaller</b>]]> quantity entered than expected. Please recheck it</string>
     <string name="label_unpack_kit_quantity_more_than_expected"><![CDATA[<b>Larger</b>]]> quantity entered than expected. Please recheck it</string>
 
@@ -271,7 +271,7 @@
     <string name="btn_mmia_list_old">See previous MMIAs History</string>
 
     <string name="mmia_list">MMIA</string>
-    <string name="requisition_list">Via Classica Requisitions</string>
+    <string name="requisition_list">Requisições Balancete</string>
     <string name="label_total">Total:%1$s</string>
     <string name="requisition_delete_failed">Delete Failed</string>
 

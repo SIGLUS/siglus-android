@@ -212,9 +212,9 @@ Feature: Log in and initialize Inventory
     And I wait for 1 second
     And I navigate back
     And I wait for "STOCK CARD OVERVIEW" to appear
-    And I press "Via Classica Requisitions"
+    And I press "Requisições Balancete"
 
-    Then I wait for "Via Classica Requisitions" to appear
+    Then I wait for "Requisições Balancete" to appear
     Then I should see text containing "Create Via Classica Requisition"
 
     When I press "Create Via Classica Requisition"
@@ -229,7 +229,7 @@ Feature: Log in and initialize Inventory
     When I navigate back
     Then I wait to see "Are you sure you want to quit without saving your work?"
     When I press "Yes"
-    Then I wait for "Via Classica Requisitions" to appear
+    Then I wait for "Requisições Balancete" to appear
     When I navigate back
     Then I wait for "STOCK CARD OVERVIEW" to appear
     When I press "MMIA"
@@ -297,8 +297,8 @@ Feature: Log in and initialize Inventory
     And I wait for 1 second
     And I navigate back
     And I wait for "STOCK CARD OVERVIEW" to appear
-    And I press "Via Classica Requisitions"
-    Then I wait for "Via Classica Requisitions" to appear
+    And I press "Requisições Balancete"
+    Then I wait for "Requisições Balancete" to appear
     Then I should see text containing "Create Via Classica Requisition"
 
     When I press "Create Via Classica Requisition"
@@ -312,7 +312,7 @@ Feature: Log in and initialize Inventory
     When I navigate back
     Then I wait to see "Are you sure you want to quit without saving your work?"
     When I press "Yes"
-    Then I wait for "Via Classica Requisitions" to appear
+    Then I wait for "Requisições Balancete" to appear
     When I navigate back
     Then I wait for "STOCK CARD OVERVIEW" to appear
     And I press the menu key

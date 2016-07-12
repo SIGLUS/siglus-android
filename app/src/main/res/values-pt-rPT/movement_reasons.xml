@@ -21,7 +21,7 @@
         <item>NEGATIVE_ADJUST|LOANS_DEPOSIT|Empréstimo (de todos os Níveis) que dão saída do Depósito</item>
         <item>NEGATIVE_ADJUST|INVENTORY_NEGATIVE|Correção do Inventário, no caso de excesso de stock (stock é superior ao existente na ficha)</item>
         <item>NEGATIVE_ADJUST|PROD_DEFECTIVE|Saída para Quarentena no Caso de Problemas relativos as Qualidade</item>
-        <item>NEGATIVE_ADJUST|RETURN_TO_DDM|Return to DDM</item>
+        <item>NEGATIVE_ADJUST|RETURN_TO_DDM|Devolução para o depósito fornecedor</item>
 
         <item>POSITIVE_ADJUST|CUSTOMER_RETURN|Devolução dos seus dependentes (US e Depósitos Beneficiários)</item>
         <item>POSITIVE_ADJUST|EXPIRED_RETURN_FROM_CUSTOMER|Devolução de Expirados (US e Depósitos Beneficiários)</item>

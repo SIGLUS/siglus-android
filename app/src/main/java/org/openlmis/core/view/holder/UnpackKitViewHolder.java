@@ -23,7 +23,7 @@ public class UnpackKitViewHolder extends PhysicalInventoryViewHolder {
     public UnpackKitViewHolder(View itemView) {
         super(itemView);
         vg_soh_pop = (ViewGroup) itemView.findViewById(R.id.vg_soh_pop);
-        etQuantity.setHint(R.string.hint_quantity_in_unpack_kit);
+        etQuantity.setHint(Html.fromHtml(context.getString(R.string.hint_quantity_in_unpack_kit)));
     }
 
     public void populate(InventoryViewModel inventoryViewModel) {

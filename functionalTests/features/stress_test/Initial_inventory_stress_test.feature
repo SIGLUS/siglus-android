@@ -21,8 +21,8 @@ Feature: Initial inventory and VIA requisition
  #   And I change device date to "20160121.130000"
  #   Given I try to log in with "initial_inventory" "password1"
  #   And I wait up to 120 seconds for "STOCK CARD OVERVIEW" to appear
- #   And I press "Via Classica Requisitions"
- #   And I wait for "Via Classica Requisitions" to appear
+ #   And I press "Requisições Balancete"
+ #   And I wait for "Requisições Balancete" to appear
  #   Then I should see text containing "No Via Classica Requisition has been created."
 
  #   And I press "Complete Inventory"
@@ -30,7 +30,7 @@ Feature: Initial inventory and VIA requisition
 
  #   Then I do physical inventory for all items
 
- #   Then I wait up to 300 seconds for "Via Classica Requisitions" to appear
+ #   Then I wait up to 300 seconds for "Requisições Balancete" to appear
  #   Then I should see text containing "Create Via Classica Requisition"
 
  #   And I press "Create Via Classica Requisition"
@@ -38,4 +38,4 @@ Feature: Initial inventory and VIA requisition
  #   Then I navigate back
  #   Then I wait to see "Are you sure you want to quit without saving your work?"
  #   Then I press "Yes"
- #   Then I wait for "Via Classica Requisitions" to appear
+ #   Then I wait for "Requisições Balancete" to appear
