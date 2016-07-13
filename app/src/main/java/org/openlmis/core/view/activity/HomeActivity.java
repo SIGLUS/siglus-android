@@ -37,12 +37,10 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
-import org.openlmis.core.model.service.PeriodService;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
@@ -82,9 +80,6 @@ public class HomeActivity extends BaseActivity {
     @Inject
     SyncService syncService;
 
-    @Inject
-    PeriodService periodService;
-
     private boolean exitPressedOnce = false;
 
     @Override
@@ -104,14 +99,6 @@ public class HomeActivity extends BaseActivity {
             setTitle(UserInfoMgr.getInstance().getFacilityName());
             syncTimeView = (SyncTimeView) findViewById(R.id.view_sync_time);
             missedRequisitionBanner = (MissedRequisitionBanner) findViewById(R.id.view_missed_requisition_banner);
-
-            try {
-                if (!periodService.hasMissedPeriod("VIA") && !periodService.hasMissedPeriod("MMIA")) {
-                    missedRequisitionBanner.setVisibility(View.GONE);
-                }
-            } catch (LMISException e) {
-                e.printStackTrace();
-            }
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             }

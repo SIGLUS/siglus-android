@@ -32,11 +32,8 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
-import org.openlmis.core.model.service.PeriodService;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.view.widget.MissedRequisitionBanner;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.fakes.RoboMenuItem;
@@ -55,7 +52,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
@@ -64,14 +60,12 @@ public class HomeActivityTest {
     private HomeActivity homeActivity;
     private LMISTestApp testApp;
     protected SharedPreferenceMgr sharedPreferenceMgr;
-    PeriodService periodService;
 
     @Before
     public void setUp() {
         testApp = (LMISTestApp) RuntimeEnvironment.application;
         homeActivity = Robolectric.buildActivity(HomeActivity.class).create().get();
         sharedPreferenceMgr = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SharedPreferenceMgr.class);
-        periodService = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(PeriodService.class);
     }
 
     @Test
@@ -206,14 +200,5 @@ public class HomeActivityTest {
 
         String toastMessage = ShadowToast.getTextOfLatestToast();
         assertThat(toastMessage, is(LMISApp.getInstance().getString(R.string.message_wipe_no_connection)));
-    }
-
-    @Test
-    public void shouldShowBannerWhenThereIsIncompleteRequisition() throws LMISException {
-        periodService = mock(PeriodService.class);
-        when(periodService.hasMissedPeriod("VIA")).thenReturn(true);
-
-        MissedRequisitionBanner missedRequisitionBanner = (MissedRequisitionBanner) homeActivity.findViewById(R.id.view_missed_requisition_banner);
-        assertNotNull(missedRequisitionBanner);
     }
 }

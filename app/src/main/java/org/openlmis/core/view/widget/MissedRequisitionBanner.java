@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -44,7 +45,15 @@ public class MissedRequisitionBanner extends LinearLayout {
         LayoutInflater.from(context).inflate(R.layout.view_missed_requisition_banner, this);
         RoboGuice.injectMembers(getContext(), this);
         RoboGuice.getInjector(getContext()).injectViewMembers(this);
-        setMissedRequisitionBannerUI();
+        try {
+            if (periodService.hasMissedPeriod("VIA") || periodService.hasMissedPeriod("MMIA")) {
+                setMissedRequisitionBannerUI();
+            } else {
+                this.setVisibility(View.GONE);
+            }
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setMissedRequisitionBannerUI() {
