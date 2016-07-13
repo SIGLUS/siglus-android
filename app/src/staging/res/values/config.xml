@@ -7,7 +7,7 @@
     <string name="ga_trackingId">UA-72363211-6</string>
     <bool name="ga_dryRun">false</bool>
     
-    <string name="app_name">ESMS DEMO</string>
+    <string name="app_name">@string/app_name_in_demo</string>
 
     <string name="app_time_out">3600000</string>
 </resources>

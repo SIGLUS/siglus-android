@@ -7,7 +7,7 @@
     <string name="ga_trackingId">UA-72363211-5</string>
     <bool name="ga_dryRun">false</bool>
 
-    <string name="app_name">LMIS</string>
+    <string name="app_name">@string/app_name_in_prd</string>
 
     <string name="app_time_out">3600000</string>
 </resources>

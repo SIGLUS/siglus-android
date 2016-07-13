@@ -329,4 +329,13 @@
     <string name="msg_emergency_requisition_cant_edit">This information is not used when creating an emergency requisition</string>
     <string name="document_number">Document number</string>
 
+    <!--App Name In Different Environment-->
+    <string name="app_name_in_local">ESMS LOCAL</string>
+    <string name="app_name_in_prodsim">ESMS PRODSIM</string>
+    <string name="app_name_in_prd">LMIS</string>
+    <string name="app_name_in_qa">ESMS QA</string>
+    <string name="app_name_in_regression">ESMS REGRESSION</string>
+    <string name="app_name_in_showcase">ESMS SHOWCASE</string>
+    <string name="app_name_in_demo">ESMS DEMO</string>
+    <string name="app_name_in_upgrade">ESMS UPGRADE</string>
 </resources>
