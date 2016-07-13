@@ -36,7 +36,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.service.PeriodService;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
+import org.openlmis.core.view.widget.MissedRequisitionBanner;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.fakes.RoboMenuItem;
@@ -213,7 +213,7 @@ public class HomeActivityTest {
         periodService = mock(PeriodService.class);
         when(periodService.hasMissedPeriod("VIA")).thenReturn(true);
 
-        IncompleteRequisitionBanner incompleteRequisitionBanner = (IncompleteRequisitionBanner) homeActivity.findViewById(R.id.view_incomplete_requisition_banner);
-        assertNotNull(incompleteRequisitionBanner);
+        MissedRequisitionBanner missedRequisitionBanner = (MissedRequisitionBanner) homeActivity.findViewById(R.id.view_missed_requisition_banner);
+        assertNotNull(missedRequisitionBanner);
     }
 }

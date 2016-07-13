@@ -48,7 +48,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
-import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
+import org.openlmis.core.view.widget.MissedRequisitionBanner;
 import org.openlmis.core.view.widget.SyncTimeView;
 
 import roboguice.inject.ContentView;
@@ -64,7 +64,7 @@ public class HomeActivity extends BaseActivity {
     @InjectView(R.id.btn_inventory)
     Button btnInventory;
 
-    IncompleteRequisitionBanner incompleteRequisitionBanner;
+    MissedRequisitionBanner missedRequisitionBanner;
     SyncTimeView syncTimeView;
 
     @InjectView(R.id.btn_mmia_list)
@@ -103,11 +103,11 @@ public class HomeActivity extends BaseActivity {
         } else {
             setTitle(UserInfoMgr.getInstance().getFacilityName());
             syncTimeView = (SyncTimeView) findViewById(R.id.view_sync_time);
-            incompleteRequisitionBanner = (IncompleteRequisitionBanner) findViewById(R.id.view_incomplete_requisition_banner);
+            missedRequisitionBanner = (MissedRequisitionBanner) findViewById(R.id.view_missed_requisition_banner);
 
             try {
                 if (!periodService.hasMissedPeriod("VIA") && !periodService.hasMissedPeriod("MMIA")) {
-                    incompleteRequisitionBanner.setVisibility(View.GONE);
+                    missedRequisitionBanner.setVisibility(View.GONE);
                 }
             } catch (LMISException e) {
                 e.printStackTrace();

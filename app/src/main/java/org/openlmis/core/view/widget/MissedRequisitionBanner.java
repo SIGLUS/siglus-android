@@ -20,28 +20,28 @@ import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
 
-public class IncompleteRequisitionBanner extends LinearLayout {
-    @InjectView(R.id.tx_incomplete_requisition)
-    TextView txIncompleteRequisition;
+public class MissedRequisitionBanner extends LinearLayout {
+    @InjectView(R.id.tx_missed_requisition)
+    TextView txMissedRequisition;
 
     @Inject
     PeriodService periodService;
 
     protected Context context;
 
-    public IncompleteRequisitionBanner(Context context) {
+    public MissedRequisitionBanner(Context context) {
         super(context);
         init(context);
     }
 
-    public IncompleteRequisitionBanner(Context context, AttributeSet attrs) {
+    public MissedRequisitionBanner(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
     private void init(Context context) {
         this.context = context;
-        LayoutInflater.from(context).inflate(R.layout.view_incomplete_requisition_banner, this);
+        LayoutInflater.from(context).inflate(R.layout.view_missed_requisition_banner, this);
         RoboGuice.injectMembers(getContext(), this);
         RoboGuice.getInjector(getContext()).injectViewMembers(this);
         setMissedRequisitionBannerUI();
@@ -53,19 +53,19 @@ public class IncompleteRequisitionBanner extends LinearLayout {
             int periodOffsetMonthVia = periodService.getMissedPeriodOffsetMonth("VIA");
             if (periodOffsetMonthMmia == 1 && periodOffsetMonthVia == 1) {
                 String periodRange = getPeriodRangeForMissedRequisition("VIA");
-                txIncompleteRequisition.setText(getResources().getString(R.string.via_and_mmia_requisition_alert, periodRange));
+                txMissedRequisition.setText(getResources().getString(R.string.via_and_mmia_requisition_alert, periodRange));
             } else if (periodOffsetMonthMmia == 0 && periodOffsetMonthVia == 1) {
                 String periodRange = getPeriodRangeForMissedRequisition("VIA");
-                txIncompleteRequisition.setText(getResources().getString(R.string.via_requisition_alert, periodRange));
+                txMissedRequisition.setText(getResources().getString(R.string.via_requisition_alert, periodRange));
             } else if (periodOffsetMonthMmia == 1 && periodOffsetMonthVia == 0) {
                 String periodRange = getPeriodRangeForMissedRequisition("MMIA");
-                txIncompleteRequisition.setText(getResources().getString(R.string.mmia_requisition_alert, periodRange));
+                txMissedRequisition.setText(getResources().getString(R.string.mmia_requisition_alert, periodRange));
             } else if (periodOffsetMonthMmia == 0 && periodOffsetMonthVia > 1) {
-                txIncompleteRequisition.setText(getResources().getString(R.string.via_requisition_for_multiple_periods_alert));
+                txMissedRequisition.setText(getResources().getString(R.string.via_requisition_for_multiple_periods_alert));
             } else if (periodOffsetMonthMmia > 1 && periodOffsetMonthVia == 0) {
-                txIncompleteRequisition.setText(getResources().getString(R.string.mmia_requisition_for_multiple_periods_alert));
+                txMissedRequisition.setText(getResources().getString(R.string.mmia_requisition_for_multiple_periods_alert));
             } else {
-                txIncompleteRequisition.setText(getResources().getString(R.string.via_and_mmia_requisitions_for_multiple_periods_alert));
+                txMissedRequisition.setText(getResources().getString(R.string.via_and_mmia_requisitions_for_multiple_periods_alert));
             }
         } catch (LMISException e) {
             e.printStackTrace();
