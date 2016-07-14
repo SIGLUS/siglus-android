@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.model.StockCard;
@@ -64,7 +65,8 @@ public class VIARequisitionActivity extends BaseActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean isPrepare = super.onPrepareOptionsMenu(menu);
-        menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(true);
+        boolean featureToggleForAddDrugsToVIA = LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_drugs_to_via_form);
+        menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(featureToggleForAddDrugsToVIA);
         return isPrepare;
     }
 
