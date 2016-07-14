@@ -431,10 +431,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @Override
     public void showMessageNotifyDialog() {
         SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
-                getString(R.string.msg_requisition_signature_message_notify_via),
-                getString(R.string.btn_continue),
-                null,
-                TAG_SHOW_MESSAGE_NOTIFY_DIALOG);
+                getString(R.string.msg_requisition_signature_message_notify_via), getString(R.string.btn_continue), null, TAG_SHOW_MESSAGE_NOTIFY_DIALOG);
 
         dialogFragment.show(getActivity().getFragmentManager(), TAG_SHOW_MESSAGE_NOTIFY_DIALOG);
     }
@@ -487,10 +484,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
         if (hasDataChanged()) {
             SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
-                    getString(R.string.msg_mmia_onback_confirm),
-                    getString(R.string.btn_positive),
-                    getString(R.string.btn_negative),
-                    TAG_BACK_PRESSED);
+                    getString(R.string.msg_mmia_onback_confirm), getString(R.string.btn_positive), getString(R.string.btn_negative), TAG_BACK_PRESSED);
             dialogFragment.show(getActivity().getFragmentManager(), "back_confirm_dialog");
             dialogFragment.setCallBackListener(this);
         } else {
