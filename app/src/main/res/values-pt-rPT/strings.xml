@@ -315,4 +315,8 @@
     <string name="mmia_requisition_for_multiple_periods_alert">Your MMIA requisitions for multiple periods have not been completed</string>
     <string name="via_and_mmia_requisitions_for_multiple_periods_alert">Your MMIA and VIA requisitions for multiple periods have not been completed</string>
     <string name="missed_requisition_time_range">%1$s to %2$s</string>
+
+    <!-- Add products to requisition form -->
+    <string name="label_add_new_drugs_to_via">Adicionar produtos</string>
+    <string name="title_add_drugs_to_form">Adicionar produtos para Requisição</string>
 </resources>

@@ -20,6 +20,8 @@ package org.openlmis.core.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
@@ -50,6 +52,31 @@ public class VIARequisitionActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         ((VIARequisitionFragment) getFragmentManager().findFragmentById(R.id.fragment_requisition)).onBackPressed();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_via_requisition, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean isPrepare = super.onPrepareOptionsMenu(menu);
+        menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(true);
+        return isPrepare;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add_new_drugs_to_via:
+                startActivity(AddDrugsToFormActivity.getIntentToMe(this));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public static Intent getIntentToMe(Context context, long formId) {
