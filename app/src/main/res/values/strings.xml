@@ -224,7 +224,7 @@
     <!-- Unpack Kit -->
     <string name="kit_number">Unpacking: %1$s %2$s kit</string>
     <string name="hint_quantity_in_unpack_kit">Quantity received</string>
-    <string name="label_unpack_kit_quantity_expected"><![CDATA[<small>Quantity expected</small>]]></string>
+    <string name="label_unpack_kit_quantity_expected">Quantity expected</string>
     <string name="label_unpack_kit_quantity_less_than_expected"><![CDATA[<b>Smaller</b>]]> quantity entered than expected. Please recheck it</string>
     <string name="label_unpack_kit_quantity_more_than_expected"><![CDATA[<b>Larger</b>]]> quantity entered than expected. Please recheck it</string>
 
