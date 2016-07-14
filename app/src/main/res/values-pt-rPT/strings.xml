@@ -319,4 +319,5 @@
     <!-- Add products to requisition form -->
     <string name="label_add_new_drugs_to_via">Adicionar produtos</string>
     <string name="title_add_drugs_to_form">Adicionar produtos para Requisição</string>
+    <string name="label_hint_amount_requisition">Amount requested</string>
 </resources>

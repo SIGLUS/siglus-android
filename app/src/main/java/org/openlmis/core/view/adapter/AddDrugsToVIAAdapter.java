@@ -17,7 +17,7 @@ public class AddDrugsToVIAAdapter extends InventoryListAdapter<AddDrugsToFormVie
 
     @Override
     public AddDrugsToFormViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new AddDrugsToFormViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_select_product, parent, false));
+        return new AddDrugsToFormViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_select_product_in_via, parent, false));
     }
 
     @Override
