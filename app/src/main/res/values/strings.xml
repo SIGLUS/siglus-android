@@ -339,9 +339,9 @@
     <string name="app_name_in_demo">ESMS DEMO</string>
     <string name="app_name_in_upgrade">ESMS UPGRADE</string>
     <!--Missed Requisition Banner-->
-    <string name="via_and_mmia_requisition_alert">Your MMIA and VIA requisitions for %1$s have not been completed</string>
-    <string name="via_requisition_alert">Your VIA requisition for %1$s has not been completed</string>
-    <string name="mmia_requisition_alert">Your MMIA requisition for %1$s has not been completed</string>
+    <string name="via_and_mmia_requisition_alert">Your MMIA and VIA requisitions for <![CDATA[<b>%1$s</b>]]> have not been completed</string>
+    <string name="via_requisition_alert">Your VIA requisition for <![CDATA[<b>%1$s</b>]]> has not been completed</string>
+    <string name="mmia_requisition_alert">Your MMIA requisition for <![CDATA[<b>%1$s</b>]]> has not been completed</string>
     <string name="via_requisition_for_multiple_periods_alert">Your VIA requisitions for multiple periods have not been completed</string>
     <string name="mmia_requisition_for_multiple_periods_alert">Your MMIA requisitions for multiple periods have not been completed</string>
     <string name="via_and_mmia_requisitions_for_multiple_periods_alert">Your MMIA and VIA requisitions for multiple periods have not been completed</string>

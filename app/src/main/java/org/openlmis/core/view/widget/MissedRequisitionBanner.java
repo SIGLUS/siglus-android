@@ -2,6 +2,7 @@ package org.openlmis.core.view.widget;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,13 +63,13 @@ public class MissedRequisitionBanner extends LinearLayout {
             int periodOffsetMonthVia = periodService.getMissedPeriodOffsetMonth("VIA");
             if (periodOffsetMonthMmia == 1 && periodOffsetMonthVia == 1) {
                 String periodRange = getPeriodRangeForMissedRequisition("VIA");
-                txMissedRequisition.setText(getResources().getString(R.string.via_and_mmia_requisition_alert, periodRange));
+                txMissedRequisition.setText(Html.fromHtml(getResources().getString(R.string.via_and_mmia_requisition_alert, periodRange)));
             } else if (periodOffsetMonthMmia == 0 && periodOffsetMonthVia == 1) {
                 String periodRange = getPeriodRangeForMissedRequisition("VIA");
-                txMissedRequisition.setText(getResources().getString(R.string.via_requisition_alert, periodRange));
+                txMissedRequisition.setText(Html.fromHtml(getResources().getString(R.string.via_requisition_alert, periodRange)));
             } else if (periodOffsetMonthMmia == 1 && periodOffsetMonthVia == 0) {
                 String periodRange = getPeriodRangeForMissedRequisition("MMIA");
-                txMissedRequisition.setText(getResources().getString(R.string.mmia_requisition_alert, periodRange));
+                txMissedRequisition.setText(Html.fromHtml(getResources().getString(R.string.mmia_requisition_alert, periodRange)));
             } else if (periodOffsetMonthMmia == 0 && periodOffsetMonthVia > 1) {
                 txMissedRequisition.setText(getResources().getString(R.string.via_requisition_for_multiple_periods_alert));
             } else if (periodOffsetMonthMmia > 1 && periodOffsetMonthVia == 0) {

@@ -47,4 +47,7 @@
 
     <color name="color_warning_text_unpack_kit_pop">#8A6D3B</color>
 
+    <color name="color_requisition_banner_background">#E8D5D3</color>
+    <color name="color_requisition_banner_border">#E1BFC5</color>
+    <color name="color_requisition_banner_text">#9D3B3B</color>
 </resources>

@@ -6,94 +6,100 @@
     android:fillViewport="true">
 
     <LinearLayout
-        style="@style/Home.Container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <org.openlmis.core.view.widget.MissedRequisitionBanner
             android:id="@+id/view_missed_requisition_banner"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_normal" />
-
-        <Button
-            android:id="@+id/btn_stock_card"
-            style="@style/Homepage.Button"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@color/color_primary"
-            android:onClick="onClickStockCard"
-            android:text="@string/label_stock_cards" />
+            android:layout_height="wrap_content" />
 
         <LinearLayout
+            style="@style/Home.Container"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <Button
-                android:id="@+id/btn_inventory"
+                android:id="@+id/btn_stock_card"
                 style="@style/Homepage.Button"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginTop="20dp"
-                android:layout_weight="2"
-                android:background="@color/color_blue"
-                android:onClick="onClickInventory"
-                android:text="@string/button_inventory" />
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@color/color_primary"
+                android:onClick="onClickStockCard"
+                android:text="@string/label_stock_cards" />
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="3"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/btn_via_list"
+                    android:id="@+id/btn_inventory"
                     style="@style/Homepage.Button"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/color_purple"
-                    android:onClick="onClickVIAHistory"
-                    android:text="@string/requisition_list" />
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="2"
+                    android:background="@color/color_blue"
+                    android:onClick="onClickInventory"
+                    android:text="@string/button_inventory" />
 
-                <Button
-                    android:id="@+id/btn_mmia_list"
-                    style="@style/Homepage.Button"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
-                    android:background="@color/color_amber"
-                    android:onClick="onClickMMIAHistory"
-                    android:text="@string/mmia_list" />
+                    android:layout_weight="3"
+                    android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/btn_kit_stock_card"
-                    style="@style/Homepage.Button"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/color_teal"
-                    android:onClick="onClickKitStockCard"
-                    android:text="@string/label_kits_stock_cards" />
+                    <Button
+                        android:id="@+id/btn_via_list"
+                        style="@style/Homepage.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:background="@color/color_purple"
+                        android:onClick="onClickVIAHistory"
+                        android:text="@string/requisition_list" />
+
+                    <Button
+                        android:id="@+id/btn_mmia_list"
+                        style="@style/Homepage.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:background="@color/color_amber"
+                        android:onClick="onClickMMIAHistory"
+                        android:text="@string/mmia_list" />
+
+                    <Button
+                        android:id="@+id/btn_kit_stock_card"
+                        style="@style/Homepage.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:background="@color/color_teal"
+                        android:onClick="onClickKitStockCard"
+                        android:text="@string/label_kits_stock_cards" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
+            <org.openlmis.core.view.widget.SyncTimeView
+                android:id="@+id/view_sync_time"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_normal" />
+
         </LinearLayout>
-
-        <org.openlmis.core.view.widget.SyncTimeView
-            android:id="@+id/view_sync_time"
-            android:layout_marginTop="@dimen/margin_normal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
-
     </LinearLayout>
+
 </ScrollView>
