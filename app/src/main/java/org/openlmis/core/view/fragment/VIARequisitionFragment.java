@@ -21,6 +21,9 @@ package org.openlmis.core.view.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +46,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListViewUtil;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.activity.VIARequisitionActivity;
+import org.openlmis.core.view.activity.AddDrugsToVIAActivity;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 import org.openlmis.core.view.adapter.RequisitionProductAdapter;
 import org.openlmis.core.view.holder.RequisitionFormViewHolder;
@@ -120,13 +123,15 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+
         formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
 
         periodEndDate = ((Date) getActivity().getIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
 
         isMissedPeriod = getActivity().getIntent().getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false);
 
-        emergencyStockCards = (ArrayList<StockCard>) getActivity().getIntent().getSerializableExtra(VIARequisitionActivity.PARAM_SELECTED_EMERGENCY);
+        emergencyStockCards = (ArrayList<StockCard>) getActivity().getIntent().getSerializableExtra(Constants.PARAM_SELECTED_EMERGENCY);
     }
 
     @Override
@@ -157,6 +162,25 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             loadData();
         }
         autoScrollLeftToRight();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_via_requisition, menu);
+        boolean featureToggleForAddDrugsToVIA = LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_drugs_to_via_form);
+        menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(featureToggleForAddDrugsToVIA);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add_new_drugs_to_via:
+                startActivity(AddDrugsToVIAActivity.getIntentToMe(getActivity()));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void autoScrollLeftToRight() {

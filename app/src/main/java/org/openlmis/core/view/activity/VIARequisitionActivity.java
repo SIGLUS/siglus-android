@@ -38,7 +38,6 @@ import roboguice.inject.ContentView;
 
 @ContentView(R.layout.activity_requisition)
 public class VIARequisitionActivity extends BaseActivity {
-    public static final String PARAM_SELECTED_EMERGENCY = "selected_emergency";
 
     @Override
     protected ScreenName getScreenName() {
@@ -55,42 +54,14 @@ public class VIARequisitionActivity extends BaseActivity {
         ((VIARequisitionFragment) getFragmentManager().findFragmentById(R.id.fragment_requisition)).onBackPressed();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.menu_via_requisition, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean isPrepare = super.onPrepareOptionsMenu(menu);
-        boolean featureToggleForAddDrugsToVIA = LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_drugs_to_via_form);
-        menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(featureToggleForAddDrugsToVIA);
-        return isPrepare;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_add_new_drugs_to_via:
-                startActivity(AddDrugsToFormActivity.getIntentToMe(this));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
+    //For existing requisition
     public static Intent getIntentToMe(Context context, long formId) {
         Intent intent = new Intent(context, VIARequisitionActivity.class);
         intent.putExtra(Constants.PARAM_FORM_ID, formId);
         return intent;
     }
 
-    public static Intent getIntentToMe(Context context, Date inventory) {
-        return getIntentToMe(context, inventory, false);
-    }
-
+    //For creating new requisition
     public static Intent getIntentToMe(Context context, Date inventory, boolean isMissedPeriod) {
         Intent intent = new Intent(context, VIARequisitionActivity.class);
         intent.putExtra(Constants.PARAM_SELECTED_INVENTORY_DATE, inventory);
@@ -98,9 +69,10 @@ public class VIARequisitionActivity extends BaseActivity {
         return intent;
     }
 
+    //For emergency requisition
     public static Intent getIntentToMe(Context context, ArrayList<StockCard> stockCards) {
         Intent intent = new Intent(context, VIARequisitionActivity.class);
-        intent.putExtra(PARAM_SELECTED_EMERGENCY, stockCards);
+        intent.putExtra(Constants.PARAM_SELECTED_EMERGENCY, stockCards);
         return intent;
     }
 }

@@ -9,8 +9,10 @@ import android.view.View;
 
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
+import org.openlmis.core.presenter.AddDrugsToVIAPresenter;
+import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.adapter.AddDrugsToFormAdapter;
+import org.openlmis.core.view.adapter.AddDrugsToVIAAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.ArrayList;
@@ -19,9 +21,10 @@ import java.util.List;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
+import rx.Subscription;
 
-@ContentView(R.layout.activity_add_drugs_to_form)
-public class AddDrugsToFormActivity extends SearchBarActivity {
+@ContentView(R.layout.activity_add_drugs_to_via)
+public class AddDrugsToVIAActivity extends SearchBarActivity {
 
     @InjectView(R.id.btn_complete)
     public View btnComplete;
@@ -29,14 +32,14 @@ public class AddDrugsToFormActivity extends SearchBarActivity {
     @InjectView(R.id.products_list)
     public RecyclerView productListRecycleView;
 
-//    @InjectPresenter(ProductPresenter.class)
-//    ProductPresenter presenter;
+    @InjectPresenter(AddDrugsToVIAPresenter.class)
+    AddDrugsToVIAPresenter presenter;
 
-    protected AddDrugsToFormAdapter mAdapter;
+    protected AddDrugsToVIAAdapter mAdapter;
 
     @Override
     protected ScreenName getScreenName() {
-        return ScreenName.AddDrugsToFormScreen;
+        return ScreenName.AddDrugsToVIAScreen;
     }
 
     @Override
@@ -49,11 +52,11 @@ public class AddDrugsToFormActivity extends SearchBarActivity {
         super.onCreate(savedInstanceState);
 
         productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new AddDrugsToFormAdapter(new ArrayList<InventoryViewModel>());
+        mAdapter = new AddDrugsToVIAAdapter(new ArrayList<InventoryViewModel>());
         productListRecycleView.setAdapter(mAdapter);
         loading();
-//        Subscription subscription = presenter.loadEmergencyProducts().subscribe(subscriber);
-//        subscriptions.add(subscription);
+        Subscription subscription = presenter.loadActiveProductsNotInVIAForm().subscribe(subscriber);
+        subscriptions.add(subscription);
 
         btnComplete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,11 +84,6 @@ public class AddDrugsToFormActivity extends SearchBarActivity {
         }
     };
 
-    public static Intent getIntentToMe(Context context) {
-        Intent intent = new Intent(context, AddDrugsToFormActivity.class);
-        return intent;
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     }
@@ -94,5 +92,10 @@ public class AddDrugsToFormActivity extends SearchBarActivity {
     public boolean onSearchStart(String query) {
         mAdapter.filter(query);
         return false;
+    }
+
+    public static Intent getIntentToMe(Context context) {
+        Intent intent = new Intent(context, AddDrugsToVIAActivity.class);
+        return intent;
     }
 }

@@ -93,7 +93,7 @@
             android:screenOrientation="portrait"
             android:label="@string/title_select_emergency_products" />
 
-        <activity android:name=".view.activity.AddDrugsToFormActivity"
+        <activity android:name=".view.activity.AddDrugsToVIAActivity"
             android:screenOrientation="portrait"
             android:label="@string/title_add_drugs_to_form" />
 

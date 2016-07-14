@@ -14,10 +14,12 @@
 
     <Button
         android:id="@+id/btn_complete"
-        style="@style/FormAction.CompleteBtn"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/default_button_height"
-        android:layout_weight="1"
-        android:text="@string/btn_complete" />
+        style="@style/Button.Blue"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_small"
+        android:text="@string/btn_complete"
+        android:textColor="@color/color_white" />
 
 </LinearLayout>

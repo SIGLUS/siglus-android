@@ -18,6 +18,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.presenter.ProductPresenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.holder.SelectEmergencyProductsViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.Robolectric;
@@ -120,7 +121,7 @@ public class SelectEmergencyProductsActivityTest {
         Intent startedIntent = shadowOf(activity).getNextStartedActivity();
 
         MatcherAssert.assertThat(startedIntent.getComponent().getClassName(), equalTo(VIARequisitionActivity.class.getName()));
-        ArrayList<StockCard> stockCards = (ArrayList<StockCard>) startedIntent.getSerializableExtra(VIARequisitionActivity.PARAM_SELECTED_EMERGENCY);
+        ArrayList<StockCard> stockCards = (ArrayList<StockCard>) startedIntent.getSerializableExtra(Constants.PARAM_SELECTED_EMERGENCY);
 
         MatcherAssert.assertThat(stockCards.get(0).getId(), Matchers.is(100L));
     }

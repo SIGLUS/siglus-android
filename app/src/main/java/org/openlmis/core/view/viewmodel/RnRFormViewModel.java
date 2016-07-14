@@ -100,7 +100,7 @@ public class RnRFormViewModel {
 
     public static RnRFormViewModel buildNormalRnrViewModel(RnRForm form) {
         RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
-        rnRFormViewModel.setViewModleFormField(form);
+        rnRFormViewModel.setViewModelFormField(form);
 
         rnRFormViewModel.syncedTime = form.getSubmittedTime() == null ? StringUtils.EMPTY : DateUtil.formatDate(form.getSubmittedTime());
         rnRFormViewModel.title = rnRFormViewModel.generatePeriod(form.getPeriodBegin(), form.getPeriodEnd());
@@ -109,7 +109,7 @@ public class RnRFormViewModel {
         return rnRFormViewModel;
     }
 
-    private void setViewModleFormField(RnRForm form) {
+    private void setViewModelFormField(RnRForm form) {
         this.form = form;
         this.id = form.getId();
         this.programCode = form.getProgram().getProgramCode();
@@ -118,7 +118,7 @@ public class RnRFormViewModel {
 
     public static RnRFormViewModel buildEmergencyViewModel(RnRForm form) {
         RnRFormViewModel rnRFormViewModel = new RnRFormViewModel();
-        rnRFormViewModel.setViewModleFormField(form);
+        rnRFormViewModel.setViewModelFormField(form);
         rnRFormViewModel.title = LMISApp.getContext().getString(R.string.label_emergency_date, DateUtil.formatDate(form.getSubmittedTime(), DateUtil.TIME_FORMAT_WITHOUT_SECOND));
         rnRFormViewModel.syncedTime = DateUtil.formatDate(form.getSubmittedTime(), DateUtil.TIME_FORMAT_WITHOUT_SECOND);
         rnRFormViewModel.name = LMISApp.getContext().getString(R.string.label_emergency_requisition_balance);
