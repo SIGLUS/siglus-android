@@ -13,6 +13,7 @@ import com.google.inject.Inject;
 
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
@@ -46,18 +47,23 @@ public class MissedRequisitionBanner extends LinearLayout {
         LayoutInflater.from(context).inflate(R.layout.view_missed_requisition_banner, this);
         RoboGuice.injectMembers(getContext(), this);
         RoboGuice.getInjector(getContext()).injectViewMembers(this);
-        try {
-            if (periodService.hasMissedPeriod("VIA") || periodService.hasMissedPeriod("MMIA")) {
-                setMissedRequisitionBannerUI();
-            } else {
-                this.setVisibility(View.GONE);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_missed_requisition_banner)) {
+            try {
+                if (periodService.hasMissedPeriod("VIA") || periodService.hasMissedPeriod("MMIA")) {
+                    setMissedRequisitionBannerMessage();
+                } else {
+                    this.setVisibility(View.GONE);
+                }
+            } catch (LMISException e) {
+                e.printStackTrace();
             }
-        } catch (LMISException e) {
-            e.printStackTrace();
+        } else {
+            this.setVisibility(View.GONE);
         }
+
     }
 
-    private void setMissedRequisitionBannerUI() {
+    private void setMissedRequisitionBannerMessage() {
         try {
             int periodOffsetMonthMmia = periodService.getMissedPeriodOffsetMonth("MMIA");
             int periodOffsetMonthVia = periodService.getMissedPeriodOffsetMonth("VIA");

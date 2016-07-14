@@ -9,4 +9,5 @@
     <bool name="feature_add_requested_in_stock_movement">true</bool>
     <bool name="feature_add_return_to_ddm_in_stock_movement_reason">true</bool>
     <bool name="feature_add_drugs_to_via_form">false</bool>
+    <bool name="feature_missed_requisition_banner">true</bool>
 </resources>
