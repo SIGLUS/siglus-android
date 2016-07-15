@@ -88,9 +88,4 @@ Feature: Requisition
     Then I should see text containing "View Via Classica Requisition"
     Then I should see text containing "You will be able to create a requisition on the 18th of"
 
-    Given I change device date to "20160328.130000"
-    And I wait for 2 seconds
-    And I press "Requisições Balancete"
-    Given I try to log in with "via" "password1"
-    Then I should see text containing "not been completed"
 

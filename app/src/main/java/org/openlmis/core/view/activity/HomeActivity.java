@@ -98,7 +98,9 @@ public class HomeActivity extends BaseActivity {
         } else {
             setTitle(UserInfoMgr.getInstance().getFacilityName());
             syncTimeView = (SyncTimeView) findViewById(R.id.view_sync_time);
-            missedRequisitionBanner = (MissedRequisitionBanner) findViewById(R.id.view_missed_requisition_banner);
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_missed_requisition_banner)) {
+                missedRequisitionBanner = (MissedRequisitionBanner) findViewById(R.id.view_missed_requisition_banner);
+            }
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             }
