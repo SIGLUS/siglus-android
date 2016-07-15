@@ -147,7 +147,7 @@ public abstract class BaseActivity extends RoboActionBarActivity implements Base
 
     private boolean alreadyTimeOuted() {
         Long currentTimeMillis = LMISApp.getInstance().getCurrentTimeMillis();
-        return Math.abs(currentTimeMillis - LMISApp.lastOperateTime) > APP_TIMEOUT;
+        return currentTimeMillis - LMISApp.lastOperateTime > APP_TIMEOUT;
     }
 
     @Override
