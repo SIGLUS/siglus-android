@@ -178,7 +178,9 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        setRequisitionBanner();
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_missed_requisition_banner)) {
+            setRequisitionBanner();
+        }
         setSyncedTime();
     }
 
