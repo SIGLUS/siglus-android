@@ -48,25 +48,28 @@ public class MissedRequisitionBanner extends LinearLayout {
         RoboGuice.injectMembers(getContext(), this);
         RoboGuice.getInjector(getContext()).injectViewMembers(this);
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_missed_requisition_banner)) {
-            try {
-                if (periodService.hasMissedPeriod("VIA") || periodService.hasMissedPeriod("MMIA")) {
-                    setMissedRequisitionBannerMessage();
-                } else {
-                    this.setVisibility(View.GONE);
-                }
-            } catch (LMISException e) {
-                e.printStackTrace();
-            }
+            updateMissedRequisitionBanner();
         } else {
             this.setVisibility(View.GONE);
         }
+    }
 
+    public void updateMissedRequisitionBanner() {
+        try {
+            if (periodService.hasMissedPeriod("VIA") || periodService.hasMissedPeriod("MMIA")) {
+                setMissedRequisitionBannerMessage();
+            } else {
+                this.setVisibility(View.GONE);
+            }
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setMissedRequisitionBannerMessage() {
         try {
-            int periodOffsetMonthMmia = periodService.getMissedPeriodOffsetMonth("MMIA");
-            int periodOffsetMonthVia = periodService.getMissedPeriodOffsetMonth("VIA");
+            int periodOffsetMonthMmia = periodService.getPeriodsCountOfMissedRequisitions("MMIA");
+            int periodOffsetMonthVia = periodService.getPeriodsCountOfMissedRequisitions("VIA");
             if (periodOffsetMonthMmia == 1 && periodOffsetMonthVia == 1) {
                 String periodRange = getPeriodRangeForMissedRequisition("VIA");
                 txMissedRequisition.setText(Html.fromHtml(getResources().getString(R.string.via_and_mmia_requisition_alert, periodRange)));
@@ -82,7 +85,7 @@ public class MissedRequisitionBanner extends LinearLayout {
                 txMissedRequisition.setText(getResources().getString(R.string.mmia_requisition_for_multiple_periods_alert));
             } else {
                 txMissedRequisition.setText(getResources().getString(R.string.via_and_mmia_requisitions_for_multiple_periods_alert));
-            }
+        }
         } catch (LMISException e) {
             e.printStackTrace();
         }

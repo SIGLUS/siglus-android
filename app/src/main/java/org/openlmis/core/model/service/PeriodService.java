@@ -108,7 +108,14 @@ public class PeriodService {
         DateTime currentMonthInventoryBeginDate;
         currentMonthInventoryBeginDate = getCurrentMonthInventoryBeginDate();
 
-        return DateUtil.calculateDateMonthOffset(nextPeriodInScheduleBegin.toDate(),currentMonthInventoryBeginDate.toDate());
+        return DateUtil.calculateDateMonthOffset(nextPeriodInScheduleBegin.toDate(), currentMonthInventoryBeginDate.toDate());
+    }
+
+    public int getPeriodsCountOfMissedRequisitions(String programCode) throws LMISException {
+        List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.No, programCode);
+        if (rnRForms.size() == 0 || rnRForms.get(rnRForms.size() - 1).isAuthorized()) {
+            return getMissedPeriodOffsetMonth(programCode);
+        } else return getMissedPeriodOffsetMonth(programCode) + 1;
     }
 
     public DateTime getCurrentMonthInventoryBeginDate() {

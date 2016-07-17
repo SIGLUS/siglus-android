@@ -63,6 +63,7 @@ public class HomeActivity extends BaseActivity {
     Button btnInventory;
 
     MissedRequisitionBanner missedRequisitionBanner;
+
     SyncTimeView syncTimeView;
 
     @InjectView(R.id.btn_mmia_list)
@@ -98,9 +99,7 @@ public class HomeActivity extends BaseActivity {
         } else {
             setTitle(UserInfoMgr.getInstance().getFacilityName());
             syncTimeView = (SyncTimeView) findViewById(R.id.view_sync_time);
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_missed_requisition_banner)) {
-                missedRequisitionBanner = (MissedRequisitionBanner) findViewById(R.id.view_missed_requisition_banner);
-            }
+            missedRequisitionBanner = (MissedRequisitionBanner) findViewById(R.id.view_missed_requisition_banner);
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             }
@@ -179,7 +178,12 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setRequisitionBanner();
         setSyncedTime();
+    }
+
+    private void setRequisitionBanner() {
+        missedRequisitionBanner.updateMissedRequisitionBanner();
     }
 
     protected void setSyncedTime() {
@@ -267,7 +271,7 @@ public class HomeActivity extends BaseActivity {
         intent.putExtra(Constants.PARAM_PASSWORD, currentUser.getPassword());
 
         PendingIntent mPendingIntent = PendingIntent.getActivity(this, requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager mgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + startAppInterval, mPendingIntent);
     }
 

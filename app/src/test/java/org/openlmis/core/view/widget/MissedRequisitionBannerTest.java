@@ -54,40 +54,40 @@ public class MissedRequisitionBannerTest {
 
 
     @Test
-    public void shouldShowBannerWithMissedMmiaAndViaWhenThereAreMultipleMissedRequisitions() throws LMISException {
+    public void shouldShowMultipleMissedMmiaAndViaRequisitionBanner() throws LMISException {
         when(periodService.hasMissedPeriod(anyString())).thenReturn(true);
-        when(periodService.getMissedPeriodOffsetMonth("VIA")).thenReturn(2);
-        when(periodService.getMissedPeriodOffsetMonth("MMIA")).thenReturn(2);
+        when(periodService.getPeriodsCountOfMissedRequisitions("VIA")).thenReturn(2);
+        when(periodService.getPeriodsCountOfMissedRequisitions("MMIA")).thenReturn(2);
         missedRequisitionBanner = new MissedRequisitionBanner(LMISTestApp.getContext());
 
         assertThat(missedRequisitionBanner.txMissedRequisition.getText().toString(), is("Your MMIA and VIA requisitions for multiple periods have not been completed"));
     }
 
     @Test
-    public void shouldShowBannerWithViaWhenThereAreMultipleMissedRequisitions() throws LMISException {
+    public void shouldShowMultipleMissedViaRequisitionBanner() throws LMISException {
         when(periodService.hasMissedPeriod(anyString())).thenReturn(true);
-        when(periodService.getMissedPeriodOffsetMonth("VIA")).thenReturn(2);
-        when(periodService.getMissedPeriodOffsetMonth("MMIA")).thenReturn(0);
+        when(periodService.getPeriodsCountOfMissedRequisitions("VIA")).thenReturn(2);
+        when(periodService.getPeriodsCountOfMissedRequisitions("MMIA")).thenReturn(0);
         missedRequisitionBanner = new MissedRequisitionBanner(LMISTestApp.getContext());
 
         assertThat(missedRequisitionBanner.txMissedRequisition.getText().toString(), is("Your VIA requisitions for multiple periods have not been completed"));
     }
 
     @Test
-    public void shouldShowBannerWithMmiaWhenThereAreMultipleMissedRequisitions() throws LMISException {
+    public void shouldShowMultipleMissedMmiaRequisitionBanner() throws LMISException {
         when(periodService.hasMissedPeriod(anyString())).thenReturn(true);
-        when(periodService.getMissedPeriodOffsetMonth("VIA")).thenReturn(0);
-        when(periodService.getMissedPeriodOffsetMonth("MMIA")).thenReturn(2);
+        when(periodService.getPeriodsCountOfMissedRequisitions("VIA")).thenReturn(0);
+        when(periodService.getPeriodsCountOfMissedRequisitions("MMIA")).thenReturn(2);
         missedRequisitionBanner = new MissedRequisitionBanner(LMISTestApp.getContext());
 
         assertThat(missedRequisitionBanner.txMissedRequisition.getText().toString(), is("Your MMIA requisitions for multiple periods have not been completed"));
     }
 
     @Test
-    public void shouldShowBannerWithViaWhenThereIsSingleMissedRequisition() throws LMISException {
+    public void shouldShowSingleMissedViaRequisitionBanner() throws LMISException {
         Period period = new Period(new DateTime(DateTime.parse("2016-05-18")));
         when(periodService.hasMissedPeriod(anyString())).thenReturn(true);
-        when(periodService.getMissedPeriodOffsetMonth("VIA")).thenReturn(1);
+        when(periodService.getPeriodsCountOfMissedRequisitions("VIA")).thenReturn(1);
         when(periodService.getMissedPeriodOffsetMonth("MMIA")).thenReturn(0);
         when(periodService.generateNextPeriod("VIA", null)).thenReturn(period);
         missedRequisitionBanner = new MissedRequisitionBanner(LMISTestApp.getContext());
@@ -96,11 +96,11 @@ public class MissedRequisitionBannerTest {
     }
 
     @Test
-    public void shouldShowBannerWithMmiaWhenThereIsSingleMissedRequisition() throws LMISException {
+    public void shouldShowSingleMissedMmiaRequisitionBanner() throws LMISException {
         Period period = new Period(new DateTime(DateTime.parse("2016-05-18")));
         when(periodService.hasMissedPeriod(anyString())).thenReturn(true);
-        when(periodService.getMissedPeriodOffsetMonth("VIA")).thenReturn(0);
-        when(periodService.getMissedPeriodOffsetMonth("MMIA")).thenReturn(1);
+        when(periodService.getPeriodsCountOfMissedRequisitions("VIA")).thenReturn(0);
+        when(periodService.getPeriodsCountOfMissedRequisitions("MMIA")).thenReturn(1);
         when(periodService.generateNextPeriod("MMIA", null)).thenReturn(period);
         missedRequisitionBanner = new MissedRequisitionBanner(LMISTestApp.getContext());
 
@@ -108,11 +108,11 @@ public class MissedRequisitionBannerTest {
     }
 
     @Test
-    public void shouldShowBannerWithViaAndMmiaWhenThereIsSingleMissedRequisition() throws LMISException {
+    public void shouldShowSingleMissedViaAndMmiaRequisitionBanner() throws LMISException {
         Period period = new Period(new DateTime(DateTime.parse("2016-05-18")));
         when(periodService.hasMissedPeriod(anyString())).thenReturn(true);
-        when(periodService.getMissedPeriodOffsetMonth("VIA")).thenReturn(1);
-        when(periodService.getMissedPeriodOffsetMonth("MMIA")).thenReturn(1);
+        when(periodService.getPeriodsCountOfMissedRequisitions("VIA")).thenReturn(1);
+        when(periodService.getPeriodsCountOfMissedRequisitions("MMIA")).thenReturn(1);
         when(periodService.generateNextPeriod("VIA", null)).thenReturn(period);
         missedRequisitionBanner = new MissedRequisitionBanner(LMISTestApp.getContext());
 
