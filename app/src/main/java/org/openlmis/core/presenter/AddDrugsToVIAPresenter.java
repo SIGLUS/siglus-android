@@ -78,9 +78,11 @@ public class AddDrugsToVIAPresenter extends Presenter {
     }
 
     public void generateNewVIAItems(List<InventoryViewModel> checkedViewModels) throws LMISException {
-        view.loading();
-        Subscription subscription = saveRnrItemsObservable(checkedViewModels).subscribe(nextMainPageAction, errorAction);
-        subscriptions.add(subscription);
+        if (view.validateInventory()) {
+            view.loading();
+            Subscription subscription = saveRnrItemsObservable(checkedViewModels).subscribe(nextMainPageAction, errorAction);
+            subscriptions.add(subscription);
+        }
     }
 
     protected Action1<Object> nextMainPageAction = new Action1<Object>() {
