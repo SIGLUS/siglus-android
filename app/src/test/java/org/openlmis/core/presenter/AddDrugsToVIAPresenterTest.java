@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.RoboGuice;
+import rx.Observable;
 import rx.observers.TestSubscriber;
 
 import static org.assertj.core.util.Lists.newArrayList;
@@ -32,6 +33,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -106,17 +108,19 @@ public class AddDrugsToVIAPresenterTest {
         InventoryViewModel inventoryViewModel2 = buildInventoryViewModel("P2", "34");
 
         when(view.validateInventory()).thenReturn(true);
-        List<RnrFormItem> newRnrItems = presenter.generateNewVIAItems(newArrayList(inventoryViewModel1, inventoryViewModel2));
+
+        ArrayList<InventoryViewModel> inventoryViewModels = newArrayList(inventoryViewModel1, inventoryViewModel2);
+        TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
+        Observable observable = presenter.saveRnrItemsObservable(inventoryViewModels);
+        observable.subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
 
         ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
         verify(rnrFormItemRepository).batchCreateOrUpdate(captor.capture());
         List<List> captorAllValues = captor.getAllValues();
         assertThat(((RnrFormItem) captorAllValues.get(0).get(0)).getRequestAmount(), is(12L));
         assertThat(((RnrFormItem) captorAllValues.get(0).get(1)).getRequestAmount(), is(34L));
-
-        assertThat(newRnrItems.size(), is(2));
-        assertThat(newRnrItems.get(0).getRequestAmount(), is(12L));
-        assertThat(newRnrItems.get(1).getRequestAmount(), is(34L));
     }
 
     @Test

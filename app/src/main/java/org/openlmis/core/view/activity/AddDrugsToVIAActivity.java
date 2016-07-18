@@ -11,7 +11,6 @@ import android.view.View;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.presenter.AddDrugsToVIAPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
@@ -66,7 +65,7 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
             @Override
             public void onClick(View v) {
                 try {
-                    saveProductsAsRnrItemsAndGoToVIA();
+                    presenter.generateNewVIAItems(mAdapter.getCheckedProducts());
                 } catch (LMISException e) {
                     e.printStackTrace();
                 }
@@ -105,11 +104,15 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
         return true;
     }
 
-    private void saveProductsAsRnrItemsAndGoToVIA() throws LMISException {
-        ArrayList<RnrFormItem> newVIAItems = presenter.generateNewVIAItems(mAdapter.getCheckedProducts());
-        if (newVIAItems != null) {
-            startActivityForResult(VIARequisitionActivity.getIntentToMe(this, null, newVIAItems), Constants.REQUEST_ADD_DRUGS_TO_VIA);
-        }
+    @Override
+    public void goToParentPage() {
+        setResult(Activity.RESULT_OK);
+        this.finish();
+    }
+
+    @Override
+    public void showErrorMessage(String msg) {
+        ToastUtil.show(msg);
     }
 
     @Override

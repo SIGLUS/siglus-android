@@ -3,7 +3,6 @@ package org.openlmis.core.presenter;
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
@@ -16,12 +15,13 @@ import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class AddDrugsToVIAPresenter extends Presenter {
@@ -77,12 +77,30 @@ public class AddDrugsToVIAPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    public ArrayList<RnrFormItem> generateNewVIAItems(List<InventoryViewModel> checkedViewModels) throws LMISException {
+    public void generateNewVIAItems(List<InventoryViewModel> checkedViewModels) throws LMISException {
+        view.loading();
+        Subscription subscription = saveRnrItemsObservable(checkedViewModels).subscribe(nextMainPageAction, errorAction);
+        subscriptions.add(subscription);
+    }
 
-        if (!view.validateInventory()) {
-            return null;
+    protected Action1<Object> nextMainPageAction = new Action1<Object>() {
+        @Override
+        public void call(Object o) {
+            view.loaded();
+            view.goToParentPage();
         }
-        List<RnrFormItem> rnrFormItemList = FluentIterable.from(checkedViewModels).transform(new Function<InventoryViewModel, RnrFormItem>() {
+    };
+
+    protected Action1<Throwable> errorAction = new Action1<Throwable>() {
+        @Override
+        public void call(Throwable throwable) {
+            view.loaded();
+            view.showErrorMessage(throwable.getMessage());
+        }
+    };
+
+    private void convertViewModelsToRnrItemsAndSave(List<InventoryViewModel> viewModels) throws LMISException {
+        List<RnrFormItem> rnrFormItemList = FluentIterable.from(viewModels).transform(new Function<InventoryViewModel, RnrFormItem>() {
             @Override
             public RnrFormItem apply(InventoryViewModel inventoryViewModel) {
                 RnrFormItem rnrFormItem = new RnrFormItem();
@@ -92,10 +110,27 @@ public class AddDrugsToVIAPresenter extends Presenter {
             }
         }).toList();
         rnrFormItemRepository.batchCreateOrUpdate(rnrFormItemList);
-        return new ArrayList(rnrFormItemList);
+    }
+
+    protected Observable saveRnrItemsObservable(final List<InventoryViewModel> viewModels) {
+        return Observable.create(new Observable.OnSubscribe<Object>() {
+            @Override
+            public void call(Subscriber<? super Object> subscriber) {
+                try {
+                    convertViewModelsToRnrItemsAndSave(viewModels);
+                    subscriber.onNext(null);
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    subscriber.onError(e);
+                    e.reportToFabric();
+                }
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     public interface AddDrugsToVIAView extends BaseView {
         boolean validateInventory();
+        void goToParentPage();
+        void showErrorMessage(String message);
     }
 }
