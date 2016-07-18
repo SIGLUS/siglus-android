@@ -46,7 +46,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
-import org.openlmis.core.view.widget.MissedRequisitionBanner;
+import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
 import org.openlmis.core.view.widget.SyncTimeView;
 
 import roboguice.inject.ContentView;
@@ -62,7 +62,7 @@ public class HomeActivity extends BaseActivity {
     @InjectView(R.id.btn_inventory)
     Button btnInventory;
 
-    MissedRequisitionBanner missedRequisitionBanner;
+    IncompleteRequisitionBanner incompleteRequisitionBanner;
 
     SyncTimeView syncTimeView;
 
@@ -99,7 +99,7 @@ public class HomeActivity extends BaseActivity {
         } else {
             setTitle(UserInfoMgr.getInstance().getFacilityName());
             syncTimeView = (SyncTimeView) findViewById(R.id.view_sync_time);
-            missedRequisitionBanner = (MissedRequisitionBanner) findViewById(R.id.view_missed_requisition_banner);
+            incompleteRequisitionBanner = (IncompleteRequisitionBanner) findViewById(R.id.view_incomplete_requisition_banner);
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             }
@@ -178,14 +178,10 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_missed_requisition_banner)) {
-            setRequisitionBanner();
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_incomplete_requisition_banner)) {
+            incompleteRequisitionBanner.setIncompleteRequisitionBanner();
         }
         setSyncedTime();
-    }
-
-    private void setRequisitionBanner() {
-        missedRequisitionBanner.updateMissedRequisitionBanner();
     }
 
     protected void setSyncedTime() {

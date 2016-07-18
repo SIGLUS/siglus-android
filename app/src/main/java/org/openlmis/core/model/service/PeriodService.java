@@ -111,7 +111,7 @@ public class PeriodService {
         return DateUtil.calculateDateMonthOffset(nextPeriodInScheduleBegin.toDate(), currentMonthInventoryBeginDate.toDate());
     }
 
-    public int getPeriodsCountOfMissedRequisitions(String programCode) throws LMISException {
+    public int getIncompletePeriodOffsetMonth(String programCode) throws LMISException {
         List<RnRForm> rnRForms = rnrFormRepository.listInclude(RnRForm.Emergency.No, programCode);
         if (rnRForms.size() == 0 || rnRForms.get(rnRForms.size() - 1).isAuthorized()) {
             return getMissedPeriodOffsetMonth(programCode);
