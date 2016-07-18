@@ -93,4 +93,19 @@ public class RnrFormItemRepository {
         }).toList();
     }
 
+    public List<Long> listAllProductIdsNewlyAddedAsRnrItems() throws LMISException {
+        List<RnrFormItem> rnrFormItems = dbUtil.withDao(RnrFormItem.class, new DbUtil.Operation<RnrFormItem, List<RnrFormItem>>() {
+            @Override
+            public List<RnrFormItem> operate(Dao<RnrFormItem, String> dao) throws SQLException {
+                return dao.queryBuilder().where().isNull("form_id").query();
+            }
+        });
+
+        return FluentIterable.from(rnrFormItems).transform(new Function<RnrFormItem, Long>() {
+            @Override
+            public Long apply(RnrFormItem rnrFormItem) {
+                return rnrFormItem.getProduct().getId();
+            }
+        }).toList();
+    }
 }

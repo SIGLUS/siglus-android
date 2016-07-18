@@ -27,6 +27,7 @@ import roboguice.RoboGuice;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
 public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
@@ -116,6 +117,27 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
         rnrFormRepository.create(form);
 
         List<Long> productIds = rnrFormItemRepository.listAllProductIdsInCurrentVIADraft();
+        assertThat(productIds.size(), is(2));
+        assertThat(productIds.get(0), is(product1.getId()));
+        assertThat(productIds.get(1), is(product2.getId()));
+    }
+
+    @Test
+    public void shouldReturnProductIdsNewlyAddedAsRnrItemsWhichAreItemsWithoutFormIds() throws Exception {
+        Product product1 = new ProductBuilder().setCode("P1").setIsActive(true).build();
+        productRepository.createOrUpdate(product1);
+        RnrFormItem rnrFormItem = new RnrFormItem();
+        rnrFormItem.setProduct(product1);
+        rnrFormItem.setRequestAmount(100L);
+
+        Product product2 = new ProductBuilder().setCode("P2").setIsActive(true).build();
+        productRepository.createOrUpdate(product2);
+        RnrFormItem rnrFormItem2 = new RnrFormItem();
+        rnrFormItem2.setProduct(product2);
+        rnrFormItem2.setRequestAmount(200L);
+        rnrFormItemRepository.batchCreateOrUpdate(newArrayList(rnrFormItem, rnrFormItem2));
+
+        List<Long> productIds = rnrFormItemRepository.listAllProductIdsNewlyAddedAsRnrItems();
         assertThat(productIds.size(), is(2));
         assertThat(productIds.get(0), is(product1.getId()));
         assertThat(productIds.get(1), is(product2.getId()));

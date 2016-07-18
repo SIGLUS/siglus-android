@@ -53,11 +53,12 @@ public class AddDrugsToVIAPresenter extends Presenter {
                     final List<String> viaProgramCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode(Constants.VIA_PROGRAM_CODE);
                     List<Long> allActiveVIAProductIds = productProgramRepository.queryActiveProductIdsByProgramsWithKits(viaProgramCodes, false);
                     final List<Long> allExistingProductsInCurrentVIADraft = rnrFormItemRepository.listAllProductIdsInCurrentVIADraft();
+                    final List<Long> productsNewlyAddedAsRnrItems = rnrFormItemRepository.listAllProductIdsNewlyAddedAsRnrItems();
 
                     List<InventoryViewModel> productsNotInVIAForm = FluentIterable.from(allActiveVIAProductIds).filter(new Predicate<Long>() {
                         @Override
                         public boolean apply(Long productId) {
-                            return !allExistingProductsInCurrentVIADraft.contains(productId);
+                            return !allExistingProductsInCurrentVIADraft.contains(productId) && !productsNewlyAddedAsRnrItems.contains(productId);
                         }
                     }).transform(new Function<Long, InventoryViewModel>() {
                         @Override
