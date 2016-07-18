@@ -52,7 +52,7 @@ public class InventoryViewModelTest {
         InventoryViewModel inventoryViewModel = InventoryViewModel.buildEmergencyModel(stockCard);
         inventoryViewModel.setChecked(true);
 
-        assertTrue(inventoryViewModel.validate());
+        assertTrue(inventoryViewModel.validate(false));
     }
 
     @Test

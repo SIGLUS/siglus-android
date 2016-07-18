@@ -1,5 +1,7 @@
 package org.openlmis.core.view.holder;
 
+import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -9,13 +11,14 @@ import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
+import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import roboguice.inject.InjectView;
 
 
-public class AddDrugsToFormViewHolder extends BaseViewHolder {
+public class AddDrugsToVIAViewHolder extends BaseViewHolder {
 
     @InjectView(R.id.product_name)
     TextView productName;
@@ -38,7 +41,10 @@ public class AddDrugsToFormViewHolder extends BaseViewHolder {
     @InjectView(R.id.action_divider)
     View actionDivider;
 
-    public AddDrugsToFormViewHolder(View itemView) {
+    @InjectView(R.id.ly_quantity)
+    TextInputLayout lyQuantity;
+
+    public AddDrugsToVIAViewHolder(View itemView) {
         super(itemView);
         taCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,13 +55,12 @@ public class AddDrugsToFormViewHolder extends BaseViewHolder {
     }
 
     public void populate(String queryKeyWord, final InventoryViewModel viewModel) {
+        final EditTextWatcher textWatcher = new EditTextWatcher(viewModel);
+        txQuantity.removeTextChangedListener(textWatcher);
+
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked == viewModel.isChecked()) {
-                    return;
-                }
-
                 if (isChecked) {
                     showEditPanel(View.VISIBLE);
                 } else {
@@ -71,6 +76,14 @@ public class AddDrugsToFormViewHolder extends BaseViewHolder {
 
         productName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyledName()));
         tvShortCode.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyledUnit()));
+
+        if (viewModel.isValid()) {
+            lyQuantity.setErrorEnabled(false);
+        } else {
+            lyQuantity.setError(context.getResources().getString(R.string.msg_inventory_check_failed));
+        }
+
+        txQuantity.addTextChangedListener(textWatcher);
     }
 
     protected void populateEditPanel(String quantity) {
@@ -87,6 +100,20 @@ public class AddDrugsToFormViewHolder extends BaseViewHolder {
             checkBox.setChecked(false);
         } else {
             checkBox.setChecked(true);
+        }
+    }
+
+    class EditTextWatcher extends SingleTextWatcher {
+
+        private final InventoryViewModel viewModel;
+
+        public EditTextWatcher(InventoryViewModel viewModel) {
+            this.viewModel = viewModel;
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            viewModel.setQuantity(editable.toString());
         }
     }
 }

@@ -200,8 +200,12 @@ public class InventoryViewModel {
         return this.getExpiryDates().contains(expireDate);
     }
 
-    public boolean validate() {
-        valid = !checked || StringUtils.isNumeric(quantity) || product.isArchived();
+    public boolean validate(boolean archivedProductMandatoryQuantity) {
+        if (archivedProductMandatoryQuantity) {
+            valid = !checked || StringUtils.isNumeric(quantity);
+        } else {
+            valid = !checked || StringUtils.isNumeric(quantity) || product.isArchived();
+        }
         return valid;
     }
 

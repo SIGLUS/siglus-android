@@ -88,7 +88,7 @@ public class SelectEmergencyProductsActivity extends SearchBarActivity {
         }).toList();
         ArrayList<StockCard> stockCards = new ArrayList<>();
         stockCards.addAll(immutableList);
-        startActivityForResult(VIARequisitionActivity.getIntentToMe(this, stockCards), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+        startActivityForResult(VIARequisitionActivity.getIntentToMe(this, stockCards, null), Constants.REQUEST_FROM_RNR_LIST_PAGE);
     }
 
     Subscriber<List<InventoryViewModel>> subscriber = new Subscriber<List<InventoryViewModel>>() {

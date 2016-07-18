@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
@@ -15,6 +16,7 @@ import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -35,6 +37,13 @@ public class AddDrugsToVIAPresenter extends Presenter {
 
     @Inject
     private RnrFormItemRepository rnrFormItemRepository;
+
+    AddDrugsToVIAView view;
+
+    @Override
+    public void attachView(BaseView v) {
+        view = (AddDrugsToVIAView) v;
+    }
 
     public Observable<List<InventoryViewModel>> loadActiveProductsNotInVIAForm() {
         return Observable.create(new Observable.OnSubscribe<List<InventoryViewModel>>() {
@@ -67,8 +76,25 @@ public class AddDrugsToVIAPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    @Override
-    public void attachView(BaseView v) throws ViewNotMatchException {
+    public ArrayList<RnrFormItem> generateNewVIAItems(List<InventoryViewModel> checkedViewModels) throws LMISException {
 
+        if (!view.validateInventory()) {
+            return null;
+        }
+        List<RnrFormItem> rnrFormItemList = FluentIterable.from(checkedViewModels).transform(new Function<InventoryViewModel, RnrFormItem>() {
+            @Override
+            public RnrFormItem apply(InventoryViewModel inventoryViewModel) {
+                RnrFormItem rnrFormItem = new RnrFormItem();
+                rnrFormItem.setProduct(inventoryViewModel.getProduct());
+                rnrFormItem.setRequestAmount(Long.parseLong(inventoryViewModel.getQuantity()));
+                return rnrFormItem;
+            }
+        }).toList();
+        rnrFormItemRepository.batchCreateOrUpdate(rnrFormItemList);
+        return new ArrayList(rnrFormItemList);
+    }
+
+    public interface AddDrugsToVIAView extends BaseView {
+        boolean validateInventory();
     }
 }

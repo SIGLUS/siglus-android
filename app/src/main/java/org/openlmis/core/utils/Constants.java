@@ -46,12 +46,14 @@ public final class Constants {
     public static final String PARAM_PASSWORD = "password";
     public static final String PARAM_CUSTOM_REGIMEN = "customRegimen";
     public static final String PARAM_SELECTED_EMERGENCY = "selected_emergency";
+    public static final String PARAM_SELECTED_ADDITIONAL_DRUGS_FOR_VIA = "selected_additional_via_drugs";
 
     // Request Params
     public static final int REQUEST_FROM_STOCK_LIST_PAGE = 100;
     public static final int REQUEST_UNPACK_KIT = 200;
     public static final int REQUEST_FROM_RNR_LIST_PAGE = 300;
     public static final int REQUEST_SELECT_PERIOD_END = 400;
+    public static final int REQUEST_ADD_DRUGS_TO_VIA = 500;
 
     // Broadcast Intent Filter
     public static final String INTENT_FILTER_START_SYNC_DATA = LMISApp.getContext().getPackageName() + ".start.sync_data";

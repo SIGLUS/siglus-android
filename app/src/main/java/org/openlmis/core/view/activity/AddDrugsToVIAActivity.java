@@ -1,5 +1,6 @@
 package org.openlmis.core.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,8 +9,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.presenter.AddDrugsToVIAPresenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.AddDrugsToVIAAdapter;
@@ -24,7 +28,7 @@ import rx.Subscriber;
 import rx.Subscription;
 
 @ContentView(R.layout.activity_add_drugs_to_via)
-public class AddDrugsToVIAActivity extends SearchBarActivity {
+public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugsToVIAPresenter.AddDrugsToVIAView{
 
     @InjectView(R.id.btn_complete)
     public View btnComplete;
@@ -61,6 +65,11 @@ public class AddDrugsToVIAActivity extends SearchBarActivity {
         btnComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                try {
+                    saveProductsAsRnrItemsAndGoToVIA();
+                } catch (LMISException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -83,6 +92,25 @@ public class AddDrugsToVIAActivity extends SearchBarActivity {
             mAdapter.refreshList(data);
         }
     };
+
+    @Override
+    public boolean validateInventory() {
+        int position = mAdapter.validateAll();
+        if (position >= 0) {
+            clearSearch();
+
+            productListRecycleView.scrollToPosition(position);
+            return false;
+        }
+        return true;
+    }
+
+    private void saveProductsAsRnrItemsAndGoToVIA() throws LMISException {
+        ArrayList<RnrFormItem> newVIAItems = presenter.generateNewVIAItems(mAdapter.getCheckedProducts());
+        if (newVIAItems != null) {
+            startActivityForResult(VIARequisitionActivity.getIntentToMe(this, null, newVIAItems), Constants.REQUEST_ADD_DRUGS_TO_VIA);
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -62,12 +62,12 @@ public class StockCardViewModelTest {
 
         // Physical Inventory should not be valid when it's empty
         model.setQuantity("");
-        model.validate();
+        model.validate(false);
         assertFalse(model.isValid());
 
         //Physical Inventory should be valid when it's numerical
         model.setQuantity("100");
-        model.validate();
+        model.validate(false);
         assertTrue(model.isValid());
     }
 
@@ -80,12 +80,12 @@ public class StockCardViewModelTest {
 
         //When it's checked, but has no numerical value, should be invalid
         model.setChecked(true);
-        model.validate();
+        model.validate(false);
         assertFalse(model.isValid());
 
         //When it's checked and filled with numerical value. It should be valid
         model.setQuantity("123");
-        model.validate();
+        model.validate(false);
         assertTrue(model.isValid());
     }
 

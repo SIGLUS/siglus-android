@@ -4,25 +4,52 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import org.openlmis.core.R;
-import org.openlmis.core.view.holder.AddDrugsToFormViewHolder;
+import org.openlmis.core.view.holder.AddDrugsToVIAViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class AddDrugsToVIAAdapter extends InventoryListAdapter<AddDrugsToFormViewHolder> implements FilterableAdapter{
+import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
+
+public class AddDrugsToVIAAdapter extends InventoryListAdapter<AddDrugsToVIAViewHolder> implements FilterableAdapter{
 
     public AddDrugsToVIAAdapter(ArrayList<InventoryViewModel> inventoryViewModels) {
         super(inventoryViewModels);
     }
 
-    @Override
-    public AddDrugsToFormViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new AddDrugsToFormViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_select_product_in_via, parent, false));
+
+    public List<InventoryViewModel> getCheckedProducts() {
+        return from(data).filter(new Predicate<InventoryViewModel>() {
+            @Override
+            public boolean apply(InventoryViewModel viewModel) {
+                return viewModel.isChecked();
+            }
+        }).toList();
     }
 
     @Override
-    public void onBindViewHolder(AddDrugsToFormViewHolder holder, int position) {
-        holder.populate(queryKeyWord, filteredList.get(position));
+    public AddDrugsToVIAViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new AddDrugsToVIAViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_select_product_in_via, parent, false));
+    }
 
+    @Override
+    public void onBindViewHolder(AddDrugsToVIAViewHolder holder, int position) {
+        holder.populate(queryKeyWord, filteredList.get(position));
+    }
+
+    @Override
+    public int validateAll() {
+        int position = -1;
+        for (int i = 0; i < data.size(); i++) {
+            if (!data.get(i).validate(true)) {
+                position = i;
+                break;
+            }
+        }
+
+        this.notifyDataSetChanged();
+        return position;
     }
 }
