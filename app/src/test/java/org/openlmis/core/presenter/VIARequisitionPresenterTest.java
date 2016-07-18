@@ -45,6 +45,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.model.repository.RnrFormItemRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
@@ -89,12 +90,14 @@ public class VIARequisitionPresenterTest {
     private VIARepository mockRnrFormRepository;
     private ProductRepository mockProductRepository;
     private StockRepository mockStockRepository;
+    private RnrFormItemRepository mockRnrFormItemRepository;
 
     @Before
     public void setup() throws ViewNotMatchException {
         mockRnrFormRepository = mock(VIARepository.class);
         mockProductRepository = mock(ProductRepository.class);
         mockStockRepository = mock(StockRepository.class);
+        mockRnrFormItemRepository = mock(RnrFormItemRepository.class);
 
         VIARequisitionFragment = mock(org.openlmis.core.view.fragment.VIARequisitionFragment.class);
 
@@ -419,6 +422,31 @@ public class VIARequisitionPresenterTest {
     }
 
     @Test
+    public void shouldAddAdditionalProductsToVIA() throws LMISException {
+        RnRForm rnRForm = mock(RnRForm.class);
+        when(mockRnrFormRepository.queryRnRForm(1L)).thenReturn(rnRForm);
+
+        RnrFormItem rnrFormItem1 = new RnrFormItemBuilder()
+                .setProduct(new ProductBuilder().setCode("P1").build()).setRequestAmount(100L)
+                .build();
+        RnrFormItem rnrFormItem2 = new RnrFormItemBuilder()
+                .setProduct(new ProductBuilder().setCode("P2").build()).setRequestAmount(200L)
+                .build();
+        List<RnrFormItem> rnrFormItems = Lists.newArrayList(rnrFormItem1, rnrFormItem2);
+        when(rnRForm.getRnrItems(IsKit.Yes)).thenReturn(new ArrayList<RnrFormItem>());
+        when(mockRnrFormItemRepository.listAllNewRnrItems()).thenReturn(rnrFormItems);
+
+        TestSubscriber<RnRForm> testSubscriber = new TestSubscriber<>();
+        presenter.getRnrFormObservable(1L).subscribe(testSubscriber);
+        testSubscriber.awaitTerminalEvent();
+        testSubscriber.assertNoErrors();
+
+        assertEquals(2, presenter.getRequisitionFormItemViewModels().size());
+        assertEquals("100", presenter.getRequisitionFormItemViewModels().get(0).getRequestAmount());
+        assertEquals("200", presenter.getRequisitionFormItemViewModels().get(1).getRequestAmount());
+    }
+
+    @Test
     public void shouldIncludeKitItemsWhenSaving() throws Exception {
         RnRForm rnRForm = new RnRForm();
         rnRForm.setBaseInfoItemListWrapper(newArrayList(new BaseInfoItem()));
@@ -642,6 +670,7 @@ public class VIARequisitionPresenterTest {
             bind(VIARepository.class).toInstance(mockRnrFormRepository);
             bind(ProductRepository.class).toInstance(mockProductRepository);
             bind(StockRepository.class).toInstance(mockStockRepository);
+            bind(RnrFormItemRepository.class).toInstance(mockRnrFormItemRepository);
         }
     }
 }
