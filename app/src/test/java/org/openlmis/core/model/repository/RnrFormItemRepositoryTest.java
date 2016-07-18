@@ -142,4 +142,25 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(productIds.get(0), is(product1.getId()));
         assertThat(productIds.get(1), is(product2.getId()));
     }
+
+    @Test
+    public void shouldListAllNewRnrItems() throws Exception {
+        Product product1 = new ProductBuilder().setCode("P1").setIsActive(true).build();
+        productRepository.createOrUpdate(product1);
+        RnrFormItem rnrFormItem = new RnrFormItem();
+        rnrFormItem.setProduct(product1);
+        rnrFormItem.setRequestAmount(100L);
+
+        Product product2 = new ProductBuilder().setCode("P2").setIsActive(true).build();
+        productRepository.createOrUpdate(product2);
+        RnrFormItem rnrFormItem2 = new RnrFormItem();
+        rnrFormItem2.setProduct(product2);
+        rnrFormItem2.setRequestAmount(200L);
+        rnrFormItemRepository.batchCreateOrUpdate(newArrayList(rnrFormItem, rnrFormItem2));
+
+        List<RnrFormItem> rnrFormItems = rnrFormItemRepository.listAllNewRnrItems();
+        assertThat(rnrFormItems.size(), is(2));
+        assertThat(rnrFormItems.get(0).getProduct().getCode(), is(product1.getCode()));
+        assertThat(rnrFormItems.get(1).getProduct().getCode(), is(product2.getCode()));
+    }
 }

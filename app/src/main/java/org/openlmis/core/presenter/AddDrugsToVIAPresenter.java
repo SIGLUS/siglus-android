@@ -129,8 +129,11 @@ public class AddDrugsToVIAPresenter extends Presenter {
     }
 
     public interface AddDrugsToVIAView extends BaseView {
+
         boolean validateInventory();
+
         void goToParentPage();
+
         void showErrorMessage(String message);
     }
 }

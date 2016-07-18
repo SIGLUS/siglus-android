@@ -34,6 +34,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.model.repository.RnrFormItemRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.VIARepository;
@@ -82,6 +83,9 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     @Getter
     @Setter
     private ViaKitsViewModel viaKitsViewModel;
+
+    @Inject
+    RnrFormItemRepository rnrFormItemRepository;
 
     public VIARequisitionPresenter() {
         requisitionFormItemViewModels = new ArrayList<>();
@@ -151,6 +155,16 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }).toList();
     }
 
+    private List<RequisitionFormItemViewModel> getViewModelsForAdditionalProducts() throws LMISException {
+        return from(rnrFormItemRepository.listAllNewRnrItems()).transform(new Function<RnrFormItem, RequisitionFormItemViewModel>() {
+            @Override
+            public RequisitionFormItemViewModel apply(RnrFormItem rnrFormItem) {
+                return new RequisitionFormItemViewModel(rnrFormItem);
+            }
+        }).toList();
+
+    }
+
     private void adjustTheoretical(RequisitionFormItemViewModel requisitionFormItemViewModel) {
         Product product = requisitionFormItemViewModel.getItem().getProduct();
         requisitionFormItemViewModel.setAdjustmentViewModels(generateAdjustInfo(product));
@@ -217,6 +231,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     private void convertRnrToViewModel(RnRForm rnrForm) throws LMISException {
         requisitionFormItemViewModels.clear();
         requisitionFormItemViewModels.addAll(getViewModelsFromRnrForm(rnrForm));
+        requisitionFormItemViewModels.addAll(getViewModelsForAdditionalProducts());
         viaKitsViewModel.convertRnrKitItemsToViaKit(rnrForm.getRnrItems(IsKit.Yes));
     }
 

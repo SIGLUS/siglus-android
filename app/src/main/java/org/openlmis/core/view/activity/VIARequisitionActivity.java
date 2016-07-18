@@ -66,10 +66,15 @@ public class VIARequisitionActivity extends BaseActivity {
         return intent;
     }
 
-    //For emergency requisition and add additional drugs to VIA
+    //For emergency requisition
     public static Intent getIntentToMe(Context context, ArrayList<StockCard> stockCards) {
         Intent intent = new Intent(context, VIARequisitionActivity.class);
         intent.putExtra(Constants.PARAM_SELECTED_EMERGENCY, stockCards);
+        return intent;
+    }
+
+    public static Intent getIntentToMe(Context context) {
+        Intent intent = new Intent(context, VIARequisitionActivity.class);
         return intent;
     }
 }

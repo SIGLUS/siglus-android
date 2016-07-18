@@ -12,6 +12,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.presenter.AddDrugsToVIAPresenter;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.AddDrugsToVIAAdapter;
@@ -105,7 +106,7 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
 
     @Override
     public void goToParentPage() {
-        setResult(Activity.RESULT_OK);
+        startActivityForResult(VIARequisitionActivity.getIntentToMe(this), Constants.REQUEST_FROM_ADD_DRUGS_TO_VIA);
         this.finish();
     }
 
