@@ -294,7 +294,12 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
         List<Product> products = productRepository.queryActiveProductsInVIAProgramButNotInDraftVIAForm();
         assertThat(products.size(), is(2));
         assertThat(products.get(0).getCode(), is("P5"));
+        assertThat(products.get(0).isArchived(), is(false));
+        assertThat(products.get(0).getId(), is(activeVIAProductNotInForm.getId()));
         assertThat(products.get(1).getCode(), is("P7"));
+        assertThat(products.get(1).isArchived(), is(true));
+        assertThat(products.get(1).getId(), is(archivedVIAProductNotInForm.getId()));
+
     }
 
     private Product createProduct(String code, boolean archived, boolean isKit, boolean active) throws LMISException {

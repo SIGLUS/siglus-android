@@ -260,6 +260,7 @@ public class ProductRepository {
                 product.setPrimaryName(cursor.getString(cursor.getColumnIndexOrThrow("primaryName")));
                 product.setStrength(cursor.getString(cursor.getColumnIndexOrThrow("strength")));
                 product.setType(cursor.getString(cursor.getColumnIndexOrThrow("type")));
+                product.setArchived(cursor.getInt(cursor.getColumnIndexOrThrow("isArchived")) == 1);
                 products.add(product);
             } while (cursor.moveToNext());
         }
