@@ -121,6 +121,8 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     private ViaKitViewForToggleOff kitViewToggleOff;
     private ArrayList<StockCard> emergencyStockCards;
 
+    private Menu menu;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,12 +167,19 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         autoScrollLeftToRight();
     }
 
+    private void hideMenuIfNotDraft() {
+        if (!presenter.getRnrFormStatus().equals(RnRForm.STATUS.DRAFT)) {
+            menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(false);
+        }
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_via_requisition, menu);
         boolean featureToggleForAddDrugsToVIA = LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_drugs_to_via_form);
         menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(featureToggleForAddDrugsToVIA);
+        this.menu = menu;
     }
 
     @Override
@@ -218,6 +227,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             refreshNormalRnr(rnRForm);
         }
         setEditable();
+        hideMenuIfNotDraft();
     }
 
     private void refreshNormalRnr(RnRForm rnRForm) {
