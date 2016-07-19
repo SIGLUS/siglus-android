@@ -3,6 +3,7 @@ package org.openlmis.core.presenter;
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
@@ -30,12 +31,6 @@ public class AddDrugsToVIAPresenter extends Presenter {
     private ProductRepository productRepository;
 
     @Inject
-    private ProgramRepository programRepository;
-
-    @Inject
-    private ProductProgramRepository productProgramRepository;
-
-    @Inject
     private RnrFormItemRepository rnrFormItemRepository;
 
     AddDrugsToVIAView view;
@@ -50,23 +45,12 @@ public class AddDrugsToVIAPresenter extends Presenter {
             @Override
             public void call(final Subscriber<? super List<InventoryViewModel>> subscriber) {
                 try {
-                    final List<String> viaProgramCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode(Constants.VIA_PROGRAM_CODE);
-                    List<Long> allActiveVIAProductIds = productProgramRepository.queryActiveProductIdsByProgramsWithKits(viaProgramCodes, false);
-                    final List<Long> allExistingProductsInCurrentVIADraft = rnrFormItemRepository.listAllProductIdsInCurrentVIADraft();
-                    final List<Long> productsNewlyAddedAsRnrItems = rnrFormItemRepository.listAllProductIdsNewlyAddedAsRnrItems();
-
-                    List<InventoryViewModel> productsNotInVIAForm = FluentIterable.from(allActiveVIAProductIds).filter(new Predicate<Long>() {
+                    List<InventoryViewModel> productsNotInVIAForm = FluentIterable.from(productRepository.queryActiveProductsInVIAProgramButNotInDraftVIAForm()).transform(new Function<Product, InventoryViewModel>() {
                         @Override
-                        public boolean apply(Long productId) {
-                            return !allExistingProductsInCurrentVIADraft.contains(productId) && !productsNewlyAddedAsRnrItems.contains(productId);
-                        }
-                    }).transform(new Function<Long, InventoryViewModel>() {
-                        @Override
-                        public InventoryViewModel apply(Long productIdToAdd) {
-                            return new InventoryViewModel(productRepository.getById(productIdToAdd));
+                        public InventoryViewModel apply(Product product) {
+                            return new InventoryViewModel(product);
                         }
                     }).toList();
-
                     subscriber.onNext(productsNotInVIAForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {

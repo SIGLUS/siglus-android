@@ -28,10 +28,16 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Product.IsKit;
+import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.builder.KitProductBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
+import org.openlmis.core.model.builder.ProductProgramBuilder;
 import org.openlmis.core.model.builder.ProgramBuilder;
+import org.openlmis.core.model.builder.RnRFormBuilder;
+import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.Arrays;
@@ -52,15 +58,21 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
 
     private ProductRepository productRepository;
 
-    private SharedPreferenceMgr sharedPreferenceMgr;
+    private ProductProgramRepository productProgramRepository;
 
-    private StockRepository stockRepository;
+    private ProgramRepository programRepository;
+
+    private RnrFormItemRepository rnrFormItemRepository;
+
+    private RnrFormRepository rnrFormRepository;
 
     @Before
     public void setUp() throws Exception {
-        sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
-        stockRepository = mock(StockRepository.class);
         productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
+        productProgramRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductProgramRepository.class);
+        programRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProgramRepository.class);
+        rnrFormItemRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormItemRepository.class);
+        rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormRepository.class);
     }
 
     @Test
@@ -226,5 +238,70 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
         List<Product> queriedProducts = productRepository.queryProductsByProductIds(Arrays.asList(product1.getId(), product2.getId()));
 
         assertEquals(2, queriedProducts.size());
+    }
+
+    @Test
+    public void shouldQueryActiveProductsInVIAProgramButNotInDraftVIAForm() throws Exception {
+        Program parentProgram = new ProgramBuilder().setProgramCode("VIA").setParentCode(null).build();
+        programRepository.createOrUpdate(parentProgram);
+        Program program1 = new ProgramBuilder().setProgramCode("PR1").setParentCode("VIA").build();
+        programRepository.createOrUpdate(program1);
+        Program program2 = new ProgramBuilder().setProgramCode("PR2").setParentCode(null).build();
+        programRepository.createOrUpdate(program2);
+
+        RnRForm rnRForm = new RnRFormBuilder().setProgram(parentProgram).setStatus(RnRForm.STATUS.DRAFT).build();
+        rnrFormRepository.create(rnRForm);
+
+        //should not be in list
+        Product productInVIA = createProduct("P1", true, false, true);
+        ProductProgram productProgram = new ProductProgramBuilder().setProductCode(productInVIA.getCode()).setProgramCode(program1.getProgramCode()).setActive(true).build();
+        productProgramRepository.createOrUpdate(productProgram);
+        RnrFormItem rnrFormItem = new RnrFormItemBuilder().setProduct(productInVIA).setRnrForm(rnRForm).build();
+
+        //should not be in list
+        Product kitProduct = createProduct("P2", false, true, true);
+        ProductProgram productProgram2 = new ProductProgramBuilder().setProductCode(kitProduct.getCode()).setProgramCode(program1.getProgramCode()).setActive(true).build();
+        productProgramRepository.createOrUpdate(productProgram2);
+
+        //should not be in list
+        Product inactiveProduct = createProduct("P3", false, true, false);
+        ProductProgram productProgram3 = new ProductProgramBuilder().setProductCode(inactiveProduct.getCode()).setProgramCode(program1.getProgramCode()).setActive(true).build();
+        productProgramRepository.createOrUpdate(productProgram3);
+
+        //should not be in list
+        Product mmiaProduct = createProduct("P4", false, false, true);
+        ProductProgram productProgram4 = new ProductProgramBuilder().setProductCode(mmiaProduct.getCode()).setProgramCode(program2.getProgramCode()).setActive(true).build();
+        productProgramRepository.createOrUpdate(productProgram4);
+
+        //should be in list
+        Product activeVIAProductNotInForm = createProduct("P5", false, false, true);
+        ProductProgram productProgram5 = new ProductProgramBuilder().setProductCode(activeVIAProductNotInForm.getCode()).setProgramCode(program1.getProgramCode()).setActive(true).build();
+        productProgramRepository.createOrUpdate(productProgram5);
+
+        //should not be in list
+        Product productAddedAsAdditional = createProduct("P6", false, false, true);
+        ProductProgram productProgram6 = new ProductProgramBuilder().setProductCode(productAddedAsAdditional.getCode()).setProgramCode(program1.getProgramCode()).setActive(true).build();
+        productProgramRepository.createOrUpdate(productProgram6);
+        RnrFormItem rnrFormItem2 = new RnrFormItemBuilder().setProduct(productAddedAsAdditional).setRnrForm(null).build();
+
+        //should be in list
+        Product archivedVIAProductNotInForm = createProduct("P7", true, false, true);
+        ProductProgram productProgram7 = new ProductProgramBuilder().setProductCode(archivedVIAProductNotInForm.getCode()).setProgramCode(program1.getProgramCode()).setActive(true).build();
+        productProgramRepository.createOrUpdate(productProgram7);
+
+        rnrFormItemRepository.batchCreateOrUpdate(newArrayList(rnrFormItem, rnrFormItem2));
+
+        List<Product> products = productRepository.queryActiveProductsInVIAProgramButNotInDraftVIAForm();
+        assertThat(products.size(), is(2));
+        assertThat(products.get(0).getCode(), is("P5"));
+        assertThat(products.get(1).getCode(), is("P7"));
+    }
+
+    private Product createProduct(String code, boolean archived, boolean isKit, boolean active) throws LMISException {
+        Product productInVIA = new ProductBuilder().setCode(code)
+                .setPrimaryName("product 1").setIsArchived(archived).setIsKit(isKit)
+                .setStrength("100").setType("type").setIsActive(active).build();
+        productRepository.createOrUpdate(productInVIA);
+        return productInVIA;
     }
 }

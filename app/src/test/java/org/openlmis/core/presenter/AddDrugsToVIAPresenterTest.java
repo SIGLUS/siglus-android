@@ -75,20 +75,9 @@ public class AddDrugsToVIAPresenterTest {
 
     @Test
     public void loadActiveProductsNotInVIAForm() throws Exception {
-
-        List<String> viaProgramCodes = newArrayList("PR1", "PR2");
-        when(programRepository.queryProgramCodesByProgramCodeOrParentCode(Constants.VIA_PROGRAM_CODE)).thenReturn(newArrayList(viaProgramCodes));
-        List<Long> productIdList = newArrayList(1L, 2L, 3L, 4L, 5L, 6L, 7L);
-        when(productProgramRepository.queryActiveProductIdsByProgramsWithKits(viaProgramCodes, false)).thenReturn(productIdList);
-        List<Long> productsInVia = newArrayList(1L, 2L, 3L);
-        when(rnrFormItemRepository.listAllProductIdsInCurrentVIADraft()).thenReturn(productsInVia);
-        List<Long> productsNewlyAddedAsRnrItems = newArrayList(6L, 7L);
-        when(rnrFormItemRepository.listAllProductIdsNewlyAddedAsRnrItems()).thenReturn(productsNewlyAddedAsRnrItems);
-
-        when(productRepository.getById(4L)).thenReturn(new ProductBuilder().setCode("P1").setPrimaryName("ABC").build());
-        when(productRepository.getById(5L)).thenReturn(new ProductBuilder().setCode("P2").setPrimaryName("DEF").build());
-        when(productRepository.getById(6L)).thenReturn(new ProductBuilder().setCode("P3").setPrimaryName("111").build());
-        when(productRepository.getById(7L)).thenReturn(new ProductBuilder().setCode("P4").setPrimaryName("222").build());
+        Product product1 = new ProductBuilder().setCode("P1").setPrimaryName("ABC").build();
+        Product product2 = new ProductBuilder().setCode("P2").setPrimaryName("DEF").build();
+        when(productRepository.queryActiveProductsInVIAProgramButNotInDraftVIAForm()).thenReturn(newArrayList(product1, product2));
 
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
         presenter.loadActiveProductsNotInVIAForm().subscribe(subscriber);

@@ -20,20 +20,24 @@
 package org.openlmis.core.model.repository;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.Where;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
+import org.openlmis.core.persistence.LmisSqliteOpenHelper;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -230,6 +234,39 @@ public class ProductRepository {
                 return dao.queryBuilder().where().in("id", productIds).query();
             }
         });
+    }
+
+    public List<Product> queryActiveProductsInVIAProgramButNotInDraftVIAForm() throws LMISException {
+        String rawSql = "SELECT p1.* FROM products p1 "
+                + "JOIN product_programs p2 "
+                + "ON p1.code = p2.productCode "
+                + "JOIN programs p3 "
+                + "ON p2.programCode = p3.programCode "
+                + "WHERE p3.programCode = 'VIA' OR p3.parentCode = 'VIA' "
+                + "AND p2.isActive = 1 AND p1.isActive = 1 "
+                + "AND p1.isKit = 0 "
+                + "AND p1.id NOT IN "
+                + "(SELECT product_id FROM rnr_form_items ri "
+                + "WHERE ri.form_id IN "
+                + "(SELECT id FROM rnr_forms r1 WHERE r1.emergency = 0 AND r1.status = 'DRAFT') "
+                + "OR ri.form_id IS NULL)";
+        final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
+        List<Product> products = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                Product product = new Product();
+                product.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
+                product.setCode(cursor.getString(cursor.getColumnIndexOrThrow("code")));
+                product.setPrimaryName(cursor.getString(cursor.getColumnIndexOrThrow("primaryName")));
+                product.setStrength(cursor.getString(cursor.getColumnIndexOrThrow("strength")));
+                product.setType(cursor.getString(cursor.getColumnIndexOrThrow("type")));
+                products.add(product);
+            } while (cursor.moveToNext());
+        }
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+        return products;
     }
 
     public enum IsWithKit {
