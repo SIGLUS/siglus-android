@@ -27,8 +27,10 @@ import junit.framework.Assert;
 
 import org.hamcrest.core.Is;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.MockitoAnnotations;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
@@ -78,6 +80,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.openlmis.core.model.Product.IsKit;
@@ -628,6 +631,28 @@ public class VIARequisitionPresenterTest {
         verify(mockRnrFormRepository).createOrUpdateWithItems(rnRForm);
     }
 
+    @Test
+    public void shouldAddNewlyAddedProductsOnVIAFormAsStockCards() throws Exception {
+        RnRForm rnRForm = new RnRForm();
+        rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
+        rnRForm.setRnrFormItemListWrapper(newArrayList(createRnrFormItem(1)));
+
+        RnrFormItem item1 = createRnrFormItem(2);
+        RnrFormItem item2 = createRnrFormItem(3);
+        RnrFormItem item3 = createRnrFormItem(4);
+        when(mockRnrFormItemRepository.listAllNewRnrItems()).thenReturn(newArrayList(item1, item2, item3));
+
+        presenter.createStockCardsAndAddToFormForAdditionalRnrItems(rnRForm);
+
+        ArgumentCaptor<StockCard> captor = ArgumentCaptor.forClass(StockCard.class);
+        verify(mockStockRepository, times(3)).createOrUpdateStockCardWithStockMovement(captor.capture());
+        List<StockCard> captorAllValues = captor.getAllValues();
+        assertThat((captorAllValues.get(0)).getProduct().getId(), is(2L));
+        assertThat((captorAllValues.get(1)).getProduct().getId(), is(3L));
+        assertThat((captorAllValues.get(2)).getProduct().getId(), is(4L));
+        assertThat(rnRForm.getRnrFormItemListWrapper().size(), is(4));
+    }
+
     private ViaKitsViewModel buildDefaultViaKit() {
         ViaKitsViewModel viaKitsViewModel = new ViaKitsViewModel();
         viaKitsViewModel.setKitsOpenedCHW("10");
@@ -651,11 +676,8 @@ public class VIARequisitionPresenterTest {
 
 
     private RnrFormItem createRnrFormItem(int i) {
-        Program program = new Program();
-        program.setProgramCode("1");
         Product product = new Product();
-        product.setProgram(program);
-        product.setId(1);
+        product.setId(i);
         product.setCode("code");
         RnrFormItem rnrFormItem = new RnrFormItem();
         rnrFormItem.setInventory(1000);

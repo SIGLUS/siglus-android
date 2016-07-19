@@ -77,6 +77,11 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     @Override
+    protected void createStockCardsAndAddToFormForAdditionalRnrItems(RnRForm rnRForm) {
+        //do nothing
+    }
+
+    @Override
     public void updateUIAfterSubmit() {
         view.setProcessButtonName(R.string.btn_complete);
     }

@@ -298,6 +298,26 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         dataViewToModel(consultationNumbers);
 
         view.showSignDialog(rnRForm.isDraft());
+
+        if (rnRForm.getStatus().equals(RnRForm.STATUS.AUTHORIZED)) {
+            generateStockCardsAndAssignFormIDToNewlyAddedRnrItems();
+        }
+    }
+
+    private void generateStockCardsAndAssignFormIDToNewlyAddedRnrItems() {
+        try {
+            List<RnrFormItem> newRnrItems = rnrFormItemRepository.listAllNewRnrItems();
+            for (RnrFormItem rnrFormItem: newRnrItems) {
+                StockCard stockCard = new StockCard();
+                stockCard.setProduct(rnrFormItem.getProduct());
+                stockRepository.createOrUpdateStockCardWithStockMovement(stockCard);
+                rnrFormItem.setForm(rnRForm);
+            }
+            rnrFormItemRepository.batchCreateOrUpdate(newRnrItems);
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+
     }
 
     private void dataViewToModel(String consultationNumbers) {
@@ -345,6 +365,42 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         List<BaseInfoItem> baseInfoItemListWrapper = rnRForm.getBaseInfoItemListWrapper();
         if (baseInfoItemListWrapper != null) {
             baseInfoItemListWrapper.get(0).setValue(consultationNumbers);
+        }
+    }
+
+    @Override
+    protected Observable<Void> createOrUpdateRnrForm(final RnRForm rnRForm) {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    rnrFormRepository.createOrUpdateWithItems(rnRForm);
+                    subscriber.onNext(null);
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    e.reportToFabric();
+                    subscriber.onError(e);
+                } finally {
+                    stockService.monthlyUpdateAvgMonthlyConsumption();
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+    }
+
+    protected void createStockCardsAndAddToFormForAdditionalRnrItems(RnRForm form) {
+        try {
+            List<RnrFormItem> rnrFormItems = new ArrayList<>();
+            rnrFormItems.addAll(form.getRnrFormItemListWrapper());
+            for (RnrFormItem rnrFormItem: rnrFormItemRepository.listAllNewRnrItems()) {
+                StockCard newStockCard = new StockCard();
+                newStockCard.setProduct(rnrFormItem.getProduct());
+                stockRepository.createOrUpdateStockCardWithStockMovement(newStockCard);
+                rnrFormItem.setForm(form);
+                rnrFormItems.add(rnrFormItem);
+            }
+            form.setRnrFormItemListWrapper(rnrFormItems);
+        } catch (LMISException e) {
+            e.reportToFabric();
         }
     }
 

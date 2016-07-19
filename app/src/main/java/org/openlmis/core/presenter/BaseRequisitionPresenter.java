@@ -31,6 +31,7 @@ import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.service.SyncService;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
@@ -261,9 +262,12 @@ public abstract class BaseRequisitionPresenter extends Presenter {
             rnRForm.getSignaturesWrapper().add(new RnRFormSignature(rnRForm, signName, RnRFormSignature.TYPE.APPROVER));
             rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
             rnRForm.setSubmittedTime(DateUtil.today());
+            createStockCardsAndAddToFormForAdditionalRnrItems(rnRForm);
             authoriseRequisition(rnRForm);
         }
     }
+
+    protected abstract void createStockCardsAndAddToFormForAdditionalRnrItems(RnRForm rnRForm);
 
     public RnRForm.STATUS getRnrFormStatus() {
         if (rnRForm != null) {
