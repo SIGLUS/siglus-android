@@ -18,6 +18,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.service.PeriodService;
+import org.openlmis.core.utils.Constants;
 
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
@@ -56,18 +57,18 @@ public class IncompleteRequisitionBanner extends LinearLayout {
 
     public void setIncompleteRequisitionBanner() {
         try {
-            int periodOffsetMonthMmia = periodService.getIncompletePeriodOffsetMonth("MMIA");
-            int periodOffsetMonthVia = periodService.getIncompletePeriodOffsetMonth("VIA");
+            int periodOffsetMonthMmia = periodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE);
+            int periodOffsetMonthVia = periodService.getIncompletePeriodOffsetMonth(Constants.VIA_PROGRAM_CODE);
             if (periodOffsetMonthMmia == 0 && periodOffsetMonthVia == 0) {
                 this.setVisibility(View.GONE);
             } else if (periodOffsetMonthMmia == 1 && periodOffsetMonthVia == 1) {
-                String periodRange = getPeriodRangeForIncompleteRequisition("VIA");
+                String periodRange = getPeriodRangeForIncompleteRequisition(Constants.VIA_PROGRAM_CODE);
                 txMissedRequisition.setText(Html.fromHtml(getResources().getString(R.string.via_and_mmia_requisition_alert, periodRange)));
             } else if (periodOffsetMonthMmia == 0 && periodOffsetMonthVia == 1) {
-                String periodRange = getPeriodRangeForIncompleteRequisition("VIA");
+                String periodRange = getPeriodRangeForIncompleteRequisition(Constants.VIA_PROGRAM_CODE);
                 txMissedRequisition.setText(Html.fromHtml(getResources().getString(R.string.via_requisition_alert, periodRange)));
             } else if (periodOffsetMonthMmia == 1 && periodOffsetMonthVia == 0) {
-                String periodRange = getPeriodRangeForIncompleteRequisition("MMIA");
+                String periodRange = getPeriodRangeForIncompleteRequisition(Constants.MMIA_PROGRAM_CODE);
                 txMissedRequisition.setText(Html.fromHtml(getResources().getString(R.string.mmia_requisition_alert, periodRange)));
             } else if (periodOffsetMonthMmia == 0 && periodOffsetMonthVia > 1) {
                 txMissedRequisition.setText(getResources().getString(R.string.via_requisition_for_multiple_periods_alert));
