@@ -5,13 +5,18 @@ import com.google.inject.Inject;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.helper.RnrFormHelper;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.RnrFormItemRepository;
+import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+import java.util.Date;
 import java.util.List;
 
 import rx.Observable;
@@ -28,6 +33,12 @@ public class AddDrugsToVIAPresenter extends Presenter {
 
     @Inject
     private RnrFormItemRepository rnrFormItemRepository;
+
+    @Inject
+    private StockRepository stockRepository;
+
+    @Inject
+    private RnrFormHelper rnrFormHelper;
 
     AddDrugsToVIAView view;
 
@@ -57,10 +68,10 @@ public class AddDrugsToVIAPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    public void generateNewVIAItems(List<InventoryViewModel> checkedViewModels) throws LMISException {
+    public void generateNewVIAItems(List<InventoryViewModel> checkedViewModels, Date periodBegin, Date periodEnd) throws LMISException {
         if (view.validateInventory()) {
             view.loading();
-            Subscription subscription = saveRnrItemsObservable(checkedViewModels).subscribe(nextMainPageAction, errorAction);
+            Subscription subscription = saveRnrItemsObservable(checkedViewModels, periodBegin, periodEnd).subscribe(nextMainPageAction, errorAction);
             subscriptions.add(subscription);
         }
     }
@@ -81,25 +92,39 @@ public class AddDrugsToVIAPresenter extends Presenter {
         }
     };
 
-    private void convertViewModelsToRnrItemsAndSave(List<InventoryViewModel> viewModels) throws LMISException {
+    private void convertViewModelsToRnrItemsAndSave(List<InventoryViewModel> viewModels, final Date periodBegin, final Date periodEnd) throws LMISException {
         List<RnrFormItem> rnrFormItemList = FluentIterable.from(viewModels).transform(new Function<InventoryViewModel, RnrFormItem>() {
             @Override
             public RnrFormItem apply(InventoryViewModel inventoryViewModel) {
                 RnrFormItem rnrFormItem = new RnrFormItem();
-                rnrFormItem.setProduct(inventoryViewModel.getProduct());
-                rnrFormItem.setRequestAmount(Long.parseLong(inventoryViewModel.getQuantity()));
+                try {
+                    rnrFormItem.setProduct(inventoryViewModel.getProduct());
+                    if (inventoryViewModel.getProduct().isArchived()) {
+                        populateRnrItemWithQuantities(rnrFormItem, periodBegin, periodEnd);
+
+                    }
+                    rnrFormItem.setRequestAmount(Long.parseLong(inventoryViewModel.getQuantity()));
+                } catch (LMISException e) {
+                    e.reportToFabric();
+                }
                 return rnrFormItem;
             }
         }).toList();
         rnrFormItemRepository.batchCreateOrUpdate(rnrFormItemList);
     }
 
-    protected Observable saveRnrItemsObservable(final List<InventoryViewModel> viewModels) {
+    private void populateRnrItemWithQuantities(RnrFormItem rnrFormItem, Date periodBegin, Date periodEnd) throws LMISException {
+        StockCard stockCard = stockRepository.queryStockCardByProductId(rnrFormItem.getProduct().getId());
+        List<StockMovementItem> stockMovementItems = stockRepository.queryStockItemsByPeriodDates(stockCard, periodBegin, periodEnd);
+        rnrFormHelper.assignTotalValues(rnrFormItem, stockMovementItems);
+    }
+
+    protected Observable saveRnrItemsObservable(final List<InventoryViewModel> viewModels, final Date periodBegin, final Date periodEnd) {
         return Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
                 try {
-                    convertViewModelsToRnrItemsAndSave(viewModels);
+                    convertViewModelsToRnrItemsAndSave(viewModels, periodBegin, periodEnd);
                     subscriber.onNext(null);
                     subscriber.onCompleted();
                 } catch (LMISException e) {

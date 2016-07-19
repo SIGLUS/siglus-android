@@ -18,6 +18,7 @@ import org.openlmis.core.view.adapter.AddDrugsToVIAAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import roboguice.inject.ContentView;
@@ -53,6 +54,9 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        final Date periodBegin = ((Date) getIntent().getSerializableExtra(Constants.PARAM_PERIOD_BEGIN));
+        final Date periodEnd = ((Date) getIntent().getSerializableExtra(Constants.PARAM_PERIOD_END));
+
         productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new AddDrugsToVIAAdapter(new ArrayList<InventoryViewModel>());
         productListRecycleView.setAdapter(mAdapter);
@@ -64,7 +68,7 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
             @Override
             public void onClick(View v) {
                 try {
-                    presenter.generateNewVIAItems(mAdapter.getCheckedProducts());
+                    presenter.generateNewVIAItems(mAdapter.getCheckedProducts(), periodBegin, periodEnd);
                 } catch (LMISException e) {
                     e.printStackTrace();
                 }
@@ -124,8 +128,10 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
         return false;
     }
 
-    public static Intent getIntentToMe(Context context) {
+    public static Intent getIntentToMe(Context context, Date periodBegin, Date periodEnd) {
         Intent intent = new Intent(context, AddDrugsToVIAActivity.class);
+        intent.putExtra(Constants.PARAM_PERIOD_BEGIN, periodBegin);
+        intent.putExtra(Constants.PARAM_PERIOD_END, periodEnd);
         return intent;
     }
 }

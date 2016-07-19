@@ -12,16 +12,24 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
+import org.openlmis.core.model.builder.StockCardBuilder;
+import org.openlmis.core.model.builder.StockMovementItemBuilder;
+import org.openlmis.core.model.helper.RnrFormHelper;
 import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormItemRepository;
+import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import roboguice.RoboGuice;
@@ -47,7 +55,9 @@ public class AddDrugsToVIAPresenterTest {
     private ProgramRepository programRepository;
     private ProductProgramRepository productProgramRepository;
     private RnrFormItemRepository rnrFormItemRepository;
+    private StockRepository stockRepository;
     AddDrugsToVIAPresenter.AddDrugsToVIAView view;
+    private RnrFormHelper rnrFormHelper;
 
 
     @Before
@@ -56,6 +66,8 @@ public class AddDrugsToVIAPresenterTest {
         programRepository = mock(ProgramRepository.class);
         productProgramRepository = mock(ProductProgramRepository.class);
         rnrFormItemRepository = mock(RnrFormItemRepository.class);
+        stockRepository = mock(StockRepository.class);
+        rnrFormHelper = mock(RnrFormHelper.class);
 
         view = mock(AddDrugsToVIAPresenter.AddDrugsToVIAView.class);
 
@@ -66,6 +78,8 @@ public class AddDrugsToVIAPresenterTest {
                 bind(ProgramRepository.class).toInstance(programRepository);
                 bind(ProductProgramRepository.class).toInstance(productProgramRepository);
                 bind(RnrFormItemRepository.class).toInstance(rnrFormItemRepository);
+                bind(StockRepository.class).toInstance(stockRepository);
+                bind(RnrFormHelper.class).toInstance(rnrFormHelper);
             }
         });
         presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(AddDrugsToVIAPresenter.class);
@@ -100,7 +114,7 @@ public class AddDrugsToVIAPresenterTest {
 
         ArrayList<InventoryViewModel> inventoryViewModels = newArrayList(inventoryViewModel1, inventoryViewModel2);
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
-        Observable observable = presenter.saveRnrItemsObservable(inventoryViewModels);
+        Observable observable = presenter.saveRnrItemsObservable(inventoryViewModels, new Date(), new Date());
         observable.subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
@@ -118,9 +132,42 @@ public class AddDrugsToVIAPresenterTest {
         InventoryViewModel inventoryViewModel2 = buildInventoryViewModel("P2", "34");
 
         when(view.validateInventory()).thenReturn(false);
-        presenter.generateNewVIAItems(newArrayList(inventoryViewModel1, inventoryViewModel2));
+        presenter.generateNewVIAItems(newArrayList(inventoryViewModel1, inventoryViewModel2), new Date(), new Date());
         verify(rnrFormItemRepository, never()).batchCreateOrUpdate(anyList());
 
+    }
+
+    @Test
+    public void shouldAssignValuesToSelectedArchivedProductsWhenSaving() throws Exception {
+        Product product1 = new ProductBuilder().setCode("P1").setPrimaryName("product 1").setIsArchived(true).setIsActive(true).build();
+        InventoryViewModel inventoryViewModel1 = new InventoryViewModel(product1);
+        inventoryViewModel1.setQuantity("100");
+
+        StockCard stockCard = new StockCardBuilder().setStockOnHand(0L).setProduct(product1).build();
+        StockMovementItem stockMovementItem1 = new StockMovementItemBuilder().withDocumentNo("123").build();
+        StockMovementItem stockMovementItem2 = new StockMovementItemBuilder().build();
+        StockMovementItem stockMovementItem3 = new StockMovementItemBuilder().build();
+        Date periodBegin = DateUtil.parseString("2016-01-21", DateUtil.DB_DATE_FORMAT);
+        Date periodEnd = DateUtil.parseString("2016-02-20", DateUtil.DB_DATE_FORMAT);
+
+        when(view.validateInventory()).thenReturn(true);
+        when(stockRepository.queryStockCardByProductId(product1.getId())).thenReturn(stockCard);
+        when(stockRepository.queryStockItemsByPeriodDates(stockCard, periodBegin, periodEnd)).thenReturn(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
+
+        ArrayList<InventoryViewModel> inventoryViewModels = newArrayList(inventoryViewModel1);
+        TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
+        Observable observable = presenter.saveRnrItemsObservable(inventoryViewModels, periodBegin, periodEnd);
+        observable.subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+
+        ArgumentCaptor<RnrFormItem> captor = ArgumentCaptor.forClass(RnrFormItem.class);
+        ArgumentCaptor<List> captor2 = ArgumentCaptor.forClass(List.class);
+        verify(rnrFormHelper).assignTotalValues(captor.capture(), captor2.capture());
+        List<RnrFormItem> captorAllValues = captor.getAllValues();
+        List<List> captor2AllValues = captor2.getAllValues();
+        assertThat(captorAllValues.get(0).getRequestAmount(), is(100L));
+        assertThat(((StockMovementItem) captor2AllValues.get(0).get(0)).getDocumentNumber(), is("123"));
     }
 
     @NonNull

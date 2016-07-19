@@ -419,6 +419,4 @@ public class StockRepository {
         return stockMovementItem != null && (stockMovementItem.getMovementDate().after(periodEnd)
                 || stockMovementItem.getCreatedTime().after(periodEnd));
     }
-
-
 }

@@ -46,7 +46,9 @@ public final class Constants {
     public static final String PARAM_PASSWORD = "password";
     public static final String PARAM_CUSTOM_REGIMEN = "customRegimen";
     public static final String PARAM_SELECTED_EMERGENCY = "selected_emergency";
-    public static final String PARAM_SELECTED_ADDITIONAL_DRUGS_FOR_VIA = "selected_additional_via_drugs";
+    public static final String PARAM_PERIOD_BEGIN = "periodBegin";
+    public static final String PARAM_PERIOD_END = "periodEnd";
+
 
     // Request Params
     public static final int REQUEST_FROM_STOCK_LIST_PAGE = 100;

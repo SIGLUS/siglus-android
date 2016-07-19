@@ -177,7 +177,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_new_drugs_to_via:
-                startActivity(AddDrugsToVIAActivity.getIntentToMe(getActivity()));
+                startActivity(AddDrugsToVIAActivity.getIntentToMe(getActivity(), presenter.getRnRForm().getPeriodBegin(), periodEndDate));
                 finish();
                 return true;
             default:
