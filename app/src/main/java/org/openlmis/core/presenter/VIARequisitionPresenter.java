@@ -298,26 +298,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         dataViewToModel(consultationNumbers);
 
         view.showSignDialog(rnRForm.isDraft());
-
-        if (rnRForm.getStatus().equals(RnRForm.STATUS.AUTHORIZED)) {
-            generateStockCardsAndAssignFormIDToNewlyAddedRnrItems();
-        }
-    }
-
-    private void generateStockCardsAndAssignFormIDToNewlyAddedRnrItems() {
-        try {
-            List<RnrFormItem> newRnrItems = rnrFormItemRepository.listAllNewRnrItems();
-            for (RnrFormItem rnrFormItem: newRnrItems) {
-                StockCard stockCard = new StockCard();
-                stockCard.setProduct(rnrFormItem.getProduct());
-                stockRepository.createOrUpdateStockCardWithStockMovement(stockCard);
-                rnrFormItem.setForm(rnRForm);
-            }
-            rnrFormItemRepository.batchCreateOrUpdate(newRnrItems);
-        } catch (LMISException e) {
-            e.reportToFabric();
-        }
-
     }
 
     private void dataViewToModel(String consultationNumbers) {

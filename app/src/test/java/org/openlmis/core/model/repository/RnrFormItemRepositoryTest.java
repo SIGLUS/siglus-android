@@ -90,60 +90,6 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void testListAllProductIdsInCurrentVIAForm() throws Exception {
-
-        Program program = new ProgramBuilder().setProgramCode(Constants.VIA_PROGRAM_CODE).build();
-        program.setProgramCode(Constants.VIA_PROGRAM_CODE);
-        programRepository.createOrUpdate(program);
-
-        Product product1 = new ProductBuilder().setCode("P1").setIsActive(true).build();
-        productRepository.createOrUpdate(product1);
-        Product product2 = new ProductBuilder().setCode("P2").setIsActive(true).build();
-        productRepository.createOrUpdate(product2);
-
-        ProductProgram productProgram1 = new ProductProgramBuilder().setProductCode("P1").setProgramCode(Constants.VIA_PROGRAM_CODE).build();
-        ProductProgram productProgram2 = new ProductProgramBuilder().setProductCode("P2").setProgramCode(Constants.VIA_PROGRAM_CODE).build();
-        productProgramRepository.createOrUpdate(productProgram1);
-        productProgramRepository.createOrUpdate(productProgram2);
-
-        RnRForm form = new RnRFormBuilder().setStatus(RnRForm.STATUS.DRAFT).setProgram(program).build();
-        form.setId(1L);
-        List<RnrFormItem> rnrFormItemList = new ArrayList<>();
-
-        rnrFormItemList.add(getRnrFormItem(form, product1, 1));
-        rnrFormItemList.add(getRnrFormItem(form, product2, 2));
-
-        rnrFormItemRepository.batchCreateOrUpdate(rnrFormItemList);
-        rnrFormRepository.create(form);
-
-        List<Long> productIds = rnrFormItemRepository.listAllProductIdsInCurrentVIADraft();
-        assertThat(productIds.size(), is(2));
-        assertThat(productIds.get(0), is(product1.getId()));
-        assertThat(productIds.get(1), is(product2.getId()));
-    }
-
-    @Test
-    public void shouldReturnProductIdsNewlyAddedAsRnrItemsWhichAreItemsWithoutFormIds() throws Exception {
-        Product product1 = new ProductBuilder().setCode("P1").setIsActive(true).build();
-        productRepository.createOrUpdate(product1);
-        RnrFormItem rnrFormItem = new RnrFormItem();
-        rnrFormItem.setProduct(product1);
-        rnrFormItem.setRequestAmount(100L);
-
-        Product product2 = new ProductBuilder().setCode("P2").setIsActive(true).build();
-        productRepository.createOrUpdate(product2);
-        RnrFormItem rnrFormItem2 = new RnrFormItem();
-        rnrFormItem2.setProduct(product2);
-        rnrFormItem2.setRequestAmount(200L);
-        rnrFormItemRepository.batchCreateOrUpdate(newArrayList(rnrFormItem, rnrFormItem2));
-
-        List<Long> productIds = rnrFormItemRepository.listAllProductIdsNewlyAddedAsRnrItems();
-        assertThat(productIds.size(), is(2));
-        assertThat(productIds.get(0), is(product1.getId()));
-        assertThat(productIds.get(1), is(product2.getId()));
-    }
-
-    @Test
     public void shouldListAllNewRnrItems() throws Exception {
         Product product1 = new ProductBuilder().setCode("P1").setIsActive(true).build();
         productRepository.createOrUpdate(product1);

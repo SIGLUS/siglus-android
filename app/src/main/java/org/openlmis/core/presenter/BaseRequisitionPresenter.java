@@ -31,7 +31,6 @@ import org.openlmis.core.model.RnRFormSignature;
 import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.service.SyncService;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
