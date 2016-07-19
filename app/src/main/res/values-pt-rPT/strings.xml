@@ -220,10 +220,12 @@
     <string name="duplicate_rnr_error">Sincronização falhou. Você já enviou uma requisição para este programa neste período.</string>
     <string name="period_mismatch_error">Sincronização falhou. O período que você está enviando não coincide com o período de programação.</string>
     <!--Rnr form historical list-->
-    <string name="label_via_name">Requisição</string>
+    <string name="label_via_name">Requisição Balancete</string>
     <string name="label_mmia_name">MMIA</string>
     <string name="action_delete_rnr_form">Remover do tablet</string>
-    <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b> Nenhuma %1$s foi criada.</b>]]> Complete o seu inventário antes de criar uma %1$s</string>
+  <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b> Nenhuma%1$s foi criada.</b>]]> Complete o seu inventário antes de criar uma requisição
+
+.</string>
     <string name="btn_view_uncompleted_physical_inventory">Completar Inventário</string>
     <string name="label_select_close_of_period"><![CDATA[Por favor seleccione um inventário a partir da lista abaixo. Apenas inventários feitos em ou entre o <b>18</b> e <b>25</b> de <b>%1$s</b> podem ser usado para fechar o período. A data de hoje é <b>%2$s</b>]]></string>
     <string name="label_completed_physical_inventory_message"><![CDATA[<b>Nenhuma %1$s Foi criado.</b>]]></string>
@@ -231,7 +233,7 @@
     <string name="label_incomplete_requisition"><![CDATA[<b>%1$s</b>]]> está incompleto.</string>
     <string name="btn_view_incomplete_requisition">Continuar trabalhando em %1$s</string>
     <string name="label_unsynced_requisition">Este <![CDATA[<b>%1$s</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
-    <string name="label_submitted_message">%1$s enviada com sucesso no dia %2$s</string>
+    <string name="label_submitted_message">%1$s enviado com sucesso no dia  %2$s</string>
     <plurals name="label_drug_count_message">
         <item quantity="one"><![CDATA[<b>%1$s</b>]]> Producto requisitado</item>
         <item quantity="other"><![CDATA[<b>%1$s</b>]]> Productos requisitados</item>
@@ -240,13 +242,13 @@
     <string name="btn_view_via_requisition">Ver %s Balancete</string>
     <string name="label_period_date">%1$s  a  %2$s</string>
     <string name="label_emergency_date">Requisição de Emergencia – %s</string>
-    <string name="label_can_not_create_rnr"><![CDATA[<b>Você será capaz de criar uma %1$s no dia 18 de %1$s</b>]]></string>
+    <string name="label_can_not_create_rnr"><![CDATA[<b>Você será capaz de criar uma requisição no dia 18 de %1$s</b>]]></string>
     <string name="label_previous_period_missing"><![CDATA[<b>O formulário não pode ser criado</b> até que períodos anteriores sejam fechados.<br> Por favor, feche todos os períodos anteriores]]></string>
     <string name="label_missed_period"><![CDATA[<b>Requisição está atrasada e nenhum inventário foi escolhido</b> Uma requisição será gerada automaticamente usando as quantidades do estoque fisico do fim do período]]></string>
     <string name="btn_select_close_period">Seleccione o fecho do período</string>
     <string name="label_create_emergency_rnr">Criar requisição de emergência</string>
     <string name="label_incomplete_requisition_old">Esta <![CDATA[<b>%1$s</b>]]> está incompleta. Para completá-la, selecione \"Criar uma %1$s\" na página inicial</string>
-    <string name="btn_requisition_list_old">Ver histórico de Requisiçóes Via Clássica submetidas</string>
+    <string name="btn_requisition_list_old">Ver histórico de Requisiçóes Balancete submetidas</string>
     <string name="btn_mmia_list_old">Ver histórico de MMIAs submetidos</string>
     <string name="mmia_list">MMIA</string>
     <string name="requisition_list">Requisições Balancete</string>
@@ -307,17 +309,16 @@
     <string name="app_name_in_showcase">ESMS SHOWCASE</string>
     <string name="app_name_in_demo">ESMS DEMO</string>
     <string name="app_name_in_upgrade">ESMS UPGRADE</string>
-    <!--Incomplete Requisition Banner-->
-    <string name="via_and_mmia_requisition_alert">Your MMIA and VIA requisitions for %1$s have not been completed</string>
-    <string name="via_requisition_alert">Your VIA requisition for %1$s has not been completed</string>
-    <string name="mmia_requisition_alert">Your MMIA requisition for %1$s has not been completed</string>
-    <string name="via_requisition_for_multiple_periods_alert">Your VIA requisitions for multiple periods have not been completed</string>
-    <string name="mmia_requisition_for_multiple_periods_alert">Your MMIA requisitions for multiple periods have not been completed</string>
-    <string name="via_and_mmia_requisitions_for_multiple_periods_alert">Your MMIA and VIA requisitions for multiple periods have not been completed</string>
-    <string name="missed_requisition_time_range">%1$s to %2$s</string>
-
-    <!-- Add products to requisition form -->
+    <!--Missed Requisition Banner-->
+    <string name="via_and_mmia_requisition_alert">Suas Requisições Balancete e seus MMIAs para <![CDATA[<b>%1$s</b>]]> não foram concluídos.</string>
+    <string name="via_requisition_alert">Sua Requisição Balancete para <![CDATA[<b>%1$s</b>]]> não foi concluída</string>
+    <string name="mmia_requisition_alert">Seu  formulário MMIA para <![CDATA[<b> %1$s </b>]]> não foi concluído.</string>
+    <string name="via_requisition_for_multiple_periods_alert">Suas requisições balancete de vários períodos não foram concluídas</string>
+    <string name="mmia_requisition_for_multiple_periods_alert">Seus relatórios MMIA de vários períodos não foram concluídos</string>
+    <string name="via_and_mmia_requisitions_for_multiple_periods_alert">Os seus relatorios de MMIA e Requisição balancete de vários períodos não foram concluídos</string>
+    <string name="missed_requisition_time_range">%1$s para %2$s</string>
+    <!--Add products to requisition form-->
     <string name="label_add_new_drugs_to_via">Adicionar produtos</string>
-    <string name="title_add_drugs_to_form">Adicionar produtos para Requisição</string>
-    <string name="label_hint_amount_requisition">Amount requested</string>
+    <string name="title_add_drugs_to_form">Adicione produtos para requisição</string>
+    <string name="label_hint_amount_requisition">Quantidade recebida</string>
 </resources>
