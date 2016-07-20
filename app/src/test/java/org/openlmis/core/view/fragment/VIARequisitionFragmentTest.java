@@ -97,6 +97,7 @@ public class VIARequisitionFragmentTest {
         when(presenter.getRequisitionFormItemViewModels()).thenReturn(formItemList);
         when(presenter.getViaKitsViewModel()).thenReturn(new ViaKitsViewModel());
         when(presenter.getRnRForm()).thenReturn(form);
+        when(presenter.getRnrFormStatus()).thenReturn(RnRForm.STATUS.DRAFT);
 
         VIARequisitionFragment = getVIARequisitionFragmentFromActivityWithIntent();
     }
