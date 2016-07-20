@@ -127,10 +127,17 @@ public class PeriodService {
                             currentDate.getMonthOfYear(),
                             Period.INVENTORY_BEGIN_DAY);
         } else {
-            currentMonthInventoryBeginDate = currentDate
-                    .withDate(currentDate.getYear(),
-                            currentDate.getMonthOfYear() - 1,
-                            Period.INVENTORY_BEGIN_DAY);
+            if (currentDate.getMonthOfYear() == 1) {
+                currentMonthInventoryBeginDate = currentDate
+                        .withDate(currentDate.getYear() - 1,
+                                12,
+                                Period.INVENTORY_BEGIN_DAY);
+            } else {
+                currentMonthInventoryBeginDate = currentDate
+                        .withDate(currentDate.getYear(),
+                                currentDate.getMonthOfYear() - 1,
+                                Period.INVENTORY_BEGIN_DAY);
+            }
         }
         return currentMonthInventoryBeginDate;
     }

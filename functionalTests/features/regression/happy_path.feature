@@ -215,9 +215,9 @@ Feature: Log in and initialize Inventory
     And I press "Requisições Balancete"
 
     Then I wait for "Requisições Balancete" to appear
-    Then I should see text containing "Create Via Classica Requisition"
+    Then I should see text containing "Create Requisition Balancete"
 
-    When I press "Create Via Classica Requisition"
+    When I press "Create Requisition Balancete"
     Then I should see "Select inventory to close period"
     And I press "Thursday"
     And I press "Next"
@@ -299,9 +299,9 @@ Feature: Log in and initialize Inventory
     And I wait for "STOCK CARD OVERVIEW" to appear
     And I press "Requisições Balancete"
     Then I wait for "Requisições Balancete" to appear
-    Then I should see text containing "Create Via Classica Requisition"
+    Then I should see text containing "Create Requisition Balancete"
 
-    When I press "Create Via Classica Requisition"
+    When I press "Create Requisition Balancete"
     Then I should see "Select inventory to close period"
     And I press "Thursday"
     And I press "Next"

@@ -99,7 +99,7 @@ Feature: Unpack Kit
     Then I wait for "MMIA" to appear
     And I press "Requisições Balancete"
     Then I wait for "Requisições Balancete" to appear
-    Then I should see text containing "No Via Classica Requisition has been created."
+    Then I should see text containing "No Requisition Balancete has been created."
 
     Then I press "Complete Inventory"
     And I wait for "inventory" to appear
@@ -111,9 +111,9 @@ Feature: Unpack Kit
     Then I do physical inventory for all items
 
     Then I wait for "Requisições Balancete" to appear
-    Then I should see text containing "Create Via Classica Requisition"
+    Then I should see text containing "Create Requisition Balancete"
 
-    And I press "Create Via Classica Requisition"
+    And I press "Create Requisition Balancete"
     Then I should see "Select inventory to close period"
     And I press "Thursday"
     And I press "Next"
@@ -127,7 +127,7 @@ Feature: Unpack Kit
     Then I press "Yes"
     Then I wait for "Requisições Balancete" to appear
 
-    And I press "Create Via Classica Requisition"
+    And I press "Create Requisition Balancete"
     Then I should see "Select inventory to close period"
     And I press "Thursday"
     And I press "Next"
@@ -145,7 +145,7 @@ Feature: Unpack Kit
     Then I press "Save"
     Then I wait for "Requisições Balancete" to appear
 
-    And I press "Continue Working on Via Classica Requisition"
+    And I press "Continue Working on Requisition Balancete"
     # And I rotate the page to "landscape"
     # Then I swipe right
     # Then I should see "345" in the requisition form
@@ -167,4 +167,4 @@ Feature: Unpack Kit
 
     And I press "Requisições Balancete"
     Then I wait for "Requisições Balancete" to appear
-    Then I should see text containing "View Via Classica Requisition"
+    Then I should see text containing "View Requisition Balancete"

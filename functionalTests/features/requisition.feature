@@ -26,16 +26,16 @@ Feature: Requisition
 
     And I press "Requisições Balancete"
     Then I wait for "Requisições Balancete" to appear
-    Then I should see text containing "No Via Classica Requisition has been created."
+    Then I should see text containing "No Requisition Balancete has been created."
 
     Then I press "Complete Inventory"
     And I wait for "inventory" to appear
     Then I do physical inventory for via items
 
     Then I wait for "Requisições Balancete" to appear
-    And I should see text containing "Create Via Classica Requisition"
+    And I should see text containing "Create Requisition Balancete"
 
-    And I press "Create Via Classica Requisition"
+    And I press "Create Requisition Balancete"
     Then I should see "Select inventory to close period"
     And I press "Thursday"
     And I press "Next"
@@ -47,7 +47,7 @@ Feature: Requisition
     Then I press "Yes"
     Then I wait for "Requisições Balancete" to appear
 
-    And I press "Create Via Classica Requisition"
+    And I press "Create Requisition Balancete"
     And I press "Thursday"
     And I press "Next"
     And I should see empty consultations number
@@ -61,7 +61,7 @@ Feature: Requisition
     Then I press "Save"
     Then I wait for "Requisições Balancete" to appear
 
-    And I press "Continue Working on Via Classica Requisition"
+    And I press "Continue Working on Requisition Balancete"
     And I wait for "Requisition -" to appear
     And I rotate the page to "landscape"
     Then I swipe right
@@ -85,7 +85,7 @@ Feature: Requisition
 
     And I press "Requisições Balancete"
     Then I wait for "Requisições Balancete" to appear
-    Then I should see text containing "View Via Classica Requisition"
+    Then I should see text containing "View Requisition Balancete"
     Then I should see text containing "You will be able to create a requisition on the 18th of"
 
 

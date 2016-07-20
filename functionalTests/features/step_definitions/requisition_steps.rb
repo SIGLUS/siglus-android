@@ -48,6 +48,5 @@ end
 
 
 Then (/^I swipe to the left in via requisition form$/) do
-    pan("* id:'et_request_amount'", :right)
-    pan("* id:'tx_different'", :right, from: {x: 0, y: 100}, to: {x: 500, y:100})
+    pan("* id:'et_request_amount'", :right, from: {x: 0, y: 100}, to: {x: 700, y:100})
 end
