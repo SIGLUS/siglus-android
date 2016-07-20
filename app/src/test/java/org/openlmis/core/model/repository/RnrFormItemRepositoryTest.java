@@ -108,5 +108,8 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(rnrFormItems.size(), is(2));
         assertThat(rnrFormItems.get(0).getProduct().getCode(), is(product1.getCode()));
         assertThat(rnrFormItems.get(1).getProduct().getCode(), is(product2.getCode()));
+
+        rnrFormItemRepository.deleteAllNewRnrItems();
+        assertThat(rnrFormItemRepository.listAllNewRnrItems().size(), is(0));
     }
 }

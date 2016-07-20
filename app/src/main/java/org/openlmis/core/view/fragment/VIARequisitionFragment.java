@@ -506,6 +506,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     private void removeTempForm() {
         if (!isHistoryForm()) {
             presenter.removeRequisition();
+            presenter.removeAllNewRnrItems();
         }
     }
 

@@ -384,6 +384,14 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }
     }
 
+    public void removeAllNewRnrItems() {
+        try {
+            rnrFormItemRepository.deleteAllNewRnrItems();
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+    }
+
     public interface VIARequisitionView extends BaseRequisitionView {
 
         void showListInputError(int index);

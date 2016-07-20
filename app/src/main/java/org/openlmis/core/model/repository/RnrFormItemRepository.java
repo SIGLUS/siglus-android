@@ -70,4 +70,17 @@ public class RnrFormItemRepository {
             }
         });
     }
+
+    public void deleteAllNewRnrItems() throws LMISException {
+        final List<RnrFormItem> additionalRnrItems = listAllNewRnrItems();
+        dbUtil.withDaoAsBatch(RnrFormItem.class, new DbUtil.Operation<RnrFormItem, Void>() {
+            @Override
+            public Void operate(Dao<RnrFormItem, String> dao) throws SQLException {
+                for (RnrFormItem item : additionalRnrItems) {
+                    dao.delete(item);
+                }
+                return null;
+            }
+        });
+    }
 }
