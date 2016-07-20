@@ -69,7 +69,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.openlmis.core.model.Product.IsKit;
 
 @RunWith(LMISTestRunner.class)
 public class InventoryPresenterTest extends LMISRepositoryUnitTest {
@@ -189,8 +188,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         Product productUnknownB = new ProductBuilder().setPrimaryName("B Unknown Product").setCode("B Code").build();
         unknownBStockCard.setProduct(productUnknownB);
 
-        when(stockRepositoryMock.list()).thenReturn(Arrays.asList(stockCardVIA, stockCardMMIA));
-        when(productRepositoryMock.listActiveProducts(IsKit.No)).thenReturn(Arrays.asList(productMMIA, productVIA, productUnknownB, productUnknownA));
+        when(productRepositoryMock.listProductsArchivedOrNotInStockCard()).thenReturn(Arrays.asList(productMMIA, productVIA, productUnknownB, productUnknownA));
         when(stockRepositoryMock.queryStockCardByProductId(10L)).thenReturn(stockCardMMIA);
 
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
@@ -201,7 +199,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
         subscriber.assertNoErrors();
         List<InventoryViewModel> receivedInventoryViewModels = subscriber.getOnNextEvents().get(0);
-        assertEquals(3, receivedInventoryViewModels.size());
+        assertEquals(4, receivedInventoryViewModels.size());
     }
 
     @Test
@@ -210,7 +208,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         Product activeProduct2 = ProductBuilder.create().setPrimaryName("active product").setCode("P3").build();
 
         when(stockRepositoryMock.list()).thenReturn(new ArrayList<StockCard>());
-        when(productRepositoryMock.listActiveProducts(IsKit.No)).thenReturn(Arrays.asList(activeProduct1, activeProduct2));
+        when(productRepositoryMock.listProductsArchivedOrNotInStockCard()).thenReturn(Arrays.asList(activeProduct1, activeProduct2));
 
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
         Observable<List<InventoryViewModel>> observable = inventoryPresenter.loadInventory();

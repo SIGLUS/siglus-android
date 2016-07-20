@@ -30,6 +30,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.builder.KitProductBuilder;
@@ -66,8 +67,11 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
 
     private RnrFormRepository rnrFormRepository;
 
+    private StockRepository stockRepository;
+
     @Before
     public void setUp() throws Exception {
+        stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockRepository.class);
         productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
         productProgramRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductProgramRepository.class);
         programRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProgramRepository.class);
@@ -88,6 +92,34 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
         List<Product> activeProducts = productRepository.listActiveProducts(IsKit.No);
 
         assertEquals(2, activeProducts.size());
+    }
+
+    @Test
+    public void shouldGetProductsNotArchivedOrNotInStockCard() throws Exception {
+        Product product1 = ProductBuilder.create().setCode("P1").setIsActive(true).setIsKit(true).setIsArchived(true).build();
+        Product product2 = ProductBuilder.create().setCode("P2").setIsActive(false).setIsKit(false).setIsArchived(true).build();
+        Product product3 = ProductBuilder.create().setCode("P3").setIsActive(true).setIsKit(false).setIsArchived(true).build();
+        productRepository.createOrUpdate(product1);
+        productRepository.createOrUpdate(product2);
+        productRepository.createOrUpdate(product3);
+        List<Product> products1 = productRepository.listProductsArchivedOrNotInStockCard();
+
+        System.out.println(products1.get(0).isArchived());
+        assertTrue(products1.get(0).isArchived());
+        assertEquals(1, products1.size());
+
+        Product product4 = ProductBuilder.create().setCode("P4").setIsActive(true).setIsKit(false).setIsArchived(false).build();
+        productRepository.createOrUpdate(product4);
+        List<Product> products2 = productRepository.listProductsArchivedOrNotInStockCard();
+
+        assertEquals(2, products2.size());
+
+        StockCard stockCard = new StockCard();
+        stockCard.setProduct(product4);
+        stockRepository.createOrUpdate(stockCard);
+        List<Product> products3 = productRepository.listProductsArchivedOrNotInStockCard();
+
+        assertEquals(1, products3.size());
     }
 
     @Test
@@ -193,13 +225,12 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
         productRepository.createOrUpdate(product2);
 
         List<Product> products = productRepository.queryProductsByProgramIds(newArrayList(2l, 3l));
-        assertThat(products.size(),is(2));
+        assertThat(products.size(), is(2));
         assertThat(products.get(0).getCode(), is("08A01"));
     }
 
     @Test
     public void shouldQueryActiveProductsByCodesWithKits() throws Exception {
-
         createSeveralProducts();
 
         List<Product> queriedProducts = productRepository.queryActiveProductsByCodesWithKits(Arrays.asList("08A01", "08A02", "08A03", "08A04"), true);

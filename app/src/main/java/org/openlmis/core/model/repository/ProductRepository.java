@@ -67,6 +67,40 @@ public class ProductRepository {
         return activeProducts;
     }
 
+    public List<Product> listProductsArchivedOrNotInStockCard() throws LMISException {
+        String rawSql = "SELECT * FROM products "
+                + "WHERE isactive = '1' "
+                + "AND products.iskit = '0' "
+                + "AND (isarchived = '1' "
+                + "OR id NOT IN ("
+                + "SELECT product_id from stock_cards));";
+
+        final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
+        List<Product> activeProducts = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                Product product = new Product();
+
+                product.setActive(true);
+                product.setKit(false);
+                product.setPrimaryName(cursor.getString(cursor.getColumnIndexOrThrow("primaryName")));
+                product.setArchived(cursor.getInt(cursor.getColumnIndexOrThrow("isArchived"))!=0);
+                product.setCode(cursor.getString(cursor.getColumnIndexOrThrow("code")));
+                product.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                product.setStrength(cursor.getString(cursor.getColumnIndexOrThrow("strength")));
+                product.setType(cursor.getString(cursor.getColumnIndexOrThrow("type")));
+                activeProducts.add(product);
+            } while (cursor.moveToNext());
+        }
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+        Collections.sort(activeProducts);
+        return activeProducts;
+    }
+
+
     public void save(final List<Product> products) {
         try {
             dbUtil.withDaoAsBatch(Product.class, new DbUtil.Operation<Product, Void>() {

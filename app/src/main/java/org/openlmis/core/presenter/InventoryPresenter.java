@@ -19,7 +19,6 @@
 
 package org.openlmis.core.presenter;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.inject.Inject;
@@ -52,7 +51,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-import static org.openlmis.core.model.Product.IsKit;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class InventoryPresenter extends Presenter {
@@ -82,7 +80,7 @@ public class InventoryPresenter extends Presenter {
             @Override
             public void call(final Subscriber<? super List<InventoryViewModel>> subscriber) {
                 try {
-                    List<Product> inventoryProducts = getValidProductsForInventory();
+                    List<Product> inventoryProducts = productRepository.listProductsArchivedOrNotInStockCard();
 
                     List<InventoryViewModel> availableStockCardsForAddNewDrug = from(inventoryProducts)
                             .transform(new Function<Product, InventoryViewModel>() {
@@ -101,19 +99,6 @@ public class InventoryPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    @NonNull
-    private List<Product> getValidProductsForInventory() throws LMISException {
-        List<Product> activeProducts = productRepository.listActiveProducts(IsKit.No);
-        final List<Product> productsWithStockCards = getProductsThatHaveStockCards();
-
-        return FluentIterable.from(activeProducts).filter(new Predicate<Product>() {
-            @Override
-            public boolean apply(@Nullable Product product) {
-                return product.isArchived() || !productsWithStockCards.contains(product);
-            }
-        }).toList();
-    }
-
     @Nullable
     private InventoryViewModel convertProductToStockCardViewModel(Product product) {
         try {
@@ -129,15 +114,6 @@ public class InventoryPresenter extends Presenter {
             e.reportToFabric();
         }
         return null;
-    }
-
-    private List<Product> getProductsThatHaveStockCards() throws LMISException {
-        return from(stockRepository.list()).transform(new Function<StockCard, Product>() {
-            @Override
-            public Product apply(StockCard stockCard) {
-                return stockCard.getProduct();
-            }
-        }).toList();
     }
 
     public Observable<List<InventoryViewModel>> loadPhysicalInventory() {
