@@ -186,8 +186,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_new_drugs_to_via:
-                startActivity(AddDrugsToVIAActivity.getIntentToMe(getActivity(), presenter.getRnRForm().getPeriodBegin(), periodEndDate));
-                finish();
+                startActivityForResult(AddDrugsToVIAActivity.getIntentToMe(getActivity(), presenter.getRnRForm().getPeriodBegin(), periodEndDate), Constants.REQUEST_ADD_DRUGS_TO_VIA);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -524,9 +523,10 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == Constants.REQUEST_FROM_ADD_DRUGS_TO_VIA){
-            initUI();
-            presenter.updateFormUI();
+        if (requestCode == Constants.REQUEST_ADD_DRUGS_TO_VIA) {
+            if (resultCode == Activity.RESULT_OK) {
+                loadData();
+            }
         }
     }
 }

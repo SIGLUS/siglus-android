@@ -55,7 +55,7 @@ public final class Constants {
     public static final int REQUEST_UNPACK_KIT = 200;
     public static final int REQUEST_FROM_RNR_LIST_PAGE = 300;
     public static final int REQUEST_SELECT_PERIOD_END = 400;
-    public static final int REQUEST_FROM_ADD_DRUGS_TO_VIA = 500;
+    public static final int REQUEST_ADD_DRUGS_TO_VIA = 500;
 
     // Broadcast Intent Filter
     public static final String INTENT_FILTER_START_SYNC_DATA = LMISApp.getContext().getPackageName() + ".start.sync_data";

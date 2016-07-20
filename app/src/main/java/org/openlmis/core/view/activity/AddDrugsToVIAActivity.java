@@ -109,7 +109,8 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
 
     @Override
     public void goToParentPage() {
-        startActivityForResult(VIARequisitionActivity.getIntentToMe(this), Constants.REQUEST_FROM_ADD_DRUGS_TO_VIA);
+        Intent returnIntent = new Intent();
+        setResult(RESULT_OK,returnIntent);
         this.finish();
     }
 
