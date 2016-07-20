@@ -77,7 +77,7 @@ public class MMIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     @Override
-    protected void createStockCardsAndAddToFormForAdditionalRnrItems(RnRForm rnRForm) {
+    protected void createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems(RnRForm rnRForm) {
         //do nothing
     }
 

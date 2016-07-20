@@ -261,12 +261,12 @@ public abstract class BaseRequisitionPresenter extends Presenter {
             rnRForm.getSignaturesWrapper().add(new RnRFormSignature(rnRForm, signName, RnRFormSignature.TYPE.APPROVER));
             rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
             rnRForm.setSubmittedTime(DateUtil.today());
-            createStockCardsAndAddToFormForAdditionalRnrItems(rnRForm);
+            createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems(rnRForm);
             authoriseRequisition(rnRForm);
         }
     }
 
-    protected abstract void createStockCardsAndAddToFormForAdditionalRnrItems(RnRForm rnRForm);
+    protected abstract void createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems(RnRForm rnRForm);
 
     public RnRForm.STATUS getRnrFormStatus() {
         if (rnRForm != null) {

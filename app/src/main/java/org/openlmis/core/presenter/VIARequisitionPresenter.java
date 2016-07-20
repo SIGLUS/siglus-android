@@ -367,14 +367,19 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    protected void createStockCardsAndAddToFormForAdditionalRnrItems(RnRForm form) {
+    protected void createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems(RnRForm form) {
         try {
             List<RnrFormItem> rnrFormItems = new ArrayList<>();
             rnrFormItems.addAll(form.getRnrFormItemListWrapper());
             for (RnrFormItem rnrFormItem: rnrFormItemRepository.listAllNewRnrItems()) {
-                StockCard newStockCard = new StockCard();
-                newStockCard.setProduct(rnrFormItem.getProduct());
-                stockRepository.createOrUpdateStockCardWithStockMovement(newStockCard);
+                if (rnrFormItem.getProduct().isArchived()) {
+                    rnrFormItem.getProduct().setArchived(false);
+                    productRepository.updateProduct(rnrFormItem.getProduct());
+                } else {
+                    StockCard newStockCard = new StockCard();
+                    newStockCard.setProduct(rnrFormItem.getProduct());
+                    stockRepository.createOrUpdateStockCardWithStockMovement(newStockCard);
+                }
                 rnrFormItem.setForm(form);
                 rnrFormItems.add(rnrFormItem);
             }

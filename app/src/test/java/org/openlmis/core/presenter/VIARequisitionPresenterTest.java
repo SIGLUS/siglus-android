@@ -27,7 +27,6 @@ import junit.framework.Assert;
 
 import org.hamcrest.core.Is;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -40,7 +39,6 @@ import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
@@ -642,7 +640,7 @@ public class VIARequisitionPresenterTest {
         RnrFormItem item3 = createRnrFormItem(4);
         when(mockRnrFormItemRepository.listAllNewRnrItems()).thenReturn(newArrayList(item1, item2, item3));
 
-        presenter.createStockCardsAndAddToFormForAdditionalRnrItems(rnRForm);
+        presenter.createStockCardsOrUnarchiveAndAddToFormForAdditionalRnrItems(rnRForm);
 
         ArgumentCaptor<StockCard> captor = ArgumentCaptor.forClass(StockCard.class);
         verify(mockStockRepository, times(3)).createOrUpdateStockCardWithStockMovement(captor.capture());

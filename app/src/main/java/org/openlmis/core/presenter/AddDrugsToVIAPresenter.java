@@ -104,6 +104,7 @@ public class AddDrugsToVIAPresenter extends Presenter {
 
                     }
                     rnrFormItem.setRequestAmount(Long.parseLong(inventoryViewModel.getQuantity()));
+                    rnrFormItem.setApprovedAmount(rnrFormItem.getRequestAmount());
                 } catch (LMISException e) {
                     e.reportToFabric();
                 }
@@ -116,6 +117,7 @@ public class AddDrugsToVIAPresenter extends Presenter {
     private void populateRnrItemWithQuantities(RnrFormItem rnrFormItem, Date periodBegin, Date periodEnd) throws LMISException {
         StockCard stockCard = stockRepository.queryStockCardByProductId(rnrFormItem.getProduct().getId());
         List<StockMovementItem> stockMovementItems = stockRepository.queryStockItemsByPeriodDates(stockCard, periodBegin, periodEnd);
+        rnrFormItem.setInitialAmount(stockMovementItems.get(0).calculatePreviousSOH());
         rnrFormHelper.assignTotalValues(rnrFormItem, stockMovementItems);
     }
 

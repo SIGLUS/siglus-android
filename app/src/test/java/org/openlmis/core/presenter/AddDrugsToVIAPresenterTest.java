@@ -123,7 +123,9 @@ public class AddDrugsToVIAPresenterTest {
         verify(rnrFormItemRepository).batchCreateOrUpdate(captor.capture());
         List<List> captorAllValues = captor.getAllValues();
         assertThat(((RnrFormItem) captorAllValues.get(0).get(0)).getRequestAmount(), is(12L));
+        assertThat(((RnrFormItem) captorAllValues.get(0).get(0)).getApprovedAmount(), is(12L));
         assertThat(((RnrFormItem) captorAllValues.get(0).get(1)).getRequestAmount(), is(34L));
+        assertThat(((RnrFormItem) captorAllValues.get(0).get(1)).getApprovedAmount(), is(34L));
     }
 
     @Test
@@ -144,7 +146,7 @@ public class AddDrugsToVIAPresenterTest {
         inventoryViewModel1.setQuantity("100");
 
         StockCard stockCard = new StockCardBuilder().setStockOnHand(0L).setProduct(product1).build();
-        StockMovementItem stockMovementItem1 = new StockMovementItemBuilder().withDocumentNo("123").build();
+        StockMovementItem stockMovementItem1 = new StockMovementItemBuilder().withStockOnHand(50).withQuantity(10).withMovementType(StockMovementItem.MovementType.ISSUE).withDocumentNo("123").build();
         StockMovementItem stockMovementItem2 = new StockMovementItemBuilder().build();
         StockMovementItem stockMovementItem3 = new StockMovementItemBuilder().build();
         Date periodBegin = DateUtil.parseString("2016-01-21", DateUtil.DB_DATE_FORMAT);
@@ -168,6 +170,11 @@ public class AddDrugsToVIAPresenterTest {
         List<List> captor2AllValues = captor2.getAllValues();
         assertThat(captorAllValues.get(0).getRequestAmount(), is(100L));
         assertThat(((StockMovementItem) captor2AllValues.get(0).get(0)).getDocumentNumber(), is("123"));
+
+        ArgumentCaptor<List> captor3 = ArgumentCaptor.forClass(List.class);
+        verify(rnrFormItemRepository).batchCreateOrUpdate(captor3.capture());
+        List<List> captorAllValues3 = captor3.getAllValues();
+        assertThat(((RnrFormItem) captorAllValues3.get(0).get(0)).getInitialAmount(), is(60L));
     }
 
     @NonNull
