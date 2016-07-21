@@ -146,9 +146,9 @@ Feature: Unpack Kit
     Then I wait for "Requisições Balancete" to appear
 
     And I press "Continue Working on Requisition Balancete"
-    # And I rotate the page to "landscape"
-    # Then I swipe right
-    # Then I should see "345" in the requisition form
+    And I rotate the page to "landscape"
+    Then I swipe right
+    Then I should see "345" in the requisition form
 
     And I press "Submit for Approval"
     And I sign requisition with "superuser" "testUser" and complete
