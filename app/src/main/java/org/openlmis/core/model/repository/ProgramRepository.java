@@ -86,7 +86,6 @@ public class ProgramRepository {
                     for (Program program : programs) {
                         createOrUpdate(program);
                         for (Product product : program.getProducts()) {
-                            product.setProgram(program);
                             productRepository.createOrUpdate(product);
                         }
                     }

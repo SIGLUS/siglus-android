@@ -174,7 +174,6 @@ public class SyncDownManagerTest {
 
         Program program = new Program();
         when(programRepository.queryByCode("PR")).thenReturn(program);
-        productWithKits.setProgram(program);
 
         SyncServerDataSubscriber subscriber = new SyncServerDataSubscriber();
         syncDownManager.syncDownServerData(subscriber);

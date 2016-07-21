@@ -20,11 +20,6 @@ public class ProductBuilder {
         return this;
     }
 
-    public ProductBuilder setProgram(Program program) {
-        product.setProgram(program);
-        return this;
-    }
-
     public ProductBuilder setStrength(String strength) {
         product.setStrength(strength);
         return this;
@@ -54,7 +49,6 @@ public class ProductBuilder {
                 .setCode("productCode")
                 .setStrength("serious")
                 .setPrimaryName("Primary product name")
-                .setProgram(new ProgramBuilder().setProgramCode("programCode").setProgramName("programName").build())
                 .build();
     }
 

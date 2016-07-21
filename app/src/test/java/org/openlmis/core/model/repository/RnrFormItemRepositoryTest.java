@@ -57,7 +57,6 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
         Program program = new Program();
         program.setProgramCode("1");
         Product product = new Product();
-        product.setProgram(program);
         product.setId(1);
 
         rnrFormItemList.add(getRnrFormItem(form, product, 1));

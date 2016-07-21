@@ -186,30 +186,11 @@ public class ProductRepository {
         });
     }
 
-    public Product getById(long id) {
-        try {
-            return genericDao.getById(String.valueOf(id));
-        } catch (LMISException e) {
-            e.reportToFabric();
-            return null;
-        }
-    }
-
     public Product getByCode(final String code) throws LMISException {
         return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, Product>() {
             @Override
             public Product operate(Dao<Product, String> dao) throws SQLException {
                 return dao.queryBuilder().where().eq("code", code).queryForFirst();
-            }
-        });
-    }
-
-
-    public List<Product> queryProductsByProgramId(final long programId) throws LMISException {
-        return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
-            @Override
-            public List<Product> operate(Dao<Product, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("program_id", programId).query();
             }
         });
     }
@@ -250,15 +231,6 @@ public class ProductRepository {
                 return product.getCode();
             }
         }).toList();
-    }
-
-    public List<Product> queryProductsByProgramIds(final List<Long> programIds) throws LMISException {
-        return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
-            @Override
-            public List<Product> operate(Dao<Product, String> dao) throws SQLException, LMISException {
-                return dao.queryBuilder().where().in("program_id", programIds).query();
-            }
-        });
     }
 
     public List<Product> queryProductsByProductIds(final List<Long> productIds) throws LMISException {
