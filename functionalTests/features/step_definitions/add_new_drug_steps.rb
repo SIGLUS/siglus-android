@@ -24,6 +24,14 @@ Then(/^I select new drug "(.*?)"/) do |drugproperty|
   end
 end
 
+And(/^I select new drug enter requested "(\d+)" by product name "(.*?)"$/) do |quantity,name|
+    steps %Q{
+        When I search product by primary name "#{name}" and select this item with quantity "#{quantity}"
+        And I clean search bar
+        And I go back
+    }
+end
+
 Then(/^I add new drug number (\d+) with SOH (\d+) quantity, then I see the added drug in stock overview$/) do |nth, soh|
   nth_drug=query("android.widget.TextView id:'product_name'")[nth.to_i-1]
   nth_checkbox = query("android.widget.CheckBox id:'checkbox' checked:'false'")[nth.to_i-1]

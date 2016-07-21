@@ -50,3 +50,18 @@ end
 Then (/^I swipe to the left in via requisition form$/) do
     pan("* id:'et_request_amount'", :right, from: {x: 0, y: 100}, to: {x: 700, y:100})
 end
+
+
+Then(/^I do physical inventory for via items without archived drugs$/) do
+    steps %Q{
+        And I do physical inventory with "113" by fnm "01A01"
+        And I do physical inventory with "123" by fnm "01A03Z"
+        And I do physical inventory with "123" by fnm "01A04Z"
+        And I do physical inventory with "123" by fnm "01A05"
+        Then I scroll "recyclerView" down to "Complete"
+        And I wait for 1 second
+        And I press "Complete"
+        And I wait for "Enter your initials" to appear
+        And I sign with "sign"
+    }
+end

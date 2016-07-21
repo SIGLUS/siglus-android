@@ -10,7 +10,24 @@ Feature: Requisition
     Then I wait for 1 second
     And I make a movement "[01A01]" "Issues" "PAV" "issued" "10"
     Then I wait for 1 second
-    Then I navigate back
+
+
+     # Archive VIA drug
+    And I select stock card code called "[01A02]"
+    And I wait for "Stock Card" to appear
+    And I select a reason "Issues" "Maternity"
+    And I wait for 1 second
+    And I swipe right
+    And I enter issued number "123"
+    And I wait for "Complete" to appear
+    And I press "Complete"
+    And I wait for "Enter your initials" to appear
+    And I sign with "superuser"
+    Then I see "0"
+    And I press the menu key
+    Then I see "Archive drugs"
+    And I press "Archive drugs"
+    And I navigate back
     Then I wait for "STOCK CARD OVERVIEW" to appear
 
     And I press "Requisições Balancete"
@@ -30,7 +47,7 @@ Feature: Requisition
 
     Then I press "Complete Inventory"
     And I wait for "inventory" to appear
-    Then I do physical inventory for via items
+    Then I do physical inventory for via items without archived drugs
 
     Then I wait for "Requisições Balancete" to appear
     And I should see text containing "Create Requisition Balancete"
@@ -54,8 +71,22 @@ Feature: Requisition
     Then I enter consultationsNub "888"
     Then I swipe to the left in via requisition form
     Then I should see "113" on index "1" of "tx_theoretical" field
+
+    #add not archive and archive product to via form
+    When I press the menu key
+    And I wait for "Add Products" to appear
+    And I press "Add Products"
+    And I wait for "Add Products" to appear
+    And I select new drug enter requested "123" by product name "Digoxina; 0,5mg/2mL; Inject"
+    And I select new drug enter requested "123" by product name "Digoxina; 2,5mg/50mL; Gotas Orais"
+    Then I wait for "Complete" to appear
+    And I press "Complete"
+    And I should see "Digoxina; 0,5mg/2mL; Inject"
+    And I should see "Digoxina; 2,5mg/50mL; Gotas Orais"
+
     Then I swipe right
     Then I swipe right
+    Then I should see "123" in the requisition form
     Then I enter QuantityRequested "345"
     Then I wait for 1 second
     Then I press "Save"
