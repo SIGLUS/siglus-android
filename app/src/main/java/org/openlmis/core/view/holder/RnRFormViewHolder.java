@@ -13,6 +13,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.network.SyncErrorsMap;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 
@@ -55,15 +56,27 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 setupButtonColor();
                 break;
             case RnRFormViewModel.TYPE_CANNOT_DO_MONTHLY_INVENTORY:
-                configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_can_not_create_rnr, DateUtil.getMonthAbbrByDate(model.getPeriodEndMonth().toDate()))), R.drawable.ic_description, R.color.color_draft_title);
+                if (isOfMmia(model)) {
+                    configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_can_not_create_mmia_rnr, DateUtil.getMonthAbbrByDate(model.getPeriodEndMonth().toDate()))), R.drawable.ic_description, R.color.color_draft_title);
+                } else {
+                    configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_can_not_create_via_rnr,DateUtil.getMonthAbbrByDate(model.getPeriodEndMonth().toDate()))), R.drawable.ic_description, R.color.color_draft_title);
+                }
                 break;
             case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD:
-                configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_uncompleted_physical_inventory_message, model.getName())), R.drawable.ic_description, R.color.color_draft_title);
-                setupButton(model, context.getString(R.string.btn_view_uncompleted_physical_inventory, model.getName()));
+                if (isOfMmia(model)) {
+                    configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_uncompleted_mmia_physical_inventory_message)), R.drawable.ic_description, R.color.color_draft_title);
+                } else {
+                    configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_uncompleted_physical_inventory_message, model.getName())), R.drawable.ic_description, R.color.color_draft_title);
+                }
+                setupButton(model, context.getString(R.string.btn_view_uncompleted_physical_inventory));
                 break;
             case RnRFormViewModel.TYPE_INVENTORY_DONE:
             case RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED:
-                configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, model.getName())), R.drawable.ic_description, R.color.color_draft_title);
+                if (isOfMmia(model)) {
+                    configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_completed_mmia_physical_inventory_message)), R.drawable.ic_description, R.color.color_draft_title);
+                } else {
+                    configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, model.getName())), R.drawable.ic_description, R.color.color_draft_title);
+                }
                 setupButton(model, context.getString(R.string.btn_view_completed_physical_inventory, model.getName()));
                 setupButtonColor();
                 break;
@@ -72,7 +85,13 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 setupButton(model, context.getString(R.string.btn_view_incomplete_requisition, model.getName()));
                 break;
             case RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL:
-                String error = context.getString(R.string.label_unsynced_requisition, model.getName());
+                String error;
+                if (isOfMmia(model)) {
+                    error = context.getString(R.string.label_unsynced_mmia_requisition);
+                } else {
+                    error = context.getString(R.string.label_unsynced_requisition);
+                }
+
                 if (model.getSyncServerErrorMessage() != null) {
                     error = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage(model.getSyncServerErrorMessage());
                 }
@@ -84,9 +103,17 @@ public class RnRFormViewHolder extends BaseViewHolder {
         }
     }
 
+    private boolean isOfMmia(RnRFormViewModel model) {
+        return model.getProgramCode().equals(Constants.MMIA_PROGRAM_CODE);
+    }
+
     private void populateSyncedHistorical(RnRFormViewModel model) {
         RnRForm form = model.getForm();
-        configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedTime())), R.drawable.ic_done_green, R.color.color_white);
+        if (isOfMmia(model)) {
+            configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_mmia_submitted_message, model.getSyncedTime())), R.drawable.ic_done_green, R.color.color_white);
+        } else {
+            configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedTime())), R.drawable.ic_done_green, R.color.color_white);
+        }
         showDeleteMenu(form);
         if (model.getName().equals(LMISApp.getContext().getString(R.string.label_via_name))) {
             setupButton(model, context.getString(R.string.btn_view_via_requisition, model.getName()));

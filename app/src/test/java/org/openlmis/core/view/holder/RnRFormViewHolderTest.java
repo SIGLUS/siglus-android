@@ -16,6 +16,7 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.persistence.DbUtil;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.RnRFormViewModel;
 import org.robolectric.RuntimeEnvironment;
@@ -79,7 +80,7 @@ public class RnRFormViewHolderTest {
         viewHolder.populate(viewModel);
 
         assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getTitle()));
-        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_unsynced_requisition, viewModel.getName())));
+        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_unsynced_mmia_requisition)));
         assertThat(((ColorDrawable) viewHolder.txPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_red)));
     }
 
@@ -91,7 +92,7 @@ public class RnRFormViewHolderTest {
         viewHolder.populate(viewModel);
 
         assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getTitle()));
-        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_uncompleted_physical_inventory_message, viewModel.getName())));
+        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_uncompleted_mmia_physical_inventory_message, viewModel.getName())));
         assertThat(((ColorDrawable) viewHolder.txPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_draft_title)));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_uncompleted_physical_inventory, viewModel.getName())));
         assertThat(viewHolder.ivDelete.getVisibility(), is(View.GONE));
@@ -105,7 +106,7 @@ public class RnRFormViewHolderTest {
         viewHolder.populate(viewModel);
 
         assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getTitle()));
-        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_completed_physical_inventory_message, viewModel.getName())));
+        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_completed_mmia_physical_inventory_message, viewModel.getName())));
         assertThat(((ColorDrawable) viewHolder.txPeriod.getBackground()).getColor(), is(getColorResource(R.color.color_draft_title)));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_completed_physical_inventory, viewModel.getName())));
         assertThat(viewHolder.ivDelete.getVisibility(), is(View.GONE));
@@ -122,7 +123,7 @@ public class RnRFormViewHolderTest {
         viewHolder.populate(viewModel);
 
         assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getTitle()));
-        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_submitted_message, viewModel.getName(), viewModel.getSyncedTime())));
+        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_mmia_submitted_message, viewModel.getSyncedTime())));
         assertThat(viewHolder.btnView.getText().toString(), is(getStringResource(R.string.btn_view_requisition, viewModel.getName())));
         assertThat(viewHolder.ivDelete.getVisibility(), is(View.VISIBLE));
         assertNull(viewHolder.tvDrugCount);
@@ -130,6 +131,7 @@ public class RnRFormViewHolderTest {
 
     @Test
     public void shouldShowTvDrugCountWhenIsHistoricalEmergency() throws SQLException {
+        program.setProgramCode(Constants.ESS_PROGRAM_CODE);
         RnRForm form = RnRForm.init(program, DateUtil.today());
         form.setStatus(RnRForm.STATUS.AUTHORIZED);
         form.setSynced(true);
@@ -162,7 +164,7 @@ public class RnRFormViewHolderTest {
         viewHolder.populate(viewModel);
 
         assertThat(viewHolder.txPeriod.getText().toString(), is(viewModel.getTitle()));
-        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_can_not_create_rnr, DateUtil.getMonthAbbrByDate(viewModel.getPeriodEndMonth().toDate()))));
+        assertThat(viewHolder.txMessage.getText().toString(), is(getStringResource(R.string.label_can_not_create_mmia_rnr, DateUtil.getMonthAbbrByDate(viewModel.getPeriodEndMonth().toDate()))));
     }
 
     @SuppressWarnings("ConstantConditions")
