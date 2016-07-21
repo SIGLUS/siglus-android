@@ -173,6 +173,14 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         }
     }
 
+    public void hideMenuInHistoryAndEmergency() {
+        if (presenter.getRnRForm() != null) {
+            if (isHistoryForm() || presenter.getRnRForm().isEmergency()) {
+                menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(false);
+            }
+        }
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -180,6 +188,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         boolean featureToggleForAddDrugsToVIA = LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_drugs_to_via_form);
         menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(featureToggleForAddDrugsToVIA);
         this.menu = menu;
+        hideMenuInHistoryAndEmergency();
     }
 
     @Override
