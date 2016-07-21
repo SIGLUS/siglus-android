@@ -102,7 +102,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
         if (isOfMmia(model)) {
             error = context.getString(R.string.label_unsynced_mmia_requisition);
         } else {
-            error = context.getString(R.string.label_unsynced_requisition);
+            error = context.getString(R.string.label_unsynced_requisition,model.getName());
         }
 
         if (model.getSyncServerErrorMessage() != null) {
