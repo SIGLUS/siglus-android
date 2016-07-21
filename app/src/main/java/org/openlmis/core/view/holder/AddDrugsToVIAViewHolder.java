@@ -46,6 +46,7 @@ public class AddDrugsToVIAViewHolder extends BaseViewHolder {
 
     public AddDrugsToVIAViewHolder(View itemView) {
         super(itemView);
+        txQuantity.setHint(R.string.label_hint_amount_requisition);
         taCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,6 +56,23 @@ public class AddDrugsToVIAViewHolder extends BaseViewHolder {
     }
 
     public void populate(String queryKeyWord, final InventoryViewModel viewModel) {
+        setItemViewListener(viewModel);
+        checkBox.setChecked(viewModel.isChecked());
+
+        productName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyledName()));
+        tvShortCode.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyledUnit()));
+
+        populateEditPanel(viewModel.getQuantity());
+        if (viewModel.isValid()) {
+            lyQuantity.setErrorEnabled(false);
+        } else {
+            lyQuantity.setError(context.getResources().getString(R.string.msg_inventory_check_failed));
+        }
+
+    }
+
+    protected void setItemViewListener(final InventoryViewModel viewModel) {
+
         final EditTextWatcher textWatcher = new EditTextWatcher(viewModel);
         txQuantity.removeTextChangedListener(textWatcher);
 
@@ -72,16 +90,6 @@ public class AddDrugsToVIAViewHolder extends BaseViewHolder {
                 viewModel.setChecked(isChecked);
             }
         });
-        checkBox.setChecked(viewModel.isChecked());
-
-        productName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyledName()));
-        tvShortCode.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyledUnit()));
-
-        if (viewModel.isValid()) {
-            lyQuantity.setErrorEnabled(false);
-        } else {
-            lyQuantity.setError(context.getResources().getString(R.string.msg_inventory_check_failed));
-        }
 
         txQuantity.addTextChangedListener(textWatcher);
     }
