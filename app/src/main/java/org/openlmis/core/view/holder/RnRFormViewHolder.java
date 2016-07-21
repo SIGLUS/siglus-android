@@ -72,35 +72,43 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 break;
             case RnRFormViewModel.TYPE_INVENTORY_DONE:
             case RnRFormViewModel.TYPE_CLOSE_OF_PERIOD_SELECTED:
-                if (isOfMmia(model)) {
-                    configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_completed_mmia_physical_inventory_message)), R.drawable.ic_description, R.color.color_draft_title);
-                } else {
-                    configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, model.getName())), R.drawable.ic_description, R.color.color_draft_title);
-                }
-                setupButton(model, context.getString(R.string.btn_view_completed_physical_inventory, model.getName()));
-                setupButtonColor();
+                populateRnrFormNotBeCreatedView(model);
                 break;
             case RnRFormViewModel.TYPE_CREATED_BUT_UNCOMPLETED:
                 configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_incomplete_requisition, model.getName())), R.drawable.ic_description, R.color.color_draft_title);
                 setupButton(model, context.getString(R.string.btn_view_incomplete_requisition, model.getName()));
                 break;
             case RnRFormViewModel.TYPE_UNSYNCED_HISTORICAL:
-                String error;
-                if (isOfMmia(model)) {
-                    error = context.getString(R.string.label_unsynced_mmia_requisition);
-                } else {
-                    error = context.getString(R.string.label_unsynced_requisition);
-                }
-
-                if (model.getSyncServerErrorMessage() != null) {
-                    error = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage(model.getSyncServerErrorMessage());
-                }
-                configHolder(model.getTitle(), Html.fromHtml(error), R.drawable.ic_error, R.color.color_red);
+                populateRnrFormUnsyncedMessage(model);
                 break;
             case RnRFormViewModel.TYPE_SYNCED_HISTORICAL:
                 populateSyncedHistorical(model);
                 break;
         }
+    }
+
+    private void populateRnrFormNotBeCreatedView(RnRFormViewModel model) {
+        if (isOfMmia(model)) {
+            configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_completed_mmia_physical_inventory_message)), R.drawable.ic_description, R.color.color_draft_title);
+        } else {
+            configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_completed_physical_inventory_message, model.getName())), R.drawable.ic_description, R.color.color_draft_title);
+        }
+        setupButton(model, context.getString(R.string.btn_view_completed_physical_inventory, model.getName()));
+        setupButtonColor();
+    }
+
+    private void populateRnrFormUnsyncedMessage(RnRFormViewModel model) {
+        String error;
+        if (isOfMmia(model)) {
+            error = context.getString(R.string.label_unsynced_mmia_requisition);
+        } else {
+            error = context.getString(R.string.label_unsynced_requisition);
+        }
+
+        if (model.getSyncServerErrorMessage() != null) {
+            error = SyncErrorsMap.getDisplayErrorMessageBySyncErrorMessage(model.getSyncServerErrorMessage());
+        }
+        configHolder(model.getTitle(), Html.fromHtml(error), R.drawable.ic_error, R.color.color_red);
     }
 
     private boolean isOfMmia(RnRFormViewModel model) {
