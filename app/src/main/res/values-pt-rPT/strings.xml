@@ -8,7 +8,7 @@
     <string name="title_stock_cards">Visão geral de estoque</string>
     <string name="title_kit_stock_cards">Visão geral de Kits</string>
     <string name="title_unpack_kit">Desembalar Kit</string>
-    <string name="title_requisition">Elaborar Requisição/Balancete para Via Clássica</string>
+    <string name="title_requisition">Elaborar Requisição Balancete para Via classica</string>
     <string name="hint_network_error">Erro de rede, verifique sua conexão a rede</string>
     <!--Login Page-->
     <string name="hint_username">Usuário</string>
@@ -34,7 +34,7 @@
     <string name="label_dummy_product">Paracetamol</string>
     <string name="label_dummy_unit">500mg</string>
     <string name="msg_inventory_check_failed">Quantidade não pode estar em branco</string>
-    <string name="msg_invalid_date">Não pode selecionar data passada ou corrente</string>
+    <string name="msg_invalid_date">Não pode selecionar data passada</string>
     <string name="btn_done">Completo</string>
     <string name="msg_remove_expire_date">Tem certeza que quer remover esta data de expiração?</string>
     <string name="msg_save_before_exit">Por favor, grave o inventário inicial, antes de sair da aplicação</string>
@@ -251,7 +251,7 @@
     <string name="btn_select_close_period">Seleccione o fecho do período</string>
     <string name="label_create_emergency_rnr">Criar requisição de emergência</string>
     <string name="label_incomplete_requisition_old">Esta <![CDATA[<b>%1$s</b>]]> está incompleta. Para completá-la, selecione \"Criar uma %1$s\" na página inicial</string>
-    <string name="btn_requisition_list_old">Ver histórico de Requisiçóes Balancete submetidas</string>
+    <string name="btn_requisition_list_old">Ver Histórico de Requisição Balancete </string>
     <string name="btn_mmia_list_old">Ver histórico de MMIAs submetidos</string>
     <string name="mmia_list">MMIA</string>
     <string name="requisition_list">Requisições Balancete</string>
@@ -302,7 +302,6 @@
     <string name="label_emergency_requisition_balance">Requisição balancete de emergência</string>
     <string name="msg_emergency_requisition_cant_edit">Esta informação não é utilizada ao criar uma requisição de emergência</string>
     <string name="document_number">Número do documento</string>
-
     <!--App Name In Different Environment-->
     <string name="app_name_in_local">ESMS LOCAL</string>
     <string name="app_name_in_prodsim">ESMS PRODSIM</string>
@@ -312,7 +311,7 @@
     <string name="app_name_in_showcase">ESMS SHOWCASE</string>
     <string name="app_name_in_demo">ESMS DEMO</string>
     <string name="app_name_in_upgrade">ESMS UPGRADE</string>
-    <!--Missed Requisition Banner-->
+    <!--Incomplete Requisition Banner-->
     <string name="via_and_mmia_requisition_alert">Suas Requisições Balancete e seus MMIAs para <![CDATA[<b>%1$s</b>]]> não foram concluídos.</string>
     <string name="via_requisition_alert">Sua Requisição Balancete para <![CDATA[<b>%1$s</b>]]> não foi concluída</string>
     <string name="mmia_requisition_alert">Seu  formulário MMIA para <![CDATA[<b> %1$s </b>]]> não foi concluído.</string>
