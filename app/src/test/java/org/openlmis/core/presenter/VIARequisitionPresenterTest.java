@@ -463,7 +463,7 @@ public class VIARequisitionPresenterTest {
         presenter.setViaKitsViewModel(viaKitsViewModel);
         presenter.requisitionFormItemViewModels = list;
 
-        presenter.saveVIAForm("100");
+        presenter.saveVIAForm("100", true);
         assertEquals(5, presenter.getRnRForm().getRnrFormItemListWrapper().size());
     }
 
