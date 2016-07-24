@@ -232,7 +232,7 @@
     <string name="btn_view_completed_physical_inventory">Criar %1$s</string>
     <string name="label_incomplete_requisition"><![CDATA[<b>%1$s</b>]]> está incompleto.</string>
     <string name="btn_view_incomplete_requisition">Continuar trabalhando em %1$s</string>
-    <string name="label_unsynced_mmia_requisition">Este <![CDATA[<b>MMIA<b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
+    <string name="label_unsynced_mmia_requisition">Este <![CDATA[<b>MMIA</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
     <string name="label_unsynced_requisition">Esta <![CDATA[<b>%1$s</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
     <string name="label_mmia_submitted_message">MMIA enviado com sucesso no dia  %1$s.</string>
     <string name="label_submitted_message">%1$s enviada com sucesso no dia  %2$s</string>
