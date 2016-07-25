@@ -111,4 +111,26 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
         rnrFormItemRepository.deleteAllNewRnrItems();
         assertThat(rnrFormItemRepository.listAllNewRnrItems().size(), is(0));
     }
+
+    @Test
+    public void shouldDeleteOneRnrFormItem() throws Exception {
+        Product product1 = new ProductBuilder().setCode("P1").setIsActive(true).build();
+        productRepository.createOrUpdate(product1);
+        RnrFormItem rnrFormItem = new RnrFormItem();
+        rnrFormItem.setProduct(product1);
+        rnrFormItem.setRequestAmount(100L);
+
+        Product product2 = new ProductBuilder().setCode("P2").setIsActive(true).build();
+        productRepository.createOrUpdate(product2);
+        RnrFormItem rnrFormItem2 = new RnrFormItem();
+        rnrFormItem2.setProduct(product2);
+        rnrFormItem2.setRequestAmount(200L);
+        rnrFormItemRepository.batchCreateOrUpdate(newArrayList(rnrFormItem, rnrFormItem2));
+
+        rnrFormItemRepository.deleteOneNewAdditionalRnrItem(rnrFormItem);
+        List<RnrFormItem> rnrFormItems = rnrFormItemRepository.listAllNewRnrItems();
+        assertThat(rnrFormItems.size(), is(1));
+        assertThat(rnrFormItems.get(0).getProduct().getCode(), is(product2.getCode()));
+
+    }
 }

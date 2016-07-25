@@ -379,7 +379,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         try {
             List<RnrFormItem> rnrFormItems = new ArrayList<>();
             rnrFormItems.addAll(form.getRnrFormItemListWrapper());
-            for (RnrFormItem rnrFormItem: rnrFormItemRepository.listAllNewRnrItems()) {
+            for (RnrFormItem rnrFormItem : rnrFormItemRepository.listAllNewRnrItems()) {
                 if (rnrFormItem.getProduct().isArchived()) {
                     rnrFormItem.getProduct().setArchived(false);
                     productRepository.updateProduct(rnrFormItem.getProduct());
@@ -403,6 +403,21 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         } catch (LMISException e) {
             e.reportToFabric();
         }
+    }
+
+    public Observable<Void> removeOneNewRnrItems(final RnrFormItem rnrFormItem) {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    rnrFormItemRepository.deleteOneNewAdditionalRnrItem(rnrFormItem);
+                } catch (LMISException e) {
+                    e.reportToFabric();
+                    subscriber.onError(e);
+                }
+                subscriber.onCompleted();
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
     public interface VIARequisitionView extends BaseRequisitionView {

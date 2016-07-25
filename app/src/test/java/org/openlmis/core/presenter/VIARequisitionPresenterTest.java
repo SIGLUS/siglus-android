@@ -651,6 +651,18 @@ public class VIARequisitionPresenterTest {
         assertThat(rnRForm.getRnrFormItemListWrapper().size(), is(4));
     }
 
+    @Test
+    public void shouldDeleteNewRnrFormItem() throws Exception {
+        Product product = new Product();
+        RnrFormItem rnrFormItem = new RnrFormItemBuilder().setProduct(product).setRequestAmount(100L).build();
+        TestSubscriber<Void> testSubscriber = new TestSubscriber<>();
+        presenter.removeOneNewRnrItems(rnrFormItem).subscribe(testSubscriber);
+        testSubscriber.awaitTerminalEvent();
+
+        testSubscriber.assertNoErrors();
+        verify(mockRnrFormItemRepository).deleteOneNewAdditionalRnrItem(rnrFormItem);
+    }
+
     private ViaKitsViewModel buildDefaultViaKit() {
         ViaKitsViewModel viaKitsViewModel = new ViaKitsViewModel();
         viaKitsViewModel.setKitsOpenedCHW("10");
