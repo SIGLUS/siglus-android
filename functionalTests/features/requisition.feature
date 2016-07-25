@@ -84,6 +84,11 @@ Feature: Requisition
     And I should see "Digoxina; 0,5mg/2mL; Inject"
     And I should see "Digoxina; 2,5mg/50mL; Gotas Orais"
 
+    #press delete icon to delete one additional product
+    And I press del icon "4"
+    Then I press "Yes"
+    And I should not see "Digoxina; 0,5mg/2mL; Inject"
+
     Then I swipe right
     Then I swipe right
     Then I should see "123" in the requisition form

@@ -65,3 +65,8 @@ Then(/^I do physical inventory for via items without archived drugs$/) do
         And I sign with "sign"
     }
 end
+
+And(/^I press del icon "(\d+)"/) do |index|
+    del = query("android.widget.ImageView id:'iv_del'")[index.to_i]
+    touch(del)
+end
