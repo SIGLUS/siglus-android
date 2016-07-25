@@ -152,10 +152,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadViaFormPage();
-    }
-
-    public void loadViaFormPage() {
 
         if (SharedPreferenceMgr.getInstance().shouldSyncLastYearStockData()) {
             ToastUtil.showInCenter(R.string.msg_stock_movement_is_not_ready);
