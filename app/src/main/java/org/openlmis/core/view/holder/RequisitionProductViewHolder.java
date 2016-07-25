@@ -37,15 +37,17 @@ public class RequisitionProductViewHolder extends BaseViewHolder {
         productCode.setText(entry.getFmn());
         productName.setText(entry.getProductName());
         if (entry.getItem().getForm() == null) {
-            ivDelete.setVisibility(View.VISIBLE);
-            ivDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showDelConfirmDialog(entry.getItem());
-                }
-            });
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_drugs_to_via_form)) {
+                ivDelete.setVisibility(View.VISIBLE);
+                ivDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showDelConfirmDialog(entry.getItem());
+                    }
+                });
+            }
         } else {
-            ivDelete.setVisibility(View.GONE);
+            ivDelete.setVisibility(View.INVISIBLE);
         }
     }
 
