@@ -227,7 +227,7 @@
     <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b> Nenhuma %1$s foi criada.</b>]]> Complete o seu inventário antes de criar uma requisição</string>
     <string name="btn_view_uncompleted_physical_inventory">Completar Inventário</string>
     <string name="label_select_close_of_period"><![CDATA[Por favor seleccione um inventário a partir da lista abaixo. Apenas inventários feitos em ou entre o <b>18</b> e <b>25</b> de <b>%1$s</b> podem ser usado para fechar o período. A data de hoje é <b>%2$s</b>]]></string>
-    <string name="label_completed_mmia_physical_inventory_message"><![CDATA[<b>Nenhum MMIA Foi criado.</b>]]></string>
+    <string name="label_completed_mmia_physical_inventory_message"><![CDATA[<b> Nenhum MMIA foi criada.</b>]]></string>
     <string name="label_completed_physical_inventory_message"><![CDATA[<b>Nenhuma %1$s Foi criado.</b>]]></string>
     <string name="btn_view_completed_physical_inventory">Criar %1$s</string>
     <string name="label_incomplete_requisition"><![CDATA[<b>%1$s</b>]]> está incompleto.</string>
@@ -305,7 +305,7 @@
     <!--App Name In Different Environment-->
     <string name="app_name_in_local">ESMS LOCAL</string>
     <string name="app_name_in_prodsim">ESMS PRODSIM</string>
-    <string name="app_name_in_prd">LMIS</string>
+    <string name="app_name_in_prd">ESMS</string>
     <string name="app_name_in_qa">ESMS QA</string>
     <string name="app_name_in_regression">ESMS REGRESSION</string>
     <string name="app_name_in_showcase">ESMS SHOWCASE</string>
