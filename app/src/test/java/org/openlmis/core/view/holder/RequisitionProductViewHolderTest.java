@@ -6,6 +6,7 @@ import android.view.View;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
@@ -44,6 +45,7 @@ public class RequisitionProductViewHolderTest {
 
     @Test
     public void shouldSetDelIconForNewAddedProduct() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_add_drugs_to_via_form,true);
         RnrFormItem formItem = new RnrFormItemBuilder().setProduct(
                 new ProductBuilder().setPrimaryName("productName").setCode("08S42").build()).setRnrForm(null)
                 .build();
@@ -63,6 +65,6 @@ public class RequisitionProductViewHolderTest {
         RequisitionFormItemViewModel viewModel = new RequisitionFormItemViewModel(formItem);
         viewHolder.populate(viewModel, presenter);
 
-        assertThat(viewHolder.ivDelete.getVisibility()).isEqualTo(View.GONE);
+        assertThat(viewHolder.ivDelete.getVisibility()).isEqualTo(View.INVISIBLE);
     }
 }
