@@ -241,7 +241,6 @@
         <item quantity="other"><![CDATA[<b>%1$s</b>]]> Productos requisitados</item>
     </plurals>
     <string name="btn_view_requisition">Ver %s</string>
-    <string name="btn_view_via_requisition">Ver %s Balancete</string>
     <string name="label_period_date">%1$s  a  %2$s</string>
     <string name="label_emergency_date">Requisição de Emergencia – %s</string>
     <string name="label_can_not_create_mmia_rnr"><![CDATA[<b>Você será capaz de criar um MMIA a partir do dia 18 de %1$s</b>]]></string>

@@ -260,7 +260,6 @@
         <item quantity="other"><![CDATA[<b>%1$s</b>]]> drugs ordered</item>
     </plurals>
     <string name="btn_view_requisition">View %s</string>
-    <string name="btn_view_via_requisition">View %s</string>
     <string name="label_period_date">%1$s  to  %2$s</string>
     <string name="label_emergency_date">Emergency Requisition – %s</string>
     <string name="label_can_not_create_mmia_rnr"><![CDATA[<b>You will be able to create a MMIA on the 18th of %1$s</b>]]> </string>

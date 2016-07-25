@@ -59,7 +59,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
                 if (isOfMmia(model)) {
                     configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_can_not_create_mmia_rnr, DateUtil.getMonthAbbrByDate(model.getPeriodEndMonth().toDate()))), R.drawable.ic_description, R.color.color_draft_title);
                 } else {
-                    configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_can_not_create_via_rnr,DateUtil.getMonthAbbrByDate(model.getPeriodEndMonth().toDate()))), R.drawable.ic_description, R.color.color_draft_title);
+                    configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_can_not_create_via_rnr, DateUtil.getMonthAbbrByDate(model.getPeriodEndMonth().toDate()))), R.drawable.ic_description, R.color.color_draft_title);
                 }
                 break;
             case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD:
@@ -102,7 +102,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
         if (isOfMmia(model)) {
             error = context.getString(R.string.label_unsynced_mmia_requisition);
         } else {
-            error = context.getString(R.string.label_unsynced_requisition,model.getName());
+            error = context.getString(R.string.label_unsynced_requisition, model.getName());
         }
 
         if (model.getSyncServerErrorMessage() != null) {
@@ -123,11 +123,7 @@ public class RnRFormViewHolder extends BaseViewHolder {
             configHolder(model.getTitle(), Html.fromHtml(context.getString(R.string.label_submitted_message, model.getName(), model.getSyncedTime())), R.drawable.ic_done_green, R.color.color_white);
         }
         showDeleteMenu(form);
-        if (model.getName().equals(LMISApp.getContext().getString(R.string.label_via_name))) {
-            setupButton(model, context.getString(R.string.btn_view_via_requisition, model.getName()));
-        } else {
-            setupButton(model, context.getString(R.string.btn_view_requisition, model.getName()));
-        }
+        setupButton(model, context.getString(R.string.btn_view_requisition, model.getName()));
 
         if (form.isEmergency()) {
             showDrugCount(form.getRnrFormItemList().size());
