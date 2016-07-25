@@ -302,12 +302,11 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
     private void dataViewToModel(String consultationNumbers, Boolean isIncludeAdditionalProduct) {
         List<RnrFormItem> rnrFormItems = new ArrayList<>();
-        if(!isIncludeAdditionalProduct) {
-            try {
-                requisitionFormItemViewModels.clear();
-                requisitionFormItemViewModels.addAll(getViewModelsFromRnrForm(getRnRForm()));
-            } catch (LMISException e) {
-                e.printStackTrace();
+        if (!isIncludeAdditionalProduct) {
+            for (RequisitionFormItemViewModel viewModel : requisitionFormItemViewModels) {
+                if (viewModel.getItem().getForm() == null) {
+                    requisitionFormItemViewModels.remove(viewModel);
+                }
             }
         }
         rnrFormItems.addAll(convertRnrItemViewModelsToRnrItems());
