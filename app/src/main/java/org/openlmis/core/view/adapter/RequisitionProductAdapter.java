@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import org.openlmis.core.R;
+import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.view.holder.RequisitionProductViewHolder;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 
@@ -16,10 +17,11 @@ public class RequisitionProductAdapter extends BaseAdapter {
 
     private final Context context;
     private final List<RequisitionFormItemViewModel> data;
-
-    public RequisitionProductAdapter(Context context, List<RequisitionFormItemViewModel> data) {
+    private VIARequisitionPresenter presenter;
+    public RequisitionProductAdapter(Context context, List<RequisitionFormItemViewModel> data, VIARequisitionPresenter presenter) {
         this.context = context;
         this.data = data;
+        this.presenter = presenter;
     }
 
     @Override
@@ -48,7 +50,7 @@ public class RequisitionProductAdapter extends BaseAdapter {
         } else {
             viewHolder = (RequisitionProductViewHolder) convertView.getTag();
         }
-        viewHolder.populate(getItem(position));
+        viewHolder.populate(getItem(position), presenter);
         return convertView;
     }
 }

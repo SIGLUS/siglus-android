@@ -356,4 +356,5 @@
     <string name="label_add_new_drugs_to_via">Add Products</string>
     <string name="title_add_drugs_to_form">Add products to requisition</string>
     <string name="label_hint_amount_requisition">Amount requested</string>
+    <string name="label_to_comfirm_delete_product">Are you sure you want to remove this product?</string>
 </resources>
