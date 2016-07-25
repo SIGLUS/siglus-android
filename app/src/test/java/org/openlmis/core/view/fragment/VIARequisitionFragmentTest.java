@@ -226,6 +226,7 @@ public class VIARequisitionFragmentTest {
     @Test
     public void shouldShowTheCannotInitFormToastWhenTheAllStockMovementsAreNotSyncDown() {
         reset(presenter);
+        when(presenter.getRnrFormStatus()).thenReturn(RnRForm.STATUS.DRAFT);
         SharedPreferenceMgr.getInstance().setShouldSyncLastYearStockCardData(true);
         VIARequisitionFragment = getVIARequisitionFragmentFromActivityWithIntent();
 

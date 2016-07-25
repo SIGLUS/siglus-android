@@ -167,6 +167,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             loadData();
         }
         autoScrollLeftToRight();
+        hideMenuIfNotDraft();
     }
 
     private void hideMenuIfNotDraft() {
@@ -191,6 +192,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(featureToggleForAddDrugsToVIA);
         this.menu = menu;
         hideMenuInHistoryAndEmergency();
+        hideMenuIfNotDraft();
     }
 
     @Override
@@ -239,7 +241,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             refreshNormalRnr(rnRForm);
         }
         setEditable();
-        hideMenuIfNotDraft();
     }
 
     private void refreshNormalRnr(RnRForm rnRForm) {
