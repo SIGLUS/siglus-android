@@ -295,20 +295,14 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             return;
         }
 
-        dataViewToModel(consultationNumbers, true);
+        dataViewToModel(consultationNumbers);
 
         view.showSignDialog(rnRForm.isDraft());
     }
 
-    private void dataViewToModel(String consultationNumbers, Boolean isIncludeAdditionalProduct) {
+    private void dataViewToModel(String consultationNumbers) {
         List<RnrFormItem> rnrFormItems = new ArrayList<>();
-        if (!isIncludeAdditionalProduct) {
-            for (RequisitionFormItemViewModel viewModel : requisitionFormItemViewModels) {
-                if (viewModel.getItem().getForm() == null) {
-                    requisitionFormItemViewModels.remove(viewModel);
-                }
-            }
-        }
+
         rnrFormItems.addAll(convertRnrItemViewModelsToRnrItems());
         rnrFormItems.addAll(viaKitsViewModel.getKitItems());
 
@@ -318,10 +312,10 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }
     }
 
-    public void saveVIAForm(String consultationNumbers, Boolean isIncludeAdditionalProduct) {
+    public void saveVIAForm(String consultationNumbers) {
         view.loading();
 
-        dataViewToModel(consultationNumbers, isIncludeAdditionalProduct);
+        dataViewToModel(consultationNumbers);
         saveRequisition();
     }
 

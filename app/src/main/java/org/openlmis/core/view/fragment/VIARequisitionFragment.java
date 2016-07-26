@@ -107,8 +107,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     protected Boolean hasDataChanged;
 
-    protected Boolean isAutoSaved = false;
-
     private RequisitionProductAdapter requisitionProductAdapter;
 
     private RequisitionFormAdapter requisitionFormAdapter;
@@ -189,8 +187,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_new_drugs_to_via:
-                isAutoSaved = true;
-                presenter.saveVIAForm(consultationView.getValue(), false);
                 startActivityForResult(AddDrugsToVIAActivity.getIntentToMe(getActivity(), presenter.getRnRForm().getPeriodBegin(), periodEndDate), Constants.REQUEST_ADD_DRUGS_TO_VIA);
                 return true;
             default:
@@ -328,7 +324,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_save:
-                isAutoSaved = false;
                 onSaveBtnClick();
                 break;
             case R.id.btn_complete:
@@ -455,9 +450,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     @Override
     public void saveSuccess() {
-        if (!isAutoSaved) {
-            finish();
-        }
+        finish();
     }
 
     @Override
@@ -467,7 +460,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     private void onSaveBtnClick() {
-        presenter.saveVIAForm(consultationView.getValue(), true);
+        presenter.saveVIAForm(consultationView.getValue());
     }
 
     private void finish() {
