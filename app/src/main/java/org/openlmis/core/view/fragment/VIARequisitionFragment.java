@@ -173,7 +173,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         Boolean hideMenu = !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_drugs_to_via_form)
                 || isHistoryForm()
                 || !presenter.getRnrFormStatus().equals(RnRForm.STATUS.DRAFT)
-                || presenter.getRnRForm() != null && presenter.getRnRForm().isEmergency();
+                || (presenter.getRnRForm() != null && presenter.getRnRForm().isEmergency());
 
         menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(!hideMenu);
     }
