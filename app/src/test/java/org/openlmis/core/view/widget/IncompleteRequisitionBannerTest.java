@@ -81,7 +81,7 @@ public class IncompleteRequisitionBannerTest {
         when(periodService.getIncompletePeriodOffsetMonth(Constants.MMIA_PROGRAM_CODE)).thenReturn(2);
         incompleteRequisitionBanner = new IncompleteRequisitionBanner(LMISTestApp.getContext());
 
-        assertThat(incompleteRequisitionBanner.txMissedRequisition.getText().toString(), is("Your MMIA requisitions for multiple periods have not been completed"));
+        assertThat(incompleteRequisitionBanner.txMissedRequisition.getText().toString(), is("Your MMIA for multiple periods have not been completed"));
     }
 
     @Test
@@ -105,7 +105,7 @@ public class IncompleteRequisitionBannerTest {
         when(periodService.generateNextPeriod(Constants.MMIA_PROGRAM_CODE, null)).thenReturn(period);
         incompleteRequisitionBanner = new IncompleteRequisitionBanner(LMISTestApp.getContext());
 
-        assertThat(incompleteRequisitionBanner.txMissedRequisition.getText().toString(), is("Your MMIA requisition for April 2016 to May 2016 has not been completed"));
+        assertThat(incompleteRequisitionBanner.txMissedRequisition.getText().toString(), is("Your MMIA for April 2016 to May 2016 has not been completed"));
     }
 
     @Test
