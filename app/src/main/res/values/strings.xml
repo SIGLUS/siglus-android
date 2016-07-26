@@ -275,7 +275,7 @@
     <string name="btn_mmia_list_old">See previous MMIAs History</string>
 
     <string name="mmia_list">MMIA</string>
-    <string name="requisition_list">Requisições Balancete</string>
+    <string name="requisition_list">Requisitions</string>
     <string name="label_total">Total:%1$s</string>
     <string name="requisition_delete_failed">Delete Failed</string>
 

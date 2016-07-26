@@ -30,26 +30,26 @@ Feature: Requisition
     And I navigate back
     Then I wait for "STOCK CARD OVERVIEW" to appear
 
-    And I press "Requisições Balancete"
-    Then I wait for "Requisições Balancete" to appear
+    And I press "Requisitions"
+    Then I wait for "Requisitions" to appear
     Then I should see text containing "You will be able to create a requisition on the 18th of Feb"
     And I navigate back
 
     Given I change device date to "20160218.140000"
     And I wait for 2 seconds
-    And I press "Requisições Balancete"
+    And I press "Requisitions"
     And I try to log in with "via" "password1"
     And I wait for "Stock Card Overview" to appear
 
-    And I press "Requisições Balancete"
-    Then I wait for "Requisições Balancete" to appear
+    And I press "Requisitions"
+    Then I wait for "Requisitions" to appear
     Then I should see text containing "No Requisition Balancete has been created."
 
     Then I press "Complete Inventory"
     And I wait for "inventory" to appear
     Then I do physical inventory for via items without archived drugs
 
-    Then I wait for "Requisições Balancete" to appear
+    Then I wait for "Requisitions" to appear
     And I should see text containing "Create Requisition Balancete"
 
     And I press "Create Requisition Balancete"
@@ -62,7 +62,7 @@ Feature: Requisition
     Then I navigate back
     Then I wait to see "Are you sure you want to quit without saving your work?"
     Then I press "Yes"
-    Then I wait for "Requisições Balancete" to appear
+    Then I wait for "Requisitions" to appear
 
     And I press "Create Requisition Balancete"
     And I press "Thursday"
@@ -90,7 +90,7 @@ Feature: Requisition
     Then I enter QuantityRequested "345"
     Then I wait for 1 second
     Then I press "Save"
-    Then I wait for "Requisições Balancete" to appear
+    Then I wait for "Requisitions" to appear
 
     And I press "Continue Working on Requisition Balancete"
     And I wait for "Requisition -" to appear
@@ -101,7 +101,7 @@ Feature: Requisition
 
     And I press "Submit for Approval"
     And I sign requisition with "superuser" "testUser" and complete
-    Then I wait for "Requisições Balancete" to appear
+    Then I wait for "Requisitions" to appear
 
     Then I navigate back
     Then I wait for "Stock Card Overview" to appear
@@ -114,8 +114,8 @@ Feature: Requisition
     Then I see "Requisition last synced 0 minutes ago"
     Then I go back
 
-    And I press "Requisições Balancete"
-    Then I wait for "Requisições Balancete" to appear
+    And I press "Requisitions"
+    Then I wait for "Requisitions" to appear
     Then I should see text containing "View Requisition Balancete"
     Then I should see text containing "You will be able to create a requisition on the 18th of"
 

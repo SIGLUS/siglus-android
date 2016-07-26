@@ -37,8 +37,8 @@ Feature: After version upgrade, data integrity should not be broken
     And I wait up to 60 seconds for "0 minutes since last sync" to appear
 
     #after upgrade, user should still be able to use the rnr form draft that are created on the old version
-    # And I press "Requisições Balancete"
-    # Then I wait for "Requisições Balancete" to appear
+    # And I press "Requisitions"
+    # Then I wait for "Requisitions" to appear
     # And I press "Continue Working on Via Classica Requisition"
     # And I wait for "Requisition -" to appear
     # Then I should see consultations number is "888"
