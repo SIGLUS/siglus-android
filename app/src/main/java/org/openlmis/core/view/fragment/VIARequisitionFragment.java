@@ -167,32 +167,22 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             loadData();
         }
         autoScrollLeftToRight();
-        hideMenuIfNotDraft();
     }
 
-    private void hideMenuIfNotDraft() {
-        if (!presenter.getRnrFormStatus().equals(RnRForm.STATUS.DRAFT)) {
-            menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(false);
-        }
-    }
+    public void hideOrShowAddProductMenuInVIAPage() {
+        Boolean hideMenu = !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_drugs_to_via_form)
+                || isHistoryForm()
+                || !presenter.getRnrFormStatus().equals(RnRForm.STATUS.DRAFT)
+                || presenter.getRnRForm() != null && presenter.getRnRForm().isEmergency();
 
-    public void hideMenuInHistoryAndEmergency() {
-        if (presenter.getRnRForm() != null) {
-            if (isHistoryForm() || presenter.getRnRForm().isEmergency()) {
-                menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(false);
-            }
-        }
+        menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(!hideMenu);
     }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_via_requisition, menu);
-        boolean featureToggleForAddDrugsToVIA = LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_drugs_to_via_form);
-        menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(featureToggleForAddDrugsToVIA);
         this.menu = menu;
-        hideMenuInHistoryAndEmergency();
-        hideMenuIfNotDraft();
+        hideOrShowAddProductMenuInVIAPage();
     }
 
     @Override
@@ -241,6 +231,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             refreshNormalRnr(rnRForm);
         }
         setEditable();
+        hideOrShowAddProductMenuInVIAPage();
     }
 
     private void refreshNormalRnr(RnRForm rnRForm) {
