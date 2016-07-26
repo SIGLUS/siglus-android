@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.ToastUtil;
@@ -36,19 +37,31 @@ public class RequisitionProductViewHolder extends BaseViewHolder {
         this.presenter = presenter;
         productCode.setText(entry.getFmn());
         productName.setText(entry.getProductName());
-        if (entry.getItem().getForm() == null) {
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_drugs_to_via_form)) {
-                ivDelete.setVisibility(View.VISIBLE);
-                ivDelete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showDelConfirmDialog(entry.getItem());
-                    }
-                });
-            }
+        setDeleteIconForNewAddedProducts(entry);
+    }
+
+    private void setDeleteIconForNewAddedProducts(final RequisitionFormItemViewModel entry) {
+        if (!hideDeleteIconInVIAPage() && isNewAddedProduct(entry)) {
+            ivDelete.setVisibility(View.VISIBLE);
+            ivDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDelConfirmDialog(entry.getItem());
+                }
+            });
         } else {
             ivDelete.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private boolean isNewAddedProduct(RequisitionFormItemViewModel entry) {
+        return entry.getItem().getForm() == null;
+    }
+
+    public Boolean hideDeleteIconInVIAPage() {
+        return  !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_drugs_to_via_form)
+                || !presenter.getRnrFormStatus().equals(RnRForm.STATUS.DRAFT)
+                || (presenter.getRnRForm() != null && presenter.getRnRForm().isEmergency());
     }
 
     protected void showDelConfirmDialog(final RnrFormItem item) {
