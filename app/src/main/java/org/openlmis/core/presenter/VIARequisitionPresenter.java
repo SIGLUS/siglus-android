@@ -230,23 +230,9 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
     private void convertRnrToViewModel(RnRForm rnrForm) throws LMISException {
         requisitionFormItemViewModels.clear();
-        if (rnrForm.isEmergency()) {
-            requisitionFormItemViewModels.addAll(getViewModelsFromRnrForm(rnrForm));
-        } else {
-            requisitionFormItemViewModels.addAll(getViewModelsFromDatabase(rnrForm));
-        }
+        requisitionFormItemViewModels.addAll(getViewModelsFromRnrForm(rnrForm));
         requisitionFormItemViewModels.addAll(getViewModelsForAdditionalProducts());
         viaKitsViewModel.convertRnrKitItemsToViaKit(rnrForm.getRnrItems(IsKit.Yes));
-    }
-
-    private List<RequisitionFormItemViewModel> getViewModelsFromDatabase(RnRForm rnrForm) throws LMISException {
-        return from(rnrFormItemRepository.listAllRnrItemsByForm(rnrForm.getId())).transform(new Function<RnrFormItem, RequisitionFormItemViewModel>() {
-            @Override
-            public RequisitionFormItemViewModel apply(RnrFormItem rnrFormItem) {
-                return new RequisitionFormItemViewModel(rnrFormItem);
-            }
-        }).toList();
-
     }
 
     @Override
@@ -329,15 +315,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
         dataViewToModel(consultationNumbers);
         saveRequisition();
-    }
-
-    public void autoSaveVIAForm(String consultationNumbers) {
-        dataViewToModel(consultationNumbers);
-        try {
-            rnrFormRepository.createOrUpdateWithItems(rnRForm);
-        } catch (LMISException e) {
-            e.printStackTrace();
-        }
     }
 
     private ImmutableList<RnrFormItem> convertRnrItemViewModelsToRnrItems() {

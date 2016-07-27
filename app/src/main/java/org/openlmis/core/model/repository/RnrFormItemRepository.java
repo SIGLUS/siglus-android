@@ -94,12 +94,4 @@ public class RnrFormItemRepository {
         });
     }
 
-    public List<RnrFormItem> listAllRnrItemsByForm(final long rnRFormId) throws LMISException {
-        return dbUtil.withDao(RnrFormItem.class, new DbUtil.Operation<RnrFormItem, List<RnrFormItem>>() {
-            @Override
-            public List<RnrFormItem> operate(Dao<RnrFormItem, String> dao) throws SQLException {
-                return dao.queryBuilder().where().eq("form_id",rnRFormId).query();
-            }
-        });
-    }
 }

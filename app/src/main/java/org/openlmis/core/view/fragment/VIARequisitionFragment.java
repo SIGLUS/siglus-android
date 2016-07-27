@@ -47,6 +47,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListViewUtil;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.activity.AddDrugsToVIAActivity;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 import org.openlmis.core.view.adapter.RequisitionProductAdapter;
 import org.openlmis.core.view.widget.DoubleListScrollListener;
@@ -186,8 +187,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_add_new_drugs_to_via) {
-            presenter.autoSaveVIAForm(consultationView.getValue());
-            startActivityForResult(getIntentToMe(getActivity(), presenter.getRnRForm().getPeriodBegin(), periodEndDate), REQUEST_ADD_DRUGS_TO_VIA);
+            startActivityForResult(AddDrugsToVIAActivity.getIntentToMe(getActivity(), presenter.getRnRForm().getPeriodBegin(), periodEndDate), REQUEST_ADD_DRUGS_TO_VIA);
             return true;
         }
         return super.onOptionsItemSelected(item);
