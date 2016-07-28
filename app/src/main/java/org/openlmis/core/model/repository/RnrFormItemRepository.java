@@ -66,7 +66,7 @@ public class RnrFormItemRepository {
         return dbUtil.withDao(RnrFormItem.class, new DbUtil.Operation<RnrFormItem, List<RnrFormItem>>() {
             @Override
             public List<RnrFormItem> operate(Dao<RnrFormItem, String> dao) throws SQLException {
-                return dao.queryBuilder().where().isNull("form_id").query();
+                return dao.queryBuilder().where().eq("isManualAdd", true).query();
             }
         });
     }

@@ -55,7 +55,7 @@ public class RequisitionProductViewHolder extends BaseViewHolder {
     }
 
     private boolean isNewAddedProduct(RequisitionFormItemViewModel entry) {
-        return entry.getItem().getForm() == null;
+        return entry.getItem().isManualAdd();
     }
 
     public Boolean hideDeleteIconInVIAPage() {

@@ -258,6 +258,8 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                 try {
                     Product product = productRepository.getByCode(addedDrugInVIA.getProductCode());
                     rnrFormItem.setProduct(product);
+                    rnrFormItem.setForm(rnRForm);
+                    rnrFormItem.setManualAdd(true);
                     if (product.isArchived()) {
                         populateRnrItemWithQuantities(rnrFormItem, periodBegin, periodEndDate);
                     }
