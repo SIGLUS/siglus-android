@@ -4,13 +4,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class AddedDrugInVIA implements Parcelable{
 
     @Getter
+    @Setter
     private String productCode;
 
     @Getter
+    @Setter
     private long quantity;
 
     public AddedDrugInVIA(String productCode, long quantity) {

@@ -36,18 +36,24 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.model.AddedDrugInVIA;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.RnrFormItemBuilder;
+import org.openlmis.core.model.builder.StockCardBuilder;
+import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.RnrFormItemRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.VIARepository;
+import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
 import org.roboguice.shaded.goole.common.collect.Lists;
@@ -60,6 +66,7 @@ import java.util.Date;
 import java.util.List;
 
 import roboguice.RoboGuice;
+import rx.Observable;
 import rx.Observer;
 import rx.observers.TestSubscriber;
 
@@ -73,6 +80,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -644,6 +652,56 @@ public class VIARequisitionPresenterTest {
 
         testSubscriber.assertNoErrors();
         verify(mockRnrFormItemRepository).deleteRnrItem(rnrFormItem);
+    }
+
+    @Test
+    public void shouldPopulateAdditionalDrugsViewModels() throws Exception {
+        presenter.requisitionFormItemViewModels = new ArrayList<>();
+
+        AddedDrugInVIA addedDrugInVIA = new AddedDrugInVIA("P1", 100L);
+        AddedDrugInVIA addedDrugInVIA2 = new AddedDrugInVIA("P2", 200L);
+
+        when(mockProductRepository.getByCode("P1")).thenReturn(new ProductBuilder().setCode("P1").setIsActive(true).setIsArchived(false).build());
+        when(mockProductRepository.getByCode("P2")).thenReturn(new ProductBuilder().setCode("P2").setIsActive(true).setIsArchived(true).build());
+
+        presenter.populateAdditionalDrugsViewModels(newArrayList(addedDrugInVIA, addedDrugInVIA2), new Date());
+
+        assertThat(presenter.requisitionFormItemViewModels.size(), is(2));
+        assertThat(presenter.requisitionFormItemViewModels.get(0).getFmn(), is("P1"));
+        assertThat(presenter.requisitionFormItemViewModels.get(1).getFmn(), is("P2"));
+        assertThat(presenter.requisitionFormItemViewModels.get(0).getRequestAmount(), is("100"));
+        assertThat(presenter.requisitionFormItemViewModels.get(1).getRequestAmount(), is("200"));
+        assertThat(presenter.requisitionFormItemViewModels.get(0).getApprovedAmount(), is("100"));
+        assertThat(presenter.requisitionFormItemViewModels.get(1).getApprovedAmount(), is("200"));
+    }
+
+    @Test
+    public void shouldAssignValuesToSelectedArchivedProducts() throws Exception {
+        Date periodBegin = DateUtil.parseString("2016-01-21", DateUtil.DB_DATE_FORMAT);
+        Date periodEnd = DateUtil.parseString("2016-02-20", DateUtil.DB_DATE_FORMAT);
+
+        AddedDrugInVIA addedDrugInVIA = new AddedDrugInVIA("P1", 100L);
+        AddedDrugInVIA addedDrugInVIA2 = new AddedDrugInVIA("P2", 200L);
+
+        Product product1 = new ProductBuilder().setCode("P1").setIsActive(true).setIsArchived(true).build();
+        when(mockProductRepository.getByCode("P1")).thenReturn(product1);
+        Product product2 = new ProductBuilder().setCode("P2").setIsActive(true).setIsArchived(false).build();
+        when(mockProductRepository.getByCode("P2")).thenReturn(product2);
+
+        StockCard stockCard = new StockCardBuilder().setStockOnHand(0L).setProduct(product1).build();
+        StockMovementItem stockMovementItem1 = new StockMovementItemBuilder().withStockOnHand(50).withQuantity(10).withMovementType(StockMovementItem.MovementType.ISSUE).withDocumentNo("123").build();
+        StockMovementItem stockMovementItem2 = new StockMovementItemBuilder().build();
+        StockMovementItem stockMovementItem3 = new StockMovementItemBuilder().build();
+
+        when(mockStockRepository.queryStockCardByProductId(product1.getId())).thenReturn(stockCard);
+        when(mockStockRepository.queryStockItemsByPeriodDates(stockCard, periodBegin, periodEnd)).thenReturn(newArrayList(stockMovementItem1, stockMovementItem2, stockMovementItem3));
+
+        presenter.requisitionFormItemViewModels = new ArrayList<>();
+        presenter.periodEndDate = periodEnd;
+
+        presenter.populateAdditionalDrugsViewModels(newArrayList(addedDrugInVIA, addedDrugInVIA2), periodBegin);
+
+        assertThat(presenter.requisitionFormItemViewModels.get(0).getInitAmount(), is("60"));
     }
 
     private ViaKitsViewModel buildDefaultViaKit() {

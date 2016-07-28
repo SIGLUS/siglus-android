@@ -67,18 +67,9 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
         btnComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<AddedDrugInVIA> addedDrugsInVIA = presenter.convertViewModelsToParcelable(mAdapter.getCheckedProducts());
-                goBackToViaForm(addedDrugsInVIA);
+                presenter.convertViewModelsToDataAndPassToParentScreen(mAdapter.getCheckedProducts());
             }
         });
-    }
-
-    private void goBackToViaForm(ArrayList<AddedDrugInVIA> addedDrugInVIAs) {
-        Intent returnIntent = new Intent();
-        setResult(RESULT_OK, returnIntent);
-        returnIntent.putParcelableArrayListExtra(Constants.PARAM_ADDED_DRUGS_TO_VIA, addedDrugInVIAs);
-        returnIntent.putExtra(Constants.PARAM_PERIOD_BEGIN, periodBegin);
-        this.finish();
     }
 
     Subscriber<List<InventoryViewModel>> subscriber = new Subscriber<List<InventoryViewModel>>() {
@@ -113,9 +104,11 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
     }
 
     @Override
-    public void goToParentPage() {
+    public void goToParentPage(ArrayList<AddedDrugInVIA> addedDrugsInVIAs) {
         Intent returnIntent = new Intent();
-        setResult(RESULT_OK,returnIntent);
+        setResult(RESULT_OK, returnIntent);
+        returnIntent.putParcelableArrayListExtra(Constants.PARAM_ADDED_DRUGS_TO_VIA, addedDrugsInVIAs);
+        returnIntent.putExtra(Constants.PARAM_PERIOD_BEGIN, periodBegin);
         this.finish();
     }
 

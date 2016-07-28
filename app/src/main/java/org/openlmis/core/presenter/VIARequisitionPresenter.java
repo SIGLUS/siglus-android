@@ -162,7 +162,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }).toList();
     }
 
-    private List<RequisitionFormItemViewModel> getViewModelsForAdditionalProducts(List<RnrFormItem> additionalItems) throws LMISException {
+    private List<RequisitionFormItemViewModel> transformDataItemsToViewModels(List<RnrFormItem> additionalItems) throws LMISException {
         return from(additionalItems).transform(new Function<RnrFormItem, RequisitionFormItemViewModel>() {
             @Override
             public RequisitionFormItemViewModel apply(RnrFormItem rnrFormItem) {
@@ -244,7 +244,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     public void populateAdditionalDrugsViewModels(List<AddedDrugInVIA> addedDrugInVIAs, Date periodBegin) {
         try {
             List<RnrFormItem> additionalProducts = generateRnrItemsForAdditionalProducts(addedDrugInVIAs, periodBegin);
-            requisitionFormItemViewModels.addAll(getViewModelsForAdditionalProducts(additionalProducts));
+            requisitionFormItemViewModels.addAll(transformDataItemsToViewModels(additionalProducts));
         } catch (LMISException e) {
             e.reportToFabric();
         }
@@ -277,8 +277,10 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     private void populateRnrItemWithQuantities(RnrFormItem rnrFormItem, Date periodBegin, Date periodEnd) throws LMISException {
         StockCard stockCard = stockRepository.queryStockCardByProductId(rnrFormItem.getProduct().getId());
         List<StockMovementItem> stockMovementItems = stockRepository.queryStockItemsByPeriodDates(stockCard, periodBegin, periodEnd);
-        rnrFormItem.setInitialAmount(stockMovementItems.get(0).calculatePreviousSOH());
-        rnrFormHelper.assignTotalValues(rnrFormItem, stockMovementItems);
+        if (stockMovementItems.size() > 0) {
+            rnrFormItem.setInitialAmount(stockMovementItems.get(0).calculatePreviousSOH());
+            rnrFormHelper.assignTotalValues(rnrFormItem, stockMovementItems);
+        }
     }
 
     @Override
