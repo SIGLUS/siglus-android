@@ -47,20 +47,22 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListViewUtil;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.activity.AddDrugsToVIAActivity;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 import org.openlmis.core.view.adapter.RequisitionProductAdapter;
 import org.openlmis.core.view.holder.RequisitionFormViewHolder;
 import org.openlmis.core.view.widget.DoubleListScrollListener;
 import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.ViaKitView;
-import org.openlmis.core.view.widget.ViaKitViewForToggleOff;
 import org.openlmis.core.view.widget.ViaReportConsultationNumberView;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 import roboguice.inject.InjectView;
+
+import static android.view.View.FOCUS_RIGHT;
+import static org.openlmis.core.utils.Constants.REQUEST_ADD_DRUGS_TO_VIA;
+import static org.openlmis.core.view.activity.AddDrugsToVIAActivity.getIntentToMe;
 
 public class VIARequisitionFragment extends BaseFragment implements VIARequisitionPresenter.VIARequisitionView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
     @InjectView(R.id.requisition_form)
@@ -118,7 +120,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     private Date periodEndDate;
     private boolean isMissedPeriod;
-    private ViaKitViewForToggleOff kitViewToggleOff;
     private ArrayList<StockCard> emergencyStockCards;
 
     private Menu menu;
@@ -142,6 +143,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         return presenter;
     }
 
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         containerView = inflater.inflate(R.layout.fragment_via_requisition, container, false);
         return containerView;
@@ -175,6 +177,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
         menu.findItem(R.id.action_add_new_drugs_to_via).setVisible(!hideMenu);
     }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -185,21 +188,19 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_add_new_drugs_to_via:
-                presenter.autoSaveVIAForm(consultationView.getValue());
-                startActivityForResult(AddDrugsToVIAActivity.getIntentToMe(getActivity(), presenter.getRnRForm().getPeriodBegin(), periodEndDate), Constants.REQUEST_ADD_DRUGS_TO_VIA);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.action_add_new_drugs_to_via) {
+            presenter.autoSaveVIAForm(consultationView.getValue());
+            startActivityForResult(getIntentToMe(getActivity(), presenter.getRnRForm().getPeriodBegin(), periodEndDate), REQUEST_ADD_DRUGS_TO_VIA);
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     public void autoScrollLeftToRight() {
         if (!isHistoryForm()) {
             formLayout.post(new Runnable() {
                 public void run() {
-                    formLayout.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
+                    formLayout.fullScroll(FOCUS_RIGHT);
                 }
             });
         }
@@ -305,20 +306,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     private void setKitValues() {
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_auto_fill_kit_rnr)) {
-            kitView.removeAllViews();
-            kitViewToggleOff = new ViaKitViewForToggleOff(getActivity());
-            kitView.addView(kitViewToggleOff);
-            kitViewToggleOff.setValue(presenter.getViaKitsViewModel());
-            kitViewToggleOff.post(new Runnable() {
-                @Override
-                public void run() {
-                    kitViewToggleOff.addTextChangeListeners(presenter.getViaKitsViewModel());
-                }
-            });
-        } else {
-            kitView.setValue(presenter.getViaKitsViewModel());
-        }
+        kitView.setValue(presenter.getViaKitsViewModel());
     }
 
     @Override
@@ -403,12 +391,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @Override
     public boolean validateConsultationNumber() {
         return consultationView.validate();
-    }
-
-    //TODO when feature_auto_fill_kit_rnr removed, then you can remove this method
-    @Override
-    public boolean validateKitData() {
-        return kitViewToggleOff.validate();
     }
 
     @Override
@@ -527,7 +509,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constants.REQUEST_ADD_DRUGS_TO_VIA) {
+        if (requestCode == REQUEST_ADD_DRUGS_TO_VIA) {
             if (resultCode == Activity.RESULT_OK) {
                 loadData();
             }

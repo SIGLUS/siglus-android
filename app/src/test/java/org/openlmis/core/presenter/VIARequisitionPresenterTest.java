@@ -139,18 +139,6 @@ public class VIARequisitionPresenterTest {
         presenter.rnRForm = createRnrForm(RnRForm.Emergency.Yes);
 
         verify(VIARequisitionFragment, never()).validateConsultationNumber();
-        verify(VIARequisitionFragment, never()).validateKitData();
-    }
-
-    @Test
-    public void shouldValidateFormReturnFalseWhenKitDataInvalid() throws Exception {
-        when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
-        when(VIARequisitionFragment.validateKitData()).thenReturn(false);
-        presenter.rnRForm = createRnrForm(RnRForm.Emergency.No);
-
-        boolean result = presenter.validateForm();
-
-        assertFalse(result);
     }
 
     @Test
@@ -161,7 +149,6 @@ public class VIARequisitionPresenterTest {
         rnRForm.setEmergency(true);
         presenter.rnRForm = rnRForm;
         when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(false);
-        when(VIARequisitionFragment.validateKitData()).thenReturn(false);
         boolean result = presenter.validateForm();
         assertTrue(result);
     }
@@ -169,7 +156,6 @@ public class VIARequisitionPresenterTest {
     @Test
     public void shouldReturnTrueWhenValidateFormSuccess() throws Exception {
         when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
-        when(VIARequisitionFragment.validateKitData()).thenReturn(true);
         presenter.rnRForm = createRnrForm(RnRForm.Emergency.No);
 
         List<RequisitionFormItemViewModel> list = new ArrayList<>();
@@ -353,7 +339,6 @@ public class VIARequisitionPresenterTest {
     public void shouldShowErrorMSGWhenThereWasARequisitionInTheSamePeriod() throws Exception {
         when(mockRnrFormRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(false);
         when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
-        when(VIARequisitionFragment.validateKitData()).thenReturn(true);
         presenter.rnRForm = createRnrForm(RnRForm.Emergency.No);
 
         presenter.processRequisition("123");
@@ -382,7 +367,6 @@ public class VIARequisitionPresenterTest {
 
         when(mockRnrFormRepository.isPeriodUnique(any(RnRForm.class))).thenReturn(true);
         when(VIARequisitionFragment.validateConsultationNumber()).thenReturn(true);
-        when(VIARequisitionFragment.validateKitData()).thenReturn(true);
 
         presenter.processRequisition("123");
 

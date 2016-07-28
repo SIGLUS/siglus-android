@@ -91,7 +91,6 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
         program = new Program("ART", "ART", null, false, null);
         when(mockProgramRepository.queryByCode(anyString())).thenReturn(program);
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_auto_fill_kit_rnr, true);
     }
 
     @Test

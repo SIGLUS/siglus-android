@@ -388,7 +388,7 @@ public class StockRepository {
             cursor.close();
         }
 
-        for (String movementDate: movementDates) {
+        for (String movementDate : movementDates) {
             Date date = DateUtil.parseString(movementDate, DateUtil.DB_DATE_FORMAT);
             if (earliestDate == null || date.before(earliestDate)) {
                 earliestDate = date;
@@ -399,11 +399,7 @@ public class StockRepository {
 
     protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm form) throws LMISException {
         List<StockCard> stockCards;
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_auto_fill_kit_rnr)) {
-            stockCards = listActiveStockCards(form.getProgram().getProgramCode(), ProductRepository.IsWithKit.Yes);
-        } else {
-            stockCards = listActiveStockCards(form.getProgram().getProgramCode(), ProductRepository.IsWithKit.No);
-        }
+        stockCards = listActiveStockCards(form.getProgram().getProgramCode(), ProductRepository.IsWithKit.Yes);
 
         for (Iterator iterator = stockCards.iterator(); iterator.hasNext(); ) {
             StockCard stockCard = (StockCard) iterator.next();

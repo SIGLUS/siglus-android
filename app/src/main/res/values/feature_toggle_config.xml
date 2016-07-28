@@ -2,7 +2,6 @@
 <resources>
     <bool name="feature_show_pop_up_even_no_data_changed_418">true</bool>
     <bool name="feature_auto_quantities_in_kit">false</bool>
-    <bool name="feature_auto_fill_kit_rnr">true</bool>
     <bool name="feature_over_stock">true</bool>
     <bool name="feature_allow_custom_regimen_in_missed_mmia_form">true</bool>
     <bool name="feature_sync_up_cmms">true</bool>

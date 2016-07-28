@@ -271,8 +271,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     protected boolean validateForm() {
         if (rnRForm.isEmergency()) {
             return validateRnrFormItems();
-        } else if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_auto_fill_kit_rnr)) {
-            return view.validateConsultationNumber() && view.validateKitData() && validateRnrFormItems();
         } else {
             return view.validateConsultationNumber() && validateRnrFormItems();
         }
@@ -456,8 +454,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         void setProcessButtonName(String name);
 
         boolean validateConsultationNumber();
-
-        boolean validateKitData();
 
         boolean isHistoryForm();
     }
