@@ -120,9 +120,9 @@ public abstract class BaseRequisitionPresenter extends Presenter {
         if (isHistory) {
             return rnrFormRepository.queryRnRForm(formId);
         }
-        RnRForm draftVIA = rnrFormRepository.queryUnAuthorized();
-        if (draftVIA != null) {
-            return draftVIA;
+        RnRForm draftRequisition = rnrFormRepository.queryUnAuthorized();
+        if (draftRequisition != null) {
+            return draftRequisition;
         }
         return rnrFormRepository.initNormalRnrForm(periodEndDate);
     }
