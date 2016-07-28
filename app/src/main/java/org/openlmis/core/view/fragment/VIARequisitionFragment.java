@@ -337,6 +337,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     public void showListInputError(int index) {
         final int position = index;
         requisitionForm.setSelection(position);
+        requisitionNameList.setSelection(position);
         requisitionForm.post(new Runnable() {
             @Override
             public void run() {
