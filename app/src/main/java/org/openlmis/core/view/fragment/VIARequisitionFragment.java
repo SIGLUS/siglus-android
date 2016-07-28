@@ -171,7 +171,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     public void hideOrShowAddProductMenuInVIAPage() {
         Boolean hideMenu = !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_drugs_to_via_form)
-                || isHistoryForm()
+                || presenter.isHistoryForm()
                 || !presenter.getRnrFormStatus().equals(RnRForm.STATUS.DRAFT)
                 || (presenter.getRnRForm() != null && presenter.getRnRForm().isEmergency());
 
@@ -197,7 +197,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     public void autoScrollLeftToRight() {
-        if (!isHistoryForm()) {
+        if (!presenter.isHistoryForm()) {
             formLayout.post(new Runnable() {
                 public void run() {
                     formLayout.fullScroll(FOCUS_RIGHT);
@@ -393,11 +393,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         return consultationView.validate();
     }
 
-    @Override
-    public boolean isHistoryForm() {
-        return formId != 0;
-    }
-
     protected void onProcessButtonClick() {
         presenter.processRequisition(consultationView.getValue());
     }
@@ -488,17 +483,11 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         }
     }
 
-    private void removeTempForm() {
-        if (!isHistoryForm()) {
-            presenter.removeRequisition();
-            presenter.removeAllNewRnrItems();
-        }
-    }
-
     @Override
     public void positiveClick(String tag) {
         if (tag.equals(TAG_BACK_PRESSED)) {
-            removeTempForm();
+            presenter.removeRequisition();
+            presenter.removeAllNewRnrItems();
             finish();
         }
     }
@@ -509,10 +498,8 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_ADD_DRUGS_TO_VIA) {
-            if (resultCode == Activity.RESULT_OK) {
-                loadData();
-            }
+        if (requestCode == REQUEST_ADD_DRUGS_TO_VIA && resultCode == Activity.RESULT_OK) {
+            loadData();
         }
     }
 }

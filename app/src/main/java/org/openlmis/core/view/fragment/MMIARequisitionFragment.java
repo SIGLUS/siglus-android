@@ -102,7 +102,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
 
     private Boolean hasDataChanged;
     private boolean commentHasChanged = false;
-    private boolean isHistoryForm;
     private long formId;
     protected View containerView;
     private Date periodEndDate;
@@ -120,7 +119,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         super.onCreate(savedInstanceState);
 
         formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
-        isHistoryForm = formId != 0;
         periodEndDate = ((Date) getActivity().getIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
     }
 
@@ -151,7 +149,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
 
     protected void initUI() {
         scrollView.setVisibility(View.INVISIBLE);
-        if (isHistoryForm) {
+        if (presenter.isHistoryForm()) {
             scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             bottomView.setVisibility(View.GONE);
             etComment.setEnabled(false);
@@ -315,7 +313,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     };
 
     private void highlightTotalDifference() {
-        if (isHistoryForm || hasEmptyColumn() || isTotalEqual() || etComment.getText().toString().length() >= 5) {
+        if (presenter.isHistoryForm() || hasEmptyColumn() || isTotalEqual() || etComment.getText().toString().length() >= 5) {
             regimeListView.deHighLightTotal();
             mmiaInfoListView.deHighLightTotal();
             tvMismatch.setVisibility(View.INVISIBLE);
@@ -438,9 +436,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     @Override
     public void positiveClick(String tag) {
         if (tag.equals(TAG_BACK_PRESSED)) {
-            if (!isHistoryForm) {
-                presenter.removeRequisition();
-            }
+            presenter.removeRequisition();
             finish();
         }
     }

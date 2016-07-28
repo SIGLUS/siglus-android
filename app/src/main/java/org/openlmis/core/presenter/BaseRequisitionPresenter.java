@@ -65,6 +65,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
 
     @Getter
     protected RnRForm rnRForm;
+    protected boolean isHistoryForm = false;
 
     public BaseRequisitionPresenter() {
         rnrFormRepository = initRnrFormRepository();
@@ -108,6 +109,9 @@ public abstract class BaseRequisitionPresenter extends Presenter {
     }
 
     public RnRForm getRnrForm(long formId) throws LMISException {
+        if (formId != 0) {
+            isHistoryForm = true;
+        }
         if (rnRForm != null) {
             return rnRForm;
         }
@@ -242,12 +246,18 @@ public abstract class BaseRequisitionPresenter extends Presenter {
     }
 
     public void removeRequisition() {
-        try {
-            rnrFormRepository.removeRnrForm(rnRForm);
-        } catch (LMISException e) {
-            ToastUtil.show(context.getString(R.string.delete_rnr_form_failed_warning));
-            e.reportToFabric();
+        if (!isHistoryForm()) {
+            try {
+                rnrFormRepository.removeRnrForm(rnRForm);
+            } catch (LMISException e) {
+                ToastUtil.show(context.getString(R.string.delete_rnr_form_failed_warning));
+                e.reportToFabric();
+            }
         }
+    }
+
+    public boolean isHistoryForm() {
+        return isHistoryForm;
     }
 
     public void processSign(String signName, RnRForm rnRForm) {

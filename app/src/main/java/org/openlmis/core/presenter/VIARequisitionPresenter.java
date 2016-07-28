@@ -147,7 +147,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             @Override
             public RequisitionFormItemViewModel apply(RnrFormItem item) {
                 RequisitionFormItemViewModel requisitionFormItemViewModel = new RequisitionFormItemViewModel(item);
-                if (!view.isHistoryForm()) {
+                if (!isHistoryForm()) {
                     adjustTheoretical(requisitionFormItemViewModel);
                 }
                 return requisitionFormItemViewModel;
@@ -454,7 +454,5 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         void setProcessButtonName(String name);
 
         boolean validateConsultationNumber();
-
-        boolean isHistoryForm();
     }
 }

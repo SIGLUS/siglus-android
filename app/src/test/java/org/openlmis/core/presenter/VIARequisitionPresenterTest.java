@@ -491,10 +491,9 @@ public class VIARequisitionPresenterTest {
 
     @Test
     public void shouldNotSetAdjustKitProductAmountInHistoryForm() throws Exception {
-        when(VIARequisitionFragment.isHistoryForm()).thenReturn(true);
-
         RnRForm rnRForm = new RnRForm();
         presenter.rnRForm = rnRForm;
+        presenter.isHistoryForm = true;
 
         ArrayList<RnrFormItem> rnrFormItemListWrapper = new ArrayList<>();
         RnrFormItem rnrFormItem = createRnrFormItem(1);

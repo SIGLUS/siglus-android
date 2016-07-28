@@ -217,6 +217,7 @@ public class MMIARequisitionFragmentTest {
 
     @Test
     public void shouldNotShowSaveAndCompleteButtonWhenFormIsNotEditable() {
+        when(mmiaFormPresenter.isHistoryForm()).thenReturn(true);
         mmiaRequisitionFragment = getMMIARequisitionFragmentWithFormId();
 
         mmiaRequisitionFragment.initUI();
