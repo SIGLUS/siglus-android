@@ -643,7 +643,7 @@ public class VIARequisitionPresenterTest {
         testSubscriber.awaitTerminalEvent();
 
         testSubscriber.assertNoErrors();
-        verify(mockRnrFormItemRepository).deleteOneNewAdditionalRnrItem(rnrFormItem);
+        verify(mockRnrFormItemRepository).deleteRnrItem(rnrFormItem);
     }
 
     private ViaKitsViewModel buildDefaultViaKit() {

@@ -9,15 +9,10 @@ import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.builder.ProductBuilder;
-import org.openlmis.core.model.builder.ProductProgramBuilder;
-import org.openlmis.core.model.builder.ProgramBuilder;
-import org.openlmis.core.model.builder.RnRFormBuilder;
-import org.openlmis.core.utils.Constants;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -95,6 +90,7 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
         RnrFormItem rnrFormItem = new RnrFormItem();
         rnrFormItem.setProduct(product1);
         rnrFormItem.setRequestAmount(100L);
+        rnrFormItem.setManualAdd(true);
 
         Product product2 = new ProductBuilder().setCode("P2").setIsActive(true).build();
         productRepository.createOrUpdate(product2);
@@ -104,9 +100,8 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
         rnrFormItemRepository.batchCreateOrUpdate(newArrayList(rnrFormItem, rnrFormItem2));
 
         List<RnrFormItem> rnrFormItems = rnrFormItemRepository.listAllNewRnrItems();
-        assertThat(rnrFormItems.size(), is(2));
+        assertThat(rnrFormItems.size(), is(1));
         assertThat(rnrFormItems.get(0).getProduct().getCode(), is(product1.getCode()));
-        assertThat(rnrFormItems.get(1).getProduct().getCode(), is(product2.getCode()));
 
         rnrFormItemRepository.deleteAllNewRnrItems();
         assertThat(rnrFormItemRepository.listAllNewRnrItems().size(), is(0));
@@ -119,15 +114,18 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
         RnrFormItem rnrFormItem = new RnrFormItem();
         rnrFormItem.setProduct(product1);
         rnrFormItem.setRequestAmount(100L);
+        rnrFormItem.setManualAdd(true);
 
         Product product2 = new ProductBuilder().setCode("P2").setIsActive(true).build();
         productRepository.createOrUpdate(product2);
         RnrFormItem rnrFormItem2 = new RnrFormItem();
         rnrFormItem2.setProduct(product2);
         rnrFormItem2.setRequestAmount(200L);
+        rnrFormItem2.setManualAdd(true);
+
         rnrFormItemRepository.batchCreateOrUpdate(newArrayList(rnrFormItem, rnrFormItem2));
 
-        rnrFormItemRepository.deleteOneNewAdditionalRnrItem(rnrFormItem);
+        rnrFormItemRepository.deleteRnrItem(rnrFormItem);
         List<RnrFormItem> rnrFormItems = rnrFormItemRepository.listAllNewRnrItems();
         assertThat(rnrFormItems.size(), is(1));
         assertThat(rnrFormItems.get(0).getProduct().getCode(), is(product2.getCode()));

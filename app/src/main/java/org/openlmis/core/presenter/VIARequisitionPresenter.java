@@ -447,7 +447,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    rnrFormItemRepository.deleteOneNewAdditionalRnrItem(rnrFormItem);
+                    rnrFormItemRepository.deleteRnrItem(rnrFormItem);
                 } catch (LMISException e) {
                     e.reportToFabric();
                     subscriber.onError(e);
