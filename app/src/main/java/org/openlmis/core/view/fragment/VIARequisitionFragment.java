@@ -39,6 +39,7 @@ import com.google.inject.Inject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.AddedDrugInVIA;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.Presenter;
@@ -57,6 +58,7 @@ import org.openlmis.core.view.widget.ViaReportConsultationNumberView;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import roboguice.inject.InjectView;
 
@@ -470,8 +472,12 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_ADD_DRUGS_TO_VIA && resultCode == Activity.RESULT_OK) {
-            loadData();
+        if (requestCode == Constants.REQUEST_ADD_DRUGS_TO_VIA && resultCode == Activity.RESULT_OK) {
+            Date periodBegin = (Date) data.getSerializableExtra(Constants.PARAM_PERIOD_BEGIN);
+
+            List<AddedDrugInVIA> drugsList = (List<AddedDrugInVIA>) data.getExtras().get(Constants.PARAM_ADDED_DRUGS_TO_VIA);
+            presenter.populateAdditionalDrugsViewModels(drugsList, periodBegin);
+            requisitionProductAdapter.notifyDataSetChanged();
         }
     }
 }

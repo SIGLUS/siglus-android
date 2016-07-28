@@ -27,12 +27,15 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.model.AddedDrugInVIA;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.helper.RnrFormHelper;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.RnrFormItemRepository;
 import org.openlmis.core.model.repository.RnrFormRepository;
@@ -45,6 +48,7 @@ import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.RnRFormItemAdjustmentViewModel;
 import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 import java.util.ArrayList;
@@ -86,6 +90,9 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
     @Inject
     RnrFormItemRepository rnrFormItemRepository;
+
+    @Inject
+    private RnrFormHelper rnrFormHelper;
 
     public VIARequisitionPresenter() {
         requisitionFormItemViewModels = new ArrayList<>();
@@ -155,8 +162,8 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }).toList();
     }
 
-    private List<RequisitionFormItemViewModel> getViewModelsForAdditionalProducts() throws LMISException {
-        return from(rnrFormItemRepository.listAllNewRnrItems()).transform(new Function<RnrFormItem, RequisitionFormItemViewModel>() {
+    private List<RequisitionFormItemViewModel> getViewModelsForAdditionalProducts(List<RnrFormItem> additionalItems) throws LMISException {
+        return from(additionalItems).transform(new Function<RnrFormItem, RequisitionFormItemViewModel>() {
             @Override
             public RequisitionFormItemViewModel apply(RnrFormItem rnrFormItem) {
                 return new RequisitionFormItemViewModel(rnrFormItem);
@@ -231,8 +238,45 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     private void convertRnrToViewModel(RnRForm rnrForm) throws LMISException {
         requisitionFormItemViewModels.clear();
         requisitionFormItemViewModels.addAll(getViewModelsFromRnrForm(rnrForm));
-        requisitionFormItemViewModels.addAll(getViewModelsForAdditionalProducts());
         viaKitsViewModel.convertRnrKitItemsToViaKit(rnrForm.getRnrItems(IsKit.Yes));
+    }
+
+    public void populateAdditionalDrugsViewModels(List<AddedDrugInVIA> addedDrugInVIAs, Date periodBegin) {
+        try {
+            List<RnrFormItem> additionalProducts = generateRnrItemsForAdditionalProducts(addedDrugInVIAs, periodBegin);
+            requisitionFormItemViewModels.addAll(getViewModelsForAdditionalProducts(additionalProducts));
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+    }
+
+    private List<RnrFormItem> generateRnrItemsForAdditionalProducts(List<AddedDrugInVIA> addedDrugInVIAs, final Date periodBegin) {
+        List<RnrFormItem> rnrFormItemList = FluentIterable.from(addedDrugInVIAs).transform(new Function<AddedDrugInVIA, RnrFormItem>() {
+            @Override
+            public RnrFormItem apply(AddedDrugInVIA addedDrugInVIA) {
+                RnrFormItem rnrFormItem = new RnrFormItem();
+                try {
+                    Product product = productRepository.getByCode(addedDrugInVIA.getProductCode());
+                    rnrFormItem.setProduct(product);
+                    if (product.isArchived()) {
+                        populateRnrItemWithQuantities(rnrFormItem, periodBegin, periodEndDate);
+                    }
+                    rnrFormItem.setRequestAmount(addedDrugInVIA.getQuantity());
+                    rnrFormItem.setApprovedAmount(rnrFormItem.getRequestAmount());
+                } catch (LMISException e) {
+                    e.reportToFabric();
+                }
+                return rnrFormItem;
+            }
+        }).toList();
+        return rnrFormItemList;
+    }
+
+    private void populateRnrItemWithQuantities(RnrFormItem rnrFormItem, Date periodBegin, Date periodEnd) throws LMISException {
+        StockCard stockCard = stockRepository.queryStockCardByProductId(rnrFormItem.getProduct().getId());
+        List<StockMovementItem> stockMovementItems = stockRepository.queryStockItemsByPeriodDates(stockCard, periodBegin, periodEnd);
+        rnrFormItem.setInitialAmount(stockMovementItems.get(0).calculatePreviousSOH());
+        rnrFormHelper.assignTotalValues(rnrFormItem, stockMovementItems);
     }
 
     @Override

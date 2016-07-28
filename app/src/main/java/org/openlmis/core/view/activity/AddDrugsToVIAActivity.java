@@ -8,8 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
+import org.openlmis.core.model.AddedDrugInVIA;
 import org.openlmis.core.presenter.AddDrugsToVIAPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
@@ -39,6 +39,7 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
     AddDrugsToVIAPresenter presenter;
 
     protected AddDrugsToVIAAdapter mAdapter;
+    private Date periodBegin;
 
     @Override
     protected ScreenName getScreenName() {
@@ -54,8 +55,7 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final Date periodBegin = ((Date) getIntent().getSerializableExtra(Constants.PARAM_PERIOD_BEGIN));
-        final Date periodEnd = ((Date) getIntent().getSerializableExtra(Constants.PARAM_PERIOD_END));
+        periodBegin = ((Date) getIntent().getSerializableExtra(Constants.PARAM_PERIOD_BEGIN));
 
         productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new AddDrugsToVIAAdapter(new ArrayList<InventoryViewModel>());
@@ -67,13 +67,18 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
         btnComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    presenter.generateNewVIAItems(mAdapter.getCheckedProducts(), periodBegin, periodEnd);
-                } catch (LMISException e) {
-                    e.printStackTrace();
-                }
+                ArrayList<AddedDrugInVIA> addedDrugsInVIA = presenter.convertViewModelsToParcelable(mAdapter.getCheckedProducts());
+                goBackToViaForm(addedDrugsInVIA);
             }
         });
+    }
+
+    private void goBackToViaForm(ArrayList<AddedDrugInVIA> addedDrugInVIAs) {
+        Intent returnIntent = new Intent();
+        setResult(RESULT_OK, returnIntent);
+        returnIntent.putParcelableArrayListExtra(Constants.PARAM_ADDED_DRUGS_TO_VIA, addedDrugInVIAs);
+        returnIntent.putExtra(Constants.PARAM_PERIOD_BEGIN, periodBegin);
+        this.finish();
     }
 
     Subscriber<List<InventoryViewModel>> subscriber = new Subscriber<List<InventoryViewModel>>() {

@@ -3,6 +3,7 @@ package org.openlmis.core.presenter;
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.AddedDrugInVIA;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
@@ -16,6 +17,7 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -135,6 +137,15 @@ public class AddDrugsToVIAPresenter extends Presenter {
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public ArrayList<AddedDrugInVIA> convertViewModelsToParcelable(List<InventoryViewModel> inventoryViewModels) {
+        return new ArrayList(FluentIterable.from(inventoryViewModels).transform(new Function<InventoryViewModel, AddedDrugInVIA>() {
+            @Override
+            public AddedDrugInVIA apply(InventoryViewModel inventoryViewModel) {
+                return new AddedDrugInVIA(inventoryViewModel.getProduct().getCode(), Long.parseLong(inventoryViewModel.getQuantity()));
+            }
+        }).toList());
     }
 
     public interface AddDrugsToVIAView extends BaseView {
