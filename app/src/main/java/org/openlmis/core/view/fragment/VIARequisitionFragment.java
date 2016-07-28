@@ -64,7 +64,6 @@ import roboguice.inject.InjectView;
 
 import static android.view.View.FOCUS_RIGHT;
 import static org.openlmis.core.utils.Constants.REQUEST_ADD_DRUGS_TO_VIA;
-import static org.openlmis.core.view.activity.AddDrugsToVIAActivity.getIntentToMe;
 
 public class VIARequisitionFragment extends BaseFragment implements VIARequisitionPresenter.VIARequisitionView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
     @InjectView(R.id.requisition_form)

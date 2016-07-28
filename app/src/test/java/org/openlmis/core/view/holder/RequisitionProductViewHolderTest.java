@@ -76,8 +76,9 @@ public class RequisitionProductViewHolderTest {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_add_drugs_to_via_form,true);
 
         RnrFormItem formItem = new RnrFormItemBuilder().setProduct(
-                new ProductBuilder().setPrimaryName("productName").setCode("08S42").build()).setRnrForm(null)
+                new ProductBuilder().setPrimaryName("productName").setCode("08S42").build())
                 .build();
+        formItem.setManualAdd(true);
 
         RequisitionFormItemViewModel viewModel = new RequisitionFormItemViewModel(formItem);
         viewHolder.populate(viewModel, presenter);
