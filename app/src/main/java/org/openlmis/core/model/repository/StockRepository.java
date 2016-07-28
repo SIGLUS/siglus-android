@@ -26,7 +26,6 @@ import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.table.TableUtils;
 
 import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.StockMovementIsNullException;
 import org.openlmis.core.model.DraftInventory;

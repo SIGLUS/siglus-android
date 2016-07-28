@@ -35,7 +35,6 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Regimen;
@@ -100,8 +99,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     @Inject
     MMIARequisitionPresenter presenter;
 
-    private Boolean hasDataChanged;
-    private boolean commentHasChanged = false;
     private long formId;
     protected View containerView;
     private Date periodEndDate;
@@ -299,7 +296,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     TextWatcher commentTextWatcher = new SimpleTextWatcher() {
         @Override
         public void afterTextChanged(Editable s) {
-            commentHasChanged = true;
             highlightTotalDifference();
             presenter.setComments(s.toString());
         }
@@ -329,26 +325,13 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     }
 
     public void onBackPressed() {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_show_pop_up_even_no_data_changed_418)) {
-            if (presenter.getRnrFormStatus() == RnRForm.STATUS.DRAFT) {
-                hasDataChanged = true;
-            }
-        }
-
-        if (hasDataChanged()) {
+        if (presenter.getRnrFormStatus() == RnRForm.STATUS.DRAFT) {
             SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(null, getString(R.string.msg_mmia_onback_confirm), getString(R.string.btn_positive), getString(R.string.btn_negative), TAG_BACK_PRESSED);
             dialogFragment.show(getActivity().getFragmentManager(), "back_confirm_dialog");
             dialogFragment.setCallBackListener(this);
         } else {
             finish();
         }
-    }
-
-    private boolean hasDataChanged() {
-        if (hasDataChanged == null) {
-            hasDataChanged = regimeListView.hasDataChanged() || mmiaInfoListView.hasDataChanged() || commentHasChanged;
-        }
-        return hasDataChanged;
     }
 
     private void finish() {

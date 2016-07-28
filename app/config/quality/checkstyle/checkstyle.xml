@@ -23,7 +23,7 @@ Severity: EASY
     <!-- Checks for Size Violations.                    -->
     <!-- See http://checkstyle.sourceforge.net/config_sizes.html -->
     <module name="FileLength">
-        <property name="max" value="600" />
+        <property name="max" value="500" />
     </module>
 
     <!-- Checks for whitespace                               -->

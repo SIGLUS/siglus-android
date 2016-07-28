@@ -49,7 +49,6 @@ import org.openlmis.core.utils.ListViewUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 import org.openlmis.core.view.adapter.RequisitionProductAdapter;
-import org.openlmis.core.view.holder.RequisitionFormViewHolder;
 import org.openlmis.core.view.widget.DoubleListScrollListener;
 import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.ViaKitView;
@@ -106,8 +105,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     @Inject
     VIARequisitionPresenter presenter;
-
-    protected Boolean hasDataChanged;
 
     private RequisitionProductAdapter requisitionProductAdapter;
 
@@ -447,33 +444,8 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         getActivity().finish();
     }
 
-    private boolean hasDataChanged() {
-        if (hasDataChanged == null) {
-            hasDataChanged = requisitionFormChanged() || consultationView.isHasChanged();
-        }
-        return hasDataChanged;
-    }
-
-    private boolean requisitionFormChanged() {
-        for (int index = 0; index < requisitionForm.getChildCount(); index++) {
-            Object requisitionItemTag = requisitionForm.getChildAt(index).getTag();
-            if (requisitionItemTag != null
-                    && requisitionItemTag instanceof RequisitionFormViewHolder
-                    && ((RequisitionFormViewHolder) requisitionItemTag).isHasDataChanged()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public void onBackPressed() {
-        if (getResources().getBoolean(R.bool.feature_show_pop_up_even_no_data_changed_418)) {
-            if (presenter.getRnrFormStatus() == RnRForm.STATUS.DRAFT) {
-                hasDataChanged = true;
-            }
-        }
-
-        if (hasDataChanged()) {
+        if (presenter.getRnrFormStatus() == RnRForm.STATUS.DRAFT) {
             SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(null,
                     getString(R.string.msg_mmia_onback_confirm), getString(R.string.btn_positive), getString(R.string.btn_negative), TAG_BACK_PRESSED);
             dialogFragment.show(getActivity().getFragmentManager(), "back_confirm_dialog");

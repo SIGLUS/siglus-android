@@ -158,9 +158,7 @@ public class VIARequisitionFragmentTest {
     }
 
     @Test
-    public void shouldShowAlertDialogWhenPressedBackWithDataChanges() {
-        VIARequisitionFragment.hasDataChanged = true;
-
+    public void shouldShowAlertDialogWhenPressedBack() {
         VIARequisitionFragment.onBackPressed();
 
         DialogFragment fragment = (DialogFragment) (VIARequisitionFragment.getActivity().getFragmentManager().findFragmentByTag("back_confirm_dialog"));
