@@ -251,11 +251,6 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
     }
 
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
-        @Override
-        public void onCancel() {
-        }
-
-        @Override
         public void onSign(String sign) {
             presenter.doPhysicalInventory(mAdapter.getData(), sign);
 

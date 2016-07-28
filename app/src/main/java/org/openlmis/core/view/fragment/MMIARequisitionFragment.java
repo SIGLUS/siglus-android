@@ -393,10 +393,6 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
 
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
         @Override
-        public void onCancel() {
-        }
-
-        @Override
         public void onSign(String sign) {
             presenter.processSign(sign, presenter.getRnRForm());
         }

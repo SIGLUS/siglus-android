@@ -44,6 +44,7 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
+import org.openlmis.core.presenter.VIARequisitionView;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListViewUtil;
@@ -65,7 +66,7 @@ import roboguice.inject.InjectView;
 import static android.view.View.FOCUS_RIGHT;
 import static org.openlmis.core.utils.Constants.REQUEST_ADD_DRUGS_TO_VIA;
 
-public class VIARequisitionFragment extends BaseFragment implements VIARequisitionPresenter.VIARequisitionView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
+public class VIARequisitionFragment extends BaseFragment implements VIARequisitionView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
     @InjectView(R.id.requisition_form)
     ListView requisitionForm;
 
@@ -407,11 +408,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
-        @Override
-        public void onCancel() {
-        }
-
-        @Override
         public void onSign(String sign) {
             presenter.processSign(sign, presenter.getRnRForm());
         }

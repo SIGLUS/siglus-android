@@ -138,10 +138,11 @@ public class SignatureDialog extends BaseDialogFragment implements View.OnClickL
         return delegate != null;
     }
 
-    public interface DialogDelegate {
-        void onCancel();
+    public static abstract class DialogDelegate {
+        public void onCancel() {
+        }
 
-        void onSign(String sign);
+        public abstract void onSign(String sign);
     }
 
     public static Bundle getBundleToMe(String title) {

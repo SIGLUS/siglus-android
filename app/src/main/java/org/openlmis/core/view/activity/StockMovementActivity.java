@@ -207,10 +207,6 @@ public class StockMovementActivity extends BaseActivity implements StockMovement
 
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
         @Override
-        public void onCancel() {
-        }
-
-        @Override
         public void onSign(String sign) {
             StockMovementViewModel stockMovementViewModel = stockMovementAdapter.getEditableStockMovement();
             stockMovementViewModel.setSignature(sign);

@@ -467,17 +467,4 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }
         view.refreshRequisitionForm(rnRForm);
     }
-
-    public interface VIARequisitionView extends BaseRequisitionView {
-
-        void showListInputError(int index);
-
-        void highLightRequestAmount();
-
-        void highLightApprovedAmount();
-
-        void setProcessButtonName(String name);
-
-        boolean validateConsultationNumber();
-    }
 }

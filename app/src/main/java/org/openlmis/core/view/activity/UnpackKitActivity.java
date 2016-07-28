@@ -109,10 +109,6 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
 
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
         @Override
-        public void onCancel() {
-        }
-
-        @Override
         public void onSign(String sign) {
             presenter.saveUnpackProducts(kitNum, etDocumentNumber.getText().toString(), sign);
         }
