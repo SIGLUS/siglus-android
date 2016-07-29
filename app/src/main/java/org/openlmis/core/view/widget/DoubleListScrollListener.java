@@ -2,15 +2,21 @@ package org.openlmis.core.view.widget;
 
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
 
-public class DoubleListScrollListener implements AbsListView.OnScrollListener {
-    ListView list1;
-    ListView list2;
+public final class DoubleListScrollListener implements OnScrollListener {
+    private ListView list1;
+    private ListView list2;
 
-    public DoubleListScrollListener(ListView list1, ListView list2) {
+    private DoubleListScrollListener(ListView list1, ListView list2) {
         this.list1 = list1;
         this.list2 = list2;
+    }
+
+    public static void scrollInSync(ListView list1, ListView list2) {
+        list1.setOnScrollListener(new DoubleListScrollListener(list1, list2));
+        list2.setOnScrollListener(new DoubleListScrollListener(list2, list1));
     }
 
     @Override
@@ -32,6 +38,7 @@ public class DoubleListScrollListener implements AbsListView.OnScrollListener {
         }
     }
 
+    @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         View subView1 = view.getChildAt(0);
         if (subView1 != null) {

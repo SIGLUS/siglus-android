@@ -39,7 +39,6 @@ import com.google.inject.Inject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
-import org.openlmis.core.model.AddedDrugInVIA;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.Presenter;
@@ -49,29 +48,28 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListViewUtil;
 import org.openlmis.core.utils.ToastUtil;
-import org.openlmis.core.view.activity.AddDrugsToVIAActivity;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 import org.openlmis.core.view.adapter.RequisitionProductAdapter;
-import org.openlmis.core.view.widget.DoubleListScrollListener;
 import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.ViaKitView;
 import org.openlmis.core.view.widget.ViaReportConsultationNumberView;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import roboguice.inject.InjectView;
 
 import static android.view.View.FOCUS_RIGHT;
 import static org.openlmis.core.utils.Constants.REQUEST_ADD_DRUGS_TO_VIA;
+import static org.openlmis.core.view.activity.AddDrugsToVIAActivity.getIntentToMe;
+import static org.openlmis.core.view.widget.DoubleListScrollListener.scrollInSync;
 
 public class VIARequisitionFragment extends BaseFragment implements VIARequisitionView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
     @InjectView(R.id.requisition_form)
-    ListView requisitionForm;
+    ListView requisitionFormList;
 
     @InjectView(R.id.product_name_list_view)
-    ListView requisitionNameList;
+    ListView requisitionProductList;
 
     @InjectView(R.id.btn_complete)
     Button btnComplete;
@@ -298,9 +296,9 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         }
 
         if (isMissedPeriod || presenter.getRnRForm().isMissed()) {
-            requisitionForm.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+            requisitionFormList.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         } else {
-            requisitionForm.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+            requisitionFormList.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
         }
     }
 
@@ -323,12 +321,12 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @Override
     public void showListInputError(int index) {
         final int position = index;
-        requisitionForm.setSelection(position);
-        requisitionNameList.setSelection(position);
-        requisitionForm.post(new Runnable() {
+        requisitionFormList.setSelection(position);
+        requisitionProductList.setSelection(position);
+        requisitionFormList.post(new Runnable() {
             @Override
             public void run() {
-                View childAt = ListViewUtil.getViewByPosition(position, requisitionForm);
+                View childAt = ListViewUtil.getViewByPosition(position, requisitionFormList);
                 EditText requestAmount = (EditText) childAt.findViewById(R.id.et_request_amount);
                 EditText approvedAmount = (EditText) childAt.findViewById(R.id.et_approved_amount);
                 if (requestAmount.isEnabled()) {
@@ -346,7 +344,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         initRequisitionBodyList();
         initRequisitionProductList();
 
-        requisitionNameList.post(new Runnable() {
+        requisitionProductList.post(new Runnable() {
             @Override
             public void run() {
                 productHeaderView.getLayoutParams().height = bodyHeaderView.getHeight();
@@ -358,8 +356,8 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     private void bindListeners() {
-        requisitionForm.setOnScrollListener(new DoubleListScrollListener(requisitionForm, requisitionNameList));
-        requisitionNameList.setOnScrollListener(new DoubleListScrollListener(requisitionNameList, requisitionForm));
+        scrollInSync(requisitionFormList, requisitionProductList);
+
         btnComplete.setOnClickListener(this);
         btnSave.setOnClickListener(this);
 
@@ -374,12 +372,12 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     private void initRequisitionBodyList() {
         requisitionFormAdapter = new RequisitionFormAdapter(getActivity(), presenter.getRequisitionFormItemViewModels());
-        requisitionForm.setAdapter(requisitionFormAdapter);
+        requisitionFormList.setAdapter(requisitionFormAdapter);
     }
 
     private void initRequisitionProductList() {
         requisitionProductAdapter = new RequisitionProductAdapter(getActivity(), presenter.getRequisitionFormItemViewModels(), presenter);
-        requisitionNameList.setAdapter(requisitionProductAdapter);
+        requisitionProductList.setAdapter(requisitionProductAdapter);
     }
 
     @Override
