@@ -437,7 +437,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     public void positiveClick(String tag) {
         if (tag.equals(TAG_BACK_PRESSED)) {
             presenter.removeRequisition();
-            presenter.removeAllNewRnrItems();
             finish();
         }
     }

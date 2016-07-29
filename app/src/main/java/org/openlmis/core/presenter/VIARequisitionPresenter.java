@@ -437,14 +437,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }
     }
 
-    public void removeAllNewRnrItems() {
-        try {
-            rnrFormItemRepository.deleteAllNewRnrItems();
-        } catch (LMISException e) {
-            e.reportToFabric();
-        }
-    }
-
     public Observable<Void> removeOneNewRnrItems(final RnrFormItem rnrFormItem) {
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
