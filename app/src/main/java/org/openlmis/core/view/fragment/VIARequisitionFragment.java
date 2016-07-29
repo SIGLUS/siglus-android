@@ -39,6 +39,7 @@ import com.google.inject.Inject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.AddedDrugInVIA;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.Presenter;
@@ -48,6 +49,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListViewUtil;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.activity.AddDrugsToVIAActivity;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 import org.openlmis.core.view.adapter.RequisitionProductAdapter;
 import org.openlmis.core.view.widget.SignatureDialog;
@@ -56,12 +58,12 @@ import org.openlmis.core.view.widget.ViaReportConsultationNumberView;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import roboguice.inject.InjectView;
 
 import static android.view.View.FOCUS_RIGHT;
 import static org.openlmis.core.utils.Constants.REQUEST_ADD_DRUGS_TO_VIA;
-import static org.openlmis.core.view.activity.AddDrugsToVIAActivity.getIntentToMe;
 import static org.openlmis.core.view.widget.DoubleListScrollListener.scrollInSync;
 
 public class VIARequisitionFragment extends BaseFragment implements VIARequisitionView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
