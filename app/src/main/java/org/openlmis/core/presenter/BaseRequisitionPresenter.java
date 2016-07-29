@@ -296,6 +296,11 @@ public abstract class BaseRequisitionPresenter extends Presenter {
 
     protected abstract int getCompleteErrorMessage();
 
+    public boolean isFormProductEditable() {
+        return !isHistoryForm()
+                && getRnrFormStatus().equals(RnRForm.STATUS.DRAFT)
+                && !(getRnRForm() != null && getRnRForm().isEmergency());
+    }
 
     public interface BaseRequisitionView extends BaseView {
 
