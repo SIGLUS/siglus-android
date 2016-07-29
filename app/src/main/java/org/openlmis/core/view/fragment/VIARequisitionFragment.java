@@ -130,11 +130,8 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         setHasOptionsMenu(true);
 
         formId = getActivity().getIntent().getLongExtra(Constants.PARAM_FORM_ID, 0);
-
         periodEndDate = ((Date) getActivity().getIntent().getSerializableExtra(Constants.PARAM_SELECTED_INVENTORY_DATE));
-
         isMissedPeriod = getActivity().getIntent().getBooleanExtra(Constants.PARAM_IS_MISSED_PERIOD, false);
-
         emergencyStockCards = (ArrayList<StockCard>) getActivity().getIntent().getSerializableExtra(Constants.PARAM_SELECTED_EMERGENCY);
     }
 
@@ -306,13 +303,10 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_save:
-                onSaveBtnClick();
-                break;
-            case R.id.btn_complete:
-                onProcessButtonClick();
-                break;
+        if (view.getId() == R.id.btn_save) {
+            onSaveBtnClick();
+        } else if (view.getId() == R.id.btn_complete) {
+            onProcessButtonClick();
         }
     }
 

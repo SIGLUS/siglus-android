@@ -20,7 +20,6 @@ package org.openlmis.core.view.holder;
 
 import android.app.DatePickerDialog;
 import android.graphics.Color;
-import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
@@ -37,7 +36,6 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.StockMovementAdapter;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
@@ -117,9 +115,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
         }
 
         movementViewMap.put(StockMovementItem.MovementType.RECEIVE, asList(etReceived));
-
         movementViewMap.put(StockMovementItem.MovementType.NEGATIVE_ADJUST, asList(etNegativeAdjustment));
-
         movementViewMap.put(StockMovementItem.MovementType.POSITIVE_ADJUST, asList(etPositiveAdjustment));
     }
 
@@ -209,19 +205,16 @@ public class StockMovementViewHolder extends BaseViewHolder {
     }
 
     private void removeTextChangeListeners(StockMovementViewModel model, long currentStockOnHand) {
+        etReceived.removeTextChangedListener(new EditTextWatcher(this, etReceived, model, currentStockOnHand));
+        etNegativeAdjustment.removeTextChangedListener(new EditTextWatcher(this, etNegativeAdjustment, model, currentStockOnHand));
+        etPositiveAdjustment.removeTextChangedListener(new EditTextWatcher(this, etPositiveAdjustment, model, currentStockOnHand));
 
-        etReceived.removeTextChangedListener(new EditTextWatcher(etReceived, model, currentStockOnHand));
-
-        etNegativeAdjustment.removeTextChangedListener(new EditTextWatcher(etNegativeAdjustment, model, currentStockOnHand));
-
-        etPositiveAdjustment.removeTextChangedListener(new EditTextWatcher(etPositiveAdjustment, model, currentStockOnHand));
-
-        etIssued.removeTextChangedListener(new EditTextWatcher(etIssued, model, currentStockOnHand));
+        etIssued.removeTextChangedListener(new EditTextWatcher(this, etIssued, model, currentStockOnHand));
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
-            etRequested.removeTextChangedListener(new EditTextWatcher(etRequested, model, currentStockOnHand));
+            etRequested.removeTextChangedListener(new EditTextWatcher(this, etRequested, model, currentStockOnHand));
         }
 
-        etDocumentNo.removeTextChangedListener(new EditTextWatcher(etDocumentNo, model, currentStockOnHand));
+        etDocumentNo.removeTextChangedListener(new EditTextWatcher(this, etDocumentNo, model, currentStockOnHand));
     }
 
     private void addClickListeners(final StockMovementViewModel model, final Date previousMovementDate) {
@@ -256,22 +249,18 @@ public class StockMovementViewHolder extends BaseViewHolder {
         DatePickerDialog dialog = new DatePickerDialog(context, DatePickerDialog.BUTTON_NEUTRAL,
                 new MovementDateListener(model, previousMovementDate),
                 today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
-
         dialog.show();
     }
 
     private void addTextChangedListeners(StockMovementViewModel model, long currentStockOnHand) {
-        etReceived.addTextChangedListener(new EditTextWatcher(etReceived, model, currentStockOnHand));
+        etReceived.addTextChangedListener(new EditTextWatcher(this, etReceived, model, currentStockOnHand));
+        etNegativeAdjustment.addTextChangedListener(new EditTextWatcher(this, etNegativeAdjustment, model, currentStockOnHand));
+        etPositiveAdjustment.addTextChangedListener(new EditTextWatcher(this, etPositiveAdjustment, model, currentStockOnHand));
+        etIssued.addTextChangedListener(new EditTextWatcher(this, etIssued, model, currentStockOnHand));
+        etDocumentNo.addTextChangedListener(new EditTextWatcher(this, etDocumentNo, model, currentStockOnHand));
 
-        etNegativeAdjustment.addTextChangedListener(new EditTextWatcher(etNegativeAdjustment, model, currentStockOnHand));
-
-        etPositiveAdjustment.addTextChangedListener(new EditTextWatcher(etPositiveAdjustment, model, currentStockOnHand));
-
-        etIssued.addTextChangedListener(new EditTextWatcher(etIssued, model, currentStockOnHand));
-
-        etDocumentNo.addTextChangedListener(new EditTextWatcher(etDocumentNo, model, currentStockOnHand));
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
-            etRequested.addTextChangedListener(new EditTextWatcher(etRequested, model, currentStockOnHand));
+            etRequested.addTextChangedListener(new EditTextWatcher(this, etRequested, model, currentStockOnHand));
         }
     }
 
@@ -350,62 +339,6 @@ public class StockMovementViewHolder extends BaseViewHolder {
         return null;
     }
 
-    class EditTextWatcher extends SingleTextWatcher {
-
-        private final View view;
-        private final long currentStockOnHand;
-        private final StockMovementViewModel model;
-
-        public EditTextWatcher(View view, StockMovementViewModel model, long currentStockOnHand) {
-            this.view = view;
-            this.currentStockOnHand = currentStockOnHand;
-            this.model = model;
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            setValue(view, model, currentStockOnHand);
-        }
-
-        private void setValue(View v, StockMovementViewModel model, long currentStockOnHand) {
-            String text = ((TextView) v).getText().toString();
-
-            if (v != etDocumentNo && v != etRequested) {
-                updateStockExistence(v, model, currentStockOnHand, text);
-            }
-
-            if (v == etReceived) {
-                model.setReceived(etReceived.getText().toString());
-            } else if (v == etIssued) {
-                model.setIssued(etIssued.getText().toString());
-            } else if (v == etPositiveAdjustment) {
-                model.setPositiveAdjustment(etPositiveAdjustment.getText().toString());
-            } else if (v == etNegativeAdjustment) {
-                model.setNegativeAdjustment(etNegativeAdjustment.getText().toString());
-            } else if (v == etDocumentNo) {
-                model.setDocumentNo(etDocumentNo.getText().toString());
-            } else if (v == etRequested) {
-                model.setRequested(etRequested.getText().toString());
-            }
-        }
-
-        private void updateStockExistence(View v, StockMovementViewModel model, long currentStockOnHand, String text) {
-            long number = 0;
-            if (!StringUtils.isEmpty(text)) {
-                number = Long.parseLong(text);
-            }
-
-            String stockExistence = "";
-            if (v == etReceived || v == etPositiveAdjustment) {
-                stockExistence = String.valueOf(currentStockOnHand + number);
-            } else if (v == etIssued || v == etNegativeAdjustment) {
-                stockExistence = String.valueOf(currentStockOnHand - number);
-            }
-            txStockExistence.setText(stockExistence);
-            model.setStockExistence(stockExistence);
-        }
-    }
-
     class MovementSelectListener implements MovementTypeDialog.OnMovementSelectListener {
 
         private StockMovementViewModel model;
@@ -436,7 +369,6 @@ public class StockMovementViewHolder extends BaseViewHolder {
         }
     }
 
-
     private void clearQuantityAndDocumentNoField() {
         etDocumentNo.setText(StringUtils.EMPTY);
         etReceived.setText(StringUtils.EMPTY);
@@ -444,7 +376,6 @@ public class StockMovementViewHolder extends BaseViewHolder {
         etPositiveAdjustment.setText(StringUtils.EMPTY);
         etIssued.setText(StringUtils.EMPTY);
     }
-
 
     class MovementDateListener implements DatePickerDialog.OnDateSetListener {
 
