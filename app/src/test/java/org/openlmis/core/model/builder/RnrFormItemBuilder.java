@@ -66,6 +66,11 @@ public class RnrFormItemBuilder {
         return this;
     }
 
+    public RnrFormItemBuilder setManualAdd(boolean manualAdd) {
+        rnrFormItem.setManualAdd(manualAdd);
+        return this;
+    }
+
     public RnrFormItem build() {
         return rnrFormItem;
     }

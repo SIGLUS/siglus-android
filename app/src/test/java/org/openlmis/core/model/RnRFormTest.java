@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.RnrFormItemBuilder;
@@ -156,9 +155,10 @@ public class RnRFormTest {
     @Test
     public void shouldSortRnrFormItemByProductCode() throws Exception {
         List<RnrFormItem> rnrFormItems = new ArrayList<>();
-        rnrFormItems.add(generateRnrFormItem("03A02"));
-        rnrFormItems.add(generateRnrFormItem("01A02"));
-        rnrFormItems.add(generateRnrFormItem("10B02"));
+        rnrFormItems.add(generateRnrFormItem("03A02", false));
+        rnrFormItems.add(generateRnrFormItem("01A02", false));
+        rnrFormItems.add(generateRnrFormItem("10B02", false));
+        rnRForm.setStatus(RnRForm.STATUS.AUTHORIZED);
         rnRForm.setRnrFormItemListWrapper(rnrFormItems);
 
         List<RnrFormItem> sortedRnrFormItems = rnRForm.getRnrFormItemListWrapper();
@@ -167,7 +167,28 @@ public class RnRFormTest {
         assertEquals("10B02", sortedRnrFormItems.get(2).getProduct().getCode());
     }
 
-    private RnrFormItem generateRnrFormItem(String productCode) {
-        return new RnrFormItemBuilder().setProduct(new ProductBuilder().setCode(productCode).build()).build();
+    @Test
+    public void shouldSortRnrByCategoryFirst() throws Exception {
+        List<RnrFormItem> rnrFormItems = new ArrayList<>();
+        rnrFormItems.add(generateRnrFormItem("A3", false));
+        rnrFormItems.add(generateRnrFormItem("B3", true));
+        rnrFormItems.add(generateRnrFormItem("B1", false));
+        rnrFormItems.add(generateRnrFormItem("A2", true));
+        rnrFormItems.add(generateRnrFormItem("B2", false));
+        rnrFormItems.add(generateRnrFormItem("A1", false));
+        rnRForm.setStatus(RnRForm.STATUS.DRAFT);
+        rnRForm.setRnrFormItemListWrapper(rnrFormItems);
+
+        List<RnrFormItem> sortedRnrFormItems = rnRForm.getRnrFormItemListWrapper();
+        assertEquals("A1", sortedRnrFormItems.get(0).getProduct().getCode());
+        assertEquals("A3", sortedRnrFormItems.get(1).getProduct().getCode());
+        assertEquals("B1", sortedRnrFormItems.get(2).getProduct().getCode());
+        assertEquals("B2", sortedRnrFormItems.get(3).getProduct().getCode());
+        assertEquals("A2", sortedRnrFormItems.get(4).getProduct().getCode());
+        assertEquals("B3", sortedRnrFormItems.get(5).getProduct().getCode());
+    }
+
+    private RnrFormItem generateRnrFormItem(String productCode, boolean manualAdd) {
+        return new RnrFormItemBuilder().setProduct(new ProductBuilder().setCode(productCode).build()).setManualAdd(manualAdd).build();
     }
 }

@@ -123,7 +123,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         when(mockProgramRepository.queryProgramCodesByProgramCodeOrParentCode(anyString())).thenReturn(mmiaCodes);
         List<Long> mmiaProductIds = new ArrayList<>();
         when(productProgramRepository.queryActiveProductIdsByProgramsWithKits(mmiaCodes, false)).thenReturn(mmiaProductIds);
-        Product someProduct = new Product();
+        Product someProduct = ProductBuilder.buildAdultProduct();
         when(mockProductRepository.queryProductsByProductIds(mmiaProductIds)).thenReturn(newArrayList(product, someProduct));
 
         RnRForm form = mmiaRepository.initNormalRnrForm(null);
@@ -141,6 +141,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     private Product generateProduct() {
         Product product = new Product();
         product.setId(1L);
+        product.setCode("ABC");
         product.setPrimaryName("Test Product");
         product.setStrength("200");
         return product;
