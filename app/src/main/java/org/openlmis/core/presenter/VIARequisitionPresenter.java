@@ -464,13 +464,4 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
-
-    public void refreshProductListInVIAForm() {
-        try {
-            convertRnrToViewModel(rnRForm);
-        } catch (LMISException e) {
-            e.printStackTrace();
-        }
-        //view.refreshRequisitionForm(rnRForm);
-    }
 }
