@@ -25,8 +25,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.google.inject.Inject;
+
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.view.holder.RequisitionFormViewHolder;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 
@@ -34,24 +37,24 @@ import java.util.List;
 
 public class RequisitionFormAdapter extends BaseAdapter {
 
+    @Inject
     private Context context;
-    private List<RequisitionFormItemViewModel> data;
+    @Inject
+    private VIARequisitionPresenter presenter;
 
     private RnRForm.STATUS status = RnRForm.STATUS.AUTHORIZED;
 
-    public RequisitionFormAdapter(Context context, List<RequisitionFormItemViewModel> data) {
-        this.data = data;
-        this.context = context;
+    public RequisitionFormAdapter() {
     }
 
     @Override
     public int getCount() {
-        return data == null ? 0 : data.size();
+        return data() == null ? 0 : data().size();
     }
 
     @Override
     public RequisitionFormItemViewModel getItem(int position) {
-        return data == null ? null : data.get(position);
+        return data() == null ? null : data().get(position);
     }
 
     @Override
@@ -87,5 +90,7 @@ public class RequisitionFormAdapter extends BaseAdapter {
         this.notifyDataSetChanged();
     }
 
+    private List<RequisitionFormItemViewModel> data() {
+        return presenter.getRequisitionFormItemViewModels();
+    }
 }
-

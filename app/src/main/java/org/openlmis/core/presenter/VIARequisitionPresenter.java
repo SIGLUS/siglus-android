@@ -58,6 +58,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import roboguice.RoboGuice;
+import roboguice.inject.ContextSingleton;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -67,7 +68,7 @@ import rx.schedulers.Schedulers;
 import static org.openlmis.core.model.Product.IsKit;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
-
+@ContextSingleton
 public class VIARequisitionPresenter extends BaseRequisitionPresenter {
 
     @Inject

@@ -107,9 +107,11 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @Inject
     VIARequisitionPresenter presenter;
 
+    @Inject
+    private RequisitionFormAdapter requisitionFormAdapter;
+    @Inject
     private RequisitionProductAdapter requisitionProductAdapter;
 
-    private RequisitionFormAdapter requisitionFormAdapter;
     private static final String TAG_BACK_PRESSED = "onBackPressed";
     private static final String TAG_SHOW_MESSAGE_NOTIFY_DIALOG = "showMessageNotifyDialog";
     protected View containerView;
@@ -337,9 +339,8 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     private void initUI() {
-        initRequisitionBodyList();
-        initRequisitionProductList();
-
+        requisitionFormList.setAdapter(requisitionFormAdapter);
+        requisitionProductList.setAdapter(requisitionProductAdapter);
         requisitionProductList.post(new Runnable() {
             @Override
             public void run() {
@@ -364,16 +365,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
                 return false;
             }
         });
-    }
-
-    private void initRequisitionBodyList() {
-        requisitionFormAdapter = new RequisitionFormAdapter(getActivity(), presenter.getRequisitionFormItemViewModels());
-        requisitionFormList.setAdapter(requisitionFormAdapter);
-    }
-
-    private void initRequisitionProductList() {
-        requisitionProductAdapter = new RequisitionProductAdapter(getActivity(), presenter.getRequisitionFormItemViewModels(), presenter);
-        requisitionProductList.setAdapter(requisitionProductAdapter);
     }
 
     @Override
