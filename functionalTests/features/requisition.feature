@@ -109,7 +109,7 @@ Feature: Requisition
     Then I see "Sync Data"
     And I press "Sync Data"
 
-    And I wait for "0 minutes since last sync" to appear
+    And I wait up to 60 seconds for "0 minutes since last sync" to appear
     And I press "0 minutes since last sync"
     Then I see "Requisition last synced 0 minutes ago"
     Then I go back
