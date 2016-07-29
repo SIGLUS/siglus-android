@@ -5,13 +5,11 @@ import com.google.inject.Inject;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.AddedDrugInVIA;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.model.helper.RnrFormHelper;
 import org.openlmis.core.model.repository.ProductRepository;
-import org.openlmis.core.model.repository.RnrFormItemRepository;
-import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
@@ -29,35 +27,36 @@ public class AddDrugsToVIAPresenter extends Presenter {
     @Inject
     private ProductRepository productRepository;
 
-    @Inject
-    private RnrFormItemRepository rnrFormItemRepository;
-
-    @Inject
-    private StockRepository stockRepository;
-
-    @Inject
-    private RnrFormHelper rnrFormHelper;
-
     ArrayList<AddedDrugInVIA> addedDrugsInVIA = new ArrayList<>();
 
     AddDrugsToVIAView view;
+
+    public AddDrugsToVIAPresenter() {
+    }
 
     @Override
     public void attachView(BaseView v) {
         view = (AddDrugsToVIAView) v;
     }
 
-    public Observable<List<InventoryViewModel>> loadActiveProductsNotInVIAForm() {
+    public Observable<List<InventoryViewModel>> loadActiveProductsNotInVIAForm(final List<String> existingProducts) {
         return Observable.create(new Observable.OnSubscribe<List<InventoryViewModel>>() {
             @Override
             public void call(final Subscriber<? super List<InventoryViewModel>> subscriber) {
                 try {
-                    List<InventoryViewModel> productsNotInVIAForm = FluentIterable.from(productRepository.queryActiveProductsInVIAProgramButNotInDraftVIAForm()).transform(new Function<Product, InventoryViewModel>() {
-                        @Override
-                        public InventoryViewModel apply(Product product) {
-                            return new InventoryViewModel(product);
-                        }
-                    }).toList();
+                    List<InventoryViewModel> productsNotInVIAForm = FluentIterable.from(productRepository.queryActiveProductsInVIAProgramButNotInDraftVIAForm())
+                            .filter(new Predicate<Product>() {
+                                @Override
+                                public boolean apply(Product product) {
+                                    return !existingProducts.contains(product.getCode());
+                                }
+                            })
+                            .transform(new Function<Product, InventoryViewModel>() {
+                                @Override
+                                public InventoryViewModel apply(Product product) {
+                                    return new InventoryViewModel(product);
+                                }
+                            }).toList();
                     subscriber.onNext(productsNotInVIAForm);
                     subscriber.onCompleted();
                 } catch (LMISException e) {

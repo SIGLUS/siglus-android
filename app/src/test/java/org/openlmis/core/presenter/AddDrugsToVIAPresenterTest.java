@@ -78,20 +78,24 @@ public class AddDrugsToVIAPresenterTest {
 
     @Test
     public void loadActiveProductsNotInVIAForm() throws Exception {
-        Product product1 = new ProductBuilder().setCode("P1").setPrimaryName("ABC").build();
-        Product product2 = new ProductBuilder().setCode("P2").setPrimaryName("DEF").build();
-        when(productRepository.queryActiveProductsInVIAProgramButNotInDraftVIAForm()).thenReturn(newArrayList(product1, product2));
+        Product product1 = new ProductBuilder().setCode("P1").setPrimaryName("A1").build();
+        Product product2 = new ProductBuilder().setCode("P2").setPrimaryName("A2").build();
+        Product product3 = new ProductBuilder().setCode("P3").setPrimaryName("A3").build();
+        Product product4 = new ProductBuilder().setCode("P4").setPrimaryName("A4").build();
+
+
+        when(productRepository.queryActiveProductsInVIAProgramButNotInDraftVIAForm()).thenReturn(newArrayList(product1, product2, product3, product4));
 
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
-        presenter.loadActiveProductsNotInVIAForm().subscribe(subscriber);
+        presenter.loadActiveProductsNotInVIAForm(newArrayList("P3", "P4")).subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
 
         subscriber.assertNoErrors();
 
         assertThat(subscriber.getOnNextEvents().get(0).size(), is(2));
-        assertThat(subscriber.getOnNextEvents().get(0).get(0).getProductName(), is("ABC"));
-        assertThat(subscriber.getOnNextEvents().get(0).get(1).getProductName(), is("DEF"));
+        assertThat(subscriber.getOnNextEvents().get(0).get(0).getProductName(), is("A1"));
+        assertThat(subscriber.getOnNextEvents().get(0).get(1).getProductName(), is("A2"));
     }
 
     @Test

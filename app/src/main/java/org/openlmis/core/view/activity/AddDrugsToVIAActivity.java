@@ -41,6 +41,8 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
     protected AddDrugsToVIAAdapter mAdapter;
     private Date periodBegin;
 
+    private List<String> existingAdditionalProductList;
+
     @Override
     protected ScreenName getScreenName() {
         return ScreenName.AddDrugsToVIAScreen;
@@ -56,12 +58,13 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
         super.onCreate(savedInstanceState);
 
         periodBegin = ((Date) getIntent().getSerializableExtra(Constants.PARAM_PERIOD_BEGIN));
+        existingAdditionalProductList = (List<String>) getIntent().getSerializableExtra(Constants.PARAM_ADDED_DRUG_CODES_IN_VIA);
 
         productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new AddDrugsToVIAAdapter(new ArrayList<InventoryViewModel>());
         productListRecycleView.setAdapter(mAdapter);
         loading();
-        Subscription subscription = presenter.loadActiveProductsNotInVIAForm().subscribe(subscriber);
+        Subscription subscription = presenter.loadActiveProductsNotInVIAForm(existingAdditionalProductList).subscribe(subscriber);
         subscriptions.add(subscription);
 
         btnComplete.setOnClickListener(new View.OnClickListener() {
@@ -127,10 +130,11 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
         return false;
     }
 
-    public static Intent getIntentToMe(Context context, Date periodBegin, Date periodEnd) {
+    public static Intent getIntentToMe(Context context, Date periodBegin, Date periodEnd, ArrayList<String> addedDrugsInVIAs) {
         Intent intent = new Intent(context, AddDrugsToVIAActivity.class);
         intent.putExtra(Constants.PARAM_PERIOD_BEGIN, periodBegin);
         intent.putExtra(Constants.PARAM_PERIOD_END, periodEnd);
+        intent.putExtra(Constants.PARAM_ADDED_DRUG_CODES_IN_VIA, addedDrugsInVIAs);
         return intent;
     }
 }

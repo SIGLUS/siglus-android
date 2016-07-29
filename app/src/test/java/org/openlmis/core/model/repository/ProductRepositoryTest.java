@@ -24,15 +24,14 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Product.IsKit;
 import org.openlmis.core.model.ProductProgram;
 import org.openlmis.core.model.Program;
-import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.KitProductBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.ProductProgramBuilder;
@@ -51,7 +50,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
@@ -298,7 +296,7 @@ public class ProductRepositoryTest extends LMISRepositoryUnitTest {
         Product productAddedAsAdditional = createProduct("P6", false, false, true);
         ProductProgram productProgram6 = new ProductProgramBuilder().setProductCode(productAddedAsAdditional.getCode()).setProgramCode(program1.getProgramCode()).setActive(true).build();
         productProgramRepository.createOrUpdate(productProgram6);
-        RnrFormItem rnrFormItem2 = new RnrFormItemBuilder().setProduct(productAddedAsAdditional).setRnrForm(null).build();
+        RnrFormItem rnrFormItem2 = new RnrFormItemBuilder().setProduct(productAddedAsAdditional).setRnrForm(rnRForm).build();
 
         //should be in list
         Product archivedVIAProductNotInForm = createProduct("P7", true, false, true);

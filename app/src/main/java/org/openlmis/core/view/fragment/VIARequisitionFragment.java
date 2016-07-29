@@ -52,9 +52,12 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.AddDrugsToVIAActivity;
 import org.openlmis.core.view.adapter.RequisitionFormAdapter;
 import org.openlmis.core.view.adapter.RequisitionProductAdapter;
+import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.ViaKitView;
 import org.openlmis.core.view.widget.ViaReportConsultationNumberView;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -184,7 +187,14 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_add_new_drugs_to_via) {
-            startActivityForResult(AddDrugsToVIAActivity.getIntentToMe(getActivity(), presenter.getRnRForm().getPeriodBegin(), periodEndDate), REQUEST_ADD_DRUGS_TO_VIA);
+            ArrayList<String> productCodes = new ArrayList<>(FluentIterable.from(presenter.getRequisitionFormItemViewModels()).transform(new Function<RequisitionFormItemViewModel, String>() {
+                @Override
+                public String apply(RequisitionFormItemViewModel requisitionFormItemViewModel) {
+                    return requisitionFormItemViewModel.getFmn();
+                }
+            }).toList());
+
+            startActivityForResult(AddDrugsToVIAActivity.getIntentToMe(getActivity(), presenter.getRnRForm().getPeriodBegin(), periodEndDate, productCodes), REQUEST_ADD_DRUGS_TO_VIA);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -450,8 +460,8 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         if (requestCode == Constants.REQUEST_ADD_DRUGS_TO_VIA && resultCode == Activity.RESULT_OK) {
             Date periodBegin = (Date) data.getSerializableExtra(Constants.PARAM_PERIOD_BEGIN);
 
-            List<AddedDrugInVIA> drugsList = (List<AddedDrugInVIA>) data.getExtras().get(Constants.PARAM_ADDED_DRUGS_TO_VIA);
-            presenter.populateAdditionalDrugsViewModels(drugsList, periodBegin);
+            List<AddedDrugInVIA> drugInVIAs = (ArrayList<AddedDrugInVIA>) data.getExtras().get(Constants.PARAM_ADDED_DRUGS_TO_VIA);
+            presenter.populateAdditionalDrugsViewModels(drugInVIAs, periodBegin);
             requisitionProductAdapter.notifyDataSetChanged();
         }
     }

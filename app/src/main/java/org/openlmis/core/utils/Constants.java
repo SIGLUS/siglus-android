@@ -49,6 +49,7 @@ public final class Constants {
     public static final String PARAM_PERIOD_BEGIN = "periodBegin";
     public static final String PARAM_PERIOD_END = "periodEnd";
     public static final String PARAM_ADDED_DRUGS_TO_VIA = "addedDrugsToVIA";
+    public static final String PARAM_ADDED_DRUG_CODES_IN_VIA = "addedDrugsInVIA";
 
 
     // Request Params

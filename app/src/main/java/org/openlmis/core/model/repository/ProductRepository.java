@@ -254,8 +254,7 @@ public class ProductRepository {
                 + "AND p1.id NOT IN "
                 + "(SELECT product_id FROM rnr_form_items ri "
                 + "WHERE ri.form_id IN "
-                + "(SELECT id FROM rnr_forms r1 WHERE r1.emergency = 0 AND r1.status = 'DRAFT') "
-                + "OR ri.form_id IS NULL)";
+                + "(SELECT id FROM rnr_forms r1 WHERE r1.emergency = 0 AND r1.status = 'DRAFT'))";
         final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
         List<Product> products = new ArrayList<>();
         if (cursor.moveToFirst()) {
