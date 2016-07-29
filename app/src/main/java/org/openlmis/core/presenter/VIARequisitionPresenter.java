@@ -48,6 +48,7 @@ import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.RnRFormItemAdjustmentViewModel;
 import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
@@ -251,6 +252,18 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }
     }
 
+    public void deleteRnRItemFromViewModel(final RnrFormItem rnrFormItem) {
+        List<RequisitionFormItemViewModel> requisitionFormItemViewModelList = FluentIterable.from(requisitionFormItemViewModels).filter(new Predicate<RequisitionFormItemViewModel>() {
+            @Override
+            public boolean apply(RequisitionFormItemViewModel requisitionFormItemViewModel) {
+                return !requisitionFormItemViewModel.getFmn().equals(rnrFormItem.getProduct().getCode());
+            }
+        }).toList();
+        requisitionFormItemViewModels.clear();
+        requisitionFormItemViewModels.addAll(requisitionFormItemViewModelList);
+        view.refreshRequisitionForm(rnRForm);
+    }
+
     private List<RnrFormItem> generateRnrItemsForAdditionalProducts(List<AddedDrugInVIA> addedDrugInVIAs, final Date periodBegin) {
         List<RnrFormItem> rnrFormItemList = FluentIterable.from(addedDrugInVIAs).transform(new Function<AddedDrugInVIA, RnrFormItem>() {
             @Override
@@ -437,7 +450,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         }
     }
 
-    public Observable<Void> removeOneNewRnrItems(final RnrFormItem rnrFormItem) {
+    public Observable<Void> removeRnrItem(final RnrFormItem rnrFormItem) {
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
@@ -458,6 +471,6 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         } catch (LMISException e) {
             e.printStackTrace();
         }
-        view.refreshRequisitionForm(rnRForm);
+        //view.refreshRequisitionForm(rnRForm);
     }
 }

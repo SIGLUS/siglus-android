@@ -53,7 +53,6 @@ import org.openlmis.core.model.repository.RnrFormItemRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.viewmodel.ViaKitsViewModel;
 import org.roboguice.shaded.goole.common.collect.Lists;
@@ -66,7 +65,6 @@ import java.util.Date;
 import java.util.List;
 
 import roboguice.RoboGuice;
-import rx.Observable;
 import rx.Observer;
 import rx.observers.TestSubscriber;
 
@@ -80,7 +78,6 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -622,7 +619,7 @@ public class VIARequisitionPresenterTest {
         Product product = new Product();
         RnrFormItem rnrFormItem = new RnrFormItemBuilder().setProduct(product).setRequestAmount(100L).build();
         TestSubscriber<Void> testSubscriber = new TestSubscriber<>();
-        presenter.removeOneNewRnrItems(rnrFormItem).subscribe(testSubscriber);
+        presenter.removeRnrItem(rnrFormItem).subscribe(testSubscriber);
         testSubscriber.awaitTerminalEvent();
 
         testSubscriber.assertNoErrors();
