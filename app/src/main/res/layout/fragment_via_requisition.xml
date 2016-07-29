@@ -56,7 +56,7 @@
                     layout="@layout/item_requisition_header" />
 
                 <ListView
-                    android:id="@+id/requisition_form"
+                    android:id="@+id/requisition_form_list_view"
                     android:layout_width="1400dp"
                     android:layout_height="match_parent"
                     android:scrollbars="vertical" />

@@ -67,7 +67,7 @@ import static org.openlmis.core.utils.Constants.REQUEST_ADD_DRUGS_TO_VIA;
 import static org.openlmis.core.view.widget.DoubleListScrollListener.scrollInSync;
 
 public class VIARequisitionFragment extends BaseFragment implements VIARequisitionView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
-    @InjectView(R.id.requisition_form)
+    @InjectView(R.id.requisition_form_list_view)
     ListView requisitionFormList;
 
     @InjectView(R.id.product_name_list_view)
