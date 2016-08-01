@@ -128,10 +128,6 @@ public class ViaReportConsultationNumberView extends LinearLayout {
         }
     };
 
-    public boolean isHasChanged() {
-        return hasChanged;
-    }
-
     public void initUI() {
         addTextChangedListener();
         editText.setFilters(new InputFilter[]{new InputFilterMinMax(Integer.MAX_VALUE)});
