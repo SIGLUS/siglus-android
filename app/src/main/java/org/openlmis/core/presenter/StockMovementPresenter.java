@@ -23,6 +23,7 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
@@ -116,7 +117,9 @@ public class StockMovementPresenter extends Presenter {
             public void onNext(List<StockMovementViewModel> stockMovementViewModels) {
                 stockMovementModelList.clear();
                 stockMovementModelList.addAll(stockMovementViewModels);
-                stockMovementModelList.add(new StockMovementViewModel());
+                if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_separate_page_for_new_stock_movements)) {
+                    stockMovementModelList.add(new StockMovementViewModel());
+                }
                 view.refreshStockMovement();
                 view.loaded();
             }
