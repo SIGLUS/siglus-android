@@ -25,14 +25,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.HorizontalScrollView;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.inject.Inject;
 
@@ -47,15 +42,13 @@ import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.presenter.VIARequisitionView;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.utils.ListViewUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.activity.AddDrugsToVIAActivity;
-import org.openlmis.core.view.adapter.RequisitionFormAdapter;
-import org.openlmis.core.view.adapter.RequisitionProductAdapter;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.openlmis.core.view.widget.SignatureDialog;
 import org.openlmis.core.view.widget.ViaKitView;
 import org.openlmis.core.view.widget.ViaReportConsultationNumberView;
+import org.openlmis.core.view.widget.ViaRequisitionBodyView;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -65,17 +58,9 @@ import java.util.List;
 
 import roboguice.inject.InjectView;
 
-import static android.view.View.FOCUS_RIGHT;
 import static org.openlmis.core.utils.Constants.REQUEST_ADD_DRUGS_TO_VIA;
-import static org.openlmis.core.view.widget.DoubleListScrollListener.scrollInSync;
 
 public class VIARequisitionFragment extends BaseFragment implements VIARequisitionView, View.OnClickListener, SimpleDialogFragment.MsgDialogCallBack {
-    @InjectView(R.id.requisition_form_list_view)
-    ListView requisitionFormList;
-
-    @InjectView(R.id.product_name_list_view)
-    ListView requisitionProductList;
-
     @InjectView(R.id.btn_complete)
     Button btnComplete;
 
@@ -88,34 +73,17 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     @InjectView(R.id.vg_kit)
     ViaKitView kitView;
 
+    @InjectView(R.id.view_via_body)
+    ViaRequisitionBodyView bodyView;
+
     @InjectView(R.id.action_panel)
     View actionPanel;
 
     @InjectView(R.id.vg_container)
     ViewGroup vgContainer;
 
-    @InjectView(R.id.requisition_header_right)
-    View bodyHeaderView;
-
-    @InjectView(R.id.requisition_header_left)
-    View productHeaderView;
-
-    @InjectView(R.id.form_layout)
-    HorizontalScrollView formLayout;
-
-    @InjectView(R.id.tv_label_request)
-    TextView headerRequestAmount;
-
-    @InjectView(R.id.tv_label_approve)
-    TextView headerApproveAmount;
-
     @Inject
     VIARequisitionPresenter presenter;
-
-    @Inject
-    private RequisitionFormAdapter requisitionFormAdapter;
-    @Inject
-    private RequisitionProductAdapter requisitionProductAdapter;
 
     private static final String TAG_BACK_PRESSED = "onBackPressed";
     private static final String TAG_SHOW_MESSAGE_NOTIFY_DIALOG = "showMessageNotifyDialog";
@@ -168,7 +136,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         } else {
             loadData();
         }
-        autoScrollLeftToRight();
+        bodyView.autoScrollLeftToRight();
     }
 
     public void hideOrShowAddProductMenuInVIAPage() {
@@ -200,16 +168,6 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
         return super.onOptionsItemSelected(item);
     }
 
-    public void autoScrollLeftToRight() {
-        if (!presenter.isHistoryForm()) {
-            formLayout.post(new Runnable() {
-                public void run() {
-                    formLayout.fullScroll(FOCUS_RIGHT);
-                }
-            });
-        }
-    }
-
     private void loadData() {
         if (isFromSelectEmergencyPage()) {
             presenter.loadEmergencyData(emergencyStockCards, new Date(LMISApp.getInstance().getCurrentTimeMillis()));
@@ -224,8 +182,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     @Override
     public void refreshRequisitionForm(RnRForm rnRForm) {
-        requisitionProductAdapter.notifyDataSetChanged();
-        requisitionFormAdapter.updateStatus(rnRForm.getStatus());
+        bodyView.refresh(rnRForm);
 
         if (rnRForm.isEmergency()) {
             refreshEmergencyRnr(rnRForm);
@@ -275,20 +232,12 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     @Override
     public void highLightApprovedAmount() {
-        headerRequestAmount.setBackgroundResource(android.R.color.transparent);
-        headerRequestAmount.setTextColor(getResources().getColor(R.color.color_text_primary));
-        headerApproveAmount.setBackgroundResource(R.color.color_accent);
-        headerApproveAmount.setTextColor(getResources().getColor(R.color.color_white));
-        requisitionFormAdapter.updateStatus(RnRForm.STATUS.SUBMITTED);
+        bodyView.highLightApprovedAmount();
     }
 
     @Override
     public void highLightRequestAmount() {
-        headerRequestAmount.setBackgroundResource(R.color.color_accent);
-        headerRequestAmount.setTextColor(getResources().getColor(R.color.color_white));
-        headerApproveAmount.setBackgroundResource(android.R.color.transparent);
-        headerApproveAmount.setTextColor(getResources().getColor(R.color.color_text_primary));
-        requisitionFormAdapter.updateStatus(RnRForm.STATUS.DRAFT);
+        bodyView.highLightRequestAmount();
     }
 
     public void setEditable() {
@@ -300,11 +249,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
             actionPanel.setVisibility(View.VISIBLE);
         }
 
-        if (isMissedPeriod || presenter.getRnRForm().isMissed()) {
-            requisitionFormList.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        } else {
-            requisitionFormList.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
-        }
+        bodyView.setEditable(isMissedPeriod || presenter.getRnRForm().isMissed());
     }
 
     private void setKitValues() {
@@ -322,54 +267,19 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
     @Override
     public void showListInputError(int index) {
-        final int position = index;
-        requisitionFormList.setSelection(position);
-        requisitionProductList.setSelection(position);
-        requisitionFormList.post(new Runnable() {
-            @Override
-            public void run() {
-                View childAt = ListViewUtil.getViewByPosition(position, requisitionFormList);
-                EditText requestAmount = (EditText) childAt.findViewById(R.id.et_request_amount);
-                EditText approvedAmount = (EditText) childAt.findViewById(R.id.et_approved_amount);
-                if (requestAmount.isEnabled()) {
-                    requestAmount.requestFocus();
-                    requestAmount.setError(getString(R.string.hint_error_input));
-                } else {
-                    approvedAmount.requestFocus();
-                    approvedAmount.setError(getString(R.string.hint_error_input));
-                }
-            }
-        });
+        bodyView.showListInputError(index);
     }
 
     private void initUI() {
-        requisitionProductAdapter.setContextFormFragement(getActivity());
-        requisitionFormList.setAdapter(requisitionFormAdapter);
-        requisitionProductList.setAdapter(requisitionProductAdapter);
-        requisitionProductList.post(new Runnable() {
-            @Override
-            public void run() {
-                productHeaderView.getLayoutParams().height = bodyHeaderView.getHeight();
-            }
-        });
-
+        bodyView.initUI();
         consultationView.initUI();
         bindListeners();
     }
 
     private void bindListeners() {
-        scrollInSync(requisitionFormList, requisitionProductList);
-
         btnComplete.setOnClickListener(this);
         btnSave.setOnClickListener(this);
-
-        formLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                hideImm();
-                return false;
-            }
-        });
+        bodyView.setHideImmOnTouchListener();
     }
 
     @Override
@@ -461,7 +371,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
 
             List<RnrFormItem> drugInVIAs = (ArrayList<RnrFormItem>) data.getExtras().get(Constants.PARAM_ADDED_DRUGS_TO_VIA);
             presenter.populateAdditionalDrugsViewModels(drugInVIAs, periodBegin);
-            requisitionProductAdapter.notifyDataSetChanged();
+            bodyView.refreshProductNameList();
         }
     }
 }
