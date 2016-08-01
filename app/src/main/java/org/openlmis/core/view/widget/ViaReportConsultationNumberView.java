@@ -145,12 +145,14 @@ public class ViaReportConsultationNumberView extends LinearLayout {
         viaRnrHeader.setText(R.string.label_emergency_requisition_balance);
     }
 
-    public void setNormalRnrHeader() {
-        viaRnrHeader.setText(R.string.label_requisition_header_consultation_header);
-    }
-
     public void setEditClickListener(OnClickListener listener) {
         editText.setFocusable(false);
         editText.setOnClickListener(listener);
+    }
+
+    public void refreshNormalRnrConsultationView(VIARequisitionPresenter presenter) {
+        viaRnrHeader.setText(R.string.label_requisition_header_consultation_header);
+        setEnabled(true);
+        setConsultationNumbers(presenter);
     }
 }

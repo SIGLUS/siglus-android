@@ -237,11 +237,9 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     private void refreshNormalRnr(RnRForm rnRForm) {
-        consultationView.setNormalRnrHeader();
-        consultationView.setEnabled(true);
+        consultationView.refreshNormalRnrConsultationView(presenter);
         btnSave.setVisibility(View.VISIBLE);
         setTitleWithPeriod(rnRForm);
-        consultationView.setConsultationNumbers(presenter);
         setKitValues();
     }
 
