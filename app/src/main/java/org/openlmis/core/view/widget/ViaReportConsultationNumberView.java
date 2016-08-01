@@ -54,7 +54,6 @@ public class ViaReportConsultationNumberView extends LinearLayout {
     float width;
 
     private VIARequisitionPresenter presenter;
-    boolean hasChanged;
 
     public ViaReportConsultationNumberView(Context context) {
         super(context);
@@ -122,7 +121,6 @@ public class ViaReportConsultationNumberView extends LinearLayout {
         public void afterTextChanged(Editable s) {
             String input = editText.getText().toString();
             if (!input.equals(presenter.getConsultationNumbers())) {
-                hasChanged = true;
                 presenter.setConsultationNumbers(input);
             }
         }
