@@ -56,7 +56,6 @@ public class MMIARegimeList extends LinearLayout {
     private List<RegimenItem> dataList;
     private List<EditText> editTexts;
     private LayoutInflater layoutInflater;
-    private boolean hasDataChanged = false;
     private ArrayList<RegimenItem> adults;
     private ArrayList<RegimenItem> paediatrics;
     protected MMIARequisitionPresenter presenter;
@@ -276,10 +275,6 @@ public class MMIARegimeList extends LinearLayout {
         });
     }
 
-    public boolean hasDataChanged() {
-        return hasDataChanged;
-    }
-
     public void highLightTotal() {
         totalView.setBackground(getResources().getDrawable(R.drawable.border_bg_red));
     }
@@ -357,7 +352,6 @@ public class MMIARegimeList extends LinearLayout {
 
         @Override
         public void afterTextChanged(Editable editable) {
-            hasDataChanged = true;
 
             try {
                 item.setAmount(Long.parseLong(editable.toString()));
