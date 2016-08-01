@@ -343,6 +343,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
     }
 
     private void initUI() {
+        requisitionProductAdapter.setContextFormFragement(getActivity());
         requisitionFormList.setAdapter(requisitionFormAdapter);
         requisitionProductList.setAdapter(requisitionProductAdapter);
         requisitionProductList.post(new Runnable() {

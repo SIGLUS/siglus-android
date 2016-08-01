@@ -1,6 +1,7 @@
 package org.openlmis.core.view.holder;
 
 import android.app.Activity;
+import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
@@ -29,12 +30,15 @@ public class RequisitionProductViewHolder extends BaseViewHolder {
 
     private VIARequisitionPresenter presenter;
 
+    private Context contextFormFragement;
+
     public RequisitionProductViewHolder(View itemView) {
         super(itemView);
     }
 
-    public void populate(final RequisitionFormItemViewModel entry, VIARequisitionPresenter presenter) {
+    public void populate(final RequisitionFormItemViewModel entry, VIARequisitionPresenter presenter, Context contextFormFragement) {
         this.presenter = presenter;
+        this.contextFormFragement = contextFormFragement;
         productCode.setText(entry.getFmn());
         productName.setText(entry.getProductName());
         setDeleteIconForNewAddedProducts(entry);
@@ -59,15 +63,15 @@ public class RequisitionProductViewHolder extends BaseViewHolder {
     }
 
     public Boolean hideDeleteIconInVIAPage() {
-        return  !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_drugs_to_via_form)
+        return !LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_drugs_to_via_form)
                 || !presenter.getRnrFormStatus().equals(RnRForm.STATUS.DRAFT)
                 || (presenter.getRnRForm() != null && presenter.getRnRForm().isEmergency());
     }
 
     protected void showDelConfirmDialog(final RnrFormItem item) {
         SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
-                LMISApp.getContext().getString(R.string.label_to_comfirm_delete_product));
-        dialogFragment.show(((Activity) context).getFragmentManager(), "del_confirm_dialog");
+                contextFormFragement.getString(R.string.label_to_comfirm_delete_product));
+        dialogFragment.show(((Activity) contextFormFragement).getFragmentManager(), "del_confirm_dialog");
         dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
             @Override
             public void positiveClick(String tag) {

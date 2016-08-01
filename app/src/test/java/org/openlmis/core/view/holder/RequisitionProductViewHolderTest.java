@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
+import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.builder.ProductBuilder;
@@ -19,7 +20,10 @@ import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.view.activity.VIARequisitionActivity;
+import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
+import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 
 import java.sql.Date;
@@ -27,6 +31,7 @@ import java.sql.Date;
 import roboguice.RoboGuice;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -37,6 +42,7 @@ public class RequisitionProductViewHolderTest {
     private VIARequisitionPresenter presenter;
     private Program program;
     private RnRForm form;
+
     @Before
     public void setUp() {
         View itemView = LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_requisition_body_left, null, false);
@@ -65,7 +71,7 @@ public class RequisitionProductViewHolderTest {
                 new ProductBuilder().setPrimaryName("productName").setCode("08S42").build())
                 .build();
         RequisitionFormItemViewModel viewModel = new RequisitionFormItemViewModel(formItem);
-        viewHolder.populate(viewModel,presenter);
+        viewHolder.populate(viewModel, presenter, LMISTestApp.getContext());
 
         assertThat(viewHolder.productName.getText().toString()).isEqualTo("productName");
         assertThat(viewHolder.productCode.getText().toString()).isEqualTo("08S42");
@@ -73,7 +79,7 @@ public class RequisitionProductViewHolderTest {
 
     @Test
     public void shouldSetDelIconForNewAddedProduct() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_add_drugs_to_via_form,true);
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_add_drugs_to_via_form, true);
 
         RnrFormItem formItem = new RnrFormItemBuilder().setProduct(
                 new ProductBuilder().setPrimaryName("productName").setCode("08S42").build())
@@ -81,7 +87,7 @@ public class RequisitionProductViewHolderTest {
         formItem.setManualAdd(true);
 
         RequisitionFormItemViewModel viewModel = new RequisitionFormItemViewModel(formItem);
-        viewHolder.populate(viewModel, presenter);
+        viewHolder.populate(viewModel, presenter, LMISTestApp.getContext());
 
         assertThat(viewHolder.ivDelete.getVisibility()).isEqualTo(View.VISIBLE);
     }
@@ -93,8 +99,23 @@ public class RequisitionProductViewHolderTest {
                 .build();
 
         RequisitionFormItemViewModel viewModel = new RequisitionFormItemViewModel(formItem);
-        viewHolder.populate(viewModel, presenter);
+        viewHolder.populate(viewModel, presenter, LMISTestApp.getContext());
 
         assertThat(viewHolder.ivDelete.getVisibility()).isEqualTo(View.INVISIBLE);
     }
+
+    @Test
+    public void shouldShowDialogWhenClickDelIcon() throws Exception {
+        VIARequisitionActivity viaRequisitionActivity = Robolectric.setupActivity(VIARequisitionActivity.class);
+        Product product = new Product();
+        RnrFormItem rnrFormItem = new RnrFormItemBuilder().setProduct(product).setRequestAmount(100L).build();
+
+        viewHolder.populate(new RequisitionFormItemViewModel(rnrFormItem), presenter, viaRequisitionActivity);
+
+        viewHolder.showDelConfirmDialog(rnrFormItem);
+
+        SimpleDialogFragment del_confirm_dialog = (SimpleDialogFragment) viaRequisitionActivity.getFragmentManager().findFragmentByTag("del_confirm_dialog");
+        assertNotNull(del_confirm_dialog);
+    }
+
 }
