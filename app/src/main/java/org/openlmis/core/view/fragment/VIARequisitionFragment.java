@@ -194,7 +194,7 @@ public class VIARequisitionFragment extends BaseFragment implements VIARequisiti
                 }
             }).toList());
 
-            startActivityForResult(AddDrugsToVIAActivity.getIntentToMe(getActivity(), presenter.getRnRForm().getPeriodBegin(), periodEndDate, productCodes), REQUEST_ADD_DRUGS_TO_VIA);
+            startActivityForResult(AddDrugsToVIAActivity.getIntentToMe(getActivity(), presenter.getRnRForm().getPeriodBegin(), productCodes), REQUEST_ADD_DRUGS_TO_VIA);
             return true;
         }
         return super.onOptionsItemSelected(item);
