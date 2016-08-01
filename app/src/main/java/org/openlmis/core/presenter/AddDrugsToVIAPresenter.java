@@ -3,8 +3,8 @@ package org.openlmis.core.presenter;
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.AddedDrugInVIA;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
@@ -27,7 +27,7 @@ public class AddDrugsToVIAPresenter extends Presenter {
     @Inject
     private ProductRepository productRepository;
 
-    ArrayList<AddedDrugInVIA> addedDrugsInVIA = new ArrayList<>();
+    ArrayList<RnrFormItem> addedRnrFormItemsInVIA = new ArrayList<>();
 
     AddDrugsToVIAView view;
 
@@ -71,7 +71,7 @@ public class AddDrugsToVIAPresenter extends Presenter {
         @Override
         public void call(Object o) {
             view.loaded();
-            view.goToParentPage(addedDrugsInVIA);
+            view.goToParentPage(addedRnrFormItemsInVIA);
         }
     };
 
@@ -86,19 +86,27 @@ public class AddDrugsToVIAPresenter extends Presenter {
     public void convertViewModelsToDataAndPassToParentScreen(List<InventoryViewModel> checkedViewModels) {
         if (view.validateInventory()) {
             view.loading();
-            Subscription subscription = convertViewModelsToParcelable(checkedViewModels).subscribe(nextMainPageAction, errorAction);
+            Subscription subscription = convertViewModelsToRnrFormItems(checkedViewModels).subscribe(nextMainPageAction, errorAction);
             subscriptions.add(subscription);
         }
     }
 
-    protected Observable convertViewModelsToParcelable(final List<InventoryViewModel> inventoryViewModels) {
+    protected Observable convertViewModelsToRnrFormItems(final List<InventoryViewModel> inventoryViewModels) {
         return Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
-                addedDrugsInVIA = new ArrayList<>(FluentIterable.from(inventoryViewModels).transform(new Function<InventoryViewModel, AddedDrugInVIA>() {
+                addedRnrFormItemsInVIA = new ArrayList<>(FluentIterable.from(inventoryViewModels).transform(new Function<InventoryViewModel, RnrFormItem>() {
                     @Override
-                    public AddedDrugInVIA apply(InventoryViewModel inventoryViewModel) {
-                        return new AddedDrugInVIA(inventoryViewModel.getProduct().getCode(), Long.parseLong(inventoryViewModel.getQuantity()));
+                    public RnrFormItem apply(InventoryViewModel inventoryViewModel) {
+                        RnrFormItem rnrFormItem = new RnrFormItem();
+                        try {
+                            Product product = productRepository.getByCode(inventoryViewModel.getFnm());
+                            rnrFormItem.setProduct(product);
+                            rnrFormItem.setRequestAmount(Long.valueOf(inventoryViewModel.getQuantity()));
+                        } catch (LMISException e) {
+                            e.reportToFabric();
+                        }
+                        return rnrFormItem;
                     }
                 }).toList());
 
@@ -112,7 +120,7 @@ public class AddDrugsToVIAPresenter extends Presenter {
 
         boolean validateInventory();
 
-        void goToParentPage(ArrayList<AddedDrugInVIA> addedDrugInVIAList);
+        void goToParentPage(ArrayList<RnrFormItem> addedRnrFormItemsInVIAs);
 
         void showErrorMessage(String message);
     }

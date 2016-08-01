@@ -27,7 +27,6 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
-import org.openlmis.core.model.AddedDrugInVIA;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
@@ -243,7 +242,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         viaKitsViewModel.convertRnrKitItemsToViaKit(rnrForm.getRnrItems(IsKit.Yes));
     }
 
-    public void populateAdditionalDrugsViewModels(List<AddedDrugInVIA> addedDrugInVIAs, Date periodBegin) {
+    public void populateAdditionalDrugsViewModels(List<RnrFormItem> addedDrugInVIAs, Date periodBegin) {
         try {
             List<RnrFormItem> additionalProducts = generateRnrItemsForAdditionalProducts(addedDrugInVIAs, periodBegin);
             requisitionFormItemViewModels.addAll(transformDataItemsToViewModels(additionalProducts));
@@ -264,20 +263,20 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         view.refreshRequisitionForm(rnRForm);
     }
 
-    private List<RnrFormItem> generateRnrItemsForAdditionalProducts(List<AddedDrugInVIA> addedDrugInVIAs, final Date periodBegin) {
-        List<RnrFormItem> rnrFormItemList = FluentIterable.from(addedDrugInVIAs).transform(new Function<AddedDrugInVIA, RnrFormItem>() {
+    private List<RnrFormItem> generateRnrItemsForAdditionalProducts(List<RnrFormItem> addedDrugInVIAs, final Date periodBegin) {
+        List<RnrFormItem> rnrFormItemList = FluentIterable.from(addedDrugInVIAs).transform(new Function<RnrFormItem, RnrFormItem>() {
             @Override
-            public RnrFormItem apply(AddedDrugInVIA addedDrugInVIA) {
+            public RnrFormItem apply(RnrFormItem addedDrugInVIA) {
                 RnrFormItem rnrFormItem = new RnrFormItem();
                 try {
-                    Product product = productRepository.getByCode(addedDrugInVIA.getProductCode());
+                    Product product = addedDrugInVIA.getProduct();
                     rnrFormItem.setProduct(product);
                     rnrFormItem.setForm(rnRForm);
                     rnrFormItem.setManualAdd(true);
                     if (product.isArchived()) {
                         populateRnrItemWithQuantities(rnrFormItem, periodBegin, periodEndDate);
                     }
-                    rnrFormItem.setRequestAmount(addedDrugInVIA.getQuantity());
+                    rnrFormItem.setRequestAmount(addedDrugInVIA.getRequestAmount());
                     rnrFormItem.setApprovedAmount(rnrFormItem.getRequestAmount());
                 } catch (LMISException e) {
                     e.reportToFabric();

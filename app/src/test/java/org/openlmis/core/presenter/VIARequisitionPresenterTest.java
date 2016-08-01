@@ -36,7 +36,6 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
-import org.openlmis.core.model.AddedDrugInVIA;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
@@ -627,16 +626,17 @@ public class VIARequisitionPresenterTest {
     }
 
     @Test
-    public void shouldPopulateAdditionalDrugsViewModels() throws Exception {
+    public void shouldPopulateAdditionalRnrFormItemsViewModels() throws Exception {
         presenter.requisitionFormItemViewModels = new ArrayList<>();
-
-        AddedDrugInVIA addedDrugInVIA = new AddedDrugInVIA("P1", 100L);
-        AddedDrugInVIA addedDrugInVIA2 = new AddedDrugInVIA("P2", 200L);
+        Product product1 = new ProductBuilder().setCode("P1").setIsActive(true).setIsArchived(true).build();
+        Product product2 = new ProductBuilder().setCode("P2").setIsActive(true).setIsArchived(false).build();
+        RnrFormItem rnrFormItem1 = new RnrFormItemBuilder().setProduct(product1).setRequestAmount(100L).build();
+        RnrFormItem rnrFormItem2 = new RnrFormItemBuilder().setProduct(product2).setRequestAmount(200L).build();
 
         when(mockProductRepository.getByCode("P1")).thenReturn(new ProductBuilder().setCode("P1").setIsActive(true).setIsArchived(false).build());
         when(mockProductRepository.getByCode("P2")).thenReturn(new ProductBuilder().setCode("P2").setIsActive(true).setIsArchived(true).build());
 
-        presenter.populateAdditionalDrugsViewModels(newArrayList(addedDrugInVIA, addedDrugInVIA2), new Date());
+        presenter.populateAdditionalDrugsViewModels(newArrayList(rnrFormItem1, rnrFormItem2), new Date());
 
         assertThat(presenter.requisitionFormItemViewModels.size(), is(2));
         assertThat(presenter.requisitionFormItemViewModels.get(0).getFmn(), is("P1"));
@@ -652,12 +652,14 @@ public class VIARequisitionPresenterTest {
         Date periodBegin = DateUtil.parseString("2016-01-21", DateUtil.DB_DATE_FORMAT);
         Date periodEnd = DateUtil.parseString("2016-02-20", DateUtil.DB_DATE_FORMAT);
 
-        AddedDrugInVIA addedDrugInVIA = new AddedDrugInVIA("P1", 100L);
-        AddedDrugInVIA addedDrugInVIA2 = new AddedDrugInVIA("P2", 200L);
-
         Product product1 = new ProductBuilder().setCode("P1").setIsActive(true).setIsArchived(true).build();
-        when(mockProductRepository.getByCode("P1")).thenReturn(product1);
         Product product2 = new ProductBuilder().setCode("P2").setIsActive(true).setIsArchived(false).build();
+        RnrFormItem rnrFormItem1 = new RnrFormItemBuilder().setProduct(product1).setRequestAmount(100L).build();
+        RnrFormItem rnrFormItem2 = new RnrFormItemBuilder().setProduct(product2).setRequestAmount(200L).build();
+
+
+        when(mockProductRepository.getByCode("P1")).thenReturn(product1);
+
         when(mockProductRepository.getByCode("P2")).thenReturn(product2);
 
         StockCard stockCard = new StockCardBuilder().setStockOnHand(0L).setProduct(product1).build();
@@ -671,7 +673,7 @@ public class VIARequisitionPresenterTest {
         presenter.requisitionFormItemViewModels = new ArrayList<>();
         presenter.periodEndDate = periodEnd;
 
-        presenter.populateAdditionalDrugsViewModels(newArrayList(addedDrugInVIA, addedDrugInVIA2), periodBegin);
+        presenter.populateAdditionalDrugsViewModels(newArrayList(rnrFormItem1, rnrFormItem2), periodBegin);
 
         assertThat(presenter.requisitionFormItemViewModels.get(0).getInitAmount(), is("60"));
     }

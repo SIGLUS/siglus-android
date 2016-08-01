@@ -9,7 +9,7 @@ import android.view.View;
 
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
-import org.openlmis.core.model.AddedDrugInVIA;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.presenter.AddDrugsToVIAPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
@@ -27,7 +27,7 @@ import rx.Subscriber;
 import rx.Subscription;
 
 @ContentView(R.layout.activity_add_drugs_to_via)
-public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugsToVIAPresenter.AddDrugsToVIAView{
+public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugsToVIAPresenter.AddDrugsToVIAView {
 
     @InjectView(R.id.btn_complete)
     public View btnComplete;
@@ -107,10 +107,10 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
     }
 
     @Override
-    public void goToParentPage(ArrayList<AddedDrugInVIA> addedDrugsInVIAs) {
+    public void goToParentPage(ArrayList<RnrFormItem> addedRnrFormItemsInVIAs) {
         Intent returnIntent = new Intent();
         setResult(RESULT_OK, returnIntent);
-        returnIntent.putParcelableArrayListExtra(Constants.PARAM_ADDED_DRUGS_TO_VIA, addedDrugsInVIAs);
+        returnIntent.putExtra(Constants.PARAM_ADDED_DRUGS_TO_VIA, addedRnrFormItemsInVIAs);
         returnIntent.putExtra(Constants.PARAM_PERIOD_BEGIN, periodBegin);
         this.finish();
     }

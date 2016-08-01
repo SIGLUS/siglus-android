@@ -104,19 +104,21 @@ public class AddDrugsToVIAPresenterTest {
         InventoryViewModel inventoryViewModel2 = buildInventoryViewModel("P2", "34");
 
         when(view.validateInventory()).thenReturn(true);
+        when(productRepository.getByCode("P1")).thenReturn(new ProductBuilder().setCode("P1").setIsActive(true).setIsArchived(false).build());
+        when(productRepository.getByCode("P2")).thenReturn(new ProductBuilder().setCode("P2").setIsActive(true).setIsArchived(true).build());
 
         ArrayList<InventoryViewModel> inventoryViewModels = newArrayList(inventoryViewModel1, inventoryViewModel2);
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
-        Observable observable = presenter.convertViewModelsToParcelable(inventoryViewModels);
+        Observable observable = presenter.convertViewModelsToRnrFormItems(inventoryViewModels);
         observable.subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
 
-        assertThat(presenter.addedDrugsInVIA.size(), is(2));
-        assertThat(presenter.addedDrugsInVIA.get(0).getProductCode(), is("P1"));
-        assertThat(presenter.addedDrugsInVIA.get(0).getQuantity(), is(12L));
-        assertThat(presenter.addedDrugsInVIA.get(1).getProductCode(), is("P2"));
-        assertThat(presenter.addedDrugsInVIA.get(1).getQuantity(), is(34L));
+        assertThat(presenter.addedRnrFormItemsInVIA.size(), is(2));
+        assertThat(presenter.addedRnrFormItemsInVIA.get(0).getProduct().getCode(), is("P1"));
+        assertThat(presenter.addedRnrFormItemsInVIA.get(0).getRequestAmount(), is(12L));
+        assertThat(presenter.addedRnrFormItemsInVIA.get(1).getProduct().getCode(), is("P2"));
+        assertThat(presenter.addedRnrFormItemsInVIA.get(1).getRequestAmount(), is(34L));
     }
 
     @Test
