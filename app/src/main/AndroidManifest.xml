@@ -72,6 +72,10 @@
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity android:name=".view.activity.StockMovementHistoryActivity" />
         <activity
+            android:name=".view.activity.StockMovementNewActivity"
+            android:label="@string/title_stock_movement"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
             android:name=".view.activity.RnRFormListActivity"
             android:label="@string/title_stock_movement"
             android:screenOrientation="portrait"

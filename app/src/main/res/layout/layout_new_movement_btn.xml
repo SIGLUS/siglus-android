@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_small">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/new_movement_panel"
+        style="@style/FormAction.Container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/default_button_bar_height">
+
+        <Button
+            android:id="@+id/btn_new_movement"
+            style="@style/FormAction.CompleteBtn.StockMovement"
+            android:layout_width="@dimen/new_movement_button_width"
+            android:layout_height="@dimen/default_button_height"
+            android:text="@string/btn_new_movement"
+            android:textAlignment="center" />
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

@@ -73,6 +73,7 @@
     <string name="label_mmia_speed_info_header">Número de pacientes em TARV</string>
     <string name="hint_mmia_comment">Observações</string>
     <string name="btn_complete">Completar</string>
+    <string name="btn_new_movement">NEW MOVEMENT</string>
     <string name="btn_submit">Submeter para aprovação</string>
     <string name="label_initial_amount">Saldo Inicial</string>
     <string name="label_received_mmia">Entradas</string>
