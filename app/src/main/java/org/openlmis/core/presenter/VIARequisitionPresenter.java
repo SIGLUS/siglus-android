@@ -185,15 +185,9 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
             for (KitProduct kitProduct : kitProducts) {
                 Product kit = productRepository.getByCode(kitProduct.getKitCode());
                 long kitSOH = getKitSOH(kit);
-                if (kitSOH == 0) {
-                    continue;
+                if (kitSOH != 0) {
+                    list.add(new RnRFormItemAdjustmentViewModel(kitSOH,kitProduct.getQuantity(),kit.getPrimaryName()));
                 }
-                RnRFormItemAdjustmentViewModel rnRFormItemAdjustmentViewModel = new RnRFormItemAdjustmentViewModel();
-                rnRFormItemAdjustmentViewModel.setKitStockOnHand(kitSOH);
-                rnRFormItemAdjustmentViewModel.setQuantity(kitProduct.getQuantity());
-                rnRFormItemAdjustmentViewModel.setKitName(kit.getPrimaryName());
-
-                list.add(rnRFormItemAdjustmentViewModel);
             }
         } catch (LMISException e) {
             e.reportToFabric();

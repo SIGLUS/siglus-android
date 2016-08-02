@@ -11,6 +11,13 @@ public class RnRFormItemAdjustmentViewModel {
     private String kitName;
     private int quantity;
 
+    public RnRFormItemAdjustmentViewModel(long kitStockOnHand, int quantity, String kitName) {
+        this.kitStockOnHand = kitStockOnHand;
+        this.quantity = quantity;
+        this.kitName = kitName;
+    }
+
+
     public String formatAdjustmentContentForProduct(String productName) {
         return LMISApp.getContext().getResources().getString(R.string.label_adjustment_dialog_adjust_content,
                 kitStockOnHand,
