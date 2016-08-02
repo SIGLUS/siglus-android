@@ -72,8 +72,12 @@
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity android:name=".view.activity.StockMovementHistoryActivity" />
         <activity
-            android:name=".view.activity.StockMovementNewActivity"
+            android:name=".view.activity.StockMovementsActivityNew"
             android:label="@string/title_stock_movement"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".view.activity.StockCardNewMovementActivity"
+            android:label="Title drug"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".view.activity.RnRFormListActivity"

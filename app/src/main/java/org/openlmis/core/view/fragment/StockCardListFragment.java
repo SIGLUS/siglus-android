@@ -41,7 +41,7 @@ import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.activity.StockMovementActivity;
-import org.openlmis.core.view.activity.StockMovementNewActivity;
+import org.openlmis.core.view.activity.StockMovementsActivityNew;
 import org.openlmis.core.view.adapter.StockCardListAdapter;
 import org.openlmis.core.view.holder.StockCardViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
@@ -170,7 +170,7 @@ public class StockCardListFragment extends BaseFragment implements StockCardPres
 
     protected Intent getStockMovementIntent(InventoryViewModel inventoryViewModel) {
         if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_separate_page_for_new_stock_movements)) {
-            return StockMovementNewActivity.getIntentToMe(getActivity(), inventoryViewModel, false);
+            return StockMovementsActivityNew.getIntentToMe(getActivity(), inventoryViewModel, false);
         } else {
             return StockMovementActivity.getIntentToMe(getActivity(), inventoryViewModel, false);
         }

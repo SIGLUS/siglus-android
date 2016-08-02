@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/new_movement_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        style="@style/StockMovement.Card">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="7">
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ly_movement_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:padding="@dimen/padding_normal">
+
+                <EditText
+                    android:id="@+id/tx_movement_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_movement_date"
+                    android:inputType="date" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ly_document_number"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:padding="@dimen/padding_normal">
+
+                <EditText
+                    android:id="@+id/tx_document_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_document_number"
+                    android:inputType="number" />
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="7">
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ly_movement_reason"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:padding="@dimen/padding_normal">
+
+                <EditText
+                    android:id="@+id/tx_movement_reason"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_movement_reason"
+                    android:inputType="text" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ly_requested_quantity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:padding="@dimen/padding_normal">
+
+                <EditText
+                    android:id="@+id/tx_requested_quantity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_requested_quantity"
+                    android:inputType="number" />
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/ly_movement_quantity"
+            android:layout_width="@dimen/new_movement_button_width"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:padding="@dimen/padding_normal">
+
+            <EditText
+                android:id="@+id/tx_movement_quantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_movement_quantity"
+                android:inputType="number" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/ly_movement_signature"
+            android:layout_width="@dimen/new_movement_button_width"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:padding="@dimen/padding_normal">
+
+            <EditText
+                android:id="@+id/tx_movement_signature"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_movement_signature"
+                android:inputType="number" />
+        </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/action_panel"
+            style="@style/FormAction.Container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/default_button_bar_height"
+            android:layout_margin="@dimen/margin_normal">
+
+            <TextView
+                android:id="@+id/btn_cancel"
+                style="@style/FormAction.CancelBtn"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="@dimen/default_button_height"
+                android:text="@string/btn_cancel" />
+
+            <Button
+                android:id="@+id/btn_complete"
+                style="@style/FormAction.CompleteBtn.StockMovement"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/default_button_height"
+                android:layout_weight="1"
+                android:text="@string/btn_complete" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+</LinearLayout>

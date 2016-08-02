@@ -51,7 +51,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_stock_movement_new)
-public class StockMovementNewActivity extends BaseActivity implements StockMovementPresenter.StockMovementView, View.OnClickListener {
+public class StockMovementsActivityNew extends BaseActivity implements StockMovementPresenter.StockMovementView, View.OnClickListener {
 
     @InjectView(R.id.list_stock_movement)
     ListView stockMovementList;
@@ -250,7 +250,7 @@ public class StockMovementNewActivity extends BaseActivity implements StockMovem
 
 
     public static Intent getIntentToMe(Context context, InventoryViewModel inventoryViewModel, boolean isKit) {
-        Intent intent = new Intent(context, StockMovementNewActivity.class);
+        Intent intent = new Intent(context, StockMovementsActivityNew.class);
         intent.putExtra(Constants.PARAM_STOCK_CARD_ID, inventoryViewModel.getStockCardId());
         intent.putExtra(Constants.PARAM_STOCK_NAME, inventoryViewModel.getProduct().getFormattedProductName());
         intent.putExtra(Constants.PARAM_IS_ACTIVATED, inventoryViewModel.getProduct().isActive());
@@ -264,6 +264,8 @@ public class StockMovementNewActivity extends BaseActivity implements StockMovem
             case R.id.btn_unpack:
                 unpackKit();
                 break;
+            case R.id.btn_new_movement:
+                startActivity(StockCardNewMovementActivity.class);
         }
     }
 }

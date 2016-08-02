@@ -172,7 +172,6 @@
         <item name="android:layout_marginRight">@dimen/margin_small</item>
         <item name="android:orientation">vertical</item>
     </style>
-    >
 
     <style name="StockMovement.Space_Land">
         <item name="android:layout_marginLeft">@dimen/margin_small</item>
@@ -189,6 +188,14 @@
         <item name="android:background">@drawable/border_bg</item>
         <item name="android:divider">@drawable/divider_horizontal</item>
         <item name="android:paddingRight">-10dp</item>
+    </style>
+
+    <style name="StockMovement.Card">
+        <item name="android:layout_marginLeft">@dimen/margin_normal</item>
+        <item name="android:layout_marginRight">@dimen/margin_normal</item>
+        <item name="android:layout_marginTop">@dimen/margin_large</item>
+        <item name="android:background">@drawable/border_bg</item>
+        <item name="android:orientation">vertical</item>
     </style>
 
     <style name="Dialog" />
