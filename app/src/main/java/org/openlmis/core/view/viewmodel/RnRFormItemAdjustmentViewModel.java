@@ -11,6 +11,9 @@ public class RnRFormItemAdjustmentViewModel {
     private String kitName;
     private int quantity;
 
+    public RnRFormItemAdjustmentViewModel() {
+    }
+
     public RnRFormItemAdjustmentViewModel(long kitStockOnHand, int quantity, String kitName) {
         this.kitStockOnHand = kitStockOnHand;
         this.quantity = quantity;

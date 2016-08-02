@@ -25,8 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.google.inject.Inject;
-
 import org.openlmis.core.R;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.VIARequisitionPresenter;
@@ -37,14 +35,15 @@ import java.util.List;
 
 public class RequisitionFormAdapter extends BaseAdapter {
 
-    @Inject
     private Context context;
-    @Inject
+
     private VIARequisitionPresenter presenter;
 
     private RnRForm.STATUS status = RnRForm.STATUS.AUTHORIZED;
 
-    public RequisitionFormAdapter() {
+    public RequisitionFormAdapter(Context context, VIARequisitionPresenter presenter) {
+        this.context = context;
+        this.presenter = presenter;
     }
 
     @Override

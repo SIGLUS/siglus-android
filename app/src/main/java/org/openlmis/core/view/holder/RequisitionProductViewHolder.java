@@ -30,15 +30,15 @@ public class RequisitionProductViewHolder extends BaseViewHolder {
 
     private VIARequisitionPresenter presenter;
 
-    private Context contextFormFragement;
+    private Context context;
 
     public RequisitionProductViewHolder(View itemView) {
         super(itemView);
     }
 
-    public void populate(final RequisitionFormItemViewModel entry, VIARequisitionPresenter presenter, Context contextFormFragement) {
+    public void populate(final RequisitionFormItemViewModel entry, VIARequisitionPresenter presenter, Context context) {
         this.presenter = presenter;
-        this.contextFormFragement = contextFormFragement;
+        this.context = context;
         productCode.setText(entry.getFmn());
         productName.setText(entry.getProductName());
         setDeleteIconForNewAddedProducts(entry);
@@ -70,8 +70,8 @@ public class RequisitionProductViewHolder extends BaseViewHolder {
 
     protected void showDelConfirmDialog(final RnrFormItem item) {
         SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
-                contextFormFragement.getString(R.string.label_to_comfirm_delete_product));
-        dialogFragment.show(((Activity) contextFormFragement).getFragmentManager(), "del_confirm_dialog");
+                context.getString(R.string.label_to_comfirm_delete_product));
+        dialogFragment.show(((Activity) context).getFragmentManager(), "del_confirm_dialog");
         dialogFragment.setCallBackListener(new SimpleDialogFragment.MsgDialogCallBack() {
             @Override
             public void positiveClick(String tag) {
