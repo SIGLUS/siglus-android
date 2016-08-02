@@ -186,7 +186,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
                 Product kit = productRepository.getByCode(kitProduct.getKitCode());
                 long kitSOH = getKitSOH(kit);
                 if (kitSOH != 0) {
-                    list.add(new RnRFormItemAdjustmentViewModel(kitSOH,kitProduct.getQuantity(),kit.getPrimaryName()));
+                    list.add(new RnRFormItemAdjustmentViewModel(kitSOH, kitProduct.getQuantity(), kit.getPrimaryName()));
                 }
             }
         } catch (LMISException e) {
@@ -261,17 +261,17 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         List<RnrFormItem> rnrFormItemList = FluentIterable.from(addedDrugInVIAs).transform(new Function<RnrFormItem, RnrFormItem>() {
             @Override
             public RnrFormItem apply(RnrFormItem addedDrugInVIA) {
+                Product product = addedDrugInVIA.getProduct();
                 RnrFormItem rnrFormItem = new RnrFormItem();
+                rnrFormItem.setProduct(product);
+                rnrFormItem.setForm(rnRForm);
+                rnrFormItem.setManualAdd(true);
+                rnrFormItem.setRequestAmount(addedDrugInVIA.getRequestAmount());
+                rnrFormItem.setApprovedAmount(rnrFormItem.getRequestAmount());
                 try {
-                    Product product = addedDrugInVIA.getProduct();
-                    rnrFormItem.setProduct(product);
-                    rnrFormItem.setForm(rnRForm);
-                    rnrFormItem.setManualAdd(true);
                     if (product.isArchived()) {
                         populateRnrItemWithQuantities(rnrFormItem, periodBegin, periodEndDate);
                     }
-                    rnrFormItem.setRequestAmount(addedDrugInVIA.getRequestAmount());
-                    rnrFormItem.setApprovedAmount(rnrFormItem.getRequestAmount());
                 } catch (LMISException e) {
                     e.reportToFabric();
                 }
@@ -382,23 +382,17 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     public String getConsultationNumbers() {
-        if (rnRForm == null) {
+        try {
+            return rnRForm.getBaseInfoItemListWrapper().get(0).getValue();
+        } catch (Exception nullRnRFormOrEmptyWrapper) {
             return null;
         }
-        List<BaseInfoItem> baseInfoItemListWrapper = rnRForm.getBaseInfoItemListWrapper();
-        if (baseInfoItemListWrapper.size() == 0) {
-            return null;
-        }
-        return rnRForm.getBaseInfoItemListWrapper().get(0).getValue();
     }
 
     public void setConsultationNumbers(String consultationNumbers) {
-        if (rnRForm == null) {
-            return;
-        }
-        List<BaseInfoItem> baseInfoItemListWrapper = rnRForm.getBaseInfoItemListWrapper();
-        if (baseInfoItemListWrapper != null) {
-            baseInfoItemListWrapper.get(0).setValue(consultationNumbers);
+        try {
+            rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
+        } catch (Exception nullRnRFormOrEmptyWrapper) {
         }
     }
 
