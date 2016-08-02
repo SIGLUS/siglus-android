@@ -13,6 +13,7 @@ import roboguice.inject.ContentView;
 public class StockCardNewMovementActivity extends BaseActivity {
 
     private String stockName;
+    private String movementType;
 
     @Override
     protected ScreenName getScreenName() {
@@ -22,6 +23,7 @@ public class StockCardNewMovementActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
+        movementType = getIntent().getStringExtra(Constants.PARAM_MOVEMENT_TYPE);
 
         super.onCreate(savedInstanceState);
 
@@ -29,12 +31,13 @@ public class StockCardNewMovementActivity extends BaseActivity {
     }
 
     private void initUI() {
-        setTitle(stockName);
+        setTitle(movementType + " " + stockName);
     }
 
-    public static Intent getIntentToMe(StockMovementsActivityNew context, String stockName) {
+    public static Intent getIntentToMe(StockMovementsActivityNew context, String stockName, String movementType) {
         Intent intent = new Intent(context, StockCardNewMovementActivity.class);
         intent.putExtra(Constants.PARAM_STOCK_NAME, stockName);
+        intent.putExtra(Constants.PARAM_MOVEMENT_TYPE, movementType);
         return intent;
     }
 

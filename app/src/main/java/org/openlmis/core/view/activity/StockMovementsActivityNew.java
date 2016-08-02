@@ -20,6 +20,7 @@ package org.openlmis.core.view.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -44,6 +45,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.StockMovementAdapter;
+import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ExpireDateViewGroup;
 
@@ -68,9 +70,6 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
     @InjectView(R.id.vg_expire_date_container)
     ExpireDateViewGroup expireDateViewGroup;
 
-    @InjectView(R.id.new_movement_panel)
-    View newMovementView;
-
     @InjectView(R.id.stock_unpack_container)
     View unpackContainer;
 
@@ -91,6 +90,8 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
     private boolean isActivated;
     private boolean isKit;
 
+    StockMovementsActivityNew activity;
+
     @Override
     protected ScreenName getScreenName() {
         return ScreenName.StockCardMovementScreen;
@@ -98,6 +99,7 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        activity = this;
         stockId = getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
         stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
         isActivated = getIntent().getBooleanExtra(Constants.PARAM_IS_ACTIVATED, true);
@@ -265,8 +267,16 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
                 unpackKit();
                 break;
             case R.id.btn_new_movement:
-                startActivity(StockCardNewMovementActivity.getIntentToMe(this, this.stockName));
+                new SimpleSelectDialogFragment(new MovementTypeOnClickListener(), Constants.MOVEMENT_TYPES).show(getFragmentManager(), "");
                 break;
         }
     }
+
+    class MovementTypeOnClickListener implements SimpleSelectDialogFragment.SelectorOnClickListener {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int selectedItem) {
+            startActivity(StockCardNewMovementActivity.getIntentToMe(activity, stockName, Constants.MOVEMENT_TYPES[selectedItem]));
+        }
+    }
+
 }

@@ -47,10 +47,10 @@ public final class Constants {
     public static final String PARAM_CUSTOM_REGIMEN = "customRegimen";
     public static final String PARAM_SELECTED_EMERGENCY = "selected_emergency";
     public static final String PARAM_PERIOD_BEGIN = "periodBegin";
-    public static final String PARAM_PERIOD_END = "periodEnd";
     public static final String PARAM_ADDED_DRUGS_TO_VIA = "addedDrugsToVIA";
     public static final String PARAM_ADDED_DRUG_CODES_IN_VIA = "addedDrugsInVIA";
-
+    public static final String PARAM_MOVEMENT_TYPE = "movementType";
+    public static final String[] MOVEMENT_TYPES = new String[]{"Entries", "Negative Adjustments", "Positive Adjustments", "Issues"};
 
     // Request Params
     public static final int REQUEST_FROM_STOCK_LIST_PAGE = 100;
