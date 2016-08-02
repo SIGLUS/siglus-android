@@ -20,7 +20,7 @@ public class RequisitionProductAdapter extends BaseAdapter {
     @Inject
     private Context context;
 
-    public Context contextFormFragment;
+    public Context contextFormFragement;
 
     @Inject
     private VIARequisitionPresenter presenter;
@@ -28,8 +28,8 @@ public class RequisitionProductAdapter extends BaseAdapter {
     public RequisitionProductAdapter() {
     }
 
-    public void setContextFormFragment(Context contextFormFragment) {
-        this.contextFormFragment = contextFormFragment;
+    public void setContextFormFragement(Context contextFormFragement) {
+        this.contextFormFragement = contextFormFragement;
     }
 
     @Override
@@ -58,7 +58,7 @@ public class RequisitionProductAdapter extends BaseAdapter {
         } else {
             viewHolder = (RequisitionProductViewHolder) convertView.getTag();
         }
-        viewHolder.populate(getItem(position), presenter, contextFormFragment);
+        viewHolder.populate(getItem(position), presenter, contextFormFragement);
         return convertView;
     }
 
