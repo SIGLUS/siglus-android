@@ -265,7 +265,8 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
                 unpackKit();
                 break;
             case R.id.btn_new_movement:
-                startActivity(StockCardNewMovementActivity.class);
+                startActivity(StockCardNewMovementActivity.getIntentToMe(this, this.stockName));
+                break;
         }
     }
 }
