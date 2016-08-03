@@ -331,4 +331,8 @@
     <string name="hint_requested_quantity">Requested</string>
     <string name="hint_movement_quantity">Quantity</string>
     <string name="hint_movement_signature">Signature</string>
+    <string name="msg_empty_movement_date">Movement date cannot be blank</string>
+    <string name="msg_empty_movement_reason">Movement reason cannot be blank</string>
+    <string name="msg_empty_quantity">Quantity cannot be blank</string>
+    <string name="msg_empty_signature">Signature cannot be blank</string>
 </resources>

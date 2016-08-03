@@ -20,6 +20,7 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.StockMovementItem;
@@ -56,7 +57,33 @@ public class NewStockMovementPresenter extends Presenter {
         return stockRepository.queryLastStockMovementItemByStockCardId(stockCardId);
     }
 
+    public void saveStockMovement(String movementDate, String ducumentNumber, String movementReason, String quantity, String signature) {
+        if (StringUtils.EMPTY.equals(movementDate)) {
+            view.showMovementDateEmpty();
+            return;
+        }
+        if (StringUtils.EMPTY.equals(movementReason)) {
+            view.showMovementReasonEmpty();
+            return;
+        }
+        if (StringUtils.EMPTY.equals(quantity)) {
+            view.showQuantityEmpty();
+            return;
+        }
+        if (StringUtils.EMPTY.equals(signature)) {
+            view.showSignatureEmpty();
+            return;
+        }
+    }
+
 
     public interface NewStockMovementView extends BaseView {
+        void showMovementDateEmpty();
+
+        void showMovementReasonEmpty();
+
+        void showQuantityEmpty();
+
+        void showSignatureEmpty();
     }
 }

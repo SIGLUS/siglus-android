@@ -2,9 +2,12 @@ package org.openlmis.core.view.activity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
@@ -26,16 +29,46 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_stock_card_new_movement)
-public class StockCardNewMovementActivity extends BaseActivity implements NewStockMovementPresenter.NewStockMovementView {
+public class StockCardNewMovementActivity extends BaseActivity implements NewStockMovementPresenter.NewStockMovementView, View.OnClickListener{
 
     @InjectView(R.id.ly_requested_quantity)
     View lyRequestedQuantity;
 
-    @InjectView(R.id.tx_movement_date)
-    TextView txMovementDate;
+    @InjectView(R.id.et_movement_date)
+    EditText etMovementDate;
 
     @InjectView(R.id.ly_movement_date)
-    View lyMovementDate;
+    TextInputLayout lyMovementDate;
+
+    @InjectView(R.id.et_document_number)
+    EditText etDocumentNumber;
+
+    @InjectView(R.id.et_movement_reason)
+    EditText etMovementReason;
+
+    @InjectView(R.id.ly_movement_reason)
+    TextInputLayout lyMovementReason;
+
+    @InjectView(R.id.et_requested_quantity)
+    EditText etRequestedQuantity;
+
+    @InjectView(R.id.et_movement_quantity)
+    EditText etMovementQuantity;
+
+    @InjectView(R.id.ly_movement_quantity)
+    TextInputLayout lyMovementQuantity;
+
+    @InjectView(R.id.et_movement_signature)
+    EditText etMovementSignature;
+
+    @InjectView(R.id.ly_movement_signature)
+    TextInputLayout lyMovementSignature;
+
+    @InjectView(R.id.btn_complete)
+    View btnComplete;
+
+    @InjectView(R.id.btn_cancel)
+    TextView tvCancel;
 
     @InjectPresenter(NewStockMovementPresenter.class)
     NewStockMovementPresenter presenter;
@@ -75,6 +108,9 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             lyRequestedQuantity.setVisibility(View.GONE);
         }
 
+        btnComplete.setOnClickListener(this);
+        tvCancel.setOnClickListener(this);
+
         lyMovementDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,6 +136,56 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         dialog.show();
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_complete:
+                presenter.saveStockMovement(etMovementDate.getText().toString(),
+                        etDocumentNumber.getText().toString(),
+                        etMovementReason.getText().toString(),
+                        etMovementQuantity.getText().toString(),
+                        etMovementSignature.getText().toString());
+                break;
+            case R.id.btn_cancel:
+                break;
+        }
+    }
+
+    public void clearErrorAlerts() {
+        lyMovementDate.setErrorEnabled(false);
+        lyMovementReason.setErrorEnabled(false);
+        lyMovementQuantity.setErrorEnabled(false);
+        lyMovementSignature.setErrorEnabled(false);
+    }
+
+    @Override
+    public void showMovementDateEmpty() {
+        clearErrorAlerts();
+        lyMovementDate.setError(getResources().getString(R.string.msg_empty_movement_date));
+        etMovementDate.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+    }
+
+    @Override
+    public void showMovementReasonEmpty() {
+        clearErrorAlerts();
+        lyMovementReason.setError(getResources().getString(R.string.msg_empty_movement_reason));
+        etMovementReason.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+    }
+
+    @Override
+    public void showQuantityEmpty() {
+        clearErrorAlerts();
+        lyMovementQuantity.setError(getResources().getString(R.string.msg_empty_quantity));
+        etMovementQuantity.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+    }
+
+    @Override
+    public void showSignatureEmpty() {
+        clearErrorAlerts();
+        lyMovementSignature.setError(getResources().getString(R.string.msg_empty_signature));
+        etMovementSignature.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+    }
+
     class MovementDateListener implements DatePickerDialog.OnDateSetListener {
 
         private Date previousMovementDate;
@@ -115,7 +201,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
             Date chosenDate = new GregorianCalendar(year, monthOfYear, dayOfMonth).getTime();
             if (validateStockMovementDate(previousMovementDate, chosenDate)) {
-                txMovementDate.setText(DateUtil.formatDate(chosenDate));
+                etMovementDate.setText(DateUtil.formatDate(chosenDate));
                 model.setMovementDate(DateUtil.formatDate(chosenDate));
             } else {
                 ToastUtil.show(R.string.msg_invalid_stock_movement_date);
