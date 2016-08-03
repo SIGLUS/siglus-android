@@ -116,8 +116,7 @@ public abstract class BaseRequisitionPresenter extends Presenter {
             return rnRForm;
         }
         //three branches: history, half completed draft, new draft
-        boolean isHistory = formId > 0;
-        if (isHistory) {
+        if (isHistoryForm()) {
             return rnrFormRepository.queryRnRForm(formId);
         }
         RnRForm draftRequisition = rnrFormRepository.queryUnAuthorized();

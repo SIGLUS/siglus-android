@@ -392,6 +392,7 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
         try {
             rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
         } catch (Exception nullRnRFormOrEmptyWrapper) {
+            return;
         }
     }
 
