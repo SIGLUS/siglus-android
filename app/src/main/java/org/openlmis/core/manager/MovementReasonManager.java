@@ -175,6 +175,22 @@ public final class MovementReasonManager {
         return new Resources(assets, metrics, config);
     }
 
+    public StockMovementItem.MovementType getMovementTypeByDescription(String movementTypeDescription) {
+        if (movementTypeDescription.equals("Issues") || movementTypeDescription.equals("Saídas")) {
+            return StockMovementItem.MovementType.ISSUE;
+        }
+        if (movementTypeDescription.equals("Entries") || movementTypeDescription.equals("Entradas")) {
+            return StockMovementItem.MovementType.RECEIVE;
+        }
+        if (movementTypeDescription.equals("Negative Adjustments") || movementTypeDescription.equals("Ajustes Negativos")) {
+            return StockMovementItem.MovementType.NEGATIVE_ADJUST;
+        }
+        if (movementTypeDescription.equals("Positive Adjustments") || movementTypeDescription.equals("Ajustes Positivos")) {
+            return StockMovementItem.MovementType.POSITIVE_ADJUST;
+        }
+        return null;
+    }
+
 
     @Data
     public static class MovementReason {
@@ -186,14 +202,6 @@ public final class MovementReasonManager {
             this.movementType = type;
             this.code = code;
             this.description = description;
-        }
-
-        public boolean isInventoryAdjustment(){
-            return INVENTORY_NEGATIVE.equalsIgnoreCase(code) || INVENTORY_POSITIVE.equalsIgnoreCase(code);
-        }
-
-        public boolean isPhysicalInventory() {
-            return StockMovementItem.MovementType.PHYSICAL_INVENTORY == movementType;
         }
 
         protected boolean canBeDisplayOnMovementMenu(){

@@ -5,16 +5,14 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 
-import java.util.ArrayList;
-
 public class SimpleSelectDialogFragment extends BaseDialogFragment{
 
     private final SelectorOnClickListener movementTypeOnClickListener;
     private final String[] selections;
 
-    public SimpleSelectDialogFragment(SelectorOnClickListener movementTypeOnClickListener, ArrayList<String> selections) {
+    public SimpleSelectDialogFragment(SelectorOnClickListener movementTypeOnClickListener, String[] selections) {
         this.movementTypeOnClickListener = movementTypeOnClickListener;
-        this.selections = selections.toArray(new String[0]);
+        this.selections = selections;
     }
 
 

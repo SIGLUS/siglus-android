@@ -1,6 +1,7 @@
 package org.openlmis.core.view.activity;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
 import java.util.Calendar;
@@ -79,6 +81,8 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     private StockMovementItem previousMovement;
 
+    private String[] movementReasons;
+
     @Override
     protected ScreenName getScreenName() {
         return ScreenName.StockCardNewMovementScreen;
@@ -94,6 +98,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
         try {
             previousMovement = presenter.loadPreviousMovement(stockCardId);
+            movementReasons = presenter.getMovementReasonList(movementType);
         } catch (LMISException e) {
             e.printStackTrace();
         }
@@ -111,10 +116,17 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         btnComplete.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
 
-        lyMovementDate.setOnClickListener(new View.OnClickListener() {
+        etMovementDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showDatePickerDialog(presenter.getStockMovementModel(), previousMovement.getMovementDate());
+            }
+        });
+
+        etMovementReason.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new SimpleSelectDialogFragment(new MovementTypeOnClickListener(), movementReasons).show(getFragmentManager(), "");
             }
         });
     }
@@ -212,6 +224,13 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             Calendar today = GregorianCalendar.getInstance();
 
             return previousMovementDate == null || !previousMovementDate.after(chosenDate) && !chosenDate.after(today.getTime());
+        }
+    }
+
+    class MovementTypeOnClickListener implements SimpleSelectDialogFragment.SelectorOnClickListener {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int selectedItem) {
+            etMovementReason.setText(movementReasons[selectedItem]);
         }
     }
 

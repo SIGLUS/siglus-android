@@ -23,10 +23,15 @@ import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
+
+import java.util.List;
 
 import lombok.Getter;
 
@@ -40,8 +45,11 @@ public class NewStockMovementPresenter extends Presenter {
 
     NewStockMovementView view;
 
+    private MovementReasonManager movementReasonManager;
+
     public NewStockMovementPresenter() {
         stockMovementModel = new StockMovementViewModel();
+        movementReasonManager = MovementReasonManager.getInstance();
     }
 
     @Override
@@ -55,6 +63,16 @@ public class NewStockMovementPresenter extends Presenter {
 
     public StockMovementItem loadPreviousMovement(Long stockCardId) throws LMISException {
         return stockRepository.queryLastStockMovementItemByStockCardId(stockCardId);
+    }
+
+    public String[] getMovementReasonList(String movementTypeStr) {
+        List<MovementReasonManager.MovementReason> movementReasonList = movementReasonManager.buildReasonListForMovementType(movementReasonManager.getMovementTypeByDescription(movementTypeStr));
+        return FluentIterable.from(movementReasonList).transform(new Function<MovementReasonManager.MovementReason, String>() {
+            @Override
+            public String apply(MovementReasonManager.MovementReason movementReason) {
+                return movementReason.getDescription();
+            }
+        }).toArray(String.class);
     }
 
     public void saveStockMovement(String movementDate, String ducumentNumber, String movementReason, String quantity, String signature) {

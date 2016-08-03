@@ -49,12 +49,8 @@ import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ExpireDateViewGroup;
 
-import java.util.ArrayList;
-
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
-
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @ContentView(R.layout.activity_stock_movement_new)
 public class StockMovementsActivityNew extends BaseActivity implements StockMovementPresenter.StockMovementView, View.OnClickListener {
@@ -96,7 +92,7 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
 
     StockMovementsActivityNew activity;
 
-    ArrayList<String> movementTypes;
+    String[] movementTypes;
 
     @Override
     protected ScreenName getScreenName() {
@@ -110,7 +106,7 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
         stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
         isActivated = getIntent().getBooleanExtra(Constants.PARAM_IS_ACTIVATED, true);
         isKit = getIntent().getBooleanExtra(Constants.PARAM_IS_KIT, false);
-        movementTypes = newArrayList(getResources().getStringArray(R.array.movement_type_items_array));
+        movementTypes = getResources().getStringArray(R.array.movement_type_items_array);
 
         super.onCreate(savedInstanceState);
 
@@ -282,7 +278,7 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
     class MovementTypeOnClickListener implements SimpleSelectDialogFragment.SelectorOnClickListener {
         @Override
         public void onClick(DialogInterface dialogInterface, int selectedItem) {
-            startActivity(StockCardNewMovementActivity.getIntentToMe(activity, stockName, movementTypes.get(selectedItem), stockId));
+            startActivity(StockCardNewMovementActivity.getIntentToMe(activity, stockName, movementTypes[selectedItem], stockId));
         }
     }
 

@@ -62,6 +62,13 @@ public class NewStockMovementPresenterTest {
         Assertions.assertThat(newStockMovementPresenter.loadPreviousMovement(123L)).isEqualTo(item);
     }
 
+    @Test
+    public void shouldGetMovementReasonListByMovementType() {
+        String[] movementReasons = newStockMovementPresenter.getMovementReasonList("Issues");
+
+        Assertions.assertThat(movementReasons.length).isEqualTo(10);
+        Assertions.assertThat(movementReasons[0]).isEqualTo("Public pharmacy");
+    }
 
     public class MyTestModule extends AbstractModule {
         @Override
