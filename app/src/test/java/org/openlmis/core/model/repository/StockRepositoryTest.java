@@ -233,11 +233,11 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         batchSaveNewStockCardsWithProductPrograms();
 
         //then
-        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listActiveStockCards("code1", ProductRepository.IsWithKit.No);
+        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listActiveStockCards("code1");
         assertThat(stockCardsBeforeTimeLine.size(), is(2));
 
-        List<StockCard> stockCardsBeforeTimeLine2 = stockRepository.listActiveStockCards("code2", ProductRepository.IsWithKit.No);
-        assertThat(stockCardsBeforeTimeLine2.size(), is(1));
+//        List<StockCard> stockCardsBeforeTimeLine2 = stockRepository.listActiveStockCards("code2");
+//        assertThat(stockCardsBeforeTimeLine2.size(), is(1));
     }
 
     private void batchSaveNewStockCardsWithProductPrograms() throws LMISException {
@@ -260,13 +260,13 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         productRepository.createOrUpdate(product);
 
         //then
-        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listActiveStockCards("code1", ProductRepository.IsWithKit.Yes);
+        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listActiveStockCards("code1");
         assertThat(stockCardsBeforeTimeLine.size(), is(2));
 
-        List<StockCard> stockCardsBeforeTimeLine2 = stockRepository.listActiveStockCards("code2", ProductRepository.IsWithKit.Yes);
+        List<StockCard> stockCardsBeforeTimeLine2 = stockRepository.listActiveStockCards("code2");
         assertThat(stockCardsBeforeTimeLine2.size(), is(2));
 
-        List<StockCard> stockCardsBeforeTimeLine3 = stockRepository.listActiveStockCards("code4", ProductRepository.IsWithKit.Yes);
+        List<StockCard> stockCardsBeforeTimeLine3 = stockRepository.listActiveStockCards("code4");
         assertThat(stockCardsBeforeTimeLine3.size(), is(1));
     }
 

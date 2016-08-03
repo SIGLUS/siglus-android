@@ -195,6 +195,16 @@ public class ProductRepository {
         });
     }
 
+    public Product getProductById(final long id) throws LMISException {
+        return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, Product>() {
+            @Override
+            public Product operate(Dao<Product, String> dao) throws SQLException {
+                return dao.queryBuilder().where().eq("id", id).queryForFirst();
+            }
+        });
+    }
+
+
     public List<Product> queryActiveProductsByCodesWithKits(final List<String> productCodes, final boolean isWithKit) throws LMISException {
         return dbUtil.withDao(Product.class, new DbUtil.Operation<Product, List<Product>>() {
             @Override
