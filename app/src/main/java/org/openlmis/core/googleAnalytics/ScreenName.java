@@ -10,6 +10,7 @@ public enum ScreenName {
     RnRFormHistoryScreen("RnR Form History Screen"),
     StockCardOverviewScreen("StockCard Overview Screen"),
     StockCardMovementScreen("StockCard Movement Screen"),
+    StockCardNewMovementScreen("StockCard New Movement Screen"),
     StockCardMovementHistoryScreen("StockCard Movement History Screen"),
     ArchivedDrugsListScreen("Archived Drugs List Screen"),
     SelectPeriodScreen("Select Period Screen"),

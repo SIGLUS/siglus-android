@@ -81,7 +81,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     @Override
     protected ScreenName getScreenName() {
-        return null;
+        return ScreenName.StockCardNewMovementScreen;
     }
 
     @Override
