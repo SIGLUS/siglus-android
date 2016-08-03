@@ -36,9 +36,6 @@ import org.openlmis.core.utils.ViewUtil;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import lombok.Getter;
@@ -54,7 +51,6 @@ public class MMIARnrForm extends LinearLayout {
 
     @Getter
     private RnrFormHorizontalScrollView rnrItemsHorizontalScrollView;
-    private HashMap<String, List<String>> rnrFormItemConfigList = new HashMap<>();
 
     @Getter
     private View leftHeaderView;
@@ -135,49 +131,10 @@ public class MMIARnrForm extends LinearLayout {
         }
     }
 
-    private void addItemViewHardCode(List<RnrFormItem> rnrFormItemList) {
-        initRnrFormItemConfigList();
-
-        addViewByMedicineTypeHardCode(rnrFormItemList, Product.MEDICINE_TYPE_ADULT);
-        addDividerView(Product.MEDICINE_TYPE_ADULT);
-        addDividerView(Product.MEDICINE_TYPE_ADULT);
-
-        addViewByMedicineTypeHardCode(rnrFormItemList, Product.MEDICINE_TYPE_CHILDREN);
-        addDividerView(Product.MEDICINE_TYPE_CHILDREN);
-
-        addViewByMedicineTypeHardCode(rnrFormItemList, Product.MEDICINE_TYPE_SOLUTION);
-        addViewForOtherMedicine(rnrFormItemList);
-
-        addDividerView(Product.MEDICINE_TYPE_SOLUTION);
-    }
-
-    private void addViewByMedicineTypeHardCode(List<RnrFormItem> rnrFormItems, String medicineTypeName) {
-        List<String> fnms = rnrFormItemConfigList.get(medicineTypeName);
-        for (String fnm : fnms) {
-            for (RnrFormItem item : rnrFormItems) {
-                if (fnm.equals(item.getProduct().getCode())) {
-                    addRnrFormItemView(medicineTypeName, item);
-                }
-            }
-        }
-    }
-
     private void addRnrFormItemView(String medicineTypeName, RnrFormItem item) {
         View leftView = addLeftView(item, false, medicineTypeName);
         ViewGroup rightView = addRightView(item, false);
         setItemSize(leftView, rightView);
-    }
-
-    private void addViewForOtherMedicine(List<RnrFormItem> dataList) {
-        List<String> configuredMedicineCodes = rnrFormItemConfigList.get(Product.MEDICINE_TYPE_ADULT);
-        configuredMedicineCodes.addAll(rnrFormItemConfigList.get(Product.MEDICINE_TYPE_CHILDREN));
-        configuredMedicineCodes.addAll(rnrFormItemConfigList.get(Product.MEDICINE_TYPE_SOLUTION));
-
-        for (RnrFormItem item: dataList) {
-            if (!configuredMedicineCodes.contains(item.getProduct().getCode())) {
-                addRnrFormItemView(Product.MEDICINE_TYPE_SOLUTION, item);
-            }
-        }
     }
 
     private void addDividerView(String medicineType) {
@@ -195,12 +152,6 @@ public class MMIARnrForm extends LinearLayout {
 
     private ViewGroup inflateRightView() {
         return (ViewGroup) layoutInflater.inflate(R.layout.item_rnr_from, this, false);
-    }
-
-    public void initRnrFormItemConfigList() {
-        rnrFormItemConfigList.put(Product.MEDICINE_TYPE_ADULT, new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.medicine_adult))));
-        rnrFormItemConfigList.put(Product.MEDICINE_TYPE_CHILDREN, new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.medicine_baby))));
-        rnrFormItemConfigList.put(Product.MEDICINE_TYPE_SOLUTION, new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.medicine_other))));
     }
 
     public void setItemSize(final View leftView, final ViewGroup rightView) {

@@ -355,17 +355,10 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_save:
-                presenter.saveMMIAForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
-                break;
-            case R.id.btn_complete:
-                if (regimeListView.isCompleted() && mmiaInfoListView.isCompleted()) {
-                    presenter.processRequisition(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
-                }
-                break;
-            default:
-                break;
+        if (view.getId() == R.id.btn_save) {
+            presenter.saveMMIAForm(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
+        } else if (view.getId() == R.id.btn_complete && regimeListView.isCompleted() && mmiaInfoListView.isCompleted()) {
+            presenter.processRequisition(regimeListView.getDataList(), mmiaInfoListView.getDataList(), etComment.getText().toString());
         }
     }
 
@@ -428,8 +421,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_FOR_CUSTOM_REGIME) {
-            final Regimen regimen = (Regimen) data.getSerializableExtra(Constants.PARAM_CUSTOM_REGIMEN);
-            regimeListView.addCustomRegimenItem(regimen);
+            regimeListView.addCustomRegimenItem((Regimen) data.getSerializableExtra(Constants.PARAM_CUSTOM_REGIMEN));
         }
     }
 }
