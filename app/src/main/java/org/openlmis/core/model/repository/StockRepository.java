@@ -414,4 +414,18 @@ public class StockRepository {
         return stockMovementItem != null && (stockMovementItem.getMovementDate().after(periodEnd)
                 || stockMovementItem.getCreatedTime().after(periodEnd));
     }
+
+    public StockMovementItem queryLastStockMovementItemByStockCardId(final Long stockCardId) throws LMISException {
+        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
+            @Override
+            public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException {
+                return dao.queryBuilder()
+                        .orderBy("movementDate", false)
+                        .orderBy("createdTime", false)
+                        .where()
+                        .eq("stockCard_id", stockCardId)
+                        .queryForFirst();
+            }
+        });
+    }
 }
