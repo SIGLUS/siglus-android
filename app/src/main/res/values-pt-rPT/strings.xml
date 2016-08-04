@@ -335,4 +335,5 @@
     <string name="msg_empty_movement_reason">Movement reason cannot be blank</string>
     <string name="msg_empty_quantity">Quantity cannot be blank</string>
     <string name="msg_empty_signature">Signature cannot be blank</string>
+    <string name="msg_invalid_quantity">Quantity cannot be larger than stock on hand</string>
 </resources>

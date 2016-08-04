@@ -15,7 +15,6 @@ public class SimpleSelectDialogFragment extends BaseDialogFragment{
         this.selections = selections;
     }
 
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 

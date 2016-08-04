@@ -117,8 +117,7 @@
                 android:id="@+id/et_movement_signature"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/hint_movement_signature"
-                android:inputType="number" />
+                android:hint="@string/hint_movement_signature" />
         </android.support.design.widget.TextInputLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

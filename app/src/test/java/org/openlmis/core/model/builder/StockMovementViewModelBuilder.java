@@ -14,6 +14,7 @@ public class StockMovementViewModelBuilder {
     String negativeAdjustment;
     String positiveAdjustment;
     String received;
+    String signature;
     private boolean isDraft;
 
     public StockMovementViewModel build() {
@@ -27,6 +28,7 @@ public class StockMovementViewModelBuilder {
         viewModel.setNegativeAdjustment(negativeAdjustment);
         viewModel.setPositiveAdjustment(positiveAdjustment);
         viewModel.setDraft(isDraft);
+        viewModel.setSignature(signature);
         return viewModel;
     }
 
@@ -72,6 +74,11 @@ public class StockMovementViewModelBuilder {
 
     public StockMovementViewModelBuilder withIsDraft(boolean isDraft) {
         this.isDraft = isDraft;
+        return this;
+    }
+
+    public StockMovementViewModelBuilder withSignature(String signature) {
+        this.signature = signature;
         return this;
     }
 }

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.presenter.NewStockMovementPresenter;
 import org.openlmis.core.utils.Constants;
@@ -22,10 +23,14 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -76,14 +81,19 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     NewStockMovementPresenter presenter;
 
     private String stockName;
-    private String movementType;
+    private StockMovementItem.MovementType movementType;
     private Long stockCardId;
 
     private StockMovementItem previousMovement;
 
-    private String[] movementReasons;
+    private List<MovementReasonManager.MovementReason> movementReasons;
+
+    private MovementReasonManager movementReasonManager;
 
     SimpleSelectDialogFragment reasonsDialog;
+
+    private StockMovementViewModel viewModel;
+    private String[] reasonListStr;
 
     @Override
     protected ScreenName getScreenName() {
@@ -93,18 +103,21 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        movementReasonManager = MovementReasonManager.getInstance();
 
         stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
-        movementType = getIntent().getStringExtra(Constants.PARAM_MOVEMENT_TYPE);
+        String movementTypeStr = getIntent().getStringExtra(Constants.PARAM_MOVEMENT_TYPE);
         stockCardId =  getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0L);
+        movementType = movementReasonManager.getMovementTypeByDescription(movementTypeStr);
+        movementReasons = movementReasonManager.buildReasonListForMovementType(movementType);
 
         try {
             previousMovement = presenter.loadPreviousMovement(stockCardId);
-            movementReasons = presenter.getMovementReasonList(movementType);
         } catch (LMISException e) {
             e.printStackTrace();
         }
 
+        viewModel = new StockMovementViewModel();
         initUI();
     }
 
@@ -128,7 +141,13 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         etMovementReason.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                reasonsDialog = new SimpleSelectDialogFragment(new MovementTypeOnClickListener(), movementReasons);
+                reasonListStr = FluentIterable.from(movementReasons).transform(new Function<MovementReasonManager.MovementReason, String>() {
+                    @Override
+                    public String apply(MovementReasonManager.MovementReason movementReason) {
+                        return movementReason.getDescription();
+                    }
+                }).toArray(String.class);
+                reasonsDialog = new SimpleSelectDialogFragment(new MovementTypeOnClickListener(viewModel), reasonListStr);
                 reasonsDialog.show(getFragmentManager(), "");
             }
         });
@@ -155,11 +174,13 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_complete:
-                presenter.saveStockMovement(etMovementDate.getText().toString(),
-                        etDocumentNumber.getText().toString(),
-                        etMovementReason.getText().toString(),
-                        etMovementQuantity.getText().toString(),
-                        etMovementSignature.getText().toString());
+                viewModel.setMovementDate(etMovementDate.getText().toString());
+                viewModel.setDocumentNo(etDocumentNumber.getText().toString());
+                HashMap<StockMovementItem.MovementType, String> quantityMap = new HashMap<>();
+                quantityMap.put(movementType, etMovementQuantity.getText().toString());
+                viewModel.setTypeQuantityMap(quantityMap);
+                viewModel.setSignature(etMovementSignature.getText().toString());
+                presenter.saveStockMovement(viewModel);
                 break;
             case R.id.btn_cancel:
                 break;
@@ -201,6 +222,28 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         etMovementSignature.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
     }
 
+    @Override
+    public void showSOHError() {
+        clearErrorAlerts();
+        lyMovementQuantity.setError(getResources().getString(R.string.msg_invalid_quantity));
+        etMovementQuantity.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+    }
+
+    @Override
+    public void showQuantityZero() {
+        clearErrorAlerts();
+        lyMovementQuantity.setError(getResources().getString(R.string.msg_entries_error));
+        etMovementQuantity.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+    }
+
+    @Override
+    public void showSignatureError() {
+        clearErrorAlerts();
+        lyMovementSignature.setError(getString(R.string.hint_signature_error_message));
+        etMovementSignature.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+    }
+
+
     class MovementDateListener implements DatePickerDialog.OnDateSetListener {
 
         private Date previousMovementDate;
@@ -231,9 +274,17 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     }
 
     class MovementTypeOnClickListener implements SimpleSelectDialogFragment.SelectorOnClickListener {
+
+        StockMovementViewModel movementViewModel;
+
+        public MovementTypeOnClickListener(StockMovementViewModel movementViewModel) {
+            this.movementViewModel = movementViewModel;
+        }
+
         @Override
         public void onClick(DialogInterface dialogInterface, int selectedItem) {
-            etMovementReason.setText(movementReasons[selectedItem]);
+            etMovementReason.setText(reasonListStr[selectedItem]);
+            viewModel.setReason(movementReasons.get(selectedItem));
             reasonsDialog.dismiss();
         }
     }
