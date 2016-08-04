@@ -18,6 +18,8 @@
 
 package org.openlmis.core.presenter;
 
+import android.support.annotation.NonNull;
+
 import com.google.inject.AbstractModule;
 
 import org.assertj.core.api.Assertions;
@@ -27,6 +29,9 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.model.KitProduct;
+import org.openlmis.core.model.Product;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.builder.StockMovementViewModelBuilder;
@@ -35,9 +40,11 @@ import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import roboguice.RoboGuice;
+import rx.observers.TestSubscriber;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -82,7 +89,7 @@ public class NewStockMovementPresenterTest {
 
         StockMovementItem previousStockItem = new StockMovementItemBuilder().withStockOnHand(5).build();
         newStockMovementPresenter.previousStockMovement = previousStockItem;
-        newStockMovementPresenter.saveStockMovement(stockMovementViewModel);
+        newStockMovementPresenter.saveStockMovement(stockMovementViewModel, 1L);
         verify(view).showSOHError();
     }
 
@@ -97,7 +104,7 @@ public class NewStockMovementPresenterTest {
 
         StockMovementItem previousStockItem = new StockMovementItemBuilder().withStockOnHand(5).build();
         newStockMovementPresenter.previousStockMovement = previousStockItem;
-        newStockMovementPresenter.saveStockMovement(stockMovementViewModel);
+        newStockMovementPresenter.saveStockMovement(stockMovementViewModel, 1L);
         verify(view, never()).showSOHError();
     }
 
@@ -112,7 +119,7 @@ public class NewStockMovementPresenterTest {
 
         StockMovementItem previousStockItem = new StockMovementItemBuilder().withStockOnHand(10).build();
         newStockMovementPresenter.previousStockMovement = previousStockItem;
-        newStockMovementPresenter.saveStockMovement(stockMovementViewModel);
+        newStockMovementPresenter.saveStockMovement(stockMovementViewModel, 1L);
         verify(view).showMovementDateEmpty();
     }
 
@@ -127,7 +134,7 @@ public class NewStockMovementPresenterTest {
 
         StockMovementItem previousStockItem = new StockMovementItemBuilder().withStockOnHand(10).build();
         newStockMovementPresenter.previousStockMovement = previousStockItem;
-        newStockMovementPresenter.saveStockMovement(stockMovementViewModel);
+        newStockMovementPresenter.saveStockMovement(stockMovementViewModel, 1L);
         verify(view).showSignatureEmpty();
     }
 
@@ -142,7 +149,7 @@ public class NewStockMovementPresenterTest {
 
         StockMovementItem previousStockItem = new StockMovementItemBuilder().withStockOnHand(10).build();
         newStockMovementPresenter.previousStockMovement = previousStockItem;
-        newStockMovementPresenter.saveStockMovement(stockMovementViewModel);
+        newStockMovementPresenter.saveStockMovement(stockMovementViewModel, 1L);
         verify(view).showMovementReasonEmpty();
     }
 
@@ -157,7 +164,7 @@ public class NewStockMovementPresenterTest {
 
         StockMovementItem previousStockItem = new StockMovementItemBuilder().withStockOnHand(10).build();
         newStockMovementPresenter.previousStockMovement = previousStockItem;
-        newStockMovementPresenter.saveStockMovement(stockMovementViewModel);
+        newStockMovementPresenter.saveStockMovement(stockMovementViewModel, 1L);
         verify(view).showQuantityZero();
     }
 
@@ -173,9 +180,43 @@ public class NewStockMovementPresenterTest {
 
         StockMovementItem previousStockItem = new StockMovementItemBuilder().withStockOnHand(10).build();
         newStockMovementPresenter.previousStockMovement = previousStockItem;
-        newStockMovementPresenter.saveStockMovement(stockMovementViewModel);
+        newStockMovementPresenter.saveStockMovement(stockMovementViewModel, 1L);
         verify(view).showSignatureError();
     }
+
+    @Test
+    public void shouldSaveStockItemWhenSaving() throws Exception {
+        StockCard stockCard = createStockCard(0, true);
+        StockMovementItem item = new StockMovementItem();
+        item.setStockOnHand(0L);
+
+        newStockMovementPresenter.previousStockMovement = new StockMovementItemBuilder().withStockOnHand(10).build();
+        StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
+        when(viewModel.convertViewToModel()).thenReturn(item);
+        when(stockRepositoryMock.queryStockCardById(stockCard.getId())).thenReturn(stockCard);
+
+        TestSubscriber<StockMovementViewModel> subscriber = new TestSubscriber<>();
+        newStockMovementPresenter.getSaveMovementObservable(viewModel, stockCard.getId()).subscribe(subscriber);
+
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+
+        verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(item);
+    }
+
+    @NonNull
+    private StockCard createStockCard(int stockOnHand, boolean isKit) {
+        StockCard stockCard = new StockCard();
+        stockCard.setId(200L);
+        stockCard.setStockOnHand(stockOnHand);
+        Product product = new Product();
+        product.setActive(true);
+        product.setKit(isKit);
+        product.setKitProductList(Arrays.asList(new KitProduct()));
+        stockCard.setProduct(product);
+        return stockCard;
+    }
+
 
     public class MyTestModule extends AbstractModule {
         @Override

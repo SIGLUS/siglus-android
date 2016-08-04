@@ -124,7 +124,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     private void initUI() {
         setTitle(movementType + " " + stockName);
 
-        if (!movementType.equals("Issues")) {
+        if (!movementType.equals(StockMovementItem.MovementType.ISSUE)) {
             lyRequestedQuantity.setVisibility(View.GONE);
         }
 
@@ -174,15 +174,19 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_complete:
+
                 viewModel.setMovementDate(etMovementDate.getText().toString());
                 viewModel.setDocumentNo(etDocumentNumber.getText().toString());
+                viewModel.setRequested(etRequestedQuantity.getText().toString());
                 HashMap<StockMovementItem.MovementType, String> quantityMap = new HashMap<>();
                 quantityMap.put(movementType, etMovementQuantity.getText().toString());
                 viewModel.setTypeQuantityMap(quantityMap);
                 viewModel.setSignature(etMovementSignature.getText().toString());
-                presenter.saveStockMovement(viewModel);
+
+                presenter.saveStockMovement(viewModel, stockCardId);
                 break;
             case R.id.btn_cancel:
+                finish();
                 break;
         }
     }
@@ -243,6 +247,11 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         etMovementSignature.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
     }
 
+    @Override
+    public void goToStockCard() {
+        setResult(RESULT_OK);
+        finish();
+    }
 
     class MovementDateListener implements DatePickerDialog.OnDateSetListener {
 

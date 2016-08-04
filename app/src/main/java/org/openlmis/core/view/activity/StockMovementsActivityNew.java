@@ -249,7 +249,7 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_UNPACK_KIT) {
+        if (resultCode == Activity.RESULT_OK && (requestCode == Constants.REQUEST_UNPACK_KIT || requestCode == Constants.REQUEST_NEW_MOVEMENT_PAGE)) {
             loadStockCard();
             presenter.loadStockMovementViewModels();
         }
@@ -281,7 +281,7 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
     class MovementTypeOnClickListener implements SimpleSelectDialogFragment.SelectorOnClickListener {
         @Override
         public void onClick(DialogInterface dialogInterface, int selectedItem) {
-            startActivity(StockCardNewMovementActivity.getIntentToMe(activity, stockName, movementTypes[selectedItem], stockId));
+            startActivityForResult(StockCardNewMovementActivity.getIntentToMe(activity, stockName, movementTypes[selectedItem], stockId), Constants.REQUEST_NEW_MOVEMENT_PAGE);
             newMovementDialog.dismiss();
         }
     }

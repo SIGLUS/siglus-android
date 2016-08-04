@@ -23,12 +23,18 @@ import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
 import lombok.Getter;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class NewStockMovementPresenter extends Presenter {
 
@@ -60,38 +66,78 @@ public class NewStockMovementPresenter extends Presenter {
         return previousStockMovement;
     }
 
-    public void saveStockMovement(StockMovementViewModel viewModel) {
+    public void saveStockMovement(final StockMovementViewModel viewModel, final Long stockCardId) {
+        if (showErrors(viewModel)) return;
+
+        getSaveMovementObservable(viewModel, stockCardId).subscribe(new Action1<StockMovementViewModel>() {
+            @Override
+            public void call(StockMovementViewModel viewModel) {
+                view.goToStockCard();
+            }
+        });
+    }
+
+    protected Observable<StockMovementViewModel> getSaveMovementObservable(final StockMovementViewModel viewModel, final Long stockCardId) {
+        return Observable.create(new Observable.OnSubscribe<StockMovementViewModel>() {
+            @Override
+            public void call(Subscriber<? super StockMovementViewModel> subscriber) {
+                convertViewModelToDataModelAndSave(viewModel, stockCardId);
+                subscriber.onNext(viewModel);
+                subscriber.onCompleted();
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+    }
+
+    private boolean showErrors(StockMovementViewModel viewModel) {
         StockMovementItem.MovementType movementType = viewModel.getTypeQuantityMap().keySet().iterator().next();
         if (StringUtils.isBlank(viewModel.getMovementDate())) {
             view.showMovementDateEmpty();
-            return;
+            return true;
         }
         if (viewModel.getReason() == null) {
             view.showMovementReasonEmpty();
-            return;
+            return true;
         }
         if (StringUtils.isBlank(viewModel.getTypeQuantityMap().get(movementType))) {
             view.showQuantityEmpty();
-            return;
+            return true;
         }
         if (StringUtils.isBlank(viewModel.getSignature())) {
             view.showSignatureEmpty();
-            return;
+            return true;
         }
 
         if (!viewModel.validateQuantitiesNotZero()) {
             view.showQuantityZero();
-            return;
+            return true;
         }
 
         if (quantityIsLargerThanSoh(viewModel.getTypeQuantityMap().get(movementType), movementType)) {
             view.showSOHError();
-            return;
+            return true;
         }
 
         if(!checkSignature(viewModel.getSignature())) {
             view.showSignatureError();
-            return;
+            return true;
+        }
+        return false;
+    }
+
+    private void convertViewModelToDataModelAndSave(StockMovementViewModel viewModel, Long stockCardId) {
+        try {
+            viewModel.populateStockExistence(previousStockMovement.getStockOnHand());
+            StockMovementItem stockMovementItem = viewModel.convertViewToModel();
+            StockCard stockCard = stockRepository.queryStockCardById(stockCardId);
+            stockMovementItem.setStockCard(stockCard);
+            stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
+
+            if (stockCard.getStockOnHand() == 0) {
+                stockCard.setExpireDates("");
+            }
+            stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
+        } catch (LMISException e) {
+            e.reportToFabric();
         }
     }
 
@@ -120,5 +166,7 @@ public class NewStockMovementPresenter extends Presenter {
         void showQuantityZero();
 
         void showSignatureError();
+
+        void goToStockCard();
     }
 }

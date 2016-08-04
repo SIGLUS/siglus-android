@@ -156,4 +156,15 @@ public class StockMovementViewModel {
                 || StringUtils.isNumeric(getPositiveAdjustment())
                 || StringUtils.isNumeric(getIssued());
     }
+
+
+    public void populateStockExistence(long previousStockOnHand) {
+        StockMovementItem.MovementType movementType = typeQuantityMap.keySet().iterator().next();
+
+        if (StockMovementItem.MovementType.RECEIVE.equals(movementType) || StockMovementItem.MovementType.POSITIVE_ADJUST.equals(movementType)) {
+            this.stockExistence = "" + (previousStockOnHand + Long.parseLong(typeQuantityMap.get(movementType)));
+        } else {
+            this.stockExistence = "" + (previousStockOnHand - Long.parseLong(typeQuantityMap.get(movementType)));
+        }
+    }
 }
