@@ -93,6 +93,8 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
     StockMovementsActivityNew activity;
 
     String[] movementTypes;
+    SimpleSelectDialogFragment newMovementDialog;
+
 
     @Override
     protected ScreenName getScreenName() {
@@ -270,7 +272,8 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
                 unpackKit();
                 break;
             case R.id.btn_new_movement:
-                new SimpleSelectDialogFragment(new MovementTypeOnClickListener(), movementTypes).show(getFragmentManager(), "");
+                newMovementDialog = new SimpleSelectDialogFragment(new MovementTypeOnClickListener(), movementTypes);
+                newMovementDialog.show(getFragmentManager(), "");
                 break;
         }
     }
@@ -279,6 +282,7 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
         @Override
         public void onClick(DialogInterface dialogInterface, int selectedItem) {
             startActivity(StockCardNewMovementActivity.getIntentToMe(activity, stockName, movementTypes[selectedItem], stockId));
+            newMovementDialog.dismiss();
         }
     }
 

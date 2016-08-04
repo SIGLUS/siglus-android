@@ -83,6 +83,8 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     private String[] movementReasons;
 
+    SimpleSelectDialogFragment reasonsDialog;
+
     @Override
     protected ScreenName getScreenName() {
         return ScreenName.StockCardNewMovementScreen;
@@ -126,7 +128,8 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         etMovementReason.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new SimpleSelectDialogFragment(new MovementTypeOnClickListener(), movementReasons).show(getFragmentManager(), "");
+                reasonsDialog = new SimpleSelectDialogFragment(new MovementTypeOnClickListener(), movementReasons);
+                reasonsDialog.show(getFragmentManager(), "");
             }
         });
     }
@@ -231,6 +234,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         @Override
         public void onClick(DialogInterface dialogInterface, int selectedItem) {
             etMovementReason.setText(movementReasons[selectedItem]);
+            reasonsDialog.dismiss();
         }
     }
 
