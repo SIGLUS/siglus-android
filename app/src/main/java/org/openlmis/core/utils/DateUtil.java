@@ -51,6 +51,7 @@ public final class DateUtil {
 
 
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
+    public static final SimpleDateFormat DATE_TIME_FORMATTER = new SimpleDateFormat(DATE_TIME_FORMAT);
     public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_YEAR = new SimpleDateFormat(DATE_FORMAT_ONLY_DAY_AND_MONTH);
     public static final SimpleDateFormat DATE_FORMAT_NOT_DISPLAY_DAY = new SimpleDateFormat(DATE_FORMAT_ONLY_MONTH_AND_YEAR);
     private static Locale locale = Locale.getDefault();
@@ -80,6 +81,10 @@ public final class DateUtil {
 
     public static String formatDate(Date date) {
         return DATE_FORMATTER.format(date);
+    }
+
+    public static String formatDateTime(Date date) {
+        return DATE_TIME_FORMATTER.format(date);
     }
 
     public static String formatDateWithoutYear(Date date) {

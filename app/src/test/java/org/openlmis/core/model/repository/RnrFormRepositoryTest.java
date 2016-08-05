@@ -210,13 +210,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(rnrFormRepository.isPeriodUnique(rnRForm2), is(true));
     }
 
-    private StockMovementItem generateStockMovementItemWithDates(Date movementDate, Date createdTime) {
-        StockMovementItem stockMovementItem = new StockMovementItem();
-        stockMovementItem.setMovementDate(movementDate);
-        stockMovementItem.setCreatedTime(createdTime);
-        return stockMovementItem;
-    }
-
     @Test
     public void shouldGenerateRnrFormItemWithCorrectAttributes() throws Exception {
         int stockExistence = 100;
@@ -287,7 +280,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         form.setPeriodEnd(DateUtil.parseString("10/20/2015", DateUtil.SIMPLE_DATE_FORMAT));
         form.setProgram(new Program("mmia", "mmia", null, false, null));
 
-        when(mockStockRepository.listActiveStockCards(anyString())).thenReturn(stockCards);
         DateTime dateTime = new DateTime();
         dateTime.millisOfDay();
         StockMovementItem stockMovementItem = new StockMovementItem();

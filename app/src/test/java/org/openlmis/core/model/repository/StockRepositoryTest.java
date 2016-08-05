@@ -43,7 +43,6 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.ProductProgramBuilder;
 import org.openlmis.core.model.builder.ProgramBuilder;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -59,7 +58,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.ISSUE;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.RECEIVE;
@@ -75,8 +73,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     StockRepository stockRepository;
     ProductRepository productRepository;
     Product product;
-    private Date lastFirstMonthDate;
-    private Date lastSecondMonthDate;
     private ProgramRepository programRepository;
     private ProductProgramRepository productProgramRepository;
     private StockCard stockCard;
@@ -91,9 +87,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
         saveTestProduct();
 
-        Date today = DateUtil.today();
-        lastFirstMonthDate = DateUtil.generatePreviousMonthDateBy(today);
-        lastSecondMonthDate = DateUtil.generatePreviousMonthDateBy(lastFirstMonthDate);
         stockCard = new StockCard();
     }
 
@@ -228,54 +221,60 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldGetStockCardsByProgramIdWithoutKitAndDeacitivatedWhenMultipleProgramsToggleOnAndDeactivateProgramToggleOn() throws Exception {
-        //when
-        batchSaveNewStockCardsWithProductPrograms();
+    public void shouldGetStockCardsBeforePeriodEndDate() throws Exception {
+        Program program1 = new ProgramBuilder().setProgramCode("code1").build();
+        Program program2 = new ProgramBuilder().setProgramCode("code2").setParentCode("code1").build();
+        Program program3 = new ProgramBuilder().setProgramCode("code3").build();
+        generateTestDataForGetStockCards("P1", true, false, program1, "1969-11-11");
+        generateTestDataForGetStockCards("P2", true, false, program1, "1970-11-11");
+        generateTestDataForGetStockCards("P3", true, false, program2, "1969-11-11");
+        generateTestDataForGetStockCards("P4", true, false, program3, "1969-11-11");
 
-        //then
-        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listActiveStockCards("code1");
+        DateTime periodBegin = new DateTime(DateUtil.parseString("1970-01-01 10:10:10", DateUtil.DATE_TIME_FORMAT));
+        DateTime periodEnd = new DateTime(DateUtil.parseString("1970-02-21 10:10:10", DateUtil.DATE_TIME_FORMAT));
+        RnRForm rnRForm = RnRForm.init(program1, new Period(periodBegin, periodEnd), false);
+        List<StockCard> stockCardsBeforeTimeLine = stockRepository.getStockCardsBeforePeriodEnd(rnRForm);
         assertThat(stockCardsBeforeTimeLine.size(), is(2));
-
-//        List<StockCard> stockCardsBeforeTimeLine2 = stockRepository.listActiveStockCards("code2");
-//        assertThat(stockCardsBeforeTimeLine2.size(), is(1));
-    }
-
-    private void batchSaveNewStockCardsWithProductPrograms() throws LMISException {
-        createNewStockCardWithProductPrograms("code1", null, ProductBuilder.create().setCode("p1").setIsActive(true).setIsKit(false).build());
-        createNewStockCardWithProductPrograms("code3", "code1", ProductBuilder.create().setCode("p5").setIsActive(true).setIsKit(false).build());
-        createNewStockCardWithProductPrograms("code2", null, ProductBuilder.create().setCode("p2").setIsActive(true).setIsKit(false).build());
-        createNewStockCardWithProductPrograms("code1", null, ProductBuilder.create().setCode("p3").setIsActive(false).setIsKit(false).build());
-        createNewStockCardWithProductPrograms("code2", null, ProductBuilder.create().setCode("p4").setIsActive(true).setIsKit(true).build());
-        createNewStockCardWithProductPrograms("code4", null, ProductBuilder.create().setCode("p6").setIsActive(true).setIsArchived(false).setIsKit(true).build());
-        createNewStockCardWithProductPrograms("code4", null, ProductBuilder.create().setCode("p7").setIsActive(true).setIsArchived(true).setIsKit(true).build());
+        assertThat(stockCardsBeforeTimeLine.get(0).getProduct().getCode(),is("P1"));
+        assertThat(stockCardsBeforeTimeLine.get(1).getProduct().getCode(),is("P3"));
     }
 
     @Test
-    public void shouldGetActiveStockCardsWithKit() throws Exception {
-        //when
-        batchSaveNewStockCardsWithProductPrograms();
+    public void shouldGetActiveAndNotArchivedStockCardsBeforePeriodEndDate() throws Exception {
+        Program program1 = new ProgramBuilder().setProgramCode("code1").build();
+        Program program2 = new ProgramBuilder().setProgramCode("code2").setParentCode("code1").build();
+        generateTestDataForGetStockCards("P1", true, false, program1, "1969-11-11");
+        generateTestDataForGetStockCards("P2", false, false, program1, "1969-11-11");
+        generateTestDataForGetStockCards("P3", true, false, program2, "1969-11-11");
+        generateTestDataForGetStockCards("P4", true, true, program2, "1969-11-11");
 
-        Product product = ProductBuilder.buildAdultProduct();
-        product.setKit(true);
-        productRepository.createOrUpdate(product);
-
-        //then
-        List<StockCard> stockCardsBeforeTimeLine = stockRepository.listActiveStockCards("code1");
+        DateTime periodBegin = new DateTime(DateUtil.parseString("1970-01-01 10:10:10", DateUtil.DATE_TIME_FORMAT));
+        DateTime periodEnd = new DateTime(DateUtil.parseString("1970-02-21 10:10:10", DateUtil.DATE_TIME_FORMAT));
+        RnRForm rnRForm = RnRForm.init(program1, new Period(periodBegin, periodEnd), false);
+        List<StockCard> stockCardsBeforeTimeLine = stockRepository.getStockCardsBeforePeriodEnd(rnRForm);
         assertThat(stockCardsBeforeTimeLine.size(), is(2));
-
-        List<StockCard> stockCardsBeforeTimeLine2 = stockRepository.listActiveStockCards("code2");
-        assertThat(stockCardsBeforeTimeLine2.size(), is(2));
-
-        List<StockCard> stockCardsBeforeTimeLine3 = stockRepository.listActiveStockCards("code4");
-        assertThat(stockCardsBeforeTimeLine3.size(), is(1));
+        assertThat(stockCardsBeforeTimeLine.get(0).getProduct().getCode(),is("P1"));
+        assertThat(stockCardsBeforeTimeLine.get(1).getProduct().getCode(),is("P3"));
     }
 
-    private void batchCreateNewStockCards() throws LMISException {
-        createNewStockCard("code1", null, ProductBuilder.create().setCode("p1").setIsActive(true).setIsKit(false).build());
-        createNewStockCard("code3", "code1", ProductBuilder.create().setCode("p5").setIsActive(true).setIsKit(false).build());
-        createNewStockCard("code2", null, ProductBuilder.create().setCode("p2").setIsActive(true).setIsKit(false).build());
-        createNewStockCard("code1", null, ProductBuilder.create().setCode("p3").setIsActive(false).setIsKit(false).build());
-        createNewStockCard("code2", null, ProductBuilder.create().setCode("p4").setIsActive(true).setIsKit(true).build());
+    private void generateTestDataForGetStockCards(String productCode, boolean isActive, boolean isArchived, Program program, String movementDate) throws LMISException {
+        Product product = new ProductBuilder().create().setCode(productCode).setIsActive(isActive).setIsArchived(isArchived).build();
+
+        productRepository.createOrUpdate(product);
+        programRepository.createOrUpdate(program);
+        createNewProductProgram(program.getProgramCode(), product.getCode());
+
+        StockCard stockCard = new StockCard();
+        stockCard.setProduct(product);
+        stockRepository.createOrUpdate(stockCard);
+
+        StockMovementItem stockMovementItem = new StockMovementItem();
+        stockMovementItem.setStockCard(stockCard);
+        stockMovementItem.setMovementDate(DateUtil.parseString(movementDate, "yyyy-MM-dd"));
+
+        stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
+        stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
+        stockRepository.refresh(stockCard);
     }
 
     @Test
@@ -347,10 +346,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         return movementItem;
     }
 
-    private long createNewStockCard(String code, String parentCode, Product product) throws LMISException {
-        return createNewStockCard(code, parentCode, product, false);
-    }
-
     private long createNewStockCard(String code, String parentCode, Product product, boolean isEmergency) throws LMISException {
         StockCard stockCard = new StockCard();
         Program program = createNewProgram(code, parentCode, isEmergency);
@@ -363,21 +358,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
                 .setActive(true).build();
 
         productProgramRepository.createOrUpdate(productProgram);
-
-        stockCard.setProduct(product);
-        stockCard.setCreatedAt(new Date());
-        stockRepository.createOrUpdate(stockCard);
-
-        return program.getId();
-    }
-
-    private long createNewStockCardWithProductPrograms(String programCode, String parentCode, Product product) throws LMISException {
-        StockCard stockCard = new StockCard();
-        Program program = createNewProgram(programCode, parentCode, false);
-
-        createNewProductProgram(programCode, product.getCode());
-
-        productRepository.createOrUpdate(product);
 
         stockCard.setProduct(product);
         stockCard.setCreatedAt(new Date());
@@ -487,46 +467,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         //then
         List<StockCard> stockCardsBeforeTimeLine = stockRepository.listEmergencyStockCards();
         assertThat(stockCardsBeforeTimeLine.size(), is(1));
-    }
-
-    @Test
-    public void shouldKeepStockCardWhenItsInPeriod() {
-        Program program = new Program();
-        program.setId(123);
-        program.setProgramCode(Constants.MMIA_PROGRAM_CODE);
-
-        Date movementDate = DateUtil.parseString("2015-07-21", DateUtil.DB_DATE_FORMAT);
-        Date createdTime = DateUtil.parseString("2015-07-21 11:00:00", DateUtil.DATE_TIME_FORMAT);
-
-        DateTime periodBegin = new DateTime(DateUtil.parseString("2015-06-21 10:10:10", DateUtil.DATE_TIME_FORMAT));
-        DateTime periodEnd = new DateTime(DateUtil.parseString("2015-07-21 11:11:11", DateUtil.DATE_TIME_FORMAT));
-        RnRForm form = RnRForm.init(program, new Period(periodBegin, periodEnd), false);
-
-        StockMovementItem movementItem = new StockMovementItem();
-        movementItem.setMovementDate(movementDate);
-        movementItem.setCreatedTime(createdTime);
-
-        assertFalse(stockRepository.shouldRemoveStockCard(movementItem, form.getPeriodEnd()));
-    }
-
-    @Test
-    public void shouldRemoveStockCardWhenItsOutPeriod() {
-        Program program = new Program();
-        program.setId(123);
-        program.setProgramCode(Constants.MMIA_PROGRAM_CODE);
-
-        Date movementDate = DateUtil.parseString("2015-07-21", DateUtil.DB_DATE_FORMAT);
-        Date createdTime = DateUtil.parseString("2015-07-21 11:11:13", DateUtil.DATE_TIME_FORMAT);
-
-        DateTime periodBegin = new DateTime(DateUtil.parseString("2015-06-21 10:10:10", DateUtil.DATE_TIME_FORMAT));
-        DateTime periodEnd = new DateTime(DateUtil.parseString("2015-07-21 11:11:11", DateUtil.DATE_TIME_FORMAT));
-        RnRForm form = RnRForm.init(program, new Period(periodBegin, periodEnd), false);
-
-        StockMovementItem movementItem = new StockMovementItem();
-        movementItem.setMovementDate(movementDate);
-        movementItem.setCreatedTime(createdTime);
-
-        assertTrue(stockRepository.shouldRemoveStockCard(movementItem, form.getPeriodEnd()));
     }
 
     private void saveDraftInventory() throws LMISException {

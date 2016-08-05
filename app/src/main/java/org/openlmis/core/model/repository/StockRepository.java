@@ -45,7 +45,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -233,51 +232,6 @@ public class StockRepository {
         return listStockCardsByProductIds(productIds);
     }
 
-    public List<StockCard> listActiveStockCards(final String programCode) throws LMISException {
-        boolean newMethod = true;
-        if (newMethod) {
-
-            List<String> programCodes = programRepository.queryProgramCodesByProgramCodeOrParentCode(programCode);
-            List<Long> productIds = productProgramRepository.queryActiveProductIdsByProgramsWithKits(programCodes, true);
-            return listStockCardsByProductIds(productIds);
-        }
-
-        String rawSql = "select * from stock_cards where product_id in ( "
-                + "select id "
-                + "from products "
-                + "where "
-                + "isActive =1 "
-                + "and isArchived = 0 "
-                + "and code in ( "
-                + "select productCode "
-                + "from product_programs "
-                + "where isActive=1 "
-                + "and programCode in ( "
-                + "select programCode "
-                + "from programs "
-                + "where parentCode= '"+programCode+"' "
-                + "or  programCode='"+programCode+"' )))";
-        final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
-        List<StockCard> stockCardList = new ArrayList<>();
-
-        if (cursor.moveToFirst()) {
-            do {
-                StockCard stockCard = new StockCard();
-                stockCard.setExpireDates(cursor.getString(cursor.getColumnIndexOrThrow("expireDates")));
-                stockCard.setProduct(productRepository.getProductById(cursor.getLong(cursor.getColumnIndexOrThrow("product_id"))));
-                stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow("stockOnHand")));
-                stockCard.setAvgMonthlyConsumption(cursor.getFloat(cursor.getColumnIndexOrThrow("avgMonthlyConsumption")));
-                stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
-                stockCardList.add(stockCard);
-            } while (cursor.moveToNext());
-        }
-        if (cursor != null && !cursor.isClosed()) {
-            cursor.close();
-        }
-
-        return stockCardList;
-    }
-
     public List<StockMovementItem> listLastFive(final long stockCardId) throws LMISException {
         return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, List<StockMovementItem>>() {
             @Override
@@ -434,23 +388,36 @@ public class StockRepository {
         return earliestDate;
     }
 
-    protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm form) throws LMISException {
-        List<StockCard> stockCards;
-        stockCards = listActiveStockCards(form.getProgram().getProgramCode());
+    protected List<StockCard> getStockCardsBeforePeriodEnd(RnRForm rnRForm) throws LMISException {
+        String rawSql = "SELECT * FROM stock_cards WHERE product_id IN ("
+                + " SELECT id FROM products WHERE isActive =1 AND isArchived = 0 AND code IN ("
+                + " SELECT productCode FROM product_programs WHERE isActive=1 AND programCode IN ("
+                + " SELECT programCode FROM programs WHERE parentCode= '" + rnRForm.getProgram().getProgramCode() + "'"
+                + " OR programCode='" + rnRForm.getProgram().getProgramCode() + "')))"
+                + " AND id NOT IN ("
+                + " SELECT stockCard_id FROM stock_items WHERE stockCard_id NOT IN ("
+                + " SELECT stockCard_id FROM stock_items"
+                + " WHERE movementDate <= '" + DateUtil.formatDateTime(rnRForm.getPeriodEnd()) + "'"
+                + " AND createdTime <= '" + DateUtil.formatDateTime(rnRForm.getPeriodEnd()) + "'))";
 
-        for (Iterator iterator = stockCards.iterator(); iterator.hasNext(); ) {
-            StockCard stockCard = (StockCard) iterator.next();
-            StockMovementItem stockMovementItem = queryFirstStockMovementItem(stockCard);
-            if (shouldRemoveStockCard(stockMovementItem, form.getPeriodEnd())) {
-                iterator.remove();
-            }
+        final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
+        List<StockCard> stockCardList = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                StockCard stockCard = new StockCard();
+                stockCard.setExpireDates(cursor.getString(cursor.getColumnIndexOrThrow("expireDates")));
+                stockCard.setProduct(productRepository.getProductById(cursor.getLong(cursor.getColumnIndexOrThrow("product_id"))));
+                stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow("stockOnHand")));
+                stockCard.setAvgMonthlyConsumption(cursor.getFloat(cursor.getColumnIndexOrThrow("avgMonthlyConsumption")));
+                stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
+                stockCardList.add(stockCard);
+            } while (cursor.moveToNext());
         }
-        return stockCards;
-    }
-
-    protected boolean shouldRemoveStockCard(StockMovementItem stockMovementItem, Date periodEnd) {
-        return stockMovementItem != null && (stockMovementItem.getMovementDate().after(periodEnd)
-                || stockMovementItem.getCreatedTime().after(periodEnd));
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+        return stockCardList;
     }
 
     public StockMovementItem queryLastStockMovementItemByStockCardId(final Long stockCardId) throws LMISException {
@@ -466,4 +433,5 @@ public class StockRepository {
             }
         });
     }
+
 }
