@@ -43,7 +43,7 @@ public class StockMovementViewModel {
     String requested;
     boolean isDraft = true;
 
-    private HashMap<StockMovementItem.MovementType, String> typeQuantityMap = new HashMap<>();
+    private HashMap<MovementReasonManager.MovementType, String> typeQuantityMap = new HashMap<>();
 
     public StockMovementViewModel(StockMovementItem item) {
         movementDate = DateUtil.formatDate(item.getMovementDate());
@@ -67,35 +67,35 @@ public class StockMovementViewModel {
     }
 
     public String getReceived() {
-        return typeQuantityMap.get(StockMovementItem.MovementType.RECEIVE);
+        return typeQuantityMap.get(MovementReasonManager.MovementType.RECEIVE);
     }
 
     public void setReceived(String received) {
-        typeQuantityMap.put(StockMovementItem.MovementType.RECEIVE, received);
+        typeQuantityMap.put(MovementReasonManager.MovementType.RECEIVE, received);
     }
 
     public String getIssued() {
-        return typeQuantityMap.get(StockMovementItem.MovementType.ISSUE);
+        return typeQuantityMap.get(MovementReasonManager.MovementType.ISSUE);
     }
 
     public void setIssued(String issued) {
-        typeQuantityMap.put(StockMovementItem.MovementType.ISSUE, issued);
+        typeQuantityMap.put(MovementReasonManager.MovementType.ISSUE, issued);
     }
 
     public String getNegativeAdjustment() {
-        return typeQuantityMap.get(StockMovementItem.MovementType.NEGATIVE_ADJUST);
+        return typeQuantityMap.get(MovementReasonManager.MovementType.NEGATIVE_ADJUST);
     }
 
     public void setNegativeAdjustment(String negativeAdjustment) {
-        typeQuantityMap.put(StockMovementItem.MovementType.NEGATIVE_ADJUST, negativeAdjustment);
+        typeQuantityMap.put(MovementReasonManager.MovementType.NEGATIVE_ADJUST, negativeAdjustment);
     }
 
     public String getPositiveAdjustment() {
-        return typeQuantityMap.get(StockMovementItem.MovementType.POSITIVE_ADJUST);
+        return typeQuantityMap.get(MovementReasonManager.MovementType.POSITIVE_ADJUST);
     }
 
     public void setPositiveAdjustment(String positiveAdjustment) {
-        typeQuantityMap.put(StockMovementItem.MovementType.POSITIVE_ADJUST, positiveAdjustment);
+        typeQuantityMap.put(MovementReasonManager.MovementType.POSITIVE_ADJUST, positiveAdjustment);
     }
 
     public StockMovementItem convertViewToModel() {
@@ -159,9 +159,9 @@ public class StockMovementViewModel {
 
 
     public void populateStockExistence(long previousStockOnHand) {
-        StockMovementItem.MovementType movementType = typeQuantityMap.keySet().iterator().next();
+        MovementReasonManager.MovementType movementType = typeQuantityMap.keySet().iterator().next();
 
-        if (StockMovementItem.MovementType.RECEIVE.equals(movementType) || StockMovementItem.MovementType.POSITIVE_ADJUST.equals(movementType)) {
+        if (MovementReasonManager.MovementType.RECEIVE.equals(movementType) || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
             this.stockExistence = "" + (previousStockOnHand + Long.parseLong(typeQuantityMap.get(movementType)));
         } else {
             this.stockExistence = "" + (previousStockOnHand - Long.parseLong(typeQuantityMap.get(movementType)));

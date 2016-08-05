@@ -161,7 +161,7 @@ public class UnpackKitPresenter extends Presenter {
 
         StockMovementItem kitMovementItem = new StockMovementItem(kitStockCard);
         kitMovementItem.setReason(MovementReasonManager.UNPACK_KIT);
-        kitMovementItem.setMovementType(StockMovementItem.MovementType.ISSUE);
+        kitMovementItem.setMovementType(MovementReasonManager.MovementType.ISSUE);
         kitMovementItem.setMovementQuantity(kitUnpackQuantity);
         kitMovementItem.setSignature(signature);
         kitMovementItem.setDocumentNumber(documentNumber);
@@ -222,7 +222,7 @@ public class UnpackKitPresenter extends Presenter {
     private StockMovementItem createUnpackMovementItem(StockCard stockCard, long movementQuantity, String documentNumber, String signature) {
         StockMovementItem unpackMovementItem = new StockMovementItem(stockCard);
         unpackMovementItem.setReason(MovementReasonManager.DDM);
-        unpackMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
+        unpackMovementItem.setMovementType(MovementReasonManager.MovementType.RECEIVE);
         unpackMovementItem.setMovementQuantity(movementQuantity);
         unpackMovementItem.setDocumentNumber(documentNumber);
         unpackMovementItem.setSignature(signature);

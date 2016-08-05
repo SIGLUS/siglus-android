@@ -86,7 +86,7 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
     public StockMovementItem generateInitialStockMovementItem() {
         StockMovementItem initInventory = new StockMovementItem(this);
         initInventory.setReason(MovementReasonManager.INVENTORY);
-        initInventory.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
+        initInventory.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
         initInventory.setMovementQuantity(stockOnHand);
         return initInventory;
     }

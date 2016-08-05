@@ -76,7 +76,7 @@ public class StockCardTest {
         MatcherAssert.assertThat(stockMovementItem.getMovementQuantity(), is(200L));
         MatcherAssert.assertThat(stockMovementItem.getStockOnHand(), is(200L));
         MatcherAssert.assertThat(stockMovementItem.getReason(), is(MovementReasonManager.INVENTORY));
-        MatcherAssert.assertThat(stockMovementItem.getMovementType(), is(StockMovementItem.MovementType.PHYSICAL_INVENTORY));
+        MatcherAssert.assertThat(stockMovementItem.getMovementType(), is(MovementReasonManager.MovementType.PHYSICAL_INVENTORY));
         MatcherAssert.assertThat(stockMovementItem.getStockCard(), is(stockCard));
     }
 

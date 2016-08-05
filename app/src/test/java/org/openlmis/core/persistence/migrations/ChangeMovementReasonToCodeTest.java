@@ -94,25 +94,25 @@ public class ChangeMovementReasonToCodeTest extends LMISRepositoryUnitTest{
     @Test
     public void shouldSetDefaultCodeWhenCannotFindACodeForReason(){
         StockMovementItem item = new StockMovementItem();
-        item.setMovementType(StockMovementItem.MovementType.ISSUE);
+        item.setMovementType(MovementReasonManager.MovementType.ISSUE);
         item.setReason("cannot find a code");
 
         migrate.setDefaultReasonCode(item);
         assertThat(item.getReason(), is(MovementReasonManager.DEFAULT_ISSUE));
 
-        item.setMovementType(StockMovementItem.MovementType.RECEIVE);
+        item.setMovementType(MovementReasonManager.MovementType.RECEIVE);
         migrate.setDefaultReasonCode(item);
         assertThat(item.getReason(), is(MovementReasonManager.DEFAULT_RECEIVE));
 
-        item.setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
+        item.setMovementType(MovementReasonManager.MovementType.POSITIVE_ADJUST);
         migrate.setDefaultReasonCode(item);
         assertThat(item.getReason(), is(MovementReasonManager.DEFAULT_POSITIVE_ADJUSTMENT));
 
-        item.setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
+        item.setMovementType(MovementReasonManager.MovementType.NEGATIVE_ADJUST);
         migrate.setDefaultReasonCode(item);
         assertThat(item.getReason(), is(MovementReasonManager.DEFAULT_NEGATIVE_ADJUSTMENT));
 
-        item.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
+        item.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
         migrate.setDefaultReasonCode(item);
         assertThat(item.getReason(), is(MovementReasonManager.INVENTORY));
 

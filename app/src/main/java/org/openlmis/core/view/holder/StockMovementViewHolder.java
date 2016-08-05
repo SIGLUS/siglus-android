@@ -89,7 +89,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
     TextView txSignature;
 
     private StockMovementAdapter.MovementChangedListener movementChangeListener;
-    private Map<StockMovementItem.MovementType, List> movementViewMap;
+    private Map<MovementReasonManager.MovementType, List> movementViewMap;
 
     public StockMovementViewHolder(View itemView, StockMovementAdapter.MovementChangedListener movementChangeListener) {
         super(itemView);
@@ -109,14 +109,14 @@ public class StockMovementViewHolder extends BaseViewHolder {
     private void initStockViewMap() {
         movementViewMap = new HashMap<>();
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
-            movementViewMap.put(StockMovementItem.MovementType.ISSUE, asList(etIssued, etRequested));
+            movementViewMap.put(MovementReasonManager.MovementType.ISSUE, asList(etIssued, etRequested));
         } else {
-            movementViewMap.put(StockMovementItem.MovementType.ISSUE, asList(etIssued));
+            movementViewMap.put(MovementReasonManager.MovementType.ISSUE, asList(etIssued));
         }
 
-        movementViewMap.put(StockMovementItem.MovementType.RECEIVE, asList(etReceived));
-        movementViewMap.put(StockMovementItem.MovementType.NEGATIVE_ADJUST, asList(etNegativeAdjustment));
-        movementViewMap.put(StockMovementItem.MovementType.POSITIVE_ADJUST, asList(etPositiveAdjustment));
+        movementViewMap.put(MovementReasonManager.MovementType.RECEIVE, asList(etReceived));
+        movementViewMap.put(MovementReasonManager.MovementType.NEGATIVE_ADJUST, asList(etNegativeAdjustment));
+        movementViewMap.put(MovementReasonManager.MovementType.POSITIVE_ADJUST, asList(etPositiveAdjustment));
     }
 
     public void populate(final StockMovementViewModel model, StockCard stockCard) {
@@ -171,8 +171,8 @@ public class StockMovementViewHolder extends BaseViewHolder {
         }
     }
 
-    private void resetStockEditText(StockMovementItem.MovementType type) {
-        for (Map.Entry<StockMovementItem.MovementType, List> movementView : movementViewMap.entrySet()) {
+    private void resetStockEditText(MovementReasonManager.MovementType type) {
+        for (Map.Entry<MovementReasonManager.MovementType, List> movementView : movementViewMap.entrySet()) {
             if (movementView.getKey().equals(type)) {
                 for (Object view : movementView.getValue()) {
                     enableAndUnderlineEditText((EditText) view);

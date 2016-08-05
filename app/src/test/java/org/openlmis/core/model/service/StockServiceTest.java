@@ -8,6 +8,7 @@ import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.Product;
@@ -34,8 +35,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.openlmis.core.model.StockMovementItem.MovementType.ISSUE;
-import static org.openlmis.core.model.StockMovementItem.MovementType.RECEIVE;
+import static org.openlmis.core.manager.MovementReasonManager.MovementType.ISSUE;
+import static org.openlmis.core.manager.MovementReasonManager.MovementType.RECEIVE;
 
 @RunWith(LMISTestRunner.class)
 public class StockServiceTest extends LMISRepositoryUnitTest {
@@ -142,7 +143,7 @@ public class StockServiceTest extends LMISRepositoryUnitTest {
         assertThat(averageMonthlyConsumption, is(-1F));
     }
 
-    private StockMovementItem createMovementItem(StockMovementItem.MovementType type, long quantity, StockCard stockCard, Date createdTime, Date movementDate, boolean synced) throws LMISException {
+    private StockMovementItem createMovementItem(MovementReasonManager.MovementType type, long quantity, StockCard stockCard, Date createdTime, Date movementDate, boolean synced) throws LMISException {
         StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setMovementQuantity(quantity);
         stockMovementItem.setMovementType(type);

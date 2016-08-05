@@ -81,7 +81,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     NewStockMovementPresenter presenter;
 
     private String stockName;
-    private StockMovementItem.MovementType movementType;
+    private MovementReasonManager.MovementType movementType;
     private Long stockCardId;
 
     private StockMovementItem previousMovement;
@@ -124,7 +124,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     private void initUI() {
         setTitle(movementType + " " + stockName);
 
-        if (!movementType.equals(StockMovementItem.MovementType.ISSUE)) {
+        if (!movementType.equals(MovementReasonManager.MovementType.ISSUE)) {
             lyRequestedQuantity.setVisibility(View.GONE);
         }
 
@@ -178,7 +178,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                 viewModel.setMovementDate(etMovementDate.getText().toString());
                 viewModel.setDocumentNo(etDocumentNumber.getText().toString());
                 viewModel.setRequested(etRequestedQuantity.getText().toString());
-                HashMap<StockMovementItem.MovementType, String> quantityMap = new HashMap<>();
+                HashMap<MovementReasonManager.MovementType, String> quantityMap = new HashMap<>();
                 quantityMap.put(movementType, etMovementQuantity.getText().toString());
                 viewModel.setTypeQuantityMap(quantityMap);
                 viewModel.setSignature(etMovementSignature.getText().toString());

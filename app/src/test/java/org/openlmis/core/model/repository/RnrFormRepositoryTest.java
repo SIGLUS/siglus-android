@@ -25,10 +25,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
@@ -233,35 +232,35 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
                 .withDocumentNo("1")
                 .withMovementReason("reason")
                 .withMovementDate("10/10/2015")
-                .withMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY)
+                .withMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY)
                 .withStockOnHand(stockExistence)
                 .build();
         StockMovementItem issueItem = stockMovementItemBuilder
                 .withDocumentNo("1")
                 .withMovementReason("reason")
                 .withMovementDate("10/10/2015")
-                .withMovementType(StockMovementItem.MovementType.ISSUE)
+                .withMovementType(MovementReasonManager.MovementType.ISSUE)
                 .withQuantity(issueQuantity)
                 .build();
         StockMovementItem receiveItem = stockMovementItemBuilder
                 .withDocumentNo("1")
                 .withMovementReason("reason")
                 .withMovementDate("10/11/2015")
-                .withMovementType(StockMovementItem.MovementType.RECEIVE)
+                .withMovementType(MovementReasonManager.MovementType.RECEIVE)
                 .withQuantity(receiveQuantity)
                 .build();
         StockMovementItem positiveItem = stockMovementItemBuilder
                 .withDocumentNo("1")
                 .withMovementReason("reason")
                 .withMovementDate("10/12/2015")
-                .withMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST)
+                .withMovementType(MovementReasonManager.MovementType.POSITIVE_ADJUST)
                 .withQuantity(positiveQuantity)
                 .build();
         StockMovementItem negativeItem = stockMovementItemBuilder
                 .withDocumentNo("1")
                 .withMovementReason("reason")
                 .withMovementDate("10/12/2015")
-                .withMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST)
+                .withMovementType(MovementReasonManager.MovementType.NEGATIVE_ADJUST)
                 .withQuantity(negativeQuantity)
                 .build();
 

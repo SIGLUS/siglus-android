@@ -68,7 +68,7 @@ public class StockMovementViewHolderTest {
                 .withReceived(null)
                 .withStockExistence("70")
                 .withIsDraft(false)
-                .withMovementReason(new MovementReasonManager.MovementReason(StockMovementItem.MovementType.ISSUE, "ISSUE_1", "issue description")).build();
+                .withMovementReason(new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "ISSUE_1", "issue description")).build();
 
         StockRepository stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockRepository.class);
 
@@ -116,7 +116,7 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldSetFontColorRedIfNotIssueAdjustment() {
-        viewModel.setReason(new MovementReasonManager.MovementReason(StockMovementItem.MovementType.NEGATIVE_ADJUST, "negative_adjust", "negative_adjust description"));
+        viewModel.setReason(new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.NEGATIVE_ADJUST, "negative_adjust", "negative_adjust description"));
         viewHolder.populate(viewModel, stockCard);
 
         int red = RuntimeEnvironment.application.getResources().getColor(R.color.color_red);
@@ -132,7 +132,7 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldSetFontColorBlackIfIssueAdjustment() {
-        viewModel.setReason(new MovementReasonManager.MovementReason(StockMovementItem.MovementType.ISSUE, "ISSUE_1", "issue description"));
+        viewModel.setReason(new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "ISSUE_1", "issue description"));
         viewHolder.populate(viewModel, stockCard);
 
         int black = RuntimeEnvironment.application.getResources().getColor(R.color.color_black);
@@ -159,7 +159,7 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldSetReasonAndDateOnComplete() {
-        MovementReasonManager.MovementReason reason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.RECEIVE, "DON", "Donations");
+        MovementReasonManager.MovementReason reason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "DON", "Donations");
         String today = DateUtil.formatDate(new Date());
         viewHolder.populate(viewModel, stockCard);
         viewHolder.txMovementDate.setText("");
@@ -218,7 +218,7 @@ public class StockMovementViewHolderTest {
 
         StockMovementViewHolder.MovementSelectListener listener = viewHolder.new MovementSelectListener(viewModel);
 
-        MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.RECEIVE, "DON", "Donations");
+        MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "DON", "Donations");
         listener.onComplete(receiveReason);
         assertTrue(viewHolder.etReceived.isEnabled());
         assertFalse(viewHolder.etPositiveAdjustment.isEnabled());
@@ -226,7 +226,7 @@ public class StockMovementViewHolderTest {
         assertFalse(viewHolder.etIssued.isEnabled());
         assertFalse(viewHolder.etRequested.isEnabled());
 
-        MovementReasonManager.MovementReason positiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.POSITIVE_ADJUST, "POSITIVE", "BOUGHT");
+        MovementReasonManager.MovementReason positiveReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.POSITIVE_ADJUST, "POSITIVE", "BOUGHT");
         listener.onComplete(positiveReason);
 
         assertFalse(viewHolder.etReceived.isEnabled());
@@ -247,7 +247,7 @@ public class StockMovementViewHolderTest {
 
         StockMovementViewHolder.MovementSelectListener listener = stockMovementViewHolder.new MovementSelectListener(viewModel);
 
-        MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.ISSUE, "ISSUE_1", "issue description");
+        MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "ISSUE_1", "issue description");
 
         listener.onComplete(receiveReason);
 
@@ -268,7 +268,7 @@ public class StockMovementViewHolderTest {
 
         StockMovementViewHolder.MovementSelectListener listener = viewHolder.new MovementSelectListener(viewModel);
 
-        MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.ISSUE, "ISSUE_1", "issue description");
+        MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "ISSUE_1", "issue description");
 
         listener.onComplete(receiveReason);
 
@@ -308,7 +308,7 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldEnableReceivedEditTextWhenModelWithReceivedType() {
-        MovementReasonManager.MovementReason receivedReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.RECEIVE, "RECEIVE_1", "receive description");
+        MovementReasonManager.MovementReason receivedReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "RECEIVE_1", "receive description");
         viewModel.setDraft(true);
         viewModel.setReason(receivedReason);
         viewHolder.populate(viewModel, stockCard);
@@ -318,7 +318,7 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldEnableNegativeAdjustmentEditTextWhenModelWithNegativeAdjustmentType() {
-        MovementReasonManager.MovementReason negativeReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.NEGATIVE_ADJUST, "NEGATIVE_1", "negative adjustment description");
+        MovementReasonManager.MovementReason negativeReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.NEGATIVE_ADJUST, "NEGATIVE_1", "negative adjustment description");
         viewModel.setDraft(true);
         viewModel.setReason(negativeReason);
         viewHolder.populate(viewModel, stockCard);
@@ -333,7 +333,7 @@ public class StockMovementViewHolderTest {
         viewHolder.etDocumentNo.setText("888");
 
         StockMovementViewHolder.MovementSelectListener listener = viewHolder.new MovementSelectListener(viewModel);
-        MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.RECEIVE, "DON", "Donations");
+        MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "DON", "Donations");
         listener.onComplete(receiveReason);
 
         assertThat(viewHolder.etDocumentNo.getText().toString(), is(""));
@@ -343,7 +343,7 @@ public class StockMovementViewHolderTest {
     public void shouldClearInputWhenReSelectSameReason() {
         viewHolder.populate(viewModel, stockCard);
         StockMovementViewHolder.MovementSelectListener listener = viewHolder.new MovementSelectListener(viewModel);
-        MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.RECEIVE, "DON", "Donations");
+        MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "DON", "Donations");
         listener.onComplete(receiveReason);
         viewHolder.etReceived.setText("10");
 
@@ -354,7 +354,7 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldEnablePositiveAdjustmentEditTextWhenModelWithPositiveAdjustmentType() {
-        MovementReasonManager.MovementReason positiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.POSITIVE_ADJUST, "POSITIVE_1", "positive adjustment description");
+        MovementReasonManager.MovementReason positiveReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.POSITIVE_ADJUST, "POSITIVE_1", "positive adjustment description");
         viewModel.setDraft(true);
         viewModel.setReason(positiveReason);
         viewHolder.populate(viewModel, stockCard);
@@ -365,7 +365,7 @@ public class StockMovementViewHolderTest {
     @Test
     public void shouldNotClearInputWhenRotate() {
         viewHolder.populate(viewModel, stockCard);
-        MovementReasonManager.MovementReason positiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.POSITIVE_ADJUST, "POSITIVE_1", "positive adjustment description");
+        MovementReasonManager.MovementReason positiveReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.POSITIVE_ADJUST, "POSITIVE_1", "positive adjustment description");
         viewModel.setDraft(true);
         viewModel.setReason(positiveReason);
         viewHolder.etPositiveAdjustment.setText("10");
@@ -393,12 +393,12 @@ public class StockMovementViewHolderTest {
         viewHolder.populate(viewModel, stockCard);
 
         StockMovementViewHolder.MovementSelectListener listener = viewHolder.new MovementSelectListener(viewModel);
-        MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.POSITIVE_ADJUST, "INVENTORY_POSITIVE", "Inventory description...");
+        MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.POSITIVE_ADJUST, "INVENTORY_POSITIVE", "Inventory description...");
         listener.onComplete(receiveReason);
 
         assertThat(viewHolder.txReason.getCurrentTextColor(), is(RuntimeEnvironment.application.getResources().getColor(R.color.color_red)));
 
-        MovementReasonManager.MovementReason issueReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.ISSUE, "PAV", "PAV Description");
+        MovementReasonManager.MovementReason issueReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "PAV", "PAV Description");
         listener.onComplete(issueReason);
 
         assertThat(viewHolder.txReason.getCurrentTextColor(), is(RuntimeEnvironment.application.getResources().getColor(R.color.color_black)));

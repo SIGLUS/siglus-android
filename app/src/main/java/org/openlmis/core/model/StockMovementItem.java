@@ -24,6 +24,7 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.utils.DateUtil;
 
 import java.util.Date;
@@ -37,25 +38,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @DatabaseTable(tableName = "stock_items")
 public class StockMovementItem extends BaseModel {
-
-    public enum MovementType {
-        RECEIVE("RECEIVE"),
-        ISSUE("ISSUE"),
-        POSITIVE_ADJUST("POSITIVE_ADJUST"),
-        NEGATIVE_ADJUST("NEGATIVE_ADJUST"),
-        PHYSICAL_INVENTORY("PHYSICAL_INVENTORY");
-
-        private final String value;
-
-        MovementType(String receive) {
-            this.value = receive;
-        }
-
-        @Override
-        public String toString() {
-            return value;
-        }
-    }
 
     @Expose
     @DatabaseField
@@ -73,7 +55,7 @@ public class StockMovementItem extends BaseModel {
     String reason;
 
     @DatabaseField
-    MovementType movementType;
+    MovementReasonManager.MovementType movementType;
 
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     StockCard stockCard;
@@ -99,11 +81,11 @@ public class StockMovementItem extends BaseModel {
 
 
     public boolean isPositiveMovement() {
-        return movementType.equals(MovementType.RECEIVE) || movementType.equals(MovementType.POSITIVE_ADJUST);
+        return movementType.equals(MovementReasonManager.MovementType.RECEIVE) || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST);
     }
 
     public boolean isNegativeMovement() {
-        return movementType.equals(MovementType.ISSUE) || movementType.equals(MovementType.NEGATIVE_ADJUST);
+        return movementType.equals(MovementReasonManager.MovementType.ISSUE) || movementType.equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST);
     }
 
     public Period getMovementPeriod() {

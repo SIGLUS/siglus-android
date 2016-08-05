@@ -32,7 +32,6 @@ import com.google.inject.Singleton;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
-import org.openlmis.core.model.StockMovementItem;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -115,14 +114,14 @@ public final class MovementReasonManager {
                 continue;
             }
 
-            MovementReason reason = new MovementReason(StockMovementItem.MovementType.valueOf(values[0]), values[1], values[2]);
+            MovementReason reason = new MovementReason(MovementType.valueOf(values[0]), values[1], values[2]);
             reasonList.add(reason);
         }
         return reasonList;
     }
 
 
-    public List<MovementReason> buildReasonListForMovementType(final StockMovementItem.MovementType type){
+    public List<MovementReason> buildReasonListForMovementType(final MovementType type){
         return FluentIterable.from(currentReasonList).filter(new Predicate<MovementReason>() {
             @Override
             public boolean apply(MovementReason movementReason) {
@@ -175,33 +174,60 @@ public final class MovementReasonManager {
         return new Resources(assets, metrics, config);
     }
 
-    public StockMovementItem.MovementType getMovementTypeByDescription(String movementTypeDescription) {
+    public MovementType getMovementTypeByDescription(String movementTypeDescription) {
         if (movementTypeDescription.equals("Issues") || movementTypeDescription.equals("Saídas")) {
-            return StockMovementItem.MovementType.ISSUE;
+            return MovementType.ISSUE;
         }
         if (movementTypeDescription.equals("Entries") || movementTypeDescription.equals("Entradas")) {
-            return StockMovementItem.MovementType.RECEIVE;
+            return MovementType.RECEIVE;
         }
         if (movementTypeDescription.equals("Negative Adjustments") || movementTypeDescription.equals("Ajustes Negativos")) {
-            return StockMovementItem.MovementType.NEGATIVE_ADJUST;
+            return MovementType.NEGATIVE_ADJUST;
         }
         if (movementTypeDescription.equals("Positive Adjustments") || movementTypeDescription.equals("Ajustes Positivos")) {
-            return StockMovementItem.MovementType.POSITIVE_ADJUST;
+            return MovementType.POSITIVE_ADJUST;
         }
         return null;
+    }
+
+    public enum MovementType {
+        RECEIVE("RECEIVE"),
+        ISSUE("ISSUE"),
+        POSITIVE_ADJUST("POSITIVE_ADJUST"),
+        NEGATIVE_ADJUST("NEGATIVE_ADJUST"),
+        PHYSICAL_INVENTORY("PHYSICAL_INVENTORY");
+
+        private final String value;
+
+        MovementType(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
     }
 
 
     @Data
     public static class MovementReason {
-        StockMovementItem.MovementType movementType;
+        MovementType movementType;
         String code;
         String description;
 
-        public MovementReason(StockMovementItem.MovementType type, String code, String description) {
+        public MovementReason(MovementType type, String code, String description) {
             this.movementType = type;
             this.code = code;
             this.description = description;
+        }
+
+        public boolean isInventoryAdjustment(){
+            return INVENTORY_NEGATIVE.equalsIgnoreCase(code) || INVENTORY_POSITIVE.equalsIgnoreCase(code);
+        }
+
+        public boolean isPhysicalInventory() {
+            return MovementType.PHYSICAL_INVENTORY == movementType;
         }
 
         protected boolean canBeDisplayOnMovementMenu(){
@@ -220,7 +246,7 @@ public final class MovementReasonManager {
         }
 
         public boolean isIssueAdjustment() {
-            return StockMovementItem.MovementType.ISSUE == movementType;
+            return MovementType.ISSUE == movementType;
         }
     }
 }

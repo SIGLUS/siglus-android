@@ -1,6 +1,7 @@
 package org.openlmis.core.model.helper;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockMovementItem;
 
@@ -23,13 +24,13 @@ public class RnrFormHelper {
         long totalAdjustment = 0;
 
         for (StockMovementItem item : stockMovementItems) {
-            if (StockMovementItem.MovementType.RECEIVE == item.getMovementType()) {
+            if (MovementReasonManager.MovementType.RECEIVE == item.getMovementType()) {
                 totalReceived += item.getMovementQuantity();
-            } else if (StockMovementItem.MovementType.ISSUE == item.getMovementType()) {
+            } else if (MovementReasonManager.MovementType.ISSUE == item.getMovementType()) {
                 totalIssued += item.getMovementQuantity();
-            } else if (StockMovementItem.MovementType.NEGATIVE_ADJUST == item.getMovementType()) {
+            } else if (MovementReasonManager.MovementType.NEGATIVE_ADJUST == item.getMovementType()) {
                 totalAdjustment -= item.getMovementQuantity();
-            } else if (StockMovementItem.MovementType.POSITIVE_ADJUST == item.getMovementType()) {
+            } else if (MovementReasonManager.MovementType.POSITIVE_ADJUST == item.getMovementType()) {
                 totalAdjustment += item.getMovementQuantity();
             }
         }

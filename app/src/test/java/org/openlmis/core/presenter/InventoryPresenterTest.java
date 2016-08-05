@@ -31,6 +31,7 @@ import org.mockito.ArgumentCaptor;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Inventory;
@@ -321,7 +322,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
         StockMovementItem item = inventoryPresenter.calculateAdjustment(model, stockCard);
 
-        assertThat(item.getMovementType(), is(StockMovementItem.MovementType.POSITIVE_ADJUST));
+        assertThat(item.getMovementType(), is(MovementReasonManager.MovementType.POSITIVE_ADJUST));
         assertThat(item.getMovementQuantity(), is(20L));
         assertThat(item.getStockOnHand(), is(Long.parseLong(model.getQuantity())));
         assertThat(item.getStockCard(), is(stockCard));
@@ -334,7 +335,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
         StockMovementItem item = inventoryPresenter.calculateAdjustment(model, stockCard);
 
-        assertThat(item.getMovementType(), is(StockMovementItem.MovementType.NEGATIVE_ADJUST));
+        assertThat(item.getMovementType(), is(MovementReasonManager.MovementType.NEGATIVE_ADJUST));
         assertThat(item.getMovementQuantity(), is(20L));
         assertThat(item.getStockOnHand(), is(Long.parseLong(model.getQuantity())));
         assertThat(item.getStockCard(), is(stockCard));
@@ -348,7 +349,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
 
         StockMovementItem item = inventoryPresenter.calculateAdjustment(model, stockCard);
 
-        assertThat(item.getMovementType(), is(StockMovementItem.MovementType.PHYSICAL_INVENTORY));
+        assertThat(item.getMovementType(), is(MovementReasonManager.MovementType.PHYSICAL_INVENTORY));
         assertThat(item.getMovementQuantity(), is(0L));
         assertThat(item.getStockOnHand(), is(Long.parseLong(model.getQuantity())));
         assertThat(item.getStockCard(), is(stockCard));

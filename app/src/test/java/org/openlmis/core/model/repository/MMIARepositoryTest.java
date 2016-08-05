@@ -29,8 +29,8 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
@@ -42,9 +42,7 @@ import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
-import org.openlmis.core.model.builder.RnrFormItemBuilder;
 import org.openlmis.core.model.service.PeriodService;
-import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -58,7 +56,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -107,9 +104,9 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         List<StockCard> stockCards = new ArrayList<>();
         stockCards.add(stockCard);
 
-        StockMovementItem stockMovementItem1 = createMovementItem(StockMovementItem.MovementType.ISSUE, 10, stockCard, mockDay1, mockDay1);
-        StockMovementItem stockMovementItem2 = createMovementItem(StockMovementItem.MovementType.RECEIVE, 20, stockCard, mockDay2, mockDay2);
-        StockMovementItem stockMovementItem3 = createMovementItem(StockMovementItem.MovementType.POSITIVE_ADJUST, 30, stockCard, mockDay3, mockDay3);
+        StockMovementItem stockMovementItem1 = createMovementItem(MovementReasonManager.MovementType.ISSUE, 10, stockCard, mockDay1, mockDay1);
+        StockMovementItem stockMovementItem2 = createMovementItem(MovementReasonManager.MovementType.RECEIVE, 20, stockCard, mockDay2, mockDay2);
+        StockMovementItem stockMovementItem3 = createMovementItem(MovementReasonManager.MovementType.POSITIVE_ADJUST, 30, stockCard, mockDay3, mockDay3);
 
         when(mockPeriodService.generateNextPeriod(anyString(), any(Date.class))).thenReturn(new Period(new DateTime("2016-12-27"), new DateTime("2017-01-20")));
         when(mockStockRepository.queryStockItemsByPeriodDates(any(StockCard.class), any(Date.class), any(Date.class)))
@@ -207,7 +204,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         return products;
     }
 
-    private StockMovementItem createMovementItem(StockMovementItem.MovementType type, long quantity, StockCard stockCard, Date createdTime, Date movementDate) throws LMISException {
+    private StockMovementItem createMovementItem(MovementReasonManager.MovementType type, long quantity, StockCard stockCard, Date createdTime, Date movementDate) throws LMISException {
         StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setMovementQuantity(quantity);
         stockMovementItem.setMovementType(type);

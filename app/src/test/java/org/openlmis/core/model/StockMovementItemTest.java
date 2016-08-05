@@ -2,6 +2,7 @@ package org.openlmis.core.model;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openlmis.core.manager.MovementReasonManager;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -20,7 +21,7 @@ public class StockMovementItemTest {
     @Test
     public void shouldSetInitialAmountCorrectWhenTypeIsIssue() throws Exception {
         //given
-        stockMovementItem.setMovementType(StockMovementItem.MovementType.ISSUE);
+        stockMovementItem.setMovementType(MovementReasonManager.MovementType.ISSUE);
 
         //when
         long calculatePreviousSOH = stockMovementItem.calculatePreviousSOH();
@@ -32,7 +33,7 @@ public class StockMovementItemTest {
     @Test
     public void shouldSetInitialAmountCorrectWhenTypeIsNegative() throws Exception {
         //given
-        stockMovementItem.setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
+        stockMovementItem.setMovementType(MovementReasonManager.MovementType.NEGATIVE_ADJUST);
 
         //when
         long calculatePreviousSOH = stockMovementItem.calculatePreviousSOH();
@@ -44,7 +45,7 @@ public class StockMovementItemTest {
     @Test
     public void shouldSetInitialAmountCorrectWhenTypeIsReceive() throws Exception {
         //given
-        stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
+        stockMovementItem.setMovementType(MovementReasonManager.MovementType.RECEIVE);
 
         //when
         long calculatePreviousSOH = stockMovementItem.calculatePreviousSOH();
@@ -56,7 +57,7 @@ public class StockMovementItemTest {
     @Test
     public void shouldSetInitialAmountCorrectWhenTypeIsPositive() throws Exception {
         //given
-        stockMovementItem.setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
+        stockMovementItem.setMovementType(MovementReasonManager.MovementType.POSITIVE_ADJUST);
 
         //when
         long calculatePreviousSOH = stockMovementItem.calculatePreviousSOH();
@@ -68,7 +69,7 @@ public class StockMovementItemTest {
     @Test
     public void shouldSetInitialAmountCorrectWhenTypeIsPhysical() throws Exception {
         //given
-        stockMovementItem.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
+        stockMovementItem.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
         stockMovementItem.setMovementQuantity(0L);
 
         //when

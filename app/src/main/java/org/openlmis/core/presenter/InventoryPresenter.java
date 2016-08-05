@@ -220,13 +220,13 @@ public class InventoryPresenter extends Presenter {
 
         if (inventory > stockOnHand) {
             item.setReason(MovementReasonManager.INVENTORY_POSITIVE);
-            item.setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
+            item.setMovementType(MovementReasonManager.MovementType.POSITIVE_ADJUST);
         } else if (inventory < stockOnHand) {
             item.setReason(MovementReasonManager.INVENTORY_NEGATIVE);
-            item.setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
+            item.setMovementType(MovementReasonManager.MovementType.NEGATIVE_ADJUST);
         } else {
             item.setReason(MovementReasonManager.INVENTORY);
-            item.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
+            item.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
         }
         return item;
     }

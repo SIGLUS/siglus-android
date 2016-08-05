@@ -44,7 +44,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
     @Before
     public void setup() {
         stockMovementViewModel = new StockMovementViewModel();
-        movementReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.RECEIVE, "RECEIVE", "receive");
+        movementReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "RECEIVE", "receive");
     }
 
     @Test
@@ -100,7 +100,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
         stockMovementViewModel.setMovementDate(DateUtil.formatDate(new Date()));
         stockMovementViewModel.setStockExistence("123");
         stockMovementViewModel.setDocumentNo("111");
-        stockMovementViewModel.setReason(movementReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.ISSUE, "issue", "issue"));
+        stockMovementViewModel.setReason(movementReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "issue", "issue"));
         stockMovementViewModel.setIssued("100");
         stockMovementViewModel.setRequested("");
         StockMovementItem stockMovementItem = stockMovementViewModel.convertViewToModel();
@@ -157,7 +157,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
         stockMovementViewModel.setMovementDate(DateUtil.formatDate(new Date()));
         stockMovementViewModel.setStockExistence("123");
         stockMovementViewModel.setDocumentNo("111");
-        stockMovementViewModel.setReason(movementReason = new MovementReasonManager.MovementReason(StockMovementItem.MovementType.ISSUE, "issue", "issue"));
+        stockMovementViewModel.setReason(movementReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "issue", "issue"));
         stockMovementViewModel.setIssued("100");
         stockMovementViewModel.setRequested("999");
         StockMovementItem stockMovementItem = stockMovementViewModel.convertViewToModel();

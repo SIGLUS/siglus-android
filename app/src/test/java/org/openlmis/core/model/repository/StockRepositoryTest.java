@@ -30,8 +30,8 @@ import org.mockito.internal.matchers.NotNull;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
@@ -61,8 +61,8 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.openlmis.core.model.StockMovementItem.MovementType.ISSUE;
-import static org.openlmis.core.model.StockMovementItem.MovementType.RECEIVE;
+import static org.openlmis.core.manager.MovementReasonManager.MovementType.ISSUE;
+import static org.openlmis.core.manager.MovementReasonManager.MovementType.RECEIVE;
 import static org.openlmis.core.model.builder.StockCardBuilder.saveStockCardWithOneMovement;
 import static org.openlmis.core.utils.DateUtil.DATE_TIME_FORMAT;
 import static org.openlmis.core.utils.DateUtil.SIMPLE_DATE_FORMAT;
@@ -550,7 +550,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         productRepository.createOrUpdate(product);
     }
 
-    private StockMovementItem createMovementItem(StockMovementItem.MovementType type, long quantity, StockCard stockCard, Date createdTime, Date movementDate, boolean synced) throws LMISException {
+    private StockMovementItem createMovementItem(MovementReasonManager.MovementType type, long quantity, StockCard stockCard, Date createdTime, Date movementDate, boolean synced) throws LMISException {
         StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setMovementQuantity(quantity);
         stockMovementItem.setMovementType(type);

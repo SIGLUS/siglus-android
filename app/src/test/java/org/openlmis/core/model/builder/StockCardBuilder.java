@@ -1,6 +1,7 @@
 package org.openlmis.core.model.builder;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -27,7 +28,7 @@ public class StockCardBuilder {
         stockMovementItem.setStockCard(stockCard);
         stockMovementItem.setMovementQuantity(10L);
         stockMovementItem.setStockOnHand(100L);
-        stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
+        stockMovementItem.setMovementType(MovementReasonManager.MovementType.RECEIVE);
         stockMovementItem.setDocumentNumber("XXX123456");
         stockMovementItem.setReason("some reason");
         stockMovementItem.setMovementDate(DateUtil.parseString("2015-11-11", "yyyy-MM-dd"));

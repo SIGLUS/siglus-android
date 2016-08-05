@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Cmm;
@@ -219,7 +220,7 @@ public class SyncUpManagerTest {
         item.setMovementQuantity(100L);
         item.setStockOnHand(-1);
         item.setMovementDate(DateUtil.today());
-        item.setMovementType(StockMovementItem.MovementType.RECEIVE);
+        item.setMovementType(MovementReasonManager.MovementType.RECEIVE);
         item.setStockCard(stockCard);
         item.setSynced(false);
 

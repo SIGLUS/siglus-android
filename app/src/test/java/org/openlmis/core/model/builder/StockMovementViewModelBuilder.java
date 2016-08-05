@@ -1,7 +1,7 @@
 package org.openlmis.core.model.builder;
 
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementReason;
-import org.openlmis.core.model.StockMovementItem.MovementType;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
 public class StockMovementViewModelBuilder {
@@ -9,7 +9,7 @@ public class StockMovementViewModelBuilder {
     String movementDate = "10/10/2010";
     String stockExistence = "200";
     String documentNo = "abc";
-    MovementReason movementReason = new MovementReason(MovementType.ISSUE, "ISSUE_1", "");
+    MovementReason movementReason = new MovementReason(MovementReasonManager.MovementType.ISSUE, "ISSUE_1", "");
     String issued = "12";
     String negativeAdjustment;
     String positiveAdjustment;

@@ -11,7 +11,6 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.MovementReasonManager.MovementReason;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.StockMovementViewModelBuilder;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.robolectric.RuntimeEnvironment;
@@ -40,7 +39,7 @@ public class StockMovementHistoryViewHolderTest {
                 .withIssued("100")
                 .withReceived(null)
                 .withStockExistence("200")
-                .withMovementReason(new MovementReason(StockMovementItem.MovementType.ISSUE, "ISSUE_1", "issue description")).build();
+                .withMovementReason(new MovementReason(MovementReasonManager.MovementType.ISSUE, "ISSUE_1", "issue description")).build();
     }
 
     @Test
@@ -91,7 +90,7 @@ public class StockMovementHistoryViewHolderTest {
 
     @Test
     public void shouldSetPhysicalInventoryFontColorToRed() {
-        viewModel.setReason(new MovementReason(StockMovementItem.MovementType.PHYSICAL_INVENTORY, "INVENTORY", ""));
+        viewModel.setReason(new MovementReason(MovementReasonManager.MovementType.PHYSICAL_INVENTORY, "INVENTORY", ""));
         viewHolder.populate(viewModel);
 
         int redColor = RuntimeEnvironment.application.getResources().getColor(R.color.color_red);
@@ -107,7 +106,7 @@ public class StockMovementHistoryViewHolderTest {
 
     @Test
     public void shouldSetNegativeInventoryAdjustmentFontColorToRed() {
-        viewModel.setReason(new MovementReason(StockMovementItem.MovementType.NEGATIVE_ADJUST, MovementReasonManager.INVENTORY_NEGATIVE, ""));
+        viewModel.setReason(new MovementReason(MovementReasonManager.MovementType.NEGATIVE_ADJUST, MovementReasonManager.INVENTORY_NEGATIVE, ""));
         viewHolder.populate(viewModel);
 
         int redColor = RuntimeEnvironment.application.getResources().getColor(R.color.color_red);
@@ -123,7 +122,7 @@ public class StockMovementHistoryViewHolderTest {
 
     @Test
     public void shouldSetPositiveInventoryAdjustmentFontColorToRed() {
-        viewModel.setReason(new MovementReason(StockMovementItem.MovementType.POSITIVE_ADJUST, MovementReasonManager.INVENTORY_POSITIVE, ""));
+        viewModel.setReason(new MovementReason(MovementReasonManager.MovementType.POSITIVE_ADJUST, MovementReasonManager.INVENTORY_POSITIVE, ""));
         viewHolder.populate(viewModel);
 
         int redColor = RuntimeEnvironment.application.getResources().getColor(R.color.color_red);
@@ -139,7 +138,7 @@ public class StockMovementHistoryViewHolderTest {
 
     @Test
     public void shouldSetReceiveFontColorToRed() {
-        viewModel.setReason(new MovementReason(StockMovementItem.MovementType.RECEIVE, "RECEIVE", ""));
+        viewModel.setReason(new MovementReason(MovementReasonManager.MovementType.RECEIVE, "RECEIVE", ""));
         viewModel.setReceived("123");
         viewModel.setIssued(null);
         viewHolder.populate(viewModel);
@@ -157,7 +156,7 @@ public class StockMovementHistoryViewHolderTest {
 
     @Test
     public void shouldSetFontColorToRedIfReasonIsNotIssue() {
-        viewModel.setReason(new MovementReason(StockMovementItem.MovementType.POSITIVE_ADJUST, "positive_adjust", ""));
+        viewModel.setReason(new MovementReason(MovementReasonManager.MovementType.POSITIVE_ADJUST, "positive_adjust", ""));
         viewModel.setIssued(null);
         viewModel.setPositiveAdjustment("123");
         viewHolder.populate(viewModel);
@@ -175,7 +174,7 @@ public class StockMovementHistoryViewHolderTest {
 
     @Test
     public void shouldSetFontColorToBlackIfReasonIsIssue() {
-        viewModel.setReason(new MovementReason(StockMovementItem.MovementType.ISSUE, "Issued", ""));
+        viewModel.setReason(new MovementReason(MovementReasonManager.MovementType.ISSUE, "Issued", ""));
         viewModel.setIssued("123");
         viewHolder.populate(viewModel);
 

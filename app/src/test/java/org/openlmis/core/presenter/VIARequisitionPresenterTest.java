@@ -36,6 +36,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
@@ -663,7 +664,7 @@ public class VIARequisitionPresenterTest {
         when(mockProductRepository.getByCode("P2")).thenReturn(product2);
 
         StockCard stockCard = new StockCardBuilder().setStockOnHand(0L).setProduct(product1).build();
-        StockMovementItem stockMovementItem1 = new StockMovementItemBuilder().withStockOnHand(50).withQuantity(10).withMovementType(StockMovementItem.MovementType.ISSUE).withDocumentNo("123").build();
+        StockMovementItem stockMovementItem1 = new StockMovementItemBuilder().withStockOnHand(50).withQuantity(10).withMovementType(MovementReasonManager.MovementType.ISSUE).withDocumentNo("123").build();
         StockMovementItem stockMovementItem2 = new StockMovementItemBuilder().build();
         StockMovementItem stockMovementItem3 = new StockMovementItemBuilder().build();
 

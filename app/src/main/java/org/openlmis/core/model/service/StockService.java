@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import org.joda.time.DateTime;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.StockMovementIsNullException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Cmm;
 import org.openlmis.core.model.Period;
@@ -125,7 +126,7 @@ public class StockService {
             }
 
             for (StockMovementItem item : stockMovementItems) {
-                if (StockMovementItem.MovementType.ISSUE == item.getMovementType()) {
+                if (MovementReasonManager.MovementType.ISSUE == item.getMovementType()) {
                     totalIssued += item.getMovementQuantity();
                 }
             }

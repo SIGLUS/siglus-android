@@ -23,6 +23,7 @@ import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
@@ -89,7 +90,7 @@ public class NewStockMovementPresenter extends Presenter {
     }
 
     private boolean showErrors(StockMovementViewModel viewModel) {
-        StockMovementItem.MovementType movementType = viewModel.getTypeQuantityMap().keySet().iterator().next();
+        MovementReasonManager.MovementType movementType = viewModel.getTypeQuantityMap().keySet().iterator().next();
         if (StringUtils.isBlank(viewModel.getMovementDate())) {
             view.showMovementDateEmpty();
             return true;
@@ -145,8 +146,8 @@ public class NewStockMovementPresenter extends Presenter {
         return signature.length() >= 2 && signature.length() <= 5 && signature.matches("\\D+");
     }
 
-    private boolean quantityIsLargerThanSoh(String quantity, StockMovementItem.MovementType type) {
-        if (StockMovementItem.MovementType.ISSUE.equals(type) || StockMovementItem.MovementType.NEGATIVE_ADJUST.equals(type)) {
+    private boolean quantityIsLargerThanSoh(String quantity, MovementReasonManager.MovementType type) {
+        if (MovementReasonManager.MovementType.ISSUE.equals(type) || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(type)) {
             return Long.parseLong(quantity) > previousStockMovement.getStockOnHand();
         }
         return false;

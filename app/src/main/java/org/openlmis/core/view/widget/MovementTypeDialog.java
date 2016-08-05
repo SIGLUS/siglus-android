@@ -26,7 +26,6 @@ import android.widget.ArrayAdapter;
 
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.model.StockMovementItem;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -100,19 +99,19 @@ public class MovementTypeDialog {
     private void showSecondaryList() {
         contentList.clear();
 
-        StockMovementItem.MovementType type = null;
+        MovementReasonManager.MovementType type = null;
         switch (status) {
             case STATUS_SELECT_RECEIVE:
-                type = StockMovementItem.MovementType.RECEIVE;
+                type = MovementReasonManager.MovementType.RECEIVE;
                 break;
             case STATUS_SELECT_NEGATIVE:
-                type = StockMovementItem.MovementType.NEGATIVE_ADJUST;
+                type = MovementReasonManager.MovementType.NEGATIVE_ADJUST;
                 break;
             case STATUS_SELECT_POSITIVE:
-                type = StockMovementItem.MovementType.POSITIVE_ADJUST;
+                type = MovementReasonManager.MovementType.POSITIVE_ADJUST;
                 break;
             case STATUS_SELECT_ISSUE:
-                type = StockMovementItem.MovementType.ISSUE;
+                type = MovementReasonManager.MovementType.ISSUE;
                 break;
         }
 
