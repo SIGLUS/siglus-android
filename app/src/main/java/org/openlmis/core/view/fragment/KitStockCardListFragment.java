@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.view.activity.StockMovementActivity;
+import org.openlmis.core.view.activity.StockMovementsActivityNew;
 import org.openlmis.core.view.adapter.KitStockCardListAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ProductsUpdateBanner;
@@ -21,7 +23,11 @@ public class KitStockCardListFragment extends StockCardListFragment {
     }
 
     protected Intent getStockMovementIntent(InventoryViewModel inventoryViewModel) {
-        return StockMovementActivity.getIntentToMe(getActivity(), inventoryViewModel, true);
+        if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_separate_page_for_new_stock_movements)) {
+            return StockMovementsActivityNew.getIntentToMe(getActivity(), inventoryViewModel, true);
+        } else {
+            return StockMovementActivity.getIntentToMe(getActivity(), inventoryViewModel, true);
+        }
     }
 
     @InjectView(R.id.product_update_banner)
