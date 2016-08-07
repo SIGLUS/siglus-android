@@ -146,7 +146,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
 
     protected void initUI() {
         scrollView.setVisibility(View.INVISIBLE);
-        if (presenter.isHistoryForm()) {
+        if (isHistoryForm()) {
             scrollView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             bottomView.setVisibility(View.GONE);
             etComment.setEnabled(false);
@@ -158,6 +158,10 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
         disableFreezeHeaderScroll();
         initActionBarHeight();
         setRegimenListener();
+    }
+
+    private boolean isHistoryForm() {
+        return formId != 0;
     }
 
     private void setRegimenListener() {
@@ -309,7 +313,7 @@ public class MMIARequisitionFragment extends BaseFragment implements MMIARequisi
     };
 
     private void highlightTotalDifference() {
-        if (presenter.isHistoryForm() || hasEmptyColumn() || isTotalEqual() || etComment.getText().toString().length() >= 5) {
+        if (isHistoryForm() || hasEmptyColumn() || isTotalEqual() || etComment.getText().toString().length() >= 5) {
             regimeListView.deHighLightTotal();
             mmiaInfoListView.deHighLightTotal();
             tvMismatch.setVisibility(View.INVISIBLE);
