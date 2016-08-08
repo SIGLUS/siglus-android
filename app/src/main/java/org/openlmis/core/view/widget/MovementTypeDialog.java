@@ -30,7 +30,8 @@ import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 
 public class MovementTypeDialog {
@@ -41,8 +42,8 @@ public class MovementTypeDialog {
     static final int STATUS_SELECT_POSITIVE = 2;
     static final int STATUS_SELECT_ISSUE = 3;
     AlertDialog dialog;
-    List<String> contentList;
-    List<MovementReasonManager.MovementReason> movementReasons;
+    ArrayList<String> contentList;
+    ArrayList<MovementReasonManager.MovementReason> movementReasons;
 
 
     ArrayAdapter<String> adapter;
@@ -59,10 +60,8 @@ public class MovementTypeDialog {
         this.context = context;
         this.listener = listener;
 
-        reasonManager = MovementReasonManager.getInstance();
-
         builder = new AlertDialog.Builder(context);
-        contentList = reasonManager.getMovementTypeDescriptionList();
+        contentList = newArrayList(context.getResources().getStringArray(R.array.movement_type_items_array));
 
         adapter = new ArrayAdapter<>(context, R.layout.item_movement_type, R.id.text, contentList);
 
@@ -82,6 +81,7 @@ public class MovementTypeDialog {
             }
         });
 
+        reasonManager = MovementReasonManager.getInstance();
         movementReasons = new ArrayList<>();
     }
 
