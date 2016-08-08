@@ -181,18 +181,12 @@
     <string name="label_ppe">PPE</string>
     <string name="hint_has_not_new_data">Estás no fim da lista</string>
 
+    <!--Reason/Origin/Destination select dialog-->
     <string name="RECEIVE">Entradas</string>
     <string name="ISSUE">Saídas</string>
     <string name="NEGATIVE_ADJUST">Ajustes Negativos</string>
     <string name="POSITIVE_ADJUST">Ajustes Positivos</string>
 
-    <!--Reason/Origin/Destination select dialog-->
-    <string-array name="movement_type_items_array">
-        <item>Entradas</item>
-        <item>Ajustes Negativos</item>
-        <item>Ajustes Positivos</item>
-        <item>Saídas</item>
-    </string-array>
     <!--Stock Card List Page-->
     <string name="search_hint">Procurar…</string>
     <string name="action_navigate_archive">Produtos Arquivados</string>
