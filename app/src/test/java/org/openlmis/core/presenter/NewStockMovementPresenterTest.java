@@ -29,6 +29,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
@@ -57,11 +58,12 @@ public class NewStockMovementPresenterTest {
     private NewStockMovementPresenter newStockMovementPresenter;
     private StockRepository stockRepositoryMock;
     NewStockMovementPresenter.NewStockMovementView view;
+    private SharedPreferenceMgr sharedPreferenceMgr;
 
     @Before
     public void setup() throws Exception {
         stockRepositoryMock = mock(StockRepository.class);
-
+        sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
         view = mock(NewStockMovementPresenter.NewStockMovementView.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
@@ -202,7 +204,31 @@ public class NewStockMovementPresenterTest {
         subscriber.assertNoErrors();
 
         verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(item);
+        verify(sharedPreferenceMgr, never()).setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
+
     }
+
+    @Test
+    public void shouldUpdateBannerPreferenceWhenSaving() throws Exception {
+        StockCard stockCard = createStockCard(0, true);
+        stockCard.getProduct().setActive(false);
+        StockMovementItem item = new StockMovementItem();
+        item.setStockOnHand(0L);
+
+        newStockMovementPresenter.previousStockMovement = new StockMovementItemBuilder().withStockOnHand(10).build();
+        StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
+        when(viewModel.convertViewToModel()).thenReturn(item);
+        when(stockRepositoryMock.queryStockCardById(stockCard.getId())).thenReturn(stockCard);
+
+        TestSubscriber<StockMovementViewModel> subscriber = new TestSubscriber<>();
+        newStockMovementPresenter.getSaveMovementObservable(viewModel, stockCard.getId()).subscribe(subscriber);
+
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+
+        verify(sharedPreferenceMgr).setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
+    }
+
 
     @NonNull
     private StockCard createStockCard(int stockOnHand, boolean isKit) {
@@ -222,6 +248,7 @@ public class NewStockMovementPresenterTest {
         @Override
         protected void configure() {
             bind(StockRepository.class).toInstance(stockRepositoryMock);
+            bind(SharedPreferenceMgr.class).toInstance(sharedPreferenceMgr);
         }
     }
 }

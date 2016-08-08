@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
@@ -48,6 +49,9 @@ public class NewStockMovementPresenter extends Presenter {
     NewStockMovementView view;
 
     StockMovementItem previousStockMovement;
+
+    @Inject
+    SharedPreferenceMgr sharedPreferenceMgr;
 
     public NewStockMovementPresenter() {
         stockMovementModel = new StockMovementViewModel();
@@ -137,6 +141,9 @@ public class NewStockMovementPresenter extends Presenter {
                 stockCard.setExpireDates("");
             }
             stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
+            if (stockCard.getStockOnHand() == 0 && !stockCard.getProduct().isActive()) {
+                sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
+            }
         } catch (LMISException e) {
             e.reportToFabric();
         }
