@@ -13,14 +13,19 @@ Feature: stock movement Page
     Then I wait for "Stock Card" to appear
     Then I wait for 1 second
     Then I should not see "This product has been deactivated and is not available to reorder"
-    And I select a reason "Negative Adjustments" "Damaged on arrival"
+
+    Then I press "NEW MOVEMENT"
+    Then I select a new movement reason "Negative Adjustments" "Damaged on arrival"
     Then I wait for 1 second
-    Then I swipe right
-    And I enter negative adjustment number "123"
-    Then I wait for "Complete" to appear
+    Then I select movement date
+    Then I press "Done"
+    Then I wait for 1 second
+    Then I enter quantity number "123"
+    Then I enter signature "super"
     And I press "Complete"
-    And I wait for "Enter your initials" to appear
-    And I sign with "superuser"
+    Then I swipe right
+    Then I swipe right
+
     Then I see "123"
     Then I see "super" in signature field
     Then I navigate back
@@ -54,15 +59,20 @@ Feature: stock movement Page
     Then I wait for 1 second
     Then I should see "This product has been deactivated and is not available to reorder"
     Then I wait for 1 second
-    And I select a reason "Issues" "PAV"
+
+    Then I press "NEW MOVEMENT"
+    Then I select a new movement reason "Issues" "PAV"
     Then I wait for 1 second
-    Then I swipe right
-    And I enter issued number "123"
+    And I enter quantity number "123"
     And I enter requested quantity "456"
-    Then I wait for "Complete" to appear
+    Then I select movement date
+    Then I press "Done"
+    Then I wait for 1 second
+    Then I enter signature "super"
     And I press "Complete"
-    And I wait for "Enter your initials" to appear
-    And I sign with "superuser"
+    Then I swipe right
+    Then I swipe right
+
     Then I see "123"
     Then I see "456"
     Then I see "super" in signature field
@@ -73,14 +83,19 @@ Feature: stock movement Page
     Then I select stock card code called "[01A01]"
     Then I wait for "Stock Card" to appear
     Then I wait for 1 second
-    And I select a reason "Negative Adjustments" "Return to DDM"
+
+    Then I press "NEW MOVEMENT"
+    Then I select a new movement reason "Negative Adjustments" "Return to DDM"
     Then I wait for 1 second
-    Then I swipe right
-    And I enter negative adjustment number "123"
-    Then I wait for "Complete" to appear
+    And I enter quantity number "123"
+    Then I select movement date
+    Then I press "Done"
+    Then I wait for 1 second
+    Then I enter signature "super"
     And I press "Complete"
-    And I wait for "Enter your initials" to appear
-    And I sign with "superuser"
+    Then I swipe right
+    Then I swipe right
+
     Then I see "123"
     Then I see "super" in signature field
     Then I navigate back

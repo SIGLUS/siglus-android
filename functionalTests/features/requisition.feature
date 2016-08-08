@@ -8,21 +8,26 @@ Feature: Requisition
     And I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
-    And I make a movement "[01A01]" "Issues" "PAV" "issued" "10"
+    And I make a new movement "[01A01]" "Issues" "PAV" "issued" "10"
     Then I wait for 1 second
 
 
      # Archive VIA drug
     And I select stock card code called "[01A02]"
     And I wait for "Stock Card" to appear
-    And I select a reason "Issues" "Maternity"
-    And I wait for 1 second
-    And I swipe right
-    And I enter issued number "123"
-    And I wait for "Complete" to appear
+
+    Then I press "NEW MOVEMENT"
+    Then I select a new movement reason "Issues" "Maternity"
+    Then I wait for 1 second
+    And I enter quantity number "123"
+    Then I select movement date
+    Then I press "Done"
+    Then I wait for 1 second
+    Then I enter signature "super"
     And I press "Complete"
-    And I wait for "Enter your initials" to appear
-    And I sign with "superuser"
+    Then I swipe right
+    Then I swipe right
+
     Then I see "0"
     And I press the menu key
     Then I see "Archive drugs"

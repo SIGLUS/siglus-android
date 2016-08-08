@@ -17,7 +17,7 @@ Feature: MMIA
     And I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
-    And I make a movement "[08S18Y]" "Issues" "PAV" "issued" "2"
+    And I make a new movement "[08S18Y]" "Issues" "PAV" "issued" "2"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second
     Then I navigate back

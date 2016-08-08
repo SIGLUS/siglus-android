@@ -41,7 +41,7 @@ And(/^I enter issued number "(.*?)"$/) do |number|
 end
 
 And(/^I enter requested quantity "(.*?)"$/) do |number|
-    q = query("android.widget.EditText id:'et_requested'")
+    q = query("android.widget.EditText id:'et_requested_quantity'")
     touch(q.last)
     keyboard_enter_text(number)
     hide_soft_keyboard
@@ -53,6 +53,41 @@ And(/^I enter negative adjustment number "(.*?)"$/) do |number|
     touch(q.last)
     keyboard_enter_text(number)
     hide_soft_keyboard
+end
+
+Then(/^I enter quantity number "(\d+)"$/) do |number|
+    q = query("android.widget.EditText id:'et_movement_quantity' text:''")
+    touch(q.first)
+    keyboard_enter_text(number)
+    hide_soft_keyboard
+end
+
+Then(/^I enter signature "(.*?)"$/) do |signature|
+    q = query("android.widget.EditText id:'et_movement_signature'")
+    touch(q)
+    keyboard_enter_text(signature)
+    hide_soft_keyboard
+end
+
+Then(/^I select movement reason$/) do
+    q = query("android.widget.EditText id:'et_movement_reason'")
+    touch(q)
+    touch(q)
+end
+
+Then(/^I select movement date$/) do
+    q = query("android.widget.EditText id:'et_movement_date'")
+    touch(q)
+    touch(q)
+end
+
+Then(/^I select a new movement reason "(.*?)" "(.*?)"$/) do |first_reason, second_reason|
+    steps %Q{
+        Then I press "#{first_reason}"
+        Then I wait for 1 second
+        Then I select movement reason
+        Then I press "#{second_reason}"
+    	}
 end
 
 And(/^I enter positive adjustment number "(.*?)"$/) do |number|
@@ -97,6 +132,31 @@ Then(/^I make a movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_ca
         And I press "Complete"
         And I wait for "Enter your initials" to appear
         And I sign with "superuser"
+        Then I wait for 2 seconds
+        Then I navigate back
+        Then I wait for 1 second
+        Then I navigate back
+    }
+end
+
+Then(/^I make a new movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_card_code, first_reason, second_reason, movement_column, number|
+    steps %Q{
+        Then I search stockcard by code "#{stock_card_code}" and select this item
+        Then I wait for "Stock Card" to appear
+        Then I wait for 1 second
+        Then I press "NEW MOVEMENT"
+        Then I select a new movement reason "#{first_reason}" "#{second_reason}"
+    }
+
+    steps %Q{
+        Then I wait for 1 second
+        Then I select movement date
+        Then I press "Done"
+        Then I wait for 1 second
+        And I enter quantity number "#{number}"
+        Then I enter signature "super"
+
+        And I press "Complete"
         Then I wait for 2 seconds
         Then I navigate back
         Then I wait for 1 second
