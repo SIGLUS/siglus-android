@@ -136,6 +136,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                 showDatePickerDialog(presenter.getStockMovementModel(), previousMovement.getMovementDate());
             }
         });
+        etMovementDate.setKeyListener(null);
 
         etMovementReason.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,6 +151,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                 reasonsDialog.show(getFragmentManager(), "");
             }
         });
+        etMovementReason.setKeyListener(null);
     }
 
     public static Intent getIntentToMe(StockMovementsActivityNew context, String stockName, MovementReasonManager.MovementType movementType, Long stockCardId) {
