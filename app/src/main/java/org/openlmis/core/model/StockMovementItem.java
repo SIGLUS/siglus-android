@@ -20,8 +20,10 @@ package org.openlmis.core.model;
 
 
 import com.google.gson.annotations.Expose;
+import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import org.openlmis.core.manager.MovementReasonManager;
@@ -79,6 +81,8 @@ public class StockMovementItem extends BaseModel {
     @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DATE_TIME_FORMAT)
     private java.util.Date createdTime;
 
+    @ForeignCollectionField()
+    private ForeignCollection<LotMovementItem> foreignLotMovementItems;
 
     public boolean isPositiveMovement() {
         return movementType.equals(MovementReasonManager.MovementType.RECEIVE) || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST);
