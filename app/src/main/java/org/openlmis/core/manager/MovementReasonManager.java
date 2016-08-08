@@ -36,7 +36,6 @@ import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,16 +67,21 @@ public final class MovementReasonManager {
     public static final String RES_DIVIDER = "[|]";
 
     List<MovementReason> currentReasonList;
+    List<MovementType> typeList;
+
     private static MovementReasonManager instance;
 
 
     Map<String, ArrayList<MovementReason>> reasonCache;
+    Map<String, ArrayList<MovementType>> typeCache;
 
     @Inject
     private MovementReasonManager(Context context){
         this.context = context;
         reasonCache = new HashMap<>();
+        typeCache = new HashMap<>();
         currentReasonList = initReasonList(this.context.getResources().getConfiguration().locale);
+        typeList = initTypeList(this.context.getResources().getConfiguration().locale);
     }
 
     public static MovementReasonManager getInstance(){
@@ -90,6 +94,27 @@ public final class MovementReasonManager {
 
     public void refresh(){
         instance = new MovementReasonManager(LMISApp.getContext());
+    }
+
+    private ArrayList<MovementType> initTypeList(Locale locale) {
+        if (typeCache.containsKey(locale.getLanguage())){
+            return typeCache.get(locale.getLanguage());
+        }
+
+        ArrayList<MovementType>  typeArrayList = new ArrayList<>();
+        MovementType.ISSUE.description = getResourceByLocal(locale).getString(R.string.ISSUE);
+        MovementType.RECEIVE.description = getResourceByLocal(locale).getString(R.string.RECEIVE);
+        MovementType.POSITIVE_ADJUST.description = getResourceByLocal(locale).getString(R.string.POSITIVE_ADJUST);
+        MovementType.NEGATIVE_ADJUST.description = getResourceByLocal(locale).getString(R.string.NEGATIVE_ADJUST);
+
+        typeArrayList.add(MovementType.ISSUE);
+        typeArrayList.add(MovementType.RECEIVE);
+        typeArrayList.add(MovementType.NEGATIVE_ADJUST);
+        typeArrayList.add(MovementType.POSITIVE_ADJUST);
+
+        typeCache.put(locale.getLanguage(), typeArrayList);
+
+        return typeArrayList;
     }
 
     private ArrayList<MovementReason> initReasonList(Locale locale) {
@@ -174,20 +199,8 @@ public final class MovementReasonManager {
         return new Resources(assets, metrics, config);
     }
 
-    public MovementType getMovementTypeByDescription(String movementTypeDescription) {
-        if (movementTypeDescription.equals("Issues") || movementTypeDescription.equals("Saídas")) {
-            return MovementType.ISSUE;
-        }
-        if (movementTypeDescription.equals("Entries") || movementTypeDescription.equals("Entradas")) {
-            return MovementType.RECEIVE;
-        }
-        if (movementTypeDescription.equals("Negative Adjustments") || movementTypeDescription.equals("Ajustes Negativos")) {
-            return MovementType.NEGATIVE_ADJUST;
-        }
-        if (movementTypeDescription.equals("Positive Adjustments") || movementTypeDescription.equals("Ajustes Positivos")) {
-            return MovementType.POSITIVE_ADJUST;
-        }
-        return null;
+    public List<MovementType> getMovementTypes() {
+        return typeList;
     }
 
     public enum MovementType {
@@ -199,8 +212,14 @@ public final class MovementReasonManager {
 
         private final String value;
 
+        String description;
+
         MovementType(String value) {
             this.value = value;
+        }
+
+        public String getDescription() {
+            return description;
         }
 
         @Override

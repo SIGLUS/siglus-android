@@ -106,9 +106,8 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         movementReasonManager = MovementReasonManager.getInstance();
 
         stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
-        String movementTypeStr = getIntent().getStringExtra(Constants.PARAM_MOVEMENT_TYPE);
+        movementType = (MovementReasonManager.MovementType) getIntent().getSerializableExtra(Constants.PARAM_MOVEMENT_TYPE);
         stockCardId =  getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0L);
-        movementType = movementReasonManager.getMovementTypeByDescription(movementTypeStr);
         movementReasons = movementReasonManager.buildReasonListForMovementType(movementType);
 
         try {
@@ -122,7 +121,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     }
 
     private void initUI() {
-        setTitle(movementType + " " + stockName);
+        setTitle(movementType.getDescription() + " " + stockName);
 
         if (!movementType.equals(MovementReasonManager.MovementType.ISSUE)) {
             lyRequestedQuantity.setVisibility(View.GONE);
@@ -153,7 +152,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         });
     }
 
-    public static Intent getIntentToMe(StockMovementsActivityNew context, String stockName, String movementType, Long stockCardId) {
+    public static Intent getIntentToMe(StockMovementsActivityNew context, String stockName, MovementReasonManager.MovementType movementType, Long stockCardId) {
         Intent intent = new Intent(context, StockCardNewMovementActivity.class);
         intent.putExtra(Constants.PARAM_STOCK_NAME, stockName);
         intent.putExtra(Constants.PARAM_MOVEMENT_TYPE, movementType);

@@ -38,6 +38,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockMovementPresenter;
@@ -48,6 +49,10 @@ import org.openlmis.core.view.adapter.StockMovementAdapter;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ExpireDateViewGroup;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
+
+import java.util.List;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -92,7 +97,7 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
 
     StockMovementsActivityNew activity;
 
-    String[] movementTypes;
+    List<MovementReasonManager.MovementType> movementTypes;
     SimpleSelectDialogFragment newMovementDialog;
 
 
@@ -108,7 +113,7 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
         stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
         isActivated = getIntent().getBooleanExtra(Constants.PARAM_IS_ACTIVATED, true);
         isKit = getIntent().getBooleanExtra(Constants.PARAM_IS_KIT, false);
-        movementTypes = getResources().getStringArray(R.array.movement_type_items_array);
+        movementTypes = MovementReasonManager.getInstance().getMovementTypes();
 
         super.onCreate(savedInstanceState);
 
@@ -272,7 +277,13 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
                 unpackKit();
                 break;
             case R.id.btn_new_movement:
-                newMovementDialog = new SimpleSelectDialogFragment(new MovementTypeOnClickListener(), movementTypes);
+                String[] selections = FluentIterable.from(movementTypes).transform(new Function<MovementReasonManager.MovementType, String>() {
+                    @Override
+                    public String apply(MovementReasonManager.MovementType movementType) {
+                        return movementType.getDescription();
+                    }
+                }).toArray(String.class);
+                newMovementDialog = new SimpleSelectDialogFragment(new MovementTypeOnClickListener(), selections);
                 newMovementDialog.show(getFragmentManager(), "");
                 break;
         }
@@ -281,7 +292,7 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
     class MovementTypeOnClickListener implements SimpleSelectDialogFragment.SelectorOnClickListener {
         @Override
         public void onClick(DialogInterface dialogInterface, int selectedItem) {
-            startActivityForResult(StockCardNewMovementActivity.getIntentToMe(activity, stockName, movementTypes[selectedItem], stockId), Constants.REQUEST_NEW_MOVEMENT_PAGE);
+            startActivityForResult(StockCardNewMovementActivity.getIntentToMe(activity, stockName, movementTypes.get(selectedItem), stockId), Constants.REQUEST_NEW_MOVEMENT_PAGE);
             newMovementDialog.dismiss();
         }
     }

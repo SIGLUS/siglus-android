@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="type_data">
-        <item>RECEIVE|Entries</item>
-        <item>ISSUE|Issues</item>
-        <item>POSITIVE_ADJUST|Positive Adjustments</item>
-        <item>NEGATIVE_ADJUST|Negative Adjustments</item>
-    </string-array>
     <string-array name="reason_data">
         <item>RECEIVE|DISTRICT_DDM|District( DDM)</item>
         <item>RECEIVE|PROVINCE_DPM|Province ( DPM)</item>

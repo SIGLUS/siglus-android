@@ -193,6 +193,11 @@
     <string name="label_ppe">PPE</string>
     <string name="hint_has_not_new_data">You are at the end of the list</string>
 
+    <string name="RECEIVE">Entries</string>
+    <string name="ISSUE">Issues</string>
+    <string name="NEGATIVE_ADJUST">Negative Adjustments</string>
+    <string name="POSITIVE_ADJUST">Positive Adjustments</string>
+
     <!-- Reason/Origin/Destination select dialog-->
     <string-array name="movement_type_items_array">
         <item>Entries</item>
