@@ -7,6 +7,10 @@ import java.util.Date;
 
 @DatabaseTable(tableName = "lots")
 public class Lot extends BaseModel{
+
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
+    Product product;
+
     @DatabaseField
     String lotNumber;
 

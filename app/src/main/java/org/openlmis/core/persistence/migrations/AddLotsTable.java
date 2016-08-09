@@ -9,6 +9,7 @@ public class AddLotsTable extends Migration {
                 + "(`createdAt` VARCHAR NOT NULL, " +
                 "`updatedAt` VARCHAR NOT NULL, " +
                 "`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "`product_id` BIGINT NOT NULL, " +
                 "`lotNumber` VARCHAR NOT NULL, " +
                 "`expirationDate` VARCHAR) ");
     }

@@ -22,7 +22,9 @@ package org.openlmis.core.model;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
+import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.ArrayList;
@@ -68,6 +70,9 @@ public class Product extends BaseModel implements Comparable<Product> {
 
     @DatabaseField
     boolean isKit;
+
+    @ForeignCollectionField()
+    private ForeignCollection<Lot> lotList;
 
     List<KitProduct> kitProductList = new ArrayList<>();
 
