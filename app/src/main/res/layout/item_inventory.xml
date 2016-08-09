@@ -94,5 +94,24 @@
                 android:hint="@string/label_expire_date" />
 
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/add_new_lot_panel"
+            style="@style/InventoryCard.ActionPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/tx_add_new_lot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_size_normal"
+                android:layout_marginLeft="@dimen/margin_normal"
+                android:textColor="@color/color_accent"
+                android:text="@string/label_add_new_lot" />
+
+
+
+        </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

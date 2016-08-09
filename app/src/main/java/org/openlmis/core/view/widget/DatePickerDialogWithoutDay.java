@@ -25,7 +25,7 @@ public class DatePickerDialogWithoutDay extends DatePickerDialog {
 
     private void init(OnDateSetListener listener) {
         mDateSetListener = listener;
-        hideDay();
+        hideDay(getDatePicker());
     }
 
     @Override
@@ -54,12 +54,11 @@ public class DatePickerDialogWithoutDay extends DatePickerDialog {
         super.onDateChanged(view, year, month, defaultDay);
     }
 
-    private void hideDay() {
-        DatePicker dp = getDatePicker();
-        if (dp == null) {
+    public static void hideDay(DatePicker datePicker) {
+        if (datePicker == null) {
             return;
         }
-        ViewGroup datePickerLayout = (ViewGroup) dp.getChildAt(0);
+        ViewGroup datePickerLayout = (ViewGroup) datePicker.getChildAt(0);
         if (datePickerLayout == null) {
             return;
         }

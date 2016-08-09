@@ -1,5 +1,6 @@
 package org.openlmis.core.view.holder;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.StockCard;
@@ -21,6 +23,7 @@ import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.widget.AddLotDialog;
 import org.openlmis.core.view.widget.DatePickerDialogWithoutDay;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 
@@ -53,6 +56,10 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     TextView tvHistoryAction;
     @InjectView(R.id.touchArea_checkbox)
     LinearLayout taCheckbox;
+    @InjectView(R.id.add_new_lot_panel)
+    View actionPanelForAddLot;
+    @InjectView(R.id.tx_add_new_lot)
+    TextView txAddNewLot;
 
     public InitialInventoryViewHolder(View itemView) {
         super(itemView);
@@ -106,6 +113,13 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
             }
         });
 
+        txAddNewLot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddNewLotDialog();
+            }
+        });
+
         final EditTextWatcher textWatcher = new EditTextWatcher(viewModel);
         txQuantity.removeTextChangedListener(textWatcher);
 
@@ -113,9 +127,17 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked && !viewModel.getProduct().isArchived()) {
-                    showEditPanel(View.VISIBLE);
+                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_new_lot_in_initial_inventory)) {
+                        showAddNewLotPanel(View.VISIBLE);
+                    } else {
+                        showEditPanel(View.VISIBLE);
+                    }
                 } else {
-                    showEditPanel(View.GONE);
+                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_new_lot_in_initial_inventory)) {
+                        showAddNewLotPanel(View.GONE);
+                    } else {
+                        showEditPanel(View.GONE);
+                    }
                     populateEditPanel(StringUtils.EMPTY, StringUtils.EMPTY);
 
                     viewModel.setQuantity(StringUtils.EMPTY);
@@ -126,6 +148,13 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         });
 
         txQuantity.addTextChangedListener(textWatcher);
+    }
+
+    private void showAddNewLotDialog() {
+
+        AddLotDialog addLotDialog = new AddLotDialog();
+        addLotDialog.show(((Activity) context).getFragmentManager(), "add_new_lot");
+
     }
 
     private void initHistoryView(final InventoryViewModel viewModel, final ViewHistoryListener listener) {
@@ -149,6 +178,12 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         actionDivider.setVisibility(visible);
         actionPanel.setVisibility(visible);
     }
+
+    public void showAddNewLotPanel(int visible){
+        actionDivider.setVisibility(visible);
+        actionPanelForAddLot.setVisibility(visible);
+    }
+
 
     class EditTextWatcher extends SingleTextWatcher {
 
