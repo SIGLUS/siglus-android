@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,6 +26,7 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
+import org.openlmis.core.view.widget.AddLotDialog;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -158,7 +160,30 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         });
         etMovementDate.setKeyListener(null);
 
-        etMovementReason.setOnClickListener(new View.OnClickListener() {
+        etMovementReason.setOnClickListener(getMovementReasonOnClickListener());
+        etMovementReason.setKeyListener(null);
+
+        actionAddNewLot.setOnClickListener(getAddNewLotOnClickListener());
+    }
+
+    @NonNull
+    private View.OnClickListener getAddNewLotOnClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AddLotDialog(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                }).show(getFragmentManager(), "");
+            }
+        };
+    }
+
+    @NonNull
+    private View.OnClickListener getMovementReasonOnClickListener() {
+        return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 reasonListStr = FluentIterable.from(movementReasons).transform(new Function<MovementReasonManager.MovementReason, String>() {
@@ -170,8 +195,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                 reasonsDialog = new SimpleSelectDialogFragment(context, new MovementTypeOnClickListener(viewModel), reasonListStr);
                 reasonsDialog.show(getFragmentManager(), "");
             }
-        });
-        etMovementReason.setKeyListener(null);
+        };
     }
 
     public static Intent getIntentToMe(StockMovementsActivityNew context, String stockName, MovementReasonManager.MovementType movementType, Long stockCardId, boolean isKit) {
@@ -319,5 +343,4 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             reasonsDialog.dismiss();
         }
     }
-
 }

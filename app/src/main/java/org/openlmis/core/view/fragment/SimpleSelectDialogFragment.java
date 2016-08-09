@@ -3,7 +3,6 @@ package org.openlmis.core.view.fragment;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -33,10 +32,5 @@ public class SimpleSelectDialogFragment extends BaseDialogFragment{
 
         alertDialog.getListView().setOnItemClickListener(movementTypeOnClickListener);
         return alertDialog;
-    }
-
-
-    public interface SelectorOnClickListener extends DialogInterface.OnClickListener {
-        void onClick(DialogInterface dialogInterface, int selectedItem);
     }
 }

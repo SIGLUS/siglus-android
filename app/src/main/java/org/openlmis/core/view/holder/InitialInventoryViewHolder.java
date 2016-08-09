@@ -152,7 +152,12 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
 
     private void showAddNewLotDialog() {
 
-        AddLotDialog addLotDialog = new AddLotDialog();
+        AddLotDialog addLotDialog = new AddLotDialog(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         addLotDialog.show(((Activity) context).getFragmentManager(), "add_new_lot");
 
     }
