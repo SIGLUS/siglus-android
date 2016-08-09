@@ -20,7 +20,6 @@ package org.openlmis.core.view.activity;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -28,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -96,6 +96,7 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
     private boolean isKit;
 
     StockMovementsActivityNew activity;
+    Context context;
 
     List<MovementReasonManager.MovementType> movementTypes;
     SimpleSelectDialogFragment newMovementDialog;
@@ -109,6 +110,7 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         activity = this;
+        context = this;
         stockId = getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
         stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
         isActivated = getIntent().getBooleanExtra(Constants.PARAM_IS_ACTIVATED, true);
@@ -283,16 +285,16 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
                         return movementType.getDescription();
                     }
                 }).toArray(String.class);
-                newMovementDialog = new SimpleSelectDialogFragment(new MovementTypeOnClickListener(), selections);
+                newMovementDialog = new SimpleSelectDialogFragment(context, new MovementTypeOnClickListener(), selections);
                 newMovementDialog.show(getFragmentManager(), "");
                 break;
         }
     }
 
-    class MovementTypeOnClickListener implements SimpleSelectDialogFragment.SelectorOnClickListener {
+    class MovementTypeOnClickListener implements AdapterView.OnItemClickListener {
         @Override
-        public void onClick(DialogInterface dialogInterface, int selectedItem) {
-            startActivityForResult(StockCardNewMovementActivity.getIntentToMe(activity, stockName, movementTypes.get(selectedItem), stockId, isKit), Constants.REQUEST_NEW_MOVEMENT_PAGE);
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            startActivityForResult(StockCardNewMovementActivity.getIntentToMe(activity, stockName, movementTypes.get(position), stockId, isKit), Constants.REQUEST_NEW_MOVEMENT_PAGE);
             newMovementDialog.dismiss();
         }
     }

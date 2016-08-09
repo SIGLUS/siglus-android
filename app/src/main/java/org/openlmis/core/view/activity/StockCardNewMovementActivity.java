@@ -1,12 +1,13 @@
 package org.openlmis.core.view.activity;
 
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -102,6 +103,8 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     private boolean isKit;
 
+    private Context context;
+
     @Override
     protected ScreenName getScreenName() {
         return ScreenName.StockCardNewMovementScreen;
@@ -109,6 +112,8 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        context = this;
+
         super.onCreate(savedInstanceState);
         movementReasonManager = MovementReasonManager.getInstance();
 
@@ -162,7 +167,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                         return movementReason.getDescription();
                     }
                 }).toArray(String.class);
-                reasonsDialog = new SimpleSelectDialogFragment(new MovementTypeOnClickListener(viewModel), reasonListStr);
+                reasonsDialog = new SimpleSelectDialogFragment(context, new MovementTypeOnClickListener(viewModel), reasonListStr);
                 reasonsDialog.show(getFragmentManager(), "");
             }
         });
@@ -299,7 +304,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         }
     }
 
-    class MovementTypeOnClickListener implements SimpleSelectDialogFragment.SelectorOnClickListener {
+    class MovementTypeOnClickListener implements AdapterView.OnItemClickListener {
 
         StockMovementViewModel movementViewModel;
 
@@ -308,9 +313,9 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         }
 
         @Override
-        public void onClick(DialogInterface dialogInterface, int selectedItem) {
-            etMovementReason.setText(reasonListStr[selectedItem]);
-            viewModel.setReason(movementReasons.get(selectedItem));
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            etMovementReason.setText(reasonListStr[position]);
+            viewModel.setReason(movementReasons.get(position));
             reasonsDialog.dismiss();
         }
     }
