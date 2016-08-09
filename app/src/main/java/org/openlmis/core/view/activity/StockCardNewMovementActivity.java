@@ -7,6 +7,8 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
@@ -24,12 +26,15 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
+import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.openlmis.core.view.widget.AddLotDialog;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -84,10 +89,10 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     @InjectView(R.id.action_add_new_lot)
     View actionAddNewLot;
 
-
     @InjectPresenter(NewStockMovementPresenter.class)
     NewStockMovementPresenter presenter;
 
+    private LotMovementAdapter lotMovementAdapter;
     private String stockName;
     private MovementReasonManager.MovementType movementType;
     private Long stockCardId;
@@ -100,12 +105,18 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     SimpleSelectDialogFragment reasonsDialog;
 
-    private StockMovementViewModel viewModel;
+    private StockMovementViewModel stockMovementViewModel;
+    private List<LotMovementViewModel> lotMovementViewModels;
+
     private String[] reasonListStr;
 
     private boolean isKit;
 
     private Context context;
+    private AddLotDialog addLotDialog;
+
+    @InjectView(R.id.lot_list)
+    private RecyclerView lotMovementRecycleView;
 
     @Override
     protected ScreenName getScreenName() {
@@ -131,8 +142,15 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             e.printStackTrace();
         }
 
-        viewModel = new StockMovementViewModel();
+        stockMovementViewModel = new StockMovementViewModel();
         initUI();
+        initRecyclerView();
+    }
+
+    private void initRecyclerView() {
+        lotMovementRecycleView.setLayoutManager(new LinearLayoutManager(this));
+        lotMovementAdapter = new LotMovementAdapter(new ArrayList());
+        lotMovementRecycleView.setAdapter(lotMovementAdapter);
     }
 
     private void initUI() {
@@ -171,12 +189,18 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AddLotDialog(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                addLotDialog = new AddLotDialog(getDialogOnClickListener());
+                addLotDialog.show(getFragmentManager(), "");
+            }
+        };
+    }
 
-                    }
-                }).show(getFragmentManager(), "");
+    @NonNull
+    private View.OnClickListener getDialogOnClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addLotDialog.dismiss();
             }
         };
     }
@@ -192,7 +216,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                         return movementReason.getDescription();
                     }
                 }).toArray(String.class);
-                reasonsDialog = new SimpleSelectDialogFragment(context, new MovementTypeOnClickListener(viewModel), reasonListStr);
+                reasonsDialog = new SimpleSelectDialogFragment(context, new MovementTypeOnClickListener(stockMovementViewModel), reasonListStr);
                 reasonsDialog.show(getFragmentManager(), "");
             }
         };
@@ -221,15 +245,15 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         switch (view.getId()) {
             case R.id.btn_complete:
 
-                viewModel.setMovementDate(etMovementDate.getText().toString());
-                viewModel.setDocumentNo(etDocumentNumber.getText().toString());
-                viewModel.setRequested(etRequestedQuantity.getText().toString());
+                stockMovementViewModel.setMovementDate(etMovementDate.getText().toString());
+                stockMovementViewModel.setDocumentNo(etDocumentNumber.getText().toString());
+                stockMovementViewModel.setRequested(etRequestedQuantity.getText().toString());
                 HashMap<MovementReasonManager.MovementType, String> quantityMap = new HashMap<>();
                 quantityMap.put(movementType, etMovementQuantity.getText().toString());
-                viewModel.setTypeQuantityMap(quantityMap);
-                viewModel.setSignature(etMovementSignature.getText().toString());
+                stockMovementViewModel.setTypeQuantityMap(quantityMap);
+                stockMovementViewModel.setSignature(etMovementSignature.getText().toString());
 
-                presenter.saveStockMovement(viewModel, stockCardId);
+                presenter.saveStockMovement(stockMovementViewModel, stockCardId);
                 break;
             case R.id.btn_cancel:
                 finish();
@@ -339,7 +363,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             etMovementReason.setText(reasonListStr[position]);
-            viewModel.setReason(movementReasons.get(position));
+            stockMovementViewModel.setReason(movementReasons.get(position));
             reasonsDialog.dismiss();
         }
     }

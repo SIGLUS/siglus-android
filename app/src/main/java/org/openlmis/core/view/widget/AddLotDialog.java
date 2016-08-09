@@ -12,7 +12,9 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
+import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 
+import lombok.Getter;
 import roboguice.inject.InjectView;
 
 public class AddLotDialog extends BaseDialogFragment {
@@ -27,6 +29,9 @@ public class AddLotDialog extends BaseDialogFragment {
     private Button btnComplete;
 
     private View.OnClickListener listener;
+
+    @Getter
+    private LotMovementViewModel viewModel;
 
     public AddLotDialog(View.OnClickListener listener) {
         this.listener = listener;

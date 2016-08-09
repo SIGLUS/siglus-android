@@ -380,4 +380,8 @@
     <string name="hint_lot_number">Lot number</string>
     <string name="label_add_lot_expire">When does the lot expire?</string>
     <string name="btn_add_new_lot">+ Add New Lot</string>
+    <string name="hint_lot_info"><![CDATA[Lot number & expiry date]]></string>
+    <string name="hint_lot_amount">Amount</string>
+    <string name="hint_soh_of_lot">Stock on hand of lot</string>
+    <string name="label_current_soh_of_lot">Stock on hand of lot</string>
 </resources>

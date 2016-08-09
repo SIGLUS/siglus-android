@@ -138,6 +138,12 @@
                 android:textColor="@color/color_accent"/>
         </LinearLayout>
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/lot_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:scrollbars="vertical" />
+
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/action_panel"
             style="@style/FormAction.Container"

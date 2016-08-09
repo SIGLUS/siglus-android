@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="7">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/ly_lot_info"
+            android:layout_width="@dimen/new_movement_button_width"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:padding="@dimen/padding_normal">
+
+            <EditText
+                android:id="@+id/et_lot_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_lot_info" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/ly_lot_amount"
+            android:layout_width="@dimen/new_movement_button_width"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:padding="@dimen/padding_normal">
+
+            <EditText
+                android:id="@+id/et_lot_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_lot_amount" />
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/vg_soh_lot"
+        style="@style/ItemPhysical.SOHText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_small">
+
+        <TextView
+            android:id="@+id/tv_stock_on_hand_in_lot_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingLeft="@dimen/padding_medium"
+            android:text="@string/label_current_soh_of_lot" />
+
+        <TextView
+            android:id="@+id/stock_on_hand_in_lot"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/color_text_secondary"
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>

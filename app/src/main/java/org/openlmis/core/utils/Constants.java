@@ -50,6 +50,7 @@ public final class Constants {
     public static final String PARAM_ADDED_DRUGS_TO_VIA = "addedDrugsToVIA";
     public static final String PARAM_ADDED_DRUG_CODES_IN_VIA = "addedDrugsInVIA";
     public static final String PARAM_MOVEMENT_TYPE = "movementType";
+    public static final String PARAM_LOT_DETAILS = "lotDetails";
 
     // Request Params
     public static final int REQUEST_FROM_STOCK_LIST_PAGE = 100;
