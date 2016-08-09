@@ -11,6 +11,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
@@ -77,6 +78,10 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     @InjectView(R.id.btn_cancel)
     TextView tvCancel;
 
+    @InjectView(R.id.action_add_new_lot)
+    View actionAddNewLot;
+
+
     @InjectPresenter(NewStockMovementPresenter.class)
     NewStockMovementPresenter presenter;
 
@@ -95,6 +100,8 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     private StockMovementViewModel viewModel;
     private String[] reasonListStr;
 
+    private boolean isKit;
+
     @Override
     protected ScreenName getScreenName() {
         return ScreenName.StockCardNewMovementScreen;
@@ -108,6 +115,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
         movementType = (MovementReasonManager.MovementType) getIntent().getSerializableExtra(Constants.PARAM_MOVEMENT_TYPE);
         stockCardId =  getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0L);
+        isKit = getIntent().getBooleanExtra(Constants.PARAM_IS_KIT, false);
         movementReasons = movementReasonManager.buildReasonListForMovementType(movementType);
 
         try {
@@ -125,6 +133,13 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
         if (!movementType.equals(MovementReasonManager.MovementType.ISSUE)) {
             lyRequestedQuantity.setVisibility(View.GONE);
+        }
+
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) && !isKit
+                && (movementType.equals(MovementReasonManager.MovementType.RECEIVE)
+                || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST))) {
+            actionAddNewLot.setVisibility(View.VISIBLE);
+            lyMovementQuantity.setVisibility(View.GONE);
         }
 
         btnComplete.setOnClickListener(this);
@@ -154,11 +169,12 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         etMovementReason.setKeyListener(null);
     }
 
-    public static Intent getIntentToMe(StockMovementsActivityNew context, String stockName, MovementReasonManager.MovementType movementType, Long stockCardId) {
+    public static Intent getIntentToMe(StockMovementsActivityNew context, String stockName, MovementReasonManager.MovementType movementType, Long stockCardId, boolean isKit) {
         Intent intent = new Intent(context, StockCardNewMovementActivity.class);
         intent.putExtra(Constants.PARAM_STOCK_NAME, stockName);
         intent.putExtra(Constants.PARAM_MOVEMENT_TYPE, movementType);
         intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCardId);
+        intent.putExtra(Constants.PARAM_IS_KIT, isKit);
         return intent;
     }
 

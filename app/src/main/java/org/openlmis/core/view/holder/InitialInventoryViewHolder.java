@@ -127,13 +127,13 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked && !viewModel.getProduct().isArchived()) {
-                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_new_lot_in_initial_inventory)) {
+                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
                         showAddNewLotPanel(View.VISIBLE);
                     } else {
                         showEditPanel(View.VISIBLE);
                     }
                 } else {
-                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_new_lot_in_initial_inventory)) {
+                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
                         showAddNewLotPanel(View.GONE);
                     } else {
                         showEditPanel(View.GONE);

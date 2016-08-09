@@ -379,4 +379,5 @@
     <string name="label_lot_number">What is the lot number?</string>
     <string name="hint_lot_number">Lot number</string>
     <string name="label_add_lot_expire">When does the lot expire?</string>
+    <string name="btn_add_new_lot">+ Add New Lot</string>
 </resources>

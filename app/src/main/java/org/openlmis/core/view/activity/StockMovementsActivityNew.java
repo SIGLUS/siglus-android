@@ -292,7 +292,7 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
     class MovementTypeOnClickListener implements SimpleSelectDialogFragment.SelectorOnClickListener {
         @Override
         public void onClick(DialogInterface dialogInterface, int selectedItem) {
-            startActivityForResult(StockCardNewMovementActivity.getIntentToMe(activity, stockName, movementTypes.get(selectedItem), stockId), Constants.REQUEST_NEW_MOVEMENT_PAGE);
+            startActivityForResult(StockCardNewMovementActivity.getIntentToMe(activity, stockName, movementTypes.get(selectedItem), stockId, isKit), Constants.REQUEST_NEW_MOVEMENT_PAGE);
             newMovementDialog.dismiss();
         }
     }

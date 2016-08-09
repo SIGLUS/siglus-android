@@ -121,6 +121,24 @@
         </android.support.design.widget.TextInputLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/action_add_new_lot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/margin_tiny"
+            android:padding="@dimen/padding_normal"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/btn_add_new_lot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_add_new_lot"
+                android:textSize="16dp"
+                android:textColor="@color/color_accent"/>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/action_panel"
             style="@style/FormAction.Container"
             android:layout_width="match_parent"
