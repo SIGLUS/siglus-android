@@ -19,6 +19,9 @@ public class LotMovementItem extends BaseModel{
     @DatabaseField
     long stockOnHand;
 
+    @DatabaseField
+    long movementQuantity;
+
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private StockMovementItem stockMovementItem;
 }

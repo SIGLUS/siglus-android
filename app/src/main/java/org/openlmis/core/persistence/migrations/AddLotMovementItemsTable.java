@@ -11,6 +11,7 @@ public class AddLotMovementItemsTable extends Migration {
                 "`id` INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "`lot_id` BIGINT NOT NULL, " +
                 "`stockOnHand` BIGINT NOT NULL, " +
+                "`movementQuantity` BIGINT NOT NULL, " +
                 "`stockMovementItem_id` BIGINT NOT NULL) ");
     }
 }
