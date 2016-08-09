@@ -38,7 +38,6 @@
     <string name="btn_done">Completo</string>
     <string name="msg_remove_expire_date">Tem certeza que quer remover esta data de expiração?</string>
     <string name="msg_save_before_exit">Por favor, grave o inventário inicial, antes de sair da aplicação</string>
-    <string name="label_add_new_lot">+ Adicionar novo lote</string>
 
     <!--Home Page-->
     <string name="label_stock_cards">Visão Geral da Ficha de estoque</string>
@@ -342,7 +341,10 @@
     <string name="label_lot_number">What is the lot number?</string>
     <string name="hint_lot_number">Lot number</string>
     <string name="label_add_lot_expire">When does the lot expire?</string>
-    <string name="btn_add_new_lot">+ Add New Lot</string>
+    <string name="msg_empty_lot_number">Lot number can not be blank.</string>
+    <string name="wrong_expire_date_warning">The expiry date that you have entered is in the past. Please double check the date before adding the lot.</string>
+    <string name="btn_add_new_lot">+ Adicionar novo lote</string>
+    <string name="title_add_new_lot">Add new lot</string>
     <string name="hint_lot_info"><![CDATA[Lot number & expiry date]]></string>
     <string name="hint_lot_amount">Amount</string>
     <string name="hint_soh_of_lot">Stock on hand of lot</string>

@@ -108,7 +108,7 @@
                 android:textSize="@dimen/font_size_normal"
                 android:layout_marginLeft="@dimen/margin_normal"
                 android:textColor="@color/color_accent"
-                android:text="@string/label_add_new_lot" />
+                android:text="@string/btn_add_new_lot" />
 
 
 

@@ -23,7 +23,7 @@ import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.openlmis.core.view.widget.AddLotDialog;
+import org.openlmis.core.view.widget.AddLotDialogFragment;
 import org.openlmis.core.view.widget.DatePickerDialogWithoutDay;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 
@@ -151,14 +151,22 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     }
 
     private void showAddNewLotDialog() {
-
-        AddLotDialog addLotDialog = new AddLotDialog(new View.OnClickListener() {
+        final AddLotDialogFragment addLotDialogFragment = new AddLotDialogFragment();
+        addLotDialogFragment.setListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                switch (v.getId()) {
+                    case R.id.btn_complete:
+                        addLotDialogFragment.validate();
+                        break;
+                    case R.id.btn_cancel:
+                        addLotDialogFragment.dismiss();
+                        checkBox.setChecked(false);
+                        break;
+                }
             }
         });
-        addLotDialog.show(((Activity) context).getFragmentManager(), "add_new_lot");
+        addLotDialogFragment.show(((Activity) context).getFragmentManager(), "add_new_lot");
 
     }
 
@@ -184,7 +192,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         actionPanel.setVisibility(visible);
     }
 
-    public void showAddNewLotPanel(int visible){
+    public void showAddNewLotPanel(int visible) {
         actionDivider.setVisibility(visible);
         actionPanelForAddLot.setVisibility(visible);
     }

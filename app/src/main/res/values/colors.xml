@@ -50,4 +50,8 @@
     <color name="color_requisition_banner_background">#E8D5D3</color>
     <color name="color_requisition_banner_border">#E1BFC5</color>
     <color name="color_requisition_banner_text">#9D3B3B</color>
+
+    <color name="color_add_lot_page_expire_date_warning_border">#F5E8C2</color>
+    <color name="color_add_lot_page_expire_date_warning_background">#F8F4DB</color>
+    <color name="color_add_lot_page_expire_date_warning_text">#7B602E</color>
 </resources>

@@ -30,7 +30,6 @@ import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class MovementTypeDialog {

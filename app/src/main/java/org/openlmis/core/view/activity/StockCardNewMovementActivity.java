@@ -30,7 +30,7 @@ import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
-import org.openlmis.core.view.widget.AddLotDialog;
+import org.openlmis.core.view.widget.AddLotDialogFragment;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -89,6 +89,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     @InjectView(R.id.action_add_new_lot)
     View actionAddNewLot;
 
+
     @InjectPresenter(NewStockMovementPresenter.class)
     NewStockMovementPresenter presenter;
 
@@ -113,7 +114,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     private boolean isKit;
 
     private Context context;
-    private AddLotDialog addLotDialog;
+    private AddLotDialogFragment addLotDialogFragment;
 
     @InjectView(R.id.lot_list)
     private RecyclerView lotMovementRecycleView;
@@ -189,18 +190,21 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addLotDialog = new AddLotDialog(getDialogOnClickListener());
-                addLotDialog.show(getFragmentManager(), "");
-            }
-        };
-    }
-
-    @NonNull
-    private View.OnClickListener getDialogOnClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addLotDialog.dismiss();
+                addLotDialogFragment = new AddLotDialogFragment();
+                addLotDialogFragment.setListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        switch (v.getId()) {
+                            case R.id.btn_complete:
+                                addLotDialogFragment.validate();
+                                break;
+                            case R.id.btn_cancel:
+                                addLotDialogFragment.dismiss();
+                                break;
+                        }
+                    }
+                });
+                addLotDialogFragment.show(getFragmentManager(), "");
             }
         };
     }
