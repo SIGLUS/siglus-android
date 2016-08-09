@@ -74,11 +74,12 @@
         <activity
             android:name=".view.activity.StockMovementsActivityNew"
             android:label="@string/title_stock_movement"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
         <activity
             android:name=".view.activity.StockCardNewMovementActivity"
             android:label="Title drug"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.activity.RnRFormListActivity"
             android:label="@string/title_stock_movement"
