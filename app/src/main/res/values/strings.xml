@@ -194,19 +194,11 @@
     <string name="label_ppe">PPE</string>
     <string name="hint_has_not_new_data">You are at the end of the list</string>
 
+    <!-- Reason/Origin/Destination select dialog-->
     <string name="RECEIVE">Entries</string>
     <string name="ISSUE">Issues</string>
     <string name="NEGATIVE_ADJUST">Negative Adjustments</string>
     <string name="POSITIVE_ADJUST">Positive Adjustments</string>
-
-    <!-- Reason/Origin/Destination select dialog-->
-    <string-array name="movement_type_items_array">
-        <item>Entries</item>
-        <item>Negative Adjustments</item>
-        <item>Positive Adjustments</item>
-        <item>Issues</item>
-    </string-array>
-
 
     <!-- Stock Card List Page -->
     <string name="search_hint">Search…</string>
