@@ -29,6 +29,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
+import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
 import lombok.Getter;
@@ -158,6 +159,10 @@ public class NewStockMovementPresenter extends Presenter {
             return Long.parseLong(quantity) > previousStockMovement.getStockOnHand();
         }
         return false;
+    }
+
+    public void addLotMovement(LotMovementViewModel lotMovementViewModel) {
+
     }
 
     public interface NewStockMovementView extends BaseView {

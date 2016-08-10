@@ -196,7 +196,12 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                     public void onClick(View v) {
                         switch (v.getId()) {
                             case R.id.btn_complete:
-                                addLotDialogFragment.validate();
+                                if (addLotDialogFragment.validate()) {
+                                    LotMovementViewModel lotMovementViewModel = new LotMovementViewModel();
+                                    lotMovementViewModel.setExpiryDate(addLotDialogFragment.getExpiryDate());
+                                    lotMovementViewModel.setLotNumber(addLotDialogFragment.getLotNumber());
+                                    presenter.addLotMovement(lotMovementViewModel);
+                                }
                                 break;
                             case R.id.btn_cancel:
                                 addLotDialogFragment.dismiss();

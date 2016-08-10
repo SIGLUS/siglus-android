@@ -14,10 +14,11 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
-import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -47,7 +48,10 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     TextView expiryDateWarning;
 
     @Getter
-    private LotMovementViewModel viewModel;
+    String lotNumber;
+
+    @Getter
+    String expiryDate;
 
     @Setter
     private View.OnClickListener listener;
@@ -97,18 +101,24 @@ public class AddLotDialogFragment extends BaseDialogFragment {
         }
     }
 
-    public void validate() {
+    public boolean validate() {
         clearErrorMessage();
-        if (etLotNumber.getText().toString().trim().isEmpty()) {
+        if (StringUtils.isBlank(etLotNumber.getText().toString())) {
             lyLotNumber.setError(getResources().getString(R.string.msg_empty_lot_number));
             etLotNumber.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+            return false;
         }
 
         Calendar today = GregorianCalendar.getInstance();
         GregorianCalendar enteredExpiryDate = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), DatePickerDialogWithoutDay.getLastDayOfMonth(datePicker));
-        if (enteredExpiryDate.before(today)) {
+        if (enteredExpiryDate == null || enteredExpiryDate.before(today)) {
             expiryDateWarning.setVisibility(View.VISIBLE);
+            return false;
         }
+
+        lotNumber = etLotNumber.getText().toString().trim();
+        expiryDate = DateUtil.formatDate(enteredExpiryDate.getTime(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+        return true;
     }
 
     private void clearErrorMessage() {
