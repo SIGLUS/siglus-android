@@ -61,6 +61,8 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     @InjectView(R.id.tx_add_new_lot)
     TextView txAddNewLot;
 
+    private AddLotDialogFragment addLotDialogFragment;
+
     public InitialInventoryViewHolder(View itemView) {
         super(itemView);
         initView();
@@ -128,6 +130,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked && !viewModel.getProduct().isArchived()) {
                     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+                        showAddNewLotDialog();
                         showAddNewLotPanel(View.VISIBLE);
                     } else {
                         showEditPanel(View.VISIBLE);
@@ -151,7 +154,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     }
 
     private void showAddNewLotDialog() {
-        final AddLotDialogFragment addLotDialogFragment = new AddLotDialogFragment();
+        addLotDialogFragment = new AddLotDialogFragment();
         addLotDialogFragment.setListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,7 +170,6 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
             }
         });
         addLotDialogFragment.show(((Activity) context).getFragmentManager(), "add_new_lot");
-
     }
 
     private void initHistoryView(final InventoryViewModel viewModel, final ViewHistoryListener listener) {

@@ -52,9 +52,6 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     @Setter
     private View.OnClickListener listener;
 
-    public AddLotDialogFragment() {
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.dialog_add_lot, container, false);
