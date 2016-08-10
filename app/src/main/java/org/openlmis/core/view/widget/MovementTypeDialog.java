@@ -31,6 +31,8 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
 
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
+
 
 public class MovementTypeDialog {
 
@@ -58,10 +60,8 @@ public class MovementTypeDialog {
         this.context = context;
         this.listener = listener;
 
-        reasonManager = MovementReasonManager.getInstance();
-
         builder = new AlertDialog.Builder(context);
-        contentList = reasonManager.getMovementTypeDescriptionList();
+        contentList = newArrayList(context.getResources().getStringArray(R.array.movement_type_items_array));
 
         adapter = new ArrayAdapter<>(context, R.layout.item_movement_type, R.id.text, contentList);
 
@@ -81,6 +81,7 @@ public class MovementTypeDialog {
             }
         });
 
+        reasonManager = MovementReasonManager.getInstance();
         movementReasons = new ArrayList<>();
     }
 

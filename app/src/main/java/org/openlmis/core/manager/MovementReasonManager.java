@@ -32,7 +32,6 @@ import com.google.inject.Singleton;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
-import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -45,7 +44,6 @@ import java.util.Map;
 
 import lombok.Data;
 
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 
 @Singleton
@@ -68,8 +66,8 @@ public final class MovementReasonManager {
     Context context;
     public static final String RES_DIVIDER = "[|]";
 
-    ArrayList<MovementReason> currentReasonList;
-    ArrayList<MovementType> typeList;
+    List<MovementReason> currentReasonList;
+    List<MovementType> typeList;
 
     private static MovementReasonManager instance;
 
@@ -117,15 +115,6 @@ public final class MovementReasonManager {
         typeCache.put(locale.getLanguage(), typeArrayList);
 
         return typeArrayList;
-    }
-
-    public ArrayList<String> getMovementTypeDescriptionList() {
-        return newArrayList(FluentIterable.from(typeList).transform(new Function<MovementType, String>() {
-            @Override
-            public String apply(MovementType movementType) {
-                return movementType.getDescription();
-            }
-        }));
     }
 
     private ArrayList<MovementReason> initReasonList(Locale locale) {
