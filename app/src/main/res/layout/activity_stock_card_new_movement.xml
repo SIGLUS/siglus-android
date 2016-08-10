@@ -86,7 +86,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_requested_quantity"
-                    android:inputType="number" />
+                    android:inputType="number"
+                    android:maxLength="9"/>
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
@@ -103,7 +104,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_movement_quantity"
-                android:inputType="number" />
+                android:inputType="number"
+                android:maxLength="9"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
