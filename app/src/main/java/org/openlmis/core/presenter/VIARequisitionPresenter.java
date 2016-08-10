@@ -381,18 +381,15 @@ public class VIARequisitionPresenter extends BaseRequisitionPresenter {
     }
 
     public String getConsultationNumbers() {
-        try {
+        if (rnRForm != null && !rnRForm.getBaseInfoItemListWrapper().isEmpty()) {
             return rnRForm.getBaseInfoItemListWrapper().get(0).getValue();
-        } catch (Exception nullRnRFormOrEmptyWrapper) {
-            return null;
         }
+        return null;
     }
 
     public void setConsultationNumbers(String consultationNumbers) {
-        try {
+        if (rnRForm != null && !rnRForm.getBaseInfoItemListWrapper().isEmpty()) {
             rnRForm.getBaseInfoItemListWrapper().get(0).setValue(consultationNumbers);
-        } catch (Exception nullRnRFormOrEmptyWrapper) {
-            return;
         }
     }
 
