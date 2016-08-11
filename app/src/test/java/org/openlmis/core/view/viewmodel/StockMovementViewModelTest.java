@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
 
@@ -91,7 +92,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
         stockMovementViewModel.setDocumentNo("111");
         stockMovementViewModel.setReason(movementReason);
         stockMovementViewModel.setReceived("100");
-        StockMovementItem stockMovementItem = stockMovementViewModel.convertViewToModel();
+        StockMovementItem stockMovementItem = stockMovementViewModel.convertViewToModel(new StockCard());
         assertNull(stockMovementItem.getRequested());
     }
 
@@ -103,7 +104,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
         stockMovementViewModel.setReason(movementReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "issue", "issue"));
         stockMovementViewModel.setIssued("100");
         stockMovementViewModel.setRequested("");
-        StockMovementItem stockMovementItem = stockMovementViewModel.convertViewToModel();
+        StockMovementItem stockMovementItem = stockMovementViewModel.convertViewToModel(new StockCard());
         assertNull(stockMovementItem.getRequested());
     }
 
@@ -160,7 +161,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
         stockMovementViewModel.setReason(movementReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "issue", "issue"));
         stockMovementViewModel.setIssued("100");
         stockMovementViewModel.setRequested("999");
-        StockMovementItem stockMovementItem = stockMovementViewModel.convertViewToModel();
+        StockMovementItem stockMovementItem = stockMovementViewModel.convertViewToModel(new StockCard());
         assertThat(stockMovementItem.getRequested(), is(999L));
     }
 }

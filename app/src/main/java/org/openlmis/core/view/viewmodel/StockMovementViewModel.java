@@ -20,12 +20,20 @@ package org.openlmis.core.view.viewmodel;
 
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.model.LotMovementItem;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,6 +52,8 @@ public class StockMovementViewModel {
     boolean isDraft = true;
 
     private HashMap<MovementReasonManager.MovementType, String> typeQuantityMap = new HashMap<>();
+
+    List<LotMovementViewModel> lotMovementViewModelList = new ArrayList<>();
 
     public StockMovementViewModel(StockMovementItem item) {
         movementDate = DateUtil.formatDate(item.getMovementDate());
@@ -98,7 +108,7 @@ public class StockMovementViewModel {
         typeQuantityMap.put(MovementReasonManager.MovementType.POSITIVE_ADJUST, positiveAdjustment);
     }
 
-    public StockMovementItem convertViewToModel() {
+    public StockMovementItem convertViewToModel(StockCard stockCard) {
         StockMovementItem stockMovementItem = new StockMovementItem();
         stockMovementItem.setStockOnHand(Long.parseLong(getStockExistence()));
 
@@ -106,8 +116,10 @@ public class StockMovementViewModel {
         stockMovementItem.setDocumentNumber(getDocumentNo());
         stockMovementItem.setMovementType(reason.getMovementType());
 
-        Long movementQuantity = Long.parseLong(typeQuantityMap.get(reason.getMovementType()));
-        stockMovementItem.setMovementQuantity(movementQuantity);
+        if (reason.getMovementType().equals(MovementReasonManager.MovementType.ISSUE) || reason.getMovementType().equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST)) {
+            Long movementQuantity = Long.parseLong(typeQuantityMap.get(reason.getMovementType()));
+            stockMovementItem.setMovementQuantity(movementQuantity);
+        }
 
         stockMovementItem.setRequested((null == requested || requested.isEmpty()) ? null : Long.valueOf(requested));
 
@@ -115,7 +127,32 @@ public class StockMovementViewModel {
 
         stockMovementItem.setMovementDate(DateUtil.parseString(getMovementDate(), DateUtil.DEFAULT_DATE_FORMAT));
 
+        stockMovementItem.setStockCard(stockCard);
+
+        populateNewLotQuantities(stockMovementItem);
+
         return stockMovementItem;
+    }
+
+    private void populateNewLotQuantities(final StockMovementItem stockMovementItem) {
+        if (!lotMovementViewModelList.isEmpty()) {
+            long receiveQuantity = 0;
+
+            stockMovementItem.setLotMovementItemListWrapper(FluentIterable.from(lotMovementViewModelList).transform(new Function<LotMovementViewModel, LotMovementItem>() {
+                @Override
+                public LotMovementItem apply(LotMovementViewModel lotMovementViewModel) {
+                    LotMovementItem lotItem = lotMovementViewModel.convertViewToModel(stockMovementItem.getStockCard().getProduct());
+                    lotItem.setStockMovementItem(stockMovementItem);
+                    return lotItem;
+                }
+            }).toList());
+
+            for (LotMovementViewModel lotMovementViewModel: lotMovementViewModelList) {
+                receiveQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
+            }
+            stockMovementItem.setMovementQuantity(receiveQuantity);
+            stockMovementItem.setStockOnHand(receiveQuantity + stockMovementItem.getStockOnHand());
+        }
     }
 
     public boolean validateEmpty() {
@@ -161,10 +198,19 @@ public class StockMovementViewModel {
     public void populateStockExistence(long previousStockOnHand) {
         MovementReasonManager.MovementType movementType = typeQuantityMap.keySet().iterator().next();
 
-        if (MovementReasonManager.MovementType.RECEIVE.equals(movementType) || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
-            this.stockExistence = "" + (previousStockOnHand + Long.parseLong(typeQuantityMap.get(movementType)));
+        //In RECEIVE lot management, no longer populate stock existence this way, populate later in the lot quantity aggregate
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+            if (MovementReasonManager.MovementType.ISSUE.equals(movementType) || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(movementType)) {
+                this.stockExistence = "" + (previousStockOnHand - Long.parseLong(typeQuantityMap.get(movementType)));
+            } else {
+                this.stockExistence = "" + previousStockOnHand;
+            }
         } else {
-            this.stockExistence = "" + (previousStockOnHand - Long.parseLong(typeQuantityMap.get(movementType)));
+            if (MovementReasonManager.MovementType.RECEIVE.equals(movementType) || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
+                this.stockExistence = "" + (previousStockOnHand + Long.parseLong(typeQuantityMap.get(movementType)));
+            } else {
+                this.stockExistence = "" + (previousStockOnHand - Long.parseLong(typeQuantityMap.get(movementType)));
+            }
         }
     }
 }

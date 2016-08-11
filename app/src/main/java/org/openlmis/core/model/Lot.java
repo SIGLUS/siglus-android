@@ -5,6 +5,9 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.Date;
 
+import lombok.Data;
+
+@Data
 @DatabaseTable(tableName = "lots")
 public class Lot extends BaseModel{
 

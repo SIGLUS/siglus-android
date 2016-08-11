@@ -11,9 +11,11 @@ import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 
 import java.util.List;
 
+import lombok.Getter;
+
 public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHolder> {
 
-
+    @Getter
     private final List<LotMovementViewModel> lotList;
 
     public LotMovementAdapter(List<LotMovementViewModel> data) {
@@ -40,7 +42,7 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
     public int validateAll() {
         int position = -1;
         for (int i = 0; i < lotList.size(); i++) {
-            if (!lotList.get(i).validate()) {
+            if (!lotList.get(i).isValid()) {
                 position = i;
                 break;
             }

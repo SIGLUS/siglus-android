@@ -15,6 +15,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -98,7 +99,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     private MovementReasonManager.MovementType movementType;
     private Long stockCardId;
 
-    private StockMovementItem previousMovement;
+    StockMovementItem previousMovement;
 
     private List<MovementReasonManager.MovementReason> movementReasons;
 
@@ -262,7 +263,6 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_complete:
-
                 stockMovementViewModel.setMovementDate(etMovementDate.getText().toString());
                 stockMovementViewModel.setDocumentNo(etDocumentNumber.getText().toString());
                 stockMovementViewModel.setRequested(etRequestedQuantity.getText().toString());
@@ -270,6 +270,8 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                 quantityMap.put(movementType, etMovementQuantity.getText().toString());
                 stockMovementViewModel.setTypeQuantityMap(quantityMap);
                 stockMovementViewModel.setSignature(etMovementSignature.getText().toString());
+                stockMovementViewModel.setLotMovementViewModelList(lotMovementAdapter.getLotList());
+                if (showErrors(stockMovementViewModel)) return;
 
                 presenter.saveStockMovement(stockMovementViewModel, stockCardId);
                 break;
@@ -284,6 +286,54 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         lyMovementReason.setErrorEnabled(false);
         lyMovementQuantity.setErrorEnabled(false);
         lyMovementSignature.setErrorEnabled(false);
+    }
+
+    protected boolean showErrors(StockMovementViewModel stockMovementViewModel) {
+        MovementReasonManager.MovementType movementType = stockMovementViewModel.getTypeQuantityMap().keySet().iterator().next();
+        if (StringUtils.isBlank(stockMovementViewModel.getMovementDate())) {
+            showMovementDateEmpty();
+            return true;
+        }
+        if (stockMovementViewModel.getReason() == null) {
+            showMovementReasonEmpty();
+            return true;
+        }
+        if ((movementType.equals(MovementReasonManager.MovementType.ISSUE) || movementType.equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST))
+            && StringUtils.isBlank(stockMovementViewModel.getTypeQuantityMap().get(movementType))) {
+            showQuantityEmpty();
+            return true;
+        }
+        if (StringUtils.isBlank(stockMovementViewModel.getSignature())) {
+            showSignatureEmpty();
+            return true;
+        }
+
+        if (!stockMovementViewModel.validateQuantitiesNotZero()) {
+            showQuantityZero();
+            return true;
+        }
+
+        if (quantityIsLargerThanSoh(stockMovementViewModel.getTypeQuantityMap().get(movementType), movementType)) {
+            showSOHError();
+            return true;
+        }
+
+        if(!checkSignature(stockMovementViewModel.getSignature())) {
+            showSignatureError();
+            return true;
+        }
+        return showLotError();
+    }
+
+    private boolean checkSignature(String signature) {
+        return signature.length() >= 2 && signature.length() <= 5 && signature.matches("\\D+");
+    }
+
+    private boolean quantityIsLargerThanSoh(String quantity, MovementReasonManager.MovementType type) {
+        if (MovementReasonManager.MovementType.ISSUE.equals(type) || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(type)) {
+            return Long.parseLong(quantity) > previousMovement.getStockOnHand();
+        }
+        return false;
     }
 
     @Override
@@ -333,6 +383,17 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         clearErrorAlerts();
         lyMovementSignature.setError(getString(R.string.hint_signature_error_message));
         etMovementSignature.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+    }
+
+    @Override
+    public boolean showLotError() {
+        clearErrorAlerts();
+        int position = lotMovementAdapter.validateAll();
+        if (position >= 0) {
+            lotMovementRecycleView.scrollToPosition(position);
+            return true;
+        }
+        return false;
     }
 
     @Override

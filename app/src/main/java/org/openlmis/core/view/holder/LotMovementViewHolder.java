@@ -1,6 +1,7 @@
 package org.openlmis.core.view.holder;
 
 import android.graphics.Color;
+import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -20,6 +21,9 @@ public class LotMovementViewHolder extends BaseViewHolder {
     @InjectView(R.id.et_lot_amount)
     private EditText etLotAmount;
 
+    @InjectView(R.id.ly_lot_amount)
+    private TextInputLayout lyLotAmount;
+
     @InjectView(R.id.et_lot_info)
     private EditText etLotInfo;
 
@@ -30,10 +34,21 @@ public class LotMovementViewHolder extends BaseViewHolder {
         super(itemView);
     }
 
-    public void populate(LotMovementViewModel viewModel) {
+    public void populate(final LotMovementViewModel viewModel) {
         etLotInfo.setText(viewModel.getLotNumber() + " - " + viewModel.getExpiryDate());
         etLotAmount.setText(viewModel.getQuantity());
-        tvStockOnHandInLot.setText(viewModel.getLotSoh());
+        if (viewModel.isValid()) {
+            lyLotAmount.setErrorEnabled(false);
+        } else {
+            lyLotAmount.setError(context.getResources().getString(R.string.msg_inventory_check_failed));
+        }
+        etLotAmount.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                viewModel.setQuantity(etLotAmount.getText().toString());
+            }
+
+        });
 
         if (context instanceof InventoryActivity) {
             lySOHLot.setVisibility(View.GONE);

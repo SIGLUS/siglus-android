@@ -20,10 +20,8 @@ package org.openlmis.core.presenter;
 
 import com.google.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
-import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -80,8 +78,6 @@ public class NewStockMovementPresenter extends Presenter {
     }
 
     public void saveStockMovement(final StockMovementViewModel viewModel, final Long stockCardId) {
-        if (showErrors(viewModel)) return;
-
         getSaveMovementObservable(viewModel, stockCardId).subscribe(new Action1<StockMovementViewModel>() {
             @Override
             public void call(StockMovementViewModel viewModel) {
@@ -101,48 +97,11 @@ public class NewStockMovementPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    private boolean showErrors(StockMovementViewModel stockMovementViewModel) {
-        MovementReasonManager.MovementType movementType = stockMovementViewModel.getTypeQuantityMap().keySet().iterator().next();
-        if (StringUtils.isBlank(stockMovementViewModel.getMovementDate())) {
-            view.showMovementDateEmpty();
-            return true;
-        }
-        if (stockMovementViewModel.getReason() == null) {
-            view.showMovementReasonEmpty();
-            return true;
-        }
-        if (StringUtils.isBlank(stockMovementViewModel.getTypeQuantityMap().get(movementType))) {
-            view.showQuantityEmpty();
-            return true;
-        }
-        if (StringUtils.isBlank(stockMovementViewModel.getSignature())) {
-            view.showSignatureEmpty();
-            return true;
-        }
-
-        if (!stockMovementViewModel.validateQuantitiesNotZero()) {
-            view.showQuantityZero();
-            return true;
-        }
-
-        if (quantityIsLargerThanSoh(stockMovementViewModel.getTypeQuantityMap().get(movementType), movementType)) {
-            view.showSOHError();
-            return true;
-        }
-
-        if(!checkSignature(stockMovementViewModel.getSignature())) {
-            view.showSignatureError();
-            return true;
-        }
-        return false;
-    }
-
     private void convertViewModelToDataModelAndSave(StockMovementViewModel viewModel, Long stockCardId) {
         try {
             viewModel.populateStockExistence(previousStockMovement.getStockOnHand());
-            StockMovementItem stockMovementItem = viewModel.convertViewToModel();
             StockCard stockCard = stockRepository.queryStockCardById(stockCardId);
-            stockMovementItem.setStockCard(stockCard);
+            StockMovementItem stockMovementItem = viewModel.convertViewToModel(stockCard);
             stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
 
             if (stockCard.getStockOnHand() == 0) {
@@ -155,17 +114,6 @@ public class NewStockMovementPresenter extends Presenter {
         } catch (LMISException e) {
             e.reportToFabric();
         }
-    }
-
-    private boolean checkSignature(String signature) {
-        return signature.length() >= 2 && signature.length() <= 5 && signature.matches("\\D+");
-    }
-
-    private boolean quantityIsLargerThanSoh(String quantity, MovementReasonManager.MovementType type) {
-        if (MovementReasonManager.MovementType.ISSUE.equals(type) || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(type)) {
-            return Long.parseLong(quantity) > previousStockMovement.getStockOnHand();
-        }
-        return false;
     }
 
     public Observable<List<LotMovementViewModel>> addLotMovement(final LotMovementViewModel lotMovementViewModel) {
@@ -193,6 +141,8 @@ public class NewStockMovementPresenter extends Presenter {
         void showQuantityZero();
 
         void showSignatureError();
+
+        boolean showLotError();
 
         void goToStockCard();
     }

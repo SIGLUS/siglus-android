@@ -61,6 +61,8 @@ public class StockRepository {
     ProgramRepository programRepository;
     @Inject
     ProductProgramRepository productProgramRepository;
+    @Inject
+    LotRepository lotRepository;
 
     GenericDao<StockCard> genericDao;
     GenericDao<StockMovementItem> stockItemGenericDao;
@@ -146,6 +148,10 @@ public class StockRepository {
     public void saveStockItem(final StockMovementItem stockMovementItem) throws LMISException {
         stockMovementItem.setCreatedTime(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
         stockItemGenericDao.create(stockMovementItem);
+
+        if (!stockMovementItem.getLotMovementItemListWrapper().isEmpty()){
+            lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());
+        }
     }
 
     public void updateProductOfStockCard(Product product) {

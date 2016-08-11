@@ -166,8 +166,7 @@ public class StockMovementPresenter extends Presenter {
 
     public void saveAndRefresh(StockMovementViewModel viewModel) {
         try {
-            StockMovementItem stockMovementItem = viewModel.convertViewToModel();
-            stockMovementItem.setStockCard(stockCard);
+            StockMovementItem stockMovementItem = viewModel.convertViewToModel(stockCard);
             stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
             if (stockCard.getStockOnHand() == 0) {
                 stockCard.setExpireDates("");

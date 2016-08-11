@@ -81,21 +81,6 @@ public class NewStockMovementPresenterTest {
     }
 
     @Test
-    public void shouldValidateQuantityIfItIsLargerThanSohWhenSaving() throws ParseException {
-        StockMovementViewModel stockMovementViewModel = new StockMovementViewModelBuilder()
-                .withMovementDate("2010-10-10").withSignature("signature")
-                .withMovementReason(new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "", "")).build();
-        HashMap<MovementReasonManager.MovementType, String> quantityMap = new HashMap<>();
-        quantityMap.put(MovementReasonManager.MovementType.ISSUE, "10");
-        stockMovementViewModel.setTypeQuantityMap(quantityMap);
-
-        StockMovementItem previousStockItem = new StockMovementItemBuilder().withStockOnHand(5).build();
-        newStockMovementPresenter.previousStockMovement = previousStockItem;
-        newStockMovementPresenter.saveStockMovement(stockMovementViewModel, 1L);
-        verify(view).showSOHError();
-    }
-
-    @Test
     public void shouldNotErrorQuantityIfItIsLargerThanSohButAdditiveWhenSaving() throws ParseException {
         StockMovementViewModel stockMovementViewModel = new StockMovementViewModelBuilder()
                 .withMovementDate("2010-10-10").withSignature("signature")
@@ -111,82 +96,6 @@ public class NewStockMovementPresenterTest {
     }
 
     @Test
-    public void shouldValidateEmptyDateFieldWhenSaving() throws ParseException {
-        StockMovementViewModel stockMovementViewModel = new StockMovementViewModelBuilder()
-                .withMovementDate("")
-                .withMovementReason(new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "", "")).build();
-        HashMap<MovementReasonManager.MovementType, String> quantityMap = new HashMap<>();
-        quantityMap.put(MovementReasonManager.MovementType.ISSUE, "10");
-        stockMovementViewModel.setTypeQuantityMap(quantityMap);
-
-        StockMovementItem previousStockItem = new StockMovementItemBuilder().withStockOnHand(10).build();
-        newStockMovementPresenter.previousStockMovement = previousStockItem;
-        newStockMovementPresenter.saveStockMovement(stockMovementViewModel, 1L);
-        verify(view).showMovementDateEmpty();
-    }
-
-    @Test
-    public void shouldValidateEmptySignatureFieldWhenSaving() throws ParseException {
-        StockMovementViewModel stockMovementViewModel = new StockMovementViewModelBuilder()
-                .withMovementDate("2000")
-                .withMovementReason(new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "", "")).build();
-        HashMap<MovementReasonManager.MovementType, String> quantityMap = new HashMap<>();
-        quantityMap.put(MovementReasonManager.MovementType.ISSUE, "10");
-        stockMovementViewModel.setTypeQuantityMap(quantityMap);
-
-        StockMovementItem previousStockItem = new StockMovementItemBuilder().withStockOnHand(10).build();
-        newStockMovementPresenter.previousStockMovement = previousStockItem;
-        newStockMovementPresenter.saveStockMovement(stockMovementViewModel, 1L);
-        verify(view).showSignatureEmpty();
-    }
-
-    @Test
-    public void shouldValidateEmptyReasonFieldWhenSaving() throws ParseException {
-        StockMovementViewModel stockMovementViewModel = new StockMovementViewModelBuilder()
-                .withMovementReason(null)
-                .withMovementDate("2000").build();
-        HashMap<MovementReasonManager.MovementType, String> quantityMap = new HashMap<>();
-        quantityMap.put(MovementReasonManager.MovementType.ISSUE, "10");
-        stockMovementViewModel.setTypeQuantityMap(quantityMap);
-
-        StockMovementItem previousStockItem = new StockMovementItemBuilder().withStockOnHand(10).build();
-        newStockMovementPresenter.previousStockMovement = previousStockItem;
-        newStockMovementPresenter.saveStockMovement(stockMovementViewModel, 1L);
-        verify(view).showMovementReasonEmpty();
-    }
-
-    @Test
-    public void shouldValidateQuantityNotZero() throws ParseException {
-        StockMovementViewModel stockMovementViewModel = new StockMovementViewModelBuilder()
-                .withSignature("abc")
-                .withMovementDate("2000").build();
-        HashMap<MovementReasonManager.MovementType, String> quantityMap = new HashMap<>();
-        quantityMap.put(MovementReasonManager.MovementType.ISSUE, "0");
-        stockMovementViewModel.setTypeQuantityMap(quantityMap);
-
-        StockMovementItem previousStockItem = new StockMovementItemBuilder().withStockOnHand(10).build();
-        newStockMovementPresenter.previousStockMovement = previousStockItem;
-        newStockMovementPresenter.saveStockMovement(stockMovementViewModel, 1L);
-        verify(view).showQuantityZero();
-    }
-
-    @Test
-    public void shouldValidateSignatureWhenLessThan2Characters() throws ParseException {
-        StockMovementViewModel stockMovementViewModel = new StockMovementViewModelBuilder()
-                .withSignature("a")
-                .withMovementReason(new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "", ""))
-                .withMovementDate("2000").build();
-        HashMap<MovementReasonManager.MovementType, String> quantityMap = new HashMap<>();
-        quantityMap.put(MovementReasonManager.MovementType.ISSUE, "10");
-        stockMovementViewModel.setTypeQuantityMap(quantityMap);
-
-        StockMovementItem previousStockItem = new StockMovementItemBuilder().withStockOnHand(10).build();
-        newStockMovementPresenter.previousStockMovement = previousStockItem;
-        newStockMovementPresenter.saveStockMovement(stockMovementViewModel, 1L);
-        verify(view).showSignatureError();
-    }
-
-    @Test
     public void shouldSaveStockItemWhenSaving() throws Exception {
         StockCard stockCard = createStockCard(0, true);
         StockMovementItem item = new StockMovementItem();
@@ -194,7 +103,7 @@ public class NewStockMovementPresenterTest {
 
         newStockMovementPresenter.previousStockMovement = new StockMovementItemBuilder().withStockOnHand(10).build();
         StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
-        when(viewModel.convertViewToModel()).thenReturn(item);
+        when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
         when(stockRepositoryMock.queryStockCardById(stockCard.getId())).thenReturn(stockCard);
 
         TestSubscriber<StockMovementViewModel> subscriber = new TestSubscriber<>();
@@ -217,7 +126,7 @@ public class NewStockMovementPresenterTest {
 
         newStockMovementPresenter.previousStockMovement = new StockMovementItemBuilder().withStockOnHand(10).build();
         StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
-        when(viewModel.convertViewToModel()).thenReturn(item);
+        when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
         when(stockRepositoryMock.queryStockCardById(stockCard.getId())).thenReturn(stockCard);
 
         TestSubscriber<StockMovementViewModel> subscriber = new TestSubscriber<>();

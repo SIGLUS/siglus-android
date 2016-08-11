@@ -28,8 +28,10 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.utils.DateUtil;
+import org.openlmis.core.utils.ListUtil;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -84,6 +86,8 @@ public class StockMovementItem extends BaseModel {
     @ForeignCollectionField()
     private ForeignCollection<LotMovementItem> foreignLotMovementItems;
 
+    private List<LotMovementItem> lotMovementItemListWrapper;
+
     public boolean isPositiveMovement() {
         return movementType.equals(MovementReasonManager.MovementType.RECEIVE) || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST);
     }
@@ -111,4 +115,10 @@ public class StockMovementItem extends BaseModel {
         this.stockOnHand = stockCard.getStockOnHand();
         this.movementDate = new Date();
     }
+
+    public List<LotMovementItem> getLotMovementItemListWrapper() {
+        lotMovementItemListWrapper = ListUtil.wrapOrEmpty(foreignLotMovementItems, lotMovementItemListWrapper);
+        return lotMovementItemListWrapper;
+    }
+
 }

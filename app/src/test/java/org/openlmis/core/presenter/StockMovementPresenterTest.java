@@ -112,7 +112,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         when(viewModel.validateInputValid()).thenReturn(true);
         when(viewModel.validateEmpty()).thenReturn(true);
         when(viewModel.validateQuantitiesNotZero()).thenReturn(true);
-        when(viewModel.convertViewToModel()).thenReturn(item);
+        when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
 
         stockMovementPresenter.submitStockMovement(viewModel);
 
@@ -129,7 +129,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         item.setStockOnHand(0L);
 
         StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
-        when(viewModel.convertViewToModel()).thenReturn(item);
+        when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
         when(stockRepositoryMock.queryStockCardById(123)).thenReturn(stockCard);
         stockMovementPresenter.setStockCard(123);
         reset(view);
@@ -153,7 +153,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         item.setStockOnHand(0L);
 
         StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
-        when(viewModel.convertViewToModel()).thenReturn(item);
+        when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
 
         //when
         stockMovementPresenter.stockCard = stockCard;
@@ -171,7 +171,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         item.setStockOnHand(0L);
 
         StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
-        when(viewModel.convertViewToModel()).thenReturn(item);
+        when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
 
         //when
         stockMovementPresenter.stockCard = stockCard;
@@ -192,7 +192,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         stockCard.getProduct().setKitProductList(new ArrayList<KitProduct>());
 
         StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
-        when(viewModel.convertViewToModel()).thenReturn(item);
+        when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
 
         when(productRepository.queryKitProductByKitCode(kit.getCode())).thenReturn(new ArrayList<KitProduct>());
 
@@ -301,7 +301,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
 
 
         StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
-        when(viewModel.convertViewToModel()).thenReturn(item);
+        when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
         when(stockRepositoryMock.queryStockCardById(123)).thenReturn(stockCard);
         stockMovementPresenter.setStockCard(123);
 
