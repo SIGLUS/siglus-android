@@ -18,6 +18,14 @@ public class LotMovementViewModel implements Serializable {
     private String lotSoh;
     private String stockMovementId;
 
+    public LotMovementViewModel() {
+    }
+
+    public LotMovementViewModel(String lotNumber, String expiryDate) {
+        this.lotNumber = lotNumber;
+        this.expiryDate = expiryDate;
+    }
+
     public boolean isValid() {
         return lotNumber != null && expiryDate != null && quantity != null;
     }
@@ -31,13 +39,5 @@ public class LotMovementViewModel implements Serializable {
         lotMovementItem.setLot(lot);
         lotMovementItem.setMovementQuantity(Long.parseLong(quantity));
         return lotMovementItem;
-    }
-
-    public LotMovementViewModel() {
-    }
-
-    public LotMovementViewModel(String lotNumber, String expiryDate) {
-        this.lotNumber = lotNumber;
-        this.expiryDate = expiryDate;
     }
 }

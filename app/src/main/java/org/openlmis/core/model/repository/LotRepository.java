@@ -21,10 +21,6 @@ public class LotRepository {
     @Inject
     Context context;
 
-    @Inject
-    public LotRepository(Context context) {
-    }
-
     public void batchCreateLotsAndLotMovements(final List<LotMovementItem> lotMovementItemListWrapper) throws LMISException {
         dbUtil.withDaoAsBatch(Lot.class, new DbUtil.Operation<Lot, Void>() {
             @Override

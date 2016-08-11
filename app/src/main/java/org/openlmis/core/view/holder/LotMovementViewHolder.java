@@ -2,6 +2,8 @@ package org.openlmis.core.view.holder;
 
 import android.graphics.Color;
 import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -42,12 +44,17 @@ public class LotMovementViewHolder extends BaseViewHolder {
         } else {
             lyLotAmount.setError(context.getResources().getString(R.string.msg_inventory_check_failed));
         }
-        etLotAmount.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        etLotAmount.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onFocusChange(View view, boolean b) {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
                 viewModel.setQuantity(etLotAmount.getText().toString());
             }
-
         });
 
         if (context instanceof InventoryActivity) {
