@@ -32,6 +32,9 @@ import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import rx.Observable;
 import rx.Subscriber;
@@ -40,6 +43,9 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class NewStockMovementPresenter extends Presenter {
+
+    @Getter
+    List<LotMovementViewModel> lotMovementViewModels;
 
     @Getter
     StockMovementViewModel stockMovementModel;
@@ -56,6 +62,7 @@ public class NewStockMovementPresenter extends Presenter {
 
     public NewStockMovementPresenter() {
         stockMovementModel = new StockMovementViewModel();
+        lotMovementViewModels = new ArrayList<>();
     }
 
     @Override
@@ -161,8 +168,15 @@ public class NewStockMovementPresenter extends Presenter {
         return false;
     }
 
-    public void addLotMovement(LotMovementViewModel lotMovementViewModel) {
-
+    public Observable<List<LotMovementViewModel>> addLotMovement(final LotMovementViewModel lotMovementViewModel) {
+        return Observable.create(new Observable.OnSubscribe<List<LotMovementViewModel>>() {
+            @Override
+            public void call(Subscriber<? super List<LotMovementViewModel>> subscriber) {
+                lotMovementViewModels.add(lotMovementViewModel);
+                subscriber.onNext(lotMovementViewModels);
+                subscriber.onCompleted();
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
     public interface NewStockMovementView extends BaseView {

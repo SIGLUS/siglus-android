@@ -34,7 +34,6 @@ import org.openlmis.core.view.widget.AddLotDialogFragment;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -43,6 +42,7 @@ import java.util.List;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
+import rx.functions.Action1;
 
 @ContentView(R.layout.activity_stock_card_new_movement)
 public class StockCardNewMovementActivity extends BaseActivity implements NewStockMovementPresenter.NewStockMovementView, View.OnClickListener{
@@ -107,7 +107,6 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     SimpleSelectDialogFragment reasonsDialog;
 
     private StockMovementViewModel stockMovementViewModel;
-    private List<LotMovementViewModel> lotMovementViewModels;
 
     private String[] reasonListStr;
 
@@ -150,8 +149,12 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     private void initRecyclerView() {
         lotMovementRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        lotMovementAdapter = new LotMovementAdapter(new ArrayList());
+        lotMovementAdapter = new LotMovementAdapter(presenter.getLotMovementViewModels());
         lotMovementRecycleView.setAdapter(lotMovementAdapter);
+    }
+
+    private void refreshRecyclerView(){
+        lotMovementAdapter.notifyDataSetChanged();
     }
 
     private void initUI() {
@@ -200,7 +203,13 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                                     LotMovementViewModel lotMovementViewModel = new LotMovementViewModel();
                                     lotMovementViewModel.setExpiryDate(addLotDialogFragment.getExpiryDate());
                                     lotMovementViewModel.setLotNumber(addLotDialogFragment.getLotNumber());
-                                    presenter.addLotMovement(lotMovementViewModel);
+                                    presenter.addLotMovement(lotMovementViewModel).subscribe(new Action1<List<LotMovementViewModel>>() {
+                                        @Override
+                                        public void call(List<LotMovementViewModel> lotMovementViewModels) {
+                                            refreshRecyclerView();
+                                        }
+                                    });
+                                    addLotDialogFragment.dismiss();
                                 }
                                 break;
                             case R.id.btn_cancel:

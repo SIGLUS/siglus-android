@@ -122,6 +122,18 @@
                 android:hint="@string/hint_movement_signature" />
         </android.support.design.widget.TextInputLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/lot_list"
+                android:layout_margin="@dimen/margin_normal"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scrollbars="vertical"/>
+        </LinearLayout>
+
+
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/action_add_new_lot"
             android:layout_width="match_parent"
@@ -136,15 +148,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/btn_add_new_lot"
-                android:textSize="16dp"
+                android:textSize="16sp"
                 android:textColor="@color/color_accent"/>
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/lot_list"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:scrollbars="vertical" />
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/action_panel"
@@ -171,7 +178,5 @@
 
         </LinearLayout>
     </LinearLayout>
-
-
 
 </LinearLayout>
