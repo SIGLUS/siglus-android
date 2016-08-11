@@ -101,36 +101,36 @@ public class NewStockMovementPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    private boolean showErrors(StockMovementViewModel viewModel) {
-        MovementReasonManager.MovementType movementType = viewModel.getTypeQuantityMap().keySet().iterator().next();
-        if (StringUtils.isBlank(viewModel.getMovementDate())) {
+    private boolean showErrors(StockMovementViewModel stockMovementViewModel) {
+        MovementReasonManager.MovementType movementType = stockMovementViewModel.getTypeQuantityMap().keySet().iterator().next();
+        if (StringUtils.isBlank(stockMovementViewModel.getMovementDate())) {
             view.showMovementDateEmpty();
             return true;
         }
-        if (viewModel.getReason() == null) {
+        if (stockMovementViewModel.getReason() == null) {
             view.showMovementReasonEmpty();
             return true;
         }
-        if (StringUtils.isBlank(viewModel.getTypeQuantityMap().get(movementType))) {
+        if (StringUtils.isBlank(stockMovementViewModel.getTypeQuantityMap().get(movementType))) {
             view.showQuantityEmpty();
             return true;
         }
-        if (StringUtils.isBlank(viewModel.getSignature())) {
+        if (StringUtils.isBlank(stockMovementViewModel.getSignature())) {
             view.showSignatureEmpty();
             return true;
         }
 
-        if (!viewModel.validateQuantitiesNotZero()) {
+        if (!stockMovementViewModel.validateQuantitiesNotZero()) {
             view.showQuantityZero();
             return true;
         }
 
-        if (quantityIsLargerThanSoh(viewModel.getTypeQuantityMap().get(movementType), movementType)) {
+        if (quantityIsLargerThanSoh(stockMovementViewModel.getTypeQuantityMap().get(movementType), movementType)) {
             view.showSOHError();
             return true;
         }
 
-        if(!checkSignature(viewModel.getSignature())) {
+        if(!checkSignature(stockMovementViewModel.getSignature())) {
             view.showSignatureError();
             return true;
         }

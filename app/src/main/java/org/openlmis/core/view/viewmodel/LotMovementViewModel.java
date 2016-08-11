@@ -13,6 +13,10 @@ public class LotMovementViewModel implements Serializable {
     private String lotSoh;
     private String stockMovementId;
 
+    public boolean validate() {
+        return lotNumber != null && expiryDate != null && quantity != null;
+    }
+
     public LotMovementViewModel() {
     }
 
