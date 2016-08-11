@@ -12,4 +12,12 @@ public class LotMovementViewModel implements Serializable {
     private String quantity;
     private String lotSoh;
     private String stockMovementId;
+
+    public LotMovementViewModel() {
+    }
+
+    public LotMovementViewModel(String lotNumber, String expiryDate) {
+        this.lotNumber = lotNumber;
+        this.expiryDate = expiryDate;
+    }
 }

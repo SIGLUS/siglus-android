@@ -3,6 +3,7 @@ package org.openlmis.core.view.holder;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.view.View;
@@ -17,19 +18,24 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.NestedRecyclerViewLinearLayoutManager;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.utils.ToastUtil;
+import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.widget.AddLotDialogFragment;
 import org.openlmis.core.view.widget.DatePickerDialogWithoutDay;
 import org.openlmis.core.view.widget.InputFilterMinMax;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import roboguice.inject.InjectView;
 
@@ -38,28 +44,46 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
 
     @InjectView(R.id.product_name)
     TextView productName;
+
     @InjectView(R.id.product_unit)
     TextView productUnit;
+
     @InjectView(R.id.ly_quantity)
     TextInputLayout lyQuantity;
+
     @InjectView(R.id.tx_quantity)
     EditText txQuantity;
+
     @InjectView(R.id.tx_expire_date)
     TextView txExpireDate;
+
     @InjectView(R.id.action_divider)
     View actionDivider;
+
     @InjectView(R.id.checkbox)
     CheckBox checkBox;
+
     @InjectView(R.id.action_panel)
     View actionPanel;
+
     @InjectView(R.id.action_view_history)
     TextView tvHistoryAction;
+
     @InjectView(R.id.touchArea_checkbox)
     LinearLayout taCheckbox;
+
     @InjectView(R.id.add_new_lot_panel)
-    View actionPanelForAddLot;
+    private View actionPanelForAddLot;
+
     @InjectView(R.id.tx_add_new_lot)
-    TextView txAddNewLot;
+    private TextView txAddNewLot;
+
+    @InjectView(R.id.rv_added_lot)
+    private RecyclerView lotListRecyclerView;
+
+    private LotMovementAdapter lotMovementAdapter;
+
+    private List<LotMovementViewModel> lotMovementViewModelList = new ArrayList<>();
 
     private AddLotDialogFragment addLotDialogFragment;
 
@@ -128,29 +152,42 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked && !viewModel.getProduct().isArchived()) {
-                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                        showAddNewLotDialog();
-                        showAddNewLotPanel(View.VISIBLE);
-                    } else {
-                        showEditPanel(View.VISIBLE);
-                    }
-                } else {
-                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                        showAddNewLotPanel(View.GONE);
-                    } else {
-                        showEditPanel(View.GONE);
-                    }
-                    populateEditPanel(StringUtils.EMPTY, StringUtils.EMPTY);
-
-                    viewModel.setQuantity(StringUtils.EMPTY);
-                    viewModel.clearExpiryDates();
-                }
-                viewModel.setChecked(isChecked);
+                checkedChangeAction(isChecked, viewModel);
             }
         });
 
         txQuantity.addTextChangedListener(textWatcher);
+    }
+
+    private void checkedChangeAction(boolean isChecked, InventoryViewModel viewModel) {
+        if (isChecked && !viewModel.getProduct().isArchived()) {
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+                initLotListRecyclerView();
+                showAddNewLotDialog();
+                showAddNewLotPanel(View.VISIBLE);
+            } else {
+                showEditPanel(View.VISIBLE);
+            }
+        } else {
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+                showAddNewLotPanel(View.GONE);
+                lotMovementViewModelList.clear();
+                lotMovementAdapter.notifyDataSetChanged();
+            } else {
+                showEditPanel(View.GONE);
+            }
+            populateEditPanel(StringUtils.EMPTY, StringUtils.EMPTY);
+
+            viewModel.setQuantity(StringUtils.EMPTY);
+            viewModel.clearExpiryDates();
+        }
+        viewModel.setChecked(isChecked);
+    }
+
+    private void initLotListRecyclerView() {
+        lotMovementAdapter = new LotMovementAdapter(lotMovementViewModelList);
+        lotListRecyclerView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(context));
+        lotListRecyclerView.setAdapter(lotMovementAdapter);
     }
 
     private void showAddNewLotDialog() {
@@ -160,16 +197,26 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.btn_complete:
-                        addLotDialogFragment.validate();
+                        if (addLotDialogFragment.validate()) {
+                            addLotView(new LotMovementViewModel(addLotDialogFragment.getLotNumber(),addLotDialogFragment.getExpiryDate()));
+                            addLotDialogFragment.dismiss();
+                        }
                         break;
                     case R.id.btn_cancel:
                         addLotDialogFragment.dismiss();
-                        checkBox.setChecked(false);
+                        if (lotMovementViewModelList.isEmpty()) {
+                            checkBox.setChecked(false);
+                        }
                         break;
                 }
             }
         });
         addLotDialogFragment.show(((Activity) context).getFragmentManager(), "add_new_lot");
+    }
+
+    private void addLotView(LotMovementViewModel lotMovementViewModel) {
+        lotMovementViewModelList.add(lotMovementViewModel);
+        lotMovementAdapter.notifyDataSetChanged();
     }
 
     private void initHistoryView(final InventoryViewModel viewModel, final ViewHistoryListener listener) {
@@ -241,5 +288,4 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     public interface ViewHistoryListener {
         void viewHistory(StockCard stockCard);
     }
-
 }

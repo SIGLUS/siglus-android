@@ -29,8 +29,11 @@ import roboguice.inject.InjectView;
 
 public class AddLotDialogFragment extends BaseDialogFragment {
 
+    @InjectView(R.id.ly_lot_number)
+    private TextInputLayout lyLotNumber;
+
     @InjectView(R.id.et_lot_number)
-    EditText etLotNumber;
+    private EditText etLotNumber;
 
     @InjectView(R.id.dp_add_new_lot)
     private DatePicker datePicker;
@@ -41,17 +44,14 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     @InjectView(R.id.btn_complete)
     private Button btnComplete;
 
-    @InjectView(R.id.ly_lot_number)
-    TextInputLayout lyLotNumber;
-
     @InjectView(R.id.tv_expiry_date_warning)
-    TextView expiryDateWarning;
+    private TextView expiryDateWarning;
 
     @Getter
-    String lotNumber;
+    private String lotNumber;
 
     @Getter
-    String expiryDate;
+    private String expiryDate;
 
     @Setter
     private View.OnClickListener listener;

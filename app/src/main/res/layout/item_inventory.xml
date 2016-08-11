@@ -95,6 +95,11 @@
 
         </LinearLayout>
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_added_lot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <LinearLayout
             android:id="@+id/add_new_lot_panel"
             style="@style/InventoryCard.ActionPanel"

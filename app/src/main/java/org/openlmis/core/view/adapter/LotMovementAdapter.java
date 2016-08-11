@@ -34,6 +34,6 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
 
     @Override
     public int getItemCount() {
-        return 0;
+        return lotList.size();
     }
 }
