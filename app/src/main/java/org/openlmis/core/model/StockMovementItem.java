@@ -29,6 +29,10 @@ import com.j256.ormlite.table.DatabaseTable;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.LotMovementViewModel;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.Date;
 import java.util.List;
@@ -88,6 +92,14 @@ public class StockMovementItem extends BaseModel {
 
     private List<LotMovementItem> lotMovementItemListWrapper;
 
+    public StockMovementItem(StockCard stockCard, InventoryViewModel model) {
+        this.stockCard = stockCard;
+        this.movementDate = new Date();
+        this.reason = MovementReasonManager.INVENTORY;
+        this.movementType = MovementReasonManager.MovementType.PHYSICAL_INVENTORY;
+        populateNewLotQuantities(model.getLotMovementViewModelList());
+    }
+
     public boolean isPositiveMovement() {
         return movementType.equals(MovementReasonManager.MovementType.RECEIVE) || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST);
     }
@@ -119,6 +131,28 @@ public class StockMovementItem extends BaseModel {
     public List<LotMovementItem> getLotMovementItemListWrapper() {
         lotMovementItemListWrapper = ListUtil.wrapOrEmpty(foreignLotMovementItems, lotMovementItemListWrapper);
         return lotMovementItemListWrapper;
+    }
+
+    public void populateNewLotQuantities(List<LotMovementViewModel> lotMovementViewModelList) {
+        final StockMovementItem stockMovementItem = this;
+        if (!lotMovementViewModelList.isEmpty()) {
+            long receiveQuantity = 0;
+
+            setLotMovementItemListWrapper(FluentIterable.from(lotMovementViewModelList).transform(new Function<LotMovementViewModel, LotMovementItem>() {
+                @Override
+                public LotMovementItem apply(LotMovementViewModel lotMovementViewModel) {
+                    LotMovementItem lotItem = lotMovementViewModel.convertViewToModel(getStockCard().getProduct());
+                    lotItem.setStockMovementItem(stockMovementItem);
+                    return lotItem;
+                }
+            }).toList());
+
+            for (LotMovementViewModel lotMovementViewModel: lotMovementViewModelList) {
+                receiveQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
+            }
+            setMovementQuantity(receiveQuantity);
+            setStockOnHand(receiveQuantity + getStockOnHand());
+        }
     }
 
 }

@@ -24,12 +24,9 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
-import org.roboguice.shaded.goole.common.base.Function;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -132,30 +129,9 @@ public class StockMovementViewModel {
 
         stockMovementItem.setStockCard(stockCard);
 
-        populateNewLotQuantities(stockMovementItem);
+        stockMovementItem.populateNewLotQuantities(lotMovementViewModelList);
 
         return stockMovementItem;
-    }
-
-    private void populateNewLotQuantities(final StockMovementItem stockMovementItem) {
-        if (!lotMovementViewModelList.isEmpty()) {
-            long receiveQuantity = 0;
-
-            stockMovementItem.setLotMovementItemListWrapper(FluentIterable.from(lotMovementViewModelList).transform(new Function<LotMovementViewModel, LotMovementItem>() {
-                @Override
-                public LotMovementItem apply(LotMovementViewModel lotMovementViewModel) {
-                    LotMovementItem lotItem = lotMovementViewModel.convertViewToModel(stockMovementItem.getStockCard().getProduct());
-                    lotItem.setStockMovementItem(stockMovementItem);
-                    return lotItem;
-                }
-            }).toList());
-
-            for (LotMovementViewModel lotMovementViewModel: lotMovementViewModelList) {
-                receiveQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
-            }
-            stockMovementItem.setMovementQuantity(receiveQuantity);
-            stockMovementItem.setStockOnHand(receiveQuantity + stockMovementItem.getStockOnHand());
-        }
     }
 
     public boolean validateEmpty() {
