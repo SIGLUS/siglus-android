@@ -56,6 +56,8 @@ public class InventoryViewModel {
     boolean hasDataChanged;
     List<String> expiryDates = new ArrayList<>();
 
+    List<LotMovementViewModel> lotMovementViewModelList = new ArrayList<>();
+
     long stockCardId;
 
     long stockOnHand;
@@ -129,6 +131,10 @@ public class InventoryViewModel {
 
     public void clearExpiryDates() {
         this.expiryDates = new ArrayList<>();
+    }
+
+    public void clearLotMovementViewModelList() {
+        this.lotMovementViewModelList = new ArrayList<>();
     }
 
     private void setProductAttributes(Product product) {
@@ -249,5 +255,9 @@ public class InventoryViewModel {
             }
             return StockCardViewHolder.STOCK_ON_HAND_NORMAL;
         }
+    }
+
+    public void addLotMovementViewModel(LotMovementViewModel lotMovementViewModel) {
+        lotMovementViewModelList.add(lotMovementViewModel);
     }
 }
