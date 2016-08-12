@@ -4,7 +4,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
@@ -13,6 +15,7 @@ import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.view.holder.StockCardViewHolder;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -132,5 +135,46 @@ public class InventoryViewModelTest {
         int stockOnHandLevel = viewModel.getStockOnHandLevel();
 
         Assertions.assertThat(stockOnHandLevel).isEqualTo(StockCardViewHolder.STOCK_ON_HAND_STOCK_OUT);
+    }
+
+    @Test
+    public void shouldReturnFalseWhenLotListIsInvalidate() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
+
+        StockCard stockCard = new StockCard();
+        stockCard.setId(1);
+
+        Product product = ProductBuilder.buildAdultProduct();
+        product.setArchived(false);
+        stockCard.setProduct(product);
+
+        InventoryViewModel inventoryViewModel = InventoryViewModel.buildEmergencyModel(stockCard);
+        inventoryViewModel.setChecked(true);
+
+        LotMovementViewModel lotMovementViewModel = new LotMovementViewModel("lotNumber","2012-09-01");
+        inventoryViewModel.lotMovementViewModelList.add(lotMovementViewModel);
+
+        assertFalse(inventoryViewModel.validate(false));
+    }
+
+    @Test
+    public void shouldReturnTrueWhenLotListIsValid() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
+
+        StockCard stockCard = new StockCard();
+        stockCard.setId(1);
+
+        Product product = ProductBuilder.buildAdultProduct();
+        product.setArchived(false);
+        stockCard.setProduct(product);
+
+        InventoryViewModel inventoryViewModel = InventoryViewModel.buildEmergencyModel(stockCard);
+        inventoryViewModel.setChecked(true);
+
+        LotMovementViewModel lotMovementViewModel = new LotMovementViewModel("lotNumber","2012-09-01");
+        lotMovementViewModel.setQuantity("21");
+        inventoryViewModel.lotMovementViewModelList.add(lotMovementViewModel);
+
+        assertTrue(inventoryViewModel.validate(false));
     }
 }

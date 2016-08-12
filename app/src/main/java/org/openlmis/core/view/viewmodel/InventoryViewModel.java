@@ -210,9 +210,23 @@ public class InventoryViewModel {
         if (archivedProductMandatoryQuantity) {
             valid = !checked || StringUtils.isNumeric(quantity);
         } else {
-            valid = !checked || StringUtils.isNumeric(quantity) || product.isArchived();
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+                valid = !checked || validateLotList() || product.isArchived();
+            }
+            else{
+                valid = !checked || StringUtils.isNumeric(quantity) || product.isArchived();
+            }
         }
         return valid;
+    }
+
+    private boolean validateLotList() {
+        for (LotMovementViewModel lotMovementViewModel:lotMovementViewModelList){
+            if (!lotMovementViewModel.isValid()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public DraftInventory parseDraftInventory() {
