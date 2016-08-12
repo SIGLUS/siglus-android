@@ -233,8 +233,7 @@ public class LoginPresenter extends Presenter {
         if (view.needInitInventory()) {
             view.goToInitInventory();
         } else {
-            view.goToInitInventory();
-//            view.goToHomePage();
+            view.goToHomePage();
         }
         hasGoneToNextPage = true;
     }

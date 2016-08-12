@@ -23,6 +23,8 @@ import android.support.annotation.Nullable;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -185,11 +187,21 @@ public class InventoryPresenter extends Presenter {
                 stockRepository.updateStockCardWithProduct(stockCard);
                 return;
             }
-
-            createStockCardAndInventoryMovement(model);
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+                createStockCardAndInventoryMovementWithLot(model);
+            } else {
+                createStockCardAndInventoryMovement(model);
+            }
         } catch (LMISException e) {
             e.reportToFabric();
         }
+    }
+
+    private void createStockCardAndInventoryMovementWithLot(InventoryViewModel model) throws LMISException {
+        StockCard stockCard = new StockCard();
+        stockCard.setProduct(model.getProduct());
+        StockMovementItem movementItem = new StockMovementItem(stockCard, model);
+        stockRepository.addStockMovementAndUpdateStockCard(movementItem);
     }
 
     private StockCard createStockCardAndInventoryMovement(InventoryViewModel model) throws LMISException {

@@ -29,7 +29,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.openlmis.core.LMISRepositoryUnitTest;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
@@ -470,6 +472,21 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         subscriber.awaitTerminalEvent();
 
         assertThat(firstStockCardViewModel.getStockCard().getExpireDates(), is(""));
+    }
+
+    @Test
+    public void shouldInitStockCardAndCreateAInitInventoryMovementItemWithLot() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management,true);
+
+        product.setArchived(false);
+
+        InventoryViewModel model = new StockCardViewModelBuilder(product).setChecked(true)
+                .setQuantity("10").setExpiryDates(newArrayList("01/01/2016")).build();
+
+        inventoryPresenter.initOrArchiveBackStockCards(newArrayList(model));
+
+        ArgumentCaptor<StockMovementItem> argument = ArgumentCaptor.forClass(StockMovementItem.class);
+        verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(argument.capture());
     }
 
     public class MyTestModule extends AbstractModule {
