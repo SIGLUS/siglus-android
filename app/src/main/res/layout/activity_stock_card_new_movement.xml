@@ -145,8 +145,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginTop="0dp"
                 android:padding="@dimen/padding_normal"
-                android:visibility="visible"
+                android:visibility="gone"
                 style="@style/StockMovement.Card">
 
                 <TextView
