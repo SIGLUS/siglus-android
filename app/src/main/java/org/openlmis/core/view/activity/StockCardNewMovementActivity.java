@@ -90,7 +90,6 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     @InjectView(R.id.action_add_new_lot)
     View actionAddNewLot;
 
-
     @InjectPresenter(NewStockMovementPresenter.class)
     NewStockMovementPresenter presenter;
 
@@ -154,8 +153,10 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         lotMovementRecycleView.setAdapter(lotMovementAdapter);
     }
 
-    private void refreshRecyclerView(){
+    private void refreshRecyclerView() {
         lotMovementAdapter.notifyDataSetChanged();
+        int lotInfoViewHeight = 250;
+        lotMovementRecycleView.setMinimumHeight(lotMovementAdapter.getItemCount() * lotInfoViewHeight);
     }
 
     private void initUI() {

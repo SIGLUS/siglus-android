@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ly_lot_item_card"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="0dp"
+    android:paddingBottom="@dimen/padding_normal"
+    style="@style/StockMovement.Card">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="7">
 
         <android.support.design.widget.TextInputLayout
@@ -67,7 +71,4 @@
             android:textColor="@color/color_text_secondary"
             android:textStyle="bold" />
     </LinearLayout>
-
-    <View
-        style="@style/InventoryCard.Divider" />
 </LinearLayout>
