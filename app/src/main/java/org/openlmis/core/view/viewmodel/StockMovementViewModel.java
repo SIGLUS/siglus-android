@@ -113,13 +113,15 @@ public class StockMovementViewModel {
         stockMovementItem.setDocumentNumber(getDocumentNo());
         stockMovementItem.setMovementType(reason.getMovementType());
 
-        Long movementQuantity = Long.parseLong(typeQuantityMap.get(reason.getMovementType()));
-        stockMovementItem.setMovementQuantity(movementQuantity);
-
-//        if (reason.getMovementType().equals(MovementReasonManager.MovementType.ISSUE) || reason.getMovementType().equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST)) {
-//            Long movementQuantity = Long.parseLong(typeQuantityMap.get(reason.getMovementType()));
-//            stockMovementItem.setMovementQuantity(movementQuantity);
-//        }
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)){
+            if (reason.getMovementType().equals(MovementReasonManager.MovementType.ISSUE) || reason.getMovementType().equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST)) {
+                Long movementQuantity = Long.parseLong(typeQuantityMap.get(reason.getMovementType()));
+                stockMovementItem.setMovementQuantity(movementQuantity);
+            }
+        } else {
+            Long movementQuantity = Long.parseLong(typeQuantityMap.get(reason.getMovementType()));
+            stockMovementItem.setMovementQuantity(movementQuantity);
+        }
 
         stockMovementItem.setRequested((null == requested || requested.isEmpty()) ? null : Long.valueOf(requested));
 
