@@ -7,7 +7,6 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,6 +20,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.NestedRecyclerViewLinearLayoutManager;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.presenter.NewStockMovementPresenter;
 import org.openlmis.core.utils.Constants;
@@ -148,15 +148,13 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     }
 
     private void initRecyclerView() {
-        lotMovementRecycleView.setLayoutManager(new LinearLayoutManager(this));
+        lotMovementRecycleView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(this));
         lotMovementAdapter = new LotMovementAdapter(presenter.getLotMovementViewModels());
         lotMovementRecycleView.setAdapter(lotMovementAdapter);
     }
 
     private void refreshRecyclerView() {
         lotMovementAdapter.notifyDataSetChanged();
-        int lotInfoViewHeight = 225;
-        lotMovementRecycleView.setMinimumHeight(lotMovementAdapter.getItemCount() * lotInfoViewHeight);
     }
 
     private void initUI() {

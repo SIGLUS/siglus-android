@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 import org.openlmis.core.exceptions.LMISException;
 
 public class NestedRecyclerViewLinearLayoutManager extends LinearLayoutManager {
-
-    private int[] mMeasuredDimension = new int[2];
     int width = 0;
     int height = 0;
 
@@ -20,6 +18,9 @@ public class NestedRecyclerViewLinearLayoutManager extends LinearLayoutManager {
 
     @Override
     public void onMeasure(RecyclerView.Recycler recycler, RecyclerView.State state, int widthSpec, int heightSpec) {
+        width = 0;
+        height = 0;
+
         final int widthMode = View.MeasureSpec.getMode(widthSpec);
         final int heightMode = View.MeasureSpec.getMode(heightSpec);
         final int widthSize = View.MeasureSpec.getSize(widthSpec);
@@ -47,15 +48,16 @@ public class NestedRecyclerViewLinearLayoutManager extends LinearLayoutManager {
                 break;
         }
 
-        setMeasuredDimension(width, height);
+        setMeasuredDimension(width, height + 1);
     }
 
     private void calculateLayoutParams(RecyclerView.Recycler recycler) {
+        int[] mMeasuredDimension = new int[2];
         for (int i = 0; i < getItemCount(); i++) {
             measureScrapChild(recycler,
                     View.MeasureSpec.makeMeasureSpec(i, View.MeasureSpec.UNSPECIFIED),
                     View.MeasureSpec.makeMeasureSpec(i, View.MeasureSpec.UNSPECIFIED),
-                    mMeasuredDimension);
+                    mMeasuredDimension, i);
 
             if (getOrientation() == HORIZONTAL) {
                 width = width + mMeasuredDimension[0];
@@ -72,9 +74,9 @@ public class NestedRecyclerViewLinearLayoutManager extends LinearLayoutManager {
     }
 
     private void measureScrapChild(RecyclerView.Recycler recycler, int widthSpec,
-                                   int heightSpec, int[] measuredDimension) {
+                                   int heightSpec, int[] measuredDimension, int position) {
         try {
-            View view = recycler.getViewForPosition(0);
+            View view = recycler.getViewForPosition(position);
 
             if (view != null) {
                 RecyclerView.LayoutParams p = (RecyclerView.LayoutParams) view.getLayoutParams();
@@ -87,7 +89,7 @@ public class NestedRecyclerViewLinearLayoutManager extends LinearLayoutManager {
 
                 view.measure(childWidthSpec, childHeightSpec);
                 measuredDimension[0] = view.getMeasuredWidth() + p.leftMargin + p.rightMargin;
-                measuredDimension[1] = view.getMeasuredHeight() + p.bottomMargin + p.topMargin -14;
+                measuredDimension[1] = view.getMeasuredHeight() + p.bottomMargin + p.topMargin;
                 recycler.recycleView(view);
             }
         } catch (IndexOutOfBoundsException e) {

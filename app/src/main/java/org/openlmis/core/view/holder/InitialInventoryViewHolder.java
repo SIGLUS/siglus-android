@@ -244,8 +244,8 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     }
 
     public void showAddNewLotPanel(int visible) {
-        actionDivider.setVisibility(visible);
         actionPanelForAddLot.setVisibility(visible);
+        lotListRecyclerView.setVisibility(visible);
     }
 
     class EditTextWatcher extends SingleTextWatcher {

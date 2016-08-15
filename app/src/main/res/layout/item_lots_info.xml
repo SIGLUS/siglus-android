@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="0dp"
     android:paddingBottom="@dimen/padding_normal"
-    style="@style/StockMovement.Card">
+    android:background="@drawable/bottom_border_gray_bg">
 
     <LinearLayout
         android:layout_width="match_parent"

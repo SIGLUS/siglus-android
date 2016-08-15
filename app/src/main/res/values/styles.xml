@@ -673,7 +673,7 @@
     </style>
 
     <style name="LayoutRequisition.HeaderLeftContainer" parent="Divider.Vertical">
-        <item name="android:background">@drawable/bottom_border_bg</item>
+        <item name="android:background">@drawable/bottom_right_border_bg</item>
         <item name="android:gravity">center</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:weightSum">4</item>

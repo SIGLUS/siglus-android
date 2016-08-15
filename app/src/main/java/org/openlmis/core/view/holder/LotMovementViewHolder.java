@@ -49,6 +49,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
         if (viewModel.isValid()) {
             lyLotAmount.setErrorEnabled(false);
         } else {
+            etLotAmount.requestFocus();
             lyLotAmount.setError(context.getResources().getString(R.string.msg_inventory_check_failed));
         }
 

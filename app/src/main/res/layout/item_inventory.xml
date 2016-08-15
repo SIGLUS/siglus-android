@@ -98,7 +98,9 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_added_lot"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:background="@drawable/top_border_gray_bg"/>
 
         <LinearLayout
             android:id="@+id/add_new_lot_panel"
