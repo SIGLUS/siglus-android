@@ -152,6 +152,7 @@ public class InventoryViewModelTest {
         inventoryViewModel.setChecked(true);
 
         LotMovementViewModel lotMovementViewModel = new LotMovementViewModel("lotNumber","2012-09-01");
+        lotMovementViewModel.validate();
         inventoryViewModel.lotMovementViewModelList.add(lotMovementViewModel);
 
         assertFalse(inventoryViewModel.validate(false));

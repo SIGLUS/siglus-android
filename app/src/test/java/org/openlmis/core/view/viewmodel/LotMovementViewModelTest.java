@@ -19,15 +19,19 @@ public class LotMovementViewModelTest {
 
     @Test
     public void shouldReturnFalseWhenViewModelIsInvalid() throws Exception {
+        viewModel.validate();
         assertFalse(viewModel.isValid());
 
         viewModel.setLotNumber("dk-23");
+        viewModel.validate();
         assertFalse(viewModel.isValid());
 
         viewModel.setQuantity("333");
+        viewModel.validate();
         assertFalse(viewModel.isValid());
 
         viewModel.setExpiryDate("2014-03-18");
+        viewModel.validate();
         assertTrue(viewModel.isValid());
     }
 }

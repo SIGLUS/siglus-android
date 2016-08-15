@@ -42,7 +42,7 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
     public int validateAll() {
         int position = -1;
         for (int i = 0; i < lotList.size(); i++) {
-            if (!lotList.get(i).isValid()) {
+            if (!lotList.get(i).validate()) {
                 position = i;
                 break;
             }

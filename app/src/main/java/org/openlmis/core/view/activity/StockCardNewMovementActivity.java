@@ -155,7 +155,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     private void refreshRecyclerView() {
         lotMovementAdapter.notifyDataSetChanged();
-        int lotInfoViewHeight = 250;
+        int lotInfoViewHeight = 225;
         lotMovementRecycleView.setMinimumHeight(lotMovementAdapter.getItemCount() * lotInfoViewHeight);
     }
 

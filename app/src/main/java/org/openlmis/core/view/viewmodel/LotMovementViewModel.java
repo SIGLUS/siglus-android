@@ -1,5 +1,6 @@
 package org.openlmis.core.view.viewmodel;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.Product;
@@ -18,6 +19,8 @@ public class LotMovementViewModel implements Serializable {
     private String lotSoh;
     private String stockMovementId;
 
+    boolean valid = true;
+
     public LotMovementViewModel() {
     }
 
@@ -26,8 +29,12 @@ public class LotMovementViewModel implements Serializable {
         this.expiryDate = expiryDate;
     }
 
-    public boolean isValid() {
-        return lotNumber != null && expiryDate != null && quantity != null;
+    public boolean validate() {
+        valid =  StringUtils.isNumeric(quantity)
+                && !StringUtils.isBlank(lotNumber)
+                && !StringUtils.isBlank(expiryDate)
+                && !StringUtils.isBlank(quantity);
+        return valid;
     }
 
     public LotMovementItem convertViewToModel(Product product) {
