@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.InventoryActivity;
@@ -41,6 +42,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
         etLotAmount.removeTextChangedListener(textWatcher);
         etLotAmount.addTextChangedListener(textWatcher);
 
+        etLotAmount.setHint(LMISApp.getInstance().getString(R.string.hint_lot_amount));
         etLotInfo.setText(viewModel.getLotNumber() + " - " + viewModel.getExpiryDate());
         etLotAmount.setText(viewModel.getQuantity());
 

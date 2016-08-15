@@ -222,7 +222,7 @@ public class InventoryViewModel {
 
     private boolean validateLotList() {
         for (LotMovementViewModel lotMovementViewModel:lotMovementViewModelList){
-            if (!lotMovementViewModel.isValid()) {
+            if (!lotMovementViewModel.validate()) {
                 return false;
             }
         }

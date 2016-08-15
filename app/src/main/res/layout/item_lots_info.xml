@@ -40,7 +40,6 @@
                 android:id="@+id/et_lot_amount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/hint_lot_amount"
                 android:inputType="number"
                 android:maxLength="9"/>
         </android.support.design.widget.TextInputLayout>
