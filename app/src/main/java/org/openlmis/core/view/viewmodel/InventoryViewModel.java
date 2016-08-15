@@ -134,7 +134,7 @@ public class InventoryViewModel {
     }
 
     public void clearLotMovementViewModelList() {
-        this.lotMovementViewModelList = new ArrayList<>();
+        this.lotMovementViewModelList.clear();
     }
 
     private void setProductAttributes(Product product) {

@@ -169,7 +169,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
                 showAddNewLotPanel(View.GONE);
                 viewModel.clearLotMovementViewModelList();
-                lotMovementAdapter.notifyDataSetChanged();
+                refreshLotList();
             } else {
                 showEditPanel(View.GONE);
             }
@@ -179,6 +179,11 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
             viewModel.clearExpiryDates();
         }
         viewModel.setChecked(isChecked);
+    }
+
+    private void refreshLotList() {
+        lotMovementAdapter.notifyDataSetChanged();
+        lotListRecyclerView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(context));
     }
 
     private void initLotListRecyclerView(InventoryViewModel viewModel) {
@@ -213,8 +218,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
 
     private void addLotView(LotMovementViewModel lotMovementViewModel, InventoryViewModel viewModel) {
         viewModel.addLotMovementViewModel(lotMovementViewModel);
-        lotListRecyclerView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(context));
-        lotMovementAdapter.notifyDataSetChanged();
+        refreshLotList();
     }
 
     private void initHistoryView(final InventoryViewModel viewModel, final ViewHistoryListener listener) {
