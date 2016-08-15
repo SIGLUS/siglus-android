@@ -117,6 +117,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     @InjectView(R.id.lot_list)
     private RecyclerView lotMovementRecycleView;
+    public static final int LOT_INFO_VIEW_HEIGHT = 225;
 
     @Override
     protected ScreenName getScreenName() {
