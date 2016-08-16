@@ -487,10 +487,10 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         Lot lot1 = new LotBuilder().setLotNumber("A111").setProduct(stockCard.getProduct()).build();
         Lot lot2 = new LotBuilder().setLotNumber("B111").setProduct(stockCard.getProduct()).build();
         Lot lot3 = new LotBuilder().setLotNumber("C111").setProduct(stockCard.getProduct()).build();
-        LotMovementItem lotMovementItem1 = new LotMovementItemBuilder().setStockMovementItem(stockMovementItem1).setLot(lot1).setMovementQuantity(100L).setStockOnHand(100L).build();
-        LotMovementItem lotMovementItem2 = new LotMovementItemBuilder().setStockMovementItem(stockMovementItem2).setLot(lot2).setMovementQuantity(200L).setStockOnHand(300L).build();
-        LotMovementItem lotMovementItem3 = new LotMovementItemBuilder().setStockMovementItem(stockMovementItem2).setLot(lot3).setMovementQuantity(300L).setStockOnHand(0L).build();
-        LotMovementItem lotMovementItem4 = new LotMovementItemBuilder().setStockMovementItem(stockMovementItem2).setLot(lot1).setMovementQuantity(400L).setStockOnHand(200L).build();
+        LotMovementItem lotMovementItem1 = new LotMovementItemBuilder().setStockMovementItem(stockMovementItem1).setLot(lot1).setMovementQuantity(100L).setStockOnHand(0L).build();
+        LotMovementItem lotMovementItem2 = new LotMovementItemBuilder().setStockMovementItem(stockMovementItem2).setLot(lot2).setMovementQuantity(200L).setStockOnHand(0L).build();
+        LotMovementItem lotMovementItem3 = new LotMovementItemBuilder().setStockMovementItem(stockMovementItem2).setLot(lot3).setMovementQuantity(0L).setStockOnHand(0L).build();
+        LotMovementItem lotMovementItem4 = new LotMovementItemBuilder().setStockMovementItem(stockMovementItem2).setLot(lot1).setMovementQuantity(400L).setStockOnHand(0L).build();
         stockMovementItem1.setLotMovementItemListWrapper(newArrayList(lotMovementItem1));
         stockMovementItem2.setLotMovementItemListWrapper(newArrayList(lotMovementItem2, lotMovementItem3, lotMovementItem4));
         stockMovementItem1.setStockCard(stockCard);
@@ -502,9 +502,9 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         List<LotOnHand> lotOnHandList = stockRepository.getNonEmptyLotOnHandByStockCard(stockCard.getId());
         assertThat(lotOnHandList.size(), is(2));
         assertThat(lotOnHandList.get(0).getLot().getLotNumber(), is("A111"));
-        assertThat(lotOnHandList.get(0).getQuantityOnHand(), is(200L));
+        assertThat(lotOnHandList.get(0).getQuantityOnHand(), is(500L));
         assertThat(lotOnHandList.get(1).getLot().getLotNumber(), is("B111"));
-        assertThat(lotOnHandList.get(1).getQuantityOnHand(), is(300L));
+        assertThat(lotOnHandList.get(1).getQuantityOnHand(), is(200L));
     }
 
     private void saveDraftInventory() throws LMISException {
