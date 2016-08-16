@@ -92,7 +92,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
             for (int i = 0; i < pickers.getChildCount(); i++) {
                 View childView = pickers.getChildAt(i);
                 if (childView.getId() == dayIdentifier) {
-                    childView.setVisibility(View.INVISIBLE);
+                    childView.setVisibility(View.GONE);
                     return;
                 }
 

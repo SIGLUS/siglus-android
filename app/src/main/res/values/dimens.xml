@@ -6,7 +6,7 @@
     <dimen name="mmia_spread_item_common_width">65dp</dimen>
     <dimen name="divider">1dp</dimen>
     <dimen name="stock_movement_item_common_width">100dp</dimen>
-    <dimen name="lot_dialog_page_common_width">500dp</dimen>
+    <dimen name="lot_dialog_page_common_width">400dp</dimen>
 
     <dimen name="default_button_height">36dp</dimen>
     <dimen name="default_button_bar_height">52dp</dimen>

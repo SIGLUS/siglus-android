@@ -77,7 +77,7 @@ end
 
 Then(/^I set date to next year$/) do
     dp = query("android.widget.DatePicker").first
-    touch(dp, :offset => {:x => 200, :y => 100})
+    touch(dp, :offset => {:x => 100, :y => 100})
 end
 
 And(/^I enter lot number "(.*?)" on add lot page$/) do |lot_number|
