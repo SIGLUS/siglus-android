@@ -57,19 +57,29 @@ public class LotRepository {
                     return null;
                 }
             });
+            lotOnHand.setQuantityOnHand(lotMovementItem.getMovementQuantity());
+            final LotOnHand finalLotOnHand = lotOnHand;
+            dbUtil.withDao(LotOnHand.class, new DbUtil.Operation<LotOnHand, Void>() {
+                @Override
+                public Void operate(Dao<LotOnHand, String> dao) throws SQLException {
+                    dao.createOrUpdate(finalLotOnHand);
+                    return null;
+                }
+            });
         } else {
-            lotOnHand = getLotOnHandByLot(lot);
+            lotOnHand = getLotOnHandByLot(existingLot);
+            lotOnHand.setQuantityOnHand( lotOnHand.getQuantityOnHand()+ lotMovementItem.getMovementQuantity());
+            final LotOnHand finalLotOnHand = lotOnHand;
+            dbUtil.withDao(LotOnHand.class, new DbUtil.Operation<LotOnHand, Void>() {
+                @Override
+                public Void operate(Dao<LotOnHand, String> dao) throws SQLException {
+                    dao.createOrUpdate(finalLotOnHand);
+                    return null;
+                }
+            });
         }
 
-        lotOnHand.setQuantityOnHand(lotMovementItem.getStockOnHand());
-        final LotOnHand finalLotOnHand = lotOnHand;
-        dbUtil.withDao(LotOnHand.class, new DbUtil.Operation<LotOnHand, Void>() {
-            @Override
-            public Void operate(Dao<LotOnHand, String> dao) throws SQLException {
-                dao.createOrUpdate(finalLotOnHand);
-                return null;
-            }
-        });
+
     }
 
     private void createLotMovementItem(final LotMovementItem lotMovementItem) throws LMISException {

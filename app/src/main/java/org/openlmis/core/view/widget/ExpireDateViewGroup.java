@@ -34,6 +34,7 @@ import com.google.inject.Inject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
@@ -54,6 +55,7 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
 
     private Context context;
     protected List<String> expireDates;
+
     @Inject
     private StockRepository stockRepository;
 
@@ -80,6 +82,13 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
         initView();
     }
 
+    public void initExpireDateViewGroup(List<LotOnHand> lotOnHandList) {
+        removeAllViews();
+        for (LotOnHand lotOnHand: lotOnHandList) {
+            addLotInfoView(lotOnHand);
+        }
+    }
+
     public void initExpireDateViewGroup(InventoryViewModel model, boolean isUpdateDBImmediately) {
         this.model = model;
         this.isUpdateDBImmediately = isUpdateDBImmediately;
@@ -97,9 +106,11 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
     }
 
     private void initView() {
-        tvAddExpiryDate = inflater.inflate(R.layout.view_add_expire_date, null);
-        tvAddExpiryDate.setOnClickListener(this);
-        addView(tvAddExpiryDate);
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+            tvAddExpiryDate = inflater.inflate(R.layout.view_add_expire_date, null);
+            tvAddExpiryDate.setOnClickListener(this);
+            addView(tvAddExpiryDate);
+        }
     }
 
     @Override
@@ -156,6 +167,29 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
         });
 
         return expireDateView;
+    }
+
+
+    private ViewGroup addLotInfoView(LotOnHand lotOnHand) {
+        String lotOnHandQuantity = "" + lotOnHand.getQuantityOnHand();
+        String lotInfo = lotOnHand.getLot().getLotNumber() + " - "
+                + DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)
+                + " - "
+                + lotOnHandQuantity;
+
+        final ViewGroup lotInfoView = (ViewGroup) inflater.inflate(R.layout.item_lot_info_for_stockcard, null);
+        TextView txLotInfo = (TextView) lotInfoView.findViewById(R.id.tx_lot_info);
+        txLotInfo.setText(lotInfo);
+        addView(lotInfoView, getChildCount() - 1);
+
+        lotInfoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //will add pop up action in another story
+            }
+        });
+
+        return lotInfoView;
     }
 
     private List<String> getStockCardExpireDates(InventoryViewModel model) {

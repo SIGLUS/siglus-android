@@ -39,6 +39,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockMovementPresenter;
@@ -192,8 +193,18 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
     @Override
     public void updateExpiryDateViewGroup() {
         StockCard stockCard = presenter.getStockCard();
-        expireDateViewGroup.initExpireDateViewGroup(new InventoryViewModel(stockCard), true);
-        expireDateViewGroup.setVisibility(stockCard.getStockOnHand() == 0 ? View.INVISIBLE : View.VISIBLE);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+            List<LotOnHand> lotOnHandList = null;
+            try {
+                lotOnHandList = presenter.getLotOnHandByStockCard(stockCard);
+            } catch (LMISException e) {
+                e.reportToFabric();
+            }
+            expireDateViewGroup.initExpireDateViewGroup(lotOnHandList);
+        } else {
+            expireDateViewGroup.initExpireDateViewGroup(new InventoryViewModel(stockCard), true);
+            expireDateViewGroup.setVisibility(stockCard.getStockOnHand() == 0 ? View.INVISIBLE : View.VISIBLE);
+        }
     }
 
     @Override
