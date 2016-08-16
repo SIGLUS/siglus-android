@@ -67,6 +67,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
         hideDay();
         btnCancel.setOnClickListener(listener);
         btnComplete.setOnClickListener(listener);
+        this.setCancelable(false);
     }
 
     @Override
