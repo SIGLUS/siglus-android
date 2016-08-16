@@ -78,8 +78,6 @@ public class LotRepository {
                 }
             });
         }
-
-
     }
 
     private void createLotMovementItem(final LotMovementItem lotMovementItem) throws LMISException {
