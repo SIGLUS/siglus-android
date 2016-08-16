@@ -5,7 +5,7 @@ Feature: stock movement Page
     Given I try to log in with "stock_card" "password1"
 
   Scenario: deactivated product show notify banner
-    Given I have initialized inventory
+    Given I have initialized inventory with lot
     When I press "Stock Card Overview"
     Then I wait for "Stock Overview" to appear
     Then I wait for 1 second

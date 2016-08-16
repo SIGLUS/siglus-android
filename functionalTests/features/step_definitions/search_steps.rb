@@ -53,6 +53,54 @@ When(/^I search product by primary name "(.*?)" and select this item with quanti
     }
 end
 
+
+When(/^I search lot product by primary name "(.*?)" and select this item with quantity "(.*?)" and lot number "(.*?)"$/) do |primary,quantity,lot_number|
+    steps %Q{
+        When I search "#{primary}"
+    }
+    q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
+    if !q.empty?
+        touch(q)
+        steps %Q{
+            Then I wait for "lot number" to appear
+            Then I enter lot number "#{lot_number}" on add lot page
+            Then I set date to next year
+            And I press "Complete"
+            Then I should see "#{lot_number}"
+            Then I enter quantity "#{quantity}" on inventory page with lot
+        }
+    end
+    steps %Q{
+        And I clean search bar
+    }
+end
+
+Then(/^I set date to next year$/) do
+    dp = query("android.widget.DatePicker").first
+    touch(dp, :offset => {:x => 200, :y => 100})
+end
+
+And(/^I enter lot number "(.*?)" on add lot page$/) do |lot_number|
+    h = query("android.widget.EditText id:'et_lot_number' text:''").first
+    touch(h)
+    keyboard_enter_text(lot_number)
+    hide_soft_keyboard
+end
+
+Then(/^I should see lot number and expired date "(.*?)"$/) do |arg1|
+ info = query("android.widget.TextView id:'et_lot_info'" , :text)
+ unless info.at(0).to_i == arg1.to_i
+     fail "Lot info is not correct"
+ end
+end
+
+And(/^I enter quantity "(\d+)" on inventory page with lot$/) do |quantity|
+    h = query("android.widget.EditText id:'et_lot_amount' text:''").first
+    touch(h)
+    keyboard_enter_text(quantity)
+    hide_soft_keyboard
+end
+
 Then(/^I shouldn't see product "(.*?)" in this page$/) do |productProperty|
     steps %Q{
        When I search drug by fnm "#{productProperty}"

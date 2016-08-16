@@ -5,7 +5,7 @@ Feature: MMIA
     Given I change device date to "20160216.130000"
     And I try to log in with "mmia" "password1"
 
-    Given I have initialized inventory with MMIA user
+    Given I have initialized inventory with MMIA user with lot
     And I press "MMIA"
     Then I wait for "MMIA" to appear
     Then I should see text containing "You will be able to create a MMIA on the 18th of Feb"
