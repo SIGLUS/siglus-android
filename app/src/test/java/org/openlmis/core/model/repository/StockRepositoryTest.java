@@ -33,6 +33,9 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.DraftInventory;
+import org.openlmis.core.model.Lot;
+import org.openlmis.core.model.LotMovementItem;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
@@ -40,9 +43,12 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.builder.LotBuilder;
+import org.openlmis.core.model.builder.LotMovementItemBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.ProductProgramBuilder;
 import org.openlmis.core.model.builder.ProgramBuilder;
+import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -72,6 +78,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     StockRepository stockRepository;
     ProductRepository productRepository;
+    LotRepository lotRepository;
     Product product;
     private ProgramRepository programRepository;
     private ProductProgramRepository productProgramRepository;
@@ -84,6 +91,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
         programRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProgramRepository.class);
         productProgramRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductProgramRepository.class);
+        lotRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(LotRepository.class);
 
         saveTestProduct();
 
@@ -235,7 +243,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         RnRForm rnRForm = RnRForm.init(program1, new Period(periodBegin, periodEnd), false);
         List<StockCard> stockCardsBeforeTimeLine = stockRepository.getStockCardsBeforePeriodEnd(rnRForm);
         assertThat(stockCardsBeforeTimeLine.size(), is(2));
-        assertThat(stockCardsBeforeTimeLine.get(0).getProduct().getCode(),is("P1"));
+        assertThat(stockCardsBeforeTimeLine.get(0).getProduct().getCode(), is("P1"));
         assertThat(stockCardsBeforeTimeLine.get(1).getProduct().getCode(),is("P3"));
     }
 
@@ -346,7 +354,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         return movementItem;
     }
 
-    private long createNewStockCard(String code, String parentCode, Product product, boolean isEmergency) throws LMISException {
+    private StockCard createNewStockCard(String code, String parentCode, Product product, boolean isEmergency) throws LMISException {
         StockCard stockCard = new StockCard();
         Program program = createNewProgram(code, parentCode, isEmergency);
         programRepository.createOrUpdate(program);
@@ -363,7 +371,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockCard.setCreatedAt(new Date());
         stockRepository.createOrUpdate(stockCard);
 
-        return program.getId();
+        return stockCard;
     }
 
     private void createNewProductProgram(String code, String productCode) throws LMISException {
@@ -467,6 +475,36 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         //then
         List<StockCard> stockCardsBeforeTimeLine = stockRepository.listEmergencyStockCards();
         assertThat(stockCardsBeforeTimeLine.size(), is(1));
+    }
+
+    @Test
+    public void shouldGetNonEmptyLotOnHandByStockCardId() throws Exception {
+        Product product = ProductBuilder.create().setProductId(1L).setCode("p1").setIsActive(true).setIsKit(false).build();
+        StockCard stockCard = createNewStockCard("code", null, product, true);
+
+        StockMovementItem stockMovementItem1 = new StockMovementItemBuilder().withMovementDate("2016-10-10").withMovementType(RECEIVE).build();
+        StockMovementItem stockMovementItem2 = new StockMovementItemBuilder().withMovementDate("2016-11-10").withMovementType(RECEIVE).build();
+        Lot lot1 = new LotBuilder().setLotNumber("A111").setProduct(stockCard.getProduct()).build();
+        Lot lot2 = new LotBuilder().setLotNumber("B111").setProduct(stockCard.getProduct()).build();
+        Lot lot3 = new LotBuilder().setLotNumber("C111").setProduct(stockCard.getProduct()).build();
+        LotMovementItem lotMovementItem1 = new LotMovementItemBuilder().setStockMovementItem(stockMovementItem1).setLot(lot1).setMovementQuantity(100L).setStockOnHand(100L).build();
+        LotMovementItem lotMovementItem2 = new LotMovementItemBuilder().setStockMovementItem(stockMovementItem2).setLot(lot2).setMovementQuantity(200L).setStockOnHand(300L).build();
+        LotMovementItem lotMovementItem3 = new LotMovementItemBuilder().setStockMovementItem(stockMovementItem2).setLot(lot3).setMovementQuantity(300L).setStockOnHand(0L).build();
+        LotMovementItem lotMovementItem4 = new LotMovementItemBuilder().setStockMovementItem(stockMovementItem2).setLot(lot1).setMovementQuantity(400L).setStockOnHand(200L).build();
+        stockMovementItem1.setLotMovementItemListWrapper(newArrayList(lotMovementItem1));
+        stockMovementItem2.setLotMovementItemListWrapper(newArrayList(lotMovementItem2, lotMovementItem3, lotMovementItem4));
+        stockMovementItem1.setStockCard(stockCard);
+        stockMovementItem2.setStockCard(stockCard);
+        stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem1);
+        stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem2);
+        stockRepository.refresh(stockCard);
+
+        List<LotOnHand> lotOnHandList = stockRepository.getNonEmptyLotOnHandByStockCard(stockCard.getId());
+        assertThat(lotOnHandList.size(), is(2));
+        assertThat(lotOnHandList.get(0).getLot().getLotNumber(), is("A111"));
+        assertThat(lotOnHandList.get(0).getQuantityOnHand(), is(200L));
+        assertThat(lotOnHandList.get(1).getLot().getLotNumber(), is("B111"));
+        assertThat(lotOnHandList.get(1).getQuantityOnHand(), is(300L));
     }
 
     private void saveDraftInventory() throws LMISException {

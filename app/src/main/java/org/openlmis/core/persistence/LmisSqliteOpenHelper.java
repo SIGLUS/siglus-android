@@ -37,6 +37,7 @@ import org.openlmis.core.persistence.migrations.AddIsCustomColumnToRegime;
 import org.openlmis.core.persistence.migrations.AddIsEmergencyColumnToProgram;
 import org.openlmis.core.persistence.migrations.AddIsKitColumnToProduct;
 import org.openlmis.core.persistence.migrations.AddLotMovementItemsTable;
+import org.openlmis.core.persistence.migrations.AddLotOnHandTable;
 import org.openlmis.core.persistence.migrations.AddLotsTable;
 import org.openlmis.core.persistence.migrations.AddLowStockAvgColumnToStockCardTable;
 import org.openlmis.core.persistence.migrations.AddManualAddColumnToRnrFormItemsTable;
@@ -109,6 +110,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new AddManualAddColumnToRnrFormItemsTable());
             add(new AddLotsTable());
             add(new AddLotMovementItemsTable());
+            add(new AddLotOnHandTable());
         }
     };
     private static int instanceCount = 0;

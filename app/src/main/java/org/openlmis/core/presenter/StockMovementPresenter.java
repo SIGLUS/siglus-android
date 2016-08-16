@@ -29,6 +29,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.KitProduct;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProductRepository;
@@ -206,6 +207,10 @@ public class StockMovementPresenter extends Presenter {
     public void archiveStockCard() {
         stockCard.getProduct().setArchived(true);
         stockRepository.updateProductOfStockCard(stockCard.getProduct());
+    }
+
+    public List<LotOnHand> getLotOnHandByStockCard(StockCard stockCard) throws LMISException {
+        return stockRepository.getNonEmptyLotOnHandByStockCard(stockCard.getId());
     }
 
     public interface StockMovementView extends BaseView {

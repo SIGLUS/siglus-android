@@ -29,6 +29,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.StockMovementIsNullException;
 import org.openlmis.core.model.DraftInventory;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
@@ -440,4 +441,17 @@ public class StockRepository {
         });
     }
 
+    public List<LotOnHand> getNonEmptyLotOnHandByStockCard(final long stockCardId) throws LMISException {
+        return dbUtil.withDao(LotOnHand.class, new DbUtil.Operation<LotOnHand, List<LotOnHand>>() {
+            @Override
+            public List<LotOnHand> operate(Dao<LotOnHand, String> dao) throws SQLException, LMISException {
+                return dao.queryBuilder()
+                        .where()
+                        .in("stockCard_id", stockCardId)
+                        .and()
+                        .ne("quantityOnHand", 0L)
+                        .query();
+            }
+        });
+    }
 }
