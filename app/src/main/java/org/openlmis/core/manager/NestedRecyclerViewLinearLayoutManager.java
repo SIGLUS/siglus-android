@@ -48,7 +48,7 @@ public class NestedRecyclerViewLinearLayoutManager extends LinearLayoutManager {
                 break;
         }
 
-        setMeasuredDimension(width, height + 1);
+        setMeasuredDimension(width, height);
     }
 
     private void calculateLayoutParams(RecyclerView.Recycler recycler) {

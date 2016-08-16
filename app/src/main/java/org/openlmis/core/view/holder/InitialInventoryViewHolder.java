@@ -183,7 +183,6 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
 
     private void refreshLotList() {
         lotMovementAdapter.notifyDataSetChanged();
-        lotListRecyclerView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(context));
     }
 
     private void initLotListRecyclerView(InventoryViewModel viewModel) {

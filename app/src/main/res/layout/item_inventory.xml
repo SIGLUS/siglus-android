@@ -100,13 +100,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:background="@drawable/top_border_gray_bg"/>
+            android:background="@color/color_white"/>
 
         <LinearLayout
             android:id="@+id/add_new_lot_panel"
             style="@style/InventoryCard.ActionPanel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/top_border_gray_bg"
             android:visibility="gone">
             <TextView
                 android:id="@+id/tx_add_new_lot"

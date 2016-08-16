@@ -135,7 +135,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:scrollbars="none"
-            android:background="@drawable/border_bg_light_gray"/>
+            android:background="@drawable/border_left_right_gray_bg_white"/>
 
         <LinearLayout
             android:id="@+id/action_add_new_lot"
