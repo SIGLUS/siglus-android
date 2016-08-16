@@ -68,7 +68,7 @@ public class LotRepository {
             });
         } else {
             lotOnHand = getLotOnHandByLot(existingLot);
-            lotOnHand.setQuantityOnHand( lotOnHand.getQuantityOnHand()+ lotMovementItem.getMovementQuantity());
+            lotOnHand.setQuantityOnHand(lotOnHand.getQuantityOnHand()+ lotMovementItem.getMovementQuantity());
             final LotOnHand finalLotOnHand = lotOnHand;
             dbUtil.withDao(LotOnHand.class, new DbUtil.Operation<LotOnHand, Void>() {
                 @Override
