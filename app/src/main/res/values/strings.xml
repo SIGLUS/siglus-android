@@ -374,6 +374,8 @@
     <string name="msg_empty_quantity">Quantity cannot be blank</string>
     <string name="msg_empty_signature">Signature cannot be blank</string>
     <string name="msg_invalid_quantity">Quantity cannot be larger than stock on hand</string>
+
+    <!--Lot management-->
     <string name="label_lot_number">What is the lot number?</string>
     <string name="hint_lot_number">Lot number</string>
     <string name="label_add_lot_expire">When does the lot expire?</string>
@@ -385,4 +387,5 @@
     <string name="hint_lot_amount">Amount</string>
     <string name="hint_soh_of_lot">Stock on hand of lot</string>
     <string name="label_current_soh_of_lot">Stock on hand of lot</string>
+    <string name="empty_lot_warning">Please add a new lot</string>
 </resources>

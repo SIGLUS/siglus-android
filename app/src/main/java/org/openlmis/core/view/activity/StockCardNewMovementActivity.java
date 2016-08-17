@@ -321,7 +321,17 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             showSignatureError();
             return true;
         }
+
+        if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) && checkLotIsEmpty()) {
+            showEmptyLotError();
+            return true;
+        }
         return showLotError();
+    }
+
+
+    private boolean checkLotIsEmpty() {
+        return presenter.getLotMovementViewModels().size() <= 0;
     }
 
     private boolean checkSignature(String signature) {
@@ -333,6 +343,11 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             return Long.parseLong(quantity) > previousMovement.getStockOnHand();
         }
         return false;
+    }
+
+    private void showEmptyLotError() {
+        clearErrorAlerts();
+        ToastUtil.show(getResources().getString(R.string.empty_lot_warning));
     }
 
     @Override
