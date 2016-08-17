@@ -44,6 +44,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
 
         etLotAmount.setHint(LMISApp.getInstance().getString(R.string.hint_lot_amount));
         etLotInfo.setText(viewModel.getLotNumber() + " - " + viewModel.getExpiryDate());
+        etLotInfo.setKeyListener(null);
         etLotAmount.setText(viewModel.getQuantity());
 
         if (viewModel.isValid()) {
