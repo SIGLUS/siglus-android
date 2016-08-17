@@ -332,17 +332,17 @@
     <string name="label_hint_amount_requisition">Quantidade recebida</string>
     <string name="label_to_comfirm_delete_product">Are you sure you want to remove this product?</string>
     <!--Stock movement adding page-->
-    <string name="hint_movement_date">Date of movement</string>
-    <string name="hint_document_number">Document number</string>
-    <string name="hint_movement_reason">Origin/Destination of movement</string>
+    <string name="hint_movement_date">Data do movimento</string>
+    <string name="hint_document_number">Número do documento</string>
+    <string name="hint_movement_reason">Origem/Destino do Movimento</string>
     <string name="hint_requested_quantity">Pedidos</string>
     <string name="hint_movement_quantity">Quantidade</string>
     <string name="hint_movement_signature">Rúbrica</string>
-    <string name="msg_empty_movement_date">Movement date cannot be blank</string>
-    <string name="msg_empty_movement_reason">Movement reason cannot be blank</string>
-    <string name="msg_empty_quantity">Quantity cannot be blank</string>
-    <string name="msg_empty_signature">Signature cannot be blank</string>
-    <string name="msg_invalid_quantity">Quantity cannot be larger than stock on hand</string>
+    <string name="msg_empty_movement_date">Data do movimento não pode estar em branco</string>
+    <string name="msg_empty_movement_reason">Razão do movimento não pode estar em branco</string>
+    <string name="msg_empty_quantity">Quantidade não pode estar em branco</string>
+    <string name="msg_empty_signature">Rúbrica não pode estar em branco</string>
+    <string name="msg_invalid_quantity">Quantidade não pode ser maior que o estoque existente</string>
     <!--Lot management-->
     <string name="label_lot_number">What is the lot number?</string>
     <string name="hint_lot_number">Lot number</string>
