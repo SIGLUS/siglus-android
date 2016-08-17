@@ -322,7 +322,9 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             return true;
         }
 
-        if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) && checkLotIsEmpty()) {
+        if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) && checkLotIsEmpty() && !isKit
+                && (movementType.equals(MovementReasonManager.MovementType.RECEIVE)
+                || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST))) {
             showEmptyLotError();
             return true;
         }
