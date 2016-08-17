@@ -193,6 +193,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                actionAddNewLot.setEnabled(false);
                 addLotDialogFragment = new AddLotDialogFragment();
                 addLotDialogFragment.setListener(new View.OnClickListener() {
                     @Override
@@ -211,9 +212,11 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                                     });
                                     addLotDialogFragment.dismiss();
                                 }
+                                actionAddNewLot.setEnabled(true);
                                 break;
                             case R.id.btn_cancel:
                                 addLotDialogFragment.dismiss();
+                                actionAddNewLot.setEnabled(true);
                                 break;
                         }
                     }
