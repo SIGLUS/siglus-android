@@ -64,8 +64,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical" />
 
-            <org.openlmis.core.view.widget.ExpireDateViewGroup
-                android:id="@+id/vg_expire_date_container"
+            <org.openlmis.core.view.widget.LotInfoGroup
+                android:id="@+id/vg_lot_info_container"
                 style="@style/StockMovement.ExpiryDates"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

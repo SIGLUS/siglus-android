@@ -49,7 +49,7 @@ import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.StockMovementAdapter;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.openlmis.core.view.widget.ExpireDateViewGroup;
+import org.openlmis.core.view.widget.LotInfoGroup;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -73,8 +73,8 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
     @InjectView(R.id.tv_cmm)
     TextView tvCmm;
 
-    @InjectView(R.id.vg_expire_date_container)
-    ExpireDateViewGroup expireDateViewGroup;
+    @InjectView(R.id.vg_lot_info_container)
+    LotInfoGroup lotInfoGroup;
 
     @InjectView(R.id.stock_unpack_container)
     View unpackContainer;
@@ -193,18 +193,14 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
     @Override
     public void updateExpiryDateViewGroup() {
         StockCard stockCard = presenter.getStockCard();
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
             List<LotOnHand> lotOnHandList = null;
             try {
                 lotOnHandList = presenter.getLotOnHandByStockCard(stockCard);
             } catch (LMISException e) {
                 e.reportToFabric();
             }
-            expireDateViewGroup.initExpireDateViewGroup(lotOnHandList);
-        } else {
-            expireDateViewGroup.initExpireDateViewGroup(new InventoryViewModel(stockCard), true);
-            expireDateViewGroup.setVisibility(stockCard.getStockOnHand() == 0 ? View.INVISIBLE : View.VISIBLE);
-        }
+            lotInfoGroup.initLotInfoGroup(lotOnHandList);
+            lotInfoGroup.setVisibility(stockCard.getStockOnHand() == 0 ? View.INVISIBLE : View.VISIBLE);
     }
 
     @Override
