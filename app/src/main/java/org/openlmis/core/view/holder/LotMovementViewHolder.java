@@ -1,6 +1,5 @@
 package org.openlmis.core.view.holder;
 
-import android.graphics.Color;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.view.View;
@@ -19,7 +18,7 @@ import roboguice.inject.InjectView;
 public class LotMovementViewHolder extends BaseViewHolder {
 
     @InjectView(R.id.stock_on_hand_in_lot)
-    private TextView tvStockOnHandInLot;
+    private TextView txStockOnHandInLot;
 
     @InjectView(R.id.et_lot_amount)
     private EditText etLotAmount;
@@ -53,12 +52,12 @@ public class LotMovementViewHolder extends BaseViewHolder {
             etLotAmount.requestFocus();
             lyLotAmount.setError(context.getResources().getString(R.string.msg_inventory_check_failed));
         }
+        etLotInfo.setOnKeyListener(null);
+        etLotInfo.setBackground(null);
 
+        txStockOnHandInLot.setText(viewModel.getLotSoh());
         if (context instanceof InventoryActivity) {
             lySOHLot.setVisibility(View.GONE);
-            etLotInfo.setEnabled(false);
-            etLotInfo.setTextColor(Color.BLACK);
-            etLotInfo.setBackground(null);
         }
     }
 

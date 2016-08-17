@@ -23,12 +23,16 @@ import com.google.inject.Inject;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,6 +129,23 @@ public class NewStockMovementPresenter extends Presenter {
                 subscriber.onCompleted();
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
+    }
+
+    public List<LotMovementViewModel> getExistingLotViewModelesByStockCard(Long stockCardId) {
+        List<LotOnHand> lotOnHandList = null;
+        try {
+            lotOnHandList = stockRepository.getNonEmptyLotOnHandByStockCard(stockCardId);
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+        return FluentIterable.from(lotOnHandList).transform(new Function <LotOnHand, LotMovementViewModel >() {
+            @Override
+            public LotMovementViewModel apply(LotOnHand lotOnHand) {
+                return new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
+                        DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
+                        lotOnHand.getQuantityOnHand().toString());
+            }
+        }).toList();
     }
 
     public interface NewStockMovementView extends BaseView {

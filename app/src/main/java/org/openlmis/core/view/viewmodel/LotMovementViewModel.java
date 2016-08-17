@@ -29,6 +29,12 @@ public class LotMovementViewModel implements Serializable {
         this.expiryDate = expiryDate;
     }
 
+    public LotMovementViewModel(String lotNumber, String expiryDate, String quantityOnHand) {
+        this.lotNumber = lotNumber;
+        this.expiryDate = expiryDate;
+        this.lotSoh = quantityOnHand;
+    }
+
     public boolean validate() {
         valid =  StringUtils.isNumeric(quantity)
                 && !StringUtils.isBlank(lotNumber)

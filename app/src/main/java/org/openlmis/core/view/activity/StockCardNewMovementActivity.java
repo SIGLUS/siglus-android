@@ -94,6 +94,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     NewStockMovementPresenter presenter;
 
     private LotMovementAdapter lotMovementAdapter;
+    private LotMovementAdapter existingLotMovementAdapter;
     private String stockName;
     private MovementReasonManager.MovementType movementType;
     private Long stockCardId;
@@ -117,6 +118,9 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     @InjectView(R.id.lot_list)
     private RecyclerView lotMovementRecycleView;
+
+    @InjectView(R.id.existing_lot_list)
+    private RecyclerView existingLotListView;
 
     @Override
     protected ScreenName getScreenName() {
@@ -144,7 +148,14 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
         stockMovementViewModel = new StockMovementViewModel();
         initUI();
+        initExistingLotListView();
         initRecyclerView();
+    }
+
+    private void initExistingLotListView() {
+        existingLotListView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(this));
+        existingLotMovementAdapter = new LotMovementAdapter(presenter.getExistingLotViewModelesByStockCard(stockCardId));
+        existingLotListView.setAdapter(existingLotMovementAdapter);
     }
 
     private void initRecyclerView() {
