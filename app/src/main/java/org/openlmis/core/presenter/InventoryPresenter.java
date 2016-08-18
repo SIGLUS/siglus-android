@@ -201,6 +201,7 @@ public class InventoryPresenter extends Presenter {
         StockCard stockCard = new StockCard();
         stockCard.setProduct(model.getProduct());
         StockMovementItem movementItem = new StockMovementItem(stockCard, model);
+        stockCard.setStockOnHand(movementItem.getStockOnHand());
         stockRepository.addStockMovementAndUpdateStockCard(movementItem);
     }
 

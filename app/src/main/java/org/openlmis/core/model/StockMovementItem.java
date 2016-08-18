@@ -152,7 +152,6 @@ public class StockMovementItem extends BaseModel {
             }
             setMovementQuantity(receiveQuantity);
             setStockOnHand(receiveQuantity + getStockOnHand());
-            this.stockCard.setStockOnHand(this.stockOnHand);
         }
     }
 

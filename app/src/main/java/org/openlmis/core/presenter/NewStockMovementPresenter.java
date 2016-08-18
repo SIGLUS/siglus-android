@@ -131,7 +131,7 @@ public class NewStockMovementPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    public List<LotMovementViewModel> getExistingLotViewModelesByStockCard(Long stockCardId) {
+    public List<LotMovementViewModel> getExistingLotViewModelsByStockCard(Long stockCardId) {
         List<LotOnHand> lotOnHandList = null;
         try {
             lotOnHandList = stockRepository.getNonEmptyLotOnHandByStockCard(stockCardId);

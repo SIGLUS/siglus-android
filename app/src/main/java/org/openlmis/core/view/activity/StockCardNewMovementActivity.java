@@ -154,7 +154,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     private void initExistingLotListView() {
         existingLotListView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(this));
-        existingLotMovementAdapter = new LotMovementAdapter(presenter.getExistingLotViewModelesByStockCard(stockCardId));
+        existingLotMovementAdapter = new LotMovementAdapter(presenter.getExistingLotViewModelsByStockCard(stockCardId));
         existingLotListView.setAdapter(existingLotMovementAdapter);
     }
 
@@ -284,6 +284,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                 stockMovementViewModel.setTypeQuantityMap(quantityMap);
                 stockMovementViewModel.setSignature(etMovementSignature.getText().toString());
                 stockMovementViewModel.setLotMovementViewModelList(lotMovementAdapter.getLotList());
+                stockMovementViewModel.setExistingLotMovementViewModelList(existingLotMovementAdapter.getLotList());
                 if (showErrors(stockMovementViewModel)) return;
 
                 presenter.saveStockMovement(stockMovementViewModel, stockCardId);
@@ -347,7 +348,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
 
     private boolean checkLotIsEmpty() {
-        return presenter.getLotMovementViewModels().size() <= 0;
+        return presenter.getLotMovementViewModels().size() <= 0 && presenter.getExistingLotViewModelsByStockCard(stockCardId).size() <= 0;
     }
 
     private boolean checkSignature(String signature) {
