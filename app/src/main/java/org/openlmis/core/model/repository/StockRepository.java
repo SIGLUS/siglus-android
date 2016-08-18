@@ -181,10 +181,6 @@ public class StockRepository {
 
     public void addStockMovementAndUpdateStockCard(StockMovementItem stockMovementItem) throws LMISException {
         StockCard stockcard = stockMovementItem.getStockCard();
-        if (stockcard == null) {
-            return;
-        }
-
         createOrUpdate(stockcard);
         saveStockItem(stockMovementItem);
     }
