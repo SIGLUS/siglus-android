@@ -98,6 +98,31 @@ Feature: stock movement Page
 
     Then I see "123"
     Then I see "super" in signature field
+
+    When I press "NEW MOVEMENT"
+    And I select a new movement reason "Entries" "District( DDM)"
+    And I wait for 1 second
+    And I select movement date
+    And I press "Done"
+    And I wait for 1 second
+    And I enter signature "super"
+    And I press "+ Add New Lot"
+    And I wait for "lot number" to appear
+    And I enter lot number "TEST-123" on add lot page
+    And I press "Complete"
+    Then I should see "TEST-123"
+    When I press "Complete"
+    Then I should see "Quantity cannot be left blank!"
+    When I enter quantity "100" for the first lot
+    And I press "Complete"
+    And I wait for 1 second
+    Then I should see "TEST-123"
+    And I swipe right
+    And I swipe right
+    Then I should see "100"
+    When I rotate the page to "landscape"
+    And I should see "super"
+
     Then I navigate back
     And I wait for "Stock Overview" to appear
 

@@ -64,10 +64,9 @@ When(/^I search lot product by primary name "(.*?)" and select this item with qu
         steps %Q{
             Then I wait for "lot number" to appear
             Then I enter lot number "#{lot_number}" on add lot page
-            Then I set date to next year
             And I press "Complete"
             Then I should see "#{lot_number}"
-            Then I enter quantity "#{quantity}" on inventory page with lot
+            Then I enter quantity "#{quantity}" for the first lot
         }
     end
     steps %Q{
@@ -94,7 +93,7 @@ Then(/^I should see lot number and expired date "(.*?)"$/) do |arg1|
  end
 end
 
-And(/^I enter quantity "(\d+)" on inventory page with lot$/) do |quantity|
+And(/^I enter quantity "(\d+)" for the first lot$/) do |quantity|
     h = query("android.widget.EditText id:'et_lot_amount' text:''").first
     touch(h)
     keyboard_enter_text(quantity)
