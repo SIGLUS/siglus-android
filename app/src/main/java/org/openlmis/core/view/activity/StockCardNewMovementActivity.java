@@ -46,7 +46,7 @@ import roboguice.inject.InjectView;
 import rx.functions.Action1;
 
 @ContentView(R.layout.activity_stock_card_new_movement)
-public class StockCardNewMovementActivity extends BaseActivity implements NewStockMovementPresenter.NewStockMovementView, View.OnClickListener{
+public class StockCardNewMovementActivity extends BaseActivity implements NewStockMovementPresenter.NewStockMovementView, View.OnClickListener {
 
     @InjectView(R.id.ly_requested_quantity)
     View lyRequestedQuantity;
@@ -140,7 +140,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
         stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
         movementType = (MovementReasonManager.MovementType) getIntent().getSerializableExtra(Constants.PARAM_MOVEMENT_TYPE);
-        stockCardId =  getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0L);
+        stockCardId = getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0L);
         isKit = getIntent().getBooleanExtra(Constants.PARAM_IS_KIT, false);
         movementReasons = movementReasonManager.buildReasonListForMovementType(movementType);
 
@@ -152,7 +152,10 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
         stockMovementViewModel = presenter.getStockMovementModel();
         initUI();
-        initExistingLotListView();
+        if (movementType.equals(MovementReasonManager.MovementType.RECEIVE)
+                || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST)) {
+            initExistingLotListView();
+        }
         initRecyclerView();
     }
 
@@ -318,7 +321,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             return true;
         }
         if ((movementType.equals(MovementReasonManager.MovementType.ISSUE) || movementType.equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST))
-            && StringUtils.isBlank(stockMovementViewModel.getTypeQuantityMap().get(movementType))) {
+                && StringUtils.isBlank(stockMovementViewModel.getTypeQuantityMap().get(movementType))) {
             showQuantityEmpty();
             return true;
         }
@@ -334,7 +337,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             showSOHError();
             return true;
         }
-        if(!checkSignature(stockMovementViewModel.getSignature())) {
+        if (!checkSignature(stockMovementViewModel.getSignature())) {
             showSignatureError();
             return true;
         }
