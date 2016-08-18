@@ -60,7 +60,7 @@
             android:layout_gravity="center"
             android:gravity="right"
             android:paddingLeft="@dimen/padding_medium"
-            android:text="@string/label_current_soh_of_lot" />
+            android:text="@string/label_existing_soh_of_lot" />
 
         <TextView
             android:id="@+id/stock_on_hand_in_lot"

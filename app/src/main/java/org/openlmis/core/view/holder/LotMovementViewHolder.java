@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
@@ -19,6 +20,9 @@ public class LotMovementViewHolder extends BaseViewHolder {
 
     @InjectView(R.id.stock_on_hand_in_lot)
     private TextView txStockOnHandInLot;
+
+    @InjectView(R.id.tv_stock_on_hand_in_lot_tip)
+    private TextView tvStockOnHandInLotTip;
 
     @InjectView(R.id.et_lot_amount)
     private EditText etLotAmount;
@@ -56,6 +60,9 @@ public class LotMovementViewHolder extends BaseViewHolder {
         etLotInfo.setBackground(null);
 
         txStockOnHandInLot.setText(viewModel.getLotSoh());
+        if(StringUtils.isBlank(viewModel.getLotSoh())) {
+            tvStockOnHandInLotTip.setText(context.getResources().getString(R.string.label_new_added_lot));
+        }
         if (context instanceof InventoryActivity) {
             lySOHLot.setVisibility(View.GONE);
         }

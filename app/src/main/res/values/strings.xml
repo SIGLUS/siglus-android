@@ -386,7 +386,8 @@
     <string name="hint_lot_info"><![CDATA[Lot number & expiry date]]></string>
     <string name="hint_lot_amount">Amount</string>
     <string name="hint_soh_of_lot">Stock on hand of lot</string>
-    <string name="label_current_soh_of_lot">Stock on hand of lot</string>
+    <string name="label_existing_soh_of_lot">Existing stock on hand of lot</string>
+    <string name="label_new_added_lot">Lot was just added and has no stock on hand</string>
     <string name="empty_lot_warning">Please add a new lot</string>
     <string name="alert_add_lot_amount">Add the received amount to a lot</string>
 </resources>
