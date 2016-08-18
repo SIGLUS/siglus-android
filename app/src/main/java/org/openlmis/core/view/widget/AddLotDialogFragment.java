@@ -22,6 +22,7 @@ import org.openlmis.core.view.fragment.BaseDialogFragment;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -125,5 +126,14 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     private void clearErrorMessage() {
         lyLotNumber.setErrorEnabled(false);
         expiryDateWarning.setVisibility(View.GONE);
+    }
+
+    public boolean hasIdenticalLot(List<String> existingLots) {
+        if (existingLots.contains(etLotNumber.getText().toString())){
+            lyLotNumber.setError("The lot already exists, please add a new one.");
+            etLotNumber.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
+            return true;
+        }
+        return false;
     }
 }

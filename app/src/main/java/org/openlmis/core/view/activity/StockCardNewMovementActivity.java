@@ -35,6 +35,7 @@ import org.openlmis.core.view.widget.AddLotDialogFragment;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -212,13 +213,29 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             @Override
             public void onClick(View v) {
                 actionAddNewLot.setEnabled(false);
+                final List<String> existingLots = new ArrayList<>();
+
+                existingLots.addAll(FluentIterable.from(stockMovementViewModel.getLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
+                    @Override
+                    public String apply(LotMovementViewModel lotMovementViewModel) {
+                        return lotMovementViewModel.getLotNumber();
+                    }
+                }).toList());
+
+                existingLots.addAll(FluentIterable.from((presenter.getExistingLotViewModelsByStockCard(stockCardId))).transform(new Function<LotMovementViewModel, String>() {
+                    @Override
+                    public String apply(LotMovementViewModel lotMovementViewModel) {
+                        return lotMovementViewModel.getLotNumber();
+                    }
+                }).toList());
+
                 addLotDialogFragment = new AddLotDialogFragment();
                 addLotDialogFragment.setListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         switch (v.getId()) {
                             case R.id.btn_complete:
-                                if (addLotDialogFragment.validate()) {
+                                if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(existingLots)) {
                                     LotMovementViewModel lotMovementViewModel = new LotMovementViewModel();
                                     lotMovementViewModel.setExpiryDate(addLotDialogFragment.getExpiryDate());
                                     lotMovementViewModel.setLotNumber(addLotDialogFragment.getLotNumber());
