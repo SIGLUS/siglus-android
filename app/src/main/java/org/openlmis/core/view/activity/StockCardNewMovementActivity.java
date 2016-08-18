@@ -291,7 +291,10 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                 stockMovementViewModel.setTypeQuantityMap(quantityMap);
                 stockMovementViewModel.setSignature(etMovementSignature.getText().toString());
                 stockMovementViewModel.setLotMovementViewModelList(lotMovementAdapter.getLotList());
-                stockMovementViewModel.setExistingLotMovementViewModelList(existingLotMovementAdapter.getLotList());
+                if (movementType.equals(MovementReasonManager.MovementType.RECEIVE)
+                        || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST)) {
+                    stockMovementViewModel.setExistingLotMovementViewModelList(existingLotMovementAdapter.getLotList());
+                }
                 if (showErrors(stockMovementViewModel)) return;
 
                 presenter.saveStockMovement();
@@ -348,7 +351,8 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     private boolean validateLotMovement(MovementReasonManager.MovementType movementType) {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            if (this.stockMovementViewModel.isLotEmpty()) {
+            if (this.stockMovementViewModel.isLotEmpty() && (movementType.equals(MovementReasonManager.MovementType.RECEIVE)
+                    || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST))) {
                 showEmptyLotError();
                 return true;
             }
