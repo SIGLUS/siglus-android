@@ -111,9 +111,11 @@ Feature: stock movement Page
     And I enter lot number "TEST-123" on add lot page
     And I press "Complete"
     Then I should see "TEST-123"
+    And I wait for 1 second
+    And I scroll down
     When I press "Complete"
     Then I should see "Quantity cannot be left blank!"
-    When I enter quantity "100" for the first lot
+    When I enter quantity "100" for the last lot
     And I press "Complete"
     And I wait for 1 second
     Then I should see "TEST-123"
@@ -122,8 +124,11 @@ Feature: stock movement Page
     Then I should see "100"
     When I rotate the page to "landscape"
     And I should see "super"
+    Then I rotate the page to "portrait"
+    And I wait for 1 second
 
     Then I navigate back
+    And I wait for 1 second
     And I wait for "Stock Overview" to appear
 
     #clear warning banner
