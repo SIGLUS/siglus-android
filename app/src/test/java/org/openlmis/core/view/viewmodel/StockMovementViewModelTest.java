@@ -28,9 +28,12 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
 
+import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -163,5 +166,53 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
         stockMovementViewModel.setRequested("999");
         StockMovementItem stockMovementItem = stockMovementViewModel.convertViewToModel(new StockCard());
         assertThat(stockMovementItem.getRequested(), is(999L));
+    }
+
+    @Test
+    public void shouldCalculateNewLotListMovementQuantityToStockOnHandWhenConvertViewModel() throws ParseException {
+        StockCard stockCard = new StockCard();
+        stockCard.setId(1);
+
+        stockMovementViewModel.setStockExistence("1");
+        stockMovementViewModel.setReason(movementReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "receive", "entries"));
+        stockMovementViewModel.setDocumentNo("111");
+        stockMovementViewModel.setReceived("0");
+        stockMovementViewModel.setMovementDate(DateUtil.formatDate(new Date()));
+        LotMovementViewModel lot1 = new LotMovementViewModel();
+        lot1.setQuantity("1");
+        lot1.setLotNumber("AAA");
+        lot1.setExpiryDate(DateUtil.formatDate(new Date()));
+        stockMovementViewModel.setLotMovementViewModelList(Arrays.asList(lot1));
+
+        StockMovementItem convertedStockMovementItem = stockMovementViewModel.convertViewToModel(stockCard);
+
+        assertEquals(2, convertedStockMovementItem.getStockOnHand());
+    }
+
+    @Test
+    public void shouldCalculateNewAndExistingLotListMovementQuantityToStockOnHandWhenConvertViewModel() throws ParseException {
+        StockCard stockCard = new StockCard();
+        stockCard.setId(1);
+
+        stockMovementViewModel.setStockExistence("1");
+        stockMovementViewModel.setReason(movementReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "receive", "entries"));
+        stockMovementViewModel.setDocumentNo("111");
+        stockMovementViewModel.setReceived("0");
+        stockMovementViewModel.setMovementDate(DateUtil.formatDate(new Date()));
+        LotMovementViewModel lot1 = new LotMovementViewModel();
+        lot1.setQuantity("1");
+        lot1.setLotNumber("AAA");
+        lot1.setExpiryDate(DateUtil.formatDate(new Date()));
+        LotMovementViewModel existingLot = new LotMovementViewModel();
+        existingLot.setQuantity("1");
+        existingLot.setLotNumber("BBB");
+        existingLot.setExpiryDate(DateUtil.formatDate(new Date()));
+
+        stockMovementViewModel.setExistingLotMovementViewModelList(Arrays.asList(existingLot));
+        stockMovementViewModel.setLotMovementViewModelList(Arrays.asList(lot1));
+
+        StockMovementItem convertedStockMovementItem = stockMovementViewModel.convertViewToModel(stockCard);
+
+        assertEquals(3, convertedStockMovementItem.getStockOnHand());
     }
 }
