@@ -53,4 +53,8 @@ public class LotMovementViewModel implements Serializable {
         lotMovementItem.setMovementQuantity(Long.parseLong(quantity));
         return lotMovementItem;
     }
+
+    public boolean hasQuantityChanged() {
+        return !StringUtils.isBlank(quantity) && Long.parseLong(quantity) > 0;
+    }
 }

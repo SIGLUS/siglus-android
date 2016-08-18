@@ -91,7 +91,7 @@ public class NewStockMovementPresenterTest {
 
         StockMovementItem previousStockItem = new StockMovementItemBuilder().withStockOnHand(5).build();
         newStockMovementPresenter.previousStockMovement = previousStockItem;
-        newStockMovementPresenter.saveStockMovement(stockMovementViewModel, 1L);
+        newStockMovementPresenter.getSaveMovementObservable(stockMovementViewModel, 1L);
         verify(view, never()).showSOHError();
     }
 

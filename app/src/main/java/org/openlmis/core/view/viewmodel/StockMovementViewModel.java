@@ -117,7 +117,7 @@ public class StockMovementViewModel {
         stockMovementItem.setDocumentNumber(getDocumentNo());
         stockMovementItem.setMovementType(reason.getMovementType());
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)){
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
             if (reason.getMovementType().equals(MovementReasonManager.MovementType.ISSUE) || reason.getMovementType().equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST)) {
                 Long movementQuantity = Long.parseLong(typeQuantityMap.get(reason.getMovementType()));
                 stockMovementItem.setMovementQuantity(movementQuantity);
@@ -135,16 +135,14 @@ public class StockMovementViewModel {
 
         stockMovementItem.setStockCard(stockCard);
 
-        List<LotMovementViewModel> totalLotMovementViewModelList =  new ArrayList<>();
-        if (existingLotMovementViewModelList.size()> 0) {
-            totalLotMovementViewModelList.addAll(FluentIterable.from(existingLotMovementViewModelList).filter(new Predicate<LotMovementViewModel>() {
-                @Override
-                public boolean apply(LotMovementViewModel lotMovementViewModel) {
-                    return !StringUtils.isBlank(lotMovementViewModel.getQuantity()) && Long.parseLong(lotMovementViewModel.getQuantity()) > 0;
-                }
-            }).toList());
-            totalLotMovementViewModelList.addAll(lotMovementViewModelList);
-        }
+        List<LotMovementViewModel> totalLotMovementViewModelList = new ArrayList<>();
+        totalLotMovementViewModelList.addAll(FluentIterable.from(existingLotMovementViewModelList).filter(new Predicate<LotMovementViewModel>() {
+            @Override
+            public boolean apply(LotMovementViewModel lotMovementViewModel) {
+                return lotMovementViewModel.hasQuantityChanged();
+            }
+        }).toList());
+        totalLotMovementViewModelList.addAll(lotMovementViewModelList);
         stockMovementItem.populateNewLotQuantities(totalLotMovementViewModelList);
 
         return stockMovementItem;
@@ -207,5 +205,16 @@ public class StockMovementViewModel {
                 this.stockExistence = "" + (previousStockOnHand - Long.parseLong(typeQuantityMap.get(movementType)));
             }
         }
+    }
+
+    public boolean hasChangedLot() {
+        for (LotMovementViewModel lot : existingLotMovementViewModelList) {
+            if (lot.hasQuantityChanged()) return true;
+        }
+        return !lotMovementViewModelList.isEmpty();
+    }
+
+    public boolean isLotEmpty() {
+        return lotMovementViewModelList.isEmpty() && existingLotMovementViewModelList.isEmpty();
     }
 }

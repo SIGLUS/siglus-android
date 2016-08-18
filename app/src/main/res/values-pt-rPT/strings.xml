@@ -356,4 +356,5 @@
     <string name="hint_soh_of_lot">Stock on hand of lot</string>
     <string name="label_current_soh_of_lot">Stock on hand of lot</string>
     <string name="empty_lot_warning">Please add a new lot</string>
+    <string name="alert_add_lot_amount">Add the received amount to a lot</string>
 </resources>

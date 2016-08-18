@@ -34,7 +34,6 @@ import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -45,10 +44,6 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class NewStockMovementPresenter extends Presenter {
-
-    @Getter
-    List<LotMovementViewModel> lotMovementViewModels;
-
     @Getter
     StockMovementViewModel stockMovementModel;
 
@@ -64,7 +59,6 @@ public class NewStockMovementPresenter extends Presenter {
 
     public NewStockMovementPresenter() {
         stockMovementModel = new StockMovementViewModel();
-        lotMovementViewModels = new ArrayList<>();
     }
 
     @Override
@@ -81,8 +75,8 @@ public class NewStockMovementPresenter extends Presenter {
         return previousStockMovement;
     }
 
-    public void saveStockMovement(final StockMovementViewModel viewModel, final Long stockCardId) {
-        getSaveMovementObservable(viewModel, stockCardId).subscribe(new Action1<StockMovementViewModel>() {
+    public void saveStockMovement() {
+        getSaveMovementObservable(stockMovementModel, previousStockMovement.getStockCard().getId()).subscribe(new Action1<StockMovementViewModel>() {
             @Override
             public void call(StockMovementViewModel viewModel) {
                 view.goToStockCard();
@@ -124,8 +118,8 @@ public class NewStockMovementPresenter extends Presenter {
         return Observable.create(new Observable.OnSubscribe<List<LotMovementViewModel>>() {
             @Override
             public void call(Subscriber<? super List<LotMovementViewModel>> subscriber) {
-                lotMovementViewModels.add(lotMovementViewModel);
-                subscriber.onNext(lotMovementViewModels);
+                stockMovementModel.getLotMovementViewModelList().add(lotMovementViewModel);
+                subscriber.onNext(stockMovementModel.getLotMovementViewModelList());
                 subscriber.onCompleted();
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());

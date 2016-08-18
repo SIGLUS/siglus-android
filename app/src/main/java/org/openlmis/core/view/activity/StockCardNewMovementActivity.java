@@ -146,7 +146,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             e.printStackTrace();
         }
 
-        stockMovementViewModel = new StockMovementViewModel();
+        stockMovementViewModel = presenter.getStockMovementModel();
         initUI();
         initExistingLotListView();
         initRecyclerView();
@@ -160,7 +160,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     private void initRecyclerView() {
         lotMovementRecycleView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(this));
-        lotMovementAdapter = new LotMovementAdapter(presenter.getLotMovementViewModels());
+        lotMovementAdapter = new LotMovementAdapter(presenter.getStockMovementModel().getLotMovementViewModelList());
         lotMovementRecycleView.setAdapter(lotMovementAdapter);
     }
 
@@ -287,7 +287,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                 stockMovementViewModel.setExistingLotMovementViewModelList(existingLotMovementAdapter.getLotList());
                 if (showErrors(stockMovementViewModel)) return;
 
-                presenter.saveStockMovement(stockMovementViewModel, stockCardId);
+                presenter.saveStockMovement();
                 break;
             case R.id.btn_cancel:
                 finish();
@@ -321,34 +321,42 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             showSignatureEmpty();
             return true;
         }
-
         if (!stockMovementViewModel.validateQuantitiesNotZero()) {
             showQuantityZero();
             return true;
         }
-
         if (quantityIsLargerThanSoh(stockMovementViewModel.getTypeQuantityMap().get(movementType), movementType)) {
             showSOHError();
             return true;
         }
-
         if(!checkSignature(stockMovementViewModel.getSignature())) {
             showSignatureError();
             return true;
         }
 
-        if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) && checkLotIsEmpty() && !isKit
-                && (movementType.equals(MovementReasonManager.MovementType.RECEIVE)
-                || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST))) {
-            showEmptyLotError();
-            return true;
-        }
+        if (validateLotMovement(movementType)) return true;
         return showLotError();
     }
 
+    private boolean validateLotMovement(MovementReasonManager.MovementType movementType) {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+            if (this.stockMovementViewModel.isLotEmpty()) {
+                showEmptyLotError();
+                return true;
+            }
+            if (!this.stockMovementViewModel.hasChangedLot() && !isKit
+                    && (movementType.equals(MovementReasonManager.MovementType.RECEIVE)
+                    || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST))) {
+                showLotQuantityError();
+                return true;
+            }
+        }
+        return false;
+    }
 
-    private boolean checkLotIsEmpty() {
-        return presenter.getLotMovementViewModels().size() <= 0 && presenter.getExistingLotViewModelsByStockCard(stockCardId).size() <= 0;
+    private void showLotQuantityError() {
+        clearErrorAlerts();
+        ToastUtil.show(getResources().getString(R.string.alert_add_lot_amount));
     }
 
     private boolean checkSignature(String signature) {
