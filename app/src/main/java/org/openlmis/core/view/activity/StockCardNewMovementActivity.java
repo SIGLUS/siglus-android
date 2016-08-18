@@ -87,6 +87,10 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     @InjectView(R.id.btn_cancel)
     TextView tvCancel;
 
+
+    @InjectView(R.id.alert_add_lot_amount)
+    TextView alertAddLotAmount;
+
     @InjectView(R.id.action_add_new_lot)
     View actionAddNewLot;
 
@@ -296,6 +300,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     }
 
     public void clearErrorAlerts() {
+        alertAddLotAmount.setVisibility(View.GONE);
         lyMovementDate.setErrorEnabled(false);
         lyMovementReason.setErrorEnabled(false);
         lyMovementQuantity.setErrorEnabled(false);
@@ -356,7 +361,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     private void showLotQuantityError() {
         clearErrorAlerts();
-        ToastUtil.show(getResources().getString(R.string.alert_add_lot_amount));
+        alertAddLotAmount.setVisibility(View.VISIBLE);
     }
 
     private boolean checkSignature(String signature) {
