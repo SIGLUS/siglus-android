@@ -220,6 +220,11 @@ public class InventoryViewModel {
         return valid;
     }
 
+    public boolean validatePhysical() {
+        valid = !checked || StringUtils.isNumeric(quantity) || product.isArchived();
+        return valid;
+    }
+
     private boolean validateLotList() {
         for (LotMovementViewModel lotMovementViewModel:lotMovementViewModelList){
             if (!lotMovementViewModel.validate()) {

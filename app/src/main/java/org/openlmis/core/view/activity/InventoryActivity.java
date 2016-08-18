@@ -260,7 +260,7 @@ public class InventoryActivity extends SearchBarActivity implements InventoryPre
 
     @Override
     public boolean validateInventory() {
-        int position = mAdapter.validateAll();
+        int position = isPhysicalInventory ? mAdapter.physicalValidateAll() : mAdapter.validateAll();
         if (position >= 0) {
             clearSearch();
 
