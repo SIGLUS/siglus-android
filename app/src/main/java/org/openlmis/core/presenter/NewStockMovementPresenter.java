@@ -35,6 +35,7 @@ import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
+import java.util.Comparator;
 import java.util.List;
 
 import lombok.Getter;
@@ -137,7 +138,12 @@ public class NewStockMovementPresenter extends Presenter {
                                 DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
                                 lotOnHand.getQuantityOnHand().toString());
                     }
-                }).toList();
+                }).toSortedList(new Comparator<LotMovementViewModel>() {
+                    @Override
+                    public int compare(LotMovementViewModel lot1, LotMovementViewModel lot2) {
+                        return DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR).compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+                    }
+                });
             } catch (LMISException e) {
                 e.printStackTrace();
             }

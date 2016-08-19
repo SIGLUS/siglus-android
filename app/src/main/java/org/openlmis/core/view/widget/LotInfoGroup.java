@@ -29,7 +29,10 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.utils.DateUtil;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
+import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
+import java.util.Comparator;
 import java.util.List;
 
 import roboguice.RoboGuice;
@@ -56,7 +59,13 @@ public class LotInfoGroup extends org.apmem.tools.layouts.FlowLayout implements 
 
     public void initLotInfoGroup(List<LotOnHand> lotOnHandList) {
         removeAllViews();
-        for (LotOnHand lotOnHand: lotOnHandList) {
+        ImmutableList<LotOnHand> sortedLotOnHandList = FluentIterable.from(lotOnHandList).toSortedList(new Comparator<LotOnHand>() {
+            @Override
+            public int compare(LotOnHand lotOnHand1, LotOnHand lotOnHand2) {
+                return lotOnHand1.getLot().getExpirationDate().compareTo(lotOnHand2.getLot().getExpirationDate());
+            }
+        });
+        for (LotOnHand lotOnHand: sortedLotOnHandList) {
             addLotInfoView(lotOnHand);
         }
     }
@@ -76,7 +85,7 @@ public class LotInfoGroup extends org.apmem.tools.layouts.FlowLayout implements 
         final ViewGroup lotInfoView = (ViewGroup) inflater.inflate(R.layout.item_lot_info_for_stockcard, null);
         TextView txLotInfo = (TextView) lotInfoView.findViewById(R.id.tx_lot_info);
         txLotInfo.setText(lotInfo);
-        addView(lotInfoView, getChildCount() - 1);
+        addView(lotInfoView, getChildCount());
 
         lotInfoView.setOnClickListener(new View.OnClickListener() {
             @Override
