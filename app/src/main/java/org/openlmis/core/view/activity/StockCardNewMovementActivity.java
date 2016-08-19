@@ -88,12 +88,17 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     @InjectView(R.id.btn_cancel)
     TextView tvCancel;
 
-
     @InjectView(R.id.alert_add_lot_amount)
     TextView alertAddLotAmount;
 
     @InjectView(R.id.action_add_new_lot)
     View actionAddNewLot;
+
+    @InjectView(R.id.lot_list)
+    private RecyclerView lotMovementRecycleView;
+
+    @InjectView(R.id.existing_lot_list)
+    private RecyclerView existingLotListView;
 
     @InjectPresenter(NewStockMovementPresenter.class)
     NewStockMovementPresenter presenter;
@@ -102,6 +107,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     private LotMovementAdapter existingLotMovementAdapter;
     private String stockName;
     private MovementReasonManager.MovementType movementType;
+
     private Long stockCardId;
 
     StockMovementItem previousMovement;
@@ -117,15 +123,9 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     private String[] reasonListStr;
 
     private boolean isKit;
-
     private Context context;
+
     private AddLotDialogFragment addLotDialogFragment;
-
-    @InjectView(R.id.lot_list)
-    private RecyclerView lotMovementRecycleView;
-
-    @InjectView(R.id.existing_lot_list)
-    private RecyclerView existingLotListView;
 
     @Override
     protected ScreenName getScreenName() {
@@ -213,33 +213,15 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             @Override
             public void onClick(View v) {
                 actionAddNewLot.setEnabled(false);
-                final List<String> existingLots = new ArrayList<>();
-
-                existingLots.addAll(FluentIterable.from(stockMovementViewModel.getLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
-                    @Override
-                    public String apply(LotMovementViewModel lotMovementViewModel) {
-                        return lotMovementViewModel.getLotNumber();
-                    }
-                }).toList());
-
-                existingLots.addAll(FluentIterable.from((presenter.getExistingLotViewModelsByStockCard(stockCardId))).transform(new Function<LotMovementViewModel, String>() {
-                    @Override
-                    public String apply(LotMovementViewModel lotMovementViewModel) {
-                        return lotMovementViewModel.getLotNumber();
-                    }
-                }).toList());
-
                 addLotDialogFragment = new AddLotDialogFragment();
                 addLotDialogFragment.setListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         switch (v.getId()) {
                             case R.id.btn_complete:
-                                if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(existingLots)) {
-                                    LotMovementViewModel lotMovementViewModel = new LotMovementViewModel();
-                                    lotMovementViewModel.setExpiryDate(addLotDialogFragment.getExpiryDate());
-                                    lotMovementViewModel.setLotNumber(addLotDialogFragment.getLotNumber());
-                                    presenter.addLotMovement(lotMovementViewModel).subscribe(new Action1<List<LotMovementViewModel>>() {
+                                if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers())) {
+                                    presenter.addLotMovement(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate()))
+                                            .subscribe(new Action1<List<LotMovementViewModel>>() {
                                         @Override
                                         public void call(List<LotMovementViewModel> lotMovementViewModels) {
                                             refreshRecyclerView();
@@ -259,6 +241,24 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                 addLotDialogFragment.show(getFragmentManager(), "");
             }
         };
+    }
+
+    @NonNull
+    private List<String> getLotNumbers() {
+        final List<String> existingLots = new ArrayList<>();
+        existingLots.addAll(FluentIterable.from(stockMovementViewModel.getLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
+            @Override
+            public String apply(LotMovementViewModel lotMovementViewModel) {
+                return lotMovementViewModel.getLotNumber();
+            }
+        }).toList());
+        existingLots.addAll(FluentIterable.from((stockMovementViewModel.getExistingLotMovementViewModelList())).transform(new Function<LotMovementViewModel, String>() {
+            @Override
+            public String apply(LotMovementViewModel lotMovementViewModel) {
+                return lotMovementViewModel.getLotNumber();
+            }
+        }).toList());
+        return existingLots;
     }
 
     @NonNull
@@ -308,10 +308,6 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                 stockMovementViewModel.setTypeQuantityMap(quantityMap);
                 stockMovementViewModel.setSignature(etMovementSignature.getText().toString());
                 stockMovementViewModel.setLotMovementViewModelList(lotMovementAdapter.getLotList());
-                if (movementType.equals(MovementReasonManager.MovementType.RECEIVE)
-                        || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST)) {
-                    stockMovementViewModel.setExistingLotMovementViewModelList(existingLotMovementAdapter.getLotList());
-                }
                 if (showErrors(stockMovementViewModel)) return;
 
                 presenter.saveStockMovement();
@@ -482,7 +478,6 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-
             Date chosenDate = new GregorianCalendar(year, monthOfYear, dayOfMonth).getTime();
             if (validateStockMovementDate(previousMovementDate, chosenDate)) {
                 etMovementDate.setText(DateUtil.formatDate(chosenDate));
@@ -494,13 +489,11 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
         private boolean validateStockMovementDate(Date previousMovementDate, Date chosenDate) {
             Calendar today = GregorianCalendar.getInstance();
-
             return previousMovementDate == null || !previousMovementDate.after(chosenDate) && !chosenDate.after(today.getTime());
         }
     }
 
     class MovementTypeOnClickListener implements AdapterView.OnItemClickListener {
-
         StockMovementViewModel movementViewModel;
 
         public MovementTypeOnClickListener(StockMovementViewModel movementViewModel) {

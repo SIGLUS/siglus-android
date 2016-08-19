@@ -33,6 +33,7 @@ import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
+import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 import java.util.List;
 
@@ -45,7 +46,7 @@ import rx.schedulers.Schedulers;
 
 public class NewStockMovementPresenter extends Presenter {
     @Getter
-    StockMovementViewModel stockMovementModel;
+    final StockMovementViewModel stockMovementModel;
 
     @Inject
     StockRepository stockRepository;
@@ -126,20 +127,24 @@ public class NewStockMovementPresenter extends Presenter {
     }
 
     public List<LotMovementViewModel> getExistingLotViewModelsByStockCard(Long stockCardId) {
-        List<LotOnHand> lotOnHandList = null;
-        try {
-            lotOnHandList = stockRepository.getNonEmptyLotOnHandByStockCard(stockCardId);
-        } catch (LMISException e) {
-            e.reportToFabric();
-        }
-        return FluentIterable.from(lotOnHandList).transform(new Function <LotOnHand, LotMovementViewModel >() {
-            @Override
-            public LotMovementViewModel apply(LotOnHand lotOnHand) {
-                return new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
-                        DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
-                        lotOnHand.getQuantityOnHand().toString());
+        if (stockMovementModel.getExistingLotMovementViewModelList().isEmpty()) {
+            ImmutableList<LotMovementViewModel> lotMovementViewModels = null;
+            try {
+                lotMovementViewModels = FluentIterable.from(stockRepository.getNonEmptyLotOnHandByStockCard(stockCardId)).transform(new Function<LotOnHand, LotMovementViewModel>() {
+                    @Override
+                    public LotMovementViewModel apply(LotOnHand lotOnHand) {
+                        return new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
+                                DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
+                                lotOnHand.getQuantityOnHand().toString());
+                    }
+                }).toList();
+            } catch (LMISException e) {
+                e.printStackTrace();
             }
-        }).toList();
+            stockMovementModel.setExistingLotMovementViewModelList(lotMovementViewModels);
+        }
+        return stockMovementModel.getExistingLotMovementViewModelList();
+
     }
 
     public interface NewStockMovementView extends BaseView {
