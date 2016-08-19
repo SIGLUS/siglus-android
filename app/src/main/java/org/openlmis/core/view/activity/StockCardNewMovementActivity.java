@@ -338,23 +338,23 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         }
         if ((movementType.equals(MovementReasonManager.MovementType.ISSUE) || movementType.equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST))
                 && StringUtils.isBlank(stockMovementViewModel.getTypeQuantityMap().get(movementType))) {
-            showQuantityEmpty();
+            showQuantityErrors(getResources().getString(R.string.msg_empty_quantity));
             return true;
         }
         if (StringUtils.isBlank(stockMovementViewModel.getSignature())) {
-            showSignatureEmpty();
+            showSignatureErrors(getResources().getString(R.string.msg_empty_signature));
             return true;
         }
         if (!stockMovementViewModel.validateQuantitiesNotZero()) {
-            showQuantityZero();
+            showQuantityErrors(getResources().getString(R.string.msg_entries_error));
             return true;
         }
         if (quantityIsLargerThanSoh(stockMovementViewModel.getTypeQuantityMap().get(movementType), movementType)) {
-            showSOHError();
+            showQuantityErrors(getResources().getString(R.string.msg_invalid_quantity));
             return true;
         }
         if (!checkSignature(stockMovementViewModel.getSignature())) {
-            showSignatureError();
+            showSignatureErrors(getString(R.string.hint_signature_error_message));
             return true;
         }
 
@@ -415,39 +415,18 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     }
 
     @Override
-    public void showQuantityEmpty() {
+    public void showQuantityErrors(String errorMsg) {
         clearErrorAlerts();
-        lyMovementQuantity.setError(getResources().getString(R.string.msg_empty_quantity));
+        lyMovementQuantity.setError(errorMsg);
         etMovementQuantity.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
     }
 
-    @Override
-    public void showSignatureEmpty() {
+    private void showSignatureErrors(String string) {
         clearErrorAlerts();
-        lyMovementSignature.setError(getResources().getString(R.string.msg_empty_signature));
+        lyMovementSignature.setError(string);
         etMovementSignature.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
     }
 
-    @Override
-    public void showSOHError() {
-        clearErrorAlerts();
-        lyMovementQuantity.setError(getResources().getString(R.string.msg_invalid_quantity));
-        etMovementQuantity.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
-    }
-
-    @Override
-    public void showQuantityZero() {
-        clearErrorAlerts();
-        lyMovementQuantity.setError(getResources().getString(R.string.msg_entries_error));
-        etMovementQuantity.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
-    }
-
-    @Override
-    public void showSignatureError() {
-        clearErrorAlerts();
-        lyMovementSignature.setError(getString(R.string.hint_signature_error_message));
-        etMovementSignature.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
-    }
 
     @Override
     public boolean showLotError() {

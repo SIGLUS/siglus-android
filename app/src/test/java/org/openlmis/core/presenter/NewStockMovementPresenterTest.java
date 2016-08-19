@@ -47,6 +47,7 @@ import java.util.HashMap;
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -92,7 +93,7 @@ public class NewStockMovementPresenterTest {
         StockMovementItem previousStockItem = new StockMovementItemBuilder().withStockOnHand(5).build();
         newStockMovementPresenter.previousStockMovement = previousStockItem;
         newStockMovementPresenter.getSaveMovementObservable(stockMovementViewModel, 1L);
-        verify(view, never()).showSOHError();
+        verify(view, never()).showQuantityErrors(anyString());
     }
 
     @Test

@@ -152,18 +152,10 @@ public class NewStockMovementPresenter extends Presenter {
 
         void showMovementReasonEmpty();
 
-        void showQuantityEmpty();
-
-        void showSignatureEmpty();
-
-        void showSOHError();
-
-        void showQuantityZero();
-
-        void showSignatureError();
-
         boolean showLotError();
 
         void goToStockCard();
+
+        void showQuantityErrors(String errorMsg);
     }
 }
