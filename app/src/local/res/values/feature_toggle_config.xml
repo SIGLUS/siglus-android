@@ -9,6 +9,5 @@
     <bool name="feature_add_return_to_ddm_in_stock_movement_reason">true</bool>
     <bool name="feature_add_drugs_to_via_form">true</bool>
     <bool name="feature_incomplete_requisition_banner">true</bool>
-    <bool name="feature_separate_page_for_new_stock_movements">true</bool>
     <bool name="feature_lot_management">true</bool>
 </resources>

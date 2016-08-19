@@ -114,7 +114,7 @@ public class StockMovementPresenter extends Presenter {
             public void onNext(List<StockMovementViewModel> stockMovementViewModels) {
                 stockMovementModelList.clear();
                 stockMovementModelList.addAll(stockMovementViewModels);
-                if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_separate_page_for_new_stock_movements)) {
+                if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
                     stockMovementModelList.add(new StockMovementViewModel());
                 }
                 view.refreshStockMovement();

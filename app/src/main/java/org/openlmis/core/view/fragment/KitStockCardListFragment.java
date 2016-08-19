@@ -23,7 +23,7 @@ public class KitStockCardListFragment extends StockCardListFragment {
     }
 
     protected Intent getStockMovementIntent(InventoryViewModel inventoryViewModel) {
-        if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_separate_page_for_new_stock_movements)) {
+        if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
             return StockMovementsActivityNew.getIntentToMe(getActivity(), inventoryViewModel, true);
         } else {
             return StockMovementActivity.getIntentToMe(getActivity(), inventoryViewModel, true);
