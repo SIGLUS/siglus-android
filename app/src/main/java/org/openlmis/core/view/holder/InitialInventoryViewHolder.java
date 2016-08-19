@@ -30,10 +30,14 @@ import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.widget.AddLotDialogFragment;
 import org.openlmis.core.view.widget.DatePickerDialogWithoutDay;
 import org.openlmis.core.view.widget.InputFilterMinMax;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import roboguice.inject.InjectView;
 
@@ -198,7 +202,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.btn_complete:
-                        if (addLotDialogFragment.validate()) {
+                        if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers(viewModel))) {
                             addLotView(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate()), viewModel);
                             addLotDialogFragment.dismiss();
                         }
@@ -213,6 +217,18 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
             }
         });
         addLotDialogFragment.show(((Activity) context).getFragmentManager(), "add_new_lot");
+    }
+
+    private List<String> getLotNumbers(InventoryViewModel viewModel) {
+        final List<String> existingLots = new ArrayList<>();
+        existingLots.addAll(FluentIterable.from(viewModel.getLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
+            @Override
+            public String apply(LotMovementViewModel lotMovementViewModel) {
+                return lotMovementViewModel.getLotNumber();
+            }
+        }).toList());
+
+        return existingLots;
     }
 
     private void addLotView(LotMovementViewModel lotMovementViewModel, InventoryViewModel viewModel) {

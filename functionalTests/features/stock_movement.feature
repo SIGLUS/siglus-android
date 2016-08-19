@@ -114,7 +114,7 @@ Feature: stock movement Page
     And I wait for 1 second
     And I scroll down
     When I press "Complete"
-    Then I should see "Quantity cannot be left blank!"
+    Then I should see "Quantity cannot be left blank or zero!"
     When I enter quantity "100" for the last lot
     And I press "Complete"
     And I wait for 1 second
