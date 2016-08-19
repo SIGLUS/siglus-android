@@ -29,6 +29,7 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
+import org.openlmis.core.view.listener.MovementDateListener;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.openlmis.core.view.widget.AddLotDialogFragment;
@@ -292,7 +293,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         final Calendar today = GregorianCalendar.getInstance();
 
         DatePickerDialog dialog = new DatePickerDialog(this, DatePickerDialog.BUTTON_NEUTRAL,
-                new MovementDateListener(model, previousMovementDate),
+                new MovementDateListener(model, previousMovementDate, etMovementDate),
                 today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
         dialog.show();
     }
@@ -445,33 +446,6 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     public void goToStockCard() {
         setResult(RESULT_OK);
         finish();
-    }
-
-    class MovementDateListener implements DatePickerDialog.OnDateSetListener {
-
-        private Date previousMovementDate;
-        private StockMovementViewModel model;
-
-        public MovementDateListener(StockMovementViewModel model, Date previousMovementDate) {
-            this.previousMovementDate = previousMovementDate;
-            this.model = model;
-        }
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            Date chosenDate = new GregorianCalendar(year, monthOfYear, dayOfMonth).getTime();
-            if (validateStockMovementDate(previousMovementDate, chosenDate)) {
-                etMovementDate.setText(DateUtil.formatDate(chosenDate));
-                model.setMovementDate(DateUtil.formatDate(chosenDate));
-            } else {
-                ToastUtil.show(R.string.msg_invalid_stock_movement_date);
-            }
-        }
-
-        private boolean validateStockMovementDate(Date previousMovementDate, Date chosenDate) {
-            Calendar today = GregorianCalendar.getInstance();
-            return previousMovementDate == null || !previousMovementDate.after(chosenDate) && !chosenDate.after(today.getTime());
-        }
     }
 
     class MovementTypeOnClickListener implements AdapterView.OnItemClickListener {
