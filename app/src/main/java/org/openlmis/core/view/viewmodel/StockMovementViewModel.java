@@ -49,6 +49,7 @@ public class StockMovementViewModel {
     String signature;
     String requested;
     boolean isDraft = true;
+    boolean isKit;
 
     private HashMap<MovementReasonManager.MovementType, String> typeQuantityMap = new HashMap<>();
 
@@ -117,7 +118,7 @@ public class StockMovementViewModel {
         stockMovementItem.setDocumentNumber(getDocumentNo());
         stockMovementItem.setMovementType(reason.getMovementType());
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) && !isKit) {
             if (reason.getMovementType().equals(MovementReasonManager.MovementType.ISSUE) || reason.getMovementType().equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST)) {
                 Long movementQuantity = Long.parseLong(typeQuantityMap.get(reason.getMovementType()));
                 stockMovementItem.setMovementQuantity(movementQuantity);

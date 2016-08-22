@@ -152,6 +152,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         }
 
         stockMovementViewModel = presenter.getStockMovementModel();
+        stockMovementViewModel.setKit(isKit);
         initUI();
         if (movementType.equals(MovementReasonManager.MovementType.RECEIVE)
                 || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST)) {
