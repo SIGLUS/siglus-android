@@ -4,6 +4,7 @@ import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -36,6 +37,9 @@ public class LotMovementViewHolder extends BaseViewHolder {
     @InjectView(R.id.vg_soh_lot)
     private LinearLayout lySOHLot;
 
+    @InjectView(R.id.iv_del)
+    private ImageView iconDel;
+
     public LotMovementViewHolder(View itemView) {
         super(itemView);
     }
@@ -60,12 +64,17 @@ public class LotMovementViewHolder extends BaseViewHolder {
         etLotInfo.setBackground(null);
 
         txStockOnHandInLot.setText(viewModel.getLotSoh());
-        if(StringUtils.isBlank(viewModel.getLotSoh())) {
+        if(isLotNewAdded(viewModel)) {
+            iconDel.setVisibility(View.VISIBLE);
             tvStockOnHandInLotTip.setText(context.getResources().getString(R.string.label_new_added_lot));
         }
         if (context instanceof InventoryActivity) {
             lySOHLot.setVisibility(View.GONE);
         }
+    }
+
+    private boolean isLotNewAdded(LotMovementViewModel viewModel) {
+        return StringUtils.isBlank(viewModel.getLotSoh());
     }
 
     class EditTextWatcher extends SingleTextWatcher {

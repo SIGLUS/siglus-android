@@ -22,7 +22,7 @@
             android:id="@+id/vs_del"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout="@layout/imageview_del" />
+            android:layout="@layout/image_view_del" />
     </LinearLayout>
 
     <EditText
