@@ -112,7 +112,7 @@ Then(/^I scroll "(.*?)" down to "(.*?)"$/) do |view, text|
     end
 end
 
-And(/^I press the pop menu for delete rnr form$/) do
+And(/^I press delete icon$/) do
     q = query("android.widget.ImageView id:'iv_del'")
     touch(q)
 end

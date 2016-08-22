@@ -100,7 +100,7 @@ Feature: MMIA
 
     Then I should see text containing "You will be able to create a MMIA on the 18th of"
 
-    When I press the pop menu for delete rnr form
+    When I press delete icon
     And I press "Remove from tablet"
     And I press "Delete"
     Then I see "Create MMIA"

@@ -99,6 +99,7 @@ Feature: stock movement Page
     Then I see "123"
     Then I see "super" in signature field
 
+    #New lot movement flow
     When I press "NEW MOVEMENT"
     And I select a new movement reason "Entries" "District( DDM)"
     And I wait for 1 second
@@ -106,11 +107,15 @@ Feature: stock movement Page
     And I press "Done"
     And I wait for 1 second
     And I enter signature "super"
-    And I press "+ Add New Lot"
-    And I wait for "lot number" to appear
-    And I enter lot number "TEST-123" on add lot page
-    And I press "Complete"
-    Then I should see "TEST-123"
+    And I add new lot with lot number "TEST-123"
+
+    And I press delete icon
+    Then I should see "Remove newly created lot"
+    And I press "REMOVE LOT"
+    Then I should not see "TEST-123"
+
+    And I add new lot with lot number "TEST-123"
+
     And I wait for 1 second
     And I scroll down
     When I press "Complete"

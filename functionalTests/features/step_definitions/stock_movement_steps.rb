@@ -271,3 +271,13 @@ Then (/^I should see more than (\d+) movements in movement history page$/) do|mo
         fail "there are no movements"
     end
 end
+
+Then (/^I add new lot with lot number "(.*?)"$/) do |lot_number|
+    steps %Q{
+        And I press "+ Add New Lot"
+        And I wait for "lot number" to appear
+        And I enter lot number "#{lot_number}" on add lot page
+        And I press "Complete"
+        Then I should see "#{lot_number}"
+    }
+end
