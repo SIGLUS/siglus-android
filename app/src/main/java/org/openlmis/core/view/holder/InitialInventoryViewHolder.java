@@ -190,7 +190,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     }
 
     private void initLotListRecyclerView(InventoryViewModel viewModel) {
-        lotMovementAdapter = new LotMovementAdapter(viewModel.getLotMovementViewModelList());
+        lotMovementAdapter = new LotMovementAdapter(viewModel.getLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
         lotListRecyclerView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(context));
         lotListRecyclerView.setAdapter(lotMovementAdapter);
     }

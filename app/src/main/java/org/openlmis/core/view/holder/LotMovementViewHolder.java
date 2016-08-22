@@ -94,6 +94,9 @@ public class LotMovementViewHolder extends BaseViewHolder {
                     @Override
                     public void positiveClick(String tag) {
                         lotMovementAdapter.remove(viewModel);
+                        if (context instanceof InventoryActivity) {
+                            ((InventoryActivity) context).productListRecycleView.getAdapter().notifyDataSetChanged();
+                        }
                     }
 
                     @Override

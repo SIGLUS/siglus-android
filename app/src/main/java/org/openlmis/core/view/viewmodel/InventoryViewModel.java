@@ -212,8 +212,7 @@ public class InventoryViewModel {
         } else {
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
                 valid = !checked || validateLotList() || product.isArchived();
-            }
-            else{
+            } else {
                 valid = !checked || StringUtils.isNumeric(quantity) || product.isArchived();
             }
         }
@@ -226,7 +225,7 @@ public class InventoryViewModel {
     }
 
     private boolean validateLotList() {
-        for (LotMovementViewModel lotMovementViewModel:lotMovementViewModelList){
+        for (LotMovementViewModel lotMovementViewModel : lotMovementViewModelList) {
             if (!lotMovementViewModel.validate()) {
                 return false;
             }
