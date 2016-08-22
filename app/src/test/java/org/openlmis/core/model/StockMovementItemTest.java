@@ -88,11 +88,11 @@ public class StockMovementItemTest {
 
     @Test
     public void shouldPopulateAllLotQuantitiesAndCalculateNewSOHForStockItem() throws ParseException {
-        LotMovementViewModel lotMovementViewModel1 = new LotMovementViewModel("ABC", "Dec 2016", "10");
+        LotMovementViewModel lotMovementViewModel1 = new LotMovementViewModel("ABC", "Dec 2016", "10", );
         lotMovementViewModel1.setQuantity("10");
-        LotMovementViewModel lotMovementViewModel2 = new LotMovementViewModel("DEF", "Nov 2016", "20");
+        LotMovementViewModel lotMovementViewModel2 = new LotMovementViewModel("DEF", "Nov 2016", "20", );
         lotMovementViewModel2.setQuantity("15");
-        LotMovementViewModel lotMovementViewModel3 = new LotMovementViewModel("HIJ", "Oct 2016", "30");
+        LotMovementViewModel lotMovementViewModel3 = new LotMovementViewModel("HIJ", "Oct 2016", "30", );
         lotMovementViewModel3.setQuantity("5");
 
         List<LotMovementViewModel> lotMovementViewModelList = newArrayList(lotMovementViewModel1, lotMovementViewModel2, lotMovementViewModel3);

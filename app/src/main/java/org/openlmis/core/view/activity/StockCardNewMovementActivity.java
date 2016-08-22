@@ -224,7 +224,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                     case R.id.btn_complete:
                         if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers())) {
                             presenter.addLotMovement(new LotMovementViewModel(addLotDialogFragment.getLotNumber(),
-                                    addLotDialogFragment.getExpiryDate()))
+                                    addLotDialogFragment.getExpiryDate(), movementType))
                                     .subscribe(new Action1<List<LotMovementViewModel>>() {
                                 @Override
                                 public void call(List<LotMovementViewModel> lotMovementViewModels) {
@@ -427,7 +427,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     @Override
     public boolean showLotError() {
         clearErrorAlerts();
-        int position = newLotMovementAdapter.validateAll();
+        int position = newLotMovementAdapter.validateAll(movementType);
         if (position >= 0) {
             newLotMovementRecycleView.scrollToPosition(position);
             return true;

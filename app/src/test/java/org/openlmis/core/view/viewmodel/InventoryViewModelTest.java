@@ -8,6 +8,7 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.ProductBuilder;
@@ -151,7 +152,7 @@ public class InventoryViewModelTest {
         InventoryViewModel inventoryViewModel = InventoryViewModel.buildEmergencyModel(stockCard);
         inventoryViewModel.setChecked(true);
 
-        LotMovementViewModel lotMovementViewModel = new LotMovementViewModel("lotNumber","2012-09-01");
+        LotMovementViewModel lotMovementViewModel = new LotMovementViewModel("lotNumber","2012-09-01", MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
         lotMovementViewModel.validate();
         inventoryViewModel.lotMovementViewModelList.add(lotMovementViewModel);
 
@@ -172,7 +173,7 @@ public class InventoryViewModelTest {
         InventoryViewModel inventoryViewModel = InventoryViewModel.buildEmergencyModel(stockCard);
         inventoryViewModel.setChecked(true);
 
-        LotMovementViewModel lotMovementViewModel = new LotMovementViewModel("lotNumber","2012-09-01");
+        LotMovementViewModel lotMovementViewModel = new LotMovementViewModel("lotNumber","2012-09-01", MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
         lotMovementViewModel.setQuantity("21");
         inventoryViewModel.lotMovementViewModelList.add(lotMovementViewModel);
 

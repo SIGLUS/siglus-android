@@ -136,7 +136,7 @@ public class NewStockMovementPresenter extends Presenter {
                     public LotMovementViewModel apply(LotOnHand lotOnHand) {
                         return new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
                                 DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
-                                lotOnHand.getQuantityOnHand().toString());
+                                lotOnHand.getQuantityOnHand().toString(), previousStockMovement.getMovementType());
                     }
                 }).toSortedList(new Comparator<LotMovementViewModel>() {
                     @Override

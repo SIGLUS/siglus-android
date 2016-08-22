@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.openlmis.core.R;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.view.holder.LotMovementViewHolder;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 
@@ -48,10 +49,10 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
         return lotList.size();
     }
 
-    public int validateAll() {
+    public int validateAll(MovementReasonManager.MovementType movementType) {
         int position = -1;
         for (int i = 0; i < lotList.size(); i++) {
-            if (!lotList.get(i).validate()) {
+            if (!lotList.get(i).validate() && !lotList.get(i).isQuantityGreaterThanSOH(movementType)) {
                 position = i;
                 break;
             }
