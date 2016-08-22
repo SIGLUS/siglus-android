@@ -114,7 +114,7 @@ end
 
 And(/^I press delete icon$/) do
     q = query("android.widget.ImageView id:'iv_del'")
-    touch(q)
+    touch(q.first)
 end
 
 Then(/^I should see patient total number is "(.*?)"$/) do |number|

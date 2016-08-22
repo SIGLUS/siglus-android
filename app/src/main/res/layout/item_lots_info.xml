@@ -82,6 +82,6 @@
         android:layout_marginTop="@dimen/margin_normal"
         android:layout_marginEnd="@dimen/margin_small"
         android:src="@drawable/ic_clear_red"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
 </LinearLayout>
