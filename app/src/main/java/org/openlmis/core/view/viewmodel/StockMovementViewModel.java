@@ -51,6 +51,7 @@ public class StockMovementViewModel {
     boolean isDraft = true;
     boolean isKit;
 
+    @Deprecated
     private HashMap<MovementReasonManager.MovementType, String> typeQuantityMap = new HashMap<>();
 
     List<LotMovementViewModel> lotMovementViewModelList = new ArrayList<>();
@@ -208,7 +209,7 @@ public class StockMovementViewModel {
         }
     }
 
-    public boolean hasChangedLot() {
+    public boolean lotQuantityGreaterThanZero() {
         for (LotMovementViewModel lot : existingLotMovementViewModelList) {
             if (lot.hasQuantityChanged()) return true;
         }

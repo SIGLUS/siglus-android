@@ -10,12 +10,10 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
@@ -24,7 +22,6 @@ import org.openlmis.core.manager.NestedRecyclerViewLinearLayoutManager;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.presenter.NewStockMovementPresenter;
 import org.openlmis.core.utils.Constants;
-import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
@@ -185,8 +182,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             lyRequestedQuantity.setVisibility(View.GONE);
         }
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) && !isKit
-                && (movementType.equals(MovementReasonManager.MovementType.RECEIVE)
+        if (!isKit && (movementType.equals(MovementReasonManager.MovementType.RECEIVE)
                 || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST))) {
             actionAddNewLot.setVisibility(View.VISIBLE);
             lyMovementQuantity.setVisibility(View.GONE);
@@ -216,31 +212,36 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             public void onClick(View v) {
                 actionAddNewLot.setEnabled(false);
                 addLotDialogFragment = new AddLotDialogFragment();
-                addLotDialogFragment.setListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        switch (v.getId()) {
-                            case R.id.btn_complete:
-                                if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers())) {
-                                    presenter.addLotMovement(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate()))
-                                            .subscribe(new Action1<List<LotMovementViewModel>>() {
-                                        @Override
-                                        public void call(List<LotMovementViewModel> lotMovementViewModels) {
-                                            refreshRecyclerView();
-                                        }
-                                    });
-                                    addLotDialogFragment.dismiss();
-                                }
-                                actionAddNewLot.setEnabled(true);
-                                break;
-                            case R.id.btn_cancel:
-                                addLotDialogFragment.dismiss();
-                                actionAddNewLot.setEnabled(true);
-                                break;
-                        }
-                    }
-                });
+                addLotDialogFragment.setListener(getAddNewLotDialogOnClickListener());
                 addLotDialogFragment.show(getFragmentManager(), "");
+            }
+        };
+    }
+
+    @NonNull
+    private View.OnClickListener getAddNewLotDialogOnClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.btn_complete:
+                        if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers())) {
+                            presenter.addLotMovement(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate()))
+                                    .subscribe(new Action1<List<LotMovementViewModel>>() {
+                                @Override
+                                public void call(List<LotMovementViewModel> lotMovementViewModels) {
+                                    refreshRecyclerView();
+                                }
+                            });
+                            addLotDialogFragment.dismiss();
+                        }
+                        actionAddNewLot.setEnabled(true);
+                        break;
+                    case R.id.btn_cancel:
+                        addLotDialogFragment.dismiss();
+                        actionAddNewLot.setEnabled(true);
+                        break;
+                }
             }
         };
     }
@@ -309,7 +310,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                 quantityMap.put(movementType, etMovementQuantity.getText().toString());
                 stockMovementViewModel.setTypeQuantityMap(quantityMap);
                 stockMovementViewModel.setSignature(etMovementSignature.getText().toString());
-                stockMovementViewModel.setLotMovementViewModelList(lotMovementAdapter.getLotList());
+                stockMovementViewModel.setNewLotMovementViewModelList(lotMovementAdapter.getLotList());
                 if (showErrors(stockMovementViewModel)) return;
 
                 presenter.saveStockMovement();
@@ -360,24 +361,18 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             return true;
         }
 
-        if (validateLotMovement(movementType)) return true;
+        if (!isKit && validateLotMovement(movementType)) return true;
         return showLotError();
     }
 
     private boolean validateLotMovement(MovementReasonManager.MovementType movementType) {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            if (this.stockMovementViewModel.isLotEmpty() && !isKit
-                    &&(movementType.equals(MovementReasonManager.MovementType.RECEIVE)
-                    || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST))) {
-                showEmptyLotError();
-                return true;
-            }
-            if (!this.stockMovementViewModel.hasChangedLot() && !isKit
-                    && (movementType.equals(MovementReasonManager.MovementType.RECEIVE)
-                    || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST))) {
-                showLotQuantityError();
-                return true;
-            }
+        if (this.stockMovementViewModel.isLotEmpty()) {
+            showEmptyLotError();
+            return true;
+        }
+        if (!this.stockMovementViewModel.lotQuantityGreaterThanZero() && !isKit) {
+            showLotQuantityError();
+            return true;
         }
         return false;
     }

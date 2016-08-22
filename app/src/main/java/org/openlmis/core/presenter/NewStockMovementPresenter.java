@@ -161,7 +161,5 @@ public class NewStockMovementPresenter extends Presenter {
         boolean showLotError();
 
         void goToStockCard();
-
-        void showQuantityErrors(String errorMsg);
     }
 }
