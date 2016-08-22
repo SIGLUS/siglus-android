@@ -166,6 +166,7 @@
     <string name="msg_entries_error">Deve introduzir um número positivo. 0 não é permitido.</string>
     <string name="label_cmm">CMM</string>
     <string name="label_validate_period">Prazos de Validade</string>
+    <string name="label_lot_info">Lot Information</string>
     <string name="btn_add_expiry_date">+ Data de expiração</string>
     <string name="menu_item_stock_movement_history">Histórico de movimentos</string>
     <string name="menu_item_kit_unpack">Desembalar Kit</string>

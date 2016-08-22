@@ -74,6 +74,9 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
     @InjectView(R.id.tv_cmm)
     TextView tvCmm;
 
+    @InjectView(R.id.label_stock_card_info)
+    TextView tvLabelStockCardInfo;
+
     @InjectView(R.id.vg_lot_info_container)
     LotInfoGroup lotInfoGroup;
 
@@ -168,6 +171,11 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
 
         tvCmm.setText((presenter.getStockCard().getCMM() < 0) ? "" : String.valueOf(presenter.getStockCard().getCMM()));
 
+        if (isKit) {
+            tvLabelStockCardInfo.setText(getString(R.string.label_validate_period));
+        } else {
+            tvLabelStockCardInfo.setText(getString(R.string.label_lot_info));
+        }
         updateExpiryDateViewGroup();
     }
 
