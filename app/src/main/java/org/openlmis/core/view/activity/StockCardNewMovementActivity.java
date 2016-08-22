@@ -364,7 +364,8 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     private boolean validateLotMovement(MovementReasonManager.MovementType movementType) {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            if (this.stockMovementViewModel.isLotEmpty() && (movementType.equals(MovementReasonManager.MovementType.RECEIVE)
+            if (this.stockMovementViewModel.isLotEmpty() && !isKit
+                    &&(movementType.equals(MovementReasonManager.MovementType.RECEIVE)
                     || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST))) {
                 showEmptyLotError();
                 return true;
