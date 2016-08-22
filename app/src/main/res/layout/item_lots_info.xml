@@ -76,11 +76,12 @@
 
     <ImageView
         android:id="@+id/iv_del"
-        android:layout_width="@dimen/font_size_normal"
-        android:layout_height="@dimen/font_size_normal"
+        android:layout_width="@dimen/font_size_large"
+        android:layout_height="@dimen/font_size_large"
+        android:padding="@dimen/padding_tiny"
         android:layout_marginTop="@dimen/margin_normal"
         android:layout_marginEnd="@dimen/margin_small"
         android:src="@drawable/ic_clear_red"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 </LinearLayout>
