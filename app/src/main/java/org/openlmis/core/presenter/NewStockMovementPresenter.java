@@ -120,8 +120,8 @@ public class NewStockMovementPresenter extends Presenter {
         return Observable.create(new Observable.OnSubscribe<List<LotMovementViewModel>>() {
             @Override
             public void call(Subscriber<? super List<LotMovementViewModel>> subscriber) {
-                stockMovementModel.getLotMovementViewModelList().add(lotMovementViewModel);
-                subscriber.onNext(stockMovementModel.getLotMovementViewModelList());
+                stockMovementModel.getNewLotMovementViewModelList().add(lotMovementViewModel);
+                subscriber.onNext(stockMovementModel.getNewLotMovementViewModelList());
                 subscriber.onCompleted();
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());

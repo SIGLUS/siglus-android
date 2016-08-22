@@ -93,7 +93,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     View actionAddNewLot;
 
     @InjectView(R.id.lot_list)
-    private RecyclerView lotMovementRecycleView;
+    private RecyclerView newLotMovementRecycleView;
 
     @InjectView(R.id.existing_lot_list)
     private RecyclerView existingLotListView;
@@ -101,7 +101,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     @InjectPresenter(NewStockMovementPresenter.class)
     NewStockMovementPresenter presenter;
 
-    private LotMovementAdapter lotMovementAdapter;
+    private LotMovementAdapter newLotMovementAdapter;
     private LotMovementAdapter existingLotMovementAdapter;
     private String stockName;
     private MovementReasonManager.MovementType movementType;
@@ -150,13 +150,10 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         }
 
         stockMovementViewModel = presenter.getStockMovementModel();
-        stockMovementViewModel.setKit(isKit);
-        initUI();
-        if (movementType.equals(MovementReasonManager.MovementType.RECEIVE)
-                || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST)) {
-            initExistingLotListView();
-        }
-        initRecyclerView();
+
+        initMovementView();
+        initExistingLotListView();
+        initNewLotListView();
     }
 
     private void initExistingLotListView() {
@@ -165,17 +162,17 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         existingLotListView.setAdapter(existingLotMovementAdapter);
     }
 
-    private void initRecyclerView() {
-        lotMovementRecycleView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(this));
-        lotMovementAdapter = new LotMovementAdapter(presenter.getStockMovementModel().getLotMovementViewModelList(), previousMovement.getStockCard().getProduct().getProductNameWithCodeAndStrength());
-        lotMovementRecycleView.setAdapter(lotMovementAdapter);
+    private void initNewLotListView() {
+        newLotMovementRecycleView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(this));
+        newLotMovementAdapter = new LotMovementAdapter(presenter.getStockMovementModel().getLotMovementViewModelList(), previousMovement.getStockCard().getProduct().getProductNameWithCodeAndStrength());
+        newLotMovementRecycleView.setAdapter(newLotMovementAdapter);
     }
 
-    private void refreshRecyclerView() {
-        lotMovementAdapter.notifyDataSetChanged();
+    private void refreshNewLotList() {
+        newLotMovementAdapter.notifyDataSetChanged();
     }
 
-    private void initUI() {
+    private void initMovementView() {
         setTitle(movementType.getDescription() + " " + stockName);
 
         if (!movementType.equals(MovementReasonManager.MovementType.ISSUE)) {
@@ -226,11 +223,12 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                 switch (v.getId()) {
                     case R.id.btn_complete:
                         if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers())) {
-                            presenter.addLotMovement(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate()))
+                            presenter.addLotMovement(new LotMovementViewModel(addLotDialogFragment.getLotNumber(),
+                                    addLotDialogFragment.getExpiryDate()))
                                     .subscribe(new Action1<List<LotMovementViewModel>>() {
                                 @Override
                                 public void call(List<LotMovementViewModel> lotMovementViewModels) {
-                                    refreshRecyclerView();
+                                    refreshNewLotList();
                                 }
                             });
                             addLotDialogFragment.dismiss();
@@ -249,7 +247,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     @NonNull
     private List<String> getLotNumbers() {
         final List<String> existingLots = new ArrayList<>();
-        existingLots.addAll(FluentIterable.from(stockMovementViewModel.getLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
+        existingLots.addAll(FluentIterable.from(stockMovementViewModel.getNewLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
             @Override
             public String apply(LotMovementViewModel lotMovementViewModel) {
                 return lotMovementViewModel.getLotNumber();
@@ -361,11 +359,11 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             return true;
         }
 
-        if (!isKit && validateLotMovement(movementType)) return true;
+        if (!isKit && validateLotMovement()) return true;
         return showLotError();
     }
 
-    private boolean validateLotMovement(MovementReasonManager.MovementType movementType) {
+    private boolean validateLotMovement() {
         if (this.stockMovementViewModel.isLotEmpty()) {
             showEmptyLotError();
             return true;
@@ -429,9 +427,9 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     @Override
     public boolean showLotError() {
         clearErrorAlerts();
-        int position = lotMovementAdapter.validateAll();
+        int position = newLotMovementAdapter.validateAll();
         if (position >= 0) {
-            lotMovementRecycleView.scrollToPosition(position);
+            newLotMovementRecycleView.scrollToPosition(position);
             return true;
         }
         return false;

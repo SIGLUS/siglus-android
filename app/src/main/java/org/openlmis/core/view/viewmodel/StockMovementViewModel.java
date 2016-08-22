@@ -54,7 +54,7 @@ public class StockMovementViewModel {
     @Deprecated
     private HashMap<MovementReasonManager.MovementType, String> typeQuantityMap = new HashMap<>();
 
-    List<LotMovementViewModel> lotMovementViewModelList = new ArrayList<>();
+    List<LotMovementViewModel> newLotMovementViewModelList = new ArrayList<>();
 
     List<LotMovementViewModel> existingLotMovementViewModelList = new ArrayList<>();
 
@@ -144,7 +144,7 @@ public class StockMovementViewModel {
                 return lotMovementViewModel.hasQuantityChanged();
             }
         }).toList());
-        totalLotMovementViewModelList.addAll(lotMovementViewModelList);
+        totalLotMovementViewModelList.addAll(newLotMovementViewModelList);
         stockMovementItem.populateNewLotQuantities(totalLotMovementViewModelList);
 
         return stockMovementItem;
@@ -213,10 +213,10 @@ public class StockMovementViewModel {
         for (LotMovementViewModel lot : existingLotMovementViewModelList) {
             if (lot.hasQuantityChanged()) return true;
         }
-        return !lotMovementViewModelList.isEmpty();
+        return !newLotMovementViewModelList.isEmpty();
     }
 
     public boolean isLotEmpty() {
-        return lotMovementViewModelList.isEmpty() && existingLotMovementViewModelList.isEmpty();
+        return newLotMovementViewModelList.isEmpty() && existingLotMovementViewModelList.isEmpty();
     }
 }
