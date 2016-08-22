@@ -97,7 +97,7 @@ public class StockMovementItem extends BaseModel {
         this.movementDate = new Date();
         this.reason = MovementReasonManager.INVENTORY;
         this.movementType = MovementReasonManager.MovementType.PHYSICAL_INVENTORY;
-        populateNewLotQuantities(model.getLotMovementViewModelList());
+        populateLotQuantitiesAndCalculateNewSOH(model.getLotMovementViewModelList(), movementType);
     }
 
     public boolean isPositiveMovement() {
@@ -133,10 +133,10 @@ public class StockMovementItem extends BaseModel {
         return lotMovementItemListWrapper;
     }
 
-    public void populateNewLotQuantities(List<LotMovementViewModel> lotMovementViewModelList) {
+    public void populateLotQuantitiesAndCalculateNewSOH(List<LotMovementViewModel> lotMovementViewModelList, MovementReasonManager.MovementType movementType) {
         final StockMovementItem stockMovementItem = this;
         if (!lotMovementViewModelList.isEmpty()) {
-            long receiveQuantity = 0;
+            long movementQuantity = 0;
 
             setLotMovementItemListWrapper(FluentIterable.from(lotMovementViewModelList).transform(new Function<LotMovementViewModel, LotMovementItem>() {
                 @Override
@@ -148,11 +148,14 @@ public class StockMovementItem extends BaseModel {
             }).toList());
 
             for (LotMovementViewModel lotMovementViewModel: lotMovementViewModelList) {
-                receiveQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
+                movementQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
             }
-            setMovementQuantity(receiveQuantity);
-            setStockOnHand(receiveQuantity + getStockOnHand());
+            setMovementQuantity(movementQuantity);
+            if (movementType.equals(MovementReasonManager.MovementType.ISSUE) || movementType.equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST)) {
+                setStockOnHand(getStockOnHand() - movementQuantity);
+            } else {
+                setStockOnHand(getStockOnHand() + movementQuantity);
+            }
         }
     }
-
 }

@@ -16,8 +16,7 @@ public class LotMovementViewModel implements Serializable {
     private String lotNumber;
     private String expiryDate;
     private String quantity;
-    private String lotSoh;
-    private String stockMovementId;
+    private String lotSoh = "0";
 
     boolean valid = true;
 

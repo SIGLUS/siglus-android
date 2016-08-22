@@ -82,21 +82,6 @@ public class NewStockMovementPresenterTest {
     }
 
     @Test
-    public void shouldNotErrorQuantityIfItIsLargerThanSohButAdditiveWhenSaving() throws ParseException {
-        StockMovementViewModel stockMovementViewModel = new StockMovementViewModelBuilder()
-                .withMovementDate("2010-10-10").withSignature("signature")
-                .withMovementReason(new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "", "")).build();
-        HashMap<MovementReasonManager.MovementType, String> quantityMap = new HashMap<>();
-        quantityMap.put(MovementReasonManager.MovementType.RECEIVE, "10");
-        stockMovementViewModel.setTypeQuantityMap(quantityMap);
-
-        StockMovementItem previousStockItem = new StockMovementItemBuilder().withStockOnHand(5).build();
-        newStockMovementPresenter.previousStockMovement = previousStockItem;
-        newStockMovementPresenter.getSaveMovementObservable(stockMovementViewModel, 1L);
-        verify(view, never()).showQuantityErrors(anyString());
-    }
-
-    @Test
     public void shouldSaveStockItemWhenSaving() throws Exception {
         StockCard stockCard = createStockCard(0, true);
         StockMovementItem item = new StockMovementItem();

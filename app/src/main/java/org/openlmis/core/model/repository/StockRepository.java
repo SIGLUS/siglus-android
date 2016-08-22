@@ -179,10 +179,21 @@ public class StockRepository {
         }
     }
 
-    public void addStockMovementAndUpdateStockCard(StockMovementItem stockMovementItem) throws LMISException {
-        StockCard stockcard = stockMovementItem.getStockCard();
-        createOrUpdate(stockcard);
-        saveStockItem(stockMovementItem);
+    public void addStockMovementAndUpdateStockCard(final StockMovementItem stockMovementItem) throws LMISException {
+        try {
+            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+                    StockCard stockcard = stockMovementItem.getStockCard();
+                    createOrUpdate(stockcard);
+                    saveStockItem(stockMovementItem);
+                    return null;
+                }
+            });
+        } catch (SQLException e) {
+            throw new LMISException(e);
+        }
+
     }
 
     public List<StockMovementItem> listUnSynced() throws LMISException {

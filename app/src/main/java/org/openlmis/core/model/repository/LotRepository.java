@@ -23,20 +23,16 @@ public class LotRepository {
     Context context;
 
     public void batchCreateLotsAndLotMovements(final List<LotMovementItem> lotMovementItemListWrapper) throws LMISException {
-        try {
-            dbUtil.withDaoAsBatch(LotMovementItem.class, new DbUtil.Operation<LotMovementItem, Object>() {
-                @Override
-                public LotMovementItem operate(Dao<LotMovementItem, String> dao) throws SQLException, LMISException {
-                    for (final LotMovementItem lotMovementItem: lotMovementItemListWrapper) {
-                        createOrUpdateLotAndLotOnHand(lotMovementItem);
-                        createLotMovementItem(lotMovementItem);
-                    }
-                    return null;
+        dbUtil.withDaoAsBatch(LotMovementItem.class, new DbUtil.Operation<LotMovementItem, Object>() {
+            @Override
+            public LotMovementItem operate(Dao<LotMovementItem, String> dao) throws SQLException, LMISException {
+                for (final LotMovementItem lotMovementItem: lotMovementItemListWrapper) {
+                    createOrUpdateLotAndLotOnHand(lotMovementItem);
+                    createLotMovementItem(lotMovementItem);
                 }
-            });
-        } catch (LMISException e) {
-            e.reportToFabric();
-        }
+                return null;
+            }
+        });
     }
 
     private void createOrUpdateLotAndLotOnHand(LotMovementItem lotMovementItem) throws LMISException {

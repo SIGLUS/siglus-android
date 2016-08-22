@@ -119,16 +119,14 @@ public class StockMovementViewModel {
         stockMovementItem.setDocumentNumber(getDocumentNo());
         stockMovementItem.setMovementType(reason.getMovementType());
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) && !isKit) {
-            if (reason.getMovementType().equals(MovementReasonManager.MovementType.ISSUE) || reason.getMovementType().equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST)) {
-                Long movementQuantity = Long.parseLong(typeQuantityMap.get(reason.getMovementType()));
-                stockMovementItem.setMovementQuantity(movementQuantity);
-            }
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) && !isKit) {
+            Long movementQuantity = Long.parseLong(typeQuantityMap.get(reason.getMovementType()));
+            stockMovementItem.setMovementQuantity(movementQuantity);
         } else {
             Long movementQuantity = Long.parseLong(typeQuantityMap.get(reason.getMovementType()));
             stockMovementItem.setMovementQuantity(movementQuantity);
-        }
-
+        }    
+        
         stockMovementItem.setRequested((null == requested || requested.isEmpty()) ? null : Long.valueOf(requested));
 
         stockMovementItem.setSignature(signature);
@@ -145,7 +143,7 @@ public class StockMovementViewModel {
             }
         }).toList());
         totalLotMovementViewModelList.addAll(newLotMovementViewModelList);
-        stockMovementItem.populateNewLotQuantities(totalLotMovementViewModelList);
+        stockMovementItem.populateLotQuantitiesAndCalculateNewSOH(totalLotMovementViewModelList, stockMovementItem.getMovementType());
 
         return stockMovementItem;
     }
@@ -198,9 +196,10 @@ public class StockMovementViewModel {
             if (MovementReasonManager.MovementType.ISSUE.equals(movementType) || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(movementType)) {
                 this.stockExistence = "" + (previousStockOnHand - Long.parseLong(typeQuantityMap.get(movementType)));
             } else {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
                 this.stockExistence = "" + previousStockOnHand;
-            }
         } else {
+            MovementReasonManager.MovementType movementType = typeQuantityMap.keySet().iterator().next();
             if (MovementReasonManager.MovementType.RECEIVE.equals(movementType) || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
                 this.stockExistence = "" + (previousStockOnHand + Long.parseLong(typeQuantityMap.get(movementType)));
             } else {
