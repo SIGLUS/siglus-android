@@ -18,8 +18,17 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
     @Getter
     private final List<LotMovementViewModel> lotList;
 
+    @Getter
+    private final String productName;
+
     public LotMovementAdapter(List<LotMovementViewModel> data) {
         this.lotList = data;
+        productName = null;
+    }
+
+    public LotMovementAdapter(List<LotMovementViewModel> data, String productName) {
+        this.lotList = data;
+        this.productName = productName;
     }
 
     @Override
@@ -31,7 +40,7 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
     @Override
     public void onBindViewHolder(LotMovementViewHolder holder, int position) {
         final LotMovementViewModel viewModel = lotList.get(position);
-        holder.populate(viewModel);
+        holder.populate(viewModel, this);
     }
 
     @Override
@@ -50,5 +59,10 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
 
         this.notifyDataSetChanged();
         return position;
+    }
+
+    public void remove(LotMovementViewModel viewModel) {
+        lotList.remove(viewModel);
+        this.notifyDataSetChanged();
     }
 }

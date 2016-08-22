@@ -168,7 +168,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     private void initRecyclerView() {
         lotMovementRecycleView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(this));
-        lotMovementAdapter = new LotMovementAdapter(presenter.getStockMovementModel().getLotMovementViewModelList());
+        lotMovementAdapter = new LotMovementAdapter(presenter.getStockMovementModel().getLotMovementViewModelList(), previousMovement.getStockCard().getProduct().getProductNameWithCodeAndStrength());
         lotMovementRecycleView.setAdapter(lotMovementAdapter);
     }
 

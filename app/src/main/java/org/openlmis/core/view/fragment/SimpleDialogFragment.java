@@ -43,7 +43,7 @@ public class SimpleDialogFragment extends RoboDialogFragment {
     private static final String ARG_NEGATIVE_BUTTON = "negative";
     private static final String ARG_TAG = "tag";
 
-    private String title;
+    private CharSequence title;
     private CharSequence message;
     private String positiveText;
     private String negativeText;
@@ -64,10 +64,10 @@ public class SimpleDialogFragment extends RoboDialogFragment {
         return newInstance(null, message, LMISApp.getContext().getString(R.string.btn_positive), LMISApp.getContext().getString(R.string.btn_negative), null);
     }
 
-    public static SimpleDialogFragment newInstance(String title, CharSequence message, String positiveText, String negativeText, String tag) {
+    public static SimpleDialogFragment newInstance(CharSequence title, CharSequence message, String positiveText, String negativeText, String tag) {
         Bundle bundle = new Bundle();
 
-        bundle.putString(ARG_TITLE, title);
+        bundle.putCharSequence(ARG_TITLE, title);
         bundle.putCharSequence(ARG_MESSAGE, message);
         bundle.putString(ARG_POSITIVE_BUTTON, positiveText);
         bundle.putString(ARG_NEGATIVE_BUTTON, negativeText);
@@ -95,7 +95,7 @@ public class SimpleDialogFragment extends RoboDialogFragment {
         super.onCreate(savedInstanceState);
 
         final Bundle arguments = getArguments();
-        title = arguments.getString(ARG_TITLE);
+        title = arguments.getCharSequence(ARG_TITLE);
         message = arguments.getCharSequence(ARG_MESSAGE);
         positiveText = arguments.getString(ARG_POSITIVE_BUTTON);
         negativeText = arguments.getString(ARG_NEGATIVE_BUTTON);
