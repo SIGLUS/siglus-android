@@ -121,9 +121,6 @@ public class StockMovementViewModel {
         if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) || isKit) {
             Long movementQuantity = Long.parseLong(typeQuantityMap.get(reason.getMovementType()));
             stockMovementItem.setMovementQuantity(movementQuantity);
-        } else {
-            Long movementQuantity = Long.parseLong(typeQuantityMap.get(reason.getMovementType()));
-            stockMovementItem.setMovementQuantity(movementQuantity);
         }
 
         stockMovementItem.setRequested((null == requested || requested.isEmpty()) ? null : Long.valueOf(requested));
@@ -138,7 +135,7 @@ public class StockMovementViewModel {
         totalLotMovementViewModelList.addAll(FluentIterable.from(existingLotMovementViewModelList).filter(new Predicate<LotMovementViewModel>() {
             @Override
             public boolean apply(LotMovementViewModel lotMovementViewModel) {
-                return lotMovementViewModel.hasQuantityChanged();
+                return lotMovementViewModel.quantityGreaterThanZero();
             }
         }).toList());
         totalLotMovementViewModelList.addAll(newLotMovementViewModelList);
@@ -201,9 +198,9 @@ public class StockMovementViewModel {
         }
     }
 
-    public boolean lotQuantityGreaterThanZero() {
+    public boolean movementQuantitiesExist() {
         for (LotMovementViewModel lot : existingLotMovementViewModelList) {
-            if (lot.hasQuantityChanged()) return true;
+            if (lot.quantityGreaterThanZero()) return true;
         }
         return !newLotMovementViewModelList.isEmpty();
     }

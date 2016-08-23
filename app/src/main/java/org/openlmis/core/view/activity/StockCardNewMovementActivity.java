@@ -181,7 +181,10 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         }
 
         if (!isKit) {
-            actionAddNewLot.setVisibility(View.VISIBLE);
+            if (MovementReasonManager.MovementType.RECEIVE.equals(movementType)
+                    || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
+                actionAddNewLot.setVisibility(View.VISIBLE);
+            }
             lyMovementQuantity.setVisibility(View.GONE);
         }
 
@@ -336,21 +339,15 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             showMovementReasonEmpty();
             return true;
         }
-        if ((movementType.equals(MovementReasonManager.MovementType.ISSUE) || movementType.equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST))
-                && StringUtils.isBlank(stockMovementViewModel.getTypeQuantityMap().get(movementType))) {
-            showQuantityErrors(getResources().getString(R.string.msg_empty_quantity));
-            return true;
-        }
+
+        if (isKit && checkKitQuantityError(stockMovementViewModel, movementType)) return true;
+
         if (StringUtils.isBlank(stockMovementViewModel.getSignature())) {
             showSignatureErrors(getResources().getString(R.string.msg_empty_signature));
             return true;
         }
         if (!stockMovementViewModel.validateQuantitiesNotZero()) {
             showQuantityErrors(getResources().getString(R.string.msg_entries_error));
-            return true;
-        }
-        if (quantityIsLargerThanSoh(stockMovementViewModel.getTypeQuantityMap().get(movementType), movementType)) {
-            showQuantityErrors(getResources().getString(R.string.msg_invalid_quantity));
             return true;
         }
         if (!checkSignature(stockMovementViewModel.getSignature())) {
@@ -362,12 +359,24 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         return showLotError();
     }
 
+    private boolean checkKitQuantityError(StockMovementViewModel stockMovementViewModel, MovementReasonManager.MovementType movementType) {
+        if (StringUtils.isBlank(stockMovementViewModel.getTypeQuantityMap().get(movementType))) {
+            showQuantityErrors(getResources().getString(R.string.msg_empty_quantity));
+            return true;
+        }
+        if (quantityIsLargerThanSoh(stockMovementViewModel.getTypeQuantityMap().get(movementType), movementType)) {
+            showQuantityErrors(getResources().getString(R.string.msg_invalid_quantity));
+            return true;
+        }
+        return false;
+    }
+
     private boolean validateLotMovement() {
         if (this.stockMovementViewModel.isLotEmpty()) {
             showEmptyLotError();
             return true;
         }
-        if (!this.stockMovementViewModel.lotQuantityGreaterThanZero() && !isKit) {
+        if (!this.stockMovementViewModel.movementQuantitiesExist()) {
             showLotQuantityError();
             return true;
         }

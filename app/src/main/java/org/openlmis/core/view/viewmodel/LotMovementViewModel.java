@@ -1,5 +1,7 @@
 package org.openlmis.core.view.viewmodel;
 
+import android.os.Parcelable;
+
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Lot;
@@ -17,7 +19,7 @@ public class LotMovementViewModel implements Serializable {
     private String lotNumber;
     private String expiryDate;
     private String quantity;
-    private String lotSoh = "0";
+    private String lotSoh;
     private MovementReasonManager.MovementType movementType;
 
     boolean valid = true;
@@ -51,9 +53,7 @@ public class LotMovementViewModel implements Serializable {
     public boolean validateQuantity(MovementReasonManager.MovementType movementType) {
         if (MovementReasonManager.MovementType.ISSUE.equals(movementType)
                 || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(movementType)) {
-            if (!StringUtils.isBlank(quantity)) {
-                quantityValid = Long.parseLong(quantity) <= Long.parseLong(lotSoh);
-            }
+            quantityValid = StringUtils.isBlank(quantity) || Long.parseLong(quantity) <= Long.parseLong(lotSoh);
         }
         return quantityValid;
     }
@@ -69,7 +69,7 @@ public class LotMovementViewModel implements Serializable {
         return lotMovementItem;
     }
 
-    public boolean hasQuantityChanged() {
+    public boolean quantityGreaterThanZero() {
         return !StringUtils.isBlank(quantity) && Long.parseLong(quantity) > 0;
     }
 }
