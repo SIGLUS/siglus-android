@@ -1,7 +1,5 @@
 package org.openlmis.core.view.viewmodel;
 
-import android.os.Parcelable;
-
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Lot;

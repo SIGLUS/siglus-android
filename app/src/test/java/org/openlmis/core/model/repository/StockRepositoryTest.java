@@ -478,7 +478,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldGetNonEmptyLotOnHandByStockCardId() throws Exception {
+    public void shouldAddLotMovementsAndGetNonEmptyLotOnHandByStockCardId() throws Exception {
         Product product = ProductBuilder.create().setProductId(1L).setCode("p1").setIsActive(true).setIsKit(false).build();
         StockCard stockCard = createNewStockCard("code", null, product, true);
 
