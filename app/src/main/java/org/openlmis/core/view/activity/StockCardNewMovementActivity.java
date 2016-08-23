@@ -355,8 +355,12 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             return true;
         }
 
-        if (!isKit && validateLotMovement()) return true;
-        return showLotError();
+        boolean lotError = !isKit && lotListEmptyError() || showLotListError();
+        if (lotError) {
+            existingLotMovementAdapter.notifyDataSetChanged();
+            newLotMovementAdapter.notifyDataSetChanged();
+        }
+        return lotError;
     }
 
     private boolean checkKitQuantityError(StockMovementViewModel stockMovementViewModel, MovementReasonManager.MovementType movementType) {
@@ -371,7 +375,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         return false;
     }
 
-    private boolean validateLotMovement() {
+    private boolean lotListEmptyError() {
         if (this.stockMovementViewModel.isLotEmpty()) {
             showEmptyLotError();
             return true;
@@ -393,10 +397,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     }
 
     private boolean quantityIsLargerThanSoh(String quantity, MovementReasonManager.MovementType type) {
-        if (MovementReasonManager.MovementType.ISSUE.equals(type) || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(type)) {
-            return Long.parseLong(quantity) > previousMovement.getStockOnHand();
-        }
-        return false;
+        return (MovementReasonManager.MovementType.ISSUE.equals(type) || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(type)) && Long.parseLong(quantity) > previousMovement.getStockOnHand();
     }
 
     private void showEmptyLotError() {
@@ -433,7 +434,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
 
     @Override
-    public boolean showLotError() {
+    public boolean showLotListError() {
         clearErrorAlerts();
         int position1 = existingLotMovementAdapter.validateExisting(movementType);
         if (position1 >= 0) {
