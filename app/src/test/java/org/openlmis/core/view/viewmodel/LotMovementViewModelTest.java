@@ -1,6 +1,5 @@
 package org.openlmis.core.view.viewmodel;
 
-import org.apache.tools.ant.taskdefs.Move;
 import org.junit.Test;
 import org.openlmis.core.manager.MovementReasonManager;
 
@@ -32,16 +31,16 @@ public class LotMovementViewModelTest {
         viewModel.validate();
         assertFalse(viewModel.isValid());
 
+        viewModel.setExpiryDate("2014-03-18");
         viewModel.validate();
         assertTrue(viewModel.isValid());
     }
 
     @Test
     public void shouldReturnFalseWhenIssueQuantityGreaterThanSOH() throws Exception {
-        viewModel.setExpiryDate("2014-03-18");
         viewModel.setLotSoh("100");
         viewModel.setQuantity("300");
         viewModel.validate();
-        assertFalse(viewModel.isQuantityGreaterThanSOH(MovementReasonManager.MovementType.ISSUE));
+        assertFalse(viewModel.validateQuantity(MovementReasonManager.MovementType.ISSUE));
     }
 }

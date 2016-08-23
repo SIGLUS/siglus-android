@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
@@ -64,7 +65,12 @@ public class LotRepository {
             });
         } else {
             lotOnHand = getLotOnHandByLot(existingLot);
-            lotOnHand.setQuantityOnHand(lotOnHand.getQuantityOnHand()+ lotMovementItem.getMovementQuantity());
+            if (lotMovementItem.getStockMovementItem().getMovementType().equals(MovementReasonManager.MovementType.ISSUE)
+                || lotMovementItem.getStockMovementItem().getMovementType().equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST)) {
+                lotOnHand.setQuantityOnHand(lotOnHand.getQuantityOnHand() - lotMovementItem.getMovementQuantity());
+            } else {
+                lotOnHand.setQuantityOnHand(lotOnHand.getQuantityOnHand() + lotMovementItem.getMovementQuantity());
+            }
             final LotOnHand finalLotOnHand = lotOnHand;
             dbUtil.withDao(LotOnHand.class, new DbUtil.Operation<LotOnHand, Void>() {
                 @Override

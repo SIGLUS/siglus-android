@@ -144,7 +144,8 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         movementReasons = movementReasonManager.buildReasonListForMovementType(movementType);
 
         try {
-            previousMovement = presenter.loadPreviousMovement(stockCardId);
+            presenter.loadData(stockCardId, movementType);
+            previousMovement = presenter.getPreviousStockMovement();
         } catch (LMISException e) {
             e.printStackTrace();
         }
@@ -427,9 +428,14 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     @Override
     public boolean showLotError() {
         clearErrorAlerts();
-        int position = newLotMovementAdapter.validateAll(movementType);
-        if (position >= 0) {
-            newLotMovementRecycleView.scrollToPosition(position);
+        int position1 = existingLotMovementAdapter.validateExisting(movementType);
+        if (position1 >= 0) {
+            existingLotListView.scrollToPosition(position1);
+            return true;
+        }
+        int position2 = newLotMovementAdapter.validateAll();
+        if (position2 >= 0) {
+            newLotMovementRecycleView.scrollToPosition(position2);
             return true;
         }
         return false;

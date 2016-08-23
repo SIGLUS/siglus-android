@@ -22,6 +22,7 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.StockCard;
@@ -54,10 +55,13 @@ public class NewStockMovementPresenter extends Presenter {
 
     NewStockMovementView view;
 
+    @Getter
     StockMovementItem previousStockMovement;
 
     @Inject
     SharedPreferenceMgr sharedPreferenceMgr;
+
+    private MovementReasonManager.MovementType newMovementType;
 
     public NewStockMovementPresenter() {
         stockMovementModel = new StockMovementViewModel();
@@ -72,9 +76,9 @@ public class NewStockMovementPresenter extends Presenter {
         }
     }
 
-    public StockMovementItem loadPreviousMovement(Long stockCardId) throws LMISException {
+    public void loadData(Long stockCardId, MovementReasonManager.MovementType movementType) throws LMISException {
         previousStockMovement = stockRepository.queryLastStockMovementItemByStockCardId(stockCardId);
-        return previousStockMovement;
+        newMovementType = movementType;
     }
 
     public void saveStockMovement() {
@@ -136,7 +140,7 @@ public class NewStockMovementPresenter extends Presenter {
                     public LotMovementViewModel apply(LotOnHand lotOnHand) {
                         return new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
                                 DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
-                                lotOnHand.getQuantityOnHand().toString(), previousStockMovement.getMovementType());
+                                lotOnHand.getQuantityOnHand().toString(), newMovementType);
                     }
                 }).toSortedList(new Comparator<LotMovementViewModel>() {
                     @Override

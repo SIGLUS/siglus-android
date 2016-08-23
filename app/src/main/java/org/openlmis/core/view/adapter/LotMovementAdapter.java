@@ -49,10 +49,23 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
         return lotList.size();
     }
 
-    public int validateAll(MovementReasonManager.MovementType movementType) {
+    public int validateExisting(MovementReasonManager.MovementType movementType) {
         int position = -1;
         for (int i = 0; i < lotList.size(); i++) {
-            if (!lotList.get(i).validate() && !lotList.get(i).isQuantityGreaterThanSOH(movementType)) {
+            if (!lotList.get(i).validateQuantity(movementType)) {
+                position = i;
+                break;
+            }
+        }
+
+        this.notifyDataSetChanged();
+        return position;
+    }
+
+    public int validateAll() {
+        int position = -1;
+        for (int i = 0; i < lotList.size(); i++) {
+            if (!lotList.get(i).validate()) {
                 position = i;
                 break;
             }

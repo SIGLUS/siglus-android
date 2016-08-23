@@ -59,18 +59,16 @@ public class LotMovementViewHolder extends BaseViewHolder {
         etLotInfo.setKeyListener(null);
         etLotAmount.setText(viewModel.getQuantity());
 
-        if (viewModel.isValid()) {
+        if (viewModel.isValid() && viewModel.isQuantityValid()) {
             lyLotAmount.setErrorEnabled(false);
         } else {
             etLotAmount.requestFocus();
-            lyLotAmount.setError(context.getResources().getString(R.string.alert_lot_quantity_error));
-        }
-
-        if (viewModel.isQuantityGreaterThanSOH(viewModel.getMovementType())) {
-            lyLotAmount.setErrorEnabled(false);
-        } else {
-            etLotAmount.requestFocus();
-            lyLotAmount.setError(context.getResources().getString(R.string.msg_invalid_quantity));
+            if (!viewModel.isValid()) {
+                lyLotAmount.setError(context.getResources().getString(R.string.alert_lot_quantity_error));
+            }
+            if (!viewModel.isQuantityValid()) {
+                lyLotAmount.setError(context.getResources().getString(R.string.msg_invalid_quantity));
+            }
         }
 
         etLotInfo.setOnKeyListener(null);

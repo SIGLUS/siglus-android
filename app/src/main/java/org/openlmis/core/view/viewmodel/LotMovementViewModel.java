@@ -21,6 +21,7 @@ public class LotMovementViewModel implements Serializable {
     private MovementReasonManager.MovementType movementType;
 
     boolean valid = true;
+    boolean quantityValid = true;
 
     public LotMovementViewModel() {
     }
@@ -47,10 +48,14 @@ public class LotMovementViewModel implements Serializable {
         return valid;
     }
 
-    public boolean isQuantityGreaterThanSOH(MovementReasonManager.MovementType movementType) {
-        return !((MovementReasonManager.MovementType.ISSUE.equals(movementType)
-                || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(movementType))
-                && (Long.parseLong(quantity) >= Long.parseLong(lotSoh)));
+    public boolean validateQuantity(MovementReasonManager.MovementType movementType) {
+        if (MovementReasonManager.MovementType.ISSUE.equals(movementType)
+                || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(movementType)) {
+            if (!StringUtils.isBlank(quantity)) {
+                quantityValid = Long.parseLong(quantity) <= Long.parseLong(lotSoh);
+            }
+        }
+        return quantityValid;
     }
 
     public LotMovementItem convertViewToModel(Product product) {

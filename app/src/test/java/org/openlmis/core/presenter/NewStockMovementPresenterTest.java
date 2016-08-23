@@ -18,6 +18,7 @@
 
 package org.openlmis.core.presenter;
 
+import android.app.ActivityManager;
 import android.support.annotation.NonNull;
 
 import com.google.inject.AbstractModule;
@@ -35,19 +36,15 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
-import org.openlmis.core.model.builder.StockMovementViewModelBuilder;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.robolectric.RuntimeEnvironment;
 
-import java.text.ParseException;
 import java.util.Arrays;
-import java.util.HashMap;
 
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -77,8 +74,9 @@ public class NewStockMovementPresenterTest {
     public void shouldLoadDataFromPreviousStockMovement() throws LMISException {
         StockMovementItem item = new StockMovementItem();
         when(stockRepositoryMock.queryLastStockMovementItemByStockCardId(123L)).thenReturn(item);
+        newStockMovementPresenter.loadData(123L, MovementReasonManager.MovementType.RECEIVE);
 
-        Assertions.assertThat(newStockMovementPresenter.loadPreviousMovement(123L)).isEqualTo(item);
+        Assertions.assertThat(newStockMovementPresenter.getPreviousStockMovement()).isEqualTo(item);
     }
 
     @Test
