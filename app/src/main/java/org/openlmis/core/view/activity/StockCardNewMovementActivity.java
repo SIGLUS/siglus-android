@@ -151,7 +151,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         }
 
         stockMovementViewModel = presenter.getStockMovementModel();
-
+        stockMovementViewModel.setKit(isKit);
         initMovementView();
         initExistingLotListView();
         initNewLotListView();
