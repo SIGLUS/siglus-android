@@ -165,7 +165,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     private void initNewLotListView() {
         newLotMovementRecycleView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(this));
-        newLotMovementAdapter = new LotMovementAdapter(presenter.getStockMovementModel().getLotMovementViewModelList(), previousMovement.getStockCard().getProduct().getProductNameWithCodeAndStrength());
+        newLotMovementAdapter = new LotMovementAdapter(presenter.getStockMovementModel().getNewLotMovementViewModelList(), previousMovement.getStockCard().getProduct().getProductNameWithCodeAndStrength());
         newLotMovementRecycleView.setAdapter(newLotMovementAdapter);
     }
 
@@ -309,7 +309,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                 quantityMap.put(movementType, etMovementQuantity.getText().toString());
                 stockMovementViewModel.setTypeQuantityMap(quantityMap);
                 stockMovementViewModel.setSignature(etMovementSignature.getText().toString());
-                stockMovementViewModel.setNewLotMovementViewModelList(lotMovementAdapter.getLotList());
+                stockMovementViewModel.setNewLotMovementViewModelList(newLotMovementAdapter.getLotList());
                 if (showErrors(stockMovementViewModel)) return;
 
                 presenter.saveStockMovement();

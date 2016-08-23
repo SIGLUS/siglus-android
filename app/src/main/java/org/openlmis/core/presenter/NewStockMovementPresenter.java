@@ -160,6 +160,8 @@ public class NewStockMovementPresenter extends Presenter {
     public interface NewStockMovementView extends BaseView {
         void showMovementDateEmpty();
 
+        void showQuantityErrors(String errorMsg);
+
         void showMovementReasonEmpty();
 
         boolean showLotError();
