@@ -216,6 +216,7 @@
     <string name="label_unpack_kit_quantity_expected">Quantidade esperada</string>
     <string name="label_unpack_kit_quantity_less_than_expected"><![CDATA[<b>Menor</ b>]]> quantidade inserida do que a esperada. Por favor verifique</string>
     <string name="label_unpack_kit_quantity_more_than_expected"><![CDATA[<b>Maior</ b>]]> quantidade inserida do que a esperada. Por favor verifique</string>
+    <string name="text_quantity_expected">%1$s esperada</string>
     <!--Server Sync Errors-->
     <string name="sync_server_error">Sincronização falhou devido à problemas técnicos no servidor. Entre em contacto com administrador do sistema.</string>
     <string name="default_sync_data_error">Sincronização falhou devido a um erro desconhecido durante a sincronização da requisição. Entre em contato com administrador do sistema.</string>

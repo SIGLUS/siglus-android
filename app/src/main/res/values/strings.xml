@@ -233,6 +233,7 @@
     <string name="label_unpack_kit_quantity_expected">Quantity expected</string>
     <string name="label_unpack_kit_quantity_less_than_expected"><![CDATA[<b>Smaller</b>]]> quantity entered than expected. Please recheck it</string>
     <string name="label_unpack_kit_quantity_more_than_expected"><![CDATA[<b>Larger</b>]]> quantity entered than expected. Please recheck it</string>
+    <string name="text_quantity_expected">%1$s expected</string>
 
     <!-- Server Sync Errors -->
     <string name="sync_server_error">Sync failed due to technical problem on the server. Please contact system administrator.</string>

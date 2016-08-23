@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Card.Padded"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/color_white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_normal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="3"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/product_name"
+                    style="@style/Text.Black.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@string/label_dummy_product" />
+
+                <TextView
+                    android:id="@+id/product_unit"
+                    style="@style/Text.Gray.Normal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="@string/label_dummy_unit" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="2"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/stock_on_hand_in_inventory"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="2"
+                    style="@style/Text.Black"
+                    android:layout_height="0dp"
+                    android:layout_gravity="right"
+                    android:paddingRight="@dimen/padding_larger"
+                    android:text="expected">
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/vg_soh_pop"
+            style="@style/ItemPhysical.SOHText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/padding_small"
+            android:padding="@dimen/padding_small"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/tv_alert_quantity_message"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingLeft="@dimen/padding_medium"
+                android:text="alert message" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/existing_lot_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:background="@color/color_white"
+                android:visibility="gone"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_add_lot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:scrollbars="none"
+                android:background="@color/color_white"/>
+
+            <LinearLayout
+                android:id="@+id/add_new_lot_panel"
+                style="@style/InventoryCard.ActionPanel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/top_border_gray_bg"
+                android:visibility="visible">
+                <TextView
+                    android:id="@+id/tx_add_new_lot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/font_size_normal"
+                    android:layout_marginLeft="@dimen/margin_normal"
+                    android:textColor="@color/color_accent"
+                    android:text="@string/btn_add_new_lot" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

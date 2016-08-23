@@ -117,9 +117,6 @@
                 android:layout_marginLeft="@dimen/margin_normal"
                 android:textColor="@color/color_accent"
                 android:text="@string/btn_add_new_lot" />
-
-
-
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>
