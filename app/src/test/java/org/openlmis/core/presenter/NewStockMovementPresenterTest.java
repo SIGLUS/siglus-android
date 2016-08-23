@@ -36,15 +36,19 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
+import org.openlmis.core.model.builder.StockMovementViewModelBuilder;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.robolectric.RuntimeEnvironment;
 
+import java.text.ParseException;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -122,6 +126,20 @@ public class NewStockMovementPresenterTest {
         verify(sharedPreferenceMgr).setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
     }
 
+    @Test
+    public void shouldNotErrorQuantityIfItIsLargerThanSohButAdditiveWhenSaving() throws ParseException {
+        StockMovementViewModel stockMovementViewModel = new StockMovementViewModelBuilder()
+                .withMovementDate("2010-10-10").withSignature("signature")
+                .withMovementReason(new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "", "")).build();
+        HashMap<MovementReasonManager.MovementType, String> quantityMap = new HashMap<>();
+        quantityMap.put(MovementReasonManager.MovementType.RECEIVE, "10");
+        stockMovementViewModel.setTypeQuantityMap(quantityMap);
+
+        StockMovementItem previousStockItem = new StockMovementItemBuilder().withStockOnHand(5).build();
+        newStockMovementPresenter.previousStockMovement = previousStockItem;
+        newStockMovementPresenter.getSaveMovementObservable(stockMovementViewModel, 1L);
+        verify(view, never()).showQuantityErrors(anyString());
+    }
 
     @NonNull
     private StockCard createStockCard(int stockOnHand, boolean isKit) {
