@@ -93,6 +93,12 @@ Then(/^I should see lot number and expired date "(.*?)"$/) do |arg1|
  end
 end
 
+And(/^I clear quantity for the last lot$/) do
+    h = query("android.widget.EditText id:'et_lot_amount' text:''").last
+    clear_text_in(h)
+end
+
+
 And(/^I enter quantity "(\d+)" for the last lot$/) do |quantity|
     h = query("android.widget.EditText id:'et_lot_amount' text:''").last
     touch(h)

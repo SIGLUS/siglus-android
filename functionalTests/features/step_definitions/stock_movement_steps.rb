@@ -153,9 +153,8 @@ Then(/^I make a new movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stoc
         Then I select movement date
         Then I press "Done"
         Then I wait for 1 second
-        And I enter quantity number "#{number}"
         Then I enter signature "super"
-
+        When I enter quantity "#{number}" for the last lot
         And I press "Complete"
         Then I wait for 2 seconds
         Then I navigate back

@@ -20,13 +20,21 @@ Feature: stock movement Page
     Then I select movement date
     Then I press "Done"
     Then I wait for 1 second
-    Then I enter quantity number "123"
     Then I enter signature "super"
     And I press "Complete"
+    Then I should see "Add the amount to a lot"
+    When I enter quantity "10000" for the last lot
+    And I press "Complete"
+    Then I should see "Quantity cannot be larger than stock on hand"
+    And I wait for 1 second
+    And I clear quantity for the last lot
+    When I enter quantity "123" for the last lot
+    And I press "Complete"
+
     Then I swipe right
     Then I swipe right
 
-    Then I see "123"
+    Then I see "0"
     Then I see "super" in signature field
     Then I navigate back
     And I wait for "Stock Overview" to appear
@@ -63,17 +71,19 @@ Feature: stock movement Page
     Then I press "NEW MOVEMENT"
     Then I select a new movement reason "Issues" "PAV"
     Then I wait for 1 second
-    And I enter quantity number "123"
-    And I enter requested quantity "456"
     Then I select movement date
     Then I press "Done"
     Then I wait for 1 second
+    And I enter requested quantity "456"
     Then I enter signature "super"
+    When I enter quantity "123" for the last lot
     And I press "Complete"
+    And I should not see "HHH - Aug 2016 - 0"
     Then I swipe right
     Then I swipe right
 
     Then I see "123"
+    Then I see "0"
     Then I see "456"
     Then I see "super" in signature field
     Then I navigate back
@@ -87,11 +97,11 @@ Feature: stock movement Page
     Then I press "NEW MOVEMENT"
     Then I select a new movement reason "Negative Adjustments" "Return to DDM"
     Then I wait for 1 second
-    And I enter quantity number "123"
     Then I select movement date
     Then I press "Done"
     Then I wait for 1 second
     Then I enter signature "super"
+    When I enter quantity "123" for the last lot
     And I press "Complete"
     Then I swipe right
     Then I swipe right
@@ -110,6 +120,7 @@ Feature: stock movement Page
     And I add new lot with lot number "TEST-123"
 
     And I press delete icon
+    And I wait for 1 second
     Then I should see "Remove newly created lot"
     And I press "REMOVE LOT"
     Then I should not see "TEST-123"

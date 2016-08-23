@@ -19,11 +19,11 @@ Feature: Requisition
     Then I press "NEW MOVEMENT"
     Then I select a new movement reason "Issues" "Maternity"
     Then I wait for 1 second
-    And I enter quantity number "123"
     Then I select movement date
     Then I press "Done"
     Then I wait for 1 second
     Then I enter signature "super"
+    When I enter quantity "123" for the last lot
     And I press "Complete"
     Then I swipe right
     Then I swipe right
