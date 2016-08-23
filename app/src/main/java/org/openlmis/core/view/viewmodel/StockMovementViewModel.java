@@ -118,14 +118,14 @@ public class StockMovementViewModel {
         stockMovementItem.setDocumentNumber(getDocumentNo());
         stockMovementItem.setMovementType(reason.getMovementType());
 
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) && !isKit) {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) || isKit) {
             Long movementQuantity = Long.parseLong(typeQuantityMap.get(reason.getMovementType()));
             stockMovementItem.setMovementQuantity(movementQuantity);
         } else {
             Long movementQuantity = Long.parseLong(typeQuantityMap.get(reason.getMovementType()));
             stockMovementItem.setMovementQuantity(movementQuantity);
         }
- 
+
         stockMovementItem.setRequested((null == requested || requested.isEmpty()) ? null : Long.valueOf(requested));
 
         stockMovementItem.setSignature(signature);

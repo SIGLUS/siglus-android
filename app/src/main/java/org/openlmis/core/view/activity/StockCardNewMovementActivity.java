@@ -180,8 +180,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             lyRequestedQuantity.setVisibility(View.GONE);
         }
 
-        if (!isKit && (movementType.equals(MovementReasonManager.MovementType.RECEIVE)
-                || movementType.equals(MovementReasonManager.MovementType.POSITIVE_ADJUST))) {
+        if (!isKit) {
             actionAddNewLot.setVisibility(View.VISIBLE);
             lyMovementQuantity.setVisibility(View.GONE);
         }
@@ -309,7 +308,6 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                 quantityMap.put(movementType, etMovementQuantity.getText().toString());
                 stockMovementViewModel.setTypeQuantityMap(quantityMap);
                 stockMovementViewModel.setSignature(etMovementSignature.getText().toString());
-                stockMovementViewModel.setNewLotMovementViewModelList(newLotMovementAdapter.getLotList());
                 if (showErrors(stockMovementViewModel)) return;
 
                 presenter.saveStockMovement();
