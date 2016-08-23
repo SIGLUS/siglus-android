@@ -320,7 +320,13 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
     class MovementTypeOnClickListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            startActivityForResult(StockCardNewMovementActivity.getIntentToMe(activity, stockName, movementTypes.get(position), stockId, isKit), Constants.REQUEST_NEW_MOVEMENT_PAGE);
+            if ((movementTypes.get(position).equals(MovementReasonManager.MovementType.ISSUE)
+                || movementTypes.get(position).equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST))
+                    && presenter.getStockCard().getStockOnHand() == 0) {
+                ToastUtil.show(R.string.msg_no_lot_for_issue);
+            } else {
+                startActivityForResult(StockCardNewMovementActivity.getIntentToMe(activity, stockName, movementTypes.get(position), stockId, isKit), Constants.REQUEST_NEW_MOVEMENT_PAGE);
+            }
             newMovementDialog.dismiss();
         }
     }

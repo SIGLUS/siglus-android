@@ -355,12 +355,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             return true;
         }
 
-        boolean lotError = !isKit && lotListEmptyError() || showLotListError();
-        if (lotError) {
-            existingLotMovementAdapter.notifyDataSetChanged();
-            newLotMovementAdapter.notifyDataSetChanged();
-        }
-        return lotError;
+        return !isKit && showLotListError() || lotListEmptyError();
     }
 
     private boolean checkKitQuantityError(StockMovementViewModel stockMovementViewModel, MovementReasonManager.MovementType movementType) {
@@ -376,6 +371,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     }
 
     private boolean lotListEmptyError() {
+        clearErrorAlerts();
         if (this.stockMovementViewModel.isLotEmpty()) {
             showEmptyLotError();
             return true;

@@ -362,4 +362,5 @@
     <string name="btn_remove_lot">REMOVE LOT</string>
     <string name="msg_remove_new_lot_title"><![CDATA[<b>Remove newly created lot</b>]]></string>
     <string name="msg_remove_new_lot"><![CDATA[Remove the newly created lot <b>%1$s</b> which is expiring in %2$s from <b>%3$s</b>]]></string>
+    <string name="msg_no_lot_for_issue">No existing lot for you to issue or do negative adjustment</string>
 </resources>
