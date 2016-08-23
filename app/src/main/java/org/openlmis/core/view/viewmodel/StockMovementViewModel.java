@@ -193,7 +193,7 @@ public class StockMovementViewModel {
         MovementReasonManager.MovementType movementType = typeQuantityMap.keySet().iterator().next();
 
         //In RECEIVE lot management, no longer populate stock existence this way, populate later in the lot quantity aggregate
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) && !isKit) {
             if (MovementReasonManager.MovementType.ISSUE.equals(movementType) || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(movementType)) {
                 this.stockExistence = "" + (previousStockOnHand - Long.parseLong(typeQuantityMap.get(movementType)));
             } else {
