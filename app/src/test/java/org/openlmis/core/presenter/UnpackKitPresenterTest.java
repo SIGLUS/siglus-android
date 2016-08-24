@@ -11,6 +11,7 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
@@ -21,6 +22,8 @@ import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.LotMovementViewModel;
+import org.openlmis.core.view.viewmodel.LotMovementViewModelBuilder;
 import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
 import org.robolectric.RuntimeEnvironment;
 
@@ -39,6 +42,7 @@ import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
 public class UnpackKitPresenterTest {
@@ -224,6 +228,35 @@ public class UnpackKitPresenterTest {
         assertThat(movementItems.get(1).getStockOnHand()).isEqualTo(10);
         assertThat(movementItems.get(1).getSignature()).isEqualTo(signature);
         assertThat(movementItems.get(1).getDocumentNumber()).isEqualTo(documentNumber);
+    }
+
+    @Test
+    public void shouldCreateStockCardForProductWithLot() throws Exception {
+        when(stockRepository.queryStockCardByProductId(200L)).thenReturn(null);
+        viewModel.setQuantity("10");
+        LotMovementViewModel lot = new LotMovementViewModelBuilder()
+                .setLotNumber("test")
+                .setLotSOH("100")
+                .setMovementType(MovementReasonManager.MovementType.RECEIVE)
+                .setExpiryDate("Aug 2016")
+                .setQuantity("100")
+                .build();
+
+        viewModel.setLotMovementViewModelList(newArrayList(lot, lot));
+
+        StockCard stockCard = presenter.createStockCardForProductWithLot(viewModel, documentNumber, signature);
+        List<StockMovementItem> movementItems = stockCard.getStockMovementItemsWrapper();
+
+        assertThat(stockCard.getStockOnHand()).isEqualTo(200L);
+        assertThat(movementItems.size()).isEqualTo(2);
+        assertThat(movementItems.get(0).getStockOnHand()).isEqualTo(0);
+        assertThat(movementItems.get(0).getSignature()).isEqualTo(null);
+        assertThat(movementItems.get(1).getStockOnHand()).isEqualTo(200L);
+        assertThat(movementItems.get(1).getSignature()).isEqualTo(signature);
+        assertThat(movementItems.get(1).getDocumentNumber()).isEqualTo(documentNumber);
+        assertThat(movementItems.get(1).getLotMovementItemListWrapper().size()).isEqualTo(2);
+        assertThat(movementItems.get(1).getLotMovementItemListWrapper().get(0).getMovementQuantity()).isEqualTo(100L);
+        assertThat(movementItems.get(1).getLotMovementItemListWrapper().get(0).getLot().getLotNumber()).isEqualTo("test");
     }
 
     @Test
