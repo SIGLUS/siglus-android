@@ -128,7 +128,11 @@ public class UnpackKitPresenter extends Presenter {
                         @Override
                         public StockCard apply(InventoryViewModel inventoryViewModel) {
                             try {
-                                return createStockCardForProduct(inventoryViewModel, documentNumber, signature);
+                                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+                                    return createStockCardForProductWithLot(inventoryViewModel, documentNumber, signature);
+                                } else {
+                                    return createStockCardForProduct(inventoryViewModel, documentNumber, signature);
+                                }
                             } catch (LMISException e) {
                                 subscriber.onError(e);
                             }
@@ -195,6 +199,40 @@ public class UnpackKitPresenter extends Presenter {
         };
     }
 
+
+    @NonNull
+    protected StockCard createStockCardForProductWithLot(InventoryViewModel inventoryViewModel, String documentNumber, String signature) throws LMISException {
+        List<StockMovementItem> stockMovementItems = new ArrayList<>();
+
+        StockCard stockCard = stockRepository.queryStockCardByProductId(inventoryViewModel.getProductId());
+        if (stockCard == null) {
+            stockCard = new StockCard();
+            stockCard.setProduct(inventoryViewModel.getProduct());
+
+            stockMovementItems.add(stockCard.generateInitialStockMovementItem());
+        }
+
+        if(inventoryViewModel.getLotMovementViewModelList().isEmpty()) {
+            inventoryViewModel.setQuantity("0");
+        } else {
+            long receiveQuantity = 0;
+            for (LotMovementViewModel lotMovementViewModel: inventoryViewModel.getLotMovementViewModelList()){
+                receiveQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
+            }
+            inventoryViewModel.setQuantity(String.valueOf(receiveQuantity));
+        }
+
+        stockCard.setExpireDates(DateUtil.uniqueExpiryDates(inventoryViewModel.getExpiryDates(), stockCard.getExpireDates()));
+        stockCard.getProduct().setArchived(false);
+
+        stockMovementItems.add(createUnpackMovementItemAndLotMovement(stockCard, documentNumber, signature, inventoryViewModel.getLotMovementViewModelList()));
+        stockCard.setStockOnHand(stockMovementItems.get(stockMovementItems.size() - 1).getStockOnHand());
+
+        stockCard.setStockMovementItemsWrapper(stockMovementItems);
+
+        return stockCard;
+    }
+
     @NonNull
     protected StockCard createStockCardForProduct(InventoryViewModel inventoryViewModel, String documentNumber, String signature) throws LMISException {
         List<StockMovementItem> stockMovementItems = new ArrayList<>();
@@ -207,33 +245,13 @@ public class UnpackKitPresenter extends Presenter {
             stockMovementItems.add(stockCard.generateInitialStockMovementItem());
         }
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            if(inventoryViewModel.getLotMovementViewModelList().isEmpty()) {
-                inventoryViewModel.setQuantity("0");
-            } else {
-                long receiveQuantity = 0;
-                for (LotMovementViewModel lotMovementViewModel: inventoryViewModel.getLotMovementViewModelList()){
-                    receiveQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
-                }
-                inventoryViewModel.setQuantity(String.valueOf(receiveQuantity));
-            }
-        }
-
         long movementQuantity = Long.parseLong(inventoryViewModel.getQuantity());
 
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            stockCard.setStockOnHand(stockCard.getStockOnHand() + movementQuantity);
-        }
+        stockCard.setStockOnHand(stockCard.getStockOnHand() + movementQuantity);
         stockCard.setExpireDates(DateUtil.uniqueExpiryDates(inventoryViewModel.getExpiryDates(), stockCard.getExpireDates()));
         stockCard.getProduct().setArchived(false);
 
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            stockMovementItems.add(createUnpackMovementItemAndLotMovement(stockCard, documentNumber, signature, inventoryViewModel.getLotMovementViewModelList()));
-            stockCard.setStockOnHand(stockMovementItems.get(stockMovementItems.size()-1).getStockOnHand());
-
-        } else {
-            stockMovementItems.add(createUnpackMovementItem(stockCard, movementQuantity, documentNumber, signature));
-        }
+        stockMovementItems.add(createUnpackMovementItem(stockCard, movementQuantity, documentNumber, signature));
         stockCard.setStockMovementItemsWrapper(stockMovementItems);
 
         return stockCard;
