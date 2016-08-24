@@ -19,6 +19,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -206,16 +207,47 @@ public class UnpackKitPresenter extends Presenter {
             stockMovementItems.add(stockCard.generateInitialStockMovementItem());
         }
 
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+            if(inventoryViewModel.getLotMovementViewModelList().isEmpty()) {
+                inventoryViewModel.setQuantity("0");
+            } else {
+                long receiveQuantity = 0;
+                for (LotMovementViewModel lotMovementViewModel: inventoryViewModel.getLotMovementViewModelList()){
+                    receiveQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
+                }
+                inventoryViewModel.setQuantity(String.valueOf(receiveQuantity));
+            }
+        }
+
         long movementQuantity = Long.parseLong(inventoryViewModel.getQuantity());
 
-        stockCard.setStockOnHand(stockCard.getStockOnHand() + movementQuantity);
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+            stockCard.setStockOnHand(stockCard.getStockOnHand() + movementQuantity);
+        }
         stockCard.setExpireDates(DateUtil.uniqueExpiryDates(inventoryViewModel.getExpiryDates(), stockCard.getExpireDates()));
         stockCard.getProduct().setArchived(false);
 
-        stockMovementItems.add(createUnpackMovementItem(stockCard, movementQuantity, documentNumber, signature));
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+            stockMovementItems.add(createUnpackMovementItemAndLotMovement(stockCard, documentNumber, signature, inventoryViewModel.getLotMovementViewModelList()));
+            stockCard.setStockOnHand(stockMovementItems.get(stockMovementItems.size()-1).getStockOnHand());
+
+        } else {
+            stockMovementItems.add(createUnpackMovementItem(stockCard, movementQuantity, documentNumber, signature));
+        }
         stockCard.setStockMovementItemsWrapper(stockMovementItems);
 
         return stockCard;
+    }
+
+    @NonNull
+    private StockMovementItem createUnpackMovementItemAndLotMovement(StockCard stockCard, String documentNumber, String signature, List<LotMovementViewModel> lotMovementViewModelList) {
+        StockMovementItem unpackMovementItem = new StockMovementItem(stockCard);
+        unpackMovementItem.setReason(MovementReasonManager.DDM);
+        unpackMovementItem.setMovementType(MovementReasonManager.MovementType.RECEIVE);
+        unpackMovementItem.setDocumentNumber(documentNumber);
+        unpackMovementItem.setSignature(signature);
+        unpackMovementItem.populateLotQuantitiesAndCalculateNewSOH(lotMovementViewModelList, unpackMovementItem.getMovementType());
+        return unpackMovementItem;
     }
 
     @NonNull
