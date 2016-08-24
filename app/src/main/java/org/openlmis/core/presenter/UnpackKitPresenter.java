@@ -22,6 +22,7 @@ import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
@@ -218,11 +219,11 @@ public class UnpackKitPresenter extends Presenter {
             stockMovementItems.add(stockCard.generateInitialStockMovementItem());
         }
 
-        if(inventoryViewModel.getLotMovementViewModelList().isEmpty()) {
+        if (inventoryViewModel.getLotMovementViewModelList().isEmpty()) {
             inventoryViewModel.setQuantity("0");
         } else {
             long receiveQuantity = 0;
-            for (LotMovementViewModel lotMovementViewModel: inventoryViewModel.getLotMovementViewModelList()){
+            for (LotMovementViewModel lotMovementViewModel : inventoryViewModel.getLotMovementViewModelList()) {
                 receiveQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
             }
             inventoryViewModel.setQuantity(String.valueOf(receiveQuantity));
@@ -231,7 +232,17 @@ public class UnpackKitPresenter extends Presenter {
         stockCard.setExpireDates(DateUtil.uniqueExpiryDates(inventoryViewModel.getExpiryDates(), stockCard.getExpireDates()));
         stockCard.getProduct().setArchived(false);
 
-        stockMovementItems.add(createUnpackMovementItemAndLotMovement(stockCard, documentNumber, signature, inventoryViewModel.getLotMovementViewModelList()));
+        List<LotMovementViewModel> totalLotMovementViewModelList = new ArrayList<>();
+        totalLotMovementViewModelList.addAll(FluentIterable.from(inventoryViewModel.getExistingLotMovementViewModelList()).filter(new Predicate<LotMovementViewModel>() {
+            @Override
+            public boolean apply(LotMovementViewModel lotMovementViewModel) {
+                return lotMovementViewModel.quantityGreaterThanZero();
+            }
+        }).toList());
+        totalLotMovementViewModelList.addAll(inventoryViewModel.getLotMovementViewModelList());
+
+        stockMovementItems.add(createUnpackMovementItemAndLotMovement(stockCard, documentNumber, signature, totalLotMovementViewModelList));
+
         stockCard.setStockOnHand(stockMovementItems.get(stockMovementItems.size() - 1).getStockOnHand());
 
         stockCard.setStockMovementItemsWrapper(stockMovementItems);
@@ -287,7 +298,7 @@ public class UnpackKitPresenter extends Presenter {
 
     private void setExistingLotViewModels(InventoryViewModel inventoryViewModel) throws LMISException {
         StockCard stockCard = stockRepository.queryStockCardByProductId(inventoryViewModel.getProductId());
-        if (stockCard != null) {
+            if (stockCard != null) {
             ImmutableList<LotMovementViewModel> lotMovementViewModels = null;
             try {
                 lotMovementViewModels = FluentIterable.from(stockRepository.getNonEmptyLotOnHandByStockCard(stockCard.getId())).transform(new Function<LotOnHand, LotMovementViewModel>() {
