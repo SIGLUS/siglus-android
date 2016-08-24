@@ -129,7 +129,12 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
                 return lotMovementViewModel.getLotNumber();
             }
         }).toList());
-
+        existingLots.addAll(FluentIterable.from(viewModel.getExistingLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
+            @Override
+            public String apply(LotMovementViewModel lotMovementViewModel) {
+                return lotMovementViewModel.getLotNumber();
+            }
+        }).toList());
         return existingLots;
     }
 }
