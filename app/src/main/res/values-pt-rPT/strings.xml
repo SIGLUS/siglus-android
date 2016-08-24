@@ -8,7 +8,7 @@
     <string name="title_stock_cards">Visão geral de estoque</string>
     <string name="title_kit_stock_cards">Visão geral de Kits</string>
     <string name="title_unpack_kit">Desembalar Kit</string>
-    <string name="title_requisition">Elaborar Requisição Balancete para Via classica</string>
+    <string name="title_requisition">Criar Requisição Balancete para Via clássica</string>
     <string name="hint_network_error">Erro de rede, verifique sua conexão a rede</string>
     <!--Login Page-->
     <string name="hint_username">Usuário</string>
@@ -38,7 +38,6 @@
     <string name="btn_done">Completo</string>
     <string name="msg_remove_expire_date">Tem certeza que quer remover esta data de expiração?</string>
     <string name="msg_save_before_exit">Por favor, grave o inventário inicial, antes de sair da aplicação</string>
-
     <!--Home Page-->
     <string name="label_stock_cards">Visão Geral da Ficha de estoque</string>
     <string name="label_kits_stock_cards">KITS</string>
@@ -74,7 +73,7 @@
     <string name="label_mmia_speed_info_header">Número de pacientes em TARV</string>
     <string name="hint_mmia_comment">Observações</string>
     <string name="btn_complete">Completar</string>
-    <string name="btn_new_movement">NEW MOVEMENT</string>
+    <string name="btn_new_movement">NOVO MOVIMENTO</string>
     <string name="btn_submit">Submeter para aprovação</string>
     <string name="label_initial_amount">Saldo Inicial</string>
     <string name="label_received_mmia">Entradas</string>
@@ -166,7 +165,7 @@
     <string name="msg_entries_error">Deve introduzir um número positivo. 0 não é permitido.</string>
     <string name="label_cmm">CMM</string>
     <string name="label_validate_period">Prazos de Validade</string>
-    <string name="label_lot_info">Lot Information</string>
+    <string name="label_lot_info">Informações de lote</string>
     <string name="btn_add_expiry_date">+ Data de expiração</string>
     <string name="menu_item_stock_movement_history">Histórico de movimentos</string>
     <string name="menu_item_kit_unpack">Desembalar Kit</string>
@@ -182,12 +181,10 @@
     <string name="label_ptv">PTV</string>
     <string name="label_ppe">PPE</string>
     <string name="hint_has_not_new_data">Estás no fim da lista</string>
-
     <string name="RECEIVE">Entradas</string>
     <string name="ISSUE">Saídas</string>
     <string name="NEGATIVE_ADJUST">Ajustes Negativos</string>
     <string name="POSITIVE_ADJUST">Ajustes Positivos</string>
-
     <!--Reason/Origin/Destination select dialog-->
     <string-array name="movement_type_items_array">
         <item>Entradas</item>
@@ -215,7 +212,7 @@
     <string name="label_physical_inventory_stock_on_hand">Estoque existente actual</string>
     <!--Unpack Kit-->
     <string name="kit_number">Desembalando: %1$s %2$s kit</string>
-    <string name="hint_quantity_in_unpack_kit"><![CDATA[<small>Quantidade recebida</small>]]></string>
+    <string name="hint_quantity_in_unpack_kit">Quantidade recebida</string>
     <string name="label_unpack_kit_quantity_expected">Quantidade esperada</string>
     <string name="label_unpack_kit_quantity_less_than_expected"><![CDATA[<b>Menor</ b>]]> quantidade inserida do que a esperada. Por favor verifique</string>
     <string name="label_unpack_kit_quantity_more_than_expected"><![CDATA[<b>Maior</ b>]]> quantidade inserida do que a esperada. Por favor verifique</string>
@@ -233,7 +230,7 @@
     <string name="label_mmia_name">MMIA</string>
     <string name="action_delete_rnr_form">Remover do tablet</string>
     <string name="label_uncompleted_mmia_physical_inventory_message"><![CDATA[<b> Nenhum MMIA foi criada.</b>]]> Complete o seu inventário antes de criar um MMIA</string>
-    <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b> Nenhuma %1$s foi criada.</b>]]> Complete o seu inventário antes de criar uma requisição</string>
+  <string name="label_uncompleted_physical_inventory_message"><![CDATA[<b> Nenhuma %1$s foi criada.</b>]]> Complete o seu inventário antes de criar uma requisição.</string>
     <string name="btn_view_uncompleted_physical_inventory">Completar Inventário</string>
     <string name="label_select_close_of_period"><![CDATA[Por favor seleccione um inventário a partir da lista abaixo. Apenas inventários feitos em ou entre o <b>18</b> e <b>25</b> de <b>%1$s</b> podem ser usado para fechar o período. A data de hoje é <b>%2$s</b>]]></string>
     <string name="label_completed_mmia_physical_inventory_message"><![CDATA[<b> Nenhum MMIA foi criada.</b>]]></string>
@@ -242,9 +239,9 @@
     <string name="label_incomplete_requisition"><![CDATA[<b>%1$s</b>]]> está incompleto.</string>
     <string name="btn_view_incomplete_requisition">Continuar trabalhando em %1$s</string>
     <string name="label_unsynced_mmia_requisition">Este <![CDATA[<b>MMIA</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
-    <string name="label_unsynced_requisition">Esta <![CDATA[<b>%1$s</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
-    <string name="label_mmia_submitted_message">MMIA enviado com sucesso no dia  %1$s.</string>
-    <string name="label_submitted_message">%1$s enviada com sucesso no dia  %2$s</string>
+    <string name="label_unsynced_requisition">Este <![CDATA[<b>%1$s</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
+    <string name="label_mmia_submitted_message">MMIA enviado com sucesso no dia %1$s</string>
+    <string name="label_submitted_message">%1$s enviado com sucesso no dia  %2$s</string>
     <plurals name="label_drug_count_message">
         <item quantity="one"><![CDATA[<b>%1$s</b>]]> Producto requisitado</item>
         <item quantity="other"><![CDATA[<b>%1$s</b>]]> Productos requisitados</item>
@@ -252,8 +249,8 @@
     <string name="btn_view_requisition">Ver %s</string>
     <string name="label_period_date">%1$s  a  %2$s</string>
     <string name="label_emergency_date">Requisição de Emergencia – %s</string>
-    <string name="label_can_not_create_mmia_rnr"><![CDATA[<b>Você será capaz de criar um MMIA a partir do dia 18 de %1$s</b>]]></string>
-    <string name="label_can_not_create_via_rnr"><![CDATA[<b>Você será capaz de criar uma requisição no dia 18 de %1$s</b>]]></string>
+    <string name="label_can_not_create_mmia_rnr"><![CDATA[<b>Você será capaz de criar um MMIA no dia 18 de %1$s</b>]]></string>
+    <string name="label_can_not_create_via_rnr"><![CDATA[<b>Você será capaz de criar uma Requisição Balancete no dia 18 de %1$s</b>]]></string>
     <string name="label_previous_period_missing"><![CDATA[<b>O formulário não pode ser criado</b> até que períodos anteriores sejam fechados.<br> Por favor, feche todos os períodos anteriores]]></string>
     <string name="label_missed_period"><![CDATA[<b>Requisição está atrasada e nenhum inventário foi escolhido</b> Uma requisição será gerada automaticamente usando as quantidades do estoque fisico do fim do período]]></string>
     <string name="btn_select_close_period">Seleccione o fecho do período</string>
@@ -262,7 +259,7 @@
     <string name="btn_requisition_list_old">Ver Histórico de Requisição Balancete </string>
     <string name="btn_mmia_list_old">Ver histórico de MMIAs submetidos</string>
     <string name="mmia_list">MMIA</string>
-    <string name="requisition_list">Requisições Balancete</string>
+    <string name="requisition_list">Requisições</string>
     <string name="label_total">Total:%1$s</string>
     <string name="requisition_delete_failed">Falha ao excluir</string>
     <string name="delete_rnr_form_failed_warning">Falha ao apagar</string>
@@ -322,16 +319,16 @@
     <!--Incomplete Requisition Banner-->
     <string name="via_and_mmia_requisition_alert">Suas Requisições Balancete e seus MMIAs para <![CDATA[<b>%1$s</b>]]> não foram concluídos.</string>
     <string name="via_requisition_alert">Sua Requisição Balancete para <![CDATA[<b>%1$s</b>]]> não foi concluída</string>
-    <string name="mmia_requisition_alert">Seu  formulário MMIA para <![CDATA[<b> %1$s </b>]]> não foi concluído.</string>
+    <string name="mmia_requisition_alert">Seu MMIA para <![CDATA[<b>%1$s</b>]]> não foi concluído.</string>
     <string name="via_requisition_for_multiple_periods_alert">Suas requisições balancete de vários períodos não foram concluídas</string>
-    <string name="mmia_requisition_for_multiple_periods_alert">Seus relatórios MMIA de vários períodos não foram concluídos</string>
+    <string name="mmia_requisition_for_multiple_periods_alert">Seus MMIA para vários períodos não foram concluídos</string>
     <string name="via_and_mmia_requisitions_for_multiple_periods_alert">Os seus relatorios de MMIA e Requisição balancete de vários períodos não foram concluídos</string>
     <string name="missed_requisition_time_range">%1$s para %2$s</string>
     <!--Add products to requisition form-->
     <string name="label_add_new_drugs_to_via">Adicionar produtos</string>
     <string name="title_add_drugs_to_form">Adicione produtos para requisição</string>
     <string name="label_hint_amount_requisition">Quantidade recebida</string>
-    <string name="label_to_comfirm_delete_product">Are you sure you want to remove this product?</string>
+    <string name="label_to_comfirm_delete_product">Tem certeza de que deseja remover este produto?</string>
     <!--Stock movement adding page-->
     <string name="hint_movement_date">Data do movimento</string>
     <string name="hint_document_number">Número do documento</string>
@@ -345,22 +342,23 @@
     <string name="msg_empty_signature">Rúbrica não pode estar em branco</string>
     <string name="msg_invalid_quantity">Quantidade não pode ser maior que o estoque existente</string>
     <!--Lot management-->
-    <string name="label_lot_number">What is the lot number?</string>
-    <string name="hint_lot_number">Lot number</string>
-    <string name="label_add_lot_expire">When does the lot expire?</string>
-    <string name="msg_empty_lot_number">Lot number can not be blank.</string>
-    <string name="wrong_expire_date_warning">The expiry date that you have entered is in the past. Please double check the date before adding the lot.</string>
+    <string name="label_lot_number">Qual é o número do lote?</string>
+    <string name="hint_lot_number">Número do lote</string>
+    <string name="label_add_lot_expire">Quando é que o lote expira?</string>
+    <string name="msg_empty_lot_number">Número do lote não pode estar em branco</string>
+    <string name="wrong_expire_date_warning">O prazo de validade que você digitou está no passado. Por favor, verifique a data antes de adicionar o lote.</string>
     <string name="btn_add_new_lot">+ Adicionar novo lote</string>
-    <string name="title_add_new_lot">Add new lot</string>
-    <string name="hint_lot_info"><![CDATA[Lot number & expiry date]]></string>
-    <string name="hint_lot_amount">Amount</string>
-    <string name="hint_soh_of_lot">Stock on hand of lot</string>
-    <string name="label_existing_soh_of_lot">Existing stock on hand of lot</string>
-    <string name="label_new_added_lot">Lot was just added and has no stock on hand</string>
-    <string name="empty_lot_warning">Please add a new lot</string>
-    <string name="alert_add_lot_amount">Add the received amount to a lot</string>
-    <string name="btn_remove_lot">REMOVE LOT</string>
-    <string name="msg_remove_new_lot_title"><![CDATA[<b>Remove newly created lot</b>]]></string>
-    <string name="msg_remove_new_lot"><![CDATA[Remove the newly created lot <b>%1$s</b> which is expiring in %2$s from <b>%3$s</b>]]></string>
-    <string name="msg_no_lot_for_issue">No existing lot for you to issue or do negative adjustment</string>
+    <string name="title_add_new_lot">Adicionar novo lote</string>
+    <string name="hint_lot_info"><![CDATA[Número de lote & prazo de validade]]></string>
+    <string name="hint_lot_amount">Quantidade</string>
+    <string name="hint_soh_of_lot">Estoque existente do lote</string>
+    <string name="label_existing_soh_of_lot">Estoque existente de um lote</string>
+    <string name="label_new_added_lot">Lote recentemente adicionado, não tem nenhum estoque existente</string>
+    <string name="empty_lot_warning">Por favor, adicione um novo lote</string>
+    <string name="alert_add_lot_amount">Adicione a quantidade a um lote</string>
+    <string name="alert_lot_quantity_error">Quantidade não pode ser deixada em branco ou zero!</string>
+    <string name="btn_remove_lot">REMOVER LOTE</string>
+    <string name="msg_remove_new_lot_title"><![CDATA[<b>Remover lote recém-criado</b>]]></string>
+    <string name="msg_remove_new_lot"><![CDATA[Remover lote recém-criado<b>%1$s</b> que vai expirar em %2$s de <b>%3$s</b>]]></string>
+    <string name="msg_no_lot_for_issue">Nenhum lote existente para que você possa dar saídaou fazer ajuste negativo</string>
 </resources>
