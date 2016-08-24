@@ -239,9 +239,9 @@
     <string name="label_incomplete_requisition"><![CDATA[<b>%1$s</b>]]> está incompleto.</string>
     <string name="btn_view_incomplete_requisition">Continuar trabalhando em %1$s</string>
     <string name="label_unsynced_mmia_requisition">Este <![CDATA[<b>MMIA</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
-    <string name="label_unsynced_requisition">Este <![CDATA[<b>%1$s</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
-    <string name="label_mmia_submitted_message">MMIA enviado com sucesso no dia %1$s</string>
-    <string name="label_submitted_message">%1$s enviado com sucesso no dia  %2$s</string>
+    <string name="label_unsynced_requisition">Esta <![CDATA[<b>%1$s</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
+    <string name="label_mmia_submitted_message">MMIA enviado com sucesso no dia  %1$s.</string>
+    <string name="label_submitted_message">%1$s enviada com sucesso no dia  %2$s</string>
     <plurals name="label_drug_count_message">
         <item quantity="one"><![CDATA[<b>%1$s</b>]]> Producto requisitado</item>
         <item quantity="other"><![CDATA[<b>%1$s</b>]]> Productos requisitados</item>
@@ -249,8 +249,8 @@
     <string name="btn_view_requisition">Ver %s</string>
     <string name="label_period_date">%1$s  a  %2$s</string>
     <string name="label_emergency_date">Requisição de Emergencia – %s</string>
-    <string name="label_can_not_create_mmia_rnr"><![CDATA[<b>Você será capaz de criar um MMIA no dia 18 de %1$s</b>]]></string>
-    <string name="label_can_not_create_via_rnr"><![CDATA[<b>Você será capaz de criar uma Requisição Balancete no dia 18 de %1$s</b>]]></string>
+    <string name="label_can_not_create_mmia_rnr"><![CDATA[<b>Você será capaz de criar um MMIA a partir do dia 18 de %1$s</b>]]></string>
+    <string name="label_can_not_create_via_rnr"><![CDATA[<b>Você será capaz de criar uma requisição no dia 18 de %1$s</b>]]></string>
     <string name="label_previous_period_missing"><![CDATA[<b>O formulário não pode ser criado</b> até que períodos anteriores sejam fechados.<br> Por favor, feche todos os períodos anteriores]]></string>
     <string name="label_missed_period"><![CDATA[<b>Requisição está atrasada e nenhum inventário foi escolhido</b> Uma requisição será gerada automaticamente usando as quantidades do estoque fisico do fim do período]]></string>
     <string name="btn_select_close_period">Seleccione o fecho do período</string>
