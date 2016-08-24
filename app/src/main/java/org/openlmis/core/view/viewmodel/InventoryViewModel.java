@@ -57,6 +57,7 @@ public class InventoryViewModel {
     List<String> expiryDates = new ArrayList<>();
 
     List<LotMovementViewModel> lotMovementViewModelList = new ArrayList<>();
+    List<LotMovementViewModel> existingLotMovementViewModelList = new ArrayList<>();
 
     long stockCardId;
 

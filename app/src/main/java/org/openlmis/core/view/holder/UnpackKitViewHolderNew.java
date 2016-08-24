@@ -36,7 +36,11 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
     @InjectView(R.id.rv_add_lot)
     private RecyclerView lotListRecyclerView;
 
+    @InjectView(R.id.existing_lot_list)
+    private RecyclerView existingLotListView;
+
     private LotMovementAdapter lotMovementAdapter;
+    private LotMovementAdapter existingLotMovementAdapter;
 
     private AddLotDialogFragment addLotDialogFragment;
 
@@ -62,6 +66,7 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
         tvStockOnHandInInventory.setText(context.getResources().getString(R.string.text_quantity_expected,
                 Long.toString(inventoryViewModel.getKitExpectQuantity())));
 
+        initExistingLotListView(inventoryViewModel);
         initLotListRecyclerView(inventoryViewModel);
     }
 
@@ -72,6 +77,12 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
                 showAddNewLotDialog(viewModel);
             }
         });
+    }
+
+    private void initExistingLotListView(InventoryViewModel viewModel) {
+        existingLotMovementAdapter = new LotMovementAdapter(viewModel.getExistingLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
+        existingLotListView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(context));
+        existingLotListView.setAdapter(existingLotMovementAdapter);
     }
 
     private void initLotListRecyclerView(InventoryViewModel viewModel) {

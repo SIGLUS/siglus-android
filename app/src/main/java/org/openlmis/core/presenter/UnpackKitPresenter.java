@@ -10,6 +10,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.KitProduct;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -22,8 +23,10 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
+import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import rx.Observable;
@@ -71,8 +74,11 @@ public class UnpackKitPresenter extends Presenter {
                     inventoryViewModels.clear();
                     List<KitProduct> kitProducts = productRepository.queryKitProductByKitCode(kitCode);
                     for (KitProduct kitProduct : kitProducts) {
-                        Product product = productRepository.getByCode(kitProduct.getProductCode());
+                        final Product product = productRepository.getByCode(kitProduct.getProductCode());
                         InventoryViewModel inventoryViewModel = new InventoryViewModel(product);
+                        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+                            setExistingLotViewModels(inventoryViewModel);
+                        }
                         inventoryViewModel.setKitExpectQuantity(kitProduct.getQuantity() * kitNum);
                         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_auto_quantities_in_kit)) {
                             inventoryViewModel.setQuantity(String.valueOf(kitProduct.getQuantity() * kitNum));
@@ -277,6 +283,31 @@ public class UnpackKitPresenter extends Presenter {
         unpackMovementItem.setDocumentNumber(documentNumber);
         unpackMovementItem.setSignature(signature);
         return unpackMovementItem;
+    }
+
+    private void setExistingLotViewModels(InventoryViewModel inventoryViewModel) throws LMISException {
+        StockCard stockCard = stockRepository.queryStockCardByProductId(inventoryViewModel.getProductId());
+        if (stockCard != null) {
+            ImmutableList<LotMovementViewModel> lotMovementViewModels = null;
+            try {
+                lotMovementViewModels = FluentIterable.from(stockRepository.getNonEmptyLotOnHandByStockCard(stockCard.getId())).transform(new Function<LotOnHand, LotMovementViewModel>() {
+                    @Override
+                    public LotMovementViewModel apply(LotOnHand lotOnHand) {
+                        return new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
+                                DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
+                                lotOnHand.getQuantityOnHand().toString(), MovementReasonManager.MovementType.RECEIVE);
+                    }
+                }).toSortedList(new Comparator<LotMovementViewModel>() {
+                    @Override
+                    public int compare(LotMovementViewModel lot1, LotMovementViewModel lot2) {
+                        return DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR).compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+                    }
+                });
+            } catch (LMISException e) {
+                e.printStackTrace();
+            }
+            inventoryViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);
+        }
     }
 
     public interface UnpackKitView extends BaseView {
