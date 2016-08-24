@@ -113,10 +113,13 @@ public class StockRepository {
     public void batchCreateOrUpdateStockMovements(final List<StockMovementItem> stockMovementItems) throws LMISException {
         dbUtil.withDaoAsBatch(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, Void>() {
             @Override
-            public Void operate(Dao<StockMovementItem, String> dao) throws SQLException {
+            public Void operate(Dao<StockMovementItem, String> dao) throws SQLException, LMISException {
                 for (StockMovementItem stockMovementItem : stockMovementItems) {
                     updateDateTimeIfEmpty(stockMovementItem);
                     dao.createOrUpdate(stockMovementItem);
+                    if (!stockMovementItem.getLotMovementItemListWrapper().isEmpty()){
+                        lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());
+                    }
                 }
                 return null;
             }
