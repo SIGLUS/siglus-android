@@ -311,7 +311,11 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                 quantityMap.put(movementType, etMovementQuantity.getText().toString());
                 stockMovementViewModel.setTypeQuantityMap(quantityMap);
                 stockMovementViewModel.setSignature(etMovementSignature.getText().toString());
-                if (showErrors(stockMovementViewModel)) return;
+                if (showErrors(stockMovementViewModel)) {
+                    existingLotMovementAdapter.notifyDataSetChanged();
+                    newLotMovementAdapter.notifyDataSetChanged();
+                    return;
+                }
 
                 presenter.saveStockMovement();
                 break;
