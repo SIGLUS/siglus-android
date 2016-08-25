@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.apache.commons.lang.StringUtils;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.NestedRecyclerViewLinearLayoutManager;
@@ -28,6 +30,8 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
     TextView tvProductName;
     TextView tvStockOnHandInInventory;
     TextView tvQuantityMessage;
+    TextView tvConfirmNoStock;
+    TextView tvConfirmHasStock;
     TextView tvProductUnit;
 
     @InjectView(R.id.tx_add_new_lot)
@@ -38,6 +42,9 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
 
     @InjectView(R.id.existing_lot_list)
     private RecyclerView existingLotListView;
+
+    @InjectView(R.id.lot_list_container)
+    private LinearLayout lotListContainer;
 
     private LotMovementAdapter lotMovementAdapter;
     private LotMovementAdapter existingLotMovementAdapter;
@@ -53,9 +60,11 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
         vg_soh_pop = (ViewGroup) itemView.findViewById(R.id.vg_soh_pop);
         tvStockOnHandInInventory = (TextView) itemView.findViewById(R.id.stock_on_hand_in_inventory);
         tvQuantityMessage = (TextView) itemView.findViewById(R.id.tv_alert_quantity_message);
+        tvConfirmNoStock = (TextView) itemView.findViewById(R.id.tv_confirm_no_stock);
+        tvConfirmHasStock = (TextView) itemView.findViewById(R.id.tv_confirm_has_stock);
     }
 
-    public void populate(InventoryViewModel inventoryViewModel) {
+    public void populate(final InventoryViewModel inventoryViewModel) {
         setItemViewListener(inventoryViewModel);
 
         tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(StringUtils.EMPTY, inventoryViewModel.getStyledName()));
@@ -64,11 +73,52 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
         tvStockOnHandInInventory.setText(this.context.getResources().getString(R.string.text_quantity_expected,
                 Long.toString(inventoryViewModel.getKitExpectQuantity())));
 
-        if( inventoryViewModel.isShouldShowEmptyLotWarning()){
-            vg_soh_pop.setVisibility(View.VISIBLE);
-        }
         initExistingLotListView(inventoryViewModel);
         initLotListRecyclerView(inventoryViewModel);
+
+        setConfirmStockClickListener(inventoryViewModel);
+
+        if(inventoryViewModel.shouldShowEmptyLotWarning()) {
+            vg_soh_pop.setVisibility(View.VISIBLE);
+            tvConfirmHasStock.setVisibility(View.GONE);
+            tvConfirmNoStock.setVisibility(View.VISIBLE);
+            tvStockOnHandInInventory.setTextColor(this.context.getResources().getColor(R.color.color_red));
+        }
+
+        if (inventoryViewModel.hasConfirmedNoStockReceived()) {
+            vg_soh_pop.setVisibility(View.VISIBLE);
+            tvConfirmHasStock.setVisibility(View.VISIBLE);
+            tvConfirmNoStock.setVisibility(View.GONE);
+            tvQuantityMessage.setText(LMISApp.getContext().getResources().getString(R.string.message_no_stock_received));
+            lotListContainer.setVisibility(View.GONE);
+            inventoryViewModel.setShouldShowEmptyLotWarning(false);
+        }
+    }
+
+    private void setConfirmStockClickListener(final InventoryViewModel inventoryViewModel) {
+        tvConfirmNoStock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tvConfirmNoStock.setVisibility(View.GONE);
+                tvConfirmHasStock.setVisibility(View.VISIBLE);
+                tvQuantityMessage.setText(LMISApp.getContext().getResources().getString(R.string.message_no_stock_received));
+                tvStockOnHandInInventory.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
+                lotListContainer.setVisibility(View.GONE);
+                inventoryViewModel.setHasConfirmedNoStockReceived(true);
+                inventoryViewModel.setShouldShowEmptyLotWarning(false);
+            }
+        });
+        tvConfirmHasStock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tvConfirmHasStock.setVisibility(View.GONE);
+                tvConfirmNoStock.setVisibility(View.VISIBLE);
+                tvQuantityMessage.setText(LMISApp.getContext().getResources().getString(R.string.message_no_stock_amount_change));
+                tvStockOnHandInInventory.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_red));
+                lotListContainer.setVisibility(View.VISIBLE);
+                inventoryViewModel.setHasConfirmedNoStockReceived(false);
+            }
+        });
     }
 
     protected void setItemViewListener(final InventoryViewModel viewModel) {

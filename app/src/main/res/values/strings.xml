@@ -234,6 +234,10 @@
     <string name="label_unpack_kit_quantity_less_than_expected"><![CDATA[<b>Smaller</b>]]> quantity entered than expected. Please recheck it</string>
     <string name="label_unpack_kit_quantity_more_than_expected"><![CDATA[<b>Larger</b>]]> quantity entered than expected. Please recheck it</string>
     <string name="text_quantity_expected">%1$s expected</string>
+    <string name="message_no_stock_amount_change">No amount entered. Please confirm that you did not receive stock</string>
+    <string name="confirm_no_stock_receive">I did not receive stock of this drug</string>
+    <string name="message_no_stock_received">No stock was received for this drug</string>
+    <string name="confirm_stock_received">I receive stock of this drug</string>
 
     <!-- Server Sync Errors -->
     <string name="sync_server_error">Sync failed due to technical problem on the server. Please contact system administrator.</string>

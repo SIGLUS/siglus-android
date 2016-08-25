@@ -140,10 +140,11 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
     }
 
     public boolean validateAll() {
-        int position = mAdapter.validateAll();
+        int position;
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
             position = mAdapter.validateAllLotListAmountIsNotEmpty();
-            mAdapter.notifyDataSetChanged();
+        } else {
+            position = mAdapter.validateAll();
         }
         if (position >= 0) {
             productListRecycleView.scrollToPosition(position);

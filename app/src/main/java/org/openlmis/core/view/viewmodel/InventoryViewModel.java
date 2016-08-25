@@ -76,7 +76,8 @@ public class InventoryViewModel {
     private String signature;
     private StockCard stockCard;
     protected Product product;
-    private boolean shouldShowEmptyLotWarning = false;
+    boolean shouldShowEmptyLotWarning = false;
+    boolean hasConfirmedNoStockReceived = false;
 
     public InventoryViewModel(StockCard stockCard) {
         this(stockCard.getProduct());
@@ -298,5 +299,13 @@ public class InventoryViewModel {
             }
         }
         return lotTotalQuantity;
+    }
+
+    public boolean hasConfirmedNoStockReceived() {
+        return this.hasConfirmedNoStockReceived;
+    }
+
+    public boolean shouldShowEmptyLotWarning() {
+        return this.shouldShowEmptyLotWarning;
     }
 }
