@@ -101,4 +101,18 @@ public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> e
         this.notifyDataSetChanged();
         return position;
     }
+
+    public int validateAllLotListAmountIsNotEmpty() {
+        int position = -1;
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).getLotListQuantityTotalAmount() <= 0) {
+                position = i;
+                data.get(position).setShouldShowEmptyLotWarning(true);
+                break;
+            }
+        }
+
+        this.notifyDataSetChanged();
+        return position;
+    }
 }

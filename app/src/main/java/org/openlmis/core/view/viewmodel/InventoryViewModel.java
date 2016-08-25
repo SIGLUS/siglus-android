@@ -70,11 +70,13 @@ public class InventoryViewModel {
 
     boolean valid = true;
 
+    Long lotTotalQuantity = 0L;
     private boolean checked = false;
 
     private String signature;
     private StockCard stockCard;
     protected Product product;
+    private boolean shouldShowEmptyLotWarning = false;
 
     public InventoryViewModel(StockCard stockCard) {
         this(stockCard.getProduct());
@@ -278,5 +280,23 @@ public class InventoryViewModel {
 
     public void addLotMovementViewModel(LotMovementViewModel lotMovementViewModel) {
         lotMovementViewModelList.add(lotMovementViewModel);
+    }
+
+    public Long getLotListQuantityTotalAmount() {
+        if(!lotMovementViewModelList.isEmpty()){
+            for(LotMovementViewModel lotMovementViewModel: lotMovementViewModelList){
+                if(!StringUtils.isBlank(lotMovementViewModel.getQuantity())){
+                    lotTotalQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
+                }
+            }
+        }
+        if(!existingLotMovementViewModelList.isEmpty()){
+            for(LotMovementViewModel lotMovementViewModel: existingLotMovementViewModelList){
+                if(!StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
+                    lotTotalQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
+                }
+            }
+        }
+        return lotTotalQuantity;
     }
 }

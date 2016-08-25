@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.presenter.UnpackKitPresenter;
@@ -140,6 +141,10 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
 
     public boolean validateAll() {
         int position = mAdapter.validateAll();
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+            position = mAdapter.validateAllLotListAmountIsNotEmpty();
+            mAdapter.notifyDataSetChanged();
+        }
         if (position >= 0) {
             productListRecycleView.scrollToPosition(position);
             return false;

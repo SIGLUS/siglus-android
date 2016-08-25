@@ -45,8 +45,6 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
     private AddLotDialogFragment addLotDialogFragment;
 
     ViewGroup vg_soh_pop;
-    private final int minExpectedQuantity = 0;
-    private int maxExpectedQuantity = Integer.MAX_VALUE;
 
     public UnpackKitViewHolderNew(View itemView) {
         super(itemView);
@@ -63,9 +61,12 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
         tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(StringUtils.EMPTY, inventoryViewModel.getStyledName()));
         tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(StringUtils.EMPTY, inventoryViewModel.getStyledUnit()));
 
-        tvStockOnHandInInventory.setText(context.getResources().getString(R.string.text_quantity_expected,
+        tvStockOnHandInInventory.setText(this.context.getResources().getString(R.string.text_quantity_expected,
                 Long.toString(inventoryViewModel.getKitExpectQuantity())));
 
+        if( inventoryViewModel.isShouldShowEmptyLotWarning()){
+            vg_soh_pop.setVisibility(View.VISIBLE);
+        }
         initExistingLotListView(inventoryViewModel);
         initLotListRecyclerView(inventoryViewModel);
     }
