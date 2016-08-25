@@ -359,7 +359,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             return true;
         }
 
-        return !isKit && showLotListError() || lotListEmptyError();
+        return !isKit && (showLotListError() || lotListEmptyError());
     }
 
     private boolean checkKitQuantityError(StockMovementViewModel stockMovementViewModel, MovementReasonManager.MovementType movementType) {
