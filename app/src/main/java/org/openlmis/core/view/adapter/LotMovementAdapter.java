@@ -51,6 +51,9 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
 
     public int validateExisting(MovementReasonManager.MovementType movementType) {
         int position = -1;
+        for (LotMovementViewModel lotMovementViewModel : lotList) {
+            lotMovementViewModel.setQuantityValid(true);
+        }
         for (int i = 0; i < lotList.size(); i++) {
             if (!lotList.get(i).validateQuantity(movementType)) {
                 position = i;
@@ -64,6 +67,10 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
 
     public int validateAll() {
         int position = -1;
+        for (LotMovementViewModel lotMovementViewModel : lotList) {
+            lotMovementViewModel.setValid(true);
+            lotMovementViewModel.setQuantityValid(true);
+        }
         for (int i = 0; i < lotList.size(); i++) {
             if (!lotList.get(i).validate()) {
                 position = i;
