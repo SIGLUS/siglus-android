@@ -74,8 +74,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:paddingLeft="@dimen/padding_medium"
-                style="@style/Text.Black"
-                android:text="@string/message_no_stock_amount_change"/>
+                style="@style/Text.Black" />
             <TextView
                 android:id="@+id/tv_confirm_no_stock"
                 android:layout_width="match_parent"
@@ -104,7 +103,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/existing_lot_list"
                 android:layout_width="match_parent"
@@ -116,7 +115,6 @@
                 android:id="@+id/rv_add_lot"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
                 android:scrollbars="none"
                 android:background="@color/color_white"/>
 
@@ -125,8 +123,7 @@
                 style="@style/InventoryCard.ActionPanel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/top_border_gray_bg"
-                android:visibility="visible">
+                android:background="@drawable/top_border_gray_bg">
                 <TextView
                     android:id="@+id/tx_add_new_lot"
                     android:layout_width="wrap_content"
