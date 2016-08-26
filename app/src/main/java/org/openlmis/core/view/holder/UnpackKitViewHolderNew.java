@@ -26,13 +26,13 @@ import java.util.List;
 import roboguice.inject.InjectView;
 
 public class UnpackKitViewHolderNew extends BaseViewHolder {
-
     TextView tvProductName;
-    TextView tvStockOnHandInInventory;
+    TextView tvKitExpectedQuantity;
     TextView tvQuantityMessage;
     TextView tvConfirmNoStock;
     TextView tvConfirmHasStock;
     TextView tvProductUnit;
+    ViewGroup vg_soh_pop;
 
     @InjectView(R.id.tx_add_new_lot)
     private TextView txAddNewLot;
@@ -48,17 +48,14 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
 
     private LotMovementAdapter lotMovementAdapter;
     private LotMovementAdapter existingLotMovementAdapter;
-
     private AddLotDialogFragment addLotDialogFragment;
-
-    ViewGroup vg_soh_pop;
 
     public UnpackKitViewHolderNew(View itemView) {
         super(itemView);
         tvProductName = (TextView) itemView.findViewById(R.id.product_name);
         tvProductUnit = (TextView) itemView.findViewById(R.id.product_unit);
-        vg_soh_pop = (LinearLayout) itemView.findViewById(R.id.vg_soh_pop);
-        tvStockOnHandInInventory = (TextView) itemView.findViewById(R.id.stock_on_hand_in_inventory);
+        vg_soh_pop = (ViewGroup) itemView.findViewById(R.id.vg_soh_pop);
+        tvKitExpectedQuantity = (TextView) itemView.findViewById(R.id.kit_expected_quantity);
         tvQuantityMessage = (TextView) itemView.findViewById(R.id.tv_alert_quantity_message);
         tvConfirmNoStock = (TextView) itemView.findViewById(R.id.tv_confirm_no_stock);
         tvConfirmHasStock = (TextView) itemView.findViewById(R.id.tv_confirm_has_stock);
@@ -66,15 +63,7 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
 
     public void populate(final InventoryViewModel inventoryViewModel) {
         setItemViewListener(inventoryViewModel);
-        lotListContainer.setVisibility(View.VISIBLE);
-        vg_soh_pop.setVisibility(View.GONE);
-        tvStockOnHandInInventory.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
-
-        tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(StringUtils.EMPTY, inventoryViewModel.getStyledName()));
-        tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(StringUtils.EMPTY, inventoryViewModel.getStyledUnit()));
-
-        tvStockOnHandInInventory.setText(this.context.getResources().getString(R.string.text_quantity_expected,
-                Long.toString(inventoryViewModel.getKitExpectQuantity())));
+        initViewHolderStyle(inventoryViewModel);
 
         initExistingLotListView(inventoryViewModel);
         initLotListRecyclerView(inventoryViewModel);
@@ -86,16 +75,26 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
             tvConfirmHasStock.setVisibility(View.GONE);
             tvConfirmNoStock.setVisibility(View.VISIBLE);
             tvQuantityMessage.setText(LMISApp.getContext().getResources().getString(R.string.message_no_stock_amount_change));
-            tvStockOnHandInInventory.setTextColor(this.context.getResources().getColor(R.color.color_red));
+            tvKitExpectedQuantity.setTextColor(this.context.getResources().getColor(R.color.color_red));
         }
 
         if (inventoryViewModel.hasConfirmedNoStockReceived()) {
             tvConfirmHasStock.setVisibility(View.VISIBLE);
             tvConfirmNoStock.setVisibility(View.GONE);
             tvQuantityMessage.setText(LMISApp.getContext().getResources().getString(R.string.message_no_stock_received));
-            tvStockOnHandInInventory.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
+            tvKitExpectedQuantity.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
             lotListContainer.setVisibility(View.GONE);
         }
+    }
+
+    private void initViewHolderStyle(InventoryViewModel inventoryViewModel) {
+        lotListContainer.setVisibility(View.VISIBLE);
+        vg_soh_pop.setVisibility(View.GONE);
+        tvKitExpectedQuantity.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
+        tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(StringUtils.EMPTY, inventoryViewModel.getStyledName()));
+        tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(StringUtils.EMPTY, inventoryViewModel.getStyledUnit()));
+        tvKitExpectedQuantity.setText(this.context.getResources().getString(R.string.text_quantity_expected,
+                Long.toString(inventoryViewModel.getKitExpectQuantity())));
     }
 
     private void setConfirmStockClickListener(final InventoryViewModel inventoryViewModel) {
@@ -105,7 +104,7 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
                 tvConfirmNoStock.setVisibility(View.GONE);
                 tvConfirmHasStock.setVisibility(View.VISIBLE);
                 tvQuantityMessage.setText(LMISApp.getContext().getResources().getString(R.string.message_no_stock_received));
-                tvStockOnHandInInventory.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
+                tvKitExpectedQuantity.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
                 lotListContainer.setVisibility(View.GONE);
                 inventoryViewModel.setHasConfirmedNoStockReceived(true);
             }
@@ -116,7 +115,7 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
                 tvConfirmHasStock.setVisibility(View.GONE);
                 tvConfirmNoStock.setVisibility(View.VISIBLE);
                 tvQuantityMessage.setText(LMISApp.getContext().getResources().getString(R.string.message_no_stock_amount_change));
-                tvStockOnHandInInventory.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_red));
+                tvKitExpectedQuantity.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_red));
                 lotListContainer.setVisibility(View.VISIBLE);
                 inventoryViewModel.setHasConfirmedNoStockReceived(false);
                 inventoryViewModel.setShouldShowEmptyLotWarning(true);

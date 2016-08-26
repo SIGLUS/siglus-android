@@ -43,7 +43,7 @@ public class UnpackKitViewHolderNewTest {
 
         viewHolder.populate(inventoryViewModel);
 
-        assertThat(viewHolder.tvStockOnHandInInventory.getText().toString()).isEqualTo("20 expected");
+        assertThat(viewHolder.tvKitExpectedQuantity.getText().toString()).isEqualTo("20 expected");
     }
 
     @Test
