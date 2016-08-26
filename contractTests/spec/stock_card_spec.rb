@@ -13,31 +13,65 @@ describe "Sync stock card data" do
       {
         facilityId: facility_id,
         productCode: "08S42",
-        quantity: 1000,
+        quantity: 600,
         type: "ADJUSTMENT",
         reasonName: "DISTRICT_DDM",
         occurred: "2015-10-15",
         referenceNumber: "referenceNumber1",
         customProps: {
-          expirationDates: "10/10/2017, 12/12/2017",
           signature: "signature",
           SOH: 1000
-        }
+        },
+        lotEventList: [
+          {
+            lotNumber: "TEST1",
+            expirationDate: "2016-10-31",
+            quantity: 500,
+            customProps: {
+              SOH: 500
+            },
+          },
+          {
+            lotNumber: "TEST1",
+            expirationDate: "2016-11-31",
+            quantity: 100,
+            customProps: {
+              SOH: 600
+            }
+          }
+        ]
       },
       {
         facilityId: facility_id,
         productCode: "08S42",
-        quantity: 500,
+        quantity: 105,
         type: "ADJUSTMENT",
         reasonName: "PUB_PHARMACY",
         occurred: "2015-10-24",
         referenceNumber: "referenceNumber2",
         requestedQuantity: 600,
         customProps: {
-          expirationDates: "10/10/2017, 12/12/2017",
           signature: "signature",
           SOH: 500
-        }
+        },
+        lotEventList: [
+          {
+            lotNumber: "TEST-A",
+            expirationDate: "2016-10-31",
+            quantity: 5,
+            customProps: {
+              SOH: 5
+            },
+          },
+          {
+            lotNumber: "TEST-B",
+            expirationDate: "2016-11-31",
+            quantity: 100,
+            customProps: {
+              SOH: 100
+            }
+          }
+        ]
       },
       {
         facilityId: facility_id,
@@ -48,10 +82,27 @@ describe "Sync stock card data" do
         occurred: "2015-10-30",
         referenceNumber: "referenceNumber3",
         customProps: {
-          expirationDates: "10/10/2017, 12/12/2017",
           signature: "signature",
           SOH: 480
-        }
+        },
+        lotEventList: [
+          {
+            lotNumber: "TEST3",
+            expirationDate: "2016-10-31",
+            quantity: 15,
+            customProps: {
+              SOH: 500
+            },
+          },
+          {
+            lotNumber: "TEST4",
+            expirationDate: "2016-11-31",
+            quantity: 5,
+            customProps: {
+              SOH: 100
+            }
+          }
+        ]
       },
       {
         facilityId: facility_id,
@@ -62,10 +113,27 @@ describe "Sync stock card data" do
         occurred: "2015-10-30",
         referenceNumber: "referenceNumber4",
         customProps: {
-          expirationDates: "10/10/2019",
           signature: "signature",
           SOH: 10
-        }
+        },
+        lotEventList: [
+          {
+            lotNumber: "TEST5",
+            expirationDate: "2016-10-31",
+            quantity: 5,
+            customProps: {
+              SOH: 500
+            },
+          },
+          {
+            lotNumber: "TEST6",
+            expirationDate: "2016-11-31",
+            quantity: 5,
+            customProps: {
+              SOH: 100
+            }
+          }
+        ]
       },
       {
         facilityId: facility_id,
@@ -76,7 +144,6 @@ describe "Sync stock card data" do
         occurred: "2015-10-30",
         referenceNumber: "referenceNumber4",
         customProps: {
-          expirationDates: "10/10/2019",
           signature: "signature",
           SOH: 11
         }
@@ -112,7 +179,7 @@ describe "Sync stock card data" do
     expect(body['stockCards'].select{|stockCard| stockCard['product']['code']=="08S42"}).not_to be_nil
     expect(body['stockCards'][0]['stockMovementItems']).not_to be_nil
     expect(body['stockCards'][0]['stockMovementItems'][0]['extensions']['soh']).not_to be_nil
-    expect(body['stockCards'][0]['stockMovementItems'][0]['extensions']['expirationdates']).not_to be_nil
+    expect(body['stockCards'][0]['stockMovementItems'][0]['extensions']['expirationdates']).to be_nil
     expect(body['stockCards'][0]['stockMovementItems'][0]['extensions']['signature']).not_to be_nil
     expect(body['stockCards'].length).to be >= 2
   end
