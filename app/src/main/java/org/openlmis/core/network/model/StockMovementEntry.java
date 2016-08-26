@@ -20,10 +20,17 @@ package org.openlmis.core.network.model;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
+import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -42,6 +49,7 @@ public class StockMovementEntry {
     Long requestedQuantity;
 
     HashMap<String, String> customProps = new HashMap<>();
+    List<LotMovementEntry> lotMovementEntryList = new ArrayList<>();
 
     public StockMovementEntry(StockMovementItem stockMovementItem, String facilityId) {
         this.setProductCode(stockMovementItem.getStockCard().getProduct().getCode());
@@ -53,8 +61,20 @@ public class StockMovementEntry {
         this.setCreatedTime(new DateTime(stockMovementItem.getCreatedTime()).toString(ISODateTimeFormat.basicDateTime()));
         this.setReferenceNumber(stockMovementItem.getDocumentNumber());
         this.setRequestedQuantity(stockMovementItem.getRequested());
-        this.getCustomProps().put("expirationDates", stockMovementItem.getStockCard().getExpireDates());
         this.getCustomProps().put("signature", stockMovementItem.getSignature());
         this.getCustomProps().put("SOH", String.valueOf(stockMovementItem.getStockOnHand()));
+
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)
+            && stockMovementItem.getLotMovementItemListWrapper() != null) {
+            lotMovementEntryList.addAll(FluentIterable.from(stockMovementItem.getLotMovementItemListWrapper()).transform(new Function<LotMovementItem, LotMovementEntry>() {
+                @Override
+                public LotMovementEntry apply(LotMovementItem lotMovementItem) {
+                    return new LotMovementEntry(lotMovementItem);
+                }
+            }).toList());
+
+        } else {
+            this.getCustomProps().put("expirationDates", stockMovementItem.getStockCard().getExpireDates());
+        }
     }
 }
