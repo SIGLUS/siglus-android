@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.view.holder.LotMovementViewHolder;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 
 import java.util.List;
@@ -21,6 +22,8 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
 
     @Getter
     private final String productName;
+    private MovementChangedListener movementChangedListener;
+    private InventoryViewModel inventoryModel;
 
     public LotMovementAdapter(List<LotMovementViewModel> data) {
         this.lotList = data;
@@ -41,6 +44,8 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
     @Override
     public void onBindViewHolder(LotMovementViewHolder holder, int position) {
         final LotMovementViewModel viewModel = lotList.get(position);
+        holder.setMovementChangeListener(movementChangedListener);
+        holder.setInventoryModel(inventoryModel, position);
         holder.populate(viewModel, this);
     }
 
@@ -85,5 +90,18 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
     public void remove(LotMovementViewModel viewModel) {
         lotList.remove(viewModel);
         this.notifyDataSetChanged();
+    }
+
+
+    public void setMovementChangeListener(MovementChangedListener movementChangedListener) {
+        this.movementChangedListener = movementChangedListener;
+    }
+
+    public void setInventoryModel(InventoryViewModel viewModel) {
+        this.inventoryModel = viewModel;
+    }
+
+    public interface MovementChangedListener {
+        void movementChange();
     }
 }

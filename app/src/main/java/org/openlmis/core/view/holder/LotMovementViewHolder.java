@@ -19,6 +19,7 @@ import org.openlmis.core.view.activity.InventoryActivity;
 import org.openlmis.core.view.activity.UnpackKitActivity;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 
 import roboguice.inject.InjectView;
@@ -45,6 +46,9 @@ public class LotMovementViewHolder extends BaseViewHolder {
 
     @InjectView(R.id.iv_del)
     private ImageView iconDel;
+    private LotMovementAdapter.MovementChangedListener  movementChangeListener;
+    private InventoryViewModel inventoryModel;
+    private int position;
 
     public LotMovementViewHolder(View itemView) {
         super(itemView);
@@ -118,17 +122,30 @@ public class LotMovementViewHolder extends BaseViewHolder {
         return StringUtils.isBlank(viewModel.getLotSoh());
     }
 
+    public void setMovementChangeListener(LotMovementAdapter.MovementChangedListener movementChangedListener) {
+        this.movementChangeListener = movementChangedListener;
+    }
+
+    public void setInventoryModel(InventoryViewModel inventoryModel, int position) {
+        this.inventoryModel = inventoryModel;
+        this.position = position;
+    }
+
     class EditTextWatcher extends SingleTextWatcher {
 
         private final LotMovementViewModel viewModel;
 
         public EditTextWatcher(LotMovementViewModel viewModel) {
             this.viewModel = viewModel;
+            this.viewModel.setHasDataChanged(false);
         }
 
         @Override
         public void afterTextChanged(Editable editable) {
+            viewModel.setHasDataChanged(true);
             viewModel.setQuantity(editable.toString());
+            inventoryModel.getLotMovementViewModelList().get(position).setQuantity(editable.toString());
+            movementChangeListener.movementChange();
         }
     }
 }

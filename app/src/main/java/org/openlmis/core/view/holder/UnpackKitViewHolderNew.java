@@ -2,6 +2,7 @@ package org.openlmis.core.view.holder;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -70,20 +71,44 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
 
         setConfirmStockClickListener(inventoryViewModel);
 
-        if(inventoryViewModel.shouldShowEmptyLotWarning()) {
+        if (inventoryViewModel.shouldShowEmptyLotWarning()) {
             vg_soh_pop.setVisibility(View.VISIBLE);
+            vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop);
             tvConfirmHasStock.setVisibility(View.GONE);
             tvConfirmNoStock.setVisibility(View.VISIBLE);
             tvQuantityMessage.setText(LMISApp.getContext().getResources().getString(R.string.message_no_stock_amount_change));
+            tvQuantityMessage.setTextColor(context.getResources().getColor(R.color.color_black));
             tvKitExpectedQuantity.setTextColor(this.context.getResources().getColor(R.color.color_red));
         }
 
         if (inventoryViewModel.hasConfirmedNoStockReceived()) {
+            vg_soh_pop.setVisibility(View.VISIBLE);
+            vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop);
             tvConfirmHasStock.setVisibility(View.VISIBLE);
             tvConfirmNoStock.setVisibility(View.GONE);
             tvQuantityMessage.setText(LMISApp.getContext().getResources().getString(R.string.message_no_stock_received));
+            tvQuantityMessage.setTextColor(context.getResources().getColor(R.color.color_black));
             tvKitExpectedQuantity.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
             lotListContainer.setVisibility(View.GONE);
+        }
+        updatePop(inventoryViewModel);
+    }
+
+    protected void updatePop(InventoryViewModel viewModel) {
+        long totalQuantity = viewModel.getLotListQuantityTotalAmount();
+        if (totalQuantity <= 0) return;
+
+        long kitExpectQuantity = viewModel.getKitExpectQuantity();
+
+        if ((totalQuantity > kitExpectQuantity)) {
+            vg_soh_pop.setVisibility(View.VISIBLE);
+            vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop_warning);
+            tvConfirmHasStock.setVisibility(View.GONE);
+            tvConfirmNoStock.setVisibility(View.GONE);
+            tvQuantityMessage.setText(Html.fromHtml(context.getString(R.string.label_unpack_kit_quantity_more_than_expected)));
+            tvQuantityMessage.setTextColor(context.getResources().getColor(R.color.color_warning_text_unpack_kit_pop));
+        } else {
+            initViewHolderStyle(viewModel);
         }
     }
 
@@ -138,8 +163,15 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
         existingLotListView.setAdapter(existingLotMovementAdapter);
     }
 
-    private void initLotListRecyclerView(InventoryViewModel viewModel) {
+    private void initLotListRecyclerView(final InventoryViewModel viewModel) {
         lotMovementAdapter = new LotMovementAdapter(viewModel.getLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
+        lotMovementAdapter.setMovementChangeListener(new LotMovementAdapter.MovementChangedListener() {
+            @Override
+            public void movementChange() {
+                updatePop(viewModel);
+            }
+        });
+        lotMovementAdapter.setInventoryModel(viewModel);
         lotListRecyclerView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(context));
         lotListRecyclerView.setAdapter(lotMovementAdapter);
     }

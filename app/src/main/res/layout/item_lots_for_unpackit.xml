@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_small"
-            android:visibility="visible"
+            android:visibility="gone"
             android:orientation="vertical">
             <TextView
                 android:id="@+id/tv_alert_quantity_message"
@@ -87,11 +87,12 @@
             <TextView
                 android:id="@+id/tv_confirm_has_stock"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:paddingLeft="@dimen/padding_medium"
+                android:paddingBottom="@dimen/padding_small"
                 android:textColor="@color/color_blue_dark"
                 android:visibility="gone"
                 android:text="@string/confirm_stock_received"/>

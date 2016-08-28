@@ -70,7 +70,6 @@ public class InventoryViewModel {
 
     boolean valid = true;
 
-    Long lotTotalQuantity = 0L;
     private boolean checked = false;
 
     private String signature;
@@ -284,6 +283,7 @@ public class InventoryViewModel {
     }
 
     public Long getLotListQuantityTotalAmount() {
+        long lotTotalQuantity = 0L;
         if(!lotMovementViewModelList.isEmpty()){
             for(LotMovementViewModel lotMovementViewModel: lotMovementViewModelList){
                 if(!StringUtils.isBlank(lotMovementViewModel.getQuantity())){
