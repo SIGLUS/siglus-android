@@ -157,8 +157,14 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
         });
     }
 
-    private void initExistingLotListView(InventoryViewModel viewModel) {
-        existingLotMovementAdapter = new LotMovementAdapter(viewModel.getExistingLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
+    private void initExistingLotListView(final InventoryViewModel viewModel) {
+        existingLotMovementAdapter = new LotMovementAdapter(viewModel.getExistingLotMovementViewModelList());
+                existingLotMovementAdapter.setMovementChangeListener(new LotMovementAdapter.MovementChangedListener() {
+            @Override
+            public void movementChange() {
+                updatePop(viewModel);
+            }
+        });
         existingLotListView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(context));
         existingLotListView.setAdapter(existingLotMovementAdapter);
     }
@@ -171,7 +177,6 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
                 updatePop(viewModel);
             }
         });
-        lotMovementAdapter.setInventoryModel(viewModel);
         lotListRecyclerView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(context));
         lotListRecyclerView.setAdapter(lotMovementAdapter);
     }
