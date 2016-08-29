@@ -76,7 +76,7 @@ public class StockRepository {
         draftInventoryGenericDao = new GenericDao<>(DraftInventory.class, context);
     }
 
-    public void batchSaveStockCardsWithMovementItemsAndUpdateProduct(final List<StockCard> stockCards) {
+    public void batchSaveUnpackStockCardsWithMovementItemsAndUpdateProduct(final List<StockCard> stockCards) {
         try {
             dbUtil.withDaoAsBatch(StockCard.class, new DbUtil.Operation<StockCard, Object>() {
                 @Override
@@ -84,7 +84,7 @@ public class StockRepository {
                     for (StockCard stockCard : stockCards) {
                         dao.createOrUpdate(stockCard);
                         updateProductOfStockCard(stockCard.getProduct());
-                        batchCreateOrUpdateStockMovements(stockCard.getStockMovementItemsWrapper());
+                        batchCreateOrUpdateStockMovements(stockCard.getStockMovementItemsWrapper(), true);
                     }
                     return null;
                 }
@@ -110,7 +110,7 @@ public class StockRepository {
         }
     }
 
-    public void batchCreateOrUpdateStockMovements(final List<StockMovementItem> stockMovementItems) throws LMISException {
+    public void batchCreateOrUpdateStockMovements(final List<StockMovementItem> stockMovementItems, final boolean shouldUpdateLotsInformation) throws LMISException {
         dbUtil.withDaoAsBatch(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, Void>() {
             @Override
             public Void operate(Dao<StockMovementItem, String> dao) throws SQLException, LMISException {
@@ -118,7 +118,7 @@ public class StockRepository {
                     updateDateTimeIfEmpty(stockMovementItem);
                     dao.createOrUpdate(stockMovementItem);
                     if (!stockMovementItem.getLotMovementItemListWrapper().isEmpty()){
-                        lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());
+                        lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper(), shouldUpdateLotsInformation);
                     }
                 }
                 return null;
@@ -143,7 +143,7 @@ public class StockRepository {
                     if (stockCard.getLotOnHandListWrapper() != null) {
                         lotRepository.createOrUpdateLotsInformation(stockCard.getLotOnHandListWrapper());
                     }
-                    batchCreateOrUpdateStockMovements(stockCard.getStockMovementItemsWrapper());
+                    batchCreateOrUpdateStockMovements(stockCard.getStockMovementItemsWrapper(), false);
                     return null;
                 }
             });
@@ -157,7 +157,7 @@ public class StockRepository {
         stockItemGenericDao.create(stockMovementItem);
 
         if (!stockMovementItem.getLotMovementItemListWrapper().isEmpty()){
-            lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());
+            lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper(), true);
         }
     }
 

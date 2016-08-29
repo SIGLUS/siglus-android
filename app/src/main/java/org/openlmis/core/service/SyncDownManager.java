@@ -241,7 +241,7 @@ public class SyncDownManager {
             if (stockCard.getId() <= 0) {
                 stockRepository.saveStockCardAndBatchUpdateMovements(stockCard);
             } else {
-                stockRepository.batchCreateOrUpdateStockMovements(stockCard.getStockMovementItemsWrapper());
+                stockRepository.batchCreateOrUpdateStockMovements(stockCard.getStockMovementItemsWrapper(), false);
             }
         }
     }

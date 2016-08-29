@@ -205,7 +205,7 @@ public class UnpackKitPresenterTest {
         testSubscriber.awaitTerminalEvent();
 
         testSubscriber.assertNoErrors();
-        verify(stockRepository).batchSaveStockCardsWithMovementItemsAndUpdateProduct(anyList());
+        verify(stockRepository).batchSaveUnpackStockCardsWithMovementItemsAndUpdateProduct(anyList());
 
         assertThat(productStockCard.getStockOnHand()).isEqualTo(300);
         assertThat(productStockCard.getExpireDates()).isEqualTo("20/1/2026,15/2/2026,30/5/2026");

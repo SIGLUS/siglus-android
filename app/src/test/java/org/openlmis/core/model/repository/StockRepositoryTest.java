@@ -123,7 +123,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
             stockCards.add(stockCard);
         }
 
-        stockRepository.batchSaveStockCardsWithMovementItemsAndUpdateProduct(stockCards);
+        stockRepository.batchSaveUnpackStockCardsWithMovementItemsAndUpdateProduct(stockCards);
 
         List<StockCard> stockCardList = stockRepository.list();
 
@@ -186,7 +186,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         for (StockMovementItem entry : items) {
             entry.setSynced(true);
         }
-        stockRepository.batchCreateOrUpdateStockMovements(items);
+        stockRepository.batchCreateOrUpdateStockMovements(items, true);
 
         //then
         stockCard = stockRepository.list().get(0);
@@ -299,7 +299,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         DateTime earlierTime = dateTime.minusMonths(1);
         StockMovementItem movementEarlierItem = getStockMovementItem(dateTime, earlierTime);
         stockMovementItems.add(movementEarlierItem);
-        stockRepository.batchCreateOrUpdateStockMovements(stockMovementItems);
+        stockRepository.batchCreateOrUpdateStockMovements(stockMovementItems, true);
 
         //when
         StockMovementItem stockMovementItem = stockRepository.queryFirstStockMovementItem(stockCard);
@@ -322,7 +322,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         StockMovementItem createdEarlierMovementItem = getStockMovementItem(earlierTime, dateTime);
         stockMovementItems.add(createdEarlierMovementItem);
 
-        stockRepository.batchCreateOrUpdateStockMovements(stockMovementItems);
+        stockRepository.batchCreateOrUpdateStockMovements(stockMovementItems, true);
 
         //when
         StockMovementItem stockMovementItem = stockRepository.queryFirstStockMovementItem(stockCard);

@@ -148,7 +148,7 @@ public class UnpackKitPresenter extends Presenter {
                     }).toList());
 
                     stockCards.add(getStockCardForKit(kitUnpackQuantity, documentNumber, signature));
-                    stockRepository.batchSaveStockCardsWithMovementItemsAndUpdateProduct(stockCards);
+                    stockRepository.batchSaveUnpackStockCardsWithMovementItemsAndUpdateProduct(stockCards);
 
                     subscriber.onNext(null);
                     subscriber.onCompleted();

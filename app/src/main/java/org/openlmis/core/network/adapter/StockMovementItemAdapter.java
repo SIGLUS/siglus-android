@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.Math.abs;
+
 public class StockMovementItemAdapter implements JsonDeserializer<StockMovementItem> {
 
     private final Gson gson;
@@ -109,6 +111,7 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
             Lot lot = new Lot();
             lot.setLotNumber(lotCode);
             movementItem.setLot(lot);
+            movementItem.setMovementQuantity(abs(movementItem.getMovementQuantity()));
             return movementItem;
         }
     }
