@@ -185,7 +185,7 @@ describe "Sync stock card data" do
     expect(stock_movement1['extensions']['soh']).to be '1000'
     expect(stock_movement1['occurred']).to be '2015-10-15'
     expect(stock_movement1['lotMovementItems'].length).to be 2
-    lot_movement1 = stock_movement1['lotMovementItems'].select{|lot_movement| lot_movement['lotCode']=='TEST1'}
+    lot_movement1 = stock_movement1['lotMovementItems'].select{|lot_movement| lot_movement['lotNumber']=='TEST1'}
     expect(lot_movement1['quantity']).to be 500
     expect(lot_movement1['extensions']['soh']).to be '500'
   end

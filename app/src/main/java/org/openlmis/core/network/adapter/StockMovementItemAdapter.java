@@ -96,7 +96,7 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
 
     class LotMovementItemResponse extends LotMovementItem {
         Map<String, String> extensions;
-        String lotCode;
+        String lotNumber;
 
         public LotMovementItem convertToLotMovementItem() {
             LotMovementItem movementItem = this;
@@ -109,7 +109,7 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
                 }
             }
             Lot lot = new Lot();
-            lot.setLotNumber(lotCode);
+            lot.setLotNumber(lotNumber);
             movementItem.setLot(lot);
             movementItem.setMovementQuantity(abs(movementItem.getMovementQuantity()));
             return movementItem;
