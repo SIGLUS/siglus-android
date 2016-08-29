@@ -71,6 +71,10 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
 
         setConfirmStockClickListener(inventoryViewModel);
 
+        validateIfShouldShowUpEmptyLotWarning(inventoryViewModel);
+    }
+
+    private void validateIfShouldShowUpEmptyLotWarning(InventoryViewModel inventoryViewModel) {
         if (inventoryViewModel.shouldShowEmptyLotWarning()) {
             vg_soh_pop.setVisibility(View.VISIBLE);
             vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop);
@@ -91,22 +95,30 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
             tvKitExpectedQuantity.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
             lotListContainer.setVisibility(View.GONE);
         }
-        updatePop(inventoryViewModel);
     }
 
     protected void updatePop(InventoryViewModel viewModel) {
         long totalQuantity = viewModel.getLotListQuantityTotalAmount();
-        if (totalQuantity <= 0) return;
-
         long kitExpectQuantity = viewModel.getKitExpectQuantity();
 
-        if ((totalQuantity > kitExpectQuantity)) {
-            vg_soh_pop.setVisibility(View.VISIBLE);
-            vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop_warning);
-            tvConfirmHasStock.setVisibility(View.GONE);
-            tvConfirmNoStock.setVisibility(View.GONE);
-            tvQuantityMessage.setText(Html.fromHtml(context.getString(R.string.label_unpack_kit_quantity_more_than_expected)));
-            tvQuantityMessage.setTextColor(context.getResources().getColor(R.color.color_warning_text_unpack_kit_pop));
+        if (viewModel.hasLotChanged()) {
+            if (totalQuantity > kitExpectQuantity) {
+                vg_soh_pop.setVisibility(View.VISIBLE);
+                vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop_warning);
+                tvConfirmHasStock.setVisibility(View.GONE);
+                tvConfirmNoStock.setVisibility(View.GONE);
+                tvQuantityMessage.setText(Html.fromHtml(context.getString(R.string.label_unpack_kit_quantity_more_than_expected)));
+                tvQuantityMessage.setTextColor(context.getResources().getColor(R.color.color_warning_text_unpack_kit_pop));
+            } else if (totalQuantity < kitExpectQuantity) {
+                vg_soh_pop.setVisibility(View.VISIBLE);
+                vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop_warning);
+                tvConfirmHasStock.setVisibility(View.GONE);
+                tvConfirmNoStock.setVisibility(View.GONE);
+                tvQuantityMessage.setText(Html.fromHtml(context.getString(R.string.label_unpack_kit_quantity_less_than_expected)));
+                tvQuantityMessage.setTextColor(context.getResources().getColor(R.color.color_warning_text_unpack_kit_pop));
+            } else {
+                initViewHolderStyle(viewModel);
+            }
         } else {
             initViewHolderStyle(viewModel);
         }

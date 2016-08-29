@@ -133,6 +133,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
 
         @Override
         public void afterTextChanged(Editable editable) {
+            this.viewModel.setHasDataChanged(true);
             viewModel.setQuantity(editable.toString());
             if (movementChangeListener != null) {
                 movementChangeListener.movementChange();

@@ -308,4 +308,18 @@ public class InventoryViewModel {
     public boolean shouldShowEmptyLotWarning() {
         return this.shouldShowEmptyLotWarning;
     }
+
+    public boolean hasLotChanged() {
+        for (LotMovementViewModel lotMovementViewModel: lotMovementViewModelList) {
+            if (!StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
+                return true;
+            }
+        }
+        for (LotMovementViewModel lotMovementViewModel: existingLotMovementViewModelList) {
+            if (!StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

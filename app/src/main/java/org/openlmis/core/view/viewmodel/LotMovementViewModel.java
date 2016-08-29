@@ -22,6 +22,7 @@ public class LotMovementViewModel implements Serializable {
 
     boolean valid = true;
     boolean quantityValid = true;
+    boolean hasDataChanged = false;
 
     public LotMovementViewModel() {}
 
