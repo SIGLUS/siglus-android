@@ -72,6 +72,7 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
         setConfirmStockClickListener(inventoryViewModel);
 
         validateIfShouldShowUpEmptyLotWarning(inventoryViewModel);
+        updatePop(inventoryViewModel);
     }
 
     private void validateIfShouldShowUpEmptyLotWarning(InventoryViewModel inventoryViewModel) {
@@ -109,6 +110,7 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
                 tvConfirmNoStock.setVisibility(View.GONE);
                 tvQuantityMessage.setText(Html.fromHtml(context.getString(R.string.label_unpack_kit_quantity_more_than_expected)));
                 tvQuantityMessage.setTextColor(context.getResources().getColor(R.color.color_warning_text_unpack_kit_pop));
+                tvKitExpectedQuantity.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
             } else if (totalQuantity < kitExpectQuantity) {
                 vg_soh_pop.setVisibility(View.VISIBLE);
                 vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop_warning);
@@ -116,11 +118,13 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
                 tvConfirmNoStock.setVisibility(View.GONE);
                 tvQuantityMessage.setText(Html.fromHtml(context.getString(R.string.label_unpack_kit_quantity_less_than_expected)));
                 tvQuantityMessage.setTextColor(context.getResources().getColor(R.color.color_warning_text_unpack_kit_pop));
+                tvKitExpectedQuantity.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
             } else {
                 initViewHolderStyle(viewModel);
             }
         } else {
             initViewHolderStyle(viewModel);
+            validateIfShouldShowUpEmptyLotWarning(viewModel);
         }
     }
 
