@@ -176,11 +176,17 @@ describe "Sync stock card data" do
     body = JSON.parse(response.body)
     expect(response.code).to eq 200
 
-    expect(body['stockCards'].select{|stockCard| stockCard['product']['code']=="08S42"}).not_to be_nil
-    expect(body['stockCards'][0]['stockMovementItems']).not_to be_nil
-    expect(body['stockCards'][0]['stockMovementItems'][0]['extensions']['soh']).not_to be_nil
-    expect(body['stockCards'][0]['stockMovementItems'][0]['extensions']['expirationdates']).to be_nil
-    expect(body['stockCards'][0]['stockMovementItems'][0]['extensions']['signature']).not_to be_nil
-    expect(body['stockCards'].length).to be >= 2
+    expect(body['stockCards'].length).to be 3
+    stock_card1 = body['stockCards'].select{|stock_card| stock_card['product']['code']=="08S42"}
+    expect(stock_card1['stockMovementItems'].length).to be 3
+    stock_movement1 = stock_card1['stockMovementItems'].select{|stock_movement| stock_movement['documentNumber']=='referenceNumber1'}
+    expect(stock_movement1['movementQuantity']).to be 600
+    expect(stock_movement1['reason']).to be 'DISTRICT_DDM'
+    expect(stock_movement1['extensions']['soh']).to be '1000'
+    expect(stock_movement1['occurred']).to be '2015-10-15'
+    expect(stock_movement1['lotMovementItems'].length).to be 2
+    lot_movement1 = stock_movement1['lotMovementItems'].select{|lot_movement| lot_movement['lotCode']=='TEST1'}
+    expect(lot_movement1['quantity']).to be 500
+    expect(lot_movement1['extensions']['soh']).to be '500'
   end
 end
