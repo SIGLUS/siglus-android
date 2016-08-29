@@ -129,14 +129,14 @@ public class LotMovementViewHolder extends BaseViewHolder {
 
         public EditTextWatcher(LotMovementViewModel viewModel) {
             this.viewModel = viewModel;
-            this.viewModel.setHasDataChanged(false);
         }
 
         @Override
         public void afterTextChanged(Editable editable) {
-            viewModel.setHasDataChanged(true);
             viewModel.setQuantity(editable.toString());
-            movementChangeListener.movementChange();
+            if (movementChangeListener != null) {
+                movementChangeListener.movementChange();
+            }
         }
     }
 }
