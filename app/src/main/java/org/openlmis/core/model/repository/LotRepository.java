@@ -55,14 +55,16 @@ public class LotRepository {
         } else {
             lotMovementItem.setLot(existingLot);
             lotOnHand = getLotOnHandByLot(existingLot);
+            //TODO: move the following logic to service not in repository!
             if (lotMovementItem.getStockMovementItem().getMovementType().equals(MovementReasonManager.MovementType.ISSUE)
-                || lotMovementItem.getStockMovementItem().getMovementType().equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST)) {
+                    || lotMovementItem.getStockMovementItem().getMovementType().equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST)) {
                 lotOnHand.setQuantityOnHand(lotOnHand.getQuantityOnHand() - lotMovementItem.getMovementQuantity());
             } else {
                 lotOnHand.setQuantityOnHand(lotOnHand.getQuantityOnHand() + lotMovementItem.getMovementQuantity());
             }
-            lotMovementItem.setStockOnHand(lotOnHand.getQuantityOnHand());
             createOrUpdateLotOnHand(lotOnHand);
+            //-----------------------------------
+            lotMovementItem.setStockOnHand(lotOnHand.getQuantityOnHand());
         }
     }
 
@@ -121,6 +123,19 @@ public class LotRepository {
                         .and()
                         .eq("product_id", productId)
                         .queryForFirst();
+            }
+        });
+    }
+
+    public void createOrUpdateLotsInformation(final List<LotOnHand> lotOnHandListWrapper) throws LMISException {
+        dbUtil.withDaoAsBatch(LotOnHand.class, new DbUtil.Operation<LotOnHand, Object>() {
+            @Override
+            public LotOnHand operate(Dao<LotOnHand, String> dao) throws SQLException, LMISException {
+                for (final LotOnHand lotOnHand: lotOnHandListWrapper) {
+                    createOrUpdateLot(lotOnHand.getLot());
+                    createOrUpdateLotOnHand(lotOnHand);
+                }
+                return null;
             }
         });
     }

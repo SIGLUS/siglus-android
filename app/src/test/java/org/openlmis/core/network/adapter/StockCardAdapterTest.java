@@ -3,10 +3,12 @@ package org.openlmis.core.network.adapter;
 import com.google.gson.JsonParser;
 import com.google.inject.AbstractModule;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -15,6 +17,7 @@ import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.JsonFileReader;
 import org.robolectric.RuntimeEnvironment;
 
@@ -24,6 +27,7 @@ import java.util.List;
 import roboguice.RoboGuice;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -80,6 +84,22 @@ public class StockCardAdapterTest {
         assertThat(stockMovementItemsWrapper.size()).isEqualTo(3);
     }
 
+    @Test
+    public void shouldDeserializeStockCardWithLots() throws Exception {
+        Product product = ProductBuilder.buildAdultProduct();
+        product.setCode("08R01");
+        when(mockProductRepository.getByCode("08R01")).thenReturn(product);
+
+        String json = JsonFileReader.readJson(getClass(),"StockCardResponseWithLots.json");
+        StockCard stockCard = stockCardAdapter.deserialize(new JsonParser().parse(json), null, null);
+        assertThat(json).isNotNull();
+
+        List<LotOnHand> lotsOnHandWrapper = stockCard.getLotOnHandListWrapper();
+        assertThat(lotsOnHandWrapper.size()).isEqualTo(2);
+        Assert.assertThat(lotsOnHandWrapper.get(0).getLot().getLotNumber(), is("test3"));
+        Assert.assertThat(lotsOnHandWrapper.get(0).getQuantityOnHand(), is(300L));
+        Assert.assertThat(lotsOnHandWrapper.get(0).getLot().getExpirationDate(), is(DateUtil.parseString("2016-07-31", DateUtil.DB_DATE_FORMAT)));
+    }
 
     @Test
     public void shouldSetupExpireDate() {

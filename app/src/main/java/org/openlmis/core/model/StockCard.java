@@ -66,6 +66,13 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
     @SerializedName("stockOnHand")
     long stockOnHand;
 
+    @ForeignCollectionField()
+    private ForeignCollection<LotOnHand> foreignLotOnHandList;
+
+    @Expose
+    @SerializedName("lotsOnHand")
+    private List<LotOnHand> lotOnHandListWrapper;
+
     @DatabaseField
     private float avgMonthlyConsumption = -1;
 

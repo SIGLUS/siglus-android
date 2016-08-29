@@ -10,9 +10,13 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.model.Lot;
+import org.openlmis.core.model.LotMovementItem;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 
@@ -30,39 +34,59 @@ public class StockCardAdapter implements JsonDeserializer<StockCard> {
     private StockRepository stockRepository;
 
     @Inject
+    private LotRepository lotRepository;
+
+    @Inject
     public StockCardAdapter() {
         RoboGuice.getInjector(LMISApp.getContext()).injectMembersWithoutViews(this);
         gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
                 .registerTypeAdapter(StockMovementItem.class, new StockMovementItemAdapter())
                 .registerTypeAdapter(Product.class, new ProductAdapter())
+                .registerTypeAdapter(Lot.class, new LotAdapter())
                 .create();
     }
 
     @Override
     public StockCard deserialize(JsonElement json, java.lang.reflect.Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         StockCard stockCard = gson.fromJson(json, StockCard.class);
-
-        List<StockMovementItem> wrapper = stockCard.getStockMovementItemsWrapper();
-        if (wrapper == null) {
-            return stockCard;
-        }
-        //the product is synced before stock card
-        //stock cards will be synced at the first time,
-        //if synced more than once, will be ignored and won't insert to local db
         try {
-            stockCard.setProduct(productRepository.getByCode(stockCard.getProduct().getCode()));
+
+            Product product = productRepository.getByCode(stockCard.getProduct().getCode());
+
+            List<LotOnHand> lotsOnHand = stockCard.getLotOnHandListWrapper();
+            if (lotsOnHand != null) {
+                for (LotOnHand lotOnHand : lotsOnHand) {
+                    Lot existingLot = lotRepository.getLotByLotNumberAndProductId(lotOnHand.getLot().getLotNumber(), product.getId());
+                    if (existingLot != null) {
+                        LotOnHand existingLotOnHand = lotRepository.getLotOnHandByLot(existingLot);
+                        lotOnHand.setId(existingLotOnHand.getId());
+                        lotOnHand.setLot(existingLot);
+                    } else {
+                        lotOnHand.getLot().setProduct(product);
+                    }
+                    lotOnHand.setStockCard(stockCard);
+                }
+            }
+
+            List<StockMovementItem> wrapper = stockCard.getStockMovementItemsWrapper();
+            if (wrapper == null) {
+                return stockCard;
+            }
+            //the product is synced before stock card
+            //stock cards will be synced at the first time,
+            //if synced more than once, will be ignored and won't insert to local db
+            stockCard.setProduct(product);
 
             StockCard stockCardInDB = stockRepository.queryStockCardByProductId(stockCard.getProduct().getId());
             if (stockCardInDB != null) {
                 stockCard.setId(stockCardInDB.getId());
             }
+            setupMovementWithCard(stockCard, wrapper);
+            setupStockCardExpireDates(stockCard, wrapper);
+
         } catch (LMISException e) {
             e.reportToFabric();
         }
-
-
-        setupMovementWithCard(stockCard, wrapper);
-        setupStockCardExpireDates(stockCard, wrapper);
 
         return stockCard;
     }
@@ -78,8 +102,12 @@ public class StockCardAdapter implements JsonDeserializer<StockCard> {
         for (int i = wrapper.size() - 1; i >= 0; i--) {
             StockMovementItem item = wrapper.get(i);
             item.setStockCard(stockCard);
+            if (item.getLotMovementItemListWrapper() != null) {
+                for (LotMovementItem lotMovementItem : item.getLotMovementItemListWrapper()) {
+                    lotMovementItem.getLot().setProduct(stockCard.getProduct());
+                }
+            }
         }
     }
-
 
 }

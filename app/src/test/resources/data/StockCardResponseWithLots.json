@@ -1,0 +1,56 @@
+{
+  "product": {
+    "id": 2059,
+    "code": "08R01",
+    "isKit": false
+  },
+  "stockMovementItems": [
+    {
+      "movementQuantity": 700,
+      "reason": "INVENTORY",
+      "type": "ADJUSTMENT",
+      "extensions": {
+        "soh": "700"
+      },
+      "createdDate": 1472449610000,
+      "occurred": "2016-08-29",
+      "lotMovementItems": [
+        {
+          "lotCode": "test3",
+          "quantity": 300,
+          "extensions": {
+            "soh": "300"
+          }
+        },
+        {
+          "lotCode": "test4",
+          "quantity": 400,
+          "extensions": {
+            "soh": "400"
+          }
+        }
+      ]
+    }
+  ],
+  "stockOnHand": 700,
+  "lotsOnHand": [
+    {
+      "lot": {
+        "id": 31,
+        "lotCode": "test3",
+        "expirationDate": "2016-07-31",
+        "valid": false
+      },
+      "quantityOnHand": 300
+    },
+    {
+      "lot": {
+        "id": 32,
+        "lotCode": "test4",
+        "expirationDate": "2016-07-31",
+        "valid": false
+      },
+      "quantityOnHand": 400
+    }
+  ]
+}

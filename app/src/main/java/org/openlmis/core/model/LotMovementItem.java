@@ -1,5 +1,7 @@
 package org.openlmis.core.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -19,6 +21,8 @@ public class LotMovementItem extends BaseModel{
     @DatabaseField
     long stockOnHand;
 
+    @Expose
+    @SerializedName("quantity")
     @DatabaseField
     long movementQuantity;
 

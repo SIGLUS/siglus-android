@@ -140,6 +140,9 @@ public class StockRepository {
                 @Override
                 public Object call() throws Exception {
                     createOrUpdate(stockCard);
+                    if (stockCard.getLotOnHandListWrapper() != null) {
+                        lotRepository.createOrUpdateLotsInformation(stockCard.getLotOnHandListWrapper());
+                    }
                     batchCreateOrUpdateStockMovements(stockCard.getStockMovementItemsWrapper());
                     return null;
                 }

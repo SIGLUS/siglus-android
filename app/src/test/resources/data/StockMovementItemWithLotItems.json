@@ -1,0 +1,26 @@
+{
+  "movementQuantity": 700,
+  "reason": "INVENTORY",
+  "type": "ADJUSTMENT",
+  "extensions": {
+    "soh": "700"
+  },
+  "createdDate": 1472449610000,
+  "occurred": "2016-08-29",
+  "lotMovementItems": [
+    {
+      "lotCode": "test3",
+      "quantity": 300,
+      "extensions": {
+        "soh": "300"
+      }
+    },
+    {
+      "lotCode": "test4",
+      "quantity": 400,
+      "extensions": {
+        "soh": "400"
+      }
+    }
+  ]
+}

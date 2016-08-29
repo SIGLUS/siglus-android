@@ -10,12 +10,17 @@ import com.google.gson.JsonParseException;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.MovementReasonNotFoundException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.model.Lot;
+import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public class StockMovementItemAdapter implements JsonDeserializer<StockMovementItem> {
@@ -54,9 +59,10 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
     class StockMovementItemResponse extends StockMovementItem {
         Map<String, String> extensions;
         String occurred;
+        List<LotMovementItemResponse> lotMovementItems;
 
         public StockMovementItem convertToStockMovementItem() {
-            StockMovementItem movementItem = this;
+            final StockMovementItem movementItem = this;
             if (extensions != null) {
                 this.setExpireDates(extensions.get("expirationdates"));
                 this.setSignature(extensions.get("signature"));
@@ -70,6 +76,39 @@ public class StockMovementItemAdapter implements JsonDeserializer<StockMovementI
             if (occurred != null) {
                 this.setMovementDate(DateUtil.parseString(occurred, DateUtil.DB_DATE_FORMAT));
             }
+
+            if (lotMovementItems != null) {
+                List<LotMovementItem> lotMovementItemsWrapper = FluentIterable.from(this.lotMovementItems).transform(new Function<LotMovementItemResponse, LotMovementItem>() {
+                    @Override
+                    public LotMovementItem apply(LotMovementItemResponse lotMovementItemResponse) {
+                        LotMovementItem lotMovementItem = lotMovementItemResponse.convertToLotMovementItem();
+                        lotMovementItem.setStockMovementItem(movementItem);
+                        return lotMovementItem;
+                    }
+                }).toList();
+                this.setLotMovementItemListWrapper(lotMovementItemsWrapper);
+            }
+            return movementItem;
+        }
+    }
+
+    class LotMovementItemResponse extends LotMovementItem {
+        Map<String, String> extensions;
+        String lotCode;
+
+        public LotMovementItem convertToLotMovementItem() {
+            LotMovementItem movementItem = this;
+            if (extensions != null) {
+                try {
+                    this.setStockOnHand(Long.parseLong(extensions.get("soh")));
+                } catch (NumberFormatException e) {
+                    new LMISException(e).reportToFabric();
+                    e.printStackTrace();
+                }
+            }
+            Lot lot = new Lot();
+            lot.setLotNumber(lotCode);
+            movementItem.setLot(lot);
             return movementItem;
         }
     }

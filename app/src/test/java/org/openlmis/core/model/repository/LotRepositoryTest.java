@@ -9,6 +9,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -20,6 +21,8 @@ import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
 import java.text.ParseException;
+import java.util.Arrays;
+import java.util.List;
 
 import roboguice.RoboGuice;
 
@@ -128,5 +131,35 @@ public class LotRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(lotRepository.getLotOnHandByLot(lot1).getQuantityOnHand(), is(1L));
         assertThat(lotRepository.getLotOnHandByLot(lot2).getQuantityOnHand(), is(0L));
         assertThat(lotRepository.getLotOnHandByLot(lot3).getQuantityOnHand(), is(3L));
+    }
+
+    @Test
+    public void shouldCreateOrOrUpdateLotsInformation() throws Exception {
+        Lot lot1 = new Lot();
+        lot1.setProduct(product);
+        lot1.setExpirationDate(DateUtil.parseString("2017-12-31", DateUtil.DB_DATE_FORMAT));
+        lot1.setLotNumber("AAA");
+
+        LotOnHand lotOnHand1 = new LotOnHand();
+        lotOnHand1.setLot(lot1);
+        lotOnHand1.setStockCard(stockCard);
+        lotOnHand1.setQuantityOnHand(10L);
+
+        Lot lot2 = new Lot();
+        lot2.setProduct(product);
+        lot2.setExpirationDate(DateUtil.parseString("2017-12-31", DateUtil.DB_DATE_FORMAT));
+        lot2.setLotNumber("BBB");
+
+        LotOnHand lotOnHand2 = new LotOnHand();
+        lotOnHand2.setLot(lot2);
+        lotOnHand2.setStockCard(stockCard);
+        lotOnHand2.setQuantityOnHand(20L);
+
+        List<LotOnHand> lotOnHandList = Arrays.asList(lotOnHand1, lotOnHand2);
+
+        lotRepository.createOrUpdateLotsInformation(lotOnHandList);
+
+        assertThat(lotRepository.getLotOnHandByLot(lot1).getQuantityOnHand(),is(lotOnHand1.getQuantityOnHand()));
+        assertThat(lotRepository.getLotOnHandByLot(lot2).getQuantityOnHand(),is(lotOnHand2.getQuantityOnHand()));
     }
 }

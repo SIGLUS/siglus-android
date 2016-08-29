@@ -1,7 +1,10 @@
 package org.openlmis.core.model;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+
+import org.openlmis.core.utils.DateUtil;
 
 import java.util.Date;
 
@@ -17,6 +20,6 @@ public class Lot extends BaseModel{
     @DatabaseField
     String lotNumber;
 
-    @DatabaseField
+    @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = DateUtil.DB_DATE_FORMAT)
     Date expirationDate;
 }
