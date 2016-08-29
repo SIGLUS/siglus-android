@@ -68,10 +68,10 @@ public class StockMovementEntryTest {
 
         StockMovementEntry entry = new StockMovementEntry(stockMovementItem, "123");
         assertThat(entry.getFacilityId(), is("123"));
-        assertThat(entry.getLotMovementEntryList().size(), is(2));
-        assertThat(entry.getLotMovementEntryList().get(0).getLotNumber(), is("ABC"));
-        assertThat(entry.getLotMovementEntryList().get(0).getExpirationDate(), is("2020-10-31"));
-        assertThat(entry.getLotMovementEntryList().get(0).getQuantity(), is(30L));
-        assertThat(entry.getLotMovementEntryList().get(0).getCustomProps().get("SOH"), is("50"));
+        assertThat(entry.getLotEventList().size(), is(2));
+        assertThat(entry.getLotEventList().get(0).getLotNumber(), is("ABC"));
+        assertThat(entry.getLotEventList().get(0).getExpirationDate(), is("2020-10-31"));
+        assertThat(entry.getLotEventList().get(0).getQuantity(), is(30L));
+        assertThat(entry.getLotEventList().get(0).getCustomProps().get("SOH"), is("50"));
     }
 }

@@ -49,7 +49,7 @@ public class StockMovementEntry {
     Long requestedQuantity;
 
     HashMap<String, String> customProps = new HashMap<>();
-    List<LotMovementEntry> lotMovementEntryList = new ArrayList<>();
+    List<LotMovementEntry> lotEventList = new ArrayList<>();
 
     public StockMovementEntry(StockMovementItem stockMovementItem, String facilityId) {
         this.setProductCode(stockMovementItem.getStockCard().getProduct().getCode());
@@ -66,7 +66,7 @@ public class StockMovementEntry {
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)
             && stockMovementItem.getLotMovementItemListWrapper() != null) {
-            lotMovementEntryList.addAll(FluentIterable.from(stockMovementItem.getLotMovementItemListWrapper()).transform(new Function<LotMovementItem, LotMovementEntry>() {
+            lotEventList.addAll(FluentIterable.from(stockMovementItem.getLotMovementItemListWrapper()).transform(new Function<LotMovementItem, LotMovementEntry>() {
                 @Override
                 public LotMovementEntry apply(LotMovementItem lotMovementItem) {
                     return new LotMovementEntry(lotMovementItem);
