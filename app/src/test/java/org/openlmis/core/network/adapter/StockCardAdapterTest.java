@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
@@ -26,6 +27,7 @@ import java.util.List;
 import roboguice.RoboGuice;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -73,7 +75,7 @@ public class StockCardAdapterTest {
         product.setCode("08S42");
         when(mockProductRepository.getByCode("08S42")).thenReturn(product);
 
-        String json = JsonFileReader.readJson(getClass(),"StockCardWithMovement.json");
+        String json = JsonFileReader.readJson(getClass(), "StockCardWithMovement.json");
         StockCard stockCard = stockCardAdapter.deserialize(new JsonParser().parse(json), null, null);
         assertNotNull(json);
 
@@ -90,15 +92,28 @@ public class StockCardAdapterTest {
         product.setCode("08R01");
         when(mockProductRepository.getByCode("08R01")).thenReturn(product);
 
-        String json = JsonFileReader.readJson(getClass(),"StockCardResponseWithLots.json");
+        String json = JsonFileReader.readJson(getClass(), "StockCardResponseWithLots.json");
         StockCard stockCard = stockCardAdapter.deserialize(new JsonParser().parse(json), null, null);
         assertNotNull(json);
 
         List<LotOnHand> lotsOnHandWrapper = stockCard.getLotOnHandListWrapper();
-        assertThat(lotsOnHandWrapper.size(),is(2));
+        assertThat(lotsOnHandWrapper.size(), is(2));
         assertThat(lotsOnHandWrapper.get(0).getLot().getLotNumber(), is("test3"));
         assertThat(lotsOnHandWrapper.get(0).getQuantityOnHand(), is(300L));
         assertThat(lotsOnHandWrapper.get(0).getLot().getExpirationDate(), is(DateUtil.parseString("2016-07-31", DateUtil.DB_DATE_FORMAT)));
+
+        List<StockMovementItem> stockMovementItems = stockCard.getStockMovementItemsWrapper();
+        assertEquals(1, stockMovementItems.size());
+        assertEquals(700, stockMovementItems.get(0).getMovementQuantity());
+        assertEquals(700, stockMovementItems.get(0).getStockOnHand());
+
+        List<LotMovementItem> lotMovementItems = stockMovementItems.get(0).getLotMovementItemListWrapper();
+        assertEquals(2, lotMovementItems.size());
+        assertEquals(300, lotMovementItems.get(0).getMovementQuantity());
+        assertEquals(400, lotMovementItems.get(1).getMovementQuantity());
+
+        assertEquals("08R01",lotMovementItems.get(0).getLot().getProduct().getCode());
+        assertEquals("08R01",lotMovementItems.get(1).getLot().getProduct().getCode());
     }
 
     @Test
