@@ -47,9 +47,9 @@ public class StockMovementItemAdapterTest {
 
         StockMovementItem stockMovementItem = stockMovementItemAdapter.deserialize(new JsonParser().parse(json), null, null);
 
-        Assert.assertThat(stockMovementItem.getLotMovementItemListWrapper().size(), is(2));
-        Assert.assertThat(stockMovementItem.getLotMovementItemListWrapper().get(0).getMovementQuantity(), is(300L));
-        Assert.assertThat(stockMovementItem.getLotMovementItemListWrapper().get(0).getStockOnHand(), is(300L));
-        Assert.assertThat(stockMovementItem.getLotMovementItemListWrapper().get(0).getLot().getLotNumber(), is("test3"));
+        Assert.assertThat(stockMovementItem.getLotMovementItemListWrapper().size(), is(1));
+        Assert.assertThat(stockMovementItem.getLotMovementItemListWrapper().get(0).getMovementQuantity(), is(5L));
+        Assert.assertThat(stockMovementItem.getLotMovementItemListWrapper().get(0).getStockOnHand(), is(5L));
+        Assert.assertThat(stockMovementItem.getLotMovementItemListWrapper().get(0).getLot().getLotNumber(), is("TEST-A"));
     }
 }

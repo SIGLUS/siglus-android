@@ -1,25 +1,19 @@
 {
-  "movementQuantity": 700,
-  "reason": "INVENTORY",
+  "movementQuantity": 5,
+  "reason": "PUB_PHARMACY",
   "type": "ADJUSTMENT",
   "extensions": {
-    "soh": "700"
+    "soh": "500"
   },
-  "createdDate": 1472449610000,
-  "occurred": "2016-08-29",
+  "createdDate": 1472520111433,
+  "occurred": "2015-10-24",
+  "requested": 600,
   "lotMovementItems": [
     {
-      "lotNumber": "test3",
-      "quantity": 300,
+      "lotNumber": "TEST-A",
+      "quantity": -5,
       "extensions": {
-        "soh": "300"
-      }
-    },
-    {
-      "lotNumber": "test4",
-      "quantity": 400,
-      "extensions": {
-        "soh": "400"
+        "soh": "5"
       }
     }
   ]
