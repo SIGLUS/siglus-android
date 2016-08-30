@@ -113,4 +113,8 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
     public boolean isLowStock() {
         return stockOnHand < (int) Math.ceil(this.avgMonthlyConsumption * 0.05);
     }
+
+    public List<LotOnHand> getLotOnHandListWrapper() {
+        return ListUtil.wrapOrEmpty(foreignLotOnHandList, lotOnHandListWrapper);
+    }
 }

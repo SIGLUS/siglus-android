@@ -27,6 +27,7 @@ import java.util.List;
 import roboguice.RoboGuice;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
@@ -134,7 +135,7 @@ public class LotRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldCreateOrOrUpdateLotsInformation() throws Exception {
+    public void shouldCreateOrUpdateLotsInformation() throws Exception {
         Lot lot1 = new Lot();
         lot1.setProduct(product);
         lot1.setExpirationDate(DateUtil.parseString("2017-12-31", DateUtil.DB_DATE_FORMAT));
@@ -161,5 +162,43 @@ public class LotRepositoryTest extends LMISRepositoryUnitTest {
 
         assertThat(lotRepository.getLotOnHandByLot(lot1).getQuantityOnHand(),is(lotOnHand1.getQuantityOnHand()));
         assertThat(lotRepository.getLotOnHandByLot(lot2).getQuantityOnHand(),is(lotOnHand2.getQuantityOnHand()));
+    }
+
+    @Test
+    public void shouldCreateLotMovementItem() throws Exception {
+        Lot lot1 = new Lot();
+        lot1.setProduct(product);
+        lot1.setExpirationDate(DateUtil.parseString("2017-12-31", DateUtil.DB_DATE_FORMAT));
+        lot1.setLotNumber("AAA");
+
+        LotOnHand lotOnHand1 = new LotOnHand();
+        lotOnHand1.setLot(lot1);
+        lotOnHand1.setStockCard(stockCard);
+        lotOnHand1.setQuantityOnHand(10L);
+
+        List<LotOnHand> lotOnHandList = Arrays.asList(lotOnHand1);
+        lotRepository.createOrUpdateLotsInformation(lotOnHandList);
+
+        StockMovementItem stockMovementItem = new StockMovementItemBuilder()
+                .withStockOnHand(100)
+                .withMovementType(MovementReasonManager.MovementType.RECEIVE)
+                .withMovementDate("2016-12-31")
+                .withQuantity(10)
+                .build();
+        stockMovementItem.setStockCard(stockCard);
+        stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
+
+        LotMovementItem lotMovementItem = new LotMovementItemBuilder()
+                .setStockMovementItem(stockMovementItem)
+                .setLot(lot1)
+                .setMovementQuantity(2L).build();
+
+        lotRepository.createLotMovementItem(lotMovementItem);
+        assertNotNull(lotMovementItem.getId());
+
+        StockMovementItem queriedStockMovementItem = stockRepository.queryLastStockMovementItemByStockCardId(stockCard.getId());
+        assertThat(queriedStockMovementItem.getLotMovementItemListWrapper().get(0).getMovementQuantity(), is(2L));
+        assertThat(queriedStockMovementItem.getLotMovementItemListWrapper().get(0).getId(), is(lotMovementItem.getId()));
+        assertThat(queriedStockMovementItem.getLotMovementItemListWrapper().get(0).getLot().getLotNumber(),is(lot1.getLotNumber()));
     }
 }

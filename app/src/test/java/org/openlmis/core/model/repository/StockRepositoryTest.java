@@ -48,6 +48,7 @@ import org.openlmis.core.model.builder.LotMovementItemBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.ProductProgramBuilder;
 import org.openlmis.core.model.builder.ProgramBuilder;
+import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
@@ -60,10 +61,10 @@ import java.util.List;
 
 import roboguice.RoboGuice;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.ISSUE;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.RECEIVE;
@@ -244,7 +245,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         List<StockCard> stockCardsBeforeTimeLine = stockRepository.getStockCardsBeforePeriodEnd(rnRForm);
         assertThat(stockCardsBeforeTimeLine.size(), is(2));
         assertThat(stockCardsBeforeTimeLine.get(0).getProduct().getCode(), is("P1"));
-        assertThat(stockCardsBeforeTimeLine.get(1).getProduct().getCode(),is("P3"));
+        assertThat(stockCardsBeforeTimeLine.get(1).getProduct().getCode(), is("P3"));
     }
 
     @Test
@@ -261,8 +262,8 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         RnRForm rnRForm = RnRForm.init(program1, new Period(periodBegin, periodEnd), false);
         List<StockCard> stockCardsBeforeTimeLine = stockRepository.getStockCardsBeforePeriodEnd(rnRForm);
         assertThat(stockCardsBeforeTimeLine.size(), is(2));
-        assertThat(stockCardsBeforeTimeLine.get(0).getProduct().getCode(),is("P1"));
-        assertThat(stockCardsBeforeTimeLine.get(1).getProduct().getCode(),is("P3"));
+        assertThat(stockCardsBeforeTimeLine.get(0).getProduct().getCode(), is("P1"));
+        assertThat(stockCardsBeforeTimeLine.get(1).getProduct().getCode(), is("P3"));
     }
 
     private void generateTestDataForGetStockCards(String productCode, boolean isActive, boolean isArchived, Program program, String movementDate) throws LMISException {
@@ -548,5 +549,53 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockRepository.refresh(stockCard);
 
         return stockMovementItem;
+    }
+
+    @Test
+    public void shouldSaveStockCardAndBatchUpdateMovements() throws Exception {
+        Product product = ProductBuilder.create().setProductId(1L).setCode("p1").setIsActive(true).setIsKit(false).build();
+        productRepository.createOrUpdate(product);
+
+        StockCard stockCard = StockCardBuilder.buildStockCard();
+        stockCard.setProduct(product);
+
+        Lot lot1 = new Lot();
+        lot1.setProduct(product);
+        lot1.setExpirationDate(DateUtil.parseString("2017-12-31", DateUtil.DB_DATE_FORMAT));
+        lot1.setLotNumber("AAA");
+
+        LotOnHand lotOnHand1 = new LotOnHand();
+        lotOnHand1.setLot(lot1);
+        lotOnHand1.setStockCard(stockCard);
+        lotOnHand1.setQuantityOnHand(10L);
+
+        stockCard.setLotOnHandListWrapper(Arrays.asList(lotOnHand1));
+
+        StockMovementItem stockMovementItem = new StockMovementItemBuilder()
+                .withStockOnHand(200)
+                .withMovementType(MovementReasonManager.MovementType.RECEIVE)
+                .withMovementDate("2015-12-31")
+                .withQuantity(10)
+                .build();
+        stockMovementItem.setStockCard(stockCard);
+        LotMovementItem lotMovementItem = new LotMovementItemBuilder()
+                .setStockMovementItem(stockMovementItem)
+                .setLot(lot1)
+                .setMovementQuantity(2L).build();
+
+        stockMovementItem.setLotMovementItemListWrapper(Arrays.asList(lotMovementItem));
+
+        stockCard.setStockMovementItemsWrapper(Arrays.asList(stockMovementItem));
+
+        stockRepository.saveStockCardAndBatchUpdateMovements(stockCard);
+
+        StockCard queriedStockCard = stockRepository.queryStockCardById(stockCard.getId());
+        assertThat(queriedStockCard.getProduct().getCode(), is(product.getCode()));
+        assertThat(queriedStockCard.getLotOnHandListWrapper().get(0).getQuantityOnHand(),is(10L));
+
+        StockMovementItem queriedStockMovementItem = queriedStockCard.getStockMovementItemsWrapper().get(0);
+        assertThat(queriedStockMovementItem.getMovementQuantity(),is(10L));
+        assertThat(queriedStockMovementItem.getLotMovementItemListWrapper().get(0).getMovementQuantity(),is(2L));
+        assertThat(queriedStockMovementItem.getLotMovementItemListWrapper().get(0).getLot().getLotNumber(),is("AAA"));
     }
 }
