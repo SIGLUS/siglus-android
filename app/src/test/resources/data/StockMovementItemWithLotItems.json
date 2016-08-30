@@ -9,14 +9,14 @@
   "occurred": "2016-08-29",
   "lotMovementItems": [
     {
-      "lotCode": "test3",
+      "lotNumber": "test3",
       "quantity": 300,
       "extensions": {
         "soh": "300"
       }
     },
     {
-      "lotCode": "test4",
+      "lotNumber": "test4",
       "quantity": 400,
       "extensions": {
         "soh": "400"
