@@ -2,7 +2,12 @@ package org.openlmis.core.view.viewmodel;
 
 import org.junit.Test;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.model.LotMovementItem;
+import org.openlmis.core.model.Product;
 
+import java.util.GregorianCalendar;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -42,5 +47,15 @@ public class LotMovementViewModelTest {
         viewModel.setQuantity("300");
         viewModel.validate();
         assertFalse(viewModel.validateQuantity(MovementReasonManager.MovementType.ISSUE));
+    }
+
+    @Test
+    public void shouldConvertLotMovementItemWithRightExpiryDate() throws Exception {
+        viewModel.setQuantity("10");
+        viewModel.setLotNumber("lot1");
+        viewModel.setExpiryDate("Feb 2015");
+
+        LotMovementItem lotMovementItem = viewModel.convertViewToModel(new Product());
+        assertEquals(new GregorianCalendar(2015,1,28).getTime(),lotMovementItem.getLot().getExpirationDate());
     }
 }

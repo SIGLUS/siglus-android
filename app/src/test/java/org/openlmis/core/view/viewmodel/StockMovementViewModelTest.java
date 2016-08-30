@@ -181,7 +181,7 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
         LotMovementViewModel lot1 = new LotMovementViewModel();
         lot1.setQuantity("1");
         lot1.setLotNumber("AAA");
-        lot1.setExpiryDate(DateUtil.formatDate(new Date()));
+        lot1.setExpiryDate(DateUtil.formatDateWithoutDay(new Date()));
         stockMovementViewModel.setNewLotMovementViewModelList(Arrays.asList(lot1));
 
         StockMovementItem convertedStockMovementItem = stockMovementViewModel.convertViewToModel(stockCard);
@@ -202,11 +202,11 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
         LotMovementViewModel lot1 = new LotMovementViewModel();
         lot1.setQuantity("1");
         lot1.setLotNumber("AAA");
-        lot1.setExpiryDate(DateUtil.formatDate(new Date()));
+        lot1.setExpiryDate(DateUtil.formatDateWithoutDay(new Date()));
         LotMovementViewModel existingLot = new LotMovementViewModel();
         existingLot.setQuantity("1");
         existingLot.setLotNumber("BBB");
-        existingLot.setExpiryDate(DateUtil.formatDate(new Date()));
+        existingLot.setExpiryDate(DateUtil.formatDateWithoutDay(new Date()));
 
         stockMovementViewModel.setExistingLotMovementViewModelList(Arrays.asList(existingLot));
         stockMovementViewModel.setNewLotMovementViewModelList(Arrays.asList(lot1));

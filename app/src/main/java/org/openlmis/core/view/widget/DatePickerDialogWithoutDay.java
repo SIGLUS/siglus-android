@@ -44,7 +44,7 @@ public class DatePickerDialogWithoutDay extends DatePickerDialog {
         }
     }
 
-    public static int getLastDayOfMonth(DatePicker datePicker) {
+    private static int getLastDayOfMonth(DatePicker datePicker) {
         return new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth()).getActualMaximum(Calendar.DATE);
     }
 
