@@ -14,6 +14,51 @@ And(/^I enter quantity for all products in kit$/) do
         tap_when_element_exists("* marked:'Complete'")
 end
 
+And(/^I enter quantity for lots of all products in kit$/) do
+        lot_list = query("android.support.v7.widget.RecyclerView id:'rv_add_lot'")
+        while lot_list.empty?
+            existing_lot = query("android.support.v7.widget.RecyclerView id:'existing_lot_list'")
+
+            if !existing_lot.empty?
+                steps %Q{
+                    And I enter lot quantity "1"
+                }
+                scroll('recyclerView', :down)
+            else
+               if(!query("android.widget.TextView text:'Seringa descartavel, 10ml c/agulha 21gx1 1/2 3 [MMC00006]'").empty?)
+                  break
+               end
+               steps %Q{
+                   And I generate new lot with lot number "TEST-123" and quantity "1"
+               }
+               scroll('recyclerView', :down)
+            end
+
+            if !query("android.support.v7.widget.RecyclerView id:'rv_add_lot'").empty?
+                scroll('recyclerView', :down)
+            end
+
+            if query("android.widget.TextView text:'Seringa descartavel, 10ml c/agulha 21gx1 1/2 3 [MMC00006]'").empty?
+                scroll('recyclerView', :down)
+            end
+        end
+
+        scroll('recyclerView', :down)
+        tap_when_element_exists("* marked:'Complete'")
+
+
+        while !query("android.widget.TextView id:'tv_confirm_no_stock'").empty?
+            confirm_no_stock = query("android.widget.TextView id:'tv_confirm_no_stock'").first
+            touch(confirm_no_stock)
+            q = query("* marked:'Complete'")
+            while q.empty?
+                scroll('recyclerView', :down)
+                q = query("* marked:'Complete'")
+            end
+            tap_when_element_exists("* marked:'Complete'")
+        end
+end
+
 And(/^I enter quantity "(.*?)" for first product$/) do |quantity|
     h = query("android.widget.EditText id:'tx_quantity'").first
     clear_text_in(h)

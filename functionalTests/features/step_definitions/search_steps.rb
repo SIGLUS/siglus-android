@@ -74,6 +74,26 @@ When(/^I search lot product by primary name "(.*?)" and select this item with qu
     }
 end
 
+When(/^I search lot product by fnm "(.*?)" and select this item with quantity "(.*?)" and lot number "(.*?)"$/) do |fnm,quantity,lot_number|
+   steps %Q{
+        When I search drug by fnm "#{fnm}"
+    }
+    q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
+    if !q.empty?
+        touch(q)
+        steps %Q{
+            Then I wait for "lot number" to appear
+            Then I enter lot number "#{lot_number}" on add lot page
+            And I press "Complete"
+            Then I should see "#{lot_number}"
+            Then I enter quantity "#{quantity}" for the last lot
+        }
+    end
+    steps %Q{
+        And I clean search bar
+    }
+end
+
 Then(/^I set date to next year$/) do
     dp = query("android.widget.DatePicker").first
     touch(dp, :offset => {:x => 100, :y => 100})
@@ -83,6 +103,13 @@ And(/^I enter lot number "(.*?)" on add lot page$/) do |lot_number|
     h = query("android.widget.EditText id:'et_lot_number' text:''").first
     touch(h)
     keyboard_enter_text(lot_number)
+    hide_soft_keyboard
+end
+
+And(/^I enter lot quantity "(.*?)"$/) do |quantity|
+    h = query("android.widget.EditText id:'et_lot_amount' text:''").first
+    touch(h)
+    keyboard_enter_text(quantity)
     hide_soft_keyboard
 end
 

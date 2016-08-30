@@ -280,3 +280,14 @@ Then (/^I add new lot with lot number "(.*?)"$/) do |lot_number|
         Then I should see "#{lot_number}"
     }
 end
+
+Then (/^I generate new lot with lot number "(.*?)" and quantity "(.*?)"$/) do |lot_number, quantity|
+    steps %Q{
+        And I press "+ Add New Lot"
+        And I wait for "lot number" to appear
+        And I enter lot number "#{lot_number}" on add lot page
+        And I press "Complete"
+        Then I wait for 1 second
+        And I enter lot quantity "#{quantity}"
+    }
+end
