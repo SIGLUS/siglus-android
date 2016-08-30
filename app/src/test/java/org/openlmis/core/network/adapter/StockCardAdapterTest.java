@@ -3,7 +3,6 @@ package org.openlmis.core.network.adapter;
 import com.google.gson.JsonParser;
 import com.google.inject.AbstractModule;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,8 +25,9 @@ import java.util.List;
 
 import roboguice.RoboGuice;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -75,13 +75,13 @@ public class StockCardAdapterTest {
 
         String json = JsonFileReader.readJson(getClass(),"StockCardWithMovement.json");
         StockCard stockCard = stockCardAdapter.deserialize(new JsonParser().parse(json), null, null);
-        assertThat(json).isNotNull();
+        assertNotNull(json);
 
-        assertThat(stockCard.getStockOnHand()).isEqualTo(480);
-        assertThat(stockCard.getProduct().getCode()).isEqualTo("08S42");
+        assertThat(stockCard.getStockOnHand(), is(480L));
+        assertThat(stockCard.getProduct().getCode(), is("08S42"));
 
         List<StockMovementItem> stockMovementItemsWrapper = stockCard.getStockMovementItemsWrapper();
-        assertThat(stockMovementItemsWrapper.size()).isEqualTo(3);
+        assertThat(stockMovementItemsWrapper.size(), is(3));
     }
 
     @Test
@@ -92,13 +92,13 @@ public class StockCardAdapterTest {
 
         String json = JsonFileReader.readJson(getClass(),"StockCardResponseWithLots.json");
         StockCard stockCard = stockCardAdapter.deserialize(new JsonParser().parse(json), null, null);
-        assertThat(json).isNotNull();
+        assertNotNull(json);
 
         List<LotOnHand> lotsOnHandWrapper = stockCard.getLotOnHandListWrapper();
-        assertThat(lotsOnHandWrapper.size()).isEqualTo(2);
-        Assert.assertThat(lotsOnHandWrapper.get(0).getLot().getLotNumber(), is("test3"));
-        Assert.assertThat(lotsOnHandWrapper.get(0).getQuantityOnHand(), is(300L));
-        Assert.assertThat(lotsOnHandWrapper.get(0).getLot().getExpirationDate(), is(DateUtil.parseString("2016-07-31", DateUtil.DB_DATE_FORMAT)));
+        assertThat(lotsOnHandWrapper.size(),is(2));
+        assertThat(lotsOnHandWrapper.get(0).getLot().getLotNumber(), is("test3"));
+        assertThat(lotsOnHandWrapper.get(0).getQuantityOnHand(), is(300L));
+        assertThat(lotsOnHandWrapper.get(0).getLot().getExpirationDate(), is(DateUtil.parseString("2016-07-31", DateUtil.DB_DATE_FORMAT)));
     }
 
     @Test
@@ -108,7 +108,7 @@ public class StockCardAdapterTest {
         item3.setExpireDates("2015-04-15");
         stockCardAdapter.setupStockCardExpireDates(stockCard, wrapper);
 
-        assertThat(stockCard.getExpireDates()).isEqualTo(item3.getExpireDates());
+        assertThat(stockCard.getExpireDates(), is(item3.getExpireDates()));
     }
 
     public class MyTestModule extends AbstractModule {

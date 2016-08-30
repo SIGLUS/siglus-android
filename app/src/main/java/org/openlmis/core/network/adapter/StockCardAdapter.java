@@ -83,7 +83,6 @@ public class StockCardAdapter implements JsonDeserializer<StockCard> {
             }
             setupMovementWithCard(stockCard, wrapper);
             setupStockCardExpireDates(stockCard, wrapper);
-
         } catch (LMISException e) {
             e.reportToFabric();
         }
@@ -102,10 +101,8 @@ public class StockCardAdapter implements JsonDeserializer<StockCard> {
         for (int i = wrapper.size() - 1; i >= 0; i--) {
             StockMovementItem item = wrapper.get(i);
             item.setStockCard(stockCard);
-            if (item.getLotMovementItemListWrapper() != null) {
-                for (LotMovementItem lotMovementItem : item.getLotMovementItemListWrapper()) {
-                    lotMovementItem.getLot().setProduct(stockCard.getProduct());
-                }
+            for (LotMovementItem lotMovementItem : item.getLotMovementItemListWrapper()) {
+                lotMovementItem.getLot().setProduct(stockCard.getProduct());
             }
         }
     }
