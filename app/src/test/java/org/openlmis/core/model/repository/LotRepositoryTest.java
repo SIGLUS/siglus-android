@@ -93,7 +93,7 @@ public class LotRepositoryTest extends LMISRepositoryUnitTest {
                 .setStockMovementItem(stockMovementItem)
                 .setLot(lot3)
                 .setMovementQuantity(5L).build();
-        lotRepository.batchCreateLotsAndLotMovements(newArrayList(lotMovementItem, lotMovementItem2, lotMovementItem3), true);
+        lotRepository.batchCreateLotsAndLotMovements(newArrayList(lotMovementItem, lotMovementItem2, lotMovementItem3));
 
         assertThat(lotRepository.getLotByLotNumberAndProductId("AAA", product.getId()).getExpirationDate(), is(lot1.getExpirationDate()));
         assertThat(lotRepository.getLotByLotNumberAndProductId("BBB", product.getId()).getExpirationDate(), is(lot2.getExpirationDate()));
@@ -126,7 +126,7 @@ public class LotRepositoryTest extends LMISRepositoryUnitTest {
                 .setLot(lot3)
                 .setMovementQuantity(2L).build();
 
-        lotRepository.batchCreateLotsAndLotMovements(newArrayList(lotMovementItem4, lotMovementItem5, lotMovementItem6), true);
+        lotRepository.batchCreateLotsAndLotMovements(newArrayList(lotMovementItem4, lotMovementItem5, lotMovementItem6));
 
         assertThat(lotRepository.getLotOnHandByLot(lot1).getQuantityOnHand(), is(1L));
         assertThat(lotRepository.getLotOnHandByLot(lot2).getQuantityOnHand(), is(0L));

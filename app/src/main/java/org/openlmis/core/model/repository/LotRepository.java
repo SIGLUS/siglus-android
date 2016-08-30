@@ -23,14 +23,12 @@ public class LotRepository {
     @Inject
     Context context;
 
-    public void batchCreateLotsAndLotMovements(final List<LotMovementItem> lotMovementItemListWrapper, final boolean shouldUpdateLotsInformation) throws LMISException {
+    public void batchCreateLotsAndLotMovements(final List<LotMovementItem> lotMovementItemListWrapper) throws LMISException {
         dbUtil.withDaoAsBatch(LotMovementItem.class, new DbUtil.Operation<LotMovementItem, Object>() {
             @Override
             public LotMovementItem operate(Dao<LotMovementItem, String> dao) throws SQLException, LMISException {
-                for (final LotMovementItem lotMovementItem: lotMovementItemListWrapper) {
-                    if (shouldUpdateLotsInformation) {
-                        createOrUpdateLotAndLotOnHand(lotMovementItem);
-                    }
+                for (final LotMovementItem lotMovementItem : lotMovementItemListWrapper) {
+                    createOrUpdateLotAndLotOnHand(lotMovementItem);
                     createLotMovementItem(lotMovementItem);
                 }
                 return null;
@@ -88,7 +86,7 @@ public class LotRepository {
         });
     }
 
-    private void createLotMovementItem(final LotMovementItem lotMovementItem) throws LMISException {
+    public void createLotMovementItem(final LotMovementItem lotMovementItem) throws LMISException {
         lotMovementItem.setCreatedAt(new Date());
         lotMovementItem.setUpdatedAt(new Date());
 
@@ -131,7 +129,7 @@ public class LotRepository {
         dbUtil.withDaoAsBatch(LotOnHand.class, new DbUtil.Operation<LotOnHand, Object>() {
             @Override
             public LotOnHand operate(Dao<LotOnHand, String> dao) throws SQLException, LMISException {
-                for (final LotOnHand lotOnHand: lotOnHandListWrapper) {
+                for (final LotOnHand lotOnHand : lotOnHandListWrapper) {
                     createOrUpdateLot(lotOnHand.getLot());
                     createOrUpdateLotOnHand(lotOnHand);
                 }

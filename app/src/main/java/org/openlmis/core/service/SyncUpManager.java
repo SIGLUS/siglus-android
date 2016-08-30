@@ -248,7 +248,7 @@ public class SyncUpManager {
             }
         });
 
-        stockRepository.batchCreateOrUpdateStockMovements(stockMovementItems, false);
+        stockRepository.batchCreateOrUpdateStockMovementsAndLotMovements(stockMovementItems);
     }
 
     private void markRnrFormSynced(RnRForm rnRForm) {

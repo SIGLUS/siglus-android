@@ -29,6 +29,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.StockMovementIsNullException;
 import org.openlmis.core.model.DraftInventory;
+import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
@@ -84,7 +85,7 @@ public class StockRepository {
                     for (StockCard stockCard : stockCards) {
                         dao.createOrUpdate(stockCard);
                         updateProductOfStockCard(stockCard.getProduct());
-                        batchCreateOrUpdateStockMovements(stockCard.getStockMovementItemsWrapper(), true);
+                        batchCreateOrUpdateStockMovementsAndLotInfo(stockCard.getStockMovementItemsWrapper());
                     }
                     return null;
                 }
@@ -110,16 +111,14 @@ public class StockRepository {
         }
     }
 
-    public void batchCreateOrUpdateStockMovements(final List<StockMovementItem> stockMovementItems, final boolean shouldUpdateLotsInformation) throws LMISException {
+    public void batchCreateOrUpdateStockMovementsAndLotInfo(final List<StockMovementItem> stockMovementItems) throws LMISException {
         dbUtil.withDaoAsBatch(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, Void>() {
             @Override
             public Void operate(Dao<StockMovementItem, String> dao) throws SQLException, LMISException {
                 for (StockMovementItem stockMovementItem : stockMovementItems) {
                     updateDateTimeIfEmpty(stockMovementItem);
                     dao.createOrUpdate(stockMovementItem);
-                    if (!stockMovementItem.getLotMovementItemListWrapper().isEmpty()){
-                        lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper(), shouldUpdateLotsInformation);
-                    }
+                    lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());
                 }
                 return null;
             }
@@ -143,7 +142,7 @@ public class StockRepository {
                     if (stockCard.getLotOnHandListWrapper() != null) {
                         lotRepository.createOrUpdateLotsInformation(stockCard.getLotOnHandListWrapper());
                     }
-                    batchCreateOrUpdateStockMovements(stockCard.getStockMovementItemsWrapper(), false);
+                    batchCreateOrUpdateStockMovementsAndLotMovements(stockCard.getStockMovementItemsWrapper());
                     return null;
                 }
             });
@@ -156,8 +155,8 @@ public class StockRepository {
         stockMovementItem.setCreatedTime(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
         stockItemGenericDao.create(stockMovementItem);
 
-        if (!stockMovementItem.getLotMovementItemListWrapper().isEmpty()){
-            lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper(), true);
+        if (!stockMovementItem.getLotMovementItemListWrapper().isEmpty()) {
+            lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());
         }
     }
 
@@ -464,6 +463,22 @@ public class StockRepository {
                         .and()
                         .ne("quantityOnHand", 0L)
                         .query();
+            }
+        });
+    }
+
+    public void batchCreateOrUpdateStockMovementsAndLotMovements(final List<StockMovementItem> stockMovementItems) throws LMISException {
+        dbUtil.withDaoAsBatch(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, Void>() {
+            @Override
+            public Void operate(Dao<StockMovementItem, String> dao) throws SQLException, LMISException {
+                for (StockMovementItem stockMovementItem : stockMovementItems) {
+                    updateDateTimeIfEmpty(stockMovementItem);
+                    dao.createOrUpdate(stockMovementItem);
+                    for (LotMovementItem lotMovementItem : stockMovementItem.getLotMovementItemListWrapper()) {
+                        lotRepository.createLotMovementItem(lotMovementItem);
+                    }
+                }
+                return null;
             }
         });
     }
