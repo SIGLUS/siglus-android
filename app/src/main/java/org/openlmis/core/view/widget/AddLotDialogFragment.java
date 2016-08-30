@@ -20,7 +20,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
 
-import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -111,15 +111,14 @@ public class AddLotDialogFragment extends BaseDialogFragment {
             return false;
         }
 
-        Calendar today = GregorianCalendar.getInstance();
-        GregorianCalendar enteredExpiryDate = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), DatePickerDialogWithoutDay.getLastDayOfMonth(datePicker));
-        if (enteredExpiryDate == null || enteredExpiryDate.before(today)) {
+        Date enteredDate = DateUtil.getActualMaximumDate(new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), 1).getTime());
+        if (enteredDate.before(new Date())) {
             expiryDateWarning.setVisibility(View.VISIBLE);
             return false;
         }
 
         lotNumber = etLotNumber.getText().toString().trim();
-        expiryDate = DateUtil.formatDate(enteredExpiryDate.getTime(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+        expiryDate = DateUtil.formatDate(enteredDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
         return true;
     }
 

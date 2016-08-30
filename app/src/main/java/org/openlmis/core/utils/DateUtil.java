@@ -146,7 +146,7 @@ public final class DateUtil {
         return dateMinusMonth(date, 1);
     }
 
-    public static int calculateDateMonthOffset(Date earlierDate, Date laterDate){
+    public static int calculateDateMonthOffset(Date earlierDate, Date laterDate) {
         Calendar startCalendar = new GregorianCalendar();
         startCalendar.setTime(earlierDate);
         Calendar endCalendar = new GregorianCalendar();
@@ -213,5 +213,11 @@ public final class DateUtil {
 
     public static int calculateMonthOffset(DateTime biggerTime, DateTime smallerTime) {
         return biggerTime.getYear() * 12 + biggerTime.getMonthOfYear() - (smallerTime.getYear() * 12 + smallerTime.getMonthOfYear());
+    }
+
+    public static Date getActualMaximumDate(Date date) {
+        CALENDAR_NOW.setTime(date);
+        CALENDAR_NOW.set(Calendar.DAY_OF_MONTH, CALENDAR_NOW.getActualMaximum(Calendar.DAY_OF_MONTH));
+        return CALENDAR_NOW.getTime();
     }
 }

@@ -8,8 +8,10 @@ import org.openlmis.core.LMISTestRunner;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.openlmis.core.utils.DateUtil.SIMPLE_DATE_FORMAT;
 import static org.openlmis.core.utils.DateUtil.parseString;
@@ -127,5 +129,14 @@ public class DateUtilTest {
         assertThat(DateUtil.calculateMonthOffset(new DateTime(parseString("30/12/2015", SIMPLE_DATE_FORMAT)), new DateTime(parseString("20/11/2015", SIMPLE_DATE_FORMAT))), is(1));
         assertThat(DateUtil.calculateMonthOffset(new DateTime(parseString("30/12/2016", SIMPLE_DATE_FORMAT)), new DateTime(parseString("20/11/2015", SIMPLE_DATE_FORMAT))), is(13));
         assertThat(DateUtil.calculateMonthOffset(new DateTime(parseString("30/12/2015", SIMPLE_DATE_FORMAT)), new DateTime(parseString("20/12/2015", SIMPLE_DATE_FORMAT))), is(0));
+    }
+
+    @Test
+    public void shouldGetActualMaximumDate() throws Exception {
+        assertEquals(new GregorianCalendar(2013, 1, 28).getTime(), DateUtil.getActualMaximumDate(new GregorianCalendar(2013, 1,1).getTime()));
+        assertEquals(new GregorianCalendar(2016, 1, 29).getTime(), DateUtil.getActualMaximumDate(new GregorianCalendar(2016, 1, 1).getTime()));
+        assertEquals(new GregorianCalendar(2013, 0, 31).getTime(), DateUtil.getActualMaximumDate(new GregorianCalendar(2013, 0, 1).getTime()));
+        assertEquals(new GregorianCalendar(2013, 3, 30).getTime(), DateUtil.getActualMaximumDate(new GregorianCalendar(2013, 3, 1).getTime()));
+        assertEquals(new GregorianCalendar(2013, 5, 30).getTime(), DateUtil.getActualMaximumDate(new GregorianCalendar(2013, 5, 1).getTime()));
     }
 }
