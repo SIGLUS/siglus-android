@@ -50,58 +50,59 @@ public class StockCardAdapter implements JsonDeserializer<StockCard> {
     public StockCard deserialize(JsonElement json, java.lang.reflect.Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         StockCard stockCard = gson.fromJson(json, StockCard.class);
         try {
+            setupStockCard(stockCard);
 
-            Product product = productRepository.getByCode(stockCard.getProduct().getCode());
+            setupLotOnHandList(stockCard);
 
-            List<LotOnHand> lotsOnHand = stockCard.getLotOnHandListWrapper();
-            if (lotsOnHand != null) {
-                for (LotOnHand lotOnHand : lotsOnHand) {
-                    Lot existingLot = lotRepository.getLotByLotNumberAndProductId(lotOnHand.getLot().getLotNumber(), product.getId());
-                    if (existingLot != null) {
-                        LotOnHand existingLotOnHand = lotRepository.getLotOnHandByLot(existingLot);
-                        lotOnHand.setId(existingLotOnHand.getId());
-                        lotOnHand.setLot(existingLot);
-                    } else {
-                        lotOnHand.getLot().setProduct(product);
-                    }
-                    lotOnHand.setStockCard(stockCard);
-                }
-            }
-
-            List<StockMovementItem> wrapper = stockCard.getStockMovementItemsWrapper();
-            if (wrapper == null) {
-                return stockCard;
-            }
-            //the product is synced before stock card
-            //stock cards will be synced at the first time,
-            //if synced more than once, will be ignored and won't insert to local db
-            stockCard.setProduct(product);
-
-            StockCard stockCardInDB = stockRepository.queryStockCardByProductId(stockCard.getProduct().getId());
-            if (stockCardInDB != null) {
-                stockCard.setId(stockCardInDB.getId());
-            }
-            setupMovementWithCard(stockCard, wrapper);
-            setupStockCardExpireDates(stockCard, wrapper);
+            setupProductAndStockCardOfMovementItems(stockCard);
         } catch (LMISException e) {
             e.reportToFabric();
         }
-
         return stockCard;
     }
 
-    public void setupStockCardExpireDates(StockCard stockCard, List<StockMovementItem> wrapper) {
+    private void setupStockCard(StockCard stockCard) throws LMISException {
+        stockCard.setProduct(productRepository.getByCode(stockCard.getProduct().getCode()));
+        updateStockCardIdIfStockCardAlreadyExist(stockCard);
+        setupStockCardExpireDates(stockCard);
+    }
+
+    private void setupLotOnHandList(StockCard stockCard) throws LMISException {
+        for (LotOnHand lotOnHand : stockCard.getLotOnHandListWrapper()) {
+            lotOnHand.getLot().setProduct(stockCard.getProduct());
+            lotOnHand.setStockCard(stockCard);
+            updateLotOnHandIdAndLotIfLotAlreadyExist(lotOnHand);
+        }
+    }
+
+    private void updateLotOnHandIdAndLotIfLotAlreadyExist(LotOnHand lotOnHand) throws LMISException {
+        Product product = lotOnHand.getLot().getProduct();
+        Lot existingLot = lotRepository.getLotByLotNumberAndProductId(lotOnHand.getLot().getLotNumber(), product.getId());
+        if (existingLot != null) {
+            lotOnHand.setId(lotRepository.getLotOnHandByLot(existingLot).getId());
+            lotOnHand.setLot(existingLot);
+        }
+    }
+
+    private void updateStockCardIdIfStockCardAlreadyExist(StockCard stockCard) throws LMISException {
+        StockCard stockCardInDB = stockRepository.queryStockCardByProductId(stockCard.getProduct().getId());
+        if (stockCardInDB != null) {
+            stockCard.setId(stockCardInDB.getId());
+        }
+    }
+
+    public void setupStockCardExpireDates(StockCard stockCard) {
+        List<StockMovementItem> wrapper = stockCard.getStockMovementItemsWrapper();
         int size = wrapper.size();
         if (size > 0) {
             stockCard.setExpireDates(wrapper.get(size - 1).getExpireDates());
         }
     }
 
-    public void setupMovementWithCard(StockCard stockCard, List<StockMovementItem> wrapper) {
-        for (int i = wrapper.size() - 1; i >= 0; i--) {
-            StockMovementItem item = wrapper.get(i);
-            item.setStockCard(stockCard);
-            for (LotMovementItem lotMovementItem : item.getLotMovementItemListWrapper()) {
+    public void setupProductAndStockCardOfMovementItems(StockCard stockCard) {
+        for (StockMovementItem stockMovementItem : stockCard.getStockMovementItemsWrapper()) {
+            stockMovementItem.setStockCard(stockCard);
+            for (LotMovementItem lotMovementItem : stockMovementItem.getLotMovementItemListWrapper()) {
                 lotMovementItem.getLot().setProduct(stockCard.getProduct());
             }
         }

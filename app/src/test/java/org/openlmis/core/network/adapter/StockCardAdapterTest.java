@@ -121,7 +121,8 @@ public class StockCardAdapterTest {
         item1.setExpireDates("2015-02-15");
         item2.setExpireDates("2015-03-15");
         item3.setExpireDates("2015-04-15");
-        stockCardAdapter.setupStockCardExpireDates(stockCard, wrapper);
+        stockCard.setStockMovementItemsWrapper(wrapper);
+        stockCardAdapter.setupStockCardExpireDates(stockCard);
 
         assertThat(stockCard.getExpireDates(), is(item3.getExpireDates()));
     }
