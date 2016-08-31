@@ -1,39 +1,82 @@
 package org.openlmis.core.service;
 
+import junit.framework.Assert;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
+import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.manager.UserInfoMgr;
+import org.openlmis.core.model.Lot;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
+import org.openlmis.core.model.StockCard;
+import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.User;
+import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.model.repository.UserRepository;
+import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.LMISRestManagerMock;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.JsonFileReader;
 import org.robolectric.RuntimeEnvironment;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import roboguice.RoboGuice;
+import rx.Observable;
+import rx.observers.TestSubscriber;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 
 @RunWith(LMISTestRunner.class)
 public class SyncDownManagerIT {
     private SyncDownManager syncDownManager;
-    private LMISRestManagerMock lmisRestManager;
     private ProductRepository productRepository;
     private ProductProgramRepository productProgramRepository;
+    private UserRepository userRepository;
+    private StockRepository stockRepository;
+    private LotRepository lotRepository;
+    private User defaultUser;
+    private SharedPreferenceMgr sharedPreferenceMgr;
+
+    @Before
+    public void setup() {
+        userRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(UserRepository.class);
+        productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
+        productProgramRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductProgramRepository.class);
+        stockRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockRepository.class);
+        lotRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(LotRepository.class);
+        syncDownManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncDownManager.class);
+        sharedPreferenceMgr = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SharedPreferenceMgr.class);
+
+        defaultUser = new User();
+        defaultUser.setUsername("username");
+        defaultUser.setPassword("password");
+        defaultUser.setFacilityId("10");
+        defaultUser.setFacilityName("facility");
+        defaultUser.setFacilityCode("F1");
+        userRepository.createOrUpdate(defaultUser);
+        UserInfoMgr.getInstance().setUser(defaultUser);
+    }
 
     @Test
     public void shouldSyncDownLatestProductWithArchivedStatus() throws Exception {
         //given
         String json = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
-        lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products", 200, "OK", json, RuntimeEnvironment.application);
-        syncDownManager = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(SyncDownManager.class);
+        LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products", 200, "OK", json, RuntimeEnvironment.application);
         syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
-        productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
-        productProgramRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductProgramRepository.class);
 
         //when
         syncDownManager.syncDownLatestProducts();
@@ -47,6 +90,53 @@ public class SyncDownManagerIT {
 
         ProductProgram productProgram = productProgramRepository.queryByCode("01A01", "ESS_MEDS");
         assertTrue(productProgram.isActive());
+    }
+
+    @Test
+    public void shouldSyncDownStockCardsWithMovements() throws Exception {
+        //set shared preferences to have synced all historical data already
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.YEAR, -1);
+        sharedPreferenceMgr.getPreference().edit().putLong(SharedPreferenceMgr.KEY_STOCK_SYNC_END_TIME, cal.getTimeInMillis()).apply();
+
+        //given
+        String productJson = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
+        LMISRestManagerMock lmisRestManager = LMISRestManagerMock.getRestManagerWithMockClient("/rest-api/latest-products", 200, "OK", productJson, RuntimeEnvironment.application);
+
+        Date now = new Date();
+        Date startDate = DateUtil.minusDayOfMonth(now, 30);
+        String startDateStr = DateUtil.formatDate(startDate, DateUtil.DB_DATE_FORMAT);
+
+        Date endDate = DateUtil.addDayOfMonth(now, 1);
+        String endDateStr = DateUtil.formatDate(endDate, DateUtil.DB_DATE_FORMAT);
+
+        String stockMovementJson = JsonFileReader.readJson(getClass(), "SyncDownStockMovementsResponse.json");
+        lmisRestManager.addNewMockedResponse("/rest-api/facilities/" + defaultUser.getFacilityId()
+                + "/stockCards?startTime="+startDateStr+"&endTime="+endDateStr, 200, "OK", stockMovementJson);
+
+        String emptyRequisitions = "{\"requisitions\": []}";
+        lmisRestManager.addNewMockedResponse("/rest-api/requisitions?facilityCode=" + defaultUser.getFacilityCode(), 200, "OK", emptyRequisitions);
+
+        syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
+
+        //when
+        TestSubscriber<SyncDownManager.SyncProgress> subscriber = new TestSubscriber<>();
+        syncDownManager.syncDownServerData(subscriber);
+
+        subscriber.awaitTerminalEvent();
+        subscriber.assertNoErrors();
+
+        List<StockCard> stockCards = stockRepository.list();
+        assertEquals(1, stockCards.size());
+        List<StockMovementItem> stockMovementItems = stockRepository.queryStockItemsHistory(stockCards.get(0).getId(), 0, 1000);
+        assertEquals(1, stockMovementItems.size());
+
+        Product product = productRepository.getByCode("01A01");
+        Lot lot = lotRepository.getLotByLotNumberAndProductId("TEST5", product.getId());
+        assertEquals("2016-10-30", DateUtil.formatDate(lot.getExpirationDate(), DateUtil.DB_DATE_FORMAT));
+        LotOnHand lotOnHand = lotRepository.getLotOnHandByLot(lot);
+        assertEquals(5, lotOnHand.getQuantityOnHand(), 0L);
     }
 
 }

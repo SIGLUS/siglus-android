@@ -1,7 +1,11 @@
 package org.openlmis.core.network;
 
+import org.mockito.Mock;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit.client.Client;
 import retrofit.client.Header;
@@ -11,17 +15,14 @@ import retrofit.mime.TypedByteArray;
 
 public class MockClient implements Client {
 
-    private String url;
-    private byte[] responseBody;
-    private int status;
-    private String reason;
+    Map<String, Response> urlToResponseMap = new HashMap<>();
 
     @Override
     public Response execute(Request request) throws IOException {
-        if (request.getUrl().contains(url)) {
-            ArrayList<Header> headers = new ArrayList<>();
-            return new Response(url, status, reason, headers,
-                    new TypedByteArray("application/json", responseBody));
+        String requestUrl = request.getUrl();
+        requestUrl = requestUrl.split("9091")[1];
+        if (urlToResponseMap.keySet().contains(requestUrl)) {
+            return urlToResponseMap.get(requestUrl);
         }
         return null;
     }
@@ -30,21 +31,10 @@ public class MockClient implements Client {
         return new MockClient();
     }
 
-    public MockClient withUrl(String url) {
-        this.url = url;
+    public MockClient addMockedResponse(String requestUrl, int mockedStatus, String mockedReason, byte[] responseBody) {
+        Response response = new Response(requestUrl, mockedStatus, mockedReason, new ArrayList<Header>(),
+                new TypedByteArray("application/json", responseBody));
+        urlToResponseMap.put(requestUrl, response);
         return this;
     }
-
-    public MockClient withStatusAndReason(int status, String reason) {
-        this.status = status;
-        this.reason = reason;
-        return this;
-    }
-
-    public MockClient withResponseBody(byte[] body) {
-        this.responseBody = body;
-        return this;
-    }
-
-
 }

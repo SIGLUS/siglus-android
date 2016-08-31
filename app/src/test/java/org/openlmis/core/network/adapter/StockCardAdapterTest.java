@@ -55,7 +55,7 @@ public class StockCardAdapterTest {
 
         stockCard = StockCardBuilder.buildStockCard();
 
-        wrapper = new ArrayList<StockMovementItem>();
+        wrapper = new ArrayList<>();
 
         StockMovementItemBuilder builder = new StockMovementItemBuilder();
 

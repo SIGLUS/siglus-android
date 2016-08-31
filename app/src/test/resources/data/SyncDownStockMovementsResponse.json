@@ -1,0 +1,66 @@
+{
+  "stockCards": [
+    {
+      "product": {
+        "id": 3180,
+        "code": "01A01",
+        "isKit": false
+      },
+      "stockMovementItems": [
+        {
+          "documentNumber": "referenceNumber4",
+          "movementQuantity": 10,
+          "reason": "LOANS_RECEIVED",
+          "type": "ADJUSTMENT",
+          "extensions": {
+            "soh": "10",
+            "signature": "signature"
+          },
+          "createdDate": 1472629253388,
+          "occurred": "2015-10-30",
+          "lotMovementItems": [
+            {
+              "lotNumber": "TEST5",
+              "quantity": 5,
+              "extensions": {
+                "soh": "500"
+              }
+            },
+            {
+              "lotNumber": "TEST6",
+              "quantity": 5,
+              "extensions": {
+                "soh": "100"
+              }
+            }
+          ]
+        }
+      ],
+      "stockOnHand": 10,
+      "lotsOnHand": [
+        {
+          "id": 33,
+          "lot": {
+            "id": 33,
+            "lotCode": "TEST5",
+            "expirationDate": "2016-10-30",
+            "valid": false
+          },
+          "quantityOnHand": 5,
+          "effectiveDate": "2016-08-31"
+        },
+        {
+          "id": 34,
+          "lot": {
+            "id": 34,
+            "lotCode": "TEST6",
+            "expirationDate": "2016-11-30",
+            "valid": false
+          },
+          "quantityOnHand": 5,
+          "effectiveDate": "2016-08-31"
+        }
+      ]
+    }
+  ]
+}
