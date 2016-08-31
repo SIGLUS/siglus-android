@@ -23,8 +23,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.PhysicalInventoryViewHolder;
+import org.openlmis.core.view.holder.PhysicalInventoryWithLotsViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.List;
@@ -43,16 +45,25 @@ public class PhysicalInventoryAdapter extends InventoryListAdapterWithBottomBtn 
 
     @Override
     public RecyclerView.ViewHolder onCreateItemViewHolder(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_physical_inventory, parent, false);
-        return new PhysicalInventoryViewHolder(view);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_physical_inventory_with_lots, parent, false);
+            return new PhysicalInventoryWithLotsViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_physical_inventory, parent, false);
+            return new PhysicalInventoryViewHolder(view);
+        }
     }
 
     @Override
     protected void populate(RecyclerView.ViewHolder viewHolder, int position) {
-        PhysicalInventoryViewHolder holder = (PhysicalInventoryViewHolder) viewHolder;
         final InventoryViewModel viewModel = filteredList.get(position);
-
-        holder.populate(viewModel, queryKeyWord);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+            PhysicalInventoryWithLotsViewHolder holder = (PhysicalInventoryWithLotsViewHolder) viewHolder;
+            holder.populate(viewModel, queryKeyWord);
+        } else {
+            PhysicalInventoryViewHolder holder = (PhysicalInventoryViewHolder) viewHolder;
+            holder.populate(viewModel, queryKeyWord);
+        }
     }
 
     @Override
