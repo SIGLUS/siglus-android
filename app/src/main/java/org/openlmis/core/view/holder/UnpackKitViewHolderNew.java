@@ -175,7 +175,7 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
 
     private void initExistingLotListView(final InventoryViewModel viewModel) {
         existingLotMovementAdapter = new LotMovementAdapter(viewModel.getExistingLotMovementViewModelList());
-                existingLotMovementAdapter.setMovementChangeListener(new LotMovementAdapter.MovementChangedListener() {
+        existingLotMovementAdapter.setMovementChangeListener(new LotMovementAdapter.MovementChangedListener() {
             @Override
             public void movementChange() {
                 updatePop(viewModel);

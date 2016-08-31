@@ -30,6 +30,7 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Inventory;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
@@ -39,10 +40,13 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
+import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -140,7 +144,15 @@ public class InventoryPresenter extends Presenter {
         return FluentIterable.from(validStockCardsForPhysicalInventory).transform(new Function<StockCard, InventoryViewModel>() {
             @Override
             public InventoryViewModel apply(StockCard stockCard) {
-                return new InventoryViewModel(stockCard);
+                InventoryViewModel inventoryViewModel = new InventoryViewModel(stockCard);
+                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+                    try {
+                        setExistingLotViewModels(inventoryViewModel);
+                    } catch (LMISException e) {
+                        e.reportToFabric();
+                    }
+                }
+                return inventoryViewModel;
             }
         }).toList();
     }
@@ -350,6 +362,29 @@ public class InventoryPresenter extends Presenter {
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+
+    private void setExistingLotViewModels(InventoryViewModel inventoryViewModel) throws LMISException {
+        ImmutableList<LotMovementViewModel> lotMovementViewModels = null;
+        try {
+            lotMovementViewModels = FluentIterable.from(stockRepository.getNonEmptyLotOnHandByStockCard(inventoryViewModel.getStockCard().getId())).transform(new Function<LotOnHand, LotMovementViewModel>() {
+                @Override
+                public LotMovementViewModel apply(LotOnHand lotOnHand) {
+                    return new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
+                            DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
+                            lotOnHand.getQuantityOnHand().toString(), MovementReasonManager.MovementType.RECEIVE);
+                }
+            }).toSortedList(new Comparator<LotMovementViewModel>() {
+                @Override
+                public int compare(LotMovementViewModel lot1, LotMovementViewModel lot2) {
+                    return DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR).compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+                }
+            });
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+        inventoryViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);
     }
 
     public interface InventoryView extends BaseView {
