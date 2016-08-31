@@ -5,9 +5,11 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @DatabaseTable(tableName = "lots_on_hand")
+@NoArgsConstructor
 public class LotOnHand extends BaseModel {
 
     @Expose
@@ -20,4 +22,10 @@ public class LotOnHand extends BaseModel {
     @Expose
     @DatabaseField
     Long quantityOnHand;
+
+    public LotOnHand(Lot lot, StockCard stockCard, long quantityOnHand) {
+        this.lot = lot;
+        this.stockCard = stockCard;
+        this.quantityOnHand = quantityOnHand;
+    }
 }
