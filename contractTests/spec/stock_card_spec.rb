@@ -32,7 +32,7 @@ describe "Sync stock card data" do
             },
           },
           {
-            lotNumber: "TEST1",
+            lotNumber: "TEST2",
             expirationDate: "2016-11-31",
             quantity: 100,
             customProps: {
@@ -56,7 +56,7 @@ describe "Sync stock card data" do
         },
         lotEventList: [
           {
-            lotNumber: "TEST-A",
+            lotNumber: "TEST1",
             expirationDate: "2016-10-31",
             quantity: 5,
             customProps: {
@@ -64,7 +64,7 @@ describe "Sync stock card data" do
             },
           },
           {
-            lotNumber: "TEST-B",
+            lotNumber: "TEST2",
             expirationDate: "2016-11-31",
             quantity: 100,
             customProps: {
@@ -140,7 +140,7 @@ describe "Sync stock card data" do
         productCode: "SCOD10",
         quantity: 1,
         type: "ADJUSTMENT",
-        reasonName: "UNPACK_KIT",
+        reasonName: "DISTRICT_DDM",
         occurred: "2015-10-30",
         referenceNumber: "referenceNumber4",
         customProps: {
@@ -188,5 +188,7 @@ describe "Sync stock card data" do
     lot_movement1 = stock_movement1['lotMovementItems'].detect{|lot_movement| lot_movement['lotNumber']=='TEST1'}
     expect(lot_movement1['quantity']).to eq 500
     expect(lot_movement1['extensions']['soh']).to eq '500'
+    lot_on_hand1 = stock_card1['lotsOnHand'].detect{|lot_on_hand| lot_on_hand['lot']['lotCode']=="TEST1"}
+    expect(lot_on_hand1['quantityOnHand']).to be 495
   end
 end
