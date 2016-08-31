@@ -276,6 +276,7 @@ Then (/^I add new lot with lot number "(.*?)"$/) do |lot_number|
         And I press "+ Add New Lot"
         And I wait for "lot number" to appear
         And I enter lot number "#{lot_number}" on add lot page
+        Then I set date to next year
         And I press "Complete"
         Then I should see "#{lot_number}"
     }
