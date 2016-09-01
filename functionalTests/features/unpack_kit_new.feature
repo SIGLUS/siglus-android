@@ -111,11 +111,13 @@ Feature: Unpack Kit
     Then I press "Complete Inventory"
     And I wait for "inventory" to appear
 
+    And I wait for 1 second
     When I search drug by fnm "15C0ZY"
     Then I should see "[15C0ZY]"
     Then I navigate back
     And I wait for 1 second
-    Then I do physical inventory for all items
+#    Then I do physical inventory for all items
+    Then I make lots adjustment of physical inventory for all items
 
     Then I wait for "Requisitions" to appear
     Then I should see text containing "Create Requisition Balancete"

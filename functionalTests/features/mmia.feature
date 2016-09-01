@@ -26,7 +26,6 @@ Feature: MMIA
     Then I should see text containing "No MMIA has been created."
     Then I press "Complete Inventory"
     And I wait for "inventory" to appear
-#    Then I do physical inventory for mmia items
     Then I make lots adjustment of physical inventory for mmia items
 
     Then I wait for "MMIA" to appear

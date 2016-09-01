@@ -246,5 +246,26 @@ Then(/^I do physical inventory for all items$/) do
   hide_soft_keyboard
 end
 
+Then(/^I make lots adjustment of physical inventory for all items$/) do
+  while !query("android.widget.EditText text:''").empty?
+    query("android.widget.EditText id:'et_lot_amount'", {:setText => '1'})
+
+    q = query("* marked:'Complete'")
+    while q.empty?
+        scroll('recyclerView', :down)
+        q = query("* marked:'Complete'")
+    end
+
+    tap_when_element_exists("* marked:'Complete'")
+  end
+
+
+  steps %Q{
+        And I wait for "Enter your initials" to appear
+        And I sign with "sign"
+    }
+  hide_soft_keyboard
+end
+
 
 
