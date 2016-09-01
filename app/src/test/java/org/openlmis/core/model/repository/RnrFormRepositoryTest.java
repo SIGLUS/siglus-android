@@ -25,10 +25,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
+import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.Lot;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
@@ -390,10 +394,15 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         StockCard stockCard = new StockCard();
         product.setId(20);
         stockCard.setProduct(product);
+        Lot lot = new Lot();
+        lot.setExpirationDate(DateUtil.parseString("Feb 2015", DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+        stockCard.setLotOnHandListWrapper(newArrayList(new LotOnHand(lot, stockCard, 10L)));
         when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
 
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
         RnrFormItem rnrFormItemByPeriod = rnrFormRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
 
+        assertThat(rnrFormItemByPeriod.getValidate(), is("01/02/2015"));
         assertThat(rnrFormItemByPeriod.getReceived(), is(0L));
         assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
         assertThat(rnrFormItemByPeriod.getInventory(), is(100L));

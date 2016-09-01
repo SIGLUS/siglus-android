@@ -434,6 +434,7 @@ public class StockRepository {
                 stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow("stockOnHand")));
                 stockCard.setAvgMonthlyConsumption(cursor.getFloat(cursor.getColumnIndexOrThrow("avgMonthlyConsumption")));
                 stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
+                stockCard.setLotOnHandListWrapper(getNonEmptyLotOnHandByStockCard(stockCard.getId()));
                 stockCardList.add(stockCard);
             } while (cursor.moveToNext());
         }
