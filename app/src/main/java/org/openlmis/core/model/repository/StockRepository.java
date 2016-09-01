@@ -158,6 +158,10 @@ public class StockRepository {
         if (!stockMovementItem.getLotMovementItemListWrapper().isEmpty()) {
             lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());
         }
+
+        if (!stockMovementItem.getNewAddedLotMovementItemListWrapper().isEmpty()) {
+            lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getNewAddedLotMovementItemListWrapper());
+        }
     }
 
     public void updateProductOfStockCard(Product product) {

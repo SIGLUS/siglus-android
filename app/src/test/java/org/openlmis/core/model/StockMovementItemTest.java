@@ -105,4 +105,27 @@ public class StockMovementItemTest {
         assertThat(stockMovementItem.getMovementQuantity(), is(30L));
     }
 
+    @Test
+    public void populateLotAndResetStockOnHandOfLotAccordingPhysicalAdjustment() throws ParseException {
+        LotMovementViewModel lotMovementViewModel1 = new LotMovementViewModel("ABC", "Dec 2016", "10", MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
+        lotMovementViewModel1.setQuantity("10");
+        LotMovementViewModel lotMovementViewModel2 = new LotMovementViewModel("DEF", "Nov 2016", "20", MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
+        lotMovementViewModel2.setQuantity("15");
+        LotMovementViewModel lotMovementViewModel3 = new LotMovementViewModel("HIJ", "Oct 2016", "30", MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
+        lotMovementViewModel3.setQuantity("5");
+
+        LotMovementViewModel lotMovementViewModelNew = new LotMovementViewModel("HIJ", "Oct 2016", "30", MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
+        lotMovementViewModelNew.setQuantity("10");
+
+        List<LotMovementViewModel> lotMovementViewModelList = newArrayList(lotMovementViewModel1, lotMovementViewModel2, lotMovementViewModel3);
+        List<LotMovementViewModel> newLotMovementViewModelList = newArrayList(lotMovementViewModelNew);
+
+        StockCard stockCard = StockCardBuilder.buildStockCard();
+        StockMovementItem stockMovementItem = new StockMovementItemBuilder().withMovementDate("2016-11-30").build();
+        stockMovementItem.setStockCard(stockCard);
+        stockMovementItem.populateLotAndResetStockOnHandOfLotAccordingPhysicalAdjustment(lotMovementViewModelList, newLotMovementViewModelList);
+        assertThat(stockMovementItem.getLotMovementItemListWrapper().get(0).getStockOnHand(), is(10L));
+        assertThat(stockMovementItem.getNewAddedLotMovementItemListWrapper().get(0).getMovementQuantity(), is(10L));
+    }
+
 }

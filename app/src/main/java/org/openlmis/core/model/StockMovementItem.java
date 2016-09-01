@@ -33,6 +33,7 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
+import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 import java.util.Date;
 import java.util.List;
@@ -91,6 +92,7 @@ public class StockMovementItem extends BaseModel {
     private ForeignCollection<LotMovementItem> foreignLotMovementItems;
 
     private List<LotMovementItem> lotMovementItemListWrapper;
+    private List<LotMovementItem> newAddedLotMovementItemListWrapper;
 
     public StockMovementItem(StockCard stockCard, InventoryViewModel model) {
         this.stockCard = stockCard;
@@ -133,6 +135,11 @@ public class StockMovementItem extends BaseModel {
         return lotMovementItemListWrapper;
     }
 
+    public List<LotMovementItem> getNewAddedLotMovementItemListWrapper() {
+        newAddedLotMovementItemListWrapper = ListUtil.wrapOrEmpty(foreignLotMovementItems, newAddedLotMovementItemListWrapper);
+        return newAddedLotMovementItemListWrapper;
+    }
+
     public void populateLotQuantitiesAndCalculateNewSOH(List<LotMovementViewModel> lotMovementViewModelList, MovementReasonManager.MovementType movementType) {
         final StockMovementItem stockMovementItem = this;
         if (!lotMovementViewModelList.isEmpty()) {
@@ -157,5 +164,30 @@ public class StockMovementItem extends BaseModel {
                 setStockOnHand(getStockOnHand() + movementQuantity);
             }
         }
+    }
+
+    public void populateLotAndResetStockOnHandOfLotAccordingPhysicalAdjustment(List<LotMovementViewModel> existingLotMovementList, List<LotMovementViewModel> newAddedLotMovementList) {
+        final StockMovementItem stockMovementItem = this;
+        ImmutableList<LotMovementItem> existingLotMovementItemList = FluentIterable.from(existingLotMovementList).transform(new Function<LotMovementViewModel, LotMovementItem>() {
+            @Override
+            public LotMovementItem apply(LotMovementViewModel lotMovementViewModel) {
+                LotMovementItem lotItem = lotMovementViewModel.convertViewToModelAndResetSOH(getStockCard().getProduct());
+                lotItem.setStockMovementItem(stockMovementItem);
+                lotItem.isResettingSOHFromPhysicalAdjustment = true;
+                return lotItem;
+            }
+        }).toList();
+
+        ImmutableList<LotMovementItem> newAddedLotMovementItemList = FluentIterable.from(newAddedLotMovementList).transform(new Function<LotMovementViewModel, LotMovementItem>() {
+            @Override
+            public LotMovementItem apply(LotMovementViewModel lotMovementViewModel) {
+                lotMovementViewModel.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
+                LotMovementItem lotItem = lotMovementViewModel.convertViewToModel(getStockCard().getProduct());
+                lotItem.setStockMovementItem(stockMovementItem);
+                return lotItem;
+            }
+        }).toList();
+        setLotMovementItemListWrapper(existingLotMovementItemList);
+        setNewAddedLotMovementItemListWrapper(newAddedLotMovementItemList);
     }
 }

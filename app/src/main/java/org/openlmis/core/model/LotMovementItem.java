@@ -31,6 +31,8 @@ public class LotMovementItem extends BaseModel {
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private StockMovementItem stockMovementItem;
 
+    boolean isResettingSOHFromPhysicalAdjustment = false;
+
     public long getLotOnHandChange() {
         if (stockMovementItem.getMovementType().equals(MovementReasonManager.MovementType.ISSUE)
                 || stockMovementItem.getMovementType().equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST)) {

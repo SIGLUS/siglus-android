@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
@@ -27,7 +28,7 @@ public class LotRepository {
             @Override
             public LotMovementItem operate(Dao<LotMovementItem, String> dao) throws SQLException, LMISException {
                 for (final LotMovementItem lotMovementItem : lotMovementItemListWrapper) {
-                    createOrUpdateLotAndLotOnHandAndUpdateLotMovementItem(lotMovementItem);
+                    createOrUpdateLotAndLotOnHand(lotMovementItem);
                     createLotMovementItem(lotMovementItem);
                 }
                 return null;
@@ -35,30 +36,39 @@ public class LotRepository {
         });
     }
 
-    private void createOrUpdateLotAndLotOnHandAndUpdateLotMovementItem(LotMovementItem lotMovementItem) throws LMISException {
-        Lot existingLot = getLotByLotNumberAndProductId(lotMovementItem.getLot().getLotNumber(), lotMovementItem.getLot().getProduct().getId());
+    private void createOrUpdateLotAndLotOnHand(LotMovementItem lotMovementItem) throws LMISException {
+        final Lot lot = lotMovementItem.getLot();
+        Lot existingLot = getLotByLotNumberAndProductId(lot.getLotNumber(), lot.getProduct().getId());
+        LotOnHand lotOnHand;
 
         if (existingLot == null) {
-            createLotAndLotOnHandFromLotMovementItem(lotMovementItem);
-        } else {
-            LotOnHand lotOnHand = getLotOnHandByLot(existingLot);
-            lotOnHand.setQuantityOnHand(lotOnHand.getQuantityOnHand() + lotMovementItem.getLotOnHandChange());
-            createOrUpdateLotOnHand(lotOnHand);
+            lot.setCreatedAt(new Date());
+            lot.setUpdatedAt(new Date());
+            lotOnHand = new LotOnHand();
+            lotOnHand.setLot(lot);
+            lotOnHand.setStockCard(lotMovementItem.getStockMovementItem().getStockCard());
+            createOrUpdateLot(lot);
+            lotOnHand.setQuantityOnHand(lotMovementItem.getMovementQuantity());
+            lotMovementItem.setStockOnHand(lotOnHand.getQuantityOnHand());
 
+            createOrUpdateLotOnHand(lotOnHand);
+        } else {
             lotMovementItem.setLot(existingLot);
+            lotOnHand = getLotOnHandByLot(existingLot);
+            if(lotMovementItem.isResettingSOHFromPhysicalAdjustment()){
+                lotOnHand.setQuantityOnHand(lotMovementItem.getStockOnHand());
+            } else {
+                if (lotMovementItem.getStockMovementItem().getMovementType().equals(MovementReasonManager.MovementType.ISSUE)
+                        || lotMovementItem.getStockMovementItem().getMovementType().equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST)) {
+                    lotOnHand.setQuantityOnHand(lotOnHand.getQuantityOnHand() - lotMovementItem.getMovementQuantity());
+                } else {
+                    lotOnHand.setQuantityOnHand(lotOnHand.getQuantityOnHand() + lotMovementItem.getMovementQuantity());
+                }
+            }
+
+            createOrUpdateLotOnHand(lotOnHand);
             lotMovementItem.setStockOnHand(lotOnHand.getQuantityOnHand());
         }
-    }
-
-    private void createLotAndLotOnHandFromLotMovementItem(LotMovementItem lotMovementItem) throws LMISException {
-        Lot lot = lotMovementItem.getLot();
-        lot.setCreatedAt(new Date());
-        lot.setUpdatedAt(new Date());
-        createOrUpdateLot(lot);
-
-        LotOnHand lotOnHand;
-        lotOnHand = new LotOnHand(lot, lotMovementItem.getStockMovementItem().getStockCard(), lotMovementItem.getMovementQuantity());
-        createOrUpdateLotOnHand(lotOnHand);
     }
 
     private void createOrUpdateLot(final Lot lot) throws LMISException {

@@ -233,9 +233,13 @@ public class InventoryPresenter extends Presenter {
 
 
     protected StockMovementItem calculateAdjustment(InventoryViewModel model, StockCard stockCard) {
-        long inventory = Long.parseLong(model.getQuantity());
+        long inventory;
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+             inventory = model.getLotListQuantityTotalAmount();
+        } else {
+             inventory = Long.parseLong(model.getQuantity());
+        }
         long stockOnHand = model.getStockOnHand();
-
         StockMovementItem item = new StockMovementItem();
         item.setSignature(model.getSignature());
         item.setMovementDate(new Date());
@@ -253,6 +257,18 @@ public class InventoryPresenter extends Presenter {
             item.setReason(MovementReasonManager.INVENTORY);
             item.setMovementType(MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
         }
+
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+            ImmutableList<LotMovementViewModel> existingLotMovementViewModelList = FluentIterable.from(model.getExistingLotMovementViewModelList()).filter(new Predicate<LotMovementViewModel>() {
+                @Override
+                public boolean apply(LotMovementViewModel lotMovementViewModel) {
+                    return lotMovementViewModel.quantityGreaterThanZero();
+                }
+            }).toList();
+
+            item.populateLotAndResetStockOnHandOfLotAccordingPhysicalAdjustment(existingLotMovementViewModelList, model.getLotMovementViewModelList());
+        }
+
         return item;
     }
 
@@ -303,7 +319,11 @@ public class InventoryPresenter extends Presenter {
                 try {
                     for (InventoryViewModel model : list) {
                         StockCard stockCard = model.getStockCard();
-                        stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
+                        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+                            stockCard.setStockOnHand(model.getLotListQuantityTotalAmount());
+                        } else {
+                            stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
+                        }
 
                         if (stockCard.getStockOnHand() == 0) {
                             stockCard.setExpireDates("");
