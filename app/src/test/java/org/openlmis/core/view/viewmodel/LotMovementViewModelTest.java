@@ -56,6 +56,16 @@ public class LotMovementViewModelTest {
         viewModel.setExpiryDate("Feb 2015");
 
         LotMovementItem lotMovementItem = viewModel.convertViewToModel(new Product());
-        assertEquals(new GregorianCalendar(2015,1,28).getTime(),lotMovementItem.getLot().getExpirationDate());
+        assertEquals(new GregorianCalendar(2015, 1, 28).getTime(), lotMovementItem.getLot().getExpirationDate());
+    }
+
+    @Test
+    public void shouldConvertLotMovementItemWithRightStockOnHand() throws Exception {
+        viewModel.setQuantity("10");
+        viewModel.setLotNumber("lot1");
+        viewModel.setExpiryDate("Feb 2015");
+
+        LotMovementItem lotMovementItem = viewModel.convertViewToModelAndResetSOH(new Product());
+        assertEquals(Long.parseLong(viewModel.getLotSoh()), lotMovementItem.getStockOnHand());
     }
 }

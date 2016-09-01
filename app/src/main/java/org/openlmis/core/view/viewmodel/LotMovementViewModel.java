@@ -61,7 +61,7 @@ public class LotMovementViewModel implements Serializable {
         Lot lot = new Lot();
         lot.setProduct(product);
         lot.setLotNumber(lotNumber);
-        lot.setExpirationDate(DateUtil.getActualMaximumDate(DateUtil.parseString(expiryDate,DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)));
+        lot.setExpirationDate(DateUtil.getActualMaximumDate(DateUtil.parseString(expiryDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)));
         lotMovementItem.setLot(lot);
         lotMovementItem.setMovementQuantity(Long.parseLong(quantity));
         return lotMovementItem;
@@ -70,4 +70,19 @@ public class LotMovementViewModel implements Serializable {
     public boolean quantityGreaterThanZero() {
         return !StringUtils.isBlank(quantity) && Long.parseLong(quantity) > 0;
     }
+
+    public LotMovementItem convertViewToModelAndResetSOH(Product product) {
+        if(lotSoh==null) setLotSoh("0");
+        this.setLotSoh(quantity);
+        LotMovementItem lotMovementItem = new LotMovementItem();
+        Lot lot = new Lot();
+        lot.setProduct(product);
+        lot.setLotNumber(lotNumber);
+        lot.setExpirationDate(DateUtil.getActualMaximumDate(DateUtil.parseString(expiryDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)));
+        lotMovementItem.setLot(lot);
+        lotMovementItem.setStockOnHand(Long.parseLong(lotSoh));
+        lotMovementItem.setMovementQuantity(0L);
+        return lotMovementItem;
+    }
+
 }
