@@ -21,8 +21,6 @@ package org.openlmis.core.view.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
@@ -93,20 +91,24 @@ public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> e
     @Override
     public int validateAll() {
         int position = -1;
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            for (int i = 0; i < data.size(); i++) {
-                if (!data.get(i).hasConfirmedNoStockReceived()) {
-                    if (data.get(i).getLotListQuantityTotalAmount() <= 0) {
-                        position = i;
-                        data.get(position).setShouldShowEmptyLotWarning(true);
-                        break;
-                    }
-                }
+        for (int i = 0; i < data.size(); i++) {
+            if (!data.get(i).validate(false)) {
+                position = i;
+                break;
             }
-        } else {
-            for (int i = 0; i < data.size(); i++) {
-                if (!data.get(i).validate(false)) {
+        }
+
+        this.notifyDataSetChanged();
+        return position;
+    }
+
+    public int validateAllLotListAmountIsNotEmpty() {
+        int position = -1;
+        for (int i = 0; i < data.size(); i++) {
+            if (!data.get(i).hasConfirmedNoStockReceived()) {
+                if (data.get(i).getLotListQuantityTotalAmount() <= 0) {
                     position = i;
+                    data.get(position).setShouldShowEmptyLotWarning(true);
                     break;
                 }
             }
