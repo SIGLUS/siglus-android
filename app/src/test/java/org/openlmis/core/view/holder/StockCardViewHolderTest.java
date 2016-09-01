@@ -114,7 +114,7 @@ public class StockCardViewHolderTest {
         stockCard.setExpireDates("");
         InventoryViewModel inventoryViewModel = new InventoryViewModel(stockCard);
 
-        viewHolder.inflateDate(inventoryViewModel, "");
+        viewHolder.inflateData(inventoryViewModel, "");
 
         assertNull(viewHolder.ivExpiryDateWarning);
     }

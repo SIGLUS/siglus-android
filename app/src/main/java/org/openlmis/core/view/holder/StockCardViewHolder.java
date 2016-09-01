@@ -58,10 +58,10 @@ public class StockCardViewHolder extends BaseViewHolder {
 
     public void populate(final InventoryViewModel inventoryViewModel, String queryKeyWord) {
         setListener(inventoryViewModel);
-        inflateDate(inventoryViewModel, queryKeyWord);
+        inflateData(inventoryViewModel, queryKeyWord);
     }
 
-    protected void inflateDate(InventoryViewModel inventoryViewModel, String queryKeyWord) {
+    protected void inflateData(InventoryViewModel inventoryViewModel, String queryKeyWord) {
         tvStockOnHand.setText(inventoryViewModel.getStockOnHand() + "");
         tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledName()));
         tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, inventoryViewModel.getStyledUnit()));
@@ -72,26 +72,42 @@ public class StockCardViewHolder extends BaseViewHolder {
     }
 
     private void initExpiryDateWarning(InventoryViewModel inventoryViewModel) {
-        String earliestExpiryDateString = inventoryViewModel.getStockCard().getEarliestExpireDate();
-        if (TextUtils.isEmpty(earliestExpiryDateString)) {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+            Date earliestLotExpiryDate = inventoryViewModel.getStockCard().getEarliestLotExpiryDate();
+
+            if (earliestLotExpiryDate != null) {
+                if (earliestLotExpiryDate.before(new Date())) {
+                    showExpiryDateWithMessage(context.getString(R.string.msg_expired_warning));
+                    return;
+                }
+                if (DateUtil.calculateDateMonthOffset(new Date(), earliestLotExpiryDate) <= 3) {
+                    showExpiryDateWithMessage(context.getString(R.string.msg_expiry_warning));
+                    return;
+                }
+            }
             hideExpiryDate();
-            return;
+        } else {
+            String earliestExpiryDateString = inventoryViewModel.getStockCard().getEarliestExpireDate();
+            if (TextUtils.isEmpty(earliestExpiryDateString)) {
+                hideExpiryDate();
+                return;
+            }
+
+            Date earliestExpiryDate = DateUtil.parseString(earliestExpiryDateString, DateUtil.SIMPLE_DATE_FORMAT);
+            Date currentDate = new Date(LMISApp.getInstance().getCurrentTimeMillis());
+
+            if (DateUtil.calculateDateMonthOffset(earliestExpiryDate, currentDate) > 0) {
+                showExpiryDateWithMessage(context.getString(R.string.msg_expired_warning));
+                return;
+            }
+
+            if (DateUtil.calculateDateMonthOffset(currentDate, earliestExpiryDate) <= 3) {
+                showExpiryDateWithMessage(context.getString(R.string.msg_expiry_warning));
+                return;
+            }
+
+            hideExpiryDate();
         }
-
-        Date earliestExpiryDate = DateUtil.parseString(earliestExpiryDateString, DateUtil.SIMPLE_DATE_FORMAT);
-        Date currentDate = new Date(LMISApp.getInstance().getCurrentTimeMillis());
-
-        if (DateUtil.calculateDateMonthOffset(earliestExpiryDate, currentDate) > 0) {
-            showExpiryDateWithMessage(context.getString(R.string.msg_expired_warning));
-            return;
-        }
-
-        if (DateUtil.calculateDateMonthOffset(currentDate, earliestExpiryDate) <= 3) {
-            showExpiryDateWithMessage(context.getString(R.string.msg_expiry_warning));
-            return;
-        }
-
-        hideExpiryDate();
     }
 
     private void showExpiryDateWithMessage(String expiryMsg) {
@@ -139,7 +155,7 @@ public class StockCardViewHolder extends BaseViewHolder {
 
         switch (stockOnHandLevel) {
             case STOCK_ON_HAND_OVER_STOCK:
-                if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_over_stock)) {
+                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_over_stock)) {
                     stockOnHandBg.setBackgroundResource(R.color.color_over_stock);
                     tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_white));
                     showWarning(context.getString(R.string.msg_over_stock_warning));

@@ -238,10 +238,6 @@ public class LoginPresenter extends Presenter {
         hasGoneToNextPage = true;
     }
 
-    public User getLatestUser() {
-        return userRepository.getLocalUser();
-    }
-
     public interface LoginView extends BaseView {
 
         void clearPassword();

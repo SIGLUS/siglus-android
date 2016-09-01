@@ -10,8 +10,10 @@ import org.openlmis.core.utils.DateUtil;
 import java.io.Serializable;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class LotMovementViewModel implements Serializable {
 
     private String lotNumber;
@@ -23,8 +25,6 @@ public class LotMovementViewModel implements Serializable {
     boolean valid = true;
     boolean quantityValid = true;
     boolean hasDataChanged = false;
-
-    public LotMovementViewModel() {}
 
     public LotMovementViewModel(String lotNumber, String expiryDate, MovementReasonManager.MovementType movementType) {
         this.lotNumber = lotNumber;
