@@ -85,4 +85,11 @@ public class LotMovementViewModel implements Serializable {
         return lotMovementItem;
     }
 
+    public boolean validateExistingLot() {
+        valid = StringUtils.isNumeric(quantity)
+                && !StringUtils.isBlank(lotNumber)
+                && !StringUtils.isBlank(expiryDate)
+                && !StringUtils.isBlank(quantity);
+        return valid;
+    }
 }

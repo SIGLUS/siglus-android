@@ -224,11 +224,20 @@ public class InventoryViewModel {
 
     public boolean validatePhysical() {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            valid = !checked || validateLotList() || product.isArchived();
+            valid = !checked || (validateLotList() && validateExistingLot()) || product.isArchived();
         } else {
             valid = !checked || StringUtils.isNumeric(quantity) || product.isArchived();
         }
         return valid;
+    }
+
+    private boolean validateExistingLot() {
+        for (LotMovementViewModel lotMovementViewModel : existingLotMovementViewModelList) {
+            if (!lotMovementViewModel.validateExistingLot()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean validateLotList() {
