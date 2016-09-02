@@ -316,31 +316,26 @@ public class InventoryPresenter extends Presenter {
         return Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
-                try {
-                    for (InventoryViewModel model : list) {
-                        StockCard stockCard = model.getStockCard();
-                        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                            stockCard.setStockOnHand(model.getLotListQuantityTotalAmount());
-                        } else {
-                            stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
-                        }
-
-                        if (stockCard.getStockOnHand() == 0) {
-                            stockCard.setExpireDates("");
-                        }
-
-                        stockRepository.addStockMovementAndUpdateStockCard(calculateAdjustment(model, stockCard));
+                for (InventoryViewModel model : list) {
+                    StockCard stockCard = model.getStockCard();
+                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+                        stockCard.setStockOnHand(model.getLotListQuantityTotalAmount());
+                    } else {
+                        stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
                     }
-                    stockRepository.clearDraftInventory();
-                    sharedPreferenceMgr.setLatestPhysicInventoryTime(DateUtil.formatDate(new Date(), DateUtil.DATE_TIME_FORMAT));
-                    saveInventoryDate();
 
-                    subscriber.onNext(null);
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    subscriber.onError(e);
-                    e.printStackTrace();
+                    if (stockCard.getStockOnHand() == 0) {
+                        stockCard.setExpireDates("");
+                    }
+
+                    stockRepository.addStockMovementAndUpdateStockCard(calculateAdjustment(model, stockCard));
                 }
+                stockRepository.clearDraftInventory();
+                sharedPreferenceMgr.setLatestPhysicInventoryTime(DateUtil.formatDate(new Date(), DateUtil.DATE_TIME_FORMAT));
+                saveInventoryDate();
+
+                subscriber.onNext(null);
+                subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }

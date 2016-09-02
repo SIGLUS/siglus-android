@@ -133,21 +133,19 @@ public class StockRepository {
         stockMovementItem.setUpdatedAt(new Date());
     }
 
-    public void saveStockCardAndBatchUpdateMovements(final StockCard stockCard) throws LMISException {
+    public void saveStockCardAndBatchUpdateMovements(final StockCard stockCard) {
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
                     createOrUpdate(stockCard);
-                    if (stockCard.getLotOnHandListWrapper() != null) {
-                        lotRepository.createOrUpdateLotsInformation(stockCard.getLotOnHandListWrapper());
-                    }
+                    lotRepository.createOrUpdateLotsInformation(stockCard.getLotOnHandListWrapper());
                     batchCreateOrUpdateStockMovementsAndLotMovements(stockCard.getStockMovementItemsWrapper());
                     return null;
                 }
             });
         } catch (SQLException e) {
-            throw new LMISException(e);
+            new LMISException(e).reportToFabric();
         }
     }
 
@@ -155,13 +153,8 @@ public class StockRepository {
         stockMovementItem.setCreatedTime(new Date(LMISApp.getInstance().getCurrentTimeMillis()));
         stockItemGenericDao.create(stockMovementItem);
 
-        if (!stockMovementItem.getLotMovementItemListWrapper().isEmpty()) {
-            lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());
-        }
-
-        if (!stockMovementItem.getNewAddedLotMovementItemListWrapper().isEmpty()) {
-            lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getNewAddedLotMovementItemListWrapper());
-        }
+        lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getLotMovementItemListWrapper());
+        lotRepository.batchCreateLotsAndLotMovements(stockMovementItem.getNewAddedLotMovementItemListWrapper());
     }
 
     public void updateProductOfStockCard(Product product) {
@@ -172,7 +165,7 @@ public class StockRepository {
         }
     }
 
-    public void createOrUpdateStockCardWithStockMovement(final StockCard stockCard) throws LMISException {
+    public void createOrUpdateStockCardWithStockMovement(final StockCard stockCard){
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
@@ -184,11 +177,11 @@ public class StockRepository {
                 }
             });
         } catch (SQLException e) {
-            throw new LMISException(e);
+            new LMISException(e).reportToFabric();
         }
     }
 
-    public void addStockMovementAndUpdateStockCard(final StockMovementItem stockMovementItem) throws LMISException {
+    public void addStockMovementAndUpdateStockCard(final StockMovementItem stockMovementItem) {
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
@@ -200,7 +193,7 @@ public class StockRepository {
                 }
             });
         } catch (SQLException e) {
-            throw new LMISException(e);
+            new LMISException(e).reportToFabric();
         }
 
     }
@@ -331,11 +324,11 @@ public class StockRepository {
         return draftInventoryGenericDao.queryForAll();
     }
 
-    public void clearDraftInventory() throws LMISException {
+    public void clearDraftInventory() {
         try {
             TableUtils.clearTable(LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(), DraftInventory.class);
         } catch (SQLException e) {
-            throw new LMISException(e);
+            new LMISException(e).reportToFabric();
         }
     }
 
@@ -374,22 +367,15 @@ public class StockRepository {
 
     }
 
-    public Date queryEarliestStockMovementDateByProgram(final String programCode) throws LMISException {
+    public Date queryEarliestStockMovementDateByProgram(final String programCode) {
         Date earliestDate = null;
 
         String rawSql = "SELECT movementDate FROM stock_items s1 "
-                + "JOIN stock_cards s2 "
-                + "ON s1.stockCard_id = s2.id "
-                + "JOIN products p1 "
-                + "ON s2.product_id = p1.id "
-                + "JOIN product_programs p2 "
-                + "ON p2.productCode = p1.code "
-                + "JOIN programs p3 "
-                + "ON p2.programCode = p3.programCode "
-                + "WHERE p1.isActive = 1 "
-                + "AND p1.isArchived = 0 "
-                + "AND p2.isActive = 1 "
-                + "AND p3.programCode = '" + programCode + "' "
+                + "JOIN stock_cards s2 ON s1.stockCard_id = s2.id "
+                + "JOIN products p1 ON s2.product_id = p1.id "
+                + "JOIN product_programs p2 ON p2.productCode = p1.code "
+                + "JOIN programs p3 ON p2.programCode = p3.programCode "
+                + "WHERE p1.isActive = 1 AND p1.isArchived = 0 AND p2.isActive = 1 AND p3.programCode = '" + programCode + "' "
                 + "OR p3.parentCode = '" + programCode + "'";
         final Cursor cursor = LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().rawQuery(rawSql, null);
         List<String> movementDates = new ArrayList<>();
@@ -398,7 +384,7 @@ public class StockRepository {
                 movementDates.add(cursor.getString(cursor.getColumnIndexOrThrow("movementDate")));
             } while (cursor.moveToNext());
         }
-        if (cursor != null && !cursor.isClosed()) {
+        if (!cursor.isClosed()) {
             cursor.close();
         }
 

@@ -104,7 +104,8 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
     }
 
     public List<StockMovementItem> getStockMovementItemsWrapper() {
-        return ListUtil.wrapOrEmpty(foreignStockMovementItems, stockMovementItemsWrapper);
+        stockMovementItemsWrapper = ListUtil.wrapOrEmpty(foreignStockMovementItems, stockMovementItemsWrapper);
+        return stockMovementItemsWrapper;
     }
 
     public int getCMM() {
@@ -120,7 +121,8 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
     }
 
     public List<LotOnHand> getLotOnHandListWrapper() {
-        return ListUtil.wrapOrEmpty(foreignLotOnHandList, lotOnHandListWrapper);
+        lotOnHandListWrapper = ListUtil.wrapOrEmpty(foreignLotOnHandList, lotOnHandListWrapper);
+        return lotOnHandListWrapper;
     }
 
     public Date getEarliestLotExpiryDate() {
