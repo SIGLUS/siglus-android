@@ -32,7 +32,6 @@ import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
@@ -195,25 +194,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(items.size(), is(2));
         assertThat(items.get(0).isSynced(), is(true));
         assertThat(items.get(1).isSynced(), is(true));
-    }
-
-    @Test
-    public void shouldListDraftInventory() throws Exception {
-        saveDraftInventory();
-
-        List<DraftInventory> draftInventories = stockRepository.inventoryRepository.queryAllDraft();
-        assertThat(draftInventories.get(0).getQuantity(), is(10L));
-        assertThat(draftInventories.get(0).getExpireDates(), is("11/10/2015"));
-        assertThat(draftInventories.get(1).getQuantity(), is(20L));
-        assertThat(draftInventories.get(1).getExpireDates(), is("12/10/2015"));
-    }
-
-    @Test
-    public void shouldClearDraftInventory() throws Exception {
-        saveDraftInventory();
-        Assert.assertThat(stockRepository.inventoryRepository.queryAllDraft().size(), is(2));
-        stockRepository.clearDraftInventory();
-        Assert.assertThat(stockRepository.inventoryRepository.queryAllDraft().size(), is(0));
     }
 
     @Test
@@ -506,20 +486,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(lotOnHandList.get(0).getQuantityOnHand(), is(500L));
         assertThat(lotOnHandList.get(1).getLot().getLotNumber(), is("B111"));
         assertThat(lotOnHandList.get(1).getQuantityOnHand(), is(200L));
-    }
-
-    private void saveDraftInventory() throws LMISException {
-        DraftInventory draftInventory1 = new DraftInventory();
-        draftInventory1.setQuantity(10L);
-        draftInventory1.setExpireDates("11/10/2015");
-        DraftInventory draftInventory2 = new DraftInventory();
-        draftInventory2.setQuantity(20L);
-        draftInventory2.setExpireDates("12/10/2015");
-
-        stockRepository.inventoryRepository.createDraft(draftInventory1);
-//        draftInventoryGenericDao.create(draftInventory);
-        stockRepository.inventoryRepository.createDraft(draftInventory2);
-//        draftInventoryGenericDao.create(draftInventory);
     }
 
     private void saveTestProduct() throws LMISException {

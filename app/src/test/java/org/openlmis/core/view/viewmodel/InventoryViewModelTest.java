@@ -9,12 +9,14 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.view.holder.StockCardViewHolder;
 
+import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -178,5 +180,23 @@ public class InventoryViewModelTest {
         inventoryViewModel.lotMovementViewModelList.add(lotMovementViewModel);
 
         assertTrue(inventoryViewModel.validate(false));
+    }
+
+    @Test
+    public void shouldParseDraftInventory() {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
+        LotMovementViewModel lotMovementViewModel1 = new LotMovementViewModelBuilder().setLotNumber("lot1").setExpiryDate("Feb 2015").build();
+        LotMovementViewModel lotMovementViewModel2 = new LotMovementViewModelBuilder().setLotNumber("lot2").setExpiryDate("Feb 2015").build();
+
+        viewModel.setExistingLotMovementViewModelList(newArrayList(lotMovementViewModel1));
+        viewModel.setLotMovementViewModelList(newArrayList(lotMovementViewModel2));
+        viewModel.setQuantity("10");
+
+        DraftInventory draftInventory = viewModel.parseDraftInventory();
+        assertThat(draftInventory.getDraftLotItemListWrapper().get(0).isNewAdded(), is(false));
+        assertThat(draftInventory.getDraftLotItemListWrapper().get(0).getLot().getLotNumber(), is("lot1"));
+        assertThat(draftInventory.getDraftLotItemListWrapper().get(1).isNewAdded(), is(true));
+        assertThat(draftInventory.getDraftLotItemListWrapper().get(1).getLot().getLotNumber(), is("lot2"));
+
     }
 }

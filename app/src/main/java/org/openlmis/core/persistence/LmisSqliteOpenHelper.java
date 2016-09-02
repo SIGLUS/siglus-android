@@ -52,6 +52,7 @@ import org.openlmis.core.persistence.migrations.ChangeMovementReasonToCode;
 import org.openlmis.core.persistence.migrations.ChangeProgramTableName;
 import org.openlmis.core.persistence.migrations.ConvertEssMedsToVIAProgram;
 import org.openlmis.core.persistence.migrations.CreateDraftInventoryTable;
+import org.openlmis.core.persistence.migrations.CreateDraftLotMovementTable;
 import org.openlmis.core.persistence.migrations.CreateDummyRegimes;
 import org.openlmis.core.persistence.migrations.CreateInitTables;
 import org.openlmis.core.persistence.migrations.CreateKitProductsTable;
@@ -111,6 +112,7 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
             add(new AddLotsTable());
             add(new AddLotMovementItemsTable());
             add(new AddLotOnHandTable());
+            add(new CreateDraftLotMovementTable());
         }
     };
     private static int instanceCount = 0;

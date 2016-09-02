@@ -71,7 +71,7 @@ public class LotRepository {
         }
     }
 
-    private void createOrUpdateLot(final Lot lot) throws LMISException {
+    public void createOrUpdateLot(final Lot lot) throws LMISException {
         dbUtil.withDao(Lot.class, new DbUtil.Operation<Lot, Void>() {
             @Override
             public Void operate(Dao<Lot, String> dao) throws SQLException {

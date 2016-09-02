@@ -316,26 +316,31 @@ public class InventoryPresenter extends Presenter {
         return Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
-                for (InventoryViewModel model : list) {
-                    StockCard stockCard = model.getStockCard();
-                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                        stockCard.setStockOnHand(model.getLotListQuantityTotalAmount());
-                    } else {
-                        stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
-                    }
+                try {
+                    for (InventoryViewModel model : list) {
+                        StockCard stockCard = model.getStockCard();
+                        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+                            stockCard.setStockOnHand(model.getLotListQuantityTotalAmount());
+                        } else {
+                            stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
+                        }
 
-                    if (stockCard.getStockOnHand() == 0) {
-                        stockCard.setExpireDates("");
-                    }
+                        if (stockCard.getStockOnHand() == 0) {
+                            stockCard.setExpireDates("");
+                        }
 
-                    stockRepository.addStockMovementAndUpdateStockCard(calculateAdjustment(model, stockCard));
+                        stockRepository.addStockMovementAndUpdateStockCard(calculateAdjustment(model, stockCard));
+                    }
+                    inventoryRepository.clearDraft();
+                    sharedPreferenceMgr.setLatestPhysicInventoryTime(DateUtil.formatDate(new Date(), DateUtil.DATE_TIME_FORMAT));
+                    saveInventoryDate();
+
+                    subscriber.onNext(null);
+                    subscriber.onCompleted();
+                } catch (LMISException e) {
+                    subscriber.onError(e);
+                    e.printStackTrace();
                 }
-                stockRepository.clearDraftInventory();
-                sharedPreferenceMgr.setLatestPhysicInventoryTime(DateUtil.formatDate(new Date(), DateUtil.DATE_TIME_FORMAT));
-                saveInventoryDate();
-
-                subscriber.onNext(null);
-                subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
@@ -378,6 +383,7 @@ public class InventoryPresenter extends Presenter {
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
+
 
     private void setExistingLotViewModels(InventoryViewModel inventoryViewModel) throws LMISException {
         ImmutableList<LotMovementViewModel> lotMovementViewModels = null;

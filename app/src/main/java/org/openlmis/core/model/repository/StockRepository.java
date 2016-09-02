@@ -23,7 +23,6 @@ import android.database.Cursor;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
-import com.j256.ormlite.table.TableUtils;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
@@ -316,14 +315,6 @@ public class StockRepository {
                 return Lists.reverse(dao.queryBuilder().offset(startIndex).limit(maxRows).orderBy("movementDate", false).orderBy("createdTime", false).orderBy("id", false).where().eq("stockCard_id", stockCardId).query());
             }
         });
-    }
-
-    public void clearDraftInventory() {
-        try {
-            TableUtils.clearTable(LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(), DraftInventory.class);
-        } catch (SQLException e) {
-            new LMISException(e).reportToFabric();
-        }
     }
 
     public StockMovementItem queryFirstStockMovementItem(final StockCard stockCard) throws LMISException {

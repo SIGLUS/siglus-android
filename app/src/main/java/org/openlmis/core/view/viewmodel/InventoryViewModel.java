@@ -239,19 +239,25 @@ public class InventoryViewModel {
     }
 
     public DraftInventory parseDraftInventory() {
-        DraftInventory draftInventory = new DraftInventory();
+        final DraftInventory draftInventory = new DraftInventory(stockCard);
         draftInventory.setExpireDates(DateUtil.formatExpiryDateString(expiryDates));
 
-        Long quantity;
-        try {
-            quantity = Long.parseLong(getQuantity());
-        } catch (NumberFormatException e) {
-            e.printStackTrace();//todo: ???
-            quantity = null;
-        }
-        draftInventory.setQuantity(quantity);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+            long quantity = getLotListQuantityTotalAmount();
+            draftInventory.setQuantity(quantity);
 
-        draftInventory.setStockCard(stockCard);
+            draftInventory.setupDraftLotList(getExistingLotMovementViewModelList(), getLotMovementViewModelList());
+        } else {
+            Long quantity;
+            try {
+                quantity = Long.parseLong(getQuantity());
+            } catch (NumberFormatException e) {
+                e.printStackTrace();//todo: ???
+                quantity = null;
+            }
+            draftInventory.setQuantity(quantity);
+        }
+
         return draftInventory;
     }
 
