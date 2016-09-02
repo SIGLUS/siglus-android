@@ -52,6 +52,7 @@ import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.service.PeriodService;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
+import org.roboguice.shaded.goole.common.collect.Lists;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -64,6 +65,7 @@ import roboguice.RoboGuice;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
@@ -407,6 +409,11 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
         assertThat(rnrFormItemByPeriod.getInventory(), is(100L));
         assertThat(rnrFormItemByPeriod.getInitialAmount(), is(100L));
+
+        stockCard.setLotOnHandListWrapper(Lists.<LotOnHand>newArrayList());
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
+        rnrFormItemByPeriod = rnrFormRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
+        assertNull(rnrFormItemByPeriod.getValidate());
     }
 
     @Test

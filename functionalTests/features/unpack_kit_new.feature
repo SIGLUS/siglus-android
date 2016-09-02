@@ -1,4 +1,4 @@
-@UNPACK_KIT @dev
+@unpack_kit_dev @dev
 Feature: Unpack Kit
 
   Scenario: Unpack US kit and verify kit products SOH

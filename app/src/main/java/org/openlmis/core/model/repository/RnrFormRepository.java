@@ -273,7 +273,10 @@ public class RnrFormRepository {
 
         rnrFormItem.setProduct(stockCard.getProduct());
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            rnrFormItem.setValidate(DateUtil.formatDate(stockCard.getEarliestLotExpiryDate(),DateUtil.SIMPLE_DATE_FORMAT));
+            Date earliestLotExpiryDate = stockCard.getEarliestLotExpiryDate();
+            if (earliestLotExpiryDate != null) {
+                rnrFormItem.setValidate(DateUtil.formatDate(earliestLotExpiryDate, DateUtil.SIMPLE_DATE_FORMAT));
+            }
         } else {
             rnrFormItem.setValidate(stockCard.getEarliestExpireDate());
         }
