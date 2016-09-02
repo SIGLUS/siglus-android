@@ -167,7 +167,7 @@ public class InventoryPresenter extends Presenter {
     }
 
     protected void restoreDraftInventory(List<InventoryViewModel> inventoryViewModels) throws LMISException {
-        List<DraftInventory> draftList = stockRepository.listDraftInventory();
+        List<DraftInventory> draftList = inventoryRepository.queryAllDraft();
 
         for (InventoryViewModel model : inventoryViewModels) {
             for (DraftInventory draftInventory : draftList) {
@@ -284,7 +284,7 @@ public class InventoryPresenter extends Presenter {
             public void call(Subscriber<? super Object> subscriber) {
                 try {
                     for (InventoryViewModel model : list) {
-                        stockRepository.saveDraftInventory(model.parseDraftInventory());
+                        inventoryRepository.createDraft(model.parseDraftInventory());
                     }
                     subscriber.onNext(null);
                     subscriber.onCompleted();

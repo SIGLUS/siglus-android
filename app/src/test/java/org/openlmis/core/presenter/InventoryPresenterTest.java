@@ -369,7 +369,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         draftInventory.setQuantity(20L);
         draftInventory.setExpireDates("11/10/2015");
         draftInventories.add(draftInventory);
-        when(stockRepositoryMock.listDraftInventory()).thenReturn(draftInventories);
+        when(mockInventoryRepository.queryAllDraft()).thenReturn(draftInventories);
 
         inventoryPresenter.restoreDraftInventory(inventoryViewModels);
         assertThat(inventoryViewModels.get(0).getQuantity(), is("20"));
@@ -391,7 +391,7 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         draftInventory.setExpireDates("11/10/2015");
         draftInventories.add(draftInventory);
 
-        when(stockRepositoryMock.listDraftInventory()).thenReturn(draftInventories);
+        when(mockInventoryRepository.queryAllDraft()).thenReturn(draftInventories);
 
         inventoryPresenter.restoreDraftInventory(inventoryViewModels);
         assertThat(inventoryViewModels.get(0).getQuantity(), is(""));

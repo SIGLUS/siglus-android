@@ -65,6 +65,8 @@ public class StockRepository {
     ProductProgramRepository productProgramRepository;
     @Inject
     LotRepository lotRepository;
+    @Inject
+    InventoryRepository inventoryRepository;
 
     GenericDao<StockCard> genericDao;
     GenericDao<StockMovementItem> stockItemGenericDao;
@@ -314,14 +316,6 @@ public class StockRepository {
                 return Lists.reverse(dao.queryBuilder().offset(startIndex).limit(maxRows).orderBy("movementDate", false).orderBy("createdTime", false).orderBy("id", false).where().eq("stockCard_id", stockCardId).query());
             }
         });
-    }
-
-    public void saveDraftInventory(DraftInventory draftInventory) throws LMISException {
-        draftInventoryGenericDao.create(draftInventory);
-    }
-
-    public List<DraftInventory> listDraftInventory() throws LMISException {
-        return draftInventoryGenericDao.queryForAll();
     }
 
     public void clearDraftInventory() {

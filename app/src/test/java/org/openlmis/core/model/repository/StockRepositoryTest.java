@@ -201,7 +201,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     public void shouldListDraftInventory() throws Exception {
         saveDraftInventory();
 
-        List<DraftInventory> draftInventories = stockRepository.listDraftInventory();
+        List<DraftInventory> draftInventories = stockRepository.inventoryRepository.queryAllDraft();
         assertThat(draftInventories.get(0).getQuantity(), is(10L));
         assertThat(draftInventories.get(0).getExpireDates(), is("11/10/2015"));
         assertThat(draftInventories.get(1).getQuantity(), is(20L));
@@ -211,9 +211,9 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldClearDraftInventory() throws Exception {
         saveDraftInventory();
-        Assert.assertThat(stockRepository.listDraftInventory().size(), is(2));
+        Assert.assertThat(stockRepository.inventoryRepository.queryAllDraft().size(), is(2));
         stockRepository.clearDraftInventory();
-        Assert.assertThat(stockRepository.listDraftInventory().size(), is(0));
+        Assert.assertThat(stockRepository.inventoryRepository.queryAllDraft().size(), is(0));
     }
 
     @Test
@@ -516,8 +516,10 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         draftInventory2.setQuantity(20L);
         draftInventory2.setExpireDates("12/10/2015");
 
-        stockRepository.saveDraftInventory(draftInventory1);
-        stockRepository.saveDraftInventory(draftInventory2);
+        stockRepository.inventoryRepository.createDraft(draftInventory1);
+//        draftInventoryGenericDao.create(draftInventory);
+        stockRepository.inventoryRepository.createDraft(draftInventory2);
+//        draftInventoryGenericDao.create(draftInventory);
     }
 
     private void saveTestProduct() throws LMISException {
