@@ -132,6 +132,7 @@ public class InventoryPresenter extends Presenter {
                     List<InventoryViewModel> inventoryViewModels = convertStockCardsToStockCardViewModels(validStockCardsForPhysicalInventory);
 
                     restoreDraftInventory(inventoryViewModels);
+                    inventoryRepository.clearDraft();
                     subscriber.onNext(inventoryViewModels);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
@@ -187,26 +188,16 @@ public class InventoryPresenter extends Presenter {
         List<LotMovementViewModel> existingLotMovementViewModelList = model.getExistingLotMovementViewModelList();
         List<LotMovementViewModel> newAddedLotMovementVieModelList = model.getLotMovementViewModelList();
         for (DraftLotItem draftLotItem : draftInventory.getDraftLotItemListWrapper()) {
-            for (LotMovementViewModel existingLotMovementViewModel : existingLotMovementViewModelList) {
-                if (draftLotItem.getLot().getLotNumber().equals(existingLotMovementViewModel.getLotNumber())
-                        && !draftLotItem.isNewAdded()) {
-                    existingLotMovementViewModel.setQuantity(draftLotItem.getQuantity().toString());
-                }
-            }
-
-            if (newAddedLotMovementVieModelList.isEmpty()) {
-                if (draftLotItem.isNewAdded()) {
-                    LotMovementViewModel newLotMovementViewModel = new LotMovementViewModel();
-                    newLotMovementViewModel.setQuantity(draftLotItem.getQuantity().toString());
-                    newLotMovementViewModel.setLotNumber(draftLotItem.getLot().getLotNumber());
-                    newLotMovementViewModel.setExpiryDate(DateUtil.formatDate(draftLotItem.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
-                    newAddedLotMovementVieModelList.add(newLotMovementViewModel);
-                }
+            if (draftLotItem.isNewAdded()) {
+                LotMovementViewModel newLotMovementViewModel = new LotMovementViewModel();
+                newLotMovementViewModel.setQuantity(draftLotItem.getQuantity().toString());
+                newLotMovementViewModel.setLotNumber(draftLotItem.getLot().getLotNumber());
+                newLotMovementViewModel.setExpiryDate(DateUtil.formatDate(draftLotItem.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+                newAddedLotMovementVieModelList.add(newLotMovementViewModel);
             } else {
-                for (LotMovementViewModel newAddedLotMovementViewModel : newAddedLotMovementVieModelList) {
-                    if (draftLotItem.getLot().getLotNumber().equals(newAddedLotMovementViewModel.getLotNumber())
-                            && draftLotItem.isNewAdded()) {
-                        newAddedLotMovementViewModel.setQuantity(draftLotItem.getQuantity().toString());
+                for (LotMovementViewModel existingLotMovementViewModel : existingLotMovementViewModelList) {
+                    if (draftLotItem.getLot().getLotNumber().equals(existingLotMovementViewModel.getLotNumber())) {
+                        existingLotMovementViewModel.setQuantity(draftLotItem.getQuantity().toString());
                     }
                 }
             }

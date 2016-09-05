@@ -85,6 +85,9 @@ public class InventoryRepository {
     public void clearDraft() throws LMISException {
         try {
             TableUtils.clearTable(LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(), DraftInventory.class);
+            if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+                TableUtils.clearTable(LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(), DraftLotItem.class);
+            }
         } catch (SQLException e) {
             throw new LMISException(e);
         }
