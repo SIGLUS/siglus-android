@@ -90,8 +90,7 @@ public class HomeActivityTest {
 
         Intent startedIntent = shadowOf(homeActivity).getNextStartedActivity();
 
-        assertThat(startedIntent.getComponent().getClassName(), equalTo(InventoryActivity.class.getName()));
-        assertThat(startedIntent.getBooleanExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, false), is(true));
+        assertThat(startedIntent.getComponent().getClassName(), equalTo(PhysicalInventoryActivity.class.getName()));
     }
 
     @Test

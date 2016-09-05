@@ -126,8 +126,7 @@ public class RnRFormListActivityTest {
         Intent nextStartedIntent = ShadowApplication.getInstance().getNextStartedActivity();
 
         assertNotNull(nextStartedIntent);
-        assertEquals(nextStartedIntent.getComponent().getClassName(), InventoryActivity.class.getName());
-        assertTrue(nextStartedIntent.getBooleanExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, false));
+        assertEquals(nextStartedIntent.getComponent().getClassName(), PhysicalInventoryActivity.class.getName());
     }
 
     @Test
