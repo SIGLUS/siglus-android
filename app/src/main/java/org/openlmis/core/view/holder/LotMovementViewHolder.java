@@ -15,6 +15,7 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
+import org.openlmis.core.view.activity.InitialInventoryActivity;
 import org.openlmis.core.view.activity.InventoryActivity;
 import org.openlmis.core.view.activity.UnpackKitActivity;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
@@ -81,7 +82,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
             iconDel.setVisibility(View.VISIBLE);
             iconDel.setOnClickListener(getOnClickListenerForDeleteIcon(viewModel, lotMovementAdapter));
         }
-        if (context instanceof InventoryActivity || context instanceof UnpackKitActivity) {
+        if (context instanceof InitialInventoryActivity || context instanceof UnpackKitActivity) {
             lySOHLot.setVisibility(View.GONE);
         }
     }
