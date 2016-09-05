@@ -35,7 +35,7 @@ public class StockCardListActivityTest {
 
         Intent nextIntent = ShadowApplication.getInstance().getNextStartedActivity();
 
-        assertThat(nextIntent.getComponent().getClassName()).isEqualTo(InventoryActivity.class.getName());
+        assertThat(nextIntent.getComponent().getClassName()).isEqualTo(InitialInventoryActivity.class.getName());
         assertThat(nextIntent.getBooleanExtra(Constants.PARAM_IS_ADD_NEW_DRUG, false)).isTrue();
     }
 

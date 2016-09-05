@@ -117,7 +117,7 @@ public class LoginActivityTest {
         Intent intent = shadowOf(loginActivity).getNextStartedActivity();
 
         assertThat(intent).isNotNull();
-        assertThat(intent.getComponent().getClassName()).isEqualTo(InventoryActivity.class.getName());
+        assertThat(intent.getComponent().getClassName()).isEqualTo(InitialInventoryActivity.class.getName());
         assertThat(loginActivity.isFinishing());
     }
 

@@ -379,7 +379,6 @@ public class InventoryPresenter extends Presenter {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
-
     private void setExistingLotViewModels(InventoryViewModel inventoryViewModel) throws LMISException {
         ImmutableList<LotMovementViewModel> lotMovementViewModels = null;
         try {

@@ -63,7 +63,7 @@ public class StockCardListActivity extends SearchBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case MENU_ID_ADD_NEW_DRUG:
-                startActivity(InventoryActivity.getIntentToMe(this, true));
+                startActivity(InitialInventoryActivity.getIntentToMe(this, true));
                 return true;
             case MENU_ID_ARCHIVE_LIST:
                 startActivityForResult(ArchivedDrugsListActivity.getIntentToMe(this), Constants.REQUEST_FROM_STOCK_LIST_PAGE);

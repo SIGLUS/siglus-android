@@ -33,7 +33,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activity.InventoryActivity"
+            android:name=".view.activity.InitialInventoryActivity"
+            android:label="@string/title_init_inventory"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.PhysicalInventoryActivity"
             android:label="@string/title_init_inventory"
             android:screenOrientation="portrait" />
         <activity
@@ -43,8 +47,7 @@
         <activity
             android:name=".view.activity.HomeActivity"
             android:screenOrientation="portrait"
-            android:label="@string/title_home" >
-        </activity>
+            android:label="@string/title_home" />
         <activity
             android:name=".view.activity.StockCardListActivity"
             android:label="@string/title_stock_cards"

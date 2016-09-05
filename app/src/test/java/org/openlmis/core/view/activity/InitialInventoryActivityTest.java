@@ -1,23 +1,4 @@
-/*
- * This program is part of the OpenLMIS logistics management information
- * system platform software.
- *
- * Copyright © 2015 ThoughtWorks, Inc.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version. This program is distributed in the
- * hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
- * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details. You should
- * have received a copy of the GNU Affero General Public License along with
- * this program. If not, see http://www.gnu.org/licenses. For additional
- * information contact info@OpenLMIS.org
- */
-
 package org.openlmis.core.view.activity;
-
 
 import android.content.Intent;
 import android.view.View;
@@ -59,15 +40,14 @@ import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
-public class InventoryActivityTest {
-
-    private InventoryActivity inventoryActivity;
+public class InitialInventoryActivityTest {
+    private InitialInventoryActivity initialInventoryActivity;
     private InventoryPresenter mockedPresenter;
 
     private List<InventoryViewModel> data;
 
     @Before
-    public void setUp() throws LMISException{
+    public void setUp() throws LMISException {
         mockedPresenter = mock(InventoryPresenter.class);
         when(mockedPresenter.loadInventory()).thenReturn(Observable.<List<InventoryViewModel>>empty());
 
@@ -78,14 +58,14 @@ public class InventoryActivityTest {
             }
         });
 
-        inventoryActivity = Robolectric.buildActivity(InventoryActivity.class).create().get();
+        initialInventoryActivity = Robolectric.buildActivity(InitialInventoryActivity.class).create().get();
 
         InventoryListAdapter mockedAdapter = mock(InventoryListAdapter.class);
         Product product = new ProductBuilder().setCode("Product code").setPrimaryName("Primary name").setStrength("10mg").build();
         data = newArrayList(new InventoryViewModel(product), new InventoryViewModel(product));
         when(mockedAdapter.getData()).thenReturn(data);
 
-        inventoryActivity.mAdapter = mockedAdapter;
+        initialInventoryActivity.mAdapter = mockedAdapter;
     }
 
     @After
@@ -95,9 +75,9 @@ public class InventoryActivityTest {
 
     @Test
     public void shouldGoToHomePageAfterInitInventoryOrDoPhysicalInventory(){
-        inventoryActivity.goToParentPage();
+        initialInventoryActivity.goToParentPage();
 
-        Intent startIntent = shadowOf(inventoryActivity).getNextStartedActivity();
+        Intent startIntent = shadowOf(initialInventoryActivity).getNextStartedActivity();
         assertEquals(startIntent.getComponent().getClassName(), HomeActivity.class.getName());
     }
 
@@ -116,10 +96,10 @@ public class InventoryActivityTest {
         });
         when(mockedPresenter.loadPhysicalInventory()).thenReturn(value);
 
-        inventoryActivity = Robolectric.buildActivity(InventoryActivity.class).withIntent(intentFromParentActivity).create().get();
-        inventoryActivity.goToParentPage();
+        initialInventoryActivity = Robolectric.buildActivity(InitialInventoryActivity.class).withIntent(intentFromParentActivity).create().get();
+        initialInventoryActivity.goToParentPage();
 
-        assertTrue(inventoryActivity.isFinishing());
+        assertTrue(initialInventoryActivity.isFinishing());
     }
 
     @Test
@@ -127,47 +107,48 @@ public class InventoryActivityTest {
         Intent intentToStockCard = new Intent();
         intentToStockCard.putExtra(Constants.PARAM_IS_ADD_NEW_DRUG, true);
 
-        inventoryActivity = Robolectric.buildActivity(InventoryActivity.class).withIntent(intentToStockCard).create().get();
+        initialInventoryActivity = Robolectric.buildActivity(InitialInventoryActivity.class).withIntent(intentToStockCard).create().get();
 
-        inventoryActivity.goToParentPage();
+        initialInventoryActivity.goToParentPage();
 
-        Intent startIntent = shadowOf(inventoryActivity).getNextStartedActivity();
+        Intent startIntent = shadowOf(initialInventoryActivity).getNextStartedActivity();
         assertEquals(startIntent.getComponent().getClassName(), StockCardListActivity.class.getName());
         assertEquals(startIntent.getFlags(), Intent.FLAG_ACTIVITY_CLEAR_TOP);
     }
 
     @Test
     public void shouldShowMessageAndNeverBackWhenPressBackInInitInventory() {
-        inventoryActivity.onBackPressed();
+        initialInventoryActivity.onBackPressed();
 
-        assertEquals(ShadowToast.getTextOfLatestToast(), inventoryActivity.getString(R.string.msg_save_before_exit));
+        assertEquals(ShadowToast.getTextOfLatestToast(), initialInventoryActivity.getString(R.string.msg_save_before_exit));
 
-        inventoryActivity.onBackPressed();
+        initialInventoryActivity.onBackPressed();
 
-        assertFalse(inventoryActivity.isFinishing());
+        assertFalse(initialInventoryActivity.isFinishing());
     }
 
     @Test
     public void shouldGetAddNewDrugActivity() {
-        Intent intent = InventoryActivity.getIntentToMe(RuntimeEnvironment.application, true);
+        Intent intent = InitialInventoryActivity.getIntentToMe(RuntimeEnvironment.application, true);
 
         assertNotNull(intent);
-        assertEquals(intent.getComponent().getClassName(), InventoryActivity.class.getName());
+        assertEquals(intent.getComponent().getClassName(), InitialInventoryActivity.class.getName());
         assertTrue(intent.getBooleanExtra(Constants.PARAM_IS_ADD_NEW_DRUG, false));
     }
 
     @Test
     public void shouldInitUIWhenInitialInventory() {
-        assertThat(inventoryActivity.btnSave.getVisibility()).isEqualTo(View.GONE);
-        assertTrue(inventoryActivity.loadingDialog.isShowing());
+        assertThat(initialInventoryActivity.btnSave.getVisibility()).isEqualTo(View.GONE);
+        assertTrue(initialInventoryActivity.loadingDialog.isShowing());
 
         verify(mockedPresenter).loadInventory();
     }
 
     @Test
     public void shouldDoInitialInventoryWhenBtnDoneClicked() {
-        inventoryActivity.btnDone.performClick();
+        initialInventoryActivity.btnDone.performClick();
 
         verify(mockedPresenter).doInitialInventory(data);
     }
+
 }

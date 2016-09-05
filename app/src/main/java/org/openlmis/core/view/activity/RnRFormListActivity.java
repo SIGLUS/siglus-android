@@ -160,7 +160,7 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         public void clickBtnView(RnRFormViewModel model) {
             switch (model.getType()) {
                 case RnRFormViewModel.TYPE_UNCOMPLETE_INVENTORY_IN_CURRENT_PERIOD:
-                    startActivityForResult(InventoryActivity.getIntentToMe(RnRFormListActivity.this, false, true), Constants.REQUEST_FROM_RNR_LIST_PAGE);
+                    startActivityForResult(PhysicalInventoryActivity.getIntentToMe(RnRFormListActivity.this), Constants.REQUEST_FROM_RNR_LIST_PAGE);
                     break;
                 case RnRFormViewModel.TYPE_INVENTORY_DONE:
                     startActivityForResult(SelectPeriodActivity.getIntentToMe(RnRFormListActivity.this, model.getProgramCode()), Constants.REQUEST_SELECT_PERIOD_END);
