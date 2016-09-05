@@ -364,7 +364,7 @@ public class InventoryPresenter extends Presenter {
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     subscriber.onError(e);
-                    e.printStackTrace();
+                    e.reportToFabric();
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());

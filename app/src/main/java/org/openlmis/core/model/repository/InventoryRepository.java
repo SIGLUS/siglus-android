@@ -17,6 +17,9 @@ import org.openlmis.core.model.Period;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
+import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.base.Predicate;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -83,13 +86,28 @@ public class InventoryRepository {
     }
 
     public void clearDraft() throws LMISException {
-        try {
-            TableUtils.clearTable(LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(), DraftInventory.class);
-            if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                TableUtils.clearTable(LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(), DraftLotItem.class);
+        dbUtil.withDaoAsBatch(DraftInventory.class, new DbUtil.Operation<DraftInventory, Object>() {
+            @Override
+            public Object operate(Dao<DraftInventory, String> dao) throws SQLException, LMISException {
+                TableUtils.clearTable(LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(), DraftInventory.class);
+                if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+
+                    lotRepository.deleteLots(FluentIterable.from(draftLotItemGenericDao.queryForAll()).filter(new Predicate<DraftLotItem>() {
+                        @Override
+                        public boolean apply(DraftLotItem draftLotItem) {
+                            return draftLotItem.isNewAdded();
+                        }
+                    }).transform(new Function<DraftLotItem, Lot>() {
+                        @Override
+                        public Lot apply(DraftLotItem draftLotItem) {
+                            return draftLotItem.getLot();
+                        }
+                    }).toList());
+                    TableUtils.clearTable(LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getConnectionSource(), DraftLotItem.class);
+                }
+                return null;
             }
-        } catch (SQLException e) {
-            throw new LMISException(e);
-        }
+        });
+
     }
 }
