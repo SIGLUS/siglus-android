@@ -155,7 +155,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     public void onClickInventory(View view) {
-        Intent intent = new Intent(HomeActivity.this, InventoryActivity.class);
+        Intent intent = new Intent(HomeActivity.this, PhysicalInventoryActivity.class);
         intent.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
         startActivity(intent);
     }
