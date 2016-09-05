@@ -116,7 +116,6 @@ Feature: Unpack Kit
     Then I should see "[15C0ZY]"
     Then I navigate back
     And I wait for 1 second
-#    Then I do physical inventory for all items
     Then I make lots adjustment of physical inventory for all items
 
     Then I wait for "Requisitions" to appear
