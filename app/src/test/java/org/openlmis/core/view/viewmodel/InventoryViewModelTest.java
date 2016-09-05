@@ -194,9 +194,9 @@ public class InventoryViewModelTest {
 
         DraftInventory draftInventory = viewModel.parseDraftInventory();
         assertThat(draftInventory.getDraftLotItemListWrapper().get(0).isNewAdded(), is(false));
-        assertThat(draftInventory.getDraftLotItemListWrapper().get(0).getLot().getLotNumber(), is("lot1"));
+        assertThat(draftInventory.getDraftLotItemListWrapper().get(0).getLotNumber(), is("lot1"));
         assertThat(draftInventory.getDraftLotItemListWrapper().get(1).isNewAdded(), is(true));
-        assertThat(draftInventory.getDraftLotItemListWrapper().get(1).getLot().getLotNumber(), is("lot2"));
+        assertThat(draftInventory.getDraftLotItemListWrapper().get(1).getLotNumber(), is("lot2"));
 
     }
 }

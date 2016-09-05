@@ -191,12 +191,12 @@ public class InventoryPresenter extends Presenter {
             if (draftLotItem.isNewAdded()) {
                 LotMovementViewModel newLotMovementViewModel = new LotMovementViewModel();
                 newLotMovementViewModel.setQuantity(draftLotItem.getQuantity().toString());
-                newLotMovementViewModel.setLotNumber(draftLotItem.getLot().getLotNumber());
-                newLotMovementViewModel.setExpiryDate(DateUtil.formatDate(draftLotItem.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+                newLotMovementViewModel.setLotNumber(draftLotItem.getLotNumber());
+                newLotMovementViewModel.setExpiryDate(DateUtil.formatDate(draftLotItem.getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
                 newAddedLotMovementVieModelList.add(newLotMovementViewModel);
             } else {
                 for (LotMovementViewModel existingLotMovementViewModel : existingLotMovementViewModelList) {
-                    if (draftLotItem.getLot().getLotNumber().equals(existingLotMovementViewModel.getLotNumber())) {
+                    if (draftLotItem.getLotNumber().equals(existingLotMovementViewModel.getLotNumber())) {
                         existingLotMovementViewModel.setQuantity(draftLotItem.getQuantity().toString());
                     }
                 }

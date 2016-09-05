@@ -143,26 +143,4 @@ public class LotRepository {
             }
         });
     }
-
-    public void deleteLots(final List<Lot> lotList) {
-        try {
-            dbUtil.withDaoAsBatch(Lot.class, new DbUtil.Operation<Lot, Object>() {
-                @Override
-                public Lot operate(Dao<Lot, String> dao) throws SQLException, LMISException {
-                    for (final Lot lot: lotList) {
-                        dbUtil.withDao(Lot.class, new DbUtil.Operation<Lot, Void>() {
-                            @Override
-                            public Void operate(Dao<Lot, String> dao) throws SQLException {
-                                dao.delete(lot);
-                                return null;
-                            }
-                        });
-                    }
-                    return null;
-                }
-            });
-        } catch (LMISException e) {
-            e.reportToFabric();
-        }
-    }
 }

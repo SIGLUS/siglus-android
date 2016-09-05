@@ -46,13 +46,11 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 @RunWith(LMISTestRunner.class)
 public class InventoryRepositoryTest {
 
-
     private InventoryRepository repository;
     private StockRepository stockRepository;
     private ProgramRepository programRepository;
     private ProductRepository productRepository;
     private ProductProgramRepository productProgramRepository;
-
 
     @Before
     public void setup() throws LMISException {
@@ -94,7 +92,9 @@ public class InventoryRepositoryTest {
 
         DraftInventory draftInventory = new DraftInventory(stockCard);
         DraftLotItem draftLotItem = new DraftLotItem();
-        draftLotItem.setLot(lot1);
+        draftLotItem.setProduct(product);
+        draftLotItem.setLotNumber("A111");
+        draftLotItem.setExpirationDate(new Date());
         draftLotItem.setDraftInventory(draftInventory);
         draftLotItem.setNewAdded(false);
         draftLotItem.setQuantity(20L);
@@ -105,7 +105,9 @@ public class InventoryRepositoryTest {
         repository.createDraft(draftInventory);
         DraftInventory draftInventoryQueried = repository.queryAllDraft().get(0);
 
-        assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getLot(), is(lot1));
+        assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getLotNumber(), is("A111"));
+        assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getProduct(), is(product));
+        assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getExpirationDate(), is(DateUtil.parseString(DateUtil.formatDate(new Date(), DateUtil.DB_DATE_FORMAT),DateUtil.DB_DATE_FORMAT)));
         assertThat(draftInventoryQueried.getStockCard().getProduct(), is(product));
         assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).isNewAdded(), is(false));
         assertThat(draftInventoryQueried.getDraftLotItemListWrapper().get(0).getQuantity(), is(20L));
