@@ -83,9 +83,13 @@ public class InitialInventoryActivity extends InventoryActivity {
     public void onBackPressed() {
         if (isSearchViewActivity()) {
             searchView.onActionViewCollapsed();
-        } else {
-            ToastUtil.show(R.string.msg_save_before_exit);
+            return;
         }
+        if (!isAddNewDrug) {
+            ToastUtil.show(R.string.msg_save_before_exit);
+            return;
+        }
+        super.onBackPressed();
     }
 
 
