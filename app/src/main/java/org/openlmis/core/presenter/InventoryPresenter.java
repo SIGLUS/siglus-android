@@ -29,6 +29,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DraftInventory;
+import org.openlmis.core.model.DraftLotItem;
 import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
@@ -174,6 +175,39 @@ public class InventoryPresenter extends Presenter {
                 if (model.getStockCardId() == draftInventory.getStockCard().getId()) {
                     model.initExpiryDates(draftInventory.getExpireDates());
                     model.setQuantity(formatQuantity(draftInventory.getQuantity()));
+                    if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+                        populateLotMovementModelWithDraftLotItem(model, draftInventory);
+                    }
+                }
+            }
+        }
+    }
+
+    private void populateLotMovementModelWithDraftLotItem(InventoryViewModel model, DraftInventory draftInventory) {
+        List<LotMovementViewModel> existingLotMovementViewModelList = model.getExistingLotMovementViewModelList();
+        List<LotMovementViewModel> newAddedLotMovementVieModelList = model.getLotMovementViewModelList();
+        for (DraftLotItem draftLotItem : draftInventory.getDraftLotItemListWrapper()) {
+            for (LotMovementViewModel existingLotMovementViewModel : existingLotMovementViewModelList) {
+                if (draftLotItem.getLot().getLotNumber().equals(existingLotMovementViewModel.getLotNumber())
+                        && !draftLotItem.isNewAdded()) {
+                    existingLotMovementViewModel.setQuantity(draftLotItem.getQuantity().toString());
+                }
+            }
+
+            if (newAddedLotMovementVieModelList.isEmpty()) {
+                if (draftLotItem.isNewAdded()) {
+                    LotMovementViewModel newLotMovementViewModel = new LotMovementViewModel();
+                    newLotMovementViewModel.setQuantity(draftLotItem.getQuantity().toString());
+                    newLotMovementViewModel.setLotNumber(draftLotItem.getLot().getLotNumber());
+                    newLotMovementViewModel.setExpiryDate(DateUtil.formatDate(draftLotItem.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+                    newAddedLotMovementVieModelList.add(newLotMovementViewModel);
+                }
+            } else {
+                for (LotMovementViewModel newAddedLotMovementViewModel : newAddedLotMovementVieModelList) {
+                    if (draftLotItem.getLot().getLotNumber().equals(newAddedLotMovementViewModel.getLotNumber())
+                            && draftLotItem.isNewAdded()) {
+                        newAddedLotMovementViewModel.setQuantity(draftLotItem.getQuantity().toString());
+                    }
                 }
             }
         }
@@ -235,9 +269,9 @@ public class InventoryPresenter extends Presenter {
     protected StockMovementItem calculateAdjustment(InventoryViewModel model, StockCard stockCard) {
         long inventory;
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-             inventory = model.getLotListQuantityTotalAmount();
+            inventory = model.getLotListQuantityTotalAmount();
         } else {
-             inventory = Long.parseLong(model.getQuantity());
+            inventory = Long.parseLong(model.getQuantity());
         }
         long stockOnHand = model.getStockOnHand();
         StockMovementItem item = new StockMovementItem();

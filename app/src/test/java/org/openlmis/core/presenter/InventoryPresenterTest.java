@@ -36,6 +36,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DraftInventory;
+import org.openlmis.core.model.DraftLotItem;
 import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
@@ -46,6 +47,8 @@ import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.LotMovementViewModel;
+import org.openlmis.core.view.viewmodel.LotMovementViewModelBuilder;
 import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
 import org.robolectric.RuntimeEnvironment;
 
@@ -376,6 +379,33 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         assertThat(inventoryViewModels.get(0).getExpiryDates().get(0), is("11/10/2015"));
         assertThat(inventoryViewModels.get(1).getQuantity(), is("15"));
         assertThat(inventoryViewModels.get(1).getExpiryDates().get(0), is("11/02/2015"));
+    }
+
+    @Test
+    public void shouldRestoreDraftInventoryWithLDraftLotItems() throws Exception {
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management,true);
+        ArrayList<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
+
+        ArrayList<DraftInventory> draftInventories = new ArrayList<>();
+        DraftInventory draftInventory = new DraftInventory();
+        stockCard.setId(9);
+        draftInventory.setStockCard(stockCard);
+        draftInventory.setQuantity(20L);
+        draftInventory.setExpireDates("11/10/2015");
+        LotMovementViewModel lotMovementViewModel1 = new LotMovementViewModelBuilder().setLotNumber("test").setExpiryDate("Sep 2016").setQuantity("10").build();
+        LotMovementViewModel lotMovementViewModel2 = new LotMovementViewModelBuilder().setLotNumber("testNew").setExpiryDate("Sep 2016").setQuantity("10").build();
+        inventoryViewModels.get(0).setExistingLotMovementViewModelList(newArrayList(lotMovementViewModel1));
+        DraftLotItem draftLotItem1 = new DraftLotItem(lotMovementViewModel1, stockCard.getProduct(), false);
+        DraftLotItem draftLotItem2 = new DraftLotItem(lotMovementViewModel2, stockCard.getProduct(), true);
+        draftInventory.setDraftLotItemListWrapper(newArrayList(draftLotItem1, draftLotItem2));
+        draftInventories.add(draftInventory);
+        when(mockInventoryRepository.queryAllDraft()).thenReturn(draftInventories);
+
+        inventoryPresenter.restoreDraftInventory(inventoryViewModels);
+        assertThat(inventoryViewModels.get(0).getQuantity(), is("20"));
+        assertThat(inventoryViewModels.get(0).getExpiryDates().get(0), is("11/10/2015"));
+        assertThat(inventoryViewModels.get(0).getLotMovementViewModelList().get(0).getLotNumber(), is("testNew"));
+        assertThat(inventoryViewModels.get(0).getExistingLotMovementViewModelList().get(0).getLotNumber(), is("test"));
     }
 
     @Test
