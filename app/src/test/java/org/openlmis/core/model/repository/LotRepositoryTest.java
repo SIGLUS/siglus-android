@@ -22,11 +22,13 @@ import org.robolectric.RuntimeEnvironment;
 
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import roboguice.RoboGuice;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
@@ -199,6 +201,21 @@ public class LotRepositoryTest extends LMISRepositoryUnitTest {
         StockMovementItem queriedStockMovementItem = stockRepository.queryLastStockMovementItemByStockCardId(stockCard.getId());
         assertThat(queriedStockMovementItem.getLotMovementItemListWrapper().get(0).getMovementQuantity(), is(2L));
         assertThat(queriedStockMovementItem.getLotMovementItemListWrapper().get(0).getId(), is(lotMovementItem.getId()));
-        assertThat(queriedStockMovementItem.getLotMovementItemListWrapper().get(0).getLot().getLotNumber(),is(lot1.getLotNumber()));
+        assertThat(queriedStockMovementItem.getLotMovementItemListWrapper().get(0).getLot().getLotNumber(), is(lot1.getLotNumber()));
+    }
+
+    @Test
+    public void shouldSaveLotIgnoreLotNumberCase() throws Exception {
+        Lot lot1 = new Lot();
+        lot1.setLotNumber("ABC");
+        lot1.setExpirationDate(new Date());
+        lot1.setProduct(product);
+        lotRepository.createOrUpdateLot(lot1);
+
+        Lot lowerCaseLot = lotRepository.getLotByLotNumberAndProductId("abc", product.getId());
+        Lot upperCaseLot = lotRepository.getLotByLotNumberAndProductId("ABC", product.getId());
+
+        assertEquals(lowerCaseLot, upperCaseLot);
+
     }
 }

@@ -75,6 +75,7 @@ public class LotRepository {
         dbUtil.withDao(Lot.class, new DbUtil.Operation<Lot, Void>() {
             @Override
             public Void operate(Dao<Lot, String> dao) throws SQLException {
+                lot.setLotNumber(lot.getLotNumber().toUpperCase());
                 dao.createOrUpdate(lot);
                 return null;
             }
@@ -122,7 +123,7 @@ public class LotRepository {
             public Lot operate(Dao<Lot, String> dao) throws SQLException {
                 return dao.queryBuilder()
                         .where()
-                        .eq("lotNumber", lotNumber)
+                        .eq("lotNumber", lotNumber.toUpperCase())
                         .and()
                         .eq("product_id", productId)
                         .queryForFirst();
