@@ -117,7 +117,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
             return false;
         }
 
-        lotNumber = etLotNumber.getText().toString().trim();
+        lotNumber = etLotNumber.getText().toString().trim().toUpperCase();
         expiryDate = DateUtil.formatDate(enteredDate, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
         return true;
     }
@@ -128,8 +128,8 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     }
 
     public boolean hasIdenticalLot(List<String> existingLots) {
-        if (existingLots.contains(etLotNumber.getText().toString())){
-            lyLotNumber.setError("The lot already exists, please add a new one.");
+        if (existingLots.contains(etLotNumber.getText().toString().toUpperCase())){
+            lyLotNumber.setError(getResources().getString(R.string.error_lot_already_exists));
             etLotNumber.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
             return true;
         }
