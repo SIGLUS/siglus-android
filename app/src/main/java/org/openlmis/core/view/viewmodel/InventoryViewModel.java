@@ -28,10 +28,13 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.DraftInventory;
+import org.openlmis.core.model.DraftLotItem;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.holder.StockCardViewHolder;
+import org.roboguice.shaded.goole.common.base.Predicate;
+import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -75,6 +78,7 @@ public class InventoryViewModel {
     protected Product product;
     boolean shouldShowEmptyLotWarning = false;
     boolean hasConfirmedNoStockReceived = false;
+    private DraftInventory draftInventory = null;
 
     public InventoryViewModel(StockCard stockCard) {
         this(stockCard.getProduct());
@@ -332,8 +336,63 @@ public class InventoryViewModel {
 
     public boolean isHasDataChanged() {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            return true;
+            if (draftInventory == null) {
+                return hasLotInInventoryModelChanged();
+            }
+            return !draftInventory.getDraftLotItemListWrapper().isEmpty() && isDifferentFromDraft();
         }
         return hasDataChanged;
+    }
+
+    private boolean isDifferentFromDraft() {
+        List<DraftLotItem> newAddedDraftLotItems = FluentIterable.from(draftInventory.getDraftLotItemListWrapper()).filter(new Predicate<DraftLotItem>() {
+            @Override
+            public boolean apply(DraftLotItem draftLotItem) {
+                return draftLotItem.isNewAdded();
+            }
+        }).toList();
+        List<DraftLotItem> existingDraftLotItems = FluentIterable.from(draftInventory.getDraftLotItemListWrapper()).filter(new Predicate<DraftLotItem>() {
+            @Override
+            public boolean apply(DraftLotItem draftLotItem) {
+                return !draftLotItem.isNewAdded();
+            }
+        }).toList();
+        for (DraftLotItem draftLotItem: existingDraftLotItems) {
+            for (LotMovementViewModel existingLotMovementViewModel: existingLotMovementViewModelList) {
+                if (draftLotItem.getLotNumber().equals(existingLotMovementViewModel.getLotNumber())) {
+                    if (!String.valueOf(draftLotItem.getQuantity() == null ? "" : draftLotItem.getQuantity()).equals(existingLotMovementViewModel.getQuantity())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        for (DraftLotItem draftLotItem: newAddedDraftLotItems) {
+            if (newAddedDraftLotItems.size() != lotMovementViewModelList.size()) {
+                return true;
+            }
+            for (LotMovementViewModel lotMovementViewModel: lotMovementViewModelList) {
+                if (draftLotItem.getLotNumber().equals(lotMovementViewModel.getLotNumber())) {
+                    if (!String.valueOf(draftLotItem.getQuantity() == null ? "" : draftLotItem.getQuantity()).equals(lotMovementViewModel.getQuantity())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean hasLotInInventoryModelChanged() {
+        for (LotMovementViewModel viewModel : existingLotMovementViewModelList) {
+            if (!viewModel.getQuantity().isEmpty()) {
+                return true;
+            }
+        }
+        if (lotMovementViewModelList.size() > 0) return true;
+        for (LotMovementViewModel viewModel : lotMovementViewModelList) {
+            if (!viewModel.getQuantity().isEmpty()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
