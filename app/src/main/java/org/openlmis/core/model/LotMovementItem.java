@@ -33,11 +33,15 @@ public class LotMovementItem extends BaseModel {
 
     boolean isResettingSOHFromPhysicalAdjustment = false;
 
-    public long getLotOnHandChange() {
+    public void setStockMovementItemAndUpdateMovementQuantity(StockMovementItem stockMovementItem) {
+        this.stockMovementItem = stockMovementItem;
+        updateMovementQuantity();
+    }
+
+    public void updateMovementQuantity() {
         if (stockMovementItem.getMovementType().equals(MovementReasonManager.MovementType.ISSUE)
                 || stockMovementItem.getMovementType().equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST)) {
-            return -1 * movementQuantity;
+            movementQuantity *= -1;
         }
-        return movementQuantity;
     }
 }

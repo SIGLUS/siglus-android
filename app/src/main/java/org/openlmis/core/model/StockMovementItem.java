@@ -143,21 +143,21 @@ public class StockMovementItem extends BaseModel {
     public void populateLotQuantitiesAndCalculateNewSOH(List<LotMovementViewModel> lotMovementViewModelList, MovementReasonManager.MovementType movementType) {
         final StockMovementItem stockMovementItem = this;
         if (!lotMovementViewModelList.isEmpty()) {
-            long movementQuantity = 0;
-
             setLotMovementItemListWrapper(FluentIterable.from(lotMovementViewModelList).transform(new Function<LotMovementViewModel, LotMovementItem>() {
                 @Override
                 public LotMovementItem apply(LotMovementViewModel lotMovementViewModel) {
                     LotMovementItem lotItem = lotMovementViewModel.convertViewToModel(getStockCard().getProduct());
-                    lotItem.setStockMovementItem(stockMovementItem);
+                    lotItem.setStockMovementItemAndUpdateMovementQuantity(stockMovementItem);
                     return lotItem;
                 }
             }).toList());
 
+            long movementQuantity = 0;
             for (LotMovementViewModel lotMovementViewModel: lotMovementViewModelList) {
                 movementQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
             }
             setMovementQuantity(movementQuantity);
+
             if (movementType.equals(MovementReasonManager.MovementType.ISSUE) || movementType.equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST)) {
                 setStockOnHand(getStockOnHand() - movementQuantity);
             } else {

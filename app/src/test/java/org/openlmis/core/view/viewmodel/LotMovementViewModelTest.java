@@ -64,8 +64,9 @@ public class LotMovementViewModelTest {
         viewModel.setQuantity("10");
         viewModel.setLotNumber("lot1");
         viewModel.setExpiryDate("Feb 2015");
+        viewModel.setLotSoh("20");
 
         LotMovementItem lotMovementItem = viewModel.convertViewToModelAndResetSOH(new Product());
-        assertEquals(Long.parseLong(viewModel.getLotSoh()), lotMovementItem.getStockOnHand());
+        assertEquals(10, lotMovementItem.getStockOnHand());
     }
 }
