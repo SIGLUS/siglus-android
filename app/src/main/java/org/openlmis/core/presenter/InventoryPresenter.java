@@ -295,14 +295,7 @@ public class InventoryPresenter extends Presenter {
         }
 
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            ImmutableList<LotMovementViewModel> existingLotMovementViewModelList = FluentIterable.from(model.getExistingLotMovementViewModelList()).filter(new Predicate<LotMovementViewModel>() {
-                @Override
-                public boolean apply(LotMovementViewModel lotMovementViewModel) {
-                    return lotMovementViewModel.quantityGreaterThanZero();
-                }
-            }).toList();
-
-            item.populateLotAndResetStockOnHandOfLotAccordingPhysicalAdjustment(existingLotMovementViewModelList, model.getLotMovementViewModelList());
+            item.populateLotAndResetStockOnHandOfLotAccordingPhysicalAdjustment(model.getExistingLotMovementViewModelList(), model.getLotMovementViewModelList());
         }
 
         return item;
