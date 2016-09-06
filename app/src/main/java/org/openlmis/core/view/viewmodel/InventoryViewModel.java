@@ -291,16 +291,16 @@ public class InventoryViewModel {
 
     public Long getLotListQuantityTotalAmount() {
         long lotTotalQuantity = 0L;
-        if(!lotMovementViewModelList.isEmpty()){
-            for(LotMovementViewModel lotMovementViewModel: lotMovementViewModelList){
-                if(!StringUtils.isBlank(lotMovementViewModel.getQuantity())){
+        if (!lotMovementViewModelList.isEmpty()) {
+            for (LotMovementViewModel lotMovementViewModel: lotMovementViewModelList) {
+                if (!StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
                     lotTotalQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
                 }
             }
         }
-        if(!existingLotMovementViewModelList.isEmpty()){
-            for(LotMovementViewModel lotMovementViewModel: existingLotMovementViewModelList){
-                if(!StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
+        if (!existingLotMovementViewModelList.isEmpty()) {
+            for (LotMovementViewModel lotMovementViewModel: existingLotMovementViewModelList) {
+                if (!StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
                     lotTotalQuantity += Long.parseLong(lotMovementViewModel.getQuantity());
                 }
             }
@@ -328,5 +328,22 @@ public class InventoryViewModel {
             }
         }
         return false;
+    }
+
+    public boolean isHasDataChanged() {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+            for (LotMovementViewModel viewModel : existingLotMovementViewModelList) {
+                if (viewModel.isHasDataChanged()) {
+                    return true;
+                }
+            }
+            for (LotMovementViewModel viewModel : lotMovementViewModelList) {
+                if (viewModel.isHasDataChanged()) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return hasDataChanged;
     }
 }
