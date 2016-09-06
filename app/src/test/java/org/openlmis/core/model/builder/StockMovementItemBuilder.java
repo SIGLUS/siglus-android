@@ -1,8 +1,8 @@
 package org.openlmis.core.model.builder;
 
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.manager.MovementReasonManager.MovementType;
+import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
 
 import java.text.ParseException;
@@ -10,7 +10,7 @@ import java.util.Date;
 
 public class StockMovementItemBuilder {
 
-    String movementDate = "10/10/2010";
+    String movementDate = "2010-10-10";
     int stockExistence = 200;
     String documentNo = "abc";
     String movementReason = "ISSUE1";

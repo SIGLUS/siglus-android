@@ -75,7 +75,6 @@ public class LotRepositoryTest extends LMISRepositoryUnitTest {
 
         StockMovementItem stockMovementItem = new StockMovementItemBuilder()
                 .withStockOnHand(100)
-                .withMovementType(MovementReasonManager.MovementType.RECEIVE)
                 .withMovementDate("2016-12-31")
                 .withQuantity(10)
                 .build();
@@ -107,7 +106,6 @@ public class LotRepositoryTest extends LMISRepositoryUnitTest {
 
         StockMovementItem stockMovementItem2 = new StockMovementItemBuilder()
                 .withStockOnHand(100)
-                .withMovementType(MovementReasonManager.MovementType.ISSUE)
                 .withMovementDate("2016-12-31")
                 .withQuantity(10)
                 .build();
@@ -117,17 +115,17 @@ public class LotRepositoryTest extends LMISRepositoryUnitTest {
         LotMovementItem lotMovementItem4 = new LotMovementItemBuilder()
                 .setStockMovementItem(stockMovementItem2)
                 .setLot(lot1)
-                .setMovementQuantity(1L).build();
+                .setMovementQuantity(-1L).build();
 
         LotMovementItem lotMovementItem5 = new LotMovementItemBuilder()
                 .setStockMovementItem(stockMovementItem2)
                 .setLot(lot2)
-                .setMovementQuantity(3L).build();
+                .setMovementQuantity(-3L).build();
 
         LotMovementItem lotMovementItem6 = new LotMovementItemBuilder()
                 .setStockMovementItem(stockMovementItem2)
                 .setLot(lot3)
-                .setMovementQuantity(2L).build();
+                .setMovementQuantity(-2L).build();
 
         lotRepository.batchCreateLotsAndLotMovements(newArrayList(lotMovementItem4, lotMovementItem5, lotMovementItem6));
 
