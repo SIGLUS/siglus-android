@@ -41,7 +41,6 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
                     List<InventoryViewModel> inventoryViewModels = convertStockCardsToStockCardViewModels(validStockCardsForPhysicalInventory);
 
                     restoreDraftInventory(inventoryViewModels);
-                    inventoryRepository.clearDraft();
                     subscriber.onNext(inventoryViewModels);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
@@ -93,6 +92,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         for (InventoryViewModel model : inventoryViewModels) {
             for (DraftInventory draftInventory : draftList) {
                 if (model.getStockCardId() == draftInventory.getStockCard().getId()) {
+                    model.setDraftInventory(draftInventory);
                     model.initExpiryDates(draftInventory.getExpireDates());
                     model.setQuantity(formatQuantity(draftInventory.getQuantity()));
                     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
@@ -108,7 +108,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         List<LotMovementViewModel> newAddedLotMovementVieModelList = model.getLotMovementViewModelList();
         for (DraftLotItem draftLotItem : draftInventory.getDraftLotItemListWrapper()) {
             if (draftLotItem.isNewAdded()) {
-                if (isNotInExistingLots(draftLotItem, existingLotMovementViewModelList)) {
+                if (isNotInExistingLots(draftLotItem, existingLotMovementViewModelList, newAddedLotMovementVieModelList)) {
                     LotMovementViewModel newLotMovementViewModel = new LotMovementViewModel();
                     newLotMovementViewModel.setQuantity(formatQuantity(draftLotItem.getQuantity()));
                     newLotMovementViewModel.setLotNumber(draftLotItem.getLotNumber());
@@ -125,9 +125,15 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         }
     }
 
-    private boolean isNotInExistingLots(DraftLotItem draftLotItem, List<LotMovementViewModel> existingLotMovementViewModelList) {
+    private boolean isNotInExistingLots(DraftLotItem draftLotItem, List<LotMovementViewModel> existingLotMovementViewModelList, List<LotMovementViewModel> newAddedLotMovementVieModelList) {
         for (LotMovementViewModel lotMovementViewModel : existingLotMovementViewModelList) {
-            if (draftLotItem.getLotNumber().equals(lotMovementViewModel.getLotNumber())) {
+            if (draftLotItem.getLotNumber().toUpperCase().equals(lotMovementViewModel.getLotNumber().toUpperCase())) {
+                return false;
+            }
+        }
+
+        for (LotMovementViewModel lotMovementViewModel : newAddedLotMovementVieModelList) {
+            if (draftLotItem.getLotNumber().toUpperCase().equals(lotMovementViewModel.getLotNumber().toUpperCase())) {
                 return false;
             }
         }
@@ -182,6 +188,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
                 try {
+                    inventoryRepository.clearDraft();
                     for (InventoryViewModel model : list) {
                         inventoryRepository.createDraft(model.parseDraftInventory());
                     }
