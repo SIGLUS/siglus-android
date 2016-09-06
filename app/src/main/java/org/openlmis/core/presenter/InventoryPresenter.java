@@ -189,11 +189,13 @@ public class InventoryPresenter extends Presenter {
         List<LotMovementViewModel> newAddedLotMovementVieModelList = model.getLotMovementViewModelList();
         for (DraftLotItem draftLotItem : draftInventory.getDraftLotItemListWrapper()) {
             if (draftLotItem.isNewAdded()) {
-                LotMovementViewModel newLotMovementViewModel = new LotMovementViewModel();
-                newLotMovementViewModel.setQuantity(draftLotItem.getQuantity().toString());
-                newLotMovementViewModel.setLotNumber(draftLotItem.getLotNumber());
-                newLotMovementViewModel.setExpiryDate(DateUtil.formatDate(draftLotItem.getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
-                newAddedLotMovementVieModelList.add(newLotMovementViewModel);
+                if (isNotInExistingLots(draftLotItem, existingLotMovementViewModelList)) {
+                    LotMovementViewModel newLotMovementViewModel = new LotMovementViewModel();
+                    newLotMovementViewModel.setQuantity(draftLotItem.getQuantity().toString());
+                    newLotMovementViewModel.setLotNumber(draftLotItem.getLotNumber());
+                    newLotMovementViewModel.setExpiryDate(DateUtil.formatDate(draftLotItem.getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+                    newAddedLotMovementVieModelList.add(newLotMovementViewModel);
+                }
             } else {
                 for (LotMovementViewModel existingLotMovementViewModel : existingLotMovementViewModelList) {
                     if (draftLotItem.getLotNumber().equals(existingLotMovementViewModel.getLotNumber())) {
@@ -202,6 +204,15 @@ public class InventoryPresenter extends Presenter {
                 }
             }
         }
+    }
+
+    private boolean isNotInExistingLots(DraftLotItem draftLotItem, List<LotMovementViewModel> existingLotMovementViewModelList) {
+        for (LotMovementViewModel lotMovementViewModel : existingLotMovementViewModelList) {
+            if (draftLotItem.getLotNumber().equals(lotMovementViewModel.getLotNumber())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private String formatQuantity(Long quantity) {
