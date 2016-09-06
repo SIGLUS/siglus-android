@@ -41,7 +41,7 @@ public class DraftLotItem extends BaseModel{
         try {
             quantity = Long.parseLong(lotMovementViewModel.getQuantity());
         } catch (Exception e) {
-            quantity = 0L;
+            quantity = null;
         }
         setExpirationDate(DateUtil.getActualMaximumDate(DateUtil.parseString(lotMovementViewModel.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR)));
         setLotNumber(lotMovementViewModel.getLotNumber());

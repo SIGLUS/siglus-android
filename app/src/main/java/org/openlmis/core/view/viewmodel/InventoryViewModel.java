@@ -245,7 +245,6 @@ public class InventoryViewModel {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
             long quantity = getLotListQuantityTotalAmount();
             draftInventory.setQuantity(quantity);
-
             draftInventory.setupDraftLotList(getExistingLotMovementViewModelList(), getLotMovementViewModelList());
         } else {
             Long quantity;
