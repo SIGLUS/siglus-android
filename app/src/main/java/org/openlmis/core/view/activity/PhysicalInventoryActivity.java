@@ -71,7 +71,6 @@ public class PhysicalInventoryActivity extends InventoryActivity {
         mAdapter = new PhysicalInventoryAdapter(list, saveClickListener, completeClickListener);
         productListRecycleView.setAdapter(mAdapter);
 
-//        loading();
         Subscription subscription = presenter.loadInventory().subscribe(stockCardSubscriber);
         subscriptions.add(subscription);
 

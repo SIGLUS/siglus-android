@@ -51,26 +51,14 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    private void setExistingLotViewModels(InventoryViewModel inventoryViewModel) throws LMISException {
-        ImmutableList<LotMovementViewModel> lotMovementViewModels = null;
-        try {
-            lotMovementViewModels = FluentIterable.from(stockRepository.getNonEmptyLotOnHandByStockCard(inventoryViewModel.getStockCard().getId())).transform(new Function<LotOnHand, LotMovementViewModel>() {
-                @Override
-                public LotMovementViewModel apply(LotOnHand lotOnHand) {
-                    return new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
-                            DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
-                            lotOnHand.getQuantityOnHand().toString(), MovementReasonManager.MovementType.RECEIVE);
-                }
-            }).toSortedList(new Comparator<LotMovementViewModel>() {
-                @Override
-                public int compare(LotMovementViewModel lot1, LotMovementViewModel lot2) {
-                    return DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR).compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
-                }
-            });
-        } catch (LMISException e) {
-            e.printStackTrace();
+    public void doInventory(List<InventoryViewModel> list, final String sign) {
+        view.loading();
+
+        for (InventoryViewModel viewModel : list) {
+            viewModel.setSignature(sign);
         }
-        inventoryViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);
+        Subscription subscription = stockMovementObservable(list).subscribe(nextMainPageAction, errorAction);
+        subscriptions.add(subscription);
     }
 
     private List<InventoryViewModel> convertStockCardsToStockCardViewModels(List<StockCard> validStockCardsForPhysicalInventory) {
@@ -213,16 +201,6 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         }
     }
 
-    public void doInventory(List<InventoryViewModel> list, final String sign) {
-        view.loading();
-
-        for (InventoryViewModel viewModel : list) {
-            viewModel.setSignature(sign);
-        }
-        Subscription subscription = stockMovementObservable(list).subscribe(nextMainPageAction, errorAction);
-        subscriptions.add(subscription);
-    }
-
     protected Observable<Object> stockMovementObservable(final List<InventoryViewModel> list) {
         return Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
@@ -258,5 +236,27 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
 
     private void saveInventoryDate() {
         inventoryRepository.save(new Inventory());
+    }
+
+    private void setExistingLotViewModels(InventoryViewModel inventoryViewModel) throws LMISException {
+        ImmutableList<LotMovementViewModel> lotMovementViewModels = null;
+        try {
+            lotMovementViewModels = FluentIterable.from(stockRepository.getNonEmptyLotOnHandByStockCard(inventoryViewModel.getStockCard().getId())).transform(new Function<LotOnHand, LotMovementViewModel>() {
+                @Override
+                public LotMovementViewModel apply(LotOnHand lotOnHand) {
+                    return new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
+                            DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
+                            lotOnHand.getQuantityOnHand().toString(), MovementReasonManager.MovementType.RECEIVE);
+                }
+            }).toSortedList(new Comparator<LotMovementViewModel>() {
+                @Override
+                public int compare(LotMovementViewModel lot1, LotMovementViewModel lot2) {
+                    return DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR).compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+                }
+            });
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+        inventoryViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);
     }
 }

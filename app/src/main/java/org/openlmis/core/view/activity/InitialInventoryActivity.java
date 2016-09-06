@@ -48,8 +48,6 @@ public class InitialInventoryActivity extends InventoryActivity {
         mAdapter = new InitialInventoryAdapter(new ArrayList<InventoryViewModel>(), viewHistoryListener);
         productListRecycleView.setAdapter(mAdapter);
 
-//        loading();
-
         Subscription subscription = presenter.loadInventory().subscribe(loadMasterSubscriber);
         subscriptions.add(subscription);
 
