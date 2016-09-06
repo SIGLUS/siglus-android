@@ -7,7 +7,9 @@ import android.view.View;
 
 import org.openlmis.core.R;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.presenter.InitialInventoryPresenter;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.InitialInventoryAdapter;
 import org.openlmis.core.view.holder.InitialInventoryViewHolder;
@@ -22,6 +24,9 @@ import rx.Subscription;
 
 @ContentView(R.layout.activity_inventory)
 public class InitialInventoryActivity extends InventoryActivity {
+    @InjectPresenter(InitialInventoryPresenter.class)
+    InitialInventoryPresenter presenter;
+
     protected boolean isAddNewDrug;
 
     @Override
@@ -32,6 +37,7 @@ public class InitialInventoryActivity extends InventoryActivity {
 
     @Override
     public void initUI() {
+        super.initUI();
         btnSave.setVisibility(View.GONE);
         if (isAddNewDrug) {
             setTitle(getResources().getString(R.string.title_add_new_drug));
@@ -42,7 +48,7 @@ public class InitialInventoryActivity extends InventoryActivity {
         mAdapter = new InitialInventoryAdapter(new ArrayList<InventoryViewModel>(), viewHistoryListener);
         productListRecycleView.setAdapter(mAdapter);
 
-        loading();
+//        loading();
 
         Subscription subscription = presenter.loadInventory().subscribe(loadMasterSubscriber);
         subscriptions.add(subscription);
@@ -50,7 +56,7 @@ public class InitialInventoryActivity extends InventoryActivity {
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.doInitialInventory(mAdapter.getData());
+                presenter.doInventory(mAdapter.getData());
             }
         });
     }

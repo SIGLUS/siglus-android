@@ -32,7 +32,6 @@ import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.presenter.InventoryPresenter;
-import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
@@ -56,9 +55,6 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
     @InjectView(R.id.btn_save)
     public View btnSave;
 
-    @InjectPresenter(InventoryPresenter.class)
-    InventoryPresenter presenter;
-
     protected InventoryListAdapter mAdapter;
 
     @Override
@@ -76,7 +72,9 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
         trackInventoryEvent(TrackerActions.SelectInventory);
     }
 
-    public abstract void initUI();
+    public void initUI() {
+        loading();
+    }
 
     protected void trackInventoryEvent(TrackerActions action) {
         LMISApp.getInstance().trackEvent(TrackerCategories.Inventory, action);

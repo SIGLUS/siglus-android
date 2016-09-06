@@ -8,11 +8,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.ProductBuilder;
-import org.openlmis.core.presenter.InventoryPresenter;
+import org.openlmis.core.presenter.PhysicalInventoryPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
@@ -31,21 +32,21 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
-public class PhysicalInventoryActivityTest {
+public class PhysicalInventoryActivityTest extends LMISRepositoryUnitTest {
     private PhysicalInventoryActivity physicalInventoryActivity;
-    private InventoryPresenter mockedPresenter;
+    private PhysicalInventoryPresenter mockedPresenter;
 
     private List<InventoryViewModel> data;
 
     @Before
     public void setUp() throws LMISException {
-        mockedPresenter = mock(InventoryPresenter.class);
-        when(mockedPresenter.loadPhysicalInventory()).thenReturn(Observable.<List<InventoryViewModel>>empty());
+        mockedPresenter = mock(PhysicalInventoryPresenter.class);
+        when(mockedPresenter.loadInventory()).thenReturn(Observable.<List<InventoryViewModel>>empty());
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
             protected void configure() {
-                bind(InventoryPresenter.class).toInstance(mockedPresenter);
+                bind(PhysicalInventoryPresenter.class).toInstance(mockedPresenter);
             }
         });
 
@@ -75,7 +76,7 @@ public class PhysicalInventoryActivityTest {
 
             }
         });
-        when(mockedPresenter.loadPhysicalInventory()).thenReturn(value);
+        when(mockedPresenter.loadInventory()).thenReturn(value);
 
         physicalInventoryActivity = Robolectric.buildActivity(PhysicalInventoryActivity.class).withIntent(intentFromParentActivity).create().get();
         physicalInventoryActivity.goToParentPage();

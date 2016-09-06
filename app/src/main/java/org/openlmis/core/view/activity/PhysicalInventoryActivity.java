@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.TrackerActions;
+import org.openlmis.core.presenter.PhysicalInventoryPresenter;
+import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.PhysicalInventoryAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
@@ -24,6 +26,8 @@ import rx.Subscription;
 
 @ContentView(R.layout.activity_inventory)
 public class PhysicalInventoryActivity extends InventoryActivity {
+    @InjectPresenter(PhysicalInventoryPresenter.class)
+    PhysicalInventoryPresenter presenter;
 
     protected Subscriber<List<InventoryViewModel>> stockCardSubscriber = new Subscriber<List<InventoryViewModel>>() {
         @Override
@@ -46,6 +50,7 @@ public class PhysicalInventoryActivity extends InventoryActivity {
 
     @Override
     public void initUI() {
+        super.initUI();
         setTitle(getResources().getString(R.string.title_physical_inventory));
 
         final List<InventoryViewModel> list = new ArrayList<>();
@@ -66,8 +71,8 @@ public class PhysicalInventoryActivity extends InventoryActivity {
         mAdapter = new PhysicalInventoryAdapter(list, saveClickListener, completeClickListener);
         productListRecycleView.setAdapter(mAdapter);
 
-        loading();
-        Subscription subscription = presenter.loadPhysicalInventory().subscribe(stockCardSubscriber);
+//        loading();
+        Subscription subscription = presenter.loadInventory().subscribe(stockCardSubscriber);
         subscriptions.add(subscription);
 
         btnDone.setOnClickListener(completeClickListener);
@@ -136,7 +141,7 @@ public class PhysicalInventoryActivity extends InventoryActivity {
 
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
         public void onSign(String sign) {
-            presenter.doPhysicalInventory(mAdapter.getData(), sign);
+            presenter.doInventory(mAdapter.getData(), sign);
 
             trackInventoryEvent(TrackerActions.ApproveInventory);
         }

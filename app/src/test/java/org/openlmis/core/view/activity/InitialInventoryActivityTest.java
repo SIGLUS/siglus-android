@@ -14,7 +14,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.ProductBuilder;
-import org.openlmis.core.presenter.InventoryPresenter;
+import org.openlmis.core.presenter.InitialInventoryPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
@@ -26,7 +26,6 @@ import java.util.List;
 
 import roboguice.RoboGuice;
 import rx.Observable;
-import rx.Subscriber;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -42,19 +41,19 @@ import static org.robolectric.Shadows.shadowOf;
 @RunWith(LMISTestRunner.class)
 public class InitialInventoryActivityTest {
     private InitialInventoryActivity initialInventoryActivity;
-    private InventoryPresenter mockedPresenter;
+    private InitialInventoryPresenter mockedPresenter;
 
     private List<InventoryViewModel> data;
 
     @Before
     public void setUp() throws LMISException {
-        mockedPresenter = mock(InventoryPresenter.class);
+        mockedPresenter = mock(InitialInventoryPresenter.class);
         when(mockedPresenter.loadInventory()).thenReturn(Observable.<List<InventoryViewModel>>empty());
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
             protected void configure() {
-                bind(InventoryPresenter.class).toInstance(mockedPresenter);
+                bind(InitialInventoryPresenter.class).toInstance(mockedPresenter);
             }
         });
 
@@ -79,27 +78,6 @@ public class InitialInventoryActivityTest {
 
         Intent startIntent = shadowOf(initialInventoryActivity).getNextStartedActivity();
         assertEquals(startIntent.getComponent().getClassName(), HomeActivity.class.getName());
-    }
-
-    @Test
-    public void shouldGoBackToParentPageWhenInventoryPageFinished(){
-        // from physical Inventory Page, go back to homePage
-
-        Intent intentFromParentActivity = new Intent();
-        intentFromParentActivity.putExtra(Constants.PARAM_IS_PHYSICAL_INVENTORY, true);
-
-        Observable<List<InventoryViewModel>> value = Observable.create(new Observable.OnSubscribe<List<InventoryViewModel>>() {
-            @Override
-            public void call(Subscriber<? super List<InventoryViewModel>> subscriber) {
-
-            }
-        });
-        when(mockedPresenter.loadPhysicalInventory()).thenReturn(value);
-
-        initialInventoryActivity = Robolectric.buildActivity(InitialInventoryActivity.class).withIntent(intentFromParentActivity).create().get();
-        initialInventoryActivity.goToParentPage();
-
-        assertTrue(initialInventoryActivity.isFinishing());
     }
 
     @Test
@@ -148,7 +126,7 @@ public class InitialInventoryActivityTest {
     public void shouldDoInitialInventoryWhenBtnDoneClicked() {
         initialInventoryActivity.btnDone.performClick();
 
-        verify(mockedPresenter).doInitialInventory(data);
+        verify(mockedPresenter).doInventory(data);
     }
 
 }
