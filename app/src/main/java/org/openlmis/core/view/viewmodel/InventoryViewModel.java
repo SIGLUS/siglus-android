@@ -332,17 +332,7 @@ public class InventoryViewModel {
 
     public boolean isHasDataChanged() {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            for (LotMovementViewModel viewModel : existingLotMovementViewModelList) {
-                if (viewModel.isHasDataChanged()) {
-                    return true;
-                }
-            }
-            for (LotMovementViewModel viewModel : lotMovementViewModelList) {
-                if (viewModel.isHasDataChanged()) {
-                    return true;
-                }
-            }
-            return false;
+            return true;
         }
         return hasDataChanged;
     }
