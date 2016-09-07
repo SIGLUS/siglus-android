@@ -301,13 +301,6 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
     }
 
     @Test
-    public void shouldShowSignatureDialog() throws Exception {
-        when(view.validateInventory()).thenReturn(true);
-        physicalInventoryPresenter.signPhysicalInventory();
-        verify(view).showSignDialog();
-    }
-
-    @Test
     public void shouldSetSignatureToViewModel() throws Exception {
         ArrayList<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
         String signature = "signature";

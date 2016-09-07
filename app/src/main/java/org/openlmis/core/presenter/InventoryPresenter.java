@@ -78,7 +78,5 @@ public abstract class InventoryPresenter extends Presenter {
         boolean validateInventory();
 
         void showErrorMessage(String msg);
-
-        void showSignDialog();
     }
 }

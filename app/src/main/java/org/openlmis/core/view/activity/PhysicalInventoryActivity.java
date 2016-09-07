@@ -64,7 +64,7 @@ public class PhysicalInventoryActivity extends InventoryActivity {
         View.OnClickListener completeClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.signPhysicalInventory();
+                signPhysicalInventory();
                 trackInventoryEvent(TrackerActions.CompleteInventory);
             }
         };
@@ -86,6 +86,12 @@ public class PhysicalInventoryActivity extends InventoryActivity {
             return false;
         }
         return true;
+    }
+
+    public void signPhysicalInventory() {
+        if (validateInventory()) {
+            showSignDialog();
+        }
     }
 
     @Override
@@ -130,7 +136,6 @@ public class PhysicalInventoryActivity extends InventoryActivity {
         return new Intent(context, PhysicalInventoryActivity.class);
     }
 
-    @Override
     public void showSignDialog() {
         SignatureDialog signatureDialog = new SignatureDialog();
         signatureDialog.setArguments(SignatureDialog.getBundleToMe(getString(R.string.label_physical_inventory_signature_title)));

@@ -96,12 +96,6 @@ public class InitialInventoryActivity extends InventoryActivity {
         super.onBackPressed();
     }
 
-
-    @Override
-    public void showSignDialog() {
-
-    }
-
     private void goToMainPage() {
         preferencesMgr.setIsNeedsInventory(false);
         startActivity(isAddNewDrug ? StockCardListActivity.getIntentToMe(this) : HomeActivity.getIntentToMe(this));

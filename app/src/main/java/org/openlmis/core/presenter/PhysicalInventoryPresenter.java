@@ -202,12 +202,6 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public void signPhysicalInventory() {
-        if (view.validateInventory()) {
-            view.showSignDialog();
-        }
-    }
-
     protected Observable<Object> stockMovementObservable(final List<InventoryViewModel> list) {
         return Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
