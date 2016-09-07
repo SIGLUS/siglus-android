@@ -1,6 +1,5 @@
 package org.openlmis.core.view.holder;
 
-import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
@@ -11,29 +10,26 @@ import android.widget.TextView;
 import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.NestedRecyclerViewLinearLayoutManager;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.openlmis.core.view.viewmodel.LotMovementViewModel;
-import org.openlmis.core.view.widget.AddLotDialogFragment;
-import org.roboguice.shaded.goole.common.base.Function;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import roboguice.inject.InjectView;
 
-public class UnpackKitViewHolderNew extends BaseViewHolder {
-    TextView tvProductName;
+public class UnpackKitViewHolderNew extends AddLotViewHolder {
     TextView tvKitExpectedQuantity;
     TextView tvQuantityMessage;
     TextView tvConfirmNoStock;
     TextView tvConfirmHasStock;
-    TextView tvProductUnit;
     ViewGroup vg_soh_pop;
+
+
+    @InjectView(R.id.product_name)
+    TextView tvProductName;
+
+    @InjectView(R.id.product_unit)
+    TextView tvProductUnit;
 
     @InjectView(R.id.tx_add_new_lot)
     private TextView txAddNewLot;
@@ -49,12 +45,9 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
 
     private LotMovementAdapter lotMovementAdapter;
     private LotMovementAdapter existingLotMovementAdapter;
-    private AddLotDialogFragment addLotDialogFragment;
 
     public UnpackKitViewHolderNew(View itemView) {
         super(itemView);
-        tvProductName = (TextView) itemView.findViewById(R.id.product_name);
-        tvProductUnit = (TextView) itemView.findViewById(R.id.product_unit);
         vg_soh_pop = (ViewGroup) itemView.findViewById(R.id.vg_soh_pop);
         tvKitExpectedQuantity = (TextView) itemView.findViewById(R.id.kit_expected_quantity);
         tvQuantityMessage = (TextView) itemView.findViewById(R.id.tv_alert_quantity_message);
@@ -164,6 +157,7 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
         });
     }
 
+    @Override
     protected void setItemViewListener(final InventoryViewModel viewModel) {
         txAddNewLot.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,7 +167,8 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
         });
     }
 
-    private void initExistingLotListView(final InventoryViewModel viewModel) {
+    @Override
+    protected void initExistingLotListView(final InventoryViewModel viewModel) {
         existingLotMovementAdapter = new LotMovementAdapter(viewModel.getExistingLotMovementViewModelList());
         existingLotMovementAdapter.setMovementChangeListener(new LotMovementAdapter.MovementChangedListener() {
             @Override
@@ -185,7 +180,8 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
         existingLotListView.setAdapter(existingLotMovementAdapter);
     }
 
-    private void initLotListRecyclerView(final InventoryViewModel viewModel) {
+    @Override
+    protected void initLotListRecyclerView(final InventoryViewModel viewModel) {
         lotMovementAdapter = new LotMovementAdapter(viewModel.getLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
         lotMovementAdapter.setMovementChangeListener(new LotMovementAdapter.MovementChangedListener() {
             @Override
@@ -197,50 +193,9 @@ public class UnpackKitViewHolderNew extends BaseViewHolder {
         lotListRecyclerView.setAdapter(lotMovementAdapter);
     }
 
-    private void addLotView(LotMovementViewModel lotMovementViewModel, InventoryViewModel viewModel) {
-        viewModel.addLotMovementViewModel(lotMovementViewModel);
-        refreshLotList();
-    }
-
-    private void refreshLotList() {
+    @Override
+    void refreshLotList() {
         lotMovementAdapter.notifyDataSetChanged();
     }
 
-    private void showAddNewLotDialog(final InventoryViewModel viewModel) {
-        addLotDialogFragment = new AddLotDialogFragment();
-        addLotDialogFragment.setListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.btn_complete:
-                        if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers(viewModel))) {
-                            addLotView(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate(), MovementReasonManager.MovementType.PHYSICAL_INVENTORY), viewModel);
-                            addLotDialogFragment.dismiss();
-                        }
-                        break;
-                    case R.id.btn_cancel:
-                        addLotDialogFragment.dismiss();
-                        break;
-                }
-            }
-        });
-        addLotDialogFragment.show(((Activity) context).getFragmentManager(), "add_new_lot");
-    }
-
-    private List<String> getLotNumbers(InventoryViewModel viewModel) {
-        final List<String> existingLots = new ArrayList<>();
-        existingLots.addAll(FluentIterable.from(viewModel.getLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
-            @Override
-            public String apply(LotMovementViewModel lotMovementViewModel) {
-                return lotMovementViewModel.getLotNumber();
-            }
-        }).toList());
-        existingLots.addAll(FluentIterable.from(viewModel.getExistingLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
-            @Override
-            public String apply(LotMovementViewModel lotMovementViewModel) {
-                return lotMovementViewModel.getLotNumber();
-            }
-        }).toList());
-        return existingLots;
-    }
 }
