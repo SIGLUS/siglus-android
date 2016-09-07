@@ -111,7 +111,6 @@ Feature: stock movement Page
     And I select a new movement reason "Entries" "District( DDM)"
     And I wait for 1 second
     And I select movement date
-    And I press "Done"
     And I wait for 1 second
     And I enter signature "super"
     And I add new lot with lot number "TEST-123"

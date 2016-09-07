@@ -20,7 +20,6 @@ Feature: Requisition
     Then I select a new movement reason "Issues" "Maternity"
     Then I wait for 1 second
     Then I select movement date
-    Then I press "Done"
     Then I wait for 1 second
     Then I enter signature "super"
     When I enter quantity "123" for the last lot
