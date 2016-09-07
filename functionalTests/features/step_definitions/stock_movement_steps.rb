@@ -72,7 +72,6 @@ end
 Then(/^I select movement reason$/) do
     q = query("android.widget.EditText id:'et_movement_reason'")
     touch(q)
-    touch(q)
 end
 
 Then(/^I select movement date$/) do
@@ -146,12 +145,8 @@ Then(/^I make a new movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stoc
         Then I wait for 1 second
         Then I press "NEW MOVEMENT"
         Then I select a new movement reason "#{first_reason}" "#{second_reason}"
-    }
-
-    steps %Q{
         Then I wait for 1 second
         Then I select movement date
-        Then I press "Done"
         Then I wait for 1 second
         Then I enter signature "super"
         When I enter quantity "#{number}" for the last lot
