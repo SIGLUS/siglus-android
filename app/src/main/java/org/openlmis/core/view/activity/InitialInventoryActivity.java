@@ -49,6 +49,7 @@ public class InitialInventoryActivity extends InventoryActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
 
+        initRecyclerView();
         Subscription subscription = presenter.loadInventory().subscribe(populateInventorySubscriber);
         subscriptions.add(subscription);
     }

@@ -74,7 +74,7 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
 
         @Override
         public void onNext(List<InventoryViewModel> inventoryViewModels) {
-            initRecyclerView();
+            mAdapter.refresh();
             setTotal(inventoryViewModels.size());
             loaded();
         }
@@ -124,7 +124,6 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
         int position = mAdapter.validateAll();
         if (position >= 0) {
             clearSearch();
-
             productListRecycleView.scrollToPosition(position);
             return false;
         }

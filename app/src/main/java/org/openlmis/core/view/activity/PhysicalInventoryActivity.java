@@ -29,6 +29,7 @@ public class PhysicalInventoryActivity extends InventoryActivity {
         bottomBtn.setVisibility(View.GONE);
         btnDone.setOnClickListener(completeClickListener);
 
+        initRecyclerView();
         Subscription subscription = presenter.loadInventory().subscribe(populateInventorySubscriber);
         subscriptions.add(subscription);
     }

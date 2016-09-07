@@ -24,6 +24,7 @@ import android.text.TextUtils;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Predicate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -36,12 +37,12 @@ public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> e
     List<InventoryViewModel> data;
 
     @Getter
-    List<InventoryViewModel> filteredList;
+    List<InventoryViewModel> filteredList = new ArrayList<>();
     String queryKeyWord;
 
     public InventoryListAdapter(List<InventoryViewModel> data) {
         this.data = data;
-        filteredList = this.data;
+        filteredList.addAll(data);
     }
 
     @Override
@@ -116,5 +117,9 @@ public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> e
 
         this.notifyDataSetChanged();
         return position;
+    }
+
+    public void refresh() {
+        filter(queryKeyWord);
     }
 }
