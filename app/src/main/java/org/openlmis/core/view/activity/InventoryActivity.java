@@ -35,8 +35,12 @@ import org.openlmis.core.presenter.InventoryPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
+
+import java.util.List;
 
 import roboguice.inject.InjectView;
+import rx.Subscriber;
 
 public abstract class InventoryActivity extends SearchBarActivity implements InventoryPresenter.InventoryView, SimpleDialogFragment.MsgDialogCallBack {
 
@@ -57,6 +61,25 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
 
     protected InventoryListAdapter mAdapter;
 
+    protected Subscriber<List<InventoryViewModel>> populateInventorySubscriber = new Subscriber<List<InventoryViewModel>>() {
+        @Override
+        public void onCompleted() {
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            ToastUtil.show(e.getMessage());
+            loaded();
+        }
+
+        @Override
+        public void onNext(List<InventoryViewModel> inventoryViewModels) {
+            initRecyclerView();
+            setTotal(inventoryViewModels.size());
+            loaded();
+        }
+    };
+
     @Override
     protected ScreenName getScreenName() {
         return ScreenName.InventoryScreen;
@@ -71,6 +94,8 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
 
         trackInventoryEvent(TrackerActions.SelectInventory);
     }
+
+    protected abstract void initRecyclerView();
 
     public void initUI() {
         loading();

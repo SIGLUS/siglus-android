@@ -13,13 +13,8 @@ import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.InitialInventoryAdapter;
 import org.openlmis.core.view.holder.InitialInventoryViewHolder;
-import org.openlmis.core.view.viewmodel.InventoryViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import roboguice.inject.ContentView;
-import rx.Subscriber;
 import rx.Subscription;
 
 @ContentView(R.layout.activity_inventory)
@@ -39,44 +34,27 @@ public class InitialInventoryActivity extends InventoryActivity {
     public void initUI() {
         super.initUI();
         btnSave.setVisibility(View.GONE);
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.doInventory();
+            }
+        });
         if (isAddNewDrug) {
             setTitle(getResources().getString(R.string.title_add_new_drug));
         } else if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
 
-        mAdapter = new InitialInventoryAdapter(new ArrayList<InventoryViewModel>(), viewHistoryListener);
-        productListRecycleView.setAdapter(mAdapter);
-
-        Subscription subscription = presenter.loadInventory().subscribe(loadMasterSubscriber);
+        Subscription subscription = presenter.loadInventory().subscribe(populateInventorySubscriber);
         subscriptions.add(subscription);
-
-        btnDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.doInventory(mAdapter.getData());
-            }
-        });
     }
 
-    protected Subscriber<List<InventoryViewModel>> loadMasterSubscriber = new Subscriber<List<InventoryViewModel>>() {
-        @Override
-        public void onCompleted() {
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            loaded();
-            ToastUtil.show(e.getMessage());
-        }
-
-        @Override
-        public void onNext(List<InventoryViewModel> inventoryViewModels) {
-            mAdapter.refreshList(inventoryViewModels);
-            setTotal(inventoryViewModels.size());
-            loaded();
-        }
-    };
+    @Override
+    protected void initRecyclerView() {
+        mAdapter = new InitialInventoryAdapter(presenter.getInventoryViewModelList(), viewHistoryListener);
+        productListRecycleView.setAdapter(mAdapter);
+    }
 
     @Override
     public void goToParentPage() {

@@ -5,23 +5,16 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
-import android.view.ViewGroup;
 
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.presenter.PhysicalInventoryPresenter;
 import org.openlmis.core.utils.InjectPresenter;
-import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.PhysicalInventoryAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
-import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.SignatureDialog;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import roboguice.inject.ContentView;
-import rx.Subscriber;
 import rx.Subscription;
 
 @ContentView(R.layout.activity_inventory)
@@ -29,53 +22,37 @@ public class PhysicalInventoryActivity extends InventoryActivity {
     @InjectPresenter(PhysicalInventoryPresenter.class)
     PhysicalInventoryPresenter presenter;
 
-    protected Subscriber<List<InventoryViewModel>> stockCardSubscriber = new Subscriber<List<InventoryViewModel>>() {
-        @Override
-        public void onCompleted() {
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            ToastUtil.show(e.getMessage());
-            loaded();
-        }
-
-        @Override
-        public void onNext(List<InventoryViewModel> inventoryViewModels) {
-            mAdapter.refreshList(inventoryViewModels);
-            setTotal(inventoryViewModels.size());
-            loaded();
-        }
-    };
-
     @Override
     public void initUI() {
         super.initUI();
         setTitle(getResources().getString(R.string.title_physical_inventory));
-
-        final List<InventoryViewModel> list = new ArrayList<>();
-        ((ViewGroup) bottomBtn.getParent()).removeView(bottomBtn);
-        View.OnClickListener saveClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.savePhysicalInventory(mAdapter.getData());
-            }
-        };
-        View.OnClickListener completeClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signPhysicalInventory();
-                trackInventoryEvent(TrackerActions.CompleteInventory);
-            }
-        };
-        mAdapter = new PhysicalInventoryAdapter(list, saveClickListener, completeClickListener);
-        productListRecycleView.setAdapter(mAdapter);
-
-        Subscription subscription = presenter.loadInventory().subscribe(stockCardSubscriber);
-        subscriptions.add(subscription);
-
+        bottomBtn.setVisibility(View.GONE);
         btnDone.setOnClickListener(completeClickListener);
+
+        Subscription subscription = presenter.loadInventory().subscribe(populateInventorySubscriber);
+        subscriptions.add(subscription);
     }
+
+    @Override
+    protected void initRecyclerView() {
+        mAdapter = new PhysicalInventoryAdapter(presenter.getInventoryViewModelList(), saveClickListener, completeClickListener);
+        productListRecycleView.setAdapter(mAdapter);
+    }
+
+    private View.OnClickListener saveClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            presenter.saveDraftPhysicalInventory();
+        }
+    };
+
+    private View.OnClickListener completeClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            signPhysicalInventory();
+            trackInventoryEvent(TrackerActions.CompleteInventory);
+        }
+    };
 
     @Override
     public boolean validateInventory() {
@@ -145,8 +122,7 @@ public class PhysicalInventoryActivity extends InventoryActivity {
 
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
         public void onSign(String sign) {
-            presenter.doInventory(mAdapter.getData(), sign);
-
+            presenter.doInventory(sign);
             trackInventoryEvent(TrackerActions.ApproveInventory);
         }
     };

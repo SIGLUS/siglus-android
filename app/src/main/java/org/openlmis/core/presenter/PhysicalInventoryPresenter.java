@@ -38,10 +38,9 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
             public void call(Subscriber<? super List<InventoryViewModel>> subscriber) {
                 try {
                     List<StockCard> validStockCardsForPhysicalInventory = getValidStockCardsForPhysicalInventory();
-                    List<InventoryViewModel> inventoryViewModels = convertStockCardsToStockCardViewModels(validStockCardsForPhysicalInventory);
-
-                    restoreDraftInventory(inventoryViewModels);
-                    subscriber.onNext(inventoryViewModels);
+                    inventoryViewModelList.addAll(convertStockCardsToStockCardViewModels(validStockCardsForPhysicalInventory));
+                    restoreDraftInventory();
+                    subscriber.onNext(inventoryViewModelList);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     subscriber.onError(e);
@@ -50,13 +49,13 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    public void doInventory(List<InventoryViewModel> list, final String sign) {
+    public void doInventory(final String sign) {
         view.loading();
 
-        for (InventoryViewModel viewModel : list) {
+        for (InventoryViewModel viewModel : inventoryViewModelList) {
             viewModel.setSignature(sign);
         }
-        Subscription subscription = stockMovementObservable(list).subscribe(nextMainPageAction, errorAction);
+        Subscription subscription = stockMovementObservable(inventoryViewModelList).subscribe(nextMainPageAction, errorAction);
         subscriptions.add(subscription);
     }
 
@@ -86,10 +85,10 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         }).toList();
     }
 
-    protected void restoreDraftInventory(List<InventoryViewModel> inventoryViewModels) throws LMISException {
+    protected void restoreDraftInventory() throws LMISException {
         List<DraftInventory> draftList = inventoryRepository.queryAllDraft();
 
-        for (InventoryViewModel model : inventoryViewModels) {
+        for (InventoryViewModel model : inventoryViewModelList) {
             for (DraftInventory draftInventory : draftList) {
                 if (model.getStockCardId() == draftInventory.getStockCard().getId()) {
                     model.setDraftInventory(draftInventory);
@@ -103,9 +102,9 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         }
     }
 
-    private void populateLotMovementModelWithDraftLotItem(InventoryViewModel model, DraftInventory draftInventory) {
-        List<LotMovementViewModel> existingLotMovementViewModelList = model.getExistingLotMovementViewModelList();
-        List<LotMovementViewModel> newAddedLotMovementVieModelList = model.getLotMovementViewModelList();
+    private void populateLotMovementModelWithDraftLotItem(InventoryViewModel inventoryViewModel, DraftInventory draftInventory) {
+        List<LotMovementViewModel> existingLotMovementViewModelList = inventoryViewModel.getExistingLotMovementViewModelList();
+        List<LotMovementViewModel> newAddedLotMovementVieModelList = inventoryViewModel.getLotMovementViewModelList();
         for (DraftLotItem draftLotItem : draftInventory.getDraftLotItemListWrapper()) {
             if (draftLotItem.isNewAdded()) {
                 if (isNotInExistingLots(draftLotItem, existingLotMovementViewModelList, newAddedLotMovementVieModelList)) {
@@ -177,9 +176,9 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         return item;
     }
 
-    public void savePhysicalInventory(List<InventoryViewModel> list) {
+    public void saveDraftPhysicalInventory() {
         view.loading();
-        Subscription subscription = saveDraftInventoryObservable(list).subscribe(nextMainPageAction, errorAction);
+        Subscription subscription = saveDraftInventoryObservable(inventoryViewModelList).subscribe(nextMainPageAction, errorAction);
         subscriptions.add(subscription);
     }
 

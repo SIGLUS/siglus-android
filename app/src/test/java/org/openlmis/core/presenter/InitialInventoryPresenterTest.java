@@ -162,7 +162,9 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
         InventoryViewModel model2 = new StockCardViewModelBuilder(product).setChecked(false)
                 .setQuantity("200").build();
 
-        initialInventoryPresenter.initOrArchiveBackStockCards(newArrayList(model, model2));
+        initialInventoryPresenter.getInventoryViewModelList().add(model);
+        initialInventoryPresenter.getInventoryViewModelList().add(model2);
+        initialInventoryPresenter.initOrArchiveBackStockCards();
 
         verify(stockRepositoryMock, times(1)).createOrUpdateStockCardWithStockMovement(any(StockCard.class));
     }
@@ -175,7 +177,7 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
         InventoryViewModel model = new StockCardViewModelBuilder(stockCard).setChecked(true)
                 .setQuantity("10").build();
 
-        initialInventoryPresenter.initOrArchiveBackStockCards(newArrayList(model));
+        initialInventoryPresenter.initOrArchiveBackStockCards();
 
         assertThat(model.getStockCard().getExpireDates(), is("01/01/2016"));
 
@@ -186,7 +188,8 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
         InventoryViewModel model = new StockCardViewModelBuilder(product).setChecked(true)
                 .setQuantity("0").setExpiryDates(newArrayList("01/01/2016")).build();
 
-        initialInventoryPresenter.initOrArchiveBackStockCards(newArrayList(model));
+        initialInventoryPresenter.getInventoryViewModelList().add(model);
+        initialInventoryPresenter.initOrArchiveBackStockCards();
 
         ArgumentCaptor<StockCard> argument = ArgumentCaptor.forClass(StockCard.class);
         verify(stockRepositoryMock).createOrUpdateStockCardWithStockMovement(argument.capture());
@@ -198,7 +201,8 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
         InventoryViewModel model = new StockCardViewModelBuilder(product).setChecked(true)
                 .setQuantity("10").setExpiryDates(newArrayList("01/01/2016")).build();
 
-        initialInventoryPresenter.initOrArchiveBackStockCards(newArrayList(model));
+        initialInventoryPresenter.getInventoryViewModelList().add(model);
+        initialInventoryPresenter.initOrArchiveBackStockCards();
 
         ArgumentCaptor<StockCard> argument = ArgumentCaptor.forClass(StockCard.class);
         verify(stockRepositoryMock).createOrUpdateStockCardWithStockMovement(argument.capture());
@@ -223,7 +227,8 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
 
         List<InventoryViewModel> inventoryViewModelList = newArrayList(uncheckedModel, archivedViewModel);
 
-        initialInventoryPresenter.initOrArchiveBackStockCards(inventoryViewModelList);
+        initialInventoryPresenter.getInventoryViewModelList().addAll(inventoryViewModelList);
+        initialInventoryPresenter.initOrArchiveBackStockCards();
 
         assertFalse(archivedStockCard.getProduct().isArchived());
         verify(stockRepositoryMock, times(1)).updateStockCardWithProduct(archivedStockCard);
@@ -274,7 +279,8 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
         InventoryViewModel model = new StockCardViewModelBuilder(product).setChecked(true)
                 .setQuantity("10").setExpiryDates(newArrayList("01/01/2016")).build();
 
-        initialInventoryPresenter.initOrArchiveBackStockCards(newArrayList(model));
+        initialInventoryPresenter.getInventoryViewModelList().add(model);
+        initialInventoryPresenter.initOrArchiveBackStockCards();
 
         ArgumentCaptor<StockMovementItem> argument = ArgumentCaptor.forClass(StockMovementItem.class);
         verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(argument.capture());

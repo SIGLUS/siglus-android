@@ -28,8 +28,10 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
 import rx.Observable;
 import rx.functions.Action1;
 
@@ -48,6 +50,9 @@ public abstract class InventoryPresenter extends Presenter {
     SharedPreferenceMgr sharedPreferenceMgr;
 
     InventoryView view;
+
+    @Getter
+    final List<InventoryViewModel> inventoryViewModelList = new ArrayList<>();
 
     @Override
     public void attachView(BaseView v) {

@@ -23,7 +23,6 @@ import rx.schedulers.Schedulers;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class InitialInventoryPresenter extends InventoryPresenter {
-
     @Override
     public Observable<List<InventoryViewModel>> loadInventory() {
         return Observable.create(new Observable.OnSubscribe<List<InventoryViewModel>>() {
@@ -32,14 +31,14 @@ public class InitialInventoryPresenter extends InventoryPresenter {
                 try {
                     List<Product> inventoryProducts = productRepository.listProductsArchivedOrNotInStockCard();
 
-                    List<InventoryViewModel> availableStockCardsForAddNewDrug = from(inventoryProducts)
+                    inventoryViewModelList.addAll(from(inventoryProducts)
                             .transform(new Function<Product, InventoryViewModel>() {
                                 @Override
                                 public InventoryViewModel apply(Product product) {
                                     return convertProductToStockCardViewModel(product);
                                 }
-                            }).toList();
-                    subscriber.onNext(availableStockCardsForAddNewDrug);
+                            }).toList());
+                    subscriber.onNext(inventoryViewModelList);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.reportToFabric();
@@ -66,45 +65,45 @@ public class InitialInventoryPresenter extends InventoryPresenter {
         return null;
     }
 
-    public void doInventory(final List<InventoryViewModel> list) {
+    public void doInventory() {
         if (view.validateInventory()) {
             view.loading();
-            Subscription subscription = initStockCardObservable(list).subscribe(nextMainPageAction);
+            Subscription subscription = initStockCardObservable().subscribe(nextMainPageAction);
             subscriptions.add(subscription);
         }
     }
 
-    private Observable<Object> initStockCardObservable(final List<InventoryViewModel> list) {
+    private Observable<Object> initStockCardObservable() {
         return Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
-                initOrArchiveBackStockCards(list);
+                initOrArchiveBackStockCards();
                 subscriber.onNext(null);
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
-    void initOrArchiveBackStockCards(List<InventoryViewModel> list) {
-        for (InventoryViewModel model : list) {
-            if (model.isChecked()) {
-                initOrArchiveBackStockCard(model);
+    void initOrArchiveBackStockCards() {
+        for (InventoryViewModel inventoryViewModel : inventoryViewModelList) {
+            if (inventoryViewModel.isChecked()) {
+                initOrArchiveBackStockCard(inventoryViewModel);
             }
         }
     }
 
-    private void initOrArchiveBackStockCard(InventoryViewModel model) {
+    private void initOrArchiveBackStockCard(InventoryViewModel inventoryViewModel) {
         try {
-            if (model.getProduct().isArchived()) {
-                StockCard stockCard = model.getStockCard();
+            if (inventoryViewModel.getProduct().isArchived()) {
+                StockCard stockCard = inventoryViewModel.getStockCard();
                 stockCard.getProduct().setArchived(false);
                 stockRepository.updateStockCardWithProduct(stockCard);
                 return;
             }
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                createStockCardAndInventoryMovementWithLot(model);
+                createStockCardAndInventoryMovementWithLot(inventoryViewModel);
             } else {
-                createStockCardAndInventoryMovement(model);
+                createStockCardAndInventoryMovement(inventoryViewModel);
             }
         } catch (LMISException e) {
             e.reportToFabric();

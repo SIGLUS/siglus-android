@@ -217,7 +217,7 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldRestoreDraftInventory() throws Exception {
 
-        ArrayList<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
+        physicalInventoryPresenter.getInventoryViewModelList().addAll(getStockCardViewModels());
 
         ArrayList<DraftInventory> draftInventories = new ArrayList<>();
         DraftInventory draftInventory = new DraftInventory();
@@ -228,11 +228,11 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
         draftInventories.add(draftInventory);
         when(mockInventoryRepository.queryAllDraft()).thenReturn(draftInventories);
 
-        physicalInventoryPresenter.restoreDraftInventory(inventoryViewModels);
-        assertThat(inventoryViewModels.get(0).getQuantity(), is("20"));
-        assertThat(inventoryViewModels.get(0).getExpiryDates().get(0), is("11/10/2015"));
-        assertThat(inventoryViewModels.get(1).getQuantity(), is("15"));
-        assertThat(inventoryViewModels.get(1).getExpiryDates().get(0), is("11/02/2015"));
+        physicalInventoryPresenter.restoreDraftInventory();
+        assertThat(physicalInventoryPresenter.getInventoryViewModelList().get(0).getQuantity(), is("20"));
+        assertThat(physicalInventoryPresenter.getInventoryViewModelList().get(0).getExpiryDates().get(0), is("11/10/2015"));
+        assertThat(physicalInventoryPresenter.getInventoryViewModelList().get(1).getQuantity(), is("15"));
+        assertThat(physicalInventoryPresenter.getInventoryViewModelList().get(1).getExpiryDates().get(0), is("11/02/2015"));
     }
 
     @Test
@@ -255,7 +255,8 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
         draftInventories.add(draftInventory);
         when(mockInventoryRepository.queryAllDraft()).thenReturn(draftInventories);
 
-        physicalInventoryPresenter.restoreDraftInventory(inventoryViewModels);
+        physicalInventoryPresenter.getInventoryViewModelList().addAll(inventoryViewModels);
+        physicalInventoryPresenter.restoreDraftInventory();
         assertThat(inventoryViewModels.get(0).getQuantity(), is("20"));
         assertThat(inventoryViewModels.get(0).getExpiryDates().get(0), is("11/10/2015"));
         assertThat(inventoryViewModels.get(0).getLotMovementViewModelList().get(0).getLotNumber(), is("testNew"));
@@ -264,9 +265,6 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldRestoreDraftInventoryWithEmptyQuantity() throws Exception {
-
-        ArrayList<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
-
         ArrayList<DraftInventory> draftInventories = new ArrayList<>();
         DraftInventory draftInventory = new DraftInventory();
         stockCard.setId(9);
@@ -277,8 +275,9 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
 
         when(mockInventoryRepository.queryAllDraft()).thenReturn(draftInventories);
 
-        physicalInventoryPresenter.restoreDraftInventory(inventoryViewModels);
-        assertThat(inventoryViewModels.get(0).getQuantity(), is(""));
+        physicalInventoryPresenter.getInventoryViewModelList().addAll(getStockCardViewModels());
+        physicalInventoryPresenter.restoreDraftInventory();
+        assertThat(physicalInventoryPresenter.getInventoryViewModelList().get(0).getQuantity(), is(""));
     }
 
     private ArrayList<InventoryViewModel> getStockCardViewModels() {
@@ -302,11 +301,11 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldSetSignatureToViewModel() throws Exception {
-        ArrayList<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
         String signature = "signature";
-        physicalInventoryPresenter.doInventory(inventoryViewModels, signature);
-        assertThat(inventoryViewModels.get(0).getSignature(), is(signature));
-        assertThat(inventoryViewModels.get(1).getSignature(), is(signature));
+        physicalInventoryPresenter.getInventoryViewModelList().addAll(getStockCardViewModels());
+        physicalInventoryPresenter.doInventory(signature);
+        assertThat(physicalInventoryPresenter.getInventoryViewModelList().get(0).getSignature(), is(signature));
+        assertThat(physicalInventoryPresenter.getInventoryViewModelList().get(1).getSignature(), is(signature));
     }
 
     @Test

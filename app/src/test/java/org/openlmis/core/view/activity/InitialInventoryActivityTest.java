@@ -126,7 +126,7 @@ public class InitialInventoryActivityTest {
     public void shouldDoInitialInventoryWhenBtnDoneClicked() {
         initialInventoryActivity.btnDone.performClick();
 
-        verify(mockedPresenter).doInventory(data);
+        verify(mockedPresenter).doInventory();
     }
 
 }
