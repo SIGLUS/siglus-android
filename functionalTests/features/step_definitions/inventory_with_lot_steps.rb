@@ -18,8 +18,7 @@ end
 
 Given(/^I have initialized inventory with MMIA user with lot$/) do
   steps %Q{
-        Then I wait up to 60 seconds for "Initial Inventory" to appear
-        Then I wait for "Initial inventory" to appear
+        Then I wait up to 120 seconds for "Initial Inventory" to appear
         When I Select MMIA Item with lot
         Then I wait for "Complete" to appear
         And I press "Complete"
