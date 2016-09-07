@@ -66,11 +66,8 @@ public class InitialInventoryPresenter extends InventoryPresenter {
     }
 
     public void doInventory() {
-        if (view.validateInventory()) {
-            view.loading();
-            Subscription subscription = initStockCardObservable().subscribe(nextMainPageAction);
-            subscriptions.add(subscription);
-        }
+        Subscription subscription = initStockCardObservable().subscribe(nextMainPageAction);
+        subscriptions.add(subscription);
     }
 
     private Observable<Object> initStockCardObservable() {

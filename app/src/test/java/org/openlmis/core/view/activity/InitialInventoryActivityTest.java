@@ -124,6 +124,7 @@ public class InitialInventoryActivityTest {
 
     @Test
     public void shouldDoInitialInventoryWhenBtnDoneClicked() {
+        when(initialInventoryActivity.mAdapter.validateAll()).thenReturn(-1);
         initialInventoryActivity.btnDone.performClick();
 
         verify(mockedPresenter).doInventory();

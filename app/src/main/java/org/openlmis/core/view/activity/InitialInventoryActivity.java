@@ -37,7 +37,10 @@ public class InitialInventoryActivity extends InventoryActivity {
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.doInventory();
+                if (validateInventory()) {
+                    loading();
+                    presenter.doInventory();
+                }
             }
         });
         if (isAddNewDrug) {
