@@ -57,7 +57,7 @@ public class PhysicalInventoryActivity extends InventoryActivity {
 
     @Override
     public boolean validateInventory() {
-        int position = mAdapter.physicalValidateAll();
+        int position = mAdapter.validateAll();
         if (position >= 0) {
             clearSearch();
             productListRecycleView.scrollToPosition(position);

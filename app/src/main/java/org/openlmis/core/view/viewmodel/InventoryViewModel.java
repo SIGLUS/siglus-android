@@ -192,12 +192,6 @@ public class InventoryViewModel {
         return !isExpireDateExists(date) && expiryDates.add(date);
     }
 
-    public void removeExpiryDate(String date) {
-        if (expiryDates != null) {
-            expiryDates.remove(date);
-        }
-    }
-
     public boolean isExpireDateExists(String expireDate) {
         return this.getExpiryDates().contains(expireDate);
     }

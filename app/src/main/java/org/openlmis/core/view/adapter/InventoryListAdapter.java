@@ -77,18 +77,6 @@ public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> e
         filter(queryKeyWord);
     }
 
-    public int physicalValidateAll() {
-        int position = -1;
-        for (int i = 0; i < data.size(); i++) {
-            if (!data.get(i).validatePhysical()) {
-                position = i;
-                break;
-            }
-        }
-        this.notifyDataSetChanged();
-        return position;
-    }
-
     @Override
     public int validateAll() {
         int position = -1;
@@ -96,22 +84,6 @@ public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> e
             if (!data.get(i).validate(false)) {
                 position = i;
                 break;
-            }
-        }
-
-        this.notifyDataSetChanged();
-        return position;
-    }
-
-    public int validateAllLotListAmountIsNotEmpty() {
-        int position = -1;
-        for (int i = 0; i < data.size(); i++) {
-            if (!data.get(i).hasConfirmedNoStockReceived()) {
-                if (data.get(i).getLotListQuantityTotalAmount() <= 0) {
-                    position = i;
-                    data.get(position).setShouldShowEmptyLotWarning(true);
-                    break;
-                }
             }
         }
 
