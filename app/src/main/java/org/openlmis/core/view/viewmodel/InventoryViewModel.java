@@ -376,14 +376,14 @@ public class InventoryViewModel {
     }
 
     private boolean hasLotInInventoryModelChanged() {
-        for (LotMovementViewModel viewModel : existingLotMovementViewModelList) {
-            if (!viewModel.getQuantity().isEmpty()) {
+        for (LotMovementViewModel viewModel : getExistingLotMovementViewModelList()) {
+            if (viewModel.getQuantity() != null && !viewModel.getQuantity().isEmpty()) {
                 return true;
             }
         }
         if (lotMovementViewModelList.size() > 0) return true;
-        for (LotMovementViewModel viewModel : lotMovementViewModelList) {
-            if (!viewModel.getQuantity().isEmpty()) {
+        for (LotMovementViewModel viewModel : getLotMovementViewModelList()) {
+            if (viewModel.getQuantity() != null && !viewModel.getQuantity().isEmpty()) {
                 return true;
             }
         }
