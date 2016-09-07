@@ -13,6 +13,7 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
+import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -63,7 +64,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         return FluentIterable.from(validStockCardsForPhysicalInventory).transform(new Function<StockCard, InventoryViewModel>() {
             @Override
             public InventoryViewModel apply(StockCard stockCard) {
-                InventoryViewModel inventoryViewModel = new InventoryViewModel(stockCard);
+                InventoryViewModel inventoryViewModel = new PhysicalInventoryViewModel(stockCard);
                 if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
                     try {
                         setExistingLotViewModels(inventoryViewModel);
@@ -91,7 +92,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         for (InventoryViewModel model : inventoryViewModelList) {
             for (DraftInventory draftInventory : draftList) {
                 if (model.getStockCardId() == draftInventory.getStockCard().getId()) {
-                    model.setDraftInventory(draftInventory);
+                    ((PhysicalInventoryViewModel)model).setDraftInventory(draftInventory);
                     model.initExpiryDates(draftInventory.getExpireDates());
                     model.setQuantity(formatQuantity(draftInventory.getQuantity()));
                     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
@@ -178,18 +179,18 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
 
     public void saveDraftPhysicalInventory() {
         view.loading();
-        Subscription subscription = saveDraftInventoryObservable(inventoryViewModelList).subscribe(nextMainPageAction, errorAction);
+        Subscription subscription = saveDraftInventoryObservable().subscribe(nextMainPageAction, errorAction);
         subscriptions.add(subscription);
     }
 
-    private Observable<Object> saveDraftInventoryObservable(final List<InventoryViewModel> list) {
+    private Observable<Object> saveDraftInventoryObservable() {
         return Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
                 try {
                     inventoryRepository.clearDraft();
-                    for (InventoryViewModel model : list) {
-                        inventoryRepository.createDraft(model.parseDraftInventory());
+                    for (InventoryViewModel model : inventoryViewModelList) {
+                        inventoryRepository.createDraft(new DraftInventory(model));
                     }
                     subscriber.onNext(null);
                     subscriber.onCompleted();

@@ -92,7 +92,7 @@ public class PhysicalInventoryViewHolder extends BaseViewHolder {
     }
 
     public void afterQuantityChanged(InventoryViewModel viewModel, String quantity) {
-        viewModel.setHasDataChanged(true);
+        viewModel.setDataChanged(true);
         viewModel.setQuantity(quantity);
     }
 

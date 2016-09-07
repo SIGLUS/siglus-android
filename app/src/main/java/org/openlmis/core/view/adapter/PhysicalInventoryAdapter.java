@@ -77,23 +77,10 @@ public class PhysicalInventoryAdapter extends InventoryListAdapterWithBottomBtn 
     public boolean isHasDataChanged() {
         List<InventoryViewModel> data = getData();
         for (InventoryViewModel model : data) {
-            if (model.isHasDataChanged()) {
+            if (model.isDataChanged()) {
                 return true;
             }
         }
         return false;
-    }
-
-    @Override
-    public int validateAll() {
-        int position = -1;
-        for (int i = 0; i < data.size(); i++) {
-            if (!data.get(i).validatePhysical()) {
-                position = i;
-                break;
-            }
-        }
-        this.notifyDataSetChanged();
-        return position;
     }
 }

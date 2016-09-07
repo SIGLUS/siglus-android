@@ -19,8 +19,8 @@
 package org.openlmis.core.view.fragment;
 
 import android.app.Activity;
-import android.view.View;
 import android.content.Intent;
+import android.view.View;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -111,7 +111,8 @@ public class StockCardListFragmentTest {
     public void shouldSortListByProductName() {
         when(fragment.presenter.getInventoryViewModels()).thenReturn(this.inventoryViewModels);
         List<InventoryViewModel> inventoryViewModels = fragment.presenter.getInventoryViewModels();
-        StockCardListAdapter adapter = new StockCardListAdapter(inventoryViewModels, null);
+        StockCardListAdapter adapter = new StockCardListAdapter(new ArrayList<InventoryViewModel>(), null);
+        adapter.refreshList(inventoryViewModels);
         adapter.sortByName(true);
 
         List<InventoryViewModel> sortedList = adapter.getFilteredList();
@@ -123,7 +124,8 @@ public class StockCardListFragmentTest {
     @Test
     public void shouldSortListBySOH() {
         when(fragment.presenter.getInventoryViewModels()).thenReturn(inventoryViewModels);
-        StockCardListAdapter adapter = new StockCardListAdapter(inventoryViewModels, null);
+        StockCardListAdapter adapter = new StockCardListAdapter(new ArrayList<InventoryViewModel>(), null);
+        adapter.refreshList(inventoryViewModels);
         adapter.sortBySOH(true);
 
         List<InventoryViewModel> sortedList = adapter.getFilteredList();

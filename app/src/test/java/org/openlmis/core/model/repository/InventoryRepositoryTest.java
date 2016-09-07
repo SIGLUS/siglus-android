@@ -90,7 +90,8 @@ public class InventoryRepositoryTest {
         stockMovementItem1.setStockCard(stockCard);
         stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem1);
 
-        DraftInventory draftInventory = new DraftInventory(stockCard);
+        DraftInventory draftInventory = new DraftInventory();
+        draftInventory.setStockCard(stockCard);
         DraftLotItem draftLotItem = new DraftLotItem();
         draftLotItem.setProduct(product);
         draftLotItem.setLotNumber("A111");

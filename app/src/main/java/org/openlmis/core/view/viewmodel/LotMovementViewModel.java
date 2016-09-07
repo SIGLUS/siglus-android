@@ -39,15 +39,6 @@ public class LotMovementViewModel implements Serializable {
         this.movementType = movementType;
     }
 
-    public boolean validate() {
-        valid = StringUtils.isNumeric(quantity)
-                && !StringUtils.isBlank(lotNumber)
-                && !StringUtils.isBlank(expiryDate)
-                && !StringUtils.isBlank(quantity)
-                && Long.parseLong(quantity) > 0;
-        return valid;
-    }
-
     public boolean validateQuantity(MovementReasonManager.MovementType movementType) {
         if (MovementReasonManager.MovementType.ISSUE.equals(movementType)
                 || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(movementType)) {
@@ -84,6 +75,15 @@ public class LotMovementViewModel implements Serializable {
         lotMovementItem.setStockOnHand(currentStockOnHand);
         lotMovementItem.setMovementQuantity(currentStockOnHand - previousStockOnHand);
         return lotMovementItem;
+    }
+
+    public boolean validate() {
+        valid = StringUtils.isNumeric(quantity)
+                && !StringUtils.isBlank(lotNumber)
+                && !StringUtils.isBlank(expiryDate)
+                && !StringUtils.isBlank(quantity)
+                && Long.parseLong(quantity) > 0;
+        return valid;
     }
 
     public boolean validateExistingLot() {

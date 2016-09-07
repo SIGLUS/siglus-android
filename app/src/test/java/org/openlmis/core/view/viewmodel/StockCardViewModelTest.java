@@ -4,16 +4,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.ProductBuilder;
 
 import java.util.ArrayList;
 
-import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(LMISTestRunner.class)
@@ -45,15 +42,6 @@ public class StockCardViewModelTest {
         assertTrue(addExpiryDate);
         boolean addExpiryDateSec = model.addExpiryDate("28/10/2016");
         assertFalse(addExpiryDateSec);
-    }
-
-    @Test
-    public void shouldParseDraftInventory() throws Exception {
-        model.setQuantity("10");
-        DraftInventory draftInventory = model.parseDraftInventory();
-
-        assertThat(draftInventory.getQuantity(), is(10L));
-        assertThat(draftInventory.getExpireDates(), is("18/10/2015,18/10/2016,18/10/2017,18/10/2018"));
     }
 
     @Test

@@ -30,6 +30,7 @@ import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModelBuilder;
+import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -290,7 +291,7 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @NonNull
     private InventoryViewModel buildStockCardWithOutDraft(int stockCardId, String quantity, String expireDate) {
-        InventoryViewModel inventoryViewModelWithOutDraft = new InventoryViewModel(buildDefaultStockCard());
+        InventoryViewModel inventoryViewModelWithOutDraft = new PhysicalInventoryViewModel(buildDefaultStockCard());
         inventoryViewModelWithOutDraft.setStockCardId(stockCardId);
         inventoryViewModelWithOutDraft.setQuantity(quantity);
         ArrayList<String> expireDates = new ArrayList<>();

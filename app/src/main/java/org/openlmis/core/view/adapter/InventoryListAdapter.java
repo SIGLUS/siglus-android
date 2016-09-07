@@ -42,7 +42,6 @@ public abstract class InventoryListAdapter<VH extends RecyclerView.ViewHolder> e
 
     public InventoryListAdapter(List<InventoryViewModel> data) {
         this.data = data;
-        filteredList.addAll(data);
     }
 
     @Override

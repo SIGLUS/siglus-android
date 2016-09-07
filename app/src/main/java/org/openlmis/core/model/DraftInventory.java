@@ -24,7 +24,11 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
+import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.ListUtil;
+import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -55,8 +59,19 @@ public class DraftInventory extends BaseModel{
 
     private List<DraftLotItem> draftLotItemListWrapper;
 
-    public DraftInventory(StockCard stockCard) {
-        this.stockCard = stockCard;
+    public DraftInventory(InventoryViewModel viewModel) {
+        this.stockCard = viewModel.getStockCard();
+        this.expireDates = DateUtil.formatExpiryDateString(viewModel.getExpiryDates());
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+            this.quantity = viewModel.getLotListQuantityTotalAmount();
+            setupDraftLotList(viewModel.getExistingLotMovementViewModelList(),viewModel.getLotMovementViewModelList());
+        } else {
+            try {
+                this.quantity = Long.parseLong(viewModel.getQuantity());
+            } catch (NumberFormatException e) {
+                this.quantity = null;
+            }
+        }
     }
 
     public List<DraftLotItem> getDraftLotItemListWrapper() {
@@ -64,7 +79,7 @@ public class DraftInventory extends BaseModel{
         return draftLotItemListWrapper;
     }
 
-    public void setupDraftLotList(List<LotMovementViewModel> existingLotMovementViewModelList, List<LotMovementViewModel> lotMovementViewModelList) {
+    private void setupDraftLotList(List<LotMovementViewModel> existingLotMovementViewModelList, List<LotMovementViewModel> lotMovementViewModelList) {
         getDraftLotItemListWrapper().addAll(FluentIterable.from(existingLotMovementViewModelList).transform(new Function<LotMovementViewModel, DraftLotItem>() {
             @Override
             public DraftLotItem apply(LotMovementViewModel lotMovementViewModel) {

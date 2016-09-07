@@ -194,7 +194,7 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
     }
 
     private void updateExpireDateToDB() {
-        model.setHasDataChanged(true);
+        model.setDataChanged(true);
         model.setExpiryDates(expireDates);
 
         if (isUpdateDBImmediately) {
