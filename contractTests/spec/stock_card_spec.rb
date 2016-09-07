@@ -58,7 +58,7 @@ describe "Sync stock card data" do
           {
             lotNumber: "TEST1",
             expirationDate: "2016-10-31",
-            quantity: 5,
+            quantity: -5,
             customProps: {
               SOH: 5
             },
@@ -66,7 +66,7 @@ describe "Sync stock card data" do
           {
             lotNumber: "TEST2",
             expirationDate: "2016-11-31",
-            quantity: 100,
+            quantity: -100,
             customProps: {
               SOH: 100
             }
