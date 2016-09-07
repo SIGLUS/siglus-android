@@ -18,7 +18,6 @@ Feature: stock movement Page
     Then I select a new movement reason "Negative Adjustments" "Damaged on arrival"
     Then I wait for 1 second
     Then I select movement date
-    Then I press "Done"
     Then I wait for 1 second
     Then I enter signature "super"
     And I press "Complete"
@@ -72,7 +71,6 @@ Feature: stock movement Page
     Then I select a new movement reason "Issues" "PAV"
     Then I wait for 1 second
     Then I select movement date
-    Then I press "Done"
     Then I wait for 1 second
     And I enter requested quantity "456"
     Then I enter signature "super"
@@ -98,7 +96,6 @@ Feature: stock movement Page
     Then I select a new movement reason "Negative Adjustments" "Return to DDM"
     Then I wait for 1 second
     Then I select movement date
-    Then I press "Done"
     Then I wait for 1 second
     Then I enter signature "super"
     When I enter quantity "123" for the last lot

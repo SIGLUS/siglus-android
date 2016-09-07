@@ -19,7 +19,6 @@ Feature: Unpack Kit
     Then I select a new movement reason "Negative Adjustments" "Damaged on arrival"
     Then I wait for 1 second
     Then I select movement date
-    Then I press "Done"
     Then I wait for 1 second
     Then I enter signature "super"
     When I enter quantity "2" for the last lot
@@ -41,7 +40,6 @@ Feature: Unpack Kit
     Then I select a new movement reason "Entries" "District( DDM)"
     Then I wait for 1 second
     Then I select movement date
-    Then I press "Done"
     Then I wait for 1 second
     Then I enter quantity number "3"
     Then I enter signature "super"
