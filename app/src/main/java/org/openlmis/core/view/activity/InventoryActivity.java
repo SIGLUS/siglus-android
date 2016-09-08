@@ -19,6 +19,7 @@
 package org.openlmis.core.view.activity;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -41,6 +42,7 @@ import java.util.List;
 
 import roboguice.inject.InjectView;
 import rx.Subscriber;
+import rx.functions.Action1;
 
 public abstract class InventoryActivity extends SearchBarActivity implements InventoryPresenter.InventoryView, SimpleDialogFragment.MsgDialogCallBack {
 
@@ -80,6 +82,27 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
         }
     };
 
+    protected Action1<Object> onNextMainPageAction = getOnNextMainPageAction();
+
+    @NonNull
+    protected Action1<Object> getOnNextMainPageAction() {
+        return new Action1<Object>() {
+            @Override
+            public void call(Object o) {
+                loaded();
+                goToNextPage();
+            }
+        };
+    }
+
+    protected Action1<Throwable> errorAction = new Action1<Throwable>() {
+        @Override
+        public void call(Throwable throwable) {
+            loaded();
+            showErrorMessage(throwable.getMessage());
+        }
+    };
+
     @Override
     protected ScreenName getScreenName() {
         return ScreenName.InventoryScreen;
@@ -105,8 +128,7 @@ public abstract class InventoryActivity extends SearchBarActivity implements Inv
         LMISApp.getInstance().trackEvent(TrackerCategories.Inventory, action);
     }
 
-    @Override
-    public abstract void goToParentPage();
+    protected abstract void goToNextPage();
 
     @Override
     public boolean onSearchStart(String query) {

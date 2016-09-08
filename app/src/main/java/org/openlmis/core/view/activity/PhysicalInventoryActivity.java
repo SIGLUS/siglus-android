@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import org.openlmis.core.R;
@@ -35,16 +36,21 @@ public class PhysicalInventoryActivity extends InventoryActivity {
 
     @Override
     protected void initRecyclerView() {
-        mAdapter = new PhysicalInventoryAdapter(presenter.getInventoryViewModelList(), saveClickListener, completeClickListener);
+        mAdapter = new PhysicalInventoryAdapter(presenter.getInventoryViewModelList(), getSaveOnClickListener(), completeClickListener);
         productListRecycleView.setAdapter(mAdapter);
     }
 
-    private View.OnClickListener saveClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            presenter.saveDraftPhysicalInventory();
-        }
-    };
+    @NonNull
+    protected View.OnClickListener getSaveOnClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loading();
+                Subscription subscription = presenter.saveDraftInventoryObservable().subscribe(onNextMainPageAction, errorAction);
+                subscriptions.add(subscription);
+            }
+        };
+    }
 
     private View.OnClickListener completeClickListener = new View.OnClickListener() {
         @Override
@@ -104,7 +110,7 @@ public class PhysicalInventoryActivity extends InventoryActivity {
     }
 
     @Override
-    public void goToParentPage() {
+    protected void goToNextPage() {
         setResult(Activity.RESULT_OK);
         finish();
     }
@@ -122,7 +128,9 @@ public class PhysicalInventoryActivity extends InventoryActivity {
 
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
         public void onSign(String sign) {
-            presenter.doInventory(sign);
+            loading();
+            Subscription subscription = presenter.stockMovementObservable(sign).subscribe(onNextMainPageAction, errorAction);
+            subscriptions.add(subscription);
             trackInventoryEvent(TrackerActions.ApproveInventory);
         }
     };

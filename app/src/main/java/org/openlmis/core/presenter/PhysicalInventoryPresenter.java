@@ -25,7 +25,6 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -48,16 +47,6 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
                 }
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
-    }
-
-    public void doInventory(final String sign) {
-        view.loading();
-
-        for (InventoryViewModel viewModel : inventoryViewModelList) {
-            viewModel.setSignature(sign);
-        }
-        Subscription subscription = stockMovementObservable(inventoryViewModelList).subscribe(nextMainPageAction, errorAction);
-        subscriptions.add(subscription);
     }
 
     private List<InventoryViewModel> convertStockCardsToStockCardViewModels(List<StockCard> validStockCardsForPhysicalInventory) {
@@ -177,13 +166,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         return item;
     }
 
-    public void saveDraftPhysicalInventory() {
-        view.loading();
-        Subscription subscription = saveDraftInventoryObservable().subscribe(nextMainPageAction, errorAction);
-        subscriptions.add(subscription);
-    }
-
-    private Observable<Object> saveDraftInventoryObservable() {
+    public Observable<Object> saveDraftInventoryObservable() {
         return Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
@@ -202,24 +185,25 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
-    protected Observable<Object> stockMovementObservable(final List<InventoryViewModel> list) {
+    public Observable<Object> stockMovementObservable(final String sign) {
         return Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
                 try {
-                    for (InventoryViewModel model : list) {
-                        StockCard stockCard = model.getStockCard();
+                    for (InventoryViewModel viewModel : inventoryViewModelList) {
+                        viewModel.setSignature(sign);
+                        StockCard stockCard = viewModel.getStockCard();
                         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                            stockCard.setStockOnHand(model.getLotListQuantityTotalAmount());
+                            stockCard.setStockOnHand(viewModel.getLotListQuantityTotalAmount());
                         } else {
-                            stockCard.setStockOnHand(Long.parseLong(model.getQuantity()));
+                            stockCard.setStockOnHand(Long.parseLong(viewModel.getQuantity()));
                         }
 
                         if (stockCard.getStockOnHand() == 0) {
                             stockCard.setExpireDates("");
                         }
 
-                        stockRepository.addStockMovementAndUpdateStockCard(calculateAdjustment(model, stockCard));
+                        stockRepository.addStockMovementAndUpdateStockCard(calculateAdjustment(viewModel, stockCard));
                     }
                     inventoryRepository.clearDraft();
                     sharedPreferenceMgr.setLatestPhysicInventoryTime(DateUtil.formatDate(new Date(), DateUtil.DATE_TIME_FORMAT));

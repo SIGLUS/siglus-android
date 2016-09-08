@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.presenter.InitialInventoryPresenter;
@@ -26,10 +27,12 @@ import java.util.List;
 
 import roboguice.RoboGuice;
 import rx.Observable;
+import rx.functions.Action1;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.Lists.newArrayList;
@@ -74,7 +77,7 @@ public class InitialInventoryActivityTest {
 
     @Test
     public void shouldGoToHomePageAfterInitInventoryOrDoPhysicalInventory(){
-        initialInventoryActivity.goToParentPage();
+        initialInventoryActivity.goToNextPage();
 
         Intent startIntent = shadowOf(initialInventoryActivity).getNextStartedActivity();
         assertEquals(startIntent.getComponent().getClassName(), HomeActivity.class.getName());
@@ -87,7 +90,7 @@ public class InitialInventoryActivityTest {
 
         initialInventoryActivity = Robolectric.buildActivity(InitialInventoryActivity.class).withIntent(intentToStockCard).create().get();
 
-        initialInventoryActivity.goToParentPage();
+        initialInventoryActivity.goToNextPage();
 
         Intent startIntent = shadowOf(initialInventoryActivity).getNextStartedActivity();
         assertEquals(startIntent.getComponent().getClassName(), StockCardListActivity.class.getName());
@@ -125,9 +128,31 @@ public class InitialInventoryActivityTest {
     @Test
     public void shouldDoInitialInventoryWhenBtnDoneClicked() {
         when(initialInventoryActivity.mAdapter.validateAll()).thenReturn(-1);
-        initialInventoryActivity.btnDone.performClick();
+        initialInventoryActivity.onNextMainPageAction = new Action1<Object>() {
+            @Override
+            public void call(Object o) {
+                return;
+            }
+        };
 
-        verify(mockedPresenter).doInventory();
+        when(mockedPresenter.initStockCardObservable()).thenReturn(Observable.empty());
+        initialInventoryActivity.btnDone.performClick();
+        verify(mockedPresenter).initStockCardObservable();
     }
 
+    @Test
+    public void shouldGoToMainPageWhenOnNextCalled() {
+        initialInventoryActivity.onNextMainPageAction.call(null);
+
+        assertNull(initialInventoryActivity.loadingDialog);
+        assertFalse(SharedPreferenceMgr.getInstance().isNeedsInventory());
+    }
+
+    @Test
+     public void shouldShowErrorWhenOnErrorCalled() {
+        String errorMessage = "This is throwable error";
+        initialInventoryActivity.errorAction.call(new Throwable(errorMessage));
+
+        assertNull(initialInventoryActivity.loadingDialog);
+    }
 }

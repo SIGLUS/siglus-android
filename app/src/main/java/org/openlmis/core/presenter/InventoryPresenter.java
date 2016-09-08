@@ -33,7 +33,6 @@ import java.util.List;
 
 import lombok.Getter;
 import rx.Observable;
-import rx.functions.Action1;
 
 public abstract class InventoryPresenter extends Presenter {
 
@@ -59,27 +58,9 @@ public abstract class InventoryPresenter extends Presenter {
         view = (InventoryView) v;
     }
 
-    protected Action1<Object> nextMainPageAction = new Action1<Object>() {
-        @Override
-        public void call(Object o) {
-            view.loaded();
-            view.goToParentPage();
-        }
-    };
-
-    protected Action1<Throwable> errorAction = new Action1<Throwable>() {
-        @Override
-        public void call(Throwable throwable) {
-            view.loaded();
-            view.showErrorMessage(throwable.getMessage());
-        }
-    };
-
     public abstract Observable<List<InventoryViewModel>> loadInventory();
 
     public interface InventoryView extends BaseView {
-        void goToParentPage();
-
         boolean validateInventory();
 
         void showErrorMessage(String msg);

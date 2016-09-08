@@ -41,8 +41,8 @@ import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.LMISRestApi;
 import org.openlmis.core.network.LMISRestManagerMock;
-import org.openlmis.core.network.model.UserResponse;
 import org.openlmis.core.network.model.SyncDownProductsResponse;
+import org.openlmis.core.network.model.UserResponse;
 import org.openlmis.core.service.SyncDownManager;
 import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.openlmis.core.service.SyncService;
@@ -215,6 +215,7 @@ public class LoginPresenterTest {
         SharedPreferenceMgr.getInstance().setLastMonthStockCardDataSynced(true);
         SharedPreferenceMgr.getInstance().setRequisitionDataSynced(true);
         SharedPreferenceMgr.getInstance().setLastSyncProductTime("time");
+        SharedPreferenceMgr.getInstance().setHasLotInfo(true);
 
         presenter.startLogin("user", "password");
 

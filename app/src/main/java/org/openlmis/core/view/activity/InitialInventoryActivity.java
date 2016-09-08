@@ -39,7 +39,8 @@ public class InitialInventoryActivity extends InventoryActivity {
             public void onClick(View v) {
                 if (validateInventory()) {
                     loading();
-                    presenter.doInventory();
+                    Subscription subscription = presenter.initStockCardObservable().subscribe(onNextMainPageAction);
+                    subscriptions.add(subscription);
                 }
             }
         });
@@ -61,8 +62,11 @@ public class InitialInventoryActivity extends InventoryActivity {
     }
 
     @Override
-    public void goToParentPage() {
-        goToMainPage();
+    public void goToNextPage() {
+        preferencesMgr.setIsNeedsInventory(false);
+        preferencesMgr.setHasLotInfo(true);
+        startActivity(isAddNewDrug ? StockCardListActivity.getIntentToMe(this) : HomeActivity.getIntentToMe(this));
+        this.finish();
     }
 
     @Override
@@ -76,12 +80,6 @@ public class InitialInventoryActivity extends InventoryActivity {
             return;
         }
         super.onBackPressed();
-    }
-
-    private void goToMainPage() {
-        preferencesMgr.setIsNeedsInventory(false);
-        startActivity(isAddNewDrug ? StockCardListActivity.getIntentToMe(this) : HomeActivity.getIntentToMe(this));
-        this.finish();
     }
 
     public static Intent getIntentToMe(Context context, boolean isAddNewDrug) {

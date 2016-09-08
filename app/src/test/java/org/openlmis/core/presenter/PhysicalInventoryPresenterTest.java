@@ -40,6 +40,7 @@ import java.util.List;
 import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Scheduler;
+import rx.Subscription;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.observers.TestSubscriber;
@@ -154,24 +155,6 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
         List<InventoryViewModel> receivedInventoryViewModels = subscriber.getOnNextEvents().get(0);
         assertEquals(1, receivedInventoryViewModels.size());
         assertEquals("VIA Product", receivedInventoryViewModels.get(0).getProductName());
-    }
-
-
-    @Test
-    public void shouldGoToMainPageWhenOnNextCalled() {
-        physicalInventoryPresenter.nextMainPageAction.call(null);
-
-        verify(view).loaded();
-        verify(view).goToParentPage();
-    }
-
-    @Test
-    public void shouldShowErrorWhenOnErrorCalled() {
-        String errorMessage = "This is throwable error";
-        physicalInventoryPresenter.errorAction.call(new Throwable(errorMessage));
-
-        verify(view).loaded();
-        verify(view).showErrorMessage(errorMessage);
     }
 
     @Test
@@ -304,7 +287,11 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
     public void shouldSetSignatureToViewModel() throws Exception {
         String signature = "signature";
         physicalInventoryPresenter.getInventoryViewModelList().addAll(getStockCardViewModels());
-        physicalInventoryPresenter.doInventory(signature);
+        TestSubscriber<Object> subscriber = new TestSubscriber<>();
+        Subscription subscription = physicalInventoryPresenter.stockMovementObservable(signature).subscribe(subscriber);
+        subscriber.awaitTerminalEvent();
+
+        physicalInventoryPresenter.subscriptions.add(subscription);
         assertThat(physicalInventoryPresenter.getInventoryViewModelList().get(0).getSignature(), is(signature));
         assertThat(physicalInventoryPresenter.getInventoryViewModelList().get(1).getSignature(), is(signature));
     }
@@ -314,7 +301,10 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
         ArrayList<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
 
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
-        Observable observable = physicalInventoryPresenter.stockMovementObservable(inventoryViewModels);
+        String sign = "test";
+        physicalInventoryPresenter.getInventoryViewModelList().clear();
+        physicalInventoryPresenter.getInventoryViewModelList().addAll(inventoryViewModels);
+        Observable observable = physicalInventoryPresenter.stockMovementObservable(sign);
         observable.subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
@@ -325,9 +315,12 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldSaveInventoryWhenCompletePhysicalInventory() throws Exception {
-        List<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
+
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
-        Observable observable = physicalInventoryPresenter.stockMovementObservable(inventoryViewModels);
+        physicalInventoryPresenter.getInventoryViewModelList().clear();
+        physicalInventoryPresenter.getInventoryViewModelList().addAll(getStockCardViewModels());
+        String sign = "signature";
+        Observable observable = physicalInventoryPresenter.stockMovementObservable(sign);
         observable.subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
@@ -343,14 +336,14 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
         firstStockCardViewModel.setQuantity("0");
 
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
-        Observable observable = physicalInventoryPresenter.stockMovementObservable(inventoryViewModels);
+        String sign = "test";
+        Observable observable = physicalInventoryPresenter.stockMovementObservable(sign);
         observable.subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
 
         assertThat(firstStockCardViewModel.getStockCard().getExpireDates(), is(""));
     }
-
 
     public class MyTestModule extends AbstractModule {
         @Override

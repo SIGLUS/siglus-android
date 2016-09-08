@@ -16,7 +16,6 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -65,12 +64,7 @@ public class InitialInventoryPresenter extends InventoryPresenter {
         return null;
     }
 
-    public void doInventory() {
-        Subscription subscription = initStockCardObservable().subscribe(nextMainPageAction);
-        subscriptions.add(subscription);
-    }
-
-    private Observable<Object> initStockCardObservable() {
+    public Observable<Object> initStockCardObservable() {
         return Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {

@@ -28,6 +28,7 @@ import roboguice.RoboGuice;
 import rx.Observable;
 import rx.Subscriber;
 
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.util.Lists.newArrayList;
 import static org.mockito.Mockito.mock;
@@ -82,8 +83,16 @@ public class PhysicalInventoryActivityTest extends LMISRepositoryUnitTest {
         when(mockedPresenter.loadInventory()).thenReturn(value);
 
         physicalInventoryActivity = Robolectric.buildActivity(PhysicalInventoryActivity.class).withIntent(intentFromParentActivity).create().get();
-        physicalInventoryActivity.goToParentPage();
+        physicalInventoryActivity.goToNextPage();
 
         assertTrue(physicalInventoryActivity.isFinishing());
+    }
+
+    @Test
+    public void shouldShowErrorWhenOnErrorCalled() {
+        String errorMessage = "This is throwable error";
+        physicalInventoryActivity.errorAction.call(new Throwable(errorMessage));
+
+        assertNull(physicalInventoryActivity.loadingDialog);
     }
 }

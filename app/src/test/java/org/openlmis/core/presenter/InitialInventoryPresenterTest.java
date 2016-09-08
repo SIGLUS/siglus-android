@@ -1,7 +1,5 @@
 package org.openlmis.core.presenter;
 
-import android.support.annotation.NonNull;
-
 import com.google.inject.AbstractModule;
 
 import org.apache.commons.lang3.StringUtils;
@@ -232,42 +230,6 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
 
         assertFalse(archivedStockCard.getProduct().isArchived());
         verify(stockRepositoryMock, times(1)).updateStockCardWithProduct(archivedStockCard);
-    }
-
-    @Test
-    public void shouldGoToMainPageWhenOnNextCalled() {
-        initialInventoryPresenter.nextMainPageAction.call(null);
-
-        verify(view).loaded();
-        verify(view).goToParentPage();
-    }
-
-    @Test
-    public void shouldShowErrorWhenOnErrorCalled() {
-        String errorMessage = "This is throwable error";
-        initialInventoryPresenter.errorAction.call(new Throwable(errorMessage));
-
-        verify(view).loaded();
-        verify(view).showErrorMessage(errorMessage);
-    }
-
-    private ArrayList<InventoryViewModel> getStockCardViewModels() {
-        ArrayList<InventoryViewModel> inventoryViewModels = new ArrayList<>();
-        inventoryViewModels.add(buildStockCardWithOutDraft(9, "11", null));
-        InventoryViewModel inventoryViewModelWithOutDraft = buildStockCardWithOutDraft(3, "15", "11/02/2015");
-        inventoryViewModels.add(inventoryViewModelWithOutDraft);
-        return inventoryViewModels;
-    }
-
-    @NonNull
-    private InventoryViewModel buildStockCardWithOutDraft(int stockCardId, String quantity, String expireDate) {
-        InventoryViewModel inventoryViewModelWithOutDraft = new InventoryViewModel(buildDefaultStockCard());
-        inventoryViewModelWithOutDraft.setStockCardId(stockCardId);
-        inventoryViewModelWithOutDraft.setQuantity(quantity);
-        ArrayList<String> expireDates = new ArrayList<>();
-        expireDates.add(expireDate);
-        inventoryViewModelWithOutDraft.setExpiryDates(expireDates);
-        return inventoryViewModelWithOutDraft;
     }
 
     @Test
