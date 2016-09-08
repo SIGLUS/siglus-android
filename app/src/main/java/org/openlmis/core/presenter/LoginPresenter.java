@@ -233,7 +233,7 @@ public class LoginPresenter extends Presenter {
         if (view.needInitInventory()) {
             view.goToInitInventory();
         } else {
-            if (!SharedPreferenceMgr.getInstance().hasLotInfo()) {
+            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) && !SharedPreferenceMgr.getInstance().hasLotInfo()) {
                 view.goToParticularPhysicalInventory();
             } else {
                 view.goToHomePage();
