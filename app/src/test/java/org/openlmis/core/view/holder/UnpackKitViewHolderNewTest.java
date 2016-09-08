@@ -14,7 +14,7 @@ import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModelBuilder;
-import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
+import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,13 +33,12 @@ public class UnpackKitViewHolderNewTest {
 
     @Test
     public void shouldPopulate() {
-        InventoryViewModel inventoryViewModel = new StockCardViewModelBuilder(product)
-                .setKitExpectQuantity(20)
-                .setQuantity("20")
-                .setChecked(false)
-                .setType("Embalagem")
-                .setSOH(123L)
-                .build();
+        InventoryViewModel inventoryViewModel = new UnpackKitInventoryViewModel(product);
+        inventoryViewModel.setKitExpectQuantity(20);
+        inventoryViewModel.setQuantity("20");
+        inventoryViewModel.setChecked(false);
+        inventoryViewModel.setType("Embalagem");
+        inventoryViewModel.setStockOnHand(123L);
 
         viewHolder.populate(inventoryViewModel);
 
@@ -48,13 +47,12 @@ public class UnpackKitViewHolderNewTest {
 
     @Test
     public void shouldSetAdapter() {
-        InventoryViewModel inventoryViewModel = new StockCardViewModelBuilder(product)
-                .setKitExpectQuantity(20)
-                .setQuantity("20")
-                .setChecked(false)
-                .setType("Embalagem")
-                .setSOH(123L)
-                .build();
+        InventoryViewModel inventoryViewModel = new UnpackKitInventoryViewModel(product);
+        inventoryViewModel.setKitExpectQuantity(20);
+        inventoryViewModel.setQuantity("20");
+        inventoryViewModel.setChecked(false);
+        inventoryViewModel.setType("Embalagem");
+        inventoryViewModel.setStockOnHand(123L);
 
         LotMovementViewModel lotMovementViewModel = new LotMovementViewModelBuilder()
                 .setMovementType(MovementReasonManager.MovementType.RECEIVE)

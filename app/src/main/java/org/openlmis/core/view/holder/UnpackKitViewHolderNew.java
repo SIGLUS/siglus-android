@@ -14,6 +14,7 @@ import org.openlmis.core.manager.NestedRecyclerViewLinearLayoutManager;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
 
 import roboguice.inject.InjectView;
 
@@ -62,14 +63,14 @@ public class UnpackKitViewHolderNew extends AddLotViewHolder {
         initExistingLotListView(inventoryViewModel);
         initLotListRecyclerView(inventoryViewModel);
 
-        setConfirmStockClickListener(inventoryViewModel);
+        setConfirmStockClickListener((UnpackKitInventoryViewModel) inventoryViewModel);
 
         validateIfShouldShowUpEmptyLotWarning(inventoryViewModel);
         updatePop(inventoryViewModel);
     }
 
     private void validateIfShouldShowUpEmptyLotWarning(InventoryViewModel inventoryViewModel) {
-        if (inventoryViewModel.shouldShowEmptyLotWarning()) {
+        if (((UnpackKitInventoryViewModel)inventoryViewModel).shouldShowEmptyLotWarning()) {
             vg_soh_pop.setVisibility(View.VISIBLE);
             vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop);
             tvConfirmHasStock.setVisibility(View.GONE);
@@ -79,7 +80,7 @@ public class UnpackKitViewHolderNew extends AddLotViewHolder {
             tvKitExpectedQuantity.setTextColor(this.context.getResources().getColor(R.color.color_red));
         }
 
-        if (inventoryViewModel.hasConfirmedNoStockReceived()) {
+        if (((UnpackKitInventoryViewModel)inventoryViewModel).isConfirmedNoStockReceived()) {
             vg_soh_pop.setVisibility(View.VISIBLE);
             vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop);
             tvConfirmHasStock.setVisibility(View.VISIBLE);
@@ -95,7 +96,7 @@ public class UnpackKitViewHolderNew extends AddLotViewHolder {
         long totalQuantity = viewModel.getLotListQuantityTotalAmount();
         long kitExpectQuantity = viewModel.getKitExpectQuantity();
 
-        if (viewModel.hasLotChanged()) {
+        if (((UnpackKitInventoryViewModel)viewModel).hasLotChanged()) {
             if (totalQuantity > kitExpectQuantity) {
                 vg_soh_pop.setVisibility(View.VISIBLE);
                 vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop_warning);
@@ -131,7 +132,7 @@ public class UnpackKitViewHolderNew extends AddLotViewHolder {
                 Long.toString(inventoryViewModel.getKitExpectQuantity())));
     }
 
-    private void setConfirmStockClickListener(final InventoryViewModel inventoryViewModel) {
+    private void setConfirmStockClickListener(final UnpackKitInventoryViewModel inventoryViewModel) {
         tvConfirmNoStock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -140,7 +141,7 @@ public class UnpackKitViewHolderNew extends AddLotViewHolder {
                 tvQuantityMessage.setText(LMISApp.getContext().getResources().getString(R.string.message_no_stock_received));
                 tvKitExpectedQuantity.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
                 lotListContainer.setVisibility(View.GONE);
-                inventoryViewModel.setHasConfirmedNoStockReceived(true);
+                inventoryViewModel.setConfirmedNoStockReceived(true);
             }
         });
         tvConfirmHasStock.setOnClickListener(new View.OnClickListener() {
@@ -151,7 +152,7 @@ public class UnpackKitViewHolderNew extends AddLotViewHolder {
                 tvQuantityMessage.setText(LMISApp.getContext().getResources().getString(R.string.message_no_stock_amount_change));
                 tvKitExpectedQuantity.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_red));
                 lotListContainer.setVisibility(View.VISIBLE);
-                inventoryViewModel.setHasConfirmedNoStockReceived(false);
+                inventoryViewModel.setConfirmedNoStockReceived(false);
                 inventoryViewModel.setShouldShowEmptyLotWarning(true);
             }
         });

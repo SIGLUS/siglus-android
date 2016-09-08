@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.List;
 
 import roboguice.RoboGuice;
+import rx.Subscription;
 import rx.observers.TestSubscriber;
 
 import static junit.framework.Assert.assertTrue;
@@ -47,7 +48,6 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 @RunWith(LMISTestRunner.class)
 public class UnpackKitPresenterTest {
     private UnpackKitPresenter presenter;
-    private UnpackKitPresenter.UnpackKitView view;
     private ProductRepository productRepository;
     private StockRepository stockRepository;
     private Product product;
@@ -57,7 +57,6 @@ public class UnpackKitPresenterTest {
 
     @Before
     public void setup() throws Exception {
-        view = mock(UnpackKitPresenter.UnpackKitView.class);
         productRepository = mock(ProductRepository.class);
         stockRepository = mock(StockRepository.class);
 
@@ -80,7 +79,6 @@ public class UnpackKitPresenterTest {
         });
 
         presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(UnpackKitPresenter.class);
-        presenter.attachView(view);
     }
 
     @Test
@@ -90,18 +88,12 @@ public class UnpackKitPresenterTest {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_auto_quantities_in_kit, true);
 
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
-        presenter.kitProductsSubscriber = subscriber;
-
-        // when
-        presenter.loadKitProducts("KIT_Code", 3);
-
+        presenter.subscriptions.add(presenter.getKitProductsObservable("KIT_Code", 3).subscribe(subscriber));
         subscriber.awaitTerminalEvent();
-        //then
 
         verify(productRepository).queryKitProductByKitCode(kit.getCode());
-        subscriber.assertNoErrors();
 
-        List<InventoryViewModel> resultProducts = subscriber.getOnNextEvents().get(0);
+        List<InventoryViewModel> resultProducts = presenter.getInventoryViewModels();
         assertThat(resultProducts.size()).isEqualTo(2);
 
         InventoryViewModel viewModel1 = resultProducts.get(0);
@@ -140,19 +132,11 @@ public class UnpackKitPresenterTest {
 
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_auto_quantities_in_kit, false);
 
-        TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
-        presenter.kitProductsSubscriber = subscriber;
-
-        // when
-        presenter.loadKitProducts("KIT_Code", 3);
-
-        subscriber.awaitTerminalEvent();
-        //then
+        presenter.getKitProductsObservable("KIT_Code", 3);
 
         verify(productRepository).queryKitProductByKitCode(kit.getCode());
-        subscriber.assertNoErrors();
 
-        List<InventoryViewModel> resultProducts = subscriber.getOnNextEvents().get(0);
+        List<InventoryViewModel> resultProducts = presenter.getInventoryViewModels();
         assertThat(resultProducts.size()).isEqualTo(2);
 
         InventoryViewModel viewModel1 = resultProducts.get(0);
@@ -190,9 +174,7 @@ public class UnpackKitPresenterTest {
                 .build();
 
 
-        TestSubscriber<Void> testSubscriber = new TestSubscriber();
-        presenter.unpackProductsSubscriber = testSubscriber;
-        presenter.inventoryViewModels = Arrays.asList(viewModel, viewModel2);
+        presenter.getInventoryViewModels().addAll(Arrays.asList(viewModel, viewModel2));
         presenter.kitCode = "SD1112";
 
         when(stockRepository.queryStockCardByProductId(200L)).thenReturn(productStockCard);
@@ -201,10 +183,11 @@ public class UnpackKitPresenterTest {
         when(productRepository.getByCode("SD1112")).thenReturn(kit);
         when(stockRepository.queryStockCardByProductId(888L)).thenReturn(kitStockCard);
 
-        presenter.saveUnpackProducts(2, documentNumber, signature);
-        testSubscriber.awaitTerminalEvent();
+        TestSubscriber subscriber = new TestSubscriber();
+        Subscription subscription = presenter.saveUnpackProductsObservable(2, documentNumber, signature).subscribe(subscriber);
+        presenter.subscriptions.add(subscription);
 
-        testSubscriber.assertNoErrors();
+        subscriber.awaitTerminalEvent();
         verify(stockRepository).batchSaveUnpackStockCardsWithMovementItemsAndUpdateProduct(anyList());
 
         assertThat(productStockCard.getStockOnHand()).isEqualTo(300);
@@ -327,13 +310,5 @@ public class UnpackKitPresenterTest {
         assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getStockOnHand()).isEqualTo(999);
         assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getSignature()).isEqualTo(signature);
         assertThat(stockCardWithMovementItems.getStockMovementItemsWrapper().get(0).getDocumentNumber()).isEqualTo(documentNumber);
-    }
-
-    @Test
-    public void shouldCallSaveSuccessWhenUnpackProductsSucceed() throws Exception {
-        presenter.unpackProductsSubscriber.onNext(null);
-
-        verify(view).loaded();
-        verify(view).saveSuccess();
     }
 }

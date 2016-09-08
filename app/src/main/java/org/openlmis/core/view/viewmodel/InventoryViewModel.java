@@ -72,8 +72,6 @@ public class InventoryViewModel {
     private String signature;
     StockCard stockCard;
     protected Product product;
-    boolean shouldShowEmptyLotWarning = false;
-    boolean hasConfirmedNoStockReceived = false;
 
     public InventoryViewModel(StockCard stockCard) {
         this(stockCard.getProduct());
@@ -255,29 +253,5 @@ public class InventoryViewModel {
             }
         }
         return lotTotalQuantity;
-    }
-
-
-    //only used in unpack kit
-    public boolean hasConfirmedNoStockReceived() {
-        return this.hasConfirmedNoStockReceived;
-    }
-
-    public boolean shouldShowEmptyLotWarning() {
-        return this.shouldShowEmptyLotWarning;
-    }
-
-    public boolean hasLotChanged() {
-        for (LotMovementViewModel lotMovementViewModel : lotMovementViewModelList) {
-            if (!StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
-                return true;
-            }
-        }
-        for (LotMovementViewModel lotMovementViewModel : existingLotMovementViewModelList) {
-            if (!StringUtils.isBlank(lotMovementViewModel.getQuantity())) {
-                return true;
-            }
-        }
-        return false;
     }
 }

@@ -20,6 +20,7 @@ import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
+import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
@@ -64,7 +65,7 @@ public class UnpackKitPresenter extends Presenter {
                     List<KitProduct> kitProducts = productRepository.queryKitProductByKitCode(kitCode);
                     for (KitProduct kitProduct : kitProducts) {
                         final Product product = productRepository.getByCode(kitProduct.getProductCode());
-                        InventoryViewModel inventoryViewModel = new InventoryViewModel(product);
+                        InventoryViewModel inventoryViewModel = new UnpackKitInventoryViewModel(product);
                         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
                             setExistingLotViewModels(inventoryViewModel);
                         }
@@ -91,7 +92,6 @@ public class UnpackKitPresenter extends Presenter {
             public void call(final Subscriber<? super Void> subscriber) {
                 try {
                     List<StockCard> stockCards = new ArrayList<>();
-
                     stockCards.addAll(FluentIterable.from(inventoryViewModels).transform(new Function<InventoryViewModel, StockCard>() {
                         @Override
                         public StockCard apply(InventoryViewModel inventoryViewModel) {

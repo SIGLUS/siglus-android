@@ -49,25 +49,4 @@ public class UnpackKitAdapter extends InventoryListAdapterWithBottomBtn implemen
             return new UnpackKitViewHolder(view);
         }
     }
-
-    @Override
-    public int validateAll() {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            int position = -1;
-            for (int i = 0; i < data.size(); i++) {
-                if (!data.get(i).hasConfirmedNoStockReceived()) {
-                    if (data.get(i).getLotListQuantityTotalAmount() <= 0) {
-                        position = i;
-                        data.get(position).setShouldShowEmptyLotWarning(true);
-                        break;
-                    }
-                }
-            }
-
-            this.notifyDataSetChanged();
-            return position;
-        } else {
-            return super.validateAll();
-        }
-    }
 }
