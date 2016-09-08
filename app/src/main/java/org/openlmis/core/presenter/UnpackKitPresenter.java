@@ -17,7 +17,6 @@ import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.utils.DateUtil;
-import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
@@ -30,18 +29,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import lombok.Getter;
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class UnpackKitPresenter extends Presenter {
-    UnpackKitView view;
-
-    protected Subscriber<List<InventoryViewModel>> kitProductsSubscriber = getKitProductSubscriber();
-    protected Subscriber<Void> unpackProductsSubscriber = getUnpackProductSubscriber();
-
     @Inject
     private ProductRepository productRepository;
 
@@ -50,21 +44,14 @@ public class UnpackKitPresenter extends Presenter {
 
     protected String kitCode;
 
-    protected List<InventoryViewModel> inventoryViewModels;
+    @Getter
+    protected final List<InventoryViewModel> inventoryViewModels = new ArrayList<>();
 
     @Override
     public void attachView(BaseView v) throws ViewNotMatchException {
-        view = (UnpackKitView) v;
-        inventoryViewModels = new ArrayList<>();
     }
 
     public UnpackKitPresenter() {
-    }
-
-    public void loadKitProducts(String kitCode, int kitNum) {
-        this.kitCode = kitCode;
-        Subscription subscription = getKitProductsObservable(kitCode, kitNum).subscribe(kitProductsSubscriber);
-        subscriptions.add(subscription);
     }
 
     public Observable<List<InventoryViewModel>> getKitProductsObservable(final String kitCode, final int kitNum) {
@@ -72,6 +59,7 @@ public class UnpackKitPresenter extends Presenter {
             @Override
             public void call(Subscriber<? super List<InventoryViewModel>> subscriber) {
                 try {
+                    UnpackKitPresenter.this.kitCode = kitCode;
                     inventoryViewModels.clear();
                     List<KitProduct> kitProducts = productRepository.queryKitProductByKitCode(kitCode);
                     for (KitProduct kitProduct : kitProducts) {
@@ -97,38 +85,11 @@ public class UnpackKitPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    private Subscriber<List<InventoryViewModel>> getKitProductSubscriber() {
-        return new Subscriber<List<InventoryViewModel>>() {
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                ToastUtil.show(e.getMessage());
-                view.loaded();
-            }
-
-            @Override
-            public void onNext(List<InventoryViewModel> inventoryViewModels) {
-                view.refreshList(inventoryViewModels);
-                view.loaded();
-            }
-        };
-    }
-
-    public void saveUnpackProducts(int kitUnpackQuantity, String documentNumber, String signature) {
-        view.loading();
-        Subscription subscription = saveUnpackProductsObservable(kitUnpackQuantity, documentNumber, signature).subscribe(unpackProductsSubscriber);
-        subscriptions.add(subscription);
-    }
-
-    private Observable saveUnpackProductsObservable(final int kitUnpackQuantity, final String documentNumber, final String signature) {
+    public Observable saveUnpackProductsObservable(final int kitUnpackQuantity, final String documentNumber, final String signature) {
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(final Subscriber<? super Void> subscriber) {
                 try {
-
                     List<StockCard> stockCards = new ArrayList<>();
 
                     stockCards.addAll(FluentIterable.from(inventoryViewModels).transform(new Function<InventoryViewModel, StockCard>() {
@@ -185,27 +146,6 @@ public class UnpackKitPresenter extends Presenter {
 
         return kitStockCard;
     }
-
-    private Subscriber<Void> getUnpackProductSubscriber() {
-        return new Subscriber<Void>() {
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                ToastUtil.show(e.getMessage());
-                view.loaded();
-            }
-
-            @Override
-            public void onNext(Void object) {
-                view.loaded();
-                view.saveSuccess();
-            }
-        };
-    }
-
 
     @NonNull
     protected StockCard createStockCardForProductWithLot(InventoryViewModel inventoryViewModel, String documentNumber, String signature) throws LMISException {
@@ -319,11 +259,5 @@ public class UnpackKitPresenter extends Presenter {
             }
             inventoryViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);
         }
-    }
-
-    public interface UnpackKitView extends BaseView {
-        void refreshList(List<InventoryViewModel> inventoryViewModels);
-
-        void saveSuccess();
     }
 }

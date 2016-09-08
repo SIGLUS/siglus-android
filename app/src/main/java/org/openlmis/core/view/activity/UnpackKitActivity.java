@@ -16,18 +16,20 @@ import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.presenter.UnpackKitPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
+import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.UnpackKitAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.SignatureDialog;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
+import rx.Subscriber;
+import rx.Subscription;
 
 @ContentView(R.layout.activity_kit_unpack)
-public class UnpackKitActivity extends BaseActivity implements UnpackKitPresenter.UnpackKitView {
+public class UnpackKitActivity extends BaseActivity {
     @InjectView(R.id.products_list)
     protected RecyclerView productListRecycleView;
 
@@ -74,12 +76,13 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
 
         initRecyclerView();
 
-        presenter.loadKitProducts(kitCode, kitNum);
+        Subscription subscription = presenter.getKitProductsObservable(kitCode, kitNum).subscribe(loadViewModelSubscriber);
+        subscriptions.add(subscription);
     }
 
     private void initRecyclerView() {
         productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new UnpackKitAdapter(new ArrayList<InventoryViewModel>(), signDialogListener);
+        mAdapter = new UnpackKitAdapter(presenter.getInventoryViewModels(), signDialogListener);
         productListRecycleView.setAdapter(mAdapter);
         productListRecycleView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -90,8 +93,27 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         });
     }
 
-    private View.OnClickListener signDialogListener = new View.OnClickListener() {
+    Subscriber<List<InventoryViewModel>> loadViewModelSubscriber = new Subscriber<List<InventoryViewModel>>() {
+        @Override
+        public void onCompleted() {
+        }
 
+        @Override
+        public void onError(Throwable e) {
+            ToastUtil.show(e.getMessage());
+            loaded();
+        }
+
+        @Override
+        public void onNext(List<InventoryViewModel> inventoryViewModels) {
+            mAdapter.refresh();
+            setTotal(inventoryViewModels.size());
+            loaded();
+        }
+    };
+
+
+    private View.OnClickListener signDialogListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (validateAll()) {
@@ -110,7 +132,27 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
         @Override
         public void onSign(String sign) {
-            presenter.saveUnpackProducts(kitNum, etDocumentNumber.getText().toString(), sign);
+            loading();
+            Subscription subscription = presenter.saveUnpackProductsObservable(kitNum, etDocumentNumber.getText().toString(), sign).subscribe(saveKitSubscriber);
+            subscriptions.add(subscription);
+        }
+    };
+
+    Subscriber<Void> saveKitSubscriber = new Subscriber<Void>() {
+        @Override
+        public void onCompleted() {
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            ToastUtil.show(e.getMessage());
+            loaded();
+        }
+
+        @Override
+        public void onNext(Void object) {
+            loaded();
+            saveSuccess();
         }
     };
 
@@ -126,14 +168,7 @@ public class UnpackKitActivity extends BaseActivity implements UnpackKitPresente
         return intent;
     }
 
-    @Override
-    public void refreshList(List<InventoryViewModel> inventoryViewModels) {
-        mAdapter.refreshList(inventoryViewModels);
-        setTotal(inventoryViewModels.size());
-    }
-
-    @Override
-    public void saveSuccess() {
+    private void saveSuccess() {
         setResult(Activity.RESULT_OK);
         finish();
     }
