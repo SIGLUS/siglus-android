@@ -42,7 +42,6 @@ import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -88,12 +87,9 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
         View addViewBtn = getChildAt(getChildCount() - 1);
         removeAllViews();
         addView(addViewBtn);
-
-        this.expireDates = getStockCardExpireDates(model);
-        if (expireDates != null) {
-            for (String date : expireDates) {
-                addExpireDateView(date);
-            }
+        expireDates = model.getExpiryDates();
+        for (String date : expireDates) {
+            addExpireDateView(date);
         }
     }
 
@@ -159,14 +155,6 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
         return expireDateView;
     }
 
-    private List<String> getStockCardExpireDates(InventoryViewModel model) {
-        if (model == null) {
-            return new ArrayList<>();
-        } else {
-            return model.getExpiryDates();
-        }
-    }
-
     private void showMsgDialog(final View expireDateView, final String expireDate) {
         SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(
                 null,
@@ -195,7 +183,6 @@ public class ExpireDateViewGroup extends org.apmem.tools.layouts.FlowLayout impl
 
     private void updateExpireDateToDB() {
         model.setDataChanged(true);
-        model.setExpiryDates(expireDates);
 
         if (isUpdateDBImmediately) {
             final StockCard stockCard = model.getStockCard();
