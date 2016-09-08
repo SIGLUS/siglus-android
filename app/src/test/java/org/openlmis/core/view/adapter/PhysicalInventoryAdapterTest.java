@@ -26,6 +26,7 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,7 @@ public class PhysicalInventoryAdapterTest {
     public void shouldReturnFirstInvalidItemPosition() {
         List<InventoryViewModel> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            InventoryViewModel model = new InventoryViewModel(stockCard);
+            InventoryViewModel model = new PhysicalInventoryViewModel(stockCard);
             model.setChecked(true);
             list.add(model);
             if (i != 5) {
@@ -73,7 +74,7 @@ public class PhysicalInventoryAdapterTest {
     public void shouldFilterTheListByProductName() {
         List<InventoryViewModel> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            InventoryViewModel model = new InventoryViewModel(stockCard);
+            InventoryViewModel model = new PhysicalInventoryViewModel(stockCard);
             list.add(model);
             final Product product = new Product();
             product.setPrimaryName("Product" + i);

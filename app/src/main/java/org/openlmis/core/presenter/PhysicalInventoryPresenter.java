@@ -89,14 +89,14 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
     protected void restoreDraftInventory() throws LMISException {
         List<DraftInventory> draftList = inventoryRepository.queryAllDraft();
 
-        for (InventoryViewModel model : inventoryViewModelList) {
+        for (InventoryViewModel viewModel : inventoryViewModelList) {
             for (DraftInventory draftInventory : draftList) {
-                if (model.getStockCardId() == draftInventory.getStockCard().getId()) {
-                    ((PhysicalInventoryViewModel)model).setDraftInventory(draftInventory);
-                    model.initExpiryDates(draftInventory.getExpireDates());
-                    model.setQuantity(formatQuantity(draftInventory.getQuantity()));
+                if (viewModel.getStockCardId() == draftInventory.getStockCard().getId()) {
+                    ((PhysicalInventoryViewModel)viewModel).setDraftInventory(draftInventory);
+                    viewModel.initExpiryDates(draftInventory.getExpireDates());
+                    viewModel.setQuantity(formatQuantity(draftInventory.getQuantity()));
                     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                        populateLotMovementModelWithDraftLotItem(model, draftInventory);
+                        populateLotMovementModelWithDraftLotItem(viewModel, draftInventory);
                     }
                 }
             }

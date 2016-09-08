@@ -12,7 +12,9 @@ import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.ProductBuilder;
+import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.presenter.PhysicalInventoryPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.adapter.InventoryListAdapter;
@@ -54,7 +56,8 @@ public class PhysicalInventoryActivityTest extends LMISRepositoryUnitTest {
 
         InventoryListAdapter mockedAdapter = mock(InventoryListAdapter.class);
         Product product = new ProductBuilder().setCode("Product code").setPrimaryName("Primary name").setStrength("10mg").build();
-        data = newArrayList(new InventoryViewModel(product), new InventoryViewModel(product));
+        StockCard stockCard = new StockCardBuilder().setProduct(product).setStockOnHand(10L).build();
+        data = newArrayList(new InventoryViewModel(stockCard), new InventoryViewModel(stockCard));
         when(mockedAdapter.getData()).thenReturn(data);
 
         physicalInventoryActivity.mAdapter = mockedAdapter;
