@@ -37,25 +37,17 @@ public class StockCardViewModelTest {
     }
 
     @Test
-    public void shouldReturnFalseWhenAddDuplicateDate() throws Exception {
-        boolean addExpiryDate = model.addExpiryDate("28/10/2016");
-        assertTrue(addExpiryDate);
-        boolean addExpiryDateSec = model.addExpiryDate("28/10/2016");
-        assertFalse(addExpiryDateSec);
-    }
-
-    @Test
     public void shouldCheckValidationInPhysicalInventoryPage() {
         model = new InventoryViewModel(stockCard);
 
         // Physical Inventory should not be valid when it's empty
         model.setQuantity("");
-        model.validate(false);
+        model.validate();
         assertFalse(model.isValid());
 
         //Physical Inventory should be valid when it's numerical
         model.setQuantity("100");
-        model.validate(false);
+        model.validate();
         assertTrue(model.isValid());
     }
 
@@ -68,12 +60,12 @@ public class StockCardViewModelTest {
 
         //When it's checked, but has no numerical value, should be invalid
         model.setChecked(true);
-        model.validate(false);
+        model.validate();
         assertFalse(model.isValid());
 
         //When it's checked and filled with numerical value. It should be valid
         model.setQuantity("123");
-        model.validate(false);
+        model.validate();
         assertTrue(model.isValid());
     }
 

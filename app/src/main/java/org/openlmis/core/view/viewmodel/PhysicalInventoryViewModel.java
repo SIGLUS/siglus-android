@@ -22,7 +22,7 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
     }
 
     @Override
-    public boolean validate(boolean archivedProductMandatoryQuantity) {
+    public boolean validate() {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
             valid = !checked || (validateLotList() && validateExistingLot()) || product.isArchived();
         } else {

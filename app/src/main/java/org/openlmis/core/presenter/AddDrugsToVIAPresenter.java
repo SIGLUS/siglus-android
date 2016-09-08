@@ -7,6 +7,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.view.BaseView;
+import org.openlmis.core.view.viewmodel.AddDrugsToViaInventoryViewModel;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
@@ -54,7 +55,7 @@ public class AddDrugsToVIAPresenter extends Presenter {
                             .transform(new Function<Product, InventoryViewModel>() {
                                 @Override
                                 public InventoryViewModel apply(Product product) {
-                                    return new InventoryViewModel(product);
+                                    return new AddDrugsToViaInventoryViewModel(product);
                                 }
                             }).toList();
                     subscriber.onNext(productsNotInVIAForm);

@@ -17,6 +17,7 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.RnrFormItemRepository;
 import org.openlmis.core.model.repository.StockRepository;
+import org.openlmis.core.view.viewmodel.AddDrugsToViaInventoryViewModel;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.RuntimeEnvironment;
 
@@ -135,7 +136,7 @@ public class AddDrugsToVIAPresenterTest {
     @NonNull
     private InventoryViewModel buildInventoryViewModel(String productCode, String quantity) {
         Product product1 = new ProductBuilder().setCode(productCode).setPrimaryName("product 1").setIsActive(true).build();
-        InventoryViewModel inventoryViewModel1 = new InventoryViewModel(product1);
+        InventoryViewModel inventoryViewModel1 = new AddDrugsToViaInventoryViewModel(product1);
         inventoryViewModel1.setQuantity(quantity);
         return inventoryViewModel1;
     }

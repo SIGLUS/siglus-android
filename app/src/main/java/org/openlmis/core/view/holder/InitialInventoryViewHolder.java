@@ -42,6 +42,8 @@ import java.util.List;
 
 import roboguice.inject.InjectView;
 
+import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
+
 
 public class InitialInventoryViewHolder extends BaseViewHolder {
 
@@ -173,7 +175,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         } else {
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
                 showAddNewLotPanel(View.GONE);
-                viewModel.clearLotMovementViewModelList();
+                viewModel.getLotMovementViewModelList().clear();
                 refreshLotList();
             } else {
                 showEditPanel(View.GONE);
@@ -181,7 +183,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
             populateEditPanel(StringUtils.EMPTY, StringUtils.EMPTY);
 
             viewModel.setQuantity(StringUtils.EMPTY);
-            viewModel.clearExpiryDates();
+            viewModel.getExpiryDates().clear();
         }
         viewModel.setChecked(isChecked);
     }
@@ -292,7 +294,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
                     } catch (ParseException e) {
                         new LMISException(e).reportToFabric();
                     }
-                    viewModel.addExpiryDate(dateString, false);
+                    viewModel.setExpiryDates(newArrayList(dateString));
                 } else {
                     ToastUtil.show(R.string.msg_invalid_date);
                 }

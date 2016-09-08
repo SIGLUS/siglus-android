@@ -35,13 +35,13 @@ public class UnpackKitInventoryViewModel extends InventoryViewModel {
     }
 
     @Override
-    public boolean validate(boolean archivedProductMandatoryQuantity) {
+    public boolean validate() {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
             if (!confirmedNoStockReceived && getLotListQuantityTotalAmount() <= 0) {
                 shouldShowEmptyLotWarning = true;
                 return false;
             }
             return true;
-        } else return super.validate(false);
+        } else return super.validate();
     }
 }

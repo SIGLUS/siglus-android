@@ -58,7 +58,7 @@ public class InventoryViewModelTest {
         InventoryViewModel inventoryViewModel = InventoryViewModel.buildEmergencyModel(stockCard);
         inventoryViewModel.setChecked(true);
 
-        assertTrue(inventoryViewModel.validate(false));
+        assertTrue(inventoryViewModel.validate());
     }
 
     @Test
@@ -158,7 +158,7 @@ public class InventoryViewModelTest {
         lotMovementViewModel.validate();
         inventoryViewModel.lotMovementViewModelList.add(lotMovementViewModel);
 
-        assertFalse(inventoryViewModel.validate(false));
+        assertFalse(inventoryViewModel.validate());
     }
 
     @Test
@@ -179,7 +179,7 @@ public class InventoryViewModelTest {
         lotMovementViewModel.setQuantity("21");
         inventoryViewModel.lotMovementViewModelList.add(lotMovementViewModel);
 
-        assertTrue(inventoryViewModel.validate(false));
+        assertTrue(inventoryViewModel.validate());
     }
 
     @Test

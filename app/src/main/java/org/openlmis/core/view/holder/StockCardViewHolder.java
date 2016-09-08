@@ -149,9 +149,9 @@ public class StockCardViewHolder extends BaseViewHolder {
         });
     }
 
-    private void initStockOnHandWarning(final InventoryViewModel stockCard) {
+    private void initStockOnHandWarning(final InventoryViewModel viewModel) {
 
-        int stockOnHandLevel = stockCard.getStockOnHandLevel();
+        int stockOnHandLevel = viewModel.getStockOnHandLevel();
 
         switch (stockOnHandLevel) {
             case STOCK_ON_HAND_OVER_STOCK:

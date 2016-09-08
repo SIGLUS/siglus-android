@@ -32,13 +32,11 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.holder.StockCardViewHolder;
 
-import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.Data;
-
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @Data
 public class InventoryViewModel {
@@ -51,7 +49,7 @@ public class InventoryViewModel {
     String type;
     String quantity;
     boolean isDataChanged;
-    List<String> expiryDates = new ArrayList<>();
+    final List<String> expiryDates = new ArrayList<>();
 
     List<LotMovementViewModel> lotMovementViewModelList = new ArrayList<>();
     List<LotMovementViewModel> existingLotMovementViewModelList = new ArrayList<>();
@@ -95,9 +93,10 @@ public class InventoryViewModel {
 
     public void initExpiryDates(String expireDates) {
         if (!TextUtils.isEmpty(expireDates)) {
-            this.expiryDates = newArrayList(expireDates.split(StockCard.DIVIDER));
+            this.expiryDates.clear();
+            this.expiryDates.addAll(Arrays.asList(expireDates.split(StockCard.DIVIDER)));
         } else {
-            this.expiryDates = new ArrayList<>();
+            this.expiryDates.clear();
         }
     }
 
@@ -117,22 +116,6 @@ public class InventoryViewModel {
     public SpannableStringBuilder getStyledUnit() {
         formatProductDisplay(product);
         return styledUnit;
-    }
-
-    public void setExpiryDates(List<String> expireDates) {
-        this.expiryDates = expireDates;
-    }
-
-    public void setQuantity(String quantity) {
-        this.quantity = quantity;
-    }
-
-    public void clearExpiryDates() {
-        this.expiryDates = new ArrayList<>();
-    }
-
-    public void clearLotMovementViewModelList() {
-        this.lotMovementViewModelList.clear();
     }
 
     private void setProductAttributes(Product product) {
@@ -159,45 +142,19 @@ public class InventoryViewModel {
     }
 
     public String optFirstExpiryDate() {
-        if (expiryDates != null && expiryDates.size() > 0) {
-            try {
-                return DateUtil.convertDate(expiryDates.get(0), DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
-            } catch (ParseException e) {
-                new LMISException(e).reportToFabric();
-                return StringUtils.EMPTY;
-            }
-        } else {
+        try {
+            return DateUtil.convertDate(expiryDates.get(0), DateUtil.SIMPLE_DATE_FORMAT, DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR);
+        } catch (Exception e) {
+            new LMISException(e).reportToFabric();
             return StringUtils.EMPTY;
         }
     }
 
-    public boolean addExpiryDate(String date) {
-        return addExpiryDate(date, true);
-    }
-
-    public boolean addExpiryDate(String date, boolean append) {
-        if (expiryDates == null) {
-            expiryDates = new ArrayList<>();
-        }
-        if (!append) {
-            expiryDates.clear();
-        }
-        return !isExpireDateExists(date) && expiryDates.add(date);
-    }
-
-    public boolean isExpireDateExists(String expireDate) {
-        return this.getExpiryDates().contains(expireDate);
-    }
-
-    public boolean validate(boolean archivedProductMandatoryQuantity) {
-        if (archivedProductMandatoryQuantity) {
-            valid = !checked || StringUtils.isNumeric(quantity);
+    public boolean validate() {
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+            valid = !checked || validateLotList() || product.isArchived();
         } else {
-            if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                valid = !checked || validateLotList() || product.isArchived();
-            } else {
-                valid = !checked || StringUtils.isNumeric(quantity) || product.isArchived();
-            }
+            valid = !checked || StringUtils.isNumeric(quantity) || product.isArchived();
         }
         return valid;
     }
@@ -253,5 +210,10 @@ public class InventoryViewModel {
             }
         }
         return lotTotalQuantity;
+    }
+
+    public void setExpiryDates(List<String> expiryDates) {
+        this.expiryDates.clear();
+        this.expiryDates.addAll(expiryDates);
     }
 }

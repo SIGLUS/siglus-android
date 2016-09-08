@@ -38,18 +38,4 @@ public class AddDrugsToVIAAdapter extends InventoryListAdapter<AddDrugsToVIAView
     public void onBindViewHolder(AddDrugsToVIAViewHolder holder, int position) {
         holder.populate(queryKeyWord, filteredList.get(position));
     }
-
-    @Override
-    public int validateAll() {
-        int position = -1;
-        for (int i = 0; i < data.size(); i++) {
-            if (!data.get(i).validate(true)) {
-                position = i;
-                break;
-            }
-        }
-
-        this.notifyDataSetChanged();
-        return position;
-    }
 }
