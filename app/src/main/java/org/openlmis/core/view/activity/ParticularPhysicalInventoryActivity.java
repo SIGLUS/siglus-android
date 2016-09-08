@@ -41,7 +41,7 @@ public class ParticularPhysicalInventoryActivity extends PhysicalInventoryActivi
         @Override
         public void call(Object o) {
             loaded();
-            ToastUtil.show(LMISApp.getInstance().getResources().getString(R.string.alert_add_lot_amount));
+            ToastUtil.show(LMISApp.getInstance().getResources().getString(R.string.msg_draft_saved));
         }
     };
 
