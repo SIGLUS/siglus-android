@@ -233,7 +233,11 @@ public class LoginPresenter extends Presenter {
         if (view.needInitInventory()) {
             view.goToInitInventory();
         } else {
-            view.goToHomePage();
+            if (!SharedPreferenceMgr.getInstance().hasLotInfo()) {
+                view.goToParticularPhysicalInventory();
+            } else {
+                view.goToHomePage();
+            }
         }
         hasGoneToNextPage = true;
     }
@@ -257,5 +261,7 @@ public class LoginPresenter extends Presenter {
         void clearErrorAlerts();
 
         void sendScreenToGoogleAnalyticsAfterLogin();
+
+        void goToParticularPhysicalInventory();
     }
 }

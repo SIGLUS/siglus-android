@@ -25,7 +25,6 @@ public class PhysicalInventoryActivity extends InventoryActivity {
     @Override
     public void initUI() {
         super.initUI();
-        setTitle(getResources().getString(R.string.title_physical_inventory));
         bottomBtn.setVisibility(View.GONE);
         btnDone.setOnClickListener(completeClickListener);
 

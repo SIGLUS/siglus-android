@@ -59,6 +59,7 @@ public class SharedPreferenceMgr {
     public static final String LAST_MOVEMENT_HANDSHAKE_DATE = "last_movement_handshake_date";
     public static final String KEY_ENABLE_QA_DEBUG = "enable_qa_debug";
     public static final String LATEST_UPDATE_LOW_STOCK_AVG_TIME = "latest_update_low_stock_avg_time";
+    public static final String KEY_HAS_LOT_INFO = "has_lot_info";
     protected StockRepository stockRepository;
 
     @Inject
@@ -103,6 +104,10 @@ public class SharedPreferenceMgr {
     public boolean isRequisitionDataSynced() {
         RnrFormRepository rnrFormRepository = RoboGuice.getInjector(LMISApp.getContext()).getInstance(RnrFormRepository.class);
         return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_IS_REQUISITION_DATA_SYNCED, rnrFormRepository.hasRequisitionData());
+    }
+
+    public boolean hasLotInfo() {
+        return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_HAS_LOT_INFO, false);
     }
 
     public void setRequisitionDataSynced(boolean requisitionDataSynced) {
