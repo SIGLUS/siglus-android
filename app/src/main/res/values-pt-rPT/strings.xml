@@ -367,4 +367,6 @@
     <string name="msg_remove_new_lot"><![CDATA[Remover lote recém-criado<b>%1$s</b> que vai expirar em %2$s de <b>%3$s</b>]]></string>
     <string name="msg_no_lot_for_issue">Nenhum lote existente para que você possa dar saídaou fazer ajuste negativo</string>
     <string name="error_lot_already_exists">The lot already exists, please add a new one.</string>
+
+    <string name="msg_draft_saved">Draft saved successfully</string>
 </resources>

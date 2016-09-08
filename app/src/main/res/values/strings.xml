@@ -402,4 +402,6 @@
     <string name="msg_remove_new_lot"><![CDATA[Remove the newly created lot <b>%1$s</b> which is expiring in %2$s from <b>%3$s</b>]]></string>
     <string name="msg_no_lot_for_issue">No existing lot for you to issue or do negative adjustment</string>
     <string name="error_lot_already_exists">The lot already exists, please add a new one.</string>
+
+    <string name="msg_draft_saved">Draft saved successfully</string>
 </resources>

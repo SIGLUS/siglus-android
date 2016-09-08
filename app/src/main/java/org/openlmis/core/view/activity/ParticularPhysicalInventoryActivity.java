@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 
+import org.openlmis.core.LMISApp;
+import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.utils.ToastUtil;
 
@@ -39,7 +41,7 @@ public class ParticularPhysicalInventoryActivity extends PhysicalInventoryActivi
         @Override
         public void call(Object o) {
             loaded();
-            ToastUtil.show("Draft saved successfully");
+            ToastUtil.show(LMISApp.getInstance().getResources().getString(R.string.alert_add_lot_amount));
         }
     };
 
