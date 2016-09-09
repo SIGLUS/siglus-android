@@ -4,13 +4,15 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import roboguice.inject.InjectView;
 
 public class BaseViewHolder extends RecyclerView.ViewHolder {
-    private ArrayList<ViewMembersInjector> viewsForInjection;
+    private ArrayList<ViewMembersInjector> viewsForInjection = new ArrayList<>();
 
     protected Context context;
 
@@ -22,8 +24,7 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void prepareFields() {
-        viewsForInjection = new ArrayList<>();
-        for (Field field : this.getClass().getDeclaredFields()) {
+        for (Field field : FieldUtils.getAllFields(this.getClass())) {
             if (field.isAnnotationPresent(InjectView.class)) {
                 viewsForInjection.add(new ViewMembersInjector(field, field.getAnnotation(InjectView.class)));
             }
