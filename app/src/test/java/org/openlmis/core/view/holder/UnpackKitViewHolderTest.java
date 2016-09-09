@@ -10,7 +10,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
+import org.openlmis.core.view.viewmodel.InventoryViewModelBuilder;
 import org.openlmis.core.view.widget.ExpireDateViewGroup;
 import org.robolectric.RuntimeEnvironment;
 
@@ -32,7 +32,7 @@ public class UnpackKitViewHolderTest {
 
     @Test
     public void shouldGetRightEtQuantity() {
-        InventoryViewModel firstViewModel = new StockCardViewModelBuilder(product)
+        InventoryViewModel firstViewModel = new InventoryViewModelBuilder(product)
                 .setKitExpectQuantity(20)
                 .setQuantity("20")
                 .setChecked(false)
@@ -42,7 +42,7 @@ public class UnpackKitViewHolderTest {
 
         viewHolder.populate(firstViewModel);
 
-        InventoryViewModel secondViewModel = new StockCardViewModelBuilder(product)
+        InventoryViewModel secondViewModel = new InventoryViewModelBuilder(product)
                 .setKitExpectQuantity(200)
                 .setQuantity("150")
                 .setChecked(false)
@@ -60,7 +60,7 @@ public class UnpackKitViewHolderTest {
 
     @Test
     public void shouldChangePopUIWhenQuantityChanged() throws Exception {
-        InventoryViewModel viewModel = new StockCardViewModelBuilder(product)
+        InventoryViewModel viewModel = new InventoryViewModelBuilder(product)
                 .setQuantity("100")
                 .setKitExpectQuantity(100l)
                 .setChecked(true)
@@ -81,7 +81,7 @@ public class UnpackKitViewHolderTest {
     public void shouldChangePopUIWhenPopulate() throws Exception {
         UnpackKitViewHolder spyViewHolder = spy(viewHolder);
 
-        InventoryViewModel viewModel = new StockCardViewModelBuilder(product)
+        InventoryViewModel viewModel = new InventoryViewModelBuilder(product)
                 .setQuantity("100")
                 .setKitExpectQuantity(100l)
                 .setChecked(true)

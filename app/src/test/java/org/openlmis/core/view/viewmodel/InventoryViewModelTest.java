@@ -43,11 +43,11 @@ public class InventoryViewModelTest {
 
         InventoryViewModel inventoryViewModel = InventoryViewModel.buildEmergencyModel(stockCard);
 
-        assertThat(inventoryViewModel.getStockCard().getId(),is(1L));
+        assertThat(inventoryViewModel.getStockCard().getId(), is(1L));
     }
 
     @Test
-    public void shouldReturnTrueWhenProductIsArchivedAndNotQuantityIsEmpty() throws Exception {
+    public void shouldValidateReturnTrueWhenProductIsArchived() throws Exception {
         StockCard stockCard = new StockCard();
         stockCard.setId(1);
 
@@ -59,6 +59,24 @@ public class InventoryViewModelTest {
         inventoryViewModel.setChecked(true);
 
         assertTrue(inventoryViewModel.validate());
+    }
+
+    @Test
+    public void shouldValidate() throws Exception {
+        assertFalse(viewModel.validate());
+
+        viewModel.setChecked(false);
+        assertTrue(viewModel.validate());
+
+        viewModel.setChecked(true);
+        viewModel.setQuantity("dk");
+        assertFalse(viewModel.validate());
+
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
+        LotMovementViewModel lotMovementViewModel = new LotMovementViewModel("lot1", "Feb 2017", MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
+        lotMovementViewModel.setQuantity("10");
+        viewModel.setLotMovementViewModelList(newArrayList(lotMovementViewModel));
+        assertTrue(viewModel.validate());
     }
 
     @Test
@@ -154,7 +172,7 @@ public class InventoryViewModelTest {
         InventoryViewModel inventoryViewModel = InventoryViewModel.buildEmergencyModel(stockCard);
         inventoryViewModel.setChecked(true);
 
-        LotMovementViewModel lotMovementViewModel = new LotMovementViewModel("lotNumber","2012-09-01", MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
+        LotMovementViewModel lotMovementViewModel = new LotMovementViewModel("lotNumber", "2012-09-01", MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
         lotMovementViewModel.validate();
         inventoryViewModel.lotMovementViewModelList.add(lotMovementViewModel);
 
@@ -175,7 +193,7 @@ public class InventoryViewModelTest {
         InventoryViewModel inventoryViewModel = InventoryViewModel.buildEmergencyModel(stockCard);
         inventoryViewModel.setChecked(true);
 
-        LotMovementViewModel lotMovementViewModel = new LotMovementViewModel("lotNumber","2012-09-01", MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
+        LotMovementViewModel lotMovementViewModel = new LotMovementViewModel("lotNumber", "2012-09-01", MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
         lotMovementViewModel.setQuantity("21");
         inventoryViewModel.lotMovementViewModelList.add(lotMovementViewModel);
 

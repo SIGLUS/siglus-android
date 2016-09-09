@@ -42,7 +42,7 @@ import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
+import org.openlmis.core.view.viewmodel.InventoryViewModelBuilder;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.robolectric.RuntimeEnvironment;
 
@@ -271,7 +271,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldAddStockMovementViewModelWhenSubscriberOnNext() throws ParseException {
         Product product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setStrength("10mg").setType("VIA").build();
-        InventoryViewModel viewModel = new StockCardViewModelBuilder(product).build();
+        InventoryViewModel viewModel = new InventoryViewModelBuilder(product).build();
 
         stockMovementPresenter.loadStockMovementViewModelSubscriber().onNext((List) newArrayList(viewModel, viewModel));
 

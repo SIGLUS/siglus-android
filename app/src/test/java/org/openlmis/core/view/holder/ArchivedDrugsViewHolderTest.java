@@ -11,7 +11,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
+import org.openlmis.core.view.viewmodel.InventoryViewModelBuilder;
 import org.robolectric.RuntimeEnvironment;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,7 +32,7 @@ public class ArchivedDrugsViewHolderTest {
         viewHolder = new ArchivedDrugsViewHolder(itemView);
 
         Product product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setIsActive(true).setStrength("10mg").setType("VIA").build();
-        viewModel = new StockCardViewModelBuilder(product)
+        viewModel = new InventoryViewModelBuilder(product)
                 .setQuantity("10")
                 .setChecked(false)
                 .setType("Embalagem")
@@ -71,7 +71,7 @@ public class ArchivedDrugsViewHolderTest {
         viewHolder = new ArchivedDrugsViewHolder(itemView);
 
         Product deactivatedProduct = new ProductBuilder().setPrimaryName("Lamivudina 300mg").setCode("08S41").setIsActive(false).setStrength("10mg").setType("VIA").build();
-        viewModel = new StockCardViewModelBuilder(deactivatedProduct)
+        viewModel = new InventoryViewModelBuilder(deactivatedProduct)
                 .setQuantity("10")
                 .setChecked(false)
                 .setType("Embalagem")

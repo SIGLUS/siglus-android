@@ -13,7 +13,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.utils.RobolectricUtils;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
+import org.openlmis.core.view.viewmodel.InventoryViewModelBuilder;
 import org.openlmis.core.view.widget.ExpireDateViewGroup;
 import org.robolectric.RuntimeEnvironment;
 
@@ -39,7 +39,7 @@ public class PhysicalInventoryViewHolderTest {
 
         product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setStrength("10mg").setType("VIA").build();
 
-        viewModel = new StockCardViewModelBuilder(product)
+        viewModel = new InventoryViewModelBuilder(product)
                 .setQuantity("10")
                 .setChecked(false)
                 .setType("Embalagem")
@@ -74,7 +74,7 @@ public class PhysicalInventoryViewHolderTest {
 
     @Test
     public void shouldShowErrorWhenStockCardViewModelIsInvalid() {
-        InventoryViewModel viewModel = new StockCardViewModelBuilder(product)
+        InventoryViewModel viewModel = new InventoryViewModelBuilder(product)
                 .setQuantity("")
                 .setChecked(true)
                 .setValid(false)

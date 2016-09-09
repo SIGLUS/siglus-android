@@ -22,9 +22,9 @@ import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModelBuilder;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModelBuilder;
-import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -68,7 +68,7 @@ public class UnpackKitPresenterTest {
         documentNumber = "test";
 
         product = new ProductBuilder().setIsKit(false).setCode("productCode1").setPrimaryName("name1").setProductId(200L).build();
-        viewModel = new StockCardViewModelBuilder(product).setChecked(true).setKitExpectQuantity(300).setQuantity("200").setExpiryDates(expireDates).build();
+        viewModel = new InventoryViewModelBuilder(product).setChecked(true).setKitExpectQuantity(300).setQuantity("200").setExpiryDates(expireDates).build();
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
@@ -149,7 +149,7 @@ public class UnpackKitPresenterTest {
     @Test
     public void shouldSaveStockCardAndStockMovementAndUpdateProductAsNotArchived() throws Exception {
         Product product2 = new ProductBuilder().setIsKit(false).setCode("productCode2").setPrimaryName("name2").setProductId(333L).setIsArchived(true).build();
-        InventoryViewModel viewModel2 = new StockCardViewModelBuilder(product2).setChecked(true).setKitExpectQuantity(300).setQuantity("200").build();
+        InventoryViewModel viewModel2 = new InventoryViewModelBuilder(product2).setChecked(true).setKitExpectQuantity(300).setQuantity("200").build();
 
         StockCard productStockCard = new StockCardBuilder().setStockCardId(111)
                 .setStockOnHand(100)

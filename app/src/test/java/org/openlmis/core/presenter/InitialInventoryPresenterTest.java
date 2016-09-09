@@ -23,7 +23,7 @@ import org.openlmis.core.model.repository.InventoryRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
+import org.openlmis.core.view.viewmodel.InventoryViewModelBuilder;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -155,9 +155,9 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldInitStockCardAndCreateAInitInventoryMovementItem() throws LMISException {
-        InventoryViewModel model = new StockCardViewModelBuilder(product).setChecked(true)
+        InventoryViewModel model = new InventoryViewModelBuilder(product).setChecked(true)
                 .setQuantity("100").build();
-        InventoryViewModel model2 = new StockCardViewModelBuilder(product).setChecked(false)
+        InventoryViewModel model2 = new InventoryViewModelBuilder(product).setChecked(false)
                 .setQuantity("200").build();
 
         initialInventoryPresenter.getInventoryViewModelList().add(model);
@@ -172,7 +172,7 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
         stockCard.setExpireDates("01/01/2016");
         product.setArchived(true);
 
-        InventoryViewModel model = new StockCardViewModelBuilder(stockCard).setChecked(true)
+        InventoryViewModel model = new InventoryViewModelBuilder(stockCard).setChecked(true)
                 .setQuantity("10").build();
 
         initialInventoryPresenter.initOrArchiveBackStockCards();
@@ -183,7 +183,7 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldClearExpiryDateWhenSohIsZeroAndIsNewDrug() throws LMISException {
-        InventoryViewModel model = new StockCardViewModelBuilder(product).setChecked(true)
+        InventoryViewModel model = new InventoryViewModelBuilder(product).setChecked(true)
                 .setQuantity("0").setExpiryDates(newArrayList("01/01/2016")).build();
 
         initialInventoryPresenter.getInventoryViewModelList().add(model);
@@ -196,7 +196,7 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldNotClearExpiryDateWhenSohIsNotZeroAndIsNewDrug() throws LMISException {
-        InventoryViewModel model = new StockCardViewModelBuilder(product).setChecked(true)
+        InventoryViewModel model = new InventoryViewModelBuilder(product).setChecked(true)
                 .setQuantity("10").setExpiryDates(newArrayList("01/01/2016")).build();
 
         initialInventoryPresenter.getInventoryViewModelList().add(model);
@@ -210,7 +210,7 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldReInventoryArchivedStockCard() throws LMISException {
-        InventoryViewModel uncheckedModel = new StockCardViewModelBuilder(product)
+        InventoryViewModel uncheckedModel = new InventoryViewModelBuilder(product)
                 .setChecked(false)
                 .setQuantity("100")
                 .build();
@@ -218,7 +218,7 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
         Product archivedProduct = new ProductBuilder().setPrimaryName("Archived product").setCode("BBC")
                 .setIsArchived(true).build();
         StockCard archivedStockCard = new StockCardBuilder().setStockOnHand(0).setProduct(archivedProduct).build();
-        InventoryViewModel archivedViewModel = new StockCardViewModelBuilder(archivedStockCard)
+        InventoryViewModel archivedViewModel = new InventoryViewModelBuilder(archivedStockCard)
                 .setChecked(true)
                 .setQuantity("200")
                 .build();
@@ -238,7 +238,7 @@ public class InitialInventoryPresenterTest extends LMISRepositoryUnitTest {
 
         product.setArchived(false);
 
-        InventoryViewModel model = new StockCardViewModelBuilder(product).setChecked(true)
+        InventoryViewModel model = new InventoryViewModelBuilder(product).setChecked(true)
                 .setQuantity("10").setExpiryDates(newArrayList("01/01/2016")).build();
 
         initialInventoryPresenter.getInventoryViewModelList().add(model);

@@ -12,9 +12,9 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.InventoryViewModelBuilder;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModelBuilder;
-import org.openlmis.core.view.viewmodel.StockCardViewModelBuilder;
 import org.robolectric.RuntimeEnvironment;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,7 +31,7 @@ public class PhysicalInventoryWithLotsViewHolderTest {
     public void setUp() throws Exception {
         viewHolder = new PhysicalInventoryWithLotsViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_physical_inventory_with_lots, null, false));
         product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setStrength("10mg").setType("VIA").build();
-        viewModel = new StockCardViewModelBuilder(product)
+        viewModel = new InventoryViewModelBuilder(product)
                 .setQuantity("10")
                 .setChecked(false)
                 .setType("Embalagem")
@@ -49,7 +49,7 @@ public class PhysicalInventoryWithLotsViewHolderTest {
 
     @Test
     public void shouldSetAdapter() {
-        InventoryViewModel inventoryViewModel = new StockCardViewModelBuilder(product)
+        InventoryViewModel inventoryViewModel = new InventoryViewModelBuilder(product)
                 .setKitExpectQuantity(20)
                 .setQuantity("20")
                 .setChecked(false)
