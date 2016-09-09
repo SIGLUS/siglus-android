@@ -188,6 +188,11 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             lyMovementQuantity.setVisibility(View.GONE);
         }
 
+        if (MovementReasonManager.MovementType.RECEIVE.equals(movementType)
+                || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
+            lyMovementReason.setHint(getResources().getString(R.string.hint_movement_reason_receive));
+        }
+
         btnComplete.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
 

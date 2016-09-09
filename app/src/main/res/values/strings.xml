@@ -372,6 +372,7 @@
     <string name="hint_movement_date">Date of movement</string>
     <string name="hint_document_number">Document number</string>
     <string name="hint_movement_reason">Origin/Destination of movement</string>
+    <string name="hint_movement_reason_receive">Origin of movement</string>
     <string name="hint_requested_quantity">Requested</string>
     <string name="hint_movement_quantity">Quantity</string>
     <string name="hint_movement_signature">Signature</string>
