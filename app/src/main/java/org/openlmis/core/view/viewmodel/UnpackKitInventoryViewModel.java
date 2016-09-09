@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 public class UnpackKitInventoryViewModel extends InventoryViewModel {
-    boolean shouldShowEmptyLotWarning = false;
+    private boolean shouldShowEmptyLotWarning = false;
     private boolean confirmedNoStockReceived = false;
 
     public UnpackKitInventoryViewModel(Product product) {

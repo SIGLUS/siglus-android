@@ -19,12 +19,20 @@ import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
 import roboguice.inject.InjectView;
 
 public class UnpackKitViewHolderNew extends AddLotViewHolder {
+    @InjectView(R.id.tv_kit_expected_quantity)
     TextView tvKitExpectedQuantity;
-    TextView tvQuantityMessage;
-    TextView tvConfirmNoStock;
-    TextView tvConfirmHasStock;
-    ViewGroup vg_soh_pop;
 
+    @InjectView(R.id.tv_alert_quantity_message)
+    TextView tvQuantityMessage;
+
+    @InjectView(R.id.tv_confirm_no_stock)
+    TextView tvConfirmNoStock;
+
+    @InjectView(R.id.tv_confirm_has_stock)
+    TextView tvConfirmHasStock;
+
+    @InjectView(R.id.vg_soh_pop)
+    ViewGroup vg_soh_pop;
 
     @InjectView(R.id.product_name)
     TextView tvProductName;
@@ -49,11 +57,6 @@ public class UnpackKitViewHolderNew extends AddLotViewHolder {
 
     public UnpackKitViewHolderNew(View itemView) {
         super(itemView);
-        vg_soh_pop = (ViewGroup) itemView.findViewById(R.id.vg_soh_pop);
-        tvKitExpectedQuantity = (TextView) itemView.findViewById(R.id.kit_expected_quantity);
-        tvQuantityMessage = (TextView) itemView.findViewById(R.id.tv_alert_quantity_message);
-        tvConfirmNoStock = (TextView) itemView.findViewById(R.id.tv_confirm_no_stock);
-        tvConfirmHasStock = (TextView) itemView.findViewById(R.id.tv_confirm_has_stock);
     }
 
     public void populate(final InventoryViewModel inventoryViewModel) {
@@ -70,21 +73,25 @@ public class UnpackKitViewHolderNew extends AddLotViewHolder {
     }
 
     private void validateIfShouldShowUpEmptyLotWarning(InventoryViewModel inventoryViewModel) {
-        if (((UnpackKitInventoryViewModel)inventoryViewModel).shouldShowEmptyLotWarning()) {
+        if (((UnpackKitInventoryViewModel) inventoryViewModel).shouldShowEmptyLotWarning()) {
             vg_soh_pop.setVisibility(View.VISIBLE);
             vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop);
+
             tvConfirmHasStock.setVisibility(View.GONE);
             tvConfirmNoStock.setVisibility(View.VISIBLE);
+
             tvQuantityMessage.setText(LMISApp.getContext().getResources().getString(R.string.message_no_stock_amount_change));
             tvQuantityMessage.setTextColor(context.getResources().getColor(R.color.color_black));
             tvKitExpectedQuantity.setTextColor(this.context.getResources().getColor(R.color.color_red));
         }
 
-        if (((UnpackKitInventoryViewModel)inventoryViewModel).isConfirmedNoStockReceived()) {
+        if (((UnpackKitInventoryViewModel) inventoryViewModel).isConfirmedNoStockReceived()) {
             vg_soh_pop.setVisibility(View.VISIBLE);
             vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop);
+
             tvConfirmHasStock.setVisibility(View.VISIBLE);
             tvConfirmNoStock.setVisibility(View.GONE);
+
             tvQuantityMessage.setText(LMISApp.getContext().getResources().getString(R.string.message_no_stock_received));
             tvQuantityMessage.setTextColor(context.getResources().getColor(R.color.color_black));
             tvKitExpectedQuantity.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
@@ -96,25 +103,21 @@ public class UnpackKitViewHolderNew extends AddLotViewHolder {
         long totalQuantity = viewModel.getLotListQuantityTotalAmount();
         long kitExpectQuantity = viewModel.getKitExpectQuantity();
 
-        if (((UnpackKitInventoryViewModel)viewModel).hasLotChanged()) {
-            if (totalQuantity > kitExpectQuantity) {
-                vg_soh_pop.setVisibility(View.VISIBLE);
-                vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop_warning);
-                tvConfirmHasStock.setVisibility(View.GONE);
-                tvConfirmNoStock.setVisibility(View.GONE);
-                tvQuantityMessage.setText(Html.fromHtml(context.getString(R.string.label_unpack_kit_quantity_more_than_expected)));
-                tvQuantityMessage.setTextColor(context.getResources().getColor(R.color.color_warning_text_unpack_kit_pop));
-                tvKitExpectedQuantity.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
-            } else if (totalQuantity < kitExpectQuantity) {
-                vg_soh_pop.setVisibility(View.VISIBLE);
-                vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop_warning);
-                tvConfirmHasStock.setVisibility(View.GONE);
-                tvConfirmNoStock.setVisibility(View.GONE);
-                tvQuantityMessage.setText(Html.fromHtml(context.getString(R.string.label_unpack_kit_quantity_less_than_expected)));
-                tvQuantityMessage.setTextColor(context.getResources().getColor(R.color.color_warning_text_unpack_kit_pop));
-                tvKitExpectedQuantity.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
-            } else {
+        if (((UnpackKitInventoryViewModel) viewModel).hasLotChanged()) {
+            if (totalQuantity == kitExpectQuantity) {
                 initViewHolderStyle(viewModel);
+            } else {
+                vg_soh_pop.setVisibility(View.VISIBLE);
+                vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop_warning);
+                tvConfirmHasStock.setVisibility(View.GONE);
+                tvConfirmNoStock.setVisibility(View.GONE);
+                tvKitExpectedQuantity.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
+                tvQuantityMessage.setTextColor(context.getResources().getColor(R.color.color_warning_text_unpack_kit_pop));
+                if (totalQuantity > kitExpectQuantity) {
+                    tvQuantityMessage.setText(Html.fromHtml(context.getString(R.string.label_unpack_kit_quantity_more_than_expected)));
+                } else {
+                    tvQuantityMessage.setText(Html.fromHtml(context.getString(R.string.label_unpack_kit_quantity_less_than_expected)));
+                }
             }
         } else {
             initViewHolderStyle(viewModel);
