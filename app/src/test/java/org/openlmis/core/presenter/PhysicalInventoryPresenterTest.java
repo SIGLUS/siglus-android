@@ -266,20 +266,18 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
 
     private ArrayList<InventoryViewModel> getStockCardViewModels() {
         ArrayList<InventoryViewModel> inventoryViewModels = new ArrayList<>();
-        inventoryViewModels.add(buildStockCardWithOutDraft(9, "11", null));
-        InventoryViewModel inventoryViewModelWithOutDraft = buildStockCardWithOutDraft(3, "15", "11/02/2015");
+        inventoryViewModels.add(buildInventoryViewModelWithOutDraft(9, "11", null));
+        InventoryViewModel inventoryViewModelWithOutDraft = buildInventoryViewModelWithOutDraft(3, "15", "11/02/2015");
         inventoryViewModels.add(inventoryViewModelWithOutDraft);
         return inventoryViewModels;
     }
 
     @NonNull
-    private InventoryViewModel buildStockCardWithOutDraft(int stockCardId, String quantity, String expireDate) {
+    private InventoryViewModel buildInventoryViewModelWithOutDraft(int stockCardId, String quantity, String expireDate) {
         InventoryViewModel inventoryViewModelWithOutDraft = new PhysicalInventoryViewModel(buildDefaultStockCard());
         inventoryViewModelWithOutDraft.setStockCardId(stockCardId);
         inventoryViewModelWithOutDraft.setQuantity(quantity);
-        ArrayList<String> expireDates = new ArrayList<>();
-        expireDates.add(expireDate);
-        inventoryViewModelWithOutDraft.setExpiryDates(expireDates);
+        inventoryViewModelWithOutDraft.getExpiryDates().add(expireDate);
         return inventoryViewModelWithOutDraft;
     }
 
@@ -332,7 +330,8 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
     public void shouldClearExpiryDatesWhenSaveStockCardWithEmptySOH() throws Exception {
         List<InventoryViewModel> inventoryViewModels = getStockCardViewModels();
         InventoryViewModel firstStockCardViewModel = inventoryViewModels.get(0);
-        firstStockCardViewModel.setExpiryDates(Arrays.asList("01/01/2016", "02/01/2016"));
+        firstStockCardViewModel.getExpiryDates().clear();
+        firstStockCardViewModel.getExpiryDates().addAll(Arrays.asList("01/01/2016", "02/01/2016"));
         firstStockCardViewModel.setQuantity("0");
 
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();

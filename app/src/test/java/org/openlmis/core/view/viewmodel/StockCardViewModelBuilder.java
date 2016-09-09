@@ -39,7 +39,8 @@ public class StockCardViewModelBuilder {
     }
 
     public StockCardViewModelBuilder setExpiryDates(List<String> dates) {
-        viewModel.setExpiryDates(dates);
+        viewModel.expiryDates.clear();
+        viewModel.expiryDates.addAll(dates);
         return this;
     }
 

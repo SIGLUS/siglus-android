@@ -211,9 +211,4 @@ public class InventoryViewModel {
         }
         return lotTotalQuantity;
     }
-
-    public void setExpiryDates(List<String> expiryDates) {
-        this.expiryDates.clear();
-        this.expiryDates.addAll(expiryDates);
-    }
 }

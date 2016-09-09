@@ -42,8 +42,6 @@ import java.util.List;
 
 import roboguice.inject.InjectView;
 
-import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
-
 
 public class InitialInventoryViewHolder extends BaseViewHolder {
 
@@ -294,7 +292,8 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
                     } catch (ParseException e) {
                         new LMISException(e).reportToFabric();
                     }
-                    viewModel.setExpiryDates(newArrayList(dateString));
+                    viewModel.getExpiryDates().clear();
+                    viewModel.getExpiryDates().add(dateString);
                 } else {
                     ToastUtil.show(R.string.msg_invalid_date);
                 }

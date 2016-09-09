@@ -33,7 +33,7 @@ public class StockCardViewModelTest {
         list.add("18/10/2017");
         list.add("18/10/2018");
         list.add("18/10/2015");
-        model.setExpiryDates(list);
+        model.expiryDates.addAll(list);
     }
 
     @Test
