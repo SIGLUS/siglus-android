@@ -43,7 +43,13 @@ import org.openlmis.core.network.adapter.RnrFormAdapter;
 import org.openlmis.core.network.adapter.StockCardAdapter;
 import org.openlmis.core.network.model.DataErrorResponse;
 
+import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSession;
 
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
@@ -54,6 +60,8 @@ import retrofit.client.Client;
 import retrofit.client.OkClient;
 import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
+
+import static javax.net.ssl.HttpsURLConnection.getDefaultHostnameVerifier;
 
 public class LMISRestManager {
 
@@ -75,6 +83,38 @@ public class LMISRestManager {
         instance = this;
     }
 
+    @NonNull
+    protected Client getSSLClient() {
+        OkHttpClient client = getOkHttpClient();
+
+        try {
+            SSLContext sslContext = SSLContext.getDefault();
+
+            client.setSslSocketFactory(sslContext.getSocketFactory());
+            client.setHostnameVerifier(new HostnameVerifier() {
+                //OVERRIDE HOSTNAME VERIFIER BECAUSE WE CONNECT TO ELB DIRECTLY DUE TO OCCASIONAL DNS ISSUES IN MOZAMBIQUE
+                @Override
+                public boolean verify(String hostname, SSLSession session) {
+
+                    X509Certificate cert;
+                    try {
+                        cert = (X509Certificate) session.getPeerCertificates()[0];
+                        if (cert.getSubjectDN().getName().equals("CN=lmis.cmam.gov.mz")) {
+                            return true;
+                        }
+                    } catch (SSLPeerUnverifiedException e) {
+                        new LMISException(e).reportToFabric();
+                    }
+
+                    return getDefaultHostnameVerifier().verify(hostname, session);
+                }
+            });
+        } catch (Exception e) {
+            new LMISException(e).reportToFabric();
+        }
+        return new OkClient(client);
+    }
+
     public static LMISRestManager getInstance(Context context) {
         if (instance == null) {
             instance = new LMISRestManager(context);
@@ -86,13 +126,13 @@ public class LMISRestManager {
         return lmisRestApi;
     }
 
-    protected Client getSSLClient() {
+    protected OkHttpClient getOkHttpClient() {
         OkHttpClient httpClient = new OkHttpClient();
         httpClient.setReadTimeout(1, TimeUnit.MINUTES);
         httpClient.setConnectTimeout(15, TimeUnit.SECONDS);
         httpClient.setWriteTimeout(30, TimeUnit.SECONDS);
 
-        return new OkClient(httpClient);
+        return httpClient;
     }
 
     @NonNull
