@@ -121,15 +121,18 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         productName.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyledName()));
         productUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(queryKeyWord, viewModel.getStyleType()));
 
-        populateEditPanel(viewModel.getQuantity(), viewModel.optFirstExpiryDate());
-
         if (viewModel.isValid()) {
             lyQuantity.setErrorEnabled(false);
         } else {
             lyQuantity.setError(context.getResources().getString(R.string.msg_inventory_check_failed));
         }
-        initLotListRecyclerView(viewModel);
+
         initHistoryView(viewModel, listener);
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+            initLotListRecyclerView(viewModel);
+        } else {
+            populateEditPanel(viewModel.getQuantity(), viewModel.optFirstExpiryDate());
+        }
     }
 
     protected void setItemViewListener(final InventoryViewModel viewModel) {
