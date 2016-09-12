@@ -415,20 +415,6 @@ public class StockRepository {
         return stockCardList;
     }
 
-    public StockMovementItem queryLastStockMovementItemByStockCardId(final Long stockCardId) throws LMISException {
-        return dbUtil.withDao(StockMovementItem.class, new DbUtil.Operation<StockMovementItem, StockMovementItem>() {
-            @Override
-            public StockMovementItem operate(Dao<StockMovementItem, String> dao) throws SQLException {
-                return dao.queryBuilder()
-                        .orderBy("movementDate", false)
-                        .orderBy("createdTime", false)
-                        .where()
-                        .eq("stockCard_id", stockCardId)
-                        .queryForFirst();
-            }
-        });
-    }
-
     public List<LotOnHand> getNonEmptyLotOnHandByStockCard(final long stockCardId) throws LMISException {
         return dbUtil.withDao(LotOnHand.class, new DbUtil.Operation<LotOnHand, List<LotOnHand>>() {
             @Override

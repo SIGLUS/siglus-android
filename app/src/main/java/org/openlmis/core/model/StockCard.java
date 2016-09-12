@@ -142,4 +142,8 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
             }
         }).getLot().getExpirationDate();
     }
+
+    public Date getLastStockMovementDate() {
+        return getStockMovementItemsWrapper().get(getStockMovementItemsWrapper().size()-1).getMovementDate();
+    }
 }

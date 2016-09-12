@@ -19,7 +19,6 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.NestedRecyclerViewLinearLayoutManager;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.presenter.NewStockMovementPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
@@ -108,8 +107,6 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     private Long stockCardId;
 
-    StockMovementItem previousMovement;
-
     private List<MovementReasonManager.MovementReason> movementReasons;
 
     private MovementReasonManager movementReasonManager;
@@ -145,12 +142,11 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
         try {
             presenter.loadData(stockCardId, movementType);
-            previousMovement = presenter.getPreviousStockMovement();
         } catch (LMISException e) {
             e.printStackTrace();
         }
 
-        stockMovementViewModel = presenter.getStockMovementModel();
+        stockMovementViewModel = presenter.getStockMovementViewModel();
         stockMovementViewModel.setKit(isKit);
         initMovementView();
         initExistingLotListView();
@@ -159,13 +155,13 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     private void initExistingLotListView() {
         existingLotListView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(this));
-        existingLotMovementAdapter = new LotMovementAdapter(presenter.getExistingLotViewModelsByStockCard(stockCardId));
+        existingLotMovementAdapter = new LotMovementAdapter(presenter.getExistingLotViewModelsByStockCard());
         existingLotListView.setAdapter(existingLotMovementAdapter);
     }
 
     private void initNewLotListView() {
         newLotMovementRecycleView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(this));
-        newLotMovementAdapter = new LotMovementAdapter(presenter.getStockMovementModel().getNewLotMovementViewModelList(), previousMovement.getStockCard().getProduct().getProductNameWithCodeAndStrength());
+        newLotMovementAdapter = new LotMovementAdapter(presenter.getStockMovementViewModel().getNewLotMovementViewModelList(), presenter.getStockCard().getProduct().getProductNameWithCodeAndStrength());
         newLotMovementRecycleView.setAdapter(newLotMovementAdapter);
     }
 
@@ -199,7 +195,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         etMovementDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDatePickerDialog(presenter.getStockMovementModel(), previousMovement.getMovementDate());
+                showDatePickerDialog(presenter.getStockMovementViewModel(), presenter.getStockCard().getLastStockMovementDate());
             }
         });
         etMovementDate.setKeyListener(null);
@@ -402,7 +398,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     }
 
     private boolean quantityIsLargerThanSoh(String quantity, MovementReasonManager.MovementType type) {
-        return (MovementReasonManager.MovementType.ISSUE.equals(type) || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(type)) && Long.parseLong(quantity) > previousMovement.getStockOnHand();
+        return (MovementReasonManager.MovementType.ISSUE.equals(type) || MovementReasonManager.MovementType.NEGATIVE_ADJUST.equals(type)) && Long.parseLong(quantity) > presenter.getStockCard().getStockOnHand();
     }
 
     private void showEmptyLotError() {

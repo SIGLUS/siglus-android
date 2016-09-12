@@ -185,7 +185,6 @@ public class StockMovementViewModel {
 
 
     public void populateStockExistence(long previousStockOnHand) {
-
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) && !isKit) {
                 this.stockExistence = "" + previousStockOnHand;
         } else {

@@ -196,7 +196,8 @@ public class LotRepositoryTest extends LMISRepositoryUnitTest {
         lotRepository.createLotMovementItem(lotMovementItem);
         assertNotNull(lotMovementItem.getId());
 
-        StockMovementItem queriedStockMovementItem = stockRepository.queryLastStockMovementItemByStockCardId(stockCard.getId());
+        StockCard stockCardQueried = stockRepository.queryStockCardById(stockCard.getId());
+        StockMovementItem queriedStockMovementItem = stockCardQueried.getStockMovementItemsWrapper().get(stockCardQueried.getStockMovementItemsWrapper().size() - 1);
         assertThat(queriedStockMovementItem.getLotMovementItemListWrapper().get(0).getMovementQuantity(), is(2L));
         assertThat(queriedStockMovementItem.getLotMovementItemListWrapper().get(0).getId(), is(lotMovementItem.getId()));
         assertThat(queriedStockMovementItem.getLotMovementItemListWrapper().get(0).getLot().getLotNumber(), is(lot1.getLotNumber()));

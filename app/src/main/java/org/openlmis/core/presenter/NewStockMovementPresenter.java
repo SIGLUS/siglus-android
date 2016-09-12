@@ -48,23 +48,23 @@ import rx.schedulers.Schedulers;
 
 public class NewStockMovementPresenter extends Presenter {
     @Getter
-    final StockMovementViewModel stockMovementModel;
+    final StockMovementViewModel stockMovementViewModel;
 
     @Inject
     StockRepository stockRepository;
 
     NewStockMovementView view;
 
-    @Getter
-    StockMovementItem previousStockMovement;
-
     @Inject
     SharedPreferenceMgr sharedPreferenceMgr;
 
     private MovementReasonManager.MovementType newMovementType;
 
+    @Getter
+    private StockCard stockCard;
+
     public NewStockMovementPresenter() {
-        stockMovementModel = new StockMovementViewModel();
+        stockMovementViewModel = new StockMovementViewModel();
     }
 
     @Override
@@ -77,12 +77,12 @@ public class NewStockMovementPresenter extends Presenter {
     }
 
     public void loadData(Long stockCardId, MovementReasonManager.MovementType movementType) throws LMISException {
-        previousStockMovement = stockRepository.queryLastStockMovementItemByStockCardId(stockCardId);
+        stockCard = stockRepository.queryStockCardById(stockCardId);
         newMovementType = movementType;
     }
 
     public void saveStockMovement() {
-        getSaveMovementObservable(stockMovementModel, previousStockMovement.getStockCard().getId()).subscribe(new Action1<StockMovementViewModel>() {
+        getSaveMovementObservable().subscribe(new Action1<StockMovementViewModel>() {
             @Override
             public void call(StockMovementViewModel viewModel) {
                 view.goToStockCard();
@@ -90,33 +90,28 @@ public class NewStockMovementPresenter extends Presenter {
         });
     }
 
-    protected Observable<StockMovementViewModel> getSaveMovementObservable(final StockMovementViewModel viewModel, final Long stockCardId) {
+    protected Observable<StockMovementViewModel> getSaveMovementObservable() {
         return Observable.create(new Observable.OnSubscribe<StockMovementViewModel>() {
             @Override
             public void call(Subscriber<? super StockMovementViewModel> subscriber) {
-                convertViewModelToDataModelAndSave(viewModel, stockCardId);
-                subscriber.onNext(viewModel);
+                convertViewModelToDataModelAndSave();
+                subscriber.onNext(stockMovementViewModel);
                 subscriber.onCompleted();
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    private void convertViewModelToDataModelAndSave(StockMovementViewModel viewModel, Long stockCardId) {
-        try {
-            viewModel.populateStockExistence(previousStockMovement.getStockOnHand());
-            StockCard stockCard = stockRepository.queryStockCardById(stockCardId);
-            StockMovementItem stockMovementItem = viewModel.convertViewToModel(stockCard);
-            stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
+    private void convertViewModelToDataModelAndSave() {
+        stockMovementViewModel.populateStockExistence(stockCard.getStockOnHand());
+        StockMovementItem stockMovementItem = stockMovementViewModel.convertViewToModel(stockCard);
+        stockCard.setStockOnHand(stockMovementItem.getStockOnHand());
 
-            if (stockCard.getStockOnHand() == 0) {
-                stockCard.setExpireDates("");
-            }
-            stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
-            if (stockCard.getStockOnHand() == 0 && !stockCard.getProduct().isActive()) {
-                sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
-            }
-        } catch (LMISException e) {
-            e.reportToFabric();
+        if (stockCard.getStockOnHand() == 0) {
+            stockCard.setExpireDates("");
+        }
+        stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem);
+        if (stockCard.getStockOnHand() == 0 && !stockCard.getProduct().isActive()) {
+            sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
         }
     }
 
@@ -124,18 +119,18 @@ public class NewStockMovementPresenter extends Presenter {
         return Observable.create(new Observable.OnSubscribe<List<LotMovementViewModel>>() {
             @Override
             public void call(Subscriber<? super List<LotMovementViewModel>> subscriber) {
-                stockMovementModel.getNewLotMovementViewModelList().add(lotMovementViewModel);
-                subscriber.onNext(stockMovementModel.getNewLotMovementViewModelList());
+                stockMovementViewModel.getNewLotMovementViewModelList().add(lotMovementViewModel);
+                subscriber.onNext(stockMovementViewModel.getNewLotMovementViewModelList());
                 subscriber.onCompleted();
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    public List<LotMovementViewModel> getExistingLotViewModelsByStockCard(Long stockCardId) {
-        if (stockMovementModel.getExistingLotMovementViewModelList().isEmpty()) {
+    public List<LotMovementViewModel> getExistingLotViewModelsByStockCard() {
+        if (stockMovementViewModel.getExistingLotMovementViewModelList().isEmpty()) {
             ImmutableList<LotMovementViewModel> lotMovementViewModels = null;
             try {
-                lotMovementViewModels = FluentIterable.from(stockRepository.getNonEmptyLotOnHandByStockCard(stockCardId)).transform(new Function<LotOnHand, LotMovementViewModel>() {
+                lotMovementViewModels = FluentIterable.from(stockRepository.getNonEmptyLotOnHandByStockCard(stockCard.getId())).transform(new Function<LotOnHand, LotMovementViewModel>() {
                     @Override
                     public LotMovementViewModel apply(LotOnHand lotOnHand) {
                         return new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
@@ -151,9 +146,9 @@ public class NewStockMovementPresenter extends Presenter {
             } catch (LMISException e) {
                 e.printStackTrace();
             }
-            stockMovementModel.setExistingLotMovementViewModelList(lotMovementViewModels);
+            stockMovementViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);
         }
-        return stockMovementModel.getExistingLotMovementViewModelList();
+        return stockMovementViewModel.getExistingLotMovementViewModelList();
 
     }
 

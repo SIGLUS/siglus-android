@@ -18,37 +18,33 @@
 
 package org.openlmis.core.presenter;
 
-import android.app.ActivityManager;
 import android.support.annotation.NonNull;
 
 import com.google.inject.AbstractModule;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.KitProduct;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
-import org.openlmis.core.model.builder.StockMovementItemBuilder;
-import org.openlmis.core.model.builder.StockMovementViewModelBuilder;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.robolectric.RuntimeEnvironment;
 
-import java.text.ParseException;
 import java.util.Arrays;
-import java.util.HashMap;
 
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
-import static org.mockito.Matchers.anyString;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -73,72 +69,48 @@ public class NewStockMovementPresenterTest {
         newStockMovementPresenter.attachView(view);
     }
 
-
-    @Test
-    public void shouldLoadDataFromPreviousStockMovement() throws LMISException {
-        StockMovementItem item = new StockMovementItem();
-        when(stockRepositoryMock.queryLastStockMovementItemByStockCardId(123L)).thenReturn(item);
-        newStockMovementPresenter.loadData(123L, MovementReasonManager.MovementType.RECEIVE);
-
-        Assertions.assertThat(newStockMovementPresenter.getPreviousStockMovement()).isEqualTo(item);
-    }
-
     @Test
     public void shouldSaveStockItemWhenSaving() throws Exception {
         StockCard stockCard = createStockCard(0, true);
-        StockMovementItem item = new StockMovementItem();
-        item.setStockOnHand(0L);
-
-        newStockMovementPresenter.previousStockMovement = new StockMovementItemBuilder().withStockOnHand(10).build();
-        StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
-        when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
-        when(stockRepositoryMock.queryStockCardById(stockCard.getId())).thenReturn(stockCard);
-
+        StockMovementViewModel stockMovementViewModel = newStockMovementPresenter.getStockMovementViewModel();
+        when(stockRepositoryMock.queryStockCardById(anyLong())).thenReturn(stockCard);
+        newStockMovementPresenter.loadData(1L, MovementReasonManager.MovementType.RECEIVE);
+        stockMovementViewModel.getTypeQuantityMap().put(MovementReasonManager.MovementType.RECEIVE, "10");
+        stockMovementViewModel.setReason(new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "code", "desc"));
+        stockMovementViewModel.setMovementDate("10/02/2016");
         TestSubscriber<StockMovementViewModel> subscriber = new TestSubscriber<>();
-        newStockMovementPresenter.getSaveMovementObservable(viewModel, stockCard.getId()).subscribe(subscriber);
+        newStockMovementPresenter.getSaveMovementObservable().subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
 
-        verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(item);
-        verify(sharedPreferenceMgr, never()).setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
+        ArgumentCaptor<StockMovementItem> captor = ArgumentCaptor.forClass(StockMovementItem.class);
+        verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(captor.capture());
+        StockMovementItem stockMovementItemSaved = captor.getAllValues().get(0);
+        assertThat(stockMovementItemSaved.getStockOnHand(), is(10L));
+        assertThat(stockMovementItemSaved.getStockCard(), is(stockCard));
 
+        verify(sharedPreferenceMgr, never()).setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
     }
 
     @Test
     public void shouldUpdateBannerPreferenceWhenSaving() throws Exception {
         StockCard stockCard = createStockCard(0, true);
         stockCard.getProduct().setActive(false);
-        StockMovementItem item = new StockMovementItem();
-        item.setStockOnHand(0L);
+        when(stockRepositoryMock.queryStockCardById(anyLong())).thenReturn(stockCard);
 
-        newStockMovementPresenter.previousStockMovement = new StockMovementItemBuilder().withStockOnHand(10).build();
-        StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
-        when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
-        when(stockRepositoryMock.queryStockCardById(stockCard.getId())).thenReturn(stockCard);
-
+        StockMovementViewModel stockMovementViewModel = newStockMovementPresenter.getStockMovementViewModel();
+        newStockMovementPresenter.loadData(1L, MovementReasonManager.MovementType.RECEIVE);
+        stockMovementViewModel.getTypeQuantityMap().put(MovementReasonManager.MovementType.RECEIVE, "0");
+        stockMovementViewModel.setReason(new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "code", "desc"));
+        stockMovementViewModel.setMovementDate("10/02/2016");
         TestSubscriber<StockMovementViewModel> subscriber = new TestSubscriber<>();
-        newStockMovementPresenter.getSaveMovementObservable(viewModel, stockCard.getId()).subscribe(subscriber);
+        newStockMovementPresenter.getSaveMovementObservable().subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
 
         verify(sharedPreferenceMgr).setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
-    }
-
-    @Test
-    public void shouldNotErrorQuantityIfItIsLargerThanSohButAdditiveWhenSaving() throws ParseException {
-        StockMovementViewModel stockMovementViewModel = new StockMovementViewModelBuilder()
-                .withMovementDate("2010-10-10").withSignature("signature")
-                .withMovementReason(new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.RECEIVE, "", "")).build();
-        HashMap<MovementReasonManager.MovementType, String> quantityMap = new HashMap<>();
-        quantityMap.put(MovementReasonManager.MovementType.RECEIVE, "10");
-        stockMovementViewModel.setTypeQuantityMap(quantityMap);
-
-        StockMovementItem previousStockItem = new StockMovementItemBuilder().withStockOnHand(5).build();
-        newStockMovementPresenter.previousStockMovement = previousStockItem;
-        newStockMovementPresenter.getSaveMovementObservable(stockMovementViewModel, 1L);
-        verify(view, never()).showQuantityErrors(anyString());
     }
 
     @NonNull
