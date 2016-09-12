@@ -53,9 +53,9 @@ public class StockMovementViewModel {
 
     private HashMap<MovementReasonManager.MovementType, String> typeQuantityMap = new HashMap<>();
 
-    List<LotMovementViewModel> newLotMovementViewModelList = new ArrayList<>();
+    final List<LotMovementViewModel> newLotMovementViewModelList = new ArrayList<>();
 
-    List<LotMovementViewModel> existingLotMovementViewModelList = new ArrayList<>();
+    final List<LotMovementViewModel> existingLotMovementViewModelList = new ArrayList<>();
 
     public StockMovementViewModel(StockMovementItem item) {
         movementDate = DateUtil.formatDate(item.getMovementDate());

@@ -155,13 +155,13 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     private void initExistingLotListView() {
         existingLotListView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(this));
-        existingLotMovementAdapter = new LotMovementAdapter(presenter.getExistingLotViewModelsByStockCard());
+        existingLotMovementAdapter = new LotMovementAdapter(stockMovementViewModel.getExistingLotMovementViewModelList());
         existingLotListView.setAdapter(existingLotMovementAdapter);
     }
 
     private void initNewLotListView() {
         newLotMovementRecycleView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(this));
-        newLotMovementAdapter = new LotMovementAdapter(presenter.getStockMovementViewModel().getNewLotMovementViewModelList(), presenter.getStockCard().getProduct().getProductNameWithCodeAndStrength());
+        newLotMovementAdapter = new LotMovementAdapter(stockMovementViewModel.getNewLotMovementViewModelList(), presenter.getStockCard().getProduct().getProductNameWithCodeAndStrength());
         newLotMovementRecycleView.setAdapter(newLotMovementAdapter);
     }
 
@@ -195,7 +195,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         etMovementDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDatePickerDialog(presenter.getStockMovementViewModel(), presenter.getStockCard().getLastStockMovementDate());
+                showDatePickerDialog(presenter.getStockCard().getLastStockMovementDate());
             }
         });
         etMovementDate.setKeyListener(null);
@@ -292,11 +292,11 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         return intent;
     }
 
-    private void showDatePickerDialog(StockMovementViewModel model, Date previousMovementDate) {
+    private void showDatePickerDialog(Date previousMovementDate) {
         final Calendar today = GregorianCalendar.getInstance();
 
         DatePickerDialog dialog = new DatePickerDialog(this, DatePickerDialog.BUTTON_NEUTRAL,
-                new MovementDateListener(model, previousMovementDate, etMovementDate),
+                new MovementDateListener(stockMovementViewModel, previousMovementDate, etMovementDate),
                 today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
         dialog.show();
     }
@@ -312,12 +312,11 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                 quantityMap.put(movementType, etMovementQuantity.getText().toString());
                 stockMovementViewModel.setTypeQuantityMap(quantityMap);
                 stockMovementViewModel.setSignature(etMovementSignature.getText().toString());
-                if (showErrors(stockMovementViewModel)) {
+                if (showErrors()) {
                     existingLotMovementAdapter.notifyDataSetChanged();
                     newLotMovementAdapter.notifyDataSetChanged();
                     return;
                 }
-
                 presenter.saveStockMovement();
                 break;
             case R.id.btn_cancel:
@@ -334,8 +333,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         lyMovementSignature.setErrorEnabled(false);
     }
 
-    protected boolean showErrors(StockMovementViewModel stockMovementViewModel) {
-        MovementReasonManager.MovementType movementType = stockMovementViewModel.getTypeQuantityMap().keySet().iterator().next();
+    protected boolean showErrors() {
         if (StringUtils.isBlank(stockMovementViewModel.getMovementDate())) {
             showMovementDateEmpty();
             return true;
@@ -345,7 +343,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
             return true;
         }
 
-        if (isKit && checkKitQuantityError(stockMovementViewModel, movementType)) return true;
+        if (isKit && checkKitQuantityError()) return true;
 
         if (StringUtils.isBlank(stockMovementViewModel.getSignature())) {
             showSignatureErrors(getResources().getString(R.string.msg_empty_signature));
@@ -363,7 +361,8 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
         return !isKit && (showLotListError() || lotListEmptyError());
     }
 
-    private boolean checkKitQuantityError(StockMovementViewModel stockMovementViewModel, MovementReasonManager.MovementType movementType) {
+    private boolean checkKitQuantityError() {
+        MovementReasonManager.MovementType movementType = stockMovementViewModel.getTypeQuantityMap().keySet().iterator().next();
         if (StringUtils.isBlank(stockMovementViewModel.getTypeQuantityMap().get(movementType))) {
             showQuantityErrors(getResources().getString(R.string.msg_empty_quantity));
             return true;
