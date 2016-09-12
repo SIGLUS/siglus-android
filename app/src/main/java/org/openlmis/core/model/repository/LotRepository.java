@@ -10,6 +10,7 @@ import org.openlmis.core.model.Lot;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.persistence.DbUtil;
+import org.openlmis.core.persistence.GenericDao;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -136,5 +137,14 @@ public class LotRepository {
                 return null;
             }
         });
+    }
+
+    public List<Lot> queryAllLot() {
+        try {
+            return new GenericDao<>(Lot.class, context).queryForAll();
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+        return null;
     }
 }

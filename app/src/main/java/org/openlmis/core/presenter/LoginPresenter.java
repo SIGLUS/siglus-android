@@ -32,6 +32,7 @@ import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.User;
+import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.model.UserResponse;
@@ -52,6 +53,9 @@ public class LoginPresenter extends Presenter {
 
     @Inject
     UserRepository userRepository;
+
+    @Inject
+    LotRepository lotRepository;
 
     @Inject
     SyncService syncService;
@@ -234,12 +238,21 @@ public class LoginPresenter extends Presenter {
             view.goToInitInventory();
         } else {
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) && !SharedPreferenceMgr.getInstance().hasLotInfo()) {
-                view.goToParticularPhysicalInventory();
+                if (existLotInfo()) {
+                    SharedPreferenceMgr.getInstance().setHasLotInfo(true);
+                    view.goToHomePage();
+                } else {
+                    view.goToParticularPhysicalInventory();
+                }
             } else {
                 view.goToHomePage();
             }
         }
         hasGoneToNextPage = true;
+    }
+
+    private boolean existLotInfo() {
+        return !lotRepository.queryAllLot().isEmpty();
     }
 
     public interface LoginView extends BaseView {
