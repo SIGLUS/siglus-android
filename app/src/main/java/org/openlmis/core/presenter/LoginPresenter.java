@@ -31,9 +31,11 @@ import org.openlmis.core.exceptions.NetWorkException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Program;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.model.UserResponse;
 import org.openlmis.core.service.SyncDownManager;
@@ -41,6 +43,8 @@ import org.openlmis.core.service.SyncDownManager.SyncProgress;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.BaseView;
+
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -56,6 +60,9 @@ public class LoginPresenter extends Presenter {
 
     @Inject
     LotRepository lotRepository;
+
+    @Inject
+    StockRepository stockRepository;
 
     @Inject
     SyncService syncService;
@@ -238,7 +245,7 @@ public class LoginPresenter extends Presenter {
             view.goToInitInventory();
         } else {
             if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) && !SharedPreferenceMgr.getInstance().hasLotInfo()) {
-                if (existLotInfo()) {
+                if (existLotInfo() || hasNoStockOnHand()) {
                     SharedPreferenceMgr.getInstance().setHasLotInfo(true);
                     view.goToHomePage();
                 } else {
@@ -249,6 +256,16 @@ public class LoginPresenter extends Presenter {
             }
         }
         hasGoneToNextPage = true;
+    }
+
+    private boolean hasNoStockOnHand() {
+        List<StockCard> stockCardList = stockRepository.list();
+        for (StockCard stockCard : stockCardList) {
+            if (stockCard.getStockOnHand() != 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean existLotInfo() {

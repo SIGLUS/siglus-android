@@ -112,22 +112,17 @@ public class StockCardPresenter extends Presenter {
         return Observable.create(new Observable.OnSubscribe<List<StockCard>>() {
             @Override
             public void call(Subscriber<? super List<StockCard>> subscriber) {
-                try {
-                    stockService.monthlyUpdateAvgMonthlyConsumption();
-
-                    subscriber.onNext(from(stockRepository.list()).filter(new Predicate<StockCard>() {
-                        @Override
-                        public boolean apply(StockCard stockCard) {
-                            if (status.isArchived()) {
-                                return showInArchiveView(stockCard);
-                            }
-                            return showInOverview(stockCard);
+                stockService.monthlyUpdateAvgMonthlyConsumption();
+                subscriber.onNext(from(stockRepository.list()).filter(new Predicate<StockCard>() {
+                    @Override
+                    public boolean apply(StockCard stockCard) {
+                        if (status.isArchived()) {
+                            return showInArchiveView(stockCard);
                         }
-                    }).toList());
-                    subscriber.onCompleted();
-                } catch (LMISException e) {
-                    subscriber.onError(e);
-                }
+                        return showInOverview(stockCard);
+                    }
+                }).toList());
+                subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }

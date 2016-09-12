@@ -208,20 +208,21 @@ public class StockRepository {
         });
     }
 
-    public List<StockCard> list() throws LMISException {
-        List<StockCard> stockCards = genericDao.queryForAll();
-        Collections.sort(stockCards);
-        return stockCards;
+    public List<StockCard> list() {
+        try {
+            List<StockCard> stockCards = genericDao.queryForAll();
+            Collections.sort(stockCards);
+            return stockCards;
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
+        return null;
     }
 
     public boolean hasStockData() {
-        try {
-            List<StockCard> list = list();
-            if (list != null && list.size() > 0) {
-                return true;
-            }
-        } catch (LMISException e) {
-            e.reportToFabric();
+        List<StockCard> list = list();
+        if (list != null && list.size() > 0) {
+            return true;
         }
         return false;
     }
