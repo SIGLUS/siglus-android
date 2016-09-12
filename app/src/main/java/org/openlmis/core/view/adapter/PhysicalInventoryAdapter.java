@@ -26,7 +26,7 @@ import android.view.ViewGroup;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.PhysicalInventoryViewHolder;
-import org.openlmis.core.view.holder.PhysicalInventoryWithLotsInventoryViewHolder;
+import org.openlmis.core.view.holder.PhysicalInventoryWithLotsViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public class PhysicalInventoryAdapter extends InventoryListAdapterWithBottomBtn 
     public RecyclerView.ViewHolder onCreateItemViewHolder(ViewGroup parent) {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_physical_inventory_with_lots, parent, false);
-            return new PhysicalInventoryWithLotsInventoryViewHolder(view);
+            return new PhysicalInventoryWithLotsViewHolder(view);
         } else {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_physical_inventory, parent, false);
             return new PhysicalInventoryViewHolder(view);
@@ -58,7 +58,7 @@ public class PhysicalInventoryAdapter extends InventoryListAdapterWithBottomBtn 
     protected void populate(RecyclerView.ViewHolder viewHolder, int position) {
         final InventoryViewModel viewModel = filteredList.get(position);
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            PhysicalInventoryWithLotsInventoryViewHolder holder = (PhysicalInventoryWithLotsInventoryViewHolder) viewHolder;
+            PhysicalInventoryWithLotsViewHolder holder = (PhysicalInventoryWithLotsViewHolder) viewHolder;
             holder.populate(viewModel, queryKeyWord);
         } else {
             PhysicalInventoryViewHolder holder = (PhysicalInventoryViewHolder) viewHolder;

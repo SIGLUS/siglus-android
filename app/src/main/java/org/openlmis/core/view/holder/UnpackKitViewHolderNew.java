@@ -1,5 +1,6 @@
 package org.openlmis.core.view.holder;
 
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import org.apache.commons.lang.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.manager.NestedRecyclerViewLinearLayoutManager;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
@@ -16,7 +18,7 @@ import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
 
 import roboguice.inject.InjectView;
 
-public class UnpackKitInventoryViewHolderNew extends LotInventoryViewHolder {
+public class UnpackKitViewHolderNew extends AddLotViewHolder {
     @InjectView(R.id.tv_kit_expected_quantity)
     TextView tvKitExpectedQuantity;
 
@@ -38,23 +40,40 @@ public class UnpackKitInventoryViewHolderNew extends LotInventoryViewHolder {
     @InjectView(R.id.product_unit)
     TextView tvProductUnit;
 
+    @InjectView(R.id.tx_add_new_lot)
+    private TextView txAddNewLot;
+
+    @InjectView(R.id.rv_add_lot)
+    private RecyclerView lotListRecyclerView;
+
+    @InjectView(R.id.existing_lot_list)
+    private RecyclerView existingLotListView;
+
     @InjectView(R.id.lot_list_container)
     private LinearLayout lotListContainer;
 
-    public UnpackKitInventoryViewHolderNew(View itemView) {
+    private LotMovementAdapter lotMovementAdapter;
+    private LotMovementAdapter existingLotMovementAdapter;
+
+    public UnpackKitViewHolderNew(View itemView) {
         super(itemView);
     }
 
-    public void populate(final InventoryViewModel viewModel) {
-        initViewHolderStyle(viewModel);
-        setConfirmStockClickListener((UnpackKitInventoryViewModel) viewModel);
+    public void populate(final InventoryViewModel inventoryViewModel) {
+        setItemViewListener(inventoryViewModel);
+        initViewHolderStyle(inventoryViewModel);
 
-        validateIfShouldShowUpEmptyLotWarning(viewModel);
-        updatePop(viewModel);
+        initExistingLotListView(inventoryViewModel);
+        initLotListRecyclerView(inventoryViewModel);
+
+        setConfirmStockClickListener((UnpackKitInventoryViewModel) inventoryViewModel);
+
+        validateIfShouldShowUpEmptyLotWarning(inventoryViewModel);
+        updatePop(inventoryViewModel);
     }
 
-    private void validateIfShouldShowUpEmptyLotWarning(InventoryViewModel viewModel) {
-        if (((UnpackKitInventoryViewModel) viewModel).shouldShowEmptyLotWarning()) {
+    private void validateIfShouldShowUpEmptyLotWarning(InventoryViewModel inventoryViewModel) {
+        if (((UnpackKitInventoryViewModel) inventoryViewModel).shouldShowEmptyLotWarning()) {
             vg_soh_pop.setVisibility(View.VISIBLE);
             vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop);
 
@@ -66,7 +85,7 @@ public class UnpackKitInventoryViewHolderNew extends LotInventoryViewHolder {
             tvKitExpectedQuantity.setTextColor(this.context.getResources().getColor(R.color.color_red));
         }
 
-        if (((UnpackKitInventoryViewModel) viewModel).isConfirmedNoStockReceived()) {
+        if (((UnpackKitInventoryViewModel) inventoryViewModel).isConfirmedNoStockReceived()) {
             vg_soh_pop.setVisibility(View.VISIBLE);
             vg_soh_pop.setBackgroundResource(R.drawable.inventory_pop);
 
@@ -106,14 +125,14 @@ public class UnpackKitInventoryViewHolderNew extends LotInventoryViewHolder {
         }
     }
 
-    private void initViewHolderStyle(InventoryViewModel viewModel) {
+    private void initViewHolderStyle(InventoryViewModel inventoryViewModel) {
         lotListContainer.setVisibility(View.VISIBLE);
         vg_soh_pop.setVisibility(View.GONE);
         tvKitExpectedQuantity.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
-        tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(StringUtils.EMPTY, viewModel.getStyledName()));
-        tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(StringUtils.EMPTY, viewModel.getStyledUnit()));
+        tvProductName.setText(TextStyleUtil.getHighlightQueryKeyWord(StringUtils.EMPTY, inventoryViewModel.getStyledName()));
+        tvProductUnit.setText(TextStyleUtil.getHighlightQueryKeyWord(StringUtils.EMPTY, inventoryViewModel.getStyledUnit()));
         tvKitExpectedQuantity.setText(this.context.getResources().getString(R.string.text_quantity_expected,
-                Long.toString(viewModel.getKitExpectQuantity())));
+                Long.toString(inventoryViewModel.getKitExpectQuantity())));
     }
 
     private void setConfirmStockClickListener(final UnpackKitInventoryViewModel inventoryViewModel) {
@@ -143,24 +162,44 @@ public class UnpackKitInventoryViewHolderNew extends LotInventoryViewHolder {
     }
 
     @Override
+    protected void setItemViewListener(final InventoryViewModel viewModel) {
+        txAddNewLot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddNewLotDialog(viewModel);
+            }
+        });
+    }
+
+    @Override
     protected void initExistingLotListView(final InventoryViewModel viewModel) {
-        super.initExistingLotListView(viewModel);
+        existingLotMovementAdapter = new LotMovementAdapter(viewModel.getExistingLotMovementViewModelList());
         existingLotMovementAdapter.setMovementChangeListener(new LotMovementAdapter.MovementChangedListener() {
             @Override
             public void movementChange() {
                 updatePop(viewModel);
             }
         });
+        existingLotListView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(context));
+        existingLotListView.setAdapter(existingLotMovementAdapter);
     }
 
     @Override
     protected void initLotListRecyclerView(final InventoryViewModel viewModel) {
-        super.initLotListRecyclerView(viewModel);
+        lotMovementAdapter = new LotMovementAdapter(viewModel.getLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
         lotMovementAdapter.setMovementChangeListener(new LotMovementAdapter.MovementChangedListener() {
             @Override
             public void movementChange() {
                 updatePop(viewModel);
             }
         });
+        lotListRecyclerView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(context));
+        lotListRecyclerView.setAdapter(lotMovementAdapter);
     }
+
+    @Override
+    void refreshLotList() {
+        lotMovementAdapter.notifyDataSetChanged();
+    }
+
 }

@@ -95,7 +95,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     @InjectView(R.id.lot_list)
     private RecyclerView newLotMovementRecycleView;
 
-    @InjectView(R.id.rv_existing_lot_list)
+    @InjectView(R.id.existing_lot_list)
     private RecyclerView existingLotListView;
 
     @InjectPresenter(NewStockMovementPresenter.class)

@@ -48,14 +48,14 @@
             android:orientation="vertical"
             android:visibility="visible">
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_existing_lot_list"
+                android:id="@+id/existing_lot_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scrollbars="none"
                 android:background="@color/color_white"/>
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_new_lot_list"
+                android:id="@+id/rv_add_lot"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scrollbars="none"

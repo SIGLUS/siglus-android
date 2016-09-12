@@ -19,6 +19,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:orientation="horizontal"
                 android:layout_weight="7"
                 android:baselineAligned="false">
@@ -59,6 +60,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:orientation="horizontal"
                 android:layout_weight="7">
 
@@ -142,7 +144,7 @@
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_existing_lot_list"
+            android:id="@+id/existing_lot_list"
             android:layout_marginLeft="@dimen/margin_normal"
             android:layout_marginRight="@dimen/margin_normal"
             android:layout_width="match_parent"

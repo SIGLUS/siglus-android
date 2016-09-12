@@ -22,14 +22,14 @@ import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
 public class PhysicalInventoryWithLotsViewHolderTest {
-    private PhysicalInventoryWithLotsInventoryViewHolder viewHolder;
+    private PhysicalInventoryWithLotsViewHolder viewHolder;
     private Product product;
     private String queryKeyWord = null;
     private InventoryViewModel viewModel;
 
     @Before
     public void setUp() throws Exception {
-        viewHolder = new PhysicalInventoryWithLotsInventoryViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_physical_inventory_with_lots, null, false));
+        viewHolder = new PhysicalInventoryWithLotsViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_physical_inventory_with_lots, null, false));
         product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setStrength("10mg").setType("VIA").build();
         viewModel = new InventoryViewModelBuilder(product)
                 .setQuantity("10")
