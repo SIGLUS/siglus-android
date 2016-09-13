@@ -7,8 +7,10 @@ import org.openlmis.core.model.Product;
 
 import java.util.GregorianCalendar;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class LotMovementViewModelTest {
@@ -67,6 +69,6 @@ public class LotMovementViewModelTest {
         viewModel.setLotSoh("20");
 
         LotMovementItem lotMovementItem = viewModel.convertViewToModelAndResetSOH(new Product());
-        assertEquals(10, lotMovementItem.getStockOnHand());
+        assertThat(lotMovementItem.getStockOnHand(), is(10L));
     }
 }

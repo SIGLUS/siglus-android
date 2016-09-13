@@ -191,7 +191,9 @@ public class LotRepositoryTest extends LMISRepositoryUnitTest {
         LotMovementItem lotMovementItem = new LotMovementItemBuilder()
                 .setStockMovementItem(stockMovementItem)
                 .setLot(lot1)
-                .setMovementQuantity(2L).build();
+                .setMovementQuantity(2L)
+                .setStockOnHand(lotOnHand1.getQuantityOnHand() + 2L)
+                .build();
 
         lotRepository.createLotMovementItem(lotMovementItem);
         assertNotNull(lotMovementItem.getId());

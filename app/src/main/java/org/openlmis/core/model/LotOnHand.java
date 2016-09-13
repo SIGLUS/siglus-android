@@ -23,7 +23,7 @@ public class LotOnHand extends BaseModel {
     @DatabaseField
     Long quantityOnHand;
 
-    public LotOnHand(Lot lot, StockCard stockCard, long quantityOnHand) {
+    public LotOnHand(Lot lot, StockCard stockCard, Long quantityOnHand) {
         this.lot = lot;
         this.stockCard = stockCard;
         this.quantityOnHand = quantityOnHand;

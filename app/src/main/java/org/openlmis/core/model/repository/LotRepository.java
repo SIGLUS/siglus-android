@@ -44,24 +44,22 @@ public class LotRepository {
         if (existingLot == null) {
             lot.setCreatedAt(new Date());
             lot.setUpdatedAt(new Date());
-            lotOnHand = new LotOnHand();
-            lotOnHand.setLot(lot);
-            lotOnHand.setStockCard(lotMovementItem.getStockMovementItem().getStockCard());
             createOrUpdateLot(lot);
-            lotOnHand.setQuantityOnHand(lotMovementItem.getMovementQuantity());
-            lotMovementItem.setStockOnHand(lotOnHand.getQuantityOnHand());
 
+            lotOnHand = new LotOnHand(lot, lotMovementItem.getStockMovementItem().getStockCard(), lotMovementItem.getMovementQuantity());
             createOrUpdateLotOnHand(lotOnHand);
+
+            lotMovementItem.setStockOnHand(lotMovementItem.getMovementQuantity());
         } else {
-            lotMovementItem.setLot(existingLot);
             lotOnHand = getLotOnHandByLot(existingLot);
-            if (lotMovementItem.isResettingSOHFromPhysicalAdjustment()) {
+            if (lotMovementItem.getStockOnHand() != null) {
                 lotOnHand.setQuantityOnHand(lotMovementItem.getStockOnHand());
             } else {
                 lotOnHand.setQuantityOnHand(lotOnHand.getQuantityOnHand() + lotMovementItem.getMovementQuantity());
             }
-
             createOrUpdateLotOnHand(lotOnHand);
+
+            lotMovementItem.setLot(existingLot);
             lotMovementItem.setStockOnHand(lotOnHand.getQuantityOnHand());
         }
     }

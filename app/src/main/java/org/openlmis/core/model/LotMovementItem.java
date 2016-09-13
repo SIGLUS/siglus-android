@@ -21,17 +21,15 @@ public class LotMovementItem extends BaseModel {
     Lot lot;
 
     @DatabaseField
-    long stockOnHand;
+    Long stockOnHand;
 
     @Expose
     @SerializedName("quantity")
     @DatabaseField
-    long movementQuantity;
+    Long movementQuantity;
 
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private StockMovementItem stockMovementItem;
-
-    boolean isResettingSOHFromPhysicalAdjustment = false;
 
     public void setStockMovementItemAndUpdateMovementQuantity(StockMovementItem stockMovementItem) {
         this.stockMovementItem = stockMovementItem;

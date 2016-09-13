@@ -109,11 +109,11 @@ public class StockCardAdapterTest {
 
         List<LotMovementItem> lotMovementItems = stockMovementItems.get(0).getLotMovementItemListWrapper();
         assertEquals(2, lotMovementItems.size());
-        assertEquals(300, lotMovementItems.get(0).getMovementQuantity());
-        assertEquals(400, lotMovementItems.get(1).getMovementQuantity());
+        assertThat(lotMovementItems.get(0).getMovementQuantity(), is(300L));
+        assertThat(lotMovementItems.get(1).getMovementQuantity(), is(400L));
 
-        assertEquals("08R01",lotMovementItems.get(0).getLot().getProduct().getCode());
-        assertEquals("08R01",lotMovementItems.get(1).getLot().getProduct().getCode());
+        assertEquals("08R01", lotMovementItems.get(0).getLot().getProduct().getCode());
+        assertEquals("08R01", lotMovementItems.get(1).getLot().getProduct().getCode());
     }
 
     @Test
