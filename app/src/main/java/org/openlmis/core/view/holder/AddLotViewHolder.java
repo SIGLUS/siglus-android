@@ -2,6 +2,7 @@ package org.openlmis.core.view.holder;
 
 import android.app.Activity;
 import android.view.View;
+import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
@@ -23,7 +24,8 @@ public abstract class AddLotViewHolder extends BaseViewHolder {
 
     abstract void setItemViewListener(final InventoryViewModel viewModel);
 
-    protected void showAddNewLotDialog(final InventoryViewModel viewModel) {
+    protected void showAddNewLotDialog(final InventoryViewModel viewModel, final TextView txAddNewLot) {
+        txAddNewLot.setEnabled(false);
         addLotDialogFragment = new AddLotDialogFragment();
         addLotDialogFragment.setListener(new View.OnClickListener() {
             @Override
@@ -34,9 +36,11 @@ public abstract class AddLotViewHolder extends BaseViewHolder {
                             addLotView(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate(), MovementReasonManager.MovementType.PHYSICAL_INVENTORY), viewModel);
                             addLotDialogFragment.dismiss();
                         }
+                        txAddNewLot.setEnabled(true);
                         break;
                     case R.id.btn_cancel:
                         addLotDialogFragment.dismiss();
+                        txAddNewLot.setEnabled(true);
                         break;
                 }
             }

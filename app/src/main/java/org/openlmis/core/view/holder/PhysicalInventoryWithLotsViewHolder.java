@@ -51,7 +51,7 @@ public class PhysicalInventoryWithLotsViewHolder extends AddLotViewHolder {
         txAddNewLot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAddNewLotDialog(viewModel);
+                showAddNewLotDialog(viewModel, txAddNewLot);
             }
         });
     }
