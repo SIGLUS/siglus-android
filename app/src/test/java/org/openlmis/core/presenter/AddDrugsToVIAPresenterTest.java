@@ -8,8 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
+import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.helper.RnrFormHelper;
 import org.openlmis.core.model.repository.ProductProgramRepository;
@@ -22,7 +22,6 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import roboguice.RoboGuice;
 import rx.Observable;
@@ -31,10 +30,7 @@ import rx.observers.TestSubscriber;
 import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
@@ -46,7 +42,6 @@ public class AddDrugsToVIAPresenterTest {
     private ProductProgramRepository productProgramRepository;
     private RnrFormItemRepository rnrFormItemRepository;
     private StockRepository stockRepository;
-    AddDrugsToVIAPresenter.AddDrugsToVIAView view;
     private RnrFormHelper rnrFormHelper;
 
 
@@ -58,8 +53,6 @@ public class AddDrugsToVIAPresenterTest {
         rnrFormItemRepository = mock(RnrFormItemRepository.class);
         stockRepository = mock(StockRepository.class);
         rnrFormHelper = mock(RnrFormHelper.class);
-
-        view = mock(AddDrugsToVIAPresenter.AddDrugsToVIAView.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
@@ -73,7 +66,6 @@ public class AddDrugsToVIAPresenterTest {
             }
         });
         presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(AddDrugsToVIAPresenter.class);
-        presenter.attachView(view);
     }
 
 
@@ -87,50 +79,40 @@ public class AddDrugsToVIAPresenterTest {
 
         when(productRepository.queryActiveProductsInVIAProgramButNotInDraftVIAForm()).thenReturn(newArrayList(product1, product2, product3, product4));
 
-        TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
+        TestSubscriber<Void> subscriber = new TestSubscriber<>();
         presenter.loadActiveProductsNotInVIAForm(newArrayList("P3", "P4")).subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
 
         subscriber.assertNoErrors();
 
-        assertThat(subscriber.getOnNextEvents().get(0).size(), is(2));
-        assertThat(subscriber.getOnNextEvents().get(0).get(0).getProductName(), is("A1"));
-        assertThat(subscriber.getOnNextEvents().get(0).get(1).getProductName(), is("A2"));
+        assertThat(presenter.getInventoryViewModelList().size(), is(2));
+        assertThat(presenter.getInventoryViewModelList().get(0).getProductName(), is("A1"));
+        assertThat(presenter.getInventoryViewModelList().get(1).getProductName(), is("A2"));
     }
 
     @Test
-    public void shouldConvertViewModelsToParcelableList() throws Exception {
+    public void shouldConvertViewModelsToRnrFormList() throws Exception {
         InventoryViewModel inventoryViewModel1 = buildInventoryViewModel("P1", "12");
+        inventoryViewModel1.setChecked(true);
         InventoryViewModel inventoryViewModel2 = buildInventoryViewModel("P2", "34");
+        inventoryViewModel2.setChecked(true);
 
-        when(view.validateInventory()).thenReturn(true);
         when(productRepository.getByCode("P1")).thenReturn(new ProductBuilder().setCode("P1").setIsActive(true).setIsArchived(false).build());
         when(productRepository.getByCode("P2")).thenReturn(new ProductBuilder().setCode("P2").setIsActive(true).setIsArchived(true).build());
 
-        ArrayList<InventoryViewModel> inventoryViewModels = newArrayList(inventoryViewModel1, inventoryViewModel2);
-        TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
-        Observable observable = presenter.convertViewModelsToRnrFormItems(inventoryViewModels);
+        presenter.getInventoryViewModelList().addAll(newArrayList(inventoryViewModel1, inventoryViewModel2));
+        TestSubscriber<ArrayList<RnrFormItem>> subscriber = new TestSubscriber<>();
+        Observable observable = presenter.convertViewModelsToRnrFormItems();
         observable.subscribe(subscriber);
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
 
-        assertThat(presenter.addedRnrFormItemsInVIA.size(), is(2));
-        assertThat(presenter.addedRnrFormItemsInVIA.get(0).getProduct().getCode(), is("P1"));
-        assertThat(presenter.addedRnrFormItemsInVIA.get(0).getRequestAmount(), is(12L));
-        assertThat(presenter.addedRnrFormItemsInVIA.get(1).getProduct().getCode(), is("P2"));
-        assertThat(presenter.addedRnrFormItemsInVIA.get(1).getRequestAmount(), is(34L));
-    }
-
-    @Test
-    public void shouldNotGoToParentPageIfNewlyAddedItemsNotValid() throws LMISException {
-        InventoryViewModel inventoryViewModel1 = buildInventoryViewModel("P1", "12");
-        InventoryViewModel inventoryViewModel2 = buildInventoryViewModel("P2", "34");
-
-        when(view.validateInventory()).thenReturn(false);
-        presenter.convertViewModelsToDataAndPassToParentScreen(newArrayList(inventoryViewModel1, inventoryViewModel2));
-        verify(view, never()).goToParentPage(any(ArrayList.class));
-
+        assertThat(subscriber.getOnNextEvents().get(0).size(), is(2));
+        assertThat(subscriber.getOnNextEvents().get(0).get(0).getProduct().getCode(), is("P1"));
+        assertThat(subscriber.getOnNextEvents().get(0).get(0).getRequestAmount(), is(12L));
+        assertThat(subscriber.getOnNextEvents().get(0).get(1).getProduct().getCode(), is("P2"));
+        assertThat(subscriber.getOnNextEvents().get(0).get(1).getRequestAmount(), is(34L));
     }
 
     @NonNull

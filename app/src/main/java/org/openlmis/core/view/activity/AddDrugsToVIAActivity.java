@@ -15,7 +15,6 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.AddDrugsToVIAAdapter;
-import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,9 +24,10 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.functions.Action1;
 
 @ContentView(R.layout.activity_add_drugs_to_via)
-public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugsToVIAPresenter.AddDrugsToVIAView {
+public class AddDrugsToVIAActivity extends SearchBarActivity {
 
     @InjectView(R.id.btn_complete)
     public View btnComplete;
@@ -40,8 +40,6 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
 
     protected AddDrugsToVIAAdapter mAdapter;
     private Date periodBegin;
-
-    private List<String> existingAdditionalProductList;
 
     @Override
     protected ScreenName getScreenName() {
@@ -58,11 +56,9 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
         super.onCreate(savedInstanceState);
 
         periodBegin = ((Date) getIntent().getSerializableExtra(Constants.PARAM_PERIOD_BEGIN));
-        existingAdditionalProductList = (List<String>) getIntent().getSerializableExtra(Constants.PARAM_ADDED_DRUG_CODES_IN_VIA);
+        List<String> existingAdditionalProductList = (List<String>) getIntent().getSerializableExtra(Constants.PARAM_ADDED_DRUG_CODES_IN_VIA);
 
-        productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new AddDrugsToVIAAdapter(new ArrayList<InventoryViewModel>());
-        productListRecycleView.setAdapter(mAdapter);
+        initRecyclerView();
         loading();
         Subscription subscription = presenter.loadActiveProductsNotInVIAForm(existingAdditionalProductList).subscribe(subscriber);
         subscriptions.add(subscription);
@@ -70,12 +66,18 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
         btnComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.convertViewModelsToDataAndPassToParentScreen(mAdapter.getCheckedProducts());
+                getRnrFormItemsAndPassToViaForm();
             }
         });
     }
 
-    Subscriber<List<InventoryViewModel>> subscriber = new Subscriber<List<InventoryViewModel>>() {
+    private void initRecyclerView() {
+        productListRecycleView.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new AddDrugsToVIAAdapter(presenter.getInventoryViewModelList());
+        productListRecycleView.setAdapter(mAdapter);
+    }
+
+    Subscriber<Void> subscriber = new Subscriber<Void>() {
         @Override
         public void onCompleted() {
             loaded();
@@ -89,13 +91,20 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
         }
 
         @Override
-        public void onNext(List<InventoryViewModel> data) {
-            mAdapter.refreshList(data);
+        public void onNext(Void v) {
+            mAdapter.refresh();
         }
     };
 
-    @Override
-    public boolean validateInventory() {
+    private void getRnrFormItemsAndPassToViaForm() {
+        if (validateInventory()) {
+            loading();
+            Subscription subscription = presenter.convertViewModelsToRnrFormItems().subscribe(nextMainPageAction, errorAction);
+            subscriptions.add(subscription);
+        }
+    }
+
+    private boolean validateInventory() {
         int position = mAdapter.validateAll();
         if (position >= 0) {
             clearSearch();
@@ -106,8 +115,7 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
         return true;
     }
 
-    @Override
-    public void goToParentPage(ArrayList<RnrFormItem> addedRnrFormItemsInVIAs) {
+    private void goToParentPage(ArrayList<RnrFormItem> addedRnrFormItemsInVIAs) {
         Intent returnIntent = new Intent();
         setResult(RESULT_OK, returnIntent);
         returnIntent.putExtra(Constants.PARAM_ADDED_DRUGS_TO_VIA, addedRnrFormItemsInVIAs);
@@ -115,8 +123,7 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
         this.finish();
     }
 
-    @Override
-    public void showErrorMessage(String msg) {
+    private void showErrorMessage(String msg) {
         ToastUtil.show(msg);
     }
 
@@ -129,6 +136,22 @@ public class AddDrugsToVIAActivity extends SearchBarActivity implements AddDrugs
         mAdapter.filter(query);
         return false;
     }
+
+    private Action1<ArrayList<RnrFormItem>> nextMainPageAction = new Action1<ArrayList<RnrFormItem>>() {
+        @Override
+        public void call(ArrayList<RnrFormItem> rnrFormItemList) {
+            loaded();
+            goToParentPage(rnrFormItemList);
+        }
+    };
+
+    private Action1<Throwable> errorAction = new Action1<Throwable>() {
+        @Override
+        public void call(Throwable throwable) {
+            loaded();
+            showErrorMessage(throwable.getMessage());
+        }
+    };
 
     public static Intent getIntentToMe(Context context, Date periodBegin, ArrayList<String> addedDrugsInVIAs) {
         Intent intent = new Intent(context, AddDrugsToVIAActivity.class);

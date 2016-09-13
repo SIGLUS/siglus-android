@@ -16,11 +16,10 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class AddDrugsToVIAPresenter extends Presenter {
@@ -28,24 +27,22 @@ public class AddDrugsToVIAPresenter extends Presenter {
     @Inject
     private ProductRepository productRepository;
 
-    ArrayList<RnrFormItem> addedRnrFormItemsInVIA = new ArrayList<>();
-
-    AddDrugsToVIAView view;
+    @Getter
+    final List<InventoryViewModel> inventoryViewModelList = new ArrayList<>();
 
     public AddDrugsToVIAPresenter() {
     }
 
     @Override
     public void attachView(BaseView v) {
-        view = (AddDrugsToVIAView) v;
     }
 
-    public Observable<List<InventoryViewModel>> loadActiveProductsNotInVIAForm(final List<String> existingProducts) {
-        return Observable.create(new Observable.OnSubscribe<List<InventoryViewModel>>() {
+    public Observable<Void> loadActiveProductsNotInVIAForm(final List<String> existingProducts) {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
-            public void call(final Subscriber<? super List<InventoryViewModel>> subscriber) {
+            public void call(final Subscriber<? super Void> subscriber) {
                 try {
-                    List<InventoryViewModel> productsNotInVIAForm = FluentIterable.from(productRepository.queryActiveProductsInVIAProgramButNotInDraftVIAForm())
+                    inventoryViewModelList.addAll(FluentIterable.from(productRepository.queryActiveProductsInVIAProgramButNotInDraftVIAForm())
                             .filter(new Predicate<Product>() {
                                 @Override
                                 public boolean apply(Product product) {
@@ -57,8 +54,8 @@ public class AddDrugsToVIAPresenter extends Presenter {
                                 public InventoryViewModel apply(Product product) {
                                     return new AddDrugsToViaInventoryViewModel(product);
                                 }
-                            }).toList();
-                    subscriber.onNext(productsNotInVIAForm);
+                            }).toList());
+                    subscriber.onNext(null);
                     subscriber.onCompleted();
                 } catch (LMISException e) {
                     e.reportToFabric();
@@ -68,35 +65,14 @@ public class AddDrugsToVIAPresenter extends Presenter {
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io());
     }
 
-    protected Action1<Object> nextMainPageAction = new Action1<Object>() {
-        @Override
-        public void call(Object o) {
-            view.loaded();
-            view.goToParentPage(addedRnrFormItemsInVIA);
-        }
-    };
-
-    protected Action1<Throwable> errorAction = new Action1<Throwable>() {
-        @Override
-        public void call(Throwable throwable) {
-            view.loaded();
-            view.showErrorMessage(throwable.getMessage());
-        }
-    };
-
-    public void convertViewModelsToDataAndPassToParentScreen(List<InventoryViewModel> checkedViewModels) {
-        if (view.validateInventory()) {
-            view.loading();
-            Subscription subscription = convertViewModelsToRnrFormItems(checkedViewModels).subscribe(nextMainPageAction, errorAction);
-            subscriptions.add(subscription);
-        }
-    }
-
-    protected Observable convertViewModelsToRnrFormItems(final List<InventoryViewModel> inventoryViewModels) {
-        return Observable.create(new Observable.OnSubscribe<Object>() {
-            @Override
-            public void call(Subscriber<? super Object> subscriber) {
-                addedRnrFormItemsInVIA = new ArrayList<>(FluentIterable.from(inventoryViewModels).transform(new Function<InventoryViewModel, RnrFormItem>() {
+    public Observable<ArrayList<RnrFormItem>> convertViewModelsToRnrFormItems() {
+        return Observable.just(new ArrayList<>(
+                FluentIterable.from(inventoryViewModelList).filter(new Predicate<InventoryViewModel>() {
+                    @Override
+                    public boolean apply(InventoryViewModel viewModel) {
+                        return viewModel.isChecked();
+                    }
+                }).transform(new Function<InventoryViewModel, RnrFormItem>() {
                     @Override
                     public RnrFormItem apply(InventoryViewModel inventoryViewModel) {
                         RnrFormItem rnrFormItem = new RnrFormItem();
@@ -109,20 +85,8 @@ public class AddDrugsToVIAPresenter extends Presenter {
                         }
                         return rnrFormItem;
                     }
-                }).toList());
-
-                subscriber.onNext(null);
-                subscriber.onCompleted();
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-    }
-
-    public interface AddDrugsToVIAView extends BaseView {
-
-        boolean validateInventory();
-
-        void goToParentPage(ArrayList<RnrFormItem> addedRnrFormItemsInVIAs);
-
-        void showErrorMessage(String message);
+                }).toList()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

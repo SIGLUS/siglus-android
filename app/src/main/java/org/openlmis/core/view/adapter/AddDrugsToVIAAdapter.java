@@ -6,27 +6,13 @@ import android.view.ViewGroup;
 import org.openlmis.core.R;
 import org.openlmis.core.view.holder.AddDrugsToVIAViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.roboguice.shaded.goole.common.base.Predicate;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class AddDrugsToVIAAdapter extends InventoryListAdapter<AddDrugsToVIAViewHolder> implements FilterableAdapter{
 
-    public AddDrugsToVIAAdapter(ArrayList<InventoryViewModel> inventoryViewModels) {
+    public AddDrugsToVIAAdapter(List<InventoryViewModel> inventoryViewModels) {
         super(inventoryViewModels);
-    }
-
-
-    public List<InventoryViewModel> getCheckedProducts() {
-        return from(data).filter(new Predicate<InventoryViewModel>() {
-            @Override
-            public boolean apply(InventoryViewModel viewModel) {
-                return viewModel.isChecked();
-            }
-        }).toList();
     }
 
     @Override
