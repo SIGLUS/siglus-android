@@ -17,7 +17,6 @@ import org.openlmis.core.view.viewmodel.PhysicalInventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
-import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 import java.util.Comparator;
 import java.util.Date;
@@ -55,11 +54,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
             public InventoryViewModel apply(StockCard stockCard) {
                 InventoryViewModel inventoryViewModel = new PhysicalInventoryViewModel(stockCard);
                 if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-                    try {
-                        setExistingLotViewModels(inventoryViewModel);
-                    } catch (LMISException e) {
-                        e.reportToFabric();
-                    }
+                    setExistingLotViewModels(inventoryViewModel);
                 }
                 return inventoryViewModel;
             }
@@ -81,7 +76,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         for (InventoryViewModel viewModel : inventoryViewModelList) {
             for (DraftInventory draftInventory : draftList) {
                 if (viewModel.getStockCardId() == draftInventory.getStockCard().getId()) {
-                    ((PhysicalInventoryViewModel)viewModel).setDraftInventory(draftInventory);
+                    ((PhysicalInventoryViewModel) viewModel).setDraftInventory(draftInventory);
                     viewModel.initExpiryDates(draftInventory.getExpireDates());
                     viewModel.setQuantity(formatQuantity(draftInventory.getQuantity()));
                     if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
@@ -134,7 +129,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
     }
 
     protected StockMovementItem calculateAdjustment(InventoryViewModel model, StockCard stockCard) {
-        long inventory;
+        Long inventory;
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
             inventory = model.getLotListQuantityTotalAmount();
         } else {
@@ -223,25 +218,20 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         inventoryRepository.save(new Inventory());
     }
 
-    private void setExistingLotViewModels(InventoryViewModel inventoryViewModel) throws LMISException {
-        ImmutableList<LotMovementViewModel> lotMovementViewModels = null;
-        try {
-            lotMovementViewModels = FluentIterable.from(stockRepository.getNonEmptyLotOnHandByStockCard(inventoryViewModel.getStockCard().getId())).transform(new Function<LotOnHand, LotMovementViewModel>() {
-                @Override
-                public LotMovementViewModel apply(LotOnHand lotOnHand) {
-                    return new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
-                            DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
-                            lotOnHand.getQuantityOnHand().toString(), MovementReasonManager.MovementType.RECEIVE);
-                }
-            }).toSortedList(new Comparator<LotMovementViewModel>() {
-                @Override
-                public int compare(LotMovementViewModel lot1, LotMovementViewModel lot2) {
-                    return DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR).compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
-                }
-            });
-        } catch (LMISException e) {
-            e.printStackTrace();
-        }
+    private void setExistingLotViewModels(InventoryViewModel inventoryViewModel) {
+        List<LotMovementViewModel> lotMovementViewModels = FluentIterable.from(inventoryViewModel.getStockCard().getNonEmptyLotOnHandList()).transform(new Function<LotOnHand, LotMovementViewModel>() {
+            @Override
+            public LotMovementViewModel apply(LotOnHand lotOnHand) {
+                return new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
+                        DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
+                        lotOnHand.getQuantityOnHand().toString(), MovementReasonManager.MovementType.RECEIVE);
+            }
+        }).toSortedList(new Comparator<LotMovementViewModel>() {
+            @Override
+            public int compare(LotMovementViewModel lot1, LotMovementViewModel lot2) {
+                return DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR).compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+            }
+        });
         inventoryViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);
     }
 }
