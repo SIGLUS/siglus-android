@@ -129,7 +129,7 @@ public class PhysicalInventoryActivity extends InventoryActivity {
     protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
         public void onSign(String sign) {
             loading();
-            Subscription subscription = presenter.stockMovementObservable(sign).subscribe(onNextMainPageAction, errorAction);
+            Subscription subscription = presenter.doInventory(sign).subscribe(onNextMainPageAction, errorAction);
             subscriptions.add(subscription);
             trackInventoryEvent(TrackerActions.ApproveInventory);
         }

@@ -185,7 +185,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<Object> stockMovementObservable(final String sign) {
+    public Observable<Object> doInventory(final String sign) {
         return Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {

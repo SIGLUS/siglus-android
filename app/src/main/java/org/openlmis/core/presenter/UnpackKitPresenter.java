@@ -122,7 +122,6 @@ public class UnpackKitPresenter extends Presenter {
     }
 
     protected StockCard getStockCardForKit(int kitUnpackQuantity, String documentNumber, String signature) throws LMISException {
-
         Product kit = productRepository.getByCode(kitCode);
         StockCard kitStockCard = stockRepository.queryStockCardByProductId(kit.getId());
 

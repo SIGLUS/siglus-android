@@ -286,7 +286,7 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
         String signature = "signature";
         physicalInventoryPresenter.getInventoryViewModelList().addAll(getStockCardViewModels());
         TestSubscriber<Object> subscriber = new TestSubscriber<>();
-        Subscription subscription = physicalInventoryPresenter.stockMovementObservable(signature).subscribe(subscriber);
+        Subscription subscription = physicalInventoryPresenter.doInventory(signature).subscribe(subscriber);
         subscriber.awaitTerminalEvent();
 
         physicalInventoryPresenter.subscriptions.add(subscription);
@@ -302,7 +302,7 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
         String sign = "test";
         physicalInventoryPresenter.getInventoryViewModelList().clear();
         physicalInventoryPresenter.getInventoryViewModelList().addAll(inventoryViewModels);
-        Observable observable = physicalInventoryPresenter.stockMovementObservable(sign);
+        Observable observable = physicalInventoryPresenter.doInventory(sign);
         observable.subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
@@ -318,7 +318,7 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
         physicalInventoryPresenter.getInventoryViewModelList().clear();
         physicalInventoryPresenter.getInventoryViewModelList().addAll(getStockCardViewModels());
         String sign = "signature";
-        Observable observable = physicalInventoryPresenter.stockMovementObservable(sign);
+        Observable observable = physicalInventoryPresenter.doInventory(sign);
         observable.subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
@@ -336,7 +336,7 @@ public class PhysicalInventoryPresenterTest extends LMISRepositoryUnitTest {
 
         TestSubscriber<List<InventoryViewModel>> subscriber = new TestSubscriber<>();
         String sign = "test";
-        Observable observable = physicalInventoryPresenter.stockMovementObservable(sign);
+        Observable observable = physicalInventoryPresenter.doInventory(sign);
         observable.subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
