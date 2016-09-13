@@ -7,15 +7,21 @@ import android.view.View;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
+import org.openlmis.core.presenter.ParticularPhysicalInventoryPresenter;
 import org.openlmis.core.utils.ToastUtil;
 
+import roboguice.RoboGuice;
 import rx.Subscription;
 import rx.functions.Action1;
 
 public class ParticularPhysicalInventoryActivity extends PhysicalInventoryActivity {
-
     public static Intent getIntentToMe(Context context) {
         return new Intent(context, ParticularPhysicalInventoryActivity.class);
+    }
+
+    @Override
+    protected void initPresenter() {
+        presenter = RoboGuice.getInjector(this).getInstance(ParticularPhysicalInventoryPresenter.class);
     }
 
     @Override

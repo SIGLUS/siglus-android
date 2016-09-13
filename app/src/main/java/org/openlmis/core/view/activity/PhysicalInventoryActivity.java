@@ -10,17 +10,16 @@ import android.view.View;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.presenter.PhysicalInventoryPresenter;
-import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.view.adapter.PhysicalInventoryAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
 import org.openlmis.core.view.widget.SignatureDialog;
 
+import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
 import rx.Subscription;
 
 @ContentView(R.layout.activity_inventory)
 public class PhysicalInventoryActivity extends InventoryActivity {
-    @InjectPresenter(PhysicalInventoryPresenter.class)
     PhysicalInventoryPresenter presenter;
 
     @Override
@@ -29,9 +28,14 @@ public class PhysicalInventoryActivity extends InventoryActivity {
         bottomBtn.setVisibility(View.GONE);
         btnDone.setOnClickListener(completeClickListener);
 
+        initPresenter();
         initRecyclerView();
         Subscription subscription = presenter.loadInventory().subscribe(populateInventorySubscriber);
         subscriptions.add(subscription);
+    }
+
+    protected void initPresenter() {
+        presenter = RoboGuice.getInjector(this).getInstance(PhysicalInventoryPresenter.class);
     }
 
     @Override

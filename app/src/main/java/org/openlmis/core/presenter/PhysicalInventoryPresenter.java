@@ -61,7 +61,7 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
         }).toList();
     }
 
-    private List<StockCard> getValidStockCardsForPhysicalInventory() throws LMISException {
+    protected List<StockCard> getValidStockCardsForPhysicalInventory() throws LMISException {
         return from(stockRepository.list()).filter(new Predicate<StockCard>() {
             @Override
             public boolean apply(StockCard stockCard) {
