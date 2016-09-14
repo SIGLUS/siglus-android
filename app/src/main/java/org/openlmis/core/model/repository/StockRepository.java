@@ -406,7 +406,7 @@ public class StockRepository {
                 stockCard.setStockOnHand(cursor.getLong(cursor.getColumnIndexOrThrow("stockOnHand")));
                 stockCard.setAvgMonthlyConsumption(cursor.getFloat(cursor.getColumnIndexOrThrow("avgMonthlyConsumption")));
                 stockCard.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
-                stockCard.setLotOnHandListWrapper(getNonEmptyLotOnHandByStockCard(stockCard.getId()));
+                stockCard.setLotOnHandListWrapper(getLotOnHandByStockCard(stockCard.getId()));
                 stockCardList.add(stockCard);
             } while (cursor.moveToNext());
         }
@@ -416,15 +416,13 @@ public class StockRepository {
         return stockCardList;
     }
 
-    public List<LotOnHand> getNonEmptyLotOnHandByStockCard(final long stockCardId) throws LMISException {
+    private List<LotOnHand> getLotOnHandByStockCard(final long stockCardId) throws LMISException {
         return dbUtil.withDao(LotOnHand.class, new DbUtil.Operation<LotOnHand, List<LotOnHand>>() {
             @Override
             public List<LotOnHand> operate(Dao<LotOnHand, String> dao) throws SQLException, LMISException {
                 return dao.queryBuilder()
                         .where()
-                        .in("stockCard_id", stockCardId)
-                        .and()
-                        .ne("quantityOnHand", 0L)
+                        .eq("stockCard_id", stockCardId)
                         .query();
             }
         });

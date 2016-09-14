@@ -126,7 +126,7 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
     }
 
     public Date getEarliestLotExpiryDate() {
-        List<LotOnHand> lotOnHandList = FluentIterable.from(getLotOnHandListWrapper()).filter(new Predicate<LotOnHand>() {
+        List<LotOnHand> lotOnHandList = FluentIterable.from(getNonEmptyLotOnHandList()).filter(new Predicate<LotOnHand>() {
             @Override
             public boolean apply(LotOnHand lotOnHand) {
                 return lotOnHand.getQuantityOnHand() > 0;

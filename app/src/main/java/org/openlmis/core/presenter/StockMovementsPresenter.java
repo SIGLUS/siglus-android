@@ -26,10 +26,8 @@ import com.google.inject.Inject;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.KitProduct;
-import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProductRepository;
@@ -55,7 +53,7 @@ import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 public class StockMovementsPresenter extends Presenter {
 
     @Getter
-    List<StockMovementViewModel> stockMovementModelList;
+    final List<StockMovementViewModel> stockMovementModelList = new ArrayList<>();
 
     @Inject
     StockRepository stockRepository;
@@ -74,16 +72,11 @@ public class StockMovementsPresenter extends Presenter {
     private ProductRepository productRepository;
 
     public StockMovementsPresenter() {
-        stockMovementModelList = new ArrayList<>();
     }
 
     @Override
-    public void attachView(BaseView v) throws ViewNotMatchException {
-        if (v instanceof StockMovementView) {
-            this.view = (StockMovementView) v;
-        } else {
-            throw new ViewNotMatchException("Need StockMovementView");
-        }
+    public void attachView(BaseView v) {
+        this.view = (StockMovementView) v;
     }
 
     public void setStockCard(long stockCardId) throws LMISException {
@@ -206,10 +199,6 @@ public class StockMovementsPresenter extends Presenter {
     public void archiveStockCard() {
         stockCard.getProduct().setArchived(true);
         stockRepository.updateProductOfStockCard(stockCard.getProduct());
-    }
-
-    public List<LotOnHand> getLotOnHandByStockCard(StockCard stockCard) throws LMISException {
-        return stockRepository.getNonEmptyLotOnHandByStockCard(stockCard.getId());
     }
 
     public interface StockMovementView extends BaseView {

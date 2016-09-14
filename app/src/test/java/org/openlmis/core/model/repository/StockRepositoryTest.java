@@ -42,7 +42,6 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
-import org.openlmis.core.model.builder.LotBuilder;
 import org.openlmis.core.model.builder.LotMovementItemBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.ProductProgramBuilder;
@@ -456,36 +455,6 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         //then
         List<StockCard> stockCardsBeforeTimeLine = stockRepository.listEmergencyStockCards();
         assertThat(stockCardsBeforeTimeLine.size(), is(1));
-    }
-
-    @Test
-    public void shouldAddLotMovementsAndGetNonEmptyLotOnHandByStockCardId() throws Exception {
-        Product product = ProductBuilder.create().setProductId(1L).setCode("p1").setIsActive(true).setIsKit(false).build();
-        StockCard stockCard = createNewStockCard("code", null, product, true);
-
-        StockMovementItem stockMovementItem1 = new StockMovementItemBuilder().withMovementDate("2016-10-10").withMovementType(RECEIVE).build();
-        StockMovementItem stockMovementItem2 = new StockMovementItemBuilder().withMovementDate("2016-11-10").withMovementType(RECEIVE).build();
-        Lot lot1 = new LotBuilder().setLotNumber("A111").setProduct(stockCard.getProduct()).build();
-        Lot lot2 = new LotBuilder().setLotNumber("B111").setProduct(stockCard.getProduct()).build();
-        Lot lot3 = new LotBuilder().setLotNumber("C111").setProduct(stockCard.getProduct()).build();
-        LotMovementItem lotMovementItem1 = new LotMovementItemBuilder().setStockMovementItem(stockMovementItem1).setLot(lot1).setMovementQuantity(100L).build();
-        LotMovementItem lotMovementItem2 = new LotMovementItemBuilder().setStockMovementItem(stockMovementItem2).setLot(lot2).setMovementQuantity(200L).build();
-        LotMovementItem lotMovementItem3 = new LotMovementItemBuilder().setStockMovementItem(stockMovementItem2).setLot(lot3).setMovementQuantity(0L).build();
-        LotMovementItem lotMovementItem4 = new LotMovementItemBuilder().setStockMovementItem(stockMovementItem2).setLot(lot1).setMovementQuantity(400L).setStockOnHand(500L).build();
-        stockMovementItem1.setLotMovementItemListWrapper(newArrayList(lotMovementItem1));
-        stockMovementItem2.setLotMovementItemListWrapper(newArrayList(lotMovementItem2, lotMovementItem3, lotMovementItem4));
-        stockMovementItem1.setStockCard(stockCard);
-        stockMovementItem2.setStockCard(stockCard);
-        stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem1);
-        stockRepository.addStockMovementAndUpdateStockCard(stockMovementItem2);
-        stockRepository.refresh(stockCard);
-
-        List<LotOnHand> lotOnHandList = stockRepository.getNonEmptyLotOnHandByStockCard(stockCard.getId());
-        assertThat(lotOnHandList.size(), is(2));
-        assertThat(lotOnHandList.get(0).getLot().getLotNumber(), is("A111"));
-        assertThat(lotOnHandList.get(0).getQuantityOnHand(), is(500L));
-        assertThat(lotOnHandList.get(1).getLot().getLotNumber(), is("B111"));
-        assertThat(lotOnHandList.get(1).getQuantityOnHand(), is(200L));
     }
 
     private void saveTestProduct() throws LMISException {

@@ -39,9 +39,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockMovementsPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
@@ -198,17 +196,9 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
 
     @Override
     public void updateExpiryDateViewGroup() {
-        StockCard stockCard = presenter.getStockCard();
         if (!isKit) {
-            lotInfoGroup.setVisibility(View.VISIBLE);
-            List<LotOnHand> lotOnHandList = null;
-            try {
-                lotOnHandList = presenter.getLotOnHandByStockCard(stockCard);
-            } catch (LMISException e) {
-                e.reportToFabric();
-            }
-            lotInfoGroup.initLotInfoGroup(lotOnHandList);
-            lotInfoGroup.setVisibility(stockCard.getStockOnHand() == 0 ? View.INVISIBLE : View.VISIBLE);
+            lotInfoGroup.setVisibility(presenter.getStockCard().getStockOnHand() == 0 ? View.INVISIBLE : View.VISIBLE);
+            lotInfoGroup.initLotInfoGroup(presenter.getStockCard().getNonEmptyLotOnHandList());
         }
     }
 

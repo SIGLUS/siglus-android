@@ -30,12 +30,9 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.KitProduct;
-import org.openlmis.core.model.Lot;
-import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
-import org.openlmis.core.model.builder.LotBuilder;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.model.repository.ProductRepository;
@@ -54,7 +51,6 @@ import java.util.List;
 import roboguice.RoboGuice;
 import rx.observers.TestSubscriber;
 
-import static junit.framework.Assert.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.Lists.newArrayList;
 import static org.mockito.Matchers.anyInt;
@@ -315,20 +311,6 @@ public class StockMovementsPresenterTest extends LMISRepositoryUnitTest {
         //then
         verify(sharedPreferenceMgr).setIsNeedShowProductsUpdateBanner(true, "name");
         verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(item);
-    }
-
-    @Test
-    public void shouldGetLotOnHandForStockCard() throws LMISException {
-        StockCard stockCard = new StockCardBuilder().setStockCardId(1L).setProduct(new ProductBuilder().setProductId(1L).build()).build();
-
-        Lot lot = new LotBuilder().setLotNumber("abc").build();
-        LotOnHand lotOnHand = new LotOnHand();
-        lotOnHand.setStockCard(stockCard);
-        lotOnHand.setLot(lot);
-
-        when(stockRepositoryMock.getNonEmptyLotOnHandByStockCard(1L)).thenReturn(newArrayList(lotOnHand));
-
-        assertEquals(1, stockMovementsPresenter.getLotOnHandByStockCard(stockCard).size());
     }
 
     public class MyTestModule extends AbstractModule {

@@ -24,7 +24,6 @@ import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
-import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -237,25 +236,20 @@ public class UnpackKitPresenter extends Presenter {
 
     private void setExistingLotViewModels(InventoryViewModel inventoryViewModel) throws LMISException {
         StockCard stockCard = stockRepository.queryStockCardByProductId(inventoryViewModel.getProductId());
-            if (stockCard != null) {
-            ImmutableList<LotMovementViewModel> lotMovementViewModels = null;
-            try {
-                lotMovementViewModels = FluentIterable.from(stockRepository.getNonEmptyLotOnHandByStockCard(stockCard.getId())).transform(new Function<LotOnHand, LotMovementViewModel>() {
-                    @Override
-                    public LotMovementViewModel apply(LotOnHand lotOnHand) {
-                        return new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
-                                DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
-                                lotOnHand.getQuantityOnHand().toString(), MovementReasonManager.MovementType.RECEIVE);
-                    }
-                }).toSortedList(new Comparator<LotMovementViewModel>() {
-                    @Override
-                    public int compare(LotMovementViewModel lot1, LotMovementViewModel lot2) {
-                        return DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR).compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
-                    }
-                });
-            } catch (LMISException e) {
-                e.printStackTrace();
-            }
+        if (stockCard != null) {
+            List<LotMovementViewModel> lotMovementViewModels = FluentIterable.from(stockCard.getNonEmptyLotOnHandList()).transform(new Function<LotOnHand, LotMovementViewModel>() {
+                @Override
+                public LotMovementViewModel apply(LotOnHand lotOnHand) {
+                    return new LotMovementViewModel(lotOnHand.getLot().getLotNumber(),
+                            DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
+                            lotOnHand.getQuantityOnHand().toString(), MovementReasonManager.MovementType.RECEIVE);
+                }
+            }).toSortedList(new Comparator<LotMovementViewModel>() {
+                @Override
+                public int compare(LotMovementViewModel lot1, LotMovementViewModel lot2) {
+                    return DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR).compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+                }
+            });
             inventoryViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);
         }
     }
