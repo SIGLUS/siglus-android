@@ -15,8 +15,10 @@ import rx.Subscription;
 import rx.functions.Action1;
 
 public class ParticularPhysicalInventoryActivity extends PhysicalInventoryActivity {
-    public static Intent getIntentToMe(Context context) {
-        return new Intent(context, ParticularPhysicalInventoryActivity.class);
+    @Override
+    public void initUI() {
+        super.initUI();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     @Override
@@ -56,5 +58,9 @@ public class ParticularPhysicalInventoryActivity extends PhysicalInventoryActivi
         SharedPreferenceMgr.getInstance().setHasLotInfo(true);
         startActivity(HomeActivity.getIntentToMe(this));
         this.finish();
+    }
+
+    public static Intent getIntentToMe(Context context) {
+        return new Intent(context, ParticularPhysicalInventoryActivity.class);
     }
 }
