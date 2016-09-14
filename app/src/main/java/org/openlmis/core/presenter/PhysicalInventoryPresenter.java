@@ -84,6 +84,17 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
                     }
                 }
             }
+
+            // This auto populate is added for tester
+            if (LMISApp.getInstance().isQAEnabled()) {
+                populateLotMovementModelWithExistingSoh(viewModel);
+            }
+        }
+    }
+
+    private void populateLotMovementModelWithExistingSoh(InventoryViewModel viewModel) {
+        for (LotMovementViewModel lotMovementViewModel : viewModel.getExistingLotMovementViewModelList()) {
+            lotMovementViewModel.setQuantity(lotMovementViewModel.getLotSoh());
         }
     }
 

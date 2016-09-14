@@ -256,9 +256,9 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
                 }
                 if (++clickTimes == developerTimes) {
                     SharedPreferenceMgr.getInstance().setEnableQaDebug(true);
-                    ToastUtil.show("Woohoo! You are Cong now, please test me");
+                    ToastUtil.show("Woohoo! You are Cong or Wei now, please test me");
                 } else if (clickTimes > 3) {
-                    ToastUtil.show("Tap it " + (developerTimes - clickTimes) + " times to be Cong");
+                    ToastUtil.show("Tap it " + (developerTimes - clickTimes) + " times to be Cong or Wei");
                 }
             }
         });
