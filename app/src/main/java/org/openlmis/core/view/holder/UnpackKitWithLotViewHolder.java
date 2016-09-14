@@ -16,7 +16,7 @@ import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
 
 import roboguice.inject.InjectView;
 
-public class UnpackKitViewHolderNew extends AddLotViewHolder {
+public class UnpackKitWithLotViewHolder extends InventoryWithLotViewHolder {
     @InjectView(R.id.tv_kit_expected_quantity)
     TextView tvKitExpectedQuantity;
 
@@ -35,7 +35,7 @@ public class UnpackKitViewHolderNew extends AddLotViewHolder {
     @InjectView(R.id.lot_list_container)
     private LinearLayout lotListContainer;
 
-    public UnpackKitViewHolderNew(View itemView) {
+    public UnpackKitWithLotViewHolder(View itemView) {
         super(itemView);
     }
 

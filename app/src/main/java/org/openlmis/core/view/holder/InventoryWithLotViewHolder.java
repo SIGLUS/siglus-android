@@ -20,7 +20,7 @@ import java.util.List;
 
 import roboguice.inject.InjectView;
 
-public abstract class AddLotViewHolder extends BaseViewHolder {
+public abstract class InventoryWithLotViewHolder extends BaseViewHolder {
     @InjectView(R.id.product_name)
     TextView tvProductName;
 
@@ -47,7 +47,7 @@ public abstract class AddLotViewHolder extends BaseViewHolder {
         initLotListRecyclerView(viewModel);
     }
 
-    public AddLotViewHolder(View itemView) {
+    public InventoryWithLotViewHolder(View itemView) {
         super(itemView);
     }
 

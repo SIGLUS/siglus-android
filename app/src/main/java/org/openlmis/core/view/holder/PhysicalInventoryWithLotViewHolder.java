@@ -5,14 +5,14 @@ import android.view.View;
 import org.openlmis.core.utils.TextStyleUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 
-public class PhysicalInventoryWithLotsViewHolder extends AddLotViewHolder {
-    public PhysicalInventoryWithLotsViewHolder(View itemView) {
+public class PhysicalInventoryWithLotViewHolder extends InventoryWithLotViewHolder {
+    public PhysicalInventoryWithLotViewHolder(View itemView) {
         super(itemView);
     }
 
     public void populate(final InventoryViewModel viewModel, String queryKeyWord) {
-        highlightQueryKeyWord(viewModel, queryKeyWord);
         super.populate(viewModel);
+        highlightQueryKeyWord(viewModel, queryKeyWord);
     }
 
     private void highlightQueryKeyWord(InventoryViewModel inventoryViewModel, String queryKeyWord) {

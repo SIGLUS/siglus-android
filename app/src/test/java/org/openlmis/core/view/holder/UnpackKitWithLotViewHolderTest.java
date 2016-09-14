@@ -21,13 +21,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
 @RunWith(LMISTestRunner.class)
-public class UnpackKitViewHolderNewTest {
-    private UnpackKitViewHolderNew viewHolder;
+public class UnpackKitWithLotViewHolderTest {
+    private UnpackKitWithLotViewHolder viewHolder;
     private Product product;
 
     @Before
     public void setUp() throws Exception {
-        viewHolder = new UnpackKitViewHolderNew(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_lots_for_unpackit, null, false));
+        viewHolder = new UnpackKitWithLotViewHolder(LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_lots_for_unpackit, null, false));
         product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setStrength("10mg").setType("VIA").build();
     }
 
