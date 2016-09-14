@@ -52,7 +52,7 @@ public class LotRepository {
             lotMovementItem.setStockOnHand(lotMovementItem.getMovementQuantity());
         } else {
             lotOnHand = getLotOnHandByLot(existingLot);
-            if (lotMovementItem.getStockOnHand() != null) {
+            if (lotMovementItem.isStockOnHandCalculated()) {
                 lotOnHand.setQuantityOnHand(lotMovementItem.getStockOnHand());
             } else {
                 lotOnHand.setQuantityOnHand(lotOnHand.getQuantityOnHand() + lotMovementItem.getMovementQuantity());

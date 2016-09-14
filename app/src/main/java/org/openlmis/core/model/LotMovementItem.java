@@ -42,4 +42,8 @@ public class LotMovementItem extends BaseModel {
             movementQuantity *= -1;
         }
     }
+
+    public boolean isStockOnHandCalculated() {
+        return stockOnHand != null;
+    }
 }
