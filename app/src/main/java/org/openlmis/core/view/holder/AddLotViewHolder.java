@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.NestedRecyclerViewLinearLayoutManager;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
@@ -35,16 +36,41 @@ public abstract class AddLotViewHolder extends BaseViewHolder {
     @InjectView(R.id.rv_existing_lot_list)
     RecyclerView existingLotListView;
 
-    LotMovementAdapter lotMovementAdapter;
+    LotMovementAdapter newLotMovementAdapter;
     LotMovementAdapter existingLotMovementAdapter;
 
     private AddLotDialogFragment addLotDialogFragment;
+
+    public void populate(InventoryViewModel viewModel) {
+        setItemViewListener(viewModel);
+        initExistingLotListView(viewModel);
+        initLotListRecyclerView(viewModel);
+    }
 
     public AddLotViewHolder(View itemView) {
         super(itemView);
     }
 
-    abstract void setItemViewListener(final InventoryViewModel viewModel);
+    protected void setItemViewListener(final InventoryViewModel viewModel) {
+        txAddNewLot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddNewLotDialog(viewModel, txAddNewLot);
+            }
+        });
+    }
+
+    protected void initExistingLotListView(final InventoryViewModel viewModel) {
+        existingLotMovementAdapter = new LotMovementAdapter(viewModel.getExistingLotMovementViewModelList());
+        existingLotListView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(context));
+        existingLotListView.setAdapter(existingLotMovementAdapter);
+    }
+
+    protected void initLotListRecyclerView(final InventoryViewModel viewModel) {
+        newLotMovementAdapter = new LotMovementAdapter(viewModel.getLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
+        newLotListView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(context));
+        newLotListView.setAdapter(newLotMovementAdapter);
+    }
 
     protected void showAddNewLotDialog(final InventoryViewModel viewModel, final TextView txAddNewLot) {
         txAddNewLot.setEnabled(false);
@@ -72,12 +98,10 @@ public abstract class AddLotViewHolder extends BaseViewHolder {
 
     protected void addLotView(LotMovementViewModel lotMovementViewModel, InventoryViewModel viewModel) {
         viewModel.addLotMovementViewModel(lotMovementViewModel);
-        refreshLotList();
+        newLotMovementAdapter.notifyDataSetChanged();
     }
 
-    abstract void refreshLotList();
-
-    protected List<String> getLotNumbers(InventoryViewModel viewModel) {
+    private List<String> getLotNumbers(InventoryViewModel viewModel) {
         final List<String> existingLots = new ArrayList<>();
         existingLots.addAll(FluentIterable.from(viewModel.getLotMovementViewModelList()).transform(new Function<LotMovementViewModel, String>() {
             @Override
@@ -93,8 +117,4 @@ public abstract class AddLotViewHolder extends BaseViewHolder {
         }).toList());
         return existingLots;
     }
-
-    abstract void initExistingLotListView(final InventoryViewModel viewModel);
-
-    abstract void initLotListRecyclerView(final InventoryViewModel viewModel);
 }
