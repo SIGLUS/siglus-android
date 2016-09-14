@@ -15,9 +15,9 @@ And(/^I enter quantity for all products in kit$/) do
 end
 
 And(/^I enter quantity for lots of all products in kit$/) do
-        lot_list = query("android.support.v7.widget.RecyclerView id:'rv_add_lot'")
+        lot_list = query("android.support.v7.widget.RecyclerView id:'rv_new_lot_list'")
         while lot_list.empty?
-            existing_lot = query("android.support.v7.widget.RecyclerView id:'existing_lot_list'")
+            existing_lot = query("android.support.v7.widget.RecyclerView id:'rv_existing_lot_list'")
 
             if !existing_lot.empty?
                 steps %Q{
@@ -34,7 +34,7 @@ And(/^I enter quantity for lots of all products in kit$/) do
                scroll('recyclerView', :down)
             end
 
-            if !query("android.support.v7.widget.RecyclerView id:'rv_add_lot'").empty?
+            if !query("android.support.v7.widget.RecyclerView id:'rv_new_lot_list'").empty?
                 scroll('recyclerView', :down)
             end
 
