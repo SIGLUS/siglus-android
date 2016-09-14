@@ -1,6 +1,5 @@
 package org.openlmis.core.view.holder;
 
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,26 +33,8 @@ public class UnpackKitViewHolderNew extends AddLotViewHolder {
     @InjectView(R.id.vg_soh_pop)
     ViewGroup vg_soh_pop;
 
-    @InjectView(R.id.product_name)
-    TextView tvProductName;
-
-    @InjectView(R.id.product_unit)
-    TextView tvProductUnit;
-
-    @InjectView(R.id.tx_add_new_lot)
-    private TextView txAddNewLot;
-
-    @InjectView(R.id.rv_add_lot)
-    private RecyclerView lotListRecyclerView;
-
-    @InjectView(R.id.existing_lot_list)
-    private RecyclerView existingLotListView;
-
     @InjectView(R.id.lot_list_container)
     private LinearLayout lotListContainer;
-
-    private LotMovementAdapter lotMovementAdapter;
-    private LotMovementAdapter existingLotMovementAdapter;
 
     public UnpackKitViewHolderNew(View itemView) {
         super(itemView);

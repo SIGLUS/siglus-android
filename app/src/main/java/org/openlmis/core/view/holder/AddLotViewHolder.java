@@ -1,11 +1,13 @@
 package org.openlmis.core.view.holder;
 
 import android.app.Activity;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.widget.AddLotDialogFragment;
@@ -15,7 +17,27 @@ import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import java.util.ArrayList;
 import java.util.List;
 
+import roboguice.inject.InjectView;
+
 public abstract class AddLotViewHolder extends BaseViewHolder {
+    @InjectView(R.id.product_name)
+    TextView tvProductName;
+
+    @InjectView(R.id.product_unit)
+    TextView tvProductUnit;
+
+    @InjectView(R.id.tx_add_new_lot)
+    TextView txAddNewLot;
+
+    @InjectView(R.id.rv_add_lot)
+    RecyclerView lotListRecyclerView;
+
+    @InjectView(R.id.existing_lot_list)
+    RecyclerView existingLotListView;
+
+    LotMovementAdapter lotMovementAdapter;
+    LotMovementAdapter existingLotMovementAdapter;
+
     private AddLotDialogFragment addLotDialogFragment;
 
     public AddLotViewHolder(View itemView) {
