@@ -41,8 +41,8 @@ public class PhysicalInventoryWithLotsViewHolder extends AddLotViewHolder {
     @Override
     protected void initLotListRecyclerView(final InventoryViewModel viewModel) {
         lotMovementAdapter = new LotMovementAdapter(viewModel.getLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
-        lotListRecyclerView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(context));
-        lotListRecyclerView.setAdapter(lotMovementAdapter);
+        newLotListView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(context));
+        newLotListView.setAdapter(lotMovementAdapter);
     }
 
     @Override

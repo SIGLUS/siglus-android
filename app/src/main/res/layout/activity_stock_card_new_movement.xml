@@ -144,7 +144,7 @@
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/existing_lot_list"
+            android:id="@+id/rv_existing_lot_list"
             android:layout_marginLeft="@dimen/margin_normal"
             android:layout_marginRight="@dimen/margin_normal"
             android:layout_width="match_parent"

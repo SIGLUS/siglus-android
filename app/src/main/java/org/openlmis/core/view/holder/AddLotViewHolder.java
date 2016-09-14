@@ -29,10 +29,10 @@ public abstract class AddLotViewHolder extends BaseViewHolder {
     @InjectView(R.id.tx_add_new_lot)
     TextView txAddNewLot;
 
-    @InjectView(R.id.rv_add_lot)
-    RecyclerView lotListRecyclerView;
+    @InjectView(R.id.rv_new_lot_list)
+    RecyclerView newLotListView;
 
-    @InjectView(R.id.existing_lot_list)
+    @InjectView(R.id.rv_existing_lot_list)
     RecyclerView existingLotListView;
 
     LotMovementAdapter lotMovementAdapter;

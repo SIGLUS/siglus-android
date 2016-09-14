@@ -174,8 +174,8 @@ public class UnpackKitViewHolderNew extends AddLotViewHolder {
                 updatePop(viewModel);
             }
         });
-        lotListRecyclerView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(context));
-        lotListRecyclerView.setAdapter(lotMovementAdapter);
+        newLotListView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(context));
+        newLotListView.setAdapter(lotMovementAdapter);
     }
 
     @Override
