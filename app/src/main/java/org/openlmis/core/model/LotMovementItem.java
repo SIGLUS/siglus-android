@@ -31,6 +31,8 @@ public class LotMovementItem extends BaseModel {
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private StockMovementItem stockMovementItem;
 
+    private boolean isStockOnHandReset;
+
     public void setStockMovementItemAndUpdateMovementQuantity(StockMovementItem stockMovementItem) {
         this.stockMovementItem = stockMovementItem;
         updateMovementQuantity();
@@ -41,9 +43,5 @@ public class LotMovementItem extends BaseModel {
                 || stockMovementItem.getMovementType().equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST)) {
             movementQuantity *= -1;
         }
-    }
-
-    public boolean isStockOnHandCalculated() {
-        return stockOnHand != null;
     }
 }

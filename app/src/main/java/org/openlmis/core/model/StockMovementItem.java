@@ -173,6 +173,7 @@ public class StockMovementItem extends BaseModel {
             public LotMovementItem apply(LotMovementViewModel lotMovementViewModel) {
                 LotMovementItem lotItem = lotMovementViewModel.convertViewToModelAndResetSOH(getStockCard().getProduct());
                 lotItem.setStockMovementItem(stockMovementItem);
+                lotItem.setStockOnHandReset(true);
                 return lotItem;
             }
         }).toList();
