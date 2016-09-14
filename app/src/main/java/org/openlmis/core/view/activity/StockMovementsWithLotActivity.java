@@ -42,7 +42,7 @@ import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.presenter.StockMovementPresenter;
+import org.openlmis.core.presenter.StockMovementsPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
@@ -59,7 +59,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_stock_movement_new)
-public class StockMovementsWithLotActivity extends BaseActivity implements StockMovementPresenter.StockMovementView, View.OnClickListener {
+public class StockMovementsWithLotActivity extends BaseActivity implements StockMovementsPresenter.StockMovementView, View.OnClickListener {
 
     @InjectView(R.id.list_stock_movement)
     ListView stockMovementList;
@@ -85,8 +85,8 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
     @InjectView(R.id.btn_unpack)
     Button btnUnpack;
 
-    @InjectPresenter(StockMovementPresenter.class)
-    StockMovementPresenter presenter;
+    @InjectPresenter(StockMovementsPresenter.class)
+    StockMovementsPresenter presenter;
 
     @Inject
     LayoutInflater layoutInflater;
@@ -146,16 +146,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
 
         showBanner();
 
-        stockMovementAdapter = new StockMovementAdapter(presenter.getStockMovementModelList(), presenter.getStockCard());
-
-        View headerView;
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
-            headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
-        } else {
-            headerView = layoutInflater.inflate(R.layout.item_old_stock_movement_header, stockMovementList, false);
-        }
-        stockMovementList.addHeaderView(headerView);
-        stockMovementList.setAdapter(stockMovementAdapter);
+        initRecyclerView();
 
         btnUnpack.setOnClickListener(this);
         btnNewMovement.setOnClickListener(this);
@@ -168,6 +159,18 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
             tvLabelStockCardInfo.setText(getString(R.string.label_lot_info));
         }
         updateExpiryDateViewGroup();
+    }
+
+    private void initRecyclerView() {
+        View headerView;
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
+            headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
+        } else {
+            headerView = layoutInflater.inflate(R.layout.item_old_stock_movement_header, stockMovementList, false);
+        }
+        stockMovementList.addHeaderView(headerView);
+        stockMovementAdapter = new StockMovementAdapter(presenter.getStockMovementModelList(), presenter.getStockCard());
+        stockMovementList.setAdapter(stockMovementAdapter);
     }
 
     private void showBanner() {

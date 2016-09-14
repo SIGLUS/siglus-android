@@ -43,7 +43,7 @@ import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.presenter.StockMovementPresenter;
+import org.openlmis.core.presenter.StockMovementsPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
@@ -58,7 +58,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_stock_movement)
-public class StockMovementsActivity extends BaseActivity implements StockMovementPresenter.StockMovementView, View.OnClickListener {
+public class StockMovementsActivity extends BaseActivity implements StockMovementsPresenter.StockMovementView, View.OnClickListener {
 
     @InjectView(R.id.list_stock_movement)
     ListView stockMovementList;
@@ -87,8 +87,8 @@ public class StockMovementsActivity extends BaseActivity implements StockMovemen
     @InjectView(R.id.btn_unpack)
     Button btnUnpack;
 
-    @InjectPresenter(StockMovementPresenter.class)
-    StockMovementPresenter presenter;
+    @InjectPresenter(StockMovementsPresenter.class)
+    StockMovementsPresenter presenter;
 
     @Inject
     LayoutInflater layoutInflater;

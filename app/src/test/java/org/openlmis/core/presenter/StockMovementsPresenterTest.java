@@ -66,13 +66,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LMISTestRunner.class)
-public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
+public class StockMovementsPresenterTest extends LMISRepositoryUnitTest {
 
-    private StockMovementPresenter stockMovementPresenter;
+    private StockMovementsPresenter stockMovementsPresenter;
 
     StockRepository stockRepositoryMock;
     ProductRepository productRepository;
-    StockMovementPresenter.StockMovementView view;
+    StockMovementsPresenter.StockMovementView view;
     StockService stockServiceMock;
 
     SharedPreferenceMgr sharedPreferenceMgr;
@@ -84,13 +84,13 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         sharedPreferenceMgr = mock(SharedPreferenceMgr.class);
         stockServiceMock = mock(StockService.class);
 
-        view = mock(StockMovementPresenter.StockMovementView.class);
+        view = mock(StockMovementsPresenter.StockMovementView.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
-        stockMovementPresenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockMovementPresenter.class);
-        stockMovementPresenter.attachView(view);
-        stockMovementPresenter.stockCard = StockCardBuilder.buildStockCard();
-        stockMovementPresenter.sharedPreferenceMgr = sharedPreferenceMgr;
+        stockMovementsPresenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(StockMovementsPresenter.class);
+        stockMovementsPresenter.attachView(view);
+        stockMovementsPresenter.stockCard = StockCardBuilder.buildStockCard();
+        stockMovementsPresenter.sharedPreferenceMgr = sharedPreferenceMgr;
     }
 
     @Test
@@ -98,7 +98,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         StockMovementViewModel stockMovementViewModelMock = mock(StockMovementViewModel.class);
         when(stockMovementViewModelMock.validateEmpty()).thenReturn(false);
 
-        stockMovementPresenter.submitStockMovement(stockMovementViewModelMock);
+        stockMovementsPresenter.submitStockMovement(stockMovementViewModelMock);
         verify(stockMovementViewModelMock, times(2)).validateEmpty();
         verify(view).showErrorAlert(anyString());
     }
@@ -108,7 +108,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         StockCard stockCard = new StockCard();
         stockCard.setProduct(new Product());
         when(stockRepositoryMock.queryStockCardById(123)).thenReturn(stockCard);
-        stockMovementPresenter.setStockCard(123);
+        stockMovementsPresenter.setStockCard(123);
 
         StockMovementItem item = new StockMovementItem();
 
@@ -118,7 +118,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         when(viewModel.validateQuantitiesNotZero()).thenReturn(true);
         when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
 
-        stockMovementPresenter.submitStockMovement(viewModel);
+        stockMovementsPresenter.submitStockMovement(viewModel);
 
         verify(view).showSignDialog();
     }
@@ -135,14 +135,14 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
         when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
         when(stockRepositoryMock.queryStockCardById(123)).thenReturn(stockCard);
-        stockMovementPresenter.setStockCard(123);
+        stockMovementsPresenter.setStockCard(123);
         reset(view);
 
         //when
-        stockMovementPresenter.saveAndRefresh(viewModel);
+        stockMovementsPresenter.saveAndRefresh(viewModel);
 
         //then
-        assertThat(stockMovementPresenter.getStockCard().getStockOnHand()).isEqualTo(item.getStockOnHand());
+        assertThat(stockMovementsPresenter.getStockCard().getStockOnHand()).isEqualTo(item.getStockOnHand());
         assertThat(stockCard.getExpireDates()).isEqualTo("");
         verify(stockRepositoryMock).addStockMovementAndUpdateStockCard(item);
         verify(view).updateArchiveMenus(true);
@@ -160,8 +160,8 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
 
         //when
-        stockMovementPresenter.stockCard = stockCard;
-        stockMovementPresenter.saveAndRefresh(viewModel);
+        stockMovementsPresenter.stockCard = stockCard;
+        stockMovementsPresenter.saveAndRefresh(viewModel);
 
         //then
         verify(view).updateArchiveMenus(false);
@@ -178,8 +178,8 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
 
         //when
-        stockMovementPresenter.stockCard = stockCard;
-        stockMovementPresenter.saveAndRefresh(viewModel);
+        stockMovementsPresenter.stockCard = stockCard;
+        stockMovementsPresenter.saveAndRefresh(viewModel);
 
         //then
         verify(view).updateUnpackKitMenu(false);
@@ -201,8 +201,8 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         when(productRepository.queryKitProductByKitCode(kit.getCode())).thenReturn(new ArrayList<KitProduct>());
 
         //when
-        stockMovementPresenter.stockCard = stockCard;
-        stockMovementPresenter.saveAndRefresh(viewModel);
+        stockMovementsPresenter.stockCard = stockCard;
+        stockMovementsPresenter.saveAndRefresh(viewModel);
 
         //then
         verify(view).updateUnpackKitMenu(false);
@@ -219,7 +219,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         when(productRepository.queryKitProductByKitCode(kit.getCode())).thenReturn(Arrays.asList(new KitProduct()));
 
         //when
-        stockMovementPresenter.setStockCard(200L);
+        stockMovementsPresenter.setStockCard(200L);
 
         //then
         verify(view).updateUnpackKitMenu(true);
@@ -237,7 +237,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         when(productRepository.queryKitProductByKitCode(kit.getCode())).thenReturn(new ArrayList<KitProduct>());
 
         //when
-        stockMovementPresenter.setStockCard(200L);
+        stockMovementsPresenter.setStockCard(200L);
 
         //then
         verify(view).updateUnpackKitMenu(false);
@@ -261,7 +261,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         when(stockRepositoryMock.listLastFive(anyInt())).thenReturn(new ArrayList<StockMovementItem>());
 
         TestSubscriber<List<StockMovementViewModel>> subscriber = new TestSubscriber<>();
-        stockMovementPresenter.loadStockMovementViewModelsObserver().subscribe(subscriber);
+        stockMovementsPresenter.loadStockMovementViewModelsObserver().subscribe(subscriber);
 
         subscriber.awaitTerminalEvent();
         subscriber.assertNoErrors();
@@ -273,9 +273,9 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         Product product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setStrength("10mg").setType("VIA").build();
         InventoryViewModel viewModel = new InventoryViewModelBuilder(product).build();
 
-        stockMovementPresenter.loadStockMovementViewModelSubscriber().onNext((List) newArrayList(viewModel, viewModel));
+        stockMovementsPresenter.loadStockMovementViewModelSubscriber().onNext((List) newArrayList(viewModel, viewModel));
 
-        assertThat(stockMovementPresenter.stockMovementModelList.size()).isEqualTo(3);
+        assertThat(stockMovementsPresenter.stockMovementModelList.size()).isEqualTo(3);
         verify(view).refreshStockMovement();
         verify(view).loaded();
     }
@@ -283,11 +283,11 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldArchiveStockCard() throws Exception {
         //given
-        StockCard stockCard = stockMovementPresenter.stockCard;
+        StockCard stockCard = stockMovementsPresenter.stockCard;
         stockCard.getProduct().setArchived(false);
 
         //when
-        stockMovementPresenter.archiveStockCard();
+        stockMovementsPresenter.archiveStockCard();
 
         //then
         assertThat(stockCard.getProduct().isArchived()).isTrue();
@@ -297,7 +297,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldUpdateNotifyDeactivatedProductList() throws LMISException {
         //given
-        StockCard stockCard = stockMovementPresenter.stockCard;
+        StockCard stockCard = stockMovementsPresenter.stockCard;
         stockCard.setStockOnHand(0);
         stockCard.getProduct().setActive(false);
         stockCard.getProduct().setPrimaryName("name");
@@ -307,10 +307,10 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
         when(viewModel.convertViewToModel(stockCard)).thenReturn(item);
         when(stockRepositoryMock.queryStockCardById(123)).thenReturn(stockCard);
-        stockMovementPresenter.setStockCard(123);
+        stockMovementsPresenter.setStockCard(123);
 
         //when
-        stockMovementPresenter.saveAndRefresh(viewModel);
+        stockMovementsPresenter.saveAndRefresh(viewModel);
 
         //then
         verify(sharedPreferenceMgr).setIsNeedShowProductsUpdateBanner(true, "name");
@@ -328,7 +328,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
 
         when(stockRepositoryMock.getNonEmptyLotOnHandByStockCard(1L)).thenReturn(newArrayList(lotOnHand));
 
-        assertEquals(1, stockMovementPresenter.getLotOnHandByStockCard(stockCard).size());
+        assertEquals(1, stockMovementsPresenter.getLotOnHandByStockCard(stockCard).size());
     }
 
     public class MyTestModule extends AbstractModule {

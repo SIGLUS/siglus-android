@@ -18,7 +18,7 @@ import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.builder.ProductBuilder;
 import org.openlmis.core.model.builder.StockCardBuilder;
-import org.openlmis.core.presenter.StockMovementPresenter;
+import org.openlmis.core.presenter.StockMovementsPresenter;
 import org.openlmis.core.utils.Constants;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
@@ -38,12 +38,12 @@ import static org.robolectric.Shadows.shadowOf;
 public class StockMovementsActivityTest {
 
     private StockMovementsActivity stockMovementsActivity;
-    private StockMovementPresenter mockedPresenter;
+    private StockMovementsPresenter mockedPresenter;
     private StockCard stockCard;
 
     @Before
     public void setUp() throws Exception {
-        mockedPresenter = mock(StockMovementPresenter.class);
+        mockedPresenter = mock(StockMovementsPresenter.class);
 
         Product product = new ProductBuilder().setPrimaryName("Lamivudina 150mg").setCode("08S40").setStrength("10mg").setType("VIA").build();
         stockCard = new StockCardBuilder()
@@ -57,7 +57,7 @@ public class StockMovementsActivityTest {
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new AbstractModule() {
             @Override
             protected void configure() {
-                bind(StockMovementPresenter.class).toInstance(mockedPresenter);
+                bind(StockMovementsPresenter.class).toInstance(mockedPresenter);
             }
         });
 

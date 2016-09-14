@@ -21,7 +21,6 @@ package org.openlmis.core.presenter;
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.LotOnHand;
@@ -68,12 +67,8 @@ public class NewStockMovementPresenter extends Presenter {
     }
 
     @Override
-    public void attachView(BaseView v) throws ViewNotMatchException {
-        if (v instanceof NewStockMovementView) {
-            this.view = (NewStockMovementView) v;
-        } else {
-            throw new ViewNotMatchException("Need NewStockMovementView");
-        }
+    public void attachView(BaseView v) {
+        this.view = (NewStockMovementView) v;
     }
 
     public void loadData(Long stockCardId, MovementReasonManager.MovementType movementType) throws LMISException {

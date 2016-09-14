@@ -52,7 +52,7 @@ import rx.schedulers.Schedulers;
 
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
-public class StockMovementPresenter extends Presenter {
+public class StockMovementsPresenter extends Presenter {
 
     @Getter
     List<StockMovementViewModel> stockMovementModelList;
@@ -73,7 +73,7 @@ public class StockMovementPresenter extends Presenter {
     @Inject
     private ProductRepository productRepository;
 
-    public StockMovementPresenter() {
+    public StockMovementsPresenter() {
         stockMovementModelList = new ArrayList<>();
     }
 
@@ -145,7 +145,6 @@ public class StockMovementPresenter extends Presenter {
     }
 
     private void saveStockMovement(StockMovementItem stockMovementItem) throws LMISException {
-
         if (stockCard.getStockOnHand() == 0 && !stockCard.getProduct().isActive()) {
             sharedPreferenceMgr.setIsNeedShowProductsUpdateBanner(true, stockCard.getProduct().getPrimaryName());
         }
