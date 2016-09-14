@@ -27,7 +27,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -38,8 +39,8 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
-import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.model.LotOnHand;
+import org.openlmis.core.googleAnalytics.TrackerActions;
+import org.openlmis.core.googleAnalytics.TrackerCategories;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.presenter.StockMovementPresenter;
@@ -47,19 +48,17 @@ import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.view.adapter.StockMovementAdapter;
-import org.openlmis.core.view.fragment.SimpleSelectDialogFragment;
+import org.openlmis.core.view.holder.StockMovementViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
-import org.openlmis.core.view.widget.LotInfoGroup;
-import org.roboguice.shaded.goole.common.base.Function;
-import org.roboguice.shaded.goole.common.collect.FluentIterable;
-
-import java.util.List;
+import org.openlmis.core.view.viewmodel.StockMovementViewModel;
+import org.openlmis.core.view.widget.ExpireDateViewGroup;
+import org.openlmis.core.view.widget.SignatureDialog;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
-@ContentView(R.layout.activity_stock_movement_new)
-public class StockMovementsActivityNew extends BaseActivity implements StockMovementPresenter.StockMovementView, View.OnClickListener {
+@ContentView(R.layout.activity_stock_movement)
+public class StockMovementsActivity extends BaseActivity implements StockMovementPresenter.StockMovementView, View.OnClickListener {
 
     @InjectView(R.id.list_stock_movement)
     ListView stockMovementList;
@@ -67,17 +66,20 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
     @InjectView(R.id.stock_movement_banner)
     View banner;
 
-    @InjectView(R.id.btn_new_movement)
-    View btnNewMovement;
+    @InjectView(R.id.btn_complete)
+    View btnComplete;
+
+    @InjectView(R.id.btn_cancel)
+    TextView tvCancel;
 
     @InjectView(R.id.tv_cmm)
     TextView tvCmm;
 
-    @InjectView(R.id.label_stock_card_info)
-    TextView tvLabelStockCardInfo;
+    @InjectView(R.id.vg_expire_date_container)
+    ExpireDateViewGroup expireDateViewGroup;
 
-    @InjectView(R.id.vg_lot_info_container)
-    LotInfoGroup lotInfoGroup;
+    @InjectView(R.id.action_panel)
+    View buttonView;
 
     @InjectView(R.id.stock_unpack_container)
     View unpackContainer;
@@ -99,10 +101,6 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
     private boolean isActivated;
     private boolean isKit;
 
-    List<MovementReasonManager.MovementType> movementTypes;
-    SimpleSelectDialogFragment newMovementDialog;
-
-
     @Override
     protected ScreenName getScreenName() {
         return ScreenName.StockCardMovementScreen;
@@ -114,7 +112,6 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
         stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
         isActivated = getIntent().getBooleanExtra(Constants.PARAM_IS_ACTIVATED, true);
         isKit = getIntent().getBooleanExtra(Constants.PARAM_IS_KIT, false);
-        movementTypes = MovementReasonManager.getInstance().getMovementTypes();
 
         super.onCreate(savedInstanceState);
 
@@ -146,7 +143,15 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
 
         showBanner();
 
+        buttonView.setVisibility(View.GONE);
+
         stockMovementAdapter = new StockMovementAdapter(presenter.getStockMovementModelList(), presenter.getStockCard());
+        stockMovementAdapter.setMovementChangeListener(new StockMovementAdapter.MovementChangedListener() {
+            @Override
+            public void movementChange() {
+                showBottomBtn();
+            }
+        });
 
         View headerView;
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
@@ -157,16 +162,12 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
         stockMovementList.addHeaderView(headerView);
         stockMovementList.setAdapter(stockMovementAdapter);
 
+        btnComplete.setOnClickListener(this);
+        tvCancel.setOnClickListener(this);
         btnUnpack.setOnClickListener(this);
-        btnNewMovement.setOnClickListener(this);
 
         tvCmm.setText((presenter.getStockCard().getCMM() < 0) ? "" : String.valueOf(presenter.getStockCard().getCMM()));
 
-        if (isKit) {
-            tvLabelStockCardInfo.setText(getString(R.string.label_validate_period));
-        } else {
-            tvLabelStockCardInfo.setText(getString(R.string.label_lot_info));
-        }
         updateExpiryDateViewGroup();
     }
 
@@ -180,6 +181,10 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
 
     @Override
     public void showSignDialog() {
+        SignatureDialog signatureDialog = new SignatureDialog();
+        signatureDialog.setArguments(SignatureDialog.getBundleToMe(getString(R.string.dialog_request_signature)));
+        signatureDialog.setDelegate(signatureDialogDelegate);
+        signatureDialog.show(getFragmentManager());
     }
 
     @Override
@@ -196,17 +201,24 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
     @Override
     public void updateExpiryDateViewGroup() {
         StockCard stockCard = presenter.getStockCard();
-        if (!isKit) {
-            lotInfoGroup.setVisibility(View.VISIBLE);
-            List<LotOnHand> lotOnHandList = null;
-            try {
-                lotOnHandList = presenter.getLotOnHandByStockCard(stockCard);
-            } catch (LMISException e) {
-                e.reportToFabric();
-            }
-            lotInfoGroup.initLotInfoGroup(lotOnHandList);
-            lotInfoGroup.setVisibility(stockCard.getStockOnHand() == 0 ? View.INVISIBLE : View.VISIBLE);
+        expireDateViewGroup.initExpireDateViewGroup(new InventoryViewModel(stockCard), true);
+        expireDateViewGroup.setVisibility(stockCard.getStockOnHand() == 0 ? View.INVISIBLE : View.VISIBLE);
+    }
+
+    protected SignatureDialog.DialogDelegate signatureDialogDelegate = new SignatureDialog.DialogDelegate() {
+        @Override
+        public void onSign(String sign) {
+            StockMovementViewModel stockMovementViewModel = stockMovementAdapter.getEditableStockMovement();
+            stockMovementViewModel.setSignature(sign);
+            presenter.saveAndRefresh(stockMovementViewModel);
+            LMISApp.getInstance().trackEvent(TrackerCategories.StockMovement, TrackerActions.SelectApprove);
         }
+    };
+
+    public void deactivatedStockDraft() {
+        StockMovementViewHolder viewHolder = (StockMovementViewHolder) stockMovementList.getChildAt(stockMovementList.getChildCount() - 1).getTag();
+        buttonView.setVisibility(View.GONE);
+        stockMovementAdapter.cleanHighLight(viewHolder);
     }
 
     @Override
@@ -223,11 +235,6 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
     @Override
     public void refreshStockMovement() {
         stockMovementAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void deactivatedStockDraft() {
-
     }
 
     @Override
@@ -269,15 +276,28 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && (requestCode == Constants.REQUEST_UNPACK_KIT || requestCode == Constants.REQUEST_NEW_MOVEMENT_PAGE)) {
+        if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_UNPACK_KIT) {
             loadStockCard();
             presenter.loadStockMovementViewModels();
         }
     }
 
+    public void showBottomBtn() {
+        if (buttonView.getVisibility() != View.VISIBLE) {
+            buttonView.setVisibility(View.VISIBLE);
+            Animation animation = AnimationUtils.loadAnimation(this, R.anim.anim_from_bottom_in);
+            buttonView.startAnimation(animation);
+            stockMovementList.post(new Runnable() {
+                @Override
+                public void run() {
+                    stockMovementList.setSelection(stockMovementList.getCount() - 1);
+                }
+            });
+        }
+    }
 
     public static Intent getIntentToMe(Context context, InventoryViewModel inventoryViewModel, boolean isKit) {
-        Intent intent = new Intent(context, StockMovementsActivityNew.class);
+        Intent intent = new Intent(context, StockMovementsActivity.class);
         intent.putExtra(Constants.PARAM_STOCK_CARD_ID, inventoryViewModel.getStockCardId());
         intent.putExtra(Constants.PARAM_STOCK_NAME, inventoryViewModel.getProduct().getFormattedProductName());
         intent.putExtra(Constants.PARAM_IS_ACTIVATED, inventoryViewModel.getProduct().isActive());
@@ -288,34 +308,18 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.btn_complete:
+                presenter.submitStockMovement(stockMovementAdapter.getEditableStockMovement());
+                LMISApp.getInstance().trackEvent(TrackerCategories.StockMovement, TrackerActions.SelectComplete);
+                break;
+            case R.id.btn_cancel:
+                StockMovementViewHolder viewHolder = (StockMovementViewHolder) stockMovementList.getChildAt(stockMovementList.getChildCount() - 1).getTag();
+                stockMovementAdapter.cancelStockMovement(viewHolder);
+                deactivatedStockDraft();
+                break;
             case R.id.btn_unpack:
                 unpackKit();
                 break;
-            case R.id.btn_new_movement:
-                String[] selections = FluentIterable.from(movementTypes).transform(new Function<MovementReasonManager.MovementType, String>() {
-                    @Override
-                    public String apply(MovementReasonManager.MovementType movementType) {
-                        return movementType.getDescription();
-                    }
-                }).toArray(String.class);
-                newMovementDialog = new SimpleSelectDialogFragment(this, new MovementTypeOnClickListener(), selections);
-                newMovementDialog.show(getFragmentManager(), "");
-                break;
         }
     }
-
-    class MovementTypeOnClickListener implements AdapterView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            if ((movementTypes.get(position).equals(MovementReasonManager.MovementType.ISSUE)
-                || movementTypes.get(position).equals(MovementReasonManager.MovementType.NEGATIVE_ADJUST))
-                    && presenter.getStockCard().getStockOnHand() == 0) {
-                ToastUtil.show(R.string.msg_no_lot_for_issue);
-            } else {
-                startActivityForResult(StockCardNewMovementActivity.getIntentToMe(StockMovementsActivityNew.this, stockName, movementTypes.get(position), stockId, isKit), Constants.REQUEST_NEW_MOVEMENT_PAGE);
-            }
-            newMovementDialog.dismiss();
-        }
-    }
-
 }

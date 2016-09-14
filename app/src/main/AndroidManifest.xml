@@ -74,16 +74,16 @@
             android:label="@string/title_requisition"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
-            android:name=".view.activity.StockMovementActivity"
+            android:name=".view.activity.StockMovementsActivity"
             android:label="@string/title_stock_movement"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity android:name=".view.activity.StockMovementHistoryActivity" />
         <activity
-            android:name=".view.activity.StockMovementsActivityNew"
+            android:name=".view.activity.StockMovementsWithLotActivity"
             android:label="@string/title_stock_movement"
             android:windowSoftInputMode="adjustPan|stateHidden"/>
         <activity
-            android:name=".view.activity.StockCardNewMovementActivity"
+            android:name=".view.activity.NewStockMovementActivity"
             android:label="Title drug"
             android:windowSoftInputMode="adjustPan|stateHidden"
             android:screenOrientation="portrait"/>

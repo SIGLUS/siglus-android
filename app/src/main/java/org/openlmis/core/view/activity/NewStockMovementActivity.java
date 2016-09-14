@@ -43,7 +43,7 @@ import roboguice.inject.InjectView;
 import rx.functions.Action1;
 
 @ContentView(R.layout.activity_stock_card_new_movement)
-public class StockCardNewMovementActivity extends BaseActivity implements NewStockMovementPresenter.NewStockMovementView, View.OnClickListener {
+public class NewStockMovementActivity extends BaseActivity implements NewStockMovementPresenter.NewStockMovementView, View.OnClickListener {
 
     @InjectView(R.id.ly_requested_quantity)
     View lyRequestedQuantity;
@@ -273,14 +273,14 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                         return movementReason.getDescription();
                     }
                 }).toArray(String.class);
-                reasonsDialog = new SimpleSelectDialogFragment(StockCardNewMovementActivity.this, new MovementTypeOnClickListener(stockMovementViewModel), reasonListStr);
+                reasonsDialog = new SimpleSelectDialogFragment(NewStockMovementActivity.this, new MovementTypeOnClickListener(stockMovementViewModel), reasonListStr);
                 reasonsDialog.show(getFragmentManager(), "");
             }
         };
     }
 
-    public static Intent getIntentToMe(StockMovementsActivityNew context, String stockName, MovementReasonManager.MovementType movementType, Long stockCardId, boolean isKit) {
-        Intent intent = new Intent(context, StockCardNewMovementActivity.class);
+    public static Intent getIntentToMe(StockMovementsWithLotActivity context, String stockName, MovementReasonManager.MovementType movementType, Long stockCardId, boolean isKit) {
+        Intent intent = new Intent(context, NewStockMovementActivity.class);
         intent.putExtra(Constants.PARAM_STOCK_NAME, stockName);
         intent.putExtra(Constants.PARAM_MOVEMENT_TYPE, movementType);
         intent.putExtra(Constants.PARAM_STOCK_CARD_ID, stockCardId);

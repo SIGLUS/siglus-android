@@ -33,7 +33,7 @@ import org.openlmis.core.model.builder.StockCardBuilder;
 import org.openlmis.core.presenter.StockCardPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.activity.StockCardListActivity;
-import org.openlmis.core.view.activity.StockMovementActivity;
+import org.openlmis.core.view.activity.StockMovementsActivity;
 import org.openlmis.core.view.adapter.StockCardListAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ProductsUpdateBanner;
@@ -168,7 +168,7 @@ public class StockCardListFragmentTest {
 
         Intent intent = ShadowApplication.getInstance().getNextStartedActivity();
 
-        assertEquals(intent.getComponent().getClassName(), StockMovementActivity.class.getName());
+        assertEquals(intent.getComponent().getClassName(), StockMovementsActivity.class.getName());
         assertEquals("Product primary name [08S42]", intent.getStringExtra(Constants.PARAM_STOCK_NAME));
         assertEquals(20L, intent.getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0));
         assertTrue(intent.getBooleanExtra(Constants.PARAM_IS_ACTIVATED, false));

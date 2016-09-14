@@ -35,9 +35,9 @@ import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(LMISTestRunner.class)
-public class StockMovementActivityTest {
+public class StockMovementsActivityTest {
 
-    private StockMovementActivity stockMovementActivity;
+    private StockMovementsActivity stockMovementsActivity;
     private StockMovementPresenter mockedPresenter;
     private StockCard stockCard;
 
@@ -64,7 +64,7 @@ public class StockMovementActivityTest {
         Intent intent = new Intent()
                 .putExtra(Constants.PARAM_STOCK_CARD_ID, 100L)
                 .putExtra(Constants.PARAM_STOCK_NAME, "Stock Name");
-        stockMovementActivity = Robolectric.buildActivity(StockMovementActivity.class).withIntent(intent).create().visible().get();
+        stockMovementsActivity = Robolectric.buildActivity(StockMovementsActivity.class).withIntent(intent).create().visible().get();
     }
 
     @After
@@ -76,12 +76,12 @@ public class StockMovementActivityTest {
     public void shouldSetStockCardIdAndPageTitle() throws LMISException {
         verify(mockedPresenter).setStockCard(100L);
 
-        assertThat(stockMovementActivity.getTitle()).isEqualTo("Stock Name");
+        assertThat(stockMovementsActivity.getTitle()).isEqualTo("Stock Name");
     }
 
     @Test
     public void shouldRefreshStockCardWhenUnpackKitSuccessful() throws LMISException {
-        stockMovementActivity.onActivityResult(Constants.REQUEST_UNPACK_KIT, Activity.RESULT_OK, new Intent());
+        stockMovementsActivity.onActivityResult(Constants.REQUEST_UNPACK_KIT, Activity.RESULT_OK, new Intent());
 
         verify(mockedPresenter, times(2)).setStockCard(100L);
         verify(mockedPresenter, times(2)).loadStockMovementViewModels();
@@ -90,16 +90,16 @@ public class StockMovementActivityTest {
     @Test
     public void shouldArchiveStockMovementWhenArchiveMenuClicked() throws Exception {
 
-        shadowOf(stockMovementActivity).clickMenuItem(R.id.action_archive);
+        shadowOf(stockMovementsActivity).clickMenuItem(R.id.action_archive);
 
         verify(mockedPresenter).archiveStockCard();
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo("Drug archived");
-        assertThat(stockMovementActivity.isFinishing()).isTrue();
+        assertThat(stockMovementsActivity.isFinishing()).isTrue();
     }
 
     @Test
     public void shouldGoToHistoryMovementWhenMenuItemSelected() {
-        shadowOf(stockMovementActivity).clickMenuItem(R.id.action_history);
+        shadowOf(stockMovementsActivity).clickMenuItem(R.id.action_history);
         Intent startedIntent = ShadowApplication.getInstance().getNextStartedActivity();
 
         assertThat(startedIntent).isNotNull();
@@ -110,8 +110,8 @@ public class StockMovementActivityTest {
 
     @Test
     public void shouldGoToSelectKitActivityWhenUnpackKitClicked() throws Exception {
-        stockMovementActivity.updateUnpackKitMenu(true);
-        stockMovementActivity.btnUnpack.performClick();
+        stockMovementsActivity.updateUnpackKitMenu(true);
+        stockMovementsActivity.btnUnpack.performClick();
 
         Intent startedIntent = ShadowApplication.getInstance().getNextStartedActivity();
 
@@ -122,32 +122,32 @@ public class StockMovementActivityTest {
 
     @Test
     public void shouldShowUnpackContainer() {
-        stockMovementActivity.updateUnpackKitMenu(false);
-        assertThat(stockMovementActivity.unpackContainer.getVisibility()).isEqualTo(View.GONE);
+        stockMovementsActivity.updateUnpackKitMenu(false);
+        assertThat(stockMovementsActivity.unpackContainer.getVisibility()).isEqualTo(View.GONE);
     }
 
     @Test
     public void shouldHideUnpackContainer() {
-        stockMovementActivity.updateUnpackKitMenu(true);
-        assertThat(stockMovementActivity.unpackContainer.getVisibility()).isEqualTo(View.VISIBLE);
+        stockMovementsActivity.updateUnpackKitMenu(true);
+        assertThat(stockMovementsActivity.unpackContainer.getVisibility()).isEqualTo(View.VISIBLE);
     }
 
     @Test
     public void shouldHideExpiryDateWhenStockCardSOHIsZero() {
         stockCard.setStockOnHand(0);
 
-        stockMovementActivity.updateExpiryDateViewGroup();
+        stockMovementsActivity.updateExpiryDateViewGroup();
 
-        assertThat(stockMovementActivity.expireDateViewGroup.getVisibility()).isEqualTo(View.INVISIBLE);
+        assertThat(stockMovementsActivity.expireDateViewGroup.getVisibility()).isEqualTo(View.INVISIBLE);
     }
 
     @Test
     public void shouldUpdateArchiveMenu() throws Exception {
-        MenuItem archiveMenu = shadowOf(stockMovementActivity).getOptionsMenu().findItem(R.id.action_archive);
+        MenuItem archiveMenu = shadowOf(stockMovementsActivity).getOptionsMenu().findItem(R.id.action_archive);
         assertThat(archiveMenu.isVisible()).isFalse();
 
-        stockMovementActivity.updateArchiveMenus(true);
-        archiveMenu = shadowOf(stockMovementActivity).getOptionsMenu().findItem(R.id.action_archive);
+        stockMovementsActivity.updateArchiveMenus(true);
+        archiveMenu = shadowOf(stockMovementsActivity).getOptionsMenu().findItem(R.id.action_archive);
         assertThat(archiveMenu.isVisible()).isTrue();
     }
 }

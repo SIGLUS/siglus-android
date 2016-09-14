@@ -6,8 +6,8 @@ import android.view.View;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
-import org.openlmis.core.view.activity.StockMovementActivity;
-import org.openlmis.core.view.activity.StockMovementsActivityNew;
+import org.openlmis.core.view.activity.StockMovementsActivity;
+import org.openlmis.core.view.activity.StockMovementsWithLotActivity;
 import org.openlmis.core.view.adapter.KitStockCardListAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.widget.ProductsUpdateBanner;
@@ -24,9 +24,9 @@ public class KitStockCardListFragment extends StockCardListFragment {
 
     protected Intent getStockMovementIntent(InventoryViewModel inventoryViewModel) {
         if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            return StockMovementsActivityNew.getIntentToMe(getActivity(), inventoryViewModel, true);
+            return StockMovementsWithLotActivity.getIntentToMe(getActivity(), inventoryViewModel, true);
         } else {
-            return StockMovementActivity.getIntentToMe(getActivity(), inventoryViewModel, true);
+            return StockMovementsActivity.getIntentToMe(getActivity(), inventoryViewModel, true);
         }
     }
 
