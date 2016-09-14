@@ -245,7 +245,7 @@
     <string name="btn_view_incomplete_requisition">Continuar trabalhando em %1$s</string>
     <string name="label_unsynced_mmia_requisition">Este <![CDATA[<b>MMIA</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
     <string name="label_unsynced_requisition">Esta <![CDATA[<b>%1$s</b>]]> não sincronizou devido à falta de ligação à Internet.<![CDATA[<br/>]]> O formulário será enviado assim que uma conexão com a Internet estiver disponível.</string>
-    <string name="label_mmia_submitted_message">MMIA enviado com sucesso no dia  %1$s.</string>
+    <string name="label_mmia_submitted_message">MMIA enviado com sucesso no dia %1$s</string>
     <string name="label_submitted_message">%1$s enviada com sucesso no dia  %2$s</string>
     <plurals name="label_drug_count_message">
         <item quantity="one"><![CDATA[<b>%1$s</b>]]> Producto requisitado</item>
@@ -313,14 +313,6 @@
     <string name="msg_emergency_requisition_cant_edit">Esta informação não é utilizada ao criar uma requisição de emergência</string>
     <string name="document_number">Número do documento</string>
     <!--App Name In Different Environment-->
-    <string name="app_name_in_local">ESMS LOCAL</string>
-    <string name="app_name_in_prodsim">ESMS PRODSIM</string>
-    <string name="app_name_in_prd">ESMS</string>
-    <string name="app_name_in_qa">ESMS QA</string>
-    <string name="app_name_in_regression">ESMS REGRESSION</string>
-    <string name="app_name_in_showcase">ESMS SHOWCASE</string>
-    <string name="app_name_in_demo">ESMS DEMO</string>
-    <string name="app_name_in_upgrade">ESMS UPGRADE</string>
     <!--Incomplete Requisition Banner-->
     <string name="via_and_mmia_requisition_alert">Suas Requisições Balancete e seus MMIAs para <![CDATA[<b>%1$s</b>]]> não foram concluídos.</string>
     <string name="via_requisition_alert">Sua Requisição Balancete para <![CDATA[<b>%1$s</b>]]> não foi concluída</string>
@@ -337,8 +329,8 @@
     <!--Stock movement adding page-->
     <string name="hint_movement_date">Data do movimento</string>
     <string name="hint_document_number">Número do documento</string>
-    <string name="hint_movement_reason">Origem/Destino do movimento</string>
-    <string name="hint_movement_reason_receive">Origem do movimento</string>
+    <string name="hint_movement_reason">Origem/Destino do Movimento</string>
+    <string name="hint_movement_reason_receive">Origem/Destino do Movimento</string>
     <string name="hint_requested_quantity">Pedidos</string>
     <string name="hint_movement_quantity">Quantidade</string>
     <string name="hint_movement_signature">Rúbrica</string>
@@ -362,12 +354,11 @@
     <string name="label_new_added_lot">Lote recentemente adicionado, não tem nenhum estoque existente</string>
     <string name="empty_lot_warning">Por favor, adicione um novo lote</string>
     <string name="alert_add_lot_amount">Adicione a quantidade a um lote</string>
-    <string name="alert_lot_quantity_error">Quantidade não pode ser deixada em branco!</string>
+    <string name="alert_lot_quantity_error">Quantidade não pode estar em branco!</string>
     <string name="btn_remove_lot">REMOVER LOTE</string>
     <string name="msg_remove_new_lot_title"><![CDATA[<b>Remover lote recém-criado</b>]]></string>
     <string name="msg_remove_new_lot"><![CDATA[Remover lote recém-criado<b>%1$s</b> que vai expirar em %2$s de <b>%3$s</b>]]></string>
     <string name="msg_no_lot_for_issue">Nenhum lote existente para que você possa dar saídaou fazer ajuste negativo</string>
-    <string name="error_lot_already_exists">The lot already exists, please add a new one.</string>
-
-    <string name="msg_draft_saved">Draft saved successfully</string>
+    <string name="error_lot_already_exists">O lote já existe, por favor, adicione um novo.</string>
+    <string name="msg_draft_saved">Rascunho gravado com sucesso</string>
 </resources>
