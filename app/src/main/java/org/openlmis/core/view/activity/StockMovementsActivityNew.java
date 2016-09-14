@@ -99,9 +99,6 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
     private boolean isActivated;
     private boolean isKit;
 
-    StockMovementsActivityNew activity;
-    Context context;
-
     List<MovementReasonManager.MovementType> movementTypes;
     SimpleSelectDialogFragment newMovementDialog;
 
@@ -113,8 +110,6 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        activity = this;
-        context = this;
         stockId = getIntent().getLongExtra(Constants.PARAM_STOCK_CARD_ID, 0);
         stockName = getIntent().getStringExtra(Constants.PARAM_STOCK_NAME);
         isActivated = getIntent().getBooleanExtra(Constants.PARAM_IS_ACTIVATED, true);
@@ -303,7 +298,7 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
                         return movementType.getDescription();
                     }
                 }).toArray(String.class);
-                newMovementDialog = new SimpleSelectDialogFragment(context, new MovementTypeOnClickListener(), selections);
+                newMovementDialog = new SimpleSelectDialogFragment(this, new MovementTypeOnClickListener(), selections);
                 newMovementDialog.show(getFragmentManager(), "");
                 break;
         }
@@ -317,7 +312,7 @@ public class StockMovementsActivityNew extends BaseActivity implements StockMove
                     && presenter.getStockCard().getStockOnHand() == 0) {
                 ToastUtil.show(R.string.msg_no_lot_for_issue);
             } else {
-                startActivityForResult(StockCardNewMovementActivity.getIntentToMe(activity, stockName, movementTypes.get(position), stockId, isKit), Constants.REQUEST_NEW_MOVEMENT_PAGE);
+                startActivityForResult(StockCardNewMovementActivity.getIntentToMe(StockMovementsActivityNew.this, stockName, movementTypes.get(position), stockId, isKit), Constants.REQUEST_NEW_MOVEMENT_PAGE);
             }
             newMovementDialog.dismiss();
         }

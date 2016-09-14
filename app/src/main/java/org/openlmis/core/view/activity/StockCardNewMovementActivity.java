@@ -1,7 +1,6 @@
 package org.openlmis.core.view.activity;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -118,7 +117,6 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
     private String[] reasonListStr;
 
     private boolean isKit;
-    private Context context;
 
     private AddLotDialogFragment addLotDialogFragment;
 
@@ -129,8 +127,6 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        context = this;
-
         super.onCreate(savedInstanceState);
         movementReasonManager = MovementReasonManager.getInstance();
 
@@ -277,7 +273,7 @@ public class StockCardNewMovementActivity extends BaseActivity implements NewSto
                         return movementReason.getDescription();
                     }
                 }).toArray(String.class);
-                reasonsDialog = new SimpleSelectDialogFragment(context, new MovementTypeOnClickListener(stockMovementViewModel), reasonListStr);
+                reasonsDialog = new SimpleSelectDialogFragment(StockCardNewMovementActivity.this, new MovementTypeOnClickListener(stockMovementViewModel), reasonListStr);
                 reasonsDialog.show(getFragmentManager(), "");
             }
         };
