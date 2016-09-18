@@ -10,12 +10,23 @@ import org.openlmis.core.R;
 import org.openlmis.core.view.holder.UnpackKitViewHolder;
 import org.openlmis.core.view.holder.UnpackKitWithLotViewHolder;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
+import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
 
 import java.util.List;
+
+import rx.functions.Action1;
 
 public class UnpackKitAdapter extends InventoryListAdapterWithBottomBtn implements FilterableAdapter {
 
     private final View.OnClickListener onClickListener;
+    private Action1 setConfirmNoStockReceivedAction = new Action1<UnpackKitInventoryViewModel>() {
+        @Override
+        public void call(UnpackKitInventoryViewModel unpackKitInventoryViewModel) {
+            unpackKitInventoryViewModel.setConfirmedNoStockReceived(true);
+            unpackKitInventoryViewModel.getLotMovementViewModelList().clear();
+            UnpackKitAdapter.this.notifyDataSetChanged();
+        }
+    };
 
     public UnpackKitAdapter(List<InventoryViewModel> data, View.OnClickListener onClickListener) {
         super(data);
@@ -26,7 +37,7 @@ public class UnpackKitAdapter extends InventoryListAdapterWithBottomBtn implemen
     protected void populate(RecyclerView.ViewHolder viewHolder, int position) {
         final InventoryViewModel viewModel = filteredList.get(position);
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            ((UnpackKitWithLotViewHolder) viewHolder).populate(viewModel);
+            ((UnpackKitWithLotViewHolder) viewHolder).populate(viewModel, setConfirmNoStockReceivedAction);
         } else {
             ((UnpackKitViewHolder) viewHolder).populate(viewModel);
         }

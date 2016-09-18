@@ -15,6 +15,7 @@ import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.UnpackKitInventoryViewModel;
 
 import roboguice.inject.InjectView;
+import rx.functions.Action1;
 
 public class UnpackKitWithLotViewHolder extends InventoryWithLotViewHolder {
     @InjectView(R.id.tv_kit_expected_quantity)
@@ -39,11 +40,11 @@ public class UnpackKitWithLotViewHolder extends InventoryWithLotViewHolder {
         super(itemView);
     }
 
-    public void populate(final InventoryViewModel viewModel) {
+    public void populate(final InventoryViewModel viewModel, Action1 setConfirmNoStockReceivedAction) {
         super.populate(viewModel);
 
         initViewHolderStyle(viewModel);
-        setConfirmStockClickListener((UnpackKitInventoryViewModel) viewModel);
+        setConfirmStockClickListener((UnpackKitInventoryViewModel) viewModel, setConfirmNoStockReceivedAction);
 
         validateIfShouldShowUpEmptyLotWarning(viewModel);
         updatePop(viewModel);
@@ -112,7 +113,7 @@ public class UnpackKitWithLotViewHolder extends InventoryWithLotViewHolder {
                 Long.toString(inventoryViewModel.getKitExpectQuantity())));
     }
 
-    private void setConfirmStockClickListener(final UnpackKitInventoryViewModel inventoryViewModel) {
+    private void setConfirmStockClickListener(final UnpackKitInventoryViewModel inventoryViewModel, final Action1 setConfirmNoStockReceivedAction) {
         tvConfirmNoStock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -121,7 +122,7 @@ public class UnpackKitWithLotViewHolder extends InventoryWithLotViewHolder {
                 tvQuantityMessage.setText(LMISApp.getContext().getResources().getString(R.string.message_no_stock_received));
                 tvKitExpectedQuantity.setTextColor(LMISApp.getContext().getResources().getColor(R.color.color_black));
                 lotListContainer.setVisibility(View.GONE);
-                inventoryViewModel.setConfirmedNoStockReceived(true);
+                setConfirmNoStockReceivedAction.call(inventoryViewModel);
             }
         });
         tvConfirmHasStock.setOnClickListener(new View.OnClickListener() {

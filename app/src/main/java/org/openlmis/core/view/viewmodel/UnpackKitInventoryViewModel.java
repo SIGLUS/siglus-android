@@ -37,7 +37,7 @@ public class UnpackKitInventoryViewModel extends InventoryViewModel {
     @Override
     public boolean validate() {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            if (!confirmedNoStockReceived && getLotListQuantityTotalAmount() <= 0) {
+            if (!confirmedNoStockReceived && (!validateLotList() || getLotListQuantityTotalAmount() <= 0)) {
                 shouldShowEmptyLotWarning = true;
                 return false;
             }
