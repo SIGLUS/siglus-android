@@ -114,6 +114,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     }
 
     public void populate(final InventoryViewModel viewModel, String queryKeyWord, ViewHistoryListener listener) {
+        resetCheckBox();
         setItemViewListener(viewModel);
 
         checkBox.setChecked(viewModel.isChecked());
@@ -133,6 +134,11 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         } else {
             populateEditPanel(viewModel.getQuantity(), viewModel.optFirstExpiryDate());
         }
+    }
+
+    private void resetCheckBox() {
+        checkBox.setOnCheckedChangeListener(null);
+        checkBox.setChecked(false);
     }
 
     protected void setItemViewListener(final InventoryViewModel viewModel) {
