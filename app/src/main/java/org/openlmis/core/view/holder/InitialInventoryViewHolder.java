@@ -139,6 +139,8 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     private void resetCheckBox() {
         checkBox.setOnCheckedChangeListener(null);
         checkBox.setChecked(false);
+        actionPanelForAddLot.setVisibility(View.GONE);
+        lotListRecyclerView.setVisibility(View.GONE);
     }
 
     protected void setItemViewListener(final InventoryViewModel viewModel) {
