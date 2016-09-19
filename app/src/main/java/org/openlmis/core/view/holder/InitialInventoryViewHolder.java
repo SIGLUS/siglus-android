@@ -154,7 +154,6 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         txAddNewLot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                txAddNewLot.setEnabled(false);
                 showAddNewLotDialog(viewModel);
             }
         });
@@ -210,6 +209,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
 
     private void showAddNewLotDialog(final InventoryViewModel viewModel) {
         addLotDialogFragment = new AddLotDialogFragment();
+        txAddNewLot.setEnabled(false);
         addLotDialogFragment.setListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
