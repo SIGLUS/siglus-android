@@ -29,9 +29,12 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
+import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.BaseInfoItem;
+import org.openlmis.core.model.Lot;
+import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.ProductProgram;
@@ -42,8 +45,11 @@ import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.builder.ProductBuilder;
+import org.openlmis.core.model.builder.StockCardBuilder;
+import org.openlmis.core.model.builder.StockMovementItemBuilder;
 import org.openlmis.core.model.service.PeriodService;
 import org.openlmis.core.utils.DateUtil;
+import org.roboguice.shaded.goole.common.collect.Lists;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -54,10 +60,14 @@ import roboguice.RoboGuice;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static org.roboguice.shaded.goole.common.collect.Lists.newArrayList;
 
@@ -192,16 +202,39 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         assertThat(baseInfoItems.get(baseInfoItems.size() - 1).getName(), is(mmiaRepository.ATTR_TOTAL_PATIENTS));
     }
 
-    private ArrayList<Product> createProducts() {
-        ArrayList<Product> products = new ArrayList<>();
+    @Test
+    public void shouldInitRnrFormItemWithoutMovement() throws Exception {
+        mmiaRepository = spy(mmiaRepository);
 
-        for (int i = 0; i < 24; i++) {
-            Product product = new Product();
-            product.setId(i);
-            product.setPrimaryName("mockProduct");
-            products.add(product);
-        }
-        return products;
+        Product product = new Product();
+        RnRForm form = new RnRForm();
+        RnrFormItem rnrFormItem = new RnrFormItem();
+        rnrFormItem.setInventory(100L);
+        rnrFormItem.setProduct(product);
+        form.setRnrFormItemListWrapper(newArrayList(rnrFormItem));
+        doReturn(newArrayList(form)).when(mmiaRepository).listInclude(any(RnRForm.Emergency.class), anyString());
+
+        StockCard stockCard = new StockCard();
+        product.setId(20);
+        stockCard.setProduct(product);
+        Lot lot = new Lot();
+        lot.setExpirationDate(DateUtil.parseString("Feb 2015", DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
+        stockCard.setLotOnHandListWrapper(newArrayList(new LotOnHand(lot, stockCard, 10L)));
+        when(mockStockRepository.queryStockItems(any(StockCard.class), any(Date.class), any(Date.class))).thenReturn(new ArrayList<StockMovementItem>());
+
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
+        RnrFormItem rnrFormItemByPeriod = mmiaRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
+
+        assertThat(rnrFormItemByPeriod.getValidate(), is("01/02/2015"));
+        assertThat(rnrFormItemByPeriod.getReceived(), is(0L));
+        assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
+        assertThat(rnrFormItemByPeriod.getInventory(), is(100L));
+        assertThat(rnrFormItemByPeriod.getInitialAmount(), is(100L));
+
+        stockCard.setLotOnHandListWrapper(Lists.<LotOnHand>newArrayList());
+        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
+        rnrFormItemByPeriod = mmiaRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
+        assertNull(rnrFormItemByPeriod.getValidate());
     }
 
     private StockMovementItem createMovementItem(MovementReasonManager.MovementType type, long quantity, StockCard stockCard, Date createdTime, Date movementDate) throws LMISException {

@@ -314,7 +314,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         assertEquals(receiveQuantity, rnrFormItem.getReceived());
         assertEquals(expectAdjustment, rnrFormItem.getAdjustment());
         assertEquals(expectInventoryQuantity, rnrFormItem.getInventory());
-        assertEquals("10/10/2016", rnrFormItem.getValidate());
         assertEquals(expectOrderQuantity, rnrFormItem.getCalculatedOrderQuantity());
     }
 
@@ -404,7 +403,6 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_lot_management, true);
         RnrFormItem rnrFormItemByPeriod = rnrFormRepository.createRnrFormItemByPeriod(stockCard, new Date(), new Date());
 
-        assertThat(rnrFormItemByPeriod.getValidate(), is("01/02/2015"));
         assertThat(rnrFormItemByPeriod.getReceived(), is(0L));
         assertThat(rnrFormItemByPeriod.getCalculatedOrderQuantity(), is(0L));
         assertThat(rnrFormItemByPeriod.getInventory(), is(100L));

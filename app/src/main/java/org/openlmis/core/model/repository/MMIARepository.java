@@ -23,6 +23,7 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
@@ -33,10 +34,12 @@ import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import roboguice.inject.InjectResource;
@@ -117,6 +120,23 @@ public class MMIARepository extends RnrFormRepository {
     public List<RnrFormItem> generateRnrFormItems(RnRForm form, List<StockCard> stockCards) throws LMISException {
         List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form, stockCards);
         return fillAllMMIAProducts(form, rnrFormItems);
+    }
+
+    @Override
+    protected RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {
+        RnrFormItem rnrFormItem = super.createRnrFormItemByPeriod(stockCard, startDate, endDate);
+
+        rnrFormItem.setProduct(stockCard.getProduct());
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
+            Date earliestLotExpiryDate = stockCard.getEarliestLotExpiryDate();
+            if (earliestLotExpiryDate != null) {
+                rnrFormItem.setValidate(DateUtil.formatDate(earliestLotExpiryDate, DateUtil.SIMPLE_DATE_FORMAT));
+            }
+        } else {
+            rnrFormItem.setValidate(stockCard.getEarliestExpireDate());
+        }
+
+        return rnrFormItem;
     }
 
     protected ArrayList<RnrFormItem> fillAllMMIAProducts(RnRForm form, List<RnrFormItem> rnrFormItems) throws LMISException {

@@ -24,8 +24,6 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.Where;
 
-import org.openlmis.core.LMISApp;
-import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Period;
@@ -41,7 +39,6 @@ import org.openlmis.core.model.service.PeriodService;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
-import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -272,15 +269,6 @@ public class RnrFormRepository {
         }
 
         rnrFormItem.setProduct(stockCard.getProduct());
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management)) {
-            Date earliestLotExpiryDate = stockCard.getEarliestLotExpiryDate();
-            if (earliestLotExpiryDate != null) {
-                rnrFormItem.setValidate(DateUtil.formatDate(earliestLotExpiryDate, DateUtil.SIMPLE_DATE_FORMAT));
-            }
-        } else {
-            rnrFormItem.setValidate(stockCard.getEarliestExpireDate());
-        }
-
         return rnrFormItem;
     }
 
@@ -338,7 +326,7 @@ public class RnrFormRepository {
         }
     }
 
-    private long lastRnrInventory(StockCard stockCard) throws LMISException {
+    protected long lastRnrInventory(StockCard stockCard) throws LMISException {
         List<RnRForm> rnRForms = listInclude(RnRForm.Emergency.No, programCode);
         if (rnRForms.isEmpty()) {
             return 0;
