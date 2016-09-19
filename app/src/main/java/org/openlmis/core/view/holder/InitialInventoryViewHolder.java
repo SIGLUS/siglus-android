@@ -152,6 +152,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
         txAddNewLot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                txAddNewLot.setEnabled(false);
                 showAddNewLotDialog(viewModel);
             }
         });
@@ -215,6 +216,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
                         if (addLotDialogFragment.validate() && !addLotDialogFragment.hasIdenticalLot(getLotNumbers(viewModel))) {
                             addLotView(new LotMovementViewModel(addLotDialogFragment.getLotNumber(), addLotDialogFragment.getExpiryDate(), MovementReasonManager.MovementType.PHYSICAL_INVENTORY), viewModel);
                             addLotDialogFragment.dismiss();
+                            txAddNewLot.setEnabled(true);
                         }
                         break;
                     case R.id.btn_cancel:
@@ -222,6 +224,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
                         if (viewModel.getLotMovementViewModelList().isEmpty()) {
                             checkBox.setChecked(false);
                         }
+                        txAddNewLot.setEnabled(true);
                         break;
                 }
             }
