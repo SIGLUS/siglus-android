@@ -1,6 +1,7 @@
 package org.openlmis.core.view.activity;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -14,7 +15,6 @@ import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
-import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.manager.NestedRecyclerViewLinearLayoutManager;
@@ -136,11 +136,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         isKit = getIntent().getBooleanExtra(Constants.PARAM_IS_KIT, false);
         movementReasons = movementReasonManager.buildReasonListForMovementType(movementType);
 
-        try {
-            presenter.loadData(stockCardId, movementType);
-        } catch (LMISException e) {
-            e.printStackTrace();
-        }
+        presenter.loadData(stockCardId, movementType);
 
         stockMovementViewModel = presenter.getStockMovementViewModel();
         stockMovementViewModel.setKit(isKit);
@@ -191,6 +187,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         etMovementDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                etMovementDate.setEnabled(false);
                 showDatePickerDialog(presenter.getStockCard().getLastStockMovementDate());
             }
         });
@@ -267,6 +264,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                etMovementReason.setEnabled(false);
                 reasonListStr = FluentIterable.from(movementReasons).transform(new Function<MovementReasonManager.MovementReason, String>() {
                     @Override
                     public String apply(MovementReasonManager.MovementReason movementReason) {
@@ -274,6 +272,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
                     }
                 }).toArray(String.class);
                 reasonsDialog = new SimpleSelectDialogFragment(NewStockMovementActivity.this, new MovementTypeOnClickListener(stockMovementViewModel), reasonListStr);
+                reasonsDialog.setCancelable(false);
                 reasonsDialog.show(getFragmentManager(), "");
             }
         };
@@ -294,6 +293,12 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         DatePickerDialog dialog = new DatePickerDialog(this, DatePickerDialog.BUTTON_NEUTRAL,
                 new MovementDateListener(stockMovementViewModel, previousMovementDate, etMovementDate),
                 today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                etMovementDate.setEnabled(true);
+            }
+        });
         dialog.show();
     }
 
@@ -463,6 +468,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
             etMovementReason.setText(reasonListStr[position]);
             stockMovementViewModel.setReason(movementReasons.get(position));
             reasonsDialog.dismiss();
+            etMovementReason.setEnabled(true);
         }
     }
 }

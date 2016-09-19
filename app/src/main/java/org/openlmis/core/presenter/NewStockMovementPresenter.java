@@ -70,8 +70,12 @@ public class NewStockMovementPresenter extends Presenter {
         this.view = (NewStockMovementView) v;
     }
 
-    public void loadData(Long stockCardId, MovementReasonManager.MovementType movementType) throws LMISException {
-        stockCard = stockRepository.queryStockCardById(stockCardId);
+    public void loadData(Long stockCardId, MovementReasonManager.MovementType movementType){
+        try {
+            stockCard = stockRepository.queryStockCardById(stockCardId);
+        } catch (LMISException e) {
+            e.reportToFabric();
+        }
         loadExistingLotMovementViewModels();
         newMovementType = movementType;
     }
