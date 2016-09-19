@@ -495,13 +495,11 @@ describe "submit requisition to web server" do
         categoryName: "Paediatrics"
       },
       {
-        code: "019",
         name: "NEW+TEST",
         patientsOnTreatment: 1,
         categoryName: "Paediatrics"
       },
       {
-        code: "020",
         name: "NEW1+TEST2",
         patientsOnTreatment: 2,
         categoryName: "Adults"
