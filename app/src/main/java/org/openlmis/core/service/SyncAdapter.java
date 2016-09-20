@@ -90,9 +90,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         syncUpManager.syncUpUnSyncedStockCardCodes();
         syncUpManager.syncAppVersion();
         syncUpManager.syncArchivedProducts();
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_sync_up_cmms)) {
-            syncUpManager.syncUpCmms();
-        }
+        syncUpManager.syncUpCmms();
 
         sendSyncFinishedBroadcast();
     }

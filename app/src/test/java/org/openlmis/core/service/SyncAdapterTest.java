@@ -135,16 +135,8 @@ public class SyncAdapterTest {
 
     @Test
     public void shouldSyncCmmsWhenToggleOn() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_up_cmms, true);
         syncAdapter.onPerformSync(null, null, null, null, null);
         verify(mockSyncUpManager).syncUpCmms();
-    }
-
-    @Test
-    public void shouldNotSyncCmmsWhenToggleOff() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_sync_up_cmms, false);
-        syncAdapter.onPerformSync(null, null, null, null, null);
-        verify(mockSyncUpManager, never()).syncUpCmms();
     }
 
     public class MyTestModule extends AbstractModule {
