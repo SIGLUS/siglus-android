@@ -177,9 +177,7 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_incomplete_requisition_banner)) {
-            incompleteRequisitionBanner.setIncompleteRequisitionBanner();
-        }
+        incompleteRequisitionBanner.setIncompleteRequisitionBanner();
         setSyncedTime();
     }
 

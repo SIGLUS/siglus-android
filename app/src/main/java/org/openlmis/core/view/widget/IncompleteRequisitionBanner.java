@@ -48,11 +48,7 @@ public class IncompleteRequisitionBanner extends LinearLayout {
         LayoutInflater.from(context).inflate(R.layout.view_incomplete_requisition_banner, this);
         RoboGuice.injectMembers(getContext(), this);
         RoboGuice.getInjector(getContext()).injectViewMembers(this);
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_incomplete_requisition_banner)) {
-            setIncompleteRequisitionBanner();
-        } else {
-            this.setVisibility(View.GONE);
-        }
+        setIncompleteRequisitionBanner();
     }
 
     public void setIncompleteRequisitionBanner() {

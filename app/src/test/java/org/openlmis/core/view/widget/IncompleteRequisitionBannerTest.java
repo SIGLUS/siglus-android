@@ -35,7 +35,6 @@ public class IncompleteRequisitionBannerTest {
 
     @Before
     public void setUp() throws Exception {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_incomplete_requisition_banner, true);
         periodService = mock(PeriodService.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new Module() {
             @Override
