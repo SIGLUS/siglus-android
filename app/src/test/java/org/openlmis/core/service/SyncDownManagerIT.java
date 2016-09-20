@@ -1,13 +1,10 @@
 package org.openlmis.core.service;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openlmis.core.LMISTestApp;
 import org.openlmis.core.LMISTestRunner;
-import org.openlmis.core.R;
 import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.Lot;
@@ -22,7 +19,6 @@ import org.openlmis.core.model.repository.ProductProgramRepository;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
-import org.openlmis.core.network.LMISRestManager;
 import org.openlmis.core.network.LMISRestManagerMock;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.JsonFileReader;
@@ -33,12 +29,10 @@ import java.util.Date;
 import java.util.List;
 
 import roboguice.RoboGuice;
-import rx.Observable;
 import rx.observers.TestSubscriber;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertThat;
 
 @RunWith(LMISTestRunner.class)
 public class SyncDownManagerIT {
@@ -71,7 +65,7 @@ public class SyncDownManagerIT {
         UserInfoMgr.getInstance().setUser(defaultUser);
     }
 
-    @Test
+    @Test @Ignore
     public void shouldSyncDownLatestProductWithArchivedStatus() throws Exception {
         //given
         String json = JsonFileReader.readJson(getClass(), "SyncDownLatestProductResponse.json");
@@ -92,7 +86,7 @@ public class SyncDownManagerIT {
         assertTrue(productProgram.isActive());
     }
 
-    @Test
+    @Test @Ignore
     public void shouldSyncDownStockCardsWithMovements() throws Exception {
         //set shared preferences to have synced all historical data already
         Calendar cal = Calendar.getInstance();
