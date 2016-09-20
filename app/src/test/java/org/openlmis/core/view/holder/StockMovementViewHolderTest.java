@@ -77,7 +77,6 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldPopulateTextDataWhenPopulatingData() {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_add_requested_in_stock_movement, true);
         viewModel.setRequested("999");
         viewHolder.populate(viewModel, stockCard);
 
@@ -210,8 +209,6 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldOnlyEnableCurrentSelectedEditTextWhenChoseMovementTypeWhenToggleIsOn() throws ParseException, LMISException {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_add_requested_in_stock_movement, true);
-
         viewModel.setDraft(true);
         viewHolder.populate(viewModel, stockCard);
         viewHolder.txMovementDate.setText("");
@@ -238,7 +235,6 @@ public class StockMovementViewHolderTest {
 
     @Test
     public void shouldEnableIssueAndRequestedEditTextWhenChoseIssueMovementTypeWhenToggleIsOn() throws ParseException, LMISException {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_add_requested_in_stock_movement, true);
         StockMovementViewHolder stockMovementViewHolder = new StockMovementViewHolder(itemView, mockedListener);
 
         viewModel.setDraft(true);
@@ -257,27 +253,6 @@ public class StockMovementViewHolderTest {
         assertTrue(stockMovementViewHolder.etIssued.isEnabled());
         assertTrue(stockMovementViewHolder.etRequested.isEnabled());
     }
-
-    @Test
-    public void shouldNotThrowExceptionWhenChoseIssueMovementTypeWhenToggleIsOff() throws ParseException, LMISException {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_add_requested_in_stock_movement, false);
-
-        viewModel.setDraft(true);
-        viewHolder.populate(viewModel, stockCard);
-        viewHolder.txMovementDate.setText("");
-
-        StockMovementViewHolder.MovementSelectListener listener = viewHolder.new MovementSelectListener(viewModel);
-
-        MovementReasonManager.MovementReason receiveReason = new MovementReasonManager.MovementReason(MovementReasonManager.MovementType.ISSUE, "ISSUE_1", "issue description");
-
-        listener.onComplete(receiveReason);
-
-        assertFalse(viewHolder.etReceived.isEnabled());
-        assertFalse(viewHolder.etPositiveAdjustment.isEnabled());
-        assertFalse(viewHolder.etNegativeAdjustment.isEnabled());
-        assertTrue(viewHolder.etIssued.isEnabled());
-    }
-
 
     @Test
     public void shouldEnableMovementTypeAndReasonIfModelIsDraft() {

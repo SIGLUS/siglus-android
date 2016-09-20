@@ -24,7 +24,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.view.holder.StockMovementViewHolder;
@@ -64,11 +63,7 @@ public class StockMovementAdapter extends BaseAdapter {
         StockMovementViewHolder holder;
 
         if (convertView == null) {
-            if(LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
-                convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_stock_movement, parent, false);
-            } else {
-                convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_old_stock_movement, parent, false);
-            }
+            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_stock_movement, parent, false);
             holder = new StockMovementViewHolder(convertView, movementChangeListener);
             convertView.setTag(holder);
         } else {

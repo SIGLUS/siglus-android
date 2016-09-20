@@ -100,20 +100,14 @@ public class StockMovementViewHolder extends BaseViewHolder {
         etNegativeAdjustment.setFilters(filters);
         etPositiveAdjustment.setFilters(filters);
         etIssued.setFilters(filters);
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
-            etRequested.setFilters(filters);
-        }
+        etRequested.setFilters(filters);
+
         initStockViewMap();
     }
 
     private void initStockViewMap() {
         movementViewMap = new HashMap<>();
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
-            movementViewMap.put(MovementReasonManager.MovementType.ISSUE, asList(etIssued, etRequested));
-        } else {
-            movementViewMap.put(MovementReasonManager.MovementType.ISSUE, asList(etIssued));
-        }
-
+        movementViewMap.put(MovementReasonManager.MovementType.ISSUE, asList(etIssued, etRequested));
         movementViewMap.put(MovementReasonManager.MovementType.RECEIVE, asList(etReceived));
         movementViewMap.put(MovementReasonManager.MovementType.NEGATIVE_ADJUST, asList(etNegativeAdjustment));
         movementViewMap.put(MovementReasonManager.MovementType.POSITIVE_ADJUST, asList(etPositiveAdjustment));
@@ -131,9 +125,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
         etNegativeAdjustment.setText(model.getNegativeAdjustment());
         etPositiveAdjustment.setText(model.getPositiveAdjustment());
         etIssued.setText(model.getIssued());
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
-            etRequested.setText(model.getRequested());
-        }
+        etRequested.setText(model.getRequested());
         txStockExistence.setText(model.getStockExistence());
         txSignature.setText(model.getSignature());
         if (model.getReason() != null) {
@@ -210,9 +202,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
         etPositiveAdjustment.removeTextChangedListener(new EditTextWatcher(this, etPositiveAdjustment, model, currentStockOnHand));
 
         etIssued.removeTextChangedListener(new EditTextWatcher(this, etIssued, model, currentStockOnHand));
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
-            etRequested.removeTextChangedListener(new EditTextWatcher(this, etRequested, model, currentStockOnHand));
-        }
+        etRequested.removeTextChangedListener(new EditTextWatcher(this, etRequested, model, currentStockOnHand));
 
         etDocumentNo.removeTextChangedListener(new EditTextWatcher(this, etDocumentNo, model, currentStockOnHand));
     }
@@ -258,10 +248,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
         etPositiveAdjustment.addTextChangedListener(new EditTextWatcher(this, etPositiveAdjustment, model, currentStockOnHand));
         etIssued.addTextChangedListener(new EditTextWatcher(this, etIssued, model, currentStockOnHand));
         etDocumentNo.addTextChangedListener(new EditTextWatcher(this, etDocumentNo, model, currentStockOnHand));
-
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
-            etRequested.addTextChangedListener(new EditTextWatcher(this, etRequested, model, currentStockOnHand));
-        }
+        etRequested.addTextChangedListener(new EditTextWatcher(this, etRequested, model, currentStockOnHand));
     }
 
     private void setItemViewTextColor(StockMovementViewModel model) {
@@ -286,9 +273,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
     private void hideUnderline() {
         etDocumentNo.setBackground(null);
         etIssued.setBackground(null);
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
-            etRequested.setBackground(null);
-        }
+        etRequested.setBackground(null);
         etNegativeAdjustment.setBackground(null);
         etPositiveAdjustment.setBackground(null);
         etReceived.setBackground(null);
@@ -300,9 +285,7 @@ public class StockMovementViewHolder extends BaseViewHolder {
         etNegativeAdjustment.setEnabled(false);
         etPositiveAdjustment.setEnabled(false);
         etIssued.setEnabled(false);
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
-            etRequested.setEnabled(false);
-        }
+        etRequested.setEnabled(false);
         txMovementDate.setEnabled(false);
         txReason.setEnabled(false);
     }
@@ -317,9 +300,8 @@ public class StockMovementViewHolder extends BaseViewHolder {
         etNegativeAdjustment.setText(StringUtils.EMPTY);
         etPositiveAdjustment.setText(StringUtils.EMPTY);
         etIssued.setText(StringUtils.EMPTY);
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
-            etRequested.setText(StringUtils.EMPTY);
-        }
+        etRequested.setText(StringUtils.EMPTY);
+
         disableLine();
         hideUnderline();
     }

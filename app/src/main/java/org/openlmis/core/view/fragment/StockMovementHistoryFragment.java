@@ -32,7 +32,6 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockMovementHistoryPresenter;
@@ -88,11 +87,7 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
-            containerView = inflater.inflate(R.layout.fragment_stock_movement_history, container, false);
-        } else {
-            containerView = inflater.inflate(R.layout.fragment_stock_movement_history_old, container, false);
-        }
+        containerView = inflater.inflate(R.layout.fragment_stock_movement_history, container, false);
         return containerView;
     }
 

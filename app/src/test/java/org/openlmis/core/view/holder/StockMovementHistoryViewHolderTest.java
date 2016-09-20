@@ -27,7 +27,6 @@ public class StockMovementHistoryViewHolderTest {
 
     @Before
     public void setUp() {
-        LMISTestApp.getInstance().setFeatureToggle(R.bool.feature_add_requested_in_stock_movement, true);
         View itemView = LayoutInflater.from(RuntimeEnvironment.application).inflate(R.layout.item_stock_movement, null, false);
         viewHolder = new StockMovementHistoryViewHolder(itemView);
 

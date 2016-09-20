@@ -34,7 +34,6 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 
-import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
@@ -160,12 +159,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
     }
 
     private void initRecyclerView() {
-        View headerView;
-        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_add_requested_in_stock_movement)) {
-            headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
-        } else {
-            headerView = layoutInflater.inflate(R.layout.item_old_stock_movement_header, stockMovementList, false);
-        }
+        View headerView = layoutInflater.inflate(R.layout.item_stock_movement_header, stockMovementList, false);
         stockMovementList.addHeaderView(headerView);
         stockMovementAdapter = new StockMovementAdapter(presenter.getStockMovementModelList(), presenter.getStockCard());
         stockMovementList.setAdapter(stockMovementAdapter);
