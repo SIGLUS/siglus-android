@@ -7,7 +7,7 @@ Feature: Log in from local
     Given I try to log in with "superuser" "password1"
     And I wait up to 180 seconds for "Initial Inventory" to appear
     Then I wait for "Initial inventory" to appear
-    When I search product by fnm "08L01X" and select this item with quantity "888"
+    When I search lot product by fnm "08L01X" and select this item with quantity "888" and lot number "ddkk"
     Then I press "Complete"
 
     Then I wait for "STOCK CARD OVERVIEW" to appear
