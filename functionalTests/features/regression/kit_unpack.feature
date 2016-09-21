@@ -1,29 +1,29 @@
-@unpack_kit @regression @change_date
+@unpack_kit @regression
 Feature: Unpack Kit
 
   Scenario: Unpack US kit and verify kit products SOH
     Given I change device date to "20160216.130000"
     And I try to log in with "kit" "password1"
-    And I wait up to 180 seconds for "Initial Inventory" to appear
+    And I wait up to 90 seconds for "Initial Inventory" to appear
     Then I wait for "Initial inventory" to appear
-    When I search product by fnm "02E02" and select this item with quantity "888"
-    When I search product by fnm "15C0ZY" and select this item with quantity "2"
+    When I search lot product by fnm "02E02" and select this item with quantity "888" and lot number "testA"
+    When I search lot product by fnm "15C0ZY" and select this item with quantity "2" and lot number "testB"
     Then I press "Complete"
 
     Then I wait for "MMIA" to appear
     And I press "Stock Card Overview"
     And I wait for "Stock Overview" to appear
-
     Then I select stock card code called "[15C0ZY]"
     Then I wait for "Stock Card" to appear
-    And I select a reason "Negative Adjustments" "Damaged on arrival"
+    Then I press "NEW MOVEMENT"
+    Then I select a new movement reason "Negative Adjustments" "Damaged on arrival"
     Then I wait for 1 second
-    Then I swipe right
-    And I enter negative adjustment number "2"
-    Then I wait for "Complete" to appear
+    Then I select movement date
+    Then I wait for 1 second
+    Then I enter signature "super"
+    When I enter quantity "2" for the last lot
     And I press "Complete"
-    And I wait for "Enter your initials" to appear
-    And I sign with "super"
+
     And I wait for 1 second
     And I press the menu key
     And I press "Archive drugs"
@@ -35,13 +35,14 @@ Feature: Unpack Kit
     Then I wait for "Kit Overview" to appear
     Then I press "KITS  (DE PME US)"
     Then I wait for "[SCOD10]" to appear
-    And I select a reason "Entries" "District( DDM)"
-    And I wait for 1 second
-    And I enter received number "3"
-    Then I wait for "Complete" to appear
+
+    Then I press "NEW MOVEMENT"
+    Then I select a new movement reason "Entries" "District( DDM)"
+    Then I select movement date
+    Then I enter quantity number "3"
+    Then I enter signature "super"
     And I press "Complete"
-    And I wait for "Enter your initials" to appear
-    And I sign with "superuser"
+
     Then I wait for "Unpack Kit" to appear
     Then I see "1"
     Then I swipe right
@@ -59,7 +60,9 @@ Feature: Unpack Kit
 
     And I enter document number for unpack kit
 
-    And I enter quantity for all products in kit
+    #enter quantity of lot
+    And I enter quantity for lots of all products in kit
+
     #signature
     And I wait for "Please enter your initials to confirm the amounts entered" to appear
     And I sign with "test"
@@ -104,11 +107,12 @@ Feature: Unpack Kit
     Then I press "Complete Inventory"
     And I wait for "inventory" to appear
 
+    And I wait for 1 second
     When I search drug by fnm "15C0ZY"
     Then I should see "[15C0ZY]"
     Then I navigate back
     And I wait for 1 second
-    Then I do physical inventory for all items
+    Then I make lots adjustment of physical inventory for all items
 
     Then I wait for "Requisitions" to appear
     Then I should see text containing "Create Requisition Balancete"
