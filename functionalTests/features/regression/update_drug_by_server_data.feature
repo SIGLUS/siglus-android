@@ -9,7 +9,7 @@ Feature: Archive drug
     Then I shouldn't see product "Alfa tocoferol (Vitamina E); 100mg; Cápsulas" in this page
     And I shouldn't see product "Baclofeno; 10mg; Comprimidos" in this page
 
-    And I search product by primary name "Estavudina/Lamivudina; 6mg+30mg, 60 Comp (Baby); Embalagem" and select this item with quantity "123"
+    And I search lot product by primary name "Estavudina/Lamivudina; 6mg+30mg, 60 Comp (Baby); Embalagem" and select this item with quantity "123" and lot number "kkk"
     And I wait for "Complete" to appear
     And I press "Complete"
     Then I wait for "STOCK CARD OVERVIEW" to appear
@@ -40,17 +40,19 @@ Feature: Archive drug
     #Archived 08S32Z
     Then I select stock card code called "[08S32Z]"
     Then I wait for "Stock Card" to appear
-    And I select a reason "Negative Adjustments" "Damaged on arrival"
+
+    Then I press "NEW MOVEMENT"
+    Then I select a new movement reason "Negative Adjustments" "Damaged on arrival"
     Then I wait for 1 second
-    Then I swipe right
-    And I enter negative adjustment number "123"
-    Then I wait for "Complete" to appear
+    Then I select movement date
+    Then I wait for 1 second
+    Then I enter quantity "123" for the last lot
+    Then I enter signature "super"
     And I press "Complete"
-    And I wait for "Enter your initials" to appear
-    And I sign with "superuser"
-    Then I wait for 1 second
-    And I press the menu key
-    Then I see "Archive drugs"
+
+    And I wait for "Stock Card" to appear
+    Then I press the menu key
+    Then I should see "Archive drugs"
     And I press "Archive drugs"
     And I wait for "Stock Overview" to appear
     Then I don't see the text "[08S32Z]"
