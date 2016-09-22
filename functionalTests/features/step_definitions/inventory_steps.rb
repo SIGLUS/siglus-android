@@ -266,5 +266,14 @@ Then(/^I do physical inventory with lot for all items$/) do
   hide_soft_keyboard
 end
 
+Then(/^I sign physical inventory$/) do
+    steps %Q{
+        When I scroll down until I see "COMPLETE"
+        And I press "COMPLETE"
+        And I wait for "Enter your initials" to appear
+        And I sign with "super"
+    }
+end
+
 
 
