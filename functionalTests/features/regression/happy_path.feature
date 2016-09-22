@@ -129,11 +129,9 @@ Feature: Log in and initialize Inventory
     #And I do physical inventory with "100" by fnm "01A01"
     And I do physical inventory with lots with "100" by fnm "01A03Z"
     And I do physical inventory with lots with "100" by fnm "01A02"
-#    And I do initial inventory with lots with "100" by fnm "01A04Z"
     And I do physical inventory with lots with "100" by fnm "01A05"
     And I do physical inventory with lots with "100" by fnm "08S36"
     And I do physical inventory with lots with "100" by fnm "08S01ZY"
-
     When I search lot product by fnm "01A04Z" and select this item with quantity "100" and lot number "FFF"
 
     And I search drug by fnm "08S01ZY"

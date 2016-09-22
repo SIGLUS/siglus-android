@@ -8,7 +8,7 @@ When(/^I select the item called "(.*?)"$/) do |name|
   while q.empty?
     scroll("RecyclerView", :down)
     q = query("android.widget.TextView {text CONTAINS '#{name}'}")
-   end
+  end
 
   touch(q)
 

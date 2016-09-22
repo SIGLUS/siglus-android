@@ -1,19 +1,6 @@
 require 'calabash-android/calabash_steps'
 require 'pry'
 
-Given(/^I have added new drugs/) do
-    steps %Q{
-            When I search product by fnm "08S01ZY" and select this item with quantity "2008"
-       }
-end
-
-Then(/^I check new drug quantity/) do
-    steps %Q{
-            When I search product by fnm "08S01ZY" and select this item with quantity "2008"
-       }
-end
-
-
 Then(/^I select new drug "(.*?)"/) do |drugproperty|
   steps %Q{
           When I search drug by fnm "#{drugproperty}"
