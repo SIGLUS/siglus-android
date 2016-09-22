@@ -104,7 +104,7 @@ When(/^I search stockcard by code "(.*?)" and select this item$/) do |stock_card
 end
 
 When(/^I search stockcard by "(.*?)"$/) do |search_key|
-    search_bar = query("android.support.v7.widget.SearchView id:'action_search'")
+    search_bar = query("android.support.v7.widget.SearchView id:'action_search'").first
     touch(search_bar)
     clear_text_in(search_bar)
     enter_text("android.support.v7.widget.SearchView id:'action_search'", search_key)
