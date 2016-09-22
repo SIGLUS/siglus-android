@@ -112,7 +112,7 @@ Feature: Unpack Kit
     Then I should see "[15C0ZY]"
     Then I navigate back
     And I wait for 1 second
-    Then I make lots adjustment of physical inventory for all items
+    Then I do physical inventory with lot for all items
 
     Then I wait for "Requisitions" to appear
     Then I should see text containing "Create Requisition Balancete"

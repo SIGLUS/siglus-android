@@ -245,7 +245,7 @@ Then(/^I do physical inventory for all items$/) do
   hide_soft_keyboard
 end
 
-Then(/^I make lots adjustment of physical inventory for all items$/) do
+Then(/^I do physical inventory with lot for all items$/) do
   while !query("android.widget.EditText text:''").empty?
     query("android.widget.EditText id:'et_lot_amount'", {:setText => '1'})
 
