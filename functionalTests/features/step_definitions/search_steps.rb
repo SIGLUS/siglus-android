@@ -36,6 +36,23 @@ When(/^I search product by fnm "(.*?)" and select this item with quantity "(.*?)
     }
 end
 
+When(/^I search product by primary name "(.*?)" and select this item with quantity "(.*?)"/) do |primary,quantity|
+    steps %Q{
+        When I search "#{primary}"
+    }
+    q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
+    if !q.empty?
+        touch(q)
+        steps %Q{
+            When I select the item called "#{primary}"
+            Then I enter quantity "#{quantity}" on inventory page
+        }
+    end
+    steps %Q{
+        And I clean search bar
+    }
+end
+
 When(/^I search lot product by primary name "(.*?)" and select this item with quantity "(.*?)" and lot number "(.*?)"$/) do |primary,quantity,lot_number|
     steps %Q{
         When I search "#{primary}"
