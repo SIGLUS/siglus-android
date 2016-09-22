@@ -3,6 +3,8 @@ package org.openlmis.core.network;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.squareup.okhttp.OkHttpClient;
+
 import java.util.Collections;
 
 import retrofit.client.Client;
@@ -11,7 +13,8 @@ import retrofit.mime.TypedByteArray;
 
 public class LMISRestManagerMock extends LMISRestManager {
 
-    private static Client mockClient;
+    protected static Client mockClient;
+    public OkHttpClient okHttpClient;
 
     protected LMISRestManagerMock(Context context) {
         super(context);
@@ -36,5 +39,15 @@ public class LMISRestManagerMock extends LMISRestManager {
     public static Response createDummyJsonResponse(String url, int responseCode, String reason, String json) {
         return new Response(url, responseCode, reason, Collections.EMPTY_LIST,
                 new TypedByteArray("application/json", json.getBytes()));
+    }
+
+    @Override
+    protected OkHttpClient getOkHttpClient() {
+        okHttpClient = super.getOkHttpClient();
+        return okHttpClient;
+    }
+
+    protected Client superGetSSLClient() {
+        return super.getSSLClient();
     }
 }
