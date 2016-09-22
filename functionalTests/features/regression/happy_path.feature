@@ -1,10 +1,10 @@
-@regression @change_date
+@regression @change_date @1
 Feature: Log in and initialize Inventory
 
   Scenario: User should be able to log in, initialize inventory and navigate to stock overview page
 
     Given I change device date to "20160216.130000"
-    #Unauthenrised account shouldn't login to the app
+#    #Unauthenrised account shouldn't login to the app
     Given I try to log in with "testlogin" "password1"
     And I should see "Username or Password is incorrect."
     Then I wait for 1 second
@@ -14,10 +14,10 @@ Feature: Log in and initialize Inventory
     And I wait up to 180 seconds for "Initial Inventory" to appear
     # to run this in a physical device, we need to wait longer, IO is slow on physical devices
 
-    # 01A01, 01A02, 01A03Z, 01A04Z, 01A05
-    When I Select VIA Item
-    # 08S42B, 08S18Y, 08S40Z, 08S36, 08S32Z
-    And I Select MMIA Item
+    #01A01, 01A02, 01A03Z, 01A04Z, 01A05
+    When I Select VIA Item with lot
+    #08S42B, 08S18Y, 08S40Z, 08S36, 08S32Z
+    And I Select MMIA Item with lot
     And I wait for "Complete" to appear
     And I press "Complete"
     Then I wait for "STOCK CARD OVERVIEW" to appear
@@ -41,104 +41,49 @@ Feature: Log in and initialize Inventory
     When I clean search bar
     And I select the inventory item called "08S01ZY"
     And I press "Complete"
-    Then I should see text containing "Quantity cannot be left blank!"
+    And I wait for 1 second
+    Then I should see text containing "Lot number can not be blank"
+    And I wait for "CANCEL" to appear
+    And I press "CANCEL"
 
-    When I unselect the inventory item
-    And I have added new drugs
+    And I wait for 1 second
+    And I clean search bar
+    And I search lot product by fnm "08S01ZY" and select this item with quantity "2008" and lot number "lot123"
     And I press "Complete"
     Then I wait for "Stock Overview" to appear
-    And I check new drug quantity
-
-    # Attempt to make a stock movement and cancel
-    Given I navigate back
-    And I wait for 1 second
-    And I select stock card code called "[08S42B]"
-    And I wait for "Stock Card" to appear
-    And I wait for 1 second
-    And I don't see "Complete"
-    And I don't see "Cancel"
-    When I select a reason "Entries" "District( DDM)"
-    And I should see "Complete"
-    And I should see "CANCEL"
-    And I press "CANCEL"
-    And I wait for 1 second
-    Then I don't see "Complete"
-    And I don't see "CANCEL"
 
     # Attempt to make a stock movement which make its soh negative
-    And I wait for 1 second
-    And I select a reason "Negative Adjustments" "Damaged on arrival"
-    And I wait for 1 second
-    And I swipe right
-    And I enter negative adjustment number "123456789098"
-    And I wait for "Complete" to appear
-    And I press "Complete"
-    Then I should see text containing "Invalid Input"
-    And I wait for 2 seconds
+    Then I search stockcard by code "08S42B" and select this item
+    When I make a negative movement with lot "Negative Adjustments" "Damaged on arrival" "123456789098"
+    Then I should see text containing "Quantity cannot be larger than stock on hand"
     And I press "CANCEL"
 
     # Make a stock movement and save
-    When I navigate back
     And I wait for 1 second
-    And I select stock card code called "[01A04Z]"
-    And I wait for "Stock Card" to appear
-    And I wait for 1 second
-    And I select a reason "Negative Adjustments" "Damaged on arrival"
-    And I wait for 1 second
+    And I navigate back
+    Then I wait for 1 second
+    And I clean search bar
+    Then I search stockcard by code "01A04Z" and select this item
+    When I make a negative movement with lot "Negative Adjustments" "Damaged on arrival" "123"
     And I swipe right
-    And I enter negative adjustment number "123"
-    And I wait for "Complete" to appear
-    And I press "Complete"
-    And I wait for "Enter your initials" to appear
-    And I sign with "superuser"
-    Then I see "123"
     And I swipe right
-    #physical device portrait view is too narrow for signature to show, need to swipe right
+    Then I should see "123"
     And I see "super" in signature field
 
     # Make stock movements with different movement types
     When I navigate back
     And I wait for 1 second
-    When I make all movements for "08S18Y"
+    When I make all movements with lot for "08S18Y"
     And I wait for 1 second
     Then I should see SOH of "08S18Y" is "125"
-
-    # Make stock movements in landscape mode
-    When I select stock card code called "[01A01]"
-    And I wait for "Stock Card" to appear
-    And I select a reason "Positive Adjustments" "Loans received at the health facility deposit"
-    Then I swipe right
-    Then I wait for 1 second
-    And I enter positive adjustment number "2"
-    And I rotate the page to "landscape"
-    Then I wait for "Complete" to appear
-    And I press "Complete"
-    And I wait for "Enter your initials" to appear
-    And I sign with "superuser"
-    # And I wait for 1 second
-    # And I swipe left
-    # And I swipe left
-    # And I wait for 1 second
-    # Then I see the text "Donations to Deposit"
-    # And I swipe right
-    # And I swipe right
-    # And I wait for 1 second
-    # And I see "125"
-    And I rotate the page to "portrait"
 
     # Archive VIA drug
     When I navigate back
     And I wait for 1 second
-    And I select stock card code called "[01A01]"
-    And I wait for "Stock Card" to appear
-    And I select a reason "Issues" "Maternity"
-    And I wait for 1 second
+    Then I search stockcard by code "01A01" and select this item
+    And I make a negative movement with lot "Issues" "Maternity" "123"
+
     And I swipe right
-    And I enter issued number "125"
-    And I wait for "Complete" to appear
-    And I press "Complete"
-    And I wait for "Enter your initials" to appear
-    And I sign with "superuser"
     Then I see "0"
     And I press the menu key
     Then I see "Archive drugs"
@@ -149,23 +94,16 @@ Feature: Log in and initialize Inventory
     And I don't see the text "[01A01]"
 
     # Archive MMIA drug
-    When I select stock card code called "[08S32Z]"
-    And I wait for "Stock Card" to appear
-    And I select a reason "Negative Adjustments" "Damaged on arrival"
-    And I wait for 1 second
+    Then I search stockcard by code "08S32Z" and select this item
+    When I make a negative movement with lot "Negative Adjustments" "Damaged on arrival" "123"
     And I swipe right
-    And I enter negative adjustment number "123"
-    And I wait for "Complete" to appear
-    And I press "Complete"
-    And I wait for "Enter your initials" to appear
-    And I sign with "superuser"
     Then I see "0"
     When I press the menu key
     Then I see "Archive drugs"
     When I press "Archive drugs"
-    And I wait for "Stock Overview" to appear
-    Then I should see total:"9" on stock list page
     And I don't see the text "[08S32Z]"
+    And I clean search bar
+    Then I should see total:"9" on stock list page
 
     # Archived drugs don't appear in monthly inventory
     Given I change device date to "20160218.140000"
@@ -185,16 +123,18 @@ Feature: Log in and initialize Inventory
     Then I should see text containing "Quantity cannot be left blank!"
 
     # Do physical inventory and SOH should be adjusted
-    When I do physical inventory with "100" by fnm "08S42B"
-    And I do physical inventory with "100" by fnm "08S18Y"
-    And I do physical inventory with "100" by fnm "08S40Z"
+    When I do physical inventory with lots with "100" by fnm "08S42B"
+    And I do physical inventory with lots with "100" by fnm "08S18Y"
+    And I do physical inventory with lots with "100" by fnm "08S40Z"
     #And I do physical inventory with "100" by fnm "01A01"
-    And I do physical inventory with "100" by fnm "01A03Z"
-    And I do physical inventory with "100" by fnm "01A02"
-    And I do physical inventory with "100" by fnm "01A04Z"
-    And I do physical inventory with "100" by fnm "01A05"
-    And I do physical inventory with "100" by fnm "08S36"
-    And I do physical inventory with "100" by fnm "08S01ZY"
+    And I do physical inventory with lots with "100" by fnm "01A03Z"
+    And I do physical inventory with lots with "100" by fnm "01A02"
+#    And I do initial inventory with lots with "100" by fnm "01A04Z"
+    And I do physical inventory with lots with "100" by fnm "01A05"
+    And I do physical inventory with lots with "100" by fnm "08S36"
+    And I do physical inventory with lots with "100" by fnm "08S01ZY"
+
+    When I search lot product by fnm "01A04Z" and select this item with quantity "100" and lot number "FFF"
 
     And I search drug by fnm "08S01ZY"
     And I press "Complete"

@@ -138,6 +138,39 @@ Then(/^I make a movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_ca
     }
 end
 
+Then(/^I make a positive movement with lot "(.*?)" "(.*?)" "(.*?)"$/) do |first_reason, second_reason, number|
+    steps %Q{
+        Then I press "NEW MOVEMENT"
+        And I wait for 1 second
+        And I select a new movement reason "#{first_reason}" "#{second_reason}"
+        And I wait for 1 second
+        Then I select movement date
+        And I wait for 1 second
+        And I enter signature "super"
+        And I wait for 1 second
+        And I enter quantity "#{number}" for the last lot
+        And I wait for 1 second
+        And I press "Complete"
+        Then I wait for 1 second
+    }
+end
+
+Then(/^I make a negative movement with lot "(.*?)" "(.*?)" "(.*?)"$/) do |first_reason, second_reason , number|
+   steps %Q{
+       Then I press "NEW MOVEMENT"
+       And I select a new movement reason "#{first_reason}" "#{second_reason}"
+       And I wait for 1 second
+       Then I select movement date
+       And I wait for 1 second
+       And I enter signature "super"
+       And I wait for 1 second
+       And I enter quantity "#{number}" for the last lot
+       And I wait for 1 second
+       And I press "Complete"
+       Then I wait for 1 second
+   }
+end
+
 Then(/^I make a new movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_card_code, first_reason, second_reason, movement_column, number|
     steps %Q{
         Then I search stockcard by code "#{stock_card_code}" and select this item
@@ -176,6 +209,17 @@ Then(/^I make all movements for "(.*?)"$/) do |drugFNM|
         And I make a movement "#{drugFNM}" "Issues" "Public pharmacy" "issued" "2"
         And I make a movement "#{drugFNM}" "Negative Adjustments" "Drugs in quarantine have expired, returned to Supplier" "negative adjustment" "2"
         And I make a movement "#{drugFNM}" "Positive Adjustments" "Returns from Customers(HF and dependent wards)" "positive adjustment" "1"
+    }
+end
+
+Then(/^I make all movements with lot for "(.*?)"$/) do |drugFNM|
+    steps %Q{
+        Then I search stockcard by code "#{drugFNM}" and select this item
+        And I make a positive movement with lot "Entries" "District( DDM)" "5"
+        And I make a negative movement with lot "Issues" "Public pharmacy" "2"
+        And I make a negative movement with lot "Negative Adjustments" "Drugs in quarantine have expired, returned to Supplier" "2"
+        And I make a positive movement with lot "Positive Adjustments" "Returns from Customers(HF and dependent wards)" "1"
+        Then I go back
     }
 end
 
@@ -277,13 +321,13 @@ Then (/^I add new lot with lot number "(.*?)"$/) do |lot_number|
     }
 end
 
-Then (/^I generate new lot with lot number "(.*?)" and quantity "(.*?)"$/) do |lot_number, quantity|
+Then (/^I add a new lot with lot number "(.*?)" and quantity "(.*?)"$/) do |lot_number, quantity|
     steps %Q{
         And I press "+ Add New Lot"
         And I wait for "lot number" to appear
         And I enter lot number "#{lot_number}" on add lot page
         And I press "Complete"
         Then I wait for 1 second
-        And I enter lot quantity "#{quantity}"
+        And I enter quantity "#{quantity}" for the last lot
     }
 end

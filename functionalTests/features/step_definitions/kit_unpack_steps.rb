@@ -29,7 +29,7 @@ And(/^I enter quantity for lots of all products in kit$/) do
                   break
                end
                steps %Q{
-                   And I generate new lot with lot number "TEST-123" and quantity "1"
+                   And I add a new lot with lot number "TEST-123" and quantity "1"
                }
                scroll('recyclerView', :down)
             end

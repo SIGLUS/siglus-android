@@ -163,18 +163,20 @@ Then(/^I should see product "(.*?)" in this page$/) do |productProperty|
 end
 
 And(/^I clean search bar/) do
-    search_bar = query("android.support.v7.widget.SearchView id:'action_search'")
+    search_bar = query("android.support.v7.widget.SearchView id:'action_search'").first
     clear_text_in(search_bar)
 end
 
 When(/^I search drug by fnm "(.*?)"$/) do |fnm|
     search_bar = query("android.support.v7.widget.SearchView id:'action_search'").first
     touch(search_bar)
+    clear_text_in(search_bar)
     enter_text("android.support.v7.widget.SearchView id:'action_search'", fnm)
 end
 
 When(/^I search "(.*?)"$/) do |keyword|
-    search_bar = query("android.support.v7.widget.SearchView id:'action_search'")
+    search_bar = query("android.support.v7.widget.SearchView id:'action_search'").first
     touch(search_bar)
+    clear_text_in(search_bar)
     enter_text("android.support.v7.widget.SearchView id:'action_search'", keyword)
 end
