@@ -3,8 +3,12 @@ Feature: After version upgrade, data integrity should not be broken
 
   Scenario: After version upgrade, user should still be able to use all pages with proper data
     When I try to log in with "marracuene" "password1"
-    And I wait up to 180 seconds for "Stock Card Overview" to appear
+    And I wait up to 180 seconds for "Inventory" to appear
     # to run this in a physical device, we need to wait longer, IO is slow on physical devices
+
+    #do mandatory physical inventory
+    And I search "whatever"
+    And I click "COMPLETE"
 
     #after upgrade, user should still be able to see stock cards and stock movements history
     Then I press "Stock Card Overview"
@@ -58,7 +62,7 @@ Feature: After version upgrade, data integrity should not be broken
     #after upgrade, user should still be able to do physical inventory
     And I press "Inventory"
     And I wait for "Inventory" to appear
-    Then I do physical inventory for all items
+    Then I do physical inventory with for all items
 
 
 
