@@ -36,7 +36,7 @@ Feature: Log in and initialize Inventory
     And I press "Add new product"
     And I wait for "Add new product" to appear
 
-    When I search drug by fnm "25D03"
+    When I search "25D03"
     Then I see "Manual de"
     When I clean search bar
     And I select the inventory item called "08S01ZY"
@@ -118,7 +118,7 @@ Feature: Log in and initialize Inventory
     And I shouldn't see product "08S32Z" in this page
 
     # Physical inventory cannot include blank quantities
-    And I search drug by fnm "08S01ZY"
+    And I search "08S01ZY"
     When I press "Complete"
     Then I should see text containing "Quantity cannot be left blank!"
 
@@ -134,7 +134,7 @@ Feature: Log in and initialize Inventory
     And I do physical inventory with lots with "100" by fnm "08S01ZY"
     When I search lot product by fnm "01A04Z" and select this item with quantity "100" and lot number "FFF"
 
-    And I search drug by fnm "08S01ZY"
+    And I search "08S01ZY"
     And I press "Complete"
     And I wait for "Enter your initials" to appear
     And I sign with "sign"

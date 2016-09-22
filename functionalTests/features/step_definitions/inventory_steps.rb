@@ -127,7 +127,7 @@ end
 
 And(/^I do physical inventory with "(\d+)" by fnm "(.*?)"$/) do |quantity,fnm|
     steps %Q{
-        When I search drug by fnm "#{fnm}"
+        When I search "#{fnm}"
         And I enter quantity "#{quantity}" on inventory page
         And I clean search bar
         And I go back
@@ -202,7 +202,7 @@ end
 
 And(/^I do physical inventory with lots with "(\d+)" by fnm "(.*?)"$/) do |quantity,fnm|
     steps %Q{
-        When I search drug by fnm "#{fnm}"
+        When I search "#{fnm}"
         And I enter quantity "#{quantity}" for the last lot
         And I clean search bar
         And I go back

@@ -23,7 +23,7 @@ Feature: Archive drug
     And I wait for "Add new product" to appear
 
     #primary name of 25D03 is "Manual de procedimentos  do Deposito Distital de Medicamentos Sem Dosagem Papel"
-    When I search drug by fnm "25D03"
+    When I search "25D03"
     Then I see "Manual de procedimentos  do Deposito Distital de Medicamentos Sem Dosagem Papel"
 
     #can not see 99X99
@@ -79,12 +79,12 @@ Feature: Archive drug
 
     #can see 99X99
     And I wait for 5 seconds
-    When I search drug by fnm "99X99"
+    When I search "99X99"
     Then I see "New Drug"
 
     #primary name of 25D03 is "Updated Drug"
     When I clean search bar
-    And I search drug by fnm "25D03"
+    And I search "25D03"
     Then I see "Updated Drug"
 
     #can not see 12D03Z

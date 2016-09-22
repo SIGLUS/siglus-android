@@ -1,6 +1,6 @@
 Then(/^I should see SOH of "(.*?)" is "(.*?)"$/) do |productcode,soh|
     steps %Q{
-        When I search drug by fnm "#{productcode}"
+        When I search "#{productcode}"
     }
     quantities = query("android.widget.TextView id:'tv_stock_on_hand'", :text)
     number=quantities.at(0).to_i

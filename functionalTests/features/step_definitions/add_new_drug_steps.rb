@@ -3,7 +3,7 @@ require 'pry'
 
 Then(/^I select new drug "(.*?)"/) do |drugproperty|
   steps %Q{
-          When I search drug by fnm "#{drugproperty}"
+          When I search "#{drugproperty}"
       }
   q = query("android.widget.CheckBox id:'checkbox' checked:'false'")
   if !q.empty?
@@ -31,7 +31,7 @@ Then(/^I add new drug number (\d+) with SOH (\d+) quantity, then I see the added
         And I press "Complete"
 
         And I wait for "Stock Overview" to appear
-        When I search stockcard by "#{nth_drug["text"]}"
+        When I search "#{nth_drug["text"]}"
         Then I see "#{soh}"
         And I navigate back
       }
