@@ -185,7 +185,7 @@ Then(/^I do physical inventory for mmia items$/) do
     }
 end
 
-Then(/^I make lots adjustment of physical inventory for mmia items$/) do
+Then(/^I do physical inventory with lot for mmia items$/) do
     steps %Q{
         And I do physical inventory with lots with "123" by fnm "08S42B"
         And I do physical inventory with lots with "121" by fnm "08S18Y"
