@@ -330,7 +330,7 @@
     <string name="hint_movement_date">Data do movimento</string>
     <string name="hint_document_number">Número do documento</string>
     <string name="hint_movement_reason">Origem/Destino do Movimento</string>
-    <string name="hint_movement_reason_receive">Origem/Destino do Movimento</string>
+    <string name="hint_movement_reason_receive">Origem do movimento</string>
     <string name="hint_requested_quantity">Pedidos</string>
     <string name="hint_movement_quantity">Quantidade</string>
     <string name="hint_movement_signature">Rúbrica</string>
