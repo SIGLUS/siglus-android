@@ -261,7 +261,7 @@ public class LoginPresenter extends Presenter {
     private boolean hasNoStockOnHand() {
         List<StockCard> stockCardList = stockRepository.list();
         for (StockCard stockCard : stockCardList) {
-            if (stockCard.getStockOnHand() != 0) {
+            if (!stockCard.getProduct().isKit() && stockCard.getStockOnHand() != 0) {
                 return false;
             }
         }
