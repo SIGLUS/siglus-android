@@ -315,7 +315,7 @@
     <!--App Name In Different Environment-->
     <!--Incomplete Requisition Banner-->
     <string name="via_and_mmia_requisition_alert">Suas Requisições Balancete e seus MMIAs para <![CDATA[<b>%1$s</b>]]> não foram concluídos.</string>
-    <string name="via_requisition_alert">Sua Requisição Balancete para <![CDATA[<b>%1$s</b>]]> não foi concluída</string>
+    <string name="via_requisition_alert">Sua Requisição Balancete de <![CDATA[<b>%1$s</b>]]> não foi concluída</string>
     <string name="mmia_requisition_alert">Seu MMIA para <![CDATA[<b>%1$s</b>]]> não foi concluído.</string>
     <string name="via_requisition_for_multiple_periods_alert">Suas requisições balancete de vários períodos não foram concluídas</string>
     <string name="mmia_requisition_for_multiple_periods_alert">Seus MMIA para vários períodos não foram concluídos</string>
