@@ -103,9 +103,44 @@ When(/^I search stockcard by code "(.*?)" and select this item$/) do |stock_card
     }
 end
 
+When(/^I search stockcard on tablet "(.*?)" and select this item$/) do |stock_card_code|
+    steps %Q{
+        When I search "#{stock_card_code}" without clearing text
+        Then I select stock card code called "#{stock_card_code}"
+    }
+end
+
 Then(/^I make a movement "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_card_code, first_reason, second_reason, movement_column, number|
     steps %Q{
         Then I search stockcard by code "#{stock_card_code}" and select this item
+        Then I wait for "Stock Card" to appear
+        Then I wait for 1 second
+        And I select a reason "#{first_reason}" "#{second_reason}"
+    }
+
+    if movement_column.eql? "negative adjustment" or movement_column.eql? "positive adjustment" or movement_column.eql? "issued"
+    # physical device could be too narrow for the negative adjustment column to show, so we need to swipe right for it too
+        steps %Q{
+            Then I swipe right
+        }
+    end
+    steps %Q{
+        Then I wait for 1 second
+        And I enter #{movement_column} number "#{number}"
+        Then I wait for "Complete" to appear
+        And I press "Complete"
+        And I wait for "Enter your initials" to appear
+        And I sign with "superuser"
+        Then I wait for 2 seconds
+        Then I navigate back
+        Then I wait for 1 second
+        Then I navigate back
+    }
+end
+
+Then(/^I make a movement on tablet "(.*?)" "(.*?)" "(.*?)" "(.*?)" "(.*?)"$/) do |stock_card_code, first_reason, second_reason, movement_column, number|
+    steps %Q{
+        Then I search stockcard on tablet "#{stock_card_code}" and select this item
         Then I wait for "Stock Card" to appear
         Then I wait for 1 second
         And I select a reason "#{first_reason}" "#{second_reason}"

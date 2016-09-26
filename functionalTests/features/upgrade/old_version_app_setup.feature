@@ -7,7 +7,7 @@ Feature: Old version set up before upgrade
 
     And I press "Stock Card Overview"
     And I wait for 1 second
-    And I make a movement "01A01" "Positive Adjustments" "Returns from Customers(HF and dependent wards)" "positive adjustment" "1"
+    And I make a movement on tablet "01A01" "Positive Adjustments" "Returns from Customers(HF and dependent wards)" "positive adjustment" "1"
 
     # to run this in a physical device, we need to wait longer, IO is slow on physical devices
 
