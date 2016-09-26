@@ -56,8 +56,10 @@ public class ParticularPhysicalInventoryActivity extends PhysicalInventoryActivi
 
     @Override
     protected void goToNextPage() {
+        loading();
         presenter.updateAvgMonthlyConsumption();
         SharedPreferenceMgr.getInstance().setHasLotInfo(true);
+        loaded();
         startActivity(HomeActivity.getIntentToMe(this));
         this.finish();
     }
