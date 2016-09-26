@@ -1,5 +1,7 @@
 package org.openlmis.core.presenter;
 
+import com.google.inject.Inject;
+
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
@@ -10,6 +12,7 @@ import org.openlmis.core.model.Inventory;
 import org.openlmis.core.model.LotOnHand;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
@@ -30,6 +33,9 @@ import rx.schedulers.Schedulers;
 import static org.roboguice.shaded.goole.common.collect.FluentIterable.from;
 
 public class PhysicalInventoryPresenter extends InventoryPresenter {
+    @Inject
+    StockService stockService;
+
     @Override
     public Observable<List<InventoryViewModel>> loadInventory() {
         return Observable.create(new Observable.OnSubscribe<List<InventoryViewModel>>() {
@@ -244,5 +250,9 @@ public class PhysicalInventoryPresenter extends InventoryPresenter {
             }
         });
         inventoryViewModel.setExistingLotMovementViewModelList(lotMovementViewModels);
+    }
+
+    public void updateAvgMonthlyConsumption() {
+        stockService.immediatelyUpdateAvgMonthlyConsumption();
     }
 }

@@ -15,6 +15,7 @@ import rx.Subscription;
 import rx.functions.Action1;
 
 public class ParticularPhysicalInventoryActivity extends PhysicalInventoryActivity {
+
     @Override
     public void initUI() {
         super.initUI();
@@ -55,6 +56,7 @@ public class ParticularPhysicalInventoryActivity extends PhysicalInventoryActivi
 
     @Override
     protected void goToNextPage() {
+        presenter.updateAvgMonthlyConsumption();
         SharedPreferenceMgr.getInstance().setHasLotInfo(true);
         startActivity(HomeActivity.getIntentToMe(this));
         this.finish();
