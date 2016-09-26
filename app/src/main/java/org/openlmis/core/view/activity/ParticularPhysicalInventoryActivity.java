@@ -2,6 +2,7 @@ package org.openlmis.core.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import org.openlmis.core.LMISApp;
@@ -56,15 +57,25 @@ public class ParticularPhysicalInventoryActivity extends PhysicalInventoryActivi
 
     @Override
     protected void goToNextPage() {
-        loading();
         presenter.updateAvgMonthlyConsumption();
         SharedPreferenceMgr.getInstance().setHasLotInfo(true);
-        loaded();
         startActivity(HomeActivity.getIntentToMe(this));
         this.finish();
     }
 
     public static Intent getIntentToMe(Context context) {
         return new Intent(context, ParticularPhysicalInventoryActivity.class);
+    }
+
+    @NonNull
+    @Override
+    protected Action1<Object> getOnNextMainPageAction() {
+        return new Action1<Object>() {
+            @Override
+            public void call(Object o) {
+                goToNextPage();
+                loaded();
+            }
+        };
     }
 }

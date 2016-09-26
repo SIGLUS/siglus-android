@@ -17,7 +17,6 @@ import org.openlmis.core.view.widget.SignatureDialog;
 import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
 import rx.Subscription;
-import rx.functions.Action1;
 
 @ContentView(R.layout.activity_inventory)
 public class PhysicalInventoryActivity extends InventoryActivity {
@@ -102,12 +101,6 @@ public class PhysicalInventoryActivity extends InventoryActivity {
 
     private boolean isDataChange() {
         return ((PhysicalInventoryAdapter) mAdapter).isHasDataChanged();
-    }
-
-    @NonNull
-    @Override
-    protected Action1<Object> getOnNextMainPageAction() {
-        return super.getOnNextMainPageAction();
     }
 
     private void showDataChangeConfirmDialog() {
