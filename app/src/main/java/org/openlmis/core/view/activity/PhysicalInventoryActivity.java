@@ -7,8 +7,11 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import com.google.inject.Inject;
+
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.TrackerActions;
+import org.openlmis.core.model.service.StockService;
 import org.openlmis.core.presenter.PhysicalInventoryPresenter;
 import org.openlmis.core.view.adapter.PhysicalInventoryAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
@@ -17,10 +20,14 @@ import org.openlmis.core.view.widget.SignatureDialog;
 import roboguice.RoboGuice;
 import roboguice.inject.ContentView;
 import rx.Subscription;
+import rx.functions.Action1;
 
 @ContentView(R.layout.activity_inventory)
 public class PhysicalInventoryActivity extends InventoryActivity {
     PhysicalInventoryPresenter presenter;
+
+    @Inject
+    StockService stockService;
 
     @Override
     public void initUI() {
@@ -101,6 +108,13 @@ public class PhysicalInventoryActivity extends InventoryActivity {
 
     private boolean isDataChange() {
         return ((PhysicalInventoryAdapter) mAdapter).isHasDataChanged();
+    }
+
+    @NonNull
+    @Override
+    protected Action1<Object> getOnNextMainPageAction() {
+        stockService.immediatelyUpdateAvgMonthlyConsumption();
+        return super.getOnNextMainPageAction();
     }
 
     private void showDataChangeConfirmDialog() {
