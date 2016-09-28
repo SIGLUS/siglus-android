@@ -306,6 +306,8 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_complete:
+                loading();
+                btnComplete.setEnabled(false);
                 stockMovementViewModel.setMovementDate(etMovementDate.getText().toString());
                 stockMovementViewModel.setDocumentNo(etDocumentNumber.getText().toString());
                 stockMovementViewModel.setRequested(etRequestedQuantity.getText().toString());
@@ -316,6 +318,8 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
                 if (showErrors()) {
                     existingLotMovementAdapter.notifyDataSetChanged();
                     newLotMovementAdapter.notifyDataSetChanged();
+                    btnComplete.setEnabled(true);
+                    loaded();
                     return;
                 }
                 presenter.saveStockMovement();
@@ -453,6 +457,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     @Override
     public void goToStockCard() {
         setResult(RESULT_OK);
+        loaded();
         finish();
     }
 
