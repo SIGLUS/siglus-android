@@ -1,13 +1,13 @@
 package org.openlmis.core.view.holder;
 
 import android.app.Activity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.manager.NestedRecyclerViewLinearLayoutManager;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
@@ -62,13 +62,13 @@ public abstract class InventoryWithLotViewHolder extends BaseViewHolder {
 
     protected void initExistingLotListView(final InventoryViewModel viewModel) {
         existingLotMovementAdapter = new LotMovementAdapter(viewModel.getExistingLotMovementViewModelList());
-        existingLotListView.setLayoutManager(new LinearLayoutManager(context));
+        existingLotListView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(context));
         existingLotListView.setAdapter(existingLotMovementAdapter);
     }
 
     protected void initLotListRecyclerView(final InventoryViewModel viewModel) {
         newLotMovementAdapter = new LotMovementAdapter(viewModel.getLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
-        newLotListView.setLayoutManager(new LinearLayoutManager(context));
+        newLotListView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(context));
         newLotListView.setAdapter(newLotMovementAdapter);
     }
 
