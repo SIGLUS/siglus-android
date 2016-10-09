@@ -7,6 +7,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,7 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.manager.NestedRecyclerViewLinearLayoutManager;
 import org.openlmis.core.presenter.NewStockMovementPresenter;
 import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.InjectPresenter;
@@ -146,13 +146,13 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     }
 
     private void initExistingLotListView() {
-        existingLotListView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(this));
+        existingLotListView.setLayoutManager(new LinearLayoutManager(this));
         existingLotMovementAdapter = new LotMovementAdapter(stockMovementViewModel.getExistingLotMovementViewModelList());
         existingLotListView.setAdapter(existingLotMovementAdapter);
     }
 
     private void initNewLotListView() {
-        newLotMovementRecycleView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(this));
+        newLotMovementRecycleView.setLayoutManager(new LinearLayoutManager(this));
         newLotMovementAdapter = new LotMovementAdapter(stockMovementViewModel.getNewLotMovementViewModelList(), presenter.getStockCard().getProduct().getProductNameWithCodeAndStrength());
         newLotMovementRecycleView.setAdapter(newLotMovementAdapter);
     }
