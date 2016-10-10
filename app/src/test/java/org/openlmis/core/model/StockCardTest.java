@@ -83,8 +83,14 @@ public class StockCardTest {
 
     @Test
     public void shouldGetCMM() throws Exception {
-        stockCard.setAvgMonthlyConsumption(0.77f);
-        assertThat(stockCard.getCMM(),is(1));
+        stockCard.setAvgMonthlyConsumption(0.7777777f);
+        assertThat(stockCard.getCMM(),is(0.78f));
+
+        stockCard.setAvgMonthlyConsumption(12.3849f);
+        assertThat(stockCard.getCMM(),is(12.38f));
+
+        stockCard.setAvgMonthlyConsumption(2234f);
+        assertThat(stockCard.getCMM(),is(2234f));
     }
 
     @Test

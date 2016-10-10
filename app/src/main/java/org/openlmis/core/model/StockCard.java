@@ -108,8 +108,8 @@ public class StockCard extends BaseModel implements Comparable<StockCard> {
         return stockMovementItemsWrapper;
     }
 
-    public int getCMM() {
-        return (int) Math.ceil(this.avgMonthlyConsumption);
+    public float getCMM() {
+        return (int)(this.avgMonthlyConsumption*100+0.5)/100f;
     }
 
     public boolean isOverStock() {
