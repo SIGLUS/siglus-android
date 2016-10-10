@@ -396,7 +396,7 @@
     <string name="label_existing_soh_of_lot">Existing stock on hand of lot</string>
     <string name="label_new_added_lot">Lot was just added and has no stock on hand</string>
     <string name="empty_lot_warning">Please add a new lot</string>
-    <string name="alert_add_lot_amount">Add the amount to a lot</string>
+    <string name="alert_add_lot_amount">Enter an amount greater than 0 on at least one lot</string>
     <string name="alert_lot_quantity_error">Quantity cannot be left blank!</string>
     <string name="btn_remove_lot">REMOVE LOT</string>
     <string name="msg_remove_new_lot_title"><![CDATA[<b>Remove newly created lot</b>]]></string>

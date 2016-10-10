@@ -21,7 +21,7 @@ Feature: stock movement Page
     Then I wait for 1 second
     Then I enter signature "super"
     And I press "Complete"
-    Then I should see "Add the amount to a lot"
+    Then I should see "Enter an amount greater than 0 on at least one lot"
     When I enter quantity "10000" for the last lot
     And I press "Complete"
     Then I should see "Quantity cannot be larger than stock on hand"
