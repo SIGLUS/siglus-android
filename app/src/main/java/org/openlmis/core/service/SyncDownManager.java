@@ -237,13 +237,7 @@ public class SyncDownManager {
 
         SyncDownStockCardResponse syncDownStockCardResponse = lmisRestApi.fetchStockMovementData(facilityId, startDate, endDate);
 
-        for (StockCard stockCard : syncDownStockCardResponse.getStockCards()) {
-            if (stockCard.getId() <= 0) {
-                stockRepository.saveStockCardAndBatchUpdateMovements(stockCard);
-            } else {
-                stockRepository.batchCreateOrUpdateStockMovementsAndLotMovements(stockCard.getStockMovementItemsWrapper());
-            }
-        }
+        stockRepository.batchCreateSyncDownStockCardsAndMovements(syncDownStockCardResponse);
     }
 
     private void fetchAndSaveRequisition() throws LMISException {

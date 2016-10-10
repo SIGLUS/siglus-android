@@ -35,6 +35,7 @@ import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.network.model.SyncDownStockCardResponse;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -442,5 +443,25 @@ public class StockRepository {
                 return null;
             }
         });
+    }
+
+    public void batchCreateSyncDownStockCardsAndMovements(final SyncDownStockCardResponse syncDownStockCardResponse) {
+        try{
+            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+                    for (StockCard stockCard : syncDownStockCardResponse.getStockCards()) {
+                        if (stockCard.getId() <= 0) {
+                            saveStockCardAndBatchUpdateMovements(stockCard);
+                        } else {
+                            batchCreateOrUpdateStockMovementsAndLotMovements(stockCard.getStockMovementItemsWrapper());
+                        }
+                    }
+                    return null;
+                }
+            });
+        } catch (SQLException e){
+            new LMISException(e).reportToFabric();
+        }
     }
 }

@@ -323,7 +323,7 @@ public class SyncDownManagerTest {
         verify(lmisRestApi).fetchStockMovementData(anyString(), anyString(), anyString());
 
         verify(sharedPreferenceMgr).setIsNeedsInventory(false);
-        verify(stockRepository, times(2)).saveStockCardAndBatchUpdateMovements(any(StockCard.class));
+        verify(stockRepository).batchCreateSyncDownStockCardsAndMovements(any(SyncDownStockCardResponse.class));
     }
 
     private SyncDownStockCardResponse getStockCardResponse() throws ParseException {
