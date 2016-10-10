@@ -3,6 +3,7 @@ package org.openlmis.core.view.holder;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -19,7 +20,6 @@ import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
-import org.openlmis.core.manager.NestedRecyclerViewLinearLayoutManager;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
@@ -203,7 +203,7 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
 
     private void initLotListRecyclerView(InventoryViewModel viewModel) {
         lotMovementAdapter = new LotMovementAdapter(viewModel.getLotMovementViewModelList(), viewModel.getProduct().getProductNameWithCodeAndStrength());
-        lotListRecyclerView.setLayoutManager(new NestedRecyclerViewLinearLayoutManager(context));
+        lotListRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         lotListRecyclerView.setAdapter(lotMovementAdapter);
     }
 
