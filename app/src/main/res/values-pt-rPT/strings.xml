@@ -353,7 +353,7 @@
     <string name="label_existing_soh_of_lot">Estoque existente de um lote</string>
     <string name="label_new_added_lot">Lote recentemente adicionado, não tem nenhum estoque existente</string>
     <string name="empty_lot_warning">Por favor, adicione um novo lote</string>
-    <string name="alert_add_lot_amount">Adicione a quantidade a um lote</string>
+    <string name="alert_add_lot_amount">Intriduza quantidade acima de "0" no minimo em um lote</string>
     <string name="alert_lot_quantity_error">Quantidade não pode estar em branco!</string>
     <string name="btn_remove_lot">REMOVER LOTE</string>
     <string name="msg_remove_new_lot_title"><![CDATA[<b>Remover lote recém-criado</b>]]></string>
