@@ -73,7 +73,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private void triggerSync() {
         sendSyncStartBroadcast();
 
-        syncDownManager.syncDownLatestProducts();
+        syncDownManager.syncDownServerData();
 
         boolean isSyncRnrSuccessful = syncUpManager.syncRnr();
         if (isSyncRnrSuccessful) {

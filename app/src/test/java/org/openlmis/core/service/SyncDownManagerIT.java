@@ -73,7 +73,7 @@ public class SyncDownManagerIT {
         syncDownManager.lmisRestApi = lmisRestManager.getLmisRestApi();
 
         //when
-        syncDownManager.syncDownLatestProducts();
+        syncDownManager.syncDownServerData();
 
         //then
         Product product = productRepository.getByCode("01A01");

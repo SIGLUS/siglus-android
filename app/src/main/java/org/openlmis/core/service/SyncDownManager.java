@@ -103,27 +103,23 @@ public class SyncDownManager {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
     }
 
-    public void syncDownLatestProducts() {
-        try {
-            syncDownProducts(new Subscriber<SyncProgress>() {
-                @Override
-                public void onCompleted() {
+    public void syncDownServerData() {
+        syncDownServerData(new Subscriber<SyncProgress>() {
+            @Override
+            public void onCompleted() {
 
-                }
+            }
 
-                @Override
-                public void onError(Throwable e) {
+            @Override
+            public void onError(Throwable e) {
 
-                }
+            }
 
-                @Override
-                public void onNext(SyncProgress syncProgress) {
+            @Override
+            public void onNext(SyncProgress syncProgress) {
 
-                }
-            });
-        } catch (LMISException e) {
-            e.printStackTrace();
-        }
+            }
+        });
     }
 
     private void syncDownLastYearStockCardsSilently(Subscriber<? super SyncProgress> subscriber) {
