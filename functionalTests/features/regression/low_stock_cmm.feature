@@ -1,4 +1,4 @@
-@regression
+@regression @1s
 Feature: low stock
 
   Scenario: Calculate low stock and cmm without stock out in 3 months
@@ -43,4 +43,4 @@ Feature: low stock
   And I wait for "Stock Overview" to appear
   Then I select stock card code called "01A01"
   Then I wait for "Stock Card" to appear
-  Then I should see CMM "145"
+  Then I should see CMM "144.33"
