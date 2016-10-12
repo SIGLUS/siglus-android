@@ -85,8 +85,7 @@
         <activity
             android:name=".view.activity.NewStockMovementActivity"
             android:label="Title drug"
-            android:windowSoftInputMode="adjustPan|stateHidden"
-            android:screenOrientation="portrait"/>
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
         <activity
             android:name=".view.activity.RnRFormListActivity"
             android:label="@string/title_stock_movement"

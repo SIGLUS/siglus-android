@@ -139,6 +139,7 @@ public class NewStockMovementPresenter extends Presenter {
                 return DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR).compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
             }
         });
+        stockMovementViewModel.getExistingLotMovementViewModelList().clear();
         stockMovementViewModel.getExistingLotMovementViewModelList().addAll(lotMovementViewModels);
     }
 
