@@ -161,7 +161,7 @@ public class StockMovementsActivity extends BaseActivity implements StockMovemen
         tvCancel.setOnClickListener(this);
         btnUnpack.setOnClickListener(this);
 
-        tvCmm.setText((presenter.getStockCard().getCMM() < 0 || isKit) ? "" : String.valueOf(presenter.getStockCard().getCMM()));
+        tvCmm.setText((presenter.getStockCard().getCMM() < 0 || isKit) ? "" : String.valueOf(presenter.getStockCard().getCMM()).replaceAll("\\.?0*$", ""));
 
         updateExpiryDateViewGroup();
     }

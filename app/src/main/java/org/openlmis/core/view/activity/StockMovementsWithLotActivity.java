@@ -152,7 +152,7 @@ public class StockMovementsWithLotActivity extends BaseActivity implements Stock
             tvLabelStockCardInfo.setText(getString(R.string.label_validate_period));
         } else {
             tvLabelStockCardInfo.setText(getString(R.string.label_lot_info));
-            tvCmm.setText((presenter.getStockCard().getCMM() < 0) ? "" : String.valueOf(presenter.getStockCard().getCMM()));
+            tvCmm.setText((presenter.getStockCard().getCMM() < 0) ? "" : String.valueOf(presenter.getStockCard().getCMM()).replaceAll("\\.?0*$", ""));
         }
         updateExpiryDateViewGroup();
     }
