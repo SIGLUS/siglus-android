@@ -113,7 +113,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
         }
 
         Date enteredDate = DateUtil.getActualMaximumDate(new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), 1).getTime());
-        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_modify_lot_expiry_date) && enteredDate.before(new Date())) {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_allow_expired_lot) && enteredDate.before(new Date())) {
             expiryDateWarning.setVisibility(View.VISIBLE);
             return false;
         }
