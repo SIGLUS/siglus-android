@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.utils.DateUtil;
@@ -112,7 +113,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
         }
 
         Date enteredDate = DateUtil.getActualMaximumDate(new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), 1).getTime());
-        if (enteredDate.before(new Date())) {
+        if (!LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_modify_lot_expiry_date) && enteredDate.before(new Date())) {
             expiryDateWarning.setVisibility(View.VISIBLE);
             return false;
         }
@@ -128,7 +129,7 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     }
 
     public boolean hasIdenticalLot(List<String> existingLots) {
-        if (existingLots.contains(etLotNumber.getText().toString().toUpperCase())){
+        if (existingLots.contains(etLotNumber.getText().toString().toUpperCase())) {
             lyLotNumber.setError(getResources().getString(R.string.error_lot_already_exists));
             etLotNumber.getBackground().setColorFilter(getResources().getColor(R.color.color_red), PorterDuff.Mode.SRC_ATOP);
             return true;
