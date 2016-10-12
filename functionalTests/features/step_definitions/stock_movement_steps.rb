@@ -63,19 +63,19 @@ Then(/^I enter quantity number "(\d+)"$/) do |number|
 end
 
 Then(/^I enter signature "(.*?)"$/) do |signature|
-    q = query("android.widget.EditText id:'et_movement_signature'")
+    q = query("android.widget.EditText id:'et_movement_signature'").first
     touch(q)
     keyboard_enter_text(signature)
     hide_soft_keyboard
 end
 
 Then(/^I select movement reason$/) do
-    q = query("android.widget.EditText id:'et_movement_reason'")
+    q = query("android.widget.EditText id:'et_movement_reason'").first
     touch(q)
 end
 
 Then(/^I select movement date$/) do
-    q = query("android.widget.EditText id:'et_movement_date'")
+    q = query("android.widget.EditText id:'et_movement_date'").first
     touch(q)
     touch(q)
 end
