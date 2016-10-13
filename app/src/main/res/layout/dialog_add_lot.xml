@@ -1,100 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/padding_largest"
-    android:paddingRight="@dimen/padding_largest"
-    android:paddingTop="@dimen/padding_large"
-    android:paddingBottom="@dimen/padding_large">
-
-    <TextView
-        style="@style/Dialog.TitleLeft"
-        android:layout_width="@dimen/lot_dialog_page_common_width"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="@dimen/font_size_large"
-        android:text="@string/title_add_new_lot" />
-
-    <LinearLayout
+    android:layout_height="match_parent"
+    android:fillViewport="false">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_medium"
-        android:orientation="vertical">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/padding_largest"
+        android:paddingRight="@dimen/padding_largest"
+        android:paddingTop="@dimen/padding_large"
+        android:paddingBottom="@dimen/padding_large">
 
         <TextView
+            style="@style/Dialog.TitleLeft"
+            android:layout_width="@dimen/lot_dialog_page_common_width"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="@dimen/font_size_large"
+            android:text="@string/title_add_new_lot" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/font_size_medium"
-            android:text="@string/label_lot_number" />
+            android:layout_marginTop="@dimen/margin_medium"
+            android:orientation="vertical">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/ly_lot_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:errorEnabled="true"
-            android:layout_marginBottom="@dimen/margin_medium">
-
-            <EditText
-                android:id="@+id/et_lot_number"
-                style="@style/Dialog.EditText"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/font_size_medium"
-                android:hint="@string/hint_lot_number" />
-        </android.support.design.widget.TextInputLayout>
+                android:text="@string/label_lot_number" />
 
-        <TextView
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ly_lot_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true"
+                android:layout_marginBottom="@dimen/margin_medium">
+
+                <EditText
+                    android:id="@+id/et_lot_number"
+                    style="@style/Dialog.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/font_size_medium"
+                    android:hint="@string/hint_lot_number" />
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_size_medium"
+                android:text="@string/label_add_lot_expire"
+                android:layout_marginBottom="@dimen/margin_large"/>
+
+            <TextView
+                android:id="@+id/tv_expiry_date_warning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_size_medium"
+                android:textColor="@color/color_add_lot_page_expire_date_warning_text"
+                android:background="@drawable/border_bg_light_yellow"
+                android:text="@string/wrong_expire_date_warning"
+                android:padding="@dimen/padding_small"
+                android:layout_marginBottom="@dimen/margin_large"
+                android:visibility="gone"/>
+
+            <DatePicker
+                android:id="@+id/dp_add_new_lot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleX="1.3"
+                android:scaleY="1.3"
+                android:calendarViewShown="false" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            style="@style/Dialog.ActionPanel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/font_size_medium"
-            android:text="@string/label_add_lot_expire"
-            android:layout_marginBottom="@dimen/margin_large"/>
+            android:layout_marginTop="@dimen/margin_medium">
 
-        <TextView
-            android:id="@+id/tv_expiry_date_warning"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/font_size_medium"
-            android:textColor="@color/color_add_lot_page_expire_date_warning_text"
-            android:background="@drawable/border_bg_light_yellow"
-            android:text="@string/wrong_expire_date_warning"
-            android:padding="@dimen/padding_small"
-            android:layout_marginBottom="@dimen/margin_large"
-            android:visibility="gone"/>
+            <TextView
+                android:id="@+id/btn_cancel"
+                style="@style/Dialog.Btn.Negative"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/default_button_height"
+                android:text="@string/btn_cancel" />
 
-        <DatePicker
-            android:id="@+id/dp_add_new_lot"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleX="1.3"
-            android:scaleY="1.3"
-            android:calendarViewShown="false" />
-
+            <Button
+                android:id="@+id/btn_complete"
+                style="@style/Dialog.Btn.Positive"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/default_button_height"
+                android:layout_marginStart="16dp"
+                android:text="@string/btn_complete" />
+        </LinearLayout>
     </LinearLayout>
-
-
-    <LinearLayout
-        style="@style/Dialog.ActionPanel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_medium">
-
-        <TextView
-            android:id="@+id/btn_cancel"
-            style="@style/Dialog.Btn.Negative"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/default_button_height"
-            android:text="@string/btn_cancel" />
-
-        <Button
-            android:id="@+id/btn_complete"
-            style="@style/Dialog.Btn.Positive"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/default_button_height"
-            android:layout_marginStart="16dp"
-            android:text="@string/btn_complete" />
-    </LinearLayout>
-
-</LinearLayout>
+</ScrollView>
