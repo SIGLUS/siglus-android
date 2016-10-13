@@ -206,6 +206,9 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
             public void onClick(View v) {
                 actionAddNewLot.setEnabled(false);
                 addLotDialogFragment = new AddLotDialogFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString(Constants.PARAM_STOCK_NAME, stockName);
+                addLotDialogFragment.setArguments(bundle);
                 addLotDialogFragment.setListener(getAddNewLotDialogOnClickListener());
                 addLotDialogFragment.show(getFragmentManager(), "");
             }

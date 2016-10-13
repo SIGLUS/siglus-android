@@ -1,6 +1,7 @@
 package org.openlmis.core.view.holder;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.manager.MovementReasonManager;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.viewmodel.InventoryViewModel;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
@@ -75,6 +77,9 @@ public abstract class InventoryWithLotViewHolder extends BaseViewHolder {
     protected void showAddNewLotDialog(final InventoryViewModel viewModel, final TextView txAddNewLot) {
         txAddNewLot.setEnabled(false);
         addLotDialogFragment = new AddLotDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.PARAM_STOCK_NAME, viewModel.getProduct().getFormattedProductName());
+        addLotDialogFragment.setArguments(bundle);
         addLotDialogFragment.setListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -21,6 +21,16 @@
             android:textSize="@dimen/font_size_large"
             android:text="@string/title_add_new_lot" />
 
+        <TextView
+            android:id="@+id/drug_name"
+            android:layout_width="@dimen/lot_dialog_page_common_width"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_normal"
+            android:layout_marginTop="@dimen/margin_small"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/font_size_medium"
+            android:text="drug name xxxx" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

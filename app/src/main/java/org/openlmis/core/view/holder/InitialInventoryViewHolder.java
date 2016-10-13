@@ -2,6 +2,7 @@ package org.openlmis.core.view.holder;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +22,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.manager.MovementReasonManager;
 import org.openlmis.core.model.StockCard;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.utils.TextStyleUtil;
@@ -210,6 +212,9 @@ public class InitialInventoryViewHolder extends BaseViewHolder {
     private void showAddNewLotDialog(final InventoryViewModel viewModel) {
         addLotDialogFragment = new AddLotDialogFragment();
         txAddNewLot.setEnabled(false);
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.PARAM_STOCK_NAME, viewModel.getProduct().getFormattedProductName());
+        addLotDialogFragment.setArguments(bundle);
         addLotDialogFragment.setListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

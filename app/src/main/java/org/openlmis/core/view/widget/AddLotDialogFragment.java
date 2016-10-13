@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
+import org.openlmis.core.utils.Constants;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.view.fragment.BaseDialogFragment;
 
@@ -49,6 +50,9 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     @InjectView(R.id.tv_expiry_date_warning)
     private TextView expiryDateWarning;
 
+    @InjectView(R.id.drug_name)
+    private TextView drugName;
+
     @Getter
     private String lotNumber;
 
@@ -67,6 +71,13 @@ public class AddLotDialogFragment extends BaseDialogFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         hideDay();
+        if(getArguments() != null){
+            String drugNameFromArgs = getArguments().getString(Constants.PARAM_STOCK_NAME);
+            if (drugNameFromArgs != null) {
+                this.drugName.setVisibility(View.VISIBLE);
+                this.drugName.setText(drugNameFromArgs);
+            }
+        }
         btnCancel.setOnClickListener(listener);
         btnComplete.setOnClickListener(listener);
         this.setCancelable(false);
