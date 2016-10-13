@@ -32,6 +32,7 @@ import org.openlmis.core.view.BaseView;
 import org.openlmis.core.view.viewmodel.LotMovementViewModel;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
+import org.roboguice.shaded.goole.common.base.Predicate;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 import org.roboguice.shaded.goole.common.collect.ImmutableList;
 
@@ -70,7 +71,7 @@ public class NewStockMovementPresenter extends Presenter {
         this.view = (NewStockMovementView) v;
     }
 
-    public void loadData(Long stockCardId, MovementReasonManager.MovementType movementType){
+    public void loadData(Long stockCardId, MovementReasonManager.MovementType movementType) {
         try {
             stockCard = stockRepository.queryStockCardById(stockCardId);
         } catch (LMISException e) {
@@ -133,13 +134,23 @@ public class NewStockMovementPresenter extends Presenter {
                         DateUtil.formatDate(lotOnHand.getLot().getExpirationDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR),
                         lotOnHand.getQuantityOnHand().toString(), newMovementType);
             }
+        }).filter(new Predicate<LotMovementViewModel>() {
+            @Override
+            public boolean apply(LotMovementViewModel lotMovementViewModel) {
+                for (LotMovementViewModel existingLot : stockMovementViewModel.getExistingLotMovementViewModelList()) {
+                    if (existingLot.getLotNumber().equals(lotMovementViewModel.getLotNumber())) {
+                        return false;
+                    }
+                }
+                return true;
+            }
         }).toSortedList(new Comparator<LotMovementViewModel>() {
             @Override
             public int compare(LotMovementViewModel lot1, LotMovementViewModel lot2) {
                 return DateUtil.parseString(lot1.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR).compareTo(DateUtil.parseString(lot2.getExpiryDate(), DateUtil.DATE_FORMAT_ONLY_MONTH_AND_YEAR));
             }
         });
-        stockMovementViewModel.getExistingLotMovementViewModelList().clear();
+
         stockMovementViewModel.getExistingLotMovementViewModelList().addAll(lotMovementViewModels);
     }
 
