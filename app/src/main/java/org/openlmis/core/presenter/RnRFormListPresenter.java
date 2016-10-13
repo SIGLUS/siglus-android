@@ -185,13 +185,13 @@ public class RnRFormListPresenter extends Presenter {
 
     private void generateFirstMissedRnrFormViewModel(List<RnRFormViewModel> viewModels, int offsetMonth, DateTime inventoryBeginDate) throws LMISException {
         if (isAllRnrFormInDBCompletedOrNoRnrFormInDB()) {
-            addFirstMissedAndNotPendingRnrForm(viewModels, offsetMonth);
+            addFirstMissedAndNotPendingRnrForm(viewModels);
         } else {
             viewModels.add(RnRFormViewModel.buildMissedPeriod(inventoryBeginDate.toDate(), inventoryBeginDate.plusMonths(1).toDate()));
         }
     }
 
-    private void addFirstMissedAndNotPendingRnrForm(List<RnRFormViewModel> viewModels, int periodOffset) throws LMISException {
+    private void addFirstMissedAndNotPendingRnrForm(List<RnRFormViewModel> viewModels) throws LMISException {
         Period nextPeriodInSchedule = periodService.generateNextPeriod(programCode, null);
 
         List<Inventory> physicalInventories = inventoryRepository.queryPeriodInventory(nextPeriodInSchedule);
