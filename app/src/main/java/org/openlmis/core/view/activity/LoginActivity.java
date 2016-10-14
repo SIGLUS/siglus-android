@@ -21,9 +21,11 @@ package org.openlmis.core.view.activity;
 
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.text.Html;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -71,6 +73,9 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
     @InjectView(R.id.iv_logo)
     public ImageView ivLogo;
 
+    @InjectView(R.id.tv_version)
+    public TextView tvVersion;
+
     @InjectPresenter(LoginPresenter.class)
     LoginPresenter presenter;
 
@@ -84,7 +89,11 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
             return;
         }
 
-        initUI();
+        try {
+            initUI();
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
         restoreFromResync();
     }
@@ -117,7 +126,10 @@ public class LoginActivity extends BaseActivity implements LoginPresenter.LoginV
         return R.style.AppTheme_NoActionBar;
     }
 
-    private void initUI() {
+    private void initUI() throws PackageManager.NameNotFoundException {
+        String versionNumber = LMISApp.getInstance().getPackageManager().getPackageInfo(LMISApp.getContext().getApplicationContext().getPackageName(), 0).versionName;
+        tvVersion.setText(Html.fromHtml(getResources().getString(R.string.version_number, versionNumber)));
+
         ivVisibilityPwd.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
 

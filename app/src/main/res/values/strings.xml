@@ -31,7 +31,7 @@
     <string name="msg_sync_stockmovement_failed">Download of stock movement data failed, please login again.</string>
     <string name="msg_initial_sync_success">Initial sync successful. Tablet is ready for use.</string>
     <string name="msg_download_archived_products_fail">Download of archived products failed, please login again.</string>
-
+    <string name="version_number"><![CDATA[Version <b>%1$s</b>]]> </string>
 
     <!-- Init Inventory -->
     <string name="hint_quantity_in_stock">Stock on Hand</string>
