@@ -1,6 +1,10 @@
 package org.openlmis.core.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 
 public final class FileUtil {
 
@@ -21,5 +25,13 @@ public final class FileUtil {
         }
 
         return dir.delete();
+    }
+
+    public static void copy(File srcFile, File dstFile) throws IOException {
+        FileChannel src = new FileInputStream(srcFile).getChannel();
+        FileChannel dst = new FileOutputStream(dstFile).getChannel();
+        dst.transferFrom(src, 0, src.size());
+        src.close();
+        dst.close();
     }
 }

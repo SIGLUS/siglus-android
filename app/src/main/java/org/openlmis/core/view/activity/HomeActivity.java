@@ -25,7 +25,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,17 +39,22 @@ import com.google.inject.Inject;
 
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
+import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.User;
+import org.openlmis.core.persistence.ExportSqliteOpenHelper;
 import org.openlmis.core.service.SyncService;
 import org.openlmis.core.utils.Constants;
+import org.openlmis.core.utils.FileUtil;
 import org.openlmis.core.utils.ToastUtil;
 import org.openlmis.core.utils.TrackRnREventUtil;
 import org.openlmis.core.view.fragment.WarningDialogFragment;
 import org.openlmis.core.view.widget.IncompleteRequisitionBanner;
 import org.openlmis.core.view.widget.SyncTimeView;
+
+import java.io.File;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectResource;
@@ -227,8 +234,27 @@ public class HomeActivity extends BaseActivity {
             case R.id.action_wipe_data:
                 alertWipeData();
                 return true;
+            case R.id.action_export_db:
+                exportDB();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void exportDB() {
+        try {
+            File currentDB = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_db");
+            File tempBackup = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_copy");
+            File externalBackup = new File(Environment.getExternalStorageDirectory(), "lmis_backup");
+            FileUtil.copy(currentDB, tempBackup);
+            ExportSqliteOpenHelper.removePrivateUserInfo(this);
+            FileUtil.copy(tempBackup,externalBackup);
+            this.deleteDatabase("lmis_copy");
+            ToastUtil.show(Html.fromHtml(getString(R.string.msg_export_data_sucess, externalBackup.getPath())));
+        } catch (Exception e) {
+            new LMISException(e).reportToFabric();
+            ToastUtil.show(e.getMessage());
         }
     }
 

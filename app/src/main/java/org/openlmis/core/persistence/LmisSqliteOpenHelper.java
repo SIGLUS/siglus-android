@@ -167,4 +167,8 @@ public final class LmisSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
         getWritableDatabase().close();
         closeHelper();
     }
+
+    public static int getDBVersion() {
+        return MIGRATIONS.size();
+    }
 }
