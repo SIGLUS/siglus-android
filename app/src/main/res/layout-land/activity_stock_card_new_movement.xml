@@ -141,6 +141,19 @@
                 android:textSize="@dimen/font_size_regular"
                 android:padding="@dimen/padding_small"
                 android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/alert_soonest_expire"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/alert_soonest_expire"
+                android:layout_marginLeft="@dimen/margin_normal"
+                android:layout_marginRight="@dimen/margin_normal"
+                android:background="@drawable/border_lot_amount_alert"
+                android:textColor="@color/color_requisition_banner_text"
+                android:textSize="@dimen/font_size_regular"
+                android:padding="@dimen/padding_small"
+                android:visibility="gone" />
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
