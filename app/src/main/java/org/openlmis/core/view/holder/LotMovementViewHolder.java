@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.R;
 import org.openlmis.core.utils.SingleTextWatcher;
@@ -26,12 +25,6 @@ import roboguice.inject.InjectView;
 
 public class LotMovementViewHolder extends BaseViewHolder {
 
-    @InjectView(R.id.stock_on_hand_in_lot)
-    private TextView txStockOnHandInLot;
-
-    @InjectView(R.id.tv_stock_on_hand_in_lot_tip)
-    private TextView tvStockOnHandInLotTip;
-
     @InjectView(R.id.et_lot_amount)
     private EditText etLotAmount;
 
@@ -41,8 +34,14 @@ public class LotMovementViewHolder extends BaseViewHolder {
     @InjectView(R.id.et_lot_info)
     private EditText etLotInfo;
 
-    @InjectView(R.id.vg_soh_lot)
-    private LinearLayout lySOHLot;
+    @InjectView(R.id.vg_lot_soh)
+    private LinearLayout vgLotSOH;
+
+    @InjectView(R.id.tv_lot_soh)
+    private TextView tvLotSOH;
+
+    @InjectView(R.id.tv_lot_soh_tip)
+    private TextView tvLotSOHTip;
 
     @InjectView(R.id.iv_del)
     private ImageView iconDel;
@@ -53,15 +52,41 @@ public class LotMovementViewHolder extends BaseViewHolder {
     }
 
     public void populate(final LotMovementViewModel viewModel, final LotMovementAdapter lotMovementAdapter) {
-        final EditTextWatcher textWatcher = new EditTextWatcher(viewModel);
-        etLotAmount.removeTextChangedListener(textWatcher);
-        etLotAmount.addTextChangedListener(textWatcher);
+        populateLotInfo(viewModel);
+        populateLotSOHBanner(viewModel);
+        updateDeleteIcon(viewModel.isNewAdded(),getOnClickListenerForDeleteIcon(viewModel, lotMovementAdapter));
+        populateAmountField(viewModel);
+    }
 
-        etLotAmount.setHint(LMISApp.getInstance().getString(R.string.hint_lot_amount));
+    private void populateLotSOHBanner(LotMovementViewModel viewModel) {
+        if (context instanceof InitialInventoryActivity || context instanceof UnpackKitActivity) {
+            vgLotSOH.setVisibility(View.GONE);
+        } else {
+            if (viewModel.isNewAdded()) {
+                if (viewModel.quantityGreaterThanZero()) {
+                    vgLotSOH.setVisibility(View.GONE);
+                } else {
+                    tvLotSOHTip.setText(context.getResources().getString(R.string.label_new_added_lot));
+                }
+            } else {
+                tvLotSOH.setText(viewModel.getLotSoh());
+            }
+        }
+    }
+
+    private void populateLotInfo(LotMovementViewModel viewModel) {
         etLotInfo.setText(viewModel.getLotNumber() + " - " + viewModel.getExpiryDate());
         etLotInfo.setKeyListener(null);
-        etLotAmount.setText(viewModel.getQuantity());
+        etLotInfo.setOnKeyListener(null);
+        etLotInfo.setBackground(null);
+    }
 
+    private void populateAmountField(LotMovementViewModel viewModel) {
+        final EditTextWatcher textWatcher = new EditTextWatcher(viewModel);
+        etLotAmount.removeTextChangedListener(textWatcher);
+        etLotAmount.setText(viewModel.getQuantity());
+        etLotAmount.addTextChangedListener(textWatcher);
+        etLotAmount.setHint(LMISApp.getInstance().getString(R.string.hint_lot_amount));
         lyLotAmount.setErrorEnabled(false);
 
         if (!viewModel.isValid()) {
@@ -72,18 +97,12 @@ public class LotMovementViewHolder extends BaseViewHolder {
             etLotAmount.requestFocus();
             lyLotAmount.setError(context.getResources().getString(R.string.msg_invalid_quantity));
         }
+    }
 
-        etLotInfo.setOnKeyListener(null);
-        etLotInfo.setBackground(null);
-
-        txStockOnHandInLot.setText(viewModel.getLotSoh());
-        if (isLotNewAdded(viewModel)) {
-            tvStockOnHandInLotTip.setText(context.getResources().getString(R.string.label_new_added_lot));
+    private void updateDeleteIcon(boolean isNewAdded, View.OnClickListener onClickListenerForDeleteIcon) {
+        if (isNewAdded) {
             iconDel.setVisibility(View.VISIBLE);
-            iconDel.setOnClickListener(getOnClickListenerForDeleteIcon(viewModel, lotMovementAdapter));
-        }
-        if (context instanceof InitialInventoryActivity || context instanceof UnpackKitActivity) {
-            lySOHLot.setVisibility(View.GONE);
+            iconDel.setOnClickListener(onClickListenerForDeleteIcon);
         }
     }
 
@@ -116,10 +135,6 @@ public class LotMovementViewHolder extends BaseViewHolder {
         };
     }
 
-    private boolean isLotNewAdded(LotMovementViewModel viewModel) {
-        return StringUtils.isBlank(viewModel.getLotSoh());
-    }
-
     public void setMovementChangeListener(LotMovementAdapter.MovementChangedListener movementChangedListener) {
         this.movementChangeListener = movementChangedListener;
     }
@@ -136,6 +151,9 @@ public class LotMovementViewHolder extends BaseViewHolder {
         public void afterTextChanged(Editable editable) {
             this.viewModel.setHasDataChanged(true);
             viewModel.setQuantity(editable.toString());
+            if (!(context instanceof InitialInventoryActivity) && !(context instanceof UnpackKitActivity) && viewModel.isNewAdded()) {
+                vgLotSOH.setVisibility(viewModel.quantityGreaterThanZero()?View.GONE:View.VISIBLE);
+            }
             if (movementChangeListener != null) {
                 movementChangeListener.movementChange();
             }

@@ -93,4 +93,8 @@ public class LotMovementViewModel implements Serializable {
                 && !StringUtils.isBlank(quantity);
         return valid;
     }
+
+    public boolean isNewAdded() {
+        return StringUtils.isBlank(lotSoh);
+    }
 }

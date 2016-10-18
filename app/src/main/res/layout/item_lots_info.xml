@@ -49,14 +49,14 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/vg_soh_lot"
+            android:id="@+id/vg_lot_soh"
             style="@style/ItemPhysical.SOHText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding_small">
 
             <TextView
-                android:id="@+id/tv_stock_on_hand_in_lot_tip"
+                android:id="@+id/tv_lot_soh_tip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -65,7 +65,7 @@
                 android:text="@string/label_existing_soh_of_lot" />
 
             <TextView
-                android:id="@+id/stock_on_hand_in_lot"
+                android:id="@+id/tv_lot_soh"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"

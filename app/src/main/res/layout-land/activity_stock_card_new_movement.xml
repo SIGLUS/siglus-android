@@ -130,7 +130,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <TextView
-                android:id="@+id/alert_add_lot_amount"
+                android:id="@+id/alert_add_positive_lot_amount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/alert_add_lot_amount"
