@@ -215,4 +215,28 @@ public class StockMovementViewModelTest extends LMISRepositoryUnitTest{
 
         assertEquals(3, convertedStockMovementItem.getStockOnHand());
     }
+
+    @Test
+    public void shouldValidateEarlyExpiredLotIssued() throws Exception {
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().setLotSOH("100").setQuantity("50").build());
+        assertTrue(stockMovementViewModel.validateSoonestToExpireLotsIssued());
+
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().setLotSOH("100").setQuantity("50").build());
+        assertFalse(stockMovementViewModel.validateSoonestToExpireLotsIssued());
+
+        stockMovementViewModel.existingLotMovementViewModelList.clear();
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().build());
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().build());
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().build());
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().setLotSOH("100").setQuantity("50").build());
+        assertFalse(stockMovementViewModel.validateSoonestToExpireLotsIssued());
+
+        stockMovementViewModel.existingLotMovementViewModelList.clear();
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().setLotSOH("100").setQuantity("100").build());
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().build());
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().build());
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().build());
+        stockMovementViewModel.existingLotMovementViewModelList.add(new LotMovementViewModelBuilder().setLotSOH("100").setQuantity("50").build());
+        assertFalse(stockMovementViewModel.validateSoonestToExpireLotsIssued());
+    }
 }

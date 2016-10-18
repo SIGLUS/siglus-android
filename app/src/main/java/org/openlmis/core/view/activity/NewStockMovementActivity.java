@@ -87,6 +87,9 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     @InjectView(R.id.alert_add_lot_amount)
     TextView alertAddLotAmount;
 
+    @InjectView(R.id.alert_soonest_expire)
+    TextView alertSoonestExpire;
+
     @InjectView(R.id.action_add_new_lot)
     View actionAddNewLot;
 
@@ -149,12 +152,25 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         existingLotListView.setLayoutManager(new LinearLayoutManager(this));
         existingLotMovementAdapter = new LotMovementAdapter(stockMovementViewModel.getExistingLotMovementViewModelList());
         existingLotListView.setAdapter(existingLotMovementAdapter);
+        if (movementType == MovementReasonManager.MovementType.ISSUE) {
+            existingLotMovementAdapter.setMovementChangeListener(new LotMovementAdapter.MovementChangedListener() {
+                @Override
+                public void movementChange() {
+                    updateSoonestToExpireNotUsedBanner();
+                }
+            });
+        }
     }
 
     private void initNewLotListView() {
         newLotMovementRecycleView.setLayoutManager(new LinearLayoutManager(this));
         newLotMovementAdapter = new LotMovementAdapter(stockMovementViewModel.getNewLotMovementViewModelList(), presenter.getStockCard().getProduct().getProductNameWithCodeAndStrength());
         newLotMovementRecycleView.setAdapter(newLotMovementAdapter);
+
+    }
+
+    private void updateSoonestToExpireNotUsedBanner() {
+        alertSoonestExpire.setVisibility(stockMovementViewModel.validateSoonestToExpireLotsIssued() ? View.GONE : View.VISIBLE);
     }
 
     private void refreshNewLotList() {
@@ -226,11 +242,11 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
                             presenter.addLotMovement(new LotMovementViewModel(addLotDialogFragment.getLotNumber(),
                                     addLotDialogFragment.getExpiryDate(), movementType))
                                     .subscribe(new Action1<List<LotMovementViewModel>>() {
-                                @Override
-                                public void call(List<LotMovementViewModel> lotMovementViewModels) {
-                                    refreshNewLotList();
-                                }
-                            });
+                                        @Override
+                                        public void call(List<LotMovementViewModel> lotMovementViewModels) {
+                                            refreshNewLotList();
+                                        }
+                                    });
                             addLotDialogFragment.dismiss();
                         }
                         actionAddNewLot.setEnabled(true);

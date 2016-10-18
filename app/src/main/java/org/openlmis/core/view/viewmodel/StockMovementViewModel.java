@@ -186,7 +186,7 @@ public class StockMovementViewModel {
 
     public void populateStockExistence(long previousStockOnHand) {
         if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_lot_management) && !isKit) {
-                this.stockExistence = "" + previousStockOnHand;
+            this.stockExistence = "" + previousStockOnHand;
         } else {
             MovementReasonManager.MovementType movementType = typeQuantityMap.keySet().iterator().next();
             if (MovementReasonManager.MovementType.RECEIVE.equals(movementType) || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
@@ -206,5 +206,22 @@ public class StockMovementViewModel {
 
     public boolean isLotEmpty() {
         return newLotMovementViewModelList.isEmpty() && existingLotMovementViewModelList.isEmpty();
+    }
+
+    public boolean validateSoonestToExpireLotsIssued() {
+        boolean soonestToExpireLotsIssued = true;
+        for (LotMovementViewModel lotMovementViewModel : existingLotMovementViewModelList) {
+            if (!StringUtils.isEmpty(lotMovementViewModel.getQuantity()) && Long.parseLong(lotMovementViewModel.getQuantity()) > 0) {
+                if (!soonestToExpireLotsIssued) {
+                    return false;
+                }
+                if (Long.parseLong(lotMovementViewModel.getQuantity()) < Long.parseLong(lotMovementViewModel.getLotSoh())) {
+                    soonestToExpireLotsIssued = false;
+                }
+            } else {
+                soonestToExpireLotsIssued = false;
+            }
+        }
+        return true;
     }
 }

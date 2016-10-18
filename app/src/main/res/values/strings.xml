@@ -405,4 +405,5 @@
     <string name="error_lot_already_exists">The lot already exists, please add a new one.</string>
 
     <string name="msg_draft_saved">Draft saved successfully</string>
+    <string name="alert_soonest_expire">The lots that you are issuing are not the first to expire</string>
 </resources>
