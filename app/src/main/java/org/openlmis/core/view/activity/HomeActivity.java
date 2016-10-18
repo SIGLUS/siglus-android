@@ -250,13 +250,13 @@ public class HomeActivity extends BaseActivity {
             FileUtil.copy(currentDB, tempBackup);
             ExportSqliteOpenHelper.removePrivateUserInfo(this);
             FileUtil.copy(tempBackup,externalBackup);
-            this.deleteDatabase("lmis_copy");
             ToastUtil.show(Html.fromHtml(getString(R.string.msg_export_data_sucess, externalBackup.getPath())));
         } catch (Exception e) {
             new LMISException(e).reportToFabric();
             ToastUtil.show(e.getMessage());
+        } finally {
             if (tempBackup.canRead()) {
-                this.deleteDatabase("lmis_copy");
+                tempBackup.delete();
             }
         }
     }
