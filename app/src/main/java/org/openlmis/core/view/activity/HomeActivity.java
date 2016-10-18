@@ -243,10 +243,10 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void exportDB() {
+        File currentDB = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_db");
+        File tempBackup = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_copy");
+        File externalBackup = new File(Environment.getExternalStorageDirectory(), "lmis_backup");
         try {
-            File currentDB = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_db");
-            File tempBackup = new File(Environment.getDataDirectory(), "//data//" + LMISApp.getContext().getApplicationContext().getPackageName() + "//databases//lmis_copy");
-            File externalBackup = new File(Environment.getExternalStorageDirectory(), "lmis_backup");
             FileUtil.copy(currentDB, tempBackup);
             ExportSqliteOpenHelper.removePrivateUserInfo(this);
             FileUtil.copy(tempBackup,externalBackup);
@@ -255,6 +255,9 @@ public class HomeActivity extends BaseActivity {
         } catch (Exception e) {
             new LMISException(e).reportToFabric();
             ToastUtil.show(e.getMessage());
+            if (tempBackup.canRead()) {
+                this.deleteDatabase("lmis_copy");
+            }
         }
     }
 
