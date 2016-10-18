@@ -209,6 +209,10 @@
     <string name="hint_update_banner_tips">%1$s Foi desactivado e removido para a <![CDATA[<b>produtos arquivados</b>]]> lista</string>
     <string name="msg_expiry_warning">Este produto tem estoque a expirar em breve. Por favor, verifique os prazos de validade dos produtos.</string>
     <string name="msg_expired_warning">Este produto tem estoque expirado. Por favor, verifique os prazos de validade do produto.</string>
+    <string name="msg_expiring_date">Expiring %1$s</string>
+    <string name="msg_expired_date">Expired %1$s</string>
+    <string name="msg_over_stock">Over stock</string>
+    <string name="msg_low_stock">Low stock</string>
     <!--Physical Inventory Page-->
     <string name="label_physical_inventory_stock_on_hand">Estoque existente actual</string>
     <!--Unpack Kit-->

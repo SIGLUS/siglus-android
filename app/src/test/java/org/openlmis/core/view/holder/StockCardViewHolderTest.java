@@ -19,7 +19,6 @@ import org.robolectric.RuntimeEnvironment;
 
 import java.util.Date;
 
-import static junit.framework.Assert.assertNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -57,7 +56,7 @@ public class StockCardViewHolderTest {
 
         viewHolder.populate(inventoryViewModel, "");
 
-        assertThat(viewHolder.ivExpiryDateWarning.getVisibility()).isEqualTo(View.VISIBLE);
+        assertThat(viewHolder.lyExpiryDateWarning.getVisibility()).isEqualTo(View.VISIBLE);
     }
 
     @Test
@@ -70,7 +69,7 @@ public class StockCardViewHolderTest {
 
         viewHolder.populate(inventoryViewModel, "");
 
-        assertThat(viewHolder.ivExpiryDateWarning.getVisibility()).isEqualTo(View.VISIBLE);
+        assertThat(viewHolder.lyExpiryDateWarning.getVisibility()).isEqualTo(View.VISIBLE);
     }
 
     @Test
@@ -83,7 +82,7 @@ public class StockCardViewHolderTest {
 
         viewHolder.populate(inventoryViewModel, "");
 
-        assertNull(viewHolder.ivExpiryDateWarning);
+        assertThat(viewHolder.lyExpiryDateWarning.getVisibility()).isEqualTo(View.GONE);
     }
 
     @Test
@@ -102,7 +101,7 @@ public class StockCardViewHolderTest {
         InventoryViewModel secondInventoryViewModel = new InventoryViewModel(stockCard);
         viewHolder.populate(secondInventoryViewModel, "");
 
-        assertThat(viewHolder.ivExpiryDateWarning.getVisibility()).isEqualTo(View.GONE);
+        assertThat(viewHolder.lyExpiryDateWarning.getVisibility()).isEqualTo(View.GONE);
     }
 
     @Test
@@ -116,6 +115,6 @@ public class StockCardViewHolderTest {
 
         viewHolder.inflateData(inventoryViewModel, "");
 
-        assertNull(viewHolder.ivExpiryDateWarning);
+        assertThat(viewHolder.lyExpiryDateWarning.getVisibility()).isEqualTo(View.GONE);
     }
 }
