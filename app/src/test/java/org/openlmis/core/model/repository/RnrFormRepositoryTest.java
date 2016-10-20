@@ -18,6 +18,8 @@
 
 package org.openlmis.core.model.repository;
 
+import android.support.annotation.NonNull;
+
 import com.google.inject.AbstractModule;
 
 import org.joda.time.DateTime;
@@ -488,6 +490,72 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
         assertThat(listWithEmergency.size(), is(3));
     }
 
+    @Test
+    public void shouldDeleteOldRnrFormData() throws LMISException {
+        Program programEss = new Program();
+        programEss.setId(1L);
+        programEss.setProgramCode("ESS_MEDS");
+
+        Program programVIA = new Program();
+        programVIA.setId(2L);
+        programVIA.setProgramCode(Constants.VIA_PROGRAM_CODE);
+        programEss.setParentCode(Constants.VIA_PROGRAM_CODE);
+
+        Program programMMIA = new Program();
+        programVIA.setId(3L);
+        programVIA.setProgramCode(Constants.MMIA_PROGRAM_CODE);
+
+
+        when(mockProgramRepository.queryProgramIdsByProgramCodeOrParentCode(Constants.VIA_PROGRAM_CODE)).thenReturn(newArrayList(1L, 2L));
+        RnRForm form = new RnRForm();
+        form.setProgram(programEss);
+        form.setStatus(RnRForm.STATUS.AUTHORIZED);
+        form.setEmergency(false);
+        form.setPeriodEnd(new Period(new DateTime()).getEnd().toDate());
+
+        RnRForm form2 = new RnRForm();
+        form2.setProgram(programVIA);
+        form2.setStatus(RnRForm.STATUS.AUTHORIZED);
+        form2.setEmergency(false);
+        form2.setPeriodEnd(DateUtil.parseString("2015-09-01", DateUtil.DB_DATE_FORMAT));
+
+        RnRForm form3 = new RnRForm();
+        form3.setProgram(programMMIA);
+        form3.setStatus(RnRForm.STATUS.AUTHORIZED);
+        form3.setEmergency(true);
+        form3.setPeriodEnd(DateUtil.parseString("2015-09-01", DateUtil.DB_DATE_FORMAT));
+
+
+        List<RnrFormItem> rnrFormItemList = new ArrayList<>();
+
+        Program program = new Program();
+        program.setProgramCode("1");
+        Product product = new Product();
+        product.setId(1);
+
+        rnrFormItemList.add(getRnrFormItem(form3, product, 1));
+
+        RnrFormItemRepository rnrFormItemRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormItemRepository.class);
+        rnrFormItemRepository.batchCreateOrUpdate(rnrFormItemList);
+
+        form3.setRegimenItemListWrapper(new ArrayList<RegimenItem>());
+        form3.setBaseInfoItemListWrapper(new ArrayList<BaseInfoItem>());
+
+        rnrFormRepository.create(form);
+        rnrFormRepository.create(form2);
+        rnrFormRepository.create(form3);
+
+        rnrFormRepository.deleteOldData();
+
+        List<RnRForm> rnRFormsQueried = rnrFormRepository.queryAllUnsyncedForms();
+        List<RnrFormItem> rnrFormItemListFromDB = rnrFormItemRepository.listAllNewRnrItems();
+
+        assertEquals(1, rnRFormsQueried.size());
+        assertEquals(new Period(new DateTime()).getEnd().toDate(), rnRFormsQueried.get(0).getPeriodEnd());
+        assertEquals(0, rnrFormItemListFromDB.size());
+
+    }
+
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
@@ -497,5 +565,14 @@ public class RnrFormRepositoryTest extends LMISRepositoryUnitTest {
             bind(PeriodService.class).toInstance(mockPeriodService);
             bind(ProductProgramRepository.class).toInstance(mockProductProgramRepository);
         }
+    }
+
+    @NonNull
+    private RnrFormItem getRnrFormItem(RnRForm form, Product product, long inventory) {
+        RnrFormItem rnrFormItem = new RnrFormItem();
+        rnrFormItem.setForm(form);
+        rnrFormItem.setProduct(product);
+        rnrFormItem.setInventory(inventory);
+        return rnrFormItem;
     }
 }

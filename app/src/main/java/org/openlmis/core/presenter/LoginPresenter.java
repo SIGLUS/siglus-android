@@ -35,6 +35,7 @@ import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.User;
 import org.openlmis.core.model.repository.LotRepository;
 import org.openlmis.core.model.repository.ProgramRepository;
+import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.model.repository.UserRepository;
 import org.openlmis.core.network.model.UserResponse;
@@ -63,6 +64,9 @@ public class LoginPresenter extends Presenter {
 
     @Inject
     StockRepository stockRepository;
+
+    @Inject
+    RnrFormRepository rnrFormRepository;
 
     @Inject
     SyncService syncService;
@@ -182,6 +186,15 @@ public class LoginPresenter extends Presenter {
         syncDownManager.syncDownServerData(getSyncSubscriber());
 
         view.sendScreenToGoogleAnalyticsAfterLogin();
+
+        if (LMISApp.getInstance().getFeatureToggleFor(R.bool.feature_archive_old_data)) {
+            ArchiveOldData();
+        }
+    }
+
+    private void ArchiveOldData() {
+        stockRepository.deleteOldData();
+        rnrFormRepository.deleteOldData();
     }
 
     public void onLoginFailed() {

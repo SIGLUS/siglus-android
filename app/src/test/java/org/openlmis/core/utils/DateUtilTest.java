@@ -139,4 +139,6 @@ public class DateUtilTest {
         assertEquals(new GregorianCalendar(2013, 3, 30).getTime(), DateUtil.getActualMaximumDate(new GregorianCalendar(2013, 3, 1).getTime()));
         assertEquals(new GregorianCalendar(2013, 5, 30).getTime(), DateUtil.getActualMaximumDate(new GregorianCalendar(2013, 5, 1).getTime()));
     }
+
+
 }

@@ -62,6 +62,7 @@ import roboguice.RoboGuice;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.openlmis.core.manager.MovementReasonManager.MovementType.ISSUE;
@@ -529,11 +530,38 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
         StockCard queriedStockCard = stockRepository.queryStockCardById(stockCard.getId());
         assertThat(queriedStockCard.getProduct().getCode(), is(product.getCode()));
-        assertThat(queriedStockCard.getLotOnHandListWrapper().get(0).getQuantityOnHand(),is(10L));
+        assertThat(queriedStockCard.getLotOnHandListWrapper().get(0).getQuantityOnHand(), is(10L));
 
         StockMovementItem queriedStockMovementItem = queriedStockCard.getStockMovementItemsWrapper().get(0);
-        assertThat(queriedStockMovementItem.getMovementQuantity(),is(10L));
-        assertThat(queriedStockMovementItem.getLotMovementItemListWrapper().get(0).getMovementQuantity(),is(2L));
-        assertThat(queriedStockMovementItem.getLotMovementItemListWrapper().get(0).getLot().getLotNumber(),is("AAA"));
+        assertThat(queriedStockMovementItem.getMovementQuantity(), is(10L));
+        assertThat(queriedStockMovementItem.getLotMovementItemListWrapper().get(0).getMovementQuantity(), is(2L));
+        assertThat(queriedStockMovementItem.getLotMovementItemListWrapper().get(0).getLot().getLotNumber(), is("AAA"));
+    }
+
+    @Test
+    public void shouldDeleteDataOver13Months() throws Exception {
+        StockCard stockCard = saveStockCardWithOneMovement(stockRepository);
+
+        StockMovementItem stockMovementItem = createMovementItem(MovementReasonManager.MovementType.POSITIVE_ADJUST, 100L, stockCard, new Date(), DateUtil.parseString("2015-06-01", DateUtil.DB_DATE_FORMAT), true);
+
+        Lot lot1 = new Lot();
+        lot1.setProduct(product);
+        lot1.setExpirationDate(DateUtil.parseString("2017-12-31", DateUtil.DB_DATE_FORMAT));
+        lot1.setLotNumber("AAA");
+
+        LotMovementItem lotMovementItem = new LotMovementItemBuilder()
+                .setStockMovementItem(stockMovementItem)
+                .setLot(lot1)
+                .setMovementQuantity(2L).build();
+
+        lotRepository.batchCreateLotsAndLotMovements(Arrays.asList(lotMovementItem));
+
+        stockRepository.deleteOldData();
+
+        StockCard stockCardQueried = stockRepository.queryStockCardById(stockCard.getId());
+
+        assertEquals(1, stockCardQueried.getStockMovementItemsWrapper().size());
+        assertNotEquals(MovementReasonManager.MovementType.POSITIVE_ADJUST, stockCardQueried.getStockMovementItemsWrapper().get(0).getMovementType());
+        assertEquals(0, stockCardQueried.getStockMovementItemsWrapper().get(0).getLotMovementItemListWrapper().size());
     }
 }

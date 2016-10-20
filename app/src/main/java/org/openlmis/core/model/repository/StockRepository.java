@@ -167,7 +167,7 @@ public class StockRepository {
         }
     }
 
-    public void createOrUpdateStockCardWithStockMovement(final StockCard stockCard){
+    public void createOrUpdateStockCardWithStockMovement(final StockCard stockCard) {
         try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
@@ -446,7 +446,7 @@ public class StockRepository {
     }
 
     public void batchCreateSyncDownStockCardsAndMovements(final SyncDownStockCardResponse syncDownStockCardResponse) {
-        try{
+        try {
             TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
@@ -460,8 +460,22 @@ public class StockRepository {
                     return null;
                 }
             });
-        } catch (SQLException e){
+        } catch (SQLException e) {
             new LMISException(e).reportToFabric();
         }
+    }
+
+    public void deleteOldData() {
+        final int MONTH_OFFSET = 13;
+
+        String dueDateShouldDataLivedInDB = DateUtil.formatDate(DateUtil.dateMinusMonth(new Date(), MONTH_OFFSET), DateUtil.DB_DATE_FORMAT);
+
+        String rawSqlDeleteLotItems = "DELETE FROM lot_movement_items " +
+                "WHERE StockMovementItem_id IN (SELECT id FROM stock_items WHERE movementDate < '" + dueDateShouldDataLivedInDB + "' );";
+        String rawSqlDeleteStockMovementItems = "DELETE FROM stock_items " +
+                "WHERE movementDate < '" + dueDateShouldDataLivedInDB + "'; ";
+
+        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteLotItems);
+        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteStockMovementItems);
     }
 }

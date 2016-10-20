@@ -24,6 +24,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.Where;
 
+import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Period;
@@ -39,6 +40,7 @@ import org.openlmis.core.model.service.PeriodService;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
+import org.openlmis.core.utils.DateUtil;
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.FluentIterable;
 
@@ -367,5 +369,32 @@ public class RnrFormRepository {
         signatureRepository.batchCreateOrUpdate(form.getSignaturesWrapper());
         regimenItemRepository.batchCreateOrUpdate(form.getRegimenItemListWrapper());
         baseInfoItemRepository.batchCreateOrUpdate(form.getBaseInfoItemListWrapper());
+    }
+
+    public void deleteOldData() {
+        final int MONTH_OFFSET = 13;
+
+        String dueDateShouldDataLivedInDB = DateUtil.formatDate(DateUtil.dateMinusMonth(new Date(), MONTH_OFFSET), DateUtil.DB_DATE_FORMAT);
+
+        String rawSqlDeleteRnrFormItems = "DELETE FROM rnr_form_items " +
+                "WHERE form_id IN (SELECT id FROM rnr_forms WHERE periodEnd < '" + dueDateShouldDataLivedInDB + "' );";
+
+        String rawSqlDeleteSignature = "DELETE FROM rnr_form_signature " +
+                "WHERE form_id IN (SELECT id FROM rnr_forms WHERE periodEnd < '" + dueDateShouldDataLivedInDB + "' );";
+
+        String rawSqlDeleteRegimeItems = "DELETE FROM regime_items " +
+                "WHERE form_id IN (SELECT id FROM rnr_forms WHERE periodEnd < '" + dueDateShouldDataLivedInDB + "' );";
+
+        String rawSqlDeleteBaseInfoItems = "DELETE FROM rnr_baseInfo_items " +
+                "WHERE rnRForm_id IN (SELECT id FROM rnr_forms WHERE periodEnd < '" + dueDateShouldDataLivedInDB + "' );";
+
+        String rawSqlDeleteRnrForms = "DELETE FROM rnr_forms " +
+                "WHERE periodEnd < '" + dueDateShouldDataLivedInDB + "'; ";
+
+        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteRnrFormItems);
+        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteBaseInfoItems);
+        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteRegimeItems);
+        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteSignature);
+        LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteRnrForms);
     }
 }
