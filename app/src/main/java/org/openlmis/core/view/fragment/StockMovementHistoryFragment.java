@@ -33,6 +33,7 @@ import android.widget.TextView;
 import com.google.inject.Inject;
 
 import org.openlmis.core.R;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.presenter.Presenter;
 import org.openlmis.core.presenter.StockMovementHistoryPresenter;
 import org.openlmis.core.utils.Constants;
@@ -52,6 +53,9 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
 
     @InjectView(R.id.list)
     ListView historyListView;
+
+    @InjectView(R.id.tv_archived_old_data)
+    TextView tvArchivedOldData;
 
     private long stockCardID;
     private long startIndex = 0;
@@ -108,6 +112,10 @@ public class StockMovementHistoryFragment extends BaseFragment implements StockM
         historyListView.setAdapter(adapter);
 
         swipeRefreshLayout.setOnRefreshListener(this);
+
+        if(!SharedPreferenceMgr.getInstance().hasDeletedOldStockMovement()) {
+            tvArchivedOldData.setVisibility(View.GONE);
+        }
     }
 
 

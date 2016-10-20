@@ -28,6 +28,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import org.joda.time.DateTime;
 import org.openlmis.core.LMISApp;
@@ -35,6 +37,7 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.googleAnalytics.ScreenName;
 import org.openlmis.core.googleAnalytics.TrackerActions;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.Period;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.presenter.RnRFormListPresenter;
@@ -65,6 +68,9 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
     @InjectView(R.id.rnr_form_list)
     RecyclerView listView;
 
+    @InjectView(R.id.tv_archived_old_data)
+    TextView tvArchivedOldData;
+
     @InjectPresenter(RnRFormListPresenter.class)
     RnRFormListPresenter presenter;
     private ArrayList<RnRFormViewModel> data;
@@ -90,6 +96,10 @@ public class RnRFormListActivity extends BaseActivity implements RnRFormListPres
         programCode = getProgramCode();
 
         setTitle(isMMIA() ? R.string.mmia_list : R.string.requisition_list);
+
+        if(!SharedPreferenceMgr.getInstance().hasDeletedOldRnr()){
+            tvArchivedOldData.setVisibility(View.GONE);
+        }
 
         presenter.setProgramCode(programCode);
 

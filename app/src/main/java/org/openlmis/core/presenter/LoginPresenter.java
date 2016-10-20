@@ -193,8 +193,14 @@ public class LoginPresenter extends Presenter {
     }
 
     private void ArchiveOldData() {
-        stockRepository.deleteOldData();
-        rnrFormRepository.deleteOldData();
+        if(stockRepository.hasOldDate()){
+            stockRepository.deleteOldData();
+            SharedPreferenceMgr.getInstance().setHasDeletedOldStockMovement(true);
+        }
+        if(rnrFormRepository.hasOldDate()){
+            rnrFormRepository.deleteOldData();
+            SharedPreferenceMgr.getInstance().setHasDeletedOldRnr(true);
+        }
     }
 
     public void onLoginFailed() {

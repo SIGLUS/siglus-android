@@ -27,6 +27,7 @@ import com.j256.ormlite.misc.TransactionManager;
 import org.openlmis.core.LMISApp;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.StockMovementIsNullException;
+import org.openlmis.core.manager.SharedPreferenceMgr;
 import org.openlmis.core.model.DraftInventory;
 import org.openlmis.core.model.LotMovementItem;
 import org.openlmis.core.model.LotOnHand;
@@ -224,6 +225,22 @@ public class StockRepository {
         List<StockCard> list = list();
         if (list != null && list.size() > 0) {
             return true;
+        }
+        return false;
+    }
+
+    public boolean hasOldDate() {
+        Date dueDateShouldDataLivedInDB = DateUtil.dateMinusMonth(new Date(), SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData());
+
+        List<StockCard> list = list();
+        if (hasStockData()) {
+            for (StockCard stockCard : list) {
+              for(StockMovementItem stockMovementItem: stockCard.getStockMovementItemsWrapper()){
+                  if (stockMovementItem.getMovementDate().before(dueDateShouldDataLivedInDB)) {
+                      return true;
+                  }
+              }
+            }
         }
         return false;
     }
@@ -466,14 +483,12 @@ public class StockRepository {
     }
 
     public void deleteOldData() {
-        final int MONTH_OFFSET = 13;
+        String dueDateShouldDataLivedInDB = DateUtil.formatDate(DateUtil.dateMinusMonth(new Date(), SharedPreferenceMgr.getInstance().getMonthOffsetThatDefinedOldData()), DateUtil.DB_DATE_FORMAT);
 
-        String dueDateShouldDataLivedInDB = DateUtil.formatDate(DateUtil.dateMinusMonth(new Date(), MONTH_OFFSET), DateUtil.DB_DATE_FORMAT);
-
-        String rawSqlDeleteLotItems = "DELETE FROM lot_movement_items " +
-                "WHERE StockMovementItem_id IN (SELECT id FROM stock_items WHERE movementDate < '" + dueDateShouldDataLivedInDB + "' );";
-        String rawSqlDeleteStockMovementItems = "DELETE FROM stock_items " +
-                "WHERE movementDate < '" + dueDateShouldDataLivedInDB + "'; ";
+        String rawSqlDeleteLotItems = "DELETE FROM lot_movement_items "
+                + "WHERE StockMovementItem_id IN (SELECT id FROM stock_items WHERE movementDate < '" + dueDateShouldDataLivedInDB + "' );";
+        String rawSqlDeleteStockMovementItems = "DELETE FROM stock_items "
+                + "WHERE movementDate < '" + dueDateShouldDataLivedInDB + "'; ";
 
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteLotItems);
         LmisSqliteOpenHelper.getInstance(LMISApp.getContext()).getWritableDatabase().execSQL(rawSqlDeleteStockMovementItems);

@@ -9,6 +9,14 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_archived_old_data"
+            android:layout_marginBottom="0dp"
+            android:background="@drawable/bottom_border_black"
+            android:text="@string/msg_has_archived_old_data"/>
+
         <include layout="@layout/item_stock_movement_header" />
 
         <android.support.v4.widget.SwipeRefreshLayout

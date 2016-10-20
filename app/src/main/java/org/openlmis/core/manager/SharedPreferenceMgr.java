@@ -60,6 +60,10 @@ public class SharedPreferenceMgr {
     public static final String KEY_ENABLE_QA_DEBUG = "enable_qa_debug";
     public static final String LATEST_UPDATE_LOW_STOCK_AVG_TIME = "latest_update_low_stock_avg_time";
     public static final String KEY_HAS_LOT_INFO = "has_lot_info";
+    public static final String KEY_HAS_DELETED_OLD_STOCK_MOVEMENT = "has_deleted_old_stock_movement";
+    public static final String KEY_HAS_DELETED_OLD_RNR = "has_deleted_old_rnr";
+    public static final String MONTH_OFFSET_DEFINED_OLD_DATA = "month_offset_that_defined_old_data";
+    final int MONTH_OFFSET = 13;
     protected StockRepository stockRepository;
 
     @Inject
@@ -108,6 +112,14 @@ public class SharedPreferenceMgr {
 
     public boolean hasLotInfo() {
         return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_HAS_LOT_INFO, false);
+    }
+
+    public boolean hasDeletedOldStockMovement() {
+        return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_HAS_DELETED_OLD_STOCK_MOVEMENT, false);
+    }
+
+    public boolean hasDeletedOldRnr() {
+        return sharedPreferences.getBoolean(SharedPreferenceMgr.KEY_HAS_DELETED_OLD_RNR, false);
     }
 
     public void setRequisitionDataSynced(boolean requisitionDataSynced) {
@@ -197,6 +209,10 @@ public class SharedPreferenceMgr {
         return sharedPreferences.getLong(KEY_LAST_SYNCED_TIME_STOCKCARD, 0);
     }
 
+    public int getMonthOffsetThatDefinedOldData() {
+        return sharedPreferences.getInt(MONTH_OFFSET_DEFINED_OLD_DATA, MONTH_OFFSET);
+    }
+
     public void setStockLastSyncTime() {
         sharedPreferences.edit().putLong(KEY_LAST_SYNCED_TIME_STOCKCARD, LMISApp.getInstance().getCurrentTimeMillis()).apply();
     }
@@ -229,5 +245,13 @@ public class SharedPreferenceMgr {
 
     public void setHasLotInfo(boolean hasLotInfo) {
         sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_HAS_LOT_INFO, hasLotInfo).apply();
+    }
+
+    public void setHasDeletedOldStockMovement(boolean hasDeletedOldStockMovement) {
+        sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_HAS_DELETED_OLD_STOCK_MOVEMENT, hasDeletedOldStockMovement).apply();
+    }
+
+    public void setHasDeletedOldRnr(boolean hasDeletedOldRnr) {
+        sharedPreferences.edit().putBoolean(SharedPreferenceMgr.KEY_HAS_DELETED_OLD_RNR, hasDeletedOldRnr).apply();
     }
 }
