@@ -28,7 +28,7 @@
     <string name="msg_sync_stockmovement_failed">Descarregamento de movimentos de estoque a partir do servidor falhou, por favor entre novamente.</string>
     <string name="msg_initial_sync_success">Sincronização inicial bem sucedida. Tablet está pronto para ser usado.</string>
     <string name="msg_download_archived_products_fail">Descarregamento de produtos arquivados a partir do servidor falhou, por favor entre novamente.</string>
-    <string name="version_number"><![CDATA[Version <b>%1$s</b>]]> </string>
+    <string name="version_number"><![CDATA[Versão <b>%1$s</b>]]></string>
     <!--Init Inventory-->
     <string name="hint_quantity_in_stock">Estoque Existente</string>
     <string name="label_expire_date">Prazos de Validade</string>
@@ -209,10 +209,10 @@
     <string name="hint_update_banner_tips">%1$s Foi desactivado e removido para a <![CDATA[<b>produtos arquivados</b>]]> lista</string>
     <string name="msg_expiry_warning">Este produto tem estoque a expirar em breve. Por favor, verifique os prazos de validade dos produtos.</string>
     <string name="msg_expired_warning">Este produto tem estoque expirado. Por favor, verifique os prazos de validade do produto.</string>
-    <string name="msg_expiring_date">Expiring %1$s</string>
-    <string name="msg_expired_date">Expired %1$s</string>
-    <string name="msg_over_stock">Over stock</string>
-    <string name="msg_low_stock">Low stock</string>
+    <string name="msg_expiring_date">Expirando %1$s</string>
+    <string name="msg_expired_date">Expirado %1$s</string>
+    <string name="msg_over_stock">Excesso de Estoque</string>
+    <string name="msg_low_stock">Estoque em risco</string>
     <!--Physical Inventory Page-->
     <string name="label_physical_inventory_stock_on_hand">Estoque existente actual</string>
     <!--Unpack Kit-->
@@ -319,9 +319,9 @@
     <string name="document_number">Número do documento</string>
     <!--App Name In Different Environment-->
     <!--Incomplete Requisition Banner-->
-    <string name="via_and_mmia_requisition_alert">Suas Requisições Balancete e seus MMIAs de <![CDATA[<b>%1$s</b>]]> não foram concluídos.</string>
-    <string name="via_requisition_alert">Sua Requisição Balancete de <![CDATA[<b>%1$s</b>]]> não foi concluída</string>
-    <string name="mmia_requisition_alert">Seu MMIA de <![CDATA[<b>%1$s</b>]]> não foi concluído.</string>
+    <string name="via_and_mmia_requisition_alert">Suas Requisições Balancete e seus MMIAs para <![CDATA[<b>%1$s</b>]]> não foram concluídos.</string>
+    <string name="via_requisition_alert">Sua Requisição Balancete para <![CDATA[<b>%1$s</b>]]> não foi concluída</string>
+    <string name="mmia_requisition_alert">Seu MMIA para <![CDATA[<b>%1$s</b>]]> não foi concluído.</string>
     <string name="via_requisition_for_multiple_periods_alert">Suas requisições balancete de vários períodos não foram concluídas</string>
     <string name="mmia_requisition_for_multiple_periods_alert">Seus MMIA para vários períodos não foram concluídos</string>
     <string name="via_and_mmia_requisitions_for_multiple_periods_alert">Os seus relatorios de MMIA e Requisição balancete de vários períodos não foram concluídos</string>
@@ -335,7 +335,7 @@
     <string name="hint_movement_date">Data do movimento</string>
     <string name="hint_document_number">Número do documento</string>
     <string name="hint_movement_reason">Origem/Destino do Movimento</string>
-    <string name="hint_movement_reason_receive">Origem do movimento</string>
+    <string name="hint_movement_reason_receive">Origem/Destino do Movimento</string>
     <string name="hint_requested_quantity">Pedidos</string>
     <string name="hint_movement_quantity">Quantidade</string>
     <string name="hint_movement_signature">Rúbrica</string>
@@ -358,16 +358,16 @@
     <string name="label_existing_soh_of_lot">Estoque existente de um lote</string>
     <string name="label_new_added_lot">Lote recentemente adicionado, não tem nenhum estoque existente</string>
     <string name="empty_lot_warning">Por favor, adicione um novo lote</string>
-    <string name="alert_add_lot_amount">Intriduza quantidade acima de "0" no minimo em um lote</string>
+    <string name="alert_add_lot_amount">Digite um valor maior que 0 em pelo menos um lote</string>
     <string name="alert_lot_quantity_error">Quantidade não pode estar em branco!</string>
     <string name="btn_remove_lot">REMOVER LOTE</string>
     <string name="msg_remove_new_lot_title"><![CDATA[<b>Remover lote recém-criado</b>]]></string>
     <string name="msg_remove_new_lot"><![CDATA[Remover lote recém-criado<b>%1$s</b> que vai expirar em %2$s de <b>%3$s</b>]]></string>
-    <string name="msg_no_lot_for_issue">Nenhum lote existente para que você possa dar saídaou fazer ajuste negativo</string>
+    <string name="msg_no_lot_for_issue">Nenhum lote existente para que você possa dar saída ou fazer ajuste negativo</string>
     <string name="error_lot_already_exists">O lote já existe, por favor, adicione um novo.</string>
     <string name="msg_draft_saved">Rascunho gravado com sucesso</string>
-    <string name="alert_soonest_expire">Your movement includes a batch that is not the first to expire</string>
-    <string name="msg_export_data_sucess">Data are successfully exported and saved to <![CDATA[<b>%1$s</b>]]></string>
-    <string name="action_export_data">Export all app data</string>
-    <string name="msg_has_archived_old_data">Historical data beyond 13-months are archived on the web portal.</string>
+    <string name="alert_soonest_expire">Seu movimento inclui um lote que não é o primeiro a expirar</string>
+    <string name="msg_export_data_sucess">Os dados foram exportados e gravados com sucesso <![CDATA[<b>%1$s</b>]]></string>
+    <string name="action_export_data">Exportar todos os dados de aplicativos</string>
+    <string name="msg_has_archived_old_data">Os dados históricos para além de 13 meses são arquivados no portal web.</string>
 </resources>
