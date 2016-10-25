@@ -102,6 +102,9 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     @InjectView(R.id.ly_lot_list)
     private ViewGroup lyLotList;
 
+    @InjectView(R.id.ly_alert_field)
+    private ViewGroup lyAlertField;
+
     @InjectPresenter(NewStockMovementPresenter.class)
     NewStockMovementPresenter presenter;
 

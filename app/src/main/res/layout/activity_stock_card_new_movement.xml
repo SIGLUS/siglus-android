@@ -175,43 +175,52 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/alert_add_positive_lot_amount"
+                    <LinearLayout
+                        android:id="@+id/ly_alert_field"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/border_lot_amount_alert"
-                        android:layout_margin="@dimen/margin_normal"
-                        android:padding="@dimen/padding_small"
-                        android:text="@string/alert_add_lot_amount"
-                        android:textColor="@color/color_requisition_banner_text"
-                        android:textSize="@dimen/font_size_regular"
-                        android:visibility="gone" />
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bottom_border_gray_bg"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/alert_soonest_expire"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_normal"
-                        android:background="@drawable/border_lot_amount_alert"
-                        android:padding="@dimen/padding_small"
-                        android:text="@string/alert_soonest_expire"
-                        android:textColor="@color/color_requisition_banner_text"
-                        android:textSize="@dimen/font_size_regular"
-                        android:visibility="gone" />
+                        <TextView
+                            android:id="@+id/alert_add_positive_lot_amount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/margin_normal"
+                            android:background="@drawable/border_lot_amount_alert"
+                            android:padding="@dimen/padding_small"
+                            android:text="@string/alert_add_lot_amount"
+                            android:textColor="@color/color_requisition_banner_text"
+                            android:textSize="@dimen/font_size_regular"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/alert_soonest_expire"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/margin_normal"
+                            android:background="@drawable/border_lot_amount_alert"
+                            android:padding="@dimen/padding_small"
+                            android:text="@string/alert_soonest_expire"
+                            android:textColor="@color/color_requisition_banner_text"
+                            android:textSize="@dimen/font_size_regular"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rv_existing_lot_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:scrollbars="none"
-                        android:overScrollMode="never"/>
+                        android:overScrollMode="never"
+                        android:scrollbars="none" />
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/lot_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:scrollbars="none"
-                        android:overScrollMode="never"/>
+                        android:overScrollMode="never"
+                        android:scrollbars="none" />
 
                     <LinearLayout
                         android:id="@+id/action_add_new_lot"
