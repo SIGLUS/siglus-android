@@ -203,13 +203,15 @@
                         android:id="@+id/rv_existing_lot_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:scrollbars="none" />
+                        android:scrollbars="none"
+                        android:overScrollMode="never"/>
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/lot_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:scrollbars="none" />
+                        android:scrollbars="none"
+                        android:overScrollMode="never"/>
 
                     <LinearLayout
                         android:id="@+id/action_add_new_lot"
