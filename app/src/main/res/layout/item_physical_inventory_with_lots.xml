@@ -53,14 +53,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scrollbars="none"
-                android:background="@color/color_white"/>
+                android:background="@color/color_white"
+                android:overScrollMode="never"/>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_new_lot_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scrollbars="none"
-                android:background="@color/color_white"/>
+                android:background="@color/color_white"
+                android:overScrollMode="never"/>
 
             <LinearLayout
                 android:id="@+id/add_new_lot_panel"
