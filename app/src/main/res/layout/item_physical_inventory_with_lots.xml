@@ -16,6 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:background="@drawable/bottom_border_gray_bg"
             android:padding="@dimen/padding_normal">
 
             <LinearLayout
@@ -65,8 +66,7 @@
                 android:id="@+id/add_new_lot_panel"
                 style="@style/InventoryCard.ActionPanel"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/top_border_gray_bg">
+                android:layout_height="wrap_content">
                 <TextView
                     android:id="@+id/tx_add_new_lot"
                     android:layout_width="wrap_content"

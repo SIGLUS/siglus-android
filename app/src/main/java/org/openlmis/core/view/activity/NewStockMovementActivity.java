@@ -10,6 +10,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -98,6 +99,9 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     @InjectView(R.id.rv_existing_lot_list)
     private RecyclerView existingLotListView;
 
+    @InjectView(R.id.ly_lot_list)
+    private ViewGroup lyLotList;
+
     @InjectPresenter(NewStockMovementPresenter.class)
     NewStockMovementPresenter presenter;
 
@@ -141,9 +145,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         presenter.loadData(stockCardId, movementType);
         stockMovementViewModel = presenter.getStockMovementViewModel();
         stockMovementViewModel.setKit(isKit);
-        initMovementView();
-        initExistingLotListView();
-        initNewLotListView();
+        initView();
     }
 
     private void initExistingLotListView() {
@@ -181,19 +183,10 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
         newLotMovementAdapter.notifyDataSetChanged();
     }
 
-    private void initMovementView() {
+    private void initView() {
         setTitle(movementType.getDescription() + " " + stockName);
-
-        if (!movementType.equals(MovementReasonManager.MovementType.ISSUE)) {
-            lyRequestedQuantity.setVisibility(View.GONE);
-        }
-
-        if (!isKit) {
-            if (MovementReasonManager.MovementType.RECEIVE.equals(movementType)
-                    || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
-                actionAddNewLot.setVisibility(View.VISIBLE);
-            }
-            lyMovementQuantity.setVisibility(View.GONE);
+        if (movementType.equals(MovementReasonManager.MovementType.ISSUE)) {
+            lyRequestedQuantity.setVisibility(View.VISIBLE);
         }
 
         if (MovementReasonManager.MovementType.RECEIVE.equals(movementType)
@@ -212,11 +205,21 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
             }
         });
         etMovementDate.setKeyListener(null);
-
         etMovementReason.setOnClickListener(getMovementReasonOnClickListener());
         etMovementReason.setKeyListener(null);
 
-        actionAddNewLot.setOnClickListener(getAddNewLotOnClickListener());
+        if (!isKit) {
+            if (MovementReasonManager.MovementType.RECEIVE.equals(movementType)
+                    || MovementReasonManager.MovementType.POSITIVE_ADJUST.equals(movementType)) {
+                actionAddNewLot.setVisibility(View.VISIBLE);
+                actionAddNewLot.setOnClickListener(getAddNewLotOnClickListener());
+            }
+            initExistingLotListView();
+            initNewLotListView();
+        } else {
+            lyMovementQuantity.setVisibility(View.VISIBLE);
+            lyLotList.setVisibility(View.GONE);
+        }
     }
 
     @NonNull

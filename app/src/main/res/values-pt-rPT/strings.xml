@@ -370,4 +370,6 @@
     <string name="msg_export_data_sucess">Os dados foram exportados e gravados com sucesso <![CDATA[<b>%1$s</b>]]></string>
     <string name="action_export_data">Exportar todos os dados de aplicativos</string>
     <string name="msg_has_archived_old_data">Os dados históricos para além de 13 meses são arquivados no portal web.</string>
+    <string name="label_movement_detail">Movement Details</string>
+    <string name="label_available_lots">Available Lots</string>
 </resources>

@@ -414,4 +414,6 @@
     <string name="action_export_data">Export all app data</string>
 
     <string name="msg_has_archived_old_data">Historical data beyond 13-months are archived on the web portal.</string>
+    <string name="label_movement_detail">Movement Details</string>
+    <string name="label_available_lots">Available Lots</string>
 </resources>
