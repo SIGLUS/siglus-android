@@ -14,6 +14,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/tv_archived_old_data"
             android:layout_marginBottom="0dp"
+            android:paddingLeft="@dimen/padding_small"
+            android:paddingTop="@dimen/padding_tiny"
+            android:paddingBottom="@dimen/padding_tiny"
             android:background="@drawable/bottom_border_black"
             android:text="@string/msg_has_archived_old_data"/>
 
