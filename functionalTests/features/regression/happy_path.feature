@@ -120,7 +120,7 @@ Feature: Log in and initialize Inventory
     # Physical inventory cannot include blank quantities
     And I search "08S01ZY"
     When I press "Complete"
-    Then I should see text containing "Quantity cannot be left blank!"
+    Then I should see text containing "Enter a positive amount for this newly created lot!"
 
     # Do physical inventory and SOH should be adjusted
     When I do physical inventory with lots with "100" by fnm "08S42B"
