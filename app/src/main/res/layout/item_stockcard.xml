@@ -28,78 +28,74 @@
     <RelativeLayout
         android:layout_width="140dp"
         android:layout_height="match_parent"
+        android:gravity="center_vertical"
         android:background="@color/color_white"
-        android:layout_marginRight="0dp">
-
+        android:orientation="vertical">
         <LinearLayout
+            android:id="@+id/ly_expiry_date_warning"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-            <LinearLayout
-                android:id="@+id/ly_expiry_date_warning"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingLeft="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_small"
+            android:layout_alignParentRight="true"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/tv_expiry_date_msg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
+                android:background="@drawable/border_bg_light_red"
                 android:paddingLeft="@dimen/padding_small"
-                android:visibility="gone">
-                <TextView
-                    android:id="@+id/tv_expiry_date_msg"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/border_bg_light_red"
-                    android:paddingLeft="@dimen/padding_small"
-                    android:paddingRight="@dimen/padding_small"
-                    android:text="@string/msg_expiring_date"
-                    android:textSize="@dimen/font_size_small"
-                    android:textColor="@color/color_box_text_red"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ly_over_stock"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingLeft="@dimen/padding_small"
-                android:visibility="gone">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/border_bg_light_blue"
-                    android:paddingLeft="@dimen/padding_small"
-                    android:paddingRight="@dimen/padding_small"
-                    android:textSize="@dimen/font_size_small"
-                    android:text="@string/msg_over_stock"
-                    android:textColor="@color/color_box_text_blue"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ly_low_stock"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingLeft="@dimen/padding_small"
-                android:visibility="gone">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/border_light_bg_light_yellow"
-                    android:paddingLeft="@dimen/padding_small"
-                    android:paddingRight="@dimen/padding_small"
-                    android:text="@string/msg_low_stock"
-                    android:textSize="@dimen/font_size_small"
-                    android:textColor="@color/color_box_text_yellow"/>
-            </LinearLayout>
+                android:paddingRight="@dimen/padding_small"
+                android:text="@string/msg_expiring_date"
+                android:textSize="@dimen/font_size_small"
+                android:textColor="@color/color_box_text_red"/>
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/ly_over_stock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingLeft="@dimen/padding_small"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/ly_expiry_date_warning"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_bg_light_blue"
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small"
+                android:textSize="@dimen/font_size_small"
+                android:text="@string/msg_over_stock"
+                android:textColor="@color/color_box_text_blue"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ly_low_stock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/ly_expiry_date_warning"
+            android:paddingLeft="@dimen/padding_small"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_light_bg_light_yellow"
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small"
+                android:text="@string/msg_low_stock"
+                android:textSize="@dimen/font_size_small"
+                android:textColor="@color/color_box_text_yellow"/>
+        </LinearLayout>
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/vg_stock_on_hand_bg"
-        android:layout_width="90dp"
+        android:layout_width="100dp"
         android:layout_height="match_parent"
         android:background="@color/color_white">
 

@@ -135,6 +135,18 @@ public class StockCardViewHolder extends BaseViewHolder {
         }
     }
 
+    private void hideLowStockStatus() {
+        if (lyLowStock != null) {
+            lyLowStock.setVisibility(View.GONE);
+        }
+    }
+
+    private void hideOverStockStatus() {
+        if (lyOverStock != null) {
+            lyOverStock.setVisibility(View.GONE);
+        }
+    }
+
     private void setListener(final InventoryViewModel inventoryViewModel) {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,15 +168,18 @@ public class StockCardViewHolder extends BaseViewHolder {
                 tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_over_stock));
                 tvStockOnHand.setTypeface(null, Typeface.NORMAL);
                 lyOverStock.setVisibility(View.VISIBLE);
+                hideLowStockStatus();
                 break;
             case STOCK_ON_HAND_LOW_STOCK:
                 tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_warning_text));
                 tvStockOnHand.setTypeface(null, Typeface.NORMAL);
                 lyLowStock.setVisibility(View.VISIBLE);
+                hideOverStockStatus();
                 break;
             case STOCK_ON_HAND_STOCK_OUT:
                 tvStockOnHand.setTextColor(context.getResources().getColor(R.color.color_stock_out));
                 tvStockOnHand.setTypeface(null, Typeface.BOLD);
+                hideStockStatus();
                 break;
             default:
                 stockOnHandBg.setBackgroundResource(R.color.color_white);
