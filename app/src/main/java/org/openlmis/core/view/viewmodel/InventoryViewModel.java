@@ -126,10 +126,10 @@ public class InventoryViewModel {
     }
 
     private void formatProductDisplay(Product product) {
-        String productName = product.getFormattedProductName();
+        String productName = product.getFormattedProductNameWithoutStrengthAndType();
         styledName = new SpannableStringBuilder(productName);
         styledName.setSpan(new ForegroundColorSpan(LMISApp.getContext().getResources().getColor(R.color.color_text_secondary)),
-                product.getPrimaryName().length(), productName.length(), Spannable.SPAN_POINT_MARK);
+                product.getProductNameWithoutStrengthAndType().length(), productName.length(), Spannable.SPAN_POINT_MARK);
 
         String unit = product.getStrength() + " " + product.getType();
         styledUnit = new SpannableStringBuilder(unit);
