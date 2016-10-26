@@ -176,14 +176,13 @@
                     android:orientation="vertical">
 
                     <LinearLayout
-                        android:id="@+id/ly_alert_field"
+                        android:id="@+id/alert_add_positive_lot_amount"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@drawable/bottom_border_gray_bg"
-                        android:orientation="vertical">
+                        android:visibility="gone">
 
                         <TextView
-                            android:id="@+id/alert_add_positive_lot_amount"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/margin_normal"
@@ -191,11 +190,17 @@
                             android:padding="@dimen/padding_small"
                             android:text="@string/alert_add_lot_amount"
                             android:textColor="@color/color_requisition_banner_text"
-                            android:textSize="@dimen/font_size_regular"
-                            android:visibility="gone" />
+                            android:textSize="@dimen/font_size_regular" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/alert_soonest_expire"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bottom_border_gray_bg"
+                        android:visibility="gone">
 
                         <TextView
-                            android:id="@+id/alert_soonest_expire"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/margin_normal"
@@ -203,10 +208,9 @@
                             android:padding="@dimen/padding_small"
                             android:text="@string/alert_soonest_expire"
                             android:textColor="@color/color_requisition_banner_text"
-                            android:textSize="@dimen/font_size_regular"
-                            android:visibility="gone" />
-
+                            android:textSize="@dimen/font_size_regular"/>
                     </LinearLayout>
+
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rv_existing_lot_list"

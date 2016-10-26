@@ -85,10 +85,10 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     TextView tvCancel;
 
     @InjectView(R.id.alert_add_positive_lot_amount)
-    TextView alertAddPositiveLotAmount;
+    ViewGroup alertAddPositiveLotAmount;
 
     @InjectView(R.id.alert_soonest_expire)
-    TextView alertSoonestExpire;
+    ViewGroup alertSoonestExpire;
 
     @InjectView(R.id.action_add_new_lot)
     View actionAddNewLot;
@@ -101,9 +101,6 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
 
     @InjectView(R.id.ly_lot_list)
     private ViewGroup lyLotList;
-
-    @InjectView(R.id.ly_alert_field)
-    private ViewGroup lyAlertField;
 
     @InjectPresenter(NewStockMovementPresenter.class)
     NewStockMovementPresenter presenter;
