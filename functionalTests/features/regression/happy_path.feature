@@ -55,7 +55,7 @@ Feature: Log in and initialize Inventory
     # Attempt to make a stock movement which make its soh negative
     Then I search stockcard by code "08S42B" and select this item
     When I make a negative movement with lot "Negative Adjustments" "Damaged on arrival" "123456789098"
-    Then I should see text containing "Quantity cannot be larger than stock on hand"
+    Then I should see text containing "The amount you entered is greater than your stock on hand"
     And I press "CANCEL"
 
     # Make a stock movement and save
