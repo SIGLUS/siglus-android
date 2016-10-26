@@ -1,5 +1,5 @@
 <resources>
-    <string name="server_base_url">https://lmis-qa.cmam.gov.mz:8443</string>
+    <string name="server_base_url">http://qa-lb-1278636645.ap-northeast-1.elb.amazonaws.com</string>
     <string name="sync_account_type">org.clintonhealthaccess.lmismoz.qa</string>
     <integer name="sync_interval">3600</integer>
     <string name="sync_content_authority">org.clintonhealthaccess.lmismoz.sync.qa</string>
