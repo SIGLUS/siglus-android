@@ -16,6 +16,7 @@ import org.openlmis.core.utils.SingleTextWatcher;
 import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.InitialInventoryActivity;
 import org.openlmis.core.view.activity.InventoryActivity;
+import org.openlmis.core.view.activity.NewStockMovementActivity;
 import org.openlmis.core.view.activity.UnpackKitActivity;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
@@ -90,13 +91,16 @@ public class LotMovementViewHolder extends BaseViewHolder {
         lyLotAmount.setErrorEnabled(false);
 
         if (!viewModel.isValid()) {
-            etLotAmount.requestFocus();
-            lyLotAmount.setError(context.getResources().getString(R.string.alert_lot_quantity_error));
+            setAmountError(context.getResources().getString(R.string.error_enter_positive_lot_amount));
         }
         if (!viewModel.isQuantityValid()) {
-            etLotAmount.requestFocus();
-            lyLotAmount.setError(context.getResources().getString(R.string.msg_invalid_quantity));
+            setAmountError(context.getResources().getString(R.string.msg_invalid_quantity));
         }
+    }
+
+    private void setAmountError(String string) {
+        etLotAmount.requestFocus();
+        lyLotAmount.setError(string);
     }
 
     private void updateDeleteIcon(boolean isNewAdded, View.OnClickListener onClickListenerForDeleteIcon) {
@@ -151,9 +155,21 @@ public class LotMovementViewHolder extends BaseViewHolder {
         public void afterTextChanged(Editable editable) {
             this.viewModel.setHasDataChanged(true);
             viewModel.setQuantity(editable.toString());
-            if (!(context instanceof InitialInventoryActivity) && !(context instanceof UnpackKitActivity) && viewModel.isNewAdded()) {
-                vgLotSOH.setVisibility(viewModel.quantityGreaterThanZero()?View.GONE:View.VISIBLE);
+            lyLotAmount.setErrorEnabled(false);
+            if (context instanceof NewStockMovementActivity) {
+                if (viewModel.isNewAdded()) {
+                    if (viewModel.validateLotWithPositiveAmount()) {
+                        vgLotSOH.setVisibility(View.GONE);
+                    } else {
+                        vgLotSOH.setVisibility(View.VISIBLE);
+                        setAmountError(context.getResources().getString(R.string.error_enter_positive_lot_amount));
+                    }
+                }
+                if (!viewModel.validateQuantityNotGreaterThanSOH(((NewStockMovementActivity) context).movementType)) {
+                    setAmountError(context.getResources().getString(R.string.msg_invalid_quantity));
+                }
             }
+
             if (movementChangeListener != null) {
                 movementChangeListener.movementChange();
             }

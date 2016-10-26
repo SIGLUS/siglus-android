@@ -161,7 +161,7 @@ public class InventoryViewModel {
 
     boolean validateLotList() {
         for (LotMovementViewModel lotMovementViewModel : lotMovementViewModelList) {
-            if (!lotMovementViewModel.validate()) {
+            if (!lotMovementViewModel.validateLotWithPositiveAmount()) {
                 return false;
             }
         }

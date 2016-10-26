@@ -57,7 +57,7 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
             lotMovementViewModel.setQuantityValid(true);
         }
         for (int i = 0; i < lotList.size(); i++) {
-            if (!lotList.get(i).validateQuantity(movementType)) {
+            if (!lotList.get(i).validateQuantityNotGreaterThanSOH(movementType)) {
                 position = i;
                 break;
             }
@@ -74,7 +74,7 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
             lotMovementViewModel.setQuantityValid(true);
         }
         for (int i = 0; i < lotList.size(); i++) {
-            if (!lotList.get(i).validate()) {
+            if (!lotList.get(i).validateLotWithPositiveAmount()) {
                 position = i;
                 break;
             }

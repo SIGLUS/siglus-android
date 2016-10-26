@@ -226,6 +226,10 @@ public final class MovementReasonManager {
         public String toString() {
             return value;
         }
+
+        public boolean isNegative() {
+            return this == ISSUE || this == NEGATIVE_ADJUST;
+        }
     }
 
 

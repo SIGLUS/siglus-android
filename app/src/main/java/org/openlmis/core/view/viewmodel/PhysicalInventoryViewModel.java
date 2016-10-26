@@ -96,7 +96,7 @@ public class PhysicalInventoryViewModel extends InventoryViewModel {
 
     private boolean validateExistingLot() {
         for (LotMovementViewModel lotMovementViewModel : existingLotMovementViewModelList) {
-            if (!lotMovementViewModel.validateExistingLot()) {
+            if (!lotMovementViewModel.validateLotWithNoEmptyFields()) {
                 return false;
             }
         }

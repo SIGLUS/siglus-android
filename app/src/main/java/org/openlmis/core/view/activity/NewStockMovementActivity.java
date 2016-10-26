@@ -111,7 +111,7 @@ public class NewStockMovementActivity extends BaseActivity implements NewStockMo
     private LotMovementAdapter newLotMovementAdapter;
     private LotMovementAdapter existingLotMovementAdapter;
     private String stockName;
-    private MovementReasonManager.MovementType movementType;
+    public MovementReasonManager.MovementType movementType;
 
     private Long stockCardId;
 

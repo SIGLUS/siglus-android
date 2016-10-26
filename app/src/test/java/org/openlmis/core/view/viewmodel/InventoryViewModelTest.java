@@ -173,7 +173,7 @@ public class InventoryViewModelTest {
         inventoryViewModel.setChecked(true);
 
         LotMovementViewModel lotMovementViewModel = new LotMovementViewModel("lotNumber", "2012-09-01", MovementReasonManager.MovementType.PHYSICAL_INVENTORY);
-        lotMovementViewModel.validate();
+        lotMovementViewModel.validateLotWithPositiveAmount();
         inventoryViewModel.lotMovementViewModelList.add(lotMovementViewModel);
 
         assertFalse(inventoryViewModel.validate());

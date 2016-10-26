@@ -343,7 +343,7 @@
     <string name="msg_empty_movement_reason">Razão do movimento não pode estar em branco</string>
     <string name="msg_empty_quantity">Quantidade não pode estar em branco</string>
     <string name="msg_empty_signature">Rúbrica não pode estar em branco</string>
-    <string name="msg_invalid_quantity">Quantidade não pode ser maior que o estoque existente</string>
+    <string name="msg_invalid_quantity">The amount you entered is greater than your stock on hand</string>
     <!--Lot management-->
     <string name="label_lot_number">Qual é o número do lote?</string>
     <string name="hint_lot_number">Número do lote</string>
@@ -372,4 +372,5 @@
     <string name="msg_has_archived_old_data">Os dados históricos para além de 13 meses são arquivados no portal web.</string>
     <string name="label_movement_detail">Movement Details</string>
     <string name="label_available_lots">Available Lots</string>
+    <string name="error_enter_positive_lot_amount">Enter a positive amount for this newly created lot</string>
 </resources>
