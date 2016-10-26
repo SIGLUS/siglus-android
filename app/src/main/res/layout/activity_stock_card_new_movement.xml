@@ -73,6 +73,7 @@
 
                             <EditText
                                 android:id="@+id/et_document_number"
+                                android:inputType="textShortMessage"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="@string/hint_document_number"
