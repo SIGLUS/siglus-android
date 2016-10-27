@@ -74,7 +74,7 @@ public class LotMovementAdapter extends RecyclerView.Adapter<LotMovementViewHold
             lotMovementViewModel.setQuantityLessThanSoh(true);
         }
         for (int i = 0; i < lotList.size(); i++) {
-            if (!lotList.get(i).validateLotWithPositiveAmount()) {
+            if (!lotList.get(i).validateLotWithPositiveQuantity()) {
                 position = i;
                 break;
             }

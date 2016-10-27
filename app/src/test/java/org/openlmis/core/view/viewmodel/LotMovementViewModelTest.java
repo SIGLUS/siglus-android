@@ -27,19 +27,19 @@ public class LotMovementViewModelTest {
 
     @Test
     public void shouldReturnFalseWhenViewModelIsInvalid() throws Exception {
-        viewModel.validateLotWithPositiveAmount();
+        viewModel.validateLotWithPositiveQuantity();
         assertFalse(viewModel.isValid());
 
         viewModel.setLotNumber("dk-23");
-        viewModel.validateLotWithPositiveAmount();
+        viewModel.validateLotWithPositiveQuantity();
         assertFalse(viewModel.isValid());
 
         viewModel.setQuantity("333");
-        viewModel.validateLotWithPositiveAmount();
+        viewModel.validateLotWithPositiveQuantity();
         assertFalse(viewModel.isValid());
 
         viewModel.setExpiryDate("2014-03-18");
-        viewModel.validateLotWithPositiveAmount();
+        viewModel.validateLotWithPositiveQuantity();
         assertTrue(viewModel.isValid());
     }
 
@@ -47,7 +47,7 @@ public class LotMovementViewModelTest {
     public void shouldReturnFalseWhenIssueQuantityGreaterThanSOH() throws Exception {
         viewModel.setLotSoh("100");
         viewModel.setQuantity("300");
-        viewModel.validateLotWithPositiveAmount();
+        viewModel.validateLotWithPositiveQuantity();
         assertFalse(viewModel.validateQuantityNotGreaterThanSOH(MovementReasonManager.MovementType.ISSUE));
     }
 

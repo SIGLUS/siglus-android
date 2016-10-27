@@ -18,6 +18,7 @@ import org.openlmis.core.view.activity.BaseActivity;
 import org.openlmis.core.view.activity.InitialInventoryActivity;
 import org.openlmis.core.view.activity.InventoryActivity;
 import org.openlmis.core.view.activity.NewStockMovementActivity;
+import org.openlmis.core.view.activity.PhysicalInventoryActivity;
 import org.openlmis.core.view.activity.UnpackKitActivity;
 import org.openlmis.core.view.adapter.LotMovementAdapter;
 import org.openlmis.core.view.fragment.SimpleDialogFragment;
@@ -161,7 +162,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
             lyLotAmount.setErrorEnabled(false);
             if (context instanceof NewStockMovementActivity) {
                 if (viewModel.isNewAdded()) {
-                    if (viewModel.validateLotWithPositiveAmount()) {
+                    if (viewModel.validateLotWithPositiveQuantity()) {
                         vgLotSOH.setVisibility(View.GONE);
                     } else {
                         vgLotSOH.setVisibility(View.VISIBLE);
@@ -170,6 +171,27 @@ public class LotMovementViewHolder extends BaseViewHolder {
                 }
                 if (!viewModel.validateQuantityNotGreaterThanSOH(((NewStockMovementActivity) context).movementType)) {
                     setAmountError(context.getResources().getString(R.string.msg_invalid_quantity));
+                }
+            }
+
+            if (context instanceof PhysicalInventoryActivity) {
+                if (viewModel.isNewAdded()) {
+                    if (viewModel.validateLotWithPositiveQuantity()) {
+                        vgLotSOH.setVisibility(View.GONE);
+                    } else {
+                        vgLotSOH.setVisibility(View.VISIBLE);
+                        setAmountError(context.getResources().getString(R.string.msg_empty_quantity));
+                    }
+                } else {
+                    if (!viewModel.validateLotWithNoEmptyFields()) {
+                        setAmountError(context.getResources().getString(R.string.msg_empty_quantity));
+                    }
+                }
+            }
+
+            if (context instanceof InitialInventoryActivity) {
+                if (!viewModel.validateLotWithPositiveQuantity()) {
+                    setAmountError(context.getResources().getString(R.string.msg_empty_quantity));
                 }
             }
 
