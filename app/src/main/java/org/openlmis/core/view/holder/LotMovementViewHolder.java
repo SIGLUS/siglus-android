@@ -95,14 +95,14 @@ public class LotMovementViewHolder extends BaseViewHolder {
         }
 
         if (!viewModel.isValid()) {
-            setAmountError(context.getResources().getString(R.string.msg_empty_quantity));
+            setQuantityError(context.getResources().getString(R.string.msg_empty_quantity));
         }
         if (!viewModel.isQuantityLessThanSoh()) {
-            setAmountError(context.getResources().getString(R.string.msg_invalid_quantity));
+            setQuantityError(context.getResources().getString(R.string.msg_invalid_quantity));
         }
     }
 
-    private void setAmountError(String string) {
+    private void setQuantityError(String string) {
         etLotAmount.requestFocus();
         lyLotAmount.setError(string);
     }
@@ -166,11 +166,11 @@ public class LotMovementViewHolder extends BaseViewHolder {
                         vgLotSOH.setVisibility(View.GONE);
                     } else {
                         vgLotSOH.setVisibility(View.VISIBLE);
-                        setAmountError(context.getResources().getString(R.string.msg_empty_quantity));
+                        setQuantityError(context.getResources().getString(R.string.msg_empty_quantity));
                     }
                 }
                 if (!viewModel.validateQuantityNotGreaterThanSOH(((NewStockMovementActivity) context).movementType)) {
-                    setAmountError(context.getResources().getString(R.string.msg_invalid_quantity));
+                    setQuantityError(context.getResources().getString(R.string.msg_invalid_quantity));
                 }
             }
 
@@ -180,18 +180,18 @@ public class LotMovementViewHolder extends BaseViewHolder {
                         vgLotSOH.setVisibility(View.GONE);
                     } else {
                         vgLotSOH.setVisibility(View.VISIBLE);
-                        setAmountError(context.getResources().getString(R.string.msg_empty_quantity));
+                        setQuantityError(context.getResources().getString(R.string.msg_empty_quantity));
                     }
                 } else {
                     if (!viewModel.validateLotWithNoEmptyFields()) {
-                        setAmountError(context.getResources().getString(R.string.msg_empty_quantity));
+                        setQuantityError(context.getResources().getString(R.string.msg_empty_quantity));
                     }
                 }
             }
 
             if (context instanceof InitialInventoryActivity) {
                 if (!viewModel.validateLotWithPositiveQuantity()) {
-                    setAmountError(context.getResources().getString(R.string.msg_empty_quantity));
+                    setQuantityError(context.getResources().getString(R.string.msg_empty_quantity));
                 }
             }
 

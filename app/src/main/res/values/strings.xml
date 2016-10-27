@@ -38,7 +38,7 @@
     <string name="label_expire_date">Expiration Date</string>
     <string name="label_dummy_product">Paracetamol</string>
     <string name="label_dummy_unit">500mg</string>
-    <string name="msg_inventory_check_failed">Quantity cannot be left blank!</string>
+    <string name="msg_inventory_check_failed">Quantity cannot be blank!</string>
     <string name="msg_invalid_date">Cannot select past month</string>
     <string name="btn_done">Done</string>
     <string name="msg_remove_expire_date">Are you sure you want to remove this expiry date?</string>
@@ -401,7 +401,6 @@
     <string name="label_new_added_lot">Lot was just added and has no stock on hand</string>
     <string name="empty_lot_warning">Please add a new lot</string>
     <string name="alert_add_lot_amount">Enter an amount greater than 0 on at least one lot</string>
-    <string name="alert_lot_quantity_error">Quantity cannot be left blank!</string>
     <string name="btn_remove_lot">REMOVE LOT</string>
     <string name="msg_remove_new_lot_title"><![CDATA[<b>Remove newly created lot</b>]]></string>
     <string name="msg_remove_new_lot"><![CDATA[Remove the newly created lot <b>%1$s</b> which is expiring in %2$s from <b>%3$s</b>]]></string>

@@ -171,7 +171,7 @@ Then(/^I do physical inventory for mmia items$/) do
     steps %Q{
         Then I scroll "recyclerView" down to "Complete"
         Then I press "Complete"
-        Then I should see text containing "cannot be left blank!"
+        Then I should see text containing "cannot be blank"
         And I do physical inventory with "123" by fnm "08S42B"
         And I do physical inventory with "121" by fnm "08S18Y"
         And I do physical inventory with "123" by fnm "08S40Z"
