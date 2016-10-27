@@ -23,7 +23,7 @@ public class LotMovementViewModel implements Serializable {
     private MovementReasonManager.MovementType movementType;
 
     boolean valid = true;
-    boolean quantityValid = true;
+    boolean quantityLessThanSoh = true;
     boolean hasDataChanged = false;
 
     public LotMovementViewModel(String lotNumber, String expiryDate, MovementReasonManager.MovementType movementType) {
@@ -41,9 +41,9 @@ public class LotMovementViewModel implements Serializable {
 
     public boolean validateQuantityNotGreaterThanSOH(MovementReasonManager.MovementType movementType) {
         if (movementType.isNegative()) {
-            quantityValid = StringUtils.isBlank(quantity) || Long.parseLong(quantity) <= Long.parseLong(lotSoh);
+            quantityLessThanSoh = StringUtils.isBlank(quantity) || Long.parseLong(quantity) <= Long.parseLong(lotSoh);
         }
-        return quantityValid;
+        return quantityLessThanSoh;
     }
 
     public LotMovementItem convertViewToModel(Product product) {

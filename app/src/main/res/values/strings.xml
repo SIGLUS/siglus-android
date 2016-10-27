@@ -416,5 +416,4 @@
     <string name="msg_has_archived_old_data">Historical data beyond 13-months are archived on the web portal.</string>
     <string name="label_movement_detail">Movement Details</string>
     <string name="label_available_lots">Available Lots</string>
-    <string name="error_enter_positive_lot_amount">Enter a positive amount for this newly created lot</string>
 </resources>

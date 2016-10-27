@@ -94,9 +94,9 @@ public class LotMovementViewHolder extends BaseViewHolder {
         }
 
         if (!viewModel.isValid()) {
-            setAmountError(context.getResources().getString(R.string.error_enter_positive_lot_amount));
+            setAmountError(context.getResources().getString(R.string.msg_empty_quantity));
         }
-        if (!viewModel.isQuantityValid()) {
+        if (!viewModel.isQuantityLessThanSoh()) {
             setAmountError(context.getResources().getString(R.string.msg_invalid_quantity));
         }
     }
@@ -165,7 +165,7 @@ public class LotMovementViewHolder extends BaseViewHolder {
                         vgLotSOH.setVisibility(View.GONE);
                     } else {
                         vgLotSOH.setVisibility(View.VISIBLE);
-                        setAmountError(context.getResources().getString(R.string.error_enter_positive_lot_amount));
+                        setAmountError(context.getResources().getString(R.string.msg_empty_quantity));
                     }
                 }
                 if (!viewModel.validateQuantityNotGreaterThanSOH(((NewStockMovementActivity) context).movementType)) {
