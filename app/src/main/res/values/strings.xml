@@ -384,7 +384,7 @@
     <string name="msg_empty_movement_reason">Movement reason cannot be blank</string>
     <string name="msg_empty_quantity">Quantity cannot be blank</string>
     <string name="msg_empty_signature">Signature cannot be blank</string>
-    <string name="msg_invalid_quantity">The amount you entered is greater than your stock on hand</string>
+    <string name="msg_invalid_quantity">Quantity cannot be larger than stock on hand</string>
 
     <!--Lot management-->
     <string name="label_lot_number">What is the lot number?</string>

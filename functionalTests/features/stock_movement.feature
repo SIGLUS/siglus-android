@@ -24,7 +24,7 @@ Feature: stock movement Page
     Then I should see "Enter an amount greater than 0 on at least one lot"
     When I enter quantity "10000" for the last lot
     And I press "Complete"
-    Then I should see "The amount you entered is greater than your stock on hand"
+    Then I should see "Quantity cannot be larger than stock on hand"
     And I wait for 1 second
     And I clear quantity for the last lot
     When I enter quantity "123" for the last lot
